@@ -10,8 +10,8 @@ uid: Bodu.Text.Delimited.Writer
 
 ## Key types
 
-- <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> — the `ref struct` writer: `WriteStartArray` / `WriteEndArray` around the record set, `WriteStartObject` / `WritePropertyName` / `WriteString` / `WriteEndObject` for header-keyed records (or a nested array of `WriteString` for positional rows), plus `Flush`, `Dispose`, `BytesCommitted`, and `BytesPending`.
-- <xref:Bodu.Text.Delimited.Writer.DelimitedWriterOptions> — `Delimiter`, `Quote`, and `NoHeader`.
+- <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> - the `ref struct` writer: `WriteStartArray` / `WriteEndArray` around the record set, `WriteStartObject` / `WritePropertyName` / `WriteString` / `WriteEndObject` for header-keyed records (or a nested array of `WriteString` for positional rows), plus `Flush`, `Dispose`, `BytesCommitted`, and `BytesPending`.
+- <xref:Bodu.Text.Delimited.Writer.DelimitedWriterOptions> - `Delimiter`, `Quote`, and `NoHeader`.
 
 ## Example
 

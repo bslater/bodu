@@ -12,7 +12,7 @@ public partial class PstNamedPropertyMapTests
 {
     /// <summary>
     /// Verifies that a string entry whose offset sits at the top of the unsigned range is skipped under the tolerant
-    /// levels and throws the format exception under strict validation — never an argument exception from a wrapped
+    /// levels and throws the format exception under strict validation - never an argument exception from a wrapped
     /// bounds check.
     /// </summary>
     [TestMethod]

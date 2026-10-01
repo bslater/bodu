@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// Input block size: configurable, <see cref="MinInputBlockSize" />–<see cref="MaxInputBlockSize" /> bytes (default
+/// Input block size: configurable, <see cref="MinInputBlockSize" />-<see cref="MaxInputBlockSize" /> bytes (default
 /// 32).
 /// </description>
 /// </item>
@@ -519,7 +519,7 @@ public sealed class CubeHash
 
             if (source.Length < needed)
             {
-                // Not enough data to complete the block — buffer and return
+                // Not enough data to complete the block - buffer and return
                 XorBytesIntoState(source, _pendingBytes);
                 _pendingBytes += source.Length;
                 return;

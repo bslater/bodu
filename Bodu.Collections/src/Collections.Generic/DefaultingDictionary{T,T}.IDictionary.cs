@@ -46,11 +46,11 @@ public sealed partial class DefaultingDictionary<TKey, TValue> :
     /// <para>
     /// The getter never throws <see cref="KeyNotFoundException" />: when the key is absent it invokes
     /// <see cref="ValueFactory" />, stores the produced value, and returns it. When the key is present the stored value
-    /// is returned and the factory is not invoked. Only this getter materializes defaults — every other read surface
+    /// is returned and the factory is not invoked. Only this getter materializes defaults - every other read surface
     /// observes stored entries only.
     /// </para>
     /// <para>
-    /// If the factory mutates the dictionary — including assigning the very key being materialized — the factory's
+    /// If the factory mutates the dictionary - including assigning the very key being materialized - the factory's
     /// return value is stored last and wins; see the reentrancy contract in the type-level remarks.
     /// </para>
     /// </remarks>
@@ -157,7 +157,7 @@ public sealed partial class DefaultingDictionary<TKey, TValue> :
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// Unlike the indexer getter, this method never invokes <see cref="ValueFactory" /> — a missing key reports
+    /// Unlike the indexer getter, this method never invokes <see cref="ValueFactory" /> - a missing key reports
     /// <see langword="false" /> and stores nothing, matching Python's <c>defaultdict.get</c>.
     /// </remarks>
     public bool TryGetValue(TKey key, out TValue value) => _inner.TryGetValue(key, out value!);

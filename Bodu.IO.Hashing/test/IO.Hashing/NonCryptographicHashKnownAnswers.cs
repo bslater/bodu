@@ -18,7 +18,7 @@ namespace Bodu.IO.Hashing;
 /// is available for the algorithm under test and the harness skips that particular vector.
 /// </para>
 /// <para>
-/// Vectors that fall outside the shared-input set — for example, the RevEng catalogue <c>"123456789"</c> CRC check —
+/// Vectors that fall outside the shared-input set - for example, the RevEng catalogue <c>"123456789"</c> CRC check -
 /// live on the <see cref="Additional" /> list and are driven by the same data-driven test harness, avoiding bespoke
 /// <c>[DataRow]</c> definitions.
 /// </para>

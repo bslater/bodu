@@ -3,12 +3,12 @@ name: Release
 # Builds, strong-name (real) signs, packs, and optionally publishes the Bodu packages.
 #
 # The whole solution is packed, but only packages listed in the shipping manifest
-# (bld/release-manifest.txt) are staged and pushed to nuget.org — packages for waves that have not
+# (bld/release-manifest.txt) are staged and pushed to nuget.org - packages for waves that have not
 # been released yet are produced as build artifacts only. See bld/RELEASING.md for the release model.
 #
 # Triggered for a release by pushing a version tag (e.g. v1.0.0), or manually via the Actions tab.
 #
-# The tag is a LABEL, not the version. Nothing here passes a version to `dotnet pack` — each package's
+# The tag is a LABEL, not the version. Nothing here passes a version to `dotnet pack` - each package's
 # version comes from bld/Versioning.props, which now runs two streams: Stable-tier packages ship at
 # BoduBaseVersion and the Preview/Experimental tier ships at BoduPreviewVersion (set per project via
 # BoduPackageVersionOverride, and reported in the build log). So a run tagged v1.0.0 publishes most
@@ -66,7 +66,15 @@ jobs:
   # ship.
   # ---------------------------------------------------------------------------------------------
   test:
-    runs-on: ubuntu-latest
+    # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+    # gradually, between October 19 and November 19, 2026, so a release is gated on both. Drop
+    # ubuntu-24.04 from the list once 26.04 has proven itself. fail-fast is off so a failure on one
+    # image does not cancel the other, and the gate reports both.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 45
 
     # Deliberately NO job-level CONFIGURATION env. MSBuild reads environment variables as global
@@ -197,7 +205,7 @@ jobs:
             echo "### Release gate failed" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "These test projects exited non-zero. A project listed here with no failing test in" >> "$GITHUB_STEP_SUMMARY"
-            echo "its TRX aborted or discovered no tests - check the uploaded \`release-test-results-trx\` artifact." >> "$GITHUB_STEP_SUMMARY"
+            echo "its TRX aborted or discovered no tests - check the uploaded \`release-test-results-trx-${{ matrix.os }}\` artifact." >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             printf '%s' "$failed" | sed 's/%0A/\n/g' | while IFS= read -r line; do
               [ -n "$line" ] && echo "- $line" >> "$GITHUB_STEP_SUMMARY"
@@ -211,14 +219,18 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: release-test-results-trx
+          name: release-test-results-trx-${{ matrix.os }}
           path: TestResults/**/*.trx
           retention-days: 14
           if-no-files-found: warn
 
   release:
     needs: test
-    runs-on: ubuntu-latest
+    # Runs on one image, not the pair the test gate uses: this job signs, packs and publishes, so it
+    # must run once. The label is named rather than ubuntu-latest so GitHub's move of that label to
+    # 26.04 cannot change the image a release is built on. Switch it to ubuntu-26.04 when the gate
+    # drops 24.04, and make a dry run on it before the next tag.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     # Named by the nuget.org trusted-publishing policy. The OIDC claim carries it, so the
@@ -250,7 +262,7 @@ jobs:
             --configuration "$CONFIGURATION" \
             --output "${{ github.workspace }}/local-packages"
 
-      - name: Guard — fail fast if the public key is misconfigured
+      - name: Guard - fail fast if the public key is misconfigured
         shell: bash
         run: |
           # Real signing produces strong-named assemblies whose retained cross-library
@@ -288,11 +300,11 @@ jobs:
           printf '%s' "$BODU_SNK" | base64 -d > "$RUNNER_TEMP/Bodu.snk"
           # Sanity check: a valid .snk is non-empty binary.
           if [ ! -s "$RUNNER_TEMP/Bodu.snk" ]; then
-            echo "::error::Decoded key is empty — BODU_SNK is not valid base64 of a .snk file."
+            echo "::error::Decoded key is empty - BODU_SNK is not valid base64 of a .snk file."
             exit 1
           fi
 
-      - name: Guard — verify the signing key matches the committed public key
+      - name: Guard - verify the signing key matches the committed public key
         shell: bash
         run: |
           # The BODU_SNK secret is the full private key the assemblies are actually signed with; the
@@ -317,7 +329,7 @@ jobs:
           pubmod=$(od -An -v -t x1 -j 32 -N "$modlen" bld/Bodu.public.snk | tr -d ' \n')
           privmod=$(od -An -v -t x1 -j 20 -N "$modlen" "$priv" | tr -d ' \n')
           if [ "$pubmod" != "$privmod" ]; then
-            echo "::error::The BODU_SNK signing key does not match bld/Bodu.public.snk — they are different key pairs. Update the secret and the committed public key together when rotating the strong-name key."
+            echo "::error::The BODU_SNK signing key does not match bld/Bodu.public.snk - they are different key pairs. Update the secret and the committed public key together when rotating the strong-name key."
             exit 1
           fi
           echo "BODU_SNK matches bld/Bodu.public.snk."

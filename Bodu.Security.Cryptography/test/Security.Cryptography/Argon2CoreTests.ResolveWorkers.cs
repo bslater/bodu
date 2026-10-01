@@ -10,7 +10,7 @@ public sealed partial class Argon2CoreTests
 {
     /// <summary>
     /// Verifies that the fill stays on the calling thread when the bound is one, when there is a single lane, and when
-    /// segments are shorter than the default threshold of 256 blocks.
+    /// segments are shorter than the default threshold of 192 blocks.
     /// </summary>
     /// <param name="maxDegreeOfParallelism">The bound on the derivation's threads.</param>
     /// <param name="lanes">The number of lanes.</param>
@@ -19,8 +19,8 @@ public sealed partial class Argon2CoreTests
     [DataRow(1, 8, 4096)]
     [DataRow(-1, 1, 4096)]
     [DataRow(64, 1, 4096)]
-    [DataRow(-1, 8, 255)]
-    [DataRow(4, 4, 255)]
+    [DataRow(-1, 8, 191)]
+    [DataRow(4, 4, 191)]
     [DataRow(64, 16, 1)]
     public void ResolveWorkers_WhenTheFillShouldStayOnTheCallingThread_ShouldReturnOne(int maxDegreeOfParallelism, int lanes, int segmentLength)
     {
@@ -30,15 +30,16 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
-    /// Verifies that segments of at least the default threshold are divided among the smaller of the bound and the
-    /// lane count.
+    /// Verifies that segments of at least the default threshold of 192 blocks, a 3 MiB matrix at four lanes, are divided
+    /// among the smaller of the bound and the lane count.
     /// </summary>
     /// <param name="maxDegreeOfParallelism">The bound on the derivation's threads.</param>
     /// <param name="lanes">The number of lanes.</param>
     /// <param name="segmentLength">The number of blocks in each segment.</param>
     /// <param name="expected">The number of threads expected.</param>
     [TestMethod]
-    [DataRow(2, 8, 256, 2)]
+    [DataRow(2, 8, 192, 2)]
+    [DataRow(4, 4, 192, 4)]
     [DataRow(4, 4, 256, 4)]
     [DataRow(3, 8, 4096, 3)]
     [DataRow(64, 4, 4096, 4)]

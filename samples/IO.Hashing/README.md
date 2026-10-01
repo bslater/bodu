@@ -11,7 +11,7 @@ Every sample is offline and deterministic: fixed inputs plus one small committed
 The `CustomCheckDigit.Test` project runs with the library test suites in CI.
 
 > **Not security.** Everything in this package detects *accidental* corruption and validates
-> identifier formats — an adversary can forge all of it. Cryptographic integrity lives in
+> identifier formats - an adversary can forge all of it. Cryptographic integrity lives in
 > `Bodu.Security.Cryptography`.
 
 ## Sample → pattern → package matrix

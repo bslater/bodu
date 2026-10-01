@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>Block size: 64 bits (8 bytes).</description>
 /// </item>
 /// <item>
-/// <description>Key size: variable, 32–448 bits (4–56 bytes).</description>
+/// <description>Key size: variable, 32-448 bits (4-56 bytes).</description>
 /// </item>
 /// <item>
 /// <description>16-round Feistel network with key-dependent S-boxes initialized from the digits of π.</description>
@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose Blowfish.</strong> Pick Blowfish only for interoperability with legacy systems that already
-/// use it — its 64-bit block size invites SWEET32 birthday-bound attacks once roughly 32 GiB has been encrypted under
+/// use it - its 64-bit block size invites SWEET32 birthday-bound attacks once roughly 32 GiB has been encrypted under
 /// one key. For new designs use <see cref="System.Security.Cryptography.Aes" />; bcrypt-style password hashing schemes
 /// that derive from Blowfish are not in scope of this class.
 /// </para>
@@ -71,7 +71,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Legacy interop only.
 /// using var blowfish = new Blowfish();
-/// blowfish.Key = legacyKeyMaterial; // 4–56 bytes
+/// blowfish.Key = legacyKeyMaterial; // 4-56 bytes
 /// blowfish.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
 /// byte[] ciphertext = blowfish.Encrypt(legacyPlaintext);
 ///]]>
@@ -115,7 +115,7 @@ public sealed class Blowfish
     /// </remarks>
     public Blowfish()
     {
-        // Fixed 64-bit block — Blowfish does not support any other block size.
+        // Fixed 64-bit block - Blowfish does not support any other block size.
         BlockSizeValue = BlowFishBlockSize;
         LegalBlockSizesValue = s_blowfishBlockSizes;
 

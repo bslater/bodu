@@ -6,13 +6,13 @@ uid: Bodu.Text.Ini.Reader
 
 ## Purpose
 
-**Bodu.Text.Ini.Reader** is the lowest tier of <xref:Bodu.Text.Ini> and exposes two forward-only cursors over UTF-8 INI text. <xref:Bodu.Text.Ini.Reader.Utf8IniReader> reports the file **as authored** — section headers, entries, and comments in source order, duplicates included — while <xref:Bodu.Text.Ini.Reader.IniDocumentReader> walks the **normalized** object-of-objects shape (global keys hoisted, duplicate sections and keys resolved by the <xref:Bodu.Text.Ini.IniDocumentOptions> policies) that the <xref:Bodu.Text.Ini.IniSerializer> and both DOMs bind through.
+**Bodu.Text.Ini.Reader** is the lowest tier of <xref:Bodu.Text.Ini> and exposes two forward-only cursors over UTF-8 INI text. <xref:Bodu.Text.Ini.Reader.Utf8IniReader> reports the file **as authored** - section headers, entries, and comments in source order, duplicates included - while <xref:Bodu.Text.Ini.Reader.IniDocumentReader> walks the **normalized** object-of-objects shape (global keys hoisted, duplicate sections and keys resolved by the <xref:Bodu.Text.Ini.IniDocumentOptions> policies) that the <xref:Bodu.Text.Ini.IniSerializer> and both DOMs bind through.
 
 ## Key types
 
-- <xref:Bodu.Text.Ini.Reader.Utf8IniReader> — the source-order `ref struct` lexer: `Read`, `TokenType` (a <xref:Bodu.Text.Ini.IniTokenType>: `SectionHeader`, `PropertyName`, `String`, `Comment`), `GetString`, `LineNumber`, and `BytesConsumed`.
-- <xref:Bodu.Text.Ini.Reader.IniDocumentReader> — the normalized cursor: `Read`, `TokenType` (`StartObject` / `EndObject` / `PropertyName` / `String`), `GetString`, and `CurrentDepth`.
-- <xref:Bodu.Text.Ini.Reader.IniReaderOptions> — `DisallowHashComments` and `SkipComments`.
+- <xref:Bodu.Text.Ini.Reader.Utf8IniReader> - the source-order `ref struct` lexer: `Read`, `TokenType` (a <xref:Bodu.Text.Ini.IniTokenType>: `SectionHeader`, `PropertyName`, `String`, `Comment`), `GetString`, `LineNumber`, and `BytesConsumed`.
+- <xref:Bodu.Text.Ini.Reader.IniDocumentReader> - the normalized cursor: `Read`, `TokenType` (`StartObject` / `EndObject` / `PropertyName` / `String`), `GetString`, and `CurrentDepth`.
+- <xref:Bodu.Text.Ini.Reader.IniReaderOptions> - `DisallowHashComments` and `SkipComments`.
 
 ## Example
 

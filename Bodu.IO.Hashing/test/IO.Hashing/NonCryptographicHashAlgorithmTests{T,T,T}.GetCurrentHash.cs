@@ -14,7 +14,8 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 {
 
     /// <summary>
-    /// Verifies that two inputs that span multiple input chunks produce different hashes.
+    /// Verifies that two inputs that span multiple input chunks, and differ by one in a single byte, produce different
+    /// hashes.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants), DynamicDataDisplayName = nameof(NonCryptographicHashAlgorithmVariantDisplayName.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(NonCryptographicHashAlgorithmVariantDisplayName))]
@@ -25,8 +26,12 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         int bufferSize = (specification.IncrementalCoverageBytes ?? specification.HashLengthInBytes) * 4;
         byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+
+        // The byte the test changes is 0xFF, and it changes by one. Fletcher-16 sums modulo 255, where 0xFF and 0x00 are
+        // the same value, so changing it to 0x00 left the hash alike; no modulus above 1 hides a change of one.
+        inputA[bufferSize - 2] = 0xFF;
         byte[] inputB = inputA.Copy()!;
-        inputB[bufferSize - 2] = 0x00;
+        inputB[bufferSize - 2] = 0xFE;
 
         algorithm.Append(inputA);
         byte[] hashA = algorithm.GetHashAndReset();

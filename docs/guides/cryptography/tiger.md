@@ -18,7 +18,7 @@ Tiger derives from <xref:System.Security.Cryptography.HashAlgorithm?displayPrope
 | Output | 192 bits (default), 160 bits, or 128 bits | Configurable via `HashSize`. |
 | Variant | `TigerHashingVariant.Tiger` (padding byte `0x01`) or `.Tiger2` (padding byte `0x80`) | Default is `Tiger`. |
 
-## Pattern 1 — a default 192-bit digest
+## Pattern 1 - a default 192-bit digest
 
 <!-- compile -->
 ```csharp
@@ -32,9 +32,9 @@ byte[] digest   = tiger.ComputeHash(data);      // 24 bytes
 string hex      = Convert.ToHexString(digest);
 ```
 
-This matches the digest that a reference Tiger implementation would produce for the same input — 24 bytes, in the standard output layout.
+This matches the digest that a reference Tiger implementation would produce for the same input - 24 bytes, in the standard output layout.
 
-## Pattern 2 — choose a truncation
+## Pattern 2 - choose a truncation
 
 Tiger accepts three output widths. 192 is the "real" Tiger; 160 and 128 are truncations of the same 192-bit internal state, useful when an external protocol fixes the digest size.
 
@@ -53,9 +53,9 @@ using var tiger = new Tiger { HashSize = 160 };
 byte[] digest = tiger.ComputeHash(data);
 ```
 
-Attempting to change `HashSize` after `ComputeHash` / `TransformBlock` has begun throws — the schedule is fixed at the first call.
+Attempting to change `HashSize` after `ComputeHash` / `TransformBlock` has begun throws - the schedule is fixed at the first call.
 
-## Pattern 3 — Tiger vs Tiger2
+## Pattern 3 - Tiger vs Tiger2
 
 Tiger's original specification used a padding byte of `0x01`. A later clarification (Tiger2) changed the padding byte to `0x80` to match the convention used by SHA-2 and other Merkle-Damgård hashes. The two variants produce **different digests** for the same input.
 
@@ -67,7 +67,7 @@ using var tiger2 = new Tiger  { Variant = TigerHashingVariant.Tiger2 };
 
 byte[] d1 = tiger .ComputeHash(data);
 byte[] d2 = tiger2.ComputeHash(data);
-// d1 != d2 — different padding byte → different digest.
+// d1 != d2 - different padding byte → different digest.
 ```
 
 Match the variant to whatever the interoperating system speaks. `AlgorithmName` reflects the configured hash size (it follows the `Tiger/{bits}` convention regardless of variant; include the variant alongside it when logging):
@@ -78,7 +78,7 @@ using var tiger = new Tiger { Variant = TigerHashingVariant.Tiger2, HashSize = 1
 Console.WriteLine($"{tiger.AlgorithmName} ({tiger.Variant})");   // "Tiger/160 (Tiger2)"
 ```
 
-## Pattern 4 — streaming a file
+## Pattern 4 - streaming a file
 
 Tiger plugs into any BCL API that takes a `HashAlgorithm`:
 
@@ -91,7 +91,7 @@ using var stream = File.OpenRead("archive.bin");
 byte[] digest = tiger.ComputeHash(stream);
 ```
 
-For larger files where you want to verify ranges of the file without rehashing the whole thing, pair Tiger with <xref:Bodu.Security.Cryptography.MerkleTree> to build a Tiger Tree Hash — see the [Merkle trees guide](merkle-trees.md).
+For larger files where you want to verify ranges of the file without rehashing the whole thing, pair Tiger with <xref:Bodu.Security.Cryptography.MerkleTree> to build a Tiger Tree Hash - see the [Merkle trees guide](merkle-trees.md).
 
 To feed several discontiguous spans into one digest, use the `TransformBlock` / `TransformFinalBlock` pair, or the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> `AppendData` helper (which takes a `ReadOnlySpan<byte>`):
 
@@ -107,7 +107,7 @@ tiger.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 byte[] digest = tiger.Hash!;
 ```
 
-## Pattern 5 — verifying a digest
+## Pattern 5 - verifying a digest
 
 Compare digests in constant time. The `VerifyHash` helper in `Bodu.Security.Cryptography.Extensions` wraps `CryptographicOperations.FixedTimeEquals`:
 
@@ -125,22 +125,22 @@ A plain `SequenceEqual` leaks timing information and is unsafe when the result d
 
 ## Security caveats
 
-- **Status.** Tiger is unbroken for pre-image and second-pre-image resistance. A 1-bit-rotation collision attack on reduced-round Tiger exists in the literature, and the 192-bit width gives only 96-bit collision resistance by the birthday bound — comfortably above brute force today, but below the 128-bit collision margin a 256-bit hash provides. For long-lived collision-critical commitments prefer SHA-256 or wider.
-- **Output width vs security level.** An n-bit digest gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance. The 128- and 160-bit truncations are correspondingly weaker against collisions — choose them only when an external protocol fixes the width.
-- **Length extension.** Tiger is a Merkle–Damgård design and inherits the length-extension property. Do **not** authenticate with `key ‖ message`; use HMAC-Tiger, or reach for a native keyed hash ([Skein](skein.md), [BLAKE2b](blake.md)) or a MAC ([SipHash](siphash.md), [Poly1305](poly1305.md)).
+- **Status.** Tiger is unbroken for pre-image and second-pre-image resistance. A 1-bit-rotation collision attack on reduced-round Tiger exists in the literature, and the 192-bit width gives only 96-bit collision resistance by the birthday bound - comfortably above brute force today, but below the 128-bit collision margin a 256-bit hash provides. For long-lived collision-critical commitments prefer SHA-256 or wider.
+- **Output width vs security level.** An n-bit digest gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance. The 128- and 160-bit truncations are correspondingly weaker against collisions - choose them only when an external protocol fixes the width.
+- **Length extension.** Tiger is a Merkle-Damgård design and inherits the length-extension property. Do **not** authenticate with `key ‖ message`; use HMAC-Tiger, or reach for a native keyed hash ([Skein](skein.md), [BLAKE2b](blake.md)) or a MAC ([SipHash](siphash.md), [Poly1305](poly1305.md)).
 
 ## When to use Tiger
 
-- **Interoperability** with systems that already use Tiger — Direct Connect, the `tth:` URN scheme, older archive formats.
-- **Tiger Tree Hash** (Merkle tree of Tiger leaves) for content-addressable stores — pair with <xref:Bodu.Security.Cryptography.MerkleTree>.
+- **Interoperability** with systems that already use Tiger - Direct Connect, the `tth:` URN scheme, older archive formats.
+- **Tiger Tree Hash** (Merkle tree of Tiger leaves) for content-addressable stores - pair with <xref:Bodu.Security.Cryptography.MerkleTree>.
 - **Educational** or research settings where the round structure and S-boxes are the object of study.
 
-For new work without an interoperability constraint, prefer SHA-2 or SHA-3 from the BCL — both are hardware-accelerated on modern CPUs and have broader analysis behind them.
+For new work without an interoperability constraint, prefer SHA-2 or SHA-3 from the BCL - both are hardware-accelerated on modern CPUs and have broader analysis behind them.
 
 ## Where to go next
 
-- [Hashing overview](hashing.md) — where Tiger sits alongside SipHash, Snefru, CubeHash, and the non-cryptographic families.
-- [Merkle trees guide](merkle-trees.md) — build a Tiger Tree Hash over a stream.
-- [Using SipHash](siphash.md) — keyed short-input hash, for hash-table DoS resistance.
-- [Using CubeHash](cubehash.md), [Using Snefru](snefru.md) — other cryptographic digests in this package.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Hashing overview](hashing.md) - where Tiger sits alongside SipHash, Snefru, CubeHash, and the non-cryptographic families.
+- [Merkle trees guide](merkle-trees.md) - build a Tiger Tree Hash over a stream.
+- [Using SipHash](siphash.md) - keyed short-input hash, for hash-table DoS resistance.
+- [Using CubeHash](cubehash.md), [Using Snefru](snefru.md) - other cryptographic digests in this package.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

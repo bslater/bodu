@@ -97,7 +97,7 @@ public sealed class AlphanumericTests
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ExpandLetterDigit(char)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the supplied character is not an ASCII decimal digit or
-    /// uppercase Latin letter — covering the <c>ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase</c> branch.
+    /// uppercase Latin letter - covering the <c>ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase</c> branch.
     /// </summary>
     /// <param name="invalid">The disallowed character under test.</param>
     [DataRow(' ')]
@@ -146,7 +146,7 @@ public sealed class AlphanumericTests
 
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ValidateAlphanumeric(ReadOnlySpan{char}, string)" /> rejects any
-    /// character outside <c>'0'</c>–<c>'9'</c> and <c>'A'</c>–<c>'Z'</c>, regardless of position in the span, and
+    /// character outside <c>'0'</c>-<c>'9'</c> and <c>'A'</c>-<c>'Z'</c>, regardless of position in the span, and
     /// surfaces the supplied <paramref name="paramName" /> on the resulting exception.
     /// </summary>
     /// <param name="invalid">The disallowed character placed at position 2 of the input span.</param>
@@ -184,14 +184,14 @@ public sealed class AlphanumericTests
 
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ValidateCusip(ReadOnlySpan{char}, string)" /> accepts every CUSIP
-    /// alphabet character — digits, uppercase letters, and the three punctuation sentinels.
+    /// alphabet character - digits, uppercase letters, and the three punctuation sentinels.
     /// </summary>
     [TestMethod]
     public void ValidateCusip_WhenAllCharactersAreValid_ShouldNotThrow() => Alphanumeric.ValidateCusip("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ*@#".AsSpan(), "value");
 
     /// <summary>
     /// Verifies that <see cref="Alphanumeric.ValidateCusip(ReadOnlySpan{char}, string)" /> rejects any character
-    /// outside <c>'0'</c>–<c>'9'</c>, <c>'A'</c>–<c>'Z'</c>, and the punctuation sentinels (<c>'*'</c>, <c>'@'</c>,
+    /// outside <c>'0'</c>-<c>'9'</c>, <c>'A'</c>-<c>'Z'</c>, and the punctuation sentinels (<c>'*'</c>, <c>'@'</c>,
     /// <c>'#'</c>), and surfaces the supplied <paramref name="paramName" />.
     /// </summary>
     /// <param name="invalid">The disallowed character placed at position 2 of the input span.</param>

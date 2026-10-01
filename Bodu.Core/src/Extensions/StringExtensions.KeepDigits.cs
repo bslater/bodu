@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <remarks>
     /// Membership is determined via <see cref="char.IsDigit(char)" />, which recognises every Unicode digit (Nd)
-    /// character — not just ASCII <c>0–9</c>.
+    /// character - not just ASCII <c>0-9</c>.
     /// </remarks>
     public static string KeepDigits(this string value) =>
         value.KeepWhere(char.IsDigit);

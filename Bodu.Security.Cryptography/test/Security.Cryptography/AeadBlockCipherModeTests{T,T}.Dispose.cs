@@ -106,8 +106,8 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     // ── Sensitive field clearing ──────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that every writable instance field of the disposed transform — excluding lifecycle
-    /// bookkeeping flags — has been cleared, zeroed, or nullified by
+    /// Verifies that every writable instance field of the disposed transform - excluding lifecycle
+    /// bookkeeping flags - has been cleared, zeroed, or nullified by
     /// <see cref="System.IDisposable.Dispose" />, ensuring no sensitive cryptographic state
     /// (subkeys, counters, accumulators, cached AAD) lingers in memory after disposal.
     /// </summary>

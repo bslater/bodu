@@ -11,7 +11,7 @@ public partial class CrcTests
 
     /// <summary>
     /// Verifies that each publicly exposed property on <see cref="Crc" /> mirrors the configured
-    /// <see cref="CrcStandard" /> for every representative variant — the full parameter surface
+    /// <see cref="CrcStandard" /> for every representative variant - the full parameter surface
     /// (<see cref="Crc.CrcStandard" />, <see cref="Crc.Name" />, <see cref="Crc.Size" />,
     /// <see cref="Crc.Polynomial" />, <see cref="Crc.InitialValue" />, <see cref="Crc.ReflectIn" />,
     /// <see cref="Crc.ReflectOut" />, <see cref="Crc.XOrOut" />).

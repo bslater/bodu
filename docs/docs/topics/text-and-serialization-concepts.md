@@ -1,18 +1,18 @@
 ---
-title: Text & Serialization — Concepts
+title: Text & Serialization - Concepts
 ---
 
-# Text & Serialization — Concepts
+# Text & Serialization - Concepts
 
-The packages in this topic — `Bodu.Text.Encoding`, `Bodu.Text.Filtering`, `Bodu.Text.Formats`, `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` — share a small set of cross-cutting ideas. This page defines them once at the topic level; each package's own concepts page (linked at the bottom) carries the full per-package vocabulary.
+The packages in this topic - `Bodu.Text.Encoding`, `Bodu.Text.Filtering`, `Bodu.Text.Formats`, `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` - share a small set of cross-cutting ideas. This page defines them once at the topic level; each package's own concepts page (linked at the bottom) carries the full per-package vocabulary.
 
 ## Codec, format, serializer
 
 The three jobs preserve different things, and that difference drives every API decision in the topic:
 
-- A **binary-to-text codec** (Base16 / Base32 / Base64 / Base58 / Base85 and friends) preserves the **byte sequence**. It maps raw bytes onto a printable alphabet and back; it attaches no meaning to the bytes, adds no structure, and is exactly invertible — `Decode(Encode(bytes))` is the identical input. Its vocabulary is alphabets, variants, padding, and decoration.
-- A **document format** (Delimited, DotEnv, INI) preserves the **document**. Parsing produces a typed value model — rows and fields, ordered entries, sections — and formatting writes the model back. Every format keeps entry order, and INI's mutable DOM additionally preserves comments, so a parse–edit–write cycle round-trips faithfully. Its vocabulary is value models, readers / writers, and round-trip rules.
-- An **object serializer** (Bencode, TOML, YAML) preserves the **object graph**. `Serialize<T>` maps your types, members, and collections onto the format; `Deserialize<T>` binds the format back. The document is a means, not the subject — converters, attributes, and naming policies control the mapping. Its vocabulary is converters, options, DOMs, and readers / writers.
+- A **binary-to-text codec** (Base16 / Base32 / Base64 / Base58 / Base85 and friends) preserves the **byte sequence**. It maps raw bytes onto a printable alphabet and back; it attaches no meaning to the bytes, adds no structure, and is exactly invertible - `Decode(Encode(bytes))` is the identical input. Its vocabulary is alphabets, variants, padding, and decoration.
+- A **document format** (Delimited, DotEnv, INI) preserves the **document**. Parsing produces a typed value model - rows and fields, ordered entries, sections - and formatting writes the model back. Every format keeps entry order, and INI's mutable DOM additionally preserves comments, so a parse-edit-write cycle round-trips faithfully. Its vocabulary is value models, readers / writers, and round-trip rules.
+- An **object serializer** (Bencode, TOML, YAML) preserves the **object graph**. `Serialize<T>` maps your types, members, and collections onto the format; `Deserialize<T>` binds the format back. The document is a means, not the subject - converters, attributes, and naming policies control the mapping. Its vocabulary is converters, options, DOMs, and readers / writers.
 
 A practical test: if you would be satisfied getting `byte[]` back, you want a codec; if you would be satisfied getting a generic document tree back, you want a format or a DOM; if you want *your* type back, you want a serializer.
 
@@ -25,50 +25,50 @@ All three serializers layer the same four surfaces over their format, and choosi
 | **Serializer** | `BencodeSerializer` / `TomlSerializer` / `YamlSerializer` | You have a model type. The default tier. |
 | **Mutable DOM** | `BencodeNode` / `TomlNode` / `YamlNode` trees | You need to parse, index, edit, and write back without a model. |
 | **Read-only DOM** | `BencodeDocument` / `TomlDocument` / `YamlDocument` | You need to inspect a parsed buffer with minimal allocation. |
-| **Utf8 reader / writer** | `Utf8BencodeReader` / `Utf8BencodeWriter`, `Utf8TomlReader` / `Utf8TomlWriter`, `Utf8YamlReader` / `Utf8YamlWriter` | You process tokens by hand — forward-only, allocation-free `ref struct` machines. |
+| **Utf8 reader / writer** | `Utf8BencodeReader` / `Utf8BencodeWriter`, `Utf8TomlReader` / `Utf8TomlWriter`, `Utf8YamlReader` / `Utf8YamlWriter` | You process tokens by hand - forward-only, allocation-free `ref struct` machines. |
 
-The tiers nest: the serializer is built on the reader / writer pair, and every custom converter receives that pair directly. Each `Bodu.Text.Formats` line format follows the same layering — a `Utf8*Reader` / `Utf8*Writer` pair, a `*Serializer`, and both DOMs — but wires every scalar as a string, so scalar conversion stays local to each format's serializer rather than adopting the shared converter engine.
+The tiers nest: the serializer is built on the reader / writer pair, and every custom converter receives that pair directly. Each `Bodu.Text.Formats` line format follows the same layering - a `Utf8*Reader` / `Utf8*Writer` pair, a `*Serializer`, and both DOMs - but wires every scalar as a string, so scalar conversion stays local to each format's serializer rather than adopting the shared converter engine.
 
 ## Framing and self-describing documents
 
-A **self-framing** (self-describing) format carries its structure inline in the bytes: Bencode's length-prefixed strings and `d…e` / `l…e` containers, TOML's tables and key syntax, INI's section headers, CSV's delimiters and quotes. A reader can walk the document without an external schema. Binary-to-text encodings are the opposite — a Base64 string is structureless payload, and any framing must come from the surrounding context. This is why the codecs expose `OperationStatus`-style streaming over raw spans, while the formats and serializers expose token readers and typed models.
+A **self-framing** (self-describing) format carries its structure inline in the bytes: Bencode's length-prefixed strings and `d…e` / `l…e` containers, TOML's tables and key syntax, INI's section headers, CSV's delimiters and quotes. A reader can walk the document without an external schema. Binary-to-text encodings are the opposite - a Base64 string is structureless payload, and any framing must come from the surrounding context. This is why the codecs expose `OperationStatus`-style streaming over raw spans, while the formats and serializers expose token readers and typed models.
 
 ## Canonical output
 
-Where a format admits several spellings of the same data, the libraries pick one and emit it consistently. Bencode is the strict case: the specification requires dictionary keys in ascending bytewise order, and `BencodeSerializer` always writes them that way, so equal inputs produce byte-identical output — a property torrent-style infohashing depends on. The document formats state their round-trip rules instead: INI re-emits comments and ordering as parsed, DotEnv re-emits ordering and the `export` flag, and Delimited output is canonical per the configured quoting policy.
+Where a format admits several spellings of the same data, the libraries pick one and emit it consistently. Bencode is the strict case: the specification requires dictionary keys in ascending bytewise order, and `BencodeSerializer` always writes them that way, so equal inputs produce byte-identical output - a property torrent-style infohashing depends on. The document formats state their round-trip rules instead: INI re-emits comments and ordering as parsed, DotEnv re-emits ordering and the `export` flag, and Delimited output is canonical per the configured quoting policy.
 
 ## Text wire vs. binary wire
 
-Not everything under the `Bodu.Text.*` prefix is text on the wire. TOML is a text format — its natural serialized form is a `string`, and `TomlSerializer` offers `string` overloads alongside the UTF-8 ones. Bencode (BEP 3) is a **binary** format — length-prefixed byte strings with no character-escaping layer — so `BencodeSerializer` works in `byte[]`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, and `Stream`, never `string`. The distinction also shapes the value models: a Bencode "string" is a byte string that happens to often hold UTF-8, which is why `byte[]` maps to it natively, whereas TOML represents `byte[]` as an integer array or a Base64 string depending on its `ByteArrayHandling` setting — the latter being a small in-document use of exactly the codec job `Bodu.Text.Encoding` does standalone.
+Not everything under the `Bodu.Text.*` prefix is text on the wire. TOML is a text format - its natural serialized form is a `string`, and `TomlSerializer` offers `string` overloads alongside the UTF-8 ones. Bencode (BEP 3) is a **binary** format - length-prefixed byte strings with no character-escaping layer - so `BencodeSerializer` works in `byte[]`, `ReadOnlySpan<byte>`, `IBufferWriter<byte>`, and `Stream`, never `string`. The distinction also shapes the value models: a Bencode "string" is a byte string that happens to often hold UTF-8, which is why `byte[]` maps to it natively, whereas TOML represents `byte[]` as an integer array or a Base64 string depending on its `ByteArrayHandling` setting - the latter being a small in-document use of exactly the codec job `Bodu.Text.Encoding` does standalone.
 
 ## Round-trip fidelity
 
 Each job comes with its own round-trip promise, and knowing which one you are owed prevents most surprises:
 
 - **Codecs** promise *byte fidelity*: decode-of-encode is the identical byte sequence, always.
-- **Formats** promise *document fidelity* to the extent the format defines it: INI preserves comments and ordering through a parse–edit–write cycle, DotEnv preserves ordering and the `export` flag; Delimited re-emits canonically per its quoting policy rather than byte-for-byte.
-- **Serializers** promise *graph fidelity for representable values*: what the format can express round-trips through `Serialize` / `Deserialize<T>`, and what it cannot express fails loudly (or is delegated to a registered converter) rather than degrading silently — Bencode, for example, has no native boolean, floating-point, or date-time form.
+- **Formats** promise *document fidelity* to the extent the format defines it: INI preserves comments and ordering through a parse-edit-write cycle, DotEnv preserves ordering and the `export` flag; Delimited re-emits canonically per its quoting policy rather than byte-for-byte.
+- **Serializers** promise *graph fidelity for representable values*: what the format can express round-trips through `Serialize` / `Deserialize<T>`, and what it cannot express fails loudly (or is delegated to a registered converter) rather than degrading silently - Bencode, for example, has no native boolean, floating-point, or date-time form.
 
 ## Strict vs. lenient parsing
 
 Every package in the topic treats strictness as an explicit, opt-in policy rather than a global mood:
 
-- **Codecs** parse strictly by default and loosen per call via `BaseFormatStyles` flags — `IgnoreWhitespace`, `AllowPrefix`, `AllowMissingPadding`.
-- **Line formats** centralize policy on their options types (`DelimitedReaderOptions`, `DotEnvReaderOptions`, `IniReaderOptions` / `IniDocumentOptions`) — quoting strictness, field-count and malformed-record handling, duplicate-key and duplicate-section policies.
+- **Codecs** parse strictly by default and loosen per call via `BaseFormatStyles` flags - `IgnoreWhitespace`, `AllowPrefix`, `AllowMissingPadding`.
+- **Line formats** centralize policy on their options types (`DelimitedReaderOptions`, `DotEnvReaderOptions`, `IniReaderOptions` / `IniDocumentOptions`) - quoting strictness, field-count and malformed-record handling, duplicate-key and duplicate-section policies.
 - **Serializers** reject malformed documents with a format-specific parse exception (`BencodeFormatException`, `TomlFormatException`, `YamlFormatException`) and binding failures with a serialization exception; tolerance for unmapped members, missing values, and type shapes is configured on `…SerializerOptions` and the attribute family, never silently assumed.
 
 The shared rule across the family: the default path validates, and every relaxation is visible at the call site.
 
 ## Options as the unit of configuration
 
-The serializers concentrate configuration on a single reusable object: `BencodeSerializerOptions` / `TomlSerializerOptions` / `YamlSerializerOptions` hold the converter list, the property naming policy, ignore conditions, unmapped-member policy, and maximum depth. An options instance becomes read-only the first time it is used and then caches its resolved converters and type metadata — so the intended pattern is one configured instance reused across many operations, not a fresh options object per call. The formats apply the same instinct one tier down: the `*ReaderOptions` / `*WriterOptions` pairs (and `IniDocumentOptions`) hold each direction's dialect policy, so a document read under a dialect is written back under the matching one.
+The serializers concentrate configuration on a single reusable object: `BencodeSerializerOptions` / `TomlSerializerOptions` / `YamlSerializerOptions` hold the converter list, the property naming policy, ignore conditions, unmapped-member policy, and maximum depth. An options instance becomes read-only the first time it is used and then caches its resolved converters and type metadata - so the intended pattern is one configured instance reused across many operations, not a fresh options object per call. The formats apply the same instinct one tier down: the `*ReaderOptions` / `*WriterOptions` pairs (and `IniDocumentOptions`) hold each direction's dialect policy, so a document read under a dialect is written back under the matching one.
 
 ## Per-package concept pages
 
 | Package | Full vocabulary |
 |---|---|
-| `Bodu.Text.Encoding` | [Core concepts](../text-encoding/concepts.md) — alphabet, variant, terminal quantum, padding, shortcut, decoration. |
-| `Bodu.Text.Formats` | [Core concepts](../formats/concepts.md) — self-framing format, value model, codec, round-trip rules, format exception. |
-| `Bodu.Text.Bencode` | [Core concepts](../serialization/bencode/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
-| `Bodu.Text.Toml` | [Core concepts](../serialization/toml/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
-| `Bodu.Text.Yaml` | [Core concepts](../serialization/yaml/concepts.md) — the serializer, options, converters and resolution, the DOMs, value mapping, multi-document streams, errors. |
+| `Bodu.Text.Encoding` | [Core concepts](../text-encoding/concepts.md) - alphabet, variant, terminal quantum, padding, shortcut, decoration. |
+| `Bodu.Text.Formats` | [Core concepts](../formats/concepts.md) - self-framing format, value model, codec, round-trip rules, format exception. |
+| `Bodu.Text.Bencode` | [Core concepts](../serialization/bencode/concepts.md) - the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
+| `Bodu.Text.Toml` | [Core concepts](../serialization/toml/concepts.md) - the serializer, options, converters and resolution, the DOMs, value mapping, errors. |
+| `Bodu.Text.Yaml` | [Core concepts](../serialization/yaml/concepts.md) - the serializer, options, converters and resolution, the DOMs, value mapping, multi-document streams, errors. |

@@ -9,8 +9,8 @@ using System.Globalization;
 namespace Bodu.Text.Bencode.Document;
 
 /// <summary>
-/// Represents a single read-only value within a <see cref="BencodeDocument" />. The element is a lightweight view — a
-/// pair of the owning document and a row index — so copying it is cheap and never materializes a node.
+/// Represents a single read-only value within a <see cref="BencodeDocument" />. The element is a lightweight view - a
+/// pair of the owning document and a row index - so copying it is cheap and never materializes a node.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -173,8 +173,8 @@ public readonly partial struct BencodeElement
     /// <returns>The raw encoded bytes of this element.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     /// <remarks>
-    /// Because canonical Bencode is byte-exact, the returned slice is suitable for hashing — for example, computing a
-    /// torrent's info-hash from the <c>info</c> dictionary's element — and for verbatim re-emission through
+    /// Because canonical Bencode is byte-exact, the returned slice is suitable for hashing - for example, computing a
+    /// torrent's info-hash from the <c>info</c> dictionary's element - and for verbatim re-emission through
     /// <see cref="Writer.Utf8BencodeWriter.WriteRawValue(ReadOnlySpan{byte}, bool)" />.
     /// </remarks>
     public byte[] GetRawBytes() =>

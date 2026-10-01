@@ -32,7 +32,7 @@ sources) and `IsWeekend` (week shape only).
   (Thursday is a weekday by the calendar and still not a working day - the case a week-shape-only check gets wrong)
 ```
 
-Thursday is excluded by the holiday rules, the weekend by the week pattern — the classification
+Thursday is excluded by the holiday rules, the weekend by the week pattern - the classification
 shows which source did the excluding.
 
 **APIs demonstrated.** `DateOnly.IsWorkingDay(service, territory)`,
@@ -41,7 +41,7 @@ shows which source did the excluding.
 ### PaymentScheduling (`Scenarios/PaymentScheduling.cs`)
 
 **Intent.** The arithmetic settlement systems live on: add N working days, find the next valid
-banking day, and snap a contractual date that landed on a holiday — forward, backward, or
+banking day, and snap a contractual date that landed on a holiday - forward, backward, or
 verify it is already valid.
 
 **What it does.** Computes T+2 settlement from the day before Anzac Day, the strict next working
@@ -57,7 +57,7 @@ day, and three snaps (forward, backward, and a no-op on an already-valid date).
   Valid date snap (no-op)        : 2024-04-23  (unchanged, which is what makes snapping safe to apply unconditionally)
 ```
 
-T+2 from Wednesday lands on *Monday* — the count skipped the Anzac Day Thursday and the
+T+2 from Wednesday lands on *Monday* - the count skipped the Anzac Day Thursday and the
 weekend, which is the whole point versus naive `AddDays(2)`. The snap pair is the classic
 contract-clause split: "next banking day" versus "no later than".
 
@@ -88,10 +88,10 @@ April 2024 has 30 days − 8 weekend days − 2 weekday holidays (Easter Monday 
 
 **Intent.** Two orthogonal knobs: fiscal-period boundaries (the first/last *working* day of the
 fiscal year or quarter containing a date) and the `WeekPattern` override that re-bases every
-working-day answer for jurisdictions or rosters whose week is not Monday–Friday.
+working-day answer for jurisdictions or rosters whose week is not Monday-Friday.
 
 **What it does.** Finds AU fiscal-year boundaries (July start) around 2024-08-15, then contrasts
-a Sunday–Thursday working week against the default on the same dates and the same `+3 working
+a Sunday-Thursday working week against the default on the same dates and the same `+3 working
 days` calculation.
 
 **What to expect.**
@@ -108,8 +108,8 @@ days` calculation.
 
 The week-pattern lines flip Friday and Sunday exactly as a Gulf-region roster would. The final
 line is a genuine coincidence worth understanding: both weeks count three working days from
-Thursday to the same Tuesday — via Fri→Mon→Tue in the default week and Sun→Mon→Tue in the
-Sun–Thu week — different paths, same landing day.
+Thursday to the same Tuesday - via Fri→Mon→Tue in the default week and Sun→Mon→Tue in the
+Sun-Thu week - different paths, same landing day.
 
 **APIs demonstrated.** `FirstWorkingDayOfFiscalYear` / `LastWorkingDayOfFiscalYear` /
 `FirstWorkingDayOfFiscalQuarter` (with `fiscalYearStartMonth`), the `WeekPattern` parameter on

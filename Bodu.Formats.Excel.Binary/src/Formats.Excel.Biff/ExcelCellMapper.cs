@@ -14,7 +14,7 @@ namespace Bodu.Formats.Excel.Biff;
 /// format through the workbook's format table.
 /// </summary>
 /// <remarks>
-/// The codec owns the wire layouts; this mapper owns the Excel interpretation — the shared-string lookup, the format
+/// The codec owns the wire layouts; this mapper owns the Excel interpretation - the shared-string lookup, the format
 /// and date classification, and the projection of cached formula results onto cell kinds.
 /// </remarks>
 internal static class ExcelCellMapper

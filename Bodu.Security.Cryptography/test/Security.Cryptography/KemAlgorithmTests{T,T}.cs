@@ -102,8 +102,8 @@ public abstract class KemAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that encapsulating without a public key — and decapsulating without a private key, including on an
-    /// encapsulate-only instance — throws <see cref="CryptographicException" />.
+    /// Verifies that encapsulating without a public key - and decapsulating without a private key, including on an
+    /// encapsulate-only instance - throws <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
     public void EncapsulateAndDecapsulate_WhenRequiredKeyMaterialIsMissing_ShouldThrowCryptographicException()

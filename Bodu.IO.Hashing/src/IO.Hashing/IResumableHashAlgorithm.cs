@@ -14,12 +14,12 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Many simple, additive non-cryptographic hashes — CRC, FNV, Jenkins-style mixes — are <em>linear</em> in the sense
+/// Many simple, additive non-cryptographic hashes - CRC, FNV, Jenkins-style mixes - are <em>linear</em> in the sense
 /// that the running accumulator at any point is fully determined by the bytes seen so far. The published digest hides
 /// that accumulator behind a finalization step (typically a final XOR, output reflection, or width mask), but the step
 /// is reversible. Implementing <see cref="IResumableHashAlgorithm" /> declares that an algorithm supports that reverse
 /// step and exposes a stable contract for callers who want to incrementally hash a stream that arrives in chunks across
-/// process boundaries — a common pattern in tail-anchored log files, content-addressed stores, or streaming integrity
+/// process boundaries - a common pattern in tail-anchored log files, content-addressed stores, or streaming integrity
 /// checks where the running state is not in memory but the previous digest <em>is</em>.
 /// </para>
 /// <para>
@@ -48,12 +48,12 @@ namespace Bodu.IO.Hashing;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.HashLengthInBytes" /> as a valid <c>previousHash</c>; (b)
 /// reverse any final XOR, reflection, or width mask before resuming; (c) re-apply finalization before returning the new
 /// digest; and (d) leave the algorithm instance in a clean state on return. The contract is not preserved across
-/// algorithms — a digest produced by <c>CRC-32/ISO-HDLC</c> can only be resumed by an instance configured with the same
+/// algorithms - a digest produced by <c>CRC-32/ISO-HDLC</c> can only be resumed by an instance configured with the same
 /// <see cref="Bodu.IO.Hashing.Checksums.CrcStandard" />.
 /// </para>
 /// <para>
 /// <strong>When this is the wrong tool.</strong> Cryptographic hashes (SHA-2, SHA-3, BLAKE) are <em>not</em> resumable
-/// in this sense — their finalization collapses internal state irreversibly, which is precisely the property that makes
+/// in this sense - their finalization collapses internal state irreversibly, which is precisely the property that makes
 /// them cryptographically useful. For appending to an in-memory algorithm instance, prefer the standard
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" /> path.
 /// <see cref="IResumableHashAlgorithm" /> only earns its keep when the running accumulator has already been discarded
@@ -75,7 +75,7 @@ namespace Bodu.IO.Hashing;
 /// var resumable = (IResumableHashAlgorithm)new Crc(CrcStandard.CRC32_ISOHDLC);
 /// byte[] digest2 = resumable.ComputeHashFrom(digest1, File.ReadAllBytes("part-2.bin"));
 ///
-/// // 3. Same result as if both segments had been appended in one session — without
+/// // 3. Same result as if both segments had been appended in one session - without
 /// // holding the running state.
 ///]]>
 /// </code>

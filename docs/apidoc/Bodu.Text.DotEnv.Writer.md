@@ -10,8 +10,8 @@ uid: Bodu.Text.DotEnv.Writer
 
 ## Key types
 
-- <xref:Bodu.Text.DotEnv.Writer.Utf8DotEnvWriter> — the `ref struct` writer: `WriteStartObject` / `WriteEndObject` framing, `WritePropertyName` (with an `export` overload) followed by `WriteString` for one `KEY=value` line, `WriteComment`, plus `Flush`, `Dispose`, `BytesCommitted`, and `BytesPending`.
-- <xref:Bodu.Text.DotEnv.Writer.DotEnvWriterOptions> — `WriteExportPrefix`, the default `export` policy applied by the single-argument `WritePropertyName`.
+- <xref:Bodu.Text.DotEnv.Writer.Utf8DotEnvWriter> - the `ref struct` writer: `WriteStartObject` / `WriteEndObject` framing, `WritePropertyName` (with an `export` overload) followed by `WriteString` for one `KEY=value` line, `WriteComment`, plus `Flush`, `Dispose`, `BytesCommitted`, and `BytesPending`.
+- <xref:Bodu.Text.DotEnv.Writer.DotEnvWriterOptions> - `WriteExportPrefix`, the default `export` policy applied by the single-argument `WritePropertyName`.
 
 ## Example
 

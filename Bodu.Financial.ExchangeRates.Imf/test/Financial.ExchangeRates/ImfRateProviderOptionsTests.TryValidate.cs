@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class ImfRateProviderOptionsTests
 {
     /// <summary>
-    /// Verifies that the default options — which require no API key — validate successfully.
+    /// Verifies that the default options - which require no API key - validate successfully.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenDefaults_ShouldReturnTrue()

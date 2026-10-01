@@ -105,7 +105,7 @@ public partial struct WeekPattern
                 }
                 else if (c == unselectedChar)
                 {
-                    // Bit is already 0 in mask — no action needed.
+                    // Bit is already 0 in mask - no action needed.
                 }
                 else
                 {

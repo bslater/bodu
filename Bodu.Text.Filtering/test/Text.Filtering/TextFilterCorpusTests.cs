@@ -11,9 +11,9 @@ namespace Bodu.Text.Filtering;
 
 /// <summary>
 /// Runs the declarative filtering-scenario corpus embedded under <c>Text.Filtering/Fixtures/*.corpus</c>. Each file
-/// holds scenarios in a simple line format — <c>scenario:</c> starts a scenario, <c>mode:</c> / <c>ignore-case:</c>
+/// holds scenarios in a simple line format - <c>scenario:</c> starts a scenario, <c>mode:</c> / <c>ignore-case:</c>
 /// set options, <c>include:</c> / <c>exclude:</c> / <c>include-regex:</c> / <c>exclude-regex:</c> add patterns, and
-/// <c>match:</c> / <c>skip:</c> state per-value expectations — so the corpus doubles as a language-neutral
+/// <c>match:</c> / <c>skip:</c> state per-value expectations - so the corpus doubles as a language-neutral
 /// description of the engine's semantics.
 /// </summary>
 [TestClass]
@@ -74,7 +74,7 @@ public sealed class TextFilterCorpusTests
     }
 
     /// <summary>
-    /// Verifies that the corpus is wired and non-trivial — a guard against silent resource-embedding breakage that
+    /// Verifies that the corpus is wired and non-trivial - a guard against silent resource-embedding breakage that
     /// would otherwise make the Regression sweep vacuously pass.
     /// </summary>
     [TestMethod]

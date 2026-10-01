@@ -1,10 +1,10 @@
 # Bodu.Formats.Outlook.Pst
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A **read-only reader for the Outlook personal-folders format** (`.pst` / MS-PST,
-Unicode and ANSI formats), built on [`Bodu.IO.Pst`](../Bodu.IO.Pst) — the node-database
-container reader — and the shared [`Bodu.Formats.Outlook`](../Bodu.Formats.Outlook)
+Unicode and ANSI formats), built on [`Bodu.IO.Pst`](../Bodu.IO.Pst) - the node-database
+container reader - and the shared [`Bodu.Formats.Outlook`](../Bodu.Formats.Outlook)
 MAPI value model it has in common with the `.msg` reader.
 
 A mail store is opened as a disposable session exposing the store properties, the
@@ -24,7 +24,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
     {
-        Console.WriteLine($"  {message.Subject} — {message.SenderName}");
+        Console.WriteLine($"  {message.Subject} - {message.SenderName}");
 
         foreach (OutlookRecipient recipient in message.Recipients)
             Console.WriteLine($"    {recipient.RecipientType}: {recipient.EmailAddress}");
@@ -37,10 +37,10 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
 ## What is read
 
-- The folder hierarchy from the root folder down — hierarchy, contents, and
+- The folder hierarchy from the root folder down - hierarchy, contents, and
   associated-contents tables, streamed row by row (search folders, which are
   Outlook runtime state, are excluded).
-- Every object's property context — fixed, variable-length, and multi-valued
+- Every object's property context - fixed, variable-length, and multi-valued
   properties, Unicode and code-page (ANSI) strings alike, with per-object
   code-page resolution inherited down the store → message → attachment chain.
 - Recipient tables (row-resident properties) and attachment objects, including
@@ -56,5 +56,5 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 - Writing or editing `.pst` files.
 - OST files (recognized and rejected).
 - MAPI session semantics (`IMsgStore` emulation, search-folder population).
-- RTF→HTML/Text de-encapsulation (MS-OXRTFEX) — consumers receive the RTF verbatim.
+- RTF→HTML/Text de-encapsulation (MS-OXRTFEX) - consumers receive the RTF verbatim.
 - TNEF (`winmail.dat`), S/MIME decryption, and OLE-attachment rendering.

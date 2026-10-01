@@ -49,7 +49,7 @@ internal static class XmlDocConfigurationLoader
             }
             catch (XmlDocConfigException)
             {
-                // Malformed config file — fall back to defaults here so the formatting analyzers keep reporting
+                // Malformed config file - fall back to defaults here so the formatting analyzers keep reporting
                 // on valid trivia. The user-facing error is surfaced separately as BODU0001 by
                 // XmlDocConfigurationAnalyzer (see CollectConfigurationErrors).
             }

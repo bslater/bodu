@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies that <see cref="NotableDateResourceLoader" /> resolves every supported value of each enumeration that
-/// participates in the XML and JSON authoring vocabulary — <see cref="NotableDateCategory" />,
+/// participates in the XML and JSON authoring vocabulary - <see cref="NotableDateCategory" />,
 /// <see cref="AdjustmentTrigger" />, <see cref="AdjustmentAction" />, <see cref="EmissionMode" />,
 /// <see cref="System.DayOfWeek" />, <see cref="WeekOrdinal" />, and <see cref="WeekdayProximity" />. Ported from the v1
 /// <c>NotableDateRuleParserTests.EnumSurface</c> / <c>NotableDateRuleJsonParserTests.EnumSurface</c> rows, mapped onto

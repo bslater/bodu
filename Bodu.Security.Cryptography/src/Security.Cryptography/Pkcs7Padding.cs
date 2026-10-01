@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// range <c>1..blockSize</c>. <see cref="Unpad" /> validates in constant time to resist padding-oracle side channels.
 /// </para>
 /// <para>
-/// <strong>When to choose PKCS7.</strong> The default for confidentiality-only block-cipher modes (CBC, ECB) — PKCS#7
+/// <strong>When to choose PKCS7.</strong> The default for confidentiality-only block-cipher modes (CBC, ECB) - PKCS#7
 /// is the padding that every mainstream cryptographic library ships as the default, and what every interoperable file
 /// format expects. For ISO/EMV environments use <see cref="Iso7816_4Padding" />; when integrating with code that emits
 /// trailing zeros use <see cref="ZeroPadding" />; when the surrounding mode (CTR, CTS, AEAD) provides its own alignment

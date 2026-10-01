@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Mode-specific lifecycle tests for <see cref="GcmSivModeTransform" /> (RFC 8452). The shared
 /// <see cref="AeadBlockCipherModeTests{TTest, TTransform}" /> base verifies the generic AEAD
-/// lifecycle; this file pins down the property that distinguishes GCM-SIV from GCM —
+/// lifecycle; this file pins down the property that distinguishes GCM-SIV from GCM -
 /// <strong>nonce-misuse resistance</strong>. Re-encrypting the same <c>(key, nonce, AAD,
 /// plaintext)</c> tuple must produce identical ciphertext (revealing only message equality);
 /// distinct plaintexts under the same nonce must remain confidential and authentic.
@@ -47,7 +47,7 @@ public sealed partial class GcmSivModeTransformTests
 
     /// <summary>
     /// Verifies that two distinct plaintexts encrypted under the same key + nonce + AAD produce
-    /// different ciphertexts — the misuse-resistance contract leaks only message equality, not
+    /// different ciphertexts - the misuse-resistance contract leaks only message equality, not
     /// message content. Confirms the keystream is not trivially fixed when the nonce repeats.
     /// </summary>
     [TestMethod]
@@ -75,7 +75,7 @@ public sealed partial class GcmSivModeTransformTests
 
     /// <summary>
     /// Verifies that encrypting the same plaintext under different AAD streams produces different
-    /// outputs — AAD is bound into the POLYVAL accumulator that derives the synthetic tag, so the
+    /// outputs - AAD is bound into the POLYVAL accumulator that derives the synthetic tag, so the
     /// tag and (via tag-as-counter-base) the keystream differ.
     /// </summary>
     [TestMethod]

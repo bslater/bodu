@@ -14,8 +14,8 @@ using Bodu.Text.Delimited.Reader;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Parses the IMF Representative Exchange Rates monthly report — a tab-separated grid of every reported currency across
-/// each business day of the month — into a normalized <see cref="ImfRateTable" />.
+/// Parses the IMF Representative Exchange Rates monthly report - a tab-separated grid of every reported currency across
+/// each business day of the month - into a normalized <see cref="ImfRateTable" />.
 /// </summary>
 /// <remarks>
 /// <para>

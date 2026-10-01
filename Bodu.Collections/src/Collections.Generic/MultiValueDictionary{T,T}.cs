@@ -26,7 +26,7 @@ namespace Bodu.Collections.Generic;
 /// retained, including per-key duplicates. <see cref="MultiValueBacking.Set" /> is an order-preserving set multimap:
 /// values are deduplicated per key using <see cref="ValueComparer" />, and the insertion order of each value's first
 /// occurrence is preserved. Under <see cref="MultiValueBacking.Set" /> backing, each add performs a linear scan of the
-/// key's existing values — a trade-off that keeps the values ordered and preserves the <see cref="IReadOnlyList{T}" />
+/// key's existing values - a trade-off that keeps the values ordered and preserves the <see cref="IReadOnlyList{T}" />
 /// view contract.
 /// </para>
 /// <para>
@@ -61,14 +61,14 @@ namespace Bodu.Collections.Generic;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Multiple values under a single key — values are retained in insertion order.
+/// // Multiple values under a single key - values are retained in insertion order.
 /// var map = new MultiValueDictionary<string, int>();
 /// map.Add("odd",  1);
 /// map.Add("odd",  3);
 /// map.Add("even", 2);
 ///
-/// Console.WriteLine(map.Count);    // 3 — total key-value entries
-/// Console.WriteLine(map.KeyCount); // 2 — distinct keys
+/// Console.WriteLine(map.Count);    // 3 - total key-value entries
+/// Console.WriteLine(map.KeyCount); // 2 - distinct keys
 ///
 /// // The indexer returns a live read-only view; absent keys yield an empty list rather than throwing.
 /// foreach (int value in map["odd"])

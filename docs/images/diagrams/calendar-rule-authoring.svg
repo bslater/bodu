@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="ra-t ra-d">
-  <title id="ra-t">Rule authoring — three provider approaches</title>
+  <title id="ra-t">Rule authoring - three provider approaches</title>
   <desc id="ra-d">Three approaches supply rules to NotableDateService. In-Code Objects build a NotableDateResource directly. XML Resource Files load through NotableDateResourceLoader from an embedded .xml file. Satellite Assemblies use the same loader but pass a separate assembly. All three produce the NotableDateResource passed to the constructor. Optional runtime overrides live in the document's Overrides section.</desc>
 
   <defs>
@@ -46,7 +46,7 @@
     <rect class="pan" width="800" height="240" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Rule authoring — three loading approaches</text>
+    <text class="ttl" x="16" y="20">Rule authoring - three loading approaches</text>
 
     <!-- In-Code Objects -->
     <g transform="translate(16 50)">
@@ -61,7 +61,7 @@
       <rect class="xf" width="214" height="40" rx="5"/>
       <text class="lbl" fill="#93C5FD" x="107" y="14">XML Resource Files</text>
       <text class="sub" x="107" y="27">NotableDateResourceLoader</text>
-      <text class="mut" x="107" y="39">embedded .xml — same assembly</text>
+      <text class="mut" x="107" y="39">embedded .xml - same assembly</text>
     </g>
 
     <!-- Satellite Assembly -->

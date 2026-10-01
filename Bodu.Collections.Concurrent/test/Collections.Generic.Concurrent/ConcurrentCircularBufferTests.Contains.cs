@@ -272,7 +272,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Contains_WhenReferenceTypeDoesNotOverrideEquals_ShouldUseReferenceEquality()
     {
-        // Use a local type that does not override Equals — equality falls back to reference identity
+        // Use a local type that does not override Equals - equality falls back to reference identity
         var buffer = new ConcurrentCircularBuffer<ReferenceItem>(3);
         var enqueued = new ReferenceItem(1);
         buffer.Enqueue(enqueued);

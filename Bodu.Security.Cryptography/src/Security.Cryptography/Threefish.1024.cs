@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Threefish-1024.</strong> The widest Threefish variant — pick it when the surrounding
+/// <strong>When to choose Threefish-1024.</strong> The widest Threefish variant - pick it when the surrounding
 /// construction (Skein-1024, custom long-tweak schemes, or extreme-margin disk-encryption layouts) requires the
 /// 1024-bit block. Throughput is lower than the 512-bit variant; the 256/512-bit variants are more practical defaults
 /// unless the wider block is a hard requirement.

@@ -6,17 +6,17 @@ uid: Bodu.Text.Delimited
 
 ## Purpose
 
-**Bodu.Text.Delimited** parses and emits **delimited** records — CSV, TSV, and other character-separated value documents — as a standalone `System.Text.Json`-shaped library: a typed record serializer, a forward-only UTF-8 token reader/writer pair, a mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the `Bodu.Text.Formats` umbrella); see also <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, <xref:Bodu.Text.Bencode>, and <xref:Bodu.Text.Toml>.
+**Bodu.Text.Delimited** parses and emits **delimited** records - CSV, TSV, and other character-separated value documents - as a standalone `System.Text.Json`-shaped library: a typed record serializer, a forward-only UTF-8 token reader/writer pair, a mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the `Bodu.Text.Formats` umbrella); see also <xref:Bodu.Text.DotEnv>, <xref:Bodu.Text.Ini>, <xref:Bodu.Text.Bencode>, and <xref:Bodu.Text.Toml>.
 
 ## Key types
 
-- <xref:Bodu.Text.Delimited.DelimitedSerializer> — static serializer: typed records ↔ delimited text, including the `IAsyncEnumerable` record-streaming overloads.
-- <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> — naming policy, case sensitivity, dialect characters, and header mode for binding.
-- <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> / <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> — forward-only `ref struct` token surfaces over UTF-8, with <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> carrying the dialect policies.
-- <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior> / <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior> / <xref:Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior> — the strictness knobs for real-world files.
-- <xref:Bodu.Text.Delimited.Document.DelimitedDocument> / <xref:Bodu.Text.Delimited.Document.DelimitedElement> — read-only, disposable document model (records as header-keyed objects or positional arrays).
-- <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> — mutable DOM root for parse → edit → write scenarios.
-- <xref:Bodu.Text.Delimited.DelimitedFormatException> / <xref:Bodu.Text.Delimited.DelimitedSerializationException> — malformed input vs. binding failures.
+- <xref:Bodu.Text.Delimited.DelimitedSerializer> - static serializer: typed records ↔ delimited text, including the `IAsyncEnumerable` record-streaming overloads.
+- <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> - naming policy, case sensitivity, dialect characters, and header mode for binding.
+- <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> / <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> - forward-only `ref struct` token surfaces over UTF-8, with <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> carrying the dialect policies.
+- <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior> / <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior> / <xref:Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior> - the strictness knobs for real-world files.
+- <xref:Bodu.Text.Delimited.Document.DelimitedDocument> / <xref:Bodu.Text.Delimited.Document.DelimitedElement> - read-only, disposable document model (records as header-keyed objects or positional arrays).
+- <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> - mutable DOM root for parse → edit → write scenarios.
+- <xref:Bodu.Text.Delimited.DelimitedFormatException> / <xref:Bodu.Text.Delimited.DelimitedSerializationException> - malformed input vs. binding failures.
 
 ## Example
 

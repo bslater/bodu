@@ -11,7 +11,7 @@ namespace Bodu.Formats.Excel.Binary.Samples.ExcelReading.Scenarios;
 /// <summary>
 /// Demonstrates the convenience surface: <see cref="ExcelBinaryWorkbook.ReadWorksheet(int)" />
 /// materializes a whole sheet into an <see cref="ExcelWorksheet" /> with indexed rows, cell
-/// lookup by coordinates, and LINQ-friendly collections — the right shape when the sheet fits
+/// lookup by coordinates, and LINQ-friendly collections - the right shape when the sheet fits
 /// in memory and you need random access rather than a single pass.
 /// </summary>
 public static class MaterializedWorksheet

@@ -64,7 +64,7 @@ public static partial class Bech32
         TryDecodeCore(source, out hrp, out data, out encoding, out _);
 
     /// <summary>
-    /// Decodes a Bech32 or Bech32m string and repacks its 5-bit data groups into 8-bit bytes — the inverse of
+    /// Decodes a Bech32 or Bech32m string and repacks its 5-bit data groups into 8-bit bytes - the inverse of
     /// <see cref="EncodeFromBytes(string, ReadOnlySpan{byte}, Bech32Encoding)" />.
     /// </summary>
     /// <param name="source">The encoded string.</param>

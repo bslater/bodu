@@ -34,8 +34,8 @@ public partial class ThrowHelperTests
     [DataRow(5, 5)]
     public void ThrowIfCountExceedsAvailable_WhenCountIsValid_ShouldNotThrow(int count, int available) => ThrowHelper.ThrowIfCountExceedsAvailable(count, available);
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for valid (count, available) pairs including the
+    /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for valid (count, available) pairs including the
     /// zero-zero and count-equals-available boundaries.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

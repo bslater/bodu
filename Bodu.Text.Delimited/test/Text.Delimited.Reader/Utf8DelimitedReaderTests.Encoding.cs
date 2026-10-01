@@ -11,7 +11,7 @@ using Bodu.Text.Delimited.Reader;
 namespace Bodu.Text.Delimited.Reader;
 
 /// <summary>
-/// Contains encoding and line-handling robustness tests for <see cref="Utf8DelimitedReader" /> — BOM stripping,
+/// Contains encoding and line-handling robustness tests for <see cref="Utf8DelimitedReader" /> - BOM stripping,
 /// line-ending variants, and UTF-8 multibyte fields.
 /// </summary>
 public partial class Utf8DelimitedReaderTests

@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.</description>
+/// <description>Output size: 128, 160, or 192 bits - internally always 192 bits, then truncated.</description>
 /// </item>
 /// <item>
 /// <description>Block size: 64 bytes (512 bits); three 64-bit state variables.</description>
@@ -54,7 +54,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Tiger.</strong> Pick Tiger only for legacy interoperability — TigerTree (Merkle hash of
+/// <strong>When to choose Tiger.</strong> Pick Tiger only for legacy interoperability - TigerTree (Merkle hash of
 /// Tiger-192 leaves) is still seen in older P2P and content-addressed storage systems. For any new security design use
 /// a SHA-2 family member or <see cref="Blake2b" />; for fast non-cryptographic fingerprinting the algorithms in
 /// <c>Bodu.IO.Hashing</c> are usually a better fit.
@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso href="https://www.cs.technion.ac.il/~biham/Reports/Tiger/">Tiger home page (Anderson / Biham)</seealso>
 /// <seealso href="../guides/cryptography/tiger.html">Using Tiger</seealso>
-/// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide
+/// <seealso href="../guides/cryptography/hashing.html#pattern-3---a-cryptographic-digest">Cryptographic digest guide
 /// </seealso>
 public sealed partial class Tiger
     : BlockHashAlgorithm

@@ -15,8 +15,8 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Characterizes the managed-heap allocation profile of every principal read and write path, recording a baseline that
-/// allocation regressions and a future flat-model redesign can be measured against. Two contracts are pinned exactly —
-/// the lexical reader and read-only element lookup allocate nothing — while the materializing pipelines are bounded by a
+/// allocation regressions and a future flat-model redesign can be measured against. Two contracts are pinned exactly -
+/// the lexical reader and read-only element lookup allocate nothing - while the materializing pipelines are bounded by a
 /// generous multiple of the input size.
 /// </summary>
 /// <remarks>
@@ -28,7 +28,7 @@ namespace Bodu.Text.Toml;
 /// <para>
 /// The multiplier bounds are deliberately loose: they exist to catch order-of-magnitude regressions and to document the
 /// current baseline. The structural parser reuses a per-depth scratch list for key paths, hands its row list to the
-/// document without a final array copy, and packs every scalar into the row — value types unboxed, and a string as the
+/// document without a final array copy, and packs every scalar into the row - value types unboxed, and a string as the
 /// source span of its content, decoded on demand from the source the document retains in a pooled buffer. So
 /// <c>TomlDocument.Parse</c> sits near eight times the input, the serializer's bind path near twenty-six, and the mutable
 /// node DOM near twenty-two; parsing a string-valued document without reading the values stays in the single digits
@@ -205,7 +205,7 @@ public sealed class TomlAllocationTests
     }
 
     /// <summary>
-    /// Verifies that deserializing an array of tables into POCO instances — the compiled-accessor metadata path —
+    /// Verifies that deserializing an array of tables into POCO instances - the compiled-accessor metadata path -
     /// stays within the recorded allocation baseline relative to the input size.
     /// </summary>
     [TestMethod]
@@ -220,7 +220,7 @@ public sealed class TomlAllocationTests
     }
 
     /// <summary>
-    /// Verifies that serializing a list of POCO instances — the compiled-accessor metadata path — stays within the
+    /// Verifies that serializing a list of POCO instances - the compiled-accessor metadata path - stays within the
     /// recorded allocation baseline relative to the produced document size.
     /// </summary>
     [TestMethod]

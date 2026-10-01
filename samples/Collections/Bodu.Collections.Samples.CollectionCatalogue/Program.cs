@@ -10,7 +10,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue;
 
 /// <summary>
 /// Entry point for the collection-catalogue sample: a tour of the specialized generic collections in
-/// <c>Bodu.Collections.Generic</c> — the fixed-capacity ring and deque, the evicting cache with both its capacity
+/// <c>Bodu.Collections.Generic</c> - the fixed-capacity ring and deque, the evicting cache with both its capacity
 /// and time dimensions, the multi-map / multiset / ordered-set family, the bidirectional and navigable dictionaries,
 /// the sequenced dictionary alongside the indexed priority queue, the layered and defaulting dictionary decorators,
 /// and the two-key table with the segmented buffer. Everything runs offline and deterministically.

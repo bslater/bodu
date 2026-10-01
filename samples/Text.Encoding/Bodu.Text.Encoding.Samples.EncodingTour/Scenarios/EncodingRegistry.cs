@@ -10,8 +10,8 @@ namespace Bodu.Samples.Text.Encoding.EncodingTour.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="BinaryEncodings" />: the name-addressable registry over the whole
-/// catalogue. When the encoding is chosen at runtime — a config value, a protocol header, a CLI
-/// flag — <c>Get(name)</c> returns an <see cref="IBinaryEncoding" /> and the consuming code
+/// catalogue. When the encoding is chosen at runtime - a config value, a protocol header, a CLI
+/// flag - <c>Get(name)</c> returns an <see cref="IBinaryEncoding" /> and the consuming code
 /// stays codec-agnostic.
 /// </summary>
 public static class EncodingRegistry

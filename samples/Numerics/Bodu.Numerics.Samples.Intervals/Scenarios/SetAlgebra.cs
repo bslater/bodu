@@ -11,7 +11,7 @@ namespace Bodu.Numerics.Samples.Intervals.Scenarios;
 /// <summary>
 /// Demonstrates the two-interval set operations on <see cref="Interval{T}" />: intersection returns
 /// a single interval, but subtracting or symmetric-differencing two intervals can leave <em>two</em>
-/// disjoint pieces — which is exactly what <see cref="IntervalPair{T}" /> carries, ready to bridge to
+/// disjoint pieces - which is exactly what <see cref="IntervalPair{T}" /> carries, ready to bridge to
 /// an <see cref="IntervalSet{T}" /> with <c>ToIntervalSet()</c>.
 /// </summary>
 public static class SetAlgebra

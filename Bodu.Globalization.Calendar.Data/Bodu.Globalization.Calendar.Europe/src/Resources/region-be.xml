@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Belgium (BE) — notable-date resource pack
+  Belgium (BE) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "BE"; the
-  community holidays (Flemish, French, German-speaking) are not modelled — only the federal set.
+  community holidays (Flemish, French, German-speaking) are not modelled - only the federal set.
 
   How this resource is built:
 
@@ -68,19 +68,19 @@
       ============================================================================================================
     -->
 
-    <!-- Labour Day (Fête du Travail / Dag van de Arbeid) — 1 May; a public holiday. Strategy: Fixed date. -->
+    <!-- Labour Day (Fête du Travail / Dag van de Arbeid) - 1 May; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="be"><Applicability><Territory code="BE" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Belgian National Day — 21 July, marking the 1831 accession of the first King of the Belgians; the national day. The fromYear="1831" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Belgian National Day - 21 July, marking the 1831 accession of the first King of the Belgians; the national day. The fromYear="1831" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="belgian-national-day" displayName="Belgian National Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="be"><Applicability fromYear="1831"><Territory code="BE" /></Applicability>
         <Strategy><Fixed month="July" day="21" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Armistice Day — 11 November, marking the 1918 armistice; a public holiday. The fromYear="1918" bound excludes earlier years. Strategy: Fixed date. -->
+    <!-- Armistice Day - 11 November, marking the 1918 armistice; a public holiday. The fromYear="1918" bound excludes earlier years. Strategy: Fixed date. -->
     <NotableDate id="armistice-day" displayName="Armistice Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="be"><Applicability fromYear="1918"><Territory code="BE" /></Applicability>
         <Strategy><Fixed month="November" day="11" /></Strategy></Rule></Rules>

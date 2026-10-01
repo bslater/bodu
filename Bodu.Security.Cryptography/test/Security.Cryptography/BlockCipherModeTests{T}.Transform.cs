@@ -26,7 +26,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     {
         if (!RequiresBlockAlignedInput)
         {
-            Assert.Inconclusive($"{typeof(TMode).Name} accepts non-block-aligned input by design — block-alignment is not enforced.");
+            Assert.Inconclusive($"{typeof(TMode).Name} accepts non-block-aligned input by design - block-alignment is not enforced.");
             return;
         }
 
@@ -192,7 +192,7 @@ public abstract partial class BlockCipherModeTests<TMode>
 
     /// <summary>
     /// Verifies that a chaining mode feeds the underlying cipher distinct inputs for two
-    /// identical plaintext blocks — the structural signal that chaining (or offset advancement)
+    /// identical plaintext blocks - the structural signal that chaining (or offset advancement)
     /// is active. This is checked on the cipher's input log rather than the ciphertext because
     /// <see cref="MonitoringBlockCipher" />'s XOR transform is linear, and some modes (notably
     /// OCB) surround the cipher call with pre- and post-XOR operations that cancel under a linear
@@ -225,7 +225,7 @@ public abstract partial class BlockCipherModeTests<TMode>
             cipher.EncryptInputs[0],
             cipher.EncryptInputs[1],
             $"{typeof(TMode).Name} reports UsesChaining=true but fed the underlying cipher " +
-            "identical inputs for two identical plaintext blocks — chaining is not active.");
+            "identical inputs for two identical plaintext blocks - chaining is not active.");
     }
 
     /// <summary>

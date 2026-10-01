@@ -85,8 +85,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
         /// the end of the snapshot.
         /// </returns>
         /// <remarks>
-        /// A default-valued <see cref="Enumerator" /> — one produced by <c>default</c> rather than by
-        /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}.GetEnumerator" /> — holds no snapshot and is treated
+        /// A default-valued <see cref="Enumerator" /> - one produced by <c>default</c> rather than by
+        /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}.GetEnumerator" /> - holds no snapshot and is treated
         /// as an empty sequence.
         /// </remarks>
         public bool MoveNext()

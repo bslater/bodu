@@ -14,18 +14,18 @@ These policies are carried by the document's `<ResolutionPolicy>` element and su
 
 ## Static documentation
 
-- **[The resolution pipeline](~/guides/calendar/resolution-pipeline.md)** — the stages a query runs through and where each policy applies.
-- **[Rule identity, priority, and observed-date resolution](~/guides/calendar/identity-and-resolution.md)** — duplicate / collision settlement and observed-date range inclusion in detail.
+- **[The resolution pipeline](~/guides/calendar/resolution-pipeline.md)** - the stages a query runs through and where each policy applies.
+- **[Rule identity, priority, and observed-date resolution](~/guides/calendar/identity-and-resolution.md)** - duplicate / collision settlement and observed-date range inclusion in detail.
 
 ## Key types
 
-- <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> — the policy bundle: `DuplicatePolicy`, `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `ObservedDateRangePolicy`, and the working week (a `Bodu.Core` `WeekPattern`, default Monday–Friday). `ResolutionPolicy.Default` is the all-defaults instance.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> — how identical occurrences are reconciled: `Error`, `KeepFirst`, `KeepLast`, `Merge`.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> — how distinct rules landing on the same day (or with overlapping spans) are settled: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> — whether a higher or lower `Priority` wins: `HigherWins`, `LowerWins`.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> — what an adjustment emits: `ActualOnly`, `ObservedOnly`, `ActualAndObserved`, `ObservedAsAdditional`, `Suppress`.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> — which occurrence date controls inclusion in a range query: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> — `Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)`. Implement this to settle same-day collisions yourself; it is consulted only under `CollisionPolicy.Custom` and is supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>`.CollisionResolver` when the `NotableDateService` is constructed.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> - the policy bundle: `DuplicatePolicy`, `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `ObservedDateRangePolicy`, and the working week (a `Bodu.Core` `WeekPattern`, default Monday-Friday). `ResolutionPolicy.Default` is the all-defaults instance.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> - how identical occurrences are reconciled: `Error`, `KeepFirst`, `KeepLast`, `Merge`.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> - how distinct rules landing on the same day (or with overlapping spans) are settled: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> - whether a higher or lower `Priority` wins: `HigherWins`, `LowerWins`.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> - what an adjustment emits: `ActualOnly`, `ObservedOnly`, `ActualAndObserved`, `ObservedAsAdditional`, `Suppress`.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> - which occurrence date controls inclusion in a range query: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> - `Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)`. Implement this to settle same-day collisions yourself; it is consulted only under `CollisionPolicy.Custom` and is supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>`.CollisionResolver` when the `NotableDateService` is constructed.
 
 ## Authored example
 
@@ -34,5 +34,5 @@ These policies are carried by the document's `<ResolutionPolicy>` element and su
                   sameDayCollisionPolicy="HighestPriorityOnly"
                   priorityDirection="HigherWins"
                   observedDateRangePolicy="ObservedOccurrenceControlsInclusion"
-                  workingDays="0111110" />   <!-- Sunday-first; Mon–Fri working -->
+                  workingDays="0111110" />   <!-- Sunday-first; Mon-Fri working -->
 ```

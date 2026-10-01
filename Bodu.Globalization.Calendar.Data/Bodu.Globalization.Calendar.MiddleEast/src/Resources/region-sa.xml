@@ -19,12 +19,12 @@
 
   <NotableDates>
 
-    <!-- Founding Day (Yawm al-Ta'sis) — 22 February, marking the 1727 establishment of the first Saudi state; observed since 2022. Strategy: Fixed day-of-month. -->
+    <!-- Founding Day (Yawm al-Ta'sis) - 22 February, marking the 1727 establishment of the first Saudi state; observed since 2022. Strategy: Fixed day-of-month. -->
     <NotableDate id="founding-day-sa" displayName="Founding Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sa"><Applicability fromYear="2022"><Territory code="SA" /></Applicability><Strategy><Fixed month="February" day="22" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- National Day (Al-Yawm al-Watani) — 23 September, marking the 1932 unification of the kingdom. Strategy: Fixed day-of-month. -->
+    <!-- National Day (Al-Yawm al-Watani) - 23 September, marking the 1932 unification of the kingdom. Strategy: Fixed day-of-month. -->
     <NotableDate id="national-day-sa" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sa"><Applicability><Territory code="SA" /></Applicability><Strategy><Fixed month="September" day="23" /></Strategy></Rule></Rules>
     </NotableDate>

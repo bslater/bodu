@@ -140,7 +140,7 @@ public partial class MerkleTreeTests
         CollectionAssert.AreEqual(new long[] { 0, 1, 2 }, diagnostics.GetLevel(0).Select(node => node.Index).ToArray());
 
         List<MerkleTreeDiagnostics.Node> hashed = diagnostics.GetAllNodes().Where(node => !node.IsLeaf).ToList();
-        Assert.HasCount(2, hashed, "one node for the first pair, one for the root — none for the promoted leaf");
+        Assert.HasCount(2, hashed, "one node for the first pair, one for the root - none for the promoted leaf");
 
         MerkleTreeDiagnostics.Node pair = hashed[0];
         Assert.AreEqual((1, 0L), (pair.Level, pair.Index));

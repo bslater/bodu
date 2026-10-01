@@ -9,15 +9,15 @@ namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
 /// Drives <see cref="BinaryEncodingContractTests{TEncoding}" /> against <see cref="Base16" /> with a
-/// minimal set of canonical RFC 4648 vectors. Validates that the contract base — which expects
-/// <c>Encode</c>, <c>Decode</c>, <c>TryEncode</c>, and <c>TryDecode</c> adapter methods — wires up to
+/// minimal set of canonical RFC 4648 vectors. Validates that the contract base - which expects
+/// <c>Encode</c>, <c>Decode</c>, <c>TryEncode</c>, and <c>TryDecode</c> adapter methods - wires up to
 /// the static <see cref="Base16" /> surface and round-trips bytes through every code path. Bespoke
 /// Base16 tests (variants, formatting options, span overloads) live in the existing
 /// <c>Base16Tests.*.cs</c> partials.
 /// </summary>
 /// <remarks>
 /// The <c>TEncoding</c> type parameter on <see cref="BinaryEncodingContractTests{TEncoding}" /> is a
-/// documentation marker — the contract is exercised through the protected adapter methods. Because
+/// documentation marker - the contract is exercised through the protected adapter methods. Because
 /// <see cref="Base16" /> is a <c>static class</c> it cannot be passed as a type argument; this subclass
 /// uses <see cref="object" /> as the placeholder.
 /// </remarks>

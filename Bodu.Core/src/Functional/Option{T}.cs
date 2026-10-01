@@ -22,7 +22,7 @@ namespace Bodu.Functional;
 /// <see cref="Match{TResult}(Func{T, TResult}, Func{TResult})" /> or the <c>GetValueOrDefault</c> overloads.
 /// </para>
 /// <para>
-/// <c>default(Option&lt;T&gt;)</c> equals <see cref="None" /> — an option that was never assigned behaves exactly like
+/// <c>default(Option&lt;T&gt;)</c> equals <see cref="None" /> - an option that was never assigned behaves exactly like
 /// an explicit <c>None</c>, so the type is total and safe to use as a field or array element without initialization.
 /// </para>
 /// <para>

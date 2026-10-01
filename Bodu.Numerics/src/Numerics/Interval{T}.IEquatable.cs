@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public readonly partial struct Interval<T> : IEquatable<Interval<T>>
 {
     /// <summary>
-    /// Determines whether this interval equals <paramref name="other" /> as a set — same lower endpoint, same upper
+    /// Determines whether this interval equals <paramref name="other" /> as a set - same lower endpoint, same upper
     /// endpoint, and matching inclusivity on each side. Any two empty intervals are equal regardless of the bounds used
     /// to construct them.
     /// </summary>

@@ -18,7 +18,7 @@ public static partial class Base85
     /// Unlike the compact <see cref="Base85Variant.GitCompact" /> mode used by
     /// <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />, this primitive never trims the
     /// trailing group: a final remainder of one, two, or three bytes is zero-padded internally and still produces five
-    /// characters. The output is therefore not self-delimiting — decoding requires the original byte count, which Git
+    /// characters. The output is therefore not self-delimiting - decoding requires the original byte count, which Git
     /// carries in its binary-patch line prefix. Use
     /// <see cref="DecodeGitPadded(ReadOnlySpan{char}, int, BaseFormatStyles)" /> with that length to recover the bytes.
     /// </remarks>

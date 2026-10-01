@@ -76,8 +76,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that encrypting a partial final block — input length is one byte shy of
-    /// <see cref="SymmetricAlgorithm.BlockSize" /> — through the algorithm's encryptor and then
+    /// Verifies that encrypting a partial final block - input length is one byte shy of
+    /// <see cref="SymmetricAlgorithm.BlockSize" /> - through the algorithm's encryptor and then
     /// decrypting the padded ciphertext recovers the partial plaintext exactly.
     /// </summary>
     [TestMethod]

@@ -16,7 +16,7 @@ for the cache that sits in front of them, see
 All eleven registrations follow one shape, so the page shows one bulk provider (ECB) and one pair
 provider (Fixer) in full and then tabulates only what differs for the other nine.
 
-## Pattern 1 — the two registration forms
+## Pattern 1 - the two registration forms
 
 Each provider package ships two extension methods with the same name. The
 <xref:Bodu.Financial.IFinancialServiceBuilder> form composes on the builder that
@@ -44,8 +44,8 @@ builder.Services
 builder.Services.AddEcbExchangeRates(builder.Configuration);
 ```
 
-The builder form takes five parameters — `configuration`, `sectionName`, `configure`, and
-`configureResilience` after the builder itself — and is the only one that exposes the
+The builder form takes five parameters - `configuration`, `sectionName`, `configure`, and
+`configureResilience` after the builder itself - and is the only one that exposes the
 `configureResilience` hook. The `IServiceCollection` form stops at `configure`. Pass a
 `sectionName` to bind from somewhere other than the default:
 
@@ -59,7 +59,7 @@ Whichever form you use, the provider is registered once as a singleton and expos
 <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> and
 <xref:Bodu.Financial.ExchangeRates.IRateProvider> through idempotent `TryAdd` registrations, so
 the first provider registered wins each contract. Register several providers and the later ones
-are still resolvable by their concrete type (`EcbRateProvider`, `FixerRateProvider`, …) — and the
+are still resolvable by their concrete type (`EcbRateProvider`, `FixerRateProvider`, …) - and the
 [aggregator](exchange-rate-caching.md#grouping-providers-with-the-aggregator) is the way to put
 them behind one contract.
 
@@ -69,7 +69,7 @@ them behind one contract.
 > non-positive timeout fails the host before the first request rather than on the first lookup.
 > The message names the provider ("Fixer exchange-rate options are invalid.").
 
-## Pattern 2 — a bulk provider in full: ECB
+## Pattern 2 - a bulk provider in full: ECB
 
 The bulk providers (ECB, BoE, RBA, IMF) download one file that covers many pairs, so their options
 describe the feed: an endpoint, a payload-cache location, and a refresh interval. Every key below
@@ -114,8 +114,8 @@ binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> (and its nes
 
 One member does **not** bind: `Feeds`, an `IReadOnlyList<EcbRateFeed>` whose elements carry a
 constructor. The configuration binder leaves it at `EcbRateFeed.Default` (the 90-day feed, then
-the full history) even when the section supplies a `Feeds` array. Set it — and anything else
-that is not a plain value — through the `configure` callback, which runs after binding:
+the full history) even when the section supplies a `Feeds` array. Set it - and anything else
+that is not a plain value - through the `configure` callback, which runs after binding:
 
 ```csharp
 builder.Services
@@ -129,7 +129,7 @@ builder.Services
         });
 ```
 
-## Pattern 3 — a pair provider in full: Fixer
+## Pattern 3 - a pair provider in full: Fixer
 
 The pair providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) fetch one currency
 pair per request, and their options all derive from
@@ -171,12 +171,12 @@ three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProvider
 | `DefaultLookback` | 7 days | The window a synchronous or undated lookup fetches on demand: it ends on the requested date and spans this duration. |
 | `CurrencyAliases` | `{}` | ISO code → source symbol; values must be alphanumeric (they are substituted into the request URL). |
 | `*LogLevel` | see block | As for the bulk providers. |
-| `ApiKey` | `""` | **Required** — a blank key fails validation. Sent as `access_key`. |
+| `ApiKey` | `""` | **Required** - a blank key fails validation. Sent as `access_key`. |
 | `TimeSeriesPath` / `HistoricalPath` | `timeseries` / `{date}` | The relative endpoints for a window and for a single day. |
 
 `HistoryAvailability` is the one `WebRateProviderOptions` member that does not bind (a record
-struct with factory members). Each provider's constructor presets it — Fixer to
-`RateHistoryAvailability.Since(1999-01-01)` — and the `configure` callback can override it.
+struct with factory members). Each provider's constructor presets it - Fixer to
+`RateHistoryAvailability.Since(1999-01-01)` - and the `configure` callback can override it.
 
 ## Per-provider differences
 
@@ -189,7 +189,7 @@ reaches the wire.
 | Provider | Section | Options type | Shape | Provider-specific keys (defaults) | Key |
 |---|---|---|---|---|---|
 | ECB | `Financial:Ecb` | `EcbRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl`, `HttpTimeout`, `UserAgent`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-ecb`), `RefreshInterval` (12 h), `CurrencyAliases` (`{}`); `Feeds` code-only | none |
-| Bank of England | `Financial:Boe` | `BoeRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl` `https://www.bankofengland.co.uk/boeapps/database/`, `QueryPath` `_iadb-fromshowcolumns.asp`, `HttpTimeout` 30 s, `UserAgent` `Bodu.Financial.ExchangeRates.Boe`), `OnDemandWindowDays` (10 — replaces `DefaultLookback`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-boe`), `RefreshInterval` (12 h); `Series` and `HistoryAvailability` code-only; no `CurrencyAliases`, no `SynchronousNetworkFetchLogLevel` | none |
+| Bank of England | `Financial:Boe` | `BoeRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl` `https://www.bankofengland.co.uk/boeapps/database/`, `QueryPath` `_iadb-fromshowcolumns.asp`, `HttpTimeout` 30 s, `UserAgent` `Bodu.Financial.ExchangeRates.Boe`), `OnDemandWindowDays` (10 - replaces `DefaultLookback`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-boe`), `RefreshInterval` (12 h); `Series` and `HistoryAvailability` code-only; no `CurrencyAliases`, no `SynchronousNetworkFetchLogLevel` | none |
 | RBA | `Financial:Rba` | `RbaRateProviderOptions` | bulk, flat | `BaseUrl` (`https://www.rba.gov.au/statistics/tables/xls-hist/`), `HttpTimeout` (30 s), `UserAgent` (`Bodu.Financial.ExchangeRates.Rba`), `EnableDiskCache` (**`false`**), `CacheDirectory` (`null` → `bodu-rba`), `CurrentEraRefreshInterval` (12 h), `CurrencyAliases` (`{ "SDR": "XDR" }`); `Eras` code-only; no `SynchronousNetworkFetchLogLevel` | none |
 | IMF | `Financial:Imf` | `ImfRateProviderOptions` | `WebRateProviderOptions` + report keys | `BaseAddress` (`https://www.imf.org/external/np/fin/data/`), `ReportPath` (`rms_mth.aspx`), `ReportType` (`REP`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-imf`), `RefreshInterval` (12 h), `CurrencyNames` (report label → ISO code, ~35 defaults, merges) | none |
 | Yahoo Finance | `Financial:Yahoo` | `YahooRateProviderOptions` | pair | `BaseAddress` (`https://query1.finance.yahoo.com/`), `ChartPath` (`v8/finance/chart/{symbol}`), `SymbolFormat` (`{from}{to}=X`) | none |
@@ -251,7 +251,7 @@ And the Bank of England's adds a query path and an on-demand window to the neste
 
 For the remaining pair providers, take the Fixer block, drop the three Fixer keys, and add the
 provider-specific keys from the table. FRED's `SeriesMap` and IMF's `CurrencyNames` are
-dictionaries, so — like `CurrencyAliases` — a section entry is **added to** the built-in map,
+dictionaries, so - like `CurrencyAliases` - a section entry is **added to** the built-in map,
 never replacing it:
 
 ```json
@@ -271,12 +271,12 @@ never replacing it:
 > `HistoryAvailability` entry in a section is neither applied nor reported; the option keeps its
 > default. Set those through `configure`.
 
-## Pattern 4 — sourcing an API key
+## Pattern 4 - sourcing an API key
 
 Fixer, exchangerate.host, and FRED refuse to start without a key, and the key must not live in
 `appsettings.json`. `Host.CreateApplicationBuilder` already layers the standard configuration
-sources — `appsettings.json`, `appsettings.{Environment}.json`, user secrets (in the
-`Development` environment), environment variables, then command-line arguments — so the
+sources - `appsettings.json`, `appsettings.{Environment}.json`, user secrets (in the
+`Development` environment), environment variables, then command-line arguments - so the
 registration needs no extra code: whichever layer defines `Financial:Fixer:ApiKey` wins.
 
 ```csharp
@@ -302,7 +302,7 @@ Financial__ExchangeRateHost__ApiKey=your-access-key
 Financial__Fred__ApiKey=your-api-key
 ```
 
-When the key is only known at runtime — a vault client, a rotated secret — set it in the
+When the key is only known at runtime - a vault client, a rotated secret - set it in the
 `configure` callback, which runs after binding and before validation, so the startup check still
 sees the final value:
 
@@ -319,14 +319,14 @@ builder.Services
 ```
 
 The key goes on the wire as a query parameter (`access_key` for Fixer and exchangerate.host,
-`api_key` for FRED), which is the endpoints' own convention — so avoid logging request URIs at
+`api_key` for FRED), which is the endpoints' own convention - so avoid logging request URIs at
 `Information` in production. XE needs no key: its provider recovers the endpoint's bearer token
 from the public site at runtime.
 
-## Pattern 5 — resilience and the `HttpClient`
+## Pattern 5 - resilience and the `HttpClient`
 
-`AddWebRateProvider` — the shared machinery every `Add<Source>ExchangeRates` delegates to in
-<xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions> — registers a named `HttpClient`
+`AddWebRateProvider` - the shared machinery every `Add<Source>ExchangeRates` delegates to in
+<xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions> - registers a named `HttpClient`
 through `IHttpClientFactory` and fits it with the standard resilience handler
 (`AddStandardResilienceHandler`). The pipeline is configured from the provider's options:
 
@@ -364,7 +364,7 @@ surfaces at once as <xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatExcepti
 None of this applies to a provider you construct by hand from its options: that provider builds
 and owns its own client through
 <xref:Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory>, with `HttpTimeout` applied as
-`HttpClient.Timeout`, the `UserAgent` header, the response-size cap — and **no retry**.
+`HttpClient.Timeout`, the `UserAgent` header, the response-size cap - and **no retry**.
 
 ## Two settings worth a second look
 
@@ -372,17 +372,17 @@ and owns its own client through
 `GetRate` / `TryGetRate` / `GetRates` that finds nothing loaded reports a miss (`false`, or
 `KeyNotFoundException` from the throwing form) without touching the network; the asynchronous
 surface and the warm-up methods (`LoadRangeAsync`, `LoadPairAsync`) are the paths that fetch.
-On, a synchronous miss blocks to download the missing window — `DefaultLookback` (or BoE's
-`OnDemandWindowDays`) ending on the requested date — which is convenient in a worker but can
+On, a synchronous miss blocks to download the missing window - `DefaultLookback` (or BoE's
+`OnDemandWindowDays`) ending on the requested date - which is convenient in a worker but can
 deadlock on a thread with a captured `SynchronizationContext`; the provider converts that case
 into an `InvalidOperationException` rather than a hang. Prefer warming at startup: the
-[warm-up hosted service](caching-configuration.md#pattern-4--warming-the-cache-at-startup)
+[warm-up hosted service](caching-configuration.md#pattern-4---warming-the-cache-at-startup)
 does exactly that.
 
 **`EnableDiskCache` / `CacheDirectory`.** The bulk providers keep the raw bytes they downloaded
 on disk (a *payload* cache, distinct from the [rate cache](exchange-rate-caching.md)) so that a
 restart does not re-download a multi-decade file. With `CacheDirectory` unset it lands in a
-provider-named folder — `bodu-ecb`, `bodu-boe`, `bodu-rba`, `bodu-imf` — under the system
+provider-named folder - `bodu-ecb`, `bodu-boe`, `bodu-rba`, `bodu-imf` - under the system
 temporary path, which is fine for a workstation and wrong for a fleet: point it at a persistent,
 writable directory in production, or set `EnableDiskCache` to `false` (the in-memory snapshot
 still prevents duplicate downloads within the process). RBA defaults it off because its era
@@ -401,9 +401,9 @@ workbooks are large and change only for the current era.
 
 ## Where to go next
 
-- [Configuring rate caching from appsettings](caching-configuration.md) — the `Financial:RateCache` tree that sits in front of these providers.
-- [Built-in exchange-rate providers](exchange-rate-providers.md) — what each provider serves, its history depth, and its failure modes.
-- [Financial dependency injection](dependency-injection.md) — the `AddFinancialService` builder these registrations compose on.
-- [Writing your own web provider](custom-web-provider.md) — give a custom feed the same `Financial:<Source>` registration.
-- [Bodu.Financial.ExchangeRates getting started](../../docs/exchange-rates/getting-started.md) — the shortest path to a first live lookup.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic.
+- [Configuring rate caching from appsettings](caching-configuration.md) - the `Financial:RateCache` tree that sits in front of these providers.
+- [Built-in exchange-rate providers](exchange-rate-providers.md) - what each provider serves, its history depth, and its failure modes.
+- [Financial dependency injection](dependency-injection.md) - the `AddFinancialService` builder these registrations compose on.
+- [Writing your own web provider](custom-web-provider.md) - give a custom feed the same `Financial:<Source>` registration.
+- [Bodu.Financial.ExchangeRates getting started](../../docs/exchange-rates/getting-started.md) - the shortest path to a first live lookup.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic.

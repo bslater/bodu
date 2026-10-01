@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// Passed to the directory delegate of an <see cref="RateCacheFileLayout" /> so a consumer can shape the folder
-/// hierarchy — for example a flat folder, a per-provider folder, or a per-provider-then-per-pair tree.
+/// hierarchy - for example a flat folder, a per-provider folder, or a per-provider-then-per-pair tree.
 /// </remarks>
 public readonly record struct RateCacheDirectoryContext
 {

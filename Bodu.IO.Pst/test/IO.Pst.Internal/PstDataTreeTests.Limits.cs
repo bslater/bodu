@@ -13,7 +13,7 @@ public partial class PstDataTreeTests
 {
     /// <summary>
     /// Builds a node whose data tree declares a logical payload of roughly 318 MB from a single physical 8 KB block
-    /// referenced 1021 times per <c>XBLOCK</c> across 40 <c>XBLOCK</c>s — above the default materialization limit,
+    /// referenced 1021 times per <c>XBLOCK</c> across 40 <c>XBLOCK</c>s - above the default materialization limit,
     /// but a perfectly ordinary size for a streamed read.
     /// </summary>
     /// <param name="expectedLength">Receives the declared logical length.</param>

@@ -76,8 +76,8 @@ public static partial class YamlSerializer
             MaxDepth = o.MaxDepth,
         });
 
-        // An empty document deserializes to the type's default rather than failing, so the converter — which requires
-        // a positioned token — is resolved only once the document is known to carry a value.
+        // An empty document deserializes to the type's default rather than failing, so the converter - which requires
+        // a positioned token - is resolved only once the document is known to carry a value.
         if (!reader.Read())
             return returnType.IsValueType ? Activator.CreateInstance(returnType) : null;
 

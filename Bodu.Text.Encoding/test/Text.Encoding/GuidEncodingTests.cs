@@ -182,7 +182,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void Base64_TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalseAndEmptyGuid()
     {
-        // 4-byte payload encodes to "3q2+7w==" — 4 bytes, not 16.
+        // 4-byte payload encodes to "3q2+7w==" - 4 bytes, not 16.
         string encoded = Base64.Encode([0xDE, 0xAD, 0xBE, 0xEF]);
 
         bool ok = Base64.TryDecodeGuid(encoded.AsSpan(), out Guid value);
@@ -236,7 +236,7 @@ public sealed class GuidEncodingTests
     }
 
     /// <summary>
-    /// Verifies the Base64Url GUID round trip — the standard 22-char URL-safe GUID convention.
+    /// Verifies the Base64Url GUID round trip - the standard 22-char URL-safe GUID convention.
     /// </summary>
     [TestMethod]
     public void Base64Url_EncodeGuid_ShouldProduceTwentyTwoUrlSafeCharacters()
@@ -380,7 +380,7 @@ public sealed class GuidEncodingTests
     [TestMethod]
     public void TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalse()
     {
-        // "DEADBEEF" decodes to 4 bytes — not a GUID.
+        // "DEADBEEF" decodes to 4 bytes - not a GUID.
         bool ok = Base16.TryDecodeGuid("DEADBEEF".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);

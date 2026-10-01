@@ -14,7 +14,8 @@ internal static partial class Argon2Core
     internal enum KernelKind
     {
         /// <summary>
-        /// The widest kernel the processor supports and the process allows: the kind dispatch selects.
+        /// The kind dispatch selects: the widest x64 kernel the processor supports and the process allows, the hybrid
+        /// kernel on ARM64, and the scalar kernel elsewhere.
         /// </summary>
         Auto = 0,
 
@@ -29,7 +30,9 @@ internal static partial class Argon2Core
         Ssse3,
 
         /// <summary>
-        /// The 128-bit kernel on ARM64, over AdvSimd.
+        /// The 128-bit kernel on ARM64, over AdvSimd, one row or column in eight vector registers. It runs only where a
+        /// caller names it: dispatch selects <see cref="AdvSimdHybrid" />, and the scalar kernel ran faster than this
+        /// one on a Neoverse N2.
         /// </summary>
         AdvSimd,
 
@@ -37,5 +40,11 @@ internal static partial class Argon2Core
         /// The 256-bit kernel on x64, over AVX2.
         /// </summary>
         Avx2,
+
+        /// <summary>
+        /// The kernel dispatch selects on ARM64: pairs of rows and pairs of columns, one of each pair over AdvSimd and
+        /// the other in general registers, interleaved so that the vector and integer pipes work at once.
+        /// </summary>
+        AdvSimdHybrid,
     }
 }

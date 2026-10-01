@@ -9,8 +9,8 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class CmacTests
 {
     /// <summary>
-    /// Verifies that the MAC of each RFC 4493 Section 4 example — the first 0, 16, 40, and 64 bytes of the example
-    /// message under the example key — matches the published value.
+    /// Verifies that the MAC of each RFC 4493 Section 4 example - the first 0, 16, 40, and 64 bytes of the example
+    /// message under the example key - matches the published value.
     /// </summary>
     /// <param name="length">The example's message length.</param>
     /// <param name="expected">The published MAC, hex.</param>

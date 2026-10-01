@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Austria (AT) — notable-date resource pack
+  Austria (AT) - notable-date resource pack
   ================================================================================================================
 
   Authored on the notable-date schema. All rules are scoped to territory "AT".
@@ -71,25 +71,25 @@
       ============================================================================================================
     -->
 
-    <!-- Epiphany (Heilige Drei Könige) — 6 January; a public holiday in Austria. Strategy: Fixed date. -->
+    <!-- Epiphany (Heilige Drei Könige) - 6 January; a public holiday in Austria. Strategy: Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- State Holiday (Staatsfeiertag) — 1 May, Austria's Labour Day; a public holiday. Strategy: Fixed date. -->
+    <!-- State Holiday (Staatsfeiertag) - 1 May, Austria's Labour Day; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="state-holiday" displayName="State Holiday" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Stephen's Day (Stefanitag) — 26 December; a public holiday. Strategy: Fixed date. -->
+    <!-- Saint Stephen's Day (Stefanitag) - 26 December; a public holiday. Strategy: Fixed date. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- National Day (Nationalfeiertag) — 26 October, marking the 1955 declaration of permanent neutrality; the national day. The fromYear="1965" bound reflects its establishment as a holiday. Strategy: Fixed date. -->
+    <!-- National Day (Nationalfeiertag) - 26 October, marking the 1955 declaration of permanent neutrality; the national day. The fromYear="1965" bound reflects its establishment as a holiday. Strategy: Fixed date. -->
     <NotableDate id="national-day" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="at"><Applicability fromYear="1965"><Territory code="AT" /></Applicability>
         <Strategy><Fixed month="October" day="26" /></Strategy></Rule></Rules>

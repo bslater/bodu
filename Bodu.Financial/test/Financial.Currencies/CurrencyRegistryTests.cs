@@ -7,7 +7,7 @@
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies the runtime <see cref="CurrencyRegistry" /> — shipped-catalogue lookup, custom registration,
+/// Verifies the runtime <see cref="CurrencyRegistry" /> - shipped-catalogue lookup, custom registration,
 /// enumeration, and thread safety.
 /// </summary>
 [TestClass]

@@ -36,7 +36,7 @@ public sealed partial class GcmModeTransformTests
     /// Minimal <see cref="IBlockCipher" /> that records whether <see cref="IDisposable.Dispose" /> was called.
     /// Encrypt/Decrypt return a deterministic but arbitrary 16-byte output, enough to let
     /// <see cref="GcmModeTransform" /> construct successfully (it computes H and the keystream block during
-    /// initialization). The output is not cryptographically meaningful — the test only inspects disposal.
+    /// initialization). The output is not cryptographically meaningful - the test only inspects disposal.
     /// </summary>
     private sealed class DisposalTrackingBlockCipher
         : IBlockCipher

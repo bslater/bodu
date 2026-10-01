@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="CBC panel — each plaintext block is XORed with the previous ciphertext before encryption; the first block uses the IV."/>
+/// <img src="../images/diagrams/classic-modes.svg" alt="CBC panel - each plaintext block is XORed with the previous ciphertext before encryption; the first block uses the IV."/>
 /// </para>
 /// <para>
 /// Encryption computes <c>Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁)</c> with <c>C₋₁ = IV</c>, and decryption inverts this as
@@ -27,20 +27,20 @@ namespace Bodu.Security.Cryptography;
 /// the chaining value, so successive calls to <see cref="Transform" /> continue the stream.
 /// </para>
 /// <para>
-/// <strong>When to use CBC.</strong> The traditional confidentiality-only mode — the right pick when interoperating
+/// <strong>When to use CBC.</strong> The traditional confidentiality-only mode - the right pick when interoperating
 /// with legacy protocols (TLS up to 1.2, JCE defaults, many file formats) or when an authenticated mode is impractical.
 /// CBC requires plaintext to be a multiple of the block size, so it is almost always paired with
 /// <see cref="Pkcs7Padding" />. For new designs prefer <see cref="GcmModeTransform" /> or
 /// <see cref="EaxModeTransform" />, both of which authenticate as well as encrypt; CBC plus a separate MAC is fragile
 /// and easy to misuse. Decryption with strippable padding is vulnerable to padding-oracle attacks. The pad-byte
-/// validation is constant-time (each padding strategy's <c>Unpad</c> — see <see cref="Pkcs7Padding" /> — walks the full
-/// final block with branchless masks), but that alone is not a complete defence — the depadded length still varies with
+/// validation is constant-time (each padding strategy's <c>Unpad</c> - see <see cref="Pkcs7Padding" /> - walks the full
+/// final block with branchless masks), but that alone is not a complete defence - the depadded length still varies with
 /// the pad count and an invalid block throws. Callers must authenticate the ciphertext (a MAC verified with
 /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />,
 /// or an AEAD mode) <b>before</b> depadding, so a padding failure is never observable to an attacker.
 /// </para>
 /// <para>
-/// CBC is sequential — neither encryption nor decryption parallelizes across blocks within a single message. Random
+/// CBC is sequential - neither encryption nor decryption parallelizes across blocks within a single message. Random
 /// access into the ciphertext is not supported.
 /// </para>
 /// </remarks>
@@ -59,15 +59,15 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#cbc--the-default">CBC walk-through in the cipher-modes guide
-/// </seealso>
+/// <seealso href="../guides/cryptography/cipher-modes.html#cbc---the-default">CBC walk-through in the cipher-modes
+/// guide </seealso>
 public sealed class CbcModeTransform
     : IBlockCipherModeTransform
 {
     /// <summary>The block cipher over which CBC mode is applied.</summary>
     private readonly IBlockCipher _cipher;
 
-    /// <summary>The evolving chaining value — initially the IV, then the most recent ciphertext block.</summary>
+    /// <summary>The evolving chaining value - initially the IV, then the most recent ciphertext block.</summary>
     private readonly byte[] _currentIv;
 
     /// <summary>Indicates whether the instance has been disposed and its chaining value cleared.</summary>
@@ -118,8 +118,8 @@ public sealed class CbcModeTransform
     }
 
     /// <summary>
-    /// Decrypts whole blocks a run at a time: the run's chaining values — the current IV and every ciphertext block but
-    /// the last — are copied aside, the run is decrypted with one multi-block call, and the chaining values are XORed
+    /// Decrypts whole blocks a run at a time: the run's chaining values - the current IV and every ciphertext block but
+    /// the last - are copied aside, the run is decrypted with one multi-block call, and the chaining values are XORed
     /// in.
     /// </summary>
     /// <param name="input">The ciphertext, a whole number of blocks.</param>
@@ -168,7 +168,7 @@ public sealed class CbcModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the running chaining vector so that key-equivalent IV
     /// state does not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not disposed by
-    /// this type — ownership remains with the caller.
+    /// this type - ownership remains with the caller.
     /// </summary>
     /// <remarks>
     /// Idempotent.

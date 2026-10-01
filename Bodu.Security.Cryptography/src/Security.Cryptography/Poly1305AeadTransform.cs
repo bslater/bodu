@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the common <see cref="IStreamAeadTransform" /> implementation shared by the extended-nonce Poly1305 AEAD
-/// constructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
+/// constructions - argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
 /// material. Derived types supply the keystream engine and, when required, an alternative framing.
 /// </summary>
 /// <remarks>
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Instances are stateful, not thread-safe, and single-use per message. A second call to <see cref="Encrypt" /> or
-/// <see cref="Decrypt" /> — including after a tag-mismatch failure — throws <see cref="InvalidOperationException" />.
+/// <see cref="Decrypt" /> - including after a tag-mismatch failure - throws <see cref="InvalidOperationException" />.
 /// </para>
 /// <para>
 /// <strong>Allocation.</strong> The instance holds the key and nonce inline, and the constructions in this library draw

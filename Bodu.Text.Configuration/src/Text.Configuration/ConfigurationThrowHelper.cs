@@ -14,7 +14,7 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// Single-use guards are kept at their call sites or expressed as <c>private static</c> helpers on the owning type.
-/// Only guards reused across two or more classes — and that test a condition rather than unconditionally throwing —
+/// Only guards reused across two or more classes - and that test a condition rather than unconditionally throwing -
 /// belong here.
 /// </para>
 /// <para>

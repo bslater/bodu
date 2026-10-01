@@ -10,7 +10,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
 {
 
     /// <summary>
-    /// Verifies that appending an empty span leaves the running check code unchanged — equal to the value
+    /// Verifies that appending an empty span leaves the running check code unchanged - equal to the value
     /// reported by a freshly constructed instance.
     /// </summary>
     [TestMethod]

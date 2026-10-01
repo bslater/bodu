@@ -19,15 +19,15 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// <see cref="LayeredDictionary{TKey, TValue}" /> is the .NET analogue of Python's <c>collections.ChainMap</c>: it
 /// groups several dictionaries into a single updatable view without copying them. Lookups search the layers in order
-/// and the <i>first</i> layer containing the key wins — an entry in an earlier layer <i>shadows</i> any entry with the
+/// and the <i>first</i> layer containing the key wins - an entry in an earlier layer <i>shadows</i> any entry with the
 /// same key in later layers. The same first-wins precedence model governs <c>Bodu.Text.Configuration</c>'s resolver
 /// chain, where earlier configuration sources take precedence over later ones.
 /// </para>
 /// <para>
 /// The layer <i>list</i> is fixed at construction, but each layer is held by reference and remains fully live:
 /// mutations made directly to an underlying dictionary are immediately visible through the view. All mutations made <i>through</i>
-/// the view — <see cref="Add(TKey, TValue)" />, the indexer setter, <see cref="Remove(TKey)" />, and
-/// <see cref="Clear" /> — affect the first layer only, exactly matching Python <c>ChainMap</c> semantics. In
+/// the view - <see cref="Add(TKey, TValue)" />, the indexer setter, <see cref="Remove(TKey)" />, and
+/// <see cref="Clear" /> - affect the first layer only, exactly matching Python <c>ChainMap</c> semantics. In
 /// particular, <see cref="Remove(TKey)" /> returns <see langword="false" /> for a key that exists only in deeper
 /// layers, and removing a first-layer entry that shadowed a deeper one makes the deeper value visible again (the
 /// "unshadowing" behaviour).
@@ -35,14 +35,14 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// <see cref="Count" />, <see cref="Keys" />, <see cref="Values" />, and enumeration present the merged view: distinct
 /// keys across all layers with first-wins values. These operations walk every layer and track seen keys, so they cost
-/// O(n) in the total number of entries across all layers — <see cref="Count" /> is <i>not</i> a cached O(1) property.
+/// O(n) in the total number of entries across all layers - <see cref="Count" /> is <i>not</i> a cached O(1) property.
 /// <see cref="Keys" /> and <see cref="Values" /> return snapshots materialized at the time of the call; enumeration is
 /// lazy and reflects the layers as it walks them.
 /// </para>
 /// <para>
 /// The optional key comparer supplied at construction is used only by the view's own distinct-key logic (the seen-key
 /// set behind <see cref="Count" /> and enumeration). Each underlying dictionary continues to use its own comparer for
-/// its lookups, so mismatched comparers can produce surprising shadowing — for example, a case-insensitive first layer
+/// its lookups, so mismatched comparers can produce surprising shadowing - for example, a case-insensitive first layer
 /// can shadow keys the view's case-sensitive comparer considers distinct. Prefer constructing the view and all layers
 /// with the same comparer.
 /// </para>
@@ -63,12 +63,12 @@ namespace Bodu.Collections.Generic;
 ///
 /// var settings = new LayeredDictionary<string, string>(overrides, defaults);
 ///
-/// string colour = settings["colour"];    // "blue" — falls through to the defaults layer
+/// string colour = settings["colour"];    // "blue" - falls through to the defaults layer
 /// settings["colour"] = "red";            // writes to the overrides layer, shadowing the default
-/// colour = settings["colour"];           // "red" — the first layer wins
+/// colour = settings["colour"];           // "red" - the first layer wins
 ///
 /// settings.Remove("colour");             // removes from the overrides layer only…
-/// colour = settings["colour"];           // "blue" — the default is unshadowed
+/// colour = settings["colour"];           // "blue" - the default is unshadowed
 ///]]>
 /// </code>
 /// </example>
@@ -157,7 +157,7 @@ public sealed partial class LayeredDictionary<TKey, TValue>
     /// A read-only list of the layer dictionaries in precedence order; index 0 is the write layer and wins on read.
     /// </value>
     /// <remarks>
-    /// The list itself is fixed at construction, but each element is the live underlying dictionary — mutating a layer
+    /// The list itself is fixed at construction, but each element is the live underlying dictionary - mutating a layer
     /// directly is immediately visible through the view.
     /// </remarks>
     public IReadOnlyList<IDictionary<TKey, TValue>> Layers => _layersView;
@@ -167,7 +167,7 @@ public sealed partial class LayeredDictionary<TKey, TValue>
     /// </summary>
     /// <value>The comparer used to deduplicate keys across layers during <see cref="Count" /> and enumeration.</value>
     /// <remarks>
-    /// This comparer does not influence lookups — each underlying layer resolves keys with its own comparer. When the
+    /// This comparer does not influence lookups - each underlying layer resolves keys with its own comparer. When the
     /// layers and the view disagree on key equality, shadowing may not match the view's notion of "same key".
     /// </remarks>
     public IEqualityComparer<TKey> Comparer => _comparer;

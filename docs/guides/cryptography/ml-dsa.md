@@ -4,7 +4,7 @@ title: ML-DSA post-quantum signatures
 
 # ML-DSA post-quantum signatures
 
-ML-DSA is the module-lattice digital signature algorithm standardized by NIST **FIPS 204** — the post-quantum companion to a classic signature scheme. Its security rests on the Module-LWE and SelfTargetMSIS problems, believed hard even for a large-scale quantum computer. This guide is for developers signing data whose signatures must remain trustworthy against future quantum attack.
+ML-DSA is the module-lattice digital signature algorithm standardized by NIST **FIPS 204** - the post-quantum companion to a classic signature scheme. Its security rests on the Module-LWE and SelfTargetMSIS problems, believed hard even for a large-scale quantum computer. This guide is for developers signing data whose signatures must remain trustworthy against future quantum attack.
 
 **Bodu.Security.Cryptography** ships the three FIPS 204 parameter sets as sealed types over the shared <xref:Bodu.Security.Cryptography.MLDsa> base: <xref:Bodu.Security.Cryptography.MLDsa44>, <xref:Bodu.Security.Cryptography.MLDsa65>, and <xref:Bodu.Security.Cryptography.MLDsa87>. This is pure ML-DSA; the pre-hash variant HashML-DSA is out of scope.
 
@@ -41,7 +41,7 @@ byte[] signature = signer.SignData(message);   // 3309 bytes
 bool valid = signer.VerifyData(message, signature);   // true
 ```
 
-`SignData` and `VerifyData` each have a context-string overload (next section) and a span overload — `SignData(data, context, destination)` writes the signature into a caller-supplied buffer of exactly `SignatureSizeInBytes`. `HasPrivateKey` / `HasPublicKey` report which halves an instance holds, exactly as for [Ed25519](signatures-ed25519.md).
+`SignData` and `VerifyData` each have a context-string overload (next section) and a span overload - `SignData(data, context, destination)` writes the signature into a caller-supplied buffer of exactly `SignatureSizeInBytes`. `HasPrivateKey` / `HasPublicKey` report which halves an instance holds, exactly as for [Ed25519](signatures-ed25519.md).
 
 ## Key distribution
 
@@ -64,7 +64,7 @@ bool ok = verifier.VerifyData(message, signature);
 
 `ImportPrivateKey` cross-checks the embedded public-key hash and throws <xref:System.ArgumentException> on a key whose secret vectors do not match.
 
-An instance keeps what FIPS 204 derives from its key on every operation — the matrix Â, the public-key hash tr, and the key's vectors in the form the arithmetic uses — from the moment the key is generated or imported, so reuse one instance for many signatures or verifications rather than importing the key for each. Beside the encoded keys these take about 32, 53 and 87 KiB for ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for a public key alone; the secret vectors are zeroed with the private key when the instance is disposed.
+An instance keeps what FIPS 204 derives from its key on every operation - the matrix Â, the public-key hash tr, and the key's vectors in the form the arithmetic uses - from the moment the key is generated or imported, so reuse one instance for many signatures or verifications rather than importing the key for each. Beside the encoded keys these take about 32, 53 and 87 KiB for ML-DSA-44, 65 and 87, or 20, 36 and 64 KiB for a public key alone; the secret vectors are zeroed with the private key when the instance is disposed.
 
 ## Context strings
 
@@ -92,7 +92,7 @@ A context longer than 255 bytes throws <xref:System.ArgumentException> at both s
 
 ## Deterministic versus hedged signing
 
-By default ML-DSA signing is **hedged**: each signature mixes 32 fresh random bytes into the nonce derivation. This is the FIPS 204 default and protects against fault-injection and randomness-disclosure attacks. The same message signed twice under the same key therefore yields **different** signatures — both valid.
+By default ML-DSA signing is **hedged**: each signature mixes 32 fresh random bytes into the nonce derivation. This is the FIPS 204 default and protects against fault-injection and randomness-disclosure attacks. The same message signed twice under the same key therefore yields **different** signatures - both valid.
 
 Set <xref:Bodu.Security.Cryptography.MLDsa.DeterministicSigning> to `true` to substitute the all-zero string, making signatures reproducible for a fixed key, message, and context. Both variants are standard and verify identically.
 
@@ -110,11 +110,11 @@ Prefer the default hedged mode unless you have a specific reason to need reprodu
 
 ## Verification never throws on a bad signature
 
-`VerifyData` returns `false` for every invalid input — a wrong-length, malformed, or non-canonical signature, a tampered message, or a mismatched context. It throws only when the instance holds no public key (<xref:System.Security.Cryptography.CryptographicException>), or when the context exceeds 255 bytes. Treat the boolean result as the sole signal and reject on `false` without branching on the reason.
+`VerifyData` returns `false` for every invalid input - a wrong-length, malformed, or non-canonical signature, a tampered message, or a mismatched context. It throws only when the instance holds no public key (<xref:System.Security.Cryptography.CryptographicException>), or when the context exceeds 255 bytes. Treat the boolean result as the sole signal and reject on `false` without branching on the reason.
 
 ## See also
 
-- [Asymmetric algorithms overview](asymmetric-overview.md) — where ML-DSA sits in the family.
-- [Signatures with Ed25519](signatures-ed25519.md) — the compact classic signature counterpart.
-- [ML-KEM post-quantum key encapsulation](ml-kem.md) — the post-quantum key-agreement companion.
-- <xref:Bodu.Security.Cryptography.MLDsa>, <xref:Bodu.Security.Cryptography.MLDsa44>, <xref:Bodu.Security.Cryptography.MLDsa65>, <xref:Bodu.Security.Cryptography.MLDsa87> — API reference.
+- [Asymmetric algorithms overview](asymmetric-overview.md) - where ML-DSA sits in the family.
+- [Signatures with Ed25519](signatures-ed25519.md) - the compact classic signature counterpart.
+- [ML-KEM post-quantum key encapsulation](ml-kem.md) - the post-quantum key-agreement companion.
+- <xref:Bodu.Security.Cryptography.MLDsa>, <xref:Bodu.Security.Cryptography.MLDsa44>, <xref:Bodu.Security.Cryptography.MLDsa65>, <xref:Bodu.Security.Cryptography.MLDsa87> - API reference.

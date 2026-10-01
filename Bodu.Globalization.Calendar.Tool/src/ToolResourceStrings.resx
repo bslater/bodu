@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Usage" xml:space="preserve">
-    <value>bodu-calendar — compile and lint Bodu notable-date rule packs
+    <value>bodu-calendar - compile and lint Bodu notable-date rule packs
 
 Usage:
   bodu-calendar lint &lt;file.xml|file.json&gt; [--resolver-dir &lt;dir&gt;]
@@ -94,10 +94,10 @@ Exit codes: 0 success, 1 validation or input failure, 2 usage error.</value>
     <value>Unsupported document extension '{0}': expected .xml or .json.</value>
   </data>
   <data name="Lint_Clean" xml:space="preserve">
-    <value>{0}: OK — resource '{1}' is valid ({2} diagnostic(s)).</value>
+    <value>{0}: OK - resource '{1}' is valid ({2} diagnostic(s)).</value>
   </data>
   <data name="Lint_Failed" xml:space="preserve">
-    <value>{0}: FAILED — {1} error(s), {2} total diagnostic(s).</value>
+    <value>{0}: FAILED - {1} error(s), {2} total diagnostic(s).</value>
   </data>
   <data name="Compile_Succeeded" xml:space="preserve">
     <value>Compiled '{0}' -&gt; {1} ({2} bytes, sha256 {3}).</value>

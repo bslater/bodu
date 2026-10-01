@@ -18,8 +18,8 @@ public sealed partial class TomlDocumentReaderTests
     /// </summary>
     /// <returns>One <c>[DynamicData]</c> row per malformed-input scenario.</returns>
     /// <remarks>
-    /// The catalogue sweeps the grammar dimensions — key/value structure, strings and escapes, numbers, date-times,
-    /// tables, arrays, inline tables, and comments — to confirm that each documented rejection rule fires. The rows
+    /// The catalogue sweeps the grammar dimensions - key/value structure, strings and escapes, numbers, date-times,
+    /// tables, arrays, inline tables, and comments - to confirm that each documented rejection rule fires. The rows
     /// are derived from the TOML v1.0.0 grammar.
     /// </remarks>
     public static IEnumerable<object[]> MalformedDocuments()

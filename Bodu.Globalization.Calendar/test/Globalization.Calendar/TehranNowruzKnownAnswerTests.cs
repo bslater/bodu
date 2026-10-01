@@ -10,8 +10,8 @@ using Bodu.Globalization.Calendar.Algorithms;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the <c>tehran-nowruz</c> observation-based algorithm — Nowruz from the true vernal-equinox instant at the
-/// Tehran standard meridian — against published Solar Hijri new-year dates and against the astronomical
+/// Verifies the <c>tehran-nowruz</c> observation-based algorithm - Nowruz from the true vernal-equinox instant at the
+/// Tehran standard meridian - against published Solar Hijri new-year dates and against the astronomical
 /// <see cref="PersianCalendar" /> as a reference oracle.
 /// </summary>
 [TestClass]
@@ -42,7 +42,7 @@ public sealed class TehranNowruzKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies that a year outside the supported 1800–2200 window yields no date rather than an unreliable guess.
+    /// Verifies that a year outside the supported 1800-2200 window yields no date rather than an unreliable guess.
     /// </summary>
     /// <param name="year">The unsupported Gregorian year.</param>
     [TestMethod]
@@ -95,7 +95,7 @@ public sealed class TehranNowruzKnownAnswerTests
 
     /// <summary>
     /// Verifies that across the entire supported window the calculator agrees with the astronomical
-    /// <see cref="PersianCalendar" /> — which implements the same true-equinox / Tehran apparent-noon rule — on the
+    /// <see cref="PersianCalendar" /> - which implements the same true-equinox / Tehran apparent-noon rule - on the
     /// Gregorian date of Farvardin 1, so the two implementations pin each other year by year.
     /// </summary>
     [TestMethod]

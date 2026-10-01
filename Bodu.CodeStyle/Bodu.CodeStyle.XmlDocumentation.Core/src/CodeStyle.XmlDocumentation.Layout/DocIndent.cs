@@ -101,7 +101,7 @@ internal static class DocIndent
                 // CDATA open / close delimiter on its own line, or a line that begins with `<![CDATA[`
                 // (with body on the same line): omit the space between the documentation prefix and the
                 // delimiter so the round-trip preserves the Bodu convention of `///<![CDATA[` and `///]]>`
-                // (no space, tightly attached). The no-space form is required by BODU1405 — any whitespace
+                // (no space, tightly attached). The no-space form is required by BODU1405 - any whitespace
                 // between `///` and `<![CDATA[` trips that rule.
                 result.Append(prefixNoTrailingSpace);
                 result.Append(content);
@@ -128,7 +128,7 @@ internal static class DocIndent
     /// </returns>
     private static bool IsCDataDelimiterLine(string content)
     {
-        // Only treat a line as a CDATA delimiter when it's the open or close marker alone — anything else
+        // Only treat a line as a CDATA delimiter when it's the open or close marker alone - anything else
         // (single-line `<![CDATA[var x = 5;]]>` embedded in prose, or an unrelated string that happens to
         // start with `<![`) gets the normal `/// ` prefix.
         return string.Equals(content, "<![CDATA[", StringComparison.Ordinal)

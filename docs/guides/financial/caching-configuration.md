@@ -8,7 +8,7 @@ The caching layer binds four option types from one configuration subtree rooted 
 `Financial:RateCache`. This page lays out that tree: which registration binds which section into
 which type, every key with its default, a complete JSON example per backend, and the lifetimes
 and thread-safety guarantees of the singletons those registrations create. For what the cache
-*does* — expiry, coverage, stacking, aggregation strategies — see
+*does* - expiry, coverage, stacking, aggregation strategies - see
 [Caching and aggregating exchange rates](exchange-rate-caching.md); for the providers underneath,
 see [Configuring providers from appsettings](provider-configuration.md).
 
@@ -21,9 +21,9 @@ see [Configuring providers from appsettings](provider-configuration.md).
 | `Financial:RateCache:Distributed` | <xref:Bodu.Financial.ExchangeRates.Caching.DistributedRateCacheOptions> | `AddDistributedRateCache` / `AddRedisRateCache` | one named instance per provider name, same section |
 | `Financial:RateCacheWarmup` | <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions> | `AddRateCacheWarmup` | one unnamed instance |
 
-Every registration takes the same trailing parameters — `IConfiguration? configuration`,
+Every registration takes the same trailing parameters - `IConfiguration? configuration`,
 `string sectionName` (the default above), and an `Action<TOptions>? configure` that runs after
-binding — and validates the bound options on start through the type's `TryValidate`. Pass the
+binding - and validates the bound options on start through the type's `TryValidate`. Pass the
 same `builder.Configuration` to each call and the whole tree is read from one place:
 
 ```csharp
@@ -43,10 +43,10 @@ builder.Services
 
 The nested sections are deliberate: `Financial:RateCache` describes the *policy* (expiry,
 logging, stampede protection) that every backend shares, while `Financial:RateCache:Sqlite` and
-`Financial:RateCache:Distributed` describe the *storage* — so a configuration file that names a
+`Financial:RateCache:Distributed` describe the *storage* - so a configuration file that names a
 SQLite path does not have to repeat the policy, and switching backends changes one subsection.
 
-## Pattern 1 — `Financial:RateCache` and `CachingRateOptions`
+## Pattern 1 - `Financial:RateCache` and `CachingRateOptions`
 
 Every key below binds, shown at its default. Durations are `TimeSpan` strings
 (`d.hh:mm:ss`), log levels are `Microsoft.Extensions.Logging.LogLevel` names:
@@ -84,8 +84,8 @@ Every key below binds, shown at its default. Durations are `TimeSpan` strings
 | `RefreshAheadFraction` | `0` | Fraction in `[0, 1)` of the expiry after which a hit also schedules one background refresh (stale-while-revalidate). |
 | `*LogLevel` | see block | The level of each cache event; `None` suppresses it. |
 
-`DefaultLookupOptions` — the <xref:Bodu.Financial.ExchangeRates.RateLookupOptions> the
-*timeless* surface applies — is not configuration-bindable (its members are read-only) and
+`DefaultLookupOptions` - the <xref:Bodu.Financial.ExchangeRates.RateLookupOptions> the
+*timeless* surface applies - is not configuration-bindable (its members are read-only) and
 stays at `RateLookupOptions.Exact` whatever the section says. Set it, like anything the binder
 cannot express, in the `configure` callback:
 
@@ -109,11 +109,11 @@ builder.Services
 > one policy object. Use `ProviderExpiry` for per-provider expiry; there is no per-provider
 > section.
 
-## Pattern 2 — `Financial:RateCache:Sqlite` and `SqliteRateCacheOptions`
+## Pattern 2 - `Financial:RateCache:Sqlite` and `SqliteRateCacheOptions`
 
 `AddSqliteRateCache("RBA", configuration)` binds the section into a **named** options instance
 (`"RBA"`), sets `Provider` to that name after binding, validates, and registers a
-<xref:Bodu.Financial.ExchangeRates.Caching.SqliteRateCache> keyed by the name — exposed as the
+<xref:Bodu.Financial.ExchangeRates.Caching.SqliteRateCache> keyed by the name - exposed as the
 keyed `IRateCache` for `"RBA"` and, for the first cache registered, as the default `IRateCache`.
 The cached provider then picks it up through `cacheFactory`:
 
@@ -157,11 +157,11 @@ builder.Services
 | `Provider` | set by the registration | Do not put it in the section: whatever is bound is overwritten with the registration's provider name. |
 
 Because every name binds the *same* section, several providers naturally share one database
-file — the intended layout: rows are keyed by provider, so `AddSqliteRateCache("RBA", …)` and
+file - the intended layout: rows are keyed by provider, so `AddSqliteRateCache("RBA", …)` and
 `AddSqliteRateCache("ECB", …)` partition cleanly inside `fx.db`. Give one provider a different
 file through its `configure` callback, which runs after binding for that name only.
 
-## Pattern 3 — `Financial:RateCache:Distributed` and `DistributedRateCacheOptions`
+## Pattern 3 - `Financial:RateCache:Distributed` and `DistributedRateCacheOptions`
 
 The distributed backend stores each pair as one blob in whatever `IDistributedCache` the host
 has registered. `AddRedisRateCache` registers the Redis `IDistributedCache` first and then
@@ -218,7 +218,7 @@ builder.Services
 
 | Key | Default | Meaning |
 |---|---|---|
-| `KeyPrefix` | `null` (omit the key) | Prepended verbatim to every key so unrelated tenants of one store cannot collide; unset, keys begin with the provider name. A non-null, all-white-space value fails validation — and a JSON `null` binds as an **empty string**, which is exactly that, so leave the key out of the section rather than writing `"KeyPrefix": null`. |
+| `KeyPrefix` | `null` (omit the key) | Prepended verbatim to every key so unrelated tenants of one store cannot collide; unset, keys begin with the provider name. A non-null, all-white-space value fails validation - and a JSON `null` binds as an **empty string**, which is exactly that, so leave the key out of the section rather than writing `"KeyPrefix": null`. |
 | `EntryExpirationMargin` | 1 h | Every blob is stamped with a server-side lifetime of the caching duration plus this margin, so an idle pair self-evicts. `null` disables server-side expiry. Non-negative. |
 | `ThrowOnStorageFailure` / `ValidateStorageOnStart` | `false` | As for SQLite. |
 | `Provider` | set by the registration | As for SQLite. |
@@ -230,7 +230,7 @@ builder.Services
 > it as the shared L1 tier of a [stack](exchange-rate-caching.md#stacking-providers-tiered-read-through);
 > give each source its own SQLite or file cache when you need one cache per provider.
 
-## Pattern 4 — warming the cache at startup
+## Pattern 4 - warming the cache at startup
 
 `AddRateCacheWarmup` binds `Financial:RateCacheWarmup` and registers a hosted service that runs
 once when the host starts. It warms every provider registered through `AddCachedRateProvider`
@@ -266,7 +266,7 @@ builder.Services
 | `StartDate` / `EndDate` | `null` | Fixed overrides for either end of the window (`yyyy-MM-dd`); `EndDate` must not precede `StartDate`. |
 | `Providers` | `[]` | Names of aggregation children (keyed `IDatedRateProvider` registrations) to warm in addition to the unkeyed cached providers. |
 
-## Pattern 5 — aggregation
+## Pattern 5 - aggregation
 
 Aggregation is configured in code, not from a section: `AddAggregatedRateProvider` builds the
 <xref:Bodu.Financial.ExchangeRates.Caching.RateAggregationOptions> from the builder calls, and
@@ -289,9 +289,9 @@ builder.Services
         builder.Configuration);                                              // Financial:RateCache for the children
 ```
 
-The DI builder sets only `DefaultStrategy` and `Routes`. The remaining members — the default
+The DI builder sets only `DefaultStrategy` and `Routes`. The remaining members - the default
 provider order, `RespectHistoryAvailability`, the timeless surface's `DefaultLookupOptions`, and
-the three log levels — keep their defaults under DI. To tune them, construct the aggregator
+the three log levels - keep their defaults under DI. To tune them, construct the aggregator
 yourself and register the instance with `AddDatedExchangeRateProvider`:
 
 ```csharp
@@ -376,8 +376,8 @@ provider it wraps, because the container owns that too.
 the decorator; every backend serializes writes to a pair under a per-pair lock (SQLite adds a
 transaction per write, so the guarantee holds across processes sharing the file), so two threads
 missing the same pair never interleave a half-written row with its coverage. Request coalescing
-is deliberately left to the inner provider — every shipped web provider already single-flights
-its downloads — so concurrent misses collapse onto one fetch at the origin rather than at the
+is deliberately left to the inner provider - every shipped web provider already single-flights
+its downloads - so concurrent misses collapse onto one fetch at the origin rather than at the
 cache. Refresh-ahead bookkeeping is shared: concurrent aged hits join one pending background
 refresh instead of each scheduling their own. The only caveat is the distributed backend, whose
 read-merge-write cycle is atomic per process but last-write-wins *across* processes, as the
@@ -398,8 +398,8 @@ All six live in the `Bodu.Financial.ExchangeRates` namespace, on `IFinancialServ
 
 ## Where to go next
 
-- [Caching and aggregating exchange rates](exchange-rate-caching.md) — expiry, coverage, stacking, strategies, observability.
-- [Configuring providers from appsettings](provider-configuration.md) — the `Financial:<Source>` sections underneath the cache.
-- [Financial dependency injection](dependency-injection.md) — the builder these registrations compose on.
-- [Testing your own provider](testing-providers.md) — `NullRateCache` and fixed providers for tests that must not cache.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic.
+- [Caching and aggregating exchange rates](exchange-rate-caching.md) - expiry, coverage, stacking, strategies, observability.
+- [Configuring providers from appsettings](provider-configuration.md) - the `Financial:<Source>` sections underneath the cache.
+- [Financial dependency injection](dependency-injection.md) - the builder these registrations compose on.
+- [Testing your own provider](testing-providers.md) - `NullRateCache` and fixed providers for tests that must not cache.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic.

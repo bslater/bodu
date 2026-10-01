@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Represents a TOML configuration source — either a one-shot <see cref="System.IO.Stream" /> or a file path — that
+/// Represents a TOML configuration source - either a one-shot <see cref="System.IO.Stream" /> or a file path - that
 /// produces a read-only <see cref="TomlConfigurationProvider" />.
 /// </summary>
 /// <remarks>

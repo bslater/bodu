@@ -12,7 +12,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// ISO 4217 numeric code <c>196</c>; minor-unit precision <c>2</c>.
-/// Historic — demonetized on 2008-01-31, replaced by EUR.
+/// Historic - demonetized on 2008-01-31, replaced by EUR.
 /// </remarks>
 public sealed class CYP : ICurrency
 {
@@ -37,7 +37,7 @@ public sealed class CYP : ICurrency
     /// <summary>
     /// Gets a value indicating that the currency has been demonetized.
     /// </summary>
-    /// <value><see langword="true" /> — this is a historic currency.</value>
+    /// <value><see langword="true" /> - this is a historic currency.</value>
     public static bool IsHistoric => true;
 
     /// <summary>

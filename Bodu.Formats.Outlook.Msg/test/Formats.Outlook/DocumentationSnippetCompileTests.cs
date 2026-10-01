@@ -112,7 +112,7 @@ public sealed class DocumentationSnippetCompileTests
 
     /// <summary>
     /// Compiles a snippet as the body of a method and returns the error diagnostics. Leading <c>using</c> directive
-    /// lines are dropped first — guide snippets often show them for context, but the wrapper method already imports
+    /// lines are dropped first - guide snippets often show them for context, but the wrapper method already imports
     /// the covered namespaces.
     /// </summary>
     /// <param name="snippet">The snippet body (method-body statements, optionally preceded by using directives).</param>

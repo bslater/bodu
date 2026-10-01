@@ -67,7 +67,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that a short single-line <c>&lt;summary&gt;</c> on a non-field member (here a method) still
-    /// expands to the multiline block form — the field rule does not affect other member kinds.
+    /// expands to the multiline block form - the field rule does not affect other member kinds.
     /// </summary>
     [TestMethod]
     public void Format_WhenMethodSummaryIsShortSingleLine_ShouldExpandToMultiline()
@@ -90,7 +90,7 @@ public partial class XmlDocFormatterTests
     /// <summary>
     /// Verifies that with <see cref="XmlDocFormatOptions.KeepFieldSummaryOnSingleLine" /> enabled a field
     /// <c>&lt;summary&gt;</c> whose content exceeds the width budget is kept on a single line rather than expanded
-    /// to the multiline block form — the contrast case to
+    /// to the multiline block form - the contrast case to
     /// <see cref="Format_WhenFieldSummaryExceedsWidth_ShouldExpandToMultiline" />.
     /// </summary>
     [TestMethod]

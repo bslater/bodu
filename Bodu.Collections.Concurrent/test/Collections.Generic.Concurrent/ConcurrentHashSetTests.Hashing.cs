@@ -73,8 +73,8 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that elements whose hash codes are extreme — including <see cref="int.MinValue" />, whose magnitude
-    /// cannot be negated — are mapped to valid buckets and retrieved correctly.
+    /// Verifies that elements whose hash codes are extreme - including <see cref="int.MinValue" />, whose magnitude
+    /// cannot be negated - are mapped to valid buckets and retrieved correctly.
     /// </summary>
     [TestMethod]
     public void Hashing_WhenHashCodesAreExtreme_ShouldStoreAndRetrieveEveryElement()

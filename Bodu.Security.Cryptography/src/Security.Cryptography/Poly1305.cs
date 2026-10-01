@@ -33,7 +33,8 @@ namespace Bodu.Security.Cryptography;
 /// accumulator is finalized by adding the second half of the key <c>s</c> and serializing the result as the final MAC
 /// tag. The arithmetic runs on three 64-bit limbs with 128-bit products, straight from the caller's buffers, and takes
 /// the same time for every message of a given length. On x64 processors with AVX2, runs of 512 bytes or more are
-/// absorbed four or eight blocks at a time in vector registers, over 26-bit limbs, to the same result.
+/// absorbed four or eight blocks at a time in vector registers, and on ARM64 runs of 256 bytes or more, 128 or more on
+/// Apple silicon, two at a time, over 26-bit limbs, to the same result.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -44,7 +45,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// Key size: 256 bits (32 bytes) — first half is clamped to <c>r</c>, second half is the nonce-derived <c>s</c>.
+/// Key size: 256 bits (32 bytes) - first half is clamped to <c>r</c>, second half is the nonce-derived <c>s</c>.
 /// </description>
 /// </item>
 /// <item>
@@ -61,7 +62,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>When to choose Poly1305.</strong> Reach for Poly1305 when implementing or extending a Poly1305-based AEAD
 /// (ChaCha20-Poly1305 in TLS 1.3, SSH, WireGuard, Noise) or when authenticating a single message with a fresh
 /// per-message key derived from a stream cipher. For multi-message keyed authentication use HMAC-SHA-256,
-/// <see cref="Blake2b" />-MAC, or <see cref="SipHash64" /> / <see cref="SipHash128" /> — none of which share Poly1305's
+/// <see cref="Blake2b" />-MAC, or <see cref="SipHash64" /> / <see cref="SipHash128" /> - none of which share Poly1305's
 /// one-time-key restriction.
 /// </para>
 /// <note type="important">This algorithm is a <b>one-time authenticator</b> and must <b>not</b> be used with the same
@@ -74,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // The 32-byte key MUST be unique per message — typically derived from a stream cipher's keystream.
+/// // The 32-byte key MUST be unique per message - typically derived from a stream cipher's keystream.
 /// byte[] oneTimeKey = DerivePoly1305KeyFromChaCha20(sessionKey, nonce);
 /// using var poly = new Poly1305 { Key = oneTimeKey };
 /// byte[] tag = poly.ComputeHash(message);
@@ -96,7 +97,7 @@ public sealed class Poly1305
     /// <summary>Indicates whether <c>ProcessFinalBlock</c> has run for the currently-assigned key.</summary>
     /// <remarks>
     /// Once set, the instance must not accept further blocks or finalize again until the caller explicitly assigns a
-    /// fresh Key — Poly1305 is a one-time MAC and reusing a (key, accumulator) pair across messages enables forgery.
+    /// fresh Key - Poly1305 is a one-time MAC and reusing a (key, accumulator) pair across messages enables forgery.
     /// </remarks>
     private bool _finalized;
 
@@ -135,7 +136,7 @@ public sealed class Poly1305
     /// The framework-invoked automatic re-initialization that occurs at the end of
     /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related APIs is tolerated so that callers can read
     /// <see cref="HashAlgorithm.Hash" /> without tripping the key-set guard. However, explicit reuse of a finalized
-    /// instance — for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])" /> call — is rejected by the
+    /// instance - for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])" /> call - is rejected by the
     /// inherited finalized-state guard on frameworks prior to .NET 6. A fresh instance should be created for each
     /// message.
     /// </para>
@@ -258,13 +259,13 @@ public sealed class Poly1305
         byte[] tag = new byte[Poly1305Core.TagBytes];
         _core.Finish(tag);
 
-        // Mark the instance as finalized so subsequent HashCore / ProcessFinalBlock calls — and the next
-        // ComputeHash after the framework's automatic re-initialization — are rejected. The guard is
+        // Mark the instance as finalized so subsequent HashCore / ProcessFinalBlock calls - and the next
+        // ComputeHash after the framework's automatic re-initialization - are rejected. The guard is
         // unconditional across all target frameworks because Poly1305's one-time-key contract is not defended
         // by HashAlgorithm.State alone (Initialize resets State to 0 after every ComputeHash).
         _finalized = true;
 
-        // Key material is no longer needed — zero it immediately to enforce Poly1305's one-time-use
+        // Key material is no longer needed - zero it immediately to enforce Poly1305's one-time-use
         // guarantee and limit key exposure in memory. The buffer is retained (not nullified) so the
         // framework's automatic re-initialization at the end of ComputeHash does not trip the
         // key-set check in Initialize.

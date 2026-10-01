@@ -12,7 +12,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// ISO 4217 numeric code <c>795</c>; minor-unit precision <c>0</c>.
-/// Historic — demonetized on 2009-01-01, replaced by TMT.
+/// Historic - demonetized on 2009-01-01, replaced by TMT.
 /// </remarks>
 public sealed class TMM : ICurrency
 {
@@ -37,7 +37,7 @@ public sealed class TMM : ICurrency
     /// <summary>
     /// Gets a value indicating that the currency has been demonetized.
     /// </summary>
-    /// <value><see langword="true" /> — this is a historic currency.</value>
+    /// <value><see langword="true" /> - this is a historic currency.</value>
     public static bool IsHistoric => true;
 
     /// <summary>

@@ -38,8 +38,8 @@ public static class FinancialJsonSerializerOptionsExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The core <c>Bodu.Financial</c> types carry no <c>[JsonConverter]</c> attribute — the library is
-    /// serialization-agnostic — so this call is required for <see cref="Bodu.Financial.Money" />,
+    /// The core <c>Bodu.Financial</c> types carry no <c>[JsonConverter]</c> attribute - the library is
+    /// serialization-agnostic - so this call is required for <see cref="Bodu.Financial.Money" />,
     /// <see cref="Bodu.Financial.Money{TCurrency}" />, <see cref="Bodu.Financial.MoneyBag" />,
     /// <see cref="Bodu.Financial.ExchangeRates.ExchangeRate" />, and
     /// <see cref="Bodu.Financial.ExchangeRates.CurrencyPair" /> to round-trip through their canonical shapes.
@@ -51,8 +51,8 @@ public static class FinancialJsonSerializerOptionsExtensions
     /// </para>
     /// <para>
     /// All three policies preserve monetary precision on round-trip: a <see cref="Bodu.Financial.Money" /> carrying an
-    /// explicit minor-unit scale (a unit price) persists that scale — via a <c>scale</c> property in the object shapes
-    /// and via the printed fractional digits in the compact form — and a <see cref="Bodu.Financial.CalculatedMoney" />
+    /// explicit minor-unit scale (a unit price) persists that scale - via a <c>scale</c> property in the object shapes
+    /// and via the printed fractional digits in the compact form - and a <see cref="Bodu.Financial.CalculatedMoney" />
     /// serializes its full unrounded amount verbatim.
     /// </para>
     /// </remarks>

@@ -81,7 +81,7 @@ internal static class MoneyMath
     /// <param name="ratios">The validated, non-negative weights; at least one must be strictly positive.</param>
     /// <returns>
     /// The per-ratio amounts in major units. Residual minor units are distributed by the largest-remainder (Hamilton)
-    /// method — each slot receives one extra unit in descending order of its fractional remainder, ties broken by
+    /// method - each slot receives one extra unit in descending order of its fractional remainder, ties broken by
     /// stable input order. Zero-ratio slots never receive residual.
     /// </returns>
     /// <remarks>
@@ -175,7 +175,7 @@ internal static class MoneyMath
         // always pass a value already rounded to minorUnits precision, so scale <= minorUnits and the exponent is
         // non-negative. The divide branch only fires for a value carrying spurious trailing-zero scale and would
         // truncate excess precision, so this assert documents (and, in debug builds, enforces) the invariant that
-        // the value is pre-rounded — a violation is a caller bug, not a silently-truncated wrong answer.
+        // the value is pre-rounded - a violation is a caller bug, not a silently-truncated wrong answer.
         System.Diagnostics.Debug.Assert(
             scale <= minorUnits,
             "ToMinorUnits expects an amount already rounded to minorUnits precision (scale <= minorUnits).");

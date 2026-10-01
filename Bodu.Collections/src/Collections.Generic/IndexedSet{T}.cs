@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents an index-addressable unique list — an insertion-ordered collection of unique elements that exposes the
+/// Represents an index-addressable unique list - an insertion-ordered collection of unique elements that exposes the
 /// full <see cref="IList{T}" /> contract.
 /// </summary>
 /// <typeparam name="T">The type of elements in the set. Elements must not be <see langword="null" />.</typeparam>
@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic;
 /// used as backing storage.
 /// </para>
 /// <para>
-/// Use <see cref="IndexedSet{T}" /> when callers need positional mutation — <see cref="Insert" />,
+/// Use <see cref="IndexedSet{T}" /> when callers need positional mutation - <see cref="Insert" />,
 /// <see cref="RemoveAt" />, <see cref="Move" />, or the indexer setter. Use <see cref="OrderedSet{T}" /> when the
 /// public surface is conceptually a set and indices exist only as a read-only view onto insertion order.
 /// </para>
@@ -38,7 +38,7 @@ namespace Bodu.Collections.Generic;
 /// playlist.Add("Intro");
 /// playlist.Add("Verse");
 /// playlist.Add("Chorus");
-/// bool added = playlist.Add("verse"); // false — already present under case-insensitive comparer
+/// bool added = playlist.Add("verse"); // false - already present under case-insensitive comparer
 ///
 /// playlist.Insert(0, "Cold Open");    // positional insertion preserves uniqueness
 /// playlist.Move(oldIndex: 1, newIndex: 3);

@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Threefish-512.</strong> The most common Threefish width — the wider 512-bit block lifts the
+/// <strong>When to choose Threefish-512.</strong> The most common Threefish width - the wider 512-bit block lifts the
 /// birthday bound to <c>~2<sup>256</sup></c> blocks, removing the SWEET32-style concerns that 64-bit and 128-bit block
 /// ciphers run into when re-used heavily under one key. A natural fit when building Skein-style constructions
 /// (Skein-512 wraps this engine under the UBI mode). Use <see cref="Threefish256" /> when the smaller block matches the

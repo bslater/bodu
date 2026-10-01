@@ -43,7 +43,7 @@ public record KeyedAlgorithmSpecification
     public bool AcceptsVariableLengthKeys => MinKeyLength != MaxKeyLength;
 
     /// <summary>
-    /// Returns all key lengths that should be accepted by the algorithm — either the explicit
+    /// Returns all key lengths that should be accepted by the algorithm - either the explicit
     /// <see cref="ValidKeyLengths" /> list, or every length between <see cref="MinKeyLength" /> and
     /// <see cref="MaxKeyLength" /> inclusive when no explicit list is provided.
     /// </summary>
@@ -53,7 +53,7 @@ public record KeyedAlgorithmSpecification
             : Enumerable.Range(MinKeyLength, MaxKeyLength - MinKeyLength + 1);
 
     /// <summary>
-    /// Returns a representative set of key lengths that should be rejected by the algorithm — lengths just outside the
+    /// Returns a representative set of key lengths that should be rejected by the algorithm - lengths just outside the
     /// valid range, useful for negative testing.
     /// </summary>
     /// <remarks>

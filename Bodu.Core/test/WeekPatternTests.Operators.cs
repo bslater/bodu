@@ -261,9 +261,9 @@ public partial class WeekPatternTests
         var b = new WeekPattern(DayOfWeek.Wednesday, DayOfWeek.Friday);
         WeekPattern result = a ^ b;
 
-        Assert.IsTrue(result.Contains(DayOfWeek.Monday), "Monday appears only in a — should be retained.");
-        Assert.IsFalse(result.Contains(DayOfWeek.Wednesday), "Wednesday appears in both — should be cancelled.");
-        Assert.IsTrue(result.Contains(DayOfWeek.Friday), "Friday appears only in b — should be retained.");
+        Assert.IsTrue(result.Contains(DayOfWeek.Monday), "Monday appears only in a - should be retained.");
+        Assert.IsFalse(result.Contains(DayOfWeek.Wednesday), "Wednesday appears in both - should be cancelled.");
+        Assert.IsTrue(result.Contains(DayOfWeek.Friday), "Friday appears only in b - should be retained.");
     }
 
 }

@@ -24,17 +24,17 @@
 
   <NotableDates>
 
-    <!-- Madaraka Day — 1 June, marking the 1963 attainment of internal self-rule. Strategy: Fixed day-of-month. -->
+    <!-- Madaraka Day - 1 June, marking the 1963 attainment of internal self-rule. Strategy: Fixed day-of-month. -->
     <NotableDate id="madaraka-day" displayName="Madaraka Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ke"><Applicability><Territory code="KE" /></Applicability><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Mashujaa Day (Heroes' Day) — 20 October, honoring those who contributed to independence. Strategy: Fixed day-of-month. -->
+    <!-- Mashujaa Day (Heroes' Day) - 20 October, honoring those who contributed to independence. Strategy: Fixed day-of-month. -->
     <NotableDate id="mashujaa-day" displayName="Mashujaa Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ke"><Applicability><Territory code="KE" /></Applicability><Strategy><Fixed month="October" day="20" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Jamhuri Day — 12 December, marking the 1963 republic. Strategy: Fixed day-of-month. -->
+    <!-- Jamhuri Day - 12 December, marking the 1963 republic. Strategy: Fixed day-of-month. -->
     <NotableDate id="jamhuri-day" displayName="Jamhuri Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ke"><Applicability><Territory code="KE" /></Applicability><Strategy><Fixed month="December" day="12" /></Strategy></Rule></Rules>
     </NotableDate>

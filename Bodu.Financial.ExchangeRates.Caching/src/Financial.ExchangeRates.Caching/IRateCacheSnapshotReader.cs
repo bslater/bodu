@@ -14,15 +14,15 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// A range lookup needs the pair's coverage first and its rows only on a coverage hit. For a backend that persists both
-/// halves together — the in-memory and file caches' single per-pair state, or the distributed cache's single per-pair
-/// blob — answering those as two separate calls reads and deserializes the same state twice. Implementing this seam
+/// halves together - the in-memory and file caches' single per-pair state, or the distributed cache's single per-pair
+/// blob - answering those as two separate calls reads and deserializes the same state twice. Implementing this seam
 /// lets the decorator read once: the snapshot carries the <em>raw, unfiltered</em> rows (so a coverage miss pays no
 /// freshness filtering) together with the freshness-evaluated coverage, and the decorator applies
 /// <see cref="RateCacheRules.SelectFresh" /> to the rows only when the window is actually served.
 /// </para>
 /// <para>
-/// The seam is deliberately optional. A backend whose halves are independently addressable — the SQLite cache's two
-/// tables — is <em>better off without it</em>: its coverage-first probe reads the rows only on a hit, which an eager
+/// The seam is deliberately optional. A backend whose halves are independently addressable - the SQLite cache's two
+/// tables - is <em>better off without it</em>: its coverage-first probe reads the rows only on a hit, which an eager
 /// combined read would forfeit. The decorator falls back to the standard <see cref="IRateCache" /> calls for any cache
 /// that does not implement the seam, so third-party backends are unaffected.
 /// </para>

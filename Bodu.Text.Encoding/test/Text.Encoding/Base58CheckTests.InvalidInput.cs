@@ -15,7 +15,7 @@ namespace Bodu.Text.Encoding;
 public sealed class Base58CheckTests_InvalidInput
 {
     /// <summary>
-    /// The 21-byte Bitcoin Genesis block payload (version byte plus HASH-160 of Satoshi's public key) — kept in
+    /// The 21-byte Bitcoin Genesis block payload (version byte plus HASH-160 of Satoshi's public key) - kept in
     /// sync with the constant in <see cref="Base58CheckTests" />.
     /// </summary>
     private static readonly byte[] GenesisPayload =

@@ -30,7 +30,7 @@ public sealed partial class XChaCha20Tests
             KnownAnswers = KeystreamKnownAnswers,
         };
 
-    // ── draft-irtf-cfrg-xchacha §2.2.1 — HChaCha20 block function ─────────────────────────────
+    // ── draft-irtf-cfrg-xchacha §2.2.1 - HChaCha20 block function ─────────────────────────────
     //
     // The canonical draft vector plus the libsodium tv_hchacha20 corpus. The HChaCha20 sub-primitive maps
     // key × nonce16 → subkey, so each row carries the input nonce in Nonce and the derived 256-bit subkey in
@@ -70,7 +70,7 @@ public sealed partial class XChaCha20Tests
         },
     ];
 
-    // ── draft-irtf-cfrg-xchacha Appendix A.2 — XChaCha20 stream cipher ────────────────────────
+    // ── draft-irtf-cfrg-xchacha Appendix A.2 - XChaCha20 stream cipher ────────────────────────
     //
     // The first 304 keystream bytes for counter 0 and counter 1.
     // Source: draft-irtf-cfrg-xchacha Appendix A.2.1 / A.2.2.

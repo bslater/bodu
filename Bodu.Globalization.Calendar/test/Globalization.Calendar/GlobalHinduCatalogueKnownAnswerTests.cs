@@ -34,9 +34,9 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
 
     /// <summary>
     /// Verifies that each Hindu observance resolves to the engine-pinned vector date across the full fifty-year sweep
-    /// (Gregorian 1990-2039). The vectors freeze the catalogue's current output as a regression baseline — braced by
+    /// (Gregorian 1990-2039). The vectors freeze the catalogue's current output as a regression baseline - braced by
     /// the independent tithi-proximity and seasonal-window checks recorded in the vector file's provenance header and
-    /// by the published-panchanga rows in this class — so an unintended change to the lunisolar model surfaces as a
+    /// by the published-panchanga rows in this class - so an unintended change to the lunisolar model surfaces as a
     /// diff rather than passing silently.
     /// </summary>
     /// <param name="kat">The vector row carrying the (year, observance) input and the expected date.</param>
@@ -119,7 +119,7 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     [DataRow(2025, "diwali", 10, 21)]
 
     // Ingress-day lunation anchors: in each of these years a new moon falls on a sidereal ingress day, so a
-    // start-of-day sun-sign read misclassifies it and fabricates a phantom adhika month one lunation early —
+    // start-of-day sun-sign read misclassifies it and fabricates a phantom adhika month one lunation early -
     // 1991 and 2010 push Ram Navami into adhika Vaishakha (engine read 22 April), 2009 pushes Diwali a lunation
     // late (engine read 16 November). Published dates per panchanga, confirmed by the calcal reference corpus.
     [DataRow(1991, "ram-navami", 3, 24)]

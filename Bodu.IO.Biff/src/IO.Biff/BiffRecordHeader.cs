@@ -14,8 +14,8 @@ namespace Bodu.IO.Biff;
 /// </summary>
 /// <remarks>
 /// <see cref="BiffReader" /> parses a header for every record it frames and exposes the current one as <see
-/// cref="BiffReader.Header" />; the type is public so a caller framing records itself — a stream scanner skipping
-/// payloads, for example — shares the same layout. <see cref="Length" /> is the declared payload length, which a
+/// cref="BiffReader.Header" />; the type is public so a caller framing records itself - a stream scanner skipping
+/// payloads, for example - shares the same layout. <see cref="Length" /> is the declared payload length, which a
 /// conformant writer keeps within <see cref="BiffLimits.GetMaxPayloadLength(BiffVersion)" />.
 /// </remarks>
 /// <param name="Id">The 16-bit record identifier.</param>

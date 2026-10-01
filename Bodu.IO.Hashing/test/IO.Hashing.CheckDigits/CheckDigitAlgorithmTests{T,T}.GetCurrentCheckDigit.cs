@@ -10,7 +10,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
 
     /// <summary>
-    /// Verifies that reading the current check digit twice in succession — with no intervening appends — yields
+    /// Verifies that reading the current check digit twice in succession - with no intervening appends - yields
     /// the same value, proving the getter is non-destructive.
     /// </summary>
     [TestMethod]

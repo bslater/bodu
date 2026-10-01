@@ -1,13 +1,13 @@
 # Bodu.Financial.ExchangeRates.Ecb
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **European
 Central Bank's** published euro foreign-exchange reference rates.
 
 It downloads the ECB `eurofxref` XML feeds, parses them, and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
-and `IRateProvider` contracts — so it composes with `Money.ConvertTo`,
+and `IRateProvider` contracts - so it composes with `Money.ConvertTo`,
 the caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
@@ -50,7 +50,7 @@ foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
   extends to the latest business day, each is refreshed on a TTL.
 - **Configuration.** `EcbRateProviderOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`. The provider's connection to the ECB is grouped under
-  its `Endpoint` (`EcbEndpointOptions`) — base URL, HTTP timeout, and user-agent — so the
+  its `Endpoint` (`EcbEndpointOptions`) - base URL, HTTP timeout, and user-agent - so the
   feeds can be pointed at a mirror or proxy without touching caching or feed selection. See
   the package's own `AddEcbExchangeRates` registration in the `Bodu.Financial.ExchangeRates` namespace.
 
@@ -58,10 +58,10 @@ foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new EcbRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+- `new EcbRateProvider(options, ...)` - the provider builds, owns, and disposes its own
   `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured user agent
   and timeout. Dispose the provider (for example with `using`) to release the client.
-- `new EcbRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new EcbRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
@@ -73,7 +73,7 @@ constructor, or let the `*.DependencyInjection` package wire one for you (catego
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 
 The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
-Azure SDK — the completed download is the one `Information` line per fetch, payload detail
+Azure SDK - the completed download is the one `Information` line per fetch, payload detail
 is `Trace`, and degraded paths are `Warning`. Every level is individually configurable on
 `EcbRateProviderOptions`:
 
@@ -96,7 +96,7 @@ var options = new EcbRateProviderOptions
 
 The default verbosity is deliberately low: at `Information` you see one line per feed
 loaded; at `Debug` you additionally see when downloads start; only at `Trace` do you get a
-line per rate observation (which can be thousands per feed — keep it for targeted
+line per rate observation (which can be thousands per feed - keep it for targeted
 debugging).
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.

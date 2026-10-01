@@ -71,7 +71,7 @@ public abstract class YamlConverter<T> : YamlConverter
             return;
 
         // A null value always writes the YAML null scalar without consulting the converter, and the depth ceiling is
-        // enforced at this single dispatch seam for every value — scalar or container — so each converter observes
+        // enforced at this single dispatch seam for every value - scalar or container - so each converter observes
         // the same entry contract the serializer's former inline walker provided.
         if (value is null)
         {

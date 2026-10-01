@@ -10,8 +10,8 @@ namespace Bodu.Collections.Generic.Contracts;
 /// <summary>
 /// Drives <see cref="DebugViewContractTests{TCollection}" /> against
 /// <see cref="IndexedPriorityQueue{TElement, TPriority}" />. Asserts the standard Bodu
-/// debugger-display contract — DebuggerDisplay, DebuggerTypeProxy, and an instance-constructible
-/// proxy — is present and wired up correctly.
+/// debugger-display contract - DebuggerDisplay, DebuggerTypeProxy, and an instance-constructible
+/// proxy - is present and wired up correctly.
 /// </summary>
 [TestClass]
 public sealed class IndexedPriorityQueueDebugViewContractTests

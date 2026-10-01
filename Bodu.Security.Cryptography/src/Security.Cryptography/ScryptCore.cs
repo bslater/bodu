@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the scrypt sequential memory-hard function defined by RFC 7914 — the PBKDF2-HMAC-SHA256 envelope, the
+/// Implements the scrypt sequential memory-hard function defined by RFC 7914 - the PBKDF2-HMAC-SHA256 envelope, the
 /// <c>scryptROMix</c> and <c>scryptBlockMix</c> mixing functions, and the Salsa20/8 core.
 /// </summary>
 /// <remarks>
@@ -26,7 +26,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// ROMix is generic over an <see cref="IScryptKernel" />, BlockMix for one instruction set, so each kernel runs in a
 /// loop the JIT specializes for it: the scalar kernel everywhere, and a 128-bit kernel over SSE2 on x64 or AdvSimd on
-/// ARM64. Every kernel produces the same key.
+/// ARM64. Every kernel produces the same key. Dispatch selects the SSE2 kernel on x64 and the scalar kernel on ARM64,
+/// where it ran faster than the AdvSimd kernel (<see cref="SimdCapabilities.AdvSimdSingleState" />).
 /// </para>
 /// <para>
 /// <c>V</c> and the ROMix scratch live in a <see cref="Workspace" /> in native memory, taken from the
@@ -34,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// provokes a gen2 collection.
 /// </para>
 /// <para>
-/// Every buffer that holds a password-derived word — <c>B</c>, <c>V</c>, and the ROMix scratch — is cleared before it
+/// Every buffer that holds a password-derived word - <c>B</c>, <c>V</c>, and the ROMix scratch - is cleared before it
 /// is released. Values the JIT keeps in registers or spills to its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
@@ -207,17 +208,22 @@ internal static partial class ScryptCore
     }
 
     /// <summary>
-    /// Selects the widest BlockMix kernel the processor supports and the process allows: AdvSimd on ARM64, then SSE2 on
-    /// x64, then the scalar kernel.
+    /// Selects the BlockMix kernel dispatch runs: SSE2 on x64, and the scalar kernel on ARM64 and everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
+    /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// The AdvSimd kernel waits on <see cref="SimdCapabilities.AdvSimdSingleState" />, which is closed: the scalar
+    /// kernel ran faster on a Neoverse N2, and on an Apple M1 faster under .NET 10 and as fast under .NET 8.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
-        if (SimdCapabilities.AdvSimd)
+        if (SimdCapabilities.AdvSimdSingleState)
             return KernelKind.AdvSimd;
 
         return SimdCapabilities.Sse2 ? KernelKind.Sse2 : KernelKind.Scalar;
@@ -326,7 +332,7 @@ internal static partial class ScryptCore
         TKernel.BlockMix(ref link, ref x, blockSizeR);
 
         // X = BlockMix(X xor V[j]), with j = Integerify(X) mod N. N is a power of two no greater than 2^30, so the
-        // index is the low word of X's last 64-byte block masked to N — word 0, which every kernel keeps first. The
+        // index is the low word of X's last 64-byte block masked to N - word 0, which every kernel keeps first. The
         // result alternates between the block and the scratch, and N being even leaves it in the block.
         int integerify = unitWords - BlockWords;
         uint mask = (uint)costN - 1;

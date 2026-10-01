@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 
 /// <summary>
 /// Demonstrates the parametric CRC design: one <see cref="Crc" /> engine, driven by an immutable
-/// <see cref="CrcStandard" /> parameter bundle, covers the entire RevEng catalogue — so "which
+/// <see cref="CrcStandard" /> parameter bundle, covers the entire RevEng catalogue - so "which
 /// CRC does this protocol use?" is answered by picking a catalogue entry, never by writing a new
 /// implementation.
 /// </summary>

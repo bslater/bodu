@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// XSalsa20 extends Salsa20 from a 64-bit nonce to a 192-bit nonce. The longer nonce is large enough to choose at
 /// random per message without meaningful collision risk, which makes XSalsa20 the safer default for protocols that
-/// cannot guarantee a unique 64-bit counter — the construction underlying NaCl / libsodium's
+/// cannot guarantee a unique 64-bit counter - the construction underlying NaCl / libsodium's
 /// <c>crypto_stream_xsalsa20</c>.
 /// </para>
 /// <para>
@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var xsalsa = new XSalsa20();
 /// xsalsa.GenerateKey(); // 256-bit
-/// xsalsa.GenerateNonce(); // 192-bit nonce — safe to choose at random
+/// xsalsa.GenerateNonce(); // 192-bit nonce - safe to choose at random
 /// byte[] ciphertext = xsalsa.Encrypt(plaintext);
 /// byte[] roundTrip  = xsalsa.Decrypt(ciphertext);
 ///]]>

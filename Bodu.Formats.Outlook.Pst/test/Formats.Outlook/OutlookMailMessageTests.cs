@@ -36,7 +36,7 @@ public partial class OutlookMailMessageTests
     }
 
     /// <summary>
-    /// Retrieves the synthetic store's full message — the one carrying recipient and attachment tables.
+    /// Retrieves the synthetic store's full message - the one carrying recipient and attachment tables.
     /// </summary>
     /// <param name="store">The open synthetic session.</param>
     /// <returns>The message view.</returns>
@@ -46,7 +46,7 @@ public partial class OutlookMailMessageTests
             .Single(static m => m.Subject == PstMessagingFixtureBuilder.NormalizedSubject);
 
     /// <summary>
-    /// Retrieves the synthetic store's plain message — the one with no subnode tree at all.
+    /// Retrieves the synthetic store's plain message - the one with no subnode tree at all.
     /// </summary>
     /// <param name="store">The open synthetic session.</param>
     /// <returns>The message view.</returns>

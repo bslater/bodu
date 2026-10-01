@@ -195,7 +195,7 @@ public sealed class SimpleReversingCryptoTransform
             {
                 // No deferred block and no new input.
                 // For padding modes that require a full block (PKCS7, ANSIX923, ISO10126),
-                // this means no padding block was ever received — throw exactly as the BCL does.
+                // this means no padding block was ever received - throw exactly as the BCL does.
                 if (_padding is not NoPadding and not ZeroPadding)
                     throw new CryptographicException("Padding is invalid and cannot be removed.");
 

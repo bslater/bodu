@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public readonly partial struct Interval<T>
 {
     /// <summary>
-    /// Returns the intersection of two intervals — the values shared by both — as an operator alias for
+    /// Returns the intersection of two intervals - the values shared by both - as an operator alias for
     /// <see cref="Intersect(Interval{T})" />.
     /// </summary>
     /// <param name="left">The first interval.</param>

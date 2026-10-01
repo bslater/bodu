@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Use a concrete wide-block variant — Serpent-256 over a CTR mode.
+/// // Use a concrete wide-block variant - Serpent-256 over a CTR mode.
 /// using TweakableSymmetricAlgorithm alg = new Serpent256();
 /// alg.GenerateKey();
 /// alg.GenerateIV();
@@ -48,7 +48,7 @@ namespace Bodu.Security.Cryptography;
 /// using (var cs = new CryptoStream(cipherText, encryptor, CryptoStreamMode.Write))
 ///     cs.Write(plaintext, 0, plaintext.Length);
 ///
-/// // For standard, externally vetted Serpent use Serpent128 instead — the wide-block variants
+/// // For standard, externally vetted Serpent use Serpent128 instead - the wide-block variants
 /// // are experimental and not interoperable with reference Serpent implementations.
 ///]]>
 /// </code>

@@ -87,7 +87,7 @@ public partial class BiDictionaryTests
 
     /// <summary>
     /// Verifies that assigning a value already bound to a different key evicts the previous binding under the
-    /// <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> policy — the old key is removed.
+    /// <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> policy - the old key is removed.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenValueBoundToDifferentKey_ForReplacePolicy_ShouldEvictPreviousBinding()

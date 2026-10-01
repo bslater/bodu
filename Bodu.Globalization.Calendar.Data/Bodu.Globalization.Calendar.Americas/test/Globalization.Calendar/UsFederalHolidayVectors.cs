@@ -10,8 +10,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded United States federal holiday vector table — twenty schedule years of observed dates as published
-/// by the U.S. Office of Personnel Management — as KAT rows for <c>[DynamicData]</c> binding.
+/// Loads the embedded United States federal holiday vector table - twenty schedule years of observed dates as published
+/// by the U.S. Office of Personnel Management - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

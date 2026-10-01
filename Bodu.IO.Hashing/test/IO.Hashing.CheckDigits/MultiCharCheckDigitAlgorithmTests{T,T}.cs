@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <typeparam name="TTest">The concrete test type inheriting this class.</typeparam>
 /// <typeparam name="TAlgorithm">The multi-character check-digit algorithm under test.</typeparam>
 /// <remarks>
-/// The harness drives assertions that every such algorithm must satisfy — algorithm name / alphabet /
+/// The harness drives assertions that every such algorithm must satisfy - algorithm name / alphabet /
 /// check-length exposure, streaming-equivalence with the static <c>Compute</c> helper, idempotent
 /// <c>GetCurrentCheckDigits</c> reads, <c>Reset</c> semantics, rejection of out-of-alphabet input, a data-driven
 /// set of known-answer vectors supplied through <see cref="GetSpecification" />, and a separate set of

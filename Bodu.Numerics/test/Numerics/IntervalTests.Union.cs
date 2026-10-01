@@ -21,8 +21,8 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that adjacent intervals — where one's upper endpoint equals the other's lower endpoint and at least
-    /// one is inclusive — union to a contiguous interval.
+    /// Verifies that adjacent intervals - where one's upper endpoint equals the other's lower endpoint and at least
+    /// one is inclusive - union to a contiguous interval.
     /// </summary>
     [TestMethod]
     public void TryUnion_WhenAdjacent_ShouldReturnContiguousInterval()
@@ -35,13 +35,13 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that two intervals with a gap at the touching point — both open at the shared endpoint — cannot be
+    /// Verifies that two intervals with a gap at the touching point - both open at the shared endpoint - cannot be
     /// unioned to a single contiguous interval.
     /// </summary>
     [TestMethod]
     public void TryUnion_WhenBothOpenAtSharedEndpoint_ShouldReturnFalse()
     {
-        // [1, 5) ∪ (5, 10] — neither contains 5, so the result is not contiguous.
+        // [1, 5) ∪ (5, 10] - neither contains 5, so the result is not contiguous.
         bool ok = Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.OpenClosed(5, 10), out Interval<int> result);
 
         Assert.IsFalse(ok);

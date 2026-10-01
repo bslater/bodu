@@ -5,7 +5,7 @@
     bld/Analyzers.props) carry version-less <PackageReference> entries that inherit the version from
     the matching <PackageVersion> below. This is the single place a dependency version changes, and
     it removes the drift that arose while the same package was pinned independently across many
-    csproj files — most visibly the Microsoft.Extensions.* family, which had spread across the
+    csproj files - most visibly the Microsoft.Extensions.* family, which had spread across the
     8.0.0 / 8.0.1 / 8.0.2 patch levels. Where a package was pinned at more than one version, the
     highest is taken below.
 
@@ -70,7 +70,7 @@
     The versions above are the floor and apply to the net8.0 leg: a package shipped in lock-step
     with a .NET release must match the framework a given leg targets, or the net8.0 leg would drag
     a .NET 10 assembly onto a .NET 8 consumer. Everything here therefore exists at both 8.0.x and
-    10.0.x on the same release cadence – the Microsoft.Extensions.* family, Microsoft.Data.Sqlite
+    10.0.x on the same release cadence - the Microsoft.Extensions.* family, Microsoft.Data.Sqlite
     (EF Core's cadence).
 
     &lt;PackageVersion Update="..."&gt; rather than Include: the item already exists from the group
@@ -83,7 +83,7 @@
 
     NOTE: the condition names net10.0 literally, and $(BoduNetTargets) in bld/TargetFrameworks.props
     is what decides which legs are actually built. Adding a framework there means adding a matching
-    group here – otherwise the new leg silently inherits the 8.0.x floor above.
+    group here - otherwise the new leg silently inherits the 8.0.x floor above.
     ============================================================================================
   -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
@@ -114,8 +114,8 @@
     ============================================================================================
     Test & analyzer tooling wave.
 
-    Packages injected by the shared build logic — the Directory.Build.targets analyzer stack and
-    test harness, plus the Bodu XML-documentation analyzer from bld/Analyzers.props — together with
+    Packages injected by the shared build logic - the Directory.Build.targets analyzer stack and
+    test harness, plus the Bodu XML-documentation analyzer from bld/Analyzers.props - together with
     the few test projects that reference a tooling package directly. Kept separate from the runtime
     wave so the two can be bumped independently.
     ============================================================================================

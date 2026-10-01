@@ -19,7 +19,7 @@ namespace Bodu.Text.Encoding;
 /// bit-stream technique used by Base16, Base32, and Base64.
 /// </para>
 /// <para>
-/// The alphabet orders digits first, then upper-case letters, then lower-case letters — the convention used by the GNU
+/// The alphabet orders digits first, then upper-case letters, then lower-case letters - the convention used by the GNU
 /// Multiple Precision library and most <c>base-x</c> implementations. Leading zero bytes in the input are encoded as
 /// leading <c>0</c> characters so that the byte-level and character-level forms preserve a meaningful prefix.
 /// </para>

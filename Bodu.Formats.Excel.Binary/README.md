@@ -1,10 +1,10 @@
 # Bodu.Formats.Excel.Binary
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A narrow, read-only reader for the **Excel 97-2003 binary workbook format** (BIFF8 /
-`.xls`). It exposes the raw cell values of each worksheet — strings, numbers, booleans,
-and errors — and nothing more. There is no formula evaluation, styling, charting, or
+`.xls`). It exposes the raw cell values of each worksheet - strings, numbers, booleans,
+and errors - and nothing more. There is no formula evaluation, styling, charting, or
 date inference; turning a numeric cell into a date or a column into a record is the
 caller's job.
 
@@ -66,10 +66,10 @@ fail with `ExcelBinaryFormatException`.
 
 ## Runnable samples
 
-The repository ships an offline, `dotnet run`-able sample for this package — the workbook
+The repository ships an offline, `dotnet run`-able sample for this package - the workbook
 session and sheet directory, forward-only streaming over ~18,000 cells, the materialized
 worksheet surface, and format-classified serial-date decoding against a real committed
-fixture — under
+fixture - under
 [`samples/Formats.Excel/`](https://github.com/bslater/bodu/tree/master/samples/Formats.Excel).
 
 ## Out of scope

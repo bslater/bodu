@@ -21,7 +21,7 @@ internal static partial class Log
 {
     /// <summary>
     /// Logs that downloading a reconstructed script chunk failed and the chunk was skipped so the token scan can
-    /// continue over the remaining chunks — expected for lazy chunks that no longer exist, but useful when diagnosing
+    /// continue over the remaining chunks - expected for lazy chunks that no longer exist, but useful when diagnosing
     /// scraper drift after an XE.com site change.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>

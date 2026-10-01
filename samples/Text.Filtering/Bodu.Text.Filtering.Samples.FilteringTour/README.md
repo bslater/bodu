@@ -11,9 +11,9 @@ Everything runs offline against small in-code corpora, so the output is determin
 dotnet run --project samples/Text.Filtering/Bodu.Text.Filtering.Samples.FilteringTour
 ```
 
-## Scenario 1 — IncludeExcludeBasics
+## Scenario 1 - IncludeExcludeBasics
 
-**Intent.** Show the default `AnyMatch` semantics — the Ant / MSBuild include-exclude set model —
+**Intent.** Show the default `AnyMatch` semantics - the Ant / MSBuild include-exclude set model -
 and the include-all default when a filter has no include patterns.
 
 **What it does.** Builds a filter from two include globs and one exclude glob, streams a small
@@ -54,10 +54,10 @@ passes unless an exclude vetoes it. Matching is ordinal and case-insensitive by 
 **APIs demonstrated.** `TextFilter.Build`, `TextFilterPattern.Include` / `Exclude`,
 `TextFilter.Filter`, `TextFilter.IsMatch`.
 
-## Scenario 2 — ParseAndOrderedRules
+## Scenario 2 - ParseAndOrderedRules
 
 **Intent.** Show `TextFilter.Parse` reading raw lines with the gitignore file conventions, and the
-`LastMatchWins` mode where the last matching rule decides — so a later include re-admits a value an
+`LastMatchWins` mode where the last matching rule decides - so a later include re-admits a value an
 earlier exclude rejected, and an allowlist is expressed with a leading exclude-everything rule.
 
 **What it does.** Parses a comment-bearing rule list under
@@ -95,9 +95,9 @@ then parses the `["!*", "error*", "!*debug*"]` allowlist shape.
 **APIs demonstrated.** `TextFilter.Parse`, `TextFilterOptions.Mode`,
 `TextFilterEvaluationMode.LastMatchWins`.
 
-## Scenario 3 — GlobsAndCostTiers
+## Scenario 3 - GlobsAndCostTiers
 
-**Intent.** Tour the glob grammar — `{a,b}` alternation, character classes, escapes — alongside a
+**Intent.** Tour the glob grammar - `{a,b}` alternation, character classes, escapes - alongside a
 regex pattern, and show the diagnostic surfaces that reveal which pattern decided each outcome.
 
 **What it does.** Builds a mixed filter (`{error,warn}*` expands at build time into two cheap
@@ -140,7 +140,7 @@ overlapping value with `GetMatchingPatterns`, and matches an escaped-metacharact
 **APIs demonstrated.** `TextFilter.Evaluate`, `TextFilterResult.Decision` / `Pattern`,
 `TextFilter.GetMatchingPatterns`, `TextFilterPatternKind.Regex`.
 
-## Scenario 4 — TelemetryAndObserver
+## Scenario 4 - TelemetryAndObserver
 
 **Intent.** Show the always-on statistics counters and the optional per-decision observer hook.
 

@@ -10,11 +10,11 @@ using Bodu.IO.Compound;
 namespace Bodu.IO.Biff.Samples.BiffBasics;
 
 /// <summary>
-/// Entry point for the BIFF sample: the record codec beneath the Excel reader via <c>Bodu.IO.Biff</c> — a record
+/// Entry point for the BIFF sample: the record codec beneath the Excel reader via <c>Bodu.IO.Biff</c> - a record
 /// census over a real workbook stream, decoding cells and the shared string table, authoring a BIFF8 workbook
 /// stream with <c>BiffWriter</c> and reading it back, and the codec's handling of malformed input. Everything runs
 /// offline against the committed <c>Data/sample-biff8.xls</c> fixture (the same file the Excel reader's tests use),
-/// whose <c>Workbook</c> stream is extracted with <c>Bodu.IO.Compound</c> — the codec itself has no container
+/// whose <c>Workbook</c> stream is extracted with <c>Bodu.IO.Compound</c> - the codec itself has no container
 /// dependency.
 /// </summary>
 public static class Program

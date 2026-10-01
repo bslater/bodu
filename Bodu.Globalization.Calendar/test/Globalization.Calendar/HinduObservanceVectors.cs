@@ -10,8 +10,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded Hindu observance vector table — fifty Gregorian years of dates for every <c>global-hindu</c>
-/// catalogue observance — as KAT rows for <c>[DynamicData]</c> binding.
+/// Loads the embedded Hindu observance vector table - fifty Gregorian years of dates for every <c>global-hindu</c>
+/// catalogue observance - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

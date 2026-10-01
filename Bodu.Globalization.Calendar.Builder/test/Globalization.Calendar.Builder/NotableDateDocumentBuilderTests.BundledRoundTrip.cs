@@ -30,8 +30,8 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Resolves every occurrence for a set of representative territories across 2024–2026 and returns them as a
-    /// comparable, ordered list — the observable fingerprint of a resource.
+    /// Resolves every occurrence for a set of representative territories across 2024-2026 and returns them as a
+    /// comparable, ordered list - the observable fingerprint of a resource.
     /// </summary>
     /// <param name="resource">The resource to resolve over.</param>
     /// <returns>An ordered list of <c>(territory, id, date, observed)</c> tuples.</returns>
@@ -53,7 +53,7 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that every bundled common catalogue round-trips through the builder — parsing it with
+    /// Verifies that every bundled common catalogue round-trips through the builder - parsing it with
     /// <see cref="NotableDateDocumentBuilder.FromXml(string)" /> and rebuilding it reproduces a resource with the same
     /// identity, definition count, rule count, adjustment-policy count, and resolved occurrences as a direct load.
     /// </summary>

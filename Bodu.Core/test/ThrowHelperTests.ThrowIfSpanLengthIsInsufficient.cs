@@ -128,7 +128,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(System.Span{T}, int, string)" />
-    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// does not throw - and on the ParamName-asserting overload reports nothing - for both
     /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length meets or exceeds the
     /// required minimum.
     /// </summary>

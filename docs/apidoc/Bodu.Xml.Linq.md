@@ -10,7 +10,7 @@ uid: Bodu.Xml.Linq
 
 ## Key types
 
-- <xref:Bodu.Xml.Linq.XmlNamespaceResolver> — implements `IXmlNamespaceResolver` over an `XElement` so XPath / prefix-aware queries can be evaluated against a LINQ-to-XML fragment.
+- <xref:Bodu.Xml.Linq.XmlNamespaceResolver> - implements `IXmlNamespaceResolver` over an `XElement` so XPath / prefix-aware queries can be evaluated against a LINQ-to-XML fragment.
 
 ## Example
 

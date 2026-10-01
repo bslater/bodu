@@ -14,7 +14,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// This object isolates the network-facing settings from the behavioural options on
 /// <see cref="EcbRateProviderOptions" />, so the host, transport timeout, and request identity can be pointed at a
-/// mirror or proxy of the ECB feeds — or simply tuned — without touching caching, feed-selection, or alias
+/// mirror or proxy of the ECB feeds - or simply tuned - without touching caching, feed-selection, or alias
 /// configuration. The absolute URL of a feed is composed from <see cref="BaseUrl" /> and the feed's relative
 /// <see cref="EcbRateFeed.FileName" /> through <see cref="ResolveFeedUrl(EcbRateFeed)" />.
 /// </para>

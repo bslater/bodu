@@ -27,12 +27,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </item>
 /// <item>
 /// <description>
-/// Compatibility: <strong>not</strong> a standardized wire format — consumers must agree on Adler-64 explicitly.
+/// Compatibility: <strong>not</strong> a standardized wire format - consumers must agree on Adler-64 explicitly.
 /// </description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Adler64.</strong> Pick <see cref="Adler64" /> when 32 bits are not enough — very large
+/// <strong>When to choose Adler64.</strong> Pick <see cref="Adler64" /> when 32 bits are not enough - very large
 /// datasets where the Adler-32 collision floor becomes a concern, multi-gigabyte block-storage checksums, or
 /// high-throughput logging pipelines. For interoperability with deflate / gzip / PNG use <see cref="Adler32" />; for
 /// stronger error detection at 64 bits prefer <see cref="Crc" /> with <see cref="CrcStandard.CRC64_XZ" />.

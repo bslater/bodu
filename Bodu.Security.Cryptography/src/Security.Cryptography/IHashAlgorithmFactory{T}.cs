@@ -22,14 +22,14 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>How to obtain an instance.</strong> Most callers do not implement this interface directly. Use
 /// <see cref="HashAlgorithmFactory.From{T}(System.Func{T})" /> to wrap an algorithm-construction delegate as a
-/// <see cref="DelegateHashAlgorithmFactory{T}" /> — the right pick whenever the algorithm needs configuration (a key, a
+/// <see cref="DelegateHashAlgorithmFactory{T}" /> - the right pick whenever the algorithm needs configuration (a key, a
 /// round count, a variant flag) at the construction site. Implement <see cref="IHashAlgorithmFactory{T}" /> directly
 /// only when adding instance pooling, telemetry, or other cross-cutting behavior around algorithm creation.
 /// </para>
 /// <para>
 /// <strong>How it is consumed.</strong> Pass the factory to the static helpers on <see cref="HashAlgorithmHelper" />,
 /// or its <see cref="Create" /> method to <see cref="MerkleTree" />. Each call gets a fresh, fully configured algorithm
-/// instance — the callers do not need to manage <see cref="System.IDisposable" /> lifecycles or thread-safety.
+/// instance - the callers do not need to manage <see cref="System.IDisposable" /> lifecycles or thread-safety.
 /// </para>
 /// <para>
 /// The type argument <typeparamref name="T" /> must derive from <see cref="HashAlgorithm" />.

@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Because additive stream ciphers are self-inverse, <see cref="CreateEncryptor()" /> and
 /// <see cref="CreateDecryptor()" /> are interchangeable; both delegate to <see cref="CreateTransform()" />, which in
-/// turn calls <see cref="CreateStreamCipher(byte[], byte[])" /> — implemented by a derived class to build a configured
+/// turn calls <see cref="CreateStreamCipher(byte[], byte[])" /> - implemented by a derived class to build a configured
 /// <see cref="IStreamCipher" /> engine from the validated key and nonce.
 /// </para>
 /// <para>

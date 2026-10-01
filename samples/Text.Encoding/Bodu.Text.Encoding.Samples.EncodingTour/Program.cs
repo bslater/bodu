@@ -9,7 +9,7 @@ using Bodu.Samples.Text.Encoding.EncodingTour.Scenarios;
 namespace Bodu.Samples.Text.Encoding.EncodingTour;
 
 /// <summary>
-/// Entry point for the encoding-tour sample: the <c>Bodu.Text.Encoding</c> catalogue — the base
+/// Entry point for the encoding-tour sample: the <c>Bodu.Text.Encoding</c> catalogue - the base
 /// families and their variants, the formatting/parse-style knobs, the checksummed schemes that
 /// detect corruption (Base58Check, Bech32), the Guid convenience surface, and the
 /// name-addressable <c>BinaryEncodings</c> registry. Every scenario is pure computation over

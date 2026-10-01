@@ -9,7 +9,7 @@ namespace Bodu.Extensions;
 public partial class NaturalStringComparerTests
 {
     /// <summary>
-    /// A natsort-style corpus — IP addresses, version-ish strings, zero-padded counters, and long digit runs — listed
+    /// A natsort-style corpus - IP addresses, version-ish strings, zero-padded counters, and long digit runs - listed
     /// in the exact order <see cref="NaturalStringComparer.Ordinal" /> is expected to produce.
     /// </summary>
     private static readonly string[] NaturalOrderCorpus =

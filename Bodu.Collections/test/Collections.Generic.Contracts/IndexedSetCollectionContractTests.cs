@@ -11,7 +11,7 @@ namespace Bodu.Collections.Generic.Contracts;
 /// Drives <see cref="CollectionContractTests{TCollection, TItem}" /> against
 /// <see cref="IndexedSet{T}" /> with <see cref="int" /> elements. <see cref="IndexedSet{T}" /> implements
 /// <see cref="IList{T}" /> (and therefore <see cref="ICollection{T}" />) plus
-/// <see cref="IReadOnlyList{T}" /> — despite the "Set" in the name it is positional, not value-only, so
+/// <see cref="IReadOnlyList{T}" /> - despite the "Set" in the name it is positional, not value-only, so
 /// it does not implement <see cref="ISet{T}" />. The shared <see cref="ICollection{T}" /> contract
 /// applies; bespoke index / Move / list-specific tests live in the existing <c>IndexedSetTests.*</c>
 /// partials.

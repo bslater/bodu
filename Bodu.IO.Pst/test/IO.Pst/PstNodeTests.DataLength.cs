@@ -35,7 +35,7 @@ public partial class PstNodeTests
 
     /// <summary>
     /// Verifies that <see cref="PstNode.DataLength" /> resolves a very large logical payload without reading any leaf
-    /// block — the length of a ~255 MB node built from three physical blocks comes back from the tree metadata alone.
+    /// block - the length of a ~255 MB node built from three physical blocks comes back from the tree metadata alone.
     /// </summary>
     [TestMethod]
     public void DataLength_WhenLogicalPayloadIsHuge_ShouldResolveWithoutMaterializing()

@@ -51,7 +51,7 @@ internal sealed class MLKemParameters
     internal string Name { get; }
 
     /// <summary>
-    /// Gets the module rank k — the dimension of the matrix Â and of the secret and noise vectors.
+    /// Gets the module rank k - the dimension of the matrix Â and of the secret and noise vectors.
     /// </summary>
     /// <value>2, 3, or 4.</value>
     internal int K { get; }

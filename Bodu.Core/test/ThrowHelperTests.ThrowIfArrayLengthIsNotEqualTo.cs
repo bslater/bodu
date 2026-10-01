@@ -22,8 +22,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — when the array length matches the expected length
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - when the array length matches the expected length
     /// exactly.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

@@ -22,8 +22,8 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>
     /// This overload uses the standard calendar alignment defined by
-    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan – Mar, Q2 = Apr – Jun, Q3 = Jul – Sep, Q4 =
-    /// Oct – Dec.
+    /// <see cref="CalendarQuarterDefinition.JanuaryToDecember" />: Q1 = Jan - Mar, Q2 = Apr - Jun, Q3 = Jul - Sep, Q4 =
+    /// Oct - Dec.
     /// </para>
     /// </remarks>
     public static bool IsFirstDateOfQuarter(this DateOnly date)

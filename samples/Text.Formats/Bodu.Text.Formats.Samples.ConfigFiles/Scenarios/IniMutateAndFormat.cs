@@ -11,7 +11,7 @@ namespace Bodu.Samples.Text.Formats.ConfigFiles.Scenarios;
 
 /// <summary>
 /// Demonstrates the edit loop on the mutable, trivia-bearing <see cref="IniNode" /> DOM: parse an INI file, change
-/// values, add a section with a comment, and write the document back to text — with every comment from the original
+/// values, add a section with a comment, and write the document back to text - with every comment from the original
 /// file surviving the round trip. This is the workflow for tooling that rewrites config files a human still owns.
 /// </summary>
 public static class IniMutateAndFormat

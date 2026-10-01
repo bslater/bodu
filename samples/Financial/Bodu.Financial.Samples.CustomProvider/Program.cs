@@ -13,7 +13,7 @@ namespace Bodu.Financial.Samples.CustomProvider;
 
 /// <summary>
 /// Entry point for the custom-provider sample: a consumer-written <see cref="CsvFileRateProvider" />
-/// used directly, through the money-conversion extensions, and composed under the caching decorator —
+/// used directly, through the money-conversion extensions, and composed under the caching decorator -
 /// proving a custom source is a first-class citizen of the stack.
 /// </summary>
 public static class Program

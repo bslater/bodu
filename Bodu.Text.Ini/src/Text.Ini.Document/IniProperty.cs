@@ -7,7 +7,7 @@
 namespace Bodu.Text.Ini.Document;
 
 /// <summary>
-/// Represents a single name/value property of an <see cref="IniElement" /> object — a global key, a section, or a
+/// Represents a single name/value property of an <see cref="IniElement" /> object - a global key, a section, or a
 /// section entry.
 /// </summary>
 public readonly struct IniProperty
@@ -24,13 +24,13 @@ public readonly struct IniProperty
     }
 
     /// <summary>
-    /// Gets the property name — a global key, a section name, or a section entry key.
+    /// Gets the property name - a global key, a section name, or a section entry key.
     /// </summary>
     /// <value>The name.</value>
     public string Name { get; }
 
     /// <summary>
-    /// Gets the property value element — a string for a global key or section entry, or an object for a section.
+    /// Gets the property value element - a string for a global key or section entry, or an object for a section.
     /// </summary>
     /// <value>The value element.</value>
     public IniElement Value { get; }

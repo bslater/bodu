@@ -329,11 +329,11 @@ public sealed partial class ConfigurationView
     /// <exception cref="FormatException">The value cannot be parsed as the enum.</exception>
     /// <remarks>
     /// Enum names are parsed case-insensitively. Numeric values are accepted only when they correspond to a declared
-    /// enum member — undefined integers (e.g. <c>severity = 99</c> for a three-member enum) are rejected with
+    /// enum member - undefined integers (e.g. <c>severity = 99</c> for a three-member enum) are rejected with
     /// <see cref="FormatException" /> rather than producing a synthetic value.
     /// <para>
     /// Combined values for <see cref="FlagsAttribute" />-decorated enums are also rejected unless the combined value
-    /// itself is a declared member — the underlying <see cref="Enum.IsDefined(System.Type, object)" /> guard treats
+    /// itself is a declared member - the underlying <see cref="Enum.IsDefined(System.Type, object)" /> guard treats
     /// <c>Read, Write</c> as undefined when only the individual flags are declared. Callers who need combined-flag
     /// parsing should call <see cref="Enum.Parse(System.Type, string, bool)" /> against
     /// <see cref="GetString(string)" /> instead.

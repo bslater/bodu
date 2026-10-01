@@ -14,8 +14,8 @@ public partial class NaturalStringComparerTests
 {
     /// <summary>
     /// Verifies that <see cref="NaturalStringComparer.Equals(string?, string?)" /> agrees with
-    /// <see cref="NaturalStringComparer.Compare(string?, string?)" /> — a pair is equal exactly when the comparison
-    /// sign is zero — across the full ordinal ordering table.
+    /// <see cref="NaturalStringComparer.Compare(string?, string?)" /> - a pair is equal exactly when the comparison
+    /// sign is zero - across the full ordinal ordering table.
     /// </summary>
     /// <param name="kat">The KAT row supplying the operand pair and the expected comparison sign.</param>
     [TestMethod]
@@ -27,8 +27,8 @@ public partial class NaturalStringComparerTests
         Assert.AreEqual(kat.Expected == 0, NaturalStringComparer.Ordinal.Equals(kat.Input.Left, kat.Input.Right), kat.Name);
 
     /// <summary>
-    /// Verifies that two strings whose digit runs carry the same numeric value but different leading-zero counts —
-    /// <c>"file07"</c> and <c>"file7"</c> — are not equal, pinning the leading-zero total-order tiebreak.
+    /// Verifies that two strings whose digit runs carry the same numeric value but different leading-zero counts -
+    /// <c>"file07"</c> and <c>"file7"</c> - are not equal, pinning the leading-zero total-order tiebreak.
     /// </summary>
     [TestMethod]
     public void Equals_WhenDigitRunsDifferOnlyInLeadingZeros_ShouldReturnFalse()
@@ -78,8 +78,8 @@ public partial class NaturalStringComparerTests
     }
 
     /// <summary>
-    /// Verifies that strings that are unequal under <see cref="NaturalStringComparer.Ordinal" /> — differing text,
-    /// differing numeric value, or case differences — report <see langword="false" /> from
+    /// Verifies that strings that are unequal under <see cref="NaturalStringComparer.Ordinal" /> - differing text,
+    /// differing numeric value, or case differences - report <see langword="false" /> from
     /// <see cref="NaturalStringComparer.Equals(string?, string?)" />.
     /// </summary>
     [TestMethod]

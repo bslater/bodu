@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="wp-t wp-d">
-  <title id="wp-t">WeekPattern — an immutable seven-day bitmask</title>
+  <title id="wp-t">WeekPattern - an immutable seven-day bitmask</title>
   <desc id="wp-d">WeekPattern is a value type holding one bit per day of the week, indexed by DayOfWeek from Sunday (bit 0) to Saturday (bit 6). The example pattern selects Monday through Friday, giving the bit string 0111110 and the formatted form MTuWThF. Because the type is immutable, With adds a day and Without clears one, each returning a new instance; the bitwise operators compose patterns by union, intersection, exclusive-or, and complement.</desc>
 
   <defs>
@@ -30,8 +30,8 @@
     <rect class="wp-pan" width="800" height="280" rx="8"/>
     <rect class="wp-hdr" width="800" height="46" rx="8"/>
     <rect class="wp-hdr" y="38" width="800" height="8"/>
-    <text class="wp-ttl" x="16" y="29">WeekPattern — one bit per day, indexed by DayOfWeek</text>
-    <text class="wp-form" x="784" y="29" text-anchor="end">immutable value type — every change returns a new instance</text>
+    <text class="wp-ttl" x="16" y="29">WeekPattern - one bit per day, indexed by DayOfWeek</text>
+    <text class="wp-form" x="784" y="29" text-anchor="end">immutable value type - every change returns a new instance</text>
 
     <!-- day cells: Sunday (bit 0) .. Saturday (bit 6); weekdays selected -->
     <g>
@@ -85,6 +85,6 @@
     <text class="wp-lbl" x="68" y="227">Composition</text>
     <text class="wp-op" x="150" y="227"><tspan class="wp-opk">With(day)</tspan> sets a bit · <tspan class="wp-opk">Without(day)</tspan> clears a bit</text>
     <text class="wp-lbl" x="68" y="247">Operators</text>
-    <text class="wp-op" x="150" y="247"><tspan class="wp-opk">|</tspan> union  ·  <tspan class="wp-opk">&amp;</tspan> intersection  ·  <tspan class="wp-opk">^</tspan> toggle  ·  <tspan class="wp-opk">~</tspan> complement  —  enumerable as DayOfWeek values</text>
+    <text class="wp-op" x="150" y="247"><tspan class="wp-opk">|</tspan> union  ·  <tspan class="wp-opk">&amp;</tspan> intersection  ·  <tspan class="wp-opk">^</tspan> toggle  ·  <tspan class="wp-opk">~</tspan> complement  -  enumerable as DayOfWeek values</text>
   </g>
 </svg>

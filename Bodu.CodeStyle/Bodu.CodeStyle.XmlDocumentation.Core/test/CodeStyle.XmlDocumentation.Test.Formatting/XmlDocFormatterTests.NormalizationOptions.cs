@@ -35,7 +35,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that with the default <see cref="XmlDocFormatOptions.PreserveBlankLines" /> (disabled) a blank
-    /// documentation line is dropped and the surrounding prose is merged — the contrast case.
+    /// documentation line is dropped and the surrounding prose is merged - the contrast case.
     /// </summary>
     [TestMethod]
     public void Format_WhenPreserveBlankLinesFalse_ShouldDropBlankLineAndMergeProse()
@@ -79,7 +79,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that with the default <see cref="XmlDocFormatOptions.CollapseProseWhitespace" /> (enabled),
-    /// runs of consecutive spaces between words collapse to a single space — the contrast case.
+    /// runs of consecutive spaces between words collapse to a single space - the contrast case.
     /// </summary>
     [TestMethod]
     public void Format_WhenCollapseProseWhitespaceTrue_ShouldCollapseMultipleSpaces()

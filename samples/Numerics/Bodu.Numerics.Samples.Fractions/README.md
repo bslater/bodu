@@ -1,24 +1,24 @@
 # Bodu.Numerics.Samples.Fractions
 
-`Fraction<T>` from `Bodu.Numerics`: an immutable exact rational number — a ratio of two integers,
+`Fraction<T>` from `Bodu.Numerics`: an immutable exact rational number - a ratio of two integers,
 always held in canonical (fully reduced) form, backed by any `IBinaryInteger<T>` component type.
 Four scenarios cover canonical arithmetic, the text surface, generic-math participation, and
 continued-fraction expansion.
 
-Everything runs offline with fixed inputs — deterministic output every run. Numeric formatting uses
+Everything runs offline with fixed inputs - deterministic output every run. Numeric formatting uses
 `CultureInfo.InvariantCulture` so the output never varies by machine culture.
 
 ```bash
 dotnet run --project samples/Numerics/Bodu.Numerics.Samples.Fractions
 ```
 
-## Scenario 1 — ExactArithmetic
+## Scenario 1 - ExactArithmetic
 
 **Intent.** Show `Fraction<T>` as an exact rational: every value reduces to canonical form on
 creation, and `+ - * /` stay exact with no floating-point drift and no manual reduction step.
 
 **What it does.** Builds fractions from integer components with the two-argument constructor (which
-reduces immediately — `2/4` arrives as `1/2`), combines them with all four operators, adds the
+reduces immediately - `2/4` arrives as `1/2`), combines them with all four operators, adds the
 `Zero`/`One` identities, demonstrates the `0.1 + 0.2` floating-point trap resolving exactly to
 `3/10`, and shows a `Fraction<BigInteger>` keeping a 21-digit numerator exact.
 
@@ -52,7 +52,7 @@ reduces immediately — `2/4` arrives as `1/2`), combines them with all four ope
 **APIs demonstrated.** `new Fraction<int>(numerator, denominator)`, `new Fraction<BigInteger>(...)`,
 `operator +` / `-` / `*` / `/`, `Fraction<T>.Zero`, `Fraction<T>.One`, `Fraction<T>.ToString`.
 
-## Scenario 2 — ParseAndFormat
+## Scenario 2 - ParseAndFormat
 
 **Intent.** Cover the text surface: parsing the canonical `numerator/denominator` form, the
 non-throwing `TryParse`, the alternate `ToString` shapes, and the allocation-free span/UTF-8
@@ -91,10 +91,10 @@ the mixed-number form splits `7/3` into `2 1/3`, and both `TryFormat` overloads 
 `Fraction<T>.ToString`, `Fraction<T>.ToMixedNumberString`, `Fraction<T>.ToPercentString`,
 `Fraction<T>.TryFormat(Span<char>, ...)`, `Fraction<T>.TryFormat(Span<byte>, ...)`.
 
-## Scenario 3 — GenericMath
+## Scenario 3 - GenericMath
 
 **Intent.** Show that `Fraction<T>` implements `INumber<Fraction<T>>`, so it drops straight into any
-algorithm written against the .NET generic-math interfaces — one generic method serves `int` and
+algorithm written against the .NET generic-math interfaces - one generic method serves `int` and
 `Fraction<int>` alike.
 
 **What it does.** Defines a single `Sum<T>(IEnumerable<T>) where T : INumber<T>` that starts from
@@ -125,7 +125,7 @@ decimal), which equals `2.283333` when projected to a `double`:
 **APIs demonstrated.** `Fraction<T>` as `INumber<Fraction<T>>`, `T.Zero`, `operator +`,
 `Fraction<T>.ToDouble`.
 
-## Scenario 4 — ContinuedFractions
+## Scenario 4 - ContinuedFractions
 
 **Intent.** Show the continued-fraction and rational-approximation surface: expanding a rational
 into its simple-continued-fraction coefficients and back, approximating a real number to a bounded
@@ -176,8 +176,8 @@ Bodu.Numerics.Samples.Fractions/
 
 ## Related
 
-- `Bodu.Numerics.Samples.Intervals` — the interval algebra (`Interval<T>`, `DiscreteInterval<T>`,
+- `Bodu.Numerics.Samples.Intervals` - the interval algebra (`Interval<T>`, `DiscreteInterval<T>`,
   `IntervalSet<T>`) built over the same numeric surface.
-- `Bodu.Numerics.Samples.JsonConverters` — round-tripping `Fraction<T>` and the interval types
+- `Bodu.Numerics.Samples.JsonConverters` - round-tripping `Fraction<T>` and the interval types
   through `System.Text.Json` with the companion serialization package.
 ```

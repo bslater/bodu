@@ -27,7 +27,7 @@ public partial class DefaultingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that a key becomes contained only after it has been stored — whether by the indexer getter, the
+    /// Verifies that a key becomes contained only after it has been stored - whether by the indexer getter, the
     /// setter, or <c>Add</c>.
     /// </summary>
     [TestMethod]

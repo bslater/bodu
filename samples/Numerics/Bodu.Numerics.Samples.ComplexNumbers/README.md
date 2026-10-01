@@ -1,6 +1,6 @@
 # Bodu.Numerics.Samples.ComplexNumbers
 
-`Complex<T>` from `Bodu.Numerics` — the generic counterpart of the `double`-only
+`Complex<T>` from `Bodu.Numerics` - the generic counterpart of the `double`-only
 `System.Numerics.Complex`. Three scenarios cover the arithmetic surface (including the
 non-componentwise multiply and the conjugate identity), the polar form and the transcendental
 functions, and the reason the type is generic at all.
@@ -28,5 +28,5 @@ output never varies by machine culture.
 
 ## Related
 
-- `Bodu.Numerics.Samples.Fractions` — the exact-rational `Fraction<T>`.
-- `Bodu.Numerics.Samples.StreamingStatistics` — the single-pass accumulators and `BigDecimal`.
+- `Bodu.Numerics.Samples.Fractions` - the exact-rational `Fraction<T>`.
+- `Bodu.Numerics.Samples.StreamingStatistics` - the single-pass accumulators and `BigDecimal`.

@@ -1,10 +1,10 @@
-# source: Table of dates 172–221 B.E. accompanying implementation guidance for the Badí‘ calendar
+# source: Table of dates 172-221 B.E. accompanying implementation guidance for the Badí‘ calendar
 # publisher: Universal House of Justice / National Spiritual Assembly of the Bahá’ís of New Zealand
 # url: https://guidelines.bahai.org.nz/wp-content/uploads/2022/07/GLSA-08-Holy-Days.pdf
 # accessed: 2026-08-03
-# license: redistribution rights unclear — transcribed facts only
+# license: redistribution rights unclear - transcribed facts only
 # notes: 550 rows. Naw-Rúz and Twin Birthdays are transcribed from the 50-year table. The other eight holy days use the source’s own conditional date table (20-March versus 21-March Naw-Rúz); no astronomical generation was performed.
-# verification: bodu 2026-08-03 — 550 rows = 50 years x 11 ids; fixed holy days at uniform Badi offsets from Naw-Ruz (+31/+39/+42/+64/+69/+111/+250/+252); Naw-Ruz always 20/21 Mar; Twin Birthdays consecutive within 14 Oct-14 Nov; Birth of the Bab within 1 day of (8th new moon after Naw-Ruz, Tehran) + 1 day for all 50 years (tools/verify-bahai-poya-vectors.py); matches the committed 2025 exact and 2026 (183 B.E.) test anchors 7/7.
+# verification: bodu 2026-08-03 - 550 rows = 50 years x 11 ids; fixed holy days at uniform Badi offsets from Naw-Ruz (+31/+39/+42/+64/+69/+111/+250/+252); Naw-Ruz always 20/21 Mar; Twin Birthdays consecutive within 14 Oct-14 Nov; Birth of the Bab within 1 day of (8th new moon after Naw-Ruz, Tehran) + 1 day for all 50 years (tools/verify-bahai-poya-vectors.py); matches the committed 2025 exact and 2026 (183 B.E.) test anchors 7/7.
 # columns: be_year,gregorian_year,holy_day_id,gregorian_date
 be_year,gregorian_year,holy_day_id,gregorian_date
 172,2015,naw-ruz,2015-03-21

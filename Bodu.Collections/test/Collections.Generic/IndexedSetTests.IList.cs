@@ -53,7 +53,7 @@ public partial class IndexedSetTests
         CollectionAssert.AreEqual(new[] { 2, 3 }, SnapshotByIndexer(sut));
     }
     // --------------------------------------------------------
-    // IList<T> contract — typed surface
+    // IList<T> contract - typed surface
     // --------------------------------------------------------
 
     /// <summary>

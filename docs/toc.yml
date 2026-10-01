@@ -1,11 +1,13 @@
 # ./<Project Root Dir>/docs/toc.yml
-- name: Docs
+- name: Documentation
   href: docs/
+- name: Packages
+  href: docs/package-matrix.md
 - name: Guides
   href: guides/
 - name: Samples
   href: samples/
 - name: Articles
   href: articles/
-- name: API
+- name: API Reference
   href: api/

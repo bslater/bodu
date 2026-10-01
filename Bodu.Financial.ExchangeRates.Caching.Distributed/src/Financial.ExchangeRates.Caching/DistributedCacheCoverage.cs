@@ -12,8 +12,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// The fetch instant drives expiry of the coverage the same way a cached row's caching instant drives expiry of the
-/// rate. All three fields are persisted as invariant text — the two dates as <c>yyyy-MM-dd</c> and the fetch instant in
-/// round-trip (<c>"O"</c>) form — so the window round-trips losslessly.
+/// rate. All three fields are persisted as invariant text - the two dates as <c>yyyy-MM-dd</c> and the fetch instant in
+/// round-trip (<c>"O"</c>) form - so the window round-trips losslessly.
 /// </remarks>
 internal sealed class DistributedCacheCoverage
 {

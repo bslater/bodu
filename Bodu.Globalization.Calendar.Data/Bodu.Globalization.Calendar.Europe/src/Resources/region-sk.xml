@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Slovakia (SK) — notable-date resource pack.
+  Slovakia (SK) - notable-date resource pack.
 
   Authored on the notable-date schema. All rules are scoped to territory "SK"; Slovakia has
   no subdivision-specific public holidays.
@@ -60,26 +60,26 @@
       ============================================================================================================
     -->
 
-    <!-- Day of the Establishment of the Slovak Republic — 1 January (also New Year's Day), marking the 1993 founding of independent Slovakia. Fixed date, with a weekend roll to the next working day. -->
+    <!-- Day of the Establishment of the Slovak Republic - 1 January (also New Year's Day), marking the 1993 founding of independent Slovakia. Fixed date, with a weekend roll to the next working day. -->
     <NotableDate id="day-of-the-establishment-of-the-slovak-republic" displayName="Day of the Establishment of the Slovak Republic" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="January" day="1" /></Strategy>
         <Adjustments><Adjustment policyRef="weekend-roll" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Epiphany (Three Kings' Day) — 6 January, marking the visit of the Magi. Fixed date. -->
+    <!-- Epiphany (Three Kings' Day) - 6 January, marking the visit of the Magi. Fixed date. -->
     <NotableDate id="epiphany" displayName="Epiphany" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="January" day="6" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <!-- Labour Day (International Workers' Day) - 1 May. Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint Stephen's Day (Second Day of Christmas) — 26 December. Fixed date; the day after Christmas Day. -->
+    <!-- Saint Stephen's Day (Second Day of Christmas) - 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="saint-stephens-day" displayName="Saint Stephen's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
@@ -91,37 +91,37 @@
       ============================================================================================================
     -->
 
-    <!-- Day of Our Lady of Sorrows (patroness of Slovakia) — 15 September. Fixed date. -->
+    <!-- Day of Our Lady of Sorrows (patroness of Slovakia) - 15 September. Fixed date. -->
     <NotableDate id="day-of-our-lady-of-sorrows" displayName="Day of Our Lady of Sorrows" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="September" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of Victory over Fascism (Liberation Day) — 8 May, marking the 1945 end of the Second World War in Europe. fromYear 1945 excludes earlier years. -->
+    <!-- Day of Victory over Fascism (Liberation Day) - 8 May, marking the 1945 end of the Second World War in Europe. fromYear 1945 excludes earlier years. -->
     <NotableDate id="day-of-victory-over-fascism" displayName="Day of Victory over Fascism" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability fromYear="1945"><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="May" day="8" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saints Cyril and Methodius Day — 5 July, honouring the Byzantine missionaries to the Slavs. Fixed date. -->
+    <!-- Saints Cyril and Methodius Day - 5 July, honouring the Byzantine missionaries to the Slavs. Fixed date. -->
     <NotableDate id="saints-cyril-and-methodius-day" displayName="Saints Cyril and Methodius Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="July" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Slovak National Uprising Anniversary — 29 August, marking the 1944 uprising against Nazi occupation. fromYear 1944 excludes earlier years. -->
+    <!-- Slovak National Uprising Anniversary - 29 August, marking the 1944 uprising against Nazi occupation. fromYear 1944 excludes earlier years. -->
     <NotableDate id="slovak-national-uprising-anniversary" displayName="Slovak National Uprising Anniversary" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability fromYear="1944"><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="August" day="29" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Constitution Day — 1 September, marking the adoption of the 1992 Slovak constitution. fromYear 1992 excludes earlier years. -->
+    <!-- Constitution Day - 1 September, marking the adoption of the 1992 Slovak constitution. fromYear 1992 excludes earlier years. -->
     <NotableDate id="constitution-day" displayName="Constitution Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability fromYear="1992"><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="September" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Struggle for Freedom and Democracy Day — 17 November, marking the 1939 and 1989 student protests (the latter began the Velvet Revolution). Fixed date. -->
+    <!-- Struggle for Freedom and Democracy Day - 17 November, marking the 1939 and 1989 student protests (the latter began the Velvet Revolution). Fixed date. -->
     <NotableDate id="struggle-for-freedom-and-democracy-day" displayName="Struggle for Freedom and Democracy Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="sk"><Applicability><Territory code="SK" /></Applicability>
         <Strategy><Fixed month="November" day="17" /></Strategy></Rule></Rules>

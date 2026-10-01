@@ -22,8 +22,8 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}" /> is the thread-safe variant of
 /// <see cref="EvictingDictionary{TKey, TValue}" />. It partitions its capacity across a fixed number of internal <em>segments</em>,
 /// each guarded by its own monitor: the key comparer's hash routes every key to exactly one segment, so operations on
-/// keys owned by different segments proceed in parallel. Reads are writes in an evicting cache — a lookup repositions
-/// the key for recency-tracked policies — so even <see cref="TryGetValue" /> takes its segment's lock; the striping
+/// keys owned by different segments proceed in parallel. Reads are writes in an evicting cache - a lookup repositions
+/// the key for recency-tracked policies - so even <see cref="TryGetValue" /> takes its segment's lock; the striping
 /// keeps that contention local.
 /// </para>
 /// <para>
@@ -35,9 +35,9 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// exactly.
 /// </para>
 /// <para>
-/// The single-key operations — <see cref="Add(TKey, TValue)" />, <see cref="TryAdd(TKey, TValue)" />,
+/// The single-key operations - <see cref="Add(TKey, TValue)" />, <see cref="TryAdd(TKey, TValue)" />,
 /// <see cref="TryGetValue" />, <see cref="ContainsKey" />, <see cref="Touch" />, <see cref="TryRemove" />, the indexer,
-/// and <see cref="GetOrAdd(TKey, TValue)" /> — are each individually atomic and lock only the owning segment.
+/// and <see cref="GetOrAdd(TKey, TValue)" /> - are each individually atomic and lock only the owning segment.
 /// <see cref="Count" />, <see cref="IsEmpty" />, <see cref="Clear" />, <see cref="ToArray" />, and the snapshot
 /// properties acquire every segment lock and therefore observe a coherent point-in-time state;
 /// <see cref="ApproximateCount" /> is lock-free.
@@ -53,14 +53,14 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// capacity policy, with the same lazy-purge model as the non-concurrent type: expired entries are invisible to lookups
 /// and enumeration before they are physically removed, capacity pressure purges a segment's expired entries ahead of a
 /// policy eviction, and <see cref="Count" /> reports the raw stored count <em>including</em> expired-but-unpurged
-/// entries — call <see cref="RemoveExpired" /> to reconcile. Without an expiration configuration the dictionary
+/// entries - call <see cref="RemoveExpired" /> to reconcile. Without an expiration configuration the dictionary
 /// performs no clock reads.
 /// </para>
 /// <para>
 /// Unlike <see cref="EvictingDictionary{TKey, TValue}" />, this type exposes only the post-commit
 /// <see cref="ItemEvicted" /> event: under concurrency an eviction has already been committed by the time a handler
 /// could observe it, so a pre-removal event could not be honored. Handlers run after the segment lock has been released
-/// and their exceptions are suppressed (except <see cref="OutOfMemoryException" />) — see the event's documentation.
+/// and their exceptions are suppressed (except <see cref="OutOfMemoryException" />) - see the event's documentation.
 /// </para>
 /// </remarks>
 /// <example>
@@ -366,7 +366,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>
     /// This is the single shared initializer that every public constructor delegates to. It is also visible to the test
-    /// assembly so instances can be constructed with an explicit segment count — a concurrency level of 1 yields a
+    /// assembly so instances can be constructed with an explicit segment count - a concurrency level of 1 yields a
     /// single segment whose eviction sequence matches the non-concurrent
     /// <see cref="EvictingDictionary{TKey, TValue}" /> exactly.
     /// </para>
@@ -414,12 +414,12 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// provided are no longer present in the dictionary by the time the handler observes them. One caveat: because the
     /// segment monitor is reentrant, a <see cref="GetOrAdd(TKey, Func{TKey, TValue})" /> factory that violates its
     /// documented no-re-entry rule and mutates the dictionary can cause the nested operation's handlers to run while
-    /// the outer call still holds the stripe lock — a handler that then blocks on another thread needing that stripe
+    /// the outer call still holds the stripe lock - a handler that then blocks on another thread needing that stripe
     /// deadlocks. Keeping factories free of dictionary calls (as their contract requires) preserves the
     /// outside-the-lock guarantee.
     /// </para>
     /// <para>
-    /// Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed — only
+    /// Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed - only
     /// <see cref="OutOfMemoryException" /> propagates. This differs from the non-concurrent
     /// <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" />, which propagates handler exceptions: under
     /// concurrency the eviction has already been committed and observed by other threads, so propagating a handler
@@ -441,7 +441,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// coherent point-in-time state. Like <see cref="Count" />, it includes expired-but-unpurged entries.
     /// </value>
     /// <remarks>
-    /// Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
+    /// Use this property when callers need a fast size estimate - for capacity hints, telemetry, or display - but can
     /// tolerate values that lag active writers. Prefer <see cref="Count" /> when an exact snapshot is required.
     /// </remarks>
     public int ApproximateCount
@@ -483,8 +483,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// for a lock-free estimate.
     /// </para>
     /// <para>
-    /// When time-based expiration is configured, this property deliberately reports the raw stored count — <em>including</em>
-    /// expired-but-unpurged entries — matching <see cref="EvictingDictionary{TKey, TValue}" />. Call
+    /// When time-based expiration is configured, this property deliberately reports the raw stored count - <em>including</em>
+    /// expired-but-unpurged entries - matching <see cref="EvictingDictionary{TKey, TValue}" />. Call
     /// <see cref="RemoveExpired" /> to purge expired entries and reconcile <see cref="Count" /> with the live set.
     /// </para>
     /// </remarks>
@@ -647,7 +647,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// </summary>
     /// <remarks>
     /// This operation acquires every segment lock, so it is atomic with respect to all other operations. It is a bulk
-    /// reset, not an eviction — <see cref="ItemEvicted" /> is not raised for the removed entries, matching
+    /// reset, not an eviction - <see cref="ItemEvicted" /> is not raised for the removed entries, matching
     /// <see cref="ConcurrentCircularBuffer{T}.Clear" />.
     /// </remarks>
     public void Clear()
@@ -678,7 +678,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// This is a pure read with respect to both the capacity policy and time-based expiration — it does not update
+    /// This is a pure read with respect to both the capacity policy and time-based expiration - it does not update
     /// recency or frequency metadata, does not increment <see cref="TotalTouches" />, and does not refresh a sliding
     /// expiration deadline (symmetric with <see cref="Touch" />; use <see cref="TryGetValue" /> or the indexer getter
     /// to slide). When time-based expiration is configured, an expired entry counts as absent: it is lazily removed as
@@ -741,11 +741,11 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// Unlike
     /// <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.GetOrAdd(TKey, Func{TKey, TValue})" />,
     /// the factory is invoked <em>inside</em> the owning segment's lock, so it runs at most once per key even under
-    /// concurrent misses — the single-flight behavior that prevents cache stampedes.
+    /// concurrent misses - the single-flight behavior that prevents cache stampedes.
     /// </para>
     /// <para>
     /// The cost of that guarantee is that the factory blocks every other operation on the same segment while it runs:
-    /// keep factories short, and never call back into this dictionary from a factory — doing so from the same thread
+    /// keep factories short, and never call back into this dictionary from a factory - doing so from the same thread
     /// re-enters the segment monitor and can corrupt eviction bookkeeping mid-add. If the factory throws, nothing is
     /// added and the exception propagates.
     /// </para>
@@ -801,7 +801,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// When time-based expiration is configured, an expired entry counts as absent: it is lazily removed as an eviction
-    /// and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy metadata — it
+    /// and <see langword="false" /> is returned. <see cref="Touch" /> affects only the capacity-policy metadata - it
     /// does not refresh a sliding expiration deadline; use a value-returning read access ( <see cref="TryGetValue" />
     /// or the indexer getter) to slide ( <see cref="ContainsKey" />, like <see cref="Touch" />, is a pure read that
     /// does not slide). The operation locks only the segment that owns <paramref name="key" />.
@@ -886,7 +886,7 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <see cref="TryRemove" /> operates on physically stored entries: when time-based expiration is configured it also
     /// removes an expired-but-unpurged entry and returns <see langword="true" />. An explicit removal is not an
-    /// eviction — it does not raise <see cref="ItemEvicted" /> and does not increment <see cref="EvictionCount" />. The
+    /// eviction - it does not raise <see cref="ItemEvicted" /> and does not increment <see cref="EvictionCount" />. The
     /// operation is atomic and locks only the segment that owns <paramref name="key" />.
     /// </remarks>
     public bool TryRemove(TKey key, out TValue value)

@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.IO.Compound.PropertySets;
 
 /// <summary>
-/// Represents a parsed OLE property set — the managed counterpart of the COM <c>IPropertyStorage</c> interface —
+/// Represents a parsed OLE property set - the managed counterpart of the COM <c>IPropertyStorage</c> interface -
 /// exposing its sections and the typed values they contain.
 /// </summary>
 /// <remarks>

@@ -10,7 +10,7 @@ namespace Bodu.Samples.Text.Encoding.EncodingTour.Scenarios;
 
 /// <summary>
 /// Demonstrates the <see cref="Guid" /> convenience overloads: identifiers destined for URLs,
-/// file names, or log lines encode directly — no manual <c>ToByteArray</c> plumbing — and each
+/// file names, or log lines encode directly - no manual <c>ToByteArray</c> plumbing - and each
 /// base trades length against alphabet safety differently.
 /// </summary>
 public static class GuidConvenience

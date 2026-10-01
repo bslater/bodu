@@ -96,7 +96,7 @@ public readonly partial struct BigDecimal
     }
 
     /// <summary>
-    /// Returns the remainder of dividing one value by another — the exact value of
+    /// Returns the remainder of dividing one value by another - the exact value of
     /// <c>left - Truncate(left / right) &#215; right</c>.
     /// </summary>
     /// <param name="left">The dividend.</param>

@@ -1,8 +1,8 @@
 # Bodu.Text.Formats
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-> **Umbrella meta-package.** This package carries no code of its own — it references the three standalone line-format libraries so a single package reference brings in all of them.
+> **Umbrella meta-package.** This package carries no code of its own - it references the three standalone line-format libraries so a single package reference brings in all of them.
 
 The Bodu line-oriented text formats on .NET 8, each a self-contained library shaped after `System.Text.Json`:
 
@@ -18,7 +18,7 @@ The Bodu line-oriented text formats on .NET 8, each a self-contained library sha
 dotnet add package Bodu.Text.Formats
 ```
 
-Targets `net8.0`. To depend on a single format, reference its package directly instead — for example `dotnet add package Bodu.Text.Delimited`.
+Targets `net8.0`. To depend on a single format, reference its package directly instead - for example `dotnet add package Bodu.Text.Delimited`.
 
 ## API shape
 
@@ -37,6 +37,6 @@ List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText);
 string back = DelimitedSerializer.Serialize(trades);
 ```
 
-The forward-only `Utf8*Reader` / `Utf8*Writer` pairs cover token-level streaming, and the mutable `*Node` DOMs cover authoring — the INI node tree additionally preserves comment trivia for faithful round trips of human-owned files.
+The forward-only `Utf8*Reader` / `Utf8*Writer` pairs cover token-level streaming, and the mutable `*Node` DOMs cover authoring - the INI node tree additionally preserves comment trivia for faithful round trips of human-owned files.
 
 See the per-package READMEs and the samples under `samples/Text.Formats/` for full walkthroughs.

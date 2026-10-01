@@ -22,7 +22,7 @@ internal static class HistoryAvailabilityGuard
     /// <remarks>
     /// Forward-resolving rules (<see cref="RateDateResolution.NextOnOrAfter" /> and the nearest family) can reach up to
     /// <see cref="RateLookupOptions.ToleranceDays" /> past the requested date, so availability guards must test this
-    /// reachable maximum rather than the requested date itself — a request just outside an advertised floor whose
+    /// reachable maximum rather than the requested date itself - a request just outside an advertised floor whose
     /// tolerance reaches back inside it can still be served.
     /// </remarks>
     internal static DateOnly LatestReachableDate(DateOnly date, RateLookupOptions? options)

@@ -20,7 +20,7 @@ public partial class NavigableDictionaryTests
     /// <summary>
     /// Verifies that 20,000 seeded mixed add/remove/upsert/lookup operations mirrored against a
     /// <see cref="SortedDictionary{TKey, TValue}" /> leave the <see cref="NavigableDictionary{TKey, TValue}" /> in
-    /// exactly the mirrored state at every checkpoint — full ordered content, count, and min/max entries — and that a
+    /// exactly the mirrored state at every checkpoint - full ordered content, count, and min/max entries - and that a
     /// floor/ceiling/higher/lower/rank/select/count-in-range probe battery agrees with a sorted-array binary-search
     /// oracle. This sweep is the correctness gate for the key-value adaptation of the size-augmented red-black tree.
     /// </summary>

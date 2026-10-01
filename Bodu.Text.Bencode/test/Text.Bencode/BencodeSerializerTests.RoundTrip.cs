@@ -53,7 +53,7 @@ public partial class BencodeSerializerTests
     [TestMethod]
     public void SerializeDeserialize_WhenStringIsMultibyteUtf8_ShouldLengthPrefixByByteCount()
     {
-        // "héllo" — the 'é' is two UTF-8 bytes, so the byte length is six for five characters.
+        // "héllo" - the 'é' is two UTF-8 bytes, so the byte length is six for five characters.
         var model = new StringModel { Value = "héllo" };
 
         byte[] bytes = BencodeSerializer.Serialize(model);
@@ -250,8 +250,8 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that registering a user <see cref="BencodeConverter{T}" /> for <see cref="bool" /> — a type with no
-    /// built-in converter — lets a Boolean member round-trip, proving the converter escape hatch.
+    /// Verifies that registering a user <see cref="BencodeConverter{T}" /> for <see cref="bool" /> - a type with no
+    /// built-in converter - lets a Boolean member round-trip, proving the converter escape hatch.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenBooleanConverterRegistered_ShouldRoundTripUnsupportedType()
@@ -270,8 +270,8 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that registering a user <see cref="BencodeConverter{T}" /> for <see cref="double" /> — a type with no
-    /// built-in converter — lets a floating-point member round-trip through a Bencode byte string, proving the converter
+    /// Verifies that registering a user <see cref="BencodeConverter{T}" /> for <see cref="double" /> - a type with no
+    /// built-in converter - lets a floating-point member round-trip through a Bencode byte string, proving the converter
     /// escape hatch for a second otherwise-unsupported type.
     /// </summary>
     [TestMethod]

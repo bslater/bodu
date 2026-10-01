@@ -28,7 +28,7 @@ public partial class OutlookAttachmentTests
             .Build();
 
     /// <summary>
-    /// Verifies that an attachment without a declared method but with a content stream reports the by-value method —
+    /// Verifies that an attachment without a declared method but with a content stream reports the by-value method -
     /// the real-world tolerance rule.
     /// </summary>
     [TestMethod]

@@ -10,7 +10,7 @@ namespace Bodu.Samples.Text.Encoding.EncodingTour.Scenarios;
 
 /// <summary>
 /// Demonstrates the catalogue: one payload through every base family, and one family
-/// (Base32/Base58/Base64/Base85) through its published variants — the alphabet is a parameter,
+/// (Base32/Base58/Base64/Base85) through its published variants - the alphabet is a parameter,
 /// not a different API, so switching between RFC 4648 standard and Crockford or between
 /// Ascii85 and Z85 is one enum argument.
 /// </summary>

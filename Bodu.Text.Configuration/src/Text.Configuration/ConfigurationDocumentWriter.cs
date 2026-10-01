@@ -46,7 +46,7 @@ internal static class ConfigurationDocumentWriter
     }
 
     /// <summary>
-    /// Writes a single section — its leading comments, header line, and entries — and reports whether any output was
+    /// Writes a single section - its leading comments, header line, and entries - and reports whether any output was
     /// produced.
     /// </summary>
     /// <param name="section">The section to emit.</param>

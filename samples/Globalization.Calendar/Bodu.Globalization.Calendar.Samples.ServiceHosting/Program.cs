@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar.Samples.ServiceHosting;
 
 /// <summary>
 /// Entry point for the service-hosting sample: registering the notable-date service in a dependency
-/// injection container — the simple singleton form and the reloadable form whose data can be swapped
+/// injection container - the simple singleton form and the reloadable form whose data can be swapped
 /// at run time without restarting the host.
 /// </summary>
 public static class Program

@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// the final digest.
 /// </para>
 /// <para>
-/// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical collision
+/// <strong>When to choose Snefru.</strong> Academic study and legacy interop only - Snefru has practical collision
 /// attacks against both the 2-pass and 4-pass variants and is one of the earliest cryptographic hashes ever published.
 /// Pick <see cref="Snefru128" /> for 128-bit output and <see cref="Snefru256" /> for 256-bit output. For any new
 /// security-sensitive cryptographic hashing use SHA-2, SHA-3, or <see cref="Blake2b" />; for non-cryptographic
@@ -244,7 +244,7 @@ public abstract partial class Snefru
     /// <summary>
     /// Applies Snefru's S-box substitution rounds using the configured constants for the given round.
     /// </summary>
-    /// <param name="round">The current round index (0–7).</param>
+    /// <param name="round">The current round index (0-7).</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ApplySBoxRounds(int round)
     {

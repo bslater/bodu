@@ -17,9 +17,9 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// This is the catch-all converter, consulted last.
 /// </summary>
 /// <remarks>
-/// The factory deliberately declines primitive and special scalar types — <see cref="decimal" />, enumerations,
+/// The factory deliberately declines primitive and special scalar types - <see cref="decimal" />, enumerations,
 /// interfaces, abstract types, and (for a format without native mappings for them) the well-known framework scalar
-/// types — so that an unsupported type surfaces as a missing-converter error rather than being mapped to a keyed
+/// types - so that an unsupported type surfaces as a missing-converter error rather than being mapped to a keyed
 /// container of its incidental public properties, which would lose data or recurse on self-referential members.
 /// <see cref="object" /> has a dedicated built-in converter earlier in the resolution order, so its rejection here is
 /// unreachable through the default list and guards only against a reordering.

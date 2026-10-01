@@ -13,7 +13,7 @@ public partial class PstBTreeTests
 {
     /// <summary>
     /// Builds a container whose node B-tree root is a branch page whose first child reference points back at the
-    /// root itself — the cheapest crafted cycle, reachable from a single 512-byte page.
+    /// root itself - the cheapest crafted cycle, reachable from a single 512-byte page.
     /// </summary>
     /// <returns>The container bytes.</returns>
     private static byte[] BuildSelfReferencingNodeTree()

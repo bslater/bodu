@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for non-empty strings (including whitespace-only
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for non-empty strings (including whitespace-only
     /// values; this guard permits whitespace by contract).
     /// </summary>
     /// <param name="testName">The data-row label.</param>

@@ -24,21 +24,21 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Strict" /> — canonical object form <c>{ "numerator": 3, "denominator": 4 }</c>;
+/// <see cref="NumericsJsonPolicy.Strict" /> - canonical object form <c>{ "numerator": 3, "denominator": 4 }</c>;
 /// rejects duplicate properties and non-object tokens. Property values may be either JSON numbers or numeric strings,
 /// so <see cref="BigInteger" />-backed values survive without precision loss.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Lenient" /> — same object shape as <see cref="NumericsJsonPolicy.Strict" />, but a
+/// <see cref="NumericsJsonPolicy.Lenient" /> - same object shape as <see cref="NumericsJsonPolicy.Strict" />, but a
 /// top-level JSON string token is accepted and routed through
 /// <see cref="Fraction{T}.Parse(ReadOnlySpan{char}, IFormatProvider?)" /> as a tolerant fallback.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Compact" /> — string form <c>"3/4"</c>; reads delegate to
+/// <see cref="NumericsJsonPolicy.Compact" /> - string form <c>"3/4"</c>; reads delegate to
 /// <see cref="Fraction{T}.TryParse(ReadOnlySpan{char}, IFormatProvider?, out Fraction{T})" /> and writes call
 /// <see cref="Fraction{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture.
 /// </description>

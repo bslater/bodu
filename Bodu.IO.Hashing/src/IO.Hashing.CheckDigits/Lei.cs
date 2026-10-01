@@ -89,7 +89,7 @@ public sealed class Lei
     /// </summary>
     /// <param name="valueIncludingCheck">The complete twenty-character LEI.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" /> -
     /// including the case where any character is outside the alphanumeric uppercase alphabet or the check characters
     /// are not decimal digits.
     /// </returns>

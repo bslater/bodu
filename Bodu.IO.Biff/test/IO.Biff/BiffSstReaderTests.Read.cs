@@ -190,7 +190,7 @@ public sealed partial class BiffSstReaderTests
     }
 
     /// <summary>
-    /// Verifies that a string spread over three records — the SST record and two continuations — is stitched in
+    /// Verifies that a string spread over three records - the SST record and two continuations - is stitched in
     /// order, with each continuation's flags byte honored.
     /// </summary>
     [TestMethod]

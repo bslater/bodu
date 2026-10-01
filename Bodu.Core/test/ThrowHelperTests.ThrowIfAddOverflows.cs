@@ -9,8 +9,8 @@ namespace Bodu;
 public partial class ThrowHelperTests
 {
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfAddOverflows(int, int, string)" /> does not throw — and reports
-    /// nothing on the ParamName-asserting overload — when the sum stays within the <see cref="int" /> range,
+    /// Verifies that <see cref="ThrowHelper.ThrowIfAddOverflows(int, int, string)" /> does not throw - and reports
+    /// nothing on the ParamName-asserting overload - when the sum stays within the <see cref="int" /> range,
     /// including the boundary sums and negative underflow boundary.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

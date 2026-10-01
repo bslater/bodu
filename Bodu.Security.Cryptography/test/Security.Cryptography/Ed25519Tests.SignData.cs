@@ -9,7 +9,7 @@ using System.Reflection;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains Ed25519-specific tests for <see cref="Ed25519.SignData(ReadOnlySpan{byte})" /> — determinism and the
+/// Contains Ed25519-specific tests for <see cref="Ed25519.SignData(ReadOnlySpan{byte})" /> - determinism and the
 /// span overload; the round-trip, tamper, and missing-key contracts are inherited from the signature base.
 /// </summary>
 public sealed partial class Ed25519Tests

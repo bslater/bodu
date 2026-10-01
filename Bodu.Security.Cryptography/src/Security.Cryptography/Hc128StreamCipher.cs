@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// HC-128 binds a 128-bit key and a 128-bit IV at construction and produces 32-bit keystream words from two 512-word
 /// secret tables, <c>P</c> and <c>Q</c>. Like Rabbit it has no seekable block counter: the tables are large evolving
 /// state and each step both updates one table entry and emits one keystream word, so the keystream must be produced
-/// strictly in sequence — the contract the engine-owns-advancement <see cref="IStreamCipher" /> interface expresses.
+/// strictly in sequence - the contract the engine-owns-advancement <see cref="IStreamCipher" /> interface expresses.
 /// </para>
 /// <para>
 /// Initialization expands the key and IV into a 1280-word array using the SHA-256 message-schedule functions, seeds the

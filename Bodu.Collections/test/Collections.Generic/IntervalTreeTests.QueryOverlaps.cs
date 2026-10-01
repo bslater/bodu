@@ -79,7 +79,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Verifies that the lazy overlap sequence is fail-fast — mutating the tree mid-iteration throws
+    /// Verifies that the lazy overlap sequence is fail-fast - mutating the tree mid-iteration throws
     /// <see cref="InvalidOperationException" /> on the next advance.
     /// </summary>
     [TestMethod]

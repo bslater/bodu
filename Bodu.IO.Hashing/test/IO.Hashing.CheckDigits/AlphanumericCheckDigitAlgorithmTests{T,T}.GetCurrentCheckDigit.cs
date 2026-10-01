@@ -47,7 +47,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     }
 
     /// <summary>
-    /// Verifies that reading the current check character twice in succession — with no intervening appends —
+    /// Verifies that reading the current check character twice in succession - with no intervening appends -
     /// yields the same value, proving the getter is non-destructive.
     /// </summary>
     [TestMethod]

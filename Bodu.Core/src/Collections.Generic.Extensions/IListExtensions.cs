@@ -20,7 +20,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// across the entire list (or matched subset) and returns the number of replacements made.
 /// </para>
 /// <para>
-/// All methods operate directly against the supplied list — no copy is allocated, and the original ordering of
+/// All methods operate directly against the supplied list - no copy is allocated, and the original ordering of
 /// non-affected elements is preserved. Methods that mutate require the list to be writable; methods that only search
 /// are safe to call on read-only views provided the list still implements <see cref="IList{T}" />.
 /// </para>

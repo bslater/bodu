@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Ofx
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **OFX's**
 (ofx.com) spot-rate history, queried from their public JSON endpoint.
@@ -9,7 +9,7 @@ Unlike the central-bank providers, OFX serves arbitrary ISO currency pairs, so
 `OfxRateProvider` derives from the arbitrary-pair `PairWebRateProvider`
 base: it fetches a pair's history over a date range on demand and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
-and `IRateProvider` contracts — so it composes with `Money.ConvertTo`, the
+and `IRateProvider` contracts - so it composes with `Money.ConvertTo`, the
 caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
@@ -38,8 +38,8 @@ RateLookupResult latest = provider.GetRate("AUD", "USD", new DateOnly(2026, 6, 1
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles: `new
-OfxRateProvider(options, ...)` — the provider builds, owns, and disposes its own
-`HttpClient` — and `new OfxRateProvider(httpClient, options, ...)` — you supply the
+OfxRateProvider(options, ...)` - the provider builds, owns, and disposes its own
+`HttpClient` - and `new OfxRateProvider(httpClient, options, ...)` - you supply the
 client and own its lifetime. The second form is what the DI registration uses, backed by
 `IHttpClientFactory`.
 

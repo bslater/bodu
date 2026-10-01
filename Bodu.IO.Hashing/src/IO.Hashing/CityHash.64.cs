@@ -16,7 +16,7 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// <see cref="CityHash64" /> selects one of four internal mixing paths depending on the input length: a compact path
-/// for 0–16 bytes, a four-word path for 17–32 bytes, an eight-word path with byte-swap finalization for 33–64 bytes,
+/// for 0-16 bytes, a four-word path for 17-32 bytes, an eight-word path with byte-swap finalization for 33-64 bytes,
 /// and a full iterative path that consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs
 /// of 65 bytes or more. All paths converge through the shared <c>HashLen16</c> finalizer, which applies two rounds of
 /// multiply-shift-XOR to distribute entropy across all output bits.
@@ -32,14 +32,14 @@ namespace Bodu.IO.Hashing;
 /// <description>Variant: <c>CityHash64</c>.</description>
 /// </item>
 /// <item>
-/// <description>Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.</description>
+/// <description>Length-dispatched mixing: 0-16, 17-32, 33-64, and 65+ byte paths.</description>
 /// </item>
 /// <item>
 /// <description>Block size on the long path: 64 bytes.</description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic hashing —
+/// <strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic hashing -
 /// fingerprints, content-based sharding, deduplication keys. <see cref="MurmurHash3_128" /> gives twice the bits at
 /// slightly lower throughput on long inputs; <see cref="Fnv1a64" /> is preferable only for very small fixed-length keys
 /// where simplicity matters more than distribution.

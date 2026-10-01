@@ -72,7 +72,7 @@ public static class ParseAndOrderedRules
         Console.WriteLine();
 
         // The allowlist idiom: because unmatched values pass, an allowlist starts by excluding EVERYTHING
-        // ("!*"), then re-admits what is wanted, then carves exceptions back out — reading top to bottom
+        // ("!*"), then re-admits what is wanted, then carves exceptions back out - reading top to bottom
         // like firewall rules, with later lines overriding earlier ones.
         var allowlist = TextFilter.Parse(["!*", "error*", "!*debug*"], ordered);
 

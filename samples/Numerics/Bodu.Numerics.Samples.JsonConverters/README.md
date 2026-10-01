@@ -1,17 +1,17 @@
 # Bodu.Numerics.Samples.JsonConverters
 
 The companion `Bodu.Numerics.Serialization.Json` package that teaches `System.Text.Json` the
-`Bodu.Numerics` types — keeping the core library serialization-agnostic (the NodaTime companion-package
+`Bodu.Numerics` types - keeping the core library serialization-agnostic (the NodaTime companion-package
 pattern). Four scenarios cover the one-call converter registration, the policy-selected wire shapes,
 the `Fraction<T>` JSON helpers, and a nested POCO graph.
 
-Everything runs offline with fixed inputs — deterministic output every run.
+Everything runs offline with fixed inputs - deterministic output every run.
 
 ```bash
 dotnet run --project samples/Numerics/Bodu.Numerics.Samples.JsonConverters
 ```
 
-## Scenario 1 — RegisterConverters
+## Scenario 1 - RegisterConverters
 
 **Intent.** Show the single call that teaches `JsonSerializer` every numerics type:
 `AddNumericsJsonConverters()` adds a coherent converter set to a `JsonSerializerOptions`, after which
@@ -21,8 +21,8 @@ built-in type.
 **What it does.** Registers the converters once (default `Strict` policy), then serializes each of the
 four types, prints the JSON, deserializes it back, and confirms the re-read value equals the original.
 
-**What to expect.** Each type emits its canonical `Strict` shape — a numerator/denominator object for
-the fraction, an endpoint object for the intervals, and a JSON array of piece-objects for the set —
+**What to expect.** Each type emits its canonical `Strict` shape - a numerator/denominator object for
+the fraction, an endpoint object for the intervals, and a JSON array of piece-objects for the set -
 and every round trip reports `matches original: True`:
 
 ```text
@@ -51,7 +51,7 @@ and every round trip reports `matches original: True`:
 `JsonSerializer.Serialize`, `JsonSerializer.Deserialize<T>` for `Fraction<int>` / `Interval<int>` /
 `DiscreteInterval<int>` / `IntervalSet<int>`.
 
-## Scenario 2 — PolicyShapes
+## Scenario 2 - PolicyShapes
 
 **Intent.** Show how `NumericsJsonPolicy` selects the on-the-wire shape: `Strict` emits
 self-describing objects for persistence, while `Compact` emits the terse single-string forms
@@ -62,7 +62,7 @@ back its own shape.
 `AddNumericsJsonConverters`, serializes the fraction `3/4` and the interval `[1, 5)` under each, then
 deserializes a compact `"3/4"` string to prove the compact reader restores the same value.
 
-**What to expect.** The strict outputs are objects; the compact outputs are single strings — the
+**What to expect.** The strict outputs are objects; the compact outputs are single strings - the
 fraction as `"3/4"` and the interval in ISO 31-11 bracket notation `"[1, 5)"`:
 
 ```text
@@ -89,7 +89,7 @@ fraction as `"3/4"` and the interval in ISO 31-11 bracket notation `"[1, 5)"`:
 `AddNumericsJsonConverters(NumericsJsonPolicy)`, `JsonSerializer.Serialize` /
 `JsonSerializer.Deserialize<Fraction<int>>`.
 
-## Scenario 3 — FractionExtensions
+## Scenario 3 - FractionExtensions
 
 **Intent.** Show the `FractionJsonExtensions` convenience helpers: `ToJson` and `FromJson` serialize
 a single `Fraction<T>` to and from JSON in one call, building the registered options internally so no
@@ -125,17 +125,17 @@ shape; both `FromJson` reads restore `22/7`:
 `FractionJsonExtensions.FromJson<T>(string)`, `FractionJsonExtensions.FromJson<T>(string,
 NumericsJsonPolicy)`.
 
-## Scenario 4 — NestedGraph
+## Scenario 4 - NestedGraph
 
 **Intent.** Show that once the numerics converters are registered they compose transparently inside a
-larger object graph — no per-property attributes required.
+larger object graph - no per-property attributes required.
 
 **What it does.** Serializes a `Portfolio` POCO whose properties mix a plain string with a
 `Fraction<int>`, an `Interval<int>`, and an `IntervalSet<int>`, prints the indented JSON, then
 deserializes the whole graph back and reads each property.
 
-**What to expect.** One `Serialize` call renders the whole graph — each numerics property using its
-own converter — and one `Deserialize` call reconstructs every property, including the normalized
+**What to expect.** One `Serialize` call renders the whole graph - each numerics property using its
+own converter - and one `Deserialize` call reconstructs every property, including the normalized
 interval set `[9, 12] ∪ [13, 17]`:
 
 ```text
@@ -202,6 +202,6 @@ Bodu.Numerics.Samples.JsonConverters/
 
 ## Related
 
-- `Bodu.Numerics.Samples.Fractions` — the exact-rational `Fraction<T>` without the JSON layer.
-- `Bodu.Numerics.Samples.Intervals` — the interval algebra without the JSON layer.
+- `Bodu.Numerics.Samples.Fractions` - the exact-rational `Fraction<T>` without the JSON layer.
+- `Bodu.Numerics.Samples.Intervals` - the interval algebra without the JSON layer.
 ```

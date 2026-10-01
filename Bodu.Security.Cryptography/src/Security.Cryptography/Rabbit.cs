@@ -52,7 +52,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 — A Description of the Rabbit Stream Cipher
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 - A Description of the Rabbit Stream Cipher
 /// Algorithm</seealso> <seealso cref="ChaCha20" /> <seealso cref="Salsa20" />
 public sealed class Rabbit
     : SymmetricStreamAlgorithm

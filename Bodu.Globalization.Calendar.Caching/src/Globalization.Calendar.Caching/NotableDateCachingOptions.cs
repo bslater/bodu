@@ -41,7 +41,7 @@ public sealed class NotableDateCachingOptions
 
     /// <summary>
     /// Gets or sets the maximum fraction of <see cref="Ttl" /> that is deterministically shaved off per territory, so
-    /// territories warmed together do not all expire — and recompute — at the same instant.
+    /// territories warmed together do not all expire - and recompute - at the same instant.
     /// </summary>
     /// <value>
     /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables jitter and preserves the exact configured
@@ -50,8 +50,8 @@ public sealed class NotableDateCachingOptions
     /// <remarks>
     /// The reduction is derived from a stable hash of the normalized territory (not from randomness), so a given
     /// territory's effective time-to-live is identical across instances and processes and deterministic under test. The
-    /// jitter is keyed by territory rather than by territory and year so the batch and per-year read paths — which
-    /// share one time-to-live per resolution — always agree on freshness. Jitter only ever shortens the duration, so no
+    /// jitter is keyed by territory rather than by territory and year so the batch and per-year read paths - which
+    /// share one time-to-live per resolution - always agree on freshness. Jitter only ever shortens the duration, so no
     /// year is served longer than the configured time-to-live allows; the trade-off is that a territory may recompute
     /// up to this fraction of its time-to-live early.
     /// </remarks>
@@ -77,7 +77,7 @@ public sealed class NotableDateCachingOptions
     /// <para>
     /// The background recompute shares the single-flight guard with genuine misses, so a miss that arrives while a
     /// refresh is computing is served the refreshed value; such a joining caller is counted as neither a hit nor a
-    /// miss. A recompute that fails is swallowed after logging — the hit it piggybacked on was already served — and the
+    /// miss. A recompute that fails is swallowed after logging - the hit it piggybacked on was already served - and the
     /// next aged hit schedules a fresh attempt. Disposing the service prevents new recomputes from being scheduled and
     /// abandons pending ones without draining them.
     /// </para>

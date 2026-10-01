@@ -10,17 +10,17 @@ dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Sa
 ```
 
 > Fixed keys/IVs/nonces are a determinism device for the sample only. Real encryption uses a random key and
-> a unique nonce per message — nonce reuse under one key is catastrophic for every cipher shown here.
+> a unique nonce per message - nonce reuse under one key is catastrophic for every cipher shown here.
 
-Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
-records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+Every scenario opens by printing a **What / Why / Expect** banner - the same three things this README
+records per scenario - so a transcript stands on its own and a reader can tell a correct run from a broken
 one without opening the source. The `text` blocks below show the value lines only; run the sample to see
 the banner above each of them.
 
-## Scenario 1 — BlockCiphers
+## Scenario 1 - BlockCiphers
 
-**Intent.** Show the raw block-cipher primitives — the keyed permutation on a single block, before any mode
-of operation — across the library's catalogue with their different key and block sizes.
+**Intent.** Show the raw block-cipher primitives - the keyed permutation on a single block, before any mode
+of operation - across the library's catalogue with their different key and block sizes.
 
 **What it does.** For Threefish (256 / 512 / 1024), Twofish, Camellia, Serpent, Skipjack, and Blowfish,
 encrypts one block of fixed plaintext in ECB mode with no padding under a fixed key, then decrypts and
@@ -50,14 +50,14 @@ checks the round trip.
 ```
 
 Threefish is a *tweakable* cipher: a fresh instance auto-generates a random tweak and IV, so the sample
-pins both to fixed values — without that, the two instances would disagree and the ciphertext would change
+pins both to fixed values - without that, the two instances would disagree and the ciphertext would change
 run to run. The non-tweakable ciphers need only a fixed key.
 
 **APIs demonstrated.** `Threefish256` / `Threefish512` / `Threefish1024`, `Twofish`, `Camellia`,
 `Serpent128`, `Skipjack`, `Blowfish`, `SymmetricAlgorithm.CreateEncryptor` / `TransformFinalBlock`, and
 `TweakableSymmetricAlgorithm.Tweak`.
 
-## Scenario 2 — CipherModes
+## Scenario 2 - CipherModes
 
 **Intent.** Show how a mode of operation extends a block cipher across a multi-block message, and how CBC
 (with padding) and CTR (streaming) differ in what they do to the message length.
@@ -86,7 +86,7 @@ leaves the length unchanged (so it is used here with a block-aligned message and
 `Twofish.BlockPadding` (`PaddingModeKind.PKCS7` / `PaddingModeKind.None`), the `Encrypt` / `Decrypt`
 extensions.
 
-## Scenario 3 — AeadAscon
+## Scenario 3 - AeadAscon
 
 **Intent.** Show authenticated encryption end to end with Ascon-AEAD128 (NIST SP 800-232): confidentiality
 plus integrity, where a single tampered byte causes decryption to fail rather than return garbage.
@@ -114,12 +114,12 @@ check the same way.
 **APIs demonstrated.** `AsconAead128` construction with a key and nonce, `ProcessAssociatedData`,
 `Encrypt(ReadOnlySpan<byte>, Span<byte>)`, `Decrypt(ReadOnlySpan<byte>, Span<byte>)`.
 
-## Scenario 4 — AeadModes
+## Scenario 4 - AeadModes
 
 **Intent.** Show that classic block ciphers reach the same authenticated-encryption guarantee through an
 AEAD *mode*, and that the library exposes several over one interface.
 
-**What it does.** Runs AES through GCM, EAX, and OCB over a fixed key, nonce, and associated data — sealing,
+**What it does.** Runs AES through GCM, EAX, and OCB over a fixed key, nonce, and associated data - sealing,
 opening, and then rejecting a tampered ciphertext for each.
 
 **What to expect.**
@@ -135,10 +135,10 @@ opening, and then rejecting a tampered ciphertext for each.
       sealed: 793f2b75ac4ba8c036a5379505ed69173e208118f519f1f420a04f2d22997ca4bd5f682d02572378
 ```
 
-Nonce sizing differs per mode: this GCM implementation — like the BCL's `AesGcm` and every TLS/IPsec
-deployment — accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte nonce;
+Nonce sizing differs per mode: this GCM implementation - like the BCL's `AesGcm` and every TLS/IPsec
+deployment - accepts only the 96-bit (12-byte) nonce; EAX authenticates the full block-sized 16-byte nonce;
 OCB takes a block-sized IV but uses only its first 12 bytes as the nonce (the trailing four bytes are
-padding — vary the leading bytes, never a trailing counter). All three share
+padding - vary the leading bytes, never a trailing counter). All three share
 the `IAeadBlockCipherModeTransform` surface, so one helper drives them; the sealed output is 25 ciphertext
 bytes plus a 16-byte tag. The byte[]-returning `Encrypt` / `Decrypt` are called through
 `AeadBlockCipherModeTransformExtensions` so the compiler does not bind to the span-writing instance overloads.
@@ -146,7 +146,7 @@ bytes plus a 16-byte tag. The byte[]-returning `Encrypt` / `Decrypt` are called 
 **APIs demonstrated.** `AesBlockCipher`, `GcmModeTransform` / `EaxModeTransform` / `OcbModeTransform`, the
 `AeadBlockCipherModeTransformExtensions.Encrypt` / `Decrypt` helpers.
 
-## Scenario 5 — StreamCiphers
+## Scenario 5 - StreamCiphers
 
 **Intent.** Show additive stream ciphers, which XOR a key-and-nonce-derived keystream against the plaintext
 and are self-inverse, and the differing nonce widths of the ChaCha/Salsa family.
@@ -173,7 +173,7 @@ variant exists precisely so a random nonce can be chosen safely without a counte
 **APIs demonstrated.** `ChaCha20`, `XChaCha20`, `Salsa20`, `SymmetricStreamAlgorithm.Key` / `Nonce`, the
 `Encrypt` / `Decrypt` extensions.
 
-## Scenario 6 — MoreCiphers
+## Scenario 6 - MoreCiphers
 
 **Intent.** Cover the ciphers the other scenarios do not reach, and draw out the distinctions that matter when
 choosing between near-siblings: what a *tweak* buys, why an extended nonce matters, and the fact that the two
@@ -210,7 +210,7 @@ key schedule. The stream ciphers preserve length exactly. The load-bearing line 
     converts back   : True
 ```
 
-`XSalsa20Poly1305` is NaCl/libsodium's **secretbox**, which has no associated-data input at all — so it requires an
+`XSalsa20Poly1305` is NaCl/libsodium's **secretbox**, which has no associated-data input at all - so it requires an
 empty span and raises `ArgumentException` for anything else. That is the right behaviour: a construction that
 quietly dropped the associated data would leave a caller believing a header was authenticated when it was not.
 `XChaCha20Poly1305` is the IETF-style AEAD and does authenticate it. Both use a 192-bit nonce, wide enough to choose
@@ -221,7 +221,7 @@ The ciphertext lengths follow from the block size and PKCS#7: a 65-byte plaintex
 it.
 
 This library appends the tag after the ciphertext; libsodium's combined format puts it first, so
-`XSalsa20Poly1305` ships `ToLibsodiumCombined` / `FromLibsodiumCombined` — getting that order wrong is a silent
+`XSalsa20Poly1305` ships `ToLibsodiumCombined` / `FromLibsodiumCombined` - getting that order wrong is a silent
 interoperability failure rather than an error.
 
 **APIs demonstrated.** `Serpent256` / `Serpent512` / `Serpent1024` over `TweakableSymmetricAlgorithm`
@@ -247,5 +247,5 @@ Bodu.Security.Cryptography.Samples.SymmetricAndAead/
 
 ## Related
 
-- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` — hashes, MACs, XOFs, KDFs, and OTPs.
-- `Bodu.Security.Cryptography.Samples.AsymmetricKeys` — X25519, Ed25519, ML-KEM, ML-DSA.
+- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` - hashes, MACs, XOFs, KDFs, and OTPs.
+- `Bodu.Security.Cryptography.Samples.AsymmetricKeys` - X25519, Ed25519, ML-KEM, ML-DSA.

@@ -46,7 +46,7 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that enumerating the dictionary yields one key–value-list pair per distinct key.
+    /// Verifies that enumerating the dictionary yields one key-value-list pair per distinct key.
     /// </summary>
     [TestMethod]
     public void Enumerator_WhenEnumerated_ShouldYieldOneEntryPerKey()

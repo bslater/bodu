@@ -53,7 +53,7 @@ public static partial class ThrowHelper
     /// <remarks>
     /// <see cref="System.Span{T}" /> is a value type and cannot be <see langword="null" />; no null guard is required
     /// or possible. Use this overload when the caller may supply a larger span than required and the excess elements
-    /// are simply ignored — for example, a buffer that must hold at least a full cipher block but may be larger. When
+    /// are simply ignored - for example, a buffer that must hold at least a full cipher block but may be larger. When
     /// the length must be exact, use <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(Span{T}, int, string)" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -105,7 +105,7 @@ public static partial class ThrowHelper
     /// <remarks>
     /// <see cref="System.ReadOnlySpan{T}" /> is a value type and cannot be <see langword="null" />; no null guard is
     /// required or possible. Use this overload when the caller may supply a larger span than required and the excess
-    /// elements are simply ignored — for example, a buffer that must hold at least a full cipher block but may be
+    /// elements are simply ignored - for example, a buffer that must hold at least a full cipher block but may be
     /// larger. When the length must be exact, use
     /// <see cref="ThrowIfSpanLengthIsNotEqualTo{T}(ReadOnlySpan{T}, int, string)" /> instead.
     /// </remarks>

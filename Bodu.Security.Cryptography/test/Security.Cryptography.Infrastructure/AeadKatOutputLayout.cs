@@ -18,12 +18,12 @@ public enum AeadKatOutputLayout
     DetachedTag,
 
     /// <summary>
-    /// The source combined output is the ciphertext followed by the tag — the Bodu convention.
+    /// The source combined output is the ciphertext followed by the tag - the Bodu convention.
     /// </summary>
     CiphertextThenTag,
 
     /// <summary>
-    /// The source combined output is the tag followed by the ciphertext — the libsodium secretbox convention.
+    /// The source combined output is the tag followed by the ciphertext - the libsodium secretbox convention.
     /// </summary>
     TagThenCiphertext,
 }

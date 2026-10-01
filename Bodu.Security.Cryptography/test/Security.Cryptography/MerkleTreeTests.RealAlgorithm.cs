@@ -95,7 +95,7 @@ public partial class MerkleTreeTests
         Assert.AreNotEqual(
             Hex(tree.ComputeRootOfBlocks(new byte[] { 0x41 }, 8)),
             Hex(tree.ComputeRootOfBlocks(new byte[] { 0x41, 0x00 }, 8)),
-            "SHA-512 leaves are not length-bound — trailing-zero inputs collided.");
+            "SHA-512 leaves are not length-bound - trailing-zero inputs collided.");
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that swapping two adjacent leaf blocks changes the root — siblings are ordered.
+    /// Verifies that swapping two adjacent leaf blocks changes the root - siblings are ordered.
     /// </summary>
     [TestMethod]
     public void ComputeRootOfBlocks_WhenAdjacentBlocksSwapped_ShouldProduceDifferentRoot()
@@ -128,7 +128,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that repeated computations on one instance are identical — the instance holds no state between calls.
+    /// Verifies that repeated computations on one instance are identical - the instance holds no state between calls.
     /// </summary>
     [TestMethod]
     public void ComputeRootOfBlocks_WhenCalledRepeatedly_ShouldProduceIdenticalResults()
@@ -144,7 +144,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that the fan-out and the block size each change the root — the topology is part of the commitment.
+    /// Verifies that the fan-out and the block size each change the root - the topology is part of the commitment.
     /// </summary>
     [TestMethod]
     public void ComputeRootOfBlocks_WhenFanOutOrBlockSizeChanges_ShouldProduceDifferentRoot()

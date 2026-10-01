@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for each of the six canonical
+    /// Verifies that <see cref="ThrowHelper.ThrowIfInvalidStringComparison" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for each of the six canonical
     /// <see cref="StringComparison" /> values.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

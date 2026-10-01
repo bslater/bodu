@@ -31,9 +31,9 @@
 
   <!-- Header: the recurrence -->
   <rect class="panel" x="20" y="18" width="780" height="72" rx="8"/>
-  <text class="title" x="36" y="40">RFC 6962 §2.1 — Merkle Tree Hash, n = 7</text>
+  <text class="title" x="36" y="40">RFC 6962 §2.1 - Merkle Tree Hash, n = 7</text>
   <text class="formula" x="36" y="60">MTH({}) = H() · MTH({d}) = H(0x00 ‖ d) · MTH(D[n]) = H(0x01 ‖ MTH(D[0:k]) ‖ MTH(D[k:n]))</text>
-  <text class="muted" x="36" y="79">k is the largest power of two <tspan class="warn">strictly below</tspan> n — so 7 splits 4 + 3, and 8 splits 4 + 4, never 8 + 0.</text>
+  <text class="muted" x="36" y="79">k is the largest power of two <tspan class="warn">strictly below</tspan> n - so 7 splits 4 + 3, and 8 splits 4 + 4, never 8 + 0.</text>
 
   <!-- Level labels -->
   <text class="level" x="30" y="136">root</text>
@@ -141,5 +141,5 @@
   </g>
 
   <!-- Footer legend -->
-  <text class="muted" x="36" y="496">l(d) = H(0x00 ‖ d) · n(a,b) = H(0x01 ‖ a ‖ b) · the prefixes keep leaf and node preimages in disjoint domains — the second-preimage defence.</text>
+  <text class="muted" x="36" y="496">l(d) = H(0x00 ‖ d) · n(a,b) = H(0x01 ‖ a ‖ b) · the prefixes keep leaf and node preimages in disjoint domains - the second-preimage defence.</text>
 </svg>

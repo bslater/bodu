@@ -56,7 +56,7 @@ public partial class CronExpressionTests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Unequal hash codes are not required by the equality contract — only equal objects must hash equally — so this is
+    /// Unequal hash codes are not required by the equality contract - only equal objects must hash equally - so this is
     /// a distribution assertion rather than a correctness one. It earns its place because the shape it guards is the
     /// overwhelmingly common one: almost every configured schedule (<c>0 2 * * *</c>, <c>30 9 * * *</c>, …) selects a
     /// single value in each of several fields, so if the hash ignores *which* value is selected, every such schedule

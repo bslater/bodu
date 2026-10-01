@@ -47,7 +47,7 @@ public sealed partial class BiffSstReaderTests
     }
 
     /// <summary>
-    /// Verifies that a string straddling into an empty CONTINUE record — which cannot carry the flags byte — is
+    /// Verifies that a string straddling into an empty CONTINUE record - which cannot carry the flags byte - is
     /// rejected as a format error rather than an index fault.
     /// </summary>
     [TestMethod]

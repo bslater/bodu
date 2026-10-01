@@ -104,7 +104,7 @@ public partial class ConcurrentLruCacheTests
 
     /// <summary>
     /// Verifies that when callers race a factory miss on the same key, exactly one produced value is stored and every
-    /// caller observes that stored value — even though the factory itself may run more than once.
+    /// caller observes that stored value - even though the factory itself may run more than once.
     /// </summary>
     [TestMethod]
     public void GetOrAdd_WhenThreadsRaceOnSameKey_ShouldReturnSingleStoredValueToEveryCaller()

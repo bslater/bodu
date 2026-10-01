@@ -10,11 +10,11 @@ uid: Bodu.Text.Yaml.Serialization
 
 ## Key types
 
-- <xref:Bodu.Text.Yaml.Serialization.YamlConverter> — the non-generic root (`CanConvert`) that `YamlSerializerOptions.Converters` holds.
-- <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> — the per-type base: implement `Read` and `Write` for `T`.
-- <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> — the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
-- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter`1> — enums as member-name strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
-- <xref:Bodu.Text.Yaml.Serialization.YamlNumberEnumConverter`1> — enums as their underlying integer.
+- <xref:Bodu.Text.Yaml.Serialization.YamlConverter> - the non-generic root (`CanConvert`) that `YamlSerializerOptions.Converters` holds.
+- <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> - the per-type base: implement `Read` and `Write` for `T`.
+- <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> - the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
+- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter`1> - enums as member-name strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
+- <xref:Bodu.Text.Yaml.Serialization.YamlNumberEnumConverter`1> - enums as their underlying integer.
 
 ## Example
 

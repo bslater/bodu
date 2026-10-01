@@ -120,7 +120,7 @@ public partial class NavigableDictionaryTests
 
     /// <summary>
     /// Verifies that the dictionary behaves correctly when accessed through
-    /// <see cref="IDictionary{TKey, TValue}" /> — indexer, lookup, and removal round-trip.
+    /// <see cref="IDictionary{TKey, TValue}" /> - indexer, lookup, and removal round-trip.
     /// </summary>
     [TestMethod]
     public void IDictionary_WhenAccessedThroughInterface_ShouldRoundTripEntries()

@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Recurrence.Samples.RecurrenceRules.Scenarios;
 /// <summary>
 /// Demonstrates how an occurrence stream is bounded: by the rule's own <c>COUNT</c> or <c>UNTIL</c>,
 /// by an explicit window passed to <c>GetOccurrences</c>, or by the caller taking a prefix of an
-/// unbounded stream — plus the point queries <c>GetNextOccurrence</c> and
+/// unbounded stream - plus the point queries <c>GetNextOccurrence</c> and
 /// <c>GetPreviousOccurrence</c>.
 /// </summary>
 public static class BoundedEnumeration

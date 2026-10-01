@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// This object isolates the network-facing settings from the behavioural options on
 /// <see cref="BoeRateProviderOptions" />, so the host, query path, transport timeout, and request identity can be
-/// pointed at a mirror or proxy of the IADB — or simply tuned — without touching caching or series configuration. A
+/// pointed at a mirror or proxy of the IADB - or simply tuned - without touching caching or series configuration. A
 /// range request is composed from <see cref="BaseUrl" />, <see cref="QueryPath" />, the requested series codes, and the
 /// inclusive date range through <see cref="BuildRequestUrl(IReadOnlyList{string}, DateOnly, DateOnly)" />.
 /// </para>

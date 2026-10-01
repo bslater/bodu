@@ -57,7 +57,7 @@ public partial class OutlookAttachmentTests
             string? fileName = attachment.FileName;
 
             long delta = GC.GetTotalMemory(forceFullCollection: false) - baseline;
-            Assert.IsTrue(delta < CeilingBytes, $"Decoding the attachment allocated {delta / 1024} KB — the payload is being materialized.");
+            Assert.IsTrue(delta < CeilingBytes, $"Decoding the attachment allocated {delta / 1024} KB - the payload is being materialized.");
             Assert.IsTrue(properties.Contains(AttachDataTag), "The payload property must remain present.");
             Assert.IsNull(properties.GetBinary(MapiPropertyIds.AttachData), "A deferred payload must not be decoded inline.");
             Assert.AreEqual(OutlookAttachmentMethod.ByValue, method);

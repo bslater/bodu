@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.Samples.CheckDigits.Scenarios;
 
 /// <summary>
 /// Demonstrates the generation direction: issuing identifiers means computing the check digit
-/// for a payload — one static <c>Compute</c> call — plus the streaming
+/// for a payload - one static <c>Compute</c> call - plus the streaming
 /// <c>Append</c>/<c>GetCurrentCheckDigit</c> surface for payloads that arrive in fragments.
 /// </summary>
 public static class ComputeAndAppend

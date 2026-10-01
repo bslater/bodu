@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.Samples.CheckDigits;
 
 /// <summary>
 /// Entry point for the check-digit sample: the <c>Bodu.IO.Hashing.CheckDigits</c> identifier
-/// surface — validating real-world identifier formats (IBAN, ISBN, EAN, payment cards, bank
+/// surface - validating real-world identifier formats (IBAN, ISBN, EAN, payment cards, bank
 /// routing numbers), generating the check digit for a payload, and the error classes different
 /// schemes can and cannot detect. Everything runs offline over fixed example identifiers.
 /// </summary>

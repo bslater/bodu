@@ -9,9 +9,9 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries (<see cref="QueryPoint" />
-/// — all intervals containing a point) and overlap-window queries (<see cref="QueryOverlaps" /> — all intervals
-/// intersecting a window) in O(log n + k).
+/// Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries
+/// (<see cref="QueryPoint" /> - all intervals containing a point) and overlap-window queries
+/// (<see cref="QueryOverlaps" /> - all intervals intersecting a window) in O(log n + k).
 /// </summary>
 /// <typeparam name="T">The type of the interval endpoints. Endpoints must not be <see langword="null" />.</typeparam>
 /// <remarks>
@@ -25,11 +25,11 @@ namespace Bodu.Collections.Generic;
 /// This type is the only member of the Bodu range family that <em>stores</em> overlapping intervals.
 /// <see cref="RangeSet{T}" /> and <see cref="RangeDictionary{TKey, TValue}" /> are sorted non-overlapping maps that
 /// merge or reject overlapping inserts, and <c>Bodu.Numerics</c>' <c>IntervalSet&lt;T&gt;</c> normalizes its contents
-/// to disjoint ranges — reach for this type when the overlaps themselves are the data.
+/// to disjoint ranges - reach for this type when the overlaps themselves are the data.
 /// </para>
 /// <para>
 /// Intervals are closed on both ends: [low, high] contains every point x with low &lt;= x &lt;= high under the active
-/// comparer, and low equal to high is a valid degenerate interval. Duplicate intervals are permitted — each
+/// comparer, and low equal to high is a valid degenerate interval. Duplicate intervals are permitted - each
 /// <see cref="Add" /> of an existing (low, high) pair increments a per-node multiplicity, and <see cref="Remove" />
 /// removes one occurrence at a time. <see cref="Count" /> and enumeration include duplicates.
 /// </para>
@@ -42,13 +42,13 @@ namespace Bodu.Collections.Generic;
 ///<![CDATA[
 /// var bookings = new IntervalTree<int>();
 /// bookings.Add(9, 11);    // 09:00-11:00
-/// bookings.Add(10, 12);   // 10:00-12:00 — overlaps are stored, not merged
+/// bookings.Add(10, 12);   // 10:00-12:00 - overlaps are stored, not merged
 /// bookings.Add(14, 15);
 ///
 /// foreach ((int low, int high) in bookings.QueryPoint(10))
 ///     Console.WriteLine($"[{low}, {high}]");            // [9, 11] then [10, 12]
 ///
-/// bool clash = bookings.Intersects(11, 13);             // true — [10, 12] reaches into the window
+/// bool clash = bookings.Intersects(11, 13);             // true - [10, 12] reaches into the window
 ///]]>
 /// </code>
 /// </example>
@@ -108,7 +108,7 @@ public sealed partial class IntervalTree<T>
     /// <param name="high">The inclusive upper endpoint. Must not be <see langword="null" />.</param>
     /// <remarks>
     /// Overlapping intervals are always accepted, and adding an interval equal to one already stored records a
-    /// duplicate occurrence rather than being rejected — the per-node multiplicity is incremented and
+    /// duplicate occurrence rather than being rejected - the per-node multiplicity is incremented and
     /// <see cref="Count" /> grows by one.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
@@ -178,7 +178,7 @@ public sealed partial class IntervalTree<T>
     /// interval is not stored.
     /// </returns>
     /// <remarks>
-    /// Only an exact (low, high) match is removed — intervals that merely overlap the arguments are untouched. When the
+    /// Only an exact (low, high) match is removed - intervals that merely overlap the arguments are untouched. When the
     /// interval is stored more than once, one occurrence is removed per call; the node itself is deleted only when its
     /// multiplicity reaches zero.
     /// </remarks>

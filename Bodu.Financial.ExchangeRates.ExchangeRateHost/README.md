@@ -1,13 +1,13 @@
 # Bodu.Financial.ExchangeRates.ExchangeRateHost
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **exchangerate.host**
 (`api.exchangerate.host`) foreign-exchange REST service.
 
 It fetches the exchangerate.host time-series and single-date endpoints, parses the JSON
 response, and serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values
-through the standard `IDatedRateProvider` and `IRateProvider` contracts — so it composes
+through the standard `IDatedRateProvider` and `IRateProvider` contracts - so it composes
 with `Money.ConvertTo`, the caching and aggregating providers, and the rest of the
 Bodu.Financial FX stack. The same interfaces and DI shape as every other provider, a
 different data source.
@@ -53,7 +53,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ## Dependency injection
 
 The package ships its own `AddExchangeRateHostExchangeRates` registration in the
-`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+`Bodu.Financial.ExchangeRates` namespace - there is no separate `*.DependencyInjection`
 package.
 
 ```csharp

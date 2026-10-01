@@ -12,7 +12,7 @@
 #     assembly cannot poison the whole run; and
 #   * one Cobertura file per project is the unit of sharding.
 #
-# The coverage tier, collector, and every exclusion live in coverage.runsettings — this script does
+# The coverage tier, collector, and every exclusion live in coverage.runsettings - this script does
 # NOT pass --collect, because a command-line collector is a second, unconfigured instance whose
 # exclusion lists are empty.
 #
@@ -28,7 +28,7 @@
 #   --list              Print the selected test projects and exit without collecting.
 #   -h | --help         Show this help.
 #
-# Emits <output>/report/environment.json describing the run — most importantly whether this host
+# Emits <output>/report/environment.json describing the run - most importantly whether this host
 # supports AVX-512, and its architecture. Six *.Avx512.cs files in Bodu.Security.Cryptography are
 # hardware-gated: the JIT selects exactly one path per process, so on a host without AVX-512 those
 # files CANNOT be covered and must be reported as 'n/a (hardware-gated)' rather than 0%. The
@@ -210,7 +210,7 @@ while read -r proj; do
     echo "::group::Collect $name"
 
     # Clear any output from a previous run of this project. vstest writes each run into a fresh GUID
-    # subdirectory, so without this the merge would union today's results with a stale report — and a
+    # subdirectory, so without this the merge would union today's results with a stale report - and a
     # stale report collected before a rename carries source paths that no longer exist, which is
     # precisely the phantom-row double-counting documented in docs/articles/code-coverage.md.
     rm -rf "${raw_dir:?}/$name"

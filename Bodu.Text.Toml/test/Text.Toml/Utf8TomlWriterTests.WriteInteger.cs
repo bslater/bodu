@@ -57,7 +57,7 @@ public sealed partial class Utf8TomlWriterTests
     }
 
     /// <summary>
-    /// Verifies that the paired overloads enforce the same state rules as the separate calls — a duplicate key is
+    /// Verifies that the paired overloads enforce the same state rules as the separate calls - a duplicate key is
     /// rejected.
     /// </summary>
     [TestMethod]

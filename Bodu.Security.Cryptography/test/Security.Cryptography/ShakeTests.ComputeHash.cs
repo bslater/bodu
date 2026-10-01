@@ -30,7 +30,7 @@ public partial class ShakeTests
     //
     // The variant harness (ShakeTests.cs) pins the standard's empty-string vectors plus the shared
     // canonical inputs at 256-bit output. These rows add distinct message inputs (0x00, 0x00010203,
-    // and the lowercase "abc" = 0x616263) and, for SHAKE256, the 512-bit output length — exercising a
+    // and the lowercase "abc" = 0x616263) and, for SHAKE256, the 512-bit output length - exercising a
     // longer squeeze than the harness covers. Expected outputs are computed from the FIPS 202 SHAKE
     // definitions (Keccak); each was independently recomputed here before pinning.
 

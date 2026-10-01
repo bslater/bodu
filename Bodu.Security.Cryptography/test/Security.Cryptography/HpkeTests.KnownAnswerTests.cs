@@ -27,7 +27,7 @@ public sealed partial class HpkeTests
 
     /// <summary>
     /// Verifies that an <see cref="HpkeReceiver" /> set up from a published vector opens every sealed message, in
-    /// sequence, to the expected plaintext — exercising decapsulation, the key schedule, the per-message nonce, and the
+    /// sequence, to the expected plaintext - exercising decapsulation, the key schedule, the per-message nonce, and the
     /// AEAD against the RFC 9180 reference outputs.
     /// </summary>
     /// <param name="vector">The known-answer vector under test.</param>

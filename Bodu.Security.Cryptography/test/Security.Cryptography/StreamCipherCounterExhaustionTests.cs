@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// Regression tests that exercise the block-counter exhaustion latch on the ChaCha20 and Salsa20 keystream
 /// engines. The latch is the safety guard that prevents keystream reuse once the block counter would wrap back
 /// to its initial value; if it ever stops firing, the cipher would silently emit duplicate keystream blocks under
-/// a single (key, nonce) pair — a catastrophic AEAD failure.
+/// a single (key, nonce) pair - a catastrophic AEAD failure.
 /// </summary>
 /// <remarks>
 /// Both engines latch via a private <c>_counterExhausted</c> field set when <c>_counter</c> advances back to

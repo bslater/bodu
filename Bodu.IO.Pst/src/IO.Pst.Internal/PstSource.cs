@@ -16,7 +16,7 @@ namespace Bodu.IO.Pst.Internal;
 /// blocks with padding stripped, trailers verified, and external data decoded per the file's content encoding.
 /// </summary>
 /// <remarks>
-/// Reads seek the underlying stream directly — the file is never buffered whole. The session is single-threaded,
+/// Reads seek the underlying stream directly - the file is never buffered whole. The session is single-threaded,
 /// matching the public surface's documented contract.
 /// </remarks>
 internal sealed class PstSource
@@ -89,7 +89,7 @@ internal sealed class PstSource
         Header.Layout;
 
     /// <summary>
-    /// Marks the source as belonging to a disposed session, so every later page or block read — cache hit or not —
+    /// Marks the source as belonging to a disposed session, so every later page or block read - cache hit or not -
     /// fails with <see cref="ObjectDisposedException" /> rather than serving stale data or surfacing the underlying
     /// stream's error.
     /// </summary>
@@ -174,7 +174,7 @@ internal sealed class PstSource
         var page = new byte[PageSize];
         ReadAt((long)bref.Offset, page);
 
-        // PAGETRAILER: ptype, ptypeRepeat, wSig, then dwCRC and bid — in that order for Unicode (at 496) and with bid
+        // PAGETRAILER: ptype, ptypeRepeat, wSig, then dwCRC and bid - in that order for Unicode (at 496) and with bid
         // before dwCRC for ANSI (at 500); the layout carries the offsets.
         byte pageType = page[layout.PageTrailerOffset];
         if (pageType != expectedType || page[layout.PageTrailerOffset + 1] != pageType)

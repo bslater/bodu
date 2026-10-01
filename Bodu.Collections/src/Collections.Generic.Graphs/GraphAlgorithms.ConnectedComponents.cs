@@ -16,7 +16,7 @@ public static partial class GraphAlgorithms
     /// <returns>A list of components, each containing the vertices that are mutually reachable.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// For a directed graph this yields the weakly connected components — vertices are grouped without regard to edge
+    /// For a directed graph this yields the weakly connected components - vertices are grouped without regard to edge
     /// direction. The partition is computed with a <see cref="DisjointSet{T}" /> over the graph's edges.
     /// </remarks>
     /// <example>

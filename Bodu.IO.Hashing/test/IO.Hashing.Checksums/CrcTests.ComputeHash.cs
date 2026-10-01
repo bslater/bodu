@@ -47,7 +47,7 @@ public partial class CrcTests
 
     /// <summary>
     /// Verifies that calling <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> twice on different inputs
-    /// returns the digest of the second input — that is, the method resets internal state before hashing so that
+    /// returns the digest of the second input - that is, the method resets internal state before hashing so that
     /// residual accumulator state from the prior call cannot bleed into the new computation.
     /// </summary>
     [TestMethod]

@@ -281,8 +281,8 @@ internal static class RbaRateWorkbookParser
     /// 8-byte IEEE 754 double that can sit up to one unit in the last place away from that figure. The explicit
     /// <see langword="double" />-to-<see langword="decimal" /> conversion rounds to 15 significant digits, which
     /// absorbs that sub-15-digit binary noise and restores the published value; every RBA rate carries far fewer than
-    /// 15 significant digits, so none is truncated. A shortest-round-trip string conversion instead preserves the noise
-    /// — for example, yielding <c>6.6754999999999995</c> for a cell published as <c>6.6755</c>.
+    /// 15 significant digits, so none is truncated. A shortest-round-trip string conversion instead preserves the
+    /// noise - for example, yielding <c>6.6754999999999995</c> for a cell published as <c>6.6755</c>.
     /// </remarks>
     internal static decimal RecoverDecimal(double value) =>
         (decimal)value;

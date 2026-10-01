@@ -145,7 +145,7 @@ public partial class AsconAead128Tests
     /// <summary>
     /// Verifies that after <see cref="AsconAead128.Decrypt" /> raises a
     /// <see cref="CryptographicException" /> on tag mismatch, subsequent <see cref="AsconAead128.Encrypt" />
-    /// calls throw <see cref="InvalidOperationException" /> — the instance is poisoned and
+    /// calls throw <see cref="InvalidOperationException" /> - the instance is poisoned and
     /// must not be reusable for an alternate operation.
     /// </summary>
     [TestMethod]
@@ -168,7 +168,7 @@ public partial class AsconAead128Tests
             dec.Decrypt(sealed_, recovered);
         });
 
-        // Now the instance has been completed via the finally block — Encrypt must reject.
+        // Now the instance has been completed via the finally block - Encrypt must reject.
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             dec.Encrypt(plaintext, sealed_);
@@ -195,7 +195,7 @@ public partial class AsconAead128Tests
 
     /// <summary>
     /// Verifies that <see cref="AsconAead128.Encrypt" /> with the input and output buffers
-    /// referencing overlapping memory still produces the same result as a non-aliased pair —
+    /// referencing overlapping memory still produces the same result as a non-aliased pair -
     /// confirming the implementation reads each block fully before writing.
     /// </summary>
     [TestMethod]

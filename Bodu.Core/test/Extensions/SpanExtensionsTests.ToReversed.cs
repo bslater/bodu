@@ -22,7 +22,7 @@ public partial class SpanExtensionsTests
     }
 
     // =========================================================================
-    // Span<T> — delegation to ReadOnlySpan<T> overloads
+    // Span<T> - delegation to ReadOnlySpan<T> overloads
     // =========================================================================
 
     /// <summary>
@@ -295,7 +295,7 @@ public partial class SpanExtensionsTests
     }
 
     // =========================================================================
-    // ReadOnlySpan<T> — Range
+    // ReadOnlySpan<T> - Range
     // =========================================================================
 
     /// <summary>
@@ -328,7 +328,7 @@ public partial class SpanExtensionsTests
     }
 
     // =========================================================================
-    // ReadOnlySpan<T> — index + count
+    // ReadOnlySpan<T> - index + count
     // =========================================================================
 
     /// <summary>
@@ -344,7 +344,7 @@ public partial class SpanExtensionsTests
         CollectionAssert.AreEqual(expected, source.ToReversed(index, count).ToArray());
     }
     // =========================================================================
-    // ReadOnlySpan<T> — full reverse
+    // ReadOnlySpan<T> - full reverse
     // =========================================================================
 
     /// <summary>

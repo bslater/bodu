@@ -42,8 +42,8 @@ internal static class MsgPropertyDecoder
     /// <param name="header">When this method returns, the decoded property-stream header.</param>
     /// <returns>The decoded property collection.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The storage has no property stream, the stream is malformed, the container is corrupt, or — under
-    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid (including a
+    /// The storage has no property stream, the stream is malformed, the container is corrupt, or - under
+    /// <see cref="CompoundValidationLevel.Strict" /> - a property entry or value stream is invalid (including a
     /// declared size that disagrees with the value stream).
     /// </exception>
     internal static MapiPropertyCollection Decode(
@@ -82,8 +82,8 @@ internal static class MsgPropertyDecoder
     /// <param name="header">When this method returns, the decoded property-stream header.</param>
     /// <returns>The decoded property collection.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The storage has no property stream, the stream is malformed, the container is corrupt, or — under
-    /// <see cref="CompoundValidationLevel.Strict" /> — a property entry or value stream is invalid.
+    /// The storage has no property stream, the stream is malformed, the container is corrupt, or - under
+    /// <see cref="CompoundValidationLevel.Strict" /> - a property entry or value stream is invalid.
     /// </exception>
     /// <remarks>
     /// The deferred property's stream length is read from the directory before the stream is opened; above the limit it
@@ -186,7 +186,7 @@ internal static class MsgPropertyDecoder
         }
         else if (tag.Type == MapiPropertyType.Object)
         {
-            // The payload of PT_OBJECT is a child storage (for example, an embedded message), never a stream —
+            // The payload of PT_OBJECT is a child storage (for example, an embedded message), never a stream -
             // surface the entry as a marker so callers know the property exists without touching the payload here.
             value = null;
         }
@@ -310,8 +310,8 @@ internal static class MsgPropertyDecoder
             case MapiPropertyType.Unicode:
             case MapiPropertyType.String8:
             case MapiPropertyType.Binary:
-                // MS-OXMSG §2.1.3: the base stream is a length stream — 4-byte entries for the string types,
-                // 8-byte entries for binary — and each element's payload lives in its own "-XXXXXXXX" stream.
+                // MS-OXMSG §2.1.3: the base stream is a length stream - 4-byte entries for the string types,
+                // 8-byte entries for binary - and each element's payload lives in its own "-XXXXXXXX" stream.
                 int entryWidth = tag.Type == MapiPropertyType.Binary ? 8 : 4;
                 if (baseBytes.Length % entryWidth != 0)
                     return SkipOrThrowMultiValue(tag, strict);

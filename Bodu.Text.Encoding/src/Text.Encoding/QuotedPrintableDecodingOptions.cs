@@ -19,7 +19,7 @@ public enum QuotedPrintableDecodingOptions : byte
     None = 0,
 
     /// <summary>
-    /// Accepts lowercase hexadecimal digits (<c>a</c>–<c>f</c>) in <c>=HH</c> escapes in addition to uppercase.
+    /// Accepts lowercase hexadecimal digits (<c>a</c>-<c>f</c>) in <c>=HH</c> escapes in addition to uppercase.
     /// </summary>
     AllowLowercaseHex = 1 << 0,
 
@@ -30,7 +30,7 @@ public enum QuotedPrintableDecodingOptions : byte
     IgnoreTrailingWhitespace = 1 << 1,
 
     /// <summary>
-    /// Accepts a bare LF (<c>0x0A</c>) as both a hard line break and, after <c>=</c>, a soft line break — in addition
+    /// Accepts a bare LF (<c>0x0A</c>) as both a hard line break and, after <c>=</c>, a soft line break - in addition
     /// to canonical CRLF.
     /// </summary>
     AllowBareLineFeed = 1 << 2,

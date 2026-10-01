@@ -7,7 +7,7 @@
 namespace Bodu.Text.Filtering;
 
 /// <content>
-/// Stress-tier scale runs — high-volume, large-input, and high-concurrency loops that exceed the standard session
+/// Stress-tier scale runs - high-volume, large-input, and high-concurrency loops that exceed the standard session
 /// guard budget of the default tiers. Run on demand via <c>stress.runsettings</c>.
 /// </content>
 public partial class TextFilterTests
@@ -110,8 +110,8 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that the general matcher's star-backtracking worst case — hundreds of <c>*a</c> segments against
-    /// long all-<c>a</c> values — stays polynomial and correct across repeated large matches.
+    /// Verifies that the general matcher's star-backtracking worst case - hundreds of <c>*a</c> segments against
+    /// long all-<c>a</c> values - stays polynomial and correct across repeated large matches.
     /// </summary>
     [TestMethod]
     [TestCategory("Stress")]
@@ -131,7 +131,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies every wildcard strategy against megabyte-scale values — the literal, prefix, suffix, contains, and
+    /// Verifies every wildcard strategy against megabyte-scale values - the literal, prefix, suffix, contains, and
     /// general tiers must all stay correct when a single value is a million characters long.
     /// </summary>
     [TestMethod]
@@ -165,7 +165,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that concurrent evaluation on one shared filter stays exact for every thread — the compiled matching
+    /// Verifies that concurrent evaluation on one shared filter stays exact for every thread - the compiled matching
     /// state is immutable, so eight threads hammering a million evaluations each must reproduce the single-threaded
     /// outcomes with zero disagreements (only the statistics counters are allowed to undercount, per contract).
     /// </summary>
@@ -208,7 +208,7 @@ public partial class TextFilterTests
 
     /// <summary>
     /// Verifies that repeatedly building filters whose brace alternation expands near the per-pattern cap stays
-    /// bounded and correct — 50 builds of a pattern expanding into 8,192 literal alternatives.
+    /// bounded and correct - 50 builds of a pattern expanding into 8,192 literal alternatives.
     /// </summary>
     [TestMethod]
     [TestCategory("Stress")]

@@ -22,12 +22,12 @@
 
   <NotableDates>
 
-    <!-- Commemoration Day (Martyrs' Day) — 1 December, honoring Emirati fallen. Strategy: Fixed day-of-month. -->
+    <!-- Commemoration Day (Martyrs' Day) - 1 December, honoring Emirati fallen. Strategy: Fixed day-of-month. -->
     <NotableDate id="commemoration-day" displayName="Commemoration Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ae"><Applicability fromYear="2015"><Territory code="AE" /></Applicability><Strategy><Fixed month="December" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- National Day — 2 December, marking the 1971 union; a two-day public holiday. Strategy: Fixed day-of-month. -->
+    <!-- National Day - 2 December, marking the 1971 union; a two-day public holiday. Strategy: Fixed day-of-month. -->
     <NotableDate id="national-day-ae" displayName="National Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="ae" durationDays="2"><Applicability><Territory code="AE" /></Applicability><Strategy><Fixed month="December" day="2" /></Strategy></Rule></Rules>
     </NotableDate>

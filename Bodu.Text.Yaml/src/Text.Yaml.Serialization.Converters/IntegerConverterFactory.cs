@@ -12,7 +12,7 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// The native-sized and 128-bit types are included even though the writer's integer surface is 64-bit signed: a value
-/// outside that range writes as its invariant text — the scalar re-reads as a string and converts back exactly — so
+/// outside that range writes as its invariant text - the scalar re-reads as a string and converts back exactly - so
 /// every width round-trips.
 /// </remarks>
 internal sealed class IntegerConverterFactory

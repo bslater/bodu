@@ -20,8 +20,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// The cache owns expiry. A caller supplies a time-to-live and an evaluation instant on every call:
 /// <see cref="GetYear" /> returns an entry only while it is fresh, and <see cref="StoreYear" /> prunes stale and
 /// superseded-version entries as it merges, so the backing store self-cleans over time. An entry is served only when
-/// its <see cref="NotableDateCacheEntry.ResourceVersion" /> matches the requested version, so a resource reload —
-/// signalled by a changed version token — forces a recompute rather than serving stale data.
+/// its <see cref="NotableDateCacheEntry.ResourceVersion" /> matches the requested version, so a resource reload -
+/// signalled by a changed version token - forces a recompute rather than serving stale data.
 /// </para>
 /// <para>
 /// Territory is normalized case-insensitively for keying, so <c>us</c> and <c>US</c> address the same entry; a
@@ -30,7 +30,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </para>
 /// <para>
 /// <strong>Ordering contract.</strong> An entry's occurrences must round-trip in the order they were supplied to
-/// <see cref="StoreYear" /> — the notable-date service's date-then-identity order. The caching service relies on this
+/// <see cref="StoreYear" /> - the notable-date service's date-then-identity order. The caching service relies on this
 /// to assemble ordered range results without re-sorting; a backend that cannot preserve order forces a sort fallback on
 /// every read it serves.
 /// </para>

@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The policy reads <see cref="PluginTrustContext.PublicKeyToken" /> — the lowercase-hexadecimal token the loader
-/// extracts from the assembly manifest — and compares it case-insensitively against the allowlist. An assembly that is
+/// The policy reads <see cref="PluginTrustContext.PublicKeyToken" /> - the lowercase-hexadecimal token the loader
+/// extracts from the assembly manifest - and compares it case-insensitively against the allowlist. An assembly that is
 /// not strong-named (no token) is always rejected.
 /// </para>
 /// <para>

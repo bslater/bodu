@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence.Samples.CronExpressions;
 
 /// <summary>
 /// Entry point for the cron sample: <c>CronExpression</c>, the Vixie five-field and optional-seconds
-/// six-field forms — parsing and the <c>@</c> macros, next and previous occurrences, the Vixie
+/// six-field forms - parsing and the <c>@</c> macros, next and previous occurrences, the Vixie
 /// day-field semantics that distinguish this dialect from Quartz, canonical text and equality, and
 /// the expressions that can never fire. Everything runs offline and deterministically.
 /// </summary>

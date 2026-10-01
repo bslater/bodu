@@ -35,8 +35,8 @@ public static partial class StringExtensions
         if (value.Length == 0) return value;
 
         // Lazy first-mismatch pattern (as RemoveWhitespace and NormalizeLineEndings use): scan without allocating
-        // until the first character that must change — a run of two or more white-space characters or a
-        // non-space white-space character — so the unchanged path is a true zero-allocation return.
+        // until the first character that must change - a run of two or more white-space characters or a
+        // non-space white-space character - so the unchanged path is a true zero-allocation return.
         int firstChange = -1;
         bool prevWasWhite = false;
         for (int i = 0; i < value.Length; i++)

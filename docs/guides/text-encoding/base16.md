@@ -4,7 +4,7 @@ title: Using Base16 (hexadecimal)
 
 # Using Base16 (hexadecimal)
 
-`Base16` is the simplest of the encoding family — every input byte maps to exactly two hex characters, so 100 %
+`Base16` is the simplest of the encoding family - every input byte maps to exactly two hex characters, so 100 %
 payload expansion. It is the canonical form for hash digests, low-level binary inspection, and any time the data
 needs to be human-readable at the byte boundary.
 
@@ -32,11 +32,11 @@ string upper = Base16.Encode(data, BaseFormattingOptions.UpperCase); // "DEADBEE
 // (bytes, variant, options) shape used by Base32/58/64/85:
 string up2  = Base16.Encode(data, Base16Variant.Upper);              // "DEADBEEF"
 
-// Decode (strict — no decorations, even length, alphabet-only)
+// Decode (strict - no decorations, even length, alphabet-only)
 byte[] back  = Base16.Decode("deadbeef");
 byte[] mixed = Base16.Decode("DeAdBeEf");                            // case-insensitive
 
-// Decode (lenient — 0x prefix, whitespace)
+// Decode (lenient - 0x prefix, whitespace)
 byte[] dump = Base16.Decode(
     "0xDE AD BE EF",
     BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
@@ -44,7 +44,7 @@ byte[] dump = Base16.Decode(
 
 ## Formatting decorations
 
-`BaseFormattingOptions` is a flag enum — combine flags with `|`:
+`BaseFormattingOptions` is a flag enum - combine flags with `|`:
 
 | Flag | Effect |
 |---|---|
@@ -74,16 +74,16 @@ between every encoded byte. The two are independent.
 
 ## Lenient parsing
 
-The decoder is **strict** by default — alphabet only, even length, no decorations. The `BaseFormatStyles` flags
+The decoder is **strict** by default - alphabet only, even length, no decorations. The `BaseFormatStyles` flags
 relax specific rules:
 
 | Flag | Effect |
 |---|---|
-| `None` | Strict mode — exact even-length hex digits, nothing else |
+| `None` | Strict mode - exact even-length hex digits, nothing else |
 | `AllowPrefix` | Tolerate a leading `0x` / `0X` |
 | `IgnoreWhitespace` | Strip ASCII space, tab, CR, LF anywhere in the input |
-| `AllowMissingPadding` | No-op — Base16 has no padding character |
-| `RequireCanonicalEncoding` | No-op — every byte maps to exactly two characters, so there are no unused terminal bits to constrain |
+| `AllowMissingPadding` | No-op - Base16 has no padding character |
+| `RequireCanonicalEncoding` | No-op - every byte maps to exactly two characters, so there are no unused terminal bits to constrain |
 
 ```csharp
 // All three of these recover the same bytes when the matching flags are set:
@@ -92,7 +92,7 @@ Base16.Decode("DE AD BE EF",     BaseFormatStyles.IgnoreWhitespace);
 Base16.Decode("0xDE AD BE EF",   BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 ```
 
-Non-ASCII whitespace (no-break space, em space) is *not* stripped — `IgnoreWhitespace` is deliberately strict
+Non-ASCII whitespace (no-break space, em space) is *not* stripped - `IgnoreWhitespace` is deliberately strict
 about which characters count as whitespace.
 
 ## BCL-style aliases
@@ -126,7 +126,7 @@ if (Base16.TryEncode(data, buffer, out int charsWritten)) { … }
 For UTF-8 byte buffers (network / file pipelines):
 
 ```csharp
-byte[] utf8 = Base16.EncodeToUtf8(data);                 // ASCII bytes — bit-identical to chars
+byte[] utf8 = Base16.EncodeToUtf8(data);                 // ASCII bytes - bit-identical to chars
 Base16.TryEncodeToUtf8(data, utf8Buffer, out int len);
 
 // Streaming decode using OperationStatus
@@ -140,7 +140,7 @@ var status = Base16.DecodeFromUtf8(
 ```
 
 `Base16.DecodeFromUtf8` with `isFinalBlock: false` returns `OperationStatus.NeedMoreData` when the chunk ends on
-an odd nibble — the partial pair is left unconsumed for the next call.
+an odd nibble - the partial pair is left unconsumed for the next call.
 
 > [!TIP]
 > The `TryToHexString` / `TryToHexStringLower` overloads come in both a `Span<char>` and a `Span<byte>` (UTF-8)
@@ -149,7 +149,7 @@ an odd nibble — the partial pair is left unconsumed for the next call.
 
 ## Encoding a GUID
 
-`Base16` encodes a <xref:System.Guid> directly — handy for a stable, lower-case hex identifier without round-tripping
+`Base16` encodes a <xref:System.Guid> directly - handy for a stable, lower-case hex identifier without round-tripping
 through `Guid.ToString("N")`:
 
 ```csharp
@@ -164,7 +164,7 @@ bool ok      = Base16.TryDecodeGuid(hex, out Guid parsed);        // non-throwin
 
 The bytes are the GUID's native mixed-endian layout (matching `Guid.TryWriteBytes`), so `DecodeGuid(Encode(id))`
 reconstructs `id` exactly. This differs from `Guid.ToString("N")`, which renders the first three fields in
-big-endian text order — the two forms are *not* interchangeable byte-for-byte, so decode hex produced by `Encode`
+big-endian text order - the two forms are *not* interchangeable byte-for-byte, so decode hex produced by `Encode`
 with `DecodeGuid`, not by re-parsing a `ToString("N")` result.
 
 ## Validation and sizing helpers
@@ -172,7 +172,7 @@ with `DecodeGuid`, not by re-parsing a `ToString("N")` result.
 ```csharp
 Base16.IsValid("deadbeef");        // true
 Base16.IsValid("dead beef");       // false (whitespace under strict mode)
-Base16.IsValid("0xdead", BaseFormatStyles.AllowPrefix); // false — odd digit count after prefix
+Base16.IsValid("0xdead", BaseFormatStyles.AllowPrefix); // false - odd digit count after prefix
 Base16.IsHexDigit('A');            // true
 Base16.IsHexDigit('g');            // false
 
@@ -210,7 +210,7 @@ byte[] ParseHexInput(string input) =>
 
 ## Where to go next
 
-- **[Base32 guide](base32.md)** — when 60 % expansion is enough and you need a smaller alphabet.
-- **[Base64 guide](base64.md)** — when 33 % expansion matters more than human readability.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Base32 guide](base32.md)** - when 60 % expansion is enough and you need a smaller alphabet.
+- **[Base64 guide](base64.md)** - when 33 % expansion matters more than human readability.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

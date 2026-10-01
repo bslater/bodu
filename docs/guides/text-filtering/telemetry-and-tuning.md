@@ -4,8 +4,8 @@ title: Telemetry and tuning
 
 # Telemetry and tuning
 
-A [`TextFilter`](xref:Bodu.Text.Filtering.TextFilter) is built for bulk work — 100k+ values against
-tens to hundreds of patterns — so it ships with the observability needed to understand and tune a
+A [`TextFilter`](xref:Bodu.Text.Filtering.TextFilter) is built for bulk work - 100k+ values against
+tens to hundreds of patterns - so it ships with the observability needed to understand and tune a
 filter at that volume: always-on counters, per-pattern hit attribution, and an optional
 per-decision observer.
 
@@ -21,11 +21,11 @@ per-decision observer.
 ## The statistics snapshot
 
 [`TextFilterStatistics`](xref:Bodu.Text.Filtering.TextFilterStatistics) is an immutable snapshot.
-The buckets always reconcile — `ItemsEvaluated == ItemsAccepted + ItemsExcluded +
-ItemsNotIncluded` — and per-pattern
+The buckets always reconcile - `ItemsEvaluated == ItemsAccepted + ItemsExcluded +
+ItemsNotIncluded` - and per-pattern
 [`HitCount`](xref:Bodu.Text.Filtering.TextFilterPatternStatistics) credits the **deciding** pattern
 only: the include that admitted the value or the exclude that vetoed it. That is exactly the signal
-selectivity tuning needs — a pattern with a near-zero hit count over a large corpus is either
+selectivity tuning needs - a pattern with a near-zero hit count over a large corpus is either
 redundant or shadowed.
 
 Counters are deliberately plain (not interlocked): matching results are always exact under
@@ -37,8 +37,8 @@ accumulates into `EvaluationTime`.
 ## The observer hook
 
 Attach an [`ITextFilterObserver`](xref:Bodu.Text.Filtering.ITextFilterObserver) to see every
-decision — the evaluated value, the [`TextFilterDecision`](xref:Bodu.Text.Filtering.TextFilterDecision),
-and the deciding pattern — for sampling, audit logging, or debugging a surprising veto. The
+decision - the evaluated value, the [`TextFilterDecision`](xref:Bodu.Text.Filtering.TextFilterDecision),
+and the deciding pattern - for sampling, audit logging, or debugging a surprising veto. The
 callback runs synchronously on the evaluating thread; exceptions propagate to the caller; when no
 observer is attached the evaluation path pays only a single null check.
 
@@ -58,9 +58,9 @@ At build time each glob is classified into the cheapest strategy its shape permi
 
 Practical consequences:
 
-- Prefer glob shapes over regexes when both can express the rule — `{error,warn}*` compiles to two
+- Prefer glob shapes over regexes when both can express the rule - `{error,warn}*` compiles to two
   tier-2 prefix checks, while `^(error|warn)` is tier 5.
-- Order within a group does not matter in `AnyMatch` — write rules for readability; the engine
+- Order within a group does not matter in `AnyMatch` - write rules for readability; the engine
   sorts by cost.
 - The indicative benchmark (100k values, 100 mixed patterns) runs ~3× faster than a compiled
   per-pattern-regex baseline, with zero allocations per value.
@@ -71,13 +71,13 @@ Regexes prefer the linear-time `NonBacktracking` engine; patterns it cannot comp
 (backreferences, lookarounds) fall back to the backtracking engine guarded by
 [`RegexMatchTimeout`](xref:Bodu.Text.Filtering.TextFilterOptions). If a match times out, the
 decision fails safe **by action**: a timed-out include does not admit the value, and a timed-out
-exclude still vetoes it — the filter never accidentally lets a value through because its exclude
+exclude still vetoes it - the filter never accidentally lets a value through because its exclude
 timed out. Timeouts are counted in
 [`TextFilterStatistics.RegexTimeouts`](xref:Bodu.Text.Filtering.TextFilterStatistics) and visible
 to the observer.
 
 ## Where to go next
 
-- **[Patterns and globs](patterns-and-globs.md)** — shaping rules into cheap tiers.
-- **[Evaluation modes](evaluation-modes.md)** — set vs ordered semantics.
-- **[API reference](xref:Bodu.Text.Filtering.TextFilterStatistics)** — the statistics types.
+- **[Patterns and globs](patterns-and-globs.md)** - shaping rules into cheap tiers.
+- **[Evaluation modes](evaluation-modes.md)** - set vs ordered semantics.
+- **[API reference](xref:Bodu.Text.Filtering.TextFilterStatistics)** - the statistics types.

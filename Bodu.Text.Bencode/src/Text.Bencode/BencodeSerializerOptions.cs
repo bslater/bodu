@@ -310,15 +310,15 @@ public sealed partial class BencodeSerializerOptions
     /// <value>The maximum depth; <see cref="DefaultMaxDepth" /> when set to zero.</value>
     /// <remarks>
     /// <para>
-    /// The limit bounds how deeply lists and dictionaries may nest. It is reached when serializing an object graph — or
-    /// deserializing a document — whose containers nest more levels deep than the effective limit, for example a chain
+    /// The limit bounds how deeply lists and dictionaries may nest. It is reached when serializing an object graph - or
+    /// deserializing a document - whose containers nest more levels deep than the effective limit, for example a chain
     /// of objects each holding the next, a dictionary of dictionaries, or lists within lists. Crossing it is reported
     /// as a catchable failure: <see cref="BencodeSerializationException" /> while serializing, or
     /// <see cref="BencodeFormatException" /> while deserializing.
     /// </para>
     /// <para>
     /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the hard ceiling,
-    /// <see cref="BencodeLimits.AbsoluteMaxDepth" /> (64); setting a larger value — even <see cref="int.MaxValue" /> —
+    /// <see cref="BencodeLimits.AbsoluteMaxDepth" /> (64); setting a larger value - even <see cref="int.MaxValue" /> -
     /// does not raise it. The ceiling exists because the serializer recurses one call-stack frame per nested container,
     /// so an unbounded depth on hostile or malformed input would exhaust the call stack and terminate the process with
     /// an uncatchable <see cref="StackOverflowException" />. Clamping converts that into the catchable exceptions

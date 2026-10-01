@@ -65,7 +65,7 @@ public sealed partial class ScryptCoreTests
         ScryptTests.OpenSslCorpusLight().Where(static row => ((KdfKnownAnswer)row[0]).Parallelism > 1);
 
     /// <summary>
-    /// Derives RFC 7914, Section 12's second vector — sixteen units of 1 MiB — as the options describe.
+    /// Derives RFC 7914, Section 12's second vector - sixteen units of 1 MiB - as the options describe.
     /// </summary>
     /// <param name="options">How the derivation runs its units.</param>
     /// <returns>The derived key, as lowercase hex.</returns>

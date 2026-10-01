@@ -13,7 +13,7 @@ namespace Bodu.Formats.Outlook.Msg;
 public partial class MapiValueDecoderTests
 {
     /// <summary>
-    /// Verifies that a FILETIME converts to a UTC time stamp — a zero offset and the same instant — regardless of the
+    /// Verifies that a FILETIME converts to a UTC time stamp - a zero offset and the same instant - regardless of the
     /// process-local time zone: MAPI time stamps are UTC by definition, and a machine-local offset would make the
     /// decoded value differ per host.
     /// </summary>
@@ -33,7 +33,7 @@ public partial class MapiValueDecoderTests
     }
 
     /// <summary>
-    /// Verifies that a FILETIME near the top of the representable range converts under every local time zone —
+    /// Verifies that a FILETIME near the top of the representable range converts under every local time zone -
     /// acceptance must not depend on whether the host's UTC offset pushes a local-time conversion out of range.
     /// </summary>
     [TestMethod]

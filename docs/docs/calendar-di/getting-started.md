@@ -1,8 +1,8 @@
 ---
-title: Bodu.Globalization.Calendar.DependencyInjection — Getting started
+title: Bodu.Globalization.Calendar.DependencyInjection - Getting started
 ---
 
-# Bodu.Globalization.Calendar.DependencyInjection — Getting started
+# Bodu.Globalization.Calendar.DependencyInjection - Getting started
 
 Unfamiliar with terms like *resource*, *territory*, or *collaborators*? Read the runtime's
 [core concepts](../calendar/concepts.md) first; the [introduction](index.md) explains the registration surface
@@ -23,7 +23,7 @@ dotnet add package Bodu.Globalization.Calendar.Caching
 
 Targets `net8.0`. Depends on `Bodu.Globalization.Calendar` (the runtime) and, at the .NET 8.0 LTS line,
 `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Logging.Abstractions`, and
-`Microsoft.Extensions.Options` (for the options-monitor overload). It brings no container of its own — any
+`Microsoft.Extensions.Options` (for the options-monitor overload). It brings no container of its own - any
 `IServiceCollection` host works, and the samples use the ASP.NET Core `WebApplication` builder.
 
 Every extension method is in the `Bodu.Globalization.Calendar` namespace; there is no
@@ -64,7 +64,7 @@ public sealed class HolidayService
 }
 ```
 
-Use the factory overload when the resource depends on other registered services — for example, the territory comes
+Use the factory overload when the resource depends on other registered services - for example, the territory comes
 from configuration:
 
 ```csharp
@@ -99,7 +99,7 @@ builder.Services.AddNotableDateService("US", AmericasCalendarData.LoadResource("
 builder.Services.AddNotableDateService("AU", AsiaPacificCalendarData.LoadResource("AU"));
 ```
 
-Resolve by key through the standard .NET 8 keyed-service surface — a `[FromKeyedServices]` constructor parameter or
+Resolve by key through the standard .NET 8 keyed-service surface - a `[FromKeyedServices]` constructor parameter or
 `GetRequiredKeyedService`:
 
 ```csharp
@@ -121,7 +121,7 @@ public sealed class PayrollCalendar
 INotableDateService us = app.Services.GetRequiredKeyedService<INotableDateService>("US");
 ```
 
-Keyed registrations are independent of the unkeyed one — register both when most consumers want a default calendar
+Keyed registrations are independent of the unkeyed one - register both when most consumers want a default calendar
 and a few want a specific jurisdiction. The keyed overloads accept a `NotableDateServiceOptions` (or an options
 factory) for collaborators, exactly like the unkeyed forms.
 
@@ -159,8 +159,8 @@ needs to *read* the current resource can inject the
 #### Rebuild from configuration automatically
 
 When the rule set is a function of configuration, bind an options class and use the `IOptionsMonitor<TOptions>`
-overload. Every change the options infrastructure observes — an edited `appsettings.json` with `reloadOnChange`,
-for example — reruns the factory and swaps the result into the live service:
+overload. Every change the options infrastructure observes - an edited `appsettings.json` with `reloadOnChange`,
+for example - reruns the factory and swaps the result into the live service:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -185,13 +185,13 @@ builder.Services.AddReloadableNotableDateService<CalendarOptions>((sp, options) 
 ```
 
 A factory that throws during a change is logged and leaves the previously loaded resource in effect, so a broken
-configuration edit never takes the calendar offline. (The `Calendar` section can hold other children — such as the
-caching package's `NotableDateCache` — without affecting the binding; the binder maps only the properties
+configuration edit never takes the calendar offline. (The `Calendar` section can hold other children - such as the
+caching package's `NotableDateCache` - without affecting the binding; the binder maps only the properties
 `CalendarOptions` declares.)
 
 ### Compose with custom collaborators
 
-Pass a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> to any overload that accepts one — here a custom
+Pass a <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> to any overload that accepts one - here a custom
 algorithm registry shared by the loader and the service, both produced from the container:
 
 ```csharp
@@ -219,7 +219,7 @@ implementation; see [Building and extending the service](../../guides/calendar/b
 The [`Bodu.Globalization.Calendar.Caching`](../calendar-caching/index.md) package layers a read-through cache over
 whichever registration you chose. `AddCachedNotableDateService` removes the registered `INotableDateService`
 descriptor, keeps it as the inner service, and registers the
-<xref:Bodu.Globalization.Calendar.Caching.CachingNotableDateService> decorator in its place — so it must come
+<xref:Bodu.Globalization.Calendar.Caching.CachingNotableDateService> decorator in its place - so it must come
 **after** the registration it wraps, and consumers keep injecting `INotableDateService`:
 
 ```csharp
@@ -266,9 +266,9 @@ backends and the startup warm-up.
 
 ## Where to go next
 
-- **[Introduction](index.md)** — the full overload table, lifetimes, and idempotency.
-- **[Calendar dependency injection guide](../../guides/calendar/dependency-injection.md)** — the complete walkthrough with collaborators and the reloadable workflow.
-- **[Bodu.Globalization.Calendar.Caching](../calendar-caching/index.md)** — the caching decorator, its backends, and its registrations.
-- **[Calendar data packs](../../guides/calendar/data-packs.md)** — the `<Region>CalendarData` factories the samples load resources from.
-- **[API reference](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions)** — the registration surface, member by member.
-- **[Runnable samples](../../samples/calendar.md)** — offline calendar sample projects you can `dotnet run`.
+- **[Introduction](index.md)** - the full overload table, lifetimes, and idempotency.
+- **[Calendar dependency injection guide](../../guides/calendar/dependency-injection.md)** - the complete walkthrough with collaborators and the reloadable workflow.
+- **[Bodu.Globalization.Calendar.Caching](../calendar-caching/index.md)** - the caching decorator, its backends, and its registrations.
+- **[Calendar data packs](../../guides/calendar/data-packs.md)** - the `<Region>CalendarData` factories the samples load resources from.
+- **[API reference](xref:Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions)** - the registration surface, member by member.
+- **[Runnable samples](../../samples/calendar.md)** - offline calendar sample projects you can `dotnet run`.

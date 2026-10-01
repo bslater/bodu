@@ -1,8 +1,8 @@
 # Bodu.Globalization.Calendar.Plugins
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Trust-gated loading of external `Bodu.Globalization.Calendar` algorithm plugins. Third-party assemblies can contribute custom `INotableDateAlgorithm` implementations, but only after passing an explicit trust policy — loading executes attacker-controlled code, so the gate is opt-in and fails closed.
+Trust-gated loading of external `Bodu.Globalization.Calendar` algorithm plugins. Third-party assemblies can contribute custom `INotableDateAlgorithm` implementations, but only after passing an explicit trust policy - loading executes attacker-controlled code, so the gate is opt-in and fails closed.
 
 ## Installation
 
@@ -18,13 +18,13 @@ Targets `net8.0`. All types live in the `Bodu.Globalization.Calendar.Plugins` na
 
 | Policy | Trust basis | Guarantee |
 |---|---|---|
-| `FileHashPluginTrustPolicy` | SHA-256 file-hash allow-list | **Integrity** — the exact reviewed bytes, or nothing; the strongest bundled policy |
-| `StrongNamePluginTrustPolicy` | Strong-name public-key token allow-list | **Identity claim only** — .NET (Core) does not verify strong-name signatures at load, and the token is copyable metadata; never sufficient alone for untrusted input — combine with the hash policy |
+| `FileHashPluginTrustPolicy` | SHA-256 file-hash allow-list | **Integrity** - the exact reviewed bytes, or nothing; the strongest bundled policy |
+| `StrongNamePluginTrustPolicy` | Strong-name public-key token allow-list | **Identity claim only** - .NET (Core) does not verify strong-name signatures at load, and the token is copyable metadata; never sufficient alone for untrusted input - combine with the hash policy |
 | `CompositePluginTrustPolicy` | Every constituent policy (AND) | Fails closed; an empty composite trusts nothing |
 | `DelegatingPluginTrustPolicy` | Custom delegate | As strong as the delegate |
-| `AllowAllPluginTrustPolicy` | Nothing | **Development only** — accepts everything; unsafe |
+| `AllowAllPluginTrustPolicy` | Nothing | **Development only** - accepts everything; unsafe |
 
-The gate is an admission check, not a sandbox: an admitted plugin runs with the full trust of the process. The complete contract — entry-point strength, registration collision policy, unloading — is documented in the [plugin trust guide](../docs/guides/calendar/plugin-trust.md).
+The gate is an admission check, not a sandbox: an admitted plugin runs with the full trust of the process. The complete contract - entry-point strength, registration collision policy, unloading - is documented in the [plugin trust guide](../docs/guides/calendar/plugin-trust.md).
 
 ## Plugin contract
 

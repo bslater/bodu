@@ -7,13 +7,13 @@
 namespace Bodu.Collections.Generic.Extensions;
 
 /// <summary>
-/// Provides deferred-execution combinators over <see cref="IEnumerable{T}" /> — batching, caching, multi-aggregate
-/// fan-out, recursive descent, randomization, and set-membership predicates — that complement the standard LINQ surface
+/// Provides deferred-execution combinators over <see cref="IEnumerable{T}" /> - batching, caching, multi-aggregate
+/// fan-out, recursive descent, randomization, and set-membership predicates - that complement the standard LINQ surface
 /// for production pipeline code.
 /// </summary>
 /// <remarks>
 /// <para>
-/// LINQ-to-Objects covers the common cases — <c>Where</c>, <c>Select</c>, <c>GroupBy</c>, <c>Aggregate</c> — but most
+/// LINQ-to-Objects covers the common cases - <c>Where</c>, <c>Select</c>, <c>GroupBy</c>, <c>Aggregate</c> - but most
 /// non-trivial pipelines end up reaching for the same hand-rolled helpers: chunking a stream into fixed-size windows,
 /// materializing once and replaying many times, walking a tree of children without recursion, or computing several
 /// aggregates in a single pass to avoid re-enumerating an expensive source. This class collects those helpers behind
@@ -23,7 +23,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// The API surface clusters into: chunking and pooling (<c>Batch</c>, <c>BatchPooled</c>), replay support (<c>Cache</c>
 /// ), set-membership predicates (<c>ContainsAll</c>, <c>ContainsAny</c>), tree traversal (<c>RecursiveSelect</c>),
 /// shuffling (<c>Randomize</c>), and multi-aggregate fan-out (<c>Aggregate</c> overloads that compute up to several
-/// seeds in a single enumeration). Each method is offered with the overload set required to keep the call site clean —
+/// seeds in a single enumeration). Each method is offered with the overload set required to keep the call site clean -
 /// a default form, a form that accepts a projection or comparer, and where useful a form that hands the caller a pooled
 /// buffer to drive throughput-sensitive work.
 /// </para>

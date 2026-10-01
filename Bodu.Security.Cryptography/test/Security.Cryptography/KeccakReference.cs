@@ -17,7 +17,7 @@ internal static class KeccakReference
     /// <summary>The number of 64-bit lanes in the Keccak-f[1600] state.</summary>
     internal const int StateWords = 25;
 
-    /// <summary>Round constants for the ι (iota) step — 24 values, one per round.</summary>
+    /// <summary>Round constants for the ι (iota) step - 24 values, one per round.</summary>
     private static readonly ulong[] s_roundConstants =
     [
         0x0000000000000001UL, 0x0000000000008082UL, 0x800000000000808AUL, 0x8000000080008000UL,
@@ -51,7 +51,7 @@ internal static class KeccakReference
 #pragma warning restore SA1137 // Elements should have the same indentation
 
     /// <summary>
-    /// Applies the full <c>Keccak-f[1600]</c> permutation — 24 rounds of θ, ρ, π, χ, and ι — to the supplied 25-word
+    /// Applies the full <c>Keccak-f[1600]</c> permutation - 24 rounds of θ, ρ, π, χ, and ι - to the supplied 25-word
     /// state in place.
     /// </summary>
     /// <param name="state">The 25-element state to permute. Modified in place.</param>

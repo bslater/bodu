@@ -17,7 +17,7 @@ public partial class Snefru128Tests
     // here-documents, and correctSnefruOutput supplies the matching 128-bit digests. The reference is
     // built at the 8-pass security level (SECURITY_LEVEL=8), which is the level Bodu implements. Note
     // the trailing-newline convention: the input for digit string "N" is "N" followed by 0x0A, and the
-    // empty case is a lone 0x0A — reconstructed faithfully from the here-document bodies.
+    // empty case is a lone 0x0A - reconstructed faithfully from the here-document bodies.
 
     /// <summary>Resource name of the embedded Snefru 2.5a input script (128-bit set).</summary>
     private const string InputResourceName = "Bodu.Security.Cryptography.Snefru.testSnefru.txt";

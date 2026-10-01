@@ -17,12 +17,12 @@ namespace Bodu.IO.Pst;
 /// <remarks>
 /// <para>
 /// This layer carries no MAPI semantics: the wire type is the raw MS-OXCDATA code and the payload is the value's
-/// little-endian bytes. Multi-valued and object-typed payloads are surfaced raw — decoding them is a format reader's
+/// little-endian bytes. Multi-valued and object-typed payloads are surfaced raw - decoding them is a format reader's
 /// concern.
 /// </para>
 /// <para>
 /// Each typed accessor requires the matching wire type and a payload of at least the type's width;
-/// <see cref="GetString" /> decodes the UTF-16LE string type (<c>0x001F</c>) only — the code-page string type (<c>0x001E</c>)
+/// <see cref="GetString" /> decodes the UTF-16LE string type (<c>0x001F</c>) only - the code-page string type (<c>0x001E</c>)
 /// stays bytes, because resolving its code page is a format-layer concern.
 /// </para>
 /// </remarks>

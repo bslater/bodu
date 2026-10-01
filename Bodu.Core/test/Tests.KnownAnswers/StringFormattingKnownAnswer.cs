@@ -41,5 +41,5 @@ public sealed record StringFormattingKnownAnswer(
     /// <summary>
     /// Gets a short display name combining identifier, operation, and scenario for test runner output.
     /// </summary>
-    public string DisplayName => $"{Id} {Operation} — {Scenario}";
+    public string DisplayName => $"{Id} {Operation} - {Scenario}";
 }

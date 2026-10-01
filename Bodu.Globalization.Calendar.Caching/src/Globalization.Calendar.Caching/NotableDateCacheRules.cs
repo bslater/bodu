@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// authoritative policy and differ only in how they read and write their bytes.
 /// </summary>
 /// <remarks>
-/// Freshness is a strict less-than comparison — an entry exactly one time-to-live old is stale — and validity allows a
+/// Freshness is a strict less-than comparison - an entry exactly one time-to-live old is stale - and validity allows a
 /// small clock-skew tolerance so an entry stamped marginally ahead of the evaluating clock is not discarded. An entry
 /// is served only when its resource version matches the requested version, and a store drops entries whose version
 /// differs from the one being written, so a resource reload wholesale invalidates a territory's cache.
@@ -106,7 +106,7 @@ internal static class NotableDateCacheRules
     /// </exception>
     /// <remarks>
     /// Equivalent to calling <see cref="SelectFresh" /> once per year, but scanning the entry list once rather than
-    /// once per year — the batch read path over a multi-year span is O(entries) instead of O(years × entries).
+    /// once per year - the batch read path over a multi-year span is O(entries) instead of O(years × entries).
     /// </remarks>
     public static void SelectFreshInto(
         IReadOnlyList<NotableDateCacheEntry> entries,

@@ -1,6 +1,6 @@
 # Implementation plan: faster primitives across Bodu.Security.Cryptography
 
-**Status:** Done and released: W0–W10 merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
+**Status:** Done and released: W0-W10 merged in #710 and shipped in `Bodu.Security.Cryptography` 1.1.0,
 released out of band (#711); results in §10, whose "Left for later" items are planned in
 [`crypto-performance-followups.md`](crypto-performance-followups.md) ·
 **Source:** the assessment run on 2026-09-27 after the Argon2 work (§1) · **Target:** `Bodu.Security.Cryptography`
@@ -37,12 +37,12 @@ Measured at `182b257`, whose sources for every primitive below are unchanged fro
 | Primitive | Bodu | Bodu without AVX-512 | Reference |
 |---|---|---|---|
 | SHAKE128 | 37 MiB/s | 34 MiB/s | OpenSSL 390 MiB/s |
-| SHAKE256 | 31 MiB/s | 29 MiB/s | — |
-| BLAKE2b-512 | 688 MiB/s | 151 MiB/s | OpenSSL (plain C) 622–673 MiB/s |
-| BLAKE2s-256 | 535 MiB/s | 78 MiB/s | OpenSSL (plain C) 394–419 MiB/s |
+| SHAKE256 | 31 MiB/s | 29 MiB/s | - |
+| BLAKE2b-512 | 688 MiB/s | 151 MiB/s | OpenSSL (plain C) 622-673 MiB/s |
+| BLAKE2s-256 | 535 MiB/s | 78 MiB/s | OpenSSL (plain C) 394-419 MiB/s |
 | BLAKE3 | 278 MiB/s | 82 MiB/s | slower than Bodu's own BLAKE2b |
-| CubeHash | 234 MiB/s | 20 MiB/s | — |
-| Skein-512 | 301 MiB/s | 293 MiB/s | — |
+| CubeHash | 234 MiB/s | 20 MiB/s | - |
+| Skein-512 | 301 MiB/s | 293 MiB/s | - |
 
 ### 1.2 Ciphers, modes and AEADs (1 MiB input unless noted)
 
@@ -50,15 +50,15 @@ Measured at `182b257`, whose sources for every primitive below are unchanged fro
 |---|---|---|
 | AES-128-CTR | 59 MiB/s | OpenSSL 4.9 GiB/s; Bodu's own ECB bulk path 3.4 GiB/s |
 | AES-128-GCM | 57 MiB/s | BCL `AesGcm` 4.1 GiB/s |
-| AES-128-GCM, PCLMULQDQ off (the path ARM64 takes) | 3.9 MiB/s | — |
+| AES-128-GCM, PCLMULQDQ off (the path ARM64 takes) | 3.9 MiB/s | - |
 | ChaCha20 | 290 MiB/s | OpenSSL 3.4 GiB/s |
 | XChaCha20-Poly1305 | 145 MiB/s; 624 B allocated per message | BCL ChaCha20-Poly1305 1.7 GiB/s |
 | XChaCha20-Poly1305, 64-byte message | 1.33 µs | BCL 1.27 µs |
-| Poly1305 | 439 MiB/s | — |
-| Serpent-128-CTR | 3.7 MiB/s | — |
+| Poly1305 | 439 MiB/s | - |
+| Serpent-128-CTR | 3.7 MiB/s | - |
 | Camellia-128-CTR | 41 MiB/s | OpenSSL CBC 182 MiB/s |
-| Twofish-CTR | 83 MiB/s | — |
-| Threefish-512-CTR | 240 MiB/s | — |
+| Twofish-CTR | 83 MiB/s | - |
+| Threefish-512-CTR | 240 MiB/s | - |
 
 ### 1.3 Key derivation
 
@@ -67,17 +67,17 @@ Measured at `182b257`, whose sources for every primitive below are unchanged fro
 | scrypt N=2¹⁴ r=8 p=1 (16 MiB) | 112 ms; 16 MiB allocated per call; gen2 collections | 48 ms |
 | scrypt N=2¹⁴ r=8 p=4 | 415 ms (units run one at a time) | 201 ms |
 | scrypt N=2¹⁷ r=8 p=1 (128 MiB) | 1,430 ms; 128 MiB allocated per call | 530 ms |
-| Argon2id m=19 MiB t=2 p=1, for scale | 26 ms | — |
+| Argon2id m=19 MiB t=2 p=1, for scale | 26 ms | - |
 
 ### 1.4 Public-key operations
 
 | Operation | Bodu | Reference |
 |---|---|---|
 | X25519 shared secret | 246 µs | OpenSSL 40 µs |
-| X25519 key generation | 222 µs | — |
+| X25519 key generation | 222 µs | - |
 | Ed25519 sign / verify | 105 µs / 388 µs (verify allocates 2.7 KB) | OpenSSL 53 µs / 160 µs |
-| ML-KEM-768 keygen / encaps / decaps | 301 / 297 / 330 µs | — |
-| ML-DSA-65 keygen / sign / verify | 1.16 / 3.44 / 1.06 ms; sign allocates 119 KB | — |
+| ML-KEM-768 keygen / encaps / decaps | 301 / 297 / 330 µs | - |
+| ML-DSA-65 keygen / sign / verify | 1.16 / 3.44 / 1.06 ms; sign allocates 119 KB | - |
 
 A what-if in a scratch copy replaced only the Keccak permutation with an unrolled one.
 SHAKE128 went from 37 to 249 MiB/s, ML-KEM-768 from 297/330 to 130/167 µs, and ML-DSA-65
@@ -89,22 +89,22 @@ verify from 1.06 ms to 0.42 ms. That permutation is the basis of W1.
 
 ### 2.1 Principles
 
-- **G1 — identical output.** Every change except W0's GCM-SIV fix is byte-for-byte
+- **G1 - identical output.** Every change except W0's GCM-SIV fix is byte-for-byte
   identical to 1.0.0. Published vectors lock it, and so do differential tests against
   the replaced code, which moves into the test project as the oracle.
-- **G2 — in-box only.** Changes use `System.Runtime.Intrinsics`, `NativeMemory`,
+- **G2 - in-box only.** Changes use `System.Runtime.Intrinsics`, `NativeMemory`,
   `Parallel` and `TimeProvider`, with no new package or native dependency. The target
   frameworks stay `net8.0;net10.0`.
-- **G3 — every vector path has a scalar twin, tested against it.**
+- **G3 - every vector path has a scalar twin, tested against it.**
   - `DisableSimd` and the `Bodu.Security.Cryptography.Simd.Test` assembly keep the
     scalar paths on every vector.
   - The ARM64 job runs both suites natively.
-- **G4 — constant time is kept, and improved where it can be.**
+- **G4 - constant time is kept, and improved where it can be.**
   - No new branch or memory access depends on a secret.
   - Replacing per-bit lookups (Serpent) and tweak branches (XTS) removes existing ones.
-- **G5 — additive public API.** The only planned additions are a thread bound for scrypt
+- **G5 - additive public API.** The only planned additions are a thread bound for scrypt
   (W3) and, if W5 needs it, for BLAKE3.
-- **G6 — measured.** Each workstream records before and after in §10, with the harness
+- **G6 - measured.** Each workstream records before and after in §10, with the harness
   from §5.
 
 ### 2.2 Targets
@@ -124,7 +124,7 @@ Targets are on the §1 machine against the §1 baseline. "Scalar" means
 | W3 scrypt | N=2¹⁴ r=8 p=1 | 112 ms | ≤ 50 ms |
 | W3 | allocation per call after warm-up | 16 MiB | ≤ 4 KiB, with no gen2 |
 | W3 | N=2¹⁴ r=8 p=4, bound 4 | 415 ms | ≤ 120 ms |
-| W4 BLAKE2 | BLAKE2b scalar / AVX2 | 151 MiB/s / — | ≥ 450 / ≥ 650 MiB/s |
+| W4 BLAKE2 | BLAKE2b scalar / AVX2 | 151 MiB/s / - | ≥ 450 / ≥ 650 MiB/s |
 | W4 | BLAKE2s scalar | 78 MiB/s | ≥ 300 MiB/s |
 | W5 BLAKE3 | 1 MiB, one thread, AVX2 | 82 MiB/s | ≥ 1 GiB/s |
 | W6 ChaCha | ChaCha20, AVX2 | 290 MiB/s | ≥ 1 GiB/s |
@@ -146,7 +146,7 @@ Targets are on the §1 machine against the §1 baseline. "Scalar" means
 | **T2** | Large per-call buffers in pooled native memory: `Argon2MatrixPool` already rents raw bytes | 3 |
 | **T3** | Independent work on threads, with a bound the caller sets. The caller thread participates, and a fault surfaces unwrapped. | 4 |
 | **T4** | Vector kernels behind static-abstract kernel and ISA-shim interfaces, dispatched once per call through `SimdCapabilities` gates. One 128-bit kernel serves SSSE3 and AdvSimd. | 5 |
-| **T5** | Validation: every-kernel-against-scalar sweeps, the `DisableSimd` assembly, the ARM64 job, and hardware-gated coverage classification | 5–6 |
+| **T5** | Validation: every-kernel-against-scalar sweeps, the `DisableSimd` assembly, the ARM64 job, and hardware-gated coverage classification | 5-6 |
 
 ---
 
@@ -157,7 +157,7 @@ Each workstream is one or more commits on the branch, and each leaves
 Regression, on `net8.0` and `net10.0`. They are ordered by value against effort, and
 none depends on a later one.
 
-### W0 — correctness and hygiene
+### W0 - correctness and hygiene
 
 - **AES-256-GCM-SIV (RFC 8452 §4).**
   - **The defect:**
@@ -192,7 +192,7 @@ none depends on a later one.
   `Avx512F.VL` rotates. Gate on `Avx512FVL`, which is what the kernel's remarks already
   claim.
 
-### W1 — Keccak (SHAKE, ML-KEM, ML-DSA)
+### W1 - Keccak (SHAKE, ML-KEM, ML-DSA)
 
 - **Problem:**
   - `KeccakPermutation.Permute` is the textbook loop: `% 5` indexing, rho and pi through
@@ -203,7 +203,7 @@ none depends on a later one.
     locals, with theta, rho and pi folded into one pass and chi applied per row.
   - The samplers:
     - ML-KEM `SampleNtt`, and ML-DSA `RejNttPoly` / `RejBoundedPoly` / `SampleInBall`,
-      squeeze whole rate blocks and parse them, instead of pulling 1–3 bytes per call.
+      squeeze whole rate blocks and parse them, instead of pulling 1-3 bytes per call.
     - The public `Shake` absorbs full blocks straight from the caller's span.
 - **Tests:**
   - The loop permutation moves into the test project as `KeccakReference`.
@@ -213,7 +213,7 @@ none depends on a later one.
 - **Later, in W9:** a four-way permutation over `Vector256<ulong>` for the independent
   XOFs.
 
-### W2 — AES modes, GHASH and POLYVAL
+### W2 - AES modes, GHASH and POLYVAL
 
 - **Problem:**
   - Every mode except ECB calls `IBlockCipher.Encrypt` once per 16-byte block. For
@@ -231,7 +231,7 @@ none depends on a later one.
     - EAX's and SIV's CMAC allocate per block.
     - OCB, GCM-SIV and CCM copy with `ToArray`.
 - **Design:**
-  - **T1 — one keystream core for the counter modes.**
+  - **T1 - one keystream core for the counter modes.**
     - An internal helper fills a stack buffer of counter blocks (256 by default) under
       the mode's increment rule:
       - big-endian 128-bit for CTR, EAX and SIV (SIV with its two bits cleared);
@@ -247,7 +247,7 @@ none depends on a later one.
   - **XTS and OCB** compute each run's tweaks or offsets first, then make one
     `EncryptBlocks` / `DecryptBlocks` call, then XOR. CBC and CFB decryption batch in
     the same way.
-  - **T4 — GHASH.**
+  - **T4 - GHASH.**
     - `GaloisField128` gains a multi-block update that works on the caller's span.
     - H to H⁴ are precomputed once per key, with one Karatsuba reduction per four
       blocks.
@@ -265,7 +265,7 @@ none depends on a later one.
   - A kernel sweep holds each GHASH kernel against the scalar one on seeded blocks.
   - The ARM64 job runs the PMULL path.
 
-### W3 — scrypt
+### W3 - scrypt
 
 - **Problem:**
   - `ScryptCore` allocates the whole `V` (`new uint[N·32r]`) on every call, plus
@@ -273,7 +273,7 @@ none depends on a later one.
   - It runs the p independent ROMix units one after another.
   - Salsa20/8 is scalar, with a `stackalloc` and copy on every call.
   - BlockMix copies each sub-block.
-  - The result is 2.3–2.7× slower than OpenSSL's plain C.
+  - The result is 2.3-2.7× slower than OpenSSL's plain C.
 - **Design:** the Argon2 phases, replayed in order.
   - **T1:**
     - Salsa20/8 with its sixteen words in locals, as `ChaCha20StreamCipher` already
@@ -302,7 +302,7 @@ none depends on a later one.
   - A kernel sweep against scalar, a thread sweep over the bounds, and a poisoned-`V`
     test.
 
-### W4 — BLAKE2b and BLAKE2s
+### W4 - BLAKE2b and BLAKE2s
 
 - **Problem:**
   - The only SIMD tier is AVX-512VL.
@@ -323,7 +323,7 @@ none depends on a later one.
 - **Tests:** the RFC 7693 and reference vectors, the keyed vectors, and a kernel sweep
   against scalar.
 
-### W5 — BLAKE3
+### W5 - BLAKE3
 
 - **Problem:**
   - One 64-byte block at a time, each copied and cleared.
@@ -341,7 +341,7 @@ none depends on a later one.
   and key derivation. Also a kernel sweep, and a thread sweep over input sizes around
   each subtree boundary.
 
-### W6 — ChaCha20, Salsa20, Poly1305 and the Poly1305 AEADs
+### W6 - ChaCha20, Salsa20, Poly1305 and the Poly1305 AEADs
 
 - **Problem:**
   - Keystream is produced one 64-byte block per interface call. Salsa20 keeps its state
@@ -368,14 +368,14 @@ none depends on a later one.
   block-counter boundaries. The Poly1305 core is compared with the old implementation
   over seeded messages.
 
-### W7 — Serpent
+### W7 - Serpent
 
 - **Problem:**
   - The bitsliced layout applies each S-box through a 32-iteration loop: gather one bit
     per word, look it up in a 16-entry table, scatter the result.
   - That costs about 4 µs per block.
 - **Design:**
-  - **T1:** Osvik's Boolean S-box circuits (S0–S7 and their inverses) replace the loop.
+  - **T1:** Osvik's Boolean S-box circuits (S0-S7 and their inverses) replace the loop.
     They are constant time by construction.
   - **T4:** `EncryptBlocks` / `DecryptBlocks` process 4 or 8 blocks through
     `Vector128<uint>` / `Vector256<uint>` for the batched modes from W2.
@@ -383,7 +383,7 @@ none depends on a later one.
   existing vectors, and a differential test of the multi-block path against single
   blocks.
 
-### W8 — Curve25519 and Ed25519
+### W8 - Curve25519 and Ed25519
 
 - **Problem:**
   - `Square` is `Multiply`, and `Double` is `Add(this)`, nine multiplies each.
@@ -400,7 +400,7 @@ none depends on a later one.
   `Square(x) = Multiply(x, x)` and `Double(P) = Add(P, P)` on seeded values, and that
   base-point key generation equals the ladder.
 
-### W9 — ML-KEM and ML-DSA beyond Keccak
+### W9 - ML-KEM and ML-DSA beyond Keccak
 
 - **Problem:**
   - The NTT butterflies and pointwise products reduce with a plain `% Q`.
@@ -419,7 +419,7 @@ none depends on a later one.
 - **Tests:** the ACVP vectors and the key-reuse paths. Cached keys are checked against
   fresh keys over many operations.
 
-### W10 — lower priority
+### W10 - lower priority
 
 - A 128-bit kernel for CubeHash's scalar fallback, which is 12× below its AVX-512 path.
 - Camellia and Twofish gain from W2's batching; no kernel work.
@@ -484,9 +484,9 @@ none depends on a later one.
 Filled in as each workstream lands. Measured with the crypto harness
 (`Bodu.Security.Cryptography.Benchmarks --crypto-harness`) on the §1 machine: 4 vCPUs,
 x64 with AVX-512, .NET 10 unless noted, the median of five rounds. Run-to-run noise on
-this machine is about ±5–10%.
+this machine is about ±5-10%.
 
-### W0 — correctness and hygiene (done)
+### W0 - correctness and hygiene (done)
 
 - AES-256-GCM-SIV derives a 256-bit message-encryption key, as RFC 8452 §4 specifies.
   The C.2 and C.3 vectors are pinned, and the test that proved the bug was committed
@@ -497,30 +497,30 @@ this machine is about ±5–10%.
   whole-block vectors are pinned; the previous vectors never doubled the tweak.
 - Threefish-512's kernel is gated on AVX-512VL, which it uses.
 
-### W1 — Keccak (done)
+### W1 - Keccak (done)
 
 | Measure | Baseline | Result | Target |
 |---|---|---|---|
-| SHAKE128, 1 MiB | 35.2 MiB/s | 263.1 MiB/s | ≥ 200 MiB/s — met |
-| SHAKE256, 1 MiB | 29.6 MiB/s | 178.0 MiB/s | — |
-| SHAKE128, 64-byte input | 4.59 µs | 0.70 µs (BCL: 1.21 µs) | — |
-| ML-KEM-768 keygen / encaps / decaps | 289 / 306 / 326 µs | 103 / 138 / 139 µs | ≤ 150 / ≤ 180 µs — met |
-| ML-DSA-65 keygen / sign / verify | 1.14 / 3.31 / 1.04 ms | 0.33 / 2.24 / 0.30 ms | verify ≤ 0.5 ms — met |
+| SHAKE128, 1 MiB | 35.2 MiB/s | 263.1 MiB/s | ≥ 200 MiB/s - met |
+| SHAKE256, 1 MiB | 29.6 MiB/s | 178.0 MiB/s | - |
+| SHAKE128, 64-byte input | 4.59 µs | 0.70 µs (BCL: 1.21 µs) | - |
+| ML-KEM-768 keygen / encaps / decaps | 289 / 306 / 326 µs | 103 / 138 / 139 µs | ≤ 150 / ≤ 180 µs - met |
+| ML-DSA-65 keygen / sign / verify | 1.14 / 3.31 / 1.04 ms | 0.33 / 2.24 / 0.30 ms | verify ≤ 0.5 ms - met |
 
 On .NET 8: SHAKE128 goes from 36.4 to 269.9 MiB/s, ML-KEM-768 encaps / decaps from
 290 / 416 to 114 / 162 µs, and ML-DSA-65 verify from 1.01 to 0.33 ms.
 
-### W2 — AES modes, GHASH and POLYVAL (done)
+### W2 - AES modes, GHASH and POLYVAL (done)
 
 | Measure | Baseline | Result | Target |
 |---|---|---|---|
-| AES-128-CTR, 1 MiB | 54.8 MiB/s | 1,665.8 MiB/s | ≥ 1 GiB/s — met |
-| AES-128-GCM, 1 MiB | 54.9 MiB/s | 1,095.2 MiB/s, 240 B allocated | ≥ 800 MiB/s — met |
-| AES-128-GCM, 64 bytes | 1.81 µs | 1.04 µs | — |
-| AES-128-GCM, scalar GHASH kernel | 4.1 MiB/s | 208.9 MiB/s | ≥ 40 MiB/s — met |
-| AES-128-GCM-SIV, 1 MiB | 38.8 MiB/s, 1,496 B | 1,154.5 MiB/s, 848 B | ≥ 5× — met (30×) |
-| AES-128-GCM-SIV, 64 bytes | 10.47 µs | 5.09 µs | — |
-| Threefish-512-CTR / Twofish-CTR | 244 / 83.7 MiB/s | 338 / 89.4 MiB/s | — |
+| AES-128-CTR, 1 MiB | 54.8 MiB/s | 1,665.8 MiB/s | ≥ 1 GiB/s - met |
+| AES-128-GCM, 1 MiB | 54.9 MiB/s | 1,095.2 MiB/s, 240 B allocated | ≥ 800 MiB/s - met |
+| AES-128-GCM, 64 bytes | 1.81 µs | 1.04 µs | - |
+| AES-128-GCM, scalar GHASH kernel | 4.1 MiB/s | 208.9 MiB/s | ≥ 40 MiB/s - met |
+| AES-128-GCM-SIV, 1 MiB | 38.8 MiB/s, 1,496 B | 1,154.5 MiB/s, 848 B | ≥ 5× - met (30×) |
+| AES-128-GCM-SIV, 64 bytes | 10.47 µs | 5.09 µs | - |
+| Threefish-512-CTR / Twofish-CTR | 244 / 83.7 MiB/s | 338 / 89.4 MiB/s | - |
 
 How it was done, and where it departs from the design above:
 
@@ -545,7 +545,7 @@ How it was done, and where it departs from the design above:
   Runs go through the cached transform up to 64 KiB, in 4 KiB chunks through scratch
   rented from the array pool for the call. From 64 KiB the one-shot call is used,
   because it avoids the chunk copies. The decryptor is now created on first use, which
-  saves 1.8 µs for every cipher that only encrypts — GCM-SIV creates one per message.
+  saves 1.8 µs for every cipher that only encrypts - GCM-SIV creates one per message.
 - **GHASH and POLYVAL** live in a new internal `Ghash` module instead of a multi-block
   update on `GaloisField128`:
   - A key is prepared once as `Ghash.Key`, holding H to H⁴ for the carry-less kernels.
@@ -566,18 +566,18 @@ How it was done, and where it departs from the design above:
   the counter blocks through `ICryptoTransform` copies. Closing the gap needs a managed
   AES round, which §9 rules out.
 
-#### W2d — the remaining AES modes
+#### W2d - the remaining AES modes
 
 | Measure (AES-128, 1 MiB) | Baseline | Result | Target |
 |---|---|---|---|
-| EAX | 27.4 MiB/s, 3.67 MB and 15 gen2 per message | 603.1 MiB/s, 112 B | ≥ 5× — met (22×) |
-| SIV | 26.0 MiB/s, 3.67 MB and 14 gen2 per message | 611.1 MiB/s, 72 B | ≥ 5× — met (23×) |
-| CCM | 26.6 MiB/s | 521.5 MiB/s | ≥ 5× — met (20×) |
-| OCB | 49.7 MiB/s, 2,160 B | 1,721.0 MiB/s, 664 B | ≥ 5× — met (35×) |
-| XTS | 59.7 MiB/s | 1,384.4 MiB/s | ≥ 5× — met (23×) |
-| CBC encryption | 59.5 MiB/s | 966.0 MiB/s | — |
-| CBC decryption | 58.2 MiB/s | 2,241.4 MiB/s | — |
-| CFB decryption | 57.5 MiB/s | 2,149.2 MiB/s | — |
+| EAX | 27.4 MiB/s, 3.67 MB and 15 gen2 per message | 603.1 MiB/s, 112 B | ≥ 5× - met (22×) |
+| SIV | 26.0 MiB/s, 3.67 MB and 14 gen2 per message | 611.1 MiB/s, 72 B | ≥ 5× - met (23×) |
+| CCM | 26.6 MiB/s | 521.5 MiB/s | ≥ 5× - met (20×) |
+| OCB | 49.7 MiB/s, 2,160 B | 1,721.0 MiB/s, 664 B | ≥ 5× - met (35×) |
+| XTS | 59.7 MiB/s | 1,384.4 MiB/s | ≥ 5× - met (23×) |
+| CBC encryption | 59.5 MiB/s | 966.0 MiB/s | - |
+| CBC decryption | 58.2 MiB/s | 2,241.4 MiB/s | - |
+| CFB decryption | 57.5 MiB/s | 2,149.2 MiB/s | - |
 
 - **CBC chaining.** CBC encryption and the CBC-MACs inside CMAC and CCM are sequential,
   so `EncryptBlocks` cannot batch them. Chained a block at a time they top out near
@@ -620,16 +620,16 @@ Correctness work found on the way, each fixed test-first:
   20,000 bytes against the platform (`AesGcm`, `AesCcm`, CBC, CFB) or against a
   block-at-a-time reference built from its specification on the platform's AES.
 
-### W3 — scrypt (done)
+### W3 - scrypt (done)
 
 | Measure | Baseline | Result | Target |
 |---|---|---|---|
-| N=2¹⁴ r=8 p=1 | 104.3 ms (OpenSSL 51.9 ms) | 32.9 ms | ≤ 50 ms — met |
-| Allocation per call, N=2¹⁴ r=8 p=1 | 16.8 MB, 10 gen2 per round | 83 B, no gen2 | ≤ 4 KiB, no gen2 — met |
-| N=2¹⁴ r=8 p=4, bound 4 | 374.3 ms (no bound existed) | 41.5 ms | ≤ 120 ms — met |
-| N=2¹⁴ r=8 p=4, one thread | 374.3 ms (OpenSSL 204.5 ms) | 122.1 ms | — |
-| N=2¹⁷ r=8 p=1 | 800.0 ms, 134 MB (OpenSSL 502.2 ms) | 270.9 ms, 80 B | — |
-| N=2¹⁴ r=8 p=1, scalar kernel | — | 52.0 ms | — |
+| N=2¹⁴ r=8 p=1 | 104.3 ms (OpenSSL 51.9 ms) | 32.9 ms | ≤ 50 ms - met |
+| Allocation per call, N=2¹⁴ r=8 p=1 | 16.8 MB, 10 gen2 per round | 83 B, no gen2 | ≤ 4 KiB, no gen2 - met |
+| N=2¹⁴ r=8 p=4, bound 4 | 374.3 ms (no bound existed) | 41.5 ms | ≤ 120 ms - met |
+| N=2¹⁴ r=8 p=4, one thread | 374.3 ms (OpenSSL 204.5 ms) | 122.1 ms | - |
+| N=2¹⁷ r=8 p=1 | 800.0 ms, 134 MB (OpenSSL 502.2 ms) | 270.9 ms, 80 B | - |
+| N=2¹⁴ r=8 p=1, scalar kernel | - | 52.0 ms | - |
 
 The baseline was measured at the start of the workstream; §1 recorded 112 ms for the
 same cost. Each step, at N=2¹⁴ r=8 p=1: the loop rewrite took it to 65 ms, native `V` to
@@ -676,18 +676,18 @@ How it was done, and where it departs from the design above:
   `libcoreclr` under the emulator. The pre-W3 code crashes the same way on the same
   corpus, so the emulator is at fault; the ARM64 CI job runs the suite on real hardware.
 
-### W4 — BLAKE2b and BLAKE2s (done)
+### W4 - BLAKE2b and BLAKE2s (done)
 
 | Measure (1 MiB) | Baseline | Result | Target |
 |---|---|---|---|
-| BLAKE2b, scalar kernel | 150.6 MiB/s | 512.3 MiB/s | ≥ 450 MiB/s — met |
-| BLAKE2b, AVX2 host | 151.5 MiB/s (scalar code) | 693.1 MiB/s | ≥ 650 MiB/s — met |
-| BLAKE2b, AVX-512 | 669.0 MiB/s (OpenSSL 664.5) | 830.5 MiB/s | — |
-| BLAKE2b, SSSE3 only | 151.5 MiB/s | 571.2 MiB/s | — |
-| BLAKE2s, scalar kernel | 96.7 MiB/s | 316.3 MiB/s | ≥ 300 MiB/s — met |
-| BLAKE2s, SSSE3 / AVX2 host | 94.4 MiB/s | 411.2 MiB/s | — |
-| BLAKE2s, AVX-512 | 518.9 MiB/s (OpenSSL 418.8) | 522.9 MiB/s | — |
-| 64-byte message, BLAKE2b / BLAKE2s, scalar | 0.94 / 0.75 µs | 0.35 / 0.29 µs | — |
+| BLAKE2b, scalar kernel | 150.6 MiB/s | 512.3 MiB/s | ≥ 450 MiB/s - met |
+| BLAKE2b, AVX2 host | 151.5 MiB/s (scalar code) | 693.1 MiB/s | ≥ 650 MiB/s - met |
+| BLAKE2b, AVX-512 | 669.0 MiB/s (OpenSSL 664.5) | 830.5 MiB/s | - |
+| BLAKE2b, SSSE3 only | 151.5 MiB/s | 571.2 MiB/s | - |
+| BLAKE2s, scalar kernel | 96.7 MiB/s | 316.3 MiB/s | ≥ 300 MiB/s - met |
+| BLAKE2s, SSSE3 / AVX2 host | 94.4 MiB/s | 411.2 MiB/s | - |
+| BLAKE2s, AVX-512 | 518.9 MiB/s (OpenSSL 418.8) | 522.9 MiB/s | - |
+| 64-byte message, BLAKE2b / BLAKE2s, scalar | 0.94 / 0.75 µs | 0.35 / 0.29 µs | - |
 
 §1's BLAKE2s baseline of 78 MiB/s came from an earlier run; the table uses this
 workstream's own measurements. On .NET 8: BLAKE2b runs at 867 MiB/s with AVX-512,
@@ -729,16 +729,16 @@ How it was done, and where it departs from the design above:
   `CollectionAssert.AreEqual` faults inside MSTest under the emulator. The same sweep
   checked with a span comparison matches the scalar kernel on all 1,000 samples.
 
-### W5 — BLAKE3 (done)
+### W5 - BLAKE3 (done)
 
 | Measure (1 MiB, one thread) | Baseline | Result | Target |
 |---|---|---|---|
-| AVX2 host | 86.8 MiB/s (scalar code) | 1,409–1,557 MiB/s | ≥ 1 GiB/s — met |
-| AVX-512, eight-way (this host's default) | 280.8 MiB/s | 2,699 MiB/s | — |
-| AVX-512, sixteen-way (`DOTNET_PreferredVectorBitWidth=512`) | 280.8 MiB/s | 3,441 MiB/s | — |
-| SSSE3 only | 86.8 MiB/s | 885 MiB/s | — |
-| Scalar | 86.8 MiB/s | 382 MiB/s | — |
-| 64-byte message, AVX-512 / scalar | 0.35 / 0.86 µs | 0.23 / 0.28 µs | — |
+| AVX2 host | 86.8 MiB/s (scalar code) | 1,409-1,557 MiB/s | ≥ 1 GiB/s - met |
+| AVX-512, eight-way (this host's default) | 280.8 MiB/s | 2,699 MiB/s | - |
+| AVX-512, sixteen-way (`DOTNET_PreferredVectorBitWidth=512`) | 280.8 MiB/s | 3,441 MiB/s | - |
+| SSSE3 only | 86.8 MiB/s | 885 MiB/s | - |
+| Scalar | 86.8 MiB/s | 382 MiB/s | - |
+| 64-byte message, AVX-512 / scalar | 0.35 / 0.86 µs | 0.23 / 0.28 µs | - |
 
 | Measure, all four cores (`maxDegreeOfParallelism: -1`) | One thread | Four threads |
 |---|---|---|
@@ -750,7 +750,7 @@ How it was done, and where it departs from the design above:
 
 §1's baseline of 82 MiB/s came from an earlier run; the table uses this workstream's
 own measurements. On .NET 8 one thread runs at 2,571 MiB/s with AVX-512 (3,608 MiB/s
-sixteen-way), 1,399–1,498 MiB/s on AVX2, 784 MiB/s on SSSE3 and 401 MiB/s scalar. A
+sixteen-way), 1,399-1,498 MiB/s on AVX2, 784 MiB/s on SSSE3 and 401 MiB/s scalar. A
 hash still allocates only its 32-byte digest on one thread; on several, each write
 that divides allocates about 2.4 KB, most of it `Parallel.For`'s own.
 
@@ -759,7 +759,7 @@ How it was done, and where it departs from the design above:
 - **T1, the one-block kernels.** The compression function moved into an internal
   `Blake3Core`. Its scalar kernel writes out the seven rounds with the schedule resolved
   to constant indices, and a `Vector128Kernel<TIsa>` runs one block over the BLAKE2s
-  shims — BLAKE3's `G` is BLAKE2s's, rotations included — on AVX-512VL, SSSE3 (also on
+  shims - BLAKE3's `G` is BLAKE2s's, rotations included - on AVX-512VL, SSSE3 (also on
   AVX2 hosts) and AdvSimd. Blake3 reads blocks straight from the caller's span, and
   builds each parent block on the stack, clearing it after the compression. This alone
   took one thread from 87 to 469 MiB/s on AVX2 and 360 MiB/s scalar.
@@ -778,7 +778,7 @@ How it was done, and where it departs from the design above:
   never compressed early; each subtree's chaining value joins the stack one level up
   per doubling.
 - **The runtime's 512-bit preference.** The sixteen-way kernel beats the eight-way one
-  by 27–40% on this Cascade Lake host, but the runtime clears
+  by 27-40% on this Cascade Lake host, but the runtime clears
   `Vector512.IsHardwareAccelerated` here, because sustained 512-bit work lowers the
   clock. It therefore runs as its own kind, `Avx512Wide`, selected only where the
   runtime prefers 512-bit vectors; elsewhere AVX-512 hosts keep the eight-way kernel.
@@ -820,31 +820,31 @@ How it was done, and where it departs from the design above:
   W4 had measured that tier on .NET 10 only, where it runs at 582. Dynamic PGO was
   inlining the hot kernel into `Blake2bCore.Compress` and running out of inlining
   budget inside it, leaving the kernel's `G`, message loads and `Undiagonalize` as
-  calls; with `TieredPGO=0` it ran at 554–609 MiB/s. Every BLAKE kernel entry point
+  calls; with `TieredPGO=0` it ran at 554-609 MiB/s. Every BLAKE kernel entry point
   now forbids inlining, so each is compiled on its own whatever the profile: the
   kernel runs at 580 MiB/s on .NET 8, and no other tier moved beyond noise. A
   reflection test per core pins the attribute, committed red before the fix.
-  - The same sweep showed AES-GCM 12–20% slower on .NET 8 with PGO than without. The
+  - The same sweep showed AES-GCM 12-20% slower on .NET 8 with PGO than without. The
     GHASH kernel compiles the same either way; the difference lies in how PGO lays out
     and devirtualizes the BCL's OpenSSL AES path under `AesBlockCipher.TransformBlocks`.
     It is not pursued here.
 
-### W6 — ChaCha20, Salsa20, Poly1305 and the Poly1305 AEADs (done)
+### W6 - ChaCha20, Salsa20, Poly1305 and the Poly1305 AEADs (done)
 
 | Measure (1 MiB unless noted) | Baseline | Result | Target |
 |---|---|---|---|
-| ChaCha20, AVX2 | 286 MiB/s | 1,163–1,446 MiB/s | ≥ 1 GiB/s — met |
-| ChaCha20, AVX-512 eight-way (this host's default) | 286 MiB/s | 3,103 MiB/s | — |
-| ChaCha20, AVX-512 sixteen-way (`DOTNET_PreferredVectorBitWidth=512`) | 286 MiB/s | 3,836 MiB/s | — |
-| ChaCha20, SSSE3 / scalar | 299 / 295 MiB/s | 774 / 307 MiB/s | — |
-| Salsa20, AVX-512 eight-way / sixteen-way | 356 MiB/s | 3,155 / 3,858 MiB/s | — |
-| Salsa20, AVX2 / SSSE3 / scalar | 353 / 346 / 351 MiB/s | 729–1,205 / 608 / 398 MiB/s | — |
-| XChaCha20-Poly1305 | 141 MiB/s | 761 MiB/s; 561–585 MiB/s on AVX2 | ≥ 500 MiB/s — met |
-| XChaCha20-Poly1305, allocation per message | 624 B | 80 B, the instance itself; `Encrypt` / `Decrypt` 0 B | nothing beyond the output — met, see below |
-| XChaCha20-Poly1305, 64-byte message | 1.40 µs | 0.82–0.86 µs | — |
-| XSalsa20-Poly1305 (secretbox) | 150 MiB/s; 656 B | 689 MiB/s; 80 B | — |
-| Poly1305 | 441 MiB/s | 1,110–1,131 MiB/s | ≥ 1 GiB/s — met |
-| Poly1305 without BMI2 / scalar | 446 / 438 MiB/s | 600–720 / 618–687 MiB/s | — |
+| ChaCha20, AVX2 | 286 MiB/s | 1,163-1,446 MiB/s | ≥ 1 GiB/s - met |
+| ChaCha20, AVX-512 eight-way (this host's default) | 286 MiB/s | 3,103 MiB/s | - |
+| ChaCha20, AVX-512 sixteen-way (`DOTNET_PreferredVectorBitWidth=512`) | 286 MiB/s | 3,836 MiB/s | - |
+| ChaCha20, SSSE3 / scalar | 299 / 295 MiB/s | 774 / 307 MiB/s | - |
+| Salsa20, AVX-512 eight-way / sixteen-way | 356 MiB/s | 3,155 / 3,858 MiB/s | - |
+| Salsa20, AVX2 / SSSE3 / scalar | 353 / 346 / 351 MiB/s | 729-1,205 / 608 / 398 MiB/s | - |
+| XChaCha20-Poly1305 | 141 MiB/s | 761 MiB/s; 561-585 MiB/s on AVX2 | ≥ 500 MiB/s - met |
+| XChaCha20-Poly1305, allocation per message | 624 B | 80 B, the instance itself; `Encrypt` / `Decrypt` 0 B | nothing beyond the output - met, see below |
+| XChaCha20-Poly1305, 64-byte message | 1.40 µs | 0.82-0.86 µs | - |
+| XSalsa20-Poly1305 (secretbox) | 150 MiB/s; 656 B | 689 MiB/s; 80 B | - |
+| Poly1305 | 441 MiB/s | 1,110-1,131 MiB/s | ≥ 1 GiB/s - met |
+| Poly1305 without BMI2 / scalar | 446 / 438 MiB/s | 600-720 / 618-687 MiB/s | - |
 
 The baselines were measured the same day at `e63fe20`, the commit before W6, whose
 stream ciphers, Poly1305 and AEADs are 1.0.0's; they agree with §1. On .NET 8 the
@@ -866,7 +866,7 @@ How it was done, and where it departs from the design above:
     `UInt128` add compiles to add, cmp, setb and movzx.
   - The high half of each product comes from `mulx` on x64 with BMI2 and `umulh` on
     ARM64. Without either, `Math.BigMul` is a call into the BCL's software fallback for
-    every product. That path fell to 316–345 MiB/s, below the old 26-bit code, and was
+    every product. That path fell to 316-345 MiB/s, below the old 26-bit code, and was
     found while measuring this section (see below).
   - The public `Poly1305` feeds the core from `HashCore`; the AEADs keep one on the
     stack.
@@ -930,9 +930,9 @@ How it was done, and where it departs from the design above:
   block function over every block count and counter case: 4,052 checks, confirmed with
   a span comparison because the emulator faults inside MSTest's `CollectionAssert`. The
   Poly1305 core's differential and edge tests pass on the `umulh` path.
-- **Found along the way, and fixed.** On x64 without BMI2 — pre-Haswell processors, the
+- **Found along the way, and fixed.** On x64 without BMI2 - pre-Haswell processors, the
   Pentium and Celeron parts that disable VEX encodings, and
-  `DOTNET_EnableHWIntrinsic=0` — the core's `Math.BigMul` fallback was nine calls per
+  `DOTNET_EnableHWIntrinsic=0` - the core's `Math.BigMul` fallback was nine calls per
   block. `Poly1305Core.SplitProduct` now forms the split inline from three 64-bit
   multiplies:
   - Write `left = a1·2^32 + a0` and `right = b1·2^32 + b0`; the product is
@@ -942,8 +942,8 @@ How it was done, and where it departs from the design above:
   - That sum, plus the carry out of `a0·b0`, is therefore exactly the product's bits
     from 32 upward.
 
-  Without BMI2 Poly1305 went from 316–345 to 600–720 MiB/s, and XChaCha20-Poly1305
-  with neither AVX2 nor BMI2 from 250 to 366–372 MiB/s. The split is held to `UInt128`
+  Without BMI2 Poly1305 went from 316-345 to 600-720 MiB/s, and XChaCha20-Poly1305
+  with neither AVX2 nor BMI2 from 250 to 366-372 MiB/s. The split is held to `UInt128`
   products at its bounds and over 100,000 seeded pairs.
 - **Left for later.**
   - Poly1305 is now the AEADs' bottleneck: at 1 MiB the keystream takes about 0.33 ms
@@ -957,18 +957,18 @@ How it was done, and where it departs from the design above:
     byte-aligned, so each is a shift pair. Where AVX-512's `vprold` is available the
     two run at the same speed.
 
-### W7 — Serpent (done)
+### W7 - Serpent (done)
 
 | Measure (1 MiB unless noted) | Baseline | Result | Target |
 |---|---|---|---|
-| Serpent-128-CTR, scalar | 3.7 MiB/s | 73–76 MiB/s | ≥ 60 MiB/s — met |
-| Serpent-128-CTR, AVX2 eight-way | 3.7 MiB/s | 396–419 MiB/s | ≥ 200 MiB/s — met |
-| Serpent-128-CTR, AVX-512VL eight-way (this host's default) | 3.7 MiB/s | 563–579 MiB/s | — |
-| Serpent-128-CTR, SSSE3 four-way | 3.7 MiB/s | 206–212 MiB/s | — |
-| Serpent-128 `EncryptBlocks` / `DecryptBlocks`, AVX-512VL | — | 730 / 785 MiB/s | — |
-| Serpent-128 `EncryptBlocks` / `DecryptBlocks`, AVX2 | — | 487 / 519 MiB/s | — |
-| Serpent-128 `Encrypt`, one block per call | 3.9 MiB/s (3.96 µs) | 81 MiB/s (188 ns) | — |
-| Serpent-256 / 512 / 1024 `Encrypt`, one block per call | 2.5 / 1.8 / 1.5 MiB/s | 17 / 12.5 / 10.5 MiB/s | — |
+| Serpent-128-CTR, scalar | 3.7 MiB/s | 73-76 MiB/s | ≥ 60 MiB/s - met |
+| Serpent-128-CTR, AVX2 eight-way | 3.7 MiB/s | 396-419 MiB/s | ≥ 200 MiB/s - met |
+| Serpent-128-CTR, AVX-512VL eight-way (this host's default) | 3.7 MiB/s | 563-579 MiB/s | - |
+| Serpent-128-CTR, SSSE3 four-way | 3.7 MiB/s | 206-212 MiB/s | - |
+| Serpent-128 `EncryptBlocks` / `DecryptBlocks`, AVX-512VL | - | 730 / 785 MiB/s | - |
+| Serpent-128 `EncryptBlocks` / `DecryptBlocks`, AVX2 | - | 487 / 519 MiB/s | - |
+| Serpent-128 `Encrypt`, one block per call | 3.9 MiB/s (3.96 µs) | 81 MiB/s (188 ns) | - |
+| Serpent-256 / 512 / 1024 `Encrypt`, one block per call | 2.5 / 1.8 / 1.5 MiB/s | 17 / 12.5 / 10.5 MiB/s | - |
 
 The CTR baseline is §1's and was re-measured at `e63fe20`, whose Serpent is 1.0.0's.
 The `Encrypt` rows come from a scratch probe that times 20,000 calls on one block, and
@@ -976,19 +976,19 @@ the `EncryptBlocks` rows from one that times the explicit `IBlockCipher` members
 1 MiB; both take the best of five or more rounds.
 
 On .NET 8 the scalar and SSSE3 tiers match within noise: 75 and 200 MiB/s. The vector
-tiers run 10–20% slower:
+tiers run 10-20% slower:
 
-- AVX-512 gives 476–484 MiB/s in CTR, and 596 / 639 MiB/s through `EncryptBlocks` /
+- AVX-512 gives 476-484 MiB/s in CTR, and 596 / 639 MiB/s through `EncryptBlocks` /
   `DecryptBlocks`. .NET 10 folds chains of bitwise operations into AVX-512's
   three-input `vpternlogd`: the eight-way kernel has 71 of them against .NET 8's 11, and
   335 instructions per eight rounds against 377.
-- AVX2 gives 334–360 MiB/s in CTR and 428 MiB/s through `EncryptBlocks`. Here the two
+- AVX2 gives 334-360 MiB/s in CTR and 428 MiB/s through `EncryptBlocks`. Here the two
   runtimes emit nearly the same kernel, .NET 8's 528 instructions against .NET 10's
   522, so the gap lies in register allocation or scheduling; it was not pursued.
 
 How it was done, and where it departs from the design above:
 
-- **T1, the circuits (W7a).** `SerpentCore` holds Osvik's circuits for S0–S7 and their
+- **T1, the circuits (W7a).** `SerpentCore` holds Osvik's circuits for S0-S7 and their
   inverses, as Crypto++ publishes them in `serpentp.h`, which is in the public domain.
   - Each circuit has 14 to 19 Boolean operations, with no branches and no table reads.
     It leaves its outputs permuted across five registers. The permutations were derived
@@ -1049,17 +1049,17 @@ How it was done, and where it departs from the design above:
   - CTR runs at about three quarters of `EncryptBlocks`, the rest going to the counter
     blocks and the XOR. That cost is W2's and applies to every block cipher.
 
-### W8 — Curve25519 and Ed25519 (done)
+### W8 - Curve25519 and Ed25519 (done)
 
 | Measure | Baseline | Result | Target |
 |---|---|---|---|
-| X25519 shared secret | 208–239 µs | 90–94 µs | ≤ 150 µs — met |
-| X25519 key generation | 204–232 µs | 49–51 µs | ≤ 70 µs — met |
-| Ed25519 sign | 87–100 µs | 51–56 µs | ≤ 80 µs — met |
-| Ed25519 verify | 363–413 µs | 136–150 µs | ≤ 200 µs — met |
-| Ed25519 verify, allocation | 2,720 B | 136 B, the `IncrementalHash` | — |
-| Without BMI2: X25519 shared secret / key generation | 367–450 / 371–435 µs | 234–259 / 105–122 µs | — |
-| Without BMI2: Ed25519 sign / verify | 139–153 / 681–780 µs | 108–118 / 368–385 µs | — |
+| X25519 shared secret | 208-239 µs | 90-94 µs | ≤ 150 µs - met |
+| X25519 key generation | 204-232 µs | 49-51 µs | ≤ 70 µs - met |
+| Ed25519 sign | 87-100 µs | 51-56 µs | ≤ 80 µs - met |
+| Ed25519 verify | 363-413 µs | 136-150 µs | ≤ 200 µs - met |
+| Ed25519 verify, allocation | 2,720 B | 136 B, the `IncrementalHash` | - |
+| Without BMI2: X25519 shared secret / key generation | 367-450 / 371-435 µs | 234-259 / 105-122 µs | - |
+| Without BMI2: Ed25519 sign / verify | 139-153 / 681-780 µs | 108-118 / 368-385 µs | - |
 
 The baselines were re-measured the same day at `e63fe20`, whose curve code is 1.0.0's;
 they sit a little below §1's 246 / 222 / 105 / 388 µs. Each range spans three runs on
@@ -1099,7 +1099,7 @@ How it was done, and where it departs from the design above:
     u = (Z + Y) / (Z − Y), one inversion.
   - The table scan had copied each 160-byte entry by value, 16 per window. It now
     selects the coordinates one field element at a time by reference, which took key
-    generation from 54–70 to 46–57 µs in the runs made at the time.
+    generation from 54-70 to 46-57 µs in the runs made at the time.
 - **Verification (W8c).**
   - The combination [S]B + [k](−A) is compared with R in projective coordinates, four
     multiplications, instead of by encoding both points, two inversions.
@@ -1144,21 +1144,21 @@ How it was done, and where it departs from the design above:
     registers, which leaves about 130 stack references. Four 64-bit limbs would need
     add-with-carry, which .NET does not expose.
 
-### W9 — ML-KEM and ML-DSA beyond Keccak (done)
+### W9 - ML-KEM and ML-DSA beyond Keccak (done)
 
 | Measure | Baseline | Result | Target |
 |---|---|---|---|
-| ML-KEM-768 encapsulate / decapsulate | 109–125 / 144–155 µs | 41–51 / 60–80 µs | ≤ 60 / ≤ 80 µs — met |
-| ML-KEM-768 key generation | 95–115 µs | 75–80 µs | — |
-| ML-DSA-65 sign | 1.82–2.28 ms | 0.79–0.85 ms | ≤ 1 ms — met |
-| ML-DSA-65 sign, allocation | about 119 KB | 3,336 B, the signature | ≤ 8 KiB — met |
-| ML-DSA-65 verify | 305–391 µs, 54,904 B | 68–73 µs, nothing | — |
-| ML-DSA-65 key generation | 322–354 µs | 302–328 µs | — |
+| ML-KEM-768 encapsulate / decapsulate | 109-125 / 144-155 µs | 41-51 / 60-80 µs | ≤ 60 / ≤ 80 µs - met |
+| ML-KEM-768 key generation | 95-115 µs | 75-80 µs | - |
+| ML-DSA-65 sign | 1.82-2.28 ms | 0.79-0.85 ms | ≤ 1 ms - met |
+| ML-DSA-65 sign, allocation | about 119 KB | 3,336 B, the signature | ≤ 8 KiB - met |
+| ML-DSA-65 verify | 305-391 µs, 54,904 B | 68-73 µs, nothing | - |
+| ML-DSA-65 key generation | 322-354 µs | 302-328 µs | - |
 
 The baselines were re-measured the same day at `e7c08bb`, the commit before W9, in runs
 alternating with the results. Each range spans three runs on each runtime: .NET 8 and
 .NET 10 measure the same within noise. On this machine a single harness row can move by
-10–15% from one run to the next, so ranges rather than single figures are recorded.
+10-15% from one run to the next, so ranges rather than single figures are recorded.
 
 How it was done, and where it departs from the design above:
 
@@ -1238,16 +1238,16 @@ How it was done, and where it departs from the design above:
     from independent SHAKE streams, four or more at a time. A `Vector256<ulong>`
     permutation would run four streams at once.
 
-### W10 — lower priority (done)
+### W10 - lower priority (done)
 
 | Measure | Baseline | Result |
 |---|---|---|
 | CubeHash, 1 MiB, AVX-512 | 258 / 390 MiB/s | 382 / 387 MiB/s |
 | CubeHash, 1 MiB, AVX-512 off (AVX2) | 24 / 21 MiB/s | 377 / 333 MiB/s |
 | CubeHash, 1 MiB, AVX2 off (SSSE3) | 24 / 21 MiB/s | 276 / 227 MiB/s |
-| CubeHash, 64-byte message, any vector kernel | 6.5–7.4 µs | 0.60–0.83 µs |
-| Whirlpool, 1 MiB | 33.7 / 43.6 MiB/s | 73–80 MiB/s |
-| Whirlpool, 64-byte message | 3.40 / 2.80 µs | 1.68–1.74 µs |
+| CubeHash, 64-byte message, any vector kernel | 6.5-7.4 µs | 0.60-0.83 µs |
+| Whirlpool, 1 MiB | 33.7 / 43.6 MiB/s | 73-80 MiB/s |
+| Whirlpool, 64-byte message | 3.40 / 2.80 µs | 1.68-1.74 µs |
 
 Figures are .NET 10 / .NET 8 where they differ. The CubeHash and Whirlpool baselines were
 measured the same day at `ee89d80` and `5c7bf86`, the commits before each change. W10

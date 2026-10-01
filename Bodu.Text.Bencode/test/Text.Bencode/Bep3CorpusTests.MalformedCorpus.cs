@@ -24,7 +24,7 @@ public sealed partial class Bep3CorpusTests
     /// <returns>The malformed corpus rows.</returns>
     public static IEnumerable<object[]> Bep3CorpusMalformedData()
     {
-        // Framing bytes — whitespace and byte-order marks are not Bencode; the BOM rows follow bendy's framing
+        // Framing bytes - whitespace and byte-order marks are not Bencode; the BOM rows follow bendy's framing
         // torture cases and the hand-edited-file defects Transmission's tests guard against.
         yield return Row(new("whitespace-only input", " ", typeof(BencodeFormatException)));
         yield return Row(new("lone line feed", "\n", typeof(BencodeFormatException)));
@@ -33,7 +33,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(new("UTF-8 byte order mark before document", "\u00EF\u00BB\u00BFi1e", typeof(BencodeFormatException)));
         yield return Row(new("leading space before document", " i1e", typeof(BencodeFormatException)));
 
-        // Integer grammar — the canonical-form violations of BEP 3 ("i-0e is invalid", "leading zeros ... are
+        // Integer grammar - the canonical-form violations of BEP 3 ("i-0e is invalid", "leading zeros ... are
         // invalid") plus the overflow and truncation ladder from libtorrent's test_bdecode.cpp and bendy.
         yield return Row(new("leading zero", "i03e", typeof(BencodeFormatException)));
         yield return Row(new("leading zeros in list", "li03ee", typeof(BencodeFormatException)));
@@ -60,7 +60,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(new("far beyond uint64 range", "i999999999999999999999999999999e", typeof(BencodeFormatException)));
         yield return Row(new("far below int64 range", "i-999999999999999999999999999999e", typeof(BencodeFormatException)));
 
-        // Byte-string grammar — separator and length-prefix defects; the astronomical-length rows re-express
+        // Byte-string grammar - separator and length-prefix defects; the astronomical-length rows re-express
         // libtorrent's overflow probes and bencodepy's malformed-length sweep.
         yield return Row(new("lone separator", ":", typeof(BencodeFormatException)));
         yield return Row(new("separator before content", ":abc", typeof(BencodeFormatException)));
@@ -84,7 +84,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(new("length beyond uint64", "18446744073709551616:x", typeof(BencodeFormatException)));
         yield return Row(new("astronomical length", "99999999999999999999999999:x", typeof(BencodeFormatException)));
 
-        // Container balance and the truncation matrix — a document cut at every structural position, following
+        // Container balance and the truncation matrix - a document cut at every structural position, following
         // the per-position truncation sweep in libtorrent's test_bdecode.cpp.
         yield return Row(new("lone end token", "e", typeof(BencodeFormatException)));
         yield return Row(new("double end token", "ee", typeof(BencodeFormatException)));
@@ -112,7 +112,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(ExcessiveDepthRow());
         yield return Row(UnclosedDeepChainRow());
 
-        // Dictionary key rules — non-string keys, raw-byte ordering violations (including the signed-byte and
+        // Dictionary key rules - non-string keys, raw-byte ordering violations (including the signed-byte and
         // UTF-16-code-unit ordering traps), and duplicates; the ordering traps mirror libtorrent's key-order
         // checks and the interop defects bencode-go's decoder tests pin.
         yield return Row(new("integer key", "di1ei2ee", typeof(BencodeFormatException)));
@@ -134,7 +134,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(new("unsorted keys in inner dictionary", "d1:ad1:b1:x1:a1:yee", typeof(BencodeFormatException)));
         yield return Row(new("duplicate keys in inner dictionary", "d1:ad1:a1:x1:a1:yee", typeof(BencodeFormatException)));
 
-        // Trailing data — bytes after a complete document, including concatenated documents and the trailing
+        // Trailing data - bytes after a complete document, including concatenated documents and the trailing
         // newline a hand-edited torrent acquires; Transmission's benc tests pin the same rejection.
         yield return Row(new("trailing data after integer", "i1e2:xx", typeof(BencodeFormatException)));
         yield return Row(new("trailing data after string", "4:spami1e", typeof(BencodeFormatException)));
@@ -153,7 +153,7 @@ public sealed partial class Bep3CorpusTests
             "d8:announce3:url4:infodee\n",
             typeof(BencodeFormatException)));
 
-        // Unknown leading bytes — every byte that cannot begin a Bencode value, at the root and nested; the
+        // Unknown leading bytes - every byte that cannot begin a Bencode value, at the root and nested; the
         // uppercase rows follow serde_bencode's case-sensitivity probes.
         yield return Row(new("unknown prefix byte", "x", typeof(BencodeFormatException)));
         yield return Row(new("uppercase integer prefix", "I1e", typeof(BencodeFormatException)));

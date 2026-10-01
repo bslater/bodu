@@ -28,8 +28,8 @@ public partial class AggregatingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that the group advertises the most generous availability across bounded children — the one whose
-    /// earliest available date reaches furthest back — because a date any single child can serve is a date the group
+    /// Verifies that the group advertises the most generous availability across bounded children - the one whose
+    /// earliest available date reaches furthest back - because a date any single child can serve is a date the group
     /// can serve.
     /// </summary>
     [TestMethod]

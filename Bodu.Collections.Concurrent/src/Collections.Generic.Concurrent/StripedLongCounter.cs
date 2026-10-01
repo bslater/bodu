@@ -20,14 +20,14 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// cells on demand.
 /// </para>
 /// <para>
-/// Increments are exact — a thread that migrates between processors mid-call still lands its increment in exactly one
+/// Increments are exact - a thread that migrates between processors mid-call still lands its increment in exactly one
 /// cell via <see cref="Interlocked.Increment(ref long)" />. <see cref="Sum" /> reads the cells without a global
 /// snapshot, so under concurrent increments the returned total may not correspond to any single instant; it is exact
 /// once incrementing has quiesced.
 /// </para>
 /// <para>
 /// This type is a standalone class rather than a nested member of its consumer because
-/// <see cref="LayoutKind.Explicit" /> — required for the cache-line padding — is not permitted on types nested inside a
+/// <see cref="LayoutKind.Explicit" /> - required for the cache-line padding - is not permitted on types nested inside a
 /// generic type.
 /// </para>
 /// </remarks>

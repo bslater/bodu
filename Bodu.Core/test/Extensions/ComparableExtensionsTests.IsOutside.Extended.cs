@@ -77,7 +77,7 @@ public partial class ComparableExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the comparer overload honours a custom comparer whose ordering is reversed from the natural ordering — items
+    /// Verifies that the comparer overload honours a custom comparer whose ordering is reversed from the natural ordering - items
     /// that are "outside" the natural range are "inside" the reversed range, and vice versa.
     /// </summary>
     [TestMethod]

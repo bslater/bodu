@@ -18,7 +18,7 @@ The namespace allow-list is *debt*: entries are namespaces that still lack an
 overview and should be removed as overviews are written, never added to.
 
 Usage:
-  python3 bld/check-docs.py all            # after `docfx docs/docfx.json`
+  python3 bld/check-docs.py all            # after `bash bld/docs/build-api-docs.sh all`
   python3 bld/check-docs.py orphans identifiers status   # no build needed
 """
 
@@ -100,15 +100,18 @@ def check_orphans() -> list[str]:
 def check_namespaces() -> list[str]:
     api_toc = os.path.join(DOCS, "api", "toc.yml")
     if not os.path.exists(api_toc):
-        return [f"{os.path.relpath(api_toc, ROOT)} does not exist; run `docfx docs/docfx.json` (metadata) first"]
+        return [f"{os.path.relpath(api_toc, ROOT)} does not exist; run `bash bld/docs/build-api-docs.sh assemblies metadata merge` first"]
 
-    # Top-level namespace entries of the generated API TOC. Namespaces outside the
-    # Bodu.* root (BCL-convention homes such as Microsoft.Extensions.DependencyInjection)
-    # hold only registration extensions and are exempt by design.
+    # Namespace entries of the generated API TOC, at every depth: the TOC nests namespaces
+    # (namespaceLayout: nested). Only namespaces with a page of their own are checked; the nested
+    # layout also adds page-less parent nodes (Bodu.IO above Bodu.IO.Hashing) that have no page to
+    # give an overview to. Namespaces outside the Bodu.* root (BCL-convention homes such as
+    # Microsoft.Extensions.DependencyInjection) hold only registration extensions and are exempt by
+    # design.
     namespaces = {
         uid
-        for uid in re.findall(r"^- uid: (\S+)\n  name: .*\n  type: Namespace", read(api_toc), re.M)
-        if uid.startswith("Bodu.") or uid == "Bodu"
+        for uid in re.findall(r"^\s*- uid: (\S+)\n\s+name: .*\n\s+type: Namespace", read(api_toc), re.M)
+        if (uid.startswith("Bodu.") or uid == "Bodu") and os.path.exists(os.path.join(DOCS, "api", f"{uid}.yml"))
     }
 
     overwritten: set[str] = set()
@@ -401,7 +404,7 @@ def release_manifest() -> tuple[dict[str, str], dict[str, str]]:
     shipped at, withheld maps a package id to the reason it is kept off nuget.org.
 
     The grammar is the manifest's own, and is shared with the ``Select shipping packages`` step
-    in ``.github/workflows/release.yml`` — a data line is ``<PackageId> <first-shipped-version>``,
+    in ``.github/workflows/release.yml`` - a data line is ``<PackageId> <first-shipped-version>``,
     while a comment line that is *only* a package id opens a withheld entry whose reason is the
     wrapped comment lines beneath it. Parsing the same file both workflows already trust keeps
     "is this package published?" a single answer rather than a second list to maintain.
@@ -430,7 +433,7 @@ def release_manifest() -> tuple[dict[str, str], dict[str, str]]:
 
 
 # A withheld package is not on nuget.org, so the only install command that can work names a feed
-# built from a local pack. Requiring that marker — rather than banning the command outright — keeps
+# built from a local pack. Requiring that marker - rather than banning the command outright - keeps
 # the one honest instruction (install the CLI from a clone) sayable, and rejects the plain form that
 # silently fails for the reader.
 LOCAL_SOURCE = re.compile(r"--add-source|--source\s+[.\w/\\]")
@@ -452,7 +455,7 @@ def check_publication() -> list[str]:
 
     Three failures are worth catching, and only the first was caught before:
 
-    * a packable package the manifest does not account for at all — neither shipped nor
+    * a packable package the manifest does not account for at all - neither shipped nor
       recorded as deliberately withheld, so nobody decided either way;
     * a published package with no install command anywhere under ``docs/``, which leaves a
       reader with no way in;
@@ -460,7 +463,7 @@ def check_publication() -> list[str]:
       that reached the live site: ``dotnet add package Bodu.Financial.ExchangeRates.Oanda``
       names a package that has never been pushed, so the command simply fails.
 
-    Withheld packages are documented — they are real code with real API pages — they just may not
+    Withheld packages are documented - they are real code with real API pages - they just may not
     claim to be installable from nuget.org.
     """
     published, withheld = release_manifest()

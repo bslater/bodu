@@ -4,12 +4,12 @@ title: Interoperating with System.Security.Cryptography
 
 # Interoperating with System.Security.Cryptography
 
-`Bodu.Security.Cryptography` is built on the BCL's own abstractions rather than beside them: every hash is a `System.Security.Cryptography.HashAlgorithm`, every block-cipher wrapper is a `SymmetricAlgorithm` (through <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> or <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>), the raw-key asymmetric types derive from `AsymmetricAlgorithm`, and the KDF and OTP surfaces take `HashAlgorithmName` or an equivalent enum. This page shows, with verified round trips, exactly where a Bodu type drops into a BCL-shaped call site — and the two places where it deliberately does not.
+`Bodu.Security.Cryptography` is built on the BCL's own abstractions rather than beside them: every hash is a `System.Security.Cryptography.HashAlgorithm`, every block-cipher wrapper is a `SymmetricAlgorithm` (through <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> or <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>), the raw-key asymmetric types derive from `AsymmetricAlgorithm`, and the KDF and OTP surfaces take `HashAlgorithmName` or an equivalent enum. This page shows, with verified round trips, exactly where a Bodu type drops into a BCL-shaped call site - and the two places where it deliberately does not.
 
 > [!NOTE]
 > `Bodu.Security.Cryptography` is not independently audited and offers best-effort, not guaranteed, side-channel resistance. Where the BCL implements the same algorithm, prefer the BCL; see [Choosing a primitive](choosing-a-primitive.md).
 
-## Pattern 1 — one-shot versus incremental hashing
+## Pattern 1 - one-shot versus incremental hashing
 
 A Bodu hash is a `HashAlgorithm`, so the BCL lifecycle applies unchanged: `ComputeHash` for one shot, `TransformBlock` … `TransformFinalBlock` then `Hash` for incremental use. <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> adds a span-friendly `AppendData` that forwards to `TransformBlock`, so you can mix the two freely.
 
@@ -41,9 +41,9 @@ byte[] appendedHash = appended.Hash!;
 // All three: 01718CEC35CD3D796DD00020E0BFECB473AD23457D063B75EFF29C0FFA2E58A9
 ```
 
-`HashAlgorithm.ComputeHash(Stream)` and `ComputeHashAsync(Stream, CancellationToken)` work too — they are inherited, not reimplemented. See [Streams and async](streaming-and-async.md) for the buffer sizes and the verify helpers.
+`HashAlgorithm.ComputeHash(Stream)` and `ComputeHashAsync(Stream, CancellationToken)` work too - they are inherited, not reimplemented. See [Streams and async](streaming-and-async.md) for the buffer sizes and the verify helpers.
 
-## Pattern 2 — `IncrementalHash` has no Bodu equivalent, and does not need one
+## Pattern 2 - `IncrementalHash` has no Bodu equivalent, and does not need one
 
 `System.Security.Cryptography.IncrementalHash` only accepts algorithms a `HashAlgorithmName` can name, so it cannot host BLAKE2, Skein, or Tiger. The equivalent shape on a Bodu hash is `AppendData` followed by an empty `TransformFinalBlock`, and `Initialize()` plays the part of `GetHashAndReset`'s reset:
 
@@ -66,9 +66,9 @@ byte[] blake3 = bodu.Hash!;                  // 6437B3AC…BD9D85
 bodu.Initialize();                           // ready for the next message
 ```
 
-Do not look for `GetHashAndReset` on a Bodu hash — it does not exist on any public type.
+Do not look for `GetHashAndReset` on a Bodu hash - it does not exist on any public type.
 
-## Pattern 3 — `CryptoStream` over a Bodu cipher
+## Pattern 3 - `CryptoStream` over a Bodu cipher
 
 `CreateEncryptor()` / `CreateDecryptor()` on any wrapper return an `ICryptoTransform` (a <xref:Bodu.Security.Cryptography.BlockCipherTransform>, or a stream-cipher transform), so `CryptoStream` composes as it would with `Aes`:
 
@@ -103,13 +103,13 @@ using (var sink = new MemoryStream())
 
 Set the mode through `BlockMode` (<xref:Bodu.Security.Cryptography.CipherModeKind>) rather than the inherited `Mode`, because only `BlockMode` can name CTR; the two properties stay in sync for the values both enums share. See [Modes, transforms, and factories](cipher-composition-reference.md).
 
-## Pattern 4 — BCL one-shots that do *not* work
+## Pattern 4 - BCL one-shots that do *not* work
 
-The BCL `SymmetricAlgorithm` one-shot helpers (`EncryptCbc`, `EncryptEcb`, and the CFB variants) call the protected `System.Security.Cryptography.SymmetricAlgorithm.TryEncryptCbcCore` family, which the Bodu wrappers do not override — those calls throw `NotSupportedException` ("Method not supported. Derived class must override."). Use `CreateEncryptor` with `CryptoStream`, or the <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions> one-shots (`alg.Encrypt(byte[])`, `alg.Encrypt(Stream, Stream)`), which route through `CreateEncryptor`.
+The BCL `SymmetricAlgorithm` one-shot helpers (`EncryptCbc`, `EncryptEcb`, and the CFB variants) call the protected `System.Security.Cryptography.SymmetricAlgorithm.TryEncryptCbcCore` family, which the Bodu wrappers do not override - those calls throw `NotSupportedException` ("Method not supported. Derived class must override."). Use `CreateEncryptor` with `CryptoStream`, or the <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions> one-shots (`alg.Encrypt(byte[])`, `alg.Encrypt(Stream, Stream)`), which route through `CreateEncryptor`.
 
-## Pattern 5 — AES-GCM is wire-compatible with `AesGcm`
+## Pattern 5 - AES-GCM is wire-compatible with `AesGcm`
 
-<xref:Bodu.Security.Cryptography.GcmModeTransform> over <xref:Bodu.Security.Cryptography.AesBlockCipher> implements the same 96-bit-nonce, 128-bit-tag profile of NIST SP 800-38D that `System.Security.Cryptography.AesGcm` does. The only difference is layout: Bodu returns `ciphertext ‖ tag` in one array, the BCL takes the ciphertext and tag as separate buffers. Split or concatenate at the boundary and the bytes match in both directions — this run uses the SP 800-38D test-case-4 material:
+<xref:Bodu.Security.Cryptography.GcmModeTransform> over <xref:Bodu.Security.Cryptography.AesBlockCipher> implements the same 96-bit-nonce, 128-bit-tag profile of NIST SP 800-38D that `System.Security.Cryptography.AesGcm` does. The only difference is layout: Bodu returns `ciphertext ‖ tag` in one array, the BCL takes the ciphertext and tag as separate buffers. Split or concatenate at the boundary and the bytes match in both directions - this run uses the SP 800-38D test-case-4 material:
 
 <!-- compile -->
 ```csharp
@@ -152,7 +152,7 @@ Both `bclPlain` and `boduPlain` equal `plaintext`. The BCL type supports 12- to 
 > [!WARNING]
 > Write `Encrypt(plaintext, associatedData: aad)`, naming the argument. With two positional `byte[]` arguments the public span overload `Encrypt(plaintext, output)` wins, the AAD array becomes the *output buffer*, and the call returns an `int`.
 
-## Pattern 6 — `XChaCha20Poly1305` is not `ChaCha20Poly1305`
+## Pattern 6 - `XChaCha20Poly1305` is not `ChaCha20Poly1305`
 
 The BCL's `ChaCha20Poly1305` is RFC 8439 with a 96-bit nonce. Bodu's <xref:Bodu.Security.Cryptography.XChaCha20Poly1305> is the extended-nonce construction (`draft-irtf-cfrg-xchacha`, libsodium `crypto_aead_xchacha20poly1305_ietf`): it derives a subkey with HChaCha20 from the first 16 nonce bytes and runs ChaCha20 on the remaining 8. They are different constructions and are **not** wire-compatible, even under the same key. Bodu ships no plain ChaCha20-Poly1305 because the BCL already does.
 
@@ -176,7 +176,7 @@ bcl.Encrypt(Convert.FromHexString("070000004041424344454647"), plaintext, bclCip
 
 Choose by the nonce discipline: a counter you can guarantee never repeats → the BCL type; nonces drawn at random → `XChaCha20Poly1305`. Both accept associated data; see [Authenticated stream ciphers](stream-aead.md).
 
-## Pattern 7 — PEM, PKCS#8, and SPKI for X25519 and Ed25519
+## Pattern 7 - PEM, PKCS#8, and SPKI for X25519 and Ed25519
 
 <xref:Bodu.Security.Cryptography.X25519> and <xref:Bodu.Security.Cryptography.Ed25519> override the `AsymmetricAlgorithm` import/export core (`ImportPkcs8PrivateKey`, `ImportSubjectPublicKeyInfo`, `TryExportPkcs8PrivateKey`, `TryExportSubjectPublicKeyInfo`) with the RFC 8410 encodings, so the **inherited** convenience members work unchanged: `ExportPkcs8PrivateKey()`, `ExportSubjectPublicKeyInfo()`, `ExportPkcs8PrivateKeyPem()`, `ExportSubjectPublicKeyInfoPem()`, and `ImportFromPem(string)`.
 
@@ -202,7 +202,7 @@ restored.ImportFromPem(privatePem);                          // dispatches to Im
 bool same = restored.SignData(message).AsSpan().SequenceEqual(signer.SignData(message));   // true
 ```
 
-The same members work on `X25519` (`-----BEGIN PUBLIC KEY-----` with the id-X25519 OID), which is how peers exchange agreement keys in PEM. What does **not** work, by design — each throws `NotSupportedException`:
+The same members work on `X25519` (`-----BEGIN PUBLIC KEY-----` with the id-X25519 OID), which is how peers exchange agreement keys in PEM. What does **not** work, by design - each throws `NotSupportedException`:
 
 | Member | X25519 / Ed25519 | ML-KEM / ML-DSA |
 |---|---|---|
@@ -213,9 +213,9 @@ The same members work on `X25519` (`-----BEGIN PUBLIC KEY-----` with the id-X255
 
 The post-quantum types expose raw encodings only (`ExportEncapsulationKey`, `ExportDecapsulationKey`, `ImportPrivateSeed`, and their ML-DSA equivalents); see [ML-KEM](ml-kem.md) and [ML-DSA](ml-dsa.md).
 
-## Pattern 8 — `HashAlgorithmName` in HKDF, an enum in OTP
+## Pattern 8 - `HashAlgorithmName` in HKDF, an enum in OTP
 
-<xref:Bodu.Security.Cryptography.Hkdf> takes a `HashAlgorithmName` and accepts SHA-1, SHA-256, SHA-384, and SHA-512 — anything else throws `ArgumentException` (`hashAlgorithm`). Its output is identical to the BCL `HKDF` for the same inputs, so the two are interchangeable (this is RFC 5869 test case 1):
+<xref:Bodu.Security.Cryptography.Hkdf> takes a `HashAlgorithmName` and accepts SHA-1, SHA-256, SHA-384, and SHA-512 - anything else throws `ArgumentException` (`hashAlgorithm`). Its output is identical to the BCL `HKDF` for the same inputs, so the two are interchangeable (this is RFC 5869 test case 1):
 
 <!-- compile -->
 ```csharp
@@ -243,7 +243,7 @@ string hotp256 = Hotp.GenerateCode(secret, counter: 0, digits: 6, algorithm: Otp
 string totp   = Totp.GenerateCode(secret, DateTimeOffset.FromUnixTimeSeconds(59), digits: 8);   // "94287082"
 ```
 
-## Pattern 9 — constant-time comparison
+## Pattern 9 - constant-time comparison
 
 `System.Security.Cryptography.CryptographicOperations.FixedTimeEquals` is what the library itself uses. The value types wrap it: <xref:Bodu.Security.Cryptography.HashValue>, <xref:Bodu.Security.Cryptography.AuthenticationTag>, and <xref:Bodu.Security.Cryptography.SignatureValue> compare in constant time through `Equals`, `==`, and an explicit `FixedTimeEquals`; the `VerifyHash` / `TryVerifyHash` extensions do the same over a freshly computed digest.
 
@@ -271,18 +271,18 @@ See [Nonces, salts, tags, and secrets](value-types.md) for the full value-type s
 | BCL surface | Bodu types that plug in | Notes |
 |---|---|---|
 | `HashAlgorithm` (`ComputeHash`, `TransformBlock`, `ComputeHashAsync`, `CryptoStream`) | every hash: `Blake2b`, `Skein*`, `Tiger`, `Whirlpool`, `SipHash*`, `Poly1305`, `AsconHash*`, `Shake`, … | plus `AppendData` / `AppendDataAsync` / `VerifyHash*` from `HashAlgorithmExtensions` |
-| `IncrementalHash` | — | use `AppendData` + empty `TransformFinalBlock` |
+| `IncrementalHash` | - | use `AppendData` + empty `TransformFinalBlock` |
 | `SymmetricAlgorithm` (`CreateEncryptor`, `CryptoStream`) | `Blowfish`, `Skipjack`, `Camellia`, `Twofish`, `Serpent128`, `Threefish*`, `Serpent256/512/1024` | BCL one-shots (`EncryptCbc` …) throw `NotSupportedException` |
 | `AesGcm` | `GcmModeTransform` + `AesBlockCipher` | byte-identical; split `ciphertext ‖ tag` |
-| `ChaCha20Poly1305` | — | `XChaCha20Poly1305` is a different construction |
+| `ChaCha20Poly1305` | - | `XChaCha20Poly1305` is a different construction |
 | `AsymmetricAlgorithm` PEM / PKCS#8 / SPKI | `X25519`, `Ed25519` | encrypted PKCS#8 and XML throw; ML-KEM / ML-DSA are raw-only |
 | `HashAlgorithmName` | `Hkdf` (SHA-1/256/384/512) | OTP uses `OtpHashAlgorithm` |
 | `CryptographicOperations.FixedTimeEquals` | `HashValue`, `AuthenticationTag`, `SignatureValue`, `SecretBytes`, `VerifyHash*` | |
 
 ## Where to go next
 
-- [Choosing a primitive](choosing-a-primitive.md) — which Bodu type, and when the BCL is the better answer.
-- [Streams and async](streaming-and-async.md) — the stream and `Task` surfaces over these same abstractions.
-- [Authenticated stream ciphers](stream-aead.md) — XChaCha20-Poly1305 and the NaCl secretbox layout.
-- [Asymmetric algorithms overview](asymmetric-overview.md) — key encodings across the four families.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Choosing a primitive](choosing-a-primitive.md) - which Bodu type, and when the BCL is the better answer.
+- [Streams and async](streaming-and-async.md) - the stream and `Task` surfaces over these same abstractions.
+- [Authenticated stream ciphers](stream-aead.md) - XChaCha20-Poly1305 and the NaCl secretbox layout.
+- [Asymmetric algorithms overview](asymmetric-overview.md) - key encodings across the four families.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

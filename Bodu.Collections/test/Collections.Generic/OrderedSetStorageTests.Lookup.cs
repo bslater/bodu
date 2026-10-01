@@ -22,7 +22,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Contains — argument validation
+    // Contains - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -71,7 +71,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Contains — basic behaviour
+    // Contains - basic behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -138,7 +138,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // IndexOf — argument validation
+    // IndexOf - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -177,7 +177,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // IndexOf — basic behaviour
+    // IndexOf - basic behaviour
     // --------------------------------------------------------
 
     /// <summary>

@@ -43,7 +43,7 @@ namespace Bodu.Security.Cryptography;
 /// cache-based side-channel attacks.
 /// </para>
 /// </remarks>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Blowfish"/>
 public sealed partial class BlowfishBlockCipher
     : IBlockCipher
@@ -95,8 +95,8 @@ public sealed partial class BlowfishBlockCipher
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The full Blowfish key schedule — including XOR of the P-array with the key bytes and repeated encryption of the
-    /// all-zeros block to expand the P-array and all four S-boxes — is performed in full during construction.
+    /// The full Blowfish key schedule - including XOR of the P-array with the key bytes and repeated encryption of the
+    /// all-zeros block to expand the P-array and all four S-boxes - is performed in full during construction.
     /// </para>
     /// </remarks>
     public BlowfishBlockCipher(ReadOnlySpan<byte> key)

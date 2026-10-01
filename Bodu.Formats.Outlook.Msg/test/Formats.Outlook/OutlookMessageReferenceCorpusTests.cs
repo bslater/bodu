@@ -16,7 +16,7 @@ namespace Bodu.Formats.Outlook;
 /// </summary>
 /// <remarks>
 /// Provenance and the adjudication notes live in <c>Fixtures/Reference/NOTICE.md</c>. Valid fixtures are asserted
-/// under <see cref="Bodu.IO.Compound.CompoundValidationLevel.Compatible" /> only — tolerating real-world writers is
+/// under <see cref="Bodu.IO.Compound.CompoundValidationLevel.Compatible" /> only - tolerating real-world writers is
 /// that level's contract. Subjects the oracle recorded with U+FFFD replacement characters come from files whose
 /// declared code page does not match their string bytes; those are asserted as present rather than byte-exact,
 /// because replacement policies legitimately differ between decoders.

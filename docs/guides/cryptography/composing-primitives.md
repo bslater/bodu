@@ -1,22 +1,22 @@
 ---
-title: Composing primitives — direct use vs. SymmetricAlgorithm
+title: Composing primitives - direct use vs. SymmetricAlgorithm
 ---
 
-# Composing primitives — direct use vs. `SymmetricAlgorithm`
+# Composing primitives - direct use vs. `SymmetricAlgorithm`
 
 `Bodu.Security.Cryptography` exposes its block ciphers at **two levels**:
 
-1. The **raw block primitive** — `SkipjackBlockCipher`, `BlowfishBlockCipher`, `CamelliaBlockCipher`, `TwofishBlockCipher`, `Serpent128Cipher`, `Serpent256Cipher`, `Serpent512Cipher`, `Serpent1024Cipher`, `Threefish256Cipher`, `Threefish512Cipher`, `Threefish1024Cipher`, `AesBlockCipher`. Each implements <xref:Bodu.Security.Cryptography.IBlockCipher>: encrypt and decrypt one fixed-size block. Compose with <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> and <xref:Bodu.Security.Cryptography.PaddingFactory> when you need the full mode + padding pipeline visible at the call site.
-2. The **`SymmetricAlgorithm`** wrappers — <xref:Bodu.Security.Cryptography.Skipjack>, <xref:Bodu.Security.Cryptography.Blowfish>, <xref:Bodu.Security.Cryptography.Camellia>, <xref:Bodu.Security.Cryptography.Twofish>, <xref:Bodu.Security.Cryptography.Serpent128>, <xref:Bodu.Security.Cryptography.Serpent256>, <xref:Bodu.Security.Cryptography.Serpent512>, <xref:Bodu.Security.Cryptography.Serpent1024>, <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Threefish512>, <xref:Bodu.Security.Cryptography.Threefish1024>. These derive from <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> (with the tweakable variants extending <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>) and integrate with `CryptoStream`, `ICryptoTransform`, and the `Encrypt` / `Decrypt` extension methods. AES is the exception — it is exposed only at the primitive level via <xref:Bodu.Security.Cryptography.AesBlockCipher>; use the BCL <xref:System.Security.Cryptography.Aes?displayProperty=nameWithType> when you want the `SymmetricAlgorithm` shape for AES.
+1. The **raw block primitive** - `SkipjackBlockCipher`, `BlowfishBlockCipher`, `CamelliaBlockCipher`, `TwofishBlockCipher`, `Serpent128Cipher`, `Serpent256Cipher`, `Serpent512Cipher`, `Serpent1024Cipher`, `Threefish256Cipher`, `Threefish512Cipher`, `Threefish1024Cipher`, `AesBlockCipher`. Each implements <xref:Bodu.Security.Cryptography.IBlockCipher>: encrypt and decrypt one fixed-size block. Compose with <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> and <xref:Bodu.Security.Cryptography.PaddingFactory> when you need the full mode + padding pipeline visible at the call site.
+2. The **`SymmetricAlgorithm`** wrappers - <xref:Bodu.Security.Cryptography.Skipjack>, <xref:Bodu.Security.Cryptography.Blowfish>, <xref:Bodu.Security.Cryptography.Camellia>, <xref:Bodu.Security.Cryptography.Twofish>, <xref:Bodu.Security.Cryptography.Serpent128>, <xref:Bodu.Security.Cryptography.Serpent256>, <xref:Bodu.Security.Cryptography.Serpent512>, <xref:Bodu.Security.Cryptography.Serpent1024>, <xref:Bodu.Security.Cryptography.Threefish256>, <xref:Bodu.Security.Cryptography.Threefish512>, <xref:Bodu.Security.Cryptography.Threefish1024>. These derive from <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> (with the tweakable variants extending <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>) and integrate with `CryptoStream`, `ICryptoTransform`, and the `Encrypt` / `Decrypt` extension methods. AES is the exception - it is exposed only at the primitive level via <xref:Bodu.Security.Cryptography.AesBlockCipher>; use the BCL <xref:System.Security.Cryptography.Aes?displayProperty=nameWithType> when you want the `SymmetricAlgorithm` shape for AES.
 
 ### The `IBlockCipher` contract
 
-<xref:Bodu.Security.Cryptography.IBlockCipher> is deliberately minimal — it is the *raw block primitive* and nothing more:
+<xref:Bodu.Security.Cryptography.IBlockCipher> is deliberately minimal - it is the *raw block primitive* and nothing more:
 
-- `int BlockSize { get; }` — the block size **in bits** (so a byte buffer is `BlockSize / 8` long; 64 for Skipjack/Blowfish, 128 for the AES family, 256/512/1024 for Threefish).
-- `void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)` and `void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)` — transform exactly one block; the spans must each be `BlockSize / 8` bytes.
+- `int BlockSize { get; }` - the block size **in bits** (so a byte buffer is `BlockSize / 8` long; 64 for Skipjack/Blowfish, 128 for the AES family, 256/512/1024 for Threefish).
+- `void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)` and `void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)` - transform exactly one block; the spans must each be `BlockSize / 8` bytes.
 
-There is no chaining, no IV, no padding, and no nonce on this surface — those all live in the mode transform (<xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>) and the padding strategy (<xref:Bodu.Security.Cryptography.IPaddingStrategy>) that wrap it. The factories assemble the three layers: a cipher, a mode keyed on <xref:Bodu.Security.Cryptography.CipherModeKind>, and a padding strategy keyed on <xref:System.Security.Cryptography.PaddingMode> or <xref:Bodu.Security.Cryptography.PaddingModeKind>. A mode transform's `Transform(input, output, encrypt)` returns the number of bytes written.
+There is no chaining, no IV, no padding, and no nonce on this surface - those all live in the mode transform (<xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>) and the padding strategy (<xref:Bodu.Security.Cryptography.IPaddingStrategy>) that wrap it. The factories assemble the three layers: a cipher, a mode keyed on <xref:Bodu.Security.Cryptography.CipherModeKind>, and a padding strategy keyed on <xref:System.Security.Cryptography.PaddingMode> or <xref:Bodu.Security.Cryptography.PaddingModeKind>. A mode transform's `Transform(input, output, encrypt)` returns the number of bytes written.
 
 Both levels produce **byte-for-byte identical ciphertext** for the same Key, IV, (Tweak), Mode, and Padding. Pick the level that matches your use case:
 
@@ -28,11 +28,11 @@ Both levels produce **byte-for-byte identical ciphertext** for the same Key, IV,
 
 ## A note on AEAD modes
 
-The AEAD mode transforms (`GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, `GcmSivModeTransform`) are designed for **128-bit-block ciphers** — their counter formats, GHASH/POLYVAL field, and offset schedules all assume 16-byte blocks. Skipjack and Blowfish have 8-byte blocks; the Threefish family starts at 32 bytes. Of the raw primitives here only <xref:Bodu.Security.Cryptography.AesBlockCipher> — and, equally, the other 128-bit ciphers `CamelliaBlockCipher` / `TwofishBlockCipher` / `Serpent128Cipher` — has the right block width to drive them, which is why the [AEAD modes guide](aead-modes.md) is AES-based. The classic modes shown here (CBC / CTR / CFB / OFB / CTS / ECB) work with any block size and so cover the rest of the cipher family.
+The AEAD mode transforms (`GcmModeTransform`, `CcmModeTransform`, `OcbModeTransform`, `EaxModeTransform`, `SivModeTransform`, `GcmSivModeTransform`) are designed for **128-bit-block ciphers** - their counter formats, GHASH/POLYVAL field, and offset schedules all assume 16-byte blocks. Skipjack and Blowfish have 8-byte blocks; the Threefish family starts at 32 bytes. Of the raw primitives here only <xref:Bodu.Security.Cryptography.AesBlockCipher> - and, equally, the other 128-bit ciphers `CamelliaBlockCipher` / `TwofishBlockCipher` / `Serpent128Cipher` - has the right block width to drive them, which is why the [AEAD modes guide](aead-modes.md) is AES-based. The classic modes shown here (CBC / CTR / CFB / OFB / CTS / ECB) work with any block size and so cover the rest of the cipher family.
 
 This is the one place the two-level split earns its keep: pairing AES with an AEAD transform requires an <xref:Bodu.Security.Cryptography.IBlockCipher>, and `AesBlockCipher` is exactly that bridge. The `SymmetricAlgorithm` wrappers never expose the underlying `IBlockCipher`, so AEAD composition is a primitive-level operation only.
 
-## Pattern 1 — direct primitive composition
+## Pattern 1 - direct primitive composition
 
 Encrypt a message under Skipjack with CBC + PKCS7, manually composing the cipher, mode transform, and padding strategy:
 
@@ -72,7 +72,7 @@ mode.Transform(ciphertext, decrypted, encrypt: false);
 byte[] recovered = padding.Unpad(decrypted, cipher.BlockSize);
 ```
 
-The same shape works for **every** primitive — swap `SkipjackBlockCipher` for `BlowfishBlockCipher`, or for one of the Threefish variants (which take a key *and* a 16-byte tweak):
+The same shape works for **every** primitive - swap `SkipjackBlockCipher` for `BlowfishBlockCipher`, or for one of the Threefish variants (which take a key *and* a 16-byte tweak):
 
 ```csharp
 byte[] key   = new byte[32];  RandomNumberGenerator.Fill(key);
@@ -82,12 +82,12 @@ byte[] tweak = new byte[16];  RandomNumberGenerator.Fill(tweak);
 using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
 IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
 
-// CTR is a stream mode — no padding.
+// CTR is a stream mode - no padding.
 byte[] ciphertext = new byte[plaintext.Length];
 mode.Transform(plaintext, ciphertext, encrypt: true);
 ```
 
-## Pattern 2 — `SymmetricAlgorithm` wrapper
+## Pattern 2 - `SymmetricAlgorithm` wrapper
 
 The same Skipjack-CBC-PKCS7 encryption written through the high-level wrapper:
 
@@ -108,7 +108,7 @@ byte[] ciphertext = alg.Encrypt(plaintext);
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-Internally, `Skipjack.CreateEncryptor` builds the same `SkipjackBlockCipher` + `CbcModeTransform` + `Pkcs7Padding` you composed by hand in Pattern 1. **The ciphertext is byte-for-byte identical.** That's the contract worth remembering: the two patterns are equivalent — the wrapper exists for convenience, not for behavior.
+Internally, `Skipjack.CreateEncryptor` builds the same `SkipjackBlockCipher` + `CbcModeTransform` + `Pkcs7Padding` you composed by hand in Pattern 1. **The ciphertext is byte-for-byte identical.** That's the contract worth remembering: the two patterns are equivalent - the wrapper exists for convenience, not for behavior.
 
 The Threefish wrappers carry the same equivalence, with `Tweak` flowing into the constructor of `Threefish*Cipher`:
 
@@ -166,21 +166,21 @@ Debug.Assert(direct.SequenceEqual(viaAlg));
 
 **Reach for the direct primitive when:**
 
-- You're building a *custom* construction — your own AEAD, a MAC over framing fields, an authenticated channel — and you need explicit access to the block primitive at every step.
-- You're composing across modes — for example, encrypting a header with CBC and a body with CTR under the same key — and want a single `IBlockCipher` instance shared by both transforms.
+- You're building a *custom* construction - your own AEAD, a MAC over framing fields, an authenticated channel - and you need explicit access to the block primitive at every step.
+- You're composing across modes - for example, encrypting a header with CBC and a body with CTR under the same key - and want a single `IBlockCipher` instance shared by both transforms.
 - You need to pass a Bodu cipher into a third-party API that expects an `IBlockCipher`.
 
 **Reach for the `SymmetricAlgorithm` wrapper when:**
 
 - You're emitting a single message and want the one-liner.
 - You're plugging into `System.Security.Cryptography.CryptoStream`, ASP.NET DataProtection, or any other API that accepts a `SymmetricAlgorithm`.
-- You're following the convention readers already know — `Encrypt` / `Decrypt` extension methods, `CreateEncryptor` / `CreateDecryptor` for stream-style use.
+- You're following the convention readers already know - `Encrypt` / `Decrypt` extension methods, `CreateEncryptor` / `CreateDecryptor` for stream-style use.
 
 ## Where to go next
 
-- [Encryption basics](encryption-basics.md) — the Key / IV / Tweak / Padding lifecycle for the `SymmetricAlgorithm` wrappers.
-- [Cipher block modes](cipher-modes.md) — what each of the five classic modes does, and worked examples through the wrapper API.
-- [AEAD modes](aead-modes.md) — for authenticated encryption (AES-only, via `AesBlockCipher`).
-- [Padding](padding.md) — PKCS7 / Zeros / None and when each is safe.
+- [Encryption basics](encryption-basics.md) - the Key / IV / Tweak / Padding lifecycle for the `SymmetricAlgorithm` wrappers.
+- [Cipher block modes](cipher-modes.md) - what each of the five classic modes does, and worked examples through the wrapper API.
+- [AEAD modes](aead-modes.md) - for authenticated encryption (AES-only, via `AesBlockCipher`).
+- [Padding](padding.md) - PKCS7 / Zeros / None and when each is safe.
 - API reference: [<xref:Bodu.Security.Cryptography.IBlockCipher>] · [<xref:Bodu.Security.Cryptography.BlockCipherModeFactory>] · [<xref:Bodu.Security.Cryptography.PaddingFactory>] · [<xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>].
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

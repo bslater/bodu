@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// <description>Block size: 48 bytes; 4-word internal state; 8 rounds per block.</description>
 /// </item>
 /// <item>
-/// <description>Status: <strong>broken</strong> — practical collision attacks are known.</description>
+/// <description>Status: <strong>broken</strong> - practical collision attacks are known.</description>
 /// </item>
 /// </list>
 /// <para>

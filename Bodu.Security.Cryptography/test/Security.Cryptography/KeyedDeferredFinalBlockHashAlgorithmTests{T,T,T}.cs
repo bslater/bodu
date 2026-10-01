@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TVariant">The enumeration type used to represent algorithm configuration variants.</typeparam>
 /// <remarks>
 /// Extends <see cref="HashAlgorithmTests{TTest, TAlgorithm, TVariant}" /> with test logic specific to keyed
-/// algorithms that follow the BLAKE-family deferred-finalisation shape — key retention, defensive copying,
+/// algorithms that follow the BLAKE-family deferred-finalisation shape - key retention, defensive copying,
 /// legal key length boundaries, keyed-vs-unkeyed digest divergence, and disposal semantics.
 /// </remarks>
 public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, TAlgorithm, TVariant>

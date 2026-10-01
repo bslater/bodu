@@ -51,7 +51,7 @@ public sealed partial class MerkleTree
     /// The rented buffer holds the leaf-domain prefix at index zero and the block's bytes from index one, so each block
     /// is hashed straight out of the buffer it was read into and the stream's bytes are never copied again. A short
     /// read is topped up rather than taken as the end of the stream, which a network, cryptographic or decompression
-    /// stream requires — only a read returning zero ends the loop.
+    /// stream requires - only a read returning zero ends the loop.
     /// </remarks>
     internal static long ForEachLeafHash(
         Stream source,
@@ -266,7 +266,7 @@ public sealed partial class MerkleTree
     /// <param name="cancellationToken">A token the parallel loop observes.</param>
     /// <returns>The leaf hashes in block order; empty for an empty input.</returns>
     /// <remarks>
-    /// Every block is sliced and hashed inside its own worker, so the whole per-block cost parallelizes — the reason
+    /// Every block is sliced and hashed inside its own worker, so the whole per-block cost parallelizes - the reason
     /// this scales closer to the core count than the stream loops, which must copy each block on the calling thread.
     /// </remarks>
     internal static byte[][] HashLeavesParallel(

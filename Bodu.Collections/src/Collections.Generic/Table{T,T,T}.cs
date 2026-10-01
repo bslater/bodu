@@ -20,28 +20,28 @@ namespace Bodu.Collections.Generic;
 /// <remarks>
 /// <para>
 /// <see cref="Table{TRow, TColumn, TValue}" /> is the .NET analogue of Guava's <c>Table</c>: a map keyed by two
-/// independent keys — a row and a column — whose reason to exist is the <i>projections</i>. A plain
+/// independent keys - a row and a column - whose reason to exist is the <i>projections</i>. A plain
 /// <c>Dictionary&lt;(TRow, TColumn), TValue&gt;</c> already covers flat two-key lookup; adopt this type when you also
 /// need <see cref="Row(TRow)" /> ("all cells of this row") or <see cref="Column(TColumn)" /> ("this column across all
 /// rows") as first-class dictionary views, or the per-row iteration of <see cref="RowMap" />.
 /// </para>
 /// <para>
-/// The backing store is row-major — an outer dictionary from row key to an inner dictionary of that row's cells — so
+/// The backing store is row-major - an outer dictionary from row key to an inner dictionary of that row's cells - so
 /// row-oriented operations are O(1) hash lookups. Column-oriented operations have no second index in this version:
 /// <see cref="Column(TColumn)" />, <see cref="ContainsColumn(TColumn)" />, and <see cref="RemoveColumn(TColumn)" />
 /// scan every row and cost O(rows) per call (per enumeration for the column view), and <see cref="ColumnKeys" /> walks
 /// every cell. Choose the row axis for the key you project by most often.
 /// </para>
 /// <para>
-/// The table never retains an empty row: removing a row's last cell — through <see cref="Remove(TRow, TColumn)" /> or
-/// <see cref="RemoveColumn(TColumn)" /> — also removes the row itself, so <see cref="ContainsRow(TRow)" /> and
+/// The table never retains an empty row: removing a row's last cell - through <see cref="Remove(TRow, TColumn)" /> or
+/// <see cref="RemoveColumn(TColumn)" /> - also removes the row itself, so <see cref="ContainsRow(TRow)" /> and
 /// <see cref="RowKeys" /> only ever report rows that hold at least one cell.
 /// </para>
 /// <para>
 /// Enumeration yields the flat cells as <see cref="KeyValuePair{TKey, TValue}" /> entries keyed by a
 /// <c>(Row, Column)</c> tuple, in row-major order: all cells of one row are contiguous, but the order of rows and the
 /// order of cells within a row follow the unspecified, insertion-biased order of
-/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> — do not rely on it. The views delegate to the
+/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> - do not rely on it. The views delegate to the
 /// live backing dictionaries, so mutating the table while enumerating the table or one of its views surfaces the
 /// standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behaviour (<see cref="InvalidOperationException" />).
 /// </para>
@@ -62,7 +62,7 @@ namespace Bodu.Collections.Generic;
 /// IReadOnlyDictionary<string, decimal> in2025 = sales.Column(2025);     // Widgets -> 1350, Gadgets -> 800
 ///
 /// sales["Gadgets", 2025] = 850m;             // upsert through the flat indexer…
-/// decimal revised = in2025["Gadgets"];       // 850 — the held view is live
+/// decimal revised = in2025["Gadgets"];       // 850 - the held view is live
 ///]]>
 /// </code>
 /// </example>
@@ -425,7 +425,7 @@ public sealed partial class Table<TRow, TColumn, TValue> : IEnumerable<KeyValueP
             }
         }
 
-        // Prune emptied rows after the scan — the outer dictionary cannot be mutated mid-enumeration.
+        // Prune emptied rows after the scan - the outer dictionary cannot be mutated mid-enumeration.
         if (emptiedRows is not null)
         {
             foreach (TRow row in emptiedRows)
@@ -453,7 +453,7 @@ public sealed partial class Table<TRow, TColumn, TValue> : IEnumerable<KeyValueP
     /// </returns>
     /// <remarks>
     /// All cells of one row are contiguous, but the order of rows and of cells within a row follows the unspecified,
-    /// insertion-biased order of <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> — do not rely on
+    /// insertion-biased order of <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> - do not rely on
     /// it. Mutating the table while enumerating surfaces the standard dictionary fail-fast behaviour (<see cref="InvalidOperationException" />).
     /// </remarks>
     public IEnumerator<KeyValuePair<(TRow Row, TColumn Column), TValue>> GetEnumerator()

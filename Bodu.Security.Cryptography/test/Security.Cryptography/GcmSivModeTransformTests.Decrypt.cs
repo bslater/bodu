@@ -51,7 +51,7 @@ public sealed partial class GcmSivModeTransformTests
                 (byte[])iv.Clone());
 
             byte[] output = new byte[plaintext.Length];
-            Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+            Array.Fill(output, (byte)0xCC); // sentinel - any non-zero value
 
             try
             {

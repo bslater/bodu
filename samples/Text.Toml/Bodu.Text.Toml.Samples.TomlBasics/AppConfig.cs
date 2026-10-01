@@ -26,13 +26,13 @@ public sealed class AppConfig
     /// <summary>Gets or sets whether the service is enabled.</summary>
     public bool Enabled { get; set; }
 
-    /// <summary>Gets or sets the release date — a TOML local date (no time, no offset).</summary>
+    /// <summary>Gets or sets the release date - a TOML local date (no time, no offset).</summary>
     public DateOnly ReleasedOn { get; set; }
 
-    /// <summary>Gets or sets the maintenance window start — a TOML local time.</summary>
+    /// <summary>Gets or sets the maintenance window start - a TOML local time.</summary>
     public TimeOnly MaintenanceWindow { get; set; }
 
-    /// <summary>Gets or sets the build stamp — a TOML offset date-time (exact instant).</summary>
+    /// <summary>Gets or sets the build stamp - a TOML offset date-time (exact instant).</summary>
     public DateTimeOffset BuildStamp { get; set; }
 
     /// <summary>Gets or sets the database table (nested TOML table).</summary>
@@ -41,7 +41,7 @@ public sealed class AppConfig
     /// <summary>Gets or sets the endpoint list (TOML array of tables).</summary>
     public List<EndpointConfig> Endpoints { get; set; } = [];
 
-    /// <summary>Gets a computed display label — never serialized.</summary>
+    /// <summary>Gets a computed display label - never serialized.</summary>
     [Ignore]
     public string DisplayLabel => $"{ServiceName} (retries: {MaxRetries})";
 }

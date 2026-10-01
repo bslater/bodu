@@ -23,7 +23,7 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies that removing an absent key — including one ending inside a compressed edge — returns
+    /// Verifies that removing an absent key - including one ending inside a compressed edge - returns
     /// <see langword="false" />.
     /// </summary>
     [TestMethod]
@@ -58,7 +58,7 @@ public sealed partial class RadixTrieTests
     }
 
     /// <summary>
-    /// Verifies that clearing an intermediate terminal — the shorter of two nested keys — re-fuses the pass-through
+    /// Verifies that clearing an intermediate terminal - the shorter of two nested keys - re-fuses the pass-through
     /// node with its child while the longer key survives.
     /// </summary>
     [TestMethod]

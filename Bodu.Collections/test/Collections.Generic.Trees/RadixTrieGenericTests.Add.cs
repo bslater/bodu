@@ -50,7 +50,7 @@ public sealed partial class RadixTrieGenericTests
     }
 
     /// <summary>
-    /// Verifies that an edge split — <c>"team"</c> then <c>"tea"</c> — preserves the values of both keys.
+    /// Verifies that an edge split - <c>"team"</c> then <c>"tea"</c> - preserves the values of both keys.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyForcesEdgeSplit_ShouldPreserveBothValues()

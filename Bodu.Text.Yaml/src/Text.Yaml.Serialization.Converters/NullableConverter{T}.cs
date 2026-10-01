@@ -11,7 +11,7 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Converts a <see cref="Nullable{T}" /> by delegating to the underlying type's converter. YAML has a real null scalar,
-/// so — unlike the shared-source twin the sibling formats compile — this converter maps a null token to
+/// so - unlike the shared-source twin the sibling formats compile - this converter maps a null token to
 /// <see langword="null" /> before the inner converter (whose null reading would produce the underlying type's default)
 /// is consulted.
 /// </summary>
@@ -45,7 +45,7 @@ internal sealed class NullableConverter<T>
     /// <inheritdoc />
     public override void Write(Utf8YamlWriter writer, T? value, YamlSerializerOptions options) =>
 
-        // A null value never reaches this converter — the dispatch seam writes the null scalar — so the value always
+        // A null value never reaches this converter - the dispatch seam writes the null scalar - so the value always
         // carries the underlying type here.
         _inner.WriteAsObject(writer, value!.Value, options);
 }

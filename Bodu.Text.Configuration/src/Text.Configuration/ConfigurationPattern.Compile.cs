@@ -21,7 +21,7 @@ public sealed partial class ConfigurationPattern
 
     /// <summary>The maximum depth that nested brace alternations (<c>{a,{b,{c,…}}}</c>) may reach in a single glob expression. Beyond this, the compiler emits <see cref="ConfigurationDiagnosticCode.BraceNestingTooDeep" /> rather than recursing through a pathologically deep pattern that risks stack exhaustion or unbounded expansion.</summary>
     /// <remarks>
-    /// EditorConfig in the wild rarely nests beyond two or three levels — patterns like <c>*.{cs,{vb,fs}}</c>. A cap of
+    /// EditorConfig in the wild rarely nests beyond two or three levels - patterns like <c>*.{cs,{vb,fs}}</c>. A cap of
     /// 32 leaves four times the deepest realistic nesting in the existing test corpus, which is comfortable for
     /// legitimate use while still rejecting clearly pathological input.
     /// </remarks>
@@ -218,7 +218,7 @@ public sealed partial class ConfigurationPattern
     }
 
     /// <summary>
-    /// Translates the brace group beginning at <paramref name="start" /> — an alternation or a numeric range — into
+    /// Translates the brace group beginning at <paramref name="start" /> - an alternation or a numeric range - into
     /// regex syntax.
     /// </summary>
     /// <param name="pattern">The glob expression being translated.</param>

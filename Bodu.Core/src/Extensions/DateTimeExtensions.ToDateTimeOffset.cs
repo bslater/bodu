@@ -56,7 +56,7 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// Use this overload to explicitly associate a non-local offset — for example when dealing with fixed time zones,
+    /// Use this overload to explicitly associate a non-local offset - for example when dealing with fixed time zones,
     /// historical data, or offset-based scheduling.
     /// </para>
     /// </remarks>

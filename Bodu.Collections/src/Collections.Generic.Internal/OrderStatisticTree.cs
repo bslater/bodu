@@ -181,8 +181,8 @@ internal static class OrderStatisticTree
     /// <remarks>
     /// An interior node with two children is reduced to its in-order successor (the payload is copied down via
     /// <see cref="OrderStatisticNode{TNode}.CopyPayloadFrom" />), so the physically unlinked node always has at most
-    /// one child. When that node is a childless black leaf it stays linked as a phantom during the fixup — its size of
-    /// 1 keeps every rotation's size recomputation consistent — and is unlinked afterwards, at which point the ancestor
+    /// one child. When that node is a childless black leaf it stays linked as a phantom during the fixup - its size of
+    /// 1 keeps every rotation's size recomputation consistent - and is unlinked afterwards, at which point the ancestor
     /// sizes are decremented.
     /// </remarks>
     internal static void Remove<TNode>(ref TNode? root, TNode node)

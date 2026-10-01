@@ -52,8 +52,8 @@ internal static class LunarPhaseCalculator
     /// The conjunction's Julian Day, or <see langword="null" /> when none is found within the search window.
     /// </returns>
     /// <remarks>
-    /// The instant matters when a caller must evaluate another body's position at the conjunction itself — for example
-    /// classifying a Hindu amanta month by the sun's sidereal sign — because a conjunction near a sign ingress can sit
+    /// The instant matters when a caller must evaluate another body's position at the conjunction itself - for example
+    /// classifying a Hindu amanta month by the sun's sidereal sign - because a conjunction near a sign ingress can sit
     /// on the other side of the boundary from the start of its civil day.
     /// </remarks>
     public static double? NewMoonJulianDayOnOrAfter(DateOnly notBefore) =>

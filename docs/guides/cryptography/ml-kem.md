@@ -4,7 +4,7 @@ title: ML-KEM post-quantum key encapsulation
 
 # ML-KEM post-quantum key encapsulation
 
-ML-KEM is the module-lattice key-encapsulation mechanism standardized by NIST **FIPS 203** — the post-quantum replacement for Diffie-Hellman-style key agreement. Its security rests on the Module-LWE problem, believed hard even for a large-scale quantum computer. This guide is for developers bootstrapping a symmetric session that must stay confidential against future quantum attack.
+ML-KEM is the module-lattice key-encapsulation mechanism standardized by NIST **FIPS 203** - the post-quantum replacement for Diffie-Hellman-style key agreement. Its security rests on the Module-LWE problem, believed hard even for a large-scale quantum computer. This guide is for developers bootstrapping a symmetric session that must stay confidential against future quantum attack.
 
 A KEM works differently from ECDH: instead of both parties contributing a public key, the receiver publishes an **encapsulation key**, and any sender calls <xref:Bodu.Security.Cryptography.MLKem.Encapsulate> to produce a **ciphertext** plus a fresh 32-byte shared secret. The receiver recovers the same secret from the ciphertext with <xref:Bodu.Security.Cryptography.MLKem.Decapsulate(System.ReadOnlySpan{System.Byte})>.
 
@@ -54,7 +54,7 @@ byte[] receiverSecret = receiver.Decapsulate(ciphertext);
 
 As with ECDH, run the 32-byte shared secret through a KDF ([HKDF](hkdf.md), or <xref:Bodu.Security.Cryptography.Blake2b> in keyed mode) before using it as a symmetric key, binding it to an application-specific context.
 
-Both `Encapsulate` and `Decapsulate` have span overloads — `Encapsulate(ciphertext, sharedSecret)` and `Decapsulate(ciphertext, sharedSecret)` — that write into caller-supplied buffers (the ciphertext span must be exactly `CiphertextSizeInBytes`, the secret span exactly 32 bytes). Query `HasEncapsulationKey` / `HasDecapsulationKey` to see which halves an instance holds: a sender that imported only the public key has `HasEncapsulationKey` true and `HasDecapsulationKey` false, and so can encapsulate but not decapsulate.
+Both `Encapsulate` and `Decapsulate` have span overloads - `Encapsulate(ciphertext, sharedSecret)` and `Decapsulate(ciphertext, sharedSecret)` - that write into caller-supplied buffers (the ciphertext span must be exactly `CiphertextSizeInBytes`, the secret span exactly 32 bytes). Query `HasEncapsulationKey` / `HasDecapsulationKey` to see which halves an instance holds: a sender that imported only the public key has `HasEncapsulationKey` true and `HasDecapsulationKey` false, and so can encapsulate but not decapsulate.
 
 ## Persisting and restoring keys
 
@@ -76,17 +76,17 @@ restored.ImportDecapsulationKey(decapsulationKey);
 
 `ImportDecapsulationKey` and `ImportEncapsulationKey` apply the FIPS 203 §7.3 hash-consistency and §7.2 modulus checks respectively, throwing <xref:System.ArgumentException> on a malformed or wrong-length key.
 
-An instance keeps what FIPS 203 derives from its key on every operation — the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) — from the moment the key is generated or imported, so reuse one instance for many encapsulations or decapsulations rather than importing the key for each. Beside the encoded keys these take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024, or 6, 12 and 20 KiB for an encapsulation key alone; the secret vector is zeroed with the decapsulation key when the instance is disposed.
+An instance keeps what FIPS 203 derives from its key on every operation - the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) - from the moment the key is generated or imported, so reuse one instance for many encapsulations or decapsulations rather than importing the key for each. Beside the encoded keys these take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024, or 6, 12 and 20 KiB for an encapsulation key alone; the secret vector is zeroed with the decapsulation key when the instance is disposed.
 
-## Implicit rejection — decapsulation does not throw on tampering
+## Implicit rejection - decapsulation does not throw on tampering
 
 A tampered ciphertext of the **correct length** does not throw. Per FIPS 203, `Decapsulate` silently returns an unrelated key (the implicit-rejection value), so an attacker cannot use decapsulation failures as an oracle. Both parties simply end up with different secrets, and the mismatch surfaces later when the symmetric session fails to authenticate. Only a *wrong-length* ciphertext throws <xref:System.ArgumentException>.
 
-This means you must **not** treat a successful `Decapsulate` as proof the ciphertext was genuine — confirm the secret matches by using it in an authenticated channel (an AEAD or a MAC).
+This means you must **not** treat a successful `Decapsulate` as proof the ciphertext was genuine - confirm the secret matches by using it in an authenticated channel (an AEAD or a MAC).
 
 ## Hybrid with X25519
 
-A KEM resists quantum attack but is newer and less battle-tested than the curve algorithms. The standard mitigation is a **hybrid**: run both [X25519](key-agreement-x25519.md) and ML-KEM, then derive the session key from **both** secrets concatenated. The result is secure as long as *either* primitive holds — quantum-safe from ML-KEM, classically conservative from X25519.
+A KEM resists quantum attack but is newer and less battle-tested than the curve algorithms. The standard mitigation is a **hybrid**: run both [X25519](key-agreement-x25519.md) and ML-KEM, then derive the session key from **both** secrets concatenated. The result is secure as long as *either* primitive holds - quantum-safe from ML-KEM, classically conservative from X25519.
 
 ```csharp
 using System.Security.Cryptography;
@@ -121,12 +121,12 @@ CryptographicOperations.ZeroMemory(combined);
 
 The sender transmits both the X25519 public key and the ML-KEM ciphertext; the receiver performs the matching X25519 derivation and ML-KEM decapsulation and runs the identical KDF.
 
-Fix the concatenation order (here classic, then post-quantum) and keep it identical on both sides — the KDF is order-sensitive, so a swapped order yields a different, mismatched key. The same `info` label must also match. This is the pattern standardized as X25519MLKEM768 for TLS hybrid key exchange; the principle is the same here.
+Fix the concatenation order (here classic, then post-quantum) and keep it identical on both sides - the KDF is order-sensitive, so a swapped order yields a different, mismatched key. The same `info` label must also match. This is the pattern standardized as X25519MLKEM768 for TLS hybrid key exchange; the principle is the same here.
 
 ## See also
 
-- [Asymmetric algorithms overview](asymmetric-overview.md) — where ML-KEM sits in the family.
-- [Key agreement with X25519](key-agreement-x25519.md) — the classic counterpart and the hybrid partner.
-- [ML-DSA post-quantum signatures](ml-dsa.md) — the post-quantum signature companion.
-- [Using HKDF](hkdf.md) — the KDF that binds the shared secret to a context before use.
-- <xref:Bodu.Security.Cryptography.MLKem>, <xref:Bodu.Security.Cryptography.MLKem512>, <xref:Bodu.Security.Cryptography.MLKem768>, <xref:Bodu.Security.Cryptography.MLKem1024> — API reference.
+- [Asymmetric algorithms overview](asymmetric-overview.md) - where ML-KEM sits in the family.
+- [Key agreement with X25519](key-agreement-x25519.md) - the classic counterpart and the hybrid partner.
+- [ML-DSA post-quantum signatures](ml-dsa.md) - the post-quantum signature companion.
+- [Using HKDF](hkdf.md) - the KDF that binds the shared secret to a context before use.
+- <xref:Bodu.Security.Cryptography.MLKem>, <xref:Bodu.Security.Cryptography.MLKem512>, <xref:Bodu.Security.Cryptography.MLKem768>, <xref:Bodu.Security.Cryptography.MLKem1024> - API reference.

@@ -13,28 +13,41 @@ on:
       publish_slot:
         description: >-
           Publish this run into a specific gh-pages slot ("1.0", "dev"). Leave empty to derive it
-          from the ref, as a push does. Use it to seed or repair a slot out of band — a series
+          from the ref, as a push does. Use it to seed or repair a slot out of band - a series
           whose tag predates this workflow, or a root that needs rebuilding before the next tag.
         required: false
         default: ''
 
 # The site is served from the gh-pages branch, so the only permission this workflow needs is the
 # one that lets it push there. pages: write and id-token: write went with the deploy-pages job, and
-# actions: read was part of the same boilerplate — nothing here reads the Actions API.
+# actions: read was part of the same boilerplate - nothing here reads the Actions API.
 permissions:
   contents: write
 
-# Serialises publishing. This guarded the Pages deployment when one existed; it now guards the
-# branch push, which needs it just as much — two runs racing to push gh-pages would leave one
-# rejected as a non-fast-forward. In-progress runs are never cancelled, so a publish always
-# finishes rather than leaving the branch half-written.
+# Serialises publishing, and only publishing. The "pages" group guards the gh-pages push: two runs
+# racing to push it would leave one rejected as a non-fast-forward, so the runs that can publish
+# (master and tag pushes, manual dispatches) queue there, and an in-progress one is never cancelled,
+# so a publish always finishes rather than leaving the branch half-written.
+#
+# A pull request never publishes, so it does not join that queue. A group holds one pending run,
+# and a newer run replaces it, so pull requests sharing "pages" had their queued docs builds
+# cancelled by every master push. Each pull request instead gets a group of its own, where a new
+# push supersedes that pull request's earlier run, in progress or not.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('docs-pr-{0}', github.event.pull_request.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
+  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
+  # Both images build and check the site; only the first publishes it (see the last step).
   build-docs:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v7
@@ -47,10 +60,23 @@ jobs:
         global-json-file: global.json
         dotnet-version: 8.0.x
 
-    # Pinned. An unpinned `tool update` means a DocFX release can change generated output
-    # or trip --warningsAsErrors without any corresponding repository change.
-    - name: Install DocFX
-      run: dotnet tool update -g docfx --version 2.81.0
+    # The metadata merge and the site validation are Python (bld/docs/*.py), with their one package
+    # pinned in bld/docs/requirements.txt.
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+
+    - name: Install documentation tooling
+      # DocFX is the local tool pinned in docs/.config/dotnet-tools.json, so CI and a local build run
+      # the same version, and a DocFX release cannot change the generated output or trip
+      # --warningsAsErrors without a reviewed change to that pin.
+      run: |
+        python -m pip install --disable-pip-version-check -r bld/docs/requirements.txt
+        dotnet tool restore --tool-manifest docs/.config/dotnet-tools.json
+
+    - name: Test the documentation pipeline
+      run: bash bld/docs/build-api-docs.sh test
 
     # BODU projects consume the XML documentation analyzer from the repository-local feed.
     # Build that package before restoring/building the shipping libraries, matching build-test.yml.
@@ -61,68 +87,24 @@ jobs:
           --configuration Release \
           --output "${{ github.workspace }}/local-packages"
 
-    # DocFX now reads compiled Release assemblies rather than asking MSBuild to evaluate
-    # the projects itself. Build each shipping library explicitly so docs describe the
-    # same public surface that is actually compiled and shipped.
-    #
-    # BODU supports both net8.0 and net10.0. CI validates both frameworks; net10.0 is the
-    # canonical documentation assembly to avoid duplicate API entries for identical types.
-    - name: Build documentation assemblies
-      shell: bash
-      run: |
-        set -euo pipefail
+    # The API reference is generated from the compiled Release assemblies, one DocFX metadata pass
+    # per framework in $(BoduNetTargets), merged into one page per API. bld/docs/build-api-docs.sh
+    # documents each stage; they run as separate steps here so a failure names its stage.
+    - name: Build documentation assemblies (every package, every framework)
+      # Builds every package bld/release-manifest.txt records (less bld/docs/api-exclusions.txt) in
+      # Release for net8.0 and net10.0 with warnings as errors, checks each produced its .dll, .xml,
+      # and .pdb, and resolves each package's id and version as MSBuild evaluates them.
+      run: bash bld/docs/build-api-docs.sh assemblies
 
-        projects="$(
-          find . \
-            -path './archive' -prune -o \
-            -path './Bodu.CodeStyle' -prune -o \
-            -path './Bodu.Text.Formats.Generators' -prune -o \
-            -path './Bodu.Globalization.Calendar.Build' -prune -o \
-            -path '*/src/*.csproj' -print \
-          | sort -u
-        )"
+    - name: Generate API metadata per framework
+      run: bash bld/docs/build-api-docs.sh metadata
 
-        if [ -z "$projects" ]; then
-          echo "::error::No documentation projects were discovered."
-          exit 1
-        fi
-
-        echo "Documentation projects:"
-        printf '%s\n' "$projects"
-
-        while IFS= read -r proj; do
-          [ -n "$proj" ] || continue
-
-          # Non-packable support projects are not part of the public package API site.
-          if grep -qi '<IsPackable>false</IsPackable>' "$proj"; then
-            echo "Skipping non-packable project: $proj"
-            continue
-          fi
-
-          echo "::group::Build $proj (net10.0)"
-          dotnet build "$proj" \
-            --configuration Release \
-            --framework net10.0 \
-            -p:TreatWarningsAsErrors=true
-          echo "::endgroup::"
-        done <<< "$projects"
-
-    - name: Verify documentation assemblies
-      shell: bash
-      run: |
-        set -euo pipefail
-
-        count="$(find . -path '*/src/bin/Release/net10.0/Bodu.*.dll' \
-          ! -path '*/ref/*' \
-          ! -path '*/refint/*' \
-          -type f | wc -l)"
-
-        if [ "$count" -eq 0 ]; then
-          echo "::error::No BODU net10.0 Release assemblies were produced for DocFX."
-          exit 1
-        fi
-
-        echo "Found $count BODU net10.0 Release assemblies for DocFX."
+    - name: Merge framework metadata
+      # One page per API, annotated with the frameworks it exists in and the package it ships in.
+      # Fails on a declaration or documentation difference between frameworks that
+      # bld/docs-checks/framework-divergence-allowlist.txt does not explain; the report is written
+      # to the job summary either way.
+      run: bash bld/docs/build-api-docs.sh merge
 
     - name: Stamp build metadata into the docs footer
       # The versions matter as much as the commit. The site is rebuilt from master on every merge,
@@ -151,7 +133,7 @@ jobs:
         echo "Footer stamped: stable=${STABLE} preview=${PREVIEW} branch=${BRANCH} commit=${SHORT_SHA} built=${BUILT}"
 
     - name: Build DocFX site
-      run: docfx docs/docfx.json --warningsAsErrors
+      run: bash bld/docs/build-api-docs.sh build
 
     - name: Check documentation coverage guard rails
       # Orphaned pages, namespaces without an apidoc overview, prose identifiers
@@ -170,7 +152,7 @@ jobs:
       run: |
         set -eu
         # Scoped to the trees DocFX actually publishes. reviews/ and forensic-review/ are
-        # excluded from build.content in docs/docfx.json, so nothing in them renders as a link —
+        # excluded from build.content in docs/docfx.json, so nothing in them renders as a link -
         # a file path named in a planning table there is not a stale link, and failing on it
         # blocks the build for no reachable defect.
         echo "Checking for direct apidoc/Bodu.*.md links (should use xref instead)..."
@@ -324,6 +306,27 @@ jobs:
         if [ $missing -ne 0 ]; then exit 1; fi
         echo "All primary-library namespace API pages present."
 
+    - name: Validate the API reference
+      # Every API applies to a known framework and is reachable from the TOC; every type page shows
+      # an Applies to table matching its frameworks and the exact package id and version MSBuild
+      # resolved; every source link names this repository at this commit and none leads to generated
+      # code; every package's landing page links to its API; and the template overlay matches the
+      # pinned DocFX. See bld/docs/validate_api_site.py.
+      run: bash bld/docs/build-api-docs.sh validate
+
+    - name: Upload documentation pipeline reports
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        # One artifact per image: two matrix jobs uploading under one name would collide.
+        name: docs-pipeline-reports-${{ matrix.os }}
+        path: |
+          docs/obj/api/*.md
+          docs/obj/api/*.json
+          docs/obj/api/*.tsv
+        if-no-files-found: ignore
+
+
     - name: Publish to the versioned gh-pages branch
       # Writes the built site into the branch layout bld/stage-docs-site.sh documents: the latest
       # release at the root and under /<series>/, master under /dev/.
@@ -336,9 +339,13 @@ jobs:
       # workflow as defined at the dispatched ref, so a tag cut before this step existed does not
       # have it - and an old tag's docs may not even build, since the guard rails above have
       # tightened since. Dispatch from master with publish_slot instead.
+      #
+      # Only the first image in the job's list publishes, so a run pushes gh-pages once, and
+      # dropping an image from the list leaves the one that remains publishing.
       if: >-
-        (github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')))
-        || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
+        strategy.job-index == 0
+        && ((github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')))
+        || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'))
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PUBLISH_SLOT: ${{ github.event.inputs.publish_slot }}
@@ -361,10 +368,10 @@ jobs:
 
           # Only a plain MAJOR.MINOR.PATCH tag publishes. A prerelease is not "the latest release"
           # and must not replace the root site; a malformed tag should not fail the run either.
-          # Both would otherwise derive a slot stage-docs-site.sh rejects — "1.0.0-rc" from
-          # v1.0.0-rc.1, "1" from v1.0 — turning a stray tag into a red build.
+          # Both would otherwise derive a slot stage-docs-site.sh rejects - "1.0.0-rc" from
+          # v1.0.0-rc.1, "1" from v1.0 - turning a stray tag into a red build.
           if ! printf '%s' "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Tag ${GITHUB_REF_NAME} is not a plain vMAJOR.MINOR.PATCH release — not publishing it as the latest docs."
+            echo "Tag ${GITHUB_REF_NAME} is not a plain vMAJOR.MINOR.PATCH release - not publishing it as the latest docs."
             exit 0
           fi
 
@@ -379,7 +386,7 @@ jobs:
         if git ls-remote --exit-code --heads "$REMOTE" gh-pages >/dev/null 2>&1; then
           git clone --depth 1 --branch gh-pages "$REMOTE" "$WORK"
         else
-          echo "gh-pages does not exist yet — creating it."
+          echo "gh-pages does not exist yet - creating it."
           git clone --depth 1 "$REMOTE" "$WORK"
           git -C "$WORK" checkout --orphan gh-pages
           git -C "$WORK" rm -rf . >/dev/null 2>&1 || true

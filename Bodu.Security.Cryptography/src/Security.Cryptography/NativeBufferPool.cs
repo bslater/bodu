@@ -10,8 +10,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Reuses the native buffers that hold the working memory of the memory-hard key-derivation functions — Argon2's memory
-/// matrix and scrypt's <c>V</c> — so a steady stream of derivations neither allocates that memory per call nor pays the
+/// Reuses the native buffers that hold the working memory of the memory-hard key-derivation functions - Argon2's memory
+/// matrix and scrypt's <c>V</c> - so a steady stream of derivations neither allocates that memory per call nor pays the
 /// operating system for fresh pages each time.
 /// </summary>
 /// <remarks>
@@ -80,7 +80,7 @@ internal sealed unsafe partial class NativeBufferPool
 
     /// <summary>
     /// Gets the pool every derivation uses: up to one retained buffer per processor, each up to 256 MiB, released after
-    /// thirty idle seconds — or none at all when the <see cref="DisableReuseSwitchName" /> switch is set.
+    /// thirty idle seconds - or none at all when the <see cref="DisableReuseSwitchName" /> switch is set.
     /// </summary>
     internal static NativeBufferPool Shared { get; } = new(
         AppContext.TryGetSwitch(DisableReuseSwitchName, out bool disabled) && disabled ? 0 : Environment.ProcessorCount,

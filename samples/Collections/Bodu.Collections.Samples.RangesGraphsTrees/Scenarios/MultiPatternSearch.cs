@@ -16,7 +16,7 @@ namespace Bodu.Collections.Samples.RangesGraphsTrees.Scenarios;
 /// <remarks>
 /// The automaton reports <em>overlapping</em> matches, which a naive loop of independent searches would not:
 /// scanning for each pattern in turn and skipping past every hit loses matches that start inside an earlier one.
-/// That is why the classic "ushers" example is used here — <c>she</c>, <c>he</c> and <c>hers</c> all overlap.
+/// That is why the classic "ushers" example is used here - <c>she</c>, <c>he</c> and <c>hers</c> all overlap.
 /// </remarks>
 public static class MultiPatternSearch
 {

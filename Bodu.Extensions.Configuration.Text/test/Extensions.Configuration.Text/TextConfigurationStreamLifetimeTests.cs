@@ -66,7 +66,7 @@ key = value
 
     /// <summary>
     /// Verifies that a non-seekable stream still loads correctly. The provider must not assume seek
-    /// capability — many real-world streams (network streams, pipes) are forward-only.
+    /// capability - many real-world streams (network streams, pipes) are forward-only.
     /// </summary>
     [TestMethod]
     public void Build_WhenStreamIsNonSeekable_ShouldStillLoad()

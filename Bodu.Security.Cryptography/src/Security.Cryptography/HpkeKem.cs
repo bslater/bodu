@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 public enum HpkeKem : ushort
 {
     /// <summary>
-    /// DHKEM(X25519, HKDF-SHA256) — Diffie-Hellman KEM over Curve25519 with HKDF-SHA256, KEM identifier <c>0x0020</c>.
+    /// DHKEM(X25519, HKDF-SHA256) - Diffie-Hellman KEM over Curve25519 with HKDF-SHA256, KEM identifier <c>0x0020</c>.
     /// </summary>
     X25519HkdfSha256 = 0x0020,
 }

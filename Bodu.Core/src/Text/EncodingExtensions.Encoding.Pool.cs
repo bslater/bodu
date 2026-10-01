@@ -31,7 +31,7 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Prefer <see cref="GetBytesPooled(System.Text.Encoding, ReadOnlySpan{char})" /> or
-    /// <see cref="GetBytesOwner(System.Text.Encoding, ReadOnlySpan{char}, MemoryPool{byte})" /> over this method — both
+    /// <see cref="GetBytesOwner(System.Text.Encoding, ReadOnlySpan{char}, MemoryPool{byte})" /> over this method - both
     /// wrap the rented buffer in an <see cref="IDisposable" /> so a leak cannot occur when the caller uses a
     /// <c>using</c> block. This method is provided for interop with APIs that require a bare <see cref="byte" /> array.
     /// </remarks>
@@ -82,7 +82,7 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Prefer <see cref="GetCharsPooled(System.Text.Encoding, ReadOnlySpan{byte})" /> or
-    /// <see cref="GetCharsOwner(System.Text.Encoding, ReadOnlySpan{byte}, MemoryPool{char})" /> over this method — both
+    /// <see cref="GetCharsOwner(System.Text.Encoding, ReadOnlySpan{byte}, MemoryPool{char})" /> over this method - both
     /// wrap the rented buffer in an <see cref="IDisposable" /> so a leak cannot occur when the caller uses a
     /// <c>using</c> block. This method is provided for interop with APIs that require a bare <see cref="char" /> array.
     /// </remarks>
@@ -207,7 +207,7 @@ public static partial class EncodingExtensions
     /// using PooledBufferBuilder<byte> pooled = System.Text.Encoding.UTF8.GetBytesPooled("hello");
     /// ReadOnlySpan<byte> bytes = pooled.WrittenSpan;
     /// downstream.Process(bytes);
-    /// // Disposed at the end of the using scope — the underlying byte[] returns to ArrayPool<byte>.Shared.
+    /// // Disposed at the end of the using scope - the underlying byte[] returns to ArrayPool<byte>.Shared.
     ///]]>
     /// </code>
     /// </example>

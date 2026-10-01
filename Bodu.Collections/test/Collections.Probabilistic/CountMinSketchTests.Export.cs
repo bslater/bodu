@@ -191,7 +191,7 @@ public partial class CountMinSketchTests
 
     /// <summary>
     /// Verifies that <see cref="CountMinSketch{T}.Import" /> throws <see cref="ArgumentException" /> when the header
-    /// describes an invalid sketch — a corrupted width field of zero.
+    /// describes an invalid sketch - a corrupted width field of zero.
     /// </summary>
     [TestMethod]
     public void Import_WhenWidthFieldIsCorrupted_ShouldThrowArgumentException()

@@ -108,7 +108,7 @@ public sealed partial class Blake3CoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch compresses a block exactly as the kernel it selects does.
+    /// Verifies that dispatch compresses a block exactly as the kernel it selects for a single block does.
     /// </summary>
     [TestMethod]
     public void Compress_WhenKernelIsAuto_ShouldMatchSelectedKernel()
@@ -118,7 +118,7 @@ public sealed partial class Blake3CoreTests
         uint[] expected = Blake3Core.InitializationVector.ToArray();
         uint[] actual = Blake3Core.InitializationVector.ToArray();
 
-        Blake3Core.Compress(Blake3Core.SelectKernel(), expected, block, 7, 64, Blake3Core.ChunkStart);
+        Blake3Core.Compress(Blake3Core.SelectSingleBlockKernel(), expected, block, 7, 64, Blake3Core.ChunkStart);
         Blake3Core.Compress(actual, block, 7, 64, Blake3Core.ChunkStart);
 
         CollectionAssert.AreEqual(expected, actual);

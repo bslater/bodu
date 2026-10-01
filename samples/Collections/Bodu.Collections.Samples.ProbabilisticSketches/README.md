@@ -5,7 +5,7 @@ sketch for frequency estimation, and a HyperLogLog for distinct-count cardinalit
 accuracy for a large, fixed memory footprint, and each exposes a precise one-sided guarantee. Three scenarios.
 
 Everything runs offline. The sketches derive all of their bit positions from
-`IEqualityComparer<T>.GetHashCode`, and `string.GetHashCode()` is randomized per process — so each scenario
+`IEqualityComparer<T>.GetHashCode`, and `string.GetHashCode()` is randomized per process - so each scenario
 supplies a `StableStringComparer` (FNV-1a) to pin the hashing. That makes the output, including the specific
 Bloom false positive, identical on every run.
 
@@ -13,11 +13,11 @@ Bloom false positive, identical on every run.
 dotnet run --project samples/Collections/Bodu.Collections.Samples.ProbabilisticSketches
 ```
 
-## Scenario 1 — BloomMembership
+## Scenario 1 - BloomMembership
 
 **Intent.** Show `BloomFilter<T>` and its two-sided contract: a member *always* tests positive (no false
 negatives), while a non-member tests positive only with a bounded probability (false positives). Both halves
-matter — the whole point is a compact filter you can trust for "definitely not present."
+matter - the whole point is a compact filter you can trust for "definitely not present."
 
 **What it does.** Sizes a filter for 8 items at a deliberately loose 10% false-positive rate (so a collision
 is easy to surface), adds eight known words, and confirms all eight test positive. It then scans a fixed list
@@ -51,7 +51,7 @@ filter:
 **APIs demonstrated.** `BloomFilter<T>(int expectedItems, double falsePositiveRate, IEqualityComparer<T>)`,
 `.Add`, `.MightContain`, `.BitCount`, `.HashCount`.
 
-## Scenario 2 — FrequencySketch
+## Scenario 2 - FrequencySketch
 
 **Intent.** Show `CountMinSketch<T>` and its one-sided guarantee: the estimated count of an element is
 *never less* than its true count. Collisions can only ever inflate an estimate, never deflate it, which is
@@ -62,7 +62,7 @@ of page visits while building an exact histogram alongside, then compares the es
 for every distinct page (sorted for stable output).
 
 **What to expect.** With a generously sized table (272×5 counters) and no collisions among five keys, every
-estimate equals the exact count — and each row confirms `estimate >= exact`:
+estimate equals the exact count - and each row confirms `estimate >= exact`:
 
 ```text
 --- CountMinSketch<T> - frequency estimates that never underestimate ---
@@ -89,7 +89,7 @@ estimate equals the exact count — and each row confirms `estimate >= exact`:
 **APIs demonstrated.** `CountMinSketch<T>(double epsilon, double delta, IEqualityComparer<T>)`, `.Add`,
 `.EstimateCount`, `.TotalCount`, `.Width`, `.Depth`.
 
-## Scenario 3 — CardinalityEstimate
+## Scenario 3 - CardinalityEstimate
 
 **Intent.** Show `HyperLogLog<T>`: a distinct-count estimator that summarizes an arbitrarily large set in a
 few kilobytes of registers, with a standard error of about 1.04/√m for m registers. It counts *distinct*
@@ -99,8 +99,8 @@ elements, so repeats cost nothing.
 twice* to prove duplicates are ignored, then compares the estimate to the true cardinality and reports the
 relative error against the sketch's own standard error.
 
-**What to expect.** The estimate lands within about 1% of the true 10,000 — comfortably inside the ~0.81%
-standard error band — despite every token being added twice:
+**What to expect.** The estimate lands within about 1% of the true 10,000 - comfortably inside the ~0.81%
+standard error band - despite every token being added twice:
 
 ```text
 --- HyperLogLog<T> - approximate distinct-count ---
@@ -140,7 +140,7 @@ Bodu.Collections.Samples.ProbabilisticSketches/
 
 ## Related
 
-- `Bodu.Collections.Samples.CollectionCatalogue` — the ring, deque, evicting cache, multi-maps and sets, the
+- `Bodu.Collections.Samples.CollectionCatalogue` - the ring, deque, evicting cache, multi-maps and sets, the
   bidirectional and navigable dictionaries, and the indexed priority queue.
-- `Bodu.Collections.Samples.RangesGraphsTrees` — coalescing range sets, the interval tree, graph algorithms,
+- `Bodu.Collections.Samples.RangesGraphsTrees` - coalescing range sets, the interval tree, graph algorithms,
   disjoint-set union-find, the tree/trie family, and Aho-Corasick multi-pattern search.

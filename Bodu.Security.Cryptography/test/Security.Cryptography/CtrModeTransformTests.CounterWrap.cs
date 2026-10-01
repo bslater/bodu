@@ -56,7 +56,7 @@ public sealed partial class CtrModeTransformTests
 
     /// <summary>
     /// Verifies that the counter-wrap latch trips at the true 2^n counter rollover even when the initial counter is
-    /// non-zero — the counter reaching all-zero (a full-space rollover) is what latches, not a match against the
+    /// non-zero - the counter reaching all-zero (a full-space rollover) is what latches, not a match against the
     /// initial value.
     /// </summary>
     /// <remarks>
@@ -150,5 +150,80 @@ public sealed partial class CtrModeTransformTests
         byte[] expected = ReferenceKeystreamXor(cipher, nearMax, input.AsSpan(0, 16 * 3).ToArray(), [16 * 3]);
         CollectionAssert.AreEqual(expected, output[..(16 * 3)], "the three blocks before the wrap");
         CollectionAssert.AreEqual(new byte[16 * 2], output[(16 * 3)..], "the blocks after the wrap");
+    }
+
+    /// <summary>
+    /// Verifies that when five counter values remain before the wrap and the input needs more, the five blocks are
+    /// written exactly as block-at-a-time processing writes them, the rest of the output is left untouched, and the call
+    /// throws <see cref="CryptographicException" />.
+    /// </summary>
+    /// <param name="name">The cipher's name, for the test's display.</param>
+    /// <param name="create">Creates a fresh keyed cipher.</param>
+    [TestMethod]
+    [DynamicData(nameof(BatchingCiphers))]
+    public void Transform_WhenCounterWrapsPartwayThroughAGroup_ShouldWriteTheBlocksBeforeTheWrapThenThrow(string name, Func<IBlockCipher> create)
+    {
+        using IBlockCipher cipher = create();
+        int blockSize = cipher.BlockSize / 8;
+        using var transform = new CtrModeTransform(cipher, new byte[blockSize]);
+        byte[] nearMax = NearMaximumCounter(blockSize, remaining: 5);
+        typeof(CtrModeTransform).GetField("_counter", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(transform, nearMax.Clone());
+
+        byte[] input = new byte[(blockSize * 12) + 3];
+        new Random(0x5E19).NextBytes(input);
+        byte[] output = new byte[input.Length];
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            transform.Transform(input, output, encrypt: true);
+        });
+
+        byte[] expected = ReferenceKeystreamXor(cipher, nearMax, input.AsSpan(0, blockSize * 5).ToArray(), [blockSize * 5]);
+        CollectionAssert.AreEqual(expected, output[..(blockSize * 5)], $"{name}: the five blocks before the wrap");
+        CollectionAssert.AreEqual(new byte[output.Length - (blockSize * 5)], output[(blockSize * 5)..], $"{name}: the output after the wrap");
+    }
+
+    /// <summary>
+    /// Verifies that when the input's last block, a partial one, takes the counter's last value, every block is written
+    /// as block-at-a-time processing writes it without an exception, and the next call throws
+    /// <see cref="CryptographicException" />.
+    /// </summary>
+    /// <param name="name">The cipher's name, for the test's display.</param>
+    /// <param name="create">Creates a fresh keyed cipher.</param>
+    [TestMethod]
+    [DynamicData(nameof(BatchingCiphers))]
+    public void Transform_WhenLastPartialBlockTakesTheCounterLastValue_ShouldWriteEveryBlockThenThrowOnTheNextCall(string name, Func<IBlockCipher> create)
+    {
+        using IBlockCipher cipher = create();
+        int blockSize = cipher.BlockSize / 8;
+        using var transform = new CtrModeTransform(cipher, new byte[blockSize]);
+        byte[] nearMax = NearMaximumCounter(blockSize, remaining: 5);
+        typeof(CtrModeTransform).GetField("_counter", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(transform, nearMax.Clone());
+
+        byte[] input = new byte[(blockSize * 4) + 3];
+        new Random(0x5E1A).NextBytes(input);
+        byte[] output = new byte[input.Length];
+
+        transform.Transform(input, output, encrypt: true);
+
+        CollectionAssert.AreEqual(ReferenceKeystreamXor(cipher, nearMax, input, [input.Length]), output, name);
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            transform.Transform(new byte[1], new byte[1], encrypt: true);
+        });
+    }
+
+    /// <summary>
+    /// Returns a counter block with the specified number of values left before it wraps: every byte 0xFF but the last.
+    /// </summary>
+    /// <param name="blockSize">The block size, in bytes.</param>
+    /// <param name="remaining">The number of counter values left, 1 to 256.</param>
+    /// <returns>The counter block.</returns>
+    private static byte[] NearMaximumCounter(int blockSize, int remaining)
+    {
+        byte[] counter = new byte[blockSize];
+        counter.AsSpan().Fill(0xFF);
+        counter[^1] = (byte)(256 - remaining);
+        return counter;
     }
 }

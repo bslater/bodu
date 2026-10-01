@@ -165,7 +165,7 @@ public partial class MoneyOfTCurrencyTests
 
         string result = money.ToString("C", new CultureInfo("de-DE"));
 
-        // de-DE: "1.234,56 €" — symbol after amount, comma decimal, period grouping.
+        // de-DE: "1.234,56 €" - symbol after amount, comma decimal, period grouping.
         StringAssert.Contains(result, "€");
         StringAssert.Contains(result, "1.234,56");
     }

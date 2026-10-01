@@ -123,7 +123,7 @@ public sealed class PooledBufferBuilder<T> :
     /// Gets the number of elements that can be written to the buffer before the next growth.
     /// </summary>
     /// <value>
-    /// The number of remaining slots in the current rented array — equivalent to <see cref="Capacity" /> minus
+    /// The number of remaining slots in the current rented array - equivalent to <see cref="Capacity" /> minus
     /// <see cref="WrittenCount" />.
     /// </value>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
@@ -419,7 +419,7 @@ public sealed class PooledBufferBuilder<T> :
     /// </returns>
     /// <remarks>
     /// This method is an escape hatch for APIs that require a <c>byte[]</c> or <see cref="ArraySegment{T}" /> rather
-    /// than a <see cref="Span{T}" /> or <see cref="Memory{T}" />. Treat the returned segment as borrowed — do not
+    /// than a <see cref="Span{T}" /> or <see cref="Memory{T}" />. Treat the returned segment as borrowed - do not
     /// retain it beyond the lifetime of this builder.
     /// </remarks>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
@@ -569,8 +569,8 @@ public sealed class PooledBufferBuilder<T> :
     /// </summary>
     /// <param name="minimum">The minimum total capacity, in elements, the buffer must be able to hold.</param>
     /// <returns>
-    /// The previous rented array when a growth occurred — the caller must pass it to <see cref="ReturnToPool" /> once
-    /// any reads that may alias it have completed — or <see langword="null" /> when the current capacity already
+    /// The previous rented array when a growth occurred - the caller must pass it to <see cref="ReturnToPool" /> once
+    /// any reads that may alias it have completed - or <see langword="null" /> when the current capacity already
     /// satisfies the request.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

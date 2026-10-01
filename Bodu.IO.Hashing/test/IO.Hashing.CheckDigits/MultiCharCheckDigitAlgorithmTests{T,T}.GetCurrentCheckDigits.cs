@@ -50,7 +50,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     }
 
     /// <summary>
-    /// Verifies that reading the current check code twice in succession — with no intervening appends — yields
+    /// Verifies that reading the current check code twice in succession - with no intervening appends - yields
     /// the same value, proving the getter is non-destructive.
     /// </summary>
     [TestMethod]

@@ -24,8 +24,8 @@ public partial class CompoundStorageBuilderSerializationTests
     private const int ExtendedDifatPayloadBytes = 8 * 1024 * 1024;
 
     /// <summary>
-    /// Verifies that a container large enough to require more than the 109 inline FAT pointers — and therefore extended
-    /// DIFAT sectors — round-trips correctly.
+    /// Verifies that a container large enough to require more than the 109 inline FAT pointers - and therefore extended
+    /// DIFAT sectors - round-trips correctly.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]

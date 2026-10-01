@@ -18,7 +18,7 @@ namespace Bodu.Functional;
 /// <remarks>
 /// <para>
 /// <see cref="Either{TLeft, TRight}" /> is a symmetric choice type: neither side is privileged, and no side carries a
-/// success or failure connotation — <see cref="Result{T}" /> owns the railway-oriented bias. Use it when a value is
+/// success or failure connotation - <see cref="Result{T}" /> owns the railway-oriented bias. Use it when a value is
 /// legitimately one of two shapes (for example, a parsed literal that is either a number or a string). Project each
 /// side independently with <see cref="MapLeft{TResult}(Func{TLeft, TResult})" /> and
 /// <see cref="MapRight{TResult}(Func{TRight, TResult})" />, exchange the sides with <see cref="Swap" />, and collapse
@@ -27,11 +27,11 @@ namespace Bodu.Functional;
 /// <para>
 /// <c>default(Either&lt;TLeft, TRight&gt;)</c> carries neither side. On an uninitialized instance <see cref="IsLeft" />
 /// and <see cref="IsRight" /> are both <see langword="false" />, <see cref="TryGetLeft(out TLeft)" /> and
-/// <see cref="TryGetRight(out TRight)" /> return <see langword="false" />, and every operation that requires a side —
-/// <c>Match</c>, <c>MapLeft</c>, <c>MapRight</c>, and <c>Swap</c> — throws <see cref="InvalidOperationException" />.
+/// <see cref="TryGetRight(out TRight)" /> return <see langword="false" />, and every operation that requires a side -
+/// <c>Match</c>, <c>MapLeft</c>, <c>MapRight</c>, and <c>Swap</c> - throws <see cref="InvalidOperationException" />.
 /// </para>
 /// <para>
-/// The type throws on <c>default</c> rather than defaulting to a side because no privileged side exists to default to —
+/// The type throws on <c>default</c> rather than defaulting to a side because no privileged side exists to default to -
 /// unlike <see cref="Option{T}" />, whose <c>default</c> is <c>None</c>, and <see cref="Result{T}" />, whose
 /// <c>default</c> is a failure carrying the empty error. Silently treating <c>default</c> as <c>Left(default!)</c>
 /// would fabricate a value the <see cref="Left(TLeft)" /> factory refuses to accept. This mirrors the

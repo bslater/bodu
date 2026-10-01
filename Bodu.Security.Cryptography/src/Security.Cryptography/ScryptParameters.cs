@@ -27,7 +27,7 @@ public sealed record ScryptParameters
     internal const long MaxMemoryBytes = 1L << 31;
 
     /// <summary>
-    /// Gets the CPU/memory cost parameter <c>N</c> — a power of two greater than one.
+    /// Gets the CPU/memory cost parameter <c>N</c> - a power of two greater than one.
     /// </summary>
     /// <value>The cost parameter <c>N</c>.</value>
     public required int CostN { get; init; }

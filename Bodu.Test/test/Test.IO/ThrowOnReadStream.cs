@@ -14,10 +14,10 @@ namespace Bodu.Test.IO;
 /// The stream serves two complementary scenarios: asserting that a consumer never reads its input (via
 /// <see cref="WasRead" />), and driving a consumer's read-failure (catch) path. By default each read throws
 /// <see cref="InvalidOperationException" />; supply an exception factory to the constructor to throw a different
-/// exception type — for example <see cref="IOException" /> — when exercising error-propagation paths.
+/// exception type - for example <see cref="IOException" /> - when exercising error-propagation paths.
 /// </para>
 /// <para>
-/// Every read overload — synchronous and both asynchronous forms — sets <see cref="WasRead" /> before throwing, so the
+/// Every read overload - synchronous and both asynchronous forms - sets <see cref="WasRead" /> before throwing, so the
 /// flag reflects an attempt through any surface.
 /// </para>
 /// <para>
@@ -58,11 +58,11 @@ public sealed class ThrowOnReadStream
     public override bool CanWrite => false;
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream has no length.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream has no length.</exception>
     public override long Length => throw new NotSupportedException();
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown on set — the stream is not seekable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown on set - the stream is not seekable.</exception>
     public override long Position
     {
         get => 0;
@@ -96,17 +96,17 @@ public sealed class ThrowOnReadStream
     }
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not seekable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not seekable.</exception>
     public override long Seek(long offset, SeekOrigin origin) =>
         throw new NotSupportedException();
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not resizable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not resizable.</exception>
     public override void SetLength(long value) =>
         throw new NotSupportedException();
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not writable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not writable.</exception>
     public override void Write(byte[] buffer, int offset, int count) =>
         throw new NotSupportedException();
 

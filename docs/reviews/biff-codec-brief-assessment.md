@@ -1,14 +1,14 @@
-# BIFF5 / BIFF8 Reader and Writer — Brief Assessment
+# BIFF5 / BIFF8 Reader and Writer - Brief Assessment
 
 **Date:** 2026-09-09
 **Scope:** The proposed low-level BIFF5/BIFF8 record codec (`BiffReader` / `BiffWriter`), its placement in the solution, and the consequential rework of the internal BIFF8 layer inside `Bodu.Formats.Excel.Binary`.
-**Subject:** The external brief *"BIFF5 / BIFF8 Reader and Writer — Brief and Requirements"*, which asks for a forward-only, `ref struct`, allocation-conscious BIFF record reader and writer in the style of `Utf8BencodeReader` / `Utf8TomlReader`, deliberately without a workbook, worksheet, or cell model.
+**Subject:** The external brief *"BIFF5 / BIFF8 Reader and Writer - Brief and Requirements"*, which asks for a forward-only, `ref struct`, allocation-conscious BIFF record reader and writer in the style of `Utf8BencodeReader` / `Utf8TomlReader`, deliberately without a workbook, worksheet, or cell model.
 
 ## 1. Verdict
 
 **Worth doing, with a narrower first cut than the brief describes, and placed as `Bodu.IO.Biff` rather than `Bodu.Biff`.**
 
-The strongest case for the codec is not new demand for BIFF5 or for authoring `.xls` files — both are niche in 2026 — but that the solution already contains a BIFF8 codec that is internal, BIFF8-only, and partially duplicated. `Bodu.Formats.Excel.Binary` carries four separate implementations of BIFF record framing, a hand-rolled BIFF8 record *writer* in its test project, and an explicit rejection of BIFF5 streams. Lifting the codec into its own package does for Excel what `Bodu.IO.Pst` does for `Bodu.Formats.Outlook.Pst`: it separates "how the bytes are laid out" from "what the workbook means", makes the wire layer testable and reusable on its own, and turns BIFF5 read support into a small delta rather than a fork.
+The strongest case for the codec is not new demand for BIFF5 or for authoring `.xls` files - both are niche in 2026 - but that the solution already contains a BIFF8 codec that is internal, BIFF8-only, and partially duplicated. `Bodu.Formats.Excel.Binary` carries four separate implementations of BIFF record framing, a hand-rolled BIFF8 record *writer* in its test project, and an explicit rejection of BIFF5 streams. Lifting the codec into its own package does for Excel what `Bodu.IO.Pst` does for `Bodu.Formats.Outlook.Pst`: it separates "how the bytes are laid out" from "what the workbook means", makes the wire layer testable and reusable on its own, and turns BIFF5 read support into a small delta rather than a fork.
 
 The brief's design principles are sound and match the repository's conventions almost everywhere. The recommendations below adjust four things: the package name and namespace, the writer's destination type, how the reader is resumed from a class-based consumer, and the depth of the initial typed-record catalogue.
 
@@ -42,10 +42,10 @@ BIFF5 today: `ExcelBinaryWorkbook` resolves a `Book` stream name (the BIFF5 conv
 | **Architectural consistency** | High | `Bodu.IO.Compound → Bodu.Formats.Excel.Binary` and `Bodu.IO.Pst → Bodu.Formats.Outlook.Pst` are the documented layering (`docs/guides/topics/binary-formats.md`). Excel is the one format package that owns its record substrate privately. `Bodu.IO.Biff` closes that gap and matches the "container-free record codec" the brief describes. |
 | **BIFF5 read support in the Excel reader** | Moderate | Legacy-archive and forensic use only; no evidence of user demand in the repository. But once the codec is version-aware the Excel-side delta is small (§6.3), so it is cheap to take. |
 | **A public writer** | Moderate | Immediate consumer: test fixture authoring for both packages (replacing `Biff8TestWorkbook`). Future consumer: an `.xls` authoring package over `Bodu.IO.Compound`'s existing writer. External demand for producing `.xls` in 2026 is low, so the writer should be justified by fixture use and round-trip testing, not by an authoring roadmap. |
-| **Inspection / transformation / forensics** | Low–moderate | The brief's "copy or rewrite streams preserving unknown records" scenario is real for the forensic workstream but has no current consumer. Raw `WriteRecord(id, payload)` gives it almost for free. |
-| **Risk: catalogue creep** | — | MS-XLS defines several hundred record types. The typed surface must be curated (§5.4) or the package never reaches "done". |
-| **Risk: BIFF5 test evidence** | — | The repository has no BIFF5 fixture (`test/Fixtures/sample-biff8.xls` only). BIFF5 vectors will be hand-authored from the MS-XLS record layouts and cross-checked by round trip; a genuine Excel 95 fixture should be sourced before the Excel reader advertises BIFF5. |
-| **Risk: shipped API** | — | `Bodu.Formats.Excel.Binary` is in release wave 2 (`bld/release-manifest.txt`) with package-validation baselines. The rework must be internal-only or additive on the Excel side; the exception contract in particular must be preserved (§6.4). |
+| **Inspection / transformation / forensics** | Low-moderate | The brief's "copy or rewrite streams preserving unknown records" scenario is real for the forensic workstream but has no current consumer. Raw `WriteRecord(id, payload)` gives it almost for free. |
+| **Risk: catalogue creep** | - | MS-XLS defines several hundred record types. The typed surface must be curated (§5.4) or the package never reaches "done". |
+| **Risk: BIFF5 test evidence** | - | The repository has no BIFF5 fixture (`test/Fixtures/sample-biff8.xls` only). BIFF5 vectors will be hand-authored from the MS-XLS record layouts and cross-checked by round trip; a genuine Excel 95 fixture should be sourced before the Excel reader advertises BIFF5. |
+| **Risk: shipped API** | - | `Bodu.Formats.Excel.Binary` is in release wave 2 (`bld/release-manifest.txt`) with package-validation baselines. The rework must be internal-only or additive on the Excel side; the exception contract in particular must be preserved (§6.4). |
 
 **Net:** proceed. Sequence the work so the consolidation lands first and pays for itself even if the later phases slip.
 
@@ -70,7 +70,7 @@ The brief proposes `new BiffWriter(Span<byte> destination, BiffVersion)`. Every 
 
 ### 4.4 Resumability: add `BiffReaderState`
 
-`ExcelWorksheetReader` is a public `sealed class` and therefore cannot hold a `ref struct` reader as a field — the reason it duplicates the framing loop today. `Utf8TomlReader` already solves this shape with `TomlReaderState` + `isFinalBlock`. Mirror it:
+`ExcelWorksheetReader` is a public `sealed class` and therefore cannot hold a `ref struct` reader as a field - the reason it duplicates the framing loop today. `Utf8TomlReader` already solves this shape with `TomlReaderState` + `isFinalBlock`. Mirror it:
 
 ```csharp
 public ref struct BiffReader
@@ -89,11 +89,11 @@ Constructing the struct is a handful of field copies and allocates nothing, so a
 
 ### 4.5 Version detection and explicit version
 
-`BiffVersion { Unknown = 0, Biff5, Biff8 }`. `Version` is `Unknown` until the first BOF is read, then fixed for the reader's lifetime; a sheet substream BOF must agree with the globals BOF or the reader throws `BiffFormatException`. `BiffReaderOptions.Version` lets a caller that already knows the version (a sheet substream read after the globals) pre-seed it, as the brief allows. BOF identifiers for BIFF2–4 (`0x0009`, `0x0209`, `0x0409`) are recognised and rejected with `BiffUnsupportedVersionException` so an old file fails as "unsupported", never as "malformed".
+`BiffVersion { Unknown = 0, Biff5, Biff8 }`. `Version` is `Unknown` until the first BOF is read, then fixed for the reader's lifetime; a sheet substream BOF must agree with the globals BOF or the reader throws `BiffFormatException`. `BiffReaderOptions.Version` lets a caller that already knows the version (a sheet substream read after the globals) pre-seed it, as the brief allows. BOF identifiers for BIFF2-4 (`0x0009`, `0x0209`, `0x0409`) are recognised and rejected with `BiffUnsupportedVersionException` so an old file fails as "unsupported", never as "malformed".
 
 ### 4.6 Code page as reader state
 
-The brief's "acceptable state" list (version, current record, continuation state) omits one thing BIFF5 needs: the active code page from the CODEPAGE record (`0x0042`), without which BIFF5 byte strings cannot be materialised. Treat it exactly like the version — a small scalar the reader records when it passes the record and exposes as `CodePage`. Materialisation uses `System.Text.Encoding.CodePages` (already a dependency of `Bodu.Formats.Outlook.Msg`/`.Pst`, so the provider registration pattern exists in-repo). BIFF8 ignores it except for the rare compressed-string edge cases the spec calls out.
+The brief's "acceptable state" list (version, current record, continuation state) omits one thing BIFF5 needs: the active code page from the CODEPAGE record (`0x0042`), without which BIFF5 byte strings cannot be materialised. Treat it exactly like the version - a small scalar the reader records when it passes the record and exposes as `CodePage`. Materialisation uses `System.Text.Encoding.CodePages` (already a dependency of `Bodu.Formats.Outlook.Msg`/`.Pst`, so the provider registration pattern exists in-repo). BIFF8 ignores it except for the rare compressed-string edge cases the spec calls out.
 
 ## 5. Proposed design
 
@@ -147,7 +147,7 @@ public ref struct BiffReader
 }
 ```
 
-Framing rules: a trailing fragment of 1–3 bytes and a payload that overruns the buffer both throw `BiffFormatException` (present behaviour). The reader tolerates any `ushort` declared length on input; the *writer* enforces the per-version maximum (8,224 bytes for BIFF8, 2,080 for BIFF5). With `isFinalBlock = false`, an incomplete trailing record returns `false` from `Read()` without consuming it, so the caller can supply more data.
+Framing rules: a trailing fragment of 1-3 bytes and a payload that overruns the buffer both throw `BiffFormatException` (present behaviour). The reader tolerates any `ushort` declared length on input; the *writer* enforces the per-version maximum (8,224 bytes for BIFF8, 2,080 for BIFF5). With `isFinalBlock = false`, an incomplete trailing record returns `false` from `Read()` without consuming it, so the caller can supply more data.
 
 Typed record structs are `public readonly record struct`s in the `Bodu.IO.Biff` namespace with a static `Read(ReadOnlySpan<byte>, BiffVersion)` used by the accessors and a `Write(IBufferWriter<byte>, BiffVersion)` used by the writer, so one layout definition serves both directions and the round-trip tests. Version differences live inside each struct (for example `BiffDimensionsRecord` reads 16-bit rows in BIFF5 and 32-bit rows in BIFF8; `BiffLabelRecord` reads a byte string in BIFF5 and a Unicode string in BIFF8).
 
@@ -175,7 +175,7 @@ public ref struct BiffSstReader        // created at an SST record: new BiffSstR
 }
 ```
 
-It carries a `ref BiffReader` field (C# 11 `ref` fields, available under the C# 14 toolchain) and advances the parent past each CONTINUE it consumes, so the parent's `BytesConsumed` stays truthful. A string whose characters straddle a CONTINUE boundary cannot be a single span; `Current` reports `IsFragmented`, and `GetString()` / `CopyTo` stitch across the boundary re-reading the option-flags byte per the BIFF8 rule — the logic already proven in `Biff8SharedStringTable.ReadCharacters`. That existing hardening (unique count bounded by available bytes, zero-length CONTINUE rejected, rich-run and extended-data skips bounded) transfers verbatim. Other continuable records (TXO, OBJ, NOTE) are left to `TryReadContinuation` and raw payloads in the first cut.
+It carries a `ref BiffReader` field (C# 11 `ref` fields, available under the C# 14 toolchain) and advances the parent past each CONTINUE it consumes, so the parent's `BytesConsumed` stays truthful. A string whose characters straddle a CONTINUE boundary cannot be a single span; `Current` reports `IsFragmented`, and `GetString()` / `CopyTo` stitch across the boundary re-reading the option-flags byte per the BIFF8 rule - the logic already proven in `Biff8SharedStringTable.ReadCharacters`. That existing hardening (unique count bounded by available bytes, zero-length CONTINUE rejected, rich-run and extended-data skips bounded) transfers verbatim. Other continuable records (TXO, OBJ, NOTE) are left to `TryReadContinuation` and raw payloads in the first cut.
 
 ### 5.4 Curated record catalogue
 
@@ -218,13 +218,13 @@ public ref struct BiffWriter
 }
 ```
 
-Version enforcement: a BIFF8-only record (SST, LABELSST) written under `Biff5` throws `InvalidOperationException` with a resource-backed message. Text written under `Biff5` is encoded with the writer's configured code page (`BiffWriterOptions.CodePage`, default 1252). The writer buffers a single record's payload in a stack or pooled scratch (max 8,228 bytes) so the length prefix is known before the header is emitted; it never buffers more than one record. Sequence validation is deliberately minimal (a BOF/EOF balance counter) — BIFF record ordering is a workbook concern, not a codec one.
+Version enforcement: a BIFF8-only record (SST, LABELSST) written under `Biff5` throws `InvalidOperationException` with a resource-backed message. Text written under `Biff5` is encoded with the writer's configured code page (`BiffWriterOptions.CodePage`, default 1252). The writer buffers a single record's payload in a stack or pooled scratch (max 8,228 bytes) so the length prefix is known before the header is emitted; it never buffers more than one record. Sequence validation is deliberately minimal (a BOF/EOF balance counter) - BIFF record ordering is a workbook concern, not a codec one.
 
 ### 5.6 Errors
 
-- `BiffFormatException : FormatException` — the bytes are not a valid BIFF stream or a known record is malformed.
-- `BiffUnsupportedVersionException : NotSupportedException` — a BIFF2/3/4 BOF, or a version-specific structure the codec does not implement.
-- `InvalidOperationException` — a typed accessor called on the wrong record, a writer misuse (BIFF8 record under BIFF5, payload over the maximum).
+- `BiffFormatException : FormatException` - the bytes are not a valid BIFF stream or a known record is malformed.
+- `BiffUnsupportedVersionException : NotSupportedException` - a BIFF2/3/4 BOF, or a version-specific structure the codec does not implement.
+- `InvalidOperationException` - a typed accessor called on the wrong record, a writer misuse (BIFF8 record under BIFF5, payload over the maximum).
 - An unknown record identifier is never an error.
 
 ## 6. Reworking `Bodu.Formats.Excel.Binary`
@@ -260,7 +260,7 @@ Once the codec is version-aware, the Excel-side delta is confined to `BiffWorkbo
 - DIMENSIONS: 10-byte record with 16-bit rows; handled by `BiffDimensionsRecord`.
 - RSTRING (`0x00D6`, rich-text label) is mapped as a text cell alongside LABEL.
 - No SST / LABELSST under BIFF5; `LabelSst` under BIFF5 is a format error.
-- `ExcelBinaryUnsupportedException` remains for BIFF2–4 and continues to carry the version in its message.
+- `ExcelBinaryUnsupportedException` remains for BIFF2-4 and continues to carry the version in its message.
 
 Publicly this is additive: the reader description, `docs/guides/excel/*`, and the package `Description` change from "BIFF8" to "BIFF5 and BIFF8", and `ExcelBinaryWorkbook.BiffVersion` is a new property. No existing member changes shape.
 
@@ -270,7 +270,7 @@ Publicly this is additive: the reader description, `docs/guides/excel/*`, and th
 
 ### 6.5 Test migration
 
-- `Biff8TestWorkbook` becomes a thin façade over `BiffWriter` (keeping `BuildWorkbookStream`'s two-pass `lbPlyPos` fix-up, which is a workbook concern) — so the Excel tests exercise the real writer, and a `Biff5` variant of the builder plus a `Book`-named stream gives the BIFF5 read tests their fixtures.
+- `Biff8TestWorkbook` becomes a thin façade over `BiffWriter` (keeping `BuildWorkbookStream`'s two-pass `lbPlyPos` fix-up, which is a workbook concern) - so the Excel tests exercise the real writer, and a `Biff5` variant of the builder plus a `Book`-named stream gives the BIFF5 read tests their fixtures.
 - `Biff8SharedStringTableTests` / `...HardeningTests` move to `Bodu.IO.Biff.Test` as `BiffSstReaderTests.*`.
 - `MalformedRecordKat` sweeps stay in Excel to pin the wrapper contract; equivalent sweeps against `BiffReader` directly are added in `Bodu.IO.Biff.Test` asserting `BiffFormatException`.
 - The `ExcelCellDecodeContractTests` vectors are unchanged (they test the `ExcelCell` mapping).
@@ -314,11 +314,11 @@ Known-answer rows are transcribed from the MS-XLS record layouts (§2.4) and, fo
 | **4. BIFF5** | BIFF5 rows for every typed record; `BiffByteString` code-page decode; Excel globals accept `0x0500`; BIFF5 fixture and tests; docs and package descriptions updated. | Needs a sourced Excel 95 file before the Excel reader claims support publicly. |
 | **5. Docs and samples** | `docs/docs/io-biff/index.md`, guides entry under *Binary Formats & I/O*, `docs/apidoc/Bodu.IO.Biff.md`, `samples/IO.Biff/`, CLAUDE.md rows, release-manifest wave entry. | Per `docs/reviews/docfx-coverage-audit-and-plan.md`'s navigation-parity requirement. |
 
-Rough sizing: phase 1 is ~25 source files and ~35 test files; phase 3 adds ~10 and ~15; phases 2 and 4 are mostly edits. Phases 1–2 are the must-have; 3–4 can follow independently.
+Rough sizing: phase 1 is ~25 source files and ~35 test files; phase 3 adds ~10 and ~15; phases 2 and 4 are mostly edits. Phases 1-2 are the must-have; 3-4 can follow independently.
 
 ## 9. Open items to confirm with the owner
 
-1. **Package name** — `Bodu.IO.Biff` (recommended, matches `IO.Compound` / `IO.Pst`) versus the brief's `Bodu.Biff`.
-2. **Exception contract for the Excel reader** — wrap `BiffFormatException` in `ExcelBinaryFormatException` (recommended, preserves the shipped contract) versus letting it propagate as the PST reader does.
-3. **BIFF5 fixture provenance** — whether a genuine Excel 95 workbook can be sourced for `test/Fixtures`; without one, BIFF5 support ships as "spec-conformant, round-trip-verified" rather than "verified against Excel output".
-4. **Release wave** — whether `Bodu.IO.Biff` joins wave 2 with the Excel package it underpins (so the Excel package's new dependency ships alongside it) or waits for a later wave.
+1. **Package name** - `Bodu.IO.Biff` (recommended, matches `IO.Compound` / `IO.Pst`) versus the brief's `Bodu.Biff`.
+2. **Exception contract for the Excel reader** - wrap `BiffFormatException` in `ExcelBinaryFormatException` (recommended, preserves the shipped contract) versus letting it propagate as the PST reader does.
+3. **BIFF5 fixture provenance** - whether a genuine Excel 95 workbook can be sourced for `test/Fixtures`; without one, BIFF5 support ships as "spec-conformant, round-trip-verified" rather than "verified against Excel output".
+4. **Release wave** - whether `Bodu.IO.Biff` joins wave 2 with the Excel package it underpins (so the Excel package's new dependency ships alongside it) or waits for a later wave.

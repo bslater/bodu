@@ -10,7 +10,7 @@ namespace Bodu.Numerics.Samples.Intervals.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="DiscreteInterval{T}" /> over the integers: because the domain is
-/// countable, an interval has a first and last member, an exact <c>Count</c>, and — crucially —
+/// countable, an interval has a first and last member, an exact <c>Count</c>, and - crucially -
 /// <em>adjacent</em> intervals with no gap between them merge into one, unlike the continuous
 /// <see cref="Interval{T}" />.
 /// </summary>

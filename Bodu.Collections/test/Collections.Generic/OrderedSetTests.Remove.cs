@@ -58,7 +58,7 @@ public partial class OrderedSetTests
     }
 
     // --------------------------------------------------------
-    // Remove — behaviour
+    // Remove - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -75,7 +75,7 @@ public partial class OrderedSetTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
     // --------------------------------------------------------
-    // Remove — argument validation
+    // Remove - argument validation
     // --------------------------------------------------------
 
     /// <summary>

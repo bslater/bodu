@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Acquisition fetches the bootstrap page, harvests the <c>_next</c> script chunks it references, and scans each for
-/// the credential. The credential is built inside a <c>btoa(...)</c> call adjacent to a <c>Basic </c> literal — for
+/// the credential. The credential is built inside a <c>btoa(...)</c> call adjacent to a <c>Basic </c> literal - for
 /// example <c>e.set("Authorization", `Basic ${btoa("user:secret")}`)</c>; the string literals passed to <c>btoa</c> are
 /// concatenated and base64-encoded to form the token. The first chunk that yields a credential wins. When no referenced
 /// chunk matches, the webpack runtime chunk's identifier-to-hash map is used to reconstruct lazily-loaded chunk URLs,
@@ -231,7 +231,7 @@ internal sealed partial class XeScrapingAuthTokenProvider
 
     /// <summary>
     /// Harvests the absolute <c>_next</c> script chunk URLs referenced by the bootstrap page, ordered so the
-    /// always-loaded <c>_app</c> entry chunk — where the credential lives — is scanned first.
+    /// always-loaded <c>_app</c> entry chunk - where the credential lives - is scanned first.
     /// </summary>
     /// <param name="html">The bootstrap page markup.</param>
     /// <param name="baseUri">The URL the referenced chunk paths are resolved against.</param>

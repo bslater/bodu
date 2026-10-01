@@ -20,8 +20,8 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// <value>The raw stored count, including expired entries that have not yet been purged.</value>
     /// <remarks>
     /// <para>
-    /// When time-based expiration is configured, this property deliberately reports the raw stored count — <em>including</em>
-    /// expired-but-unpurged entries — so it remains an O(1) read that never touches the clock. Expired entries are
+    /// When time-based expiration is configured, this property deliberately reports the raw stored count - <em>including</em>
+    /// expired-but-unpurged entries - so it remains an O(1) read that never touches the clock. Expired entries are
     /// invisible to <see cref="ContainsKey" />, <see cref="TryGetValue" />, the indexer getter, and enumeration, so
     /// <see cref="Count" /> may exceed the number of entries those members observe.
     /// </para>
@@ -215,8 +215,8 @@ public partial class EvictingDictionary<TKey, TValue> :
     /// <inheritdoc />
     /// <remarks>
     /// This is a pure read: it does not update recency or frequency metadata, count as a touch, or slide the expiration
-    /// deadline. When time-based expiration is configured, an expired entry still counts as absent — it is lazily
-    /// removed and <see langword="false" /> is returned — but a live hit leaves the entry's sliding deadline unchanged.
+    /// deadline. When time-based expiration is configured, an expired entry still counts as absent - it is lazily
+    /// removed and <see langword="false" /> is returned - but a live hit leaves the entry's sliding deadline unchanged.
     /// Use <see cref="TryGetValue" /> or the indexer getter for a read that slides the deadline under
     /// <see cref="EvictingDictionaryExpirationKind.Sliding" />.
     /// </remarks>

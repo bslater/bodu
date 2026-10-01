@@ -9,7 +9,7 @@ aggregates.
 
 Everything runs offline with fixed inputs. The descriptive scenarios run on a single thread; the
 parallel scenario mutates the collections from many threads but reports only aggregates that are
-invariant under scheduling, so the output is deterministic — byte-identical every run.
+invariant under scheduling, so the output is deterministic - byte-identical every run.
 
 ```bash
 dotnet run --project samples/Collections.Concurrent/Bodu.Collections.Concurrent.Samples.ThreadSafeCollections
@@ -21,7 +21,7 @@ NuGet consumers would add:
 dotnet add package Bodu.Collections.Concurrent
 ```
 
-## Scenario 1 — BoundedRingBuffer
+## Scenario 1 - BoundedRingBuffer
 
 **Intent.** Show `ConcurrentCircularBuffer<T>` as a fixed-capacity FIFO ring with two distinct
 overflow policies: reject-when-full (the standard `IProducerConsumerCollection<T>` contract that
@@ -68,10 +68,10 @@ snapshot:
 **APIs demonstrated.** `ConcurrentCircularBuffer<T>(int, bool)`, `IProducerConsumerCollection<T>.TryAdd` /
 `.TryTake`, `ConcurrentCircularBuffer<T>.Enqueue`, `.ItemEvicted`, `.ToArray`, `.Count`, `.Capacity`.
 
-## Scenario 2 — LockFreeSet
+## Scenario 2 - LockFreeSet
 
-**Intent.** Show `ConcurrentHashSet<T>`'s idempotent-add contract — `Add` returns whether the element
-was newly inserted, so it doubles as the type's try-add — together with membership, removal, and the
+**Intent.** Show `ConcurrentHashSet<T>`'s idempotent-add contract - `Add` returns whether the element
+was newly inserted, so it doubles as the type's try-add - together with membership, removal, and the
 in-place set-algebra operators.
 
 **What it does.** Adds two new elements (each `Add` returns `True`), re-adds a present element (returns
@@ -121,7 +121,7 @@ produce the expected sets, and all three predicates hold:
 `.UnionWith` / `.ExceptWith` / `.IntersectWith`, `.IsSupersetOf` / `.Overlaps` / `.SetEquals`, and the
 `ConcurrentHashSet<T>(IEnumerable<T>)` constructor.
 
-## Scenario 3 — SingleFlightCache
+## Scenario 3 - SingleFlightCache
 
 **Intent.** Show `ConcurrentEvictingDictionary<TKey, TValue>` as a bounded cache: the single-flight
 `GetOrAdd(key, factory)` that runs a value factory at most once per key, the first-in-first-out
@@ -129,10 +129,10 @@ eviction order under capacity pressure, and the `ItemEvicted` callback that fire
 displaced.
 
 **What it does.** Part 1 calls `GetOrAdd(42, factory)` five times against a capacity-8 FIFO cache with
-a counted factory — the load-bearing evidence that the factory runs once, not per call. Part 2 uses a
+a counted factory - the load-bearing evidence that the factory runs once, not per call. Part 2 uses a
 **capacity-1** cache: because the dictionary partitions its capacity across
 `min(concurrencyLevel, capacity)` lock-striped segments, capacity 1 guarantees a single segment, so the
-FIFO eviction sequence is exact — adding keys `1, 2, 3, 4` displaces `1, 2, 3` in order, leaving `4`
+FIFO eviction sequence is exact - adding keys `1, 2, 3, 4` displaces `1, 2, 3` in order, leaving `4`
 resident. Part 3 inserts 20 distinct keys into a capacity-8 cache and reports only the accounting
 invariant: every inserted key is either still resident or was evicted exactly once, so
 `survivors + evictions == inserted` holds no matter how keys route across segments, and the
@@ -177,10 +177,10 @@ split, which is why they are the assertions the scenario headlines.
 `EvictingDictionaryPolicy.FirstInFirstOut`, `.GetOrAdd(TKey, Func<TKey, TValue>)`, `.Add`, `.ItemEvicted`,
 `.ToArray`, `.Count`, `.EvictionCount`.
 
-## Scenario 4 — ParallelSafety
+## Scenario 4 - ParallelSafety
 
 **Intent.** Show that the concurrent collections stay correct under genuine parallelism, while keeping
-the sample deterministic by asserting and printing only order-independent aggregates — never per-item
+the sample deterministic by asserting and printing only order-independent aggregates - never per-item
 results, whose arrival order is nondeterministic.
 
 **What it does.** A 4-way `Parallel.For` adds `0..999` into a `ConcurrentHashSet<int>`; the scenario
@@ -233,8 +233,8 @@ Bodu.Collections.Concurrent.Samples.ThreadSafeCollections/
 
 ## Related
 
-- `Bodu.Collections.Concurrent` — the library under demonstration: `ConcurrentCircularBuffer<T>`
+- `Bodu.Collections.Concurrent` - the library under demonstration: `ConcurrentCircularBuffer<T>`
   (lock-free Vyukov MPMC ring), `ConcurrentHashSet<T>` (lock-free split-ordered set), and
   `ConcurrentEvictingDictionary<TKey, TValue>` (lock-striped bounded cache).
-- `Bodu.Collections` — the single-threaded counterparts (`CircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`,
+- `Bodu.Collections` - the single-threaded counterparts (`CircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`,
   and the wider specialized-collection catalogue).

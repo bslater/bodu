@@ -45,7 +45,7 @@ public interface IStreamCipher
     /// </summary>
     /// <value>The keystream block size, in bytes.</value>
     /// <remarks>
-    /// The block size is expressed in bytes — not bits — because stream ciphers operate on byte-granular keystream
+    /// The block size is expressed in bytes - not bits - because stream ciphers operate on byte-granular keystream
     /// segments rather than the bit-oriented block sizes reported by <see cref="IBlockCipher.BlockSize" />.
     /// </remarks>
     int BlockSize { get; }
@@ -60,7 +60,7 @@ public interface IStreamCipher
     /// Thrown if <paramref name="destination" /> is shorter than <see cref="BlockSize" />.
     /// </exception>
     /// <exception cref="System.Security.Cryptography.CryptographicException">
-    /// Thrown if the keystream is exhausted — for example, a fixed-width block counter would wrap and reuse earlier
+    /// Thrown if the keystream is exhausted - for example, a fixed-width block counter would wrap and reuse earlier
     /// keystream. Continuing past this point would compromise confidentiality.
     /// </exception>
     /// <remarks>

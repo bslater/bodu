@@ -13,7 +13,7 @@ namespace Bodu.Text.Filtering;
 /// <remarks>
 /// <para>
 /// Attach an implementation via <see cref="TextFilter.Observer" /> to see exactly which values matched, which were
-/// rejected, and by which pattern — for diagnostics, sampling, or audit logging. When no observer is attached the
+/// rejected, and by which pattern - for diagnostics, sampling, or audit logging. When no observer is attached the
 /// filter's evaluation path pays only a single null check.
 /// </para>
 /// <para>

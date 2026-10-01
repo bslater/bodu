@@ -10,7 +10,7 @@ namespace Bodu.IO.Compound.Samples.CompoundBasics;
 
 /// <summary>
 /// Entry point for the compound-file sample: the OLE2 / Compound File Binary (CFB) container via
-/// <c>Bodu.IO.Compound</c> — authoring a container with the staged builder API and reading it
+/// <c>Bodu.IO.Compound</c> - authoring a container with the staged builder API and reading it
 /// back, OLE property sets (the metadata legacy Office files carry), format detection and the
 /// v3/v4 version knob, and walking a real committed <c>.doc</c>'s storage tree. Everything runs
 /// offline against in-memory containers and the committed <c>Data/</c> fixtures.

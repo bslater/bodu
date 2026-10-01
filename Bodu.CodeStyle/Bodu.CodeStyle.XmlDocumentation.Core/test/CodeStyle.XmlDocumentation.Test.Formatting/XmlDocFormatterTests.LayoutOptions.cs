@@ -82,7 +82,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that, by default, an element name that is not in any layout set (here <c>&lt;note&gt;</c>)
-    /// flows inline and is left unchanged — the contrast case for the <see cref="XmlDocFormatOptions.BlockTags" />
+    /// flows inline and is left unchanged - the contrast case for the <see cref="XmlDocFormatOptions.BlockTags" />
     /// override above.
     /// </summary>
     [TestMethod]
@@ -117,7 +117,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that, by default (no never-split entry), an over-budget single-line <c>&lt;returns&gt;</c>
-    /// expands to a block — the contrast case for the never-split behavior above.
+    /// expands to a block - the contrast case for the never-split behavior above.
     /// </summary>
     [TestMethod]
     public void Format_WhenSingleLineTagOverBudgetAndWrappingAllowed_ShouldExpandToBlock()

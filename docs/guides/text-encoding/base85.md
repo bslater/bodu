@@ -5,7 +5,7 @@ title: Using Base85 (Ascii85, Z85, and Git)
 # Using Base85 (Ascii85, Z85, and Git)
 
 `Base85` packs four input bytes into a 32-bit unsigned integer, then divides by 85 four times to emit five output
-characters. The payload expansion is **25 %** — the smallest of any encoding the library ships, but at the cost
+characters. The payload expansion is **25 %** - the smallest of any encoding the library ships, but at the cost
 of a denser alphabet that includes ASCII punctuation.
 
 ```
@@ -44,9 +44,9 @@ byte[] back = Base85.Decode(a);
 
 | Variant | Alphabet | `z` shortcut | Partial groups | Input alignment |
 |---|---|---|---|---|
-| `Ascii85` (Adobe Tech Note 5045) | `!` (33) through `u` (117) — 85 contiguous ASCII characters | Yes — `z` represents 4 zero bytes | **Yes** — 1, 2, or 3-byte tails permitted | Any length |
-| `Z85` (RFC 32 — ZeroMQ) | `0-9 a-z A-Z .-:+=^!/*?&<>()[]{}@%$#` — shell-safe, no quote or backslash | No | **No** | **Multiple of 4 bytes** |
-| `GitCompact` (Git `base85.c`) | `0-9 A-Z a-z !#$%&()*+-;<=>?@^_` `` ` `` `{|}~` — Git binary-patch alphabet | No | **Yes** — compact 1, 2, or 3-byte tails | Any length |
+| `Ascii85` (Adobe Tech Note 5045) | `!` (33) through `u` (117) - 85 contiguous ASCII characters | Yes - `z` represents 4 zero bytes | **Yes** - 1, 2, or 3-byte tails permitted | Any length |
+| `Z85` (RFC 32 - ZeroMQ) | `0-9 a-z A-Z .-:+=^!/*?&<>()[]{}@%$#` - shell-safe, no quote or backslash | No | **No** | **Multiple of 4 bytes** |
+| `GitCompact` (Git `base85.c`) | `0-9 A-Z a-z !#$%&()*+-;<=>?@^_` `` ` `` `{|}~` - Git binary-patch alphabet | No | **Yes** - compact 1, 2, or 3-byte tails | Any length |
 
 ### When to pick each
 
@@ -54,16 +54,16 @@ byte[] back = Base85.Decode(a);
 |---|---|
 | `Ascii85` | PDF / PostScript embedded binary, Adobe Tech Note 5045-compatible streams, dense Base85 with shortcut |
 | `Z85` | ZeroMQ wire keys, shell-pasted binary keys (alphabet avoids quote / backslash / semicolon) |
-| `GitCompact` | The Git binary-patch Base85 alphabet — round-trip-safe compact output, or the exact padded line primitive |
+| `GitCompact` | The Git binary-patch Base85 alphabet - round-trip-safe compact output, or the exact padded line primitive |
 
 ## The `z` shortcut (Ascii85 only)
 
-Adobe Ascii85 reserves the character `z` (ASCII 122 — *outside* the `!`–`u` alphabet) as a shortcut for four
+Adobe Ascii85 reserves the character `z` (ASCII 122 - *outside* the `!`-`u` alphabet) as a shortcut for four
 consecutive zero bytes. The encoder emits it automatically:
 
 ```csharp
 byte[] zeros = new byte[8];
-string encoded = Base85.Encode(zeros);   // "zz" — two shortcuts, not 10 chars
+string encoded = Base85.Encode(zeros);   // "zz" - two shortcuts, not 10 chars
 
 byte[] back = Base85.Decode("zz");        // 8 zero bytes
 ```
@@ -71,10 +71,10 @@ byte[] back = Base85.Decode("zz");        // 8 zero bytes
 The shortcut is only valid at a **group boundary**. The decoder rejects `z` mid-group:
 
 ```csharp
-Base85.Decode("9jz");                     // FormatException — z after partial group
+Base85.Decode("9jz");                     // FormatException - z after partial group
 ```
 
-Z85 has no shortcut — all-zero input emits five `0` characters per group.
+Z85 has no shortcut - all-zero input emits five `0` characters per group.
 
 ## Partial groups (Ascii85 only)
 
@@ -97,11 +97,11 @@ Base85.Encode(new byte[] { 0x00, 0x00 });    // "!!!" (2 bytes → 3 chars)
 Base85.Encode(new byte[] { 0x00, 0x00, 0x00 }); // "!!!!" (3 bytes → 4 chars)
 ```
 
-A single trailing character (or six characters — full group plus one) is rejected:
+A single trailing character (or six characters - full group plus one) is rejected:
 
 ```csharp
-Base85.Decode("9");                          // FormatException — single trailing char invalid
-Base85.Decode("uuuuuu");                     // FormatException — full group + 1 invalid
+Base85.Decode("9");                          // FormatException - single trailing char invalid
+Base85.Decode("uuuuuu");                     // FormatException - full group + 1 invalid
 ```
 
 ## Z85 alignment requirement
@@ -111,31 +111,31 @@ length must be a multiple of five characters. Non-aligned input throws `Argument
 `FormatException` on decode.
 
 ```csharp
-Base85.Encode(new byte[5], Base85Variant.Z85);  // ArgumentException — 5 is not a multiple of 4
-Base85.Decode("HelloW", Base85Variant.Z85);     // FormatException — 6 is not a multiple of 5
+Base85.Encode(new byte[5], Base85Variant.Z85);  // ArgumentException - 5 is not a multiple of 4
+Base85.Decode("HelloW", Base85Variant.Z85);     // FormatException - 6 is not a multiple of 5
 ```
 
 ## Z85 shell-safe alphabet
 
-Z85's defining feature is its alphabet choice — it avoids characters that shells, JSON, or quoted strings would
+Z85's defining feature is its alphabet choice - it avoids characters that shells, JSON, or quoted strings would
 need to escape:
 
 ```
 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#
 ```
 
-Notice the absence of `"`, `'`, `\`, `;`, `|`, `` ` `` — exactly the characters that would require escaping in
+Notice the absence of `"`, `'`, `\`, `;`, `|`, `` ` `` - exactly the characters that would require escaping in
 shell commands or in JSON / XML string literals. This makes Z85 a popular choice for binary keys that need to be
 pasted into shell sessions or embedded directly in configuration files.
 
 ## Git Base85
 
 `Base85Variant.GitCompact` adds the alphabet Git uses for binary patch payloads (`base85.c`). It shares the Ascii85 partial-group
-behaviour but uses Git's alphabet, and it has **no** `z` shortcut and **no** Adobe `<~`/`~>` delimiters — those
+behaviour but uses Git's alphabet, and it has **no** `z` shortcut and **no** Adobe `<~`/`~>` delimiters - those
 characters (`<`, `=`, `>`, `~`) are ordinary Git digits.
 
 > [!NOTE]
-> `Base85Variant.GitCompact` implements the Git Base85 **alphabet** only. It does not parse Git binary patches — literal/delta
+> `Base85Variant.GitCompact` implements the Git Base85 **alphabet** only. It does not parse Git binary patches - literal/delta
 > sections, zlib payloads, line-length prefixes, and patch application are out of scope.
 
 ### Compact mode (default, round-trip safe)
@@ -157,7 +157,7 @@ Ascii85.
 ### Padded mode (exact Git line primitive)
 
 Git's binary-patch line format is **not** self-delimiting: it always emits five characters per group and carries the
-decoded byte count in the line prefix. The `EncodeGitPadded` / `DecodeGitPadded` helpers expose that primitive — the
+decoded byte count in the line prefix. The `EncodeGitPadded` / `DecodeGitPadded` helpers expose that primitive - the
 caller supplies the decoded length on decode. They are **not** registered as `IBinaryEncoding`, because the interface
 cannot carry that length.
 
@@ -190,8 +190,8 @@ the data span to the `GetEncodedLength(ReadOnlySpan<byte>, …)` overload, which
 
 ```csharp
 Base85.GetMaxEncodedLength(8, Base85Variant.Ascii85);                 // worst case (no shortcuts)
-Base85.GetEncodedLength(new byte[8], Base85Variant.Ascii85);          // exact — counts the two 'z' shortcuts
-Base85.GetEncodedLength(data, Base85Variant.Z85);                     // exact — Z85 has no shortcut, so equals the bound
+Base85.GetEncodedLength(new byte[8], Base85Variant.Ascii85);          // exact - counts the two 'z' shortcuts
+Base85.GetEncodedLength(data, Base85Variant.Z85);                     // exact - Z85 has no shortcut, so equals the bound
 ```
 
 Like Base58, Base85 is not streamable: the `EncodeToUtf8` / `DecodeFromUtf8` overloads exist for API consistency
@@ -245,12 +245,12 @@ string Stream(ReadOnlySpan<byte> binary) => "<~" + Base85.Encode(binary) + "~>";
 // PostScript convention: <~…~> delimits an Ascii85 region
 ```
 
-(The library does not add or strip the `<~`/`~>` delimiters automatically — they are a PostScript convention, not
+(The library does not add or strip the `<~`/`~>` delimiters automatically - they are a PostScript convention, not
 part of the encoding itself.)
 
 ## Where to go next
 
-- **[Base58 guide](base58.md)** — when the use case is blockchain or human-typed identifiers.
-- **[Base64 guide](base64.md)** — when familiarity beats density.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Base58 guide](base58.md)** - when the use case is blockchain or human-typed identifiers.
+- **[Base64 guide](base64.md)** - when familiarity beats density.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

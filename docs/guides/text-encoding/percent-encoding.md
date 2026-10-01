@@ -23,10 +23,10 @@ UriComponent  : a%2Fb%3Fc%3Dd                  ('/', '?', '=' are reserved → e
 ```csharp
 using Bodu.Text.Encoding;
 
-// URI component (default) — only unreserved characters pass through.
+// URI component (default) - only unreserved characters pass through.
 string component = PercentEncoding.EncodeString("a/b?c=d");                 // a%2Fb%3Fc%3Dd
 
-// Form field — space becomes '+'.
+// Form field - space becomes '+'.
 string field = PercentEncoding.EncodeString("a b+c", mode: PercentEncodingMode.FormUrlEncoded); // a+b%2Bc
 
 // Round-trip.
@@ -41,7 +41,7 @@ Like Quoted-Printable, percent-encoding is content-dependent and mode-driven, so
 | Mode | Passes through unescaped | Use for |
 |---|---|---|
 | `UriComponent` (default) | unreserved `ALPHA DIGIT - . _ ~` | A standalone value embedded in any URI component |
-| `PathSegment` | unreserved + sub-delims + `:` `@` (encodes `/` `?` `#`) | One path segment — encode each segment, then join with `/` |
+| `PathSegment` | unreserved + sub-delims + `:` `@` (encodes `/` `?` `#`) | One path segment - encode each segment, then join with `/` |
 | `Query` | unreserved + sub-delims + `:` `@` `/` `?` (encodes `#`) | A whole query component |
 | `FormUrlEncoded` | ASCII alphanumeric + `*` `-` `.` `_` | HTML form / query name-value data |
 
@@ -63,7 +63,7 @@ PercentEncoding.Encode("#"u8, PercentEncodingMode.Query);          // %23 (fragm
 | `~` | `%7E` (not in the form pass-through set) |
 | ASCII alphanumeric, `*`, `-`, `.`, `_` | Literal |
 
-`+` is treated as a space **only** in `FormUrlEncoded` mode — in every other mode it is a literal plus byte.
+`+` is treated as a space **only** in `FormUrlEncoded` mode - in every other mode it is a literal plus byte.
 
 ## Hex casing
 
@@ -100,15 +100,15 @@ PercentEncoding.DecodeString("%E2%80%BD");               // ‽
 PercentEncoding.DecodeString("%FF");                     // "�" (UTF-8 replacement fallback)
 ```
 
-The byte-oriented `Decode` / `TryDecode` reject non-ASCII source characters — Unicode belongs in `DecodeString`.
+The byte-oriented `Decode` / `TryDecode` reject non-ASCII source characters - Unicode belongs in `DecodeString`.
 
 ## Validation and sizing
 
 ```csharp
 PercentEncoding.IsValid("a%2Fb");                            // true
 PercentEncoding.IsValid("%GG");                              // false
-PercentEncoding.IsValid("a b");                              // false — literal space is not canonical
-PercentEncoding.IsValid("a/b?c", PercentEncodingMode.Query); // true — '/' and '?' are allowed in a query
+PercentEncoding.IsValid("a b");                              // false - literal space is not canonical
+PercentEncoding.IsValid("a/b?c", PercentEncodingMode.Query); // true - '/' and '?' are allowed in a query
 
 PercentEncoding.GetEncodedLength(value, mode);           // exact encoded length
 PercentEncoding.GetMaxEncodedLength(value.Length);       // worst case = length * 3
@@ -117,7 +117,7 @@ PercentEncoding.TryGetDecodedLength(text, out int n, mode); // exact decoded len
 
 `IsValid` checks **canonical** conformance for the mode: a literal character the mode would percent-encode (a space, or
 `#` in a URI component) makes it return `false`, while a percent-escaped octet such as `%2F` is always accepted.
-`Decode` is more lenient — it still recovers a literal reserved character — so `IsValid(x) == true` implies `Decode(x)`
+`Decode` is more lenient - it still recovers a literal reserved character - so `IsValid(x) == true` implies `Decode(x)`
 succeeds, but not the reverse. `TryGetDecodedLength` mirrors `Decode`, so it can size a buffer for any decodable input.
 
 ## Span path
@@ -127,11 +127,11 @@ char[] buffer = new char[PercentEncoding.GetMaxEncodedLength(value.Length)];
 bool ok = PercentEncoding.TryEncode(value, buffer, out int written, PercentEncodingMode.UriComponent);
 ```
 
-`TryEncode` / `TryDecode` never throw — they return `false` and write `0` for an undefined mode, malformed input, or an
+`TryEncode` / `TryDecode` never throw - they return `false` and write `0` for an undefined mode, malformed input, or an
 undersized destination.
 
 ## Where to go next
 
-- **[Quoted-Printable guide](quoted-printable.md)** — the MIME body `=HH` escape encoding.
-- **[Base64 guide](base64.md)** — the URL-safe variant when you need compact transport rather than readable URLs.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic.
+- **[Quoted-Printable guide](quoted-printable.md)** - the MIME body `=HH` escape encoding.
+- **[Base64 guide](base64.md)** - the URL-safe variant when you need compact transport rather than readable URLs.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic.

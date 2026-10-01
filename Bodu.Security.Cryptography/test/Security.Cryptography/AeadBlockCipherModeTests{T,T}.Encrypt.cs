@@ -30,7 +30,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
     /// <summary>
     /// Verifies that <see cref="IAeadBlockCipherModeTransform.Encrypt" /> returns exactly
-    /// <c>plaintext.Length + TagSize</c> — the ciphertext length plus the appended tag.
+    /// <c>plaintext.Length + TagSize</c> - the ciphertext length plus the appended tag.
     /// </summary>
     [TestMethod]
     public void Encrypt_OutputLengthShouldEqualPlaintextLengthPlusTagSize()
@@ -190,7 +190,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// must produce identical ciphertext and tag for the same plaintext.
     /// </summary>
     /// <remarks>
-    /// AEAD modes do not introduce internal randomness — determinism is required for
+    /// AEAD modes do not introduce internal randomness - determinism is required for
     /// correctness so that the receiver can reproduce the sender's tag exactly during
     /// verification.
     /// </remarks>
@@ -225,7 +225,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// ciphertext and tag as never calling <c>ProcessAssociatedData</c> at all.
     /// </summary>
     /// <remarks>
-    /// Each AEAD mode treats the absent-AAD and empty-AAD cases identically — the tag
+    /// Each AEAD mode treats the absent-AAD and empty-AAD cases identically - the tag
     /// computation reduces to the same value whether the caller explicitly supplies an empty
     /// span or omits the call entirely.
     /// </remarks>

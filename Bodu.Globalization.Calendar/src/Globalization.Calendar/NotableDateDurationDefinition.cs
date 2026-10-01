@@ -13,8 +13,8 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// A rule declares at most one duration definition. A <see langword="null" /> duration means the rule inherits the
-/// parent concept's <see cref="NotableDateDefinition.DefaultDurationDays" />. The two concrete kinds —
-/// <see cref="FixedDurationDefinition" /> and <see cref="CalculatedEndDateDurationDefinition" /> — are mutually
+/// parent concept's <see cref="NotableDateDefinition.DefaultDurationDays" />. The two concrete kinds -
+/// <see cref="FixedDurationDefinition" /> and <see cref="CalculatedEndDateDurationDefinition" /> - are mutually
 /// exclusive by construction, so a rule can never declare both a fixed day count and a calculated end date.
 /// </para>
 /// </remarks>

@@ -55,7 +55,7 @@ public partial class ConfigurationResolverTests
     }
 
     /// <summary>
-    /// Verifies that the resolver is a snapshot — mutating the document after resolution does not change a
+    /// Verifies that the resolver is a snapshot - mutating the document after resolution does not change a
     /// previously returned view.
     /// </summary>
     [TestMethod]

@@ -56,7 +56,7 @@ public partial class NumericExtensionsTests
         });
 
     // --------------------------------------------------
-    // byte[] — exception cases
+    // byte[] - exception cases
     // --------------------------------------------------
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class NumericExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="NumericExtensions.ReverseWords(byte[])" /> does not modify the original
-    /// array — the result is a distinct new allocation.
+    /// array - the result is a distinct new allocation.
     /// </summary>
     [TestMethod]
     public void ReverseWords_WhenByteArrayIsValid_ShouldNotMutateOriginalArray()
@@ -86,7 +86,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // byte[] — valid inputs; each adjacent pair is swapped
+    // byte[] - valid inputs; each adjacent pair is swapped
     // --------------------------------------------------
 
     /// <summary>
@@ -119,8 +119,8 @@ public partial class NumericExtensionsTests
     /// <see cref="ArgumentException" /> when the array length is not a positive multiple of two.
     /// </summary>
     [TestMethod]
-    [DataRow(new byte[] { 0x01 })]          // length 1 — odd
-    [DataRow(new byte[] { 0x01, 0x02, 0x03 })] // length 3 — odd
+    [DataRow(new byte[] { 0x01 })]          // length 1 - odd
+    [DataRow(new byte[] { 0x01, 0x02, 0x03 })] // length 3 - odd
     public void ReverseWords_WhenByteArrayLengthIsOdd_ShouldThrowExactly(byte[] bytes) =>
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -139,7 +139,7 @@ public partial class NumericExtensionsTests
         });
 
     // --------------------------------------------------
-    // Span<byte> — valid inputs; in-place swap
+    // Span<byte> - valid inputs; in-place swap
     // --------------------------------------------------
 
     /// <summary>
@@ -159,7 +159,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // Span<byte> — exception cases
+    // Span<byte> - exception cases
     // --------------------------------------------------
 
     /// <summary>
@@ -191,7 +191,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // uint — two 16-bit words; bytes swapped within each word, word order preserved
+    // uint - two 16-bit words; bytes swapped within each word, word order preserved
     // --------------------------------------------------
 
     /// <summary>
@@ -200,8 +200,8 @@ public partial class NumericExtensionsTests
     /// For example, <c>0xAABBCCDD</c> → <c>0xBBAADDCC</c>, not <c>0xDDCCBBAA</c>.
     /// </summary>
     [TestMethod]
-    [DataRow(0x00000000U, 0x00000000U, "all bits zero — identity")]
-    [DataRow(0xFFFFFFFFU, 0xFFFFFFFFU, "all bits set — identity")]
+    [DataRow(0x00000000U, 0x00000000U, "all bits zero - identity")]
+    [DataRow(0xFFFFFFFFU, 0xFFFFFFFFU, "all bits set - identity")]
     [DataRow(0x00FF00FFU, 0xFF00FF00U, "byte-swapped palindrome")]
     [DataRow(0xAABBCCDDU, 0xBBAADDCCU, "AABB|CCDD → BBAA|DDCC (word order preserved)")]
     [DataRow(0x12345678U, 0x34127856U, "1234|5678 → 3412|7856")]
@@ -236,7 +236,7 @@ public partial class NumericExtensionsTests
     }
 
     // --------------------------------------------------
-    // ulong — four 16-bit words; bytes swapped within each word, word order preserved
+    // ulong - four 16-bit words; bytes swapped within each word, word order preserved
     // --------------------------------------------------
 
     /// <summary>
@@ -245,11 +245,11 @@ public partial class NumericExtensionsTests
     /// For example, <c>0xAABBCCDD11223344</c> → <c>0xBBAADDCC22114433</c>.
     /// </summary>
     [TestMethod]
-    [DataRow(0x0000000000000000UL, 0x0000000000000000UL, "all bits zero — identity")]
-    [DataRow(0xFFFFFFFFFFFFFFFFUL, 0xFFFFFFFFFFFFFFFFUL, "all bits set — identity")]
+    [DataRow(0x0000000000000000UL, 0x0000000000000000UL, "all bits zero - identity")]
+    [DataRow(0xFFFFFFFFFFFFFFFFUL, 0xFFFFFFFFFFFFFFFFUL, "all bits set - identity")]
     [DataRow(0x00FF00FF00FF00FFUL, 0xFF00FF00FF00FF00UL, "byte-swapped palindrome")]
     [DataRow(0xAABBCCDD11223344UL, 0xBBAADDCC22114433UL, "AABB|CCDD|1122|3344 → BBAA|DDCC|2211|4433")]
-    [DataRow(0x0102030405060708UL, 0x0201040306050807UL, "sequential bytes — each pair swapped")]
+    [DataRow(0x0102030405060708UL, 0x0201040306050807UL, "sequential bytes - each pair swapped")]
     [DataRow(0x0001000200030004UL, 0x0100020003000400UL, "single bits in each word")]
     [DataRow(0xFF00FF00FF00FF00UL, 0x00FF00FF00FF00FFUL, "high bytes only in each word")]
     public void ReverseWords_WhenValueIsULong_ShouldSwapBytesWithinEachWord(ulong value, ulong expected, string description)
@@ -264,7 +264,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(expected, actual, description);
     }
     // --------------------------------------------------
-    // ushort — a single 16-bit word; result is identical to ReverseBytes(ushort)
+    // ushort - a single 16-bit word; result is identical to ReverseBytes(ushort)
     // --------------------------------------------------
 
     /// <summary>
@@ -272,9 +272,9 @@ public partial class NumericExtensionsTests
     /// input value, for a representative set of inputs.
     /// </summary>
     [TestMethod]
-    [DataRow((ushort)0x0000, (ushort)0x0000, "all bits zero — identity")]
-    [DataRow((ushort)0xFFFF, (ushort)0xFFFF, "all bits set — identity")]
-    [DataRow((ushort)0xAAAA, (ushort)0xAAAA, "byte-palindrome — identity")]
+    [DataRow((ushort)0x0000, (ushort)0x0000, "all bits zero - identity")]
+    [DataRow((ushort)0xFFFF, (ushort)0xFFFF, "all bits set - identity")]
+    [DataRow((ushort)0xAAAA, (ushort)0xAAAA, "byte-palindrome - identity")]
     [DataRow((ushort)0xAABB, (ushort)0xBBAA, "AABB → BBAA")]
     [DataRow((ushort)0x1234, (ushort)0x3412, "1234 → 3412")]
     [DataRow((ushort)0x0100, (ushort)0x0001, "single bit in high byte → low byte")]

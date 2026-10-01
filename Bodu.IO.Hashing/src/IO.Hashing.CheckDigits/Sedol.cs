@@ -13,12 +13,12 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// SEDOL identifiers comprise six body characters followed by a single numeric check digit. Body characters are drawn
-/// from the decimal digits and the uppercase Latin consonants — vowels (<c>A</c>, <c>E</c>, <c>I</c>, <c>O</c>,
+/// from the decimal digits and the uppercase Latin consonants - vowels (<c>A</c>, <c>E</c>, <c>I</c>, <c>O</c>,
 /// <c>U</c>) are <b>not</b> permitted in any body position and will cause input-validation exceptions.
 /// </para>
 /// <para>
 /// The weight pattern <c>{1, 3, 1, 7, 3, 9}</c> is applied from left to right across the six body characters; each
-/// character's numeric value (digits: <c>0</c>–<c>9</c>; letters: <c>A</c>=10 … <c>Z</c>=35) is multiplied by its
+/// character's numeric value (digits: <c>0</c>-<c>9</c>; letters: <c>A</c>=10 … <c>Z</c>=35) is multiplied by its
 /// position weight. The check digit is chosen so the weighted sum is a multiple of ten.
 /// </para>
 /// <para>
@@ -106,7 +106,7 @@ public sealed class Sedol
     /// </summary>
     /// <param name="valueIncludingCheck">The complete seven-character SEDOL.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under SEDOL; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under SEDOL; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="valueIncludingCheck" /> is empty, the length is wrong, any body
     /// character is a vowel or non-alphanumeric, or the check character is not a decimal digit.
     /// </returns>

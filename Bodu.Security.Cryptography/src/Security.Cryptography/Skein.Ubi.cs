@@ -14,7 +14,7 @@ public abstract partial class Skein
 {
     /// <summary>
     /// Returns the cached initial chaining value derived from the configuration block (and the optional KEY UBI phase
-    /// when a key is set). Exposed for Skein 1.3 Appendix B verification — the published IVs for the canonical unkeyed
+    /// when a key is set). Exposed for Skein 1.3 Appendix B verification - the published IVs for the canonical unkeyed
     /// hash configurations must equal the words returned here when the algorithm is constructed with no key and the
     /// matching output size.
     /// </summary>
@@ -44,7 +44,7 @@ public abstract partial class Skein
     /// <param name="final">Whether this is the final UBI call in the current stage. Sets bit 127 of the tweak.</param>
     /// <param name="position">
     /// The cumulative number of real (unpadded) bytes processed by this stage through and including the current block.
-    /// Stored in the lower 64 bits of the tweak — the upper 32 bits of the specification's 96-bit position field are
+    /// Stored in the lower 64 bits of the tweak - the upper 32 bits of the specification's 96-bit position field are
     /// always zero for the sequential hashing profile implemented here.
     /// </param>
     /// <remarks>
@@ -199,7 +199,7 @@ public abstract partial class Skein
             _pendingBytes = 0;
         }
 
-        // Pending is empty here unless source exactly fits alongside the existing pending tail — handled above.
+        // Pending is empty here unless source exactly fits alongside the existing pending tail - handled above.
         // Stream full blocks, always keeping at least one block of lookahead deferred in the pending buffer.
         while (source.Length > blockSize)
         {

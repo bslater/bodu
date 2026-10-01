@@ -9,7 +9,7 @@ using Bodu.Security.Cryptography.Samples.CipherModesAndPadding.Scenarios;
 namespace Bodu.Security.Cryptography.Samples.CipherModesAndPadding;
 
 /// <summary>
-/// Entry point for the cipher-modes-and-padding sample: the layer beneath <c>SymmetricAlgorithm.Mode</c> — the
+/// Entry point for the cipher-modes-and-padding sample: the layer beneath <c>SymmetricAlgorithm.Mode</c> - the
 /// <c>IPaddingStrategy</c> implementations as standalone objects, the confidentiality mode transforms driven directly
 /// over an <c>IBlockCipher</c>, and the specialist modes (ciphertext stealing, XTS, and the nonce-misuse-resistant
 /// authenticated modes). Keys and IVs are fixed so every line of output is reproducible.

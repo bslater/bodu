@@ -1,12 +1,12 @@
 ---
-title: Bodu.Text.Yaml — Introduction
+title: Bodu.Text.Yaml - Introduction
 ---
 
 # Bodu.Text.Yaml
 
 ![Bodu.Text.Yaml](../../../images/hero-yaml.svg)
 
-**Bodu.Text.Yaml** is a library for [YAML](https://yaml.org/), the indentation-structured document format. It is the third member of the [Bodu serializer family](../index.md), alongside [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Bencode](../bencode/index.md). It keeps the family architecture — a static serializer façade, a mutable DOM, a read-only DOM, and a low-level reader/writer pair — and the shared `Bodu.Text.Serialization` attribute family, naming policies, serialization callbacks, converter attributes, and converter factories. On top of that, YAML adds its own presentation richness. This page covers what is *specific* to YAML.
+**Bodu.Text.Yaml** is a library for [YAML](https://yaml.org/), the indentation-structured document format. It is the third member of the [Bodu serializer family](../index.md), alongside [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Bencode](../bencode/index.md). It keeps the family architecture - a static serializer façade, a mutable DOM, a read-only DOM, and a low-level reader/writer pair - and the shared `Bodu.Text.Serialization` attribute family, naming policies, serialization callbacks, converter attributes, and converter factories. On top of that, YAML adds its own presentation richness. This page covers what is *specific* to YAML.
 
 ## The format in one paragraph
 
@@ -14,7 +14,7 @@ YAML is a text format built around indentation rather than brackets: a mapping i
 
 ## The node and value model
 
-Under the surface presentation, every YAML document is a tree of three node shapes — a **mapping** (key/value pairs), a **sequence** (an ordered list), and a **scalar** (a single value). The scalar resolves to one of the core kinds the profile recognises, surfaced as <xref:Bodu.Text.Yaml.YamlValueKind>:
+Under the surface presentation, every YAML document is a tree of three node shapes - a **mapping** (key/value pairs), a **sequence** (an ordered list), and a **scalar** (a single value). The scalar resolves to one of the core kinds the profile recognises, surfaced as <xref:Bodu.Text.Yaml.YamlValueKind>:
 
 | Kind | YAML | Example |
 |---|---|---|
@@ -32,13 +32,13 @@ The same kinds drive the token stream (<xref:Bodu.Text.Yaml.YamlTokenType>) that
 
 YAML carries presentation information a JSON-style tree does not. Bodu.Text.Yaml resolves it on read and chooses it on write rather than exposing each variant as a distinct value kind:
 
-- **Scalar styles** — plain, single- and double-quoted, literal (`|`) and folded (`>`) block scalars. The five presentations plus the `Any` "writer chooses" sentinel are enumerated by <xref:Bodu.Text.Yaml.YamlScalarStyle>; <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle> records the original style of a parsed scalar (and reports `Any` for a non-scalar node). Block scalars carry a chomping indicator — `Clip` / `Strip` / `Keep` — modelled by <xref:Bodu.Text.Yaml.YamlBlockChomping>.
-- **Block vs. flow** — the writer emits block-style collections for readability, falling back to flow `[]` / `{}` only for empty containers, and writes a scalar plain unless plain rendering would change its meaning, in which case it double-quotes and escapes. There is no public scalar-style control on the write path.
-- **Anchors and aliases** — `&a` defines an anchor, `*a` references it; the reader resolves aliases transparently into the composed tree (they must be unique and acyclic, or a <xref:Bodu.Text.Yaml.YamlFormatException> is raised).
+- **Scalar styles** - plain, single- and double-quoted, literal (`|`) and folded (`>`) block scalars. The five presentations plus the `Any` "writer chooses" sentinel are enumerated by <xref:Bodu.Text.Yaml.YamlScalarStyle>; <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle> records the original style of a parsed scalar (and reports `Any` for a non-scalar node). Block scalars carry a chomping indicator - `Clip` / `Strip` / `Keep` - modelled by <xref:Bodu.Text.Yaml.YamlBlockChomping>.
+- **Block vs. flow** - the writer emits block-style collections for readability, falling back to flow `[]` / `{}` only for empty containers, and writes a scalar plain unless plain rendering would change its meaning, in which case it double-quotes and escapes. There is no public scalar-style control on the write path.
+- **Anchors and aliases** - `&a` defines an anchor, `*a` references it; the reader resolves aliases transparently into the composed tree (they must be unique and acyclic, or a <xref:Bodu.Text.Yaml.YamlFormatException> is raised).
 
 ## Spec versions: 1.2 core, opt-in 1.1
 
-Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` are Booleans — this sidesteps the well-known "Norway problem", in which YAML 1.1 silently reads unquoted `no` as `false`. Setting <xref:Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion> to <xref:Bodu.Text.Yaml.YamlSpecVersion.V1_1> additionally accepts the `yes` / `no` / `on` / `off` / `y` / `n` Boolean spellings, leading-zero octal integers, and sexagesimal (base-60) numbers, and enables YAML 1.1 **merge keys** (`<<`) through <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>. The version controls only *implicit scalar typing*; anchors, aliases, and the hex (`0x`) and `0o`-octal integer forms are recognised under both. A `%YAML` directive overrides the typing per document.
+Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` are Booleans - this sidesteps the well-known "Norway problem", in which YAML 1.1 silently reads unquoted `no` as `false`. Setting <xref:Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion> to <xref:Bodu.Text.Yaml.YamlSpecVersion.V1_1> additionally accepts the `yes` / `no` / `on` / `off` / `y` / `n` Boolean spellings, leading-zero octal integers, and sexagesimal (base-60) numbers, and enables YAML 1.1 **merge keys** (`<<`) through <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>. The version controls only *implicit scalar typing*; anchors, aliases, and the hex (`0x`) and `0o`-octal integer forms are recognised under both. A `%YAML` directive overrides the typing per document.
 
 ## Multi-document streams
 
@@ -57,7 +57,7 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 | <xref:Bodu.Text.Serialization.NamingPolicy> | `CamelCase`, `SnakeCaseLower` / `SnakeCaseUpper`, `KebabCaseLower` / `KebabCaseUpper`. |
 | <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> / <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> | Base classes for a custom per-type converter (reading through the <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, writing through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>) and for a factory serving a family of types. |
 | <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` / `YamlNumberEnumConverter<TEnum>` | Public enum converters: member-name strings with an optional naming policy, or the underlying numeric value. |
-| <xref:Bodu.Text.Yaml.Nodes.YamlNode> | Mutable DOM — `Parse`, index, mutate, write back with `ToYamlString()`. |
+| <xref:Bodu.Text.Yaml.Nodes.YamlNode> | Mutable DOM - `Parse`, index, mutate, write back with `ToYamlString()`. |
 | <xref:Bodu.Text.Yaml.Document.YamlDocument> | Read-only, low-allocation DOM walked through `RootElement`; `ParseAllDocuments` for multi-document streams. |
 | <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> / <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> | Forward-only `ref struct` token machines. The reader is **buffered** (it parses into an in-memory node store, then `Read()` walks it; `ValueTextEquals` compares keys allocation-free); the writer emits block-style YAML and enforces a well-formed call sequence. |
 | <xref:Bodu.Text.Yaml.YamlFormatException> / <xref:Bodu.Text.Yaml.YamlSerializationException> | Malformed input (line/column/offset) vs a value that cannot bind. |
@@ -77,10 +77,10 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the serializer, the converter model, the two DOMs, and the reader/writer seam, with the full value-mapping table.
-- **[Getting started](getting-started.md)** — install and the first round trip.
-- **[Using YAML](../../../guides/serialization/yaml/using.md)** — worked patterns: type mapping, spec-version selection, both DOMs, and multi-document streams.
-- **[Writing converters](../../../guides/serialization/yaml/converters.md)** — custom shapes with `YamlConverter<T>`.
-- **[Bodu serializers introduction](../index.md)** — the family parent: the shared tiers and how to choose a format. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) introductions cover the twin libraries.
-- **[Text & Serialization topic](../../topics/text-and-serialization.md)** — how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.
-- **API reference** — <xref:Bodu.Text.Yaml>.
+- **[Core concepts](concepts.md)** - the serializer, the converter model, the two DOMs, and the reader/writer seam, with the full value-mapping table.
+- **[Getting started](getting-started.md)** - install and the first round trip.
+- **[Using YAML](../../../guides/serialization/yaml/using.md)** - worked patterns: type mapping, spec-version selection, both DOMs, and multi-document streams.
+- **[Writing converters](../../../guides/serialization/yaml/converters.md)** - custom shapes with `YamlConverter<T>`.
+- **[Bodu serializers introduction](../index.md)** - the family parent: the shared tiers and how to choose a format. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) introductions cover the twin libraries.
+- **[Text & Serialization topic](../../topics/text-and-serialization.md)** - how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.
+- **API reference** - <xref:Bodu.Text.Yaml>.

@@ -27,7 +27,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 /// <remarks>
 /// <para>
 /// The rule fires when all three conditions hold: (1) the element is <c>&lt;typeparam&gt;</c>; (2) the rendered source
-/// line — leading indent, <c>///</c> prefix, start tag, content, end tag — exceeds
+/// line - leading indent, <c>///</c> prefix, start tag, content, end tag - exceeds
 /// <see cref="XmlDocFormatOptions.MaxLineLength" />; (3) the content contains at least one period-space boundary where
 /// splitting the first sentence would bring the line under budget. The third condition guarantees the companion code
 /// fix can always succeed when the diagnostic fires.
@@ -95,7 +95,7 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzer : DiagnosticAnal
         XmlDocFormatOptions options = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(compilationOptions, treeOptions);
         var budget = options.MaxLineLength;
 
-        // Measure the canonical single-line rendering — the form BODU1011 would reflow the element to — rather
+        // Measure the canonical single-line rendering - the form BODU1011 would reflow the element to - rather
         // than the raw source span. This avoids over-estimating a multi-line-authored element and re-firing
         // after the formatter has joined it onto one line.
         var canonicalContent = XmlDocProseText.Canonicalize(GetContentText(element));

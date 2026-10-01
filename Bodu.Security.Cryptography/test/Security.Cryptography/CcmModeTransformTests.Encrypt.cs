@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class CcmModeTransformTests
 {
     /// <summary>
-    /// Verifies that the ciphertext and tag match the platform's <see cref="AesCcm" /> — an independent implementation
-    /// — for AES-128 and AES-256, across message lengths that fit in one run of counters, straddle one, and span
+    /// Verifies that the ciphertext and tag match the platform's <see cref="AesCcm" /> - an independent implementation
+    /// - for AES-128 and AES-256, across message lengths that fit in one run of counters, straddle one, and span
     /// several, with associated data of every alignment.
     /// </summary>
     [TestMethod]

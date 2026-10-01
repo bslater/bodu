@@ -22,7 +22,7 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fraction{T}.FromDecimal" /> produces the exact <em>decimal</em> rational value — so a
+    /// Verifies that <see cref="Fraction{T}.FromDecimal" /> produces the exact <em>decimal</em> rational value - so a
     /// human-decimal such as <c>0.1m</c> becomes exactly <c>1/10</c>, unlike the binary <see cref="double" /> path.
     /// </summary>
     [TestMethod]
@@ -51,7 +51,7 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fraction{T}.FromDouble" /> captures the <em>exact IEEE 754 binary</em> value — so
+    /// Verifies that <see cref="Fraction{T}.FromDouble" /> captures the <em>exact IEEE 754 binary</em> value - so
     /// <c>0.1d</c> (which is not exactly one tenth in binary) is <em>not</em> <c>1/10</c>, yet its best rational
     /// approximation within a denominator of ten recovers <c>1/10</c>. This locks the exact-binary contract and its
     /// contrast with <see cref="Fraction{T}.FromDecimal" />.
@@ -67,7 +67,7 @@ public partial class FractionTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fraction{T}.FromDouble" /> maps negative zero to the canonical zero — the fraction model
+    /// Verifies that <see cref="Fraction{T}.FromDouble" /> maps negative zero to the canonical zero - the fraction model
     /// has a single zero and does not carry a sign on it.
     /// </summary>
     [TestMethod]

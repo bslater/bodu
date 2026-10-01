@@ -10,14 +10,14 @@ namespace Bodu.Collections.Samples.ProbabilisticSketches.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="CountMinSketch{T}" />: a sublinear frequency estimator that counts a stream of
-/// elements in fixed memory. Its central guarantee is one-sided — an estimate <em>never underestimates</em>
+/// elements in fixed memory. Its central guarantee is one-sided - an estimate <em>never underestimates</em>
 /// the true count, and only ever overestimates when hash collisions add another element's mass.
 /// </summary>
 /// <remarks>
 /// The one-sidedness is what makes the structure usable. Each element increments one counter per row, and an
 /// estimate is the <em>minimum</em> across those rows: a counter can only have been inflated by some other element
 /// sharing it, never deflated, so taking the smallest discards the most-collided rows. An estimate is therefore a
-/// true upper bound — safe for "is this above a threshold?", never for "is this below one".
+/// true upper bound - safe for "is this above a threshold?", never for "is this below one".
 /// </remarks>
 public static class FrequencySketch
 {

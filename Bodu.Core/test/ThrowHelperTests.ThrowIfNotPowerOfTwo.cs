@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for accepted positive powers of two.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for accepted positive powers of two.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="value">The value passed to the guard.</param>
@@ -63,7 +63,7 @@ public partial class ThrowHelperTests
     /// arguments, exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
     /// </summary>
     [TestMethod]
-    [DataRow(4294967296L)]  // 2^32 — valid power of two, exceeds int range
+    [DataRow(4294967296L)]  // 2^32 - valid power of two, exceeds int range
     [DataRow(1099511627776L)] // 2^40
     public void ThrowIfNotPowerOfTwo_WhenValueIsLongPowerOfTwo_ShouldNotThrow(long value) => ThrowHelper.ThrowIfNotPowerOfTwo(value);
 

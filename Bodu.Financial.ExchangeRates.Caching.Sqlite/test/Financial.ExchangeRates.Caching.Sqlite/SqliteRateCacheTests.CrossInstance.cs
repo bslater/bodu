@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 
 /// <summary>
-/// Verifies that two independent <see cref="SqliteRateCache" /> instances sharing one database file — the
-/// cross-process case, where no in-process per-pair lock is shared — never corrupt the store: SQLite's own locking and
+/// Verifies that two independent <see cref="SqliteRateCache" /> instances sharing one database file - the
+/// cross-process case, where no in-process per-pair lock is shared - never corrupt the store: SQLite's own locking and
 /// the per-write transaction keep each pair's state internally consistent, so a reader never observes coverage without
 /// its rows.
 /// </summary>
@@ -46,7 +46,7 @@ public sealed partial class SqliteRateCacheTests
         await Task.WhenAll(writes);
 
         // The first uncontended write establishes the row and its coverage; no write removes them, so the final state is
-        // exactly one row whose rate is one writer's, with the window covered — never a torn coverage-without-rows state.
+        // exactly one row whose rate is one writer's, with the window covered - never a torn coverage-without-rows state.
         IReadOnlyList<CachedRate> rows = cacheA.GetRates(Pair, Duration, now);
         DateRangeCoverage coverage = cacheA.GetCoverage(Pair, Duration, now);
 

@@ -16,7 +16,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// <remarks>
 /// Both types exist to avoid a cost that is invisible until it is not. A table stores only the cells that exist,
 /// so a sparse grid costs what it holds rather than rows × columns; a segmented buffer never copies what it
-/// already holds, so appending stays O(1) with no doubling pause and no large-object-heap churn — at the price of
+/// already holds, so appending stays O(1) with no doubling pause and no large-object-heap churn - at the price of
 /// a two-step index and no contiguous span.
 /// </remarks>
 public static class TableAndSegments

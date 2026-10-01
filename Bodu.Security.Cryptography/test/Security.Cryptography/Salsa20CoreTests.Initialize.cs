@@ -10,7 +10,7 @@ public sealed partial class Salsa20CoreTests
 {
     /// <summary>
     /// Verifies that a 256-bit key and a nonce seed the state the specification lays out: the constant on the diagonal,
-    /// the key halves in words 1–4 and 11–14, the nonce in words 6 and 7, and a zero counter in words 8 and 9.
+    /// the key halves in words 1-4 and 11-14, the nonce in words 6 and 7, and a zero counter in words 8 and 9.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenKeyIs256Bits_ShouldLayOutTheState()

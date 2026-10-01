@@ -17,8 +17,8 @@ namespace Bodu.Security.Cryptography;
 /// <param name="LeafIndex">The zero-based index of the leaf the path proves.</param>
 /// <param name="Path">The expected path steps, lowercase hex, leaf-upward.</param>
 /// <remarks>
-/// A bespoke record rather than <see cref="ValidKat{TInput,TExpected}" /> because the input is a pair — tree size and
-/// leaf index — that the generic's single <c>Input</c> cannot carry without a tuple that reads worse than this.
+/// A bespoke record rather than <see cref="ValidKat{TInput,TExpected}" /> because the input is a pair - tree size and
+/// leaf index - that the generic's single <c>Input</c> cannot carry without a tuple that reads worse than this.
 /// </remarks>
 public sealed record MerkleInclusionKat(
     string Name,

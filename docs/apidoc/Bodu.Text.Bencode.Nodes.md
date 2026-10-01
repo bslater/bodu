@@ -10,11 +10,11 @@ uid: Bodu.Text.Bencode.Nodes
 
 ## Key types
 
-- <xref:Bodu.Text.Bencode.Nodes.BencodeNode> — abstract base: `Parse`, `AsObject` / `AsArray` / `AsValue`, `GetValue<T>`, `GetValueKind`, `WriteTo`, `ToByteArray`, `DeepEquals`, and the implicit conversions from `string`, integers, and `byte[]`.
-- <xref:Bodu.Text.Bencode.Nodes.BencodeObject> — a dictionary node keyed by string, with `Add` / `Remove` / `TryGetValue` and an indexer.
-- <xref:Bodu.Text.Bencode.Nodes.BencodeArray> — a list node implementing `IList<BencodeNode?>`.
-- <xref:Bodu.Text.Bencode.Nodes.BencodeValue> — an integer or byte-string leaf, created via `Create` and read via `GetValue<T>` / `TryGetValue<T>`.
-- <xref:Bodu.Text.Bencode.Nodes.BencodeNodeOptions> — parsing options for `Parse`.
+- <xref:Bodu.Text.Bencode.Nodes.BencodeNode> - abstract base: `Parse`, `AsObject` / `AsArray` / `AsValue`, `GetValue<T>`, `GetValueKind`, `WriteTo`, `ToByteArray`, `DeepEquals`, and the implicit conversions from `string`, integers, and `byte[]`.
+- <xref:Bodu.Text.Bencode.Nodes.BencodeObject> - a dictionary node keyed by string, with `Add` / `Remove` / `TryGetValue` and an indexer.
+- <xref:Bodu.Text.Bencode.Nodes.BencodeArray> - a list node implementing `IList<BencodeNode?>`.
+- <xref:Bodu.Text.Bencode.Nodes.BencodeValue> - an integer or byte-string leaf, created via `Create` and read via `GetValue<T>` / `TryGetValue<T>`.
+- <xref:Bodu.Text.Bencode.Nodes.BencodeNodeOptions> - parsing options for `Parse`.
 
 ## Example
 
@@ -32,4 +32,4 @@ byte[] back = root.ToByteArray();    // keys re-emitted in canonical order
 
 - **Canonical on write.** Insertion order is kept in memory, but `WriteTo` / `ToByteArray` always emit dictionary keys in bytewise order.
 - **Parent tracking.** A node belongs to at most one parent; adding an attached node elsewhere throws <xref:System.InvalidOperationException>.
-- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 7 — Use a document model instead of a type).
+- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 7 - Use a document model instead of a type).

@@ -228,8 +228,8 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
-    /// Gets the corpus distilled from defects reported against other RFC 5545 implementations — python-dateutil,
-    /// rrule.js, ical4j, ical.net, ical.js, libical, lib-recur, and ice_cube — with the reference occurrences
+    /// Gets the corpus distilled from defects reported against other RFC 5545 implementations - python-dateutil,
+    /// rrule.js, ical4j, ical.net, ical.js, libical, lib-recur, and ice_cube - with the reference occurrences
     /// confirmed against python-dateutil 2.9.0.
     /// </summary>
     /// <value>The corpus rows.</value>
@@ -251,7 +251,7 @@ public partial class RecurrenceRuleTests
                 new("ordinal BYDAY distinct in a 5-Monday month", "FREQ=MONTHLY;BYDAY=1MO,-4MO;COUNT=6", D(2025, 9, 1), 6,
                     [D(2025, 9, 1), D(2025, 9, 8), D(2025, 10, 6), D(2025, 11, 3), D(2025, 12, 1), D(2025, 12, 8)]),
 
-                // RFC 5545 Note 1: BYDAY limits rather than expands when BYMONTHDAY is present — and the ordinal
+                // RFC 5545 Note 1: BYDAY limits rather than expands when BYMONTHDAY is present - and the ordinal
                 // must still be honoured while limiting (ical.net#782).
                 new("ordinal BYDAY limits alongside BYMONTHDAY", "FREQ=MONTHLY;BYMONTHDAY=1,8;BYDAY=1MO,2TU;COUNT=3", D(2026, 6, 1), 3,
                     [D(2026, 6, 1), D(2026, 9, 8), D(2026, 12, 8)]),

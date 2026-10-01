@@ -311,7 +311,7 @@ internal static class Program
         builder.Append("/// ISO 4217 numeric code <c>").Append(currency.Numeric.ToString(CultureInfo.InvariantCulture)).Append("</c>; minor-unit precision <c>").Append(currency.MinorUnits.ToString(CultureInfo.InvariantCulture)).AppendLine("</c>.");
         if (currency.IsHistoric)
         {
-            builder.Append("/// Historic — demonetized");
+            builder.Append("/// Historic - demonetized");
             if (!string.IsNullOrEmpty(currency.DemonetizedOn))
                 builder.Append(" on ").Append(currency.DemonetizedOn);
             if (!string.IsNullOrEmpty(currency.SuccessorIsoCode))
@@ -357,7 +357,7 @@ internal static class Program
             builder.AppendLine("    /// <summary>");
             builder.AppendLine("    /// Gets a value indicating that the currency has been demonetized.");
             builder.AppendLine("    /// </summary>");
-            builder.AppendLine("    /// <value><see langword=\"true\" /> — this is a historic currency.</value>");
+            builder.AppendLine("    /// <value><see langword=\"true\" /> - this is a historic currency.</value>");
             builder.AppendLine("    public static bool IsHistoric => true;");
 
             if (!string.IsNullOrEmpty(currency.DemonetizedOn))

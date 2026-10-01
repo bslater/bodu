@@ -51,12 +51,12 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="AsconXof128" /></term>
-/// <description>Plain Ascon XOF — variable-length output without a customization string.</description>
+/// <description>Plain Ascon XOF - variable-length output without a customization string.</description>
 /// </item>
 /// <item>
 /// <term><see cref="AsconCxof128" /></term>
 /// <description>
-/// Customizable Ascon XOF — accepts a customization string before absorption to domain-separate output families.
+/// Customizable Ascon XOF - accepts a customization string before absorption to domain-separate output families.
 /// </description>
 /// </item>
 /// </list>
@@ -72,14 +72,14 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Consume through a concrete derivative — produce a 32-byte digest from "hello".
+/// // Consume through a concrete derivative - produce a 32-byte digest from "hello".
 /// using var xof = new AsconXof128();
 /// xof.Absorb("hello"u8);
 ///
 /// byte[] digest = new byte[32];
 /// xof.Squeeze(digest);
 ///
-/// // Squeeze additional output of any length — the XOF can produce as many bytes as needed.
+/// // Squeeze additional output of any length - the XOF can produce as many bytes as needed.
 /// byte[] more = new byte[64];
 /// xof.Squeeze(more);
 ///

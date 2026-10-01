@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This is the marker every plugin shares; capability-specific contracts derive from it — for example
+/// This is the marker every plugin shares; capability-specific contracts derive from it - for example
 /// <see cref="INotableDateAlgorithmPlugin" />, which contributes custom algorithms. A host activates the plugin through
 /// <see cref="NotableDatePluginLoader" /> and reads <see cref="Name" /> and <see cref="Version" /> purely for
 /// reporting; neither participates in trust evaluation, which is governed entirely by the

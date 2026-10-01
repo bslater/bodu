@@ -31,7 +31,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </item>
 /// <item>
 /// <description>
-/// Duplicate-section provenance — which matching section "won" for a given key — is collapsed by the resolver's
+/// Duplicate-section provenance - which matching section "won" for a given key - is collapsed by the resolver's
 /// last-wins precedence and is not exposed.
 /// </description>
 /// </item>
@@ -43,7 +43,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </item>
 /// <item>
 /// <description>
-/// Literal colons inside key segments cannot survive — the colon is the hierarchy delimiter in
+/// Literal colons inside key segments cannot survive - the colon is the hierarchy delimiter in
 /// <see cref="Microsoft.Extensions.Configuration.IConfiguration" />, so a key like <c>service\:name</c> in the source
 /// document is split into the hierarchy <c>service</c> / <c>name</c> by the configuration system once flattened.
 /// </description>

@@ -49,7 +49,7 @@ public sealed partial class MerkleTreeDiagnostics
     private readonly ConcurrentBag<Node> _nodes = new();
 
     // -----------------------------------------------------------------------------------------
-    // Internal recording — called by MerkleTree.LevelFold, which every Merkle computation reduces through
+    // Internal recording - called by MerkleTree.LevelFold, which every Merkle computation reduces through
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed partial class MerkleTreeDiagnostics
         _nodes.Where(n => n.Level == level).OrderBy(n => n.Index).ToList();
 
     /// <summary>
-    /// Gets the root node — the sole node at the highest recorded level — or <see langword="null" /> if no nodes have
+    /// Gets the root node - the sole node at the highest recorded level - or <see langword="null" /> if no nodes have
     /// been recorded.
     /// </summary>
     public Node? Root =>

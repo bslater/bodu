@@ -19,7 +19,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     public void GetCurrentHash_WhenShouldPadAndAlignedFinalBlock_ShouldSlicePaddedOutputIntoBlocks()
     {
         PaddingBlockHasher hasher = new();
-        hasher.Append(new byte[] { 0x11, 0x22 });  // residual = 2 bytes — no blocks emitted yet
+        hasher.Append(new byte[] { 0x11, 0x22 });  // residual = 2 bytes - no blocks emitted yet
         Assert.IsEmpty(hasher.Blocks);
 
         _ = hasher.GetCurrentHash();
@@ -36,7 +36,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     /// Verifies that when <c>AllowUnalignedFinalBlock</c> is <see langword="true" />, <c>GetCurrentHashCore</c>
     /// forwards the full padded buffer (whose length is not necessarily a multiple of
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}.BlockSizeBytes" />) to <c>ProcessBlock</c> in a single
-    /// call — the cloned instance must not throw despite the unaligned length.
+    /// call - the cloned instance must not throw despite the unaligned length.
     /// </summary>
     [TestMethod]
     public void GetCurrentHash_WhenShouldPadAndUnalignedFinalBlockIsAllowed_ShouldForwardPaddedBufferWholesale()

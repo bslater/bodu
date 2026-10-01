@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 /// <para>
 /// Every shared member carries a working default so the options bind cleanly through
 /// <c>Microsoft.Extensions.Options</c> and require no configuration for the common case. A derived type sets
-/// <see cref="BaseAddress" /> in its constructor — the base leaves it unset because the host differs per source — and
+/// <see cref="BaseAddress" /> in its constructor - the base leaves it unset because the host differs per source - and
 /// overrides <see cref="TryValidateCore" /> to add its own invariants.
 /// </para>
 /// <para>
@@ -276,7 +276,7 @@ public abstract class WebRateProviderOptions
     /// </returns>
     /// <remarks>
     /// Alias values are substituted verbatim into a source's request path. Constraining them to alphanumerics keeps
-    /// them URL-safe — a value containing a path or query delimiter (<c>/</c>, <c>?</c>, <c>#</c>, <c>\</c>, <c>%</c>)
+    /// them URL-safe - a value containing a path or query delimiter (<c>/</c>, <c>?</c>, <c>#</c>, <c>\</c>, <c>%</c>)
     /// or a parent-directory reference cannot inject an extra path or query segment into the request. Source symbol
     /// components (for example <c>USD</c> or <c>BTC</c>) are already alphanumeric.
     /// </remarks>

@@ -102,7 +102,7 @@ public ref struct Utf8IniReader
     public readonly IniTokenType TokenType => _tokenType;
 
     /// <summary>
-    /// Gets the decoded text of the current token — a section name, key name, string value, or comment.
+    /// Gets the decoded text of the current token - a section name, key name, string value, or comment.
     /// </summary>
     /// <returns>The token text.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the current token has no text.</exception>

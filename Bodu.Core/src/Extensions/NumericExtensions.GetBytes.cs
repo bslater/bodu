@@ -44,8 +44,8 @@ public static partial class NumericExtensions
     /// </para>
     /// <para>
     /// The <see cref="INumberBase{TSelf}" /> constraint rejects non-numeric types (such as reference types) at compile
-    /// time. Numeric types that <see cref="BitConverter" /> does not support — for example <see cref="decimal" />,
-    /// <see cref="System.Int128" />, or <see cref="System.Numerics.BigInteger" /> — still satisfy the constraint and
+    /// time. Numeric types that <see cref="BitConverter" /> does not support - for example <see cref="decimal" />,
+    /// <see cref="System.Int128" />, or <see cref="System.Numerics.BigInteger" /> - still satisfy the constraint and
     /// fail at run time with <see cref="InvalidOperationException" />.
     /// </para>
     /// </remarks>

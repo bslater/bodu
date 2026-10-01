@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 [TestClass]
 public sealed class HashAlgorithmExtensionsKatTests
 {
-    // SHA-256 known answers — public test vectors from FIPS 180-4 / RFC 6234.
+    // SHA-256 known answers - public test vectors from FIPS 180-4 / RFC 6234.
     private static IReadOnlyList<MessageDigestKnownAnswer> Kats { get; } =
     [
         new()

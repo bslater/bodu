@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="Base64Url" /> — the first-class URL-safe Base64 wrapper.
+/// Behavioural tests for <see cref="Base64Url" /> - the first-class URL-safe Base64 wrapper.
 /// </summary>
 [TestClass]
 public sealed class Base64UrlTests
@@ -30,7 +30,7 @@ public sealed class Base64UrlTests
 
     /// <summary>
     /// Verifies that <see cref="Base64Url.Decode(string)" /> also accepts URL-safe input that includes canonical
-    /// padding — the lenient AllowMissingPadding semantics permit either form.
+    /// padding - the lenient AllowMissingPadding semantics permit either form.
     /// </summary>
     [TestMethod]
     public void Decode_ShouldAcceptPaddedUrlSafeInput()
@@ -59,13 +59,13 @@ public sealed class Base64UrlTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64Url.Decode(string)" /> reproduces a real JWT header decoding scenario —
+    /// Verifies that <see cref="Base64Url.Decode(string)" /> reproduces a real JWT header decoding scenario -
     /// URL-safe alphabet, padding omitted.
     /// </summary>
     [TestMethod]
     public void Decode_ShouldDecodeRealJwtHeaderSegment()
     {
-        // Header segment of a JWT — {"alg":"HS256","typ":"JWT"} encoded URL-safe, no padding.
+        // Header segment of a JWT - {"alg":"HS256","typ":"JWT"} encoded URL-safe, no padding.
         const string segment = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
 
         byte[] decoded = Base64Url.Decode(segment);

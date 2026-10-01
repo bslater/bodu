@@ -21,7 +21,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// empty string is a valid key.
 /// </para>
 /// <para>
-/// Enumeration order — through <see cref="GetEnumerator" /> or <see cref="KeysWithPrefix(string)" /> — is unspecified
+/// Enumeration order - through <see cref="GetEnumerator" /> or <see cref="KeysWithPrefix(string)" /> - is unspecified
 /// in this version. The trie is not thread-safe for concurrent mutation. For an associative variant that maps keys to
 /// values, see <see cref="Trie{TValue}" />.
 /// </para>

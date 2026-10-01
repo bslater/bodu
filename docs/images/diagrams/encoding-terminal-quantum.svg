@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="tq-t tq-d">
-  <title id="tq-t">Terminal quantum and padding — RFC 4648</title>
+  <title id="tq-t">Terminal quantum and padding - RFC 4648</title>
   <desc id="tq-d">The terminal quantum is the last partial group at the end of the input. Base64 packs 3 input bytes into 4 output characters; if the input is shorter than a multiple of 3 bytes, Base64 emits 2 or 3 characters and pads with one or two equals signs to maintain 4-character alignment. Base32 packs 5 input bytes into 8 output characters and pads to alignment with up to 6 equals signs. Base16 has no terminal quantum: input must be an even number of nibbles. Crockford Base32 and z-base-32 omit padding by convention.</desc>
 
   <defs>
@@ -26,7 +26,7 @@
     <rect class="pan" width="800" height="300" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Terminal quantum and padding — RFC 4648</text>
+    <text class="ttl" x="16" y="20">Terminal quantum and padding - RFC 4648</text>
 
     <!-- ============== BASE64 row ============== -->
     <g transform="translate(20 50)">

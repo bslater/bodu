@@ -9,7 +9,7 @@ namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
 /// Drives <see cref="BinaryEncodingContractTests{TEncoding}" /> against <see cref="Base64" /> with the
-/// canonical RFC 4648 §10 vectors. Bespoke Base64 tests (variants — Standard, UrlSafe, MIME — span
+/// canonical RFC 4648 §10 vectors. Bespoke Base64 tests (variants - Standard, UrlSafe, MIME - span
 /// overloads, formatting options) live in the existing <c>Base64Tests.*.cs</c> partials.
 /// </summary>
 [TestClass]

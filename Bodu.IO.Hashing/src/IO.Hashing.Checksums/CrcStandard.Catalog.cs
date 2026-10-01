@@ -186,14 +186,14 @@ public sealed partial class CrcStandard
    }
 
     /// <summary>
-    /// Materialises — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.
+    /// Materialises - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.
     /// </summary>
     /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>
     /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="standard" /> is not a defined enum value.</exception>
     /// <remarks>
     /// <para>The first call for a given value constructs a new <see cref="CrcStandard" /> from the packed catalogue data and races
-    /// to publish it into the per-entry cache. Subsequent calls — including concurrent calls — return the same instance, so
+    /// to publish it into the per-entry cache. Subsequent calls - including concurrent calls - return the same instance, so
     /// reference equality is stable.</para>
     /// </remarks>
     public static CrcStandard Get(CrcStandards standard)

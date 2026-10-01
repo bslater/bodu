@@ -59,7 +59,7 @@ public sealed partial class MoneyBag
     /// <summary>Orders <see cref="CurrencyCode" /> keys by their ISO 4217 alphabetic code (ordinal) rather than their numeric enum value, so enumeration stays in ISO-code lexicographic order as it was when the bag was keyed by string.</summary>
     /// <remarks>
     /// Declared before <see cref="Empty" /> so the shared empty instance captures this comparer during static
-    /// initialization rather than the default (numeric) ordering — static fields initialize in textual order.
+    /// initialization rather than the default (numeric) ordering - static fields initialize in textual order.
     /// </remarks>
     private static readonly IComparer<CurrencyCode> s_codeComparer =
         Comparer<CurrencyCode>.Create(static (a, b) => string.CompareOrdinal(a.ToString(), b.ToString()));
@@ -168,8 +168,8 @@ public sealed partial class MoneyBag
     /// <remarks>
     /// The bag is a settlement-precision container: the incoming amount is rounded to its currency's registered minor
     /// units (banker's rounding) before it is folded into the balance, so an explicit-scale unit price settles on
-    /// entry. Settle high-precision amounts deliberately — via
-    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> — when a different rounding rule is required.
+    /// entry. Settle high-precision amounts deliberately - via
+    /// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" /> - when a different rounding rule is required.
     /// </remarks>
     public MoneyBag Add(Money amount)
     {
@@ -197,7 +197,7 @@ public sealed partial class MoneyBag
     /// <returns>The amount rounded to the registered minor units using banker's rounding.</returns>
     /// <remarks>
     /// Balances are held at the currency's registered minor units because the JSON wire form carries no per-balance
-    /// scale — rounding on entry keeps the in-memory balances identical to what a serialization round-trip restores,
+    /// scale - rounding on entry keeps the in-memory balances identical to what a serialization round-trip restores,
     /// instead of letting sub-minor-unit digits mutate silently on the first save/load.
     /// </remarks>
     private static decimal NormalizeToRegistry(Money amount) =>

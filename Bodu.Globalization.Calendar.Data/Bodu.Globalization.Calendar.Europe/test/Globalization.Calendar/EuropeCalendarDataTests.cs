@@ -47,7 +47,7 @@ public sealed partial class EuropeCalendarDataTests
 
     // Scotland: the New Year pair's chained substitution (GOV.UK official dates). 2022: 1 Jan Saturday rolls New
     // Year's Day to Monday 3rd, so 2 January (Sunday) steps over it to Tuesday 4th. 2023: 1 Jan Sunday rolls New
-    // Year's Day onto Monday 2 January — 2 January's own nominal weekday — so 2 January chains to Tuesday 3rd.
+    // Year's Day onto Monday 2 January - 2 January's own nominal weekday - so 2 January chains to Tuesday 3rd.
     // 2027: 2 January Saturday takes the plain weekend roll to Monday 4th (1 Jan Friday needs no substitute).
     [DataRow("GB-SCT", 2022, "new-years-day", "2022-01-03", true)]
     [DataRow("GB-SCT", 2022, "day-after-new-years-day", "2022-01-04", true)]
@@ -55,14 +55,14 @@ public sealed partial class EuropeCalendarDataTests
     [DataRow("GB-SCT", 2023, "day-after-new-years-day", "2023-01-03", true)]
     [DataRow("GB-SCT", 2027, "day-after-new-years-day", "2027-01-04", true)]
 
-    // United Kingdom: entries restored by the entry-level migration audit — Christmas Eve and Father's Day come via
+    // United Kingdom: entries restored by the entry-level migration audit - Christmas Eve and Father's Day come via
     // the europe-common hub; April Fool's Day and Remembrance Day (11 November) come via the global-all aggregate.
     [DataRow("GB", 2024, "christmas-eve", "2024-12-24", false)]
     [DataRow("GB", 2024, "fathers-day", "2024-06-16", false)]
     [DataRow("GB", 2024, "april-fools-day", "2024-04-01", false)]
     [DataRow("GB", 2024, "remembrance-day", "2024-11-11", false)]
 
-    // Germany: entries restored/fixed by the audit — Christmas Eve and Father's Day come via the europe-common hub.
+    // Germany: entries restored/fixed by the audit - Christmas Eve and Father's Day come via the europe-common hub.
     [DataRow("DE", 2024, "christmas-eve", "2024-12-24", false)]
     [DataRow("DE", 2024, "fathers-day", "2024-06-16", false)]
 
@@ -73,7 +73,7 @@ public sealed partial class EuropeCalendarDataTests
     [DataRow("FR", 2024, "bastille-day", "2024-07-14", false)]
     [DataRow("FR", 2024, "armistice-day", "2024-11-11", false)]
 
-    // France: entries restored/fixed by the entry-level migration audit — Christmas Eve, Father's Day, Whit Sunday
+    // France: entries restored/fixed by the entry-level migration audit - Christmas Eve, Father's Day, Whit Sunday
     // (Pentecost), the Assumption, and April Fool's Day come via the europe-common hub; the Alsace-Moselle Good
     // Friday and Saint Stephen's Day are subdivision-scoped to FR-67/FR-68/FR-57.
     [DataRow("FR", 2024, "christmas-eve", "2024-12-24", false)]
@@ -163,7 +163,7 @@ public sealed partial class EuropeCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that the restored Assumption of Mary (15 August) is a non-working public holiday in France — checked on
+    /// Verifies that the restored Assumption of Mary (15 August) is a non-working public holiday in France - checked on
     /// the occurrence flag rather than the IsNonWorkingDay extension, which also treats weekends as non-working.
     /// </summary>
     [TestMethod]

@@ -249,7 +249,7 @@ internal sealed class CfbDirectory
         // arbitrarily deep (the entry count is attacker-controlled via the directory stream length), which
         // would overflow the call stack under a recursive walk and crash the process with an uncatchable
         // StackOverflowException. The explicit stack keeps the walk on the heap so a degenerate/deep tree is
-        // handled — or rejected as a catchable CompoundFileFormatException — regardless of depth.
+        // handled - or rejected as a catchable CompoundFileFormatException - regardless of depth.
         Stack<uint> pending = new();
         uint current = sid;
 

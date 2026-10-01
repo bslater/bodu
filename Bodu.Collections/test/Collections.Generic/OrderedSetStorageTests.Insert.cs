@@ -95,7 +95,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Move — argument validation
+    // Move - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -116,7 +116,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Move — positional behaviour
+    // Move - positional behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -182,7 +182,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // ReplaceAt — mutation behaviour
+    // ReplaceAt - mutation behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -203,7 +203,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // ReplaceAt — argument validation
+    // ReplaceAt - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -278,7 +278,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // TryInsert — positional behaviour
+    // TryInsert - positional behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -309,7 +309,7 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // TryInsert — duplicates
+    // TryInsert - duplicates
     // --------------------------------------------------------
 
     /// <summary>
@@ -330,7 +330,7 @@ public partial class OrderedSetStorageTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
     }
     // --------------------------------------------------------
-    // TryInsert — argument validation
+    // TryInsert - argument validation
     // --------------------------------------------------------
 
     /// <summary>

@@ -1,8 +1,8 @@
 ---
-title: Line formats — Getting started
+title: Line formats - Getting started
 ---
 
-# Line formats — Getting started
+# Line formats - Getting started
 
 First steps with `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`.
 
@@ -122,6 +122,6 @@ using DelimitedDocument dirty = DelimitedDocument.Parse(bytes, lenient);
 
 ## Where to go next
 
-- [Core concepts](concepts.md) — the quartet vocabulary.
-- [Parser policies](parser-policies.md) — every strictness knob.
-- The [format guides](../../guides/formats/index.md) — deeper recipes per format.
+- [Core concepts](concepts.md) - the quartet vocabulary.
+- [Parser policies](parser-policies.md) - every strictness knob.
+- The [format guides](../../guides/formats/index.md) - deeper recipes per format.

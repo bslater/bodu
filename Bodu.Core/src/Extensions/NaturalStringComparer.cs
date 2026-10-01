@@ -16,8 +16,8 @@ namespace Bodu.Extensions;
 /// <para>
 /// The comparer mirrors the ordering produced by Windows Explorer (<c>StrCmpLogicalW</c>) and Python's <c>natsort</c>
 /// package: each string is treated as an alternating sequence of digit runs and non-digit segments. Digit runs are
-/// compared by numeric magnitude — leading zeros are skipped, a longer trimmed run is greater, and equal-length trimmed
-/// runs are compared digit by digit — so runs of arbitrary length compare correctly without ever being parsed into a
+/// compared by numeric magnitude - leading zeros are skipped, a longer trimmed run is greater, and equal-length trimmed
+/// runs are compared digit by digit - so runs of arbitrary length compare correctly without ever being parsed into a
 /// bounded integer type. Non-digit segments are compared ordinally ( <see cref="Ordinal" /> /
 /// <see cref="OrdinalIgnoreCase" />) or using a culture's <see cref="CompareInfo" /> (<see cref="CurrentCulture" /> /
 /// <see cref="CurrentCultureIgnoreCase" /> / <see cref="Create(CultureInfo, bool)" />).
@@ -31,9 +31,9 @@ namespace Bodu.Extensions;
 /// string, two <see langword="null" /> references are equal, and the empty string sorts before any non-empty string.
 /// </para>
 /// <para>
-/// Only the ASCII digits <c>'0'</c>–<c>'9'</c> participate in numeric comparison; other Unicode digit classes are
+/// Only the ASCII digits <c>'0'</c>-<c>'9'</c> participate in numeric comparison; other Unicode digit classes are
 /// treated as ordinary text. A leading <c>'-'</c> is an ordinary character (no sign parsing), and decimal points,
-/// thousands separators, and version-sort dotted-tuple semantics are likewise out of scope — <c>'.'</c> simply
+/// thousands separators, and version-sort dotted-tuple semantics are likewise out of scope - <c>'.'</c> simply
 /// separates adjacent digit runs.
 /// </para>
 /// <para>
@@ -50,7 +50,7 @@ namespace Bodu.Extensions;
 /// var names = new[] { "file10", "file2", "file1" };
 ///
 /// Array.Sort(names, NaturalStringComparer.Ordinal);
-/// // names is now ["file1", "file2", "file10"] — a plain ordinal sort would yield
+/// // names is now ["file1", "file2", "file10"] - a plain ordinal sort would yield
 /// // ["file1", "file10", "file2"].
 ///]]>
 /// </code>

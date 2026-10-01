@@ -20,7 +20,7 @@ public class XeScrapingAuthTokenProviderTests
     /// <summary>The credential embedded in the fixtures (<c>btoa("lodestar:pugsnax")</c>).</summary>
     private static readonly string ExpectedToken = Convert.ToBase64String(Encoding.ASCII.GetBytes("lodestar:pugsnax"));
 
-    /// <summary>A script chunk that builds the credential the current way — a template literal whose value is a single <c>btoa</c> literal.</summary>
+    /// <summary>A script chunk that builds the credential the current way - a template literal whose value is a single <c>btoa</c> literal.</summary>
     private const string AuthSnippet = "let h=new Headers;h.set(\"Authorization\",`Basic ${btoa(\"lodestar:pugsnax\")}`);";
 
     /// <summary>A benign script chunk that carries no credential.</summary>

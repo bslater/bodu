@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="TCryptoTransform">The concrete block cipher transform type under test.</typeparam>
 /// <remarks>
 /// Concrete subclasses override <see cref="CreateEncryptor" /> and <see cref="CreateDecryptor" /> to produce
-/// a paired encryptor and decryptor that share the same key, IV, and (where applicable) tweak — so an
+/// a paired encryptor and decryptor that share the same key, IV, and (where applicable) tweak - so an
 /// encrypt-then-decrypt round trip via these transforms recovers the original plaintext. Crypto-correctness
 /// is validated at the block-cipher tier through <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />;
 /// the transform tier validates the public <see cref="System.Security.Cryptography.ICryptoTransform" /> surface

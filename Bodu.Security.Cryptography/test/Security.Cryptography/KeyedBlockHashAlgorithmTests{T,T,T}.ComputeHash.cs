@@ -44,7 +44,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
     /// <summary>
     /// Verifies that supplying a non-empty <see cref="Skein{T}.Key" /> causes the digest to differ from the plain,
-    /// unkeyed hash of the same input — confirming that the preliminary <c>KEY</c> UBI phase actually influences the
+    /// unkeyed hash of the same input - confirming that the preliminary <c>KEY</c> UBI phase actually influences the
     /// chaining value.
     /// </summary>
     [TestMethod]

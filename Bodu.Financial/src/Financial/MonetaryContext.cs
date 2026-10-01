@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Carries the rounding and scaling policy applied at a monetary operation boundary — multiplication, division,
+/// Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,
 /// conversion, allocation, and the conversion of a high-precision calculation back to a settlement value.
 /// </summary>
 /// <remarks>

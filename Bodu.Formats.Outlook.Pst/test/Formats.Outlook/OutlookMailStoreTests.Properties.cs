@@ -38,8 +38,8 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
-    /// Verifies that a store whose message-store object node is absent still exposes its folder hierarchy — the
-    /// folders decode under the fallback encoding instead of failing on the missing node — and reports an empty
+    /// Verifies that a store whose message-store object node is absent still exposes its folder hierarchy - the
+    /// folders decode under the fallback encoding instead of failing on the missing node - and reports an empty
     /// store property collection.
     /// </summary>
     [TestMethod]

@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Recurrence.Samples.RecurrenceSets;
 /// <summary>
 /// Entry point for the recurrence-set sample: <c>RecurrenceSet</c>, the composition layer that
 /// folds one or more <c>RRULE</c>s together with explicit <c>RDATE</c> additions and <c>EXDATE</c>
-/// removals into a single occurrence stream — plus the iCalendar property-block round trip and
+/// removals into a single occurrence stream - plus the iCalendar property-block round trip and
 /// value equality. Everything runs offline and deterministically.
 /// </summary>
 public static class Program

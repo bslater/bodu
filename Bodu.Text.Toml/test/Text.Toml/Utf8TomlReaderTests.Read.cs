@@ -177,7 +177,7 @@ public sealed partial class Utf8TomlReaderTests
     }
 
     /// <summary>
-    /// Verifies that the lexer accepts structurally invalid input — duplicate keys lex cleanly because duplicate
+    /// Verifies that the lexer accepts structurally invalid input - duplicate keys lex cleanly because duplicate
     /// detection is the document builder's responsibility, not the lexer's.
     /// </summary>
     [TestMethod]

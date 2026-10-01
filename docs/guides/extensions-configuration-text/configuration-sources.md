@@ -6,7 +6,7 @@ title: Configuration sources
 
 `Bodu.Extensions.Configuration.Text` bridges [`Bodu.Text.Configuration`](../text-configuration/index.md) into `Microsoft.Extensions.Configuration`. Add a Bodu-formatted INI file or stream to an `IConfigurationBuilder`, and the parsed and resolved view becomes available through the standard `IConfiguration` surface that ASP.NET Core, Generic Host, and the rest of the BCL configuration pipeline already consume.
 
-## Pattern 1 — file-backed source with reload-on-change
+## Pattern 1 - file-backed source with reload-on-change
 
 <!-- compile -->
 ```csharp
@@ -21,9 +21,9 @@ string? appName = configuration["appName"];
 string? level   = configuration["logging:level"];
 ```
 
-`AddTextConfigurationFile(path, …)` registers a `TextConfigurationSource`. The provider uses the host's default file provider, watches for changes when `reloadOnChange: true`, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through `ConfigurationKeyOptions.Default` so `logging.level.default = …` is reachable as `"logging:level:default"` — the canonical colon-delimited form `IConfiguration` consumers expect.
+`AddTextConfigurationFile(path, …)` registers a `TextConfigurationSource`. The provider uses the host's default file provider, watches for changes when `reloadOnChange: true`, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through `ConfigurationKeyOptions.Default` so `logging.level.default = …` is reachable as `"logging:level:default"` - the canonical colon-delimited form `IConfiguration` consumers expect.
 
-## Pattern 2 — explicit file provider
+## Pattern 2 - explicit file provider
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -39,9 +39,9 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-Pass an `IFileProvider` to read from a specific physical or embedded location rather than the builder's default file provider. The `targetPath` argument, when supplied, enables EditorConfig glob anchoring — sections become globs that the resolver matches against the target path. See [Views and resolution](../text-configuration/views-and-resolution.md#pattern-2--anchored-editorconfig-globs).
+Pass an `IFileProvider` to read from a specific physical or embedded location rather than the builder's default file provider. The `targetPath` argument, when supplied, enables EditorConfig glob anchoring - sections become globs that the resolver matches against the target path. See [Views and resolution](../text-configuration/views-and-resolution.md#pattern-2---anchored-editorconfig-globs).
 
-## Pattern 3 — convention-based discovery
+## Pattern 3 - convention-based discovery
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -53,7 +53,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 The parameterless overload probes for `.boduconfig` first and then `bodu.config` in the builder's base path. With `optional: true` (the default) the call is a no-op when neither file is present; with `optional: false` it throws `FileNotFoundException`.
 
-## Pattern 4 — stream-backed source
+## Pattern 4 - stream-backed source
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -70,9 +70,9 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-`AddTextConfigurationStream(Stream, …)` registers a `TextStreamConfigurationSource`. Unlike file-backed sources, stream sources do not support reload-on-change — the stream is consumed once during `Build()`. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.
+`AddTextConfigurationStream(Stream, …)` registers a `TextStreamConfigurationSource`. Unlike file-backed sources, stream sources do not support reload-on-change - the stream is consumed once during `Build()`. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.
 
-## Pattern 5 — pre-parsed document
+## Pattern 5 - pre-parsed document
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -86,7 +86,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-`AddTextConfigurationDocument` accepts any <xref:Bodu.Text.Configuration.IniDocumentBase> — including a
+`AddTextConfigurationDocument` accepts any <xref:Bodu.Text.Configuration.IniDocumentBase> - including a
 <xref:Bodu.Text.Configuration.ConfigurationDocument>. The bridge resolves the document once and flattens the view into an
 in-memory collection before handing it to the configuration root, so the source is captured **by value**: later mutations to the document do not flow into the configuration, and there is no reload-on-change.
 
@@ -104,7 +104,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-## Pattern 6 — fluent source configuration
+## Pattern 6 - fluent source configuration
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -124,7 +124,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 The delegate overload mirrors the `AddJsonFile(source => …)` pattern from `Microsoft.Extensions.Configuration.Json`. Set every property up front rather than choosing the right `AddTextConfiguration*` overload for the combination you need.
 
-## Pattern 7 — TOML file or stream source
+## Pattern 7 - TOML file or stream source
 
 Alongside the Bodu INI bridge, the package ships a read-only TOML bridge that surfaces [`Bodu.Text.Toml`](../serialization/toml/index.md) through the same `IConfiguration` pipeline, mirroring the `AddJsonFile` / `AddJsonStream` shape:
 
@@ -139,9 +139,9 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];
 ```
 
-`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`. The source is **read once** when the configuration is built — the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`. The source is **read once** when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
 
-For configuration that arrives as a stream rather than a file path, use the stream overload — the UTF-8 TOML text is consumed once during `Build()`:
+For configuration that arrives as a stream rather than a file path, use the stream overload - the UTF-8 TOML text is consumed once during `Build()`:
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -175,7 +175,7 @@ logging:console:includeScopes = true
 
 Keys are matched case-insensitively, exactly as the BCL JSON and INI providers behave, so `configuration["Logging:Level"]` and `configuration["logging:level"]` resolve to the same value. Because the TOML bridge surfaces the same colon-delimited key space, it layers and binds to `IOptions<T>` exactly like the INI sources described below; the only difference is that, being read-only, it never participates in reload-on-change.
 
-## Pattern 8 — Bencode file or stream source
+## Pattern 8 - Bencode file or stream source
 
 The package also ships a read-only Bencode bridge that surfaces [`Bodu.Text.Bencode`](../serialization/bencode/index.md) through the same `IConfiguration` pipeline, with the same shape as the TOML bridge:
 
@@ -191,9 +191,9 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];
 ```
 
-`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`. Like the TOML bridge, the source is **read once** when the configuration is built — it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`. Like the TOML bridge, the source is **read once** when the configuration is built - it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
 
-For configuration that arrives as a stream, use the stream overload — the Bencode document is consumed once during `Build()`:
+For configuration that arrives as a stream, use the stream overload - the Bencode document is consumed once during `Build()`:
 
 <!-- compile -->
 ```csharp
@@ -209,7 +209,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 ### How Bencode values map to configuration keys
 
-The document root must be a Bencode **dictionary** — an integer, byte-string, or list root is rejected with `FormatException`, because it cannot contribute named configuration keys. Nested dictionaries contribute one colon-delimited segment per level, and list elements contribute their zero-based index as a segment, mirroring the framework JSON provider:
+The document root must be a Bencode **dictionary** - an integer, byte-string, or list root is rejected with `FormatException`, because it cannot contribute named configuration keys. Nested dictionaries contribute one colon-delimited segment per level, and list elements contribute their zero-based index as a segment, mirroring the framework JSON provider:
 
 ```
 d7:loggingd6:levelsl4:info4:warneee
@@ -224,9 +224,9 @@ logging:levels:1 = warn
 
 The document is parsed with the library's strict canonical defaults, so unsorted or duplicate dictionary keys are rejected. Integers render invariant across the full unsigned 64-bit range the format supports; byte strings decode as UTF-8, with content that is not valid UTF-8 decoded via U+FFFD replacement rather than rejected. Keys are matched case-insensitively, so two Bencode keys that differ only in case collide and are rejected as duplicates.
 
-## Pattern 9 — binding to `IOptions<T>`
+## Pattern 9 - binding to `IOptions<T>`
 
-Because the bridge surfaces standard colon-delimited keys, the values bind to typed options classes through the ordinary `Microsoft.Extensions.Options` pipeline. `ConfigurationOptionsExtensions.AddConfigurationOptions<TOptions>` is a discoverable shim over `services.Configure<TOptions>(section)` — either call produces the same registration:
+Because the bridge surfaces standard colon-delimited keys, the values bind to typed options classes through the ordinary `Microsoft.Extensions.Options` pipeline. `ConfigurationOptionsExtensions.AddConfigurationOptions<TOptions>` is a discoverable shim over `services.Configure<TOptions>(section)` - either call produces the same registration:
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
@@ -263,7 +263,7 @@ public sealed class RequestLogger
 }
 ```
 
-So an INI source containing `logging.level = Debug` flattens to the key `"logging:level"`, the `"logging"` section binds onto `LoggingOptions`, and `options.Value.Level` reads `"Debug"`. Callers comfortable with the BCL surface can keep calling `services.Configure<LoggingOptions>(section)` directly — the helper exists purely to keep the call site short.
+So an INI source containing `logging.level = Debug` flattens to the key `"logging:level"`, the `"logging"` section binds onto `LoggingOptions`, and `options.Value.Level` reads `"Debug"`. Callers comfortable with the BCL surface can keep calling `services.Configure<LoggingOptions>(section)` directly - the helper exists purely to keep the call site short.
 
 ## How the bridge surfaces values
 
@@ -283,17 +283,17 @@ The file and stream providers assign the flattened map straight to the inherited
 
 The bridge exposes two source types directly:
 
-- **`TextConfigurationSource`** — extends `FileConfigurationSource`. Properties:
-  - `Path`, `Optional`, `ReloadOnChange`, `FileProvider` — inherited from the BCL base.
-  - `TargetPath` — optional target path for EditorConfig glob anchoring.
-  - `ParseOptions` — `ConfigurationParseOptions?` (null defers to defaults).
-  - `ResolveOptions` — `ConfigurationResolveOptions?` (null defers to defaults).
+- **`TextConfigurationSource`** - extends `FileConfigurationSource`. Properties:
+  - `Path`, `Optional`, `ReloadOnChange`, `FileProvider` - inherited from the BCL base.
+  - `TargetPath` - optional target path for EditorConfig glob anchoring.
+  - `ParseOptions` - `ConfigurationParseOptions?` (null defers to defaults).
+  - `ResolveOptions` - `ConfigurationResolveOptions?` (null defers to defaults).
 
-- **`TextStreamConfigurationSource`** — extends `StreamConfigurationSource`. Properties:
-  - `Stream` — inherited from the BCL base; consumed during `Build()`.
-  - `TargetPath`, `ParseOptions`, `ResolveOptions` — as above.
+- **`TextStreamConfigurationSource`** - extends `StreamConfigurationSource`. Properties:
+  - `Stream` - inherited from the BCL base; consumed during `Build()`.
+  - `TargetPath`, `ParseOptions`, `ResolveOptions` - as above.
 
-Both build provider classes — <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> (a `FileConfigurationProvider`) and <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> (a `StreamConfigurationProvider`) — flatten the resolved view into the inherited `Data` dictionary. They are public but rarely constructed directly; you configure the source and the provider handles the rest. Each exposes a typed `TextSource` accessor for diagnostic introspection — locate the provider on `IConfigurationRoot.Providers` and read back the originating source:
+Both build provider classes - <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider> (a `FileConfigurationProvider`) and <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> (a `StreamConfigurationProvider`) - flatten the resolved view into the inherited `Data` dictionary. They are public but rarely constructed directly; you configure the source and the provider handles the rest. Each exposes a typed `TextSource` accessor for diagnostic introspection - locate the provider on `IConfigurationRoot.Providers` and read back the originating source:
 
 ```csharp
 IConfigurationRoot root = builder.Build();
@@ -313,9 +313,9 @@ When `reloadOnChange: true` on a file-backed source, the `TextConfigurationProvi
 3. The flattened key / value map replaces the previous one.
 4. The standard `IConfiguration.Reload()` change-token fires.
 
-Subscribers to `ChangeToken.OnChange(...)` see the new values without re-instantiating the configuration root. The reload is atomic from the consumer's perspective — there is no window in which the configuration is half-loaded.
+Subscribers to `ChangeToken.OnChange(...)` see the new values without re-instantiating the configuration root. The reload is atomic from the consumer's perspective - there is no window in which the configuration is half-loaded.
 
-Reload composes with options binding through the standard monitor surface — `IOptionsMonitor<T>` re-binds on every reload, where `IOptions<T>` is a one-shot snapshot taken at first resolution:
+Reload composes with options binding through the standard monitor surface - `IOptionsMonitor<T>` re-binds on every reload, where `IOptions<T>` is a one-shot snapshot taken at first resolution:
 
 ```csharp
 public sealed class RequestLogger
@@ -331,7 +331,7 @@ public sealed class RequestLogger
 }
 ```
 
-Stream and pre-parsed-document sources have no file to watch, so they never reload — re-add the source and rebuild the root to pick up new data.
+Stream and pre-parsed-document sources have no file to watch, so they never reload - re-add the source and rebuild the root to pick up new data.
 
 ## Layering with other providers
 
@@ -347,16 +347,16 @@ IConfiguration configuration = new ConfigurationBuilder()
 // appsettings.json:  { "logging": { "level": "Information" } }
 // overrides.ini:     logging.level = Debug
 
-configuration["logging:level"];   // "Debug" — the Bodu source is later
+configuration["logging:level"];   // "Debug" - the Bodu source is later
 ```
 
-Reverse the order to make the JSON file the override layer. Because both sources flatten to the same colon-delimited key space, no key translation is needed — a `logging.level` INI entry and a nested `"logging": { "level": … }` JSON property occupy the same key, `"logging:level"`.
+Reverse the order to make the JSON file the override layer. Because both sources flatten to the same colon-delimited key space, no key translation is needed - a `logging.level` INI entry and a nested `"logging": { "level": … }` JSON property occupy the same key, `"logging:level"`.
 
 ## ASP.NET Core and the Generic Host
 
 Because a Bodu source is an ordinary `IConfigurationSource`, it registers on the
 same `IConfigurationBuilder` that `WebApplicationBuilder` and `HostBuilder`
-already expose — there is no host-specific entry point to learn. The patterns
+already expose - there is no host-specific entry point to learn. The patterns
 above (file, stream, layering, `IOptions<T>` binding) all apply unchanged inside
 a hosted app; this section shows the wiring that is specific to the host.
 
@@ -380,7 +380,7 @@ Host.CreateDefaultBuilder(args)
 ```
 
 **Environment-based file selection** mirrors the host's own
-`appsettings.{Environment}.json` convention — layer a base file with an
+`appsettings.{Environment}.json` convention - layer a base file with an
 environment overlay, the later source winning on conflict:
 
 ```csharp
@@ -426,7 +426,7 @@ public sealed class RequestLogger
 Reload-on-change composes with the host the same way it does outside it: with
 `reloadOnChange: true` on a file source, the provider re-reads and re-resolves on
 a file edit, the configuration root's change token fires, and
-`IOptionsMonitor<T>.CurrentValue` re-binds — so a long-lived singleton sees the
+`IOptionsMonitor<T>.CurrentValue` re-binds - so a long-lived singleton sees the
 new values without a restart, while `IOptions<T>` stays the one-shot snapshot
 taken at first resolution. Stream and pre-parsed-document sources have no file to
 watch and never reload, so reserve them for configuration that is fixed for the
@@ -435,16 +435,16 @@ process lifetime.
 ## When *not* to use the bridge
 
 - **You only need the codec.** Reach for [`Bodu.Text.Ini`](../formats/ini.md) for codec-only access without the bridge or the resolve layer.
-- **You only need the resolved view.** Reach for [`Bodu.Text.Configuration`](../text-configuration/index.md) directly — call `Resolve()` and consume `ConfigurationView` without the `IConfiguration` surface.
-- **You need JSON, environment-variable, or command-line configuration.** Use the standard Microsoft sources — `AddJsonFile`, `AddEnvironmentVariables`, `AddCommandLine`. The Bodu bridge composes with them; sources earlier in the builder chain are overridden by later sources, per the standard `IConfiguration` rules.
+- **You only need the resolved view.** Reach for [`Bodu.Text.Configuration`](../text-configuration/index.md) directly - call `Resolve()` and consume `ConfigurationView` without the `IConfiguration` surface.
+- **You need JSON, environment-variable, or command-line configuration.** Use the standard Microsoft sources - `AddJsonFile`, `AddEnvironmentVariables`, `AddCommandLine`. The Bodu bridge composes with them; sources earlier in the builder chain are overridden by later sources, per the standard `IConfiguration` rules.
 
 ## See also
 
-- [`Bodu.Extensions.Configuration.Text` guides](index.md) — the member overview for this package.
-- [`Bodu.Text.Configuration` overview](../text-configuration/index.md) — the underlying parse / view layer.
-- [Parsing and profiles](../text-configuration/parsing-and-profiles.md) — the parse-time options surfaced via `ParseOptions`.
-- [Views and resolution](../text-configuration/views-and-resolution.md) — the resolve-time options surfaced via `ResolveOptions` and `TargetPath`.
-- [Configuration topic guides](../topics/configuration.md) — every guide in the Configuration topic.
-- [Configuration topic overview](../../docs/topics/configuration.md) — the pipeline and package boundaries.
+- [`Bodu.Extensions.Configuration.Text` guides](index.md) - the member overview for this package.
+- [`Bodu.Text.Configuration` overview](../text-configuration/index.md) - the underlying parse / view layer.
+- [Parsing and profiles](../text-configuration/parsing-and-profiles.md) - the parse-time options surfaced via `ParseOptions`.
+- [Views and resolution](../text-configuration/views-and-resolution.md) - the resolve-time options surfaced via `ResolveOptions` and `TargetPath`.
+- [Configuration topic guides](../topics/configuration.md) - every guide in the Configuration topic.
+- [Configuration topic overview](../../docs/topics/configuration.md) - the pipeline and package boundaries.
 - [`TextConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource) · [`TextStreamConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource) · [`TomlConfigurationExtensions`](xref:Bodu.Extensions.Configuration.Text.TomlConfigurationExtensions) · [`BencodeConfigurationExtensions`](xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationExtensions) · [`BencodeConfigurationSource`](xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource) · [`ConfigurationOptionsExtensions`](xref:Bodu.Extensions.Configuration.Text.ConfigurationOptionsExtensions)
 - [`Bodu.Extensions.Configuration.Text` API reference](xref:Bodu.Extensions.Configuration.Text).

@@ -15,7 +15,7 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 /// </summary>
 /// <remarks>
 /// The detector deliberately refuses ambiguous cases. A boundary is a period followed by horizontal whitespace where
-/// the preceding token is an ordinary word — not a known abbreviation (<c>e.g.</c>, <c>i.e.</c>, <c>etc.</c>, …), not a
+/// the preceding token is an ordinary word - not a known abbreviation (<c>e.g.</c>, <c>i.e.</c>, <c>etc.</c>, …), not a
 /// dotted qualified name (<c>System.String</c>), not a decimal or version number, and not part of an ellipsis. When no
 /// unambiguous boundary exists the detector returns <c>-1</c>, so the rule does not fire and the code fix never
 /// performs a questionable split.

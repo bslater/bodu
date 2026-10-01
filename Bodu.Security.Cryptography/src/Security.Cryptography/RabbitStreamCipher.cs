@@ -25,8 +25,8 @@ namespace Bodu.Security.Cryptography;
 /// The implementation follows the RFC 4503 octet conventions exactly: the key and IV are interpreted as big-endian
 /// integers split into 16-bit subkeys (I2OSP), and each keystream block is serialized as the big-endian (I2OSP)
 /// representation of the 128-bit extraction value. This reproduces the RFC 4503 Appendix A conformance vectors and the
-/// Appendix B internal-state debugging vectors byte-for-byte. (Note that some implementations — for example Crypto++
-/// and libtomcrypt — use a self-consistent little-endian convention whose key, IV, and keystream octets are
+/// Appendix B internal-state debugging vectors byte-for-byte. (Note that some implementations - for example Crypto++
+/// and libtomcrypt - use a self-consistent little-endian convention whose key, IV, and keystream octets are
 /// byte-reversed relative to the RFC.)
 /// </para>
 /// <para>
@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// from one key. Each emitted block runs one next-state iteration and then extracts 128 bits from the state.
 /// </para>
 /// </remarks>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 — A Description of the Rabbit Stream Cipher
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc4503">RFC 4503 - A Description of the Rabbit Stream Cipher
 /// Algorithm</seealso> <seealso cref="Rabbit" />
 internal sealed partial class RabbitStreamCipher
     : IStreamCipher
@@ -50,16 +50,16 @@ internal sealed partial class RabbitStreamCipher
     /// <summary>The keystream block length, in bytes (128 bits).</summary>
     internal const int BlockSizeBytes = 16;
 
-    /// <summary>The first of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).</summary>
+    /// <summary>The first of the three repeating counter-increment constants A0-A7 (RFC 4503 §2.5).</summary>
     /// <remarks>
-    /// The eight counter-increment constants A0–A7 alternate these three repeating words across the counter system.
+    /// The eight counter-increment constants A0-A7 alternate these three repeating words across the counter system.
     /// </remarks>
     private const uint A0 = 0x4D34D34D;
 
-    /// <summary>The second of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).</summary>
+    /// <summary>The second of the three repeating counter-increment constants A0-A7 (RFC 4503 §2.5).</summary>
     private const uint A1 = 0xD34D34D3;
 
-    /// <summary>The third of the three repeating counter-increment constants A0–A7 (RFC 4503 §2.5).</summary>
+    /// <summary>The third of the three repeating counter-increment constants A0-A7 (RFC 4503 §2.5).</summary>
     private const uint A2 = 0x34D34D34;
 
     /// <summary>The eight 32-bit state variables of the Rabbit working state.</summary>
@@ -155,7 +155,7 @@ internal sealed partial class RabbitStreamCipher
     /// least-significant 16 bits of the 128-bit big-endian key integer (RFC 4503 I2OSP convention).
     /// </summary>
     /// <param name="key">The 16-byte key.</param>
-    /// <param name="index">The subkey index, 0–7.</param>
+    /// <param name="index">The subkey index, 0-7.</param>
     /// <returns>The 16-bit subkey value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint SubKey(ReadOnlySpan<byte> key, int index)
@@ -169,7 +169,7 @@ internal sealed partial class RabbitStreamCipher
     /// least-significant 16 bits of the 64-bit big-endian IV integer.
     /// </summary>
     /// <param name="nonce">The 8-byte IV.</param>
-    /// <param name="index">The subword index, 0–3.</param>
+    /// <param name="index">The subword index, 0-3.</param>
     /// <returns>The 16-bit IV subword value.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint IvWord(ReadOnlySpan<byte> nonce, int index)
@@ -239,7 +239,7 @@ internal sealed partial class RabbitStreamCipher
 
     /// <summary>
     /// Advances the counter system and the eight state variables by one Rabbit next-state iteration (RFC 4503
-    /// §2.4–2.5).
+    /// §2.4-2.5).
     /// </summary>
     private void NextState()
     {

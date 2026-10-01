@@ -4,9 +4,9 @@ title: Sequenced dictionary
 
 # Sequenced dictionary
 
-`SequencedDictionary<TKey, TValue>` is a dictionary that preserves the order in which entries are encountered and gives O(1) access to — and removal of — the first and last entries. It is the .NET analogue of Java's `LinkedHashMap`, and realizes the same *sequenced* (encounter-order) contract: a well-defined first and last entry with constant-time access to each.
+`SequencedDictionary<TKey, TValue>` is a dictionary that preserves the order in which entries are encountered and gives O(1) access to - and removal of - the first and last entries. It is the .NET analogue of Java's `LinkedHashMap`, and realizes the same *sequenced* (encounter-order) contract: a well-defined first and last entry with constant-time access to each.
 
-It is **unbounded** — it never evicts. For a fixed-capacity cache with a built-in eviction policy, reach for [`EvictingDictionary<TKey, TValue>`](evicting-dictionary.md) instead.
+It is **unbounded** - it never evicts. For a fixed-capacity cache with a built-in eviction policy, reach for [`EvictingDictionary<TKey, TValue>`](evicting-dictionary.md) instead.
 
 ## Ordering modes
 
@@ -15,11 +15,11 @@ The ordering mode is chosen at construction and is fixed for the lifetime of the
 | Mode | Constructor | Reads reorder? | First / Last |
 |---|---|---|---|
 | Insertion order *(default)* | `new SequencedDictionary<K,V>()` | No | Oldest / newest **inserted** entry. |
-| Access order | `new SequencedDictionary<K,V>(accessOrder: true)` | Yes — a read or indexed update moves the entry to the tail. | Least- / most-**recently-used** entry. |
+| Access order | `new SequencedDictionary<K,V>(accessOrder: true)` | Yes - a read or indexed update moves the entry to the tail. | Least- / most-**recently-used** entry. |
 
 In access-order mode, a successful lookup (`this[key]` getter or `TryGetValue`) and an indexed value update move the affected entry to the end of the iteration order. `ContainsKey`, `TryGetFirst`/`TryGetLast`, and `First`/`Last` are pure reads and never reorder.
 
-## Pattern 1 — insertion-ordered map
+## Pattern 1 - insertion-ordered map
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -34,7 +34,7 @@ foreach (var (name, value) in headers)
     Console.WriteLine($"{name}: {value}");
 ```
 
-## Pattern 2 — O(1) ends as a queue-like store
+## Pattern 2 - O(1) ends as a queue-like store
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -49,7 +49,7 @@ if (pending.TryGetFirst(out var oldest))
 pending.TryRemoveFirst(out _);   // dequeue the head
 ```
 
-## Pattern 3 — least-recently-used cache
+## Pattern 3 - least-recently-used cache
 
 Access-order mode makes the least-recently-used entry the `First` entry, so an unbounded LRU with manual trimming is a few lines:
 
@@ -74,7 +74,7 @@ byte[] GetOrLoad(string key)
 }
 ```
 
-## Pattern 4 — assignment semantics
+## Pattern 4 - assignment semantics
 
 `Add` follows the strict BCL `Dictionary<TKey, TValue>.Add` contract and throws on a duplicate key. The indexer upserts: a new key is appended to the tail, and an existing key's value is updated in place (and, in access-order mode, moved to the tail).
 
@@ -84,7 +84,7 @@ using Bodu.Collections.Generic;
 
 var map = new SequencedDictionary<string, int>();
 map.Add("a", 1);
-map["a"] = 10;          // updates in place — order unchanged in insertion mode
+map["a"] = 10;          // updates in place - order unchanged in insertion mode
 // map.Add("a", 2);     // would throw ArgumentException (duplicate key)
 ```
 
@@ -94,7 +94,7 @@ map["a"] = 10;          // updates in place — order unchanged in insertion mod
 
 ## Relationship to `OrderedDictionary<TKey, TValue>`
 
-The BCL's `OrderedDictionary<TKey, TValue>` (.NET 9+) is *positional* — index-addressable with `Insert(index, …)`, `RemoveAt(index)`, and O(1) random access by position, but O(n) removal of a non-tail entry. `SequencedDictionary<TKey, TValue>` exposes **no** positional surface; it trades index access for O(1) removal of either end and O(1) removal of any entry by key, and adds the access-order mode. On Bodu's `net8.0` target the BCL `OrderedDictionary<TKey, TValue>` is not available regardless.
+The BCL's `OrderedDictionary<TKey, TValue>` (.NET 9+) is *positional* - index-addressable with `Insert(index, …)`, `RemoveAt(index)`, and O(1) random access by position, but O(n) removal of a non-tail entry. `SequencedDictionary<TKey, TValue>` exposes **no** positional surface; it trades index access for O(1) removal of either end and O(1) removal of any entry by key, and adds the access-order mode. On Bodu's `net8.0` target the BCL `OrderedDictionary<TKey, TValue>` is not available regardless.
 
 ## API summary
 
@@ -117,8 +117,8 @@ The BCL's `OrderedDictionary<TKey, TValue>` (.NET 9+) is *positional* — index-
 
 ## Where to go next
 
-- [Evicting dictionary](evicting-dictionary.md) — fixed-capacity cache with FIFO / LRU / LFU eviction policies.
-- [Choosing a collection](choosing-a-collection.md) — the full decision guide across the namespace.
-- [Bodu.Collections guide index](index.md) — all key types at a glance.
-- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) — full namespace overview.
-- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.
+- [Evicting dictionary](evicting-dictionary.md) - fixed-capacity cache with FIFO / LRU / LFU eviction policies.
+- [Choosing a collection](choosing-a-collection.md) - the full decision guide across the namespace.
+- [Bodu.Collections guide index](index.md) - all key types at a glance.
+- [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) - full namespace overview.
+- **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

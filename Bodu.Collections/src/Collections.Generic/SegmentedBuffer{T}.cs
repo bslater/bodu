@@ -239,9 +239,9 @@ public sealed class SegmentedBuffer<T> :
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the buffer contents in insertion order.</returns>
     /// <remarks>
-    /// Enumeration yields elements in the order they were added. The enumerator is fail-fast: if the buffer is modified
-    /// — by <see cref="Add" /> or by assignment through the indexer — after enumeration begins, the next iteration step
-    /// throws <see cref="InvalidOperationException" />.
+    /// Enumeration yields elements in the order they were added. The enumerator is fail-fast: if the buffer is
+    /// modified - by <see cref="Add" /> or by assignment through the indexer - after enumeration begins, the next
+    /// iteration step throws <see cref="InvalidOperationException" />.
     /// </remarks>
     /// <exception cref="InvalidOperationException">The buffer was modified after enumeration began.</exception>
     public IEnumerator<T> GetEnumerator()

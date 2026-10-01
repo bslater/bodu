@@ -50,7 +50,7 @@ public static class SqliteRateCacheExtensions
     /// <para>
     /// Call this once per provider to register several caches side by side. Point them at distinct
     /// <see cref="SqliteRateCacheOptions.DatabaseFilePath" /> values to isolate each provider in its own file, or at
-    /// one shared file to hold every provider's series in a single database — the provider is the leading key column,
+    /// one shared file to hold every provider's series in a single database - the provider is the leading key column,
     /// so the series stay partitioned with no collisions. The first registration also backs the default
     /// <see cref="IRateCache" /> resolution; resolve a specific provider's cache by its key.
     /// </para>
@@ -102,7 +102,7 @@ public static class SqliteRateCacheExtensions
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<SqliteRateCacheOptions>, SqliteCacheStorageStartupValidator>());
 
         // Register the concrete cache as a singleton keyed by the provider name so each provider added gets its own
-        // instance — its own keep-alive connection and per-pair locks — and the container disposes each on shutdown.
+        // instance - its own keep-alive connection and per-pair locks - and the container disposes each on shutdown.
         // Keying is what lets several providers be registered side by side, including over one shared database file
         // where the leading provider column keeps their series partitioned.
         services.TryAddKeyedSingleton(providerName, (serviceProvider, key) =>

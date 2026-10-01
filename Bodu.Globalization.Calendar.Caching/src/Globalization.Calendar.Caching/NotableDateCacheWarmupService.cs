@@ -19,11 +19,11 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The warm-up runs in the background after the host has started — it yields before doing any work, so application
-/// start is never blocked — and computes territories one at a time (year resolution is synchronous and CPU-bound),
+/// The warm-up runs in the background after the host has started - it yields before doing any work, so application
+/// start is never blocked - and computes territories one at a time (year resolution is synchronous and CPU-bound),
 /// checking for host shutdown between territories. When the registered <see cref="INotableDateService" /> is not the
-/// caching decorator — the warm-up was registered without <c>AddCachedNotableDateService</c>, or another decorator was
-/// layered over it — the run logs the misconfiguration and no-ops rather than failing the host.
+/// caching decorator - the warm-up was registered without <c>AddCachedNotableDateService</c>, or another decorator was
+/// layered over it - the run logs the misconfiguration and no-ops rather than failing the host.
 /// </para>
 /// <para>
 /// Failure never crashes the host: an individual territory's failure is already swallowed inside

@@ -47,7 +47,7 @@ public partial class ConfigurationPatternTests
     }
 
     /// <summary>
-    /// Verifies that the cap counts only unescaped opening braces — a pattern containing many escaped
+    /// Verifies that the cap counts only unescaped opening braces - a pattern containing many escaped
     /// <c>\{</c> literals does not exhaust the nesting budget.
     /// </summary>
     [TestMethod]
@@ -60,7 +60,7 @@ public partial class ConfigurationPatternTests
 
         source.Append(".log");
 
-        // Should not throw — every '{' is escaped, so depth never exceeds zero.
+        // Should not throw - every '{' is escaped, so depth never exceeds zero.
         var pattern = ConfigurationPattern.Compile(source.ToString());
 
         StringBuilder expectedMatch = new();
@@ -74,7 +74,7 @@ public partial class ConfigurationPatternTests
     }
 
     /// <summary>
-    /// Builds <c>prefix.{a,{a,{a,…,b}…}}.suffix</c> — an <paramref name="depth" />-deep nested alternation
+    /// Builds <c>prefix.{a,{a,{a,…,b}…}}.suffix</c> - an <paramref name="depth" />-deep nested alternation
     /// where every layer offers <c>a</c> alongside an inner brace, terminating in <c>b</c>. The compiled
     /// pattern matches both <c>prefix.a.suffix</c> and <c>prefix.b.suffix</c>.
     /// </summary>

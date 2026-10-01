@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="ep-t ep-d">
-  <title id="ep-t">Bodu.Text.Encoding — encode/decode pipeline</title>
+  <title id="ep-t">Bodu.Text.Encoding - encode/decode pipeline</title>
   <desc id="ep-d">Every encoding follows the same four-stage pipeline. Encoding takes raw binary bytes, packs them into N-bit symbols (Base16, Base32, Base64) or performs big-integer divmod (Base58) or 4-byte block packing (Base85), applies variant transforms (alphabet swap, padding, shortcut), and optionally adds decorations (case folding, prefix, spacing, line breaks). The result is encoded text. Decoding is the same path in reverse: strip decorations, apply alphabet lookup, then bit-stream unpack, divmod, or block expansion. The bottom row labels the strategy each radix family uses.</desc>
 
   <defs>
@@ -36,9 +36,9 @@
     <rect class="pan" width="800" height="300" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Bodu.Text.Encoding — encode/decode pipeline</text>
+    <text class="ttl" x="16" y="20">Bodu.Text.Encoding - encode/decode pipeline</text>
 
-    <!-- ===== Top row — ENCODE (left-to-right, teal) ===== -->
+    <!-- ===== Top row - ENCODE (left-to-right, teal) ===== -->
     <text class="row" x="20" y="58">ENCODE  ▸ binary bytes → encoded text</text>
 
     <g transform="translate(20 70)">
@@ -78,7 +78,7 @@
     <!-- ===== Middle separator ===== -->
     <line x1="20" y1="142" x2="780" y2="142" stroke="#334155" stroke-width="1"/>
 
-    <!-- ===== Bottom row — DECODE (left-to-right, purple) ===== -->
+    <!-- ===== Bottom row - DECODE (left-to-right, purple) ===== -->
     <text class="rowd" x="20" y="164">DECODE  ▸ encoded text → binary bytes</text>
 
     <g transform="translate(20 176)">

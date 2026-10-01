@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <remarks>
 /// <para>
 /// Each algorithm family derives a concrete specification (for example <c>HashAlgorithmSpecification</c> or
-/// <c>BlockCipherSpecification</c>) that adds its family-specific properties — key sizes, block sizes, boundary lengths
-/// — and binds <typeparamref name="TKat" /> to its operation-shaped vector type. Contract test bases read
+/// <c>BlockCipherSpecification</c>) that adds its family-specific properties - key sizes, block sizes, boundary
+/// lengths - and binds <typeparamref name="TKat" /> to its operation-shaped vector type. Contract test bases read
 /// <see cref="KnownAnswers" /> uniformly, so the same data-driven harness drives every family.
 /// </para>
 /// <para>

@@ -8,11 +8,11 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class CtrModeTransformTests
 {
-    // ── NIST SP 800-38A Appendix F.5.1 — AES-128-CTR ─────────────────────────────────────────
+    // ── NIST SP 800-38A Appendix F.5.1 - AES-128-CTR ─────────────────────────────────────────
     //
     // Key:           2b7e151628aed2a6abf7158809cf4f3c
     // Initial counter (T1): f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
-    // Plaintext blocks P1–P4 / Ciphertext blocks C1–C4.
+    // Plaintext blocks P1-P4 / Ciphertext blocks C1-C4.
 
     private static readonly byte[] NistKey = Convert.FromHexString("2b7e151628aed2a6abf7158809cf4f3c");
     private static readonly byte[] NistCounter = Convert.FromHexString("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff");

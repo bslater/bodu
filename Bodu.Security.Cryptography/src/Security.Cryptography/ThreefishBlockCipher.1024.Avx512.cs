@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// AVX-512 vectorised implementation of <see cref="Threefish1024Cipher" />. The sixteen 64-bit state words are split
-/// across two <see cref="Vector512{T}" /> registers — <c>loVec</c> holds the eight even-position words
+/// across two <see cref="Vector512{T}" /> registers - <c>loVec</c> holds the eight even-position words
 /// <c>(x0, x2, x4, x6, x8, x10, x12, x14)</c> and <c>hiVec</c> the eight odd-position words
 /// <c>(x1, x3, x5, x7, x9, x11, x13, x15)</c>. Each round performs a vector add, a per-lane variable rotate (
 /// <c>VPROLVQ</c>), an XOR, and a pair of single-source <c>VPERMQ</c> shuffles that realign the registers for the next
@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The per-round word permutation has a uniform 4-round cycle: the same two lane-shuffle vectors realign both registers
-/// for every inter-round transition within a group, and after four shuffles both registers return to canonical layout —
+/// for every inter-round transition within a group, and after four shuffles both registers return to canonical layout -
 /// exactly where the subkey injection lands.
 /// </para>
 /// <para>

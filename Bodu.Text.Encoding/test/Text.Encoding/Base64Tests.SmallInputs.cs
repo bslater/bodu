@@ -20,7 +20,7 @@ public sealed partial class Base64Tests
     [DataRow(16)]
     [DataRow(64)]
     [DataRow(128)]
-    [DataRow(192)]   // ~256 chars when encoded — straddles 256-char stackalloc threshold below
+    [DataRow(192)]   // ~256 chars when encoded - straddles 256-char stackalloc threshold below
     [DataRow(256)]
     [DataRow(257)]
     [DataRow(512)]

@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements DHKEM(X25519, HKDF-SHA256) — the Diffie-Hellman key encapsulation mechanism of RFC 9180 §4.1 built on
+/// Implements DHKEM(X25519, HKDF-SHA256) - the Diffie-Hellman key encapsulation mechanism of RFC 9180 §4.1 built on
 /// X25519 and HKDF-SHA256, providing the base <c>Encap</c>/<c>Decap</c> operations and the authenticated
 /// <c>AuthEncap</c>/<c>AuthDecap</c> operations used by HPKE's Auth and AuthPSK modes.
 /// </summary>

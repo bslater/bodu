@@ -28,8 +28,16 @@ internal static partial class VectorRotation
         /// <param name="count">The number of bits to rotate each lane by.</param>
         /// <returns>The rotated lanes.</returns>
         /// <remarks>
+        /// <para>
         /// <paramref name="count" /> must be a constant from 1 to 31; it is not validated. Because it is a constant,
         /// the choice between the forms folds away when the call is inlined.
+        /// </para>
+        /// <para>
+        /// The shifts are the portable operators, not <c>Sse2.ShiftLeftLogical</c> and <c>Sse2.ShiftRightLogical</c>.
+        /// .NET 10 compiles either form to immediate shifts. .NET 8 does not fold <c>(byte)(32 - count)</c> into the
+        /// intrinsic's immediate: it passes the count from memory, and the ChaCha20 and Salsa20 kernels built on that
+        /// form spill more and run slower than on the portable operators, which move the count into a register.
+        /// </para>
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<uint> RotateLeft(Vector128<uint> value, [ConstantExpected(Min = 1, Max = 31)] byte count) => count switch

@@ -22,8 +22,8 @@ public sealed partial class X25519Tests
     private const string WycheproofResourceName = "Bodu.Security.Cryptography.X25519.Wycheproof.txt";
 
     /// <summary>
-    /// Yields the published RFC 7748 vectors — the two §5.2 single-call scalar-multiplication vectors and both
-    /// directions of the §6.1 Diffie-Hellman example — as KAT rows.
+    /// Yields the published RFC 7748 vectors - the two §5.2 single-call scalar-multiplication vectors and both
+    /// directions of the §6.1 Diffie-Hellman example - as KAT rows.
     /// </summary>
     /// <returns>One row per vector.</returns>
     private static IEnumerable<object[]> Rfc7748KnownAnswers()

@@ -41,7 +41,7 @@ public sealed record SignatureKnownAnswer
     public required byte[] Message { get; init; }
 
     /// <summary>
-    /// Gets the signature — the expected output for a signing row, or the candidate under test for a verification row.
+    /// Gets the signature - the expected output for a signing row, or the candidate under test for a verification row.
     /// </summary>
     public required byte[] Signature { get; init; }
 

@@ -20,7 +20,7 @@ namespace Bodu.IO.Hashing;
 /// non-cryptographic use cases.
 /// </para>
 /// <para>
-/// <strong>When to choose APHash.</strong> APHash is one of the simplest position-aware mixes in the lib — pick it when
+/// <strong>When to choose APHash.</strong> APHash is one of the simplest position-aware mixes in the lib - pick it when
 /// a small, dependency-free 32-bit hash is enough and the performance budget per byte is tight. For better avalanche on
 /// hash-table keys prefer <see cref="Fnv1a32" /> or <see cref="MurmurHash3_32" />; for content fingerprinting prefer
 /// <see cref="CityHash" />. APHash, <see cref="JSHash" />, <see cref="SDBM" />, and <see cref="Pjw32" /> are siblings

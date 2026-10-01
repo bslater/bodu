@@ -184,7 +184,7 @@ public ref partial struct BiffWriter
     /// <remarks>
     /// The split is byte-oriented: it is correct for structures the format allows to continue at any byte (drawing and
     /// text objects, for example) but not for the shared string table, whose continuation must restart at a character
-    /// boundary with a fresh flags byte — use <see cref="WriteSst(ReadOnlySpan{string})" /> for that.
+    /// boundary with a fresh flags byte - use <see cref="WriteSst(ReadOnlySpan{string})" /> for that.
     /// </remarks>
     public void WriteContinuedRecord(ushort recordId, scoped ReadOnlySpan<byte> payload)
     {

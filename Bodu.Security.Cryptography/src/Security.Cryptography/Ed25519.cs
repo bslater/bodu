@@ -83,6 +83,14 @@ public sealed partial class Ed25519
     /// <summary>The fixed key size, in bits, reported through <see cref="AsymmetricAlgorithm.KeySize" />.</summary>
     private const int KeySizeBits = 256;
 
+    /// <summary>The longest message, in bytes, that signing and verification hash in one call over a copy on the stack; a longer one is hashed incrementally.</summary>
+    /// <remarks>
+    /// An <see cref="IncrementalHash" /> costs an allocation and its setup on every call, which the one-call hash
+    /// avoids at the price of copying the message. The one-call hash measured faster at every length up to 4 KiB, on
+    /// both runtimes; the bound keeps the copy's stack use small.
+    /// </remarks>
+    internal const int StackHashMaximumMessageLength = 1024;
+
     /// <summary>The single legal key size reported through <see cref="AsymmetricAlgorithm.LegalKeySizes" />.</summary>
     private static readonly KeySizes[] s_legalKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
 
@@ -281,12 +289,13 @@ public sealed partial class Ed25519
 
         // RFC 8032 §5.1.6: expand the seed into the clamped scalar s and the deterministic-nonce prefix. Every
         // secret-bearing scratch span is cleared in the finally, so a fault mid-signing (in the point arithmetic or
-        // the incremental hash) cannot leave the expanded private scalar or nonce material live on the stack.
+        // the hashing) cannot leave the expanded private scalar or nonce material live on the stack.
         Span<byte> expanded = stackalloc byte[64];
         Span<byte> s = stackalloc byte[32];
         Span<byte> digest = stackalloc byte[64];
         Span<byte> r = stackalloc byte[32];
         Span<byte> k = stackalloc byte[32];
+        IncrementalHash? hash = null;
 
         try
         {
@@ -297,29 +306,21 @@ public sealed partial class Ed25519
             s[31] &= 127;
             s[31] |= 64;
 
-            using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
-            {
-                // r = SHA-512(prefix ‖ M) mod L, then R = [r]B.
-                hash.AppendData(expanded[32..]);
-                hash.AppendData(data);
-                hash.GetHashAndReset(digest);
-                Ed25519Scalar.Reduce(digest, r);
+            // r = SHA-512(prefix ‖ M) mod L, then R = [r]B.
+            HashPrefixedMessage(expanded[32..], [], data, digest, ref hash);
+            Ed25519Scalar.Reduce(digest, r);
 
-                Span<byte> rEncoded = destination[..32];
-                Ed25519Point.ScalarMultBase(r).Encode(rEncoded);
+            Span<byte> rEncoded = destination[..32];
+            Ed25519Point.ScalarMultBase(r).Encode(rEncoded);
 
-                // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
-                hash.AppendData(rEncoded);
-                hash.AppendData(TypedKeyMaterial!.PublicKey);
-                hash.AppendData(data);
-                hash.GetHashAndReset(digest);
-
-                Ed25519Scalar.Reduce(digest, k);
-                Ed25519Scalar.MulAdd(k, s, r, destination[32..]);
-            }
+            // S = (r + SHA-512(R ‖ A ‖ M) · s) mod L.
+            HashPrefixedMessage(rEncoded, TypedKeyMaterial!.PublicKey, data, digest, ref hash);
+            Ed25519Scalar.Reduce(digest, k);
+            Ed25519Scalar.MulAdd(k, s, r, destination[32..]);
         }
         finally
         {
+            hash?.Dispose();
             CryptographyHelper.Clear(k);
             CryptographyHelper.Clear(r);
             CryptographyHelper.Clear(digest);
@@ -341,8 +342,8 @@ public sealed partial class Ed25519
     /// <exception cref="CryptographicException">The instance does not hold a public key.</exception>
     /// <remarks>
     /// <para>
-    /// Verification never throws for bad signature input: every failure mode — wrong length, S ≥ L, a non-canonical or
-    /// off-curve R, or a small-order R or public key — yields <see langword="false" />. Verification time may vary with
+    /// Verification never throws for bad signature input: every failure mode - wrong length, S ≥ L, a non-canonical or
+    /// off-curve R, or a small-order R or public key - yields <see langword="false" />. Verification time may vary with
     /// the inputs, which is acceptable because all inputs to verification are public.
     /// </para>
     /// <para>
@@ -384,12 +385,15 @@ public sealed partial class Ed25519
 
         // k = SHA-512(R ‖ A ‖ M) mod L; accept when [S]B == R + [k]A (cofactorless).
         Span<byte> digest = stackalloc byte[64];
-        using (var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA512))
+        IncrementalHash? hash = null;
+
+        try
         {
-            hash.AppendData(rEncoded);
-            hash.AppendData(TypedKeyMaterial!.PublicKey);
-            hash.AppendData(data);
-            hash.GetHashAndReset(digest);
+            HashPrefixedMessage(rEncoded, TypedKeyMaterial!.PublicKey, data, digest, ref hash);
+        }
+        finally
+        {
+            hash?.Dispose();
         }
 
         Span<byte> k = stackalloc byte[32];
@@ -401,6 +405,65 @@ public sealed partial class Ed25519
         Ed25519Point combination = Ed25519Point.DoubleScalarMultBaseVartime(sEncoded, k, publicPoint.Negate());
 
         return Ed25519Point.AreEqual(combination, rPoint);
+    }
+
+    /// <summary>
+    /// Computes the SHA-512 digest of <paramref name="first" /> ‖ <paramref name="second" /> ‖
+    /// <paramref name="message" />, the input of every hash RFC 8032 takes over a message.
+    /// </summary>
+    /// <param name="first">
+    /// The first part of the prefix: the nonce prefix of the expanded key, or the encoded R.
+    /// </param>
+    /// <param name="second">The second part of the prefix: empty, or the encoded public key A.</param>
+    /// <param name="message">The message.</param>
+    /// <param name="destination">The 64-byte span that receives the digest.</param>
+    /// <param name="hash">
+    /// The incremental hash for a longer message: <see langword="null" /> until one is needed, then kept for the
+    /// caller's next hash. The caller disposes it.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// A message of up to <see cref="StackHashMaximumMessageLength" /> bytes is copied after the prefix into a buffer
+    /// on the stack and hashed in one call, which allocates nothing; a longer one is hashed incrementally, without the
+    /// copy, and signing's two hashes of it share one <see cref="IncrementalHash" />.
+    /// </para>
+    /// <para>
+    /// The prefix, 64 bytes at most, may be the secret nonce prefix, so its copy is cleared before the method returns.
+    /// </para>
+    /// </remarks>
+    private static void HashPrefixedMessage(
+        ReadOnlySpan<byte> first,
+        ReadOnlySpan<byte> second,
+        ReadOnlySpan<byte> message,
+        Span<byte> destination,
+        ref IncrementalHash? hash)
+    {
+        if (message.Length > StackHashMaximumMessageLength)
+        {
+            hash ??= IncrementalHash.CreateHash(HashAlgorithmName.SHA512);
+            hash.AppendData(first);
+            hash.AppendData(second);
+            hash.AppendData(message);
+            hash.GetHashAndReset(destination);
+
+            return;
+        }
+
+        int prefixLength = first.Length + second.Length;
+        Span<byte> buffer = stackalloc byte[prefixLength + message.Length];
+
+        try
+        {
+            first.CopyTo(buffer);
+            second.CopyTo(buffer[first.Length..]);
+            message.CopyTo(buffer[prefixLength..]);
+
+            SHA512.HashData(buffer, destination);
+        }
+        finally
+        {
+            CryptographyHelper.Clear(buffer[..prefixLength]);
+        }
     }
 
     /// <summary>

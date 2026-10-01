@@ -170,7 +170,7 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
-    /// Encodes one record — preceded by the header row when it is still pending — into the batch buffer using a fresh
+    /// Encodes one record - preceded by the header row when it is still pending - into the batch buffer using a fresh
     /// per-record writer, which is safe because delimited rows are self-contained.
     /// </summary>
     /// <param name="destination">The batch buffer.</param>

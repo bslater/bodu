@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 
 /// <summary>
 /// Measures throughput, latency, and allocation for the primitives the cryptography performance plans
-/// (<c>plans/crypto-performance.md</c> and <c>plans/crypto-performance-followups.md</c>) target, next to the BCL and — on
-/// Linux — OpenSSL on the same machine.
+/// (<c>plans/crypto-performance.md</c> and <c>plans/crypto-performance-followups.md</c>) target, next to the BCL and - on
+/// Linux - OpenSSL on the same machine.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -29,9 +29,11 @@ namespace Bodu.Security.Cryptography.Benchmarks;
 /// median of five rounds; allocation is the process-wide allocation per operation over all five.
 /// </para>
 /// <para>
-/// Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the published package. SIMD tiers are
-/// selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or <c>DOTNET_EnableAVX512=0</c> (.NET
-/// 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and <c>DOTNET_EnableHWIntrinsic=0</c> every vector path.
+/// Built with <c>-p:BoduCryptoBaseline=1.0.0</c>, the same source measures the published package, leaving out the cases
+/// for APIs 1.0.0 lacks. SIMD tiers are selected with the runtime's switches: <c>DOTNET_EnableAVX512F=0</c> (.NET 8) or
+/// <c>DOTNET_EnableAVX512=0</c> (.NET 10) removes AVX-512, <c>DOTNET_EnableAVX2=0</c> AVX2, and
+/// <c>DOTNET_EnableHWIntrinsic=0</c> every vector path, the BCL's included. <c>--disable-simd</c> sets the library's
+/// own switch instead, so only the library's kernels give way to their scalar paths.
 /// </para>
 /// </remarks>
 internal static class CryptoHarness
@@ -56,6 +58,15 @@ internal static class CryptoHarness
     /// number of keystream blocks up to nine, then twelve and fifteen.
     /// </summary>
     private static readonly int[] s_shortAeadLengths = [0, 16, 128, 192, 320, 384, 448, 512, 576, 768, 960];
+
+    /// <summary>The message lengths below 256 bytes the MAC cases add, from 128 bytes, where Apple silicon's AdvSimd kernel takes over.</summary>
+    private static readonly int[] s_macThresholdLengths = [128, 192];
+
+    /// <summary>
+    /// The message lengths the Poly1305 kernel cases sweep: each side of every length at which dispatch moves from one
+    /// kernel to the next, then up to the bulk input.
+    /// </summary>
+    private static readonly int[] s_kernelLengths = [64, 128, 192, 256, 384, 512, 768, 1 << 10, 2 << 10, 4 << 10, 16 << 10, BulkLength];
 
     /// <summary>The case filters from the command line; empty to run every case.</summary>
     private static string[] s_filters = [];
@@ -86,7 +97,14 @@ internal static class CryptoHarness
         RunHashes();
         RunStreamCiphers();
         RunAeadsAndModes();
+#if !BODU_CRYPTO_BASELINE
+        RunPoly1305Kernels();
+#endif
+        RunBlockCiphers();
         RunKeyDerivation();
+#if !BODU_CRYPTO_BASELINE
+        RunArgon2Kernels();
+#endif
         RunPublicKey();
     }
 
@@ -121,11 +139,13 @@ internal static class CryptoHarness
         using (var blake3 = new Blake3())
             Measure("hash", "Bodu BLAKE3 16 MiB", large.Length, () => blake3.TryComputeHash(large, digest, out _));
 
+#if !BODU_CRYPTO_BASELINE
         using (var blake3 = new Blake3(maxDegreeOfParallelism: -1))
         {
             Measure("hash", "Bodu BLAKE3 1 MiB, all cores", BulkLength, () => blake3.TryComputeHash(bulk, digest, out _));
             Measure("hash", "Bodu BLAKE3 16 MiB, all cores", large.Length, () => blake3.TryComputeHash(large, digest, out _));
         }
+#endif
 
         Measure("hash", "BCL SHA-256 1 MiB", BulkLength, () => SHA256.HashData(bulk, digest));
         if (Shake128.IsSupported)
@@ -209,6 +229,14 @@ internal static class CryptoHarness
                 Measure("aead", $"BCL ChaCha20-Poly1305 {size}", length, () => bcl.Encrypt(nonce12, message, output.AsSpan(0, length), tag));
         }
 
+        // The MAC alone between the AdvSimd kernel's two thresholds: Apple silicon's kernel takes runs from 128 bytes,
+        // every other ARM64 processor's from 256.
+        foreach (int length in s_macThresholdLengths)
+        {
+            byte[] message = Random(length, 16);
+            Measure("mac", $"Bodu Poly1305 {SizeLabel(length)}", length, () => { using var mac = new Poly1305(); mac.Key = key32; mac.TryComputeHash(message, digest, out _); });
+        }
+
         using (var aes = new AesBlockCipher(key16))
         using (var aes2 = new AesBlockCipher(key32[..16]))
         {
@@ -242,6 +270,89 @@ internal static class CryptoHarness
             using IBlockCipher cipher = create();
             byte[] iv = Random(ivLength, 13);
             Measure("mode", $"Bodu {name}-CTR 1 MiB", BulkLength, () => { using var ctr = new CtrModeTransform(cipher, iv); ctr.Transform(bulk, output.AsSpan(0, BulkLength), encrypt: true); });
+            Measure("mode", $"Bodu {name}-CTR 64 B", SmallLength, () => { using var ctr = new CtrModeTransform(cipher, iv); ctr.Transform(small, output.AsSpan(0, SmallLength), encrypt: true); });
+
+            // The same blocks encrypted without the counter mode: what CTR's keystream costs before the counters and
+            // the XOR.
+            Measure("mode", $"Bodu {name}-ECB bulk 1 MiB", BulkLength, () => cipher.EncryptBlocks(bulk, output.AsSpan(0, BulkLength)));
+        }
+    }
+
+#if !BODU_CRYPTO_BASELINE
+    /// <summary>
+    /// Measures Poly1305 through each kernel the processor supports, named explicitly, at lengths either side of the
+    /// dispatch thresholds, to show where each kernel overtakes the one below it.
+    /// </summary>
+    /// <remarks>
+    /// The library's switch does not reach a kernel named explicitly, so with <c>--disable-simd</c> these cases would
+    /// repeat the default configuration's, and they are left out.
+    /// </remarks>
+    private static void RunPoly1305Kernels()
+    {
+        if (Program.IsSimdDisabled)
+            return;
+
+        var driver = Poly1305KernelDriver.Create();
+        byte[] key = Random(32, 16);
+        byte[] tag = new byte[16];
+        foreach (int length in s_kernelLengths)
+        {
+            byte[] message = Random(length, 17);
+            foreach ((string name, int kernel) in driver.Kernels)
+                Measure("kernel", $"Poly1305 {name} {SizeLabel(length)}", length, () => driver.ComputeTag(kernel, key, message, tag));
+        }
+    }
+
+    /// <summary>
+    /// Measures Argon2id through each compression kernel the processor supports, named explicitly and on the calling
+    /// thread, with the parameters of the key-derivation case.
+    /// </summary>
+    private static void RunArgon2Kernels()
+    {
+        if (Program.IsSimdDisabled)
+            return;
+
+        var driver = Argon2FillDriver.Create();
+        byte[] password = Random(32, 21);
+        byte[] salt = Random(16, 22);
+        var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
+        foreach ((string name, int kernel) in driver.Kernels)
+            Measure("kernel", $"Argon2id {name} m=19 MiB t=2 p=1", 0, () => driver.DeriveKeyWithKernel(argon2, password, salt, kernel));
+    }
+#endif
+
+    /// <summary>
+    /// Measures block ciphers one block per call, through <see cref="IBlockCipher.Encrypt" /> and
+    /// <see cref="IBlockCipher.Decrypt" />: the wide-block Serpent variants, which have no batched path, and Serpent-128
+    /// for scale.
+    /// </summary>
+    private static void RunBlockCiphers()
+    {
+        const int Length = 64 << 10;
+        byte[] input = Random(Length, 18);
+        byte[] output = new byte[Length];
+        byte[] tweak = Random(16, 19);
+
+        foreach ((string name, Func<IBlockCipher> create) in new (string, Func<IBlockCipher>)[]
+        {
+            ("Serpent-128", () => new Serpent128Cipher(Random(32, 20))),
+            ("Serpent-256", () => new Serpent256Cipher(Random(32, 20), tweak)),
+            ("Serpent-512", () => new Serpent512Cipher(Random(64, 20), tweak)),
+            ("Serpent-1024", () => new Serpent1024Cipher(Random(128, 20), tweak)),
+        })
+        {
+            using IBlockCipher cipher = create();
+            int blockLength = cipher.BlockSize / 8;
+            Measure("block", $"Bodu {name} encrypt, block per call", Length, () =>
+            {
+                for (int offset = 0; offset < Length; offset += blockLength)
+                    cipher.Encrypt(input.AsSpan(offset, blockLength), output.AsSpan(offset, blockLength));
+            });
+            Measure("block", $"Bodu {name} decrypt, block per call", Length, () =>
+            {
+                for (int offset = 0; offset < Length; offset += blockLength)
+                    cipher.Decrypt(input.AsSpan(offset, blockLength), output.AsSpan(offset, blockLength));
+            });
         }
     }
 
@@ -263,8 +374,10 @@ internal static class CryptoHarness
                 Measure("kdf", $"OpenSSL scrypt {parameters}", 0, () => OpenSsl.Scrypt(password, salt, 1UL << log2N, (ulong)r, (ulong)p, key));
         }
 
+#if !BODU_CRYPTO_BASELINE
         var threaded = new Scrypt(1 << 14, 8, 4, maxDegreeOfParallelism: 4);
         Measure("kdf", "Bodu scrypt N=2^14 r=8 p=4 bound 4", 0, () => threaded.DeriveKey(password, salt, key));
+#endif
 
         var argon2 = new Argon2Parameters { MemoryKiB = 19 * 1024, Iterations = 2, Parallelism = 1 };
         Measure("kdf", "Bodu Argon2id m=19 MiB t=2 p=1", 0, () => Argon2id.DeriveKey(password, salt, argon2));
@@ -293,25 +406,78 @@ internal static class CryptoHarness
             byte[] signature = ed25519.SignData(message);
             Measure("asym", "Bodu Ed25519 sign", 0, () => ed25519.SignData(message));
             Measure("asym", "Bodu Ed25519 verify", 0, () => ed25519.VerifyData(message, signature));
+
+            // Signing into a span allocates nothing for the signature, so its B/op is the hashing's alone. The longer
+            // messages show what the hashing costs as a message grows.
+            byte[] destination = new byte[Ed25519.SignatureSizeInBytes];
+            Measure("asym", "Bodu Ed25519 sign into a span", 0, () => ed25519.SignData(message, destination));
+            foreach (int length in new[] { 1 << 10, 16 << 10 })
+            {
+                byte[] longer = Random(length, 17);
+                byte[] longerSignature = ed25519.SignData(longer);
+                string size = SizeLabel(length);
+                Measure("asym", $"Bodu Ed25519 sign {size} into a span", 0, () => ed25519.SignData(longer, destination));
+                Measure("asym", $"Bodu Ed25519 verify {size}", 0, () => ed25519.VerifyData(longer, longerSignature));
+            }
         }
 
-        using (var kem = new MLKem768())
-        {
-            Measure("pq", "Bodu ML-KEM-768 key generation", 0, kem.GenerateKey);
-            kem.GenerateKey();
-            (byte[] ciphertext, _) = kem.Encapsulate();
-            Measure("pq", "Bodu ML-KEM-768 encapsulate", 0, () => kem.Encapsulate());
-            Measure("pq", "Bodu ML-KEM-768 decapsulate", 0, () => kem.Decapsulate(ciphertext));
-        }
+        MeasureKem("512", () => new MLKem512());
+        MeasureKem("768", () => new MLKem768());
+        MeasureKem("1024", () => new MLKem1024());
+        MeasureDsa("44", () => new MLDsa44(), message);
+        MeasureDsa("65", () => new MLDsa65(), message);
+        MeasureDsa("87", () => new MLDsa87(), message);
+    }
 
-        using (var dsa = new MLDsa65())
+    /// <summary>
+    /// Measures one ML-KEM parameter set: key generation, encapsulation and decapsulation with the values the key keeps,
+    /// and encapsulation to a key imported for that one encapsulation, as a peer's key is.
+    /// </summary>
+    /// <param name="level">The parameter set's number, such as 768.</param>
+    /// <param name="create">Creates an instance of the parameter set.</param>
+    private static void MeasureKem(string level, Func<MLKem> create)
+    {
+        string name = "Bodu ML-KEM-" + level;
+        using MLKem kem = create();
+        using MLKem recipient = create();
+
+        Measure("pq", name + " key generation", 0, kem.GenerateKey);
+        kem.GenerateKey();
+        byte[] encapsulationKey = kem.ExportEncapsulationKey();
+        (byte[] ciphertext, _) = kem.Encapsulate();
+        Measure("pq", name + " encapsulate", 0, () => kem.Encapsulate());
+        Measure("pq", name + " decapsulate", 0, () => kem.Decapsulate(ciphertext));
+        Measure("pq", name + " encapsulate to an imported key", 0, () =>
         {
-            Measure("pq", "Bodu ML-DSA-65 key generation", 0, dsa.GenerateKey);
-            dsa.GenerateKey();
-            byte[] signature = dsa.SignData(message);
-            Measure("pq", "Bodu ML-DSA-65 sign", 0, () => dsa.SignData(message));
-            Measure("pq", "Bodu ML-DSA-65 verify", 0, () => dsa.VerifyData(message, signature));
-        }
+            recipient.ImportEncapsulationKey(encapsulationKey);
+            recipient.Encapsulate();
+        });
+    }
+
+    /// <summary>
+    /// Measures one ML-DSA parameter set: key generation, signing and verification with the values the key keeps, and
+    /// verification with a public key imported for that one verification, as a signer's key is.
+    /// </summary>
+    /// <param name="level">The parameter set's number, such as 65.</param>
+    /// <param name="create">Creates an instance of the parameter set.</param>
+    /// <param name="message">The message to sign and verify.</param>
+    private static void MeasureDsa(string level, Func<MLDsa> create, byte[] message)
+    {
+        string name = "Bodu ML-DSA-" + level;
+        using MLDsa dsa = create();
+        using MLDsa verifier = create();
+
+        Measure("pq", name + " key generation", 0, dsa.GenerateKey);
+        dsa.GenerateKey();
+        byte[] publicKey = dsa.ExportPublicKey();
+        byte[] signature = dsa.SignData(message);
+        Measure("pq", name + " sign", 0, () => dsa.SignData(message));
+        Measure("pq", name + " verify", 0, () => dsa.VerifyData(message, signature));
+        Measure("pq", name + " verify with an imported key", 0, () =>
+        {
+            verifier.ImportPublicKey(publicKey);
+            verifier.VerifyData(message, signature);
+        });
     }
 
     /// <summary>
@@ -411,7 +577,8 @@ internal static class CryptoHarness
         string isa = RuntimeInformation.ProcessArchitecture == Architecture.Arm64
             ? $"AdvSimd={System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported}"
             : $"AVX-512={System.Runtime.Intrinsics.X86.Avx512F.IsSupported} AVX2={System.Runtime.Intrinsics.X86.Avx2.IsSupported} SSSE3={System.Runtime.Intrinsics.X86.Ssse3.IsSupported}";
-        return $"Bodu.Security.Cryptography {version}; {RuntimeInformation.FrameworkDescription}; {Environment.ProcessorCount} processors; {isa}; OpenSSL references {(OpenSsl.IsAvailable ? "on" : "off")}";
+        string simd = Program.IsSimdDisabled ? "library SIMD off" : "library SIMD on";
+        return $"Bodu.Security.Cryptography {version}; {RuntimeInformation.FrameworkDescription}; {Environment.ProcessorCount} processors; {isa}; {simd}; OpenSSL references {(OpenSsl.IsAvailable ? "on" : "off")}";
     }
 
     /// <summary>

@@ -13,7 +13,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// <c>MOD 11-2</c> is the pure ISO 7064 system that uses modulus eleven with radix two. It operates on an arbitrary
-/// sequence of decimal digits and emits a single check character drawn from the alphabet <c>'0'</c>–<c>'9'</c> plus the
+/// sequence of decimal digits and emits a single check character drawn from the alphabet <c>'0'</c>-<c>'9'</c> plus the
 /// sentinel <c>'X'</c> used to represent the value ten.
 /// </para>
 /// <para>
@@ -99,7 +99,7 @@ public sealed class Iso7064Mod11_2
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check character.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under MOD 11-2; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under MOD 11-2; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="valueIncludingCheck" /> is empty, any non-final character is not a
     /// decimal digit, or the final character is neither a decimal digit nor <c>'X'</c>.
     /// </returns>

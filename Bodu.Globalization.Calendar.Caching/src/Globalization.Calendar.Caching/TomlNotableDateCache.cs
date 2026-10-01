@@ -14,14 +14,14 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each file records the territory as a top-level key, an array of tables under <c>Entries</c> — one table per cached
-/// civil year with its version and computed instant — and an array of tables under <c>Occurrences</c>, one flat table
+/// Each file records the territory as a top-level key, an array of tables under <c>Entries</c> - one table per cached
+/// civil year with its version and computed instant - and an array of tables under <c>Occurrences</c>, one flat table
 /// per emitted occurrence carrying its year and version so it associates back to its entry. Dates and instants use
 /// TOML's native RFC 3339 forms.
 /// </para>
 /// <para>
-/// Malformed content is treated as an empty result, and all file-level resilience — including atomic temp-and-move
-/// writes and the parse memo — is provided by <see cref="FileNotableDateCacheBase" />.
+/// Malformed content is treated as an empty result, and all file-level resilience - including atomic temp-and-move
+/// writes and the parse memo - is provided by <see cref="FileNotableDateCacheBase" />.
 /// </para>
 /// </remarks>
 public sealed class TomlNotableDateCache

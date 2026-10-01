@@ -9,7 +9,7 @@ using System.Text;
 namespace Bodu.IO.Compound.Builders;
 
 /// <summary>
-/// Represents a stream entry in a mutable compound-file object model — a named, file-like node carrying an opaque byte
+/// Represents a stream entry in a mutable compound-file object model - a named, file-like node carrying an opaque byte
 /// payload.
 /// </summary>
 /// <remarks>

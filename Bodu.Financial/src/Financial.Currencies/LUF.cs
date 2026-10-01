@@ -12,7 +12,7 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// ISO 4217 numeric code <c>442</c>; minor-unit precision <c>2</c>.
-/// Historic — demonetized on 2002-02-28, replaced by EUR.
+/// Historic - demonetized on 2002-02-28, replaced by EUR.
 /// </remarks>
 public sealed class LUF : ICurrency
 {
@@ -37,7 +37,7 @@ public sealed class LUF : ICurrency
     /// <summary>
     /// Gets a value indicating that the currency has been demonetized.
     /// </summary>
-    /// <value><see langword="true" /> — this is a historic currency.</value>
+    /// <value><see langword="true" /> - this is a historic currency.</value>
     public static bool IsHistoric => true;
 
     /// <summary>

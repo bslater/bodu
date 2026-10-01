@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <remarks>
 /// <para>
 /// Each built-in is registered as a <see cref="DelegateNotableDateAlgorithm" /> that captures the parameters its
-/// calculator requires — for example the time-zone offset that dates an equinox holiday, or the festival key shared by
-/// the Hindu lunisolar family — behind the parameterless <see cref="INotableDateAlgorithm.Calculate(int)" /> surface.
+/// calculator requires - for example the time-zone offset that dates an equinox holiday, or the festival key shared by
+/// the Hindu lunisolar family - behind the parameterless <see cref="INotableDateAlgorithm.Calculate(int)" /> surface.
 /// The registry is immutable after construction and safe to share across threads.
 /// </para>
 /// </remarks>

@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides shared scaffolding for the regional calendar data-bundle test classes — a common load-and-resolve
-/// smoke test plus resolution and date-tolerance helpers — parameterized over a single region's data factory
+/// Provides shared scaffolding for the regional calendar data-bundle test classes - a common load-and-resolve
+/// smoke test plus resolution and date-tolerance helpers - parameterized over a single region's data factory
 /// through the <see cref="SupportedCountries" /> and <see cref="CreateService(string)" /> hooks.
 /// </summary>
 /// <remarks>
@@ -78,7 +78,7 @@ public abstract class CalendarDataTestsBase
     /// <paramref name="year" />.
     /// </summary>
     /// <param name="territory">The territory code to resolve.</param>
-    /// <param name="year">The Gregorian year whose 1 January–31 December window is resolved.</param>
+    /// <param name="year">The Gregorian year whose 1 January-31 December window is resolved.</param>
     /// <returns>The notable dates emitted for the territory and year, in resolution order.</returns>
     protected IReadOnlyList<NotableDate> ResolveYear(string territory, int year) =>
         CreateService(territory)

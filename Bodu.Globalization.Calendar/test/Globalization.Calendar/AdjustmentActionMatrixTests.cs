@@ -37,7 +37,7 @@ public sealed partial class AdjustmentActionMatrixTests
         service.Resolve(new DateRange(start, end), Territory).Single(r => r.NotableDateId == id);
 
     // -----------------------------------------------------------------------------------------------------------------
-    // AddDays — signed shift, including offsets that cross month and year boundaries. A single-year applicability bound
+    // AddDays - signed shift, including offsets that cross month and year boundaries. A single-year applicability bound
     // keeps a cross-year shift from materialising the rule twice over the service's one-year-either-side scan.
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ public sealed partial class AdjustmentActionMatrixTests
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Weekday-seeking actions — inclusive OnOrAfter / OnOrBefore against an explicit target weekday.
+    // Weekday-seeking actions - inclusive OnOrAfter / OnOrBefore against an explicit target weekday.
     // -----------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed partial class AdjustmentActionMatrixTests
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Working-day actions — start strictly past the anchor and skip weekends by default (skipWeekends defaults true).
+    // Working-day actions - start strictly past the anchor and skip weekends by default (skipWeekends defaults true).
     // -----------------------------------------------------------------------------------------------------------------
 
     /// <summary>

@@ -12,7 +12,7 @@ namespace Bodu.Financial.Samples.CachedRates.Scenarios;
 /// Demonstrates <see cref="RateHistoryAvailability" />: a provider's declaration of how far back its
 /// history reaches. The caching and aggregation layers consume this declaration (their
 /// <c>RespectHistoryAvailability</c> options default to <see langword="true" />) to clamp range fetches
-/// and skip providers that cannot possibly serve a date — instead of issuing doomed requests.
+/// and skip providers that cannot possibly serve a date - instead of issuing doomed requests.
 /// </summary>
 public static class HistoryClamping
 {

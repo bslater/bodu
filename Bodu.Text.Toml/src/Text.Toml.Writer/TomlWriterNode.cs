@@ -11,8 +11,8 @@ namespace Bodu.Text.Toml.Writer;
 /// <c>Write*</c> calls before serializing the completed tree to canonical TOML.
 /// </summary>
 /// <remarks>
-/// TOML's surface layout is a whole-document property — whether a table becomes a <c>[header]</c> block or an inline
-/// <c>{ … }</c> depends on where it sits — so the writer cannot emit incrementally. It buffers each value into one of
+/// TOML's surface layout is a whole-document property - whether a table becomes a <c>[header]</c> block or an inline
+/// <c>{ … }</c> depends on where it sits - so the writer cannot emit incrementally. It buffers each value into one of
 /// the three concrete node kinds (<see cref="TomlTableWriterNode" />, <see cref="TomlArrayWriterNode" />, or
 /// <see cref="TomlScalarWriterNode" />) and renders the root table once it is closed.
 /// </remarks>

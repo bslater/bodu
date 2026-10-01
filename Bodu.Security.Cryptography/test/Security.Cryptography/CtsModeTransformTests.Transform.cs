@@ -11,7 +11,7 @@ public sealed partial class CtsModeTransformTests
     /// <summary>
     /// Verifies that CTS throws <see cref="ArgumentException" /> when the input is shorter than
     /// one full block. CTS requires at least one complete block to produce output of the same
-    /// length as the input — there is nothing to steal from.
+    /// length as the input - there is nothing to steal from.
     /// </summary>
     [TestMethod]
     public void Transform_WhenInputShorterThanOneBlock_ShouldThrowExactly()
@@ -80,7 +80,7 @@ public sealed partial class CtsModeTransformTests
         int written = CreateTransform(cipher, iv).Transform(input, output, encrypt: true);
 
         Assert.AreEqual(length, written,
-            "CTS must write exactly input.Length bytes — no padding.");
+            "CTS must write exactly input.Length bytes - no padding.");
     }
 
     /// <summary>
@@ -167,7 +167,7 @@ public sealed partial class CtsModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that decrypting in place — the output being exactly the input — recovers the plaintext for block-aligned
+    /// Verifies that decrypting in place - the output being exactly the input - recovers the plaintext for block-aligned
     /// input and for input that ends in a stolen partial block, with several blocks before it.
     /// </summary>
     [TestMethod]

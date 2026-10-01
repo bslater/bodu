@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Recurrence.Samples.RecurrenceRules;
 
 /// <summary>
 /// Entry point for the recurrence-rule sample: <c>RecurrenceRule</c>, the RFC 5545 <c>RRULE</c>
-/// form — parsing and formatting, the <c>BY*</c> expansion and limiting semantics that
+/// form - parsing and formatting, the <c>BY*</c> expansion and limiting semantics that
 /// implementations most often get wrong, week numbering under <c>WKST</c>, the fluent
 /// <c>RecurrenceRuleBuilder</c>, and bounded enumeration. Everything runs offline and
 /// deterministically.

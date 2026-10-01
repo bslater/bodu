@@ -49,7 +49,7 @@ public partial class FiscalWeekQuarterProviderTests
     }
 
     /// <summary>
-    /// Verifies the cross-year boundary invariant holds for every fiscal year in 2000–2040: the start
+    /// Verifies the cross-year boundary invariant holds for every fiscal year in 2000-2040: the start
     /// of Q1 in year <c>y</c> must equal the day after the end of Q4 in year <c>y - 1</c>, and each
     /// consecutive quarter within a year must also be contiguous. The total number of days across all
     /// four quarters must equal <c>GetWeeksInFiscalYear(y) × 7</c>. Verified under both alignment
@@ -96,7 +96,7 @@ public partial class FiscalWeekQuarterProviderTests
     }
 
     /// <summary>
-    /// Verifies that in a 53-week fiscal year Q4 spans exactly 98 days (14 weeks) while Q1–Q3 each
+    /// Verifies that in a 53-week fiscal year Q4 spans exactly 98 days (14 weeks) while Q1-Q3 each
     /// span exactly 91 days (13 weeks), confirming the extra week is confined to Q4.
     /// </summary>
     [TestMethod]
@@ -150,7 +150,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// </summary>
     /// <remarks>
     /// Under a Saturday-aligned, nearest-day, fiscal-year-end-January rule, the 53-week fiscal years
-    /// between 2000 and 2030 are 2000, 2005, 2011, 2016, 2022, and 2028 — each has a span of 371 days
+    /// between 2000 and 2030 are 2000, 2005, 2011, 2016, 2022, and 2028 - each has a span of 371 days
     /// between the nearest-Saturday alignments of consecutive 1 February anchors.
     /// </remarks>
     [TestMethod]
@@ -181,7 +181,7 @@ public partial class FiscalWeekQuarterProviderTests
         }
 
         throw new InvalidOperationException(
-            $"No 53-week fiscal year found in the range {fromYear}–{toYear}.");
+            $"No 53-week fiscal year found in the range {fromYear}-{toYear}.");
     }
 
 }

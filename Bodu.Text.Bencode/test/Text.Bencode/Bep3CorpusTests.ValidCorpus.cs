@@ -28,7 +28,7 @@ public sealed partial class Bep3CorpusTests
     /// <returns>The valid corpus rows.</returns>
     public static IEnumerable<object[]> Bep3CorpusValidData()
     {
-        // Integer grammar — the literal BEP 3 examples plus the signed/unsigned 64-bit boundary ladder pinned by
+        // Integer grammar - the literal BEP 3 examples plus the signed/unsigned 64-bit boundary ladder pinned by
         // libtorrent's test_bdecode.cpp and bendy's integer torture cases.
         yield return Row(new("BEP 3 positive integer example", "i3e", [Integer]));
         yield return Row(new("BEP 3 negative integer example", "i-3e", [Integer]));
@@ -51,7 +51,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(new("integer uint64 max", "i18446744073709551615e", [Integer]));
         yield return Row(new("integer nineteen digits", "i1000000000000000000e", [Integer]));
 
-        // Byte-string grammar — the BEP 3 example plus structurally confusable and binary payloads; the
+        // Byte-string grammar - the BEP 3 example plus structurally confusable and binary payloads; the
         // content-looks-like-a-token rows follow Transmission's benc tests and bencodepy's decoder suite.
         yield return Row(new("empty byte string", "0:", [ByteString]));
         yield return Row(new("single-byte string", "1:a", [ByteString]));
@@ -76,7 +76,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(new("content is two-byte UTF-8 sequence", "2:\u00C3\u00A9", [ByteString]));
         yield return Row(new("content is four-byte UTF-8 sequence", "4:\u00F0\u009F\u0098\u0080", [ByteString]));
 
-        // Lists — the BEP 3 example plus width, nesting, and heterogeneous element sweeps modeled on
+        // Lists - the BEP 3 example plus width, nesting, and heterogeneous element sweeps modeled on
         // bencode-go's decoder tables.
         yield return Row(new("empty list", "le", [StartList, EndList]));
         yield return Row(new(
@@ -124,7 +124,7 @@ public sealed partial class Bep3CorpusTests
         yield return Row(WideListRow());
         yield return Row(DepthChainRow());
 
-        // Dictionaries — the BEP 3 examples plus the raw-byte key-ordering ladder; the ordering edges follow
+        // Dictionaries - the BEP 3 examples plus the raw-byte key-ordering ladder; the ordering edges follow
         // libtorrent's key-order checks and the signed/unsigned and UTF-16-versus-byte-order traps they encode.
         yield return Row(new("empty dictionary", "de", [StartDictionary, EndDictionary]));
         yield return Row(new(
@@ -233,7 +233,7 @@ public sealed partial class Bep3CorpusTests
             "d1:a1:\u00001:b1:\u00FFe",
             [StartDictionary, PropertyName, ByteString, PropertyName, ByteString, EndDictionary]));
 
-        // Structural composition — alternating container chains and sibling containers, following the nesting
+        // Structural composition - alternating container chains and sibling containers, following the nesting
         // sweeps in libtorrent's test_bdecode.cpp.
         yield return Row(new(
             "dictionary in list in dictionary",
@@ -298,7 +298,7 @@ public sealed partial class Bep3CorpusTests
                 EndList,
             ]));
 
-        // Realistic wire shapes — the metainfo and tracker structures of BEP 3/12/23 and the KRPC messages of
+        // Realistic wire shapes - the metainfo and tracker structures of BEP 3/12/23 and the KRPC messages of
         // BEP 5, BEP 9, and BEP 10, with binary payloads where the real protocol carries them.
         yield return Row(SingleFileTorrentRow());
         yield return Row(new(
@@ -433,7 +433,7 @@ public sealed partial class Bep3CorpusTests
         new("three-digit length prefix", "100:" + new string('a', 100), [ByteString]);
 
     /// <summary>
-    /// Builds the full-byte-range row: a 256-byte string carrying every value 0x00–0xFF exactly once.
+    /// Builds the full-byte-range row: a 256-byte string carrying every value 0x00-0xFF exactly once.
     /// </summary>
     /// <returns>The corpus row.</returns>
     private static ValidKat<string, BencodeTokenType[]> FullByteRangeRow()

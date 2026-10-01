@@ -104,20 +104,20 @@ if ($fetchedUtc) {
 [void]$lines.Add('')
 [void]$lines.Add('## Accessing standards')
 [void]$lines.Add('')
-[void]$lines.Add('The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.IO.Hashing.Checksums.CrcStandard> allocates only the packed spec rows and the per-entry cache slots — individual <xref:Bodu.IO.Hashing.Checksums.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.')
+[void]$lines.Add('The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.IO.Hashing.Checksums.CrcStandard> allocates only the packed spec rows and the per-entry cache slots - individual <xref:Bodu.IO.Hashing.Checksums.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.')
 [void]$lines.Add('')
 [void]$lines.Add('Three entry points:')
 [void]$lines.Add('')
 [void]$lines.Add('```csharp')
-[void]$lines.Add('// 1. Strongly-typed common standards — most convenient for the usual suspects.')
+[void]$lines.Add('// 1. Strongly-typed common standards - most convenient for the usual suspects.')
 [void]$lines.Add('using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);')
 [void]$lines.Add('using var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli')
 [void]$lines.Add('using var crc = new Crc(CrcStandard.CRC16_MODBUS);')
 [void]$lines.Add('')
-[void]$lines.Add('// 2. By enum — covers every canonical catalogue entry (112 in total).')
+[void]$lines.Add('// 2. By enum - covers every canonical catalogue entry (112 in total).')
 [void]$lines.Add('using var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));')
 [void]$lines.Add('')
-[void]$lines.Add('// 3. By name — resolves canonical names AND published aliases.')
+[void]$lines.Add('// 3. By name - resolves canonical names AND published aliases.')
 [void]$lines.Add('using var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));')
 [void]$lines.Add('using var crc2 = new Crc(CrcStandard.FromName("PKZIP"));   // same instance as crc1')
 [void]$lines.Add('')
@@ -129,14 +129,14 @@ if ($fetchedUtc) {
 [void]$lines.Add('')
 [void]$lines.Add('## Support policy')
 [void]$lines.Add('')
-[void]$lines.Add('`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.')
+[void]$lines.Add('`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1-64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.')
 [void]$lines.Add('')
 [void]$lines.Add('Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.')
 [void]$lines.Add('')
 
 [void]$lines.Add('## Common standards (strongly-typed)')
 [void]$lines.Add('')
-[void]$lines.Add('These are exposed as `public static CrcStandard` properties on <xref:Bodu.IO.Hashing.Checksums.CrcStandard> for convenience — the underlying cache is still shared with the enum-based lookup.')
+[void]$lines.Add('These are exposed as `public static CrcStandard` properties on <xref:Bodu.IO.Hashing.Checksums.CrcStandard> for convenience - the underlying cache is still shared with the enum-based lookup.')
 [void]$lines.Add('')
 [void]$lines.Add('| Name | Width | Property | Aliases |')
 [void]$lines.Add('|---|---:|---|---|')
@@ -148,7 +148,7 @@ foreach ($spec in $supported) {
     if ($spec.PSObject.Properties.Match('aliases').Count -gt 0 -and $spec.aliases) {
         $aliases = @($spec.aliases)
     }    
-    $aliasCell = if ($aliases.Count -eq 0) { '—' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
+    $aliasCell = if ($aliases.Count -eq 0) { '-' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
     [void]$lines.Add("| $($spec.name) | $($spec.size) | ``CrcStandard.$c`` | $aliasCell |")
 }
 [void]$lines.Add('')
@@ -167,7 +167,7 @@ foreach ($spec in $supported) {
     if ($spec.PSObject.Properties.Match('aliases').Count -gt 0 -and $spec.aliases) {
         $aliases = @($spec.aliases)
     }    
-    $aliasCell = if ($aliases.Count -eq 0) { '—' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
+    $aliasCell = if ($aliases.Count -eq 0) { '-' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
     $anchor = Format-AnchorSlug $spec.name
     $refLink = "[spec]($source#$anchor)"
     $nameCell = if ($Common.Contains($spec.name)) { "**$($spec.name)**" } else { $spec.name }
@@ -203,12 +203,12 @@ if ($skipped.Count -gt 0) {
 [void]$lines.Add('```')
 [void]$lines.Add('')
 
-# Closing cross-links — the overview label depends on which guide folder this copy lands in.
+# Closing cross-links - the overview label depends on which guide folder this copy lands in.
 $overviewLabel = if ($OutputPath -match 'io-hashing') { 'Bodu.IO.Hashing guides overview' } else { 'Bodu.Security.Cryptography guides overview' }
 [void]$lines.Add('## See also')
 [void]$lines.Add('')
-[void]$lines.Add('- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.')
-[void]$lines.Add("- **[$overviewLabel](index.md)** — every guide in this library.")
+[void]$lines.Add('- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.')
+[void]$lines.Add("- **[$overviewLabel](index.md)** - every guide in this library.")
 [void]$lines.Add('')
 
 Set-Content -LiteralPath $OutputPath -Value ($lines -join "`n") -Encoding utf8

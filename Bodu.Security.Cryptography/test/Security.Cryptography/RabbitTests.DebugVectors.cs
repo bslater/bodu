@@ -20,7 +20,7 @@ public sealed partial class RabbitTests
     private const string AppendixBKeyHex = "912813292E3D36FE3BFC62F1DC51C3AC";
     private const string AppendixBIvHex = "C373F575C1267E59";
 
-    // RFC 4503 Appendix B.1 — key setup checkpoints, then the post-48-byte-output state.
+    // RFC 4503 Appendix B.1 - key setup checkpoints, then the post-48-byte-output state.
     private static readonly StateCheckpoint[] KeySetupCheckpoints =
     [
         new("Inner state after key expansion", 0,
@@ -40,7 +40,7 @@ public sealed partial class RabbitTests
             [0x45406940, 0x9CD0CFA9, 0x7B26E725, 0x82F5FEE2, 0x87CBDB06, 0x5AD06156, 0x4B229534, 0x087DC224]),
     ];
 
-    // RFC 4503 Appendix B.2 — IV setup checkpoints.
+    // RFC 4503 Appendix B.2 - IV setup checkpoints.
     private static readonly StateCheckpoint[] IvSetupCheckpoints =
     [
         new("Inner state after IV expansion", 0,

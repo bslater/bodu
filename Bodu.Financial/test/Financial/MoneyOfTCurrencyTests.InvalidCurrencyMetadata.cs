@@ -17,7 +17,7 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     /// <summary>
-    /// A custom currency tag that reports a negative minor-unit precision — invalid.
+    /// A custom currency tag that reports a negative minor-unit precision - invalid.
     /// </summary>
     private sealed class NegativeMinorUnitsCurrency
         : ICurrency
@@ -55,7 +55,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A custom currency tag that reports <see cref="int.MaxValue" /> — pathologically out of range.
+    /// A custom currency tag that reports <see cref="int.MaxValue" /> - pathologically out of range.
     /// </summary>
     private sealed class IntMaxMinorUnitsCurrency
         : ICurrency
@@ -67,7 +67,7 @@ public partial class MoneyOfTCurrencyTests
         public static string IsoCode => "XXC";
 
         /// <summary>
-        /// Gets <see cref="int.MaxValue" /> as the minor-unit precision — far beyond the decimal cap.
+        /// Gets <see cref="int.MaxValue" /> as the minor-unit precision - far beyond the decimal cap.
         /// </summary>
         /// <value>The value <see cref="int.MaxValue" />.</value>
         public static int MinorUnits => int.MaxValue;
@@ -133,7 +133,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <c>default(Money&lt;TCurrency&gt;)</c> for a broken-metadata currency does not throw,
-    /// because constructing the default value never invokes the validating constructor — the rounding step
+    /// because constructing the default value never invokes the validating constructor - the rounding step
     /// (and therefore the validation gate) is skipped.
     /// </summary>
     [TestMethod]

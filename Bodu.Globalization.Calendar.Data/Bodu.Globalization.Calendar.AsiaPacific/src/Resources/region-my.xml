@@ -12,7 +12,7 @@
   <NotableDates>
 
     <!--
-      Hari Raya Aidilfitri (Eid al-Fitr) — the festival ending Ramadan, on 1 Shawwal in the Hijri (Islamic)
+      Hari Raya Aidilfitri (Eid al-Fitr) - the festival ending Ramadan, on 1 Shawwal in the Hijri (Islamic)
       calendar. Fixed in the Hijri calendar; sweepCalendarYears="true" projects the occurrence onto the surrounding
       Gregorian year. The two-day statutory span is expressed via durationDays="2". Follows the base class library's
       tabular reckoning rather than local moon-sighting, so it may differ by a day or two from the gazetted date.
@@ -24,7 +24,7 @@
     </NotableDate>
 
     <!--
-      Hari Raya Aidiladha (Eid al-Adha) — the festival of sacrifice, on 10 Dhu al-Hijja in the Hijri calendar. Fixed
+      Hari Raya Aidiladha (Eid al-Adha) - the festival of sacrifice, on 10 Dhu al-Hijja in the Hijri calendar. Fixed
       in the Hijri calendar; sweepCalendarYears="true" projects the occurrence onto the surrounding Gregorian year.
       The two-day statutory span is expressed via durationDays="2". Tabular reckoning, not moon-sighting. Strategy:
       Fixed Hijri month/day.

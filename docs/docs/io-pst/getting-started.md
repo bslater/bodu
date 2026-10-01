@@ -1,8 +1,8 @@
 ---
-title: Bodu.IO.Pst — Getting started
+title: Bodu.IO.Pst - Getting started
 ---
 
-# Bodu.IO.Pst — Getting started
+# Bodu.IO.Pst - Getting started
 
 Unfamiliar with terms like *node database*, *NID*, *data tree*, *heap-on-node*, or *table context*? Read [Core concepts](concepts.md) first.
 
@@ -12,7 +12,7 @@ Unfamiliar with terms like *node database*, *NID*, *data tree*, *heap-on-node*, 
 dotnet add package Bodu.IO.Pst
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` (shared throw-helpers) and `Bodu.Collections`; no third-party NuGet references. For the message-level view — folders, subjects, senders, attachments — install `Bodu.Formats.Outlook.Pst` instead (it references this package) and see [the mail-store sample below](#read-the-mail-store-instead).
+Targets `net8.0`. Depends on `Bodu.Core` (shared throw-helpers) and `Bodu.Collections`; no third-party NuGet references. For the message-level view - folders, subjects, senders, attachments - install `Bodu.Formats.Outlook.Pst` instead (it references this package) and see [the mail-store sample below](#read-the-mail-store-instead).
 
 ## Open a file and read the store node
 
@@ -27,7 +27,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
     Console.WriteLine($"0x{value.PropertyId:X4} (wire 0x{value.WireType:X4}): {value.RawData.Length} bytes");
 ```
 
-The returned session is <xref:System.IDisposable> — the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed to `Open`. Reads are lazy: opening parses only the header, and each node's payload is read when asked for.
+The returned session is <xref:System.IDisposable> - the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed to `Open`. Reads are lazy: opening parses only the header, and each node's payload is read when asked for.
 
 ## Probe before opening
 
@@ -43,7 +43,7 @@ if (PstFile.IsPstFile(source))
 }
 ```
 
-`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant — Unicode and ANSI files then open, and <xref:Bodu.IO.Pst.PstFile.Format> reports which; a subsequent open of an OST file throws <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant - Unicode and ANSI files then open, and <xref:Bodu.IO.Pst.PstFile.Format> reports which; a subsequent open of an OST file throws <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 
 ## Enumerate the node directory
 
@@ -131,11 +131,11 @@ catch (PstUnsupportedFormatException)
 }
 catch (PstFileFormatException ex)
 {
-    Console.WriteLine($"Malformed: {ex.Error} — {ex.Message}");
+    Console.WriteLine($"Malformed: {ex.Error} - {ex.Message}");
 }
 ```
 
-Every failure surfaces through the <xref:Bodu.IO.Pst.PstFileException> family with a <xref:Bodu.IO.Pst.PstFileError> category — corruption never escapes as any other exception type.
+Every failure surfaces through the <xref:Bodu.IO.Pst.PstFileException> family with a <xref:Bodu.IO.Pst.PstFileError> category - corruption never escapes as any other exception type.
 
 ## Read the mail store instead
 
@@ -157,7 +157,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
     {
-        Console.WriteLine($"  {message.Subject} — {message.SenderName} at {message.SentTime}");
+        Console.WriteLine($"  {message.Subject} - {message.SenderName} at {message.SentTime}");
 
         foreach (OutlookRecipient recipient in message.Recipients)
             Console.WriteLine($"    to {recipient.DisplayName} <{recipient.EmailAddress}>");
@@ -170,6 +170,6 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the vocabulary in depth.
-- **[Introduction](index.md)** — scope, scenarios, and headline types.
-- **API reference** — [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook).
+- **[Core concepts](concepts.md)** - the vocabulary in depth.
+- **[Introduction](index.md)** - scope, scenarios, and headline types.
+- **API reference** - [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook).

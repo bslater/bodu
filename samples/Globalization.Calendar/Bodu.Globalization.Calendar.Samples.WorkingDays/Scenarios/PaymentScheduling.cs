@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Samples.WorkingDays.Scenarios;
 /// <summary>
 /// Demonstrates the arithmetic that payment and settlement systems live on: add N working days
 /// (T+2 settlement), find the next working day, and snap a contractual date that landed on a
-/// holiday or weekend to a valid banking day — forward, backward, or to the nearest.
+/// holiday or weekend to a valid banking day - forward, backward, or to the nearest.
 /// </summary>
 public static class PaymentScheduling
 {

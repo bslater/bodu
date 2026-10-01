@@ -4,10 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.InteropServices;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-DSA rounding and hint primitives (FIPS 204 Algorithms 35–40).
+/// Provides the ML-DSA rounding and hint primitives (FIPS 204 Algorithms 35-40).
 /// </summary>
 internal static partial class MLDsaEngine
 {
@@ -128,16 +130,199 @@ internal static partial class MLDsaEngine
     }
 
     /// <summary>
-    /// Computes the infinity norm of a polynomial: the maximum absolute value of the centered representatives.
+    /// Replaces each coefficient of a polynomial by its high part under the γ₂ decomposition (FIPS 204 Algorithm 37),
+    /// with the kernel dispatch selects.
+    /// </summary>
+    /// <param name="gamma2">The parameter γ₂: (q − 1) / 32 or (q − 1) / 88.</param>
+    /// <param name="r">The 256 coefficients, each in [0, q).</param>
+    /// <param name="r1">The span receiving the 256 high parts. May be <paramref name="r" />.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="r" /> or <paramref name="r1" /> holds fewer than 256 coefficients.
+    /// </exception>
+    internal static void HighBits(int gamma2, ReadOnlySpan<int> r, Span<int> r1) =>
+        HighBits(KernelKind.Auto, gamma2, r, r1);
+
+    /// <summary>
+    /// Replaces each coefficient of a polynomial by its high part under the γ₂ decomposition (FIPS 204 Algorithm 37),
+    /// with the specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="gamma2">The parameter γ₂: (q − 1) / 32 or (q − 1) / 88.</param>
+    /// <param name="r">The 256 coefficients, each in [0, q).</param>
+    /// <param name="r1">The span receiving the 256 high parts. May be <paramref name="r" />.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="r" /> or <paramref name="r1" /> holds fewer than 256 coefficients.
+    /// </exception>
+    /// <remarks>
+    /// Every kernel produces the high parts <see cref="HighBits(int, int)" /> does.
+    /// </remarks>
+    internal static void HighBits(KernelKind kernel, int gamma2, ReadOnlySpan<int> r, Span<int> r1)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(r.Length, N, nameof(r));
+        ArgumentOutOfRangeException.ThrowIfLessThan(r1.Length, N, nameof(r1));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+        {
+            Vector256Kernel.HighBits(gamma2, ref MemoryMarshal.GetReference(r), ref MemoryMarshal.GetReference(r1));
+            return;
+        }
+
+        for (int i = 0; i < N; i++)
+            r1[i] = HighBits(gamma2, r[i]);
+    }
+
+    /// <summary>
+    /// Returns the largest magnitude of a polynomial's low parts under the γ₂ decomposition, with the kernel dispatch
+    /// selects.
+    /// </summary>
+    /// <param name="gamma2">The parameter γ₂: (q − 1) / 32 or (q − 1) / 88.</param>
+    /// <param name="r">The 256 coefficients, each in [0, q).</param>
+    /// <returns>
+    /// The largest |r₀| over the coefficients, where <see cref="Decompose" /> splits each into (r₁, r₀).
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="r" /> holds fewer than 256 coefficients.
+    /// </exception>
+    internal static int LowBitsNorm(int gamma2, ReadOnlySpan<int> r) =>
+        LowBitsNorm(KernelKind.Auto, gamma2, r);
+
+    /// <summary>
+    /// Returns the largest magnitude of a polynomial's low parts under the γ₂ decomposition, with the specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="gamma2">The parameter γ₂: (q − 1) / 32 or (q − 1) / 88.</param>
+    /// <param name="r">The 256 coefficients, each in [0, q).</param>
+    /// <returns>
+    /// The largest |r₀| over the coefficients, where <see cref="Decompose" /> splits each into (r₁, r₀).
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="r" /> holds fewer than 256 coefficients.
+    /// </exception>
+    /// <remarks>
+    /// The scan has no early exit, so the time reveals only that the check happened, not which coefficient drove the
+    /// bound. Every kernel returns the same value.
+    /// </remarks>
+    internal static int LowBitsNorm(KernelKind kernel, int gamma2, ReadOnlySpan<int> r)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(r.Length, N, nameof(r));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+            return Vector256Kernel.LowBitsNorm(gamma2, ref MemoryMarshal.GetReference(r));
+
+        int maximum = 0;
+        for (int i = 0; i < N; i++)
+        {
+            Decompose(gamma2, r[i], out _, out int r0);
+
+            // |r₀| through the sign mask rather than Math.Abs, which branches on the sign of a secret-derived value.
+            int sign = r0 >> 31;
+            maximum = Math.Max(maximum, (r0 ^ sign) - sign);
+        }
+
+        return maximum;
+    }
+
+    /// <summary>
+    /// Computes the hints of one polynomial of the signature, h = MakeHint(−ct₀, w − cs₂ + ct₀) coefficient by
+    /// coefficient (FIPS 204 Algorithm 7, line 26), with the kernel dispatch selects.
+    /// </summary>
+    /// <param name="gamma2">The parameter γ₂: (q − 1) / 32 or (q − 1) / 88.</param>
+    /// <param name="ct0">The 256 coefficients of ct₀, each in [0, q).</param>
+    /// <param name="wMinusCs2">The 256 coefficients of w − cs₂, each in [0, q).</param>
+    /// <param name="hints">The span receiving the 256 hints, each 0 or 1.</param>
+    /// <returns>The number of hints that are 1.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="ct0" />, <paramref name="wMinusCs2" /> or <paramref name="hints" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
+    internal static int MakeHints(int gamma2, ReadOnlySpan<int> ct0, ReadOnlySpan<int> wMinusCs2, Span<int> hints) =>
+        MakeHints(KernelKind.Auto, gamma2, ct0, wMinusCs2, hints);
+
+    /// <summary>
+    /// Computes the hints of one polynomial of the signature, h = MakeHint(−ct₀, w − cs₂ + ct₀) coefficient by
+    /// coefficient (FIPS 204 Algorithm 7, line 26), with the specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="gamma2">The parameter γ₂: (q − 1) / 32 or (q − 1) / 88.</param>
+    /// <param name="ct0">The 256 coefficients of ct₀, each in [0, q).</param>
+    /// <param name="wMinusCs2">The 256 coefficients of w − cs₂, each in [0, q).</param>
+    /// <param name="hints">The span receiving the 256 hints, each 0 or 1.</param>
+    /// <returns>The number of hints that are 1.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="ct0" />, <paramref name="wMinusCs2" /> or <paramref name="hints" /> holds fewer than 256
+    /// coefficients.
+    /// </exception>
+    /// <remarks>
+    /// Every coefficient is computed and counted, whatever the hints hold. Every kernel produces the same hints.
+    /// </remarks>
+    internal static int MakeHints(KernelKind kernel, int gamma2, ReadOnlySpan<int> ct0, ReadOnlySpan<int> wMinusCs2, Span<int> hints)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(ct0.Length, N, nameof(ct0));
+        ArgumentOutOfRangeException.ThrowIfLessThan(wMinusCs2.Length, N, nameof(wMinusCs2));
+        ArgumentOutOfRangeException.ThrowIfLessThan(hints.Length, N, nameof(hints));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+            return Vector256Kernel.MakeHints(gamma2, ref MemoryMarshal.GetReference(ct0), ref MemoryMarshal.GetReference(wMinusCs2), ref MemoryMarshal.GetReference(hints));
+
+        int weight = 0;
+        for (int i = 0; i < N; i++)
+        {
+            int negated = Canonicalize(-ct0[i]);
+            int basis = Canonicalize(wMinusCs2[i] + ct0[i] - Q);
+            int hint = MakeHint(gamma2, negated, basis);
+            hints[i] = hint;
+            weight += hint;
+        }
+
+        return weight;
+    }
+
+    /// <summary>
+    /// Computes the infinity norm of a polynomial, the maximum absolute value of the centered representatives, with the
+    /// kernel dispatch selects.
     /// </summary>
     /// <param name="poly">The 256 coefficients in [0, q).</param>
     /// <returns>The infinity norm.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="poly" /> holds fewer than 256 coefficients.
+    /// </exception>
+    internal static int InfinityNorm(ReadOnlySpan<int> poly) =>
+        InfinityNorm(KernelKind.Auto, poly);
+
+    /// <summary>
+    /// Computes the infinity norm of a polynomial, the maximum absolute value of the centered representatives, with the
+    /// specified kernel.
+    /// </summary>
+    /// <param name="kernel">
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
+    /// processor supports.
+    /// </param>
+    /// <param name="poly">The 256 coefficients in [0, q).</param>
+    /// <returns>The infinity norm.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="poly" /> holds fewer than 256 coefficients.
+    /// </exception>
     /// <remarks>
-    /// The scan has no early exit, so the time reveals only that a norm check happened — which restart iteration of the
-    /// signing loop runs is public by design — and not which coefficient drove the bound.
+    /// The scan has no early exit, so the time reveals only that a norm check happened - which restart iteration of the
+    /// signing loop runs is public by design - and not which coefficient drove the bound. Every kernel returns the same
+    /// value.
     /// </remarks>
-    private static int InfinityNorm(ReadOnlySpan<int> poly)
+    internal static int InfinityNorm(KernelKind kernel, ReadOnlySpan<int> poly)
     {
+        ArgumentOutOfRangeException.ThrowIfLessThan(poly.Length, N, nameof(poly));
+
+        if (Resolve(kernel) == KernelKind.Avx2)
+            return Vector256Kernel.InfinityNorm(ref MemoryMarshal.GetReference(poly));
+
         int maximum = 0;
         for (int i = 0; i < N; i++)
         {

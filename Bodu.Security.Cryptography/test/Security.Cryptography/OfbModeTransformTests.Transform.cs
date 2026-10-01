@@ -43,7 +43,7 @@ public sealed partial class OfbModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that in OFB mode encryption and decryption are the same operation — XORing with the keystream produced
+    /// Verifies that in OFB mode encryption and decryption are the same operation - XORing with the keystream produced
     /// from the IV. Both directions should reproduce the input after a round trip.
     /// </summary>
     [TestMethod]

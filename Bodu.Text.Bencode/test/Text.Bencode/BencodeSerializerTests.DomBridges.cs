@@ -11,9 +11,9 @@ using Bodu.Text.Bencode.Nodes;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies the serializer ⇄ DOM bridges — <see cref="BencodeSerializer.SerializeToNode{T}" />,
+/// Verifies the serializer ⇄ DOM bridges - <see cref="BencodeSerializer.SerializeToNode{T}" />,
 /// <see cref="BencodeSerializer.SerializeToDocument{T}" />, and
-/// <see cref="BencodeSerializer.Deserialize{T}(BencodeNode, BencodeSerializerOptions?)" /> — that mirror the
+/// <see cref="BencodeSerializer.Deserialize{T}(BencodeNode, BencodeSerializerOptions?)" /> - that mirror the
 /// equivalent <see cref="System.Text.Json.JsonSerializer" /> members.
 /// </summary>
 public partial class BencodeSerializerTests

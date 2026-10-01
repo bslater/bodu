@@ -540,7 +540,7 @@ internal static partial class CryptographyThrowHelper
     /// <param name="input">The input span being read by the transform.</param>
     /// <param name="output">The output span being written by the transform.</param>
     /// <param name="allowExactInPlace">
-    /// When <see langword="true" /> (the default) the spans may alias exactly — same start address and same length — so
+    /// When <see langword="true" /> (the default) the spans may alias exactly - same start address and same length - so
     /// that the caller can perform an in-place transform with a single buffer. When <see langword="false" />, any
     /// overlap (including exact aliasing) is rejected.
     /// </param>

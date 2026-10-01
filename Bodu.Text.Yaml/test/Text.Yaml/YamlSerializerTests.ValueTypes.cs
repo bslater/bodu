@@ -27,7 +27,7 @@ public partial class YamlSerializerTests
 
     /// <summary>
     /// Verifies that an unsigned 64-bit value one above <see cref="long.MaxValue" /> writes as its plain invariant
-    /// text — which the reader resolves as a string — and round-trips exactly.
+    /// text - which the reader resolves as a string - and round-trips exactly.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenUInt64AboveInt64Range_ShouldWriteTextAndRoundTrip()
@@ -83,7 +83,7 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Int128.MinValue" /> — below the signed 64-bit range — writes as its quoted invariant
+    /// Verifies that <see cref="Int128.MinValue" /> - below the signed 64-bit range - writes as its quoted invariant
     /// text (the leading sign forces quoting) and round-trips exactly.
     /// </summary>
     [TestMethod]

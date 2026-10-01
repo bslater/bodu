@@ -15,7 +15,7 @@ namespace Bodu.Formats.Outlook;
 public partial class MapiPropertyCollectionTests
 {
     /// <summary>
-    /// Verifies that a collection built from decoded properties surfaces a string value through the typed accessor —
+    /// Verifies that a collection built from decoded properties surfaces a string value through the typed accessor -
     /// the primary happy path of the shared model.
     /// </summary>
     [TestMethod]

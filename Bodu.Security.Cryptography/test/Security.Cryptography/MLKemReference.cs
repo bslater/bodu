@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the ML-KEM arithmetic that <see cref="MLKemEngine" />'s Montgomery and Barrett reductions replaced — every
-/// coefficient reduced with the remainder operator, and the binomial noise counted a bit at a time — kept as an
+/// Provides the ML-KEM arithmetic that <see cref="MLKemEngine" />'s Montgomery and Barrett reductions replaced - every
+/// coefficient reduced with the remainder operator, and the binomial noise counted a bit at a time - kept as an
 /// independent oracle that the engine's arithmetic tests hold it to.
 /// </summary>
 internal static class MLKemReference
@@ -73,7 +73,7 @@ internal static class MLKemReference
     }
 
     /// <summary>
-    /// Multiplies two NTT-domain polynomials (FIPS 203 Algorithms 11–12), reducing with the remainder operator.
+    /// Multiplies two NTT-domain polynomials (FIPS 203 Algorithms 11-12), reducing with the remainder operator.
     /// </summary>
     /// <param name="left">The first polynomial.</param>
     /// <param name="right">The second polynomial.</param>

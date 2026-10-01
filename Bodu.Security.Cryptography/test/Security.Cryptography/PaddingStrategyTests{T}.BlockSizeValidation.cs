@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
 /// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw
 /// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize</c> is not a positive multiple of
-/// 8 — rather than letting the <c>blockSize / 8</c> integer division surface a
+/// 8 - rather than letting the <c>blockSize / 8</c> integer division surface a
 /// <see cref="DivideByZeroException" />, or silently succeeding for inputs whose length happens to
 /// be a multiple of <c>|blockSize|</c>.
 /// </summary>
@@ -35,7 +35,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Pad" /> with <c>blockSize == 0</c> throws
     /// <see cref="CryptographicException" /> rather than <see cref="DivideByZeroException" />
-    /// from the modulo expression. Universally applicable — every padding scheme validates
+    /// from the modulo expression. Universally applicable - every padding scheme validates
     /// <c>blockSize</c> on <c>Pad</c>.
     /// </summary>
     [TestMethod]

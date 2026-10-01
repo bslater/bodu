@@ -1,4 +1,4 @@
-# KAT Provenance Tracker — Bodu.Security.Cryptography
+# KAT Provenance Tracker - Bodu.Security.Cryptography
 
 Tracks each cipher / hash / MAC / AEAD / asymmetric algorithm and the provenance of its known-answer tests (KATs):
 whether the tests load **dynamically from an embedded original vector file via a reader** (the target pattern), are
@@ -6,13 +6,13 @@ whether the tests load **dynamically from an embedded original vector file via a
 **outstanding** (need an official vector file we don't yet have).
 
 Legend for **Loading**:
-- **Embedded+reader** — original vector file shipped as `EmbeddedResource`, parsed by a reader into KAT records, driven
+- **Embedded+reader** - original vector file shipped as `EmbeddedResource`, parsed by a reader into KAT records, driven
   via `[DynamicData]`. This is the goal.
-- **Inline-cited** — expected values are literal `[DataRow]`/records transcribed from a named official source (an RFC or
+- **Inline-cited** - expected values are literal `[DataRow]`/records transcribed from a named official source (an RFC or
   FIPS worked-example table with no separate machine-readable vector file). Legitimate, but not file-driven.
-- **Self-ref** — no external authority exists (bespoke construction); cross-checked against a second in-house
+- **Self-ref** - no external authority exists (bespoke construction); cross-checked against a second in-house
   implementation only. Cannot be pinned to a published source.
-- **Outstanding** — needs an official vector file we do not yet hold.
+- **Outstanding** - needs an official vector file we do not yet hold.
 
 ---
 
@@ -44,11 +44,11 @@ Legend for **Loading**:
 | Poly1305 | RFC 8439 Appendix A.3 (MAC) | `Rfc8439VectorReader` | 11 |
 | XChaCha20 | draft-arciszewski-xchacha-03 (2.2.1 + A.3.2) | `XChaChaDraftVectorReader` | 2 |
 | XChaCha20-Poly1305 (AEAD) | draft-arciszewski-xchacha-03 Appendix A.3.1 | `XChaChaDraftVectorReader` | 1 |
-| X25519 | Wycheproof | (pre-existing loader) | — |
-| Ed25519 | Wycheproof | (pre-existing loader) | — |
-| ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | — |
-| ML-DSA 44/65/87 | NIST ACVP | `MLDsaAcvpVectors` | — |
-| HPKE | RFC 9180 test vectors (JSON) | (pre-existing loader) | — |
+| X25519 | Wycheproof | (pre-existing loader) | - |
+| Ed25519 | Wycheproof | (pre-existing loader) | - |
+| ML-KEM 512/768/1024 | NIST ACVP | `MLKemAcvpVectors` | - |
+| ML-DSA 44/65/87 | NIST ACVP | `MLDsaAcvpVectors` | - |
+| HPKE | RFC 9180 test vectors (JSON) | (pre-existing loader) | - |
 
 ## 2. Inline literals from an official source (cited, correct)
 
@@ -58,35 +58,35 @@ inline is the natural form.
 
 | Algorithm | Source | Convertible to file? |
 |---|---|---|
-| AES (block) | FIPS-197 Appendix C | No separate file — FIPS table |
+| AES (block) | FIPS-197 Appendix C | No separate file - FIPS table |
 | Skipjack | FIPS-185 §8 + NSA reference | No separate file |
-| Blowfish | — | **Converted (see §1)** — Eric Young vectors |
-| Twofish | — | **Converted (see §1)** — AES-submission ecb_vk/vt/tbl |
+| Blowfish | - | **Converted (see §1)** - Eric Young vectors |
+| Twofish | - | **Converted (see §1)** - AES-submission ecb_vk/vt/tbl |
 | Camellia | RFC 3713 / RFC 5528 | RFC tables (+ NESSIE file exists) |
-| Tiger-192 | — | **Converted (see §1)** |
-| Threefish 256/512/1024 | Crypto++ `threefish.txt` (Skein golden KAT) | Yes — Crypto++ vector file |
-| SHAKE128/256 | FIPS 202 / CAVP | Yes — NIST CAVP `.rsp` |
-| Poly1305 | — | **Converted (see §1)** — RFC 8439 Appendix A.3 |
-| Whirlpool | — | **Converted (see §1)** — OpenSSL ISO evptests file |
+| Tiger-192 | - | **Converted (see §1)** |
+| Threefish 256/512/1024 | Crypto++ `threefish.txt` (Skein golden KAT) | Yes - Crypto++ vector file |
+| SHAKE128/256 | FIPS 202 / CAVP | Yes - NIST CAVP `.rsp` |
+| Poly1305 | - | **Converted (see §1)** - RFC 8439 Appendix A.3 |
+| Whirlpool | - | **Converted (see §1)** - OpenSSL ISO evptests file |
 | AES-GCM-SIV | RFC 8452 Appendix C.1 | RFC table |
 | AES-CCM | Cross-checked vs BCL `AesCcm` oracle | Oracle, not a file |
 | AES-SIV | RFC 5297 Appendix A.1 | RFC table |
 | CBC-CTS (CS3) | Derived from NIST SP 800-38A F.2.1 | Derived (no NIST CTS file) |
 
-## 3. Self-referential — no external authority (cannot be pinned)
+## 3. Self-referential - no external authority (cannot be pinned)
 
 | Algorithm | Note |
 |---|---|
 | Serpent-256/-512/-1024 (wide tweakable) | Bespoke; cross-checked vs in-house Python port only |
-| CubeHash — non-standard round configs (`80`,`160`,`300`,`10`-round) | No published vectors for these parameters |
-| Threefish — all-zero baseline row | Trivial self-capture (non-zero rows externally confirmed) |
+| CubeHash - non-standard round configs (`80`,`160`,`300`,`10`-round) | No published vectors for these parameters |
+| Threefish - all-zero baseline row | Trivial self-capture (non-zero rows externally confirmed) |
 
-## 4. Outstanding — need an official vector file (see §5 for what to supply)
+## 4. Outstanding - need an official vector file (see §5 for what to supply)
 
 | Algorithm | Needed | Status |
 |---|---|---|
-| FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package — to assess |
-| CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package — likely already catalogue-driven |
+| FNV1a, Adler (Bodu.IO.Hashing) | reference vectors | Separate package - to assess |
+| CRC catalogue (Bodu.IO.Hashing) | RevEng catalogue check values | Separate package - likely already catalogue-driven |
 
 ## 5. Files to supply (RFC / source detail)
 
@@ -95,10 +95,10 @@ other hosts return a hard 403 at the gateway, so for those, upload the file or p
 
 - **Tiger2**: `0x80`-padding variant, 192-bit. Crypto++ `TestVectors/` or OpenSSL. (Tiger uses `0x01`; Tiger2 uses `0x80`.)
 - **CubeHash (standard)**: SHA-3 Round 2 submission KATs `ShortMsgKAT_{224,256,384,512}.txt` for **CubeHash16+16/32+32**
-  (init 16 / per-block 16 / finalization 32, 32-byte block). The exotic-round Bodu configs are unpinnable — skip.
+  (init 16 / per-block 16 / finalization 32, 32-byte block). The exotic-round Bodu configs are unpinnable - skip.
 - **Skein**: Skein 1.3 NIST submission `skein_golden_kat` / `skein_golden_kat_internals`.
 - **Salsa20/XSalsa20 family**: the eSTREAM / NaCl / DJB Salsa20 / XSalsa20 vectors.
 
 ---
 
-_This is a living document — update the tables as each algorithm is converted. One algorithm per commit._
+_This is a living document - update the tables as each algorithm is converted. One algorithm per commit._

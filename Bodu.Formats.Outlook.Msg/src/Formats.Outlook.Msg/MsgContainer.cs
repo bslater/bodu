@@ -14,7 +14,7 @@ namespace Bodu.Formats.Outlook.Msg;
 /// <see cref="OutlookMsgFormatException" /> rather than a <see cref="CompoundFileException" />.
 /// </summary>
 /// <remarks>
-/// A corrupt directory, FAT chain, or stream can fail at any point after the container opened — when a storage is
+/// A corrupt directory, FAT chain, or stream can fail at any point after the container opened - when a storage is
 /// enumerated, a stream is looked up, or its bytes are read. Routing those calls through this type keeps the documented
 /// exception contract: callers observe <see cref="OutlookFormatException" /> descendants only, with the container
 /// exception preserved as the inner exception.

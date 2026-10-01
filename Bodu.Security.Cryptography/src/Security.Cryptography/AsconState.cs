@@ -68,7 +68,7 @@ internal struct AsconState
     /// and 12 (Ascon-p12).
     /// </param>
     /// <remarks>
-    /// Rounds are numbered 0–11; a call with <paramref name="rounds" /> = <c>r</c> applies rounds <c>12 − r</c> through
+    /// Rounds are numbered 0-11; a call with <paramref name="rounds" /> = <c>r</c> applies rounds <c>12 − r</c> through
     /// <c>11</c>, preserving the standard constant-addition schedule.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -16,7 +16,7 @@ public partial class PstPropertyContextTests
 
     /// <summary>
     /// Opens a property context whose only out-of-line value is a binary property backed by an XXBLOCK tree of
-    /// 40 XBLOCKs that each reference one 8 KB block 1,021 times — about 318 MB of logical payload above the default
+    /// 40 XBLOCKs that each reference one 8 KB block 1,021 times - about 318 MB of logical payload above the default
     /// materialization limit, so only a streaming path can serve it.
     /// </summary>
     /// <param name="expectedLength">When this method returns, the logical payload length.</param>
@@ -125,7 +125,7 @@ public partial class PstPropertyContextTests
 
             long delta = GC.GetTotalMemory(forceFullCollection: false) - baseline;
             Assert.AreEqual(expectedLength, length);
-            Assert.IsTrue(delta < CeilingBytes, $"Measuring the value allocated {delta / (1024 * 1024)} MB — the payload is being materialized.");
+            Assert.IsTrue(delta < CeilingBytes, $"Measuring the value allocated {delta / (1024 * 1024)} MB - the payload is being materialized.");
         }
     }
 }

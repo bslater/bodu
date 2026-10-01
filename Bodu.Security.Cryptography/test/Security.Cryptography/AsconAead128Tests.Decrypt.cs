@@ -245,7 +245,7 @@ public partial class AsconAead128Tests
         using (AsconAead128 enc = MakeInstance())
             enc.Encrypt(plaintext, sealed_);
 
-        // Decrypt in-place over the same buffer — output starts at the head of `sealed_`.
+        // Decrypt in-place over the same buffer - output starts at the head of `sealed_`.
         using AsconAead128 dec = MakeInstance();
         int written = dec.Decrypt(sealed_, sealed_);
 

@@ -1,6 +1,6 @@
 name: Policy Gate
 
-# Tier-1 DETERMINISTIC coding-policy gate — the blocking, reproducible, zero-AI backbone.
+# Tier-1 DETERMINISTIC coding-policy gate - the blocking, reproducible, zero-AI backbone.
 #
 # Enforces the mechanically checkable rules from CLAUDE.md that the Roslyn analyzers don't
 # already cover. This is a REQUIRED check: it fails the build (and blocks merge under branch
@@ -8,9 +8,9 @@ name: Policy Gate
 # false-positive merges and no per-PR model cost.
 #
 # It runs two checkers:
-#   • bld/check-folder-namespace-alignment.sh — whole-tree (the tree is clean today), the
+#   • bld/check-folder-namespace-alignment.sh - whole-tree (the tree is clean today), the
 #     folder ↔ namespace convention.
-#   • bld/check-policy.sh — DIFF-SCOPED (added files / added lines only) so pre-existing
+#   • bld/check-policy.sh - DIFF-SCOPED (added files / added lines only) so pre-existing
 #     grandfathered stragglers don't block unrelated PRs: copyright banner, file-scoped
 #     namespace, and no string-literal exception messages (resx/ThrowHelper policy).
 #
@@ -30,8 +30,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
+  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
   deterministic-policy:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 

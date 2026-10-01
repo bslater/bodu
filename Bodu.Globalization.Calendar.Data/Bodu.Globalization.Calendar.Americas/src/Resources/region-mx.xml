@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Mexico (MX) — notable-date resource pack
+  Mexico (MX) - notable-date resource pack
   ================================================================================================================
 
   National rules are scoped to territory "MX". Mexico's statutory holidays (días de descanso obligatorio, Ley
@@ -56,7 +56,7 @@
   <NotableDates>
 
     <!--
-      Constitution Day (Día de la Constitución) — commemorates the 1917 constitution promulgated on 5 February;
+      Constitution Day (Día de la Constitución) - commemorates the 1917 constitution promulgated on 5 February;
       observed on the FIRST Monday of February since the 2006 calendar reform. Obligatory rest day. Strategy:
       DayOfWeekInMonth (first Monday).
     -->
@@ -65,14 +65,14 @@
         <Strategy><DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="First" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Flag Day (Día de la Bandera) — 24 February; a civic observance, not a rest day. Strategy: Fixed day-of-month. -->
+    <!-- Flag Day (Día de la Bandera) - 24 February; a civic observance, not a rest day. Strategy: Fixed day-of-month. -->
     <NotableDate id="flag-day-mx" displayName="Flag Day" category="Civic" defaultNonWorkingDay="false">
       <Rules><Rule id="mx"><Applicability fromYear="1940"><Territory code="MX" /></Applicability>
         <Strategy><Fixed month="February" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
     <!--
-      Benito Juárez's Birthday (Natalicio de Benito Juárez) — commemorates his birth on 21 March 1806; observed on
+      Benito Juárez's Birthday (Natalicio de Benito Juárez) - commemorates his birth on 21 March 1806; observed on
       the THIRD Monday of March since the 2006 calendar reform. Obligatory rest day. Strategy: DayOfWeekInMonth
       (third Monday).
     -->
@@ -82,7 +82,7 @@
     </NotableDate>
 
     <!--
-      Mother's Day (Día de las Madres) — 10 May, a fixed date in Mexico (not the second Sunday observed elsewhere in
+      Mother's Day (Día de las Madres) - 10 May, a fixed date in Mexico (not the second Sunday observed elsewhere in
       the Americas). A widely observed cultural day, not a rest day. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="mothers-day" displayName="Mother's Day" category="Observance" defaultNonWorkingDay="false">
@@ -91,7 +91,7 @@
     </NotableDate>
 
     <!--
-      Independence Day (Día de la Independencia) — 16 September, commemorating the 1810 Grito de Dolores. Obligatory
+      Independence Day (Día de la Independencia) - 16 September, commemorating the 1810 Grito de Dolores. Obligatory
       rest day. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="independence-day-mx" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
@@ -100,7 +100,7 @@
     </NotableDate>
 
     <!--
-      Day of the Dead (Día de Muertos) — 2 November; a major cultural and religious observance honoring the deceased,
+      Day of the Dead (Día de Muertos) - 2 November; a major cultural and religious observance honoring the deceased,
       paired with the imported All Saints' Day on 1 November. Not a rest day. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="day-of-the-dead" displayName="Day of the Dead" category="Cultural" defaultNonWorkingDay="false">
@@ -109,7 +109,7 @@
     </NotableDate>
 
     <!--
-      Revolution Day (Día de la Revolución) — commemorates the 20 November 1910 start of the Mexican Revolution;
+      Revolution Day (Día de la Revolución) - commemorates the 20 November 1910 start of the Mexican Revolution;
       observed on the THIRD Monday of November since the 2006 calendar reform. Obligatory rest day. Strategy:
       DayOfWeekInMonth (third Monday).
     -->
@@ -119,7 +119,7 @@
     </NotableDate>
 
     <!--
-      Day of the Virgin of Guadalupe (Día de la Virgen de Guadalupe) — 12 December; a major national religious
+      Day of the Virgin of Guadalupe (Día de la Virgen de Guadalupe) - 12 December; a major national religious
       observance. Not a rest day. Strategy: Fixed day-of-month.
     -->
     <NotableDate id="guadalupe-day" displayName="Day of the Virgin of Guadalupe" category="Religious" defaultNonWorkingDay="false">

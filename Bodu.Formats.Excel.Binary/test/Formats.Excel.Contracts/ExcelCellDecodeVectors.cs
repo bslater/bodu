@@ -13,9 +13,9 @@ namespace Bodu.Formats.Excel.Contracts;
 /// <see cref="ExcelCellDecodeContractTests" /> drives through every cell-decode surface.
 /// </summary>
 /// <remarks>
-/// The records are built with <see cref="Biff8TestWorkbook" /> and exercise the value-bearing record types — inline
+/// The records are built with <see cref="Biff8TestWorkbook" /> and exercise the value-bearing record types - inline
 /// <c>LABEL</c>, <c>NUMBER</c>, <c>RK</c>, <c>MULRK</c>, <c>BOOLERR</c>, and <c>FORMULA</c> (with each cached-result
-/// kind) — without referencing a shared string table, so the same rows decode identically through the streaming reader
+/// kind) - without referencing a shared string table, so the same rows decode identically through the streaming reader
 /// and the materialized workbook.
 /// </remarks>
 internal static class ExcelCellDecodeVectors

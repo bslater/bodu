@@ -10,7 +10,7 @@ public sealed partial class DistributedRateCacheTests
 {
     /// <summary>
     /// Verifies end to end that the caching provider's asynchronous surfaces drive the distributed backend through
-    /// its asynchronous store APIs — no synchronous Get or Set — so network I/O never blocks a thread-pool thread.
+    /// its asynchronous store APIs - no synchronous Get or Set - so network I/O never blocks a thread-pool thread.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenBackedByDistributedCache_ShouldUseAsyncStoreApis()

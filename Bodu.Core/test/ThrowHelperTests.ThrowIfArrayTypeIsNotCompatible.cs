@@ -29,8 +29,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> does not throw — and on
-    /// the ParamName-asserting overload reports nothing — for arrays whose element type matches
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> does not throw - and on
+    /// the ParamName-asserting overload reports nothing - for arrays whose element type matches
     /// <c>int</c>.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

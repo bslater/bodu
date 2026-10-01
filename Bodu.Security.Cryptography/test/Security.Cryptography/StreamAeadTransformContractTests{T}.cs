@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Defines the common <see cref="IStreamAeadTransform" /> contract shared by every extended-nonce Poly1305 AEAD —
+/// Defines the common <see cref="IStreamAeadTransform" /> contract shared by every extended-nonce Poly1305 AEAD -
 /// constructor validation, round-trip across length boundaries, output sizing, authentication-failure behaviour
 /// (tag / ciphertext / wrong key / wrong nonce / wrong associated data), single-use lifecycle, in-place operation, and
 /// buffer-overlap rules. Concrete fixtures supply the construction under test and whether it authenticates associated
@@ -233,13 +233,13 @@ public abstract class StreamAeadTransformContractTests<TAead>
 
     /// <summary>
     /// Verifies that a failed authentication releases no candidate plaintext through the output buffer: a
-    /// sentinel-filled destination comes back either untouched (verify-before-release — the tag is checked over the
+    /// sentinel-filled destination comes back either untouched (verify-before-release - the tag is checked over the
     /// ciphertext before any output is written) or all-zero (write-then-clear), and in neither case contains the
     /// plaintext.
     /// </summary>
     /// <remarks>
     /// The output buffer is pre-filled with a non-zero sentinel so the assertion actually proves the transform's
-    /// behaviour — a zero-initialised buffer would pass even if the transform wrote plaintext and then zeroed it, or
+    /// behaviour - a zero-initialised buffer would pass even if the transform wrote plaintext and then zeroed it, or
     /// never touched it at all, without distinguishing the two acceptable contracts from a leak.
     /// </remarks>
     [TestMethod]
@@ -250,7 +250,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
         sealed_[^1] ^= 0xff;
 
         byte[] output = new byte[sealed_.Length - 16];
-        Array.Fill(output, (byte)0xCC); // sentinel — any non-zero value
+        Array.Fill(output, (byte)0xCC); // sentinel - any non-zero value
         using TAead dec = Create(Key(), Nonce());
         Assert.ThrowsExactly<CryptographicException>(() => { _ = dec.Decrypt(sealed_, output); });
 

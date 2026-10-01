@@ -24,7 +24,7 @@ public partial class NumericExtensionsTests
         });
 
     // --------------------------------------------------
-    // byte — invalid count
+    // byte - invalid count
     // --------------------------------------------------
 
     /// <summary>
@@ -83,7 +83,7 @@ public partial class NumericExtensionsTests
             ((ushort)0xFFFF).RotateBitsLeft(count);
         });
     // --------------------------------------------------
-    // byte — valid rotations
+    // byte - valid rotations
     // --------------------------------------------------
 
     /// <summary>
@@ -91,9 +91,9 @@ public partial class NumericExtensionsTests
     /// for a representative set of values and rotation counts within the valid range [0, 8].
     /// </summary>
     [TestMethod]
-    [DataRow((byte)0x00, 0, (byte)0x00)] // all-zero, any rotation — identity
-    [DataRow((byte)0xFF, 1, (byte)0xFF)] // all-ones, any rotation — identity
-    [DataRow((byte)0xFF, 8, (byte)0xFF)] // full rotation — identity
+    [DataRow((byte)0x00, 0, (byte)0x00)] // all-zero, any rotation - identity
+    [DataRow((byte)0xFF, 1, (byte)0xFF)] // all-ones, any rotation - identity
+    [DataRow((byte)0xFF, 8, (byte)0xFF)] // full rotation - identity
     [DataRow((byte)0xAA, 8, (byte)0xAA)] // full rotation preserves alternating pattern
     [DataRow((byte)0x01, 1, (byte)0x02)] // LSB shifts left by 1
     [DataRow((byte)0x01, 7, (byte)0x80)] // LSB wraps to MSB
@@ -104,7 +104,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(expected, value.RotateBitsLeft(count));
 
     // --------------------------------------------------
-    // uint — valid rotations
+    // uint - valid rotations
     // --------------------------------------------------
 
     /// <summary>
@@ -112,9 +112,9 @@ public partial class NumericExtensionsTests
     /// for a representative set of values and rotation counts within the valid range [0, 32].
     /// </summary>
     [TestMethod]
-    [DataRow(0x00000000U, 0, 0x00000000U)] // all-zero — identity
-    [DataRow(0xFFFFFFFFU, 1, 0xFFFFFFFFU)] // all-ones — identity
-    [DataRow(0xFFFFFFFFU, 32, 0xFFFFFFFFU)] // full rotation — identity
+    [DataRow(0x00000000U, 0, 0x00000000U)] // all-zero - identity
+    [DataRow(0xFFFFFFFFU, 1, 0xFFFFFFFFU)] // all-ones - identity
+    [DataRow(0xFFFFFFFFU, 32, 0xFFFFFFFFU)] // full rotation - identity
     [DataRow(0x00000001U, 1, 0x00000002U)] // LSB shifts left
     [DataRow(0x80000000U, 1, 0x00000001U)] // MSB wraps to LSB
     [DataRow(0xAAAAAAAAU, 15, 0x55555555U)] // 1010... rotated 15 → 0101...
@@ -124,7 +124,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(expected, value.RotateBitsLeft(count));
 
     // --------------------------------------------------
-    // ulong — valid rotations
+    // ulong - valid rotations
     // --------------------------------------------------
 
     /// <summary>
@@ -132,9 +132,9 @@ public partial class NumericExtensionsTests
     /// for a representative set of values and rotation counts within the valid range [0, 64].
     /// </summary>
     [TestMethod]
-    [DataRow(0x0000000000000000UL, 0, 0x0000000000000000UL)] // all-zero — identity
-    [DataRow(0xFFFFFFFFFFFFFFFFUL, 1, 0xFFFFFFFFFFFFFFFFUL)] // all-ones — identity
-    [DataRow(0xFFFFFFFFFFFFFFFFUL, 64, 0xFFFFFFFFFFFFFFFFUL)] // full rotation — identity
+    [DataRow(0x0000000000000000UL, 0, 0x0000000000000000UL)] // all-zero - identity
+    [DataRow(0xFFFFFFFFFFFFFFFFUL, 1, 0xFFFFFFFFFFFFFFFFUL)] // all-ones - identity
+    [DataRow(0xFFFFFFFFFFFFFFFFUL, 64, 0xFFFFFFFFFFFFFFFFUL)] // full rotation - identity
     [DataRow(0x0000000000000001UL, 1, 0x0000000000000002UL)] // LSB shifts left
     [DataRow(0x8000000000000000UL, 1, 0x0000000000000001UL)] // MSB wraps to LSB
     [DataRow(0xAAAAAAAAAAAAAAAAUL, 31, 0x5555555555555555UL)] // 1010... rotated 31 → 0101...
@@ -144,7 +144,7 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(expected, value.RotateBitsLeft(count));
 
     // --------------------------------------------------
-    // ushort — valid rotations
+    // ushort - valid rotations
     // --------------------------------------------------
 
     /// <summary>
@@ -152,9 +152,9 @@ public partial class NumericExtensionsTests
     /// for a representative set of values and rotation counts within the valid range [0, 16].
     /// </summary>
     [TestMethod]
-    [DataRow((ushort)0x0000, 0, (ushort)0x0000)] // all-zero — identity
-    [DataRow((ushort)0xFFFF, 1, (ushort)0xFFFF)] // all-ones — identity
-    [DataRow((ushort)0xFFFF, 16, (ushort)0xFFFF)] // full rotation — identity
+    [DataRow((ushort)0x0000, 0, (ushort)0x0000)] // all-zero - identity
+    [DataRow((ushort)0xFFFF, 1, (ushort)0xFFFF)] // all-ones - identity
+    [DataRow((ushort)0xFFFF, 16, (ushort)0xFFFF)] // full rotation - identity
     [DataRow((ushort)0xAAAA, 16, (ushort)0xAAAA)] // full rotation preserves pattern
     [DataRow((ushort)0x0001, 1, (ushort)0x0002)] // LSB shifts left by 1
     [DataRow((ushort)0x8000, 1, (ushort)0x0001)] // MSB wraps to LSB

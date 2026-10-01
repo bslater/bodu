@@ -35,8 +35,8 @@ public partial class ScryptTests
     }
 
     /// <summary>
-    /// Verifies that an instance allowed several threads derives RFC 7914's second key — sixteen units of 1 MiB, enough
-    /// to divide — the same through every derivation member.
+    /// Verifies that an instance allowed several threads derives RFC 7914's second key - sixteen units of 1 MiB, enough
+    /// to divide - the same through every derivation member.
     /// </summary>
     /// <param name="maxDegreeOfParallelism">The bound.</param>
     [TestMethod]

@@ -75,8 +75,8 @@ public sealed partial class TwofishTests
     /// Verifies that <see cref="Twofish.CreateEncryptor(byte[], byte[])" /> throws
     /// <see cref="CryptographicException" /> when the supplied key length does not match the algorithm's
     /// configured key size. Twofish-specific because Twofish has three discrete legal key sizes (128 / 192 /
-    /// 256 bits) — a one-byte adjustment from any legal size lands on an illegal size. Ciphers with a
-    /// continuous legal-key-size range (e.g. Blowfish 32–448 bits) do not satisfy that property and are not
+    /// 256 bits) - a one-byte adjustment from any legal size lands on an illegal size. Ciphers with a
+    /// continuous legal-key-size range (e.g. Blowfish 32-448 bits) do not satisfy that property and are not
     /// covered by this test.
     /// </summary>
     [TestMethod]

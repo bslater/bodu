@@ -174,7 +174,7 @@ public sealed partial class Base58Tests
     [TestMethod]
     public void TryEncode_WhenDestinationExactlyActualSize_ShouldReturnTrue()
     {
-        byte[] bytes = Ascii("Hello"); // encodes to "9Ajdvzr" — 7 chars
+        byte[] bytes = Ascii("Hello"); // encodes to "9Ajdvzr" - 7 chars
 
         // Destination is exactly the actual encoded size (7), well below the worst-case upper bound for 5 bytes.
         char[] destination = new char[7];

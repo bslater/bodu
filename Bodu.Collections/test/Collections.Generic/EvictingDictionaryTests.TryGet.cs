@@ -153,7 +153,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        // Access "A" — under MRU this should make it the most recently used and the next eviction candidate.
+        // Access "A" - under MRU this should make it the most recently used and the next eviction candidate.
         _ = dictionary.TryGetValue("A", out _);
 
         dictionary.Add("C", 3); // Should evict "A" (most recently used).

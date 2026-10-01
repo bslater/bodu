@@ -10,11 +10,11 @@ uid: Bodu.Text.Bencode.Document
 
 ## Key types
 
-- <xref:Bodu.Text.Bencode.Document.BencodeDocument> — the disposable owner: `Parse` (from `byte[]` or `ReadOnlySpan<byte>`), `RootElement`, `WriteTo`.
-- <xref:Bodu.Text.Bencode.Document.BencodeElement> — the value cursor: `ValueKind`, `GetString` / `GetBytes` / `GetRawBytes` / `GetInt64` / `GetUInt64` (+ `TryGet*`), `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, `EnumerateArray` / `EnumerateObject`, `Clone`, and `WriteTo`.
-- <xref:Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator> / <xref:Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator> — the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
-- <xref:Bodu.Text.Bencode.Document.BencodeProperty> — a `Name` / `Value` pair yielded by `EnumerateObject`.
-- <xref:Bodu.Text.Bencode.Document.BencodeDocumentOptions> — `MaxDepth`, `AllowUnsortedKeys`, `AllowDuplicateKeys`.
+- <xref:Bodu.Text.Bencode.Document.BencodeDocument> - the disposable owner: `Parse` (from `byte[]` or `ReadOnlySpan<byte>`), `RootElement`, `WriteTo`.
+- <xref:Bodu.Text.Bencode.Document.BencodeElement> - the value cursor: `ValueKind`, `GetString` / `GetBytes` / `GetRawBytes` / `GetInt64` / `GetUInt64` (+ `TryGet*`), `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, `EnumerateArray` / `EnumerateObject`, `Clone`, and `WriteTo`.
+- <xref:Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator> / <xref:Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator> - the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
+- <xref:Bodu.Text.Bencode.Document.BencodeProperty> - a `Name` / `Value` pair yielded by `EnumerateObject`.
+- <xref:Bodu.Text.Bencode.Document.BencodeDocumentOptions> - `MaxDepth`, `AllowUnsortedKeys`, `AllowDuplicateKeys`.
 
 ## Example
 
@@ -33,4 +33,4 @@ foreach (BencodeProperty property in root.EnumerateObject())
 
 - **Lifetime.** Elements are only valid while their document is undisposed; call `Clone` to detach one.
 - **Integers beyond `long`.** A value in the `ulong` range reads through `GetUInt64` / `TryGetUInt64`.
-- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 7 — Use a document model instead of a type).
+- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 7 - Use a document model instead of a type).

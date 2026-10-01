@@ -16,7 +16,7 @@ public sealed class SimdOptOutTests
 {
     /// <summary>
     /// Verifies that with the disable switch set, the SIMD capability gates report unavailable regardless of the host's
-    /// hardware — the switch overrides every intrinsic check.
+    /// hardware - the switch overrides every intrinsic check.
     /// </summary>
     [TestMethod]
     public void SimdCapabilities_WhenDisableSwitchSet_ShouldReportGatesDisabled()
@@ -28,6 +28,7 @@ public sealed class SimdOptOutTests
         Assert.IsFalse(SimdCapabilities.Ssse3, "Expected the disable switch to force Ssse3 off.");
         Assert.IsFalse(SimdCapabilities.Sse2, "Expected the disable switch to force Sse2 off.");
         Assert.IsFalse(SimdCapabilities.AdvSimd, "Expected the disable switch to force AdvSimd off.");
+        Assert.IsFalse(SimdCapabilities.AdvSimdSingleState, "Expected the AdvSimd single-state kernels to stay held back.");
         Assert.IsFalse(SimdCapabilities.Pmull, "Expected the disable switch to force the polynomial-multiply GHASH gate off.");
     }
 
@@ -53,13 +54,15 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, BLAKE3 dispatches to its scalar compression kernel whatever the processor
-    /// supports, so the linked BLAKE3 vectors in this assembly hold the scalar kernel to them.
+    /// Verifies that with SIMD disabled, BLAKE3 dispatches to its scalar compression kernel, for several inputs and for
+    /// a single block, whatever the processor supports, so the linked BLAKE3 vectors in this assembly hold the scalar
+    /// kernel to them.
     /// </summary>
     [TestMethod]
     public void Blake3CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
     {
         Assert.AreEqual(Blake3Core.KernelKind.Scalar, Blake3Core.SelectKernel());
+        Assert.AreEqual(Blake3Core.KernelKind.Scalar, Blake3Core.SelectSingleBlockKernel());
     }
 
     /// <summary>
@@ -101,22 +104,55 @@ public sealed class SimdOptOutTests
 
     /// <summary>
     /// Verifies that with SIMD disabled, Poly1305 absorbs every run of whole blocks, however long, through its scalar
-    /// loop, whatever the processor supports.
+    /// loop, whatever the processor supports, on Apple's cores and elsewhere: from each length at which a vector kernel
+    /// would take over, up to 1 MiB.
     /// </summary>
-    /// <param name="length">The length of the run, in bytes.</param>
     [TestMethod]
-    [DataRow(Poly1305Core.Avx2MinimumBytes)]
-    [DataRow(Poly1305Core.Avx2PairedMinimumBytes)]
-    [DataRow(Poly1305Core.Avx512MinimumBytes)]
-    [DataRow(1 << 20)]
-    public void Poly1305CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarLoop(int length)
+    public void Poly1305CoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarLoop()
     {
-        Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length));
+        int[] lengths =
+        [
+            Poly1305Core.AppleAdvSimdMinimumBytes,
+            Poly1305Core.AdvSimdMinimumBytes,
+            Poly1305Core.Avx2MinimumBytes,
+            Poly1305Core.Avx2PairedMinimumBytes,
+            Poly1305Core.Avx512MinimumBytes,
+            1 << 20,
+        ];
+
+        foreach (int length in lengths)
+        {
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length), $"length {length}");
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: false), $"length {length}, elsewhere");
+            Assert.AreEqual(Poly1305Core.KernelKind.Scalar, Poly1305Core.SelectKernel(length, appleSilicon: true), $"length {length}, on Apple's cores");
+        }
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, Serpent-128 encrypts and decrypts runs of blocks with its scalar rounds, one
-    /// block at a time, whatever the processor supports.
+    /// Verifies that with SIMD disabled, the four-way Keccak permutation takes its scalar kernel whatever the processor
+    /// supports, and reports itself unaccelerated, so ML-KEM and ML-DSA sample one XOF stream at a time.
+    /// </summary>
+    [TestMethod]
+    public void KeccakPermutationSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
+    {
+        Assert.AreEqual(KeccakPermutation.KernelKind.Scalar, KeccakPermutation.SelectKernel());
+        Assert.IsFalse(KeccakPermutation.IsFourWayAccelerated);
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, ML-KEM and ML-DSA transform and multiply with their scalar kernels whatever
+    /// the processor supports, so the linked ACVP vectors in this assembly hold the scalar kernels to them.
+    /// </summary>
+    [TestMethod]
+    public void LatticeSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernels()
+    {
+        Assert.AreEqual(MLKemEngine.KernelKind.Scalar, MLKemEngine.SelectKernel());
+        Assert.AreEqual(MLDsaEngine.KernelKind.Scalar, MLDsaEngine.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that with SIMD disabled, Serpent-128 encrypts and decrypts runs of blocks, and forms its counter blocks,
+    /// with its scalar rounds, one block at a time, whatever the processor supports.
     /// </summary>
     [TestMethod]
     public void SerpentCoreSelectKernel_WhenSimdDisabled_ShouldReturnTheScalarKernel()
@@ -134,7 +170,7 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, scrypt — mixing through the scalar kernel, on one thread and on several —
+    /// Verifies that with SIMD disabled, scrypt - mixing through the scalar kernel, on one thread and on several -
     /// still reproduces RFC 7914, Section 12's first two vectors.
     /// </summary>
     [TestMethod]
@@ -164,7 +200,7 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that with SIMD disabled, GCM — hashing through the scalar GHASH kernel — still matches the platform's
+    /// Verifies that with SIMD disabled, GCM - hashing through the scalar GHASH kernel - still matches the platform's
     /// <see cref="System.Security.Cryptography.AesGcm" /> on messages that fill several four-block groups and end in a
     /// partial block, with associated data of several alignments.
     /// </summary>
@@ -215,7 +251,7 @@ public sealed class SimdOptOutTests
     }
 
     /// <summary>
-    /// Verifies that BLAKE3 — one of the AVX-512-accelerated primitives — reproduces the official empty-input reference
+    /// Verifies that BLAKE3 - one of the AVX-512-accelerated primitives - reproduces the official empty-input reference
     /// digest when SIMD is disabled, exercising the scalar fallback.
     /// </summary>
     [TestMethod]

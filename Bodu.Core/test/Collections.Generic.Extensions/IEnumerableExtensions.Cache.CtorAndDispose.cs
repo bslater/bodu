@@ -70,7 +70,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
     /// <summary>
     /// Verifies that disposing a cached sequence before any element has been requested releases the wrapper's state
-    /// without throwing — the constructor-only state must be safe to release even when initialisation has not begun.
+    /// without throwing - the constructor-only state must be safe to release even when initialisation has not begun.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledBeforeEnumeration_ShouldNotThrow()

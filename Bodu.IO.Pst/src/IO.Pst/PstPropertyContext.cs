@@ -13,7 +13,7 @@ namespace Bodu.IO.Pst;
 
 /// <summary>
 /// Represents a node's property context (<c>PC</c>): the LTP property bag of 16-bit property identifiers with
-/// wire-typed values, in the manner the exploration plan sketches — format-agnostic, with no MAPI semantics.
+/// wire-typed values, in the manner the exploration plan sketches - format-agnostic, with no MAPI semantics.
 /// </summary>
 /// <remarks>
 /// The context's records are materialized when the context is read; each value's payload is resolved on access, so a
@@ -126,8 +126,8 @@ public sealed class PstPropertyContext
     /// <remarks>
     /// <para>
     /// The stream is the streaming counterpart of <see cref="TryGetValue" />: a heap-resident value is served from the
-    /// heap's decoded bytes, and a subnode-resident value is read block by block on demand — the same stream
-    /// <see cref="PstNode.OpenDataStream" /> returns — so <see cref="PstFileOptions.MaxNodeDataLength" />, which bounds
+    /// heap's decoded bytes, and a subnode-resident value is read block by block on demand - the same stream
+    /// <see cref="PstNode.OpenDataStream" /> returns - so <see cref="PstFileOptions.MaxNodeDataLength" />, which bounds
     /// materialization, does not apply. The stream is bound to the owning session and must be disposed before it.
     /// </para>
     /// <para>

@@ -70,7 +70,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <summary>
     /// Verifies that an instance whose <see cref="IAeadBlockCipherModeTransform.Decrypt" /> raised
     /// <see cref="CryptographicException" /> on tag mismatch is poisoned for any further
-    /// <see cref="IAeadBlockCipherModeTransform.Encrypt" /> attempt — the finally block on the
+    /// <see cref="IAeadBlockCipherModeTransform.Encrypt" /> attempt - the finally block on the
     /// failed Decrypt sets the completion flag so the instance cannot be repurposed.
     /// </summary>
     /// <remarks>
@@ -108,7 +108,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// <summary>
     /// Verifies that an instance whose <see cref="IAeadBlockCipherModeTransform.Decrypt" /> raised
     /// <see cref="CryptographicException" /> on tag mismatch is poisoned for any further
-    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> attempt — even with valid ciphertext,
+    /// <see cref="IAeadBlockCipherModeTransform.Decrypt" /> attempt - even with valid ciphertext,
     /// the spent instance cannot be reused. A fresh transform is required for every message.
     /// </summary>
     [TestMethod]
@@ -136,6 +136,6 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
             decTransform.Decrypt(sealedCopy, new byte[plaintext.Length]),
-            $"{typeof(TTransform).Name} must reject a second Decrypt — even with valid ciphertext — after a tag-mismatch failure.");
+            $"{typeof(TTransform).Name} must reject a second Decrypt - even with valid ciphertext - after a tag-mismatch failure.");
     }
 }

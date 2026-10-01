@@ -16,8 +16,8 @@ namespace Bodu.Test.Contracts;
 /// <typeparam name="TItem">The element type held by the collection.</typeparam>
 /// <remarks>
 /// <para>
-/// The base focuses on the core <see cref="ICollection{T}" /> contract — count, contains, add, remove,
-/// clear, copy-to, enumeration — and does not exercise type-specific or concurrency-specific behaviour.
+/// The base focuses on the core <see cref="ICollection{T}" /> contract - count, contains, add, remove,
+/// clear, copy-to, enumeration - and does not exercise type-specific or concurrency-specific behaviour.
 /// Subclasses are free to add bespoke tests for behaviour outside the shared contract.
 /// </para>
 /// </remarks>

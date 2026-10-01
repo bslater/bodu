@@ -4,7 +4,7 @@ title: Using Base32
 
 # Using Base32
 
-`Base32` packs five bits per output character (radix 32), so the payload expansion is **60 %** — between Base16's
+`Base32` packs five bits per output character (radix 32), so the payload expansion is **60 %** - between Base16's
 100 % and Base64's 33 %. The library ships four variants: the two RFC 4648 alphabets plus two human-oriented
 alternatives.
 
@@ -15,8 +15,8 @@ input bytes  : 66 6F 6F 62 61 72             (ASCII "foobar")
               :                              └──   ─ 5-byte group ─  ┘
 encoded text : MZXW6YTBOI======              (Standard, 16 chars including padding)
               CPNMUOJ1E8======               (HexExtended)
-              CPNMUOJ1E8                     (Crockford — no padding by default)
-              csrtbarvni                     (Z-Base-32 — lowercase alphabet, no padding)
+              CPNMUOJ1E8                     (Crockford - no padding by default)
+              csrtbarvni                     (Z-Base-32 - lowercase alphabet, no padding)
 ```
 
 ## Quick reference
@@ -34,11 +34,11 @@ string s = Base32.Encode(data);
 string h = Base32.Encode(data, Base32Variant.HexExtended);
 // "CPNMUOJ1E8======"
 
-// Crockford — no padding by default
+// Crockford - no padding by default
 string c = Base32.Encode(data, Base32Variant.Crockford);
 // "CSQPYRK1E8"
 
-// z-base-32 — lowercase human-oriented
+// z-base-32 - lowercase human-oriented
 string z = Base32.Encode(data, Base32Variant.ZBase32);
 // (lowercase z-base-32 form)
 ```
@@ -47,9 +47,9 @@ string z = Base32.Encode(data, Base32Variant.ZBase32);
 
 | Variant | Alphabet | Padding default | Visually ambiguous chars excluded | Decode aliases |
 |---|---|---|---|---|
-| `Standard` (RFC 4648 §6) | `A-Z 2-7` | Yes (`=`) | — | Case-insensitive |
-| `HexExtended` (RFC 4648 §7) | `0-9 A-V` | Yes (`=`) | — | Case-insensitive |
-| `Crockford` | `0-9 A-Z` minus `I L O U` | No | Yes — `I` `L` `O` `U` | `I`/`L` → `1`, `O` → `0`, case-insensitive |
+| `Standard` (RFC 4648 §6) | `A-Z 2-7` | Yes (`=`) | - | Case-insensitive |
+| `HexExtended` (RFC 4648 §7) | `0-9 A-V` | Yes (`=`) | - | Case-insensitive |
+| `Crockford` | `0-9 A-Z` minus `I L O U` | No | Yes - `I` `L` `O` `U` | `I`/`L` → `1`, `O` → `0`, case-insensitive |
 | `ZBase32` | Permuted lowercase | No | Indirectly | Case-insensitive |
 
 ### When to pick each
@@ -100,16 +100,16 @@ byte[]  back       = Base32.Decode(withoutPad, Base32Variant.Standard, BaseForma
 | `BaseFormatStyles.IgnoreWhitespace` | Strip ASCII space, tab, CR, LF (handy for line-wrapped output) |
 | `BaseFormatStyles.AllowMissingPadding` | Accept inputs that omit the trailing `=` characters |
 | `BaseFormatStyles.AllowPrefix` | No-op for Base32 (no standard prefix) |
-| `BaseFormatStyles.RequireCanonicalEncoding` | **Tightens** the decoder — rejects a terminal symbol with non-zero unused bits |
+| `BaseFormatStyles.RequireCanonicalEncoding` | **Tightens** the decoder - rejects a terminal symbol with non-zero unused bits |
 
-`BaseFormattingOptions.InsertLineBreaks` is supported on encode and wraps at 64 characters — the same convention
+`BaseFormattingOptions.InsertLineBreaks` is supported on encode and wraps at 64 characters - the same convention
 as Base16.
 
 ### Canonical form and the 5-byte quantum
 
 Base32 repeats a **5-byte → 8-character** quantum (40 bits = lcm of the 8-bit byte and the 5-bit symbol). A
-partial tail does not fill every bit of its final symbol — a 1-byte tail leaves 2 unused bits, a 2-byte tail
-leaves 4, and so on — and RFC 4648 §3.5 lets a decoder accept the result whatever those leftover bits are. Two
+partial tail does not fill every bit of its final symbol - a 1-byte tail leaves 2 unused bits, a 2-byte tail
+leaves 4, and so on - and RFC 4648 §3.5 lets a decoder accept the result whatever those leftover bits are. Two
 encoded strings that differ only in those unused trailing bits therefore decode to the *same* bytes. By default
 the decoder tolerates the non-canonical form; `RequireCanonicalEncoding` rejects it, so every byte sequence has a
 single accepted spelling:
@@ -125,7 +125,7 @@ Base32.Decode(canonical, Base32Variant.Standard,
     BaseFormatStyles.RequireCanonicalEncoding);                    // … but is rejected under canonical enforcement
 ```
 
-Pass `RequireCanonicalEncoding` when each byte sequence must have exactly one accepted spelling — content-addressed
+Pass `RequireCanonicalEncoding` when each byte sequence must have exactly one accepted spelling - content-addressed
 keys, deduplication, or a value that feeds a signature. The flag is a no-op for the leftover-bit-free families
 (Base16) and the non-bit-stream families (Base58, Base85).
 
@@ -151,7 +151,7 @@ var status = Base32.DecodeFromUtf8(
 
 ```csharp
 Base32.IsValid("MZXW6YTBOI======");          // true (Standard, padded)
-Base32.IsValid("MZXW6YTBOI");                // false (strict — missing padding)
+Base32.IsValid("MZXW6YTBOI");                // false (strict - missing padding)
 Base32.IsValid("MZXW6YTBOI",
     Base32Variant.Standard,
     BaseFormatStyles.AllowMissingPadding);   // true
@@ -167,7 +167,7 @@ Base32.GetMaxDecodedLength(32);               // 20
 
 ## Encoding a GUID
 
-`Base32` encodes a <xref:System.Guid> into a 26-character (padless) or 32-character (padded) token — denser than
+`Base32` encodes a <xref:System.Guid> into a 26-character (padless) or 32-character (padded) token - denser than
 hex and case-insensitive, so it survives shouting down a phone line in Crockford form:
 
 ```csharp
@@ -199,12 +199,12 @@ string display = Base32.Encode(
 ```csharp
 byte[] randomBytes = RandomNumberGenerator.GetBytes(5);
 string code = Base32.Encode(randomBytes, Base32Variant.Crockford);
-// e.g. "F08NHM37" — 8 characters, no ambiguity with O/0/I/L
+// e.g. "F08NHM37" - 8 characters, no ambiguity with O/0/I/L
 ```
 
 ## Where to go next
 
-- **[Base64 guide](base64.md)** — when you need denser packing.
-- **[Base16 guide](base16.md)** — when you need explicit byte boundaries.
-- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** — runtime-selected encoding choice.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Base64 guide](base64.md)** - when you need denser packing.
+- **[Base16 guide](base16.md)** - when you need explicit byte boundaries.
+- **[`IBinaryEncoding` interface](binary-encodings-interface.md)** - runtime-selected encoding choice.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

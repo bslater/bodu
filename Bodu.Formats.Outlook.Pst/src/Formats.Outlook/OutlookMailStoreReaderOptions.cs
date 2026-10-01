@@ -75,7 +75,7 @@ public sealed class OutlookMailStoreReaderOptions
     public bool DecompressRtf { get; init; } = true;
 
     /// <summary>
-    /// Gets the largest node payload, in bytes, the underlying container materializes in memory — the ceiling on any
+    /// Gets the largest node payload, in bytes, the underlying container materializes in memory - the ceiling on any
     /// single property value, attachment payload, or table the store decodes at once.
     /// </summary>
     /// <value>

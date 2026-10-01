@@ -55,8 +55,8 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.TryDequeue(out _));
     }
 
-    // Previously tested with capacity = 1. Migrated to capacity = 2 — the minimum supported
-    // value — following the implementation change that requires capacity >= 2 for the Vyukov
+    // Previously tested with capacity = 1. Migrated to capacity = 2 - the minimum supported
+    // value - following the implementation change that requires capacity >= 2 for the Vyukov
     // MPMC sequence protocol to be correct.
 
     /// <summary>

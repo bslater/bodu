@@ -10,7 +10,7 @@ uid: Bodu.Buffers
 
 ## Key types
 
-- <xref:Bodu.Buffers.PooledBufferBuilder`1> — `ArrayPool<T>`-backed builder for assembling spans without allocation. Returns the rented array to the pool on `Dispose`. Writes go through `Append(T)`, `AppendRange(ReadOnlySpan<T>)` (with `ReadOnlyMemory<T>` / `IEnumerable<T>` overloads), `AddMany`, or the `IBufferWriter<T>` pair `GetSpan(sizeHint)` / `GetMemory(sizeHint)` + `Advance(count)`; reads go through `WrittenSpan` / `WrittenMemory`, `CopyTo` / `TryCopyTo`, or `ToArrayAndDispose()`, which hands back a right-sized array and returns the rental in one step.
+- <xref:Bodu.Buffers.PooledBufferBuilder`1> - `ArrayPool<T>`-backed builder for assembling spans without allocation. Returns the rented array to the pool on `Dispose`. Writes go through `Append(T)`, `AppendRange(ReadOnlySpan<T>)` (with `ReadOnlyMemory<T>` / `IEnumerable<T>` overloads), `AddMany`, or the `IBufferWriter<T>` pair `GetSpan(sizeHint)` / `GetMemory(sizeHint)` + `Advance(count)`; reads go through `WrittenSpan` / `WrittenMemory`, `CopyTo` / `TryCopyTo`, or `ToArrayAndDispose()`, which hands back a right-sized array and returns the rental in one step.
 
 ## Example
 
@@ -36,5 +36,5 @@ ReadOnlySpan<byte> written = builder.WrittenSpan;
 ## Notes
 
 - **Disposable.** The builder rents from `ArrayPool<T>.Shared`. Dispose at the end of use; `using` is the idiomatic pattern.
-- **Single owner.** The builder is not thread-safe — pool-backed buffers are owned by a single writer.
+- **Single owner.** The builder is not thread-safe - pool-backed buffers are owned by a single writer.
 - **See also:** the [Bodu.Core introduction](~/docs/core/index.md), <xref:Bodu.Collections.Generic.SegmentedBuffer`1> for streaming buffers where the total length is not known up front.

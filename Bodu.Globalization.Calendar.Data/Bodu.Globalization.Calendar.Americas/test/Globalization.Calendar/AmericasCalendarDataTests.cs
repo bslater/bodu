@@ -118,8 +118,8 @@ public sealed partial class AmericasCalendarDataTests
 
     /// <summary>
     /// Verifies that holidays whose date floats from year to year resolve to independently-known reference dates
-    /// across both historical and future years — the Easter-derived offsets, the nth-weekday-in-month rules, and the
-    /// nearest-weekday rules — so the moving feasts are pinned, not merely structurally validated.
+    /// across both historical and future years - the Easter-derived offsets, the nth-weekday-in-month rules, and the
+    /// nearest-weekday rules - so the moving feasts are pinned, not merely structurally validated.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="year">The Gregorian year.</param>
@@ -227,7 +227,7 @@ public sealed partial class AmericasCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that a holiday does not resolve in a year outside its applicability — before its first applicable
+    /// Verifies that a holiday does not resolve in a year outside its applicability - before its first applicable
     /// year, or (for the quadrennial Inauguration Day) in a non-inauguration year.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>
@@ -254,7 +254,7 @@ public sealed partial class AmericasCalendarDataTests
 
     /// <summary>
     /// Verifies that Mexican holidays whose date floats from year to year resolve to independently-known published
-    /// dates — the three 2006-reform Monday holidays and the Holy Week feasts — so the moving holidays are pinned to
+    /// dates - the three 2006-reform Monday holidays and the Holy Week feasts - so the moving holidays are pinned to
     /// confirmed calendar dates rather than merely structurally validated.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
@@ -307,8 +307,8 @@ public sealed partial class AmericasCalendarDataTests
 
     /// <summary>
     /// Verifies that Latin American holidays whose date floats from year to year resolve to independently-known
-    /// published dates — the Easter-derived Carnival, Corpus Christi and Holy Week feasts, the nth-weekday family
-    /// observances, the Argentine movable holidays, and the Colombian Emiliani Monday holidays — so the moving
+    /// published dates - the Easter-derived Carnival, Corpus Christi and Holy Week feasts, the nth-weekday family
+    /// observances, the Argentine movable holidays, and the Colombian Emiliani Monday holidays - so the moving
     /// holidays are pinned to confirmed calendar dates rather than merely structurally validated.
     /// </summary>
     /// <param name="territory">The requested territory code.</param>

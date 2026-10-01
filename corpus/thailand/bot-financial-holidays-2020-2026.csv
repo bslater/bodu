@@ -1,10 +1,10 @@
-# source: Annual holidays of financial institutions and subsequent amendment/additional-holiday notifications, 2020–2026
+# source: Annual holidays of financial institutions and subsequent amendment/additional-holiday notifications, 2020-2026
 # publisher: Bank of Thailand
 # url: https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2562/EngPDF/25620179.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2563/EngPDF/25630233.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2563/EngPDF/25630208.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2564/EngPDF/25640124.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2564/EngPDF/25640207.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2565/EngPDF/25650128.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2566/EngPDF/25660133.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2566/EngPDF/25660204.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2567/EngPDF/25670152.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2567/EngPDF/25670209.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2568/EngPDF/25680162.pdf; https://www.bot.or.th/content/dam/bot/fipcs/documents/FPG/2569/EngPDF/25690116.pdf
 # accessed: 2026-08-03
-# license: redistribution rights unclear — transcribed facts only; BOT site states copyright / all rights reserved
+# license: redistribution rights unclear - transcribed facts only; BOT site states copyright / all rights reserved
 # notes: 126 final-effective rows. Weekdays computed from Gregorian dates. 2020 removes the suspended April Songkran rows and includes the September replacement holidays. 2023-12-29 replaces the initially announced 2024-01-02 special holiday. 2026-10-16 is scoped to financial institutions in Bangkok only.
-# verification: bodu 2026-08-03 — 126 rows, years contiguous 2020-2026; caveat: the weekday column was computed from the date by the transcriber, not transcribed from the notices, so it is not an independent check; English notices are unofficial translations (Thai text prevails).
+# verification: bodu 2026-08-03 - 126 rows, years contiguous 2020-2026; caveat: the weekday column was computed from the date by the transcriber, not transcribed from the notices, so it is not an independent check; English notices are unofficial translations (Thai text prevails).
 # columns: year,name_en_as_published,gregorian_date,weekday,notes
 year,name_en_as_published,gregorian_date,weekday,notes
 2020,New Year’s Day,2020-01-01,Wednesday,

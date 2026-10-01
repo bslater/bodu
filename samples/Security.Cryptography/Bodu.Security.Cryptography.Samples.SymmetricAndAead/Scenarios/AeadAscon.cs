@@ -19,7 +19,7 @@ public static class AeadAscon
     // Ascon-AEAD128 uses a 128-bit (16-byte) key and a 128-bit (16-byte) nonce.
     private static readonly byte[] Key = Hex.Fill(16, 0x60);
 
-    // Fixed only for reproducibility — in real use a nonce must never be reused under the same key.
+    // Fixed only for reproducibility - in real use a nonce must never be reused under the same key.
     private static readonly byte[] Nonce = Hex.Fill(16, 0x70);
     private static readonly byte[] AssociatedData = Encoding.ASCII.GetBytes("v1|message-header");
     private static readonly byte[] Plaintext = Encoding.ASCII.GetBytes("attack at dawn");

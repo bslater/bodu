@@ -44,8 +44,8 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     /// <inheritdoc />
     /// <remarks>
     /// Returns a read-only snapshot of the distinct keys across all layers, in first-wins enumeration order,
-    /// materialized at the time of the call. The returned collection is not write-through — its mutating members throw
-    /// <see cref="NotSupportedException" /> — and later mutations of the layers are not reflected in a previously
+    /// materialized at the time of the call. The returned collection is not write-through - its mutating members throw
+    /// <see cref="NotSupportedException" /> - and later mutations of the layers are not reflected in a previously
     /// returned collection.
     /// </remarks>
     public ICollection<TKey> Keys
@@ -63,8 +63,8 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     /// <inheritdoc />
     /// <remarks>
     /// Returns a read-only snapshot of the first-wins values for the distinct keys across all layers, materialized at
-    /// the time of the call. The returned collection is not write-through — its mutating members throw
-    /// <see cref="NotSupportedException" /> — and later mutations of the layers are not reflected in a previously
+    /// the time of the call. The returned collection is not write-through - its mutating members throw
+    /// <see cref="NotSupportedException" /> - and later mutations of the layers are not reflected in a previously
     /// returned collection.
     /// </remarks>
     public ICollection<TValue> Values
@@ -143,7 +143,7 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     /// </summary>
     /// <remarks>
     /// Matching Python <c>ChainMap</c> semantics, only the first layer is cleared; deeper layers are untouched, so any
-    /// keys they contain remain visible through the view — including keys the cleared entries previously shadowed.
+    /// keys they contain remain visible through the view - including keys the cleared entries previously shadowed.
     /// </remarks>
     public void Clear() => _layers[0].Clear();
 
@@ -176,7 +176,7 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
 
     /// <inheritdoc />
     /// <remarks>
-    /// Copies the merged view — distinct keys with first-wins values — in enumeration order.
+    /// Copies the merged view - distinct keys with first-wins values - in enumeration order.
     /// </remarks>
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
@@ -232,7 +232,7 @@ public sealed partial class LayeredDictionary<TKey, TValue> :
     /// <param name="key">The key of the entry to remove. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the entry was removed from the first layer; <see langword="false" /> if the first
-    /// layer did not contain the key — including when the key exists only in deeper layers.
+    /// layer did not contain the key - including when the key exists only in deeper layers.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>

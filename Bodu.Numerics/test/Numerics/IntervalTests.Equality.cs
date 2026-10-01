@@ -35,7 +35,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that all empty intervals — regardless of their constructed bounds — compare equal and hash equally.
+    /// Verifies that all empty intervals - regardless of their constructed bounds - compare equal and hash equally.
     /// </summary>
     [TestMethod]
     public void Equals_WhenBothEmpty_ShouldReturnTrueRegardlessOfBounds()

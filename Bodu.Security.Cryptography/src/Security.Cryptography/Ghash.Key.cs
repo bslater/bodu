@@ -135,7 +135,7 @@ internal static partial class Ghash
     }
 
     /// <summary>
-    /// Multiplies a GHASH-domain element by <c>x</c> — RFC 8452 Appendix A's <c>mulX_GHASH</c>: a one-bit right shift
+    /// Multiplies a GHASH-domain element by <c>x</c> - RFC 8452 Appendix A's <c>mulX_GHASH</c>: a one-bit right shift
     /// of the block read as a big-endian integer, folding <c>0xE1</c> into its first byte when the bit shifted out was
     /// set.
     /// </summary>

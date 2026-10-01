@@ -55,8 +55,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies that disposing a freshly-constructed instance of a concrete algoirthm — one
-    /// that has never had any property accessed or hashing performed — completes without throwing.
+    /// Verifies that disposing a freshly-constructed instance of a concrete algoirthm - one
+    /// that has never had any property accessed or hashing performed - completes without throwing.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenInstanceUntouched_ShouldNotThrow()

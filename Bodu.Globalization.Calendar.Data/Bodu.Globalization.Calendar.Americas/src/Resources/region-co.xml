@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ================================================================================================================
-  Colombia (CO) — notable-date resource pack
+  Colombia (CO) - notable-date resource pack
   ================================================================================================================
 
   National rules are scoped to territory "CO". Colombia's public holidays are national, so there are no
@@ -70,7 +70,7 @@
 
   <NotableDates>
 
-    <!-- Saint Joseph's Day (Día de San José) — 19 March, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <!-- Saint Joseph's Day (Día de San José) - 19 March, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
     <NotableDate id="saint-joseph" displayName="Saint Joseph's Day" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><Fixed month="March" day="19" /></Strategy>
@@ -78,7 +78,7 @@
     </NotableDate>
 
     <!--
-      Ascension of the Lord (Ascensión del Señor) — observed on the Monday 43 days after Easter Sunday (the Monday
+      Ascension of the Lord (Ascensión del Señor) - observed on the Monday 43 days after Easter Sunday (the Monday
       following the canonical Ascension Thursday). Strategy: OffsetFromRule from the imported Easter Sunday anchor.
     -->
     <NotableDate id="ascension-day-co" displayName="Ascension of the Lord" category="Religious" defaultNonWorkingDay="true">
@@ -86,45 +86,45 @@
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="43" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Corpus Christi — observed on the Monday 64 days after Easter Sunday. Strategy: OffsetFromRule from the Easter Sunday anchor. -->
+    <!-- Corpus Christi - observed on the Monday 64 days after Easter Sunday. Strategy: OffsetFromRule from the Easter Sunday anchor. -->
     <NotableDate id="corpus-christi-co" displayName="Corpus Christi" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="64" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Sacred Heart (Sagrado Corazón) — observed on the Monday 71 days after Easter Sunday. Strategy: OffsetFromRule from the Easter Sunday anchor. -->
+    <!-- Sacred Heart (Sagrado Corazón) - observed on the Monday 71 days after Easter Sunday. Strategy: OffsetFromRule from the Easter Sunday anchor. -->
     <NotableDate id="sacred-heart-co" displayName="Sacred Heart" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><OffsetFromRule notableDateRef="easter-sunday" ruleRef="default" offsetDays="71" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saints Peter and Paul (San Pedro y San Pablo) — 29 June, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <!-- Saints Peter and Paul (San Pedro y San Pablo) - 29 June, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
     <NotableDate id="saints-peter-and-paul" displayName="Saints Peter and Paul" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><Fixed month="June" day="29" /></Strategy>
         <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Independence Day (Día de la Independencia) — 20 July, marking the 1810 declaration. Not moved. Strategy: Fixed day-of-month. -->
+    <!-- Independence Day (Día de la Independencia) - 20 July, marking the 1810 declaration. Not moved. Strategy: Fixed day-of-month. -->
     <NotableDate id="independence-day-co" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><Fixed month="July" day="20" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Battle of Boyacá (Batalla de Boyacá) — 7 August, marking the 1819 victory that secured independence. Not moved. Strategy: Fixed day-of-month. -->
+    <!-- Battle of Boyacá (Batalla de Boyacá) - 7 August, marking the 1819 victory that secured independence. Not moved. Strategy: Fixed day-of-month. -->
     <NotableDate id="battle-of-boyaca" displayName="Battle of Boyacá" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><Fixed month="August" day="7" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of the Races / Columbus Day (Día de la Raza) — 12 October, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <!-- Day of the Races / Columbus Day (Día de la Raza) - 12 October, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
     <NotableDate id="dia-de-la-raza-co" displayName="Day of the Races" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><Fixed month="October" day="12" /></Strategy>
         <Adjustments><Adjustment policyRef="emiliani-next-monday" /></Adjustments></Rule></Rules>
     </NotableDate>
 
-    <!-- Independence of Cartagena (Independencia de Cartagena) — 11 November, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
+    <!-- Independence of Cartagena (Independencia de Cartagena) - 11 November, observed on the following Monday under the Emiliani law. Strategy: Fixed day-of-month with the Emiliani adjustment. -->
     <NotableDate id="cartagena-independence" displayName="Independence of Cartagena" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="co"><Applicability><Territory code="CO" /></Applicability>
         <Strategy><Fixed month="November" day="11" /></Strategy>

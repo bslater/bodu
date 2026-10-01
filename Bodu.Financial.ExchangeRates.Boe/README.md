@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.Boe
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Bank of
 England's** daily spot exchange rates, queried from the Bank's Interactive Statistical
@@ -9,7 +9,7 @@ Database (IADB).
 It builds an IADB CSV query for the configured series over a date range, parses the
 response with the `Bodu.Text.Formats` RFC 4180 reader, and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
-and `IRateProvider` contracts — so it composes with `Money.ConvertTo`,
+and `IRateProvider` contracts - so it composes with `Money.ConvertTo`,
 the caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
 
 ```csharp
@@ -49,18 +49,18 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   on a TTL, since a range ending near today can gain an observation each business day.
 - **Configuration.** `BoeRateProviderOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`. The provider's connection to the IADB is grouped under
-  its `Endpoint` (`BoeEndpointOptions`) — base URL, query path, HTTP timeout, and
-  user-agent — so the query can be pointed at a mirror or proxy without touching caching or
+  its `Endpoint` (`BoeEndpointOptions`) - base URL, query path, HTTP timeout, and
+  user-agent - so the query can be pointed at a mirror or proxy without touching caching or
   series configuration. The package ships its own `AddBoeExchangeRates` registration in the `Bodu.Financial.ExchangeRates` namespace.
 
 ## HTTP client and lifetime
 
 The provider is `IDisposable` and offers two construction styles:
 
-- `new BoeRateProvider(options, ...)` — the provider builds, owns, and disposes its own
+- `new BoeRateProvider(options, ...)` - the provider builds, owns, and disposes its own
   `HttpClient`, created via `RateProviderHttpClientFactory.Create` from the configured user agent
   and timeout. Dispose the provider (for example with `using`) to release the client.
-- `new BoeRateProvider(httpClient, options, ...)` — you supply the client and own its
+- `new BoeRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
   `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
 
@@ -72,7 +72,7 @@ constructor, or let the `*.DependencyInjection` package wire one for you (catego
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 
 The levels follow the conventions used by `Microsoft.Extensions.Http`, EF Core, and the
-Azure SDK — the completed download is the one `Information` line per range loaded, payload
+Azure SDK - the completed download is the one `Information` line per range loaded, payload
 detail is `Trace`, and degraded paths are `Warning`. Every level is individually
 configurable on `BoeRateProviderOptions`:
 
@@ -94,7 +94,7 @@ var options = new BoeRateProviderOptions
 
 The default verbosity is deliberately low: at `Information` you see one line per range
 loaded; at `Debug` you additionally see when downloads start; only at `Trace` do you get a
-line per rate observation (which can be thousands per range — keep it for targeted
+line per rate observation (which can be thousands per range - keep it for targeted
 debugging).
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.

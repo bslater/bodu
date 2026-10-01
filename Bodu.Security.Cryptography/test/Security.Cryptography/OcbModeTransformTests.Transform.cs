@@ -71,10 +71,10 @@ public sealed partial class OcbModeTransformTests
     /// partial-block path still operates correctly after a long run of full blocks.
     /// </remarks>
     [TestMethod]
-    [DataRow(64, DisplayName = "64 bytes  — 4 full blocks, first use of L[2]")]
-    [DataRow(128, DisplayName = "128 bytes — 8 full blocks, first use of L[3]")]
-    [DataRow(256, DisplayName = "256 bytes — 16 full blocks, first use of L[4]")]
-    [DataRow(256 + 7, DisplayName = "263 bytes — 16 full blocks + 7-byte partial")]
+    [DataRow(64, DisplayName = "64 bytes  - 4 full blocks, first use of L[2]")]
+    [DataRow(128, DisplayName = "128 bytes - 8 full blocks, first use of L[3]")]
+    [DataRow(256, DisplayName = "256 bytes - 16 full blocks, first use of L[4]")]
+    [DataRow(256 + 7, DisplayName = "263 bytes - 16 full blocks + 7-byte partial")]
     public void EncryptThenDecrypt_WithLongPlaintext_ShouldRoundTrip(int plaintextLength)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
@@ -107,12 +107,12 @@ public sealed partial class OcbModeTransformTests
     /// the transition from partial-only, to exactly-full, to full-plus-partial respectively.
     /// </remarks>
     [TestMethod]
-    [DataRow(1, DisplayName = "1 byte   — minimum non-empty")]
-    [DataRow(15, DisplayName = "15 bytes — partial only (blockSize - 1)")]
-    [DataRow(16, DisplayName = "16 bytes — exactly one full block")]
-    [DataRow(17, DisplayName = "17 bytes — one full + 1-byte partial")]
-    [DataRow(31, DisplayName = "31 bytes — two-block partial boundary")]
-    [DataRow(32, DisplayName = "32 bytes — exactly two full blocks")]
+    [DataRow(1, DisplayName = "1 byte   - minimum non-empty")]
+    [DataRow(15, DisplayName = "15 bytes - partial only (blockSize - 1)")]
+    [DataRow(16, DisplayName = "16 bytes - exactly one full block")]
+    [DataRow(17, DisplayName = "17 bytes - one full + 1-byte partial")]
+    [DataRow(31, DisplayName = "31 bytes - two-block partial boundary")]
+    [DataRow(32, DisplayName = "32 bytes - exactly two full blocks")]
     public void EncryptThenDecrypt_WithPlaintextAtBlockBoundaryLengths_ShouldRoundTrip(int ptLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
@@ -146,12 +146,12 @@ public sealed partial class OcbModeTransformTests
     /// multiple blocks with two distinct L-array indices (<c>L[0]</c> and <c>L[1]</c>).
     /// </remarks>
     [TestMethod]
-    [DataRow(1, DisplayName = "1 byte   — sub-block partial")]
-    [DataRow(15, DisplayName = "15 bytes — partial (blockSize - 1)")]
-    [DataRow(16, DisplayName = "16 bytes — exactly one full block")]
-    [DataRow(17, DisplayName = "17 bytes — full + 1-byte partial")]
-    [DataRow(32, DisplayName = "32 bytes — exactly two full blocks")]
-    [DataRow(33, DisplayName = "33 bytes — two full + 1-byte partial")]
+    [DataRow(1, DisplayName = "1 byte   - sub-block partial")]
+    [DataRow(15, DisplayName = "15 bytes - partial (blockSize - 1)")]
+    [DataRow(16, DisplayName = "16 bytes - exactly one full block")]
+    [DataRow(17, DisplayName = "17 bytes - full + 1-byte partial")]
+    [DataRow(32, DisplayName = "32 bytes - exactly two full blocks")]
+    [DataRow(33, DisplayName = "33 bytes - two full + 1-byte partial")]
     public void EncryptThenDecrypt_WithAadAtBlockBoundaryLengths_ShouldRoundTrip(int aadLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
@@ -176,14 +176,14 @@ public sealed partial class OcbModeTransformTests
     // ── IV nonce extraction ───────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that changing only the trailing padding bytes of the IV (bytes 12–15) does
+    /// Verifies that changing only the trailing padding bytes of the IV (bytes 12-15) does
     /// not affect the ciphertext or tag, because <see cref="OcbModeTransform" /> uses only
     /// the first 12 bytes as the OCB3 nonce.
     /// </summary>
     /// <remarks>
     /// The constructor copies <c>iv[0..11]</c> into the internal 12-byte nonce field and
     /// discards the remainder. The IV length must equal the cipher block size (16 bytes for
-    /// AES) to match the interface contract, but bytes 12–15 carry no cryptographic meaning
+    /// AES) to match the interface contract, but bytes 12-15 carry no cryptographic meaning
     /// and are padding only.
     /// </remarks>
     [TestMethod]
@@ -205,7 +205,7 @@ public sealed partial class OcbModeTransformTests
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreEqual(ct1, ct2,
-            "IV bytes 12–15 are nonce padding and must not influence the ciphertext or tag.");
+            "IV bytes 12-15 are nonce padding and must not influence the ciphertext or tag.");
     }
 
 }

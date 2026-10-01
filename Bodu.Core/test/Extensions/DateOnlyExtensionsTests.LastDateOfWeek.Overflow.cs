@@ -38,7 +38,7 @@ public partial class DateOnlyExtensionsTests
     public void LastDateOfWeek_DateOnly_WithWeekendDefinition_WhenResultExceedsMaxValue_ShouldThrowExactly()
     {
         // With SaturdaySunday weekend, the week starts on Monday and ends on Sunday.
-        // DateOnly.MaxValue is Friday, so end-of-week is Sunday — two days past MaxValue, which overflows.
+        // DateOnly.MaxValue is Friday, so end-of-week is Sunday - two days past MaxValue, which overflows.
         DateOnly date = DateOnly.MaxValue;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

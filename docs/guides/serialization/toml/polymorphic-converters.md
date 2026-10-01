@@ -12,9 +12,9 @@ fixed `T`, a `TomlConverterFactory`
 right concrete converter for it. This is the mechanism behind two common
 shapes:
 
-- **Open-generic families** — every closed `Money<TCurrency>`, every
+- **Open-generic families** - every closed `Money<TCurrency>`, every
   `Stack<T>`, where one factory serves an unbounded set of closed types.
-- **Tagged (discriminated) hierarchies** — a base type with a `"kind"`
+- **Tagged (discriminated) hierarchies** - a base type with a `"kind"`
   field whose value selects which derived type to materialize.
 
 This guide builds on [Writing converters](converters.md); read that first
@@ -37,10 +37,10 @@ The serializer treats the factory exactly like any other converter in the
 then `options.Converters`, then built-ins. When the candidate is a factory
 it calls `CanConvert(type)`; on `true` it calls `CreateConverter(type, options)`
 **once per closed type** and caches the result. The factory itself never
-reads or writes a value — `CreateConverter` returns an ordinary
+reads or writes a value - `CreateConverter` returns an ordinary
 `TomlConverter<T>` that does the work.
 
-## Pattern 1 — an open-generic family
+## Pattern 1 - an open-generic family
 
 To serve every closed `Money<TCurrency>` from one registration, match the
 open generic in `CanConvert` and close `MoneyConverter<>` over the
@@ -74,7 +74,7 @@ options.Converters.Add(new MoneyConverterFactory());
 This is the same machinery the built-in nullable, enum, collection, and
 dictionary converters use.
 
-## Pattern 2 — a tagged (discriminated) hierarchy
+## Pattern 2 - a tagged (discriminated) hierarchy
 
 The richer case is a base type whose concrete shape is chosen by a
 discriminator field. Model the family as a closed set of derived types and
@@ -119,12 +119,12 @@ public sealed class ShapeConverterFactory : TomlConverterFactory
 `Shape Outline { get; set; }` routes through the factory regardless of
 which concrete value it currently holds.
 
-## Pattern 3 — reading and writing the discriminator
+## Pattern 3 - reading and writing the discriminator
 
 The concrete converter is a `TomlConverter<Shape>`. On entry to `Read` the
 reader is positioned on the table's `StartTable` token; the converter walks
-the normalized token stream — `PropertyName` followed by the value's token,
-through to the matching `EndTable` — collecting the discriminator and the
+the normalized token stream - `PropertyName` followed by the value's token,
+through to the matching `EndTable` - collecting the discriminator and the
 payload fields, then constructs the matching derived type:
 
 ```csharp
@@ -170,7 +170,7 @@ public sealed class ShapeConverter : TomlConverter<Shape>
 
     public override void Write(Utf8TomlWriter writer, Shape value, TomlSerializerOptions options)
     {
-        // Dispatch on the runtime type so the right payload — including the tag — is written.
+        // Dispatch on the runtime type so the right payload - including the tag - is written.
         switch (value)
         {
             case Circle c:
@@ -208,8 +208,8 @@ The key moves:
   payload, so the value round-trips back through `Read`.
 - **Fail with the serialization exception.** A missing or unknown tag is a
   *well-formed value that does not fit*, so throw
-  <xref:Bodu.Text.Toml.TomlSerializationException> — the same family the
-  built-in converters throw — not the parse exception, which is reserved
+  <xref:Bodu.Text.Toml.TomlSerializationException> - the same family the
+  built-in converters throw - not the parse exception, which is reserved
   for syntactically invalid documents.
 
 ## Registration and resolution order
@@ -227,11 +227,11 @@ For a *family*, the natural placements are a type-level attribute on the
 base type, or a single registration on the options:
 
 ```csharp
-// Option A — annotate the base type so every Shape member uses the factory.
+// Option A - annotate the base type so every Shape member uses the factory.
 [Converter(typeof(ShapeConverterFactory))]
 public abstract class Shape { /* … */ }
 
-// Option B — register once on the options.
+// Option B - register once on the options.
 var options = new TomlSerializerOptions();
 options.Converters.Add(new ShapeConverterFactory());
 ```
@@ -253,8 +253,8 @@ Three ordering consequences are worth keeping in mind:
 
 ## See also
 
-- [Writing converters](converters.md) — the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
-- [Built-in converter catalog](builtin-converters.md) — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
-- [Mapping attributes](attributes.md) — `[Converter]` placement and the precedence ladder in detail.
-- API reference — <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>, <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>.
-- **[Text & Serialization guides](../../topics/text-and-serialization.md)** — every guide in this topic.
+- [Writing converters](converters.md) - the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
+- [Built-in converter catalog](builtin-converters.md) - the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
+- [Mapping attributes](attributes.md) - `[Converter]` placement and the precedence ladder in detail.
+- API reference - <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory>, <xref:Bodu.Text.Toml.Serialization.TomlConverter`1>.
+- **[Text & Serialization guides](../../topics/text-and-serialization.md)** - every guide in this topic.

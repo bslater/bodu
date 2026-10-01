@@ -9,7 +9,7 @@ namespace Bodu.Text.Toml;
 /// <summary>
 /// Verifies the collection value model of <see cref="TomlSerializer" />: a sequence member (including the queue-,
 /// stack-, and bag-shaped collections that do not implement <see cref="ICollection{T}" />) maps to a TOML array
-/// preserving element order — with the stack-reversing round-trip — empty and nested arrays are handled, a
+/// preserving element order - with the stack-reversing round-trip - empty and nested arrays are handled, a
 /// <see langword="null" /> element is rejected, an interface-typed member materializes a concrete list on read, and a
 /// top-level collection is rejected because a TOML document's root must be a table.
 /// </summary>
@@ -99,7 +99,7 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a collection of a native scalar kind other than integer — here Boolean — serializes to a TOML array
+    /// Verifies that a collection of a native scalar kind other than integer - here Boolean - serializes to a TOML array
     /// of that kind and round-trips.
     /// </summary>
     [TestMethod]

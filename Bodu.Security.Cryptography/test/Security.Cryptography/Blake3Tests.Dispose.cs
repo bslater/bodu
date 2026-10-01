@@ -17,8 +17,8 @@ public partial class Blake3Tests
     /// <summary>
     /// Verifies that disposing a <see cref="Blake3" /> instance which accumulated chaining values across more
     /// than one chunk overwrites every live word of the <c>_cvStack</c> backing buffer and resets the depth
-    /// counter to zero. Without this guarantee, the per-chunk chaining values — which are derived from the
-    /// message and (for keyed hashing) from the key — survive in heap memory until the GC collects them.
+    /// counter to zero. Without this guarantee, the per-chunk chaining values - which are derived from the
+    /// message and (for keyed hashing) from the key - survive in heap memory until the GC collects them.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCvStackHasAccumulatedChainingValues_ShouldZeroEachStoredArray()

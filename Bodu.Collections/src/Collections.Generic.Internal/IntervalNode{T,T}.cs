@@ -48,7 +48,7 @@ internal abstract class IntervalNode<TEndpoint, TNode> : BinaryTreeNode<TNode>
     internal TEndpoint High { get; set; }
 
     /// <summary>
-    /// Gets or sets the greatest upper endpoint in the subtree rooted at this node, including itself — the augmentation
+    /// Gets or sets the greatest upper endpoint in the subtree rooted at this node, including itself - the augmentation
     /// that prunes query descents.
     /// </summary>
     /// <value>The subtree's maximum upper endpoint.</value>

@@ -14,7 +14,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed partial class CachingRateProviderTests
 {
     /// <summary>
-    /// Verifies that a single-date async lookup — miss then hit — performs all cache I/O through the async seam and
+    /// Verifies that a single-date async lookup - miss then hit - performs all cache I/O through the async seam and
     /// never through the synchronous members.
     /// </summary>
     [TestMethod]
@@ -32,7 +32,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a range async lookup — refetch then covered serve — performs all cache I/O through the async
+    /// Verifies that a range async lookup - refetch then covered serve - performs all cache I/O through the async
     /// seam.
     /// </summary>
     [TestMethod]

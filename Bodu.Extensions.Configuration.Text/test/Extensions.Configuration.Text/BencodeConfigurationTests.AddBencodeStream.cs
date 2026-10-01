@@ -106,7 +106,7 @@ public sealed partial class BencodeConfigurationTests
     }
 
     /// <summary>
-    /// Verifies that two keys differing only in case — valid canonical Bencode — collide in the case-insensitive
+    /// Verifies that two keys differing only in case - valid canonical Bencode - collide in the case-insensitive
     /// configuration key model and throw <see cref="FormatException" /> when built.
     /// </summary>
     [TestMethod]

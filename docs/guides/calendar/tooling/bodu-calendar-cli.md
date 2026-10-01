@@ -4,7 +4,7 @@ title: The bodu-calendar CLI
 
 # The `bodu-calendar` CLI
 
-`Bodu.Globalization.Calendar.Tool` is a .NET tool that validates notable-date XML / JSON documents with the stable `BODU-CAL-*` diagnostics and compiles them to sealed `.bcal` binary packs. It runs the *same* load pipeline as the runtime — `NotableDateResourceLoader.TryLoad` / `TryLoadJson` in collect mode — so a document that passes `lint` loads at run time and vice versa, and the `Bodu.Globalization.Calendar.Build` MSBuild task is a thin wrapper over its `compile` verb. This page is the verb-by-verb reference; the [tooling introduction](../../../docs/calendar-tooling/index.md) covers installation and positioning, and [Binary rule packs](../binary-rule-packs.md) covers when a pack is worth it.
+`Bodu.Globalization.Calendar.Tool` is a .NET tool that validates notable-date XML / JSON documents with the stable `BODU-CAL-*` diagnostics and compiles them to sealed `.bcal` binary packs. It runs the *same* load pipeline as the runtime - `NotableDateResourceLoader.TryLoad` / `TryLoadJson` in collect mode - so a document that passes `lint` loads at run time and vice versa, and the `Bodu.Globalization.Calendar.Build` MSBuild task is a thin wrapper over its `compile` verb. This page is the verb-by-verb reference; the [tooling introduction](../../../docs/calendar-tooling/index.md) covers installation and positioning, and [Binary rule packs](../binary-rule-packs.md) covers when a pack is worth it.
 
 The tool is [not published to nuget.org](../../../docs/package-matrix.md#not-published-to-nugetorg), so install it from a locally built feed:
 
@@ -33,9 +33,9 @@ bodu-calendar info    <file.bcal>
 |---|---|---|
 | `-o`, `--output <file>` | `compile` | The pack path. **Default:** the input path with its extension changed to `.bcal` (`rules/holidays.xml` → `rules/holidays.bcal`). Missing directories are created. |
 | `--resolver-dir <dir>` | `lint`, `compile` | A directory whose `<name>.xml` / `<name>.json` files satisfy the document's imports, consulted **before** the bundled common catalogues. Without it, imports resolve against the bundled catalogues only. |
-| `-h`, `--help`, `help` | — | Prints usage to stderr and exits 2. |
+| `-h`, `--help`, `help` | - | Prints usage to stderr and exits 2. |
 
-Verbs are case-insensitive (`LINT` works). The document format is chosen by extension — `.xml` or `.json`; anything else is a usage error. Exactly one input file is accepted; an unknown option or a second positional argument prints usage.
+Verbs are case-insensitive (`LINT` works). The document format is chosen by extension - `.xml` or `.json`; anything else is a usage error. Exactly one input file is accepted; an unknown option or a second positional argument prints usage.
 
 ## Exit codes
 
@@ -53,17 +53,17 @@ Each diagnostic prints on its own line as `[Severity] CODE: message`, where `COD
 
 ```text
 $ bodu-calendar lint easter.xml
-easter.xml: OK — resource 'fixture.easter' is valid (0 diagnostic(s)).
+easter.xml: OK - resource 'fixture.easter' is valid (0 diagnostic(s)).
 [exit 0]
 
 $ bodu-calendar lint invalid-unknown-algorithm.xml
 [Error] BODU-CAL-ALGORITHM: Notable date 'x', rule 'r': algorithm key 'not-a-real-algorithm' is not recognized.
-invalid-unknown-algorithm.xml: FAILED — 1 error(s), 1 total diagnostic(s).
+invalid-unknown-algorithm.xml: FAILED - 1 error(s), 1 total diagnostic(s).
 [exit 1]
 
 $ bodu-calendar lint invalid-unknown-policy-ref.xml
 [Error] BODU-CAL-ADJREF: Rule 'r' references undefined adjustment policy 'missing-policy'.
-invalid-unknown-policy-ref.xml: FAILED — 1 error(s), 1 total diagnostic(s).
+invalid-unknown-policy-ref.xml: FAILED - 1 error(s), 1 total diagnostic(s).
 [exit 1]
 
 $ bodu-calendar lint missing.xml
@@ -75,7 +75,7 @@ Unsupported document extension '.bcal': expected .xml or .json.          (stderr
 [exit 2]
 ```
 
-The summary line's shape is fixed: `<file>: OK — resource '<id>' is valid (<n> diagnostic(s)).` on success and `<file>: FAILED — <errors> error(s), <total> total diagnostic(s).` on failure, so a log scraper can match on `: OK —` / `: FAILED —` and an editor can match `^\[(Error|Warning)\] (BODU-CAL-[A-Z]+): `.
+The summary line's shape is fixed: `<file>: OK - resource '<id>' is valid (<n> diagnostic(s)).` on success and `<file>: FAILED - <errors> error(s), <total> total diagnostic(s).` on failure, so a log scraper can match on `: OK -` / `: FAILED -` and an editor can match `^\[(Error|Warning)\] (BODU-CAL-[A-Z]+): `.
 
 ## Compiling to `.bcal`
 
@@ -90,13 +90,13 @@ out/easter.bcal: format v1, resource 'fixture.easter' (schema 1.0), 2 notable da
 
 $ bodu-calendar compile invalid-unknown-algorithm.xml -o out/bad.bcal
 [Error] BODU-CAL-ALGORITHM: Notable date 'x', rule 'r': algorithm key 'not-a-real-algorithm' is not recognized.          (stderr)
-invalid-unknown-algorithm.xml: FAILED — 1 error(s), 1 total diagnostic(s).                                               (stderr)
+invalid-unknown-algorithm.xml: FAILED - 1 error(s), 1 total diagnostic(s).                                               (stderr)
 [exit 1]
 ```
 
-The digest printed by `compile` and `info` is the SHA-256 of the pack payload that the format stores in its header (bytes 8–39, after the `BCAL` magic and the little-endian format version), so the two lines agree by construction and the value is stable for a given document — byte-identical output is what makes the MSBuild integration's up-to-date check sound. Nothing is written when validation fails.
+The digest printed by `compile` and `info` is the SHA-256 of the pack payload that the format stores in its header (bytes 8-39, after the `BCAL` magic and the little-endian format version), so the two lines agree by construction and the value is stable for a given document - byte-identical output is what makes the MSBuild integration's up-to-date check sound. Nothing is written when validation fails.
 
-A document that imports shared catalogues by name — `<Use resource="christian-western" />` and the like — resolves them from the catalogues embedded in the runtime. Point `--resolver-dir` at a folder of your own `<name>.xml` / `<name>.json` files to satisfy private imports, or to shadow a bundled catalogue with a local copy of the same name.
+A document that imports shared catalogues by name - `<Use resource="christian-western" />` and the like - resolves them from the catalogues embedded in the runtime. Point `--resolver-dir` at a folder of your own `<name>.xml` / `<name>.json` files to satisfy private imports, or to shadow a bundled catalogue with a local copy of the same name.
 
 ## Loading a compiled pack
 
@@ -115,14 +115,14 @@ using (FileStream stream = File.OpenRead("out/easter.bcal"))
 var service = new NotableDateService(resource);
 ```
 
-<xref:Bodu.Globalization.Calendar.NotableDateBinaryResource> is the same writer the tool uses — `Write(resource, stream)` produces the identical bytes from an already-built resource, including the bundled catalogues — and `Read(stream)` is its inverse. A truncated or tampered pack fails with <xref:Bodu.Globalization.Calendar.NotableDateBinaryFormatException>, which is also what `info` reports as exit `1`.
+<xref:Bodu.Globalization.Calendar.NotableDateBinaryResource> is the same writer the tool uses - `Write(resource, stream)` produces the identical bytes from an already-built resource, including the bundled catalogues - and `Read(stream)` is its inverse. A truncated or tampered pack fails with <xref:Bodu.Globalization.Calendar.NotableDateBinaryFormatException>, which is also what `info` reports as exit `1`.
 
-## Pattern — fail the build on lint errors
+## Pattern - fail the build on lint errors
 
 Because errors exit `1` and diagnostics are stable, the tool drops straight into CI. Lint every rule document, and let the non-zero exit fail the job:
 
 ```bash
-# GitHub Actions / any POSIX shell — lint every document, fail on the first error.
+# GitHub Actions / any POSIX shell - lint every document, fail on the first error.
 # Not on nuget.org: pack the tool from a clone and install it from that local feed.
 dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
 dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
@@ -141,7 +141,7 @@ done
     bodu-calendar compile rules/holidays.xml -o artifacts/holidays.bcal --resolver-dir rules/shared
 ```
 
-For a project-integrated alternative that runs on every `dotnet build`, use the MSBuild task — see [Compiling packs in MSBuild](msbuild-integration.md).
+For a project-integrated alternative that runs on every `dotnet build`, use the MSBuild task - see [Compiling packs in MSBuild](msbuild-integration.md).
 
 ## In-process use
 
@@ -161,8 +161,8 @@ if (exitCode != CalendarTool.ExitSuccess)
 
 ## Where to go next
 
-- **[Compiling packs in MSBuild](msbuild-integration.md)** — the `NotableDatePack` items and `CompileNotableDatePack` task over the same compiler.
-- **[Binary rule packs](../binary-rule-packs.md)** — format guarantees and the version-1 layout.
-- **[Calendar validation diagnostics](../validation-diagnostics.md)** — the `BODU-CAL-*` catalogue the lint output uses.
-- **[Bodu.Globalization.Calendar tooling introduction](../../../docs/calendar-tooling/index.md)** — installation and positioning of the two tooling packages.
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Compiling packs in MSBuild](msbuild-integration.md)** - the `NotableDatePack` items and `CompileNotableDatePack` task over the same compiler.
+- **[Binary rule packs](../binary-rule-packs.md)** - format guarantees and the version-1 layout.
+- **[Calendar validation diagnostics](../validation-diagnostics.md)** - the `BODU-CAL-*` catalogue the lint output uses.
+- **[Bodu.Globalization.Calendar tooling introduction](../../../docs/calendar-tooling/index.md)** - installation and positioning of the two tooling packages.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

@@ -9,7 +9,7 @@ using Bodu.Samples.Text.Formats.DelimitedData.Scenarios;
 namespace Bodu.Samples.Text.Formats.DelimitedData;
 
 /// <summary>
-/// Entry point for the delimited-data sample: RFC 4180 CSV/TSV via <c>Bodu.Text.Delimited</c> —
+/// Entry point for the delimited-data sample: RFC 4180 CSV/TSV via <c>Bodu.Text.Delimited</c> -
 /// parsing into a document with typed field access, the policy knobs for ragged and malformed
 /// real-world input, formatting a document back to text, and the forward-only streaming
 /// reader/writer for large files. Everything runs offline against the committed

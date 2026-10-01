@@ -78,7 +78,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange{T}(System.Span{T}, int, int, string)" />
-    /// does not throw — and on the ParamName-asserting overload reports nothing — for both
+    /// does not throw - and on the ParamName-asserting overload reports nothing - for both
     /// <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" /> when the span length is within
     /// <c>[minLength, maxLength]</c>.
     /// </summary>

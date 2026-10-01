@@ -18,7 +18,7 @@ namespace Bodu.Test.IO;
 /// set <see cref="Position" /> also throws.
 /// </para>
 /// <para>
-/// Use this stream in tests that verify a consumer never calls seek-related members on its input stream — confirming
+/// Use this stream in tests that verify a consumer never calls seek-related members on its input stream - confirming
 /// compatibility with sources that can only be read sequentially.
 /// </para>
 /// <para>
@@ -52,11 +52,11 @@ public sealed class NonSeekableStream
     public override bool CanWrite => false;
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not seekable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not seekable.</exception>
     public override long Length => throw new NotSupportedException("Stream is not seekable.");
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not seekable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not seekable.</exception>
     public override long Position
     {
         get => throw new NotSupportedException("Stream is not seekable.");
@@ -72,17 +72,17 @@ public sealed class NonSeekableStream
         => inner.ReadAsync(buffer, cancellationToken);
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not seekable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not seekable.</exception>
     public override long Seek(long offset, SeekOrigin origin)
         => throw new NotSupportedException("Stream is not seekable.");
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not writable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not writable.</exception>
     public override void SetLength(long value)
         => throw new NotSupportedException("Stream is not writable.");
 
     /// <inheritdoc />
-    /// <exception cref="NotSupportedException">Always thrown — the stream is not writable.</exception>
+    /// <exception cref="NotSupportedException">Always thrown - the stream is not writable.</exception>
     public override void Write(byte[] buffer, int offset, int count)
         => throw new NotSupportedException("Stream is not writable.");
 

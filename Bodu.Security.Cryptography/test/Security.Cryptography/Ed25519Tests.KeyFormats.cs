@@ -116,7 +116,7 @@ public sealed partial class Ed25519Tests
     }
 
     /// <summary>
-    /// The canonical RFC 7468 PKCS#8 PEM encoding of the RFC 8410 §10.3 Ed25519 private key — the DER of
+    /// The canonical RFC 7468 PKCS#8 PEM encoding of the RFC 8410 §10.3 Ed25519 private key - the DER of
     /// <see cref="ValidPkcs8Vectors" /> Base64-wrapped under the <c>PRIVATE KEY</c> label.
     /// </summary>
     private const string Rfc8410Pkcs8Pem =

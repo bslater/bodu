@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Serpent is a 32-round substitution–permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
+/// Serpent is a 32-round substitution-permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
 /// Advanced Encryption Standard (AES) candidate. Each round applies a round-key XOR, one of the eight 4-bit S-boxes
 /// <c>S0..S7</c>, and the bitsliced linear transformation <c>L</c>. The final round replaces <c>L</c> with a post-round
 /// key XOR. Shorter keys are padded to 256 bits by appending a <c>1</c> bit followed by zeros, per the Serpent
@@ -40,7 +40,7 @@ namespace Bodu.Security.Cryptography;
 /// <code language="csharp">
 ///<![CDATA[
 /// // Direct single-block use. For most workloads prefer the Serpent128 SymmetricAlgorithm wrapper.
-/// byte[] key = new byte[32];   // 128, 192, or 256 bits — Serpent pads shorter keys to 256
+/// byte[] key = new byte[32];   // 128, 192, or 256 bits - Serpent pads shorter keys to 256
 /// RandomNumberGenerator.Fill(key);
 ///
 /// using var cipher = new Serpent128Cipher(key);
@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher
-    : SerpentBlockCipherBase, IBlockCipher
+    : SerpentBlockCipherBase, IBlockCipher, ICounterModeBlockCipher
 {
     /// <summary>Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers should read <see cref="BlockSize" /> instead.</summary>
     private const int BlockSizeBits = 128;
@@ -173,6 +173,20 @@ public sealed class Serpent128Cipher
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
 
         SerpentCore.DecryptBlocks(_roundKeys, input, output);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Forms eight counter blocks at a time over 256-bit vectors, and four over 128-bit vectors, where the processor
+    /// offers them, one block to each lane, and combines their keystream with the input as it stores it; the rest go
+    /// one at a time.
+    /// </remarks>
+    void ICounterModeBlockCipher.XorCounterKeystream(ref ulong counterHigh, ref ulong counterLow, ReadOnlySpan<byte> input, Span<byte> output)
+    {
+        ThrowIfDisposed();
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, input.Length);
+
+        SerpentCore.XorCounterKeystream(_roundKeys, ref counterHigh, ref counterLow, input, output);
     }
 
     /// <inheritdoc />

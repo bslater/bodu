@@ -17,9 +17,9 @@ namespace Bodu.IO.Hashing;
 /// values should be populated from an authoritative source or a CI-captured dump of this implementation.
 /// </para>
 /// <para>
-/// The tests below exercise structural guarantees — output length, internal code-path coverage (seed choice
-/// at 0–7, 8–15 and ≥16 bytes; <c>CityMurmur</c> for &lt; 128-byte inputs; the iterative main loop for
-/// ≥ 128-byte inputs), determinism, and non-trivial output distribution — without relying on specific
+/// The tests below exercise structural guarantees - output length, internal code-path coverage (seed choice
+/// at 0-7, 8-15 and ≥16 bytes; <c>CityMurmur</c> for &lt; 128-byte inputs; the iterative main loop for
+/// ≥ 128-byte inputs), determinism, and non-trivial output distribution - without relying on specific
 /// digests.
 /// </para>
 /// </remarks>

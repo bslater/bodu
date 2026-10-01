@@ -15,8 +15,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Encrypting counters a run at a time rather than a block at a time lets a cipher amortize its per-call cost — for
-/// <see cref="AesBlockCipher" />, one call into the platform's AES for the whole run instead of one per 16 bytes —
+/// Encrypting counters a run at a time rather than a block at a time lets a cipher amortize its per-call cost - for
+/// <see cref="AesBlockCipher" />, one call into the platform's AES for the whole run instead of one per 16 bytes -
 /// while a cipher that keeps the default <see cref="IBlockCipher.EncryptBlocks" /> still encrypts one block per call,
 /// exactly as before.
 /// </para>
@@ -24,6 +24,12 @@ namespace Bodu.Security.Cryptography;
 /// The modes keep their counters, increment rules, and wrap checks; they build each run of counters and stop it at the
 /// point their per-block loop would have stopped, so output and exceptions match the per-block formulation byte for
 /// byte, including the output already written when a wrap check throws.
+/// </para>
+/// <para>
+/// A cipher that implements <see cref="ICounterModeBlockCipher" /> takes the big-endian 128-bit counter itself: its
+/// kernels form the counter blocks in registers and combine their keystream with the input as they store it, so
+/// <see cref="TransformBigEndian128" /> hands it the whole input, and <see cref="CtrModeTransform" /> the input up to
+/// the counter's wrap.
 /// </para>
 /// </remarks>
 internal static class CounterKeystream
@@ -59,7 +65,7 @@ internal static class CounterKeystream
 
     /// <summary>
     /// Applies the CTR keystream of a 128-bit block cipher whose counter blocks start at
-    /// <paramref name="initialCounter" /> and increment as a big-endian 128-bit integer, modulo <c>2¹²⁸</c> — the
+    /// <paramref name="initialCounter" /> and increment as a big-endian 128-bit integer, modulo <c>2¹²⁸</c> - the
     /// counter of EAX and SIV.
     /// </summary>
     /// <param name="cipher">The cipher whose encrypt primitive produces the keystream.</param>
@@ -72,10 +78,17 @@ internal static class CounterKeystream
     internal static void TransformBigEndian128(IBlockCipher cipher, ReadOnlySpan<byte> initialCounter, ReadOnlySpan<byte> input, Span<byte> output)
     {
         const int BlockBytes = 16;
-        Span<byte> counters = stackalloc byte[BatchBytes];
-        Span<byte> keystream = stackalloc byte[BatchBytes];
         ulong high = BinaryPrimitives.ReadUInt64BigEndian(initialCounter);
         ulong low = BinaryPrimitives.ReadUInt64BigEndian(initialCounter.Slice(8));
+
+        if (cipher is ICounterModeBlockCipher counterCipher)
+        {
+            counterCipher.XorCounterKeystream(ref high, ref low, input, output);
+            return;
+        }
+
+        Span<byte> counters = stackalloc byte[BatchBytes];
+        Span<byte> keystream = stackalloc byte[BatchBytes];
         int used = 0;
 
         try

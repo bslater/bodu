@@ -325,7 +325,7 @@ public partial class ConcurrentCircularBufferTests
         AssertBufferContainsOnlyValuesInRange(buffer, expectedCount: 3, minInclusive: 0, maxInclusive: 9);
 
         // Monotonic ordering cannot be asserted here. Parallel.For enqueues in thread-scheduling
-        // order, not value order — thread 9 can legitimately run before thread 0, producing a
+        // order, not value order - thread 9 can legitimately run before thread 0, producing a
         // snapshot such as [9, 0, 1] that is internally correct FIFO but not value-sorted.
         // The range-and-count check above is the only valid invariant for concurrent enqueues
         // where item values and insertion order are independent.

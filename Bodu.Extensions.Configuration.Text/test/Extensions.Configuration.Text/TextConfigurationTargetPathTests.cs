@@ -13,7 +13,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <summary>
 /// Pins the <see cref="TextConfigurationSource.TargetPath" /> behaviour for the bridge providers. When
 /// <c>TargetPath</c> is <see langword="null" /> only preamble (global section) keys flow into the
-/// configuration view — section-anchored values are not surfaced, because there is no path against which the
+/// configuration view - section-anchored values are not surfaced, because there is no path against which the
 /// section globs can be evaluated.
 /// </summary>
 [TestClass]

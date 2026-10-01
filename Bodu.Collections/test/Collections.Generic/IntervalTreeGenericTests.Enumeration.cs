@@ -37,7 +37,7 @@ public partial class IntervalTreeGenericTests
     }
 
     /// <summary>
-    /// Verifies that the struct enumerator fails fast — <see cref="IntervalTree{TKey, TValue}.Enumerator.MoveNext" />
+    /// Verifies that the struct enumerator fails fast - <see cref="IntervalTree{TKey, TValue}.Enumerator.MoveNext" />
     /// throws <see cref="InvalidOperationException" /> after any mutation, including a value-list append.
     /// </summary>
     [TestMethod]

@@ -20,7 +20,7 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Only one trailing line terminator is removed. Repeated trailing newlines are intentionally preserved — use
+    /// Only one trailing line terminator is removed. Repeated trailing newlines are intentionally preserved - use
     /// <see cref="string.TrimEnd(char[])" /> with <c>'\r','\n'</c> when greedy stripping is required.
     /// </remarks>
     public static string RemoveTrailingNewLine(this string value)

@@ -4,12 +4,12 @@ title: Reflection-free binding with the source generator
 
 # Reflection-free binding with the source generator
 
-`Bodu.Text.Formats.Generators` emits compile-time factories for `[DelimitedRecord]` and `[IniSection]` POCOs so that `DelimitedSerializer` and `IniSerializer` can bind without reflection. This guide walks one record type and one section type end to end: annotate, build, use the generated factory with the factory overloads, confirm byte parity with the reflection binder, and read the diagnostics. The reference material — csproj wiring, the full rule list, the diagnostics table, trimming — is on the [package page](../../docs/formats/generators.md).
+`Bodu.Text.Formats.Generators` emits compile-time factories for `[DelimitedRecord]` and `[IniSection]` POCOs so that `DelimitedSerializer` and `IniSerializer` can bind without reflection. This guide walks one record type and one section type end to end: annotate, build, use the generated factory with the factory overloads, confirm byte parity with the reflection binder, and read the diagnostics. The reference material - csproj wiring, the full rule list, the diagnostics table, trimming - is on the [package page](../../docs/formats/generators.md).
 
 > [!NOTE]
 > The generator is not yet published as a package; reference the project as an analyzer (`OutputItemType="Analyzer" ReferenceOutputAssembly="false"`), together with `Bodu.Text.Delimited` and/or `Bodu.Text.Ini` for the marker attributes and factory interfaces.
 
-## Step 1 — annotate a partial POCO
+## Step 1 - annotate a partial POCO
 
 The rules that matter: the type is `partial`, non-generic, has a parameterless constructor, and every mapped member is a public read/write property of a supported scalar type. `[PropertyName]` renames a column; `[Ignore]` drops one.
 
@@ -35,9 +35,9 @@ public sealed partial class Trade
 }
 ```
 
-## Step 2 — build, and look at what was generated
+## Step 2 - build, and look at what was generated
 
-Building the project adds `Trade.DelimitedFactory`. Its `Headers` are the resolved wire names in declaration order — the renamed column and the omitted `Notes` member are already visible here:
+Building the project adds `Trade.DelimitedFactory`. Its `Headers` are the resolved wire names in declaration order - the renamed column and the omitted `Notes` member are already visible here:
 
 <!-- compile -->
 ```csharp
@@ -104,7 +104,7 @@ partial class Trade
 
 Every conversion is explicit and invariant-culture; nothing in the file touches `System.Reflection`.
 
-## Step 3 — serialize and deserialize through the factory
+## Step 3 - serialize and deserialize through the factory
 
 The factory overloads take the factory as an extra argument and are otherwise the same entry points:
 
@@ -127,7 +127,7 @@ List<Trade> back = DelimitedSerializer.Deserialize(csv, Trade.DelimitedFactory);
 // back[0].TradedAt → 2026-03-02T09:30:00+00:00; back[1].Venue → null (empty field)
 ```
 
-Dialect options apply unchanged — a TSV or headerless variant is one options object away:
+Dialect options apply unchanged - a TSV or headerless variant is one options object away:
 
 <!-- compile -->
 ```csharp
@@ -140,7 +140,7 @@ List<Trade> positional = DelimitedSerializer.Deserialize(
 // binds by position in Headers order → Symbol = "IBM", Quantity = 10
 ```
 
-## Step 4 — the same for an INI section
+## Step 4 - the same for an INI section
 
 <!-- compile -->
 ```csharp
@@ -184,7 +184,7 @@ string globals = IniSerializer.SerializeSection("", server, ServerSection.IniFac
 
 ## Byte parity with the reflection binder
 
-The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through `DelimitedSerializer.Serialize(records)` and `DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)` yields **identical text** — same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical `[section]` / `key=value` bytes the reflection binder emits for a section POCO.
+The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through `DelimitedSerializer.Serialize(records)` and `DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)` yields **identical text** - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical `[section]` / `key=value` bytes the reflection binder emits for a section POCO.
 
 <!-- compile -->
 ```csharp
@@ -199,7 +199,7 @@ The one deliberate divergence: a factory's names are fixed at compile time, so `
 
 The generator reports three diagnostics, all in category `Bodu.Text.Formats.Generators`.
 
-**`BTFG001` (error) — the type is not partial.** The most common first-run failure: the attribute is present, the `partial` modifier is not. No factory is generated, so `Trade.DelimitedFactory` also fails to resolve.
+**`BTFG001` (error) - the type is not partial.** The most common first-run failure: the attribute is present, the `partial` modifier is not. No factory is generated, so `Trade.DelimitedFactory` also fails to resolve.
 
 <!-- compile -->
 ```csharp
@@ -209,7 +209,7 @@ public sealed class Trade { … }          // BTFG001: … is not declared parti
 
 A nested type must have *every* containing type marked `partial` too.
 
-**`BTFG002` (warning) — a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. Either move the value to a supported scalar (for example, format a `Uri` as a `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
+**`BTFG002` (warning) - a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. Either move the value to a supported scalar (for example, format a `Uri` as a `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
 
 <!-- compile -->
 ```csharp
@@ -221,7 +221,7 @@ public sealed partial class Order
 }
 ```
 
-**`BTFG003` (error) — the type is generic.** A static `DelimitedFactory` property cannot exist on an open generic, and the same applies to a type nested inside a generic type. No source is emitted; close the type over its arguments or write the factory by hand.
+**`BTFG003` (error) - the type is generic.** A static `DelimitedFactory` property cannot exist on an open generic, and the same applies to a type nested inside a generic type. No source is emitted; close the type over its arguments or write the factory by hand.
 
 <!-- compile -->
 ```csharp
@@ -231,10 +231,10 @@ public sealed partial class Section<T> { … }   // BTFG003: … is generic (or 
 
 ## When the generator cannot be used
 
-Implement `IDelimitedRecordFactory<TRecord>` or `IIniSectionFactory<TSection>` yourself — the [package page](../../docs/formats/generators.md#writing-a-factory-by-hand) shows a complete hand-written `Trade` factory that is byte-identical to the generated one. The factory overloads accept any implementation.
+Implement `IDelimitedRecordFactory<TRecord>` or `IIniSectionFactory<TSection>` yourself - the [package page](../../docs/formats/generators.md#writing-a-factory-by-hand) shows a complete hand-written `Trade` factory that is byte-identical to the generated one. The factory overloads accept any implementation.
 
 ## See also
 
-- [Bodu.Text.Formats.Generators](../../docs/formats/generators.md) — the package page: wiring, rules, diagnostics table, trimming and AOT.
-- [Using delimited (CSV / TSV)](delimited.md) and [Using INI](ini.md) — the reflection-path patterns the factories mirror.
-- [Streams and token-level I/O](streaming.md) — the `Utf8*Reader` / `Utf8*Writer` surface underneath both binders.
+- [Bodu.Text.Formats.Generators](../../docs/formats/generators.md) - the package page: wiring, rules, diagnostics table, trimming and AOT.
+- [Using delimited (CSV / TSV)](delimited.md) and [Using INI](ini.md) - the reflection-path patterns the factories mirror.
+- [Streams and token-level I/O](streaming.md) - the `Utf8*Reader` / `Utf8*Writer` surface underneath both binders.

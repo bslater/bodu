@@ -7,7 +7,7 @@
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry — a storage, a
+/// Provides an immutable snapshot of the metadata recorded for a single compound-file directory entry - a storage, a
 /// stream, or the root storage.
 /// </summary>
 /// <remarks>

@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Samples.MerkleTrees.Scenarios;
 /// <summary>
 /// Demonstrates the append-only guarantee: <see cref="MerkleTree.ConsistencyProof" /> and
 /// <see cref="MerkleTree.VerifyConsistency" /> prove that a later root extends an earlier one without rewriting
-/// anything already committed — and show precisely which entries that promise covers.
+/// anything already committed - and show precisely which entries that promise covers.
 /// </summary>
 public static class Consistency
 {

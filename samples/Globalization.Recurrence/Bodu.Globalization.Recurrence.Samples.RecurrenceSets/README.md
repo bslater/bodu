@@ -1,10 +1,10 @@
 # Bodu.Globalization.Recurrence.Samples.RecurrenceSets
 
-`RecurrenceSet` — the composition layer that folds one or more `RRULE`s together with explicit
+`RecurrenceSet` - the composition layer that folds one or more `RRULE`s together with explicit
 `RDATE` additions and `EXDATE` removals into a single occurrence stream. Three scenarios cover how
 the parts combine, the iCalendar property-block round trip, and querying a composed set.
 
-Everything runs offline with fixed inputs, formatted with the invariant culture — deterministic
+Everything runs offline with fixed inputs, formatted with the invariant culture - deterministic
 output every run.
 
 ```bash
@@ -13,10 +13,10 @@ dotnet run --project samples/Globalization.Recurrence/Bodu.Globalization.Recurre
 
 NuGet consumers: `dotnet add package Bodu.Globalization.Recurrence`
 
-## Scenario 1 — SetComposition
+## Scenario 1 - SetComposition
 
-**Intent.** Show the composition rule — the union of every rule and every explicit date, minus every
-exception date, emitted once each in ascending order — one part at a time, so each part's
+**Intent.** Show the composition rule - the union of every rule and every explicit date, minus every
+exception date, emitted once each in ascending order - one part at a time, so each part's
 contribution is visible.
 
 **What it does.** Builds the same weekly rule into four sets of increasing complexity: rule only,
@@ -60,13 +60,13 @@ ExceptionDates : 2 (2026-01-19, 2026-01-21)
 ```
 
 The `overlapping` row is the load-bearing one: 2026-06-01 is both a Monday and the first of the
-month, so a weekly-Monday rule and a monthly-first rule both produce it — and the stream carries it
+month, so a weekly-Monday rule and a monthly-first rule both produce it - and the stream carries it
 once, which the distinct count confirms.
 
 **APIs demonstrated.** `RecurrenceSet` constructor (start, rules, `dates`, `exceptionDates`),
 `.GetOccurrences()`, `.Start` / `.Rules` / `.Dates` / `.ExceptionDates`.
 
-## Scenario 2 — PropertyBlocks
+## Scenario 2 - PropertyBlocks
 
 **Intent.** Show that the text form is a *storage* format, not a display form: a set renders to the
 `DTSTART` / `RRULE` / `RDATE` / `EXDATE` lines a calendar file carries, and parses back to an equal
@@ -129,13 +129,13 @@ occurrences           : 2026-05-04, 2026-05-06
 **APIs demonstrated.** `RecurrenceSet.ToString()`, `.Parse(string)`,
 `.TryParse(string, out RecurrenceSet, out string)`, `.Equals`, `.GetHashCode()`.
 
-## Scenario 3 — SetQueries
+## Scenario 3 - SetQueries
 
 **Intent.** Show a realistic composed set answering the questions a calendar UI and a scheduler each
-ask: "what falls in this month?" and "when is the next one?" — with exception dates handled by the
+ask: "what falls in this month?" and "when is the next one?" - with exception dates handled by the
 set rather than re-applied by the caller.
 
-**What it does.** Builds a term timetable — a weekly class bounded by `UNTIL`, plus a Saturday make-up
+**What it does.** Builds a term timetable - a weekly class bounded by `UNTIL`, plus a Saturday make-up
 session, minus a mid-term break and a public holiday. It enumerates the whole term, then three
 one-month windows, then queries around both an excluded date and the make-up session, runs both
 directions at an exact hit, and finally queries past the end of term.
@@ -195,8 +195,8 @@ Bodu.Globalization.Recurrence.Samples.RecurrenceSets/
 
 ## Related
 
-- `Bodu.Globalization.Recurrence.Samples.RecurrenceRules` — the `RRULE` form a set composes.
-- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` — a set behind the same adapter as the
+- `Bodu.Globalization.Recurrence.Samples.RecurrenceRules` - the `RRULE` form a set composes.
+- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` - a set behind the same adapter as the
   other three forms.
 
 > `EXRULE` is not modelled: a set composes `RRULE`, `RDATE`, and `EXDATE` only. RFC 5545 deprecated

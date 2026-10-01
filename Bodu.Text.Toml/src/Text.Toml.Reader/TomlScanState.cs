@@ -12,8 +12,8 @@ namespace Bodu.Text.Toml.Reader;
 /// </summary>
 /// <remarks>
 /// TOML is lexically context-sensitive: the same bytes lex as a bare key in key position and as an integer in value
-/// position. The lexer tracks that context itself — it is a property of the grammar's productions, not of the
-/// document's table structure — so consumers receive correctly classified tokens from a plain forward scan.
+/// position. The lexer tracks that context itself - it is a property of the grammar's productions, not of the
+/// document's table structure - so consumers receive correctly classified tokens from a plain forward scan.
 /// </remarks>
 internal enum TomlScanState
 {

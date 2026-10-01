@@ -22,7 +22,7 @@ namespace Bodu.Collections.Generic;
 /// defines: a well-defined first and last entry with constant-time access to each.
 /// </para>
 /// <para>
-/// This differs from the BCL's <c>OrderedDictionary&lt;TKey, TValue&gt;</c> (.NET 9+), which is <i>positional</i> — it
+/// This differs from the BCL's <c>OrderedDictionary&lt;TKey, TValue&gt;</c> (.NET 9+), which is <i>positional</i> - it
 /// is index-addressable and supports inserting, overwriting, and removing at an arbitrary index, with O(1) random
 /// access by position but O(n) removal of a non-tail entry. <see cref="SequencedDictionary{TKey, TValue}" /> instead
 /// exposes <b>no</b> positional surface; it preserves a traversal order and adds O(1) access to and removal of either
@@ -79,7 +79,7 @@ namespace Bodu.Collections.Generic;
 /// lru.Add("A", 1);
 /// lru.Add("B", 2);
 /// _ = lru["A"];           // "A" is now most-recently-used.
-/// var oldest = lru.First; // { "B", 2 } — the least-recently-used entry.
+/// var oldest = lru.First; // { "B", 2 } - the least-recently-used entry.
 ///]]>
 /// </code>
 /// </example>

@@ -115,7 +115,7 @@ public sealed partial class X25519Tests
     }
 
     /// <summary>
-    /// The canonical RFC 7468 SubjectPublicKeyInfo PEM encoding of the RFC 7748 §6.1 Alice public key — the DER of
+    /// The canonical RFC 7468 SubjectPublicKeyInfo PEM encoding of the RFC 7748 §6.1 Alice public key - the DER of
     /// <see cref="ValidSubjectPublicKeyInfoVectors" /> Base64-wrapped under the <c>PUBLIC KEY</c> label.
     /// </summary>
     private const string Rfc7748SpkiPem =

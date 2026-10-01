@@ -58,7 +58,7 @@ public class DistributedRateCacheOptions
     /// <remarks>
     /// <para>
     /// Every entry this cache serves must already be fresh under the per-call caching duration, so an entry evicted
-    /// server-side at <c>duration + margin</c> would in any case have been filtered on read — served results are
+    /// server-side at <c>duration + margin</c> would in any case have been filtered on read - served results are
     /// unchanged in any normal configuration. The margin keeps the server-side lifetime comfortably behind the
     /// application-side freshness (including the shared one-minute clock-skew tolerance), so eviction never races a
     /// legitimate read.

@@ -16,8 +16,8 @@ namespace Bodu.Core.Samples.FunctionalRailway.Scenarios;
 /// </summary>
 /// <remarks>
 /// The point is that failure is a return value on the same path as success, so the pipeline reads top to bottom
-/// with no try/catch interrupting it. Each step is written as if the previous one succeeded — because if it did
-/// not, the step never runs — and the original error arrives intact at the end rather than being wrapped, logged
+/// with no try/catch interrupting it. Each step is written as if the previous one succeeded - because if it did
+/// not, the step never runs - and the original error arrives intact at the end rather than being wrapped, logged
 /// and rethrown at every level.
 /// </remarks>
 public static class ResultRailway

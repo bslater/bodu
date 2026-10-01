@@ -19,14 +19,14 @@ public sealed partial class ConcurrentHashSet<T> :
     /// and does not expose a public lock object.
     /// </value>
     /// <remarks>
-    /// Thread safety is achieved through a lock-free algorithm — there is no internal lock to expose. Callers should
+    /// Thread safety is achieved through a lock-free algorithm - there is no internal lock to expose. Callers should
     /// not attempt to coordinate access externally via <see cref="ICollection.SyncRoot" />, as that property is not
     /// supported.
     /// </remarks>
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Gets an object that can be used to synchronize access to the collection. Not supported on this type —
+    /// Gets an object that can be used to synchronize access to the collection. Not supported on this type -
     /// <see cref="ConcurrentHashSet{T}" /> manages its own internal synchronization.
     /// </summary>
     /// <exception cref="NotSupportedException">

@@ -30,7 +30,7 @@ public class DistributedNotableDateCacheOptions
     /// <value>The expiration margin; defaults to one hour.</value>
     /// <remarks>
     /// Every entry this cache serves must already be fresh under the per-call time-to-live, so a blob evicted
-    /// server-side at <c>ttl + margin</c> would in any case have been filtered on read — served results are unchanged
+    /// server-side at <c>ttl + margin</c> would in any case have been filtered on read - served results are unchanged
     /// in any normal configuration, while a territory that stops being queried self-evicts from the backing store
     /// instead of lingering forever. A deployment that stores under one time-to-live and later reads under a longer one
     /// could observe a server-side eviction where it previously saw a hit; set the margin to <see langword="null" /> to

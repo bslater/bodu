@@ -91,9 +91,9 @@ public sealed class StrategyResolutionCalendarSystemKnownAnswerTests
     [DataRow("hanukkah", 2022, "2022-12-19")]
     [DataRow("hanukkah", 2023, "2023-12-08")]
     [DataRow("hanukkah", 2024, "2024-12-26")]
-    [DataRow("purim", 2022, "2022-03-17")]   // Hebrew 5782 — leap year (Adar II)
-    [DataRow("purim", 2023, "2023-03-07")]   // Hebrew 5783 — non-leap year
-    [DataRow("purim", 2024, "2024-03-24")]   // Hebrew 5784 — leap year (Adar II)
+    [DataRow("purim", 2022, "2022-03-17")]   // Hebrew 5782 - leap year (Adar II)
+    [DataRow("purim", 2023, "2023-03-07")]   // Hebrew 5783 - non-leap year
+    [DataRow("purim", 2024, "2024-03-24")]   // Hebrew 5784 - leap year (Adar II)
     public void Resolve_HebrewSweepObservance_MatchesKnownAnswer(string notableDateId, int year, string expected) =>
         AssertResolvesInYear(notableDateId, year, DateOnly.Parse(expected, CultureInfo.InvariantCulture));
 

@@ -111,8 +111,8 @@ public sealed class RateTableBuilder
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
     /// <remarks>
-    /// When supplied, <paramref name="fetchedAtUtc" /> is recorded at the series grain — a property of the load, not of
-    /// the individual observation — and is stamped onto every <see cref="ExchangeRate" /> the series materializes. A
+    /// When supplied, <paramref name="fetchedAtUtc" /> is recorded at the series grain - a property of the load, not of
+    /// the individual observation - and is stamped onto every <see cref="ExchangeRate" /> the series materializes. A
     /// later upsert carrying a fresh instant overwrites it; passing <see langword="null" /> leaves any previously
     /// recorded instant in place.
     /// </remarks>

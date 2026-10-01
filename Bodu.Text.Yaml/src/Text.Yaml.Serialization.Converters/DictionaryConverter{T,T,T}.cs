@@ -24,7 +24,7 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// YAML mapping keys are strings, so a non-string key is converted to its round-trippable invariant-culture text on
 /// write and parsed back on read. Distinct keys whose string forms collide are rejected with
 /// <see cref="YamlSerializationException" />, so the serializer never emits a document its own parser would reject as a
-/// duplicate key. An entry whose value is <see langword="null" /> writes the YAML null scalar — YAML, unlike its
+/// duplicate key. An entry whose value is <see langword="null" /> writes the YAML null scalar - YAML, unlike its
 /// sibling formats, has a native null form.
 /// </para>
 /// </remarks>

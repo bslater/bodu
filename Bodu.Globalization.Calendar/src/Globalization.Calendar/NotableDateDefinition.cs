@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A concept owns multiple rules so that territory-specific variants — for example a national and a regional rule that
-/// merely share a display name — coexist as distinct, independently addressable rules rather than collapsing.
+/// A concept owns multiple rules so that territory-specific variants - for example a national and a regional rule that
+/// merely share a display name - coexist as distinct, independently addressable rules rather than collapsing.
 /// </para>
 /// </remarks>
 /// <seealso cref="NotableDateRule" /> <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and

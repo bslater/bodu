@@ -19,12 +19,12 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // 1.1 / 1.2 — Centralized metadata validation: invalid ISO codes must throw at every public surface, not just
+    // 1.1 / 1.2 - Centralized metadata validation: invalid ISO codes must throw at every public surface, not just
     // at the constructor.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// A custom currency tag that reports a null ISO code — invalid.
+    /// A custom currency tag that reports a null ISO code - invalid.
     /// </summary>
     private sealed class NullIsoCurrency
         : ICurrency
@@ -34,7 +34,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A custom currency tag that reports an empty ISO code — invalid.
+    /// A custom currency tag that reports an empty ISO code - invalid.
     /// </summary>
     private sealed class EmptyIsoCurrency
         : ICurrency
@@ -44,7 +44,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A custom currency tag whose ISO code is the wrong length — invalid.
+    /// A custom currency tag whose ISO code is the wrong length - invalid.
     /// </summary>
     private sealed class WrongLengthIsoCurrency
         : ICurrency
@@ -54,7 +54,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A custom currency tag whose ISO code is lowercase — invalid (ISO 4217 is uppercase).
+    /// A custom currency tag whose ISO code is lowercase - invalid (ISO 4217 is uppercase).
     /// </summary>
     private sealed class LowercaseIsoCurrency
         : ICurrency
@@ -64,7 +64,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A custom currency tag whose ISO code contains non-letter characters — invalid.
+    /// A custom currency tag whose ISO code contains non-letter characters - invalid.
     /// </summary>
     private sealed class NonLetterIsoCurrency
         : ICurrency
@@ -135,7 +135,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that the static <see cref="Money{TCurrency}.IsoCode" /> accessor also throws — not just the
+    /// Verifies that the static <see cref="Money{TCurrency}.IsoCode" /> accessor also throws - not just the
     /// constructor. Before the fix, the property returned the raw value (e.g. <see langword="null" />), letting
     /// the type half-exist with broken metadata.
     /// </summary>
@@ -149,11 +149,11 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // 4.1 — CashRoundingIncrement validation.
+    // 4.1 - CashRoundingIncrement validation.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// A currency tag that reports a negative cash-rounding increment — invalid.
+    /// A currency tag that reports a negative cash-rounding increment - invalid.
     /// </summary>
     private sealed class NegativeCashIncrementCurrency
         : ICurrency
@@ -164,7 +164,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A currency tag whose cash-rounding increment has finer precision than its minor-unit precision — invalid.
+    /// A currency tag whose cash-rounding increment has finer precision than its minor-unit precision - invalid.
     /// A 2-dp currency cannot meaningfully round to 0.001 increments.
     /// </summary>
     private sealed class FinerCashIncrementCurrency
@@ -200,7 +200,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // 5.1 — Convert<TTarget> must reject a zero exchange rate.
+    // 5.1 - Convert<TTarget> must reject a zero exchange rate.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -220,7 +220,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // 5.3 — FromFraction must round exact rational values directly to minor units (no decimal intermediate).
+    // 5.3 - FromFraction must round exact rational values directly to minor units (no decimal intermediate).
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -231,7 +231,7 @@ public partial class MoneyOfTCurrencyTests
     /// </summary>
     /// <remarks>
     /// Construction: numerator = 1225 × 10^25 + 1, denominator = 10^28. That equals
-    /// <c>1.2250000000000000000000000001</c> — strictly above the midpoint <c>1.225</c>, so an exact round to
+    /// <c>1.2250000000000000000000000001</c> - strictly above the midpoint <c>1.225</c>, so an exact round to
     /// 2 dp must produce <c>1.23</c>. The current implementation truncates the trailing <c>+1</c> when
     /// converting to <see cref="decimal" /> at 28-digit precision, leaving exactly <c>1.225m</c>, then
     /// banker's-rounds that midpoint down to <c>1.22</c>.
@@ -261,7 +261,7 @@ public partial class MoneyOfTCurrencyTests
 
         var result = Money<USD>.FromFraction(value);
 
-        // 1.2349999999999999999999999999 — exact rounds to 1.23 banker's; the buggy path would land on
+        // 1.2349999999999999999999999999 - exact rounds to 1.23 banker's; the buggy path would land on
         // 1.235 (decimal-precision quantisation) and then on 1.24.
         Assert.AreEqual(new Money<USD>(1.23m), result);
     }
@@ -283,7 +283,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // 7.1 — GetHashCode should use type identity, not the runtime ISO code value.
+    // 7.1 - GetHashCode should use type identity, not the runtime ISO code value.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -308,7 +308,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that two currency tags sharing the same <c>IsoCode</c> but differing in type identity produce
-    /// distinct hash codes — currency identity is type identity, not the string the type happens to report.
+    /// distinct hash codes - currency identity is type identity, not the string the type happens to report.
     /// </summary>
     /// <remarks>
     /// Before the fix, <c>GetHashCode</c> hashed on <c>TCurrency.IsoCode</c>, so two tag types sharing "USD"
@@ -325,13 +325,13 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // 8.2 — Format precision must be capped at decimal's native precision.
+    // 8.2 - Format precision must be capped at decimal's native precision.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that explicit precision suffixes above 28 (decimal's native precision) are rejected rather than
     /// passed through to <see cref="decimal.ToString(string, IFormatProvider)" /> where they would either
-    /// produce nonsense output or — for pathological values like <c>int.MaxValue</c> — exhaust resources.
+    /// produce nonsense output or - for pathological values like <c>int.MaxValue</c> - exhaust resources.
     /// </summary>
     [TestMethod]
     [DataRow("N29")]
@@ -350,14 +350,14 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // 8.3 — Locale-mismatch formatting must respect the culture's CurrencyNegativePattern.
+    // 8.3 - Locale-mismatch formatting must respect the culture's CurrencyNegativePattern.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// Verifies that the mismatched-locale negative-amount output follows the culture's
     /// <see cref="NumberFormatInfo.CurrencyNegativePattern" /> rather than the buggy plain
     /// <c>"&lt;ISO&gt; -&lt;N&gt;"</c> composition. The exact output is platform-specific (Linux ICU and
-    /// Windows differ on en-US's negative pattern), so the contract asserted here is the inverse — the output
+    /// Windows differ on en-US's negative pattern), so the contract asserted here is the inverse - the output
     /// must not be the broken pre-fix form, and must equal what <see cref="decimal.ToString(string, IFormatProvider)" />
     /// produces with the same cloned-and-substituted <see cref="NumberFormatInfo" />.
     /// </summary>

@@ -23,7 +23,7 @@ public partial class KeccakSpongeTests
     }
 
     /// <summary>
-    /// Verifies that absorbing the reference message in adversarial chunk sizes — spanning lane and rate boundaries —
+    /// Verifies that absorbing the reference message in adversarial chunk sizes - spanning lane and rate boundaries -
     /// produces exactly the SHAKE128 output of a one-shot absorb.
     /// </summary>
     /// <param name="chunkSize">The chunk size to split the message into.</param>
@@ -57,7 +57,7 @@ public partial class KeccakSpongeTests
     }
 
     /// <summary>
-    /// Verifies that squeezing the output stream in adversarial chunk sizes — spanning lane and rate boundaries —
+    /// Verifies that squeezing the output stream in adversarial chunk sizes - spanning lane and rate boundaries -
     /// produces exactly the bytes of a single one-shot squeeze over the same absorbed input.
     /// </summary>
     /// <param name="chunkSize">The chunk size to squeeze at a time.</param>

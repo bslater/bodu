@@ -17,7 +17,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 
     /// <summary>
     /// Verifies that encrypting a run of blocks in one call produces, for every block, what encrypting it on its own
-    /// produces — the ECB semantics every counter mode relies on when it hands a whole run of counters to the cipher.
+    /// produces - the ECB semantics every counter mode relies on when it hands a whole run of counters to the cipher.
     /// </summary>
     /// <param name="variant">The cipher configuration under test.</param>
     [TestMethod]

@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Direct single-block use — most callers should prefer the Threefish256 SymmetricAlgorithm.
+/// // Direct single-block use - most callers should prefer the Threefish256 SymmetricAlgorithm.
 /// byte[] key   = new byte[32];   // 256-bit key
 /// byte[] tweak = new byte[16];   // 128-bit tweak
 /// RandomNumberGenerator.Fill(key);
@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.
 /// SymmetricAlgorithm</seealso> <seealso cref="Threefish256"/>
 public sealed partial class Threefish256Cipher
     : ThreefishBlockCipher

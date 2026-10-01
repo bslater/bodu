@@ -11,8 +11,8 @@ using Bodu.IO.Pst.Internal;
 namespace Bodu.IO.Pst;
 
 /// <summary>
-/// Verifies <see cref="PstTableContext" />, the LTP table. This root holds the shared fixture — a two-row table with
-/// fixed, variable, and absent cells over a heap-resident row matrix — and the member partials assert each surface's
+/// Verifies <see cref="PstTableContext" />, the LTP table. This root holds the shared fixture - a two-row table with
+/// fixed, variable, and absent cells over a heap-resident row matrix - and the member partials assert each surface's
 /// contract over it.
 /// </summary>
 [TestClass]

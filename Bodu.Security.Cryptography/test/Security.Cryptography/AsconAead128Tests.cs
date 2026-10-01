@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography;
 /// Contains unit tests for the <see cref="AsconAead128" /> authenticated encryption algorithm.
 /// Tests are partitioned across the following partial files:
 /// <list type="bullet">
-/// <item><description><c>AsconAead128Tests.Encrypt.cs</c> — constructor validation, <see cref="AsconAead128.Encrypt" /> argument handling, and output-size verification.</description></item>
-/// <item><description><c>AsconAead128Tests.Decrypt.cs</c> — <see cref="AsconAead128.Decrypt" /> argument handling, tag-mismatch detection, and round-trip correctness.</description></item>
+/// <item><description><c>AsconAead128Tests.Encrypt.cs</c> - constructor validation, <see cref="AsconAead128.Encrypt" /> argument handling, and output-size verification.</description></item>
+/// <item><description><c>AsconAead128Tests.Decrypt.cs</c> - <see cref="AsconAead128.Decrypt" /> argument handling, tag-mismatch detection, and round-trip correctness.</description></item>
 /// </list>
 /// </summary>
 [TestClass]

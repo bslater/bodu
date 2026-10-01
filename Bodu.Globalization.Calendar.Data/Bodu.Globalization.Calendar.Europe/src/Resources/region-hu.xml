@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Hungary (HU) — notable-date resource pack.
+  Hungary (HU) - notable-date resource pack.
 
   Authored on the notable-date schema. All rules are scoped to territory "HU"; Hungary has
   no subdivision-specific public holidays.
@@ -63,13 +63,13 @@
       ============================================================================================================
     -->
 
-    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <!-- Labour Day (International Workers' Day) - 1 May. Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="hu"><Applicability><Territory code="HU" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
+    <!-- Second Day of Christmas - 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="hu"><Applicability><Territory code="HU" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
@@ -81,19 +81,19 @@
       ============================================================================================================
     -->
 
-    <!-- 1848 Revolution Memorial Day — 15 March, commemorating the 1848 Hungarian Revolution. fromYear 1848 excludes earlier years. -->
+    <!-- 1848 Revolution Memorial Day - 15 March, commemorating the 1848 Hungarian Revolution. fromYear 1848 excludes earlier years. -->
     <NotableDate id="revolution-memorial-day-1848" displayName="1848 Revolution Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="hu"><Applicability fromYear="1848"><Territory code="HU" /></Applicability>
         <Strategy><Fixed month="March" day="15" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- State Foundation Day (Saint Stephen's Day) — 20 August, marking the founding of the Hungarian state. Fixed date. -->
+    <!-- State Foundation Day (Saint Stephen's Day) - 20 August, marking the founding of the Hungarian state. Fixed date. -->
     <NotableDate id="state-foundation-day" displayName="State Foundation Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="hu"><Applicability><Territory code="HU" /></Applicability>
         <Strategy><Fixed month="August" day="20" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- 1956 Revolution Memorial Day (Republic Day) — 23 October, commemorating the 1956 Hungarian Revolution. fromYear 1956 excludes earlier years. -->
+    <!-- 1956 Revolution Memorial Day (Republic Day) - 23 October, commemorating the 1956 Hungarian Revolution. fromYear 1956 excludes earlier years. -->
     <NotableDate id="revolution-memorial-day-1956" displayName="1956 Revolution Memorial Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="hu"><Applicability fromYear="1956"><Territory code="HU" /></Applicability>
         <Strategy><Fixed month="October" day="23" /></Strategy></Rule></Rules>

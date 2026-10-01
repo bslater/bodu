@@ -29,7 +29,7 @@ public partial class PstNodeTests
     }
 
     /// <summary>
-    /// Verifies that a multi-block payload assembles to the logical length its data tree records — the message node's
+    /// Verifies that a multi-block payload assembles to the logical length its data tree records - the message node's
     /// payload exceeds a single block.
     /// </summary>
     [TestMethod]
@@ -46,7 +46,7 @@ public partial class PstNodeTests
 
     /// <summary>
     /// Verifies that every enumerated node's payload materializes to its reported directory length, under strict
-    /// validation, for each Unicode fixture — the full-corpus data-tree sweep.
+    /// validation, for each Unicode fixture - the full-corpus data-tree sweep.
     /// </summary>
     /// <param name="kat">The fixture census row.</param>
     [TestMethod]

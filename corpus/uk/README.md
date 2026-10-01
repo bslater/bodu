@@ -1,4 +1,4 @@
-# United Kingdom — GOV.UK bank-holiday feed
+# United Kingdom - GOV.UK bank-holiday feed
 
 `bank-holidays-2019-2028.json` is the official GOV.UK bank-holiday dataset
 (<https://www.gov.uk/bank-holidays.json>), archived **verbatim** as delivered on
@@ -9,7 +9,7 @@ fetched user-side and handed back).
 - **SHA-256**: `4fc9d13d6f02cd9805b242d7d34621266de82c058aff0e2ed81facbe65e21107`
 - **Licence**: Open Government Licence v3.0 (redistribution with attribution permitted,
   which is why the raw JSON is committed rather than link-and-hash only)
-- **Coverage**: 2019–2028 across the three feed divisions `england-and-wales`,
+- **Coverage**: 2019-2028 across the three feed divisions `england-and-wales`,
   `scotland`, `northern-ireland` (83/94/103 events respectively), including the
   Scottish World Cup bank holiday added to the feed after November 2025
 

@@ -4,7 +4,7 @@ title: Using Adler
 
 # Using Adler
 
-The Adler checksum — introduced by Mark Adler for zlib — maintains two running sums, **A** and **B**, reduced modulo a prime. It is cheap, position-dependent (so it catches transpositions), and the canonical <xref:Bodu.IO.Hashing.Checksums.Adler32> is the checksum embedded in every zlib stream.
+The Adler checksum - introduced by Mark Adler for zlib - maintains two running sums, **A** and **B**, reduced modulo a prime. It is cheap, position-dependent (so it catches transpositions), and the canonical <xref:Bodu.IO.Hashing.Checksums.Adler32> is the checksum embedded in every zlib stream.
 
 ![Adler-32 twin running sums: A starts at 1 and accumulates each byte modulo 65521, B accumulates the running A, and the output is B shifted left 16 bits combined with A](../../images/diagrams/adler-twin-sum.svg)
 
@@ -12,7 +12,7 @@ The Adler checksum — introduced by Mark Adler for zlib — maintains two runni
 
 | Type | Width | Modulus | Intended use |
 |---|---|---|---|
-| <xref:Bodu.IO.Hashing.Checksums.Adler32> | 32 bits | 65521 (largest prime below 2¹⁶) | Canonical Adler-32 — zlib, PNG, rsync. |
+| <xref:Bodu.IO.Hashing.Checksums.Adler32> | 32 bits | 65521 (largest prime below 2¹⁶) | Canonical Adler-32 - zlib, PNG, rsync. |
 | <xref:Bodu.IO.Hashing.Checksums.Adler32C> | 32 bits | 65536 | SIMD-friendly variant; faster on vector pipelines, **not** wire-compatible with Adler-32. |
 | <xref:Bodu.IO.Hashing.Checksums.Adler64> | 64 bits | 4294967291 (largest prime below 2³²) | Extended width for long buffers where a 32-bit space is uncomfortable. |
 
@@ -21,7 +21,7 @@ All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?disp
 > [!NOTE]
 > Add `using Bodu.IO.Hashing.Checksums;` for `Adler32` / `Adler32C` / `Adler64`, not `using Bodu.IO.Hashing;`.
 
-## Pattern 1 — compute a digest in one call
+## Pattern 1 - compute a digest in one call
 
 <!-- compile -->
 ```csharp
@@ -38,7 +38,7 @@ string hex    = Convert.ToHexString(digest);   // 4 bytes, 8 hex characters, big
 
 Swap `Adler32` for `Adler64` when you need the wider space, or for `Adler32C` when you want the SIMD-friendly modulus and don't need interoperability with zlib.
 
-## Pattern 2 — the `Append` / `GetCurrentHash` / `Reset` lifecycle
+## Pattern 2 - the `Append` / `GetCurrentHash` / `Reset` lifecycle
 
 ```csharp
 using Bodu.IO.Hashing.Checksums;
@@ -51,12 +51,12 @@ byte[] partial = adler.GetCurrentHash();    // snapshot, non-destructive
 adler.Append(chunk3);                       // state preserved after GetCurrentHash
 byte[] full = adler.GetCurrentHash();
 
-adler.Reset();                              // A = 1, B = 0 — zlib's canonical initial state
+adler.Reset();                              // A = 1, B = 0 - zlib's canonical initial state
 ```
 
 `GetCurrentHash` finalizes on a copy of the accumulators, so calling it mid-stream is cheap and safe.
 
-## Pattern 3 — streaming a file
+## Pattern 3 - streaming a file
 
 ```csharp
 using Bodu.IO.Hashing.Checksums;
@@ -76,9 +76,9 @@ using (FileStream fs = File.OpenRead("archive.bin"))
 byte[] fingerprint = adler.GetCurrentHash();
 ```
 
-There is no restriction on chunk size — the two-sum update is byte-by-byte internally, so arbitrary boundaries are safe.
+There is no restriction on chunk size - the two-sum update is byte-by-byte internally, so arbitrary boundaries are safe.
 
-## Pattern 4 — wire-compatible zlib checksum
+## Pattern 4 - wire-compatible zlib checksum
 
 A zlib stream carries an Adler-32 trailer in **big-endian** byte order. `GetCurrentHash` returns the digest in the BCL-standard big-endian layout already, so you can write it to the stream directly:
 
@@ -101,15 +101,15 @@ outputStream.Write(trailer);
 
 ## Error-detection profile and the short-input weakness
 
-Adler maintains `A` (the running byte sum, starting at 1) and `B` (the running sum of `A`). The prime modulus (65521) of the canonical variant spreads error patterns more evenly than the next-larger composite would — its single advantage over a power-of-two reduction. But the structure has a well-known weakness on **short inputs**:
+Adler maintains `A` (the running byte sum, starting at 1) and `B` (the running sum of `A`). The prime modulus (65521) of the canonical variant spreads error patterns more evenly than the next-larger composite would - its single advantage over a power-of-two reduction. But the structure has a well-known weakness on **short inputs**:
 
 - Each byte first lands in `A`, and `B` only accumulates the *running* `A`. For a short message `A` stays small, so `B` grows slowly and the high bits of the 32-bit digest barely move. The effective digest space is far narrower than 32 bits until the payload is a few hundred bytes long.
 - This is the reason RFC 1950 carries Adler-32 only as a trailer over an already-substantial deflate stream, and the reason a CRC-32 is the better checksum for short frames.
 
-Like Fletcher, Adler catches every single-bit error and every adjacent-byte transposition, and like Fletcher it offers no per-position burst guarantee. Choose it for zlib interoperability or for long, benign payloads — not for short frames on a noisy link.
+Like Fletcher, Adler catches every single-bit error and every adjacent-byte transposition, and like Fletcher it offers no per-position burst guarantee. Choose it for zlib interoperability or for long, benign payloads - not for short frames on a noisy link.
 
 > [!IMPORTANT]
-> `Adler32C` trades the prime modulus for `2^16`, which removes the `% 65521` reduction and keeps an auto-vectorised loop vectorised — but the power-of-two modulus weakens error coverage further and the digest is **not** interchangeable with a real Adler-32. Use it only inside your own system, never on a zlib/PNG/rsync wire.
+> `Adler32C` trades the prime modulus for `2^16`, which removes the `% 65521` reduction and keeps an auto-vectorised loop vectorised - but the power-of-two modulus weakens error coverage further and the digest is **not** interchangeable with a real Adler-32. Use it only inside your own system, never on a zlib/PNG/rsync wire.
 
 ## Adler vs Fletcher vs CRC
 
@@ -117,11 +117,11 @@ Like Fletcher, Adler catches every single-bit error and every adjacent-byte tran
 - **Fletcher** uses a similar twin-accumulator structure with word-sized rather than byte-sized updates; comparable error-detection on uncorrelated noise, slightly different distribution.
 - **CRC** is polynomial-arithmetic over GF(2); better at catching the kind of burst errors common on physical links, and it is what wire formats usually specify.
 
-All three are **non-cryptographic** — none of them resists a motivated adversary. If you need authentication, see the [cryptography hashing guide](../cryptography/hashing.md).
+All three are **non-cryptographic** - none of them resists a motivated adversary. If you need authentication, see the [cryptography hashing guide](../cryptography/hashing.md).
 
 ## Where to go next
 
-- [Using Fletcher](fletcher.md) — the other twin-accumulator family.
-- [Using CRC](crc.md) — the polynomial-arithmetic family.
-- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) — key types and design notes.
-- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
+- [Using Fletcher](fletcher.md) - the other twin-accumulator family.
+- [Using CRC](crc.md) - the polynomial-arithmetic family.
+- [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) - key types and design notes.
+- **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.

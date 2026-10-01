@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography.Samples.SymmetricAndAead;
 
 /// <summary>
 /// Entry point for the symmetric / AEAD sample: block ciphers, block-cipher modes, the Ascon-AEAD128
-/// authenticated cipher, AEAD modes over AES, and additive stream ciphers — all over fixed keys, IVs,
+/// authenticated cipher, AEAD modes over AES, and additive stream ciphers - all over fixed keys, IVs,
 /// nonces, and associated data so every line of output is deterministic.
 /// </summary>
 public static class Program

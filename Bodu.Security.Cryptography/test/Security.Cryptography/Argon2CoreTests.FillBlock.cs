@@ -12,38 +12,42 @@ public sealed partial class Argon2CoreTests
     private const int DifferentialBlocks = 200;
 
     /// <summary>
-    /// Verifies that a vector kernel overwriting its destination — every pass of version 0x10 and the first pass of
-    /// version 0x13 — produces the scalar kernel's block and carried state for seeded random inputs.
+    /// Verifies that each other kernel overwriting its destination - every pass of version 0x10 and the first pass of
+    /// version 0x13 - produces the scalar kernel's block and carried state for seeded random inputs.
     /// </summary>
-    /// <param name="kernel">The name of the vector kernel.</param>
+    /// <param name="kernel">The name of the kernel.</param>
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenOverwriting_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: false);
 
     /// <summary>
-    /// Verifies that a vector kernel XORing into its destination — every pass after the first in version 0x13 —
+    /// Verifies that each other kernel XORing into its destination - every pass after the first in version 0x13 -
     /// produces the scalar kernel's block and carried state for seeded random inputs.
     /// </summary>
-    /// <param name="kernel">The name of the vector kernel.</param>
+    /// <param name="kernel">The name of the kernel.</param>
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenXoring_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: true, referenceIsDestination: false);
 
     /// <summary>
-    /// Verifies that a vector kernel whose reference block is also its destination — as the Argon2i address generator
-    /// compresses its address block in place — reads the reference before overwriting it, as the scalar kernel does.
+    /// Verifies that each other kernel whose reference block is also its destination - as the Argon2i address
+    /// generator compresses its address block in place - reads the reference before overwriting it, as the scalar
+    /// kernel does.
     /// </summary>
-    /// <param name="kernel">The name of the vector kernel.</param>
+    /// <param name="kernel">The name of the kernel.</param>
     [TestMethod]
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("AdvSimdHybrid")]
     public void FillBlock_WhenReferenceIsTheDestination_ShouldMatchTheScalarKernel(string kernel) =>
         AssertKernelMatchesScalar(ParseSupportedKernel(kernel), withXor: false, referenceIsDestination: true);
 
@@ -62,16 +66,49 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
+    /// Verifies that the hybrid kernel, specialized over the SSSE3 shim, produces the scalar kernel's block and carried
+    /// state for seeded random inputs, so that an x64 pass runs the code the ARM64 hybrid kernel shares with it.
+    /// </summary>
+    /// <param name="withXor">Whether the compression XORs into the destination.</param>
+    /// <param name="referenceIsDestination">Whether the reference block and the destination are the same block.</param>
+    [TestMethod]
+    [DataRow(false, false)]
+    [DataRow(true, false)]
+    [DataRow(false, true)]
+    public void FillBlock_WhenHybridRunsOverTheSsse3Shim_ShouldMatchTheScalarKernel(bool withXor, bool referenceIsDestination)
+    {
+        if (!System.Runtime.Intrinsics.X86.Ssse3.IsSupported)
+            Assert.Inconclusive("SSSE3 is not available on this processor.");
+
+        AssertMatchesScalar(
+            (state, reference, next, xor) => FillBlock<Argon2Core.HybridKernel<Argon2Core.Ssse3Isa>>(state, new ulong[Argon2Matrix.WordsPerBlock], reference, next, xor),
+            0x5353,
+            withXor,
+            referenceIsDestination);
+    }
+
+    /// <summary>
     /// Compresses seeded random blocks with a kernel and with the scalar kernel, and asserts that both leave the same
     /// destination block and the same carried state.
     /// </summary>
     /// <param name="kernel">The kernel under test.</param>
     /// <param name="withXor">Whether the compression XORs into the destination.</param>
     /// <param name="referenceIsDestination">Whether the reference block and the destination are the same block.</param>
-    private static void AssertKernelMatchesScalar(Argon2Core.KernelKind kernel, bool withXor, bool referenceIsDestination)
+    private static void AssertKernelMatchesScalar(Argon2Core.KernelKind kernel, bool withXor, bool referenceIsDestination) =>
+        AssertMatchesScalar((state, reference, next, xor) => FillBlock(kernel, state, reference, next, xor), (int)kernel, withXor, referenceIsDestination);
+
+    /// <summary>
+    /// Compresses seeded random blocks with a compression and with the scalar kernel, and asserts that both leave the
+    /// same destination block and the same carried state.
+    /// </summary>
+    /// <param name="fill">Compresses one block: the carried state, the reference block, the destination, and whether to XOR.</param>
+    /// <param name="seed">Distinguishes the random inputs of one compression under test from another's.</param>
+    /// <param name="withXor">Whether the compression XORs into the destination.</param>
+    /// <param name="referenceIsDestination">Whether the reference block and the destination are the same block.</param>
+    private static void AssertMatchesScalar(Action<ulong[], ulong[], ulong[], bool> fill, int seed, bool withXor, bool referenceIsDestination)
     {
         const int Words = Argon2Matrix.WordsPerBlock;
-        var random = new Random(0x4172_6732 + (int)kernel + (withXor ? 1 << 8 : 0) + (referenceIsDestination ? 1 << 9 : 0));
+        var random = new Random(0x4172_6732 + seed + (withXor ? 1 << 8 : 0) + (referenceIsDestination ? 1 << 9 : 0));
         ulong[] state = new ulong[Words];
         ulong[] reference = new ulong[Words];
         ulong[] next = new ulong[Words];
@@ -87,7 +124,7 @@ public sealed partial class Argon2CoreTests
             ulong[] actualNext = referenceIsDestination ? reference : next;
 
             FillBlock(Argon2Core.KernelKind.Scalar, expectedState, expectedReference, expectedNext, withXor);
-            FillBlock(kernel, state, reference, actualNext, withXor);
+            fill(state, reference, actualNext, withXor);
 
             CollectionAssert.AreEqual(expectedNext, actualNext, $"The destination differs at block {block}.");
             CollectionAssert.AreEqual(expectedState, state, $"The carried state differs at block {block}.");
@@ -117,6 +154,10 @@ public sealed partial class Argon2CoreTests
 
             case Argon2Core.KernelKind.Ssse3:
                 FillBlock<Argon2Core.Vector128Kernel<Argon2Core.Ssse3Isa>>(state, scratch, reference, next, withXor);
+                break;
+
+            case Argon2Core.KernelKind.AdvSimdHybrid:
+                FillBlock<Argon2Core.HybridKernel<Argon2Core.AdvSimdIsa>>(state, scratch, reference, next, withXor);
                 break;
 
             default:

@@ -23,7 +23,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
     /// <summary>
     /// Verifies that every <see cref="CipherModeKind" /> value can be applied via the <see cref="SetBlockMode" />
-    /// hook without throwing — the underlying property is a plain auto-property and must not gain accidental enum
+    /// hook without throwing - the underlying property is a plain auto-property and must not gain accidental enum
     /// validation.
     /// </summary>
     [TestMethod]

@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the ML-KEM-768 parameter set of NIST FIPS 203 (module rank 3, NIST security category 3, comparable to
-/// AES-192) — the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.
+/// AES-192) - the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// Key and ciphertext sizes: encapsulation key 1184 bytes, decapsulation key 2400 bytes, ciphertext 1088 bytes, shared

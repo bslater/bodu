@@ -15,7 +15,7 @@ public readonly partial struct Interval<T> :
     /// <summary>
     /// Parses an interval from its ISO 31-11 bracket-notation string representation.
     /// </summary>
-    /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
+    /// <param name="s">The text to parse - for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
     /// <param name="provider">The culture used to parse each endpoint.</param>
     /// <returns>The parsed interval.</returns>
     /// <exception cref="ArgumentNullException">
@@ -37,7 +37,7 @@ public readonly partial struct Interval<T> :
     ///
     /// if (!Interval<int>.TryParse("1..5", null, out var parsed))
     /// {
-    ///     // reached — "1..5" is not ISO 31-11 notation
+    ///     // reached - "1..5" is not ISO 31-11 notation
     /// }
     ///]]>
     /// </code>
@@ -51,7 +51,7 @@ public readonly partial struct Interval<T> :
     /// <summary>
     /// Parses an interval from its ISO 31-11 bracket-notation string representation using the current culture.
     /// </summary>
-    /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
+    /// <param name="s">The text to parse - for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
     /// <returns>The parsed interval.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
@@ -65,7 +65,7 @@ public readonly partial struct Interval<T> :
     /// <summary>
     /// Parses an interval from its ISO 31-11 bracket-notation span representation.
     /// </summary>
-    /// <param name="s">The text to parse — for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
+    /// <param name="s">The text to parse - for example <c>"[1, 5)"</c>, <c>"(0, 1)"</c>, or <c>"∅"</c>.</param>
     /// <param name="provider">The culture used to parse each endpoint.</param>
     /// <returns>The parsed interval.</returns>
     /// <exception cref="FormatException">
@@ -139,7 +139,7 @@ public readonly partial struct Interval<T> :
 
         if (trimmed.Length < 5)
         {
-            // Minimum non-empty interval is "[a,b]" — five characters.
+            // Minimum non-empty interval is "[a,b]" - five characters.
             result = default;
             return false;
         }

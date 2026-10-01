@@ -155,7 +155,7 @@ public static partial class ThrowHelper
     /// </exception>
     /// <remarks>
     /// Use this overload when the caller may supply a larger array than required and the excess elements are simply
-    /// ignored — for example, a buffer that must hold at least a full cipher block but may be larger. When the length
+    /// ignored - for example, a buffer that must hold at least a full cipher block but may be larger. When the length
     /// must be exact, use <see cref="ThrowIfArrayLengthIsNotEqualTo" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

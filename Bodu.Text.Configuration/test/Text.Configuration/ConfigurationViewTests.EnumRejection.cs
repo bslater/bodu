@@ -81,7 +81,7 @@ public partial class ConfigurationViewTests
     }
 
     /// <summary>
-    /// Verifies that a single Flags value matching a declared member <em>is</em> accepted — the rejection
+    /// Verifies that a single Flags value matching a declared member <em>is</em> accepted - the rejection
     /// rule above is specifically about combined-value names, not single members of a Flags enum.
     /// </summary>
     [TestMethod]

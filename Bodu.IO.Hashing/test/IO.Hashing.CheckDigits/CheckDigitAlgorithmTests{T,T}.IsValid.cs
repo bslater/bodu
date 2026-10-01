@@ -31,7 +31,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that <c>IsValid</c> returns <see langword="false" /> — without throwing — when the input
+    /// Verifies that <c>IsValid</c> returns <see langword="false" /> - without throwing - when the input
     /// contains a non-digit character.
     /// </summary>
     [TestMethod]

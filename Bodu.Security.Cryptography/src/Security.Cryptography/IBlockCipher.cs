@@ -27,26 +27,26 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// An <see cref="IBlockCipherModeTransform" /> wraps a cipher with a chaining strategy (CBC, CTR, …) — built via
+/// An <see cref="IBlockCipherModeTransform" /> wraps a cipher with a chaining strategy (CBC, CTR, …) - built via
 /// <see cref="BlockCipherModeFactory.Create(CipherModeKind, IBlockCipher, byte[])" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// An <see cref="IPaddingStrategy" /> aligns input to the cipher block size — built via
+/// An <see cref="IPaddingStrategy" /> aligns input to the cipher block size - built via
 /// <see cref="PaddingFactory.Create(System.Security.Cryptography.PaddingMode)" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
 /// <see cref="BlockCipherTransform" /> bundles a cipher, mode, and padding into a single
-/// <see cref="System.Security.Cryptography.ICryptoTransform" /> — the integration point used by every
+/// <see cref="System.Security.Cryptography.ICryptoTransform" /> - the integration point used by every
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> in this library.
 /// </description>
 /// </item>
 /// </list>
 /// <para>
-/// Most callers never instantiate <see cref="IBlockCipher" /> directly — they use a
+/// Most callers never instantiate <see cref="IBlockCipher" /> directly - they use a
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> (Aes, Twofish, Camellia, Threefish, Serpent,
 /// Skipjack, Blowfish), set Key/IV/Mode/Padding, and let the library compose the layers. Direct use of this interface
 /// is appropriate when implementing a new mode, plugging a non-<c>SymmetricAlgorithm</c> cipher engine into the
@@ -120,7 +120,7 @@ public interface IBlockCipher
     /// <remarks>
     /// The default implementation calls <see cref="Encrypt" /> once per block. Implementations backed by a primitive
     /// with per-call setup cost (for example a wrapped BCL cipher context) should override this to amortize that cost
-    /// across the whole run. Callers that process independent blocks — ECB and the keystream layer of CTR-based modes —
+    /// across the whole run. Callers that process independent blocks - ECB and the keystream layer of CTR-based modes -
     /// should prefer this over a per-block loop.
     /// </remarks>
     void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)

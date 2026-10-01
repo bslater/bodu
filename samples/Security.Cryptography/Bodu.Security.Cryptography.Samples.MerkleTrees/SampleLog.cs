@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography.Samples.MerkleTrees;
 /// </summary>
 /// <remarks>
 /// Keeping the corpus here rather than per scenario means the roots printed by different scenarios are directly
-/// comparable — the consistency scenario's seven-entry root is the same value the commitment scenario publishes.
+/// comparable - the consistency scenario's seven-entry root is the same value the commitment scenario publishes.
 /// </remarks>
 public static class SampleLog
 {

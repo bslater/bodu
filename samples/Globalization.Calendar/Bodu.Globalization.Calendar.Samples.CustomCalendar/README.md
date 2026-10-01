@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Samples.CustomCalendar
 
-Authoring your own calendar — company holidays, shutdowns, celebrations — with the fluent
+Authoring your own calendar - company holidays, shutdowns, celebrations - with the fluent
 `NotableDateDocumentBuilder`, then treating it exactly like a shipped data pack: adjustment
 policies, catalogue imports, and the XML and JSON round trips that make the document a
 distributable artifact. Fully offline; the round-trip files are written to the sample's own
@@ -12,14 +12,14 @@ dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.
 
 ## Scenarios
 
-For the full catalogue of occurrence sources — every single-date strategy, the recurrence
-sources, and fixed vs. calculated durations — see the
+For the full catalogue of occurrence sources - every single-date strategy, the recurrence
+sources, and fixed vs. calculated durations - see the
 [Notable-date rule strategies](../../../docs/guides/calendar/strategy-reference.md) guide.
 
 ### AuthoringCompanyHolidays (`Scenarios/AuthoringCompanyHolidays.cs`)
 
-**Intent.** Show that rules are *data*, authored declaratively — a fixed date, a fortnightly
-recurrence, and a **calculated-duration** span whose length is computed from the calendar — with
+**Intent.** Show that rules are *data*, authored declaratively - a fixed date, a fortnightly
+recurrence, and a **calculated-duration** span whose length is computed from the calendar - with
 no date mathematics in consumer code.
 
 **What it does.** Builds a three-concept company calendar (fixed Founding Day, a fortnightly
@@ -48,11 +48,11 @@ resolves December 2023 → mid-2024 through a plain `NotableDateService`.
   (three kinds of occurrence from one document: a fixed date, a recurring event repeating many times, and a multi-day span that reports its own duration)
 ```
 
-The shutdown's span is **calculated**, not a fixed day count — it is 16 days here but 9 in years
+The shutdown's span is **calculated**, not a fixed day count - it is 16 days here but 9 in years
 where the Friday before Boxing Day is Christmas Day, all from one rule (see the shutdown table in
 the [strategy guide](../../../docs/guides/calendar/strategy-reference.md#durations-fixed-or-calculated)).
 The All-Hands repeats every 14 days from its anchor. The authored resource is served by the same
-service type the regional packs return — a custom calendar is a first-class citizen.
+service type the regional packs return - a custom calendar is a first-class citizen.
 
 **APIs demonstrated.** `NotableDateDocumentBuilder.Create` / `WithMetadata` / `AddNotableDate`,
 `NotableDateDefinitionBuilder.AsNonWorkingByDefault` / `AddRule`,
@@ -62,12 +62,12 @@ service type the regional packs return — a custom calendar is a first-class ci
 ### FrequencyBasedSchedules (`Scenarios/FrequencyBasedSchedules.cs`)
 
 **Intent.** Frequency-based rules: a `Recurrence` source yields **many** occurrences in a window
-instead of one date per year — the four recurrence kinds, authored fluently.
+instead of one date per year - the four recurrence kinds, authored fluently.
 
-**What it does.** Builds an operations calendar entirely from recurrences — a fortnightly
+**What it does.** Builds an operations calendar entirely from recurrences - a fortnightly
 All-Hands (`DailyInterval`), a twice-weekly Maintenance Window (`Weekly` on Monday + Friday), a
 day-15 Payroll Run and a day-31 Month-End Close (`MonthlyDay`, the latter clamping short months),
-and a last-Friday Board Report (`MonthlyWeekday`) — then resolves the first quarter of 2026.
+and a last-Friday Board Report (`MonthlyWeekday`) - then resolves the first quarter of 2026.
 
 **What to expect (excerpt).**
 
@@ -96,9 +96,9 @@ and a last-Friday Board Report (`MonthlyWeekday`) — then resolves the first qu
 ```
 
 Every occurrence flows through the normal pipeline (category, non-working flag, duration,
-adjustments) just like a fixed holiday, and generation is **query-window invariant** — resolving
+adjustments) just like a fixed holiday, and generation is **query-window invariant** - resolving
 February alone yields exactly the February subset of the quarter. See
-[Notable-date rule strategies — Recurrence sources](../../../docs/guides/calendar/strategy-reference.md#recurrence-sources).
+[Notable-date rule strategies - Recurrence sources](../../../docs/guides/calendar/strategy-reference.md#recurrence-sources).
 
 **APIs demonstrated.** `NotableDateRuleBuilder.DailyInterval` / `Weekly` / `MonthlyDay` /
 `MonthlyWeekday`, `InvalidDayOfMonthBehavior.UseLastDayOfMonth`, `WeekOrdinal.Last`,
@@ -107,7 +107,7 @@ February alone yields exactly the February subset of the quarter. See
 ### AdjustmentsAndPolicies (`Scenarios/AdjustmentsAndPolicies.cs`)
 
 **Intent.** Weekend/in-lieu substitution as declarative policy: a trigger (when), an action
-(what), and an emission mode (what queries return) — declared once, referenced by any rule.
+(what), and an emission mode (what queries return) - declared once, referenced by any rule.
 
 **What it does.** Declares a `weekend-roll` policy (`IfWeekend` → `MoveToNextWorkingDay`,
 `ObservedOnly` emission, with a reason string) and attaches it to the Founding Day rule, then
@@ -123,7 +123,7 @@ Saturday).
 ```
 
 The 2022 occurrence keeps its lineage: the emitted (observed) Monday, the actual Saturday, and
-the human-readable reason — everything a leave system needs to explain the in-lieu day.
+the human-readable reason - everything a leave system needs to explain the in-lieu day.
 
 **APIs demonstrated.** `AddAdjustmentPolicy`, `AdjustmentPolicyBuilder.When` / `Then` / `Emit` /
 `WithReason`, `AdjustmentTrigger.IfWeekend`, `AdjustmentAction.MoveToNextWorkingDay`,
@@ -149,7 +149,7 @@ company's own Founding Day, and builds with the catalogue resolver.
   (the Easter dates came from the catalogue computus with nothing hand-coded, but carry this company's non-working flag rather than the catalogue's)
 ```
 
-The Easter dates came from the catalogue's algorithm — nothing was hand-coded. Note the
+The Easter dates came from the catalogue's algorithm - nothing was hand-coded. Note the
 dependency the validator enforces: Good Friday and Easter Monday are defined as *offsets from*
 `easter-sunday`, so the anchor concept must be `Use`d too; omitting it fails the build with a
 precise diagnostic (`BODU-CAL-OFFSET-MISSING`).
@@ -185,7 +185,7 @@ documented JSON subset.
 
 **Intent.** The same round trip against the documented JSON subset: XML and JSON are two
 encodings of one document model, so an authored calendar persists, distributes, and reloads
-identically through either — the builder for further editing, or the plain loader for a consumer
+identically through either - the builder for further editing, or the plain loader for a consumer
 without the Builder package.
 
 **What it does.** Saves the same authored calendar to `contoso-holidays.json` (the `.json`
@@ -202,7 +202,7 @@ resources' ids.
   Builder and loader agree: True  (expected True - authoring and consuming are two views of one document, not two representations to keep in sync)
 ```
 
-The JSON form is 500 bytes to the XML form's 576 — the same distributable calendar, resolving to
+The JSON form is 500 bytes to the XML form's 576 - the same distributable calendar, resolving to
 the identical Founding Day. `LoadJson` is the JSON counterpart to the XML-accepting `Load`; the
 builder's own `Load` infers the format from the file extension.
 

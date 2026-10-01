@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// XChaCha20 extends RFC 8439 ChaCha20 to a 192-bit nonce, following <c>draft-irtf-cfrg-xchacha</c>. The longer nonce
 /// is large enough to choose at random per message without meaningful collision risk, which makes XChaCha20 the safer
-/// default for protocols that cannot guarantee a unique 96-bit counter — the use case behind libsodium's
+/// default for protocols that cannot guarantee a unique 96-bit counter - the use case behind libsodium's
 /// <c>crypto_stream_xchacha20</c>.
 /// </para>
 /// <para>
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// Like ChaCha20 this is the <em>raw</em>, confidentiality-only cipher and is self-inverse — encryptor and decryptor
+/// Like ChaCha20 this is the <em>raw</em>, confidentiality-only cipher and is self-inverse - encryptor and decryptor
 /// are interchangeable. For authenticated encryption, pair it with a MAC such as <see cref="Poly1305" />.
 /// </para>
 /// </remarks>
@@ -53,13 +53,13 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using var xchacha = new XChaCha20();
 /// xchacha.GenerateKey(); // 256-bit
-/// xchacha.GenerateNonce(); // 192-bit nonce — safe to choose at random
+/// xchacha.GenerateNonce(); // 192-bit nonce - safe to choose at random
 /// byte[] ciphertext = xchacha.Encrypt(plaintext);
 /// byte[] roundTrip  = xchacha.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
+/// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha - XChaCha:
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="ChaCha20" />
 public sealed class XChaCha20
     : SymmetricStreamAlgorithm

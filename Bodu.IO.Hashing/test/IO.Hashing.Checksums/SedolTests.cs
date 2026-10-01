@@ -61,7 +61,7 @@ public sealed partial class SedolTests
 
     /// <summary>
     /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
-    /// vowel — vowels are not part of the SEDOL alphabet.
+    /// vowel - vowels are not part of the SEDOL alphabet.
     /// </summary>
     /// <param name="vowel">The vowel character placed in the body.</param>
     [DataRow('A')]

@@ -11,7 +11,7 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses a recorded Argon2 corpus — one pipe-separated row per derivation, as produced from a released build — into
+/// Parses a recorded Argon2 corpus - one pipe-separated row per derivation, as produced from a released build - into
 /// <see cref="KdfKnownAnswer" /> records.
 /// </summary>
 /// <remarks>

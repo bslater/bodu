@@ -34,7 +34,7 @@ public partial class BitSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BitSet.Cardinality" /> tracks mutations — set, clear, flip, and range operations.
+    /// Verifies that <see cref="BitSet.Cardinality" /> tracks mutations - set, clear, flip, and range operations.
     /// </summary>
     [TestMethod]
     public void Cardinality_WhenBitsMutated_ShouldTrackChanges()

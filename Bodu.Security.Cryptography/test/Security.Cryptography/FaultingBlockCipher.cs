@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// The fault fires <em>before</em> the inner cipher runs, so the faulting call writes nothing. A
 /// <paramref name="faultAfterCalls" /> of zero (or negative) disables the fault entirely, turning the decorator into a
-/// pure call counter — the fault-sweep tests use that mode to measure how many block operations a clean run performs.
+/// pure call counter - the fault-sweep tests use that mode to measure how many block operations a clean run performs.
 /// </remarks>
 internal sealed class FaultingBlockCipher : IBlockCipher
 {

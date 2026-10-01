@@ -25,7 +25,7 @@ public sealed class AppConfig
     /// <summary>Gets or sets whether the service is enabled.</summary>
     public bool Enabled { get; set; }
 
-    /// <summary>Gets or sets the sampling ratio — a YAML float scalar.</summary>
+    /// <summary>Gets or sets the sampling ratio - a YAML float scalar.</summary>
     public double SampleRate { get; set; }
 
     /// <summary>Gets or sets the database mapping (nested YAML mapping).</summary>
@@ -34,7 +34,7 @@ public sealed class AppConfig
     /// <summary>Gets or sets the endpoint list (YAML block sequence of mappings).</summary>
     public List<EndpointConfig> Endpoints { get; set; } = [];
 
-    /// <summary>Gets a computed display label — never serialized.</summary>
+    /// <summary>Gets a computed display label - never serialized.</summary>
     [Ignore]
     public string DisplayLabel => $"{ServiceName} (retries: {MaxRetries})";
 }

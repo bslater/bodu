@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class OcbModeTransformTests
 {
-    // ── Constructor — valid tagSize values ────────────────────────────────────────────────────
+    // ── Constructor - valid tagSize values ────────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the <see cref="OcbModeTransform" /> constructor correctly sets
@@ -42,7 +42,7 @@ public sealed partial class OcbModeTransformTests
     /// <remarks>
     /// RFC 7253 §2.2 designates TAGLEN = 128 bits as the full-width tag. The default
     /// ensures backward compatibility with call sites that do not specify a tag size,
-    /// and matches the vectors in RFC 7253 Appendix A tests 01–16.
+    /// and matches the vectors in RFC 7253 Appendix A tests 01-16.
     /// </remarks>
     [TestMethod]
     public void Ctor_WithDefaultTagSize_ShouldBe128Bits()
@@ -54,7 +54,7 @@ public sealed partial class OcbModeTransformTests
             "Omitting tagSize must produce TagSize = 128 bits.");
     }
 
-    // ── Constructor — invalid tagSize values ──────────────────────────────────────────────────
+    // ── Constructor - invalid tagSize values ──────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that a <c>tagSize</c> value of zero or below throws
@@ -80,7 +80,7 @@ public sealed partial class OcbModeTransformTests
     /// </summary>
     /// <remarks>
     /// The value 16 is included specifically to catch the common mistake of passing the
-    /// byte count rather than the bit width — e.g. writing <c>tagSize: 16</c> when
+    /// byte count rather than the bit width - e.g. writing <c>tagSize: 16</c> when
     /// the intended value is <c>tagSize: 128</c>. 16 bits is a valid byte-aligned value
     /// (a 2-byte tag), so the test instead asserts on values that violate either the upper
     /// bound or the 8-bit alignment rule.

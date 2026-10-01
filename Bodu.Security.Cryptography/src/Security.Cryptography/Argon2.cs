@@ -24,14 +24,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// A derivation fills its lanes on several threads when that pays: up to <see cref="Argon2Parameters.Parallelism" />
-/// threads, bounded by the processor count, once each lane's share of a pass is large enough to be worth dividing (in
-/// the region of 1 MiB). The calling thread always takes part, so a derivation never waits on an idle thread pool, and
-/// the tag never depends on the threads used. <see cref="MaxDegreeOfParallelism" /> bounds a derivation's threads for
-/// callers that already run many derivations at once.
+/// threads, bounded by the processor count, once each lane's share of a pass is large enough to be worth dividing (from
+/// 768 KiB). The calling thread always takes part, so a derivation never waits on an idle thread pool, and the tag
+/// never depends on the threads used. <see cref="MaxDegreeOfParallelism" /> bounds a derivation's threads for callers
+/// that already run many derivations at once.
 /// </para>
 /// <para>
 /// The memory matrix is held in native memory and reused across derivations, so a derivation neither allocates it on
-/// the collected heap nor waits for it to be zeroed. Up to one matrix per processor stays reserved — cleared — for up
+/// the collected heap nor waits for it to be zeroed. Up to one matrix per processor stays reserved - cleared - for up
 /// to thirty seconds after the last derivation; the <c>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</c>
 /// <see cref="AppContext" /> switch releases each matrix as soon as its derivation ends instead. Every block of the
 /// matrix and every buffer holding a password-derived value is cleared before it is released; values the JIT keeps in

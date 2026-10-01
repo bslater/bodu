@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes the Argon2i password-hashing and key-derivation function (RFC 9106) — the variant that uses
+/// Computes the Argon2i password-hashing and key-derivation function (RFC 9106) - the variant that uses
 /// data-independent memory addressing, making it resistant to side-channel timing attacks. This class cannot be
 /// inherited.
 /// </summary>

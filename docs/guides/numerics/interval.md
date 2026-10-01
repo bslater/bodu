@@ -8,10 +8,10 @@ title: Working with Interval<T>
 any `INumber<T>` endpoint type. Endpoint inclusivity is independent on
 each side, so a single type expresses all four conventional shapes:
 
-- Closed-closed `[a, b]` — both endpoints included.
-- Open-open `(a, b)` — both endpoints excluded.
-- Closed-open `[a, b)` — lower included, upper excluded.
-- Open-closed `(a, b]` — lower excluded, upper included.
+- Closed-closed `[a, b]` - both endpoints included.
+- Open-open `(a, b)` - both endpoints excluded.
+- Closed-open `[a, b)` - lower included, upper excluded.
+- Open-closed `(a, b]` - lower excluded, upper included.
 
 The type works with any numeric backing type that implements
 `INumber<T>`: `int`, `long`, `double`, `decimal`, `BigInteger`, and
@@ -20,8 +20,8 @@ consumer-defined numeric types built on the generic-math interfaces.
 Internally an `Interval<T>` is a `readonly struct` holding the two `T`
 endpoints plus a single inclusivity byte (the two flags packed as bits
 0 and 1), so for a fixed-width endpoint type it is allocation-free and
-copies by value. The set operations — `Contains`, `Overlaps`,
-`Intersect`, `TryUnion` — are a few `T` comparisons each and allocate
+copies by value. The set operations - `Contains`, `Overlaps`,
+`Intersect`, `TryUnion` - are a few `T` comparisons each and allocate
 nothing. Endpoints are stored at full `T` precision with no widening or
 narrowing.
 
@@ -48,8 +48,8 @@ var f = Interval.Closed(1.5, 2.5);          // Interval<double>
 var g = Interval.ClosedOpen(0m, 100m);      // Interval<decimal>
 ```
 
-The primary constructor — `new Interval<T>(lower, upper,
-lowerInclusive, upperInclusive)` — is also public for cases where the
+The primary constructor - `new Interval<T>(lower, upper,
+lowerInclusive, upperInclusive)` - is also public for cases where the
 inclusivity comes from a runtime computation:
 
 <!-- compile -->
@@ -72,7 +72,7 @@ and is called a **degenerate** interval (`IsDegenerate` returns
 `true`).
 
 All empty intervals are equal to `Interval<T>.Empty` regardless of the
-bounds they were constructed with — the type honors the mathematical
+bounds they were constructed with - the type honors the mathematical
 fact that there is one empty set, not many:
 
 <!-- compile -->
@@ -98,14 +98,14 @@ endpoint:
 ```csharp
 var range = Interval<int>.ClosedOpen(1, 5);   // [1, 5)
 
-range.Contains(1);  // True  — lower endpoint included
-range.Contains(4);  // True  — interior
-range.Contains(5);  // False — upper endpoint excluded
-range.Contains(0);  // False — outside the interval
+range.Contains(1);  // True  - lower endpoint included
+range.Contains(4);  // True  - interior
+range.Contains(5);  // False - upper endpoint excluded
+range.Contains(0);  // False - outside the interval
 ```
 
 `Contains(Interval<T>)` tests whether the supplied interval is a
-subset of this one — every value of the inner interval is also a
+subset of this one - every value of the inner interval is also a
 value of the outer:
 
 <!-- compile -->
@@ -114,7 +114,7 @@ var outer = Interval<int>.Closed(0, 10);
 
 outer.Contains(Interval<int>.Closed(2, 8));   // True
 outer.Contains(Interval<int>.Closed(2, 11));  // False
-outer.Contains(Interval<int>.Empty);          // True — every set contains ∅
+outer.Contains(Interval<int>.Empty);          // True - every set contains ∅
 ```
 
 The empty interval is a subset of every interval, so any interval
@@ -134,7 +134,7 @@ the contract concrete:
 
 Because `Interval<T>` is a *set* rather than a scalar, it deliberately
 implements neither `IComparable<Interval<T>>` nor the ordering
-operators — there is no total order on sets. Use the subset
+operators - there is no total order on sets. Use the subset
 (`Contains`) and overlap (`Overlaps`) relations instead, or order a
 collection of intervals by an endpoint explicitly (`OrderBy(i => i.Lower)`).
 
@@ -146,15 +146,15 @@ one value:
 <!-- compile -->
 ```csharp
 Interval<int>.Closed(1, 5).Overlaps(Interval<int>.Closed(3, 7));      // True
-Interval<int>.ClosedOpen(1, 5).Overlaps(Interval<int>.Closed(5, 10)); // False — touch only
-Interval<int>.OpenClosed(1, 5).Overlaps(Interval<int>.Closed(5, 10)); // True — both include 5
+Interval<int>.ClosedOpen(1, 5).Overlaps(Interval<int>.Closed(5, 10)); // False - touch only
+Interval<int>.OpenClosed(1, 5).Overlaps(Interval<int>.Closed(5, 10)); // True - both include 5
 ```
 
 Note that intervals that *touch* at a value but do not both contain
-it — for example `[1, 5)` and `[5, 10]` — do not overlap, because no
+it - for example `[1, 5)` and `[5, 10]` - do not overlap, because no
 value belongs to both.
 
-`Intersect(other)` returns the intersection interval — the set of
+`Intersect(other)` returns the intersection interval - the set of
 values shared by both operands. When the intersection is empty, the
 result is `Interval<T>.Empty`:
 
@@ -164,40 +164,40 @@ Interval<int>.Closed(1, 5).Intersect(Interval<int>.Closed(3, 7));  // [3, 5]
 Interval<int>.Closed(1, 3).Intersect(Interval<int>.Closed(5, 7));  // ∅
 ```
 
-When endpoint values tie, the *stricter* (open) inclusivity wins —
+When endpoint values tie, the *stricter* (open) inclusivity wins -
 this guarantees `Intersect` returns a true subset of both operands:
 
 <!-- compile -->
 ```csharp
 var a = Interval<int>.Closed(1, 5);    // [1, 5]
 var b = Interval<int>.Open(1, 5);      // (1, 5)
-var ab = a.Intersect(b);               // (1, 5) — open wins on both ends
+var ab = a.Intersect(b);               // (1, 5) - open wins on both ends
 ```
 
 ## Union and adjacency
 
 `TryUnion(other, out result)` succeeds when the union of the two
-intervals is itself a single contiguous interval — that is, when the
+intervals is itself a single contiguous interval - that is, when the
 operands either overlap or are *adjacent*. Two intervals are adjacent
 when the upper endpoint of one equals the lower endpoint of the other
 and at least one of those endpoints is inclusive:
 
 <!-- compile -->
 ```csharp
-// Adjacent — [1, 5) ∪ [5, 10] -> [1, 10]
+// Adjacent - [1, 5) ∪ [5, 10] -> [1, 10]
 if (Interval<int>.ClosedOpen(1, 5).TryUnion(Interval<int>.Closed(5, 10), out var u))
 {
     Console.WriteLine(u);  // [1, 10]
 }
 
-// Disjoint — [1, 5) ∪ (5, 10] returns false because 5 is in neither
+// Disjoint - [1, 5) ∪ (5, 10] returns false because 5 is in neither
 //            interval and the result would not be contiguous.
 bool ok = Interval<int>.ClosedOpen(1, 5)
     .TryUnion(Interval<int>.OpenClosed(5, 10), out var _);
 Console.WriteLine(ok);  // False
 ```
 
-When endpoint values tie, the *looser* (inclusive) inclusivity wins —
+When endpoint values tie, the *looser* (inclusive) inclusivity wins -
 `TryUnion` returns the union, which is always a superset of either
 operand:
 
@@ -205,7 +205,7 @@ operand:
 ```csharp
 var a = Interval<int>.Closed(1, 5);    // [1, 5]
 var b = Interval<int>.Open(1, 5);      // (1, 5)
-a.TryUnion(b, out var u);              // [1, 5] — inclusive wins on both ends
+a.TryUnion(b, out var u);              // [1, 5] - inclusive wins on both ends
 ```
 
 Union with `Interval<T>.Empty` is always defined and leaves the other
@@ -213,7 +213,7 @@ operand unchanged.
 
 ## Length and degenerate intervals
 
-`Length` is the **algebraic** length of the interval — the difference
+`Length` is the **algebraic** length of the interval - the difference
 between the upper and lower endpoints, regardless of endpoint
 inclusion:
 
@@ -241,9 +241,9 @@ static int IntegerCount(Interval<int> r)
     return upper - lower + 1;
 }
 
-IntegerCount(Interval<int>.Closed(1, 5));     // 5 — {1, 2, 3, 4, 5}
-IntegerCount(Interval<int>.ClosedOpen(1, 5)); // 4 — {1, 2, 3, 4}
-IntegerCount(Interval<int>.Open(1, 5));       // 3 — {2, 3, 4}
+IntegerCount(Interval<int>.Closed(1, 5));     // 5 - {1, 2, 3, 4, 5}
+IntegerCount(Interval<int>.ClosedOpen(1, 5)); // 4 - {1, 2, 3, 4}
+IntegerCount(Interval<int>.Open(1, 5));       // 3 - {2, 3, 4}
 ```
 
 ## Formatting
@@ -277,8 +277,8 @@ for allocation-free formatting into character or UTF-8 byte buffers.
 `Interval<T>` implements `IParsable<Interval<T>>`,
 `ISpanParsable<Interval<T>>`, and `IUtf8SpanParsable<Interval<T>>`, so
 the static `Parse` and `TryParse` methods accept any ISO 31-11
-bracket-notation text — as a `string`, a character span, or UTF-8
-bytes — and the empty-set glyph:
+bracket-notation text - as a `string`, a character span, or UTF-8
+bytes - and the empty-set glyph:
 
 ```csharp
 Interval<int>.Parse("[1, 5)", CultureInfo.InvariantCulture);
@@ -309,7 +309,7 @@ return `false` from `TryParse` and throw `FormatException` from
 
 Unlike `Fraction<T>`, interval parsing forwards the *full*
 `NumberStyles.Any` to each endpoint, so culture-specific group
-separators and decimal points in the endpoints are accepted — pass
+separators and decimal points in the endpoints are accepted - pass
 `CultureInfo.InvariantCulture` explicitly when you need a stable,
 machine-independent round-trip.
 
@@ -330,7 +330,7 @@ var b = Interval<int>.Closed(1, 5);
 var c = Interval<int>.ClosedOpen(1, 5);
 
 Console.WriteLine(a == b);  // True
-Console.WriteLine(a == c);  // False — inclusivity differs
+Console.WriteLine(a == c);  // False - inclusivity differs
 
 Console.WriteLine(a.GetHashCode() == b.GetHashCode());  // True
 ```
@@ -346,9 +346,9 @@ The genuine mismatches that remain:
 
 - **Discrete integer semantics.** `Interval<T>` is a *continuous* range over
   ordered coordinates: `Interval<int>.Open(1, 2)` is non-empty even though no
-  integer lies strictly between 1 and 2. When you need integer-set semantics —
+  integer lies strictly between 1 and 2. When you need integer-set semantics -
   an open interval over consecutive integers is empty, and `[1, 2]` and
-  `[3, 4]` are adjacent and merge — use
+  `[3, 4]` are adjacent and merge - use
   [`DiscreteInterval<T>`](discrete-intervals.md).
 - **A single value holding many disjoint pieces.** A binary `Difference` /
   `SymmetricDifference` returns an `IntervalPair<T>` (at most two pieces), and
@@ -364,9 +364,9 @@ The genuine mismatches that remain:
 
 ## See also
 
-- [Interval algebra](interval-algebra.md) — unbounded endpoints, difference, the `&` / `|` operators, and `IntervalSet<T>`.
-- [Discrete integer intervals](discrete-intervals.md) — the integer-domain `DiscreteInterval<T>`.
+- [Interval algebra](interval-algebra.md) - unbounded endpoints, difference, the `&` / `|` operators, and `IntervalSet<T>`.
+- [Discrete integer intervals](discrete-intervals.md) - the integer-domain `DiscreteInterval<T>`.
 - [`Interval<T>` API reference](xref:Bodu.Numerics.Interval`1)
 - [`Interval` static factory helpers](xref:Bodu.Numerics.Interval)
 - [`Fraction<T>` API reference](xref:Bodu.Numerics.Fraction`1)
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

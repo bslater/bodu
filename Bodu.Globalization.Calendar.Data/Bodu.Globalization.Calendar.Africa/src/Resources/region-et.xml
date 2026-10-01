@@ -31,37 +31,37 @@
 
   <NotableDates>
 
-    <!-- Ethiopian Christmas (Genna) — 7 January (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
+    <!-- Ethiopian Christmas (Genna) - 7 January (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
     <NotableDate id="ethiopian-christmas" displayName="Ethiopian Christmas (Genna)" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="January" day="7" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Epiphany (Timkat) — 19 January (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
+    <!-- Epiphany (Timkat) - 19 January (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
     <NotableDate id="timkat" displayName="Epiphany (Timkat)" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="January" day="19" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Adwa Victory Day — 2 March, marking the 1896 victory over Italy. Strategy: Fixed day-of-month. -->
+    <!-- Adwa Victory Day - 2 March, marking the 1896 victory over Italy. Strategy: Fixed day-of-month. -->
     <NotableDate id="adwa-victory-day" displayName="Adwa Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="March" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Patriots' Victory Day — 5 May, marking the 1941 liberation. Strategy: Fixed day-of-month. -->
+    <!-- Patriots' Victory Day - 5 May, marking the 1941 liberation. Strategy: Fixed day-of-month. -->
     <NotableDate id="patriots-victory-day" displayName="Patriots' Victory Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="May" day="5" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Downfall of the Derg — 28 May, marking the 1991 end of the Derg regime. Strategy: Fixed day-of-month. -->
+    <!-- Downfall of the Derg - 28 May, marking the 1991 end of the Derg regime. Strategy: Fixed day-of-month. -->
     <NotableDate id="derg-downfall-day" displayName="Downfall of the Derg" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability fromYear="1992"><Territory code="ET" /></Applicability><Strategy><Fixed month="May" day="28" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Ethiopian New Year (Enkutatash) — 11 September (Gregorian projection of the Ethiopic new year). Strategy: Fixed day-of-month. -->
+    <!-- Ethiopian New Year (Enkutatash) - 11 September (Gregorian projection of the Ethiopic new year). Strategy: Fixed day-of-month. -->
     <NotableDate id="ethiopian-new-year" displayName="Ethiopian New Year (Enkutatash)" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="September" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Finding of the True Cross (Meskel) — 27 September (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
+    <!-- Finding of the True Cross (Meskel) - 27 September (Gregorian projection of the Ethiopic feast). Strategy: Fixed day-of-month. -->
     <NotableDate id="meskel" displayName="Finding of the True Cross (Meskel)" category="Religious" defaultNonWorkingDay="true">
       <Rules><Rule id="et"><Applicability><Territory code="ET" /></Applicability><Strategy><Fixed month="September" day="27" /></Strategy></Rule></Rules>
     </NotableDate>

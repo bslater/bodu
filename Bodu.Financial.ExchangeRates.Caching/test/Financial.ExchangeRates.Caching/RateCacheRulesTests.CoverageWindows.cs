@@ -50,7 +50,7 @@ public sealed partial class RateCacheRulesTests
 
     /// <summary>
     /// Verifies that the window-typed merge prunes stale windows, drops windows fully superseded by the new range,
-    /// keeps partially overlapping windows, and appends the new window — identically to the public tuple overload.
+    /// keeps partially overlapping windows, and appends the new window - identically to the public tuple overload.
     /// </summary>
     [TestMethod]
     public void MergeCoverage_WhenWindowTyped_ShouldMatchTupleOverload()

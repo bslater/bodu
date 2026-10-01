@@ -11,7 +11,7 @@ using Bodu.Globalization.Calendar.RangeResolution;
 namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 
 /// <summary>
-/// Demonstrates adjustment policies — the declarative weekend/in-lieu machinery — on an authored
+/// Demonstrates adjustment policies - the declarative weekend/in-lieu machinery - on an authored
 /// calendar: a trigger (when does the policy fire), an action (what happens), and an emission mode
 /// (what the query returns). The observed occurrence keeps its lineage to the actual date.
 /// </summary>

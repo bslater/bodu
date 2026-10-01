@@ -53,8 +53,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> when all data has been supplied.
     /// </para>
     /// <para>
-    /// Multiple <see cref="AppendDataAsync" /> calls — and calls interleaved with the synchronous
-    /// <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" /> — accumulate correctly because both
+    /// Multiple <see cref="AppendDataAsync" /> calls - and calls interleaved with the synchronous
+    /// <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" /> - accumulate correctly because both
     /// delegate to <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> on the same instance.
     /// </para>
     /// <para>

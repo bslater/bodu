@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Serves as the base for secret-key known-answer test vectors — those whose computation is parameterized by a key.
+/// Serves as the base for secret-key known-answer test vectors - those whose computation is parameterized by a key.
 /// Message-digest, key-derivation, and symmetric-cipher vectors all extend this root.
 /// </summary>
 /// <remarks>

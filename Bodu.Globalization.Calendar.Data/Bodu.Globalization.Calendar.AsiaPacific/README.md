@@ -1,8 +1,8 @@
 # Bodu.Globalization.Calendar.AsiaPacific
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Holiday and observance data for the Asia-Pacific region, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack — national rules plus ISO 3166-2 subdivisions — that imports the shared faith and civil catalogues (including the lunar, Hindu, Buddhist, and Islamic calendars).
+Holiday and observance data for the Asia-Pacific region, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus ISO 3166-2 subdivisions - that imports the shared faith and civil catalogues (including the lunar, Hindu, Buddhist, and Islamic calendars).
 
 ## Installation
 
@@ -41,7 +41,7 @@ Subdivision rules (state / provincial holidays) resolve automatically when a ter
 dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.AsiaPacific/test/Bodu.Globalization.Calendar.AsiaPacific.Test.csproj --settings bvt.runsettings
 ```
 
-`AsiaPacificCalendarDataTests` pins every floating or computed holiday (lunar-calendar festivals, Hijri / Hindu / Buddhist dates, nth-weekday rules, weekend-substitution shifts) to confirmed published dates — exact where deterministic, with a ±2-day tolerance for moon-sighting / astronomical festivals — plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+`AsiaPacificCalendarDataTests` pins every floating or computed holiday (lunar-calendar festivals, Hijri / Hindu / Buddhist dates, nth-weekday rules, weekend-substitution shifts) to confirmed published dates - exact where deterministic, with a ±2-day tolerance for moon-sighting / astronomical festivals - plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
 
 ## License
 

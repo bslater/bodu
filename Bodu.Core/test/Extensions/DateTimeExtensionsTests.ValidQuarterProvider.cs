@@ -11,7 +11,7 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Test-only <see cref="IQuarterDefinitionProvider" /> implementing a shifted 3-month quarter grid
-    /// (Q1 = Dec–Feb, Q2 = Mar–May, Q3 = Jun–Aug, Q4 = Sep–Nov). Exposes public <c>DynamicData</c> sources
+    /// (Q1 = Dec-Feb, Q2 = Mar-May, Q3 = Jun-Aug, Q4 = Sep-Nov). Exposes public <c>DynamicData</c> sources
     /// used by provider-overload tests in both <see cref="DateTimeExtensionsTests" /> and
     /// <see cref="DateOnlyExtensionsTests" />.
     /// </summary>

@@ -7,7 +7,7 @@
 namespace Bodu.IO.Biff;
 
 /// <summary>
-/// Represents a decoded <c>RSTRING</c> record: a BIFF5 rich-text label cell — a 16-bit-length code-page byte string
+/// Represents a decoded <c>RSTRING</c> record: a BIFF5 rich-text label cell - a 16-bit-length code-page byte string
 /// followed by a run table of two-byte entries (character index, font index).
 /// </summary>
 /// <remarks>

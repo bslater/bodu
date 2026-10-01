@@ -28,7 +28,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// The two public overloads differ by options-type constraint. Use the short overload when <c>TOptions</c> derives from
-/// <see cref="WebRateProviderOptions" /> — it reads <see cref="WebRateProviderOptions.UserAgent" />,
+/// <see cref="WebRateProviderOptions" /> - it reads <see cref="WebRateProviderOptions.UserAgent" />,
 /// <see cref="WebRateProviderOptions.HttpTimeout" />, and <see cref="WebRateProviderOptions.TryValidate" />
 /// automatically. Use the full overload when the options type does not inherit from
 /// <see cref="WebRateProviderOptions" /> and the caller must supply explicit selectors.

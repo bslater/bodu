@@ -13,7 +13,7 @@ namespace Bodu.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Freshness is a strict less-than comparison — a value exactly one duration old is stale — so every backend that
+/// Freshness is a strict less-than comparison - a value exactly one duration old is stale - so every backend that
 /// evaluates freshness through this helper agrees to the boundary. The clock-skew tolerance lets a value stamped
 /// marginally ahead of the evaluating clock survive validation, which matters when a writer and a reader observe
 /// slightly different clocks.
@@ -74,8 +74,8 @@ internal static class CacheFreshness
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The reduction is derived from an FNV-1a hash of the key characters — deliberately not
-    /// <see cref="string.GetHashCode()" />, which is randomized per process — so the same key always yields the same
+    /// The reduction is derived from an FNV-1a hash of the key characters - deliberately not
+    /// <see cref="string.GetHashCode()" />, which is randomized per process - so the same key always yields the same
     /// effective duration across instances, processes, and test runs, and two processes sharing a durable store agree
     /// on when an entry expires.
     /// </para>

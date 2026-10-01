@@ -4,7 +4,7 @@ title: Bodu.Extensions.Configuration.Text guides
 
 # Bodu.Extensions.Configuration.Text guides
 
-Recipe-style walk-throughs for **Bodu.Extensions.Configuration.Text** — the bridge between
+Recipe-style walk-throughs for **Bodu.Extensions.Configuration.Text** - the bridge between
 [`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`, built on
 <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource>,
 <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource>, and the
@@ -32,34 +32,34 @@ sections to typed POCO classes through the standard `Microsoft.Extensions.Depend
 
 <div class="bodu-card">
   <h3><a href="configuration-sources.md">Configuration sources</a></h3>
-  <p>Every <code>AddTextConfiguration*</code> overload — file, stream, pre-parsed document, convention-based discovery, fluent source configuration — plus the read-only <code>AddTomlFile</code> / <code>AddTomlStream</code> and <code>AddBencodeFile</code> / <code>AddBencodeStream</code> bridges, reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
+  <p>Every <code>AddTextConfiguration*</code> overload - file, stream, pre-parsed document, convention-based discovery, fluent source configuration - plus the read-only <code>AddTomlFile</code> / <code>AddTomlStream</code> and <code>AddBencodeFile</code> / <code>AddBencodeStream</code> bridges, reload-on-change, <code>IOptions&lt;T&gt;</code> binding, and layering alongside JSON and environment-variable sources.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../../docs/extensions-configuration-text/index.md">Introduction</a></h3>
-  <p>Package overview — what the bridge adds on top of <code>Bodu.Text.Configuration</code>, headline types, and the scenarios it was built for.</p>
+  <p>Package overview - what the bridge adds on top of <code>Bodu.Text.Configuration</code>, headline types, and the scenarios it was built for.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../../docs/extensions-configuration-text/concepts.md">Core concepts</a></h3>
-  <p>The shared vocabulary — source, provider, target path, option propagation, reload token, options binding.</p>
+  <p>The shared vocabulary - source, provider, target path, option propagation, reload token, options binding.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../../docs/extensions-configuration-text/getting-started.md">Getting started</a></h3>
-  <p>Install the package and run the minimal samples — a file source, a typed options class, and a Generic Host wiring.</p>
+  <p>Install the package and run the minimal samples - a file source, a typed options class, and a Generic Host wiring.</p>
 </div>
 
 </div>
 
 ## Reading path
 
-1. **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** — install and confirm the minimal file-source sample runs.
-2. **[Configuration sources](configuration-sources.md)** — pick the right `AddTextConfiguration*` overload for your scenario and wire up options binding and reload.
-3. **[Views and resolution](../text-configuration/views-and-resolution.md)** — when you need to understand *which* value the bridge surfaced, drop down to the underlying resolve layer.
+1. **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** - install and confirm the minimal file-source sample runs.
+2. **[Configuration sources](configuration-sources.md)** - pick the right `AddTextConfiguration*` overload for your scenario and wire up options binding and reload.
+3. **[Views and resolution](../text-configuration/views-and-resolution.md)** - when you need to understand *which* value the bridge surfaced, drop down to the underlying resolve layer.
 
 The bridge propagates `ParseOptions` and `ResolveOptions` verbatim to the underlying library, so everything in the
-[Bodu.Text.Configuration guides](../text-configuration/index.md) — profiles, glob anchoring, key mapping, diagnostics —
+[Bodu.Text.Configuration guides](../text-configuration/index.md) - profiles, glob anchoring, key mapping, diagnostics -
 applies unchanged to values consumed through `IConfiguration`.
 
 ## Namespace map
@@ -70,11 +70,11 @@ applies unchanged to values consumed through `IConfiguration`.
 
 ## Where to go next
 
-- **[Runnable samples](../../samples/text-configuration.md)** — the offline BridgeHosting sample under `samples/Text.Configuration/`: `AddTextConfigurationFile` with `targetPath`, `AddTomlFile`, and `IOptions<T>` binding.
-- **[Introduction](../../docs/extensions-configuration-text/index.md)** — namespaces, headline types, scenarios.
-- **[Core concepts](../../docs/extensions-configuration-text/concepts.md)** — full vocabulary.
-- **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** — install + runnable minimal samples.
-- **[Configuration topic guides](../topics/configuration.md)** — the topic map for both configuration packages.
-- **[Configuration topic overview](../../docs/topics/configuration.md)** — the pipeline and package boundaries across both packages.
-- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
-- **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.
+- **[Runnable samples](../../samples/text-configuration.md)** - the offline BridgeHosting sample under `samples/Text.Configuration/`: `AddTextConfigurationFile` with `targetPath`, `AddTomlFile`, and `IOptions<T>` binding.
+- **[Introduction](../../docs/extensions-configuration-text/index.md)** - namespaces, headline types, scenarios.
+- **[Core concepts](../../docs/extensions-configuration-text/concepts.md)** - full vocabulary.
+- **[Getting started](../../docs/extensions-configuration-text/getting-started.md)** - install + runnable minimal samples.
+- **[Configuration topic guides](../topics/configuration.md)** - the topic map for both configuration packages.
+- **[Configuration topic overview](../../docs/topics/configuration.md)** - the pipeline and package boundaries across both packages.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** - full type-by-type docs.
+- **[Bodu.Text.Configuration](../text-configuration/index.md)** - the underlying parser, resolver, and view.

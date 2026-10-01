@@ -141,7 +141,7 @@ public partial class Utf8BencodeReaderTests
 
     /// <summary>
     /// Verifies that dictionary keys in correct raw-byte order are accepted in cases where common text orderings
-    /// disagree — upper-case before lower-case ASCII, and U+FFFD before an astral-plane key.
+    /// disagree - upper-case before lower-case ASCII, and U+FFFD before an astral-plane key.
     /// </summary>
     [TestMethod]
     public void Read_WhenKeysOrderedByRawBytesAgainstTextOrder_ShouldSucceed()
@@ -162,7 +162,7 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
-    /// Verifies that dictionary keys are ordered by <em>unsigned</em> byte value across the whole 0x00–0xFF range:
+    /// Verifies that dictionary keys are ordered by <em>unsigned</em> byte value across the whole 0x00-0xFF range:
     /// keys beginning with 0x00, 0x7F, 0x80, and 0xFF in that ascending order are accepted. The 0x7F→0x80 step is the
     /// point at which a signed-byte comparison would invert the order, so this pins the required unsigned compare.
     /// </summary>
@@ -191,8 +191,8 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
-    /// Verifies that a dictionary whose keys ascend only under a <em>signed</em> byte interpretation — key 0xFF
-    /// (−1 as a signed byte, 255 unsigned) placed before key 0x00 — is rejected as unordered, since BEP 3 requires
+    /// Verifies that a dictionary whose keys ascend only under a <em>signed</em> byte interpretation - key 0xFF
+    /// (−1 as a signed byte, 255 unsigned) placed before key 0x00 - is rejected as unordered, since BEP 3 requires
     /// raw-byte order and raw bytes compare unsigned. This is the classic signed-<c>char</c> key-ordering interop bug.
     /// </summary>
     [TestMethod]
@@ -303,8 +303,8 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
-    /// Verifies that canonical edge-case documents — empty containers and a deeply nested chain within the depth
-    /// limit — are accepted without throwing.
+    /// Verifies that canonical edge-case documents - empty containers and a deeply nested chain within the depth
+    /// limit - are accepted without throwing.
     /// </summary>
     /// <param name="testName">The human-readable scenario label.</param>
     /// <param name="input">The valid Bencode, expressed as Latin-1 text.</param>

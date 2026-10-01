@@ -25,13 +25,13 @@ using CompoundFile streaming = CompoundFile.Open(source, buffered: false);
 | | Buffered (default) | Streaming (`buffered: false`) |
 |---|---|---|
 | Source after open | Can be closed immediately. | Must stay open and unmodified for the file's lifetime. |
-| Memory | Whole file resident. | Bounded — one sector at a time for large streams. |
+| Memory | Whole file resident. | Bounded - one sector at a time for large streams. |
 | Source requirement | Any readable stream. | Must be seekable (`ArgumentException` otherwise). |
-| Concurrency | Read-only and safe to share across threads. | Reads are serialized against the shared source position — concurrent, but not parallel. |
+| Concurrency | Read-only and safe to share across threads. | Reads are serialized against the shared source position - concurrent, but not parallel. |
 
-The default suits the common case — a few-kilobyte `.xls` or `.msg` — where reading it all up front is simplest and lets you drop the file handle right away. Reach for streaming when the file is large enough that holding it whole is undesirable and you can keep the source open.
+The default suits the common case - a few-kilobyte `.xls` or `.msg` - where reading it all up front is simplest and lets you drop the file handle right away. Reach for streaming when the file is large enough that holding it whole is undesirable and you can keep the source open.
 
-## Letting the reader decide — the Auto strategy
+## Letting the reader decide - the Auto strategy
 
 The `buffered` flag is the two-value shorthand; the full control is <xref:Bodu.IO.Compound.CompoundReadStrategy> on <xref:Bodu.IO.Compound.CompoundFileOptions>, which adds a third option that picks per source size:
 
@@ -51,11 +51,11 @@ using CompoundFile file = CompoundFile.Open(source, options, leaveOpen: true);
 <xref:Bodu.IO.Compound.CompoundReadStrategy.Auto> compares a seekable source's length against <xref:Bodu.IO.Compound.CompoundFileOptions.MaxBufferedBytes> (64 MiB by default): small files are buffered, large ones streamed. A non-seekable source can only be buffered, so `Auto` and `Buffered` both read it whole, while `Streaming` over a non-seekable source throws <xref:System.ArgumentException>.
 
 > [!NOTE]
-> Even under a streaming file, a stream whose size is below the **mini-stream cutoff** (typically 4096 bytes) is materialised whole rather than walked sector by sector — its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the *large* streams; the small ones are already resident.
+> Even under a streaming file, a stream whose size is below the **mini-stream cutoff** (typically 4096 bytes) is materialised whole rather than walked sector by sector - its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the *large* streams; the small ones are already resident.
 
 ## The CompoundStream cursor
 
-`CompoundStorage.OpenStream` returns a `CompoundStream`, a standard read-only, seekable <xref:System.IO.Stream> — `CanRead` and `CanSeek` are `true`, `CanWrite` is `false`. Because it is a `Stream`, it composes with the BCL surfaces that consume one:
+`CompoundStorage.OpenStream` returns a `CompoundStream`, a standard read-only, seekable <xref:System.IO.Stream> - `CanRead` and `CanSeek` are `true`, `CanWrite` is `false`. Because it is a `Stream`, it composes with the BCL surfaces that consume one:
 
 ```csharp
 using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
@@ -70,25 +70,25 @@ Span<byte> header = stackalloc byte[8];
 stream.ReadExactly(header);
 ```
 
-Under a buffered file the cursor's payload was materialized into a `byte[]` at open time, and `Read` / `Seek` work over that array. Under a streaming file the same cursor instead walks the stream's sector chain in the source: each `Read` locates the sector for the current `Position`, copies only the bytes within that sector, and advances — so the full payload is never resident. The two behave identically from the caller's side; only the memory profile differs.
+Under a buffered file the cursor's payload was materialized into a `byte[]` at open time, and `Read` / `Seek` work over that array. Under a streaming file the same cursor instead walks the stream's sector chain in the source: each `Read` locates the sector for the current `Position`, copies only the bytes within that sector, and advances - so the full payload is never resident. The two behave identically from the caller's side; only the memory profile differs.
 
-`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor — the one returned by `OpenStream(name)`. On a *writable* file, `OpenStream(name, FileMode, FileAccess)` (and `CreateStream`) instead return a read-write cursor whose `CanWrite` is `true`; see [Authoring compound files](authoring-compound-files.md). Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
+`Write` and `SetLength` throw <xref:System.NotSupportedException> on this read-only cursor - the one returned by `OpenStream(name)`. On a *writable* file, `OpenStream(name, FileMode, FileAccess)` (and `CreateStream`) instead return a read-write cursor whose `CanWrite` is `true`; see [Authoring compound files](authoring-compound-files.md). Seeking past the end is allowed (the `Stream` contract); the next `Read` returns zero. The cursor's <xref:Bodu.IO.Compound.CompoundStream.Stat> property exposes the entry's <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot, and `Length` reports the declared payload size.
 
-> A single cursor is not safe for concurrent use — its `Position` advances as you read. Open one cursor per reader.
+> A single cursor is not safe for concurrent use - its `Position` advances as you read. Open one cursor per reader.
 
 ## AsMemory vs chunked Read
 
 ```csharp
 using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
 
-// Whole-payload view — convenient for small streams.
+// Whole-payload view - convenient for small streams.
 ReadOnlyMemory<byte> all = stream.AsMemory();
 ushort magic = BinaryPrimitives.ReadUInt16LittleEndian(all.Span);
 ```
 
-`AsMemory` returns a read-only view over the entire payload. For a buffered stream this is a view over the already-materialized bytes with no copy; for a streaming stream it reads the whole chain into memory on request. It does not depend on or advance `Position`. `ReadAllBytes` is the copying sibling — it returns a fresh `byte[]` of the whole payload, mirroring `File.ReadAllBytes`.
+`AsMemory` returns a read-only view over the entire payload. For a buffered stream this is a view over the already-materialized bytes with no copy; for a streaming stream it reads the whole chain into memory on request. It does not depend on or advance `Position`. `ReadAllBytes` is the copying sibling - it returns a fresh `byte[]` of the whole payload, mirroring `File.ReadAllBytes`.
 
-Prefer chunked `Read` over `AsMemory` for large streaming payloads — `AsMemory` defeats the point of streaming by pulling the whole thing into memory:
+Prefer chunked `Read` over `AsMemory` for large streaming payloads - `AsMemory` defeats the point of streaming by pulling the whole thing into memory:
 
 ```csharp
 using CompoundStream stream = file.RootStorage.OpenStream("LargeBlob");
@@ -108,9 +108,9 @@ finally
 
 ## Large payloads on the write side
 
-A *writable* cursor (from `CreateStream` or a write-access `OpenStream` on a writable file) buffers its whole payload in memory until it flushes into the staging tree, and it caps that buffer at `int.MaxValue` bytes — growing past the cap throws <xref:System.NotSupportedException> rather than exhausting memory by surprise.
+A *writable* cursor (from `CreateStream` or a write-access `OpenStream` on a writable file) buffers its whole payload in memory until it flushes into the staging tree, and it caps that buffer at `int.MaxValue` bytes - growing past the cap throws <xref:System.NotSupportedException> rather than exhausting memory by surprise.
 
-For payloads that should not (or cannot) be buffered, author through a deferred stream source instead: `CompoundStorageBuilder.AddStream(name, openRead, length)` or `AddStreamFromFile`. Deferred sources declare their length up front, are opened only during serialization, and are copied to the destination through a fixed-size pooled buffer — so the container can carry payloads far larger than memory. See [Authoring compound files](authoring-compound-files.md) for the deferred patterns.
+For payloads that should not (or cannot) be buffered, author through a deferred stream source instead: `CompoundStorageBuilder.AddStream(name, openRead, length)` or `AddStreamFromFile`. Deferred sources declare their length up front, are opened only during serialization, and are copied to the destination through a fixed-size pooled buffer - so the container can carry payloads far larger than memory. See [Authoring compound files](authoring-compound-files.md) for the deferred patterns.
 
 Independent of the cursor cap, MS-CFB itself limits any single stream in a version-3 (512-byte-sector) file to 2 GB; larger streams require a version-4 file (`CompoundBuildOptions.Version = CompoundFileVersion.V4`).
 
@@ -118,8 +118,8 @@ Independent of the cursor cap, MS-CFB itself limits any single stream in a versi
 
 Two paths do real asynchronous I/O, matched to where the work is actually a device operation rather than a memory copy:
 
-- **`CompoundFile.CommitAsync` / `FlushAsync`** write the container to the destination — and copy any deferred stream sources — with `WriteAsync` / `ReadAsync`. They share the exact layout computation the synchronous `Commit` uses, so the bytes are identical; cancellation is observed before any write and again between chunks. A cancellation or failure mid-write leaves the destination partially written and the file dirty (the same surface a synchronous fault presents) — commit again, or `Revert`.
-- **`CompoundStream.ReadAsync`** is truly asynchronous only for a *streaming*-mode cursor, which reads its sectors on demand from the underlying source. A buffered cursor (the default) and a writable cursor read from memory, so their `ReadAsync` completes synchronously — awaiting them is correct but adds no I/O concurrency.
+- **`CompoundFile.CommitAsync` / `FlushAsync`** write the container to the destination - and copy any deferred stream sources - with `WriteAsync` / `ReadAsync`. They share the exact layout computation the synchronous `Commit` uses, so the bytes are identical; cancellation is observed before any write and again between chunks. A cancellation or failure mid-write leaves the destination partially written and the file dirty (the same surface a synchronous fault presents) - commit again, or `Revert`.
+- **`CompoundStream.ReadAsync`** is truly asynchronous only for a *streaming*-mode cursor, which reads its sectors on demand from the underlying source. A buffered cursor (the default) and a writable cursor read from memory, so their `ReadAsync` completes synchronously - awaiting them is correct but adds no I/O concurrency.
 
 There is no `OpenAsync`: opening a buffered file is a single contiguous read the caller can do themselves (open a `MemoryStream` and pass it), and opening a streaming file does no bulk I/O up front.
 
@@ -132,6 +132,6 @@ There is no `OpenAsync`: opening a buffered file is a single contiguous read the
 
 ## Where to go next
 
-- [Reading compound files](reading-compound-files.md) — opening, navigating, and the `Open` vs `ReadAllBytes` choice.
-- [Reading property sets](property-sets.md) — the metadata streams.
+- [Reading compound files](reading-compound-files.md) - opening, navigating, and the `Open` vs `ReadAllBytes` choice.
+- [Reading property sets](property-sets.md) - the metadata streams.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound).

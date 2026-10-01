@@ -798,7 +798,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Character &apos;{0}&apos; (U+{1:X4}) is not a hex digit (&apos;0&apos;–&apos;9&apos;, &apos;A&apos;–&apos;F&apos;, or &apos;a&apos;–&apos;f&apos;)..
+        ///   Looks up a localized string similar to Character &apos;{0}&apos; (U+{1:X4}) is not a hex digit (&apos;0&apos;-&apos;9&apos;, &apos;A&apos;-&apos;F&apos;, or &apos;a&apos;-&apos;f&apos;)..
         /// </summary>
         internal static string Arg_OutOfRange_NotAsciiHexDigit {
             get {

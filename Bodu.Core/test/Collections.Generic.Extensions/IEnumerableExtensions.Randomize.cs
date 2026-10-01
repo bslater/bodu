@@ -67,11 +67,11 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     // =========================================================================
-    // Explicit overload — Randomize<T>(IEnumerable<T>, RandomizationMode, IRandomGenerator, int?)
+    // Explicit overload - Randomize<T>(IEnumerable<T>, RandomizationMode, IRandomGenerator, int?)
     // =========================================================================
 
     /// <summary>
-    /// Verifies that <c>Randomize</c> in <see cref="RandomizationMode.StreamWindowed" /> mode defers execution — the
+    /// Verifies that <c>Randomize</c> in <see cref="RandomizationMode.StreamWindowed" /> mode defers execution - the
     /// source is not enumerated until the returned sequence is consumed.
     /// </summary>
     [TestMethod]

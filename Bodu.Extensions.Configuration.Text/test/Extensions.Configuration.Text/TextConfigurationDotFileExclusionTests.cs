@@ -48,7 +48,7 @@ discovered = yes
 
     /// <summary>
     /// Verifies that the same fixture loads correctly when the <see cref="PhysicalFileProvider" /> is
-    /// constructed with <see cref="ExclusionFilters.None" /> — this is the documented workaround in the
+    /// constructed with <see cref="ExclusionFilters.None" /> - this is the documented workaround in the
     /// extension's XML remarks.
     /// </summary>
     [TestMethod]
@@ -67,7 +67,7 @@ discovered = yes
 
     /// <summary>
     /// Verifies that even with default exclusion filters, the plain <c>bodu.config</c> fallback is still
-    /// resolved — only the dot-prefixed name is affected by the default filter.
+    /// resolved - only the dot-prefixed name is affected by the default filter.
     /// </summary>
     [TestMethod]
     public void AddConfiguration_WhenPlainFileExistsAndDefaultExclusionFilters_ShouldResolvePlainFile()

@@ -4,7 +4,7 @@ title: Properties and named properties
 
 # Properties and named properties
 
-Everything a message carries is a MAPI property: a 32-bit tag — a 16-bit identifier plus a 16-bit wire type — paired with a value. The conveniences on <xref:Bodu.Formats.Outlook.OutlookMessage> are curated views; the full surface is the tag-addressed <xref:Bodu.Formats.Outlook.MapiPropertyCollection> on `Properties`, and the same collection shape hangs off every recipient and attachment.
+Everything a message carries is a MAPI property: a 32-bit tag - a 16-bit identifier plus a 16-bit wire type - paired with a value. The conveniences on <xref:Bodu.Formats.Outlook.OutlookMessage> are curated views; the full surface is the tag-addressed <xref:Bodu.Formats.Outlook.MapiPropertyCollection> on `Properties`, and the same collection shape hangs off every recipient and attachment.
 
 ## The raw property surface
 
@@ -15,7 +15,7 @@ using Bodu.Formats.Outlook;
 using var message = OutlookMessage.OpenRead("invoice.msg");
 
 // Typed accessors probe the plausible wire types for an identifier and
-// return null when absent — they never throw for a missing property.
+// return null when absent - they never throw for a missing property.
 string? subject = message.Properties.GetString(MapiPropertyIds.Subject);
 int? codePage = message.Properties.GetInt32(MapiPropertyIds.MessageCodepage);
 DateTimeOffset? sent = message.Properties.GetDateTime(MapiPropertyIds.ClientSubmitTime);
@@ -34,13 +34,13 @@ foreach (MapiProperty item in message.Properties)
 
 ## Tags and wire types
 
-<xref:Bodu.Formats.Outlook.MapiPropertyTag> decomposes the 32-bit tag: `Id`, the base `Type` (with the multi-valued flag stripped), `IsMultiValued`, and `IsNamed` for identifiers at or above `0x8000`. `ToString` renders the canonical hexadecimal form, for example `0x0037001F` — the subject as a Unicode string.
+<xref:Bodu.Formats.Outlook.MapiPropertyTag> decomposes the 32-bit tag: `Id`, the base `Type` (with the multi-valued flag stripped), `IsMultiValued`, and `IsNamed` for identifiers at or above `0x8000`. `ToString` renders the canonical hexadecimal form, for example `0x0037001F` - the subject as a Unicode string.
 
 Multi-valued properties decode to arrays (`string[]`, `int[]`, `byte[][]`, …) and are addressed through the multi-valued accessors such as `GetStringArray`.
 
 ## Named properties
 
-Identifiers at or above `0x8000` are file-specific: their meaning comes from the message's named-property mapping, which pairs each identifier with a durable <xref:Bodu.Formats.Outlook.MapiNamedProperty> — a property-set GUID plus a numeric identifier or a string name. Resolve in either direction:
+Identifiers at or above `0x8000` are file-specific: their meaning comes from the message's named-property mapping, which pairs each identifier with a durable <xref:Bodu.Formats.Outlook.MapiNamedProperty> - a property-set GUID plus a numeric identifier or a string name. Resolve in either direction:
 
 <!-- compile -->
 ```csharp
@@ -48,7 +48,7 @@ using Bodu.Formats.Outlook;
 
 using var message = OutlookMessage.OpenRead("invoice.msg");
 
-// PS_PUBLIC_STRINGS "Keywords" — the category list.
+// PS_PUBLIC_STRINGS "Keywords" - the category list.
 var keywords = new MapiNamedProperty(
     new Guid("00020329-0000-0000-C000-000000000046"), "Keywords");
 

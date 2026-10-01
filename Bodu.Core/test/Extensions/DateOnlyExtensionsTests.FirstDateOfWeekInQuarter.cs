@@ -218,8 +218,8 @@ public partial class DateOnlyExtensionsTests
 
     /// <summary>
     /// Provides <see cref="DateOnly" /> rows for the provider-based overload, mirroring the
-    /// <see cref="DateTimeExtensionsTests.ValidQuarterProvider" /> quarter grid (Q1 = Dec–Feb, Q2 = Mar–May,
-    /// Q3 = Jun–Aug, Q4 = Sep–Nov).
+    /// <see cref="DateTimeExtensionsTests.ValidQuarterProvider" /> quarter grid (Q1 = Dec-Feb, Q2 = Mar-May,
+    /// Q3 = Jun-Aug, Q4 = Sep-Nov).
     /// </summary>
     public static IEnumerable<object[]> FirstDateOfWeekInQuarterProviderTestData()
     {

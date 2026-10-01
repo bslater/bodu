@@ -9,7 +9,7 @@ namespace Bodu.IO.Pst;
 public partial class PstNodeTests
 {
     /// <summary>
-    /// Verifies that the first subnode of a type is found in one pass over the subnode directory — the reference
+    /// Verifies that the first subnode of a type is found in one pass over the subnode directory - the reference
     /// message carries its recipient and attachment tables there.
     /// </summary>
     [TestMethod]

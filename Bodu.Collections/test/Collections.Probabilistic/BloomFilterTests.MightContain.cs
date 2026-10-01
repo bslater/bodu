@@ -55,7 +55,7 @@ public partial class BloomFilterTests
     /// Verifies that the observed false-positive rate of a filter loaded to its design capacity stays within 3× the
     /// design rate: 10,000 sequential ints are inserted into a filter sized for n = 10,000 at p = 0.01 and 10,000
     /// disjoint absent ints are probed. The 3× headroom (0.03) absorbs the statistical variance of a single
-    /// deterministic sample — the expected count is ~100 false positives with a standard deviation of ~10, so 300 is
+    /// deterministic sample - the expected count is ~100 false positives with a standard deviation of ~10, so 300 is
     /// far outside plausible noise while still catching a broken hash or sizing regression. The sweep is
     /// deterministic because <see cref="int" /> hash codes are stable across processes.
     /// </summary>

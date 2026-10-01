@@ -16,7 +16,7 @@ A `TerritoryCode` carries two pieces of information:
 |---|---|
 | `Country` | The ISO 3166-1 alpha-2 country code (`AU`, `GB`, `US`). Always upper-case in canonical form; the empty string for the default value. |
 | `Subdivision` | The optional ISO 3166-2 subdivision suffix (`NSW`, `SCT`, `CA`). `null` when the territory refers to the whole country. |
-| `IsSubdivision` | `true` when `Subdivision` is non-null — the code names a subdivision rather than a whole country. |
+| `IsSubdivision` | `true` when `Subdivision` is non-null - the code names a subdivision rather than a whole country. |
 | `IsEmpty` | `true` for the default `TerritoryCode` (the `default(TerritoryCode)` value, with an empty `Country`). |
 | `Parent` | The containing country-level `TerritoryCode` for a subdivision (e.g. `AU-NSW` → `AU`); the value itself for a country-level code; the default value when this code is empty. |
 
@@ -30,7 +30,7 @@ string code = auNsw;                 // implicit → "AU-NSW"
 TerritoryCode au = auNsw.Parent;     // → AU
 bool isSub = auNsw.IsSubdivision;    // → true
 
-TerritoryCode gb = (TerritoryCode)"GB-SCT";   // explicit cast — throws on a malformed code
+TerritoryCode gb = (TerritoryCode)"GB-SCT";   // explicit cast - throws on a malformed code
 ```
 
 `TerritoryCode` is a value type with full `==` / `!=` equality, so two codes parsed from `"AU-NSW"` and `"  au-nsw "` compare equal.
@@ -42,24 +42,24 @@ TerritoryCode gb = (TerritoryCode)"GB-SCT";   // explicit cast — throws on a m
 ```csharp
 using Bodu.Globalization.Calendar;
 
-// Throwing parse — use when the input is trusted authored data.
+// Throwing parse - use when the input is trusted authored data.
 TerritoryCode au    = TerritoryCode.Parse("AU");
 TerritoryCode auNsw = TerritoryCode.Parse("AU-NSW");
 
-// Try-parse — use for user input or external data.
+// Try-parse - use for user input or external data.
 if (TerritoryCode.TryParse(userInput, out TerritoryCode territory))
 {
     // territory is canonical here.
 }
 
-// Comma-separated list — convenient for multi-territory query parameters.
+// Comma-separated list - convenient for multi-territory query parameters.
 IReadOnlyList<TerritoryCode> territories =
     TerritoryCode.ParseList("AU-NSW, AU-VIC, NZ");
 ```
 
 The library normalizes whitespace and casing during parsing, so `"  au-nsw  "` and `"AU-NSW"` parse to the same value.
 
-Because the service and extensions accept plain strings, you rarely need to parse explicitly — pass `"AU-NSW"` directly. Parse when you want to inspect a code's `Country`, `Subdivision`, or `Parent`, or to validate untrusted input before querying.
+Because the service and extensions accept plain strings, you rarely need to parse explicitly - pass `"AU-NSW"` directly. Parse when you want to inspect a code's `Country`, `Subdivision`, or `Parent`, or to validate untrusted input before querying.
 
 ## Containment
 
@@ -85,8 +85,8 @@ This is the same containment relation that `NotableDateService` applies during r
 TerritoryCode au    = TerritoryCode.Parse("AU");
 TerritoryCode auNsw = TerritoryCode.Parse("AU-NSW");
 
-bool a = au.Contains(auNsw);    // true  — AU ⊇ AU-NSW
-bool b = auNsw.Contains(au);    // false — a subdivision does not contain its country
+bool a = au.Contains(auNsw);    // true  - AU ⊇ AU-NSW
+bool b = auNsw.Contains(au);    // false - a subdivision does not contain its country
 ```
 
 ## Authoring territory scope in a document
@@ -94,7 +94,7 @@ bool b = auNsw.Contains(au);    // false — a subdivision does not contain its 
 A rule narrows its applicability by listing `<Territory code="…">` elements inside its `<Applicability>`. A rule with no `<Territory>` is globally applicable. Use the country code to cover a whole country, or a subdivision code to cover one region:
 
 ```xml
-<!-- National holiday — applies to every Australian subdivision. -->
+<!-- National holiday - applies to every Australian subdivision. -->
 <NotableDate id="australia-day" displayName="Australia Day" category="PublicHoliday" defaultNonWorkingDay="true">
   <Rules>
     <Rule id="default">
@@ -106,7 +106,7 @@ A rule narrows its applicability by listing `<Territory code="…">` elements in
   </Rules>
 </NotableDate>
 
-<!-- Regional public holiday — applies only to Victoria. -->
+<!-- Regional public holiday - applies only to Victoria. -->
 <NotableDate id="melbourne-cup-day" displayName="Melbourne Cup Day" category="PublicHoliday" defaultNonWorkingDay="true">
   <Rules>
     <Rule id="default">
@@ -176,7 +176,7 @@ The containment relation is the right way to model "national rule + a few region
 - Author the national rule **once** at the country level (`<Territory code="AU" />`).
 - For each subdivision that genuinely differs, author a separate concept or rule scoped to that subdivision (`<Territory code="AU-NT" />`), or suppress the national rule for that subdivision with a `<RemoveRule>` override and add the variant.
 
-Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct — scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The [holiday patterns guide](holiday-patterns.md) shows worked examples for both shapes.
+Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct - scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The [holiday patterns guide](holiday-patterns.md) shows worked examples for both shapes.
 
 ## Data-pack conventions
 
@@ -184,15 +184,15 @@ The official `Bodu.Globalization.Calendar.<Region>` companion packages follow th
 
 - National rules are authored at the country level (`AU`, `US`, `GB`).
 - State / province / region variants use the canonical ISO 3166-2 subdivision suffix (`AU-NSW`, `US-CA`, `GB-SCT`).
-- Cross-country composition (e.g. *EU bank holidays*) is **not** modelled via territory code — each country ships its own rule set under its own ISO code. Cross-cutting groupings belong in tags.
+- Cross-country composition (e.g. *EU bank holidays*) is **not** modelled via territory code - each country ships its own rule set under its own ISO code. Cross-cutting groupings belong in tags.
 
 See [Calendar data packs](data-packs.md) for the per-pack helpers.
 
 ## Where to go next
 
-- **[Core concepts](../../docs/calendar/concepts.md)** — the vocabulary at a glance.
-- **[Using NotableDateService](notable-dates.md)** — how containment shapes query results.
-- **[Authoring notable date rules](rule-authoring.md)** — full authoring workflow with worked examples.
-- **[Calendar data packs](data-packs.md)** — region-specific bundled rule sets.
-- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — generated API surface.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Core concepts](../../docs/calendar/concepts.md)** - the vocabulary at a glance.
+- **[Using NotableDateService](notable-dates.md)** - how containment shapes query results.
+- **[Authoring notable date rules](rule-authoring.md)** - full authoring workflow with worked examples.
+- **[Calendar data packs](data-packs.md)** - region-specific bundled rule sets.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** - generated API surface.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

@@ -25,7 +25,7 @@ key = value
 """;
 
     /// <summary>
-    /// Verifies that a missing file with <c>optional: false</c> throws when the configuration is built —
+    /// Verifies that a missing file with <c>optional: false</c> throws when the configuration is built -
     /// matching the JSON/INI provider conventions in <c>Microsoft.Extensions.Configuration</c>.
     /// </summary>
     [TestMethod]
@@ -77,7 +77,7 @@ key = value
     }
 
     /// <summary>
-    /// Verifies that a malformed *optional* file still throws by default — optional means "may be absent",
+    /// Verifies that a malformed *optional* file still throws by default - optional means "may be absent",
     /// not "may be corrupt". This matches the JSON provider behaviour and protects against silent data loss.
     /// </summary>
     [TestMethod]
@@ -109,7 +109,7 @@ key = value
     }
 
     /// <summary>
-    /// Verifies that an empty stream produces an empty configuration view without throwing — empty input is
+    /// Verifies that an empty stream produces an empty configuration view without throwing - empty input is
     /// a legal document.
     /// </summary>
     [TestMethod]

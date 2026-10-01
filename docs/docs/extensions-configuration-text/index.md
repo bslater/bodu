@@ -1,5 +1,5 @@
 ---
-title: Bodu.Extensions.Configuration.Text — Introduction
+title: Bodu.Extensions.Configuration.Text - Introduction
 ---
 
 # Bodu.Extensions.Configuration.Text
@@ -9,7 +9,7 @@ title: Bodu.Extensions.Configuration.Text — Introduction
 **Bodu.Extensions.Configuration.Text** is the bridge between
 [`Bodu.Text.Configuration`](../text-configuration/index.md) and `Microsoft.Extensions.Configuration`, and one half of
 the **[Configuration](../topics/configuration.md)** topic. It exposes a
-single conventional entry point — `IConfigurationBuilder.AddTextConfigurationFile(...)` — that adds a Bodu Text
+single conventional entry point - `IConfigurationBuilder.AddTextConfigurationFile(...)` - that adds a Bodu Text
 Configuration file (or stream, or pre-parsed document) as a configuration source alongside JSON, INI, XML, and
 environment variables.
 
@@ -27,7 +27,7 @@ configuration.GetSection("service")      // a child section that binds to your P
 
 ## Core mental model
 
-![Configuration flow — builder to provider to IConfiguration to IOptions](../../images/diagrams/extensions-configuration-text-flow.svg)
+![Configuration flow - builder to provider to IConfiguration to IOptions](../../images/diagrams/extensions-configuration-text-flow.svg)
 
 The provider is a thin host around `Bodu.Text.Configuration`. The builder creates a
 <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> (or its stream-only sibling
@@ -66,7 +66,7 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 
 ### Sources and providers
 
-*The plumbing — typically not constructed directly. Use the builder extensions instead.*
+*The plumbing - typically not constructed directly. Use the builder extensions instead.*
 
 | Type | Purpose |
 |---|---|
@@ -75,14 +75,14 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | `StreamConfigurationSource` subclass. One-shot: no reload-on-change. |
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | The matching stream provider. |
 | *Internal loader (not public)* | Parses + resolves a stream into a flat key/value dictionary; reused by both `Text*` providers. |
-| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> | Implements `IConfigurationSource` directly (not a `FileConfigurationSource`). Carries `Path`, `Optional`, `Stream`. Read-once — no `ReloadOnChange`. |
+| <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource> | Implements `IConfigurationSource` directly (not a `FileConfigurationSource`). Carries `Path`, `Optional`, `Stream`. Read-once - no `ReloadOnChange`. |
 | <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationProvider> | The matching TOML provider. Flattens the TOML table hierarchy into colon-delimited keys. |
-| <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource> | The Bencode counterpart — implements `IConfigurationSource` directly with the same `Path`, `Optional`, `Stream` shape. Read-once. |
+| <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource> | The Bencode counterpart - implements `IConfigurationSource` directly with the same `Path`, `Optional`, `Stream` shape. Read-once. |
 | <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationProvider> | The matching Bencode provider. Requires a dictionary-rooted document and flattens nested dictionaries into colon-delimited keys. |
 
 ### Options binding
 
-*Thin shims over `services.Configure<TOptions>(...)` — there for discoverability.*
+*Thin shims over `services.Configure<TOptions>(...)` - there for discoverability.*
 
 | Type | Purpose |
 |---|---|
@@ -93,9 +93,9 @@ Everything lives in the `Bodu.Extensions.Configuration.Text` namespace.
 | Scenario | Reach for |
 |---|---|
 | Add a `.boduconfig` file to the builder | `builder.AddTextConfigurationFile(".boduconfig")` |
-| Conventional probe — try `.boduconfig` then `bodu.config` | `builder.AddTextConfiguration()` (no-arg) |
+| Conventional probe - try `.boduconfig` then `bodu.config` | `builder.AddTextConfiguration()` (no-arg) |
 | Anchor glob resolution to a specific source path | `builder.AddTextConfigurationFile("appsettings.bodu", targetPath: "src/Foo.cs")` |
-| Optional file — do not throw if missing | `builder.AddTextConfigurationFile("appsettings.bodu", optional: true)` |
+| Optional file - do not throw if missing | `builder.AddTextConfigurationFile("appsettings.bodu", optional: true)` |
 | Reload-on-change | `builder.AddTextConfigurationFile("appsettings.bodu", reloadOnChange: true)` |
 | Use a specific `IFileProvider` | `builder.AddTextConfigurationFile(physicalFileProvider, "appsettings.bodu")` |
 | Read from a stream (test fixtures, embedded resources) | `builder.AddTextConfigurationStream(stream)` |
@@ -126,11 +126,11 @@ contract.
 provider attaches a file watcher through the configured `IFileProvider`; any change to the underlying file triggers
 a reparse + reload, and any reload tokens issued through `IConfiguration` fire.
 
-`TextStreamConfigurationSource` does **not** support reload-on-change — it parses the stream once when `Build` is
+`TextStreamConfigurationSource` does **not** support reload-on-change - it parses the stream once when `Build` is
 called, and the stream lifetime ends with that parse. For dynamic stream-backed inputs, rebuild the configuration.
 
 The TOML and Bencode bridges (`AddTomlFile` / `AddTomlStream`, `AddBencodeFile` / `AddBencodeStream`) are read-once
-and read-only by design — they attach no file watcher even for the file overloads, so there is no `reloadOnChange`
+and read-only by design - they attach no file watcher even for the file overloads, so there is no `reloadOnChange`
 parameter on any of the four methods.
 
 ## How keys are projected
@@ -139,21 +139,21 @@ The provider hands its parsed document to the resolver and copies the resulting
 <xref:Bodu.Text.Configuration.ConfigurationView> into the inherited `Data` dictionary. Under the default
 <xref:Bodu.Text.Configuration.ConfigurationKeyOptions.Default> key options, the
 <xref:Bodu.Text.Configuration.ConfigurationKeyMapping.DotToColon> mapping rewrites dotted file keys to the colon
-delimiter `IConfiguration` expects — `logging.level.default` becomes `logging:level:default`. Keys are stored under
+delimiter `IConfiguration` expects - `logging.level.default` becomes `logging:level:default`. Keys are stored under
 `StringComparer.OrdinalIgnoreCase`, matching the JSON and INI providers, so `configuration["Logging:Level"]` and
 `configuration["logging:level"]` resolve to the same value.
 
 The projection is intentionally lossy relative to the richer document model. Comments, source locations
 (line/column/path), and duplicate-section provenance are preserved on the parsed
 <xref:Bodu.Text.Configuration.ConfigurationDocument> but discarded during the flatten. A literal colon inside a key
-segment cannot survive — once flattened, the colon is the hierarchy delimiter. Consumers who need any of that metadata
+segment cannot survive - once flattened, the colon is the hierarchy delimiter. Consumers who need any of that metadata
 should depend on <xref:Bodu.Text.Configuration.ConfigurationDocument> directly rather than going through the bridge.
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary: source vs provider, target path, parse / resolve option propagation, reload-on-change, options binding.
-- **[Getting started](getting-started.md)** — install + minimal samples for the file overload, the stream overload, conventional probe, options binding.
-- **[Bodu.Extensions.Configuration.Text guides](../../guides/extensions-configuration-text/index.md)** — worked patterns, including [configuration sources](../../guides/extensions-configuration-text/configuration-sources.md).
-- **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view model.
-- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
-- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Text.Configuration side by side.
+- **[Core concepts](concepts.md)** - vocabulary: source vs provider, target path, parse / resolve option propagation, reload-on-change, options binding.
+- **[Getting started](getting-started.md)** - install + minimal samples for the file overload, the stream overload, conventional probe, options binding.
+- **[Bodu.Extensions.Configuration.Text guides](../../guides/extensions-configuration-text/index.md)** - worked patterns, including [configuration sources](../../guides/extensions-configuration-text/configuration-sources.md).
+- **[Bodu.Text.Configuration](../text-configuration/index.md)** - the underlying parser, resolver, and view model.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** - full type-by-type docs.
+- **[Configuration topic](../topics/configuration.md)** - this package and its sibling Bodu.Text.Configuration side by side.

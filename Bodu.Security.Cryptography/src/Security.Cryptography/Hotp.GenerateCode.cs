@@ -21,7 +21,7 @@ public static partial class Hotp
     /// <see cref="OtpHashAlgorithm" /> value.
     /// </exception>
     /// <remarks>
-    /// The result is returned as a string rather than an integer because a code's leading zeros are significant — for
+    /// The result is returned as a string rather than an integer because a code's leading zeros are significant - for
     /// example a computed value of 84204 is the six-digit code <c>"084204"</c>.
     /// </remarks>
     public static string GenerateCode(ReadOnlySpan<byte> secret, long counter, int digits = 6, OtpHashAlgorithm algorithm = OtpHashAlgorithm.Sha1)

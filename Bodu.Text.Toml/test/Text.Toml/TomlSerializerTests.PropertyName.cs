@@ -33,7 +33,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that, under the default (general) options, a table key whose casing differs from the member's CLR name
-    /// is treated as unmapped and not bound, because the general default is case-sensitive — matching both
+    /// is treated as unmapped and not bound, because the general default is case-sensitive - matching both
     /// <see cref="System.Text.Json.JsonSerializer" /> and TOML's case-sensitive keys.
     /// </summary>
     [TestMethod]

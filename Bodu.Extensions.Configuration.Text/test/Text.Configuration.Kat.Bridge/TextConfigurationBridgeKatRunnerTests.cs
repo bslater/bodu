@@ -54,7 +54,7 @@ public partial class TextConfigurationBridgeKatRunnerTests
 
         if (kat.Source is null)
         {
-            // Optional missing file scenario — no file is created, but the builder is configured to expect one.
+            // Optional missing file scenario - no file is created, but the builder is configured to expect one.
             _ = new ConfigurationBuilder()
                 .AddTextConfigurationFile(source =>
                 {

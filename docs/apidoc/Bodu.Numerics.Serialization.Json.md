@@ -10,25 +10,25 @@ uid: Bodu.Numerics.Serialization.Json
 
 **Bodu.Numerics.Serialization.Json** carries the `System.Text.Json` integration for <xref:Bodu.Numerics>. It supplies the converters that round-trip <xref:Bodu.Numerics.Fraction`1>, <xref:Bodu.Numerics.Interval`1>, <xref:Bodu.Numerics.DiscreteInterval`1>, <xref:Bodu.Numerics.IntervalSet`1>, <xref:Bodu.Numerics.BigDecimal>, and <xref:Bodu.Numerics.Complex`1> to and from JSON, together with a one-call extension that registers them under a chosen policy.
 
-The core `Bodu.Numerics` library is serialization-agnostic — its value types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json`. Add this package and call `AddNumericsJsonConverters` to opt into JSON support and select a wire policy across a whole `JsonSerializerOptions` instance.
+The core `Bodu.Numerics` library is serialization-agnostic - its value types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json`. Add this package and call `AddNumericsJsonConverters` to opt into JSON support and select a wire policy across a whole `JsonSerializerOptions` instance.
 
 ## Static documentation
 
-- **[Introduction](~/docs/numerics-serialization-json/index.md)** — the converters and factories, the policy model, what is deliberately not covered, and the scenario index.
-- **[Core concepts](~/docs/numerics-serialization-json/concepts.md)** — factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.
-- **[Getting started](~/docs/numerics-serialization-json/getting-started.md)** — install + minimal samples for each policy and each type, including a source-generated context.
-- **[Numerics JSON serialization guide](~/guides/numerics/json-serialization.md)** — wire formats, the three policies, and registering the converters.
+- **[Introduction](~/docs/numerics-serialization-json/index.md)** - the converters and factories, the policy model, what is deliberately not covered, and the scenario index.
+- **[Core concepts](~/docs/numerics-serialization-json/concepts.md)** - factories vs closed converters, each type's wire shape, raw-number precision, trimming and AOT, failure modes.
+- **[Getting started](~/docs/numerics-serialization-json/getting-started.md)** - install + minimal samples for each policy and each type, including a source-generated context.
+- **[Numerics JSON serialization guide](~/guides/numerics/json-serialization.md)** - wire formats, the three policies, and registering the converters.
 
 ## Key types
 
-- <xref:Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions> — `AddNumericsJsonConverters(JsonSerializerOptions, NumericsJsonPolicy)` registers the converter factories for every numeric value type on an options instance and returns it for chaining.
-- <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> — the wire-format selector: `Strict` (default), `Lenient`, and `Compact`.
-- <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory> — converters for `Fraction<T>`; the factory binds the open-generic converter to the concrete `T` at run time.
-- <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory> — the equivalent converters for `Interval<T>`, including the unbounded-endpoint markers.
-- <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1> (and their factories) — converters for `DiscreteInterval<T>` (through the interval wire shape) and `IntervalSet<T>` (a JSON array of pieces).
-- <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> — the converter for `BigDecimal`: `Strict` object shape `{ "unscaledValue": …, "scale": … }` or the compact decimal string. Non-generic, so it registers directly rather than through a factory.
-- <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory> — converters for `Complex<T>`: `Strict` object shape `{ "real": …, "imaginary": … }` (non-finite components as the strings `"NaN"` / `"Infinity"` / `"-Infinity"`) or the compact `"<real; imaginary>"` string.
-- <xref:Bodu.Numerics.Serialization.Json.FractionJsonExtensions> — the `ToJson()` / `FromJson<T>(string)` convenience helpers.
+- <xref:Bodu.Numerics.Serialization.Json.NumericsJsonSerializerOptionsExtensions> - `AddNumericsJsonConverters(JsonSerializerOptions, NumericsJsonPolicy)` registers the converter factories for every numeric value type on an options instance and returns it for chaining.
+- <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> - the wire-format selector: `Strict` (default), `Lenient`, and `Compact`.
+- <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory> - converters for `Fraction<T>`; the factory binds the open-generic converter to the concrete `T` at run time.
+- <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory> - the equivalent converters for `Interval<T>`, including the unbounded-endpoint markers.
+- <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1> (and their factories) - converters for `DiscreteInterval<T>` (through the interval wire shape) and `IntervalSet<T>` (a JSON array of pieces).
+- <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> - the converter for `BigDecimal`: `Strict` object shape `{ "unscaledValue": …, "scale": … }` or the compact decimal string. Non-generic, so it registers directly rather than through a factory.
+- <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1>, <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory> - converters for `Complex<T>`: `Strict` object shape `{ "real": …, "imaginary": … }` (non-finite components as the strings `"NaN"` / `"Infinity"` / `"-Infinity"`) or the compact `"<real; imaginary>"` string.
+- <xref:Bodu.Numerics.Serialization.Json.FractionJsonExtensions> - the `ToJson()` / `FromJson<T>(string)` convenience helpers.
 
 ## Example
 

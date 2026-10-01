@@ -1,10 +1,10 @@
 # Bodu.Globalization.Recurrence.Samples.AnchoredIntervals
 
-`AnchoredInterval` — the calendar-free recurrence form: a fixed spacing with no calendar semantics
+`AnchoredInterval` - the calendar-free recurrence form: a fixed spacing with no calendar semantics
 at all. Three scenarios cover construction and canonical duration text, the anchor-per-query design
 that lets one instance serve many series, and the boundary of the RFC 5545 §3.3.6 duration grammar.
 
-Everything runs offline with fixed inputs, formatted with the invariant culture — deterministic
+Everything runs offline with fixed inputs, formatted with the invariant culture - deterministic
 output every run.
 
 ```bash
@@ -13,9 +13,9 @@ dotnet run --project samples/Globalization.Recurrence/Bodu.Globalization.Recurre
 
 NuGet consumers: `dotnet add package Bodu.Globalization.Recurrence`
 
-## Scenario 1 — IntervalBasics
+## Scenario 1 - IntervalBasics
 
-**Intent.** Show what the type stores — only the interval — and the canonical duration text it
+**Intent.** Show what the type stores - only the interval - and the canonical duration text it
 renders back to, which is not always the spelling it was given.
 
 **What it does.** Builds the same interval from a `TimeSpan` and from `PT6H` text and compares them;
@@ -67,7 +67,7 @@ equal                                       : True
 **APIs demonstrated.** `AnchoredInterval` constructor, `.Parse`, `.TryParse`, `.Interval`,
 `.ToString()`, `.Equals`, `.GetHashCode()`.
 
-## Scenario 2 — AnchoredQueries
+## Scenario 2 - AnchoredQueries
 
 **Intent.** Show the design decision the type is named for: the anchor that positions the grid is
 supplied **per query**, not captured by the instance. That is what lets one configured interval
@@ -78,8 +78,8 @@ against three different anchors; runs next and previous at an exact grid point w
 flag both ways; queries an instant five years from its anchor; enumerates a window; and shows the
 `DateTimeOffset` overload preserving the anchor's offset.
 
-**What to expect.** The anchor itself is **not** an occurrence — the series starts one interval later
-— which is what makes an anchor a natural "last run" marker. Looking back before the first occurrence
+**What to expect.** The anchor itself is **not** an occurrence - the series starts one interval later -
+which is what makes an anchor a natural "last run" marker. Looking back before the first occurrence
 therefore has no answer. A query five years from its anchor lands on the grid exactly, because the
 position is computed arithmetically rather than by stepping:
 
@@ -125,7 +125,7 @@ anchor   : 2026-04-01 00:00 +10:00
 `GetOccurrences(DateTime, DateTime, DateTime)`, `GetNextOccurrence(DateTime, DateTime, bool)`,
 `GetPreviousOccurrence(DateTime, DateTime, bool)`, and the `DateTimeOffset` overloads.
 
-## Scenario 3 — DurationGrammar
+## Scenario 3 - DurationGrammar
 
 **Intent.** Map the boundary of the duration grammar precisely, and show that every rejection names
 the offending token rather than reporting a generic failure.
@@ -135,7 +135,7 @@ sign and lowercase input; runs fourteen rejected forms and prints each defect me
 throwing the same message `TryParse` reports; and closes with a configuration-validation loop.
 
 **What to expect.** The rejections are the interesting half. `P1DT` is rejected because a time
-designator must be followed by at least one component — a case several libraries accept. A negative
+designator must be followed by at least one component - a case several libraries accept. A negative
 duration is rejected on *meaning* rather than syntax: it parses as a valid duration but is not a
 valid interval:
 
@@ -198,6 +198,6 @@ Bodu.Globalization.Recurrence.Samples.AnchoredIntervals/
 
 ## Related
 
-- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` — why an interval is immune to the
+- `Bodu.Globalization.Recurrence.Samples.SchedulingHost` - why an interval is immune to the
   daylight-saving question a cron expression raises.
-- `Bodu.Globalization.Recurrence.Samples.CronExpressions` — the wall-clock form of the same surface.
+- `Bodu.Globalization.Recurrence.Samples.CronExpressions` - the wall-clock form of the same surface.

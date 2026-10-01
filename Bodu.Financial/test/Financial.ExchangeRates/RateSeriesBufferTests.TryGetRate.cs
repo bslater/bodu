@@ -24,7 +24,7 @@ public partial class RateSeriesBufferTests
 
     /// <summary>
     /// Verifies that <see cref="RateSeriesBuffer.TryGetRate" /> returns <see langword="false" /> and a
-    /// default rate for a missing day number — the buffer's lookup is intentionally exact-only.
+    /// default rate for a missing day number - the buffer's lookup is intentionally exact-only.
     /// </summary>
     [TestMethod]
     public void TryGetRate_WhenDayMissing_ShouldReturnFalseAndDefault()

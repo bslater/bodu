@@ -52,8 +52,8 @@ public partial class ThrowHelperTests
     public void ThrowIfIndexOutOfRange_Array_WhenIndexIsWithinBounds_ShouldNotThrow(int index) => ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> does not throw —
-    /// and on the ParamName-asserting overload reports nothing — when the index is within array bounds.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> does not throw -
+    /// and on the ParamName-asserting overload reports nothing - when the index is within array bounds.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="index">The index passed to the guard.</param>
@@ -70,7 +70,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws
     /// <see cref="ArgumentNullException" /> (with <c>ParamName == "array"</c>) when the array is
     /// <see langword="null" />, or <see cref="ArgumentOutOfRangeException" /> (with <c>ParamName == "index"</c>)
-    /// when the index is out of bounds — never just the first parameter.
+    /// when the index is out of bounds - never just the first parameter.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="index">The index passed to the guard.</param>

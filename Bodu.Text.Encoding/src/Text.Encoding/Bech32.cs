@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding — a checksummed base-32 format consisting of a
+/// Provides Bech32 (BIP-173) and Bech32m (BIP-350) encoding and decoding - a checksummed base-32 format consisting of a
 /// human-readable part (HRP), the <c>1</c> separator, a data part of 5-bit groups, and a six-symbol error-detecting
 /// checksum.
 /// </summary>
@@ -18,8 +18,8 @@ namespace Bodu.Text.Encoding;
 /// <para>
 /// Bech32 is not a plain binary-to-text encoding: every encoded string carries an HRP prefix and a checksum, so the
 /// type is modelled on <see cref="Base58Check" /> rather than the <see cref="IBinaryEncoding" /> family. The core
-/// surface operates on 5-bit data groups (each value <c>0</c>–<c>31</c>); use <see cref="ConvertBits" /> — or the
-/// <c>FromBytes</c> / <c>ToBytes</c> convenience members — to translate between 8-bit bytes and 5-bit groups.
+/// surface operates on 5-bit data groups (each value <c>0</c>-<c>31</c>); use <see cref="ConvertBits" /> - or the
+/// <c>FromBytes</c> / <c>ToBytes</c> convenience members - to translate between 8-bit bytes and 5-bit groups.
 /// </para>
 /// <para>
 /// Encoded output is always lower case (the canonical form). Decoding accepts an all-lower-case or all-upper-case
@@ -73,7 +73,7 @@ public static partial class Bech32
 
     /// <summary>
     /// Converts a sequence of integers between bit widths, as defined by the BIP-173 reference <c>convertbits</c>
-    /// routine — the operation that packs 8-bit bytes into 5-bit Bech32 groups and back.
+    /// routine - the operation that packs 8-bit bytes into 5-bit Bech32 groups and back.
     /// </summary>
     /// <param name="data">The input values, each fitting within <paramref name="fromBits" /> bits.</param>
     /// <param name="fromBits">The bit width of each input value.</param>

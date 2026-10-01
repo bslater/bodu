@@ -45,7 +45,7 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that a document too incomplete to serialize — a concept with no rules — lints as a
+    /// Verifies that a document too incomplete to serialize - a concept with no rules - lints as a
     /// <c>BODU-CAL-BUILDER-INCOMPLETE</c> error rather than throwing the serialization exception.
     /// </summary>
     [TestMethod]
@@ -97,7 +97,7 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that a clean <c>Validate</c> result guarantees <c>Build</c> succeeds for the same document — the lint
+    /// Verifies that a clean <c>Validate</c> result guarantees <c>Build</c> succeeds for the same document - the lint
     /// and the build share one validation pipeline.
     /// </summary>
     [TestMethod]

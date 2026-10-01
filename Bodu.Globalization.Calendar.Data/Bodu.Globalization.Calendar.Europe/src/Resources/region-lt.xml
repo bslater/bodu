@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Lithuania (LT) — notable-date resource pack.
+  Lithuania (LT) - notable-date resource pack.
 
   Authored on the notable-date schema. All rules are scoped to territory "LT"; Lithuania has
   no subdivision-specific public holidays.
@@ -62,19 +62,19 @@
       ============================================================================================================
     -->
 
-    <!-- Labour Day (International Workers' Day) — 1 May. Fixed date. -->
+    <!-- Labour Day (International Workers' Day) - 1 May. Fixed date. -->
     <NotableDate id="labour-day" displayName="Labour Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="May" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- All Souls' Day (Day of the Dead) — 2 November, the day after All Saints' Day. Fixed date. -->
+    <!-- All Souls' Day (Day of the Dead) - 2 November, the day after All Saints' Day. Fixed date. -->
     <NotableDate id="all-souls-day" displayName="All Souls' Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="November" day="2" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Second Day of Christmas — 26 December. Fixed date; the day after Christmas Day. -->
+    <!-- Second Day of Christmas - 26 December. Fixed date; the day after Christmas Day. -->
     <NotableDate id="second-day-of-christmas" displayName="Second Day of Christmas" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="December" day="26" /></Strategy></Rule></Rules>
@@ -86,25 +86,25 @@
       ============================================================================================================
     -->
 
-    <!-- Day of Restoration of the State — 16 February, marking the 1918 Act of Independence. fromYear 1918 excludes earlier years. -->
+    <!-- Day of Restoration of the State - 16 February, marking the 1918 Act of Independence. fromYear 1918 excludes earlier years. -->
     <NotableDate id="day-of-restoration-of-the-state" displayName="Day of Restoration of the State" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability fromYear="1918"><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="February" day="16" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of Restoration of Independence — 11 March, marking the 1990 re-declaration of independence from the Soviet Union. fromYear 1990 excludes earlier years. -->
+    <!-- Day of Restoration of Independence - 11 March, marking the 1990 re-declaration of independence from the Soviet Union. fromYear 1990 excludes earlier years. -->
     <NotableDate id="day-of-restoration-of-independence" displayName="Day of Restoration of Independence" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability fromYear="1990"><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="March" day="11" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Saint John's Day (Midsummer / Joninės) — 24 June, the traditional midsummer celebration. Fixed date. -->
+    <!-- Saint John's Day (Midsummer / Joninės) - 24 June, the traditional midsummer celebration. Fixed date. -->
     <NotableDate id="saint-johns-day" displayName="Saint John's Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="June" day="24" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Statehood Day (Coronation of King Mindaugas) — 6 July, marking the 1253 coronation of Lithuania's only king. fromYear 1253 excludes earlier years. -->
+    <!-- Statehood Day (Coronation of King Mindaugas) - 6 July, marking the 1253 coronation of Lithuania's only king. fromYear 1253 excludes earlier years. -->
     <NotableDate id="statehood-day" displayName="Statehood Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="lt"><Applicability fromYear="1253"><Territory code="LT" /></Applicability>
         <Strategy><Fixed month="July" day="6" /></Strategy></Rule></Rules>

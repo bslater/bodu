@@ -8,7 +8,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// The exception thrown when an upstream exchange-rate feed returns data that cannot be interpreted as exchange-rate
-/// information — because it is malformed or omits the expected values.
+/// information - because it is malformed or omits the expected values.
 /// </summary>
 /// <remarks>
 /// This is the shared format-failure type for the exchange-rate provider packages. Each provider raises it for the

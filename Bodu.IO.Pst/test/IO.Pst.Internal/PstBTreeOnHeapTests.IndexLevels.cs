@@ -32,7 +32,7 @@ public partial class PstBTreeOnHeapTests
 
     /// <summary>
     /// Verifies that an index item naming itself as its own child is rejected during enumeration rather than being
-    /// re-entered once per declared level — a two-entry self-reference would otherwise yield 2^levels records.
+    /// re-entered once per declared level - a two-entry self-reference would otherwise yield 2^levels records.
     /// </summary>
     [TestMethod]
     public void EnumerateRecords_WhenIndexItemReferencesItself_ShouldThrowPstFileFormatException()

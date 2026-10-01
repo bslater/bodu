@@ -90,8 +90,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue> :
     /// <exception cref="ArgumentNullException"><c>item.Key</c> is <see langword="null" />.</exception>
     /// <remarks>
     /// The value comparison and removal happen atomically under the owning segment's lock, so a concurrent update of
-    /// the value cannot cause a mismatched entry to be removed. An explicit removal is not an eviction — it does not
-    /// raise <see cref="ItemEvicted" /> — though a lazily removed expired entry encountered along the way is surfaced
+    /// the value cannot cause a mismatched entry to be removed. An explicit removal is not an eviction - it does not
+    /// raise <see cref="ItemEvicted" /> - though a lazily removed expired entry encountered along the way is surfaced
     /// as one.
     /// </remarks>
     public bool Remove(KeyValuePair<TKey, TValue> item)

@@ -134,7 +134,7 @@ public partial class EvictingDictionaryTests
 
         dictionary.Add("C", 3); // cycles A and B; A is evicted
 
-        // B was cycled to the tail — its node reference must have been updated.
+        // B was cycled to the tail - its node reference must have been updated.
         bool result = dictionary.Remove("B");
 
         Assert.IsTrue(result);

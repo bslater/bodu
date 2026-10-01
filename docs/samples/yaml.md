@@ -6,11 +6,11 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for `Bodu.Text.Yaml` under
 [`samples/Text.Yaml/`](https://github.com/bslater/bodu/tree/master/samples/Text.Yaml). Both
-samples are **offline and deterministic** — they run against small committed `Data/*.yaml`
-files — and are members of `bodu.slnx`, built and executed by CI, so the code they show cannot
+samples are **offline and deterministic** - they run against small committed `Data/*.yaml`
+files - and are members of `bodu.slnx`, built and executed by CI, so the code they show cannot
 drift from the current API. Each sample's README documents every scenario individually: its
 intent, what the code does, the output to expect, and the APIs demonstrated. These are the YAML
-counterparts of the [Toml](toml.md) and [Bencode](bencode.md) samples — the same
+counterparts of the [Toml](toml.md) and [Bencode](bencode.md) samples - the same
 `System.Text.Json`-aligned stack.
 
 Run either sample from the repository root:
@@ -28,8 +28,8 @@ into a typed graph and round-trips; YAML's implicit scalar typing coerces string
 null with the `YamlNumberHandling` knob; sequences and mappings bind to `List<T>`/arrays and
 `Dictionary<,>`; wire names layer a naming policy under the shared attribute family
 (`[PropertyName]`, `[Ignore]`, `[Required]`) with `WriteEnumsAsStrings` controlling enum output;
-and the wire knobs — `YamlSpecVersion` (defaulting to the Norway-problem-safe v1.2) and the
-duplicate-key and merge-key behaviours — are each shown. *Package:
+and the wire knobs - `YamlSpecVersion` (defaulting to the Norway-problem-safe v1.2) and the
+duplicate-key and merge-key behaviours - are each shown. *Package:
 `Bodu.Text.Yaml`.*
 
 ### Bodu.Text.Yaml.Samples.YamlDocuments
@@ -43,5 +43,5 @@ DOM (one parse, cheap `YamlElement` cursors, `EnumerateMapping`/`EnumerateSequen
 
 ## Related
 
-- [Toml samples](toml.md) and [Bencode samples](bencode.md) — the sibling
+- [Toml samples](toml.md) and [Bencode samples](bencode.md) - the sibling
   `System.Text.Json`-aligned serializers.

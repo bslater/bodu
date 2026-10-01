@@ -29,30 +29,30 @@
       ============================================================================================================
     -->
 
-    <!-- Naw-Ruz — Baha'i New Year at the vernal equinox. Strategy: Algorithm "vernal-equinox". -->
+    <!-- Naw-Ruz - Baha'i New Year at the vernal equinox. Strategy: Algorithm "vernal-equinox". -->
     <NotableDate id="naw-ruz" displayName="Naw-Ruz" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default"><Strategy><Algorithm key="vernal-equinox" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Ridvan — twelve-day festival beginning 31 days after Naw-Ruz; a 12-day span. -->
+    <!-- Ridvan - twelve-day festival beginning 31 days after Naw-Ruz; a 12-day span. -->
     <NotableDate id="ridvan" displayName="Ridvan" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default" durationDays="12">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- First Day of Ridvan — 31 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- First Day of Ridvan - 31 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="first-day-of-ridvan" displayName="First Day of Ridvan" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="31" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Ninth Day of Ridvan — 39 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Ninth Day of Ridvan - 39 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="ninth-day-of-ridvan" displayName="Ninth Day of Ridvan" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="39" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Twelfth Day of Ridvan — 42 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Twelfth Day of Ridvan - 42 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="twelfth-day-of-ridvan" displayName="Twelfth Day of Ridvan" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="42" /></Strategy></Rule></Rules>
@@ -66,31 +66,31 @@
       Baha'i calendar approximation above.
     -->
 
-    <!-- Declaration of the Bab — 64 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Declaration of the Bab - 64 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="declaration-of-the-bab" displayName="Declaration of the Bab" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="64" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Ascension of Baha'u'llah — 69 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Ascension of Baha'u'llah - 69 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="ascension-of-bahaullah" displayName="Ascension of Baha'u'llah" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="69" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Martyrdom of the Bab — 111 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Martyrdom of the Bab - 111 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="martyrdom-of-the-bab" displayName="Martyrdom of the Bab" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="111" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Day of the Covenant — 250 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Day of the Covenant - 250 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="day-of-the-covenant" displayName="Day of the Covenant" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="250" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Ascension of Abdu'l-Baha — 252 days after Naw-Ruz. Strategy: OffsetFromRule. -->
+    <!-- Ascension of Abdu'l-Baha - 252 days after Naw-Ruz. Strategy: OffsetFromRule. -->
     <NotableDate id="ascension-of-abdul-baha" displayName="Ascension of Abdu'l-Baha" category="Religious" defaultNonWorkingDay="false">
       <Rules><Rule id="default">
         <Strategy><OffsetFromRule notableDateRef="naw-ruz" ruleRef="default" offsetDays="252" /></Strategy></Rule></Rules>

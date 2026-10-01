@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base58Check encoding and decoding — a Base58 superset used by Bitcoin addresses, WIF private keys, and
+/// Provides Base58Check encoding and decoding - a Base58 superset used by Bitcoin addresses, WIF private keys, and
 /// related protocols. The encoder appends a four-byte checksum derived from the leading bytes of
 /// <c>SHA-256(SHA-256(payload))</c> so that mistyped or truncated input can be detected at decode time.
 /// </summary>
@@ -35,7 +35,7 @@ namespace Bodu.Text.Encoding;
 /// string address = Base58Check.Encode(payload);               // "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2" (example)
 ///
 /// // Decoder verifies the trailing checksum and strips it; throws on mismatch.
-/// byte[] decoded = Base58Check.Decode(address);               // 21 bytes — original version + hash160
+/// byte[] decoded = Base58Check.Decode(address);               // 21 bytes - original version + hash160
 ///]]>
 /// </code>
 /// </example>
@@ -76,7 +76,7 @@ public static class Base58Check
     }
 
     /// <summary>
-    /// Encodes <paramref name="payload" /> using Base58Check — appends a four-byte SHA-256 squared checksum and Base58
+    /// Encodes <paramref name="payload" /> using Base58Check - appends a four-byte SHA-256 squared checksum and Base58
     /// encodes the concatenation.
     /// </summary>
     /// <param name="payload">The bytes to encode.</param>
@@ -133,7 +133,7 @@ public static class Base58Check
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="source" /> is a valid Base58Check input under the supplied variant — that is,
+    /// Indicates whether <paramref name="source" /> is a valid Base58Check input under the supplied variant - that is,
     /// every character is in the variant alphabet and the trailing four-byte checksum matches the decoded payload.
     /// </summary>
     /// <param name="source">The Base58Check encoded input.</param>

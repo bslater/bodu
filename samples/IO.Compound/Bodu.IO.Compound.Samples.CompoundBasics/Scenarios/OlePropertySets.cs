@@ -10,7 +10,7 @@ using Bodu.IO.Compound.PropertySets;
 namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
 
 /// <summary>
-/// Demonstrates OLE property sets — the document metadata (title, author, timestamps) legacy
+/// Demonstrates OLE property sets - the document metadata (title, author, timestamps) legacy
 /// Office files carry in the well-known <c>SummaryInformation</c> stream: author one with
 /// <see cref="SummaryInformationBuilder" />, read it back through
 /// <see cref="CompoundFile.TryGetSummaryInformation" />, and inspect the metadata of a real

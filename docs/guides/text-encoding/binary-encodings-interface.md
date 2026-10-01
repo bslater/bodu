@@ -8,8 +8,8 @@ The per-encoding static classes (`Base16`, `Base32`, `Base64`, `Base58`, `Base85
 when the encoding is known at compile time. They are fast, support variant-specific options (line breaks, padding
 control, MIME wrapping), and produce the cleanest call sites.
 
-For code that must select the encoding **at runtime** — configuration-driven serializers, plugin pipelines,
-generic utilities — the library exposes a unified contract:
+For code that must select the encoding **at runtime** - configuration-driven serializers, plugin pipelines,
+generic utilities - the library exposes a unified contract:
 
 ```csharp
 public interface IBinaryEncoding
@@ -70,20 +70,20 @@ names include canonical forms and common aliases:
 |---|---|
 | `base16-lower` | `base16`, `hex` |
 | `base16-upper` | `hex-upper` |
-| `base32` | — |
-| `base32hex` | — |
-| `base32-crockford` | — |
+| `base32` | - |
+| `base32hex` | - |
+| `base32-crockford` | - |
 | `z-base-32` | `zbase32` |
-| `base64` | — |
+| `base64` | - |
 | `base64-urlsafe` | `base64url` |
-| `base64-mime` | — |
-| `base45` | — |
+| `base64-mime` | - |
+| `base45` | - |
 | `base58` | `base58-bitcoin`, `base58-flickr` |
-| `base58-ripple` | — |
-| `base62` | — |
+| `base58-ripple` | - |
+| `base62` | - |
 | `ascii85` | `base85` |
 | `base85-git` | `git-base85`, `b85` |
-| `z85` | — |
+| `z85` | - |
 
 ```csharp
 string encodingName = configuration["TokenEncoding"];   // e.g. "base64-urlsafe"
@@ -175,17 +175,17 @@ public static bool TryRoundTrip(IBinaryEncoding encoding, ReadOnlySpan<byte> dat
 
 The interface is a convenience for the runtime-selection use case. Skip it when:
 
-- The encoding is known at compile time — use the static class directly for the cleanest call site.
+- The encoding is known at compile time - use the static class directly for the cleanest call site.
 - You need variant-specific options like `BaseFormattingOptions.InsertLineBreaks`,
-  `BaseFormattingOptions.OmitPadding`, or `BaseFormatStyles.AllowPrefix` — those are not exposed via the interface
+  `BaseFormattingOptions.OmitPadding`, or `BaseFormatStyles.AllowPrefix` - those are not exposed via the interface
   by design (each encoding has different option semantics).
-- You need the `UTF-8` byte path or the `OperationStatus` streaming decode — those are only available on the
+- You need the `UTF-8` byte path or the `OperationStatus` streaming decode - those are only available on the
   static classes.
 
 ## Where to go next
 
 - **[Base16 guide](base16.md)**, **[Base32 guide](base32.md)**, **[Base64 guide](base64.md)**,
-  **[Base58 guide](base58.md)**, **[Base85 guide](base85.md)** — the static-class entry points with the full
+  **[Base58 guide](base58.md)**, **[Base85 guide](base85.md)** - the static-class entry points with the full
   option set.
-- **[Core concepts](../../docs/text-encoding/concepts.md)** — vocabulary refresher.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- **[Core concepts](../../docs/text-encoding/concepts.md)** - vocabulary refresher.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

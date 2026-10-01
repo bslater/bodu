@@ -273,7 +273,7 @@ public sealed class XmlDocConfigurationLoaderTests
 
     /// <summary>
     /// Verifies that, with no <c>end_of_line</c> key, the line ending is inferred from the file's first newline
-    /// — an LF file resolves to LF rather than the CRLF default.
+    /// - an LF file resolves to LF rather than the CRLF default.
     /// </summary>
     [TestMethod]
     public void ResolveLineEnding_WhenNotSpecifiedButFileIsLf_ShouldReturnLf()

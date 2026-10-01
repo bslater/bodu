@@ -10,7 +10,7 @@ using Bodu.Globalization.Calendar;
 namespace Bodu.Globalization.Calendar.Samples.WorkingDays.Scenarios;
 
 /// <summary>
-/// Demonstrates counting and enumerating working days over a window — the SLA/duration questions:
+/// Demonstrates counting and enumerating working days over a window - the SLA/duration questions:
 /// "how many business days between these dates?" and "which days are they?".
 /// </summary>
 public static class RangeCounting

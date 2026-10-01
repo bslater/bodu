@@ -95,8 +95,8 @@ public sealed partial class RecurrenceRule
     /// </returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
     /// <remarks>
-    /// Due-ness evaluation is a previous-occurrence comparison — typically
-    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> — so missed occurrences coalesce
+    /// Due-ness evaluation is a previous-occurrence comparison - typically
+    /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> - so missed occurrences coalesce
     /// structurally: the answer is a single instant, never a backlog.
     /// </remarks>
     public DateTime? GetPreviousOccurrence(DateTime start, DateTime before, bool inclusive = false)
@@ -265,7 +265,7 @@ public sealed partial class RecurrenceRule
 
             instants.Sort();
 
-            // Two BY values can resolve to the same instant — BYMONTHDAY=1,-31 in a 31-day month, or BYDAY=1MO,-4MO
+            // Two BY values can resolve to the same instant - BYMONTHDAY=1,-31 in a 31-day month, or BYDAY=1MO,-4MO
             // in a month with exactly four Mondays. The candidate set is a set, so duplicates are removed before
             // BYSETPOS indexes into it and before COUNT counts it.
             RemoveAdjacentDuplicates(instants);
@@ -652,8 +652,8 @@ public sealed partial class RecurrenceRule
     /// </param>
     /// <returns><see langword="true" /> when the weekday is allowed; otherwise <see langword="false" />.</returns>
     /// <remarks>
-    /// When <c>BYDAY</c> acts as a limit rather than an expansion — RFC 5545 §3.3.10 Notes 1 and 2, which apply once
-    /// <c>BYMONTHDAY</c> or <c>BYYEARDAY</c> is present — an ordinal prefix still selects a single occurrence of the
+    /// When <c>BYDAY</c> acts as a limit rather than an expansion - RFC 5545 §3.3.10 Notes 1 and 2, which apply once
+    /// <c>BYMONTHDAY</c> or <c>BYYEARDAY</c> is present - an ordinal prefix still selects a single occurrence of the
     /// weekday, so <c>BYDAY=1MO</c> admits only the first Monday. Ordinals are meaningless at the daily frequency and
     /// are ignored there.
     /// </remarks>
@@ -794,8 +794,8 @@ public sealed partial class RecurrenceRule
     /// <c>WKST</c> therefore shifts both the dates a week number resolves to and which years have a fifty-third week.
     /// </para>
     /// <para>
-    /// A numbered week can straddle the calendar year — week one may begin in the preceding December and the final week
-    /// may end in the following January — so a resolved day is kept regardless of the calendar year it falls in. When
+    /// A numbered week can straddle the calendar year - week one may begin in the preceding December and the final week
+    /// may end in the following January - so a resolved day is kept regardless of the calendar year it falls in. When
     /// <c>BYDAY</c> is absent the week expands to all seven of its days.
     /// </para>
     /// </remarks>

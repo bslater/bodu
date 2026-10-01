@@ -23,29 +23,29 @@ namespace Bodu.Security.Cryptography;
 /// Two overloads are provided. <see cref="Create(PaddingMode)" /> dispatches the BCL-standard
 /// <see cref="PaddingMode" /> values (PKCS7, Zeros, None, ANSI X.923, ISO 10126).
 /// <see cref="Create(PaddingModeKind)" /> additionally supports <see cref="PaddingModeKind.ISO7816_4" />, the
-/// "one-and-zeros" scheme used by smart cards and SHA-3 / Keccak — pick this overload when integrating with the
+/// "one-and-zeros" scheme used by smart cards and SHA-3 / Keccak - pick this overload when integrating with the
 /// extended <see cref="PaddingModeKind" /> superset.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // BCL-standard padding mode — covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
+/// // BCL-standard padding mode - covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
 /// IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
 ///
-/// // Extended padding mode — adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
+/// // Extended padding mode - adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
 /// IPaddingStrategy iso7816 = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 ///
 /// // Apply on encryption.
 /// byte[] padded = pkcs7.Pad(plaintext, blockSizeBits: 128);
 ///
-/// // Remove on decryption — Unpad validates the trailer and throws CryptographicException
+/// // Remove on decryption - Unpad validates the trailer and throws CryptographicException
 /// // if the padding is malformed.
 /// byte[] stripped = pkcs7.Unpad(decrypted, blockSizeBits: 128);
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/padding.html">Padding guide — PKCS7, Zeros, None, ANSI X.923, ISO 10126 and
+/// <seealso href="../guides/cryptography/padding.html">Padding guide - PKCS7, Zeros, None, ANSI X.923, ISO 10126 and
 /// ISO/IEC 7816-4 with worked examples</seealso>
 public static class PaddingFactory
 {

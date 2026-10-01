@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// Instances are supplied by derived test classes via
 /// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}.GetSpecification(TVariant)" /> and drive
-/// assertions that are common across every non-cryptographic hash algorithm under test — output width, optional block
+/// assertions that are common across every non-cryptographic hash algorithm under test - output width, optional block
 /// size, and distribution-test boundary parameters.
 /// </remarks>
 public record NonCryptographicHashAlgorithmSpecification

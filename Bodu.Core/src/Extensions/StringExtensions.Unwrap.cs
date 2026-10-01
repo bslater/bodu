@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// <param name="comparison">The string comparison used for prefix and suffix matching.</param>
     /// <returns>
     /// The unwrapped string when both ends match; otherwise <paramref name="value" /> unchanged. Unwrapping requires
-    /// both ends to match — partial matches are left intact so the operation is reversible against
+    /// both ends to match - partial matches are left intact so the operation is reversible against
     /// <see cref="Wrap(string, string, string)" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when any string argument is <see langword="null" />.</exception>

@@ -16,8 +16,15 @@ on:
       - '.github/workflows/codestyle-build-test.yml'
 
 jobs:
+  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
+  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
@@ -53,6 +60,8 @@ jobs:
         run: dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj --configuration Release --no-build --output ./artifacts
 
       - name: Upload package
+        # Both images pack the same package, so only the first in the list uploads it.
+        if: strategy.job-index == 0
         uses: actions/upload-artifact@v7
         with:
           name: Bodu.CodeStyle.XmlDocumentation.nupkg

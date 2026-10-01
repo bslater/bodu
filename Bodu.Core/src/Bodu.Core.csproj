@@ -3,23 +3,34 @@
   <!-- Build configuration and NuGet package metadata. -->
   <PropertyGroup>
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+
+    <!--
+      Out of band: shipped 1.0.1 ahead of the lock-step BoduBaseVersion (bld/RELEASING.md, "Out-of-band
+      single-package release"), and validates against its own last release, 1.0.1, rather than the
+      shared baseline. 1.0.1 added no public API: it carries the internal vector rotations that
+      Bodu.Security.Cryptography 1.2.0 calls, so the two shipped together. When BoduBaseVersion
+      reaches 1.0.1, remove both properties; the release-manifest check fails until they are gone.
+      The shared baseline then needs the suppressions that CompatibilitySuppressions.xml describes.
+    -->
+    <BoduPackageVersionOverride>1.0.1</BoduPackageVersionOverride>
+    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.0.1</PackageValidationBaselineVersion>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
-    <Title>Bodu — Core</Title>
+    <Title>Bodu - Core</Title>
     <Description>Foundational building blocks for .NET 8: ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, spans, and enumerables, async threading primitives, text-encoding utilities, the WeekPattern value type, and the ThrowHelper argument-validation catalogue the rest of the solution validates against. The specialized generic collection catalogue (circular buffer, deque, evicting dictionary, graphs, tries, and more) ships separately as Bodu.Collections.</Description>
     <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;week-pattern</PackageTags>
   </PropertyGroup>
 
   <!--
-    InternalsVisibleTo grants — every entry below was audited and is currently in use:
+    InternalsVisibleTo grants - every entry below was audited and is currently in use:
       - Bodu.Core.Test               : test project (ConcurrentHashSet internal ctor, ClampDefaultConcurrencyLevel,
                                        XorShiftRandom ScaleToUnitInterval / BoundedNextUInt32 helpers, etc.).
       - Bodu.Globalization.Calendar  : DateTimeExtensions.TicksPerDay.
       - Bodu.Security.Cryptography   : the *Unchecked numeric extensions (RotateBitsLeftUnchecked /
                                        RotateBitsRightUnchecked in the cipher and hash cores), and the vector
                                        rotations (VectorExtensions.RotateBitsLeftUnchecked over VectorRotation) in
-                                       the ChaCha20, Salsa20, Serpent and CubeHash kernels.
+                                       the ChaCha20, Salsa20, Serpent, CubeHash and four-way Keccak kernels.
       - Bodu.IO.Hashing              : ResourceStrings, RotateBitsRightUnchecked.
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->
@@ -54,13 +65,8 @@
   <!--
     Wire the in-repo XML-doc analyzer and code-fix as a Roslyn analyzer reference scoped to this project.
     Used to exercise BODU1405 (<code> must begin with CDATA flush against ///) against Bodu.Core in isolation.
-
-    Skipped when DocFX is generating the documentation site (BuildingForDocfx=true): docfx's Roslyn
-    workspace cannot resolve analyzer-only ProjectReferences that fall outside its scanned project set,
-    and emits "Found project reference without a matching metadata reference" warnings that are escalated
-    to errors by the warningsAsErrors flag the docfx workflow sets.
   -->
-  <ItemGroup Condition="'$(BuildingForDocfx)' != 'true'">
+  <ItemGroup>
     <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj"
                       ReferenceOutputAssembly="false"
                       OutputItemType="Analyzer" />

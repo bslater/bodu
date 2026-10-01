@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Samples.Plugins;
 /// Entry point for the plugin sample: <c>Bodu.Globalization.Calendar.Plugins</c> loading a
 /// date-calculation algorithm out of a separate assembly, under a trust policy. The plugin lives in
 /// the sibling <c>…Samples.Plugin.Contoso</c> project, which this host references with
-/// <c>ReferenceOutputAssembly=false</c> — so the DLL is built and copied beside the host, but its
+/// <c>ReferenceOutputAssembly=false</c> - so the DLL is built and copied beside the host, but its
 /// types are unavailable at compile time and the host can only reach it through the loader.
 /// Everything runs offline and deterministically.
 /// </summary>

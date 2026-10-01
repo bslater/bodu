@@ -9,8 +9,8 @@ using System.Globalization;
 namespace Bodu.Text.Toml.Document;
 
 /// <summary>
-/// Represents a single read-only value within a <see cref="TomlDocument" />. The element is a lightweight view — a pair
-/// of the owning document and a row index — so copying it is cheap and never materializes a node.
+/// Represents a single read-only value within a <see cref="TomlDocument" />. The element is a lightweight view - a pair
+/// of the owning document and a row index - so copying it is cheap and never materializes a node.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,7 +18,7 @@ namespace Bodu.Text.Toml.Document;
 /// any member access throws <see cref="ObjectDisposedException" />.
 /// </para>
 /// <para>
-/// TOML defines eight scalar value kinds — string, integer, float, Boolean, and four date/time forms — alongside arrays
+/// TOML defines eight scalar value kinds - string, integer, float, Boolean, and four date/time forms - alongside arrays
 /// and tables. Each scalar accessor returns the value decoded once during parsing and throws
 /// <see cref="InvalidOperationException" /> when invoked on an element of a different kind.
 /// </para>

@@ -11,7 +11,7 @@ using System.Text;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides the shared, reusable notable-date resources bundled with the library — the civil, Christian, and other
+/// Provides the shared, reusable notable-date resources bundled with the library - the civil, Christian, and other
 /// thematic catalogues that define common observances (New Year's Day, Easter, Christmas, and the like) once for
 /// territory packs to import rather than redefine.
 /// </summary>
@@ -117,7 +117,7 @@ public static class CommonNotableDateResources
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is the direct path from a strongly-typed name to a usable resource — for example
+    /// This is the direct path from a strongly-typed name to a usable resource - for example
     /// <c>CommonNotableDateResources.Load(CommonNotableDateCatalog.GlobalAll)</c> materializes the entire bundled
     /// <c>global-all</c> catalogue ready to hand to a <see cref="NotableDateService" />.
     /// </para>

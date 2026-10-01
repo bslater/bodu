@@ -9,15 +9,15 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains Ed25519-specific tests for <see cref="Ed25519.VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> —
+/// Contains Ed25519-specific tests for <see cref="Ed25519.VerifyData(ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> -
 /// the RFC 8032 canonical-S malleability check; the round-trip, tamper, and malformed-signature contracts are
 /// inherited from the signature base.
 /// </summary>
 public sealed partial class Ed25519Tests
 {
     /// <summary>
-    /// Verifies that a signature whose S component has the group order L added — an otherwise-forgeable malleated
-    /// twin — is rejected by the canonical-S check.
+    /// Verifies that a signature whose S component has the group order L added - an otherwise-forgeable malleated
+    /// twin - is rejected by the canonical-S check.
     /// </summary>
     [TestMethod]
     public void VerifyData_WhenSignatureSComponentIsMalleated_ShouldReturnFalse()

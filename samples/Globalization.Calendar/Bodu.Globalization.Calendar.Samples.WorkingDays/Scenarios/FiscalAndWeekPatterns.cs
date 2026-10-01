@@ -12,13 +12,13 @@ namespace Bodu.Globalization.Calendar.Samples.WorkingDays.Scenarios;
 
 /// <summary>
 /// Demonstrates the fiscal-boundary helpers and the <see cref="WeekPattern" /> override. The default
-/// working week is Monday–Friday; passing a different pattern re-bases every working-day answer —
-/// for jurisdictions or rosters where the week is not Mon–Fri — without touching the holiday rules.
+/// working week is Monday-Friday; passing a different pattern re-bases every working-day answer -
+/// for jurisdictions or rosters where the week is not Mon-Fri - without touching the holiday rules.
 /// </summary>
 public static class FiscalAndWeekPatterns
 {
     /// <summary>
-    /// Finds Australian fiscal-year boundaries and contrasts a Sunday–Thursday working week.
+    /// Finds Australian fiscal-year boundaries and contrasts a Sunday-Thursday working week.
     /// </summary>
     /// <param name="service">The notable-date service supplying holiday knowledge.</param>
     public static void Run(INotableDateService service)

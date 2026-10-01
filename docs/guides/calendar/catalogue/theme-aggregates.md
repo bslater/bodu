@@ -4,7 +4,7 @@ title: Aggregate and utility catalogues
 
 # Aggregate and utility catalogues
 
-Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status — see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.
+Concepts defined by the shared catalogues in this theme. A region pack imports the concepts it observes and supplies its own territory scope and non-working status - see the [region pages](index.md#by-region). The **When** column is a one-phrase gloss, not the calculation recipe.
 
 ## global-all
 
@@ -52,8 +52,8 @@ _Observed by:_ [GB](region-europe.md)
 
 | Concept | Category | Non-working | When |
 |---|---|---|---|
-| NAIDOC Week | Observance | — | 1st Sun Jul |
-| World Space Week | Observance | — | Fixed 4 Oct |
+| NAIDOC Week | Observance | - | 1st Sun Jul |
+| World Space Week | Observance | - | Fixed 4 Oct |
 
 ---
 
@@ -61,6 +61,6 @@ _Observed by:_ [GB](region-europe.md)
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

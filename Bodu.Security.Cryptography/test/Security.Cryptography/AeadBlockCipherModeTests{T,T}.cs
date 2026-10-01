@@ -11,10 +11,10 @@ namespace Bodu.Security.Cryptography;
 /// constructor validation via <see cref="CipherModeTestsBase{TTransform}" /> together with
 /// per-method tests partitioned across the following partial files:
 /// <list type="bullet">
-/// <item><description><c>AeadBlockCipherModeTests.Encrypt.cs</c> — <see cref="IAeadBlockCipherModeTransform.Encrypt" /> argument validation and output-size tests.</description></item>
-/// <item><description><c>AeadBlockCipherModeTests.Decrypt.cs</c> — <see cref="IAeadBlockCipherModeTransform.Decrypt" /> argument validation, tamper detection, and round-trip tests.</description></item>
-/// <item><description><c>AeadBlockCipherModeTests.ProcessAssociatedData.cs</c> — <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" /> lifecycle tests.</description></item>
-/// <item><description><c>AeadBlockCipherModeTests.TagSize.cs</c> — <see cref="IAeadBlockCipherModeTransform.TagSize" /> property tests.</description></item>
+/// <item><description><c>AeadBlockCipherModeTests.Encrypt.cs</c> - <see cref="IAeadBlockCipherModeTransform.Encrypt" /> argument validation and output-size tests.</description></item>
+/// <item><description><c>AeadBlockCipherModeTests.Decrypt.cs</c> - <see cref="IAeadBlockCipherModeTransform.Decrypt" /> argument validation, tamper detection, and round-trip tests.</description></item>
+/// <item><description><c>AeadBlockCipherModeTests.ProcessAssociatedData.cs</c> - <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" /> lifecycle tests.</description></item>
+/// <item><description><c>AeadBlockCipherModeTests.TagSize.cs</c> - <see cref="IAeadBlockCipherModeTransform.TagSize" /> property tests.</description></item>
 /// </list>
 /// </summary>
 /// <remarks>

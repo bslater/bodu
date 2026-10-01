@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm.Key" /> switches the instance into the keyed
-/// <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to 64 bytes and
+/// <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1-32 bytes) is zero-padded to 64 bytes and
 /// prepended as the first message block, and the key length is encoded into the parameter block so that keyed and
 /// unkeyed digests of the same message are always distinct.
 /// </para>
@@ -40,13 +40,13 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description>Output size: configurable — 128, 160, 192, 224, or 256 bits.</description>
+/// <description>Output size: configurable - 128, 160, 192, 224, or 256 bits.</description>
 /// </item>
 /// <item>
 /// <description>Block size: 64 bytes (512 bits); 8 × 32-bit state words; 10 rounds.</description>
 /// </item>
 /// <item>
-/// <description>Optional key: 1–32 bytes for BLAKE2s-MAC mode (RFC 7693 §2.8).</description>
+/// <description>Optional key: 1-32 bytes for BLAKE2s-MAC mode (RFC 7693 §2.8).</description>
 /// </item>
 /// <item>
 /// <description>Specification: RFC 7693; optimized for 8/16/32-bit hosts.</description>
@@ -54,7 +54,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose BLAKE2s.</strong> Pick BLAKE2s on 32-bit hosts, embedded targets, or any time the output is
-/// at most 32 bytes — the 32-bit-word design beats <see cref="Blake2b" /> on those platforms. On 64-bit hosts and for
+/// at most 32 bytes - the 32-bit-word design beats <see cref="Blake2b" /> on those platforms. On 64-bit hosts and for
 /// outputs longer than 32 bytes, <see cref="Blake2b" /> is faster. For very large parallel workloads
 /// <see cref="Blake3" /> is faster still and supports tree hashing natively.
 /// </para>
@@ -168,7 +168,7 @@ public sealed partial class Blake2s
             HashSizeValue = value;
 
             // The digest length is encoded into the parameter block during state initialization, which the base
-            // performs at construction and after each completed hash — but not on a HashSize change. Rebuild the
+            // performs at construction and after each completed hash - but not on a HashSize change. Rebuild the
             // state now so the next hash uses the new digest length; otherwise it would run with the stale parameter
             // block baked at construction and produce a wrong digest.
             Initialize();
@@ -220,8 +220,9 @@ public sealed partial class Blake2s
     /// <see langword="true" /> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     /// <remarks>
-    /// Compression runs on the widest kernel <see cref="Blake2sCore" /> selects: AVX-512, then AdvSimd on ARM64, then
-    /// SSSE3, then the scalar kernel, each gate honoring the process-wide SIMD opt-out.
+    /// Compression runs on the kernel <see cref="Blake2sCore" /> selects: AVX-512, then SSSE3 on x64, and the scalar
+    /// kernel on ARM64, where it ran faster than the AdvSimd kernel, and everywhere else; each gate honors the
+    /// process-wide SIMD opt-out.
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal) =>
         Blake2sCore.Compress(_h, block, totalBytesIncludingThisBlock, isFinal);

@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Scenarios;
 
 /// <summary>
 /// Demonstrates an observation-based built-in algorithm: the <c>tehran-nowruz</c> key computes Nowruz from the
-/// true vernal-equinox instant at the Tehran standard meridian — the official Iranian rule — as an opt-in
+/// true vernal-equinox instant at the Tehran standard meridian - the official Iranian rule - as an opt-in
 /// alternative to tabular Persian-calendar resources.
 /// </summary>
 public static class ObservationBasedVariant

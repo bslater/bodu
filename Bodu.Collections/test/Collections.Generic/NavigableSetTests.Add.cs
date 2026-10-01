@@ -64,8 +64,8 @@ public partial class NavigableSetTests
     }
 
     /// <summary>
-    /// Verifies that a monotonically ascending insertion sequence — the classic rebalancing stress for a
-    /// self-balancing tree — keeps the set fully queryable.
+    /// Verifies that a monotonically ascending insertion sequence - the classic rebalancing stress for a
+    /// self-balancing tree - keeps the set fully queryable.
     /// </summary>
     [TestMethod]
     public void Add_WhenItemsAddedAscending_ShouldRemainConsistent()

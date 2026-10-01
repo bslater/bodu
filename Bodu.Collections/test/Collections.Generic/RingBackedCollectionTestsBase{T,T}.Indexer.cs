@@ -66,7 +66,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [DataRow(16)]
     public void Indexer_WhenStorageWrapped_ShouldReturnLogicalOrder(int capacity)
     {
-        // Fill to capacity, drain one, refill — this places the head past zero and the tail wrapped to slot zero.
+        // Fill to capacity, drain one, refill - this places the head past zero and the tail wrapped to slot zero.
         TCollection collection = CreateCollection(capacity);
         for (int i = 0; i < capacity; i++)
             AddToTail(collection, i);

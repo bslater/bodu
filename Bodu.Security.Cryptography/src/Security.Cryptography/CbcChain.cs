@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides CBC chaining for the modes built on it — CBC encryption, and the CBC-MAC inside CMAC and CCM — through the
+/// Provides CBC chaining for the modes built on it - CBC encryption, and the CBC-MAC inside CMAC and CCM - through the
 /// cipher's own chained implementation where it has one, and a block at a time otherwise.
 /// </summary>
 internal static class CbcChain

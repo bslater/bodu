@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The shared secret is supplied as raw key bytes. Authenticator applications conventionally exchange the secret as a
 /// Base32 string inside an <c>otpauth://</c> URI; decode it to bytes before calling these methods (for example with
-/// <c>Bodu.Text.Encoding.Base32</c>) — this type deliberately takes no dependency on a particular text encoding. RFC
+/// <c>Bodu.Text.Encoding.Base32</c>) - this type deliberately takes no dependency on a particular text encoding. RFC
 /// 4226 recommends a secret of at least 128 bits, and 160 bits (the SHA-1 output length) for full strength.
 /// </para>
 /// <para>

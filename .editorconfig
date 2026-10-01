@@ -373,7 +373,7 @@ dotnet_diagnostic.IDE0073.severity = none
 # Bodu code-style analyzer diagnostics
 # ---------------------------------------------------------------------------------------------------------------
 #
-# Diagnostic IDs follow the BODU#### scheme — the thousands digit denotes the analyzer family:
+# Diagnostic IDs follow the BODU#### scheme - the thousands digit denotes the analyzer family:
 #   BODU0xxx  reserved / analyzer infrastructure
 #   BODU1xxx  XML documentation
 #   BODU2xxx  member ordering         (deferred)
@@ -401,7 +401,7 @@ indent_size = 2
 indent_size = 2
 
 # ---------------------------------------------------------------------------------------------------------------
-# Test file overrides — relax rules that are noisy and unhelpful in test code
+# Test file overrides - relax rules that are noisy and unhelpful in test code
 # ---------------------------------------------------------------------------------------------------------------
 
 [**/*Test*.cs]

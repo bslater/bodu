@@ -56,14 +56,14 @@ public readonly partial struct Result<T>
     /// <para>
     /// The selector is not invoked when this result is a failure. The projected value is lifted through the strict
     /// <see cref="Result.Success{T}(T)" /> factory, so a <see langword="null" /> projection result throws
-    /// <see cref="ArgumentNullException" /> — a successful result can never carry <see langword="null" />.
+    /// <see cref="ArgumentNullException" /> - a successful result can never carry <see langword="null" />.
     /// </para>
     /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// var length = Result.Success("railway").Map(s => s.Length); // Success(7)
-    /// var failed = Result.Failure<string>("boom").Map(s => s.Length); // Failure(boom) — selector not invoked
+    /// var failed = Result.Failure<string>("boom").Map(s => s.Length); // Failure(boom) - selector not invoked
     ///]]>
     /// </code>
     /// </example>
@@ -313,7 +313,7 @@ public readonly partial struct Result<T>
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The captured <see cref="ResultError.Exception" /> is never rethrown directly — doing so would corrupt its
+    /// The captured <see cref="ResultError.Exception" /> is never rethrown directly - doing so would corrupt its
     /// original stack trace. It is exposed as the inner exception of the thrown
     /// <see cref="InvalidOperationException" /> instead.
     /// </para>
@@ -333,7 +333,7 @@ public readonly partial struct Result<T>
     /// <returns><c>Some(value)</c> when the result represents success; otherwise <c>None</c>.</returns>
     /// <remarks>
     /// <para>
-    /// This is the inverse of <see cref="Option{T}.ToResult(ResultError)" />, except that the error is lost — convert
+    /// This is the inverse of <see cref="Option{T}.ToResult(ResultError)" />, except that the error is lost - convert
     /// back requires supplying a new error.
     /// </para>
     /// </remarks>

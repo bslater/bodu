@@ -7,8 +7,8 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and
-/// word swaps, bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol
+/// Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and
+/// word swaps, bit reversal and rotation, and unchecked arithmetic helpers - for hashing, serialization, and protocol
 /// code.
 /// </summary>
 /// <remarks>
@@ -30,7 +30,7 @@ namespace Bodu.Extensions;
 /// <para>
 /// All operations are pure, branch-light, allocation-free for the value-typed overloads, and deterministic. Where a
 /// <c>byte[]</c> is returned (for example, <c>GetBytes</c> or <c>ReverseBits(byte[])</c>) a fresh array is allocated
-/// each call — callers wanting buffer reuse should slice into a pre-allocated <see cref="Span{T}" /> via the BCL
+/// each call - callers wanting buffer reuse should slice into a pre-allocated <see cref="Span{T}" /> via the BCL
 /// primitives instead.
 /// </para>
 /// <example>
@@ -40,11 +40,11 @@ namespace Bodu.Extensions;
 /// uint host = 0x11_22_33_44u;
 /// uint network = host.ReverseBytes(); // => 0x44_33_22_11
 ///
-/// // Bit reversal — useful in CRC and DSP code.
+/// // Bit reversal - useful in CRC and DSP code.
 /// byte mask = 0b1011_0001;
 /// byte mirrored = mask.ReverseBits(); // => 0b1000_1101
 ///
-/// // Cyclic bit rotation — common in hashing primitives.
+/// // Cyclic bit rotation - common in hashing primitives.
 /// uint rotated = 0x0000_00FFu.RotateBitsLeft(8); // => 0x0000_FF00
 ///]]>
 /// </code>

@@ -210,15 +210,15 @@ public partial class DateOnlyExtensionsTests
 
     /// <summary>
     /// Provides <see cref="DateOnly" /> rows for the provider-based overload, mirroring the
-    /// <see cref="DateTimeExtensionsTests.ValidQuarterProvider" /> quarter grid (Q1 = Dec–Feb, Q2 = Mar–May,
-    /// Q3 = Jun–Aug, Q4 = Sep–Nov).
+    /// <see cref="DateTimeExtensionsTests.ValidQuarterProvider" /> quarter grid (Q1 = Dec-Feb, Q2 = Mar-May,
+    /// Q3 = Jun-Aug, Q4 = Sep-Nov).
     /// </summary>
     public static IEnumerable<object[]> LastDateOfWeekInQuarterProviderTestData()
     {
-        // Q1 (Dec 2023 – Feb 2024) ends Thu 29 Feb 2024.
+        // Q1 (Dec 2023 - Feb 2024) ends Thu 29 Feb 2024.
         yield return new object[] { new DateOnly(2024, 1, 15), DayOfWeek.Thursday, new DateOnly(2024, 2, 29) };
         yield return new object[] { new DateOnly(2024, 1, 15), DayOfWeek.Sunday, new DateOnly(2024, 2, 25) };
-        // Q3 (Jun – Aug 2024) ends Sat 31 Aug 2024.
+        // Q3 (Jun - Aug 2024) ends Sat 31 Aug 2024.
         yield return new object[] { new DateOnly(2024, 7, 1), DayOfWeek.Saturday, new DateOnly(2024, 8, 31) };
         yield return new object[] { new DateOnly(2024, 7, 1), DayOfWeek.Monday, new DateOnly(2024, 8, 26) };
     }

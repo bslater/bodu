@@ -1,14 +1,14 @@
 ---
-title: Text & Serialization — Guides
+title: Text & Serialization - Guides
 ---
 
-# Text & Serialization — Guides
+# Text & Serialization - Guides
 
-Recipe-style walk-throughs for the text family — the `Bodu.Text.Encoding` binary-to-text codecs, the `Bodu.Text.Filtering` include/exclude filtering engine, the `Bodu.Text.Formats` document formats, and the `Bodu.Text.Bencode` / `Bodu.Text.Toml` object serializers. Four different jobs, four guide sections; this page is the topic-level map.
+Recipe-style walk-throughs for the text family - the `Bodu.Text.Encoding` binary-to-text codecs, the `Bodu.Text.Filtering` include/exclude filtering engine, the `Bodu.Text.Formats` document formats, and the `Bodu.Text.Bencode` / `Bodu.Text.Toml` object serializers. Four different jobs, four guide sections; this page is the topic-level map.
 
-If you are unsure which package does the job you have, start with the [topic overview](../../docs/topics/text-and-serialization.md) — it leads with the codec / format / serializer disambiguation — and the [topic concepts](../../docs/topics/text-and-serialization-concepts.md) for the shared vocabulary.
+If you are unsure which package does the job you have, start with the [topic overview](../../docs/topics/text-and-serialization.md) - it leads with the codec / format / serializer disambiguation - and the [topic concepts](../../docs/topics/text-and-serialization-concepts.md) for the shared vocabulary.
 
-## Bodu.Text.Encoding — binary-to-text codecs
+## Bodu.Text.Encoding - binary-to-text codecs
 
 Bytes ⇄ printable text. Base16 through Base85 with every common variant, plus Base45, Base62, and Bech32.
 
@@ -16,7 +16,7 @@ Bytes ⇄ printable text. Base16 through Base85 with every common variant, plus 
 
 <div class="bodu-card">
   <h3><a href="../text-encoding/index.md">Overview</a></h3>
-  <p>The encoding family at a glance — payload expansion, variants, the choose-an-encoding table, and the shared API shape.</p>
+  <p>The encoding family at a glance - payload expansion, variants, the choose-an-encoding table, and the shared API shape.</p>
 </div>
 
 <div class="bodu-card">
@@ -31,7 +31,7 @@ Bytes ⇄ printable text. Base16 through Base85 with every common variant, plus 
 
 <div class="bodu-card">
   <h3><a href="../text-encoding/bech32.md">Using Bech32</a></h3>
-  <p>Bech32 / Bech32m (BIP 173 / 350) — human-readable part, separator, 5-bit data, and the six-symbol checksum.</p>
+  <p>Bech32 / Bech32m (BIP 173 / 350) - human-readable part, separator, 5-bit data, and the six-symbol checksum.</p>
 </div>
 
 <div class="bodu-card">
@@ -41,7 +41,7 @@ Bytes ⇄ printable text. Base16 through Base85 with every common variant, plus 
 
 </div>
 
-## Bodu.Text.Filtering — include/exclude filtering
+## Bodu.Text.Filtering - include/exclude filtering
 
 Selecting values by pattern. Glob and regex patterns compiled into one cost-tiered matcher, with set or ordered-rule semantics and built-in telemetry.
 
@@ -49,12 +49,12 @@ Selecting values by pattern. Glob and regex patterns compiled into one cost-tier
 
 <div class="bodu-card">
   <h3><a href="../text-filtering/index.md">Overview</a></h3>
-  <p>How the engine works — compile-once filters, cost-tier classification, and the guide map.</p>
+  <p>How the engine works - compile-once filters, cost-tier classification, and the guide map.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../text-filtering/patterns-and-globs.md">Patterns and globs</a></h3>
-  <p>The full glob grammar — classes, <code>{a,b}</code> alternation, escapes — and when to reach for regex.</p>
+  <p>The full glob grammar - classes, <code>{a,b}</code> alternation, escapes - and when to reach for regex.</p>
 </div>
 
 <div class="bodu-card">
@@ -69,9 +69,9 @@ Selecting values by pattern. Glob and regex patterns compiled into one cost-tier
 
 </div>
 
-## Bodu.Text.Formats — document formats
+## Bodu.Text.Formats - document formats
 
-Parse, edit, and write structured documents — typed value models with streaming readers and writers.
+Parse, edit, and write structured documents - typed value models with streaming readers and writers.
 
 <div class="bodu-cards">
 
@@ -102,14 +102,14 @@ Parse, edit, and write structured documents — typed value models with streamin
 
 <div class="bodu-card">
   <h3><a href="../formats/choosing-a-format.md">Choosing a text format</a></h3>
-  <p>Delimited vs. DotEnv vs. INI — the shape of data each format suits and how to pick between them.</p>
+  <p>Delimited vs. DotEnv vs. INI - the shape of data each format suits and how to pick between them.</p>
 </div>
 
 </div>
 
-## Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml — object serializers
+## Bodu.Text.Bencode, Bodu.Text.Toml, and Bodu.Text.Yaml - object serializers
 
-POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an architecture and vocabulary — everything learned for one transfers to the next by swapping the prefix. Each has its own guide set.
+POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an architecture and vocabulary - everything learned for one transfers to the next by swapping the prefix. Each has its own guide set.
 
 <div class="bodu-cards">
 
@@ -120,31 +120,31 @@ POCO ⇄ wire format, `System.Text.Json`-shaped. The three libraries share an ar
 
 <div class="bodu-card">
   <h3><a href="../serialization/toml/index.md">TOML guides</a></h3>
-  <p><code>TomlSerializer</code> — type mapping, spec-version selection, both DOMs, the full attribute family, converters, callbacks, and the built-in catalog.</p>
+  <p><code>TomlSerializer</code> - type mapping, spec-version selection, both DOMs, the full attribute family, converters, callbacks, and the built-in catalog.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../serialization/bencode/index.md">Bencode guides</a></h3>
-  <p><code>BencodeSerializer</code> — byte strings, canonical key ordering, the kinds Bencode cannot represent, attributes, converters, callbacks, and the catalog.</p>
+  <p><code>BencodeSerializer</code> - byte strings, canonical key ordering, the kinds Bencode cannot represent, attributes, converters, callbacks, and the catalog.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../serialization/yaml/index.md">YAML guides</a></h3>
-  <p><code>YamlSerializer</code> — type mapping, the 1.2 core schema, both DOMs, multi-document streams, the shared <code>Bodu.Text.Serialization</code> attributes, custom converters, and the catalog.</p>
+  <p><code>YamlSerializer</code> - type mapping, the 1.2 core schema, both DOMs, multi-document streams, the shared <code>Bodu.Text.Serialization</code> attributes, custom converters, and the catalog.</p>
 </div>
 
 </div>
 
 ## Suggested reading path
 
-1. **[Topic overview](../../docs/topics/text-and-serialization.md)** — settle which of the three jobs you have.
-2. The matching **overview guide** — [encodings](../text-encoding/index.md), [formats](../formats/index.md), or [serializers](../serialization/index.md).
-3. The **per-type walk-through** for your format or encoding — e.g. [Base64](../text-encoding/base64.md), [INI](../formats/ini.md), or [Using TOML](../serialization/toml/using.md).
-4. For the serializers, the customization guides — e.g. TOML's **[attributes](../serialization/toml/attributes.md)**, then **[converters](../serialization/toml/converters.md)** (Bencode and YAML carry the same guides under their own hubs).
+1. **[Topic overview](../../docs/topics/text-and-serialization.md)** - settle which of the three jobs you have.
+2. The matching **overview guide** - [encodings](../text-encoding/index.md), [formats](../formats/index.md), or [serializers](../serialization/index.md).
+3. The **per-type walk-through** for your format or encoding - e.g. [Base64](../text-encoding/base64.md), [INI](../formats/ini.md), or [Using TOML](../serialization/toml/using.md).
+4. For the serializers, the customization guides - e.g. TOML's **[attributes](../serialization/toml/attributes.md)**, then **[converters](../serialization/toml/converters.md)** (Bencode and YAML carry the same guides under their own hubs).
 
 ## Where to go next
 
-- [Text & Serialization topic overview](../../docs/topics/text-and-serialization.md) — the disambiguation triangle, package table, and decision table.
-- [Topic concepts](../../docs/topics/text-and-serialization-concepts.md) — codec vs. format vs. serializer, the tier model, framing, canonical output, strictness.
-- Package introductions — [Bodu.Text.Encoding](../../docs/text-encoding/index.md), [Bodu.Text.Filtering](../../docs/text-filtering/index.md), [Bodu.Text.Formats](../../docs/formats/index.md), [Bodu serializers](../../docs/serialization/index.md).
+- [Text & Serialization topic overview](../../docs/topics/text-and-serialization.md) - the disambiguation triangle, package table, and decision table.
+- [Topic concepts](../../docs/topics/text-and-serialization-concepts.md) - codec vs. format vs. serializer, the tier model, framing, canonical output, strictness.
+- Package introductions - [Bodu.Text.Encoding](../../docs/text-encoding/index.md), [Bodu.Text.Filtering](../../docs/text-filtering/index.md), [Bodu.Text.Formats](../../docs/formats/index.md), [Bodu serializers](../../docs/serialization/index.md).
 - **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.Text.Encoding](../text-encoding/index.md) · [Bodu.Text.Filtering](../text-filtering/index.md) · [Bodu.Text.Formats](../formats/index.md) · [Bodu serializers](../serialization/index.md).

@@ -36,7 +36,7 @@ public readonly partial struct Money<TCurrency>
     /// Cash rounding applies to physical cash totals only; electronic transactions retain the full
     /// <see cref="MinorUnits" /> precision. For Switzerland (CHF, 5-rappen rounding), Canada (CAD, 5-cent cash rounding
     /// since 2013), Australia (AUD, 5-cent cash rounding since 1992), and other currencies whose smallest circulating
-    /// coin is larger than <c>10^-MinorUnits</c>, this method snaps to the cash denomination — for example,
+    /// coin is larger than <c>10^-MinorUnits</c>, this method snaps to the cash denomination - for example,
     /// <c>CHF 12.34</c> rounds to <c>CHF 12.35</c>.
     /// </remarks>
     public Money<TCurrency> RoundToCash() =>

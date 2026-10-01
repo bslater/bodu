@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies <see cref="AlgorithmDateStrategy" /> Western (Gregorian) and Orthodox (Julian) Easter Sunday computation
-/// against the published year-by-year known-answer tables (1700–2093 Gregorian, 1916–2099 Julian), resolved through the
+/// against the published year-by-year known-answer tables (1700-2093 Gregorian, 1916-2099 Julian), resolved through the
 /// service so the algorithm dispatch and projection are exercised end to end.
 /// </summary>
 [TestClass]
@@ -36,7 +36,7 @@ public sealed class EasterKnownAnswerTests
     }
 
     /// <summary>
-    /// Provides the Western (Gregorian) Easter Sunday known-answer rows, 1700–2093.
+    /// Provides the Western (Gregorian) Easter Sunday known-answer rows, 1700-2093.
     /// </summary>
     /// <returns>Rows of <c>{ year, month, day }</c>.</returns>
     public static IEnumerable<object[]> GregorianRows()
@@ -421,7 +421,7 @@ public sealed class EasterKnownAnswerTests
     }
 
     /// <summary>
-    /// Provides the Orthodox (Julian-paschal) Easter Sunday known-answer rows, 1916–2099.
+    /// Provides the Orthodox (Julian-paschal) Easter Sunday known-answer rows, 1916-2099.
     /// </summary>
     /// <returns>Rows of <c>{ year, month, day }</c>.</returns>
     public static IEnumerable<object[]> JulianRows()

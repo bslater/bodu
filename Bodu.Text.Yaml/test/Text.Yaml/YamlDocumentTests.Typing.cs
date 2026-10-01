@@ -188,8 +188,8 @@ public partial class YamlDocumentTests
 
     /// <summary>
     /// Verifies that colon-separated base-60 ("sexagesimal") scalars remain strings even under the YAML 1.1 schema.
-    /// The historical 1.1 schema resolved <c>base-60</c> integers and floats — a notorious footgun that silently
-    /// turned MAC-address-like or time-like values into large numbers — so this parser deliberately does not honor it.
+    /// The historical 1.1 schema resolved <c>base-60</c> integers and floats - a notorious footgun that silently
+    /// turned MAC-address-like or time-like values into large numbers - so this parser deliberately does not honor it.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
@@ -218,7 +218,7 @@ public partial class YamlDocumentTests
 
     /// <summary>
     /// Verifies that the same leading-zero integer is read as decimal under the YAML 1.2 core schema, whose integer
-    /// production is plain base-10. The identical literal <c>010</c> therefore means 8 under 1.1 but 10 under 1.2 — the
+    /// production is plain base-10. The identical literal <c>010</c> therefore means 8 under 1.1 but 10 under 1.2 - the
     /// version-dependent octal ambiguity is pinned on both sides so the divergence stays intentional.
     /// </summary>
     [TestMethod]
@@ -261,8 +261,8 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that ISO-8601-like date and timestamp scalars remain strings under the YAML 1.2 core schema, which —
-    /// unlike YAML 1.1 — carries no implicit <c>!!timestamp</c> resolution, so a date is never coerced to a number.
+    /// Verifies that ISO-8601-like date and timestamp scalars remain strings under the YAML 1.2 core schema, which -
+    /// unlike YAML 1.1 - carries no implicit <c>!!timestamp</c> resolution, so a date is never coerced to a number.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

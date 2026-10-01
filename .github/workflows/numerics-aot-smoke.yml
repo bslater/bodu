@@ -23,8 +23,15 @@ permissions:
   contents: read
 
 jobs:
+  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
+  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
   aot-smoke:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v7
@@ -42,8 +49,8 @@ jobs:
     - name: Publish and run the AOT smoke app on each target framework
       # PublishAot is set inside the AotSmoke csproj rather than passed with -p: a command-line
       # -p:PublishAot=true is a global MSBuild property that propagates to every project in the
-      # restore graph — including the netstandard2.0 Bodu.CodeStyle analyzer projects wired in as
-      # analyzer-only ProjectReferences — which fails restore with NETSDK1207.
+      # restore graph - including the netstandard2.0 Bodu.CodeStyle analyzer projects wired in as
+      # analyzer-only ProjectReferences - which fails restore with NETSDK1207.
       #
       # The project multi-targets, so -f is required and each leg is published and run in turn:
       # trimming and AOT warnings differ between framework versions, and a leg that is never

@@ -318,7 +318,10 @@ internal static partial class Blake3Core
     /// <summary>
     /// Compresses one input of whole blocks, block by block, from the key to its chaining value.
     /// </summary>
-    /// <param name="kernel">The kernel; never <see cref="KernelKind.Auto" />.</param>
+    /// <param name="kernel">
+    /// The kernel that compresses several inputs at once; never <see cref="KernelKind.Auto" />. The blocks run on the
+    /// kernel it compresses a single block with.
+    /// </param>
     /// <param name="input">The first byte of the input.</param>
     /// <param name="blocks">The number of 64-byte blocks in the input.</param>
     /// <param name="key">The first of the eight key words.</param>
@@ -331,6 +334,7 @@ internal static partial class Blake3Core
     {
         Span<uint> chainingValue = stackalloc uint[ChainingValueWords];
         MemoryMarshal.CreateReadOnlySpan(ref key, ChainingValueWords).CopyTo(chainingValue);
+        KernelKind blockKernel = SingleBlockKernel(kernel);
 
         for (int block = 0; block < blocks; block++)
         {
@@ -338,7 +342,7 @@ internal static partial class Blake3Core
             if (block == 0) blockFlags |= flagsStart;
             if (block == blocks - 1) blockFlags |= flagsEnd;
 
-            Compress(kernel, chainingValue, MemoryMarshal.CreateReadOnlySpan(ref Unsafe.Add(ref input, block * BlockBytes), BlockBytes), counter, BlockBytes, blockFlags);
+            Compress(blockKernel, chainingValue, MemoryMarshal.CreateReadOnlySpan(ref Unsafe.Add(ref input, block * BlockBytes), BlockBytes), counter, BlockBytes, blockFlags);
         }
 
         StoreChainingValue(chainingValue, MemoryMarshal.CreateSpan(ref output, ChainingValueBytes));

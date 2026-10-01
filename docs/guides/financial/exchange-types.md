@@ -1,11 +1,11 @@
 ---
-title: Exchange-rate types — a usage-scenario catalogue
+title: Exchange-rate types - a usage-scenario catalogue
 ---
 
-# Exchange-rate types — a usage-scenario catalogue
+# Exchange-rate types - a usage-scenario catalogue
 
 `Bodu.Financial` ships roughly a dozen foreign-exchange types. They are
-not interchangeable layers of the same idea — each one exists for a
+not interchangeable layers of the same idea - each one exists for a
 specific job, and the fastest way to use the library well is to start
 from *the scenario you are in* and let it point at the type. This page
 is that map. For the conversion mechanics and the lookup-option
@@ -36,15 +36,15 @@ behaviour, see [Working with exchange rates](exchange-rates.md) and
 
 The rest of this page groups these by the role they play.
 
-## Rate values — the things you observe and pass
+## Rate values - the things you observe and pass
 
-### `ExchangeRate` — the runtime observation
+### `ExchangeRate` - the runtime observation
 
 [`ExchangeRate`](xref:Bodu.Financial.ExchangeRates.ExchangeRate) is the immutable
 record struct every provider returns: source ISO, destination ISO,
 observation date, a strictly-positive multiplier, the publishing
 provider's name, and an `IsInverted` flag. **Reach for it** whenever
-the direction is *data* — bank feeds, broker exports, a flat list of
+the direction is *data* - bank feeds, broker exports, a flat list of
 quotes to load into a provider. It deliberately does **not** round;
 the destination currency's minor-unit precision is applied only when
 the rate meets a `Money` at the conversion boundary.
@@ -52,10 +52,10 @@ the rate meets a `Money` at the conversion boundary.
 <!-- compile -->
 ```csharp
 var rate = new ExchangeRate(CurrencyCode.USD, CurrencyCode.EUR, new DateOnly(2024, 6, 14), 0.928m, "ECB");
-decimal eurAmount = rate.Convert(100m);   // 92.80 — unrounded
+decimal eurAmount = rate.Convert(100m);   // 92.80 - unrounded
 ```
 
-### `ExchangeRate<TBase, TQuote>` — the compile-time-typed rate
+### `ExchangeRate<TBase, TQuote>` - the compile-time-typed rate
 
 When a contract, desk, or account is pinned to one specific direction,
 [`ExchangeRate<TBase, TQuote>`](xref:Bodu.Financial.ExchangeRates.ExchangeRate`2)
@@ -75,28 +75,28 @@ ExchangeRate runtime = typed.ToRuntime();
 var back = ExchangeRate<USD, EUR>.FromRuntime(runtime); // throws on ISO mismatch
 ```
 
-### `CurrencyPair` — the directional key
+### `CurrencyPair` - the directional key
 
 [`CurrencyPair`](xref:Bodu.Financial.ExchangeRates.CurrencyPair) is an
 immutable record struct constructed as `new CurrencyPair(CurrencyCode from, CurrencyCode to)`;
 it exposes `From` and `To`, validates both codes at construction, and
 exposes `Inverse()`. **Reach for it** instead
 of a `(string, string)` tuple anywhere a currency direction is used as
-a dictionary key or method argument — the named properties make the
+a dictionary key or method argument - the named properties make the
 direction unambiguous and centralise currency validation.
 
-### `RateObservation` — the bare data point
+### `RateObservation` - the bare data point
 
 [`RateObservation`](xref:Bodu.Financial.ExchangeRates.RateObservation)
 is the lightweight `(Date, Rate)` carrier used for series enumeration,
 builder mutation, and bulk import. It carries **no** provider or
-inversion metadata — those belong to the enclosing series — so it is
+inversion metadata - those belong to the enclosing series - so it is
 the right shape when you are streaming points into a series and the
 provider is already fixed by context.
 
-## Storing dated rates — series, key, and book
+## Storing dated rates - series, key, and book
 
-### `RateSeries` — one pair, one provider, every date
+### `RateSeries` - one pair, one provider, every date
 
 [`RateSeries`](xref:Bodu.Financial.ExchangeRates.RateSeries) holds
 every observation for a single `(pair, provider)` in two parallel
@@ -108,20 +108,20 @@ provider; `GetObservations()` enumerates in ascending date order, and
 the copy-on-write helpers `WithRate(date, rate)` / `WithoutRate(date)`
 return a fresh series for single edits.
 
-### `RateSeriesBuilder` — the mutable companion
+### `RateSeriesBuilder` - the mutable companion
 
 [`RateSeriesBuilder`](xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder)
 is how you construct or edit a series imperatively while keeping the
 "strictly ascending unique dates, strictly positive rates" invariant.
 The three explicit shapes encode intent:
 
-- `Add(date, rate)` — throws if the date already exists (the data is wrong).
-- `Set(date, rate)` — throws if the date is missing (you expected it).
-- `Upsert(date, rate)` — insert-or-replace, the merge shape.
+- `Add(date, rate)` - throws if the date already exists (the data is wrong).
+- `Set(date, rate)` - throws if the date is missing (you expected it).
+- `Upsert(date, rate)` - insert-or-replace, the merge shape.
 
 Each has a `Try`-prefixed boolean sibling; bulk import uses `AddRange`
 (rejects duplicates) and `UpsertRange` (replaces existing dates) with
-atomic rollback — a mid-batch failure leaves the builder untouched.
+atomic rollback - a mid-batch failure leaves the builder untouched.
 `ToSeries()` snapshots an immutable series; it throws on an empty
 builder because a series must hold at least one observation.
 
@@ -139,17 +139,17 @@ RateSeries series = builder.ToSeries();
 is the `(pair, provider)` record struct that keys a series when the
 same pair carries rates from more than one source.
 [`RateBook`](xref:Bodu.Financial.ExchangeRates.RateBook) is the
-immutable, frozen-dictionary store of many series keyed by that key —
+immutable, frozen-dictionary store of many series keyed by that key -
 the bridge between the mutable build side and the read-side providers.
 It permits multiple providers per pair; the provider layered on top
 decides which one answers.
 
-### `RateTableBuilder` — multi-pair, multi-provider import
+### `RateTableBuilder` - multi-pair, multi-provider import
 
 [`RateTableBuilder`](xref:Bodu.Financial.ExchangeRates.RateTableBuilder)
 owns one `RateSeriesBuilder` per `(pair, provider)` key.
-**Reach for it** when ingest data arrives flat — many pairs from many
-providers — and you want to accumulate before producing immutable
+**Reach for it** when ingest data arrives flat - many pairs from many
+providers - and you want to accumulate before producing immutable
 snapshots. `Upsert(pair, provider, date, rate)` is the per-point entry
 point, `GetOrAddSeries(...)` exposes a builder for bulk work,
 `ToSeries()` snapshots every non-empty series, and `ToBook()`
@@ -164,14 +164,14 @@ table.Upsert(new CurrencyPair(CurrencyCode.USD, CurrencyCode.JPY), "BoJ", new Da
 var provider = new FixedDatedRateProvider(table.ToBook());
 ```
 
-## Looking rates up — the provider stack
+## Looking rates up - the provider stack
 
 ### Timeless vs. dated: the two contracts
 
 [`IRateProvider`](xref:Bodu.Financial.ExchangeRates.IRateProvider)
 exposes a single `GetRate(from, to)` returning a `decimal`. **Reach for
 it** when the rate is simply "current" and the date is not part of what
-you record — a unit-test fixture, a daily snapshot, a live ticker.
+you record - a unit-test fixture, a daily snapshot, a live ticker.
 
 [`IDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.IDatedRateProvider)
 takes a `DateOnly` and
@@ -179,7 +179,7 @@ takes a `DateOnly` and
 and returns an
 [`RateLookupResult`](xref:Bodu.Financial.ExchangeRates.RateLookupResult)
 with full provenance. **Reach for it** when the *date* of the rate is
-part of the audit trail — ledger postings, tax reports, regulatory
+part of the audit trail - ledger postings, tax reports, regulatory
 filings. It provides both `GetRate` (throws `KeyNotFoundException`) and
 allocation-free `TryGetRate` (`bool`); the timeless contract has only
 the throwing form.
@@ -192,7 +192,7 @@ the throwing form.
 | Try-pattern | no | yes |
 | Default impl | `FixedRateTable` | `FixedDatedRateProvider` |
 
-### `FixedRateTable` — the smallest timeless provider
+### `FixedRateTable` - the smallest timeless provider
 
 [`FixedRateTable`](xref:Bodu.Financial.ExchangeRates.FixedRateTable)
 implements the timeless contract from a flat `(from, to) → rate`
@@ -211,7 +211,7 @@ table.GetRate("EUR", "USD");  // 1 / 0.93   (inverse fallback)
 table.GetRate("USD", "USD");  // 1m         (identity)
 ```
 
-### `FixedDatedRateProvider` — the in-memory dated provider
+### `FixedDatedRateProvider` - the in-memory dated provider
 
 [`FixedDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider)
 implements the dated contract over a `RateBook`. Construct it
@@ -221,7 +221,7 @@ This is the workhorse store behind dated lookups; its behaviour under
 every `RateLookupOptions` setting is the subject of the
 [worked-dataset page](exchange-rate-lookups.md).
 
-### `AggregatingRateProvider` — primary plus fallbacks
+### `AggregatingRateProvider` - primary plus fallbacks
 
 [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider)
 (in `Bodu.Financial.ExchangeRates.Caching`) groups an ordered set of named dated
@@ -234,17 +234,17 @@ custom [`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IR
 and per-FX-pair routing are covered in the
 [caching and aggregating guide](exchange-rate-caching.md).
 
-### `DatedRateProviderAdapter` — dated source, timeless surface
+### `DatedRateProviderAdapter` - dated source, timeless surface
 
 [`DatedRateProviderAdapter`](xref:Bodu.Financial.ExchangeRates.DatedRateProviderAdapter)
 exposes a dated provider through `IRateProvider` by pinning a
 fixed valuation date and options. **Reach for it** when an existing
-consumer — such as `MoneyBag.ConvertTo<TTarget>(IRateProvider)`
-— accepts only the timeless contract but the rates must come from a
+consumer - such as `MoneyBag.ConvertTo<TTarget>(IRateProvider)` -
+accepts only the timeless contract but the rates must come from a
 dated source resolved with one consistent policy (a reporting-period
 end-date, say).
 
-### `RateHistoryAvailability` — how deep a provider's history goes
+### `RateHistoryAvailability` - how deep a provider's history goes
 
 [`RateHistoryAvailability`](xref:Bodu.Financial.ExchangeRates.RateHistoryAvailability)
 is a small immutable value a provider exposes through
@@ -252,7 +252,7 @@ is a small immutable value a provider exposes through
 to declare how far back it can serve rates, in one of three shapes (the
 [`RateHistoryAvailabilityKind`](xref:Bodu.Financial.ExchangeRates.RateHistoryAvailabilityKind)):
 `Unbounded` (no known floor), `Since(earliest)` (a fixed inception date),
-or `RollingDays(n)` (only the most recent *n* days — for example OANDA's
+or `RollingDays(n)` (only the most recent *n* days - for example OANDA's
 anonymous endpoint exposes roughly the last 180). **Reach for it** to find
 the earliest date worth requesting before a lookup: `GetEarliestAvailable(asOf)`
 resolves the floor against a reference date (`null` when unbounded), and
@@ -260,7 +260,7 @@ resolves the floor against a reference date (`null` when unbounded), and
 
 ## Lookup configuration and outcome
 
-### `RateLookupOptions` — the rules on a miss
+### `RateLookupOptions` - the rules on a miss
 
 [`RateLookupOptions`](xref:Bodu.Financial.ExchangeRates.RateLookupOptions)
 bundles the date-resolution policy, the tolerance window, and the
@@ -271,17 +271,17 @@ static factories (`Exact`, `PreviousWithin`, `NextWithin`,
 change a result is in the
 [worked-dataset page](exchange-rate-lookups.md).
 
-### `RateLookupResult` — the answer with provenance
+### `RateLookupResult` - the answer with provenance
 
 [`RateLookupResult`](xref:Bodu.Financial.ExchangeRates.RateLookupResult)
 carries the resolved `ExchangeRate`, the `RequestedDate`, the
 `Resolution` that fired, and `OffsetDays`, plus the derived
 `ResolvedDate`, `SignedOffsetDays`, `IsExactDate`, `IsPreviousDate`,
 and `IsFutureDate`. It is everything needed to explain *which* observed
-value was selected and *how far* from the request — without re-querying
+value was selected and *how far* from the request - without re-querying
 the table.
 
-### `MoneyConversionResult<TSource, TTarget>` — convert + audit
+### `MoneyConversionResult<TSource, TTarget>` - convert + audit
 
 [`MoneyConversionResult<,>`](xref:Bodu.Financial.MoneyConversionResult`2)
 is what `Money<T>.ConvertToWithRate<TSource, TTarget>(...)` returns: the
@@ -328,8 +328,8 @@ line of provenance per source currency alongside the total.
 
 ## See also
 
-- [Exchange-rate lookups on a known dataset](exchange-rate-lookups.md) — every option, worked end to end.
-- [Working with exchange rates](exchange-rates.md) — the provider-stack walkthrough and editing surface.
-- [Working with `Money<TCurrency>`](money.md) — the money types these rates convert.
-- [Bodu.Financial — Core concepts](../../docs/financial/concepts.md) — the shared vocabulary.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic, across Bodu.Numerics and Bodu.Financial.
+- [Exchange-rate lookups on a known dataset](exchange-rate-lookups.md) - every option, worked end to end.
+- [Working with exchange rates](exchange-rates.md) - the provider-stack walkthrough and editing surface.
+- [Working with `Money<TCurrency>`](money.md) - the money types these rates convert.
+- [Bodu.Financial - Core concepts](../../docs/financial/concepts.md) - the shared vocabulary.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic, across Bodu.Numerics and Bodu.Financial.

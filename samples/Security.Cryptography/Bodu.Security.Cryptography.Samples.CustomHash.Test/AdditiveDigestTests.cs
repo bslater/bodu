@@ -14,9 +14,9 @@ namespace Bodu.Security.Cryptography.Samples.CustomHash;
 /// Drives the library's shared <see cref="BlockHashAlgorithmTests{TTest, TAlgorithm, TVariant}" /> contract
 /// against the sample's <see cref="AdditiveDigest" />. This is the pattern for any consumer-authored
 /// <c>BlockHashAlgorithm</c>: supply a <see cref="HashAlgorithmSpecification" />, a factory, and the dense
-/// incremental-input digest table, and inherit the full block-buffered hashing contract — residual-buffer
+/// incremental-input digest table, and inherit the full block-buffered hashing contract - residual-buffer
 /// accumulation, block-alignment parity, padded-final-block correctness, streaming/async parity, disposal
-/// state, and property reflection — the same bar Tiger, Whirlpool, and BLAKE2b are held to.
+/// state, and property reflection - the same bar Tiger, Whirlpool, and BLAKE2b are held to.
 /// </summary>
 [TestClass]
 public sealed class AdditiveDigestTests

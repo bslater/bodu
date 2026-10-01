@@ -40,7 +40,7 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
-    /// Verifies that vector-valued properties — the heading-pair and titles-of-parts shape real documents carry —
+    /// Verifies that vector-valued properties - the heading-pair and titles-of-parts shape real documents carry -
     /// survive the write-back path end to end.
     /// </summary>
     [TestMethod]

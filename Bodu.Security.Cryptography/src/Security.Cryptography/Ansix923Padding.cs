@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to choose ANSI X.923.</strong> Pick this when interoperating with legacy financial / banking systems or
-/// formats that explicitly require the X.923 layout. For all other cases use <see cref="Pkcs7Padding" /> — it is the
+/// formats that explicitly require the X.923 layout. For all other cases use <see cref="Pkcs7Padding" /> - it is the
 /// modern standard and is what every mainstream library expects by default.
 /// </para>
 /// </remarks>

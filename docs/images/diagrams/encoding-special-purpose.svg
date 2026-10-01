@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="esp-t esp-d">
-  <title id="esp-t">Special-purpose encodings — Base45, Base62, Bech32</title>
+  <title id="esp-t">Special-purpose encodings - Base45, Base62, Bech32</title>
   <desc id="esp-d">Three special-purpose encodings sit alongside the core radix families. Base45 (RFC 9285) packs each pair of bytes into three characters drawn from the QR-code Alphanumeric-mode alphabet (0-9, A-Z and nine symbols) with no padding; a trailing odd byte becomes two characters. It carries binary payloads inside QR codes and the EU Digital COVID Certificate. Base62 uses the GMP-style alphabet 0-9 A-Z a-z and big-integer division by 62, preserving leading zero bytes as leading zero characters; it produces compact, URL-safe identifiers and short links. Bech32 and Bech32m (BIP 173 / 350) are not plain binary-to-text encodings: an encoded string is a human-readable part, the 1 separator, 5-bit data groups, and a six-symbol error-detecting checksum. They encode Bitcoin SegWit addresses and Lightning invoices.</desc>
 
   <defs>
@@ -33,7 +33,7 @@
     <rect class="pan" width="800" height="280" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Special-purpose encodings — Base45 · Base62 · Bech32</text>
+    <text class="ttl" x="16" y="20">Special-purpose encodings - Base45 · Base62 · Bech32</text>
 
     <!-- ============ Base45 ============ -->
     <g transform="translate(16 44)">

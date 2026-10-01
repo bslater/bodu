@@ -46,7 +46,7 @@ public partial class ConfigurationViewTests
     }
 
     /// <summary>
-    /// Verifies that under the identity mapping — where the stored canonical key keeps its dotted form — a colon-form
+    /// Verifies that under the identity mapping - where the stored canonical key keeps its dotted form - a colon-form
     /// lookup still resolves to the same value. This is the case the previous one-way <c>'.'→':'</c> normalization
     /// could not reach.
     /// </summary>

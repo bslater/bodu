@@ -76,7 +76,7 @@ public partial class BencodeSerializerTests
         var value = new List<byte[]> { new byte[] { 0x01, 0x02 }, Array.Empty<byte>() };
 
         byte[] bytes = BencodeSerializer.Serialize(value);
-        // l {2: 0x01 0x02}{0:} e — each byte-string element carries the raw bytes after its length prefix.
+        // l {2: 0x01 0x02}{0:} e - each byte-string element carries the raw bytes after its length prefix.
         byte[] expected = [.. Encoding.Latin1.GetBytes("l2:"), 0x01, 0x02, .. Encoding.Latin1.GetBytes("0:e")];
         CollectionAssert.AreEqual(expected, bytes);
 

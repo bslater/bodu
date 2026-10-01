@@ -10,7 +10,7 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents an immutable complex number — a value with a real and an imaginary component — backed by an arbitrary
+/// Represents an immutable complex number - a value with a real and an imaginary component - backed by an arbitrary
 /// <see cref="IFloatingPointIeee754{TSelf}" /> component type.
 /// </summary>
 /// <typeparam name="T">The floating-point type used to store the real and imaginary components.</typeparam>

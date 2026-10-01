@@ -12,8 +12,8 @@ namespace Bodu.Formats.Excel;
 /// </summary>
 /// <remarks>
 /// The defaults read the full metadata surface (document properties and date-format detection) and dispose a
-/// caller-supplied stream with the workbook. For a numeric, time-series workload — where only row, column, and numeric
-/// value matter — clearing <see cref="ReadDocumentProperties" /> and <see cref="DetectDateFormats" /> skips the
+/// caller-supplied stream with the workbook. For a numeric, time-series workload - where only row, column, and numeric
+/// value matter - clearing <see cref="ReadDocumentProperties" /> and <see cref="DetectDateFormats" /> skips the
 /// property sets and number-format interpretation.
 /// <example>
 /// <code language="csharp">

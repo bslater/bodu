@@ -10,7 +10,7 @@ namespace Bodu.Formats.Outlook;
 /// Provides curated well-known MAPI property identifiers (the <c>PidTag*</c> constants of MS-OXPROPS).
 /// </summary>
 /// <remarks>
-/// This is a deliberately small subset — the identifiers the Outlook readers' convenience surfaces and common consumer
+/// This is a deliberately small subset - the identifiers the Outlook readers' convenience surfaces and common consumer
 /// scenarios need. Every property of a message remains reachable through <see cref="MapiPropertyCollection" /> by raw
 /// identifier regardless of whether it is listed here.
 /// </remarks>

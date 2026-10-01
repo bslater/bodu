@@ -1,6 +1,6 @@
 # Formats.Excel Samples
 
-A console application demonstrating the `Bodu.Formats.Excel.Binary` package — the read-only
+A console application demonstrating the `Bodu.Formats.Excel.Binary` package - the read-only
 Excel 97-2003 (BIFF8 / `.xls`) workbook reader. Run it with:
 
 ```bash
@@ -8,7 +8,7 @@ dotnet run --project samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.Exc
 ```
 
 The sample is offline and deterministic: every scenario reads the committed
-`Data/sample-biff8.xls` fixture (464 KB — a genuine two-sheet exchange-rates workbook with
+`Data/sample-biff8.xls` fixture (464 KB - a genuine two-sheet exchange-rates workbook with
 ~18,000 cells, copied from the library's test fixtures).
 
 ## Sample → pattern → package matrix

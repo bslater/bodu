@@ -98,8 +98,8 @@ public partial class PstHeapNodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PstHeapNode.TryGetItem" /> reports failure — and <see cref="PstHeapNode.GetItem" />
-    /// throws <see cref="PstFileFormatException" /> — for identifiers outside the heap: the null HID, nonzero type
+    /// Verifies that <see cref="PstHeapNode.TryGetItem" /> reports failure - and <see cref="PstHeapNode.GetItem" />
+    /// throws <see cref="PstFileFormatException" /> - for identifiers outside the heap: the null HID, nonzero type
     /// bits, an out-of-range item index, and an out-of-range block index.
     /// </summary>
     /// <param name="testName">The scenario name.</param>

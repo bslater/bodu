@@ -24,7 +24,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Strict" /> — canonical object form
+/// <see cref="NumericsJsonPolicy.Strict" /> - canonical object form
 /// <c>{ "lower": 1, "upper": 5, "lowerInclusive": true, "upperInclusive": true }</c>; the empty interval emits as the
 /// single-property object <c>{ "empty": true }</c>. A bounded side requires its endpoint value and inclusion flag; an
 /// unbounded side emits the marker <c>"lowerUnbounded": true</c> / <c>"upperUnbounded": true</c> in place of both (for
@@ -35,7 +35,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Lenient" /> — same object shape as <see cref="NumericsJsonPolicy.Strict" />, with
+/// <see cref="NumericsJsonPolicy.Lenient" /> - same object shape as <see cref="NumericsJsonPolicy.Strict" />, with
 /// additional tolerance: <c>"min"</c> and <c>"max"</c> are accepted as aliases for <c>"lower"</c> and <c>"upper"</c>,
 /// missing endpoint-inclusion flags default to closed (<see langword="true" />), and a top-level JSON string is
 /// accepted and routed through <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" /> as a
@@ -44,7 +44,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Compact" /> — string form in ISO 31-11 bracket notation (for example <c>"[1, 5)"</c>)
+/// <see cref="NumericsJsonPolicy.Compact" /> - string form in ISO 31-11 bracket notation (for example <c>"[1, 5)"</c>)
 /// or the empty-set glyph <c>"∅"</c>. Reads delegate to
 /// <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" /> and writes call
 /// <see cref="Interval{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture.
@@ -114,7 +114,7 @@ public sealed class IntervalJsonConverter<T>
 
         // Endpoint values (or the unbounded marker) come first; the inclusivity flags trail them so a fully bounded
         // interval keeps the original lower/upper/lowerInclusive/upperInclusive property order. An unbounded side emits
-        // only its marker — an infinite endpoint has no value and no inclusion.
+        // only its marker - an infinite endpoint has no value and no inclusion.
         if (value.LowerUnbounded)
         {
             writer.WriteBoolean("lowerUnbounded", true);

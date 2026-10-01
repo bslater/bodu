@@ -64,7 +64,7 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The date and time value whose year and month are used to determine the result.</param>
     /// <param name="calendar">
     /// An optional <see cref="Calendar" /> instance used to evaluate the result. If <see langword="null" />, the
-    /// calendar of <see cref="CultureInfo.CurrentCulture" /> is used.
+    /// <see cref="DateTimeFormatInfo.Calendar" /> of <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </param>
     /// <returns>
     /// The total number of days in the specified month and year of <paramref name="dateTime" />, based on the rules of
@@ -75,9 +75,10 @@ public static partial class DateTimeExtensions
     /// This overload supports calendar-aware computations for systems such as <see cref="HebrewCalendar" />,
     /// <see cref="HijriCalendar" />, <see cref="JapaneseCalendar" />, and others supported by .NET.
     /// <paramref name="dateTime" /> is first projected into the target calendar, so the result is equivalent to
-    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> — the length of the
-    /// calendar's own month containing the date, not the Gregorian month. The current culture's calendar is used if
-    /// <paramref name="calendar" /> is <see langword="null" />.
+    /// <c>calendar.GetDaysInMonth(calendar.GetYear(dateTime), calendar.GetMonth(dateTime))</c> - the length of the
+    /// calendar's own month containing the date, not the Gregorian month. If <paramref name="calendar" /> is
+    /// <see langword="null" />, the <see cref="DateTimeFormatInfo.Calendar" /> of
+    /// <see cref="CultureInfo.CurrentCulture" /> is used.
     /// </para>
     /// <para>
     /// This method does not account for leap months. For calendars that support leap months or multiple eras, consider
@@ -86,7 +87,7 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static int DaysInMonth(this DateTime dateTime, Calendar? calendar)
     {
-        Calendar target = calendar ?? CultureInfo.CurrentCulture.Calendar;
+        Calendar target = calendar ?? CultureInfo.CurrentCulture.DateTimeFormat.Calendar;
 
         return target.GetDaysInMonth(target.GetYear(dateTime), target.GetMonth(dateTime));
     }

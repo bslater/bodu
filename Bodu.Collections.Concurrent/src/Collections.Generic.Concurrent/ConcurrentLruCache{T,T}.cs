@@ -19,17 +19,17 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <remarks>
 /// <para>
 /// <see cref="ConcurrentLruCache{TKey, TValue}" /> is the read-optimized bounded cache of the package: entries live in
-/// a <see cref="ConcurrentDictionary{TKey, TValue}" /> and recency is tracked by three internal FIFO queues — <em>hot</em>
+/// a <see cref="ConcurrentDictionary{TKey, TValue}" /> and recency is tracked by three internal FIFO queues - <em>hot</em>
 /// (new arrivals), <em>warm</em> (entries that have proven reuse), and <em>cold</em> (entries one unaccessed pass from
 /// eviction). A successful lookup is entirely lock-free: it performs the dictionary probe and sets the entry's accessed
-/// flag with a single volatile write. Queue maintenance — promoting accessed entries, demoting idle ones, evicting from
-/// the cold end — is amortized onto writers: after each mutating operation at most one thread briefly cycles the queues
+/// flag with a single volatile write. Queue maintenance - promoting accessed entries, demoting idle ones, evicting from
+/// the cold end - is amortized onto writers: after each mutating operation at most one thread briefly cycles the queues
 /// while contending writers proceed without waiting.
 /// </para>
 /// <para>
 /// The policy is a <em>pseudo</em>-LRU: it approximates least-recently-used ordering the way production caches
 /// (BitFaster.Caching, Caffeine) do, favoring read throughput over exact recency ordering. For exact, selectable
-/// eviction policies — at the cost of taking a segment lock on every operation, including reads — use
+/// eviction policies - at the cost of taking a segment lock on every operation, including reads - use
 /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}" />. The two types also differ in their capacity contract:
 /// this cache's <see cref="Count" /> may <em>transiently</em> exceed <see cref="Capacity" /> by at most the number of
 /// concurrently in-flight writers. That bound is enforced by write back-pressure: a writer that observes the cache over
@@ -49,7 +49,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// Hit and miss telemetry is maintained on cache-line-padded striped counters so the lock-free read path never contends
 /// on a shared counter; <see cref="HitCount" />, <see cref="MissCount" />, and <see cref="HitRatio" /> aggregate on
 /// demand. Evictions raise the post-commit <see cref="ItemEvicted" /> event after all internal coordination has been
-/// released, with handler exceptions suppressed (except <see cref="OutOfMemoryException" />) — the package's
+/// released, with handler exceptions suppressed (except <see cref="OutOfMemoryException" />) - the package's
 /// established concurrent eviction-event contract.
 /// </para>
 /// <para>
@@ -222,7 +222,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// present by the time the handler observes them.
     /// </para>
     /// <para>
-    /// Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed — only
+    /// Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed - only
     /// <see cref="OutOfMemoryException" /> propagates. There is no pre-removal event: a committed concurrent eviction
     /// cannot be unwound.
     /// </para>
@@ -410,12 +410,12 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// <para>
     /// The sweep runs under the maintenance lock: every entry currently in the backing dictionary is removed with a
     /// node-conditional remove, and the recency queues are drained of the resulting dead nodes. Entries added
-    /// concurrently with the sweep may survive it — unlike
+    /// concurrently with the sweep may survive it - unlike
     /// <see cref="ConcurrentEvictingDictionary{TKey, TValue}.Clear" />, this cache has no global write lock to make the
     /// reset atomic against writers.
     /// </para>
     /// <para>
-    /// A clear is a bulk reset, not an eviction — <see cref="ItemEvicted" /> is not raised for the removed entries.
+    /// A clear is a bulk reset, not an eviction - <see cref="ItemEvicted" /> is not raised for the removed entries.
     /// <see cref="HitCount" />, <see cref="MissCount" />, and <see cref="EvictionCount" /> are reset to zero.
     /// </para>
     /// </remarks>
@@ -664,7 +664,7 @@ public sealed partial class ConcurrentLruCache<TKey, TValue>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// The key is reusable immediately, but the removed entry's dead queue node keeps its occupancy slot until a later
-    /// maintenance pass drains it. An explicit removal is not an eviction — it does not raise
+    /// maintenance pass drains it. An explicit removal is not an eviction - it does not raise
     /// <see cref="ItemEvicted" /> and does not increment <see cref="EvictionCount" />.
     /// </remarks>
     public bool TryRemove(TKey key, out TValue value)

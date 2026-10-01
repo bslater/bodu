@@ -247,7 +247,7 @@ public partial class Blake2sTests
 
         byte[] key = Enumerable.Range(0, Blake2s.MaxKeySize / 8).Select(i => (byte)i).ToArray();
 
-        // (name, input-length, expected-hex) — all use the same 32-byte sequential key.
+        // (name, input-length, expected-hex) - all use the same 32-byte sequential key.
         (string Name, int Length, string Hex)[] entries =
         [
             ("KAT-0",  0,  "48A8997DA407876B3D79C0D92325AD3B89CBB754D86AB71AEE047AD345FD2C49"),

@@ -72,8 +72,8 @@ public partial class MoneyBagTests
     }
 
     /// <summary>
-    /// Verifies that the dated overload uses the lookup options — e.g. <see cref="RateLookupOptions.PreviousWithin(int)" />
-    /// — to resolve fall-back dates within the requested tolerance.
+    /// Verifies that the dated overload uses the lookup options - e.g. <see cref="RateLookupOptions.PreviousWithin(int)" />
+    /// - to resolve fall-back dates within the requested tolerance.
     /// </summary>
     [TestMethod]
     public void DatedConvertTo_WhenResolutionPolicyAppliesFallback_ShouldUseEarlierObservation()
@@ -133,7 +133,7 @@ public partial class MoneyBagTests
     [TestMethod]
     public void DatedConvertTo_WhenBagAlreadyContainsTargetCurrency_ShouldPassThroughWithoutRateLookup()
     {
-        // No USD/USD rate in the provider — proves the same-currency identity is taking effect.
+        // No USD/USD rate in the provider - proves the same-currency identity is taking effect.
         IDatedRateProvider rates = BuildDatedProvider();
 
         MoneyBag bag = MoneyBag.Empty.Add(new Money<USD>(75m));

@@ -46,7 +46,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="property">The property to test for post-disposal write access.</param>
     /// <remarks>
     /// Skipped (inconclusive) when <typeparamref name="TAlgorithm" /> does not implement <see cref="IDisposable" />.
-    /// Reads the property value before disposal, then reassigns the same value after disposal — exercising the
+    /// Reads the property value before disposal, then reassigns the same value after disposal - exercising the
     /// setter without changing observable behaviour.
     /// </remarks>
     [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
@@ -176,8 +176,8 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         });
     }
     /// <summary>
-    /// Verifies that disposing a freshly-constructed instance of the algorithm under test — one that has never had
-    /// any property accessed or hashing performed — completes without throwing.
+    /// Verifies that disposing a freshly-constructed instance of the algorithm under test - one that has never had
+    /// any property accessed or hashing performed - completes without throwing.
     /// </summary>
     /// <remarks>
     /// Skipped (inconclusive) when <typeparamref name="TAlgorithm" /> does not implement <see cref="IDisposable" />,

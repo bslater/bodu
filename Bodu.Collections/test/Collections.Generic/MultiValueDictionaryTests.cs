@@ -47,7 +47,7 @@ public partial class MultiValueDictionaryTests
     /// <summary>Value-type key with structural (value-based) equality via record struct.</summary>
     private readonly record struct Coord(int Row, int Col);
 
-    /// <summary>Reference-type value with no overridden equality — uses reference identity.</summary>
+    /// <summary>Reference-type value with no overridden equality - uses reference identity.</summary>
     private sealed class Label
     {
 

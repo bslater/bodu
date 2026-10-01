@@ -1000,7 +1000,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0004",
-            name: "#pragma warning directive between XML doc and member does not block fix — long summary and returns lines",
+            name: "#pragma warning directive between XML doc and member does not block fix - long summary and returns lines",
             inputSource:
             """
             namespace Bodu.Extensions;
@@ -1045,7 +1045,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0005",
-            name: "#pragma warning directive between XML doc and method does not block fix — long para line in remarks",
+            name: "#pragma warning directive between XML doc and method does not block fix - long para line in remarks",
             inputSource:
             """
             namespace Bodu.Extensions;
@@ -1100,7 +1100,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.Safety(
             id: "XMLSAFE-0006",
-            name: "#if/#else/#endif directive between XML doc and class does not block fix — long summary line",
+            name: "#if/#else/#endif directive between XML doc and class does not block fix - long summary line",
             inputSource:
             """
             namespace Bodu.Collections.Generic;

@@ -11,8 +11,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// provider names to consult and, optionally, the strategy to combine them.
 /// </summary>
 /// <remarks>
-/// A route lets a single aggregator prefer different sources for different pairs — for example <c>AUD/USD</c> via
-/// <c>[RBA, ECB]</c> while <c>USD/GBP</c> prefers <c>[ECB, RBA]</c> — and optionally override the aggregator's default
+/// A route lets a single aggregator prefer different sources for different pairs - for example <c>AUD/USD</c> via
+/// <c>[RBA, ECB]</c> while <c>USD/GBP</c> prefers <c>[ECB, RBA]</c> - and optionally override the aggregator's default
 /// strategy for that pair.
 /// <example>
 /// <code language="csharp">

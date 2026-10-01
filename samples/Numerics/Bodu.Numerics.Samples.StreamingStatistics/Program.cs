@@ -10,7 +10,7 @@ namespace Bodu.Numerics.Samples.StreamingStatistics;
 
 /// <summary>
 /// Entry point for the streaming-statistics sample: the single-pass accumulators from
-/// <c>Bodu.Numerics</c> — <c>RunningStatistics&lt;T&gt;</c>, the fixed-window
+/// <c>Bodu.Numerics</c> - <c>RunningStatistics&lt;T&gt;</c>, the fixed-window
 /// <c>MovingSum&lt;T&gt;</c> / <c>MovingMinMax&lt;T&gt;</c>, the streaming
 /// <c>RunningQuantile&lt;T&gt;</c>, and the exact <c>BigDecimal</c>. Everything runs offline and
 /// deterministically over fixed input streams.

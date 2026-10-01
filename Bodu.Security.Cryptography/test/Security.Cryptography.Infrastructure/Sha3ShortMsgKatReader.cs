@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses the NIST SHA-3 competition <c>ShortMsgKAT</c> / <c>LongMsgKAT</c> file format — repeated
-/// <c>Len = / Msg = / MD =</c> records where <c>Len</c> is the message length in <b>bits</b> — into known-answer
+/// Parses the NIST SHA-3 competition <c>ShortMsgKAT</c> / <c>LongMsgKAT</c> file format - repeated
+/// <c>Len = / Msg = / MD =</c> records where <c>Len</c> is the message length in <b>bits</b> - into known-answer
 /// records. Only byte-aligned records (<c>Len</c> a multiple of 8) are emitted, since the algorithms under test operate
 /// on whole bytes; bit-partial records are skipped.
 /// </summary>

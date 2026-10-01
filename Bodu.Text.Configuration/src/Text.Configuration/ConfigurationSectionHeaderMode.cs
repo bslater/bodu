@@ -16,7 +16,7 @@ namespace Bodu.Text.Configuration;
 /// any text that appears *after* the final <c>]</c> is a separate decision that this mode controls.
 /// </para>
 /// <para>
-/// Under <see cref="Lenient" /> the parser accepts trailing content silently — useful when the document is authored
+/// Under <see cref="Lenient" /> the parser accepts trailing content silently - useful when the document is authored
 /// against a lenient EditorConfig dialect that ignores trailing words. Under <see cref="Strict" /> the parser emits
 /// <see cref="ConfigurationDiagnosticCode.TrailingContentAfterSectionHeader" /> so authors learn about typos.
 /// <see cref="AllowTrailingInlineComment" /> sits between the two: trailing comments (introduced by <c>#</c> or

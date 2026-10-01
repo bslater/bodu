@@ -21,8 +21,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <remarks>
 /// Writing dispatches on the value's runtime type: a value whose runtime type differs from <typeparamref name="T" />
 /// re-enters converter resolution so a polymorphic member serializes exactly as its concrete instance would. A member
-/// whose value is <see langword="null" /> writes the YAML null scalar unless the member's ignore condition — or the
-/// serializer-wide <see cref="YamlSerializerOptions.DefaultIgnoreCondition" /> — omits it.
+/// whose value is <see langword="null" /> writes the YAML null scalar unless the member's ignore condition - or the
+/// serializer-wide <see cref="YamlSerializerOptions.DefaultIgnoreCondition" /> - omits it.
 /// </remarks>
 internal sealed class ObjectConverter<T>
     : YamlConverter<T>
@@ -183,8 +183,8 @@ internal sealed class ObjectConverter<T>
 
         YamlWriteStack? state = writer.WriteStack;
 
-        // The collision check covers every declared wire name — including members omitted from this document by an
-        // ignore condition — matching the walker's contract that extension data never shadows a declared member.
+        // The collision check covers every declared wire name - including members omitted from this document by an
+        // ignore condition - matching the walker's contract that extension data never shadows a declared member.
         var declared = new HashSet<string>(StringComparer.Ordinal);
         foreach (PropertyMetadata property in metadata.Properties)
             declared.Add(property.WireName);

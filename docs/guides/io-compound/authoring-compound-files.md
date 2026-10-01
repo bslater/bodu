@@ -4,7 +4,7 @@ title: Authoring compound files
 
 # Authoring compound files
 
-**Bodu.IO.Compound** writes as well as reads. This guide covers building a Compound File Binary (CFB) container from scratch, embedding nested storages and named streams, and round-tripping OLE property sets. As with the read path, the library has no application-format knowledge — it lays out the storage tree and the raw bytes you give it, and leaves the format payload to you.
+**Bodu.IO.Compound** writes as well as reads. This guide covers building a Compound File Binary (CFB) container from scratch, embedding nested storages and named streams, and round-tripping OLE property sets. As with the read path, the library has no application-format knowledge - it lays out the storage tree and the raw bytes you give it, and leaves the format payload to you.
 
 There are two authoring paths, and they suit different jobs:
 
@@ -15,7 +15,7 @@ There are two authoring paths, and they suit different jobs:
 
 The builder path is the default recommendation: it is a detached, in-memory object model with no open file handle until you serialize. Reach for the in-place path when you want to write a stream's bytes through a real <xref:System.IO.Stream> cursor.
 
-## Pattern 1 — assemble a container with the builder
+## Pattern 1 - assemble a container with the builder
 
 <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilder.CreateRoot> returns a detached root. `AddStream` adds a named stream from an in-memory payload; `AddStorage` adds a nested storage and returns it so you can descend. Serialize with `Save`, `WriteTo`, or `ToArray`.
 
@@ -37,7 +37,7 @@ byte[] bytes = root.ToArray();        // …or materialize the bytes
 
 `AddStream` accepts a `ReadOnlyMemory<byte>`, so a `byte[]` binds directly. Both `AddStream` and `AddStorage` throw <xref:Bodu.IO.Compound.CompoundFileSerializationException> if a child with the same name already exists in that storage.
 
-## Pattern 2 — defer large payloads
+## Pattern 2 - defer large payloads
 
 When a stream's bytes come from a file or another source you do not want to hold in memory, add it with a deferred opener or directly from a path. The bytes are read only when the container is serialized.
 
@@ -56,9 +56,9 @@ root.AddStreamFromFile("Data", "payload.dat");
 root.Save("out.cfb");
 ```
 
-## Pattern 3 — create and mutate a file in place
+## Pattern 3 - create and mutate a file in place
 
-<xref:Bodu.IO.Compound.CompoundFile.Create*> returns a writable <xref:Bodu.IO.Compound.CompoundFile>. Its `RootStorage.CreateStream` returns a writable <xref:Bodu.IO.Compound.CompoundStream> — a real read-write `Stream` (`CanWrite` is `true`) — and `CreateStorage` adds a nested storage. Edits are staged in memory and persisted by `Commit`.
+<xref:Bodu.IO.Compound.CompoundFile.Create*> returns a writable <xref:Bodu.IO.Compound.CompoundFile>. Its `RootStorage.CreateStream` returns a writable <xref:Bodu.IO.Compound.CompoundStream> - a real read-write `Stream` (`CanWrite` is `true`) - and `CreateStorage` adds a nested storage. Edits are staged in memory and persisted by `Commit`.
 
 ```csharp
 using Bodu.IO.Compound;
@@ -80,17 +80,17 @@ using (CompoundStream nested = storage.CreateStream("Nested"))
 file.Commit();   // nothing is written to `output` until this call
 ```
 
-A writable <xref:Bodu.IO.Compound.CompoundStorage> also exposes its directory-entry metadata as settable properties — <xref:Bodu.IO.Compound.CompoundStorage.ClassId>, <xref:Bodu.IO.Compound.CompoundStorage.CreationTime>, <xref:Bodu.IO.Compound.CompoundStorage.ModifiedTime>, and <xref:Bodu.IO.Compound.CompoundStorage.StateBits>. The root storage's `ClassId` is the conventional file-type discriminator for OLE2-based formats:
+A writable <xref:Bodu.IO.Compound.CompoundStorage> also exposes its directory-entry metadata as settable properties - <xref:Bodu.IO.Compound.CompoundStorage.ClassId>, <xref:Bodu.IO.Compound.CompoundStorage.CreationTime>, <xref:Bodu.IO.Compound.CompoundStorage.ModifiedTime>, and <xref:Bodu.IO.Compound.CompoundStorage.StateBits>. The root storage's `ClassId` is the conventional file-type discriminator for OLE2-based formats:
 
 ```csharp
 file.RootStorage.ClassId = new Guid("00020820-0000-0000-c000-000000000046");   // Excel workbook CLSID
 ```
 
-Metadata is never stamped automatically — `Commit` leaves timestamps untouched, so a value only changes when you set it (and byte-identical re-saves stay possible). Per MS-CFB, only storage entries carry this metadata; stream entries are always written with zero CLSID, timestamps, and state bits.
+Metadata is never stamped automatically - `Commit` leaves timestamps untouched, so a value only changes when you set it (and byte-identical re-saves stay possible). Per MS-CFB, only storage entries carry this metadata; stream entries are always written with zero CLSID, timestamps, and state bits.
 
-Disposing the file **without** calling `Commit` discards the staged edits — `Commit` is the only thing that writes to the destination. `Revert` drops staged edits explicitly; `IsDirty` reports whether any are pending.
+Disposing the file **without** calling `Commit` discards the staged edits - `Commit` is the only thing that writes to the destination. `Revert` drops staged edits explicitly; `IsDirty` reports whether any are pending.
 
-## Pattern 4 — edit an existing container
+## Pattern 4 - edit an existing container
 
 To change a file you already have, load it into a builder, mutate the tree, and re-serialize. <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilder.FromFile*> copies from an open <xref:Bodu.IO.Compound.CompoundFile> (pass `lazy: true` to defer reading stream payloads until serialization); `Load` reads from a stream.
 
@@ -109,7 +109,7 @@ root.Rename("Storage 1", "Archive");           // rename a child
 root.Save("out.xls");
 ```
 
-## Pattern 5 — write document property sets
+## Pattern 5 - write document property sets
 
 The <xref:Bodu.IO.Compound.PropertySets> namespace authors OLE property sets as well as reading them. Build a <xref:Bodu.IO.Compound.PropertySets.SummaryInformationBuilder> from typed fields, serialize it with `ToArray`, and embed it at the conventional stream name. `CompoundFile.TryGetSummaryInformation` reads it back.
 
@@ -149,7 +149,7 @@ if (file.TryGetSummaryInformation(out SummaryInformation? read))
 
 ## Where to go next
 
-- **[Reading compound files](reading-compound-files.md)** — the open → navigate → read recipe the write path mirrors.
-- **[Reading property sets](property-sets.md)** — the read side of the summary-information streams.
-- **[Buffered vs streaming access](streaming-and-buffering.md)** — the read strategy and the `CompoundStream` cursor.
+- **[Reading compound files](reading-compound-files.md)** - the open → navigate → read recipe the write path mirrors.
+- **[Reading property sets](property-sets.md)** - the read side of the summary-information streams.
+- **[Buffered vs streaming access](streaming-and-buffering.md)** - the read strategy and the `CompoundStream` cursor.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) and the [Bodu.IO.Compound.Builders](xref:Bodu.IO.Compound.Builders) authoring types.

@@ -49,7 +49,7 @@ public partial class MoneyBagJsonConverterTests
     }
 
     /// <summary>
-    /// Verifies that malformed payloads — a non-object root or a non-numeric balance — are rejected with a
+    /// Verifies that malformed payloads - a non-object root or a non-numeric balance - are rejected with a
     /// <see cref="JsonException" />.
     /// </summary>
     [TestMethod]

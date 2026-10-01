@@ -29,7 +29,7 @@ public partial class SpanExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — full reverse, varying lengths
+    // Data sources - full reverse, varying lengths
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -45,7 +45,7 @@ public partial class SpanExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — partial reverse, index + count
+    // Data sources - partial reverse, index + count
     // -------------------------------------------------------------------------
 
     /// <summary>
@@ -61,7 +61,7 @@ public partial class SpanExtensionsTests
         ];
 
     // -------------------------------------------------------------------------
-    // Data sources — Range expressions
+    // Data sources - Range expressions
     // Note: Range is not a valid [DataRow] argument; [DynamicData] is required
     // for all Range-based parameterised tests.
     // -------------------------------------------------------------------------
@@ -78,8 +78,8 @@ public partial class SpanExtensionsTests
         [0, 0, false, true,  new[] { 5, 4, 3, 2, 1 }], // 0..^0  full array
         [0, 3, false, false, new[] { 3, 2, 1, 4, 5 }], // 0..3   first section
         [2, 5, false, false, new[] { 1, 2, 5, 4, 3 }], // 2..5   last section
-        [2, 2, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..2   empty range — straight copy
-        [2, 3, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..3   single element — straight copy
+        [2, 2, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..2   empty range - straight copy
+        [2, 3, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..3   single element - straight copy
         ];
 
     // -------------------------------------------------------------------------

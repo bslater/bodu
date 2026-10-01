@@ -22,8 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Within the transforms and products, coefficients are reduced by Montgomery reduction and a Barrett-style reduction
 /// (see the Reduction partial): fixed sequences of multiplications, shifts and masks, never a division. Of the two
-/// factors in each coefficient-wise product, the one fixed for the whole operation — the matrix Â, ŝ₁, ŝ₂, t̂₀, or
-/// t̂₁·2ᵈ — is held in Montgomery form, so each product needs a single reduction and comes out exact.
+/// factors in each coefficient-wise product, the one fixed for the whole operation - the matrix Â, ŝ₁, ŝ₂, t̂₀, or
+/// t̂₁·2ᵈ - is held in Montgomery form, so each product needs a single reduction and comes out exact.
 /// </para>
 /// <para>
 /// The number of rejection-loop restarts during signing is public by design (FIPS 204 §3.5); the per-iteration work is
@@ -237,8 +237,7 @@ internal static partial class MLDsaEngine
             for (int kappa = 0; ; kappa += l)
             {
                 // y = ExpandMask(ρ″, κ); w = NTT⁻¹(Â ∘ NTT(y)); w₁ = HighBits(w).
-                for (int r = 0; r < l; r++)
-                    ExpandMask(parameters, rhoDoublePrime, kappa + r, y.Slice(r * N, N));
+                ExpandMaskVector(parameters, rhoDoublePrime, kappa, y);
 
                 y.CopyTo(yHat);
                 for (int r = 0; r < l; r++)
@@ -250,8 +249,7 @@ internal static partial class MLDsaEngine
                 {
                     Span<int> wi = w.Slice(i * N, N);
                     InvNtt(wi);
-                    for (int j = 0; j < N; j++)
-                        w1[(i * N) + j] = HighBits(parameters.Gamma2, wi[j]);
+                    HighBits(parameters.Gamma2, wi, w1.Slice(i * N, N));
                 }
 
                 // c̃ = H(μ ‖ w1Encode(w₁), λ/4); c = SampleInBall(c̃); ĉ = NTT(c).
@@ -273,10 +271,7 @@ internal static partial class MLDsaEngine
                     InvNtt(product);
 
                     Span<int> zr = z.Slice(r * N, N);
-                    ReadOnlySpan<int> yr = y.Slice(r * N, N);
-                    for (int j = 0; j < N; j++)
-                        zr[j] = Canonicalize(yr[j] + product[j] - Q);
-
+                    AddModQ(y.Slice(r * N, N), product, zr);
                     rejected |= InfinityNorm(zr) >= parameters.Gamma1 - parameters.Beta;
                 }
 
@@ -287,16 +282,8 @@ internal static partial class MLDsaEngine
                     InvNtt(product);
 
                     Span<int> ri = wMinusCs2.Slice(i * N, N);
-                    ReadOnlySpan<int> wi = w.Slice(i * N, N);
-                    int lowNorm = 0;
-                    for (int j = 0; j < N; j++)
-                    {
-                        ri[j] = Canonicalize(wi[j] - product[j]);
-                        Decompose(parameters.Gamma2, ri[j], out _, out int r0);
-                        lowNorm = Math.Max(lowNorm, Math.Abs(r0));
-                    }
-
-                    rejected |= lowNorm >= parameters.Gamma2 - parameters.Beta;
+                    SubtractModQ(w.Slice(i * N, N), product, ri);
+                    rejected |= LowBitsNorm(parameters.Gamma2, ri) >= parameters.Gamma2 - parameters.Beta;
                 }
 
                 // h = MakeHint(−⟨ĉ ∘ t̂₀⟩, w − cs₂ + ct₀); reject when ‖ct₀‖∞ ≥ γ₂ or the hint weight exceeds ω.
@@ -307,15 +294,7 @@ internal static partial class MLDsaEngine
                     InvNtt(product);
 
                     rejected |= InfinityNorm(product) >= parameters.Gamma2;
-
-                    for (int j = 0; j < N; j++)
-                    {
-                        int negated = Canonicalize(-product[j]);
-                        int basis = Canonicalize(wMinusCs2[(i * N) + j] + product[j] - Q);
-                        int hint = MakeHint(parameters.Gamma2, negated, basis);
-                        hints[(i * N) + j] = hint;
-                        hintWeight += hint;
-                    }
+                    hintWeight += MakeHints(parameters.Gamma2, product, wMinusCs2.Slice(i * N, N), hints.Slice(i * N, N));
                 }
 
                 if (rejected || hintWeight > parameters.Omega)
@@ -627,15 +606,9 @@ internal static partial class MLDsaEngine
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(rho, 32);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(matrix, parameters.K * parameters.L * N);
 
-        for (int r = 0; r < parameters.K; r++)
-        {
-            for (int s = 0; s < parameters.L; s++)
-            {
-                Span<int> entry = matrix.Slice(((r * parameters.L) + s) * N, N);
-                RejNttPoly(rho, (byte)s, (byte)r, entry);
-                ToMontgomery(entry);
-            }
-        }
+        SampleMatrix(parameters, rho, matrix);
+        for (int offset = 0; offset < matrix.Length; offset += N)
+            ToMontgomery(matrix.Slice(offset, N));
     }
 
     /// <summary>
@@ -686,22 +659,24 @@ internal static partial class MLDsaEngine
         ReadOnlySpan<byte> rhoPrime = expanded.Slice(32, 64);
         ReadOnlySpan<byte> capK = expanded[96..];
 
-        // s₁, ŝ₁, s₂, t and t₀, then Â when the caller does not keep it.
+        // s₁ and s₂, ŝ₁, t and t₀, then Â when the caller does not keep it.
         int length = ((2 * l) + (3 * k) + (keepValues ? 0 : k * l)) * N;
         int[] rented = ArrayPool<int>.Shared.Rent(length);
 
         try
         {
             Span<int> workspace = rented.AsSpan(0, length);
-            Span<int> s1 = TakePolynomials(ref workspace, l);
+
+            // s₁ and s₂ are adjacent, so ExpandS samples them as one vector, nonces 0 to ℓ + k − 1.
+            Span<int> secrets = TakePolynomials(ref workspace, l + k);
+            Span<int> s1 = secrets[..(l * N)];
+            Span<int> s2 = secrets[(l * N)..];
             Span<int> s1Hat = TakePolynomials(ref workspace, l);
-            Span<int> s2 = TakePolynomials(ref workspace, k);
             Span<int> t = TakePolynomials(ref workspace, k);
             Span<int> t0 = TakePolynomials(ref workspace, k);
             Span<int> expandedMatrix = keepValues ? matrix : TakePolynomials(ref workspace, k * l);
 
-            SampleSecretVector(parameters, rhoPrime, 0, s1);
-            SampleSecretVector(parameters, rhoPrime, l, s2);
+            SampleSecretVector(parameters, rhoPrime, 0, secrets);
             ExpandMatrix(parameters, rho, expandedMatrix);
 
             // t = NTT⁻¹(Â ∘ NTT(s₁)) + s₂. Â is held in Montgomery form, so ŝ₁ stays plain for the products.
@@ -717,7 +692,7 @@ internal static partial class MLDsaEngine
             {
                 Span<int> ti = t.Slice(i * N, N);
                 InvNtt(ti);
-                AddInto(ti, s2.Slice(i * N, N));
+                AddModQ(ti, s2.Slice(i * N, N), ti);
             }
 
             EncodeKeys(parameters, rho, capK, t, s1, s2, t0, publicKey, privateKey);
@@ -802,7 +777,7 @@ internal static partial class MLDsaEngine
             {
                 Span<int> ti = t.Slice(i * N, N);
                 InvNtt(ti);
-                AddInto(ti, s2.Slice(i * N, N));
+                AddModQ(ti, s2.Slice(i * N, N), ti);
 
                 for (int j = 0; j < N; j++)
                 {
@@ -862,8 +837,9 @@ internal static partial class MLDsaEngine
         Span<int> secretVector2,
         Span<int> lowOrderVector)
     {
-        for (int j = 0; j < s1Hat.Length; j++)
-            secretVector1[j] = ToMontgomery(s1Hat[j]);
+        s1Hat.CopyTo(secretVector1);
+        for (int offset = 0; offset < secretVector1.Length; offset += N)
+            ToMontgomery(secretVector1.Slice(offset, N));
 
         s2.CopyTo(secretVector2);
         t0.CopyTo(lowOrderVector);
@@ -878,8 +854,12 @@ internal static partial class MLDsaEngine
         {
             int plain = Freeze(highOrderVector[j] + secretVector2[j] - lowOrderVector[j]);
             highOrderVector[j] = Canonicalize(ToMontgomery(plain));
-            secretVector2[j] = ToMontgomery(secretVector2[j]);
-            lowOrderVector[j] = ToMontgomery(lowOrderVector[j]);
+        }
+
+        for (int offset = 0; offset < secretVector2.Length; offset += N)
+        {
+            ToMontgomery(secretVector2.Slice(offset, N));
+            ToMontgomery(lowOrderVector.Slice(offset, N));
         }
     }
 
@@ -913,8 +893,8 @@ internal static partial class MLDsaEngine
     /// <param name="matrix">The matrix Â, as <see cref="ExpandMatrix" /> produces it.</param>
     /// <param name="vector">The ℓ NTT-domain polynomials.</param>
     /// <param name="result">
-    /// The span receiving the k NTT-domain products, plain, each coefficient reduced with <see cref="Reduce32" /> so
-    /// that <see cref="InvNtt" /> takes it as it is.
+    /// The span receiving the k NTT-domain products, plain, each coefficient reduced with <see cref="Reduce32(int)" />
+    /// so that <see cref="InvNtt(Span{int})" /> takes it as it is.
     /// </param>
     private static void MultiplyMatrixVector(
         MLDsaParameters parameters,
@@ -932,8 +912,7 @@ internal static partial class MLDsaEngine
             for (int s = 0; s < l; s++)
                 MultiplyAccumulateNtt(matrix.Slice(((i * l) + s) * N, N), vector.Slice(s * N, N), ri);
 
-            for (int j = 0; j < N; j++)
-                ri[j] = Reduce32(ri[j]);
+            Reduce32(ri);
         }
     }
 
@@ -949,21 +928,6 @@ internal static partial class MLDsaEngine
             Ntt(poly);
             ToMontgomery(poly);
         }
-    }
-
-    /// <summary>
-    /// Samples a vector of bounded secret polynomials via ExpandS (FIPS 204 Algorithm 33).
-    /// </summary>
-    /// <param name="parameters">The parameter set.</param>
-    /// <param name="rhoPrime">The 64-byte secret expansion seed.</param>
-    /// <param name="nonceBase">The starting nonce (0 for s₁, ℓ for s₂).</param>
-    /// <param name="vector">
-    /// The span receiving the polynomials, centered coefficients folded into [0, q); its length fixes their number.
-    /// </param>
-    private static void SampleSecretVector(MLDsaParameters parameters, ReadOnlySpan<byte> rhoPrime, int nonceBase, Span<int> vector)
-    {
-        for (int r = 0; r < vector.Length / N; r++)
-            RejBoundedPoly(parameters.Eta, rhoPrime, nonceBase + r, vector.Slice(r * N, N));
     }
 
     /// <summary>

@@ -63,7 +63,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that with the default (empty) <see cref="XmlDocFormatOptions.IndentText" /> nested block content
-    /// stays flush with its enclosing tag — the contrast case confirming the default layout is unchanged.
+    /// stays flush with its enclosing tag - the contrast case confirming the default layout is unchanged.
     /// </summary>
     [TestMethod]
     public void Format_WhenIndentTextDefault_ShouldKeepNestedContentFlush()

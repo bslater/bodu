@@ -1,8 +1,8 @@
 ---
-title: Bodu.Numerics.Serialization.Json — Getting started
+title: Bodu.Numerics.Serialization.Json - Getting started
 ---
 
-# Bodu.Numerics.Serialization.Json — Getting started
+# Bodu.Numerics.Serialization.Json - Getting started
 
 Unfamiliar with terms like *policy*, *factory vs closed converter*, *raw JSON number*, or *unbounded marker*? Read [Core concepts](concepts.md) first.
 
@@ -23,7 +23,7 @@ using System.Text.Json;
 using Bodu.Numerics;
 using Bodu.Numerics.Serialization.Json;
 
-// Registration is required — the core types carry no [JsonConverter] attribute.
+// Registration is required - the core types carry no [JsonConverter] attribute.
 var options = new JsonSerializerOptions().AddNumericsJsonConverters();   // Strict
 
 string json = JsonSerializer.Serialize(new Fraction<int>(3, 4), options);
@@ -46,7 +46,7 @@ JsonSerializer.Serialize(new Fraction<int>(8, 15), compact);            // "8/15
 // Lenient accepts a top-level string and the min/max aliases on read; it writes the Strict shape.
 Fraction<int> fromText = JsonSerializer.Deserialize<Fraction<int>>("\"8/15\"", lenient);
 Interval<int> fromFeed = JsonSerializer.Deserialize<Interval<int>>(
-    """{ "min": 1, "max": 5 }""", lenient);                               // [1, 5] — flags default to closed
+    """{ "min": 1, "max": 5 }""", lenient);                               // [1, 5] - flags default to closed
 ```
 
 ### Intervals, discrete intervals, and sets
@@ -67,7 +67,7 @@ IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 3), Interval<
 JsonSerializer.Serialize(set, compact);                                 // ["[1, 3]","[8, 9]"]
 ```
 
-`DiscreteInterval<T>` serializes through the same interval shape over its canonical closed bounds. The pair result types (`IntervalPair<T>`, `DiscreteIntervalPair<T>`) are not serializable — convert them with `ToIntervalSet()` first.
+`DiscreteInterval<T>` serializes through the same interval shape over its canonical closed bounds. The pair result types (`IntervalPair<T>`, `DiscreteIntervalPair<T>`) are not serializable - convert them with `ToIntervalSet()` first.
 
 ### Arbitrary precision without loss
 
@@ -77,7 +77,7 @@ using System.Numerics;
 var precise = new Fraction<BigInteger>(BigInteger.Parse("123456789012345678901234567890"), 7);
 
 string exact = JsonSerializer.Serialize(precise, options);
-// {"numerator":123456789012345678901234567890,"denominator":7} — raw JSON numbers, nothing truncated
+// {"numerator":123456789012345678901234567890,"denominator":7} - raw JSON numbers, nothing truncated
 
 // Consumers that cannot carry big JSON numbers may quote the components instead.
 Fraction<BigInteger> quoted = JsonSerializer.Deserialize<Fraction<BigInteger>>(
@@ -153,9 +153,9 @@ string payload = JsonSerializer.Serialize(
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — the converter table and scenario index.
-- **[Numerics JSON serialization guide](../../guides/numerics/json-serialization.md)** — the full wire-format reference, worked examples per policy, and the failure-mode table.
-- **[Bodu.Numerics getting started](../numerics/getting-started.md)** — the value types being serialized.
-- **[Bodu.Numerics.Serialization.Json API reference](xref:Bodu.Numerics.Serialization.Json)** — full type-by-type docs.
-- **[Runnable samples](../../samples/numerics.md)** — `Bodu.Numerics.Samples.JsonConverters` runs every shape on this page.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - the converter table and scenario index.
+- **[Numerics JSON serialization guide](../../guides/numerics/json-serialization.md)** - the full wire-format reference, worked examples per policy, and the failure-mode table.
+- **[Bodu.Numerics getting started](../numerics/getting-started.md)** - the value types being serialized.
+- **[Bodu.Numerics.Serialization.Json API reference](xref:Bodu.Numerics.Serialization.Json)** - full type-by-type docs.
+- **[Runnable samples](../../samples/numerics.md)** - `Bodu.Numerics.Samples.JsonConverters` runs every shape on this page.

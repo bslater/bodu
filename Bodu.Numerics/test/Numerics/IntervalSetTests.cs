@@ -7,7 +7,7 @@
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Verifies the <see cref="IntervalSet{T}" /> normalized disconnected-range type — its construction, membership,
+/// Verifies the <see cref="IntervalSet{T}" /> normalized disconnected-range type - its construction, membership,
 /// enumeration, and formatting. The N-ary set algebra and equality are covered in the sibling partials.
 /// </summary>
 [TestClass]

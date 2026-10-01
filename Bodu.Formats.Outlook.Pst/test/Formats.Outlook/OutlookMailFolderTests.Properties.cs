@@ -12,7 +12,7 @@ public partial class OutlookMailFolderTests
 {
     /// <summary>
     /// Verifies that a code page declared on a folder is inherited by the messages it contains when they declare
-    /// none of their own — the encoding chain runs store → folder → message → attachment → embedded message.
+    /// none of their own - the encoding chain runs store → folder → message → attachment → embedded message.
     /// </summary>
     [TestMethod]
     public void Properties_WhenFolderDeclaresCodePage_ShouldBeInheritedByItsMessages()

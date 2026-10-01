@@ -105,7 +105,7 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce — the
+    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce - the
     /// normalised length divided by four times three, less one byte per trailing <c>=</c> padding character.
     /// </summary>
     /// <param name="normalized">A normalised Base64 character span whose length is a multiple of four.</param>

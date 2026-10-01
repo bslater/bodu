@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The <see cref="Diagnostics" /> property carries the full diagnostic set — both the errors that caused the failure
-/// and any warnings gathered along the way — so a caller can report every problem at once rather than discovering them
+/// The <see cref="Diagnostics" /> property carries the full diagnostic set - both the errors that caused the failure
+/// and any warnings gathered along the way - so a caller can report every problem at once rather than discovering them
 /// one load at a time.
 /// </para>
 /// </remarks>

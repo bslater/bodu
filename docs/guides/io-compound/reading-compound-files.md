@@ -6,9 +6,9 @@ title: Reading compound files
 
 <xref:Bodu.IO.Compound.CompoundFile> opens an OLE2 / Compound File Binary container and exposes its storage hierarchy and stream payloads. This guide covers the end-to-end recipe: probe the input, open the file, walk the directory, and read a named stream's bytes.
 
-The mental model is a file system in a single file — storages are directories, streams are files. Navigation starts at `RootStorage` and is scoped to each storage's direct children; there is no path syntax, so you descend one storage at a time. Names are matched with the **case-insensitive** compound-file relationship, so a request for `workbook` resolves the `Workbook` stream. Each entry's name is stored as UTF-16 in a 64-byte field, capping it at 31 characters, and control prefixes are kept verbatim — the `\x05` on summary-information streams, the `__substg1.0_` on `.msg` streams — so a lookup must pass the exact name.
+The mental model is a file system in a single file - storages are directories, streams are files. Navigation starts at `RootStorage` and is scoped to each storage's direct children; there is no path syntax, so you descend one storage at a time. Names are matched with the **case-insensitive** compound-file relationship, so a request for `workbook` resolves the `Workbook` stream. Each entry's name is stored as UTF-16 in a 64-byte field, capping it at 31 characters, and control prefixes are kept verbatim - the `\x05` on summary-information streams, the `__substg1.0_` on `.msg` streams - so a lookup must pass the exact name.
 
-## Pattern 1 — open a file and read a known stream
+## Pattern 1 - open a file and read a known stream
 
 ```csharp
 using Bodu.IO.Compound;
@@ -19,9 +19,9 @@ CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 byte[] bytes = workbook.ReadAllBytes();
 ```
 
-`Open` reads the stream from its current position to the end. The returned `CompoundFile` is <xref:System.IDisposable> — the `using` declaration disposes it, which also closes the source stream unless `leaveOpen: true` was passed. `OpenStream` resolves a direct child of `RootStorage` by name and throws <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> when no such stream exists.
+`Open` reads the stream from its current position to the end. The returned `CompoundFile` is <xref:System.IDisposable> - the `using` declaration disposes it, which also closes the source stream unless `leaveOpen: true` was passed. `OpenStream` resolves a direct child of `RootStorage` by name and throws <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> when no such stream exists.
 
-## Pattern 2 — probe before opening
+## Pattern 2 - probe before opening
 
 ```csharp
 using Bodu.IO.Compound;
@@ -39,7 +39,7 @@ using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
 
 `CompoundFile.IsCompoundFile` inspects only the eight-byte OLE2 signature (`D0 CF 11 E0 A1 B1 1A E1`) and restores the stream position before returning, so it is cheap to call ahead of a full open. There is also a `ReadOnlySpan<byte>` overload for bytes you already hold.
 
-## Pattern 3 — walk the hierarchy
+## Pattern 3 - walk the hierarchy
 
 ```csharp
 using Bodu.IO.Compound;
@@ -62,7 +62,7 @@ Print(file.RootStorage);
 
 Each <xref:Bodu.IO.Compound.CompoundStorage> exposes three enumerators over its direct children, all in directory order: `EnumerateEntries` yields a <xref:Bodu.IO.Compound.CompoundEntryInfo> metadata snapshot for every child (storage *and* stream), while `EnumerateStorages` and `EnumerateStreams` yield the navigable child storages and stream entries respectively. `CompoundEntryInfo` carries the `Name`, `EntryType`, `Length`, `ClassId`, and the creation / modification timestamps.
 
-## Pattern 4 — non-throwing lookup
+## Pattern 4 - non-throwing lookup
 
 ```csharp
 using Bodu.IO.Compound;
@@ -75,7 +75,7 @@ if (file.RootStorage.TryOpenStorage("ObjectPool", out CompoundStorage? pool) &&
 }
 ```
 
-Prefer the `TryOpenStorage` / `TryOpenStream` pair when a missing entry is a normal outcome — they return `false` instead of raising `CompoundStreamNotFoundException`. The throwing `OpenStorage` / `OpenStream` forms are better when the entry is required and its absence is a programming or data error; the exception's `StreamName` property names the entry that was not found.
+Prefer the `TryOpenStorage` / `TryOpenStream` pair when a missing entry is a normal outcome - they return `false` instead of raising `CompoundStreamNotFoundException`. The throwing `OpenStorage` / `OpenStream` forms are better when the entry is required and its absence is a programming or data error; the exception's `StreamName` property names the entry that was not found.
 
 ## Reading the bytes
 
@@ -84,7 +84,7 @@ The <xref:Bodu.IO.Compound.CompoundStream> returned by `OpenStream` gives you tw
 | Member | Returns | Use when |
 |---|---|---|
 | `ReadAllBytes` | `byte[]` | The payload is small and consumed in one pass. |
-| the stream itself | a seekable <xref:System.IO.Stream> | The payload is large or read incrementally — `CompoundStream` is a seekable `Stream` cursor you can hand to `BinaryReader`, `StreamReader`, or `CopyTo`. |
+| the stream itself | a seekable <xref:System.IO.Stream> | The payload is large or read incrementally - `CompoundStream` is a seekable `Stream` cursor you can hand to `BinaryReader`, `StreamReader`, or `CopyTo`. |
 
 ```csharp
 using CompoundStream stream = file.RootStorage.OpenStream("Workbook");
@@ -96,7 +96,7 @@ ushort recordSize = reader.ReadUInt16();
 
 See [Buffered vs streaming access](streaming-and-buffering.md) for how the cursor behaves under buffered and streaming files, and how to bound memory for large payloads.
 
-## Pattern 5 — choose a validation level
+## Pattern 5 - choose a validation level
 
 <!-- compile -->
 ```csharp
@@ -108,7 +108,7 @@ var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLeve
 using CompoundFile file = CompoundFile.Open(File.OpenRead("book.xls"), options);
 ```
 
-<xref:Bodu.IO.Compound.CompoundFileOptions> carries both the read strategy and the <xref:Bodu.IO.Compound.CompoundValidationLevel>. Every level still enforces the memory-safety invariants (signature, sector sizes, allocation-table bounds, a root storage); the level only governs how the reader treats recoverable inconsistencies. `Strict` is the choice for validating a trusted corpus, `Minimal` for best-effort recovery from corruption — it stops a broken chain and yields what it has rather than throwing.
+<xref:Bodu.IO.Compound.CompoundFileOptions> carries both the read strategy and the <xref:Bodu.IO.Compound.CompoundValidationLevel>. Every level still enforces the memory-safety invariants (signature, sector sizes, allocation-table bounds, a root storage); the level only governs how the reader treats recoverable inconsistencies. `Strict` is the choice for validating a trusted corpus, `Minimal` for best-effort recovery from corruption - it stops a broken chain and yields what it has rather than throwing.
 
 ## Error handling
 
@@ -122,7 +122,7 @@ try
 }
 catch (CompoundFileFormatException ex) when (ex.Category == CompoundFileError.InvalidSignature)
 {
-    // Not an OLE2 file at all — e.g. a .xlsx (ZIP) was handed in.
+    // Not an OLE2 file at all - e.g. a .xlsx (ZIP) was handed in.
 }
 catch (CompoundFileFormatException ex)
 {
@@ -136,20 +136,20 @@ catch (CompoundStreamNotFoundException ex)
 
 | Exception | `Category` (when applicable) | Cause |
 |---|---|---|
-| <xref:System.ArgumentNullException> | — | The stream passed to `Open` is `null`. |
-| <xref:System.ArgumentException> | — | `buffered: false` was requested over a non-seekable stream, or `IsCompoundFile` was given a non-seekable stream. |
-| <xref:System.NotSupportedException> | — | An unsupported `FileMode` / `FileAccess` combination was requested. |
+| <xref:System.ArgumentNullException> | - | The stream passed to `Open` is `null`. |
+| <xref:System.ArgumentException> | - | `buffered: false` was requested over a non-seekable stream, or `IsCompoundFile` was given a non-seekable stream. |
+| <xref:System.NotSupportedException> | - | An unsupported `FileMode` / `FileAccess` combination was requested. |
 | <xref:Bodu.IO.Compound.CompoundFileFormatException> | `InvalidSignature`, `InvalidHeader`, `TruncatedFile`, `SectorOutOfRange`, `FatCycle`, `InvalidMiniFat`, `StreamChainTooShort`, `DirectoryCycle`, `InvalidRootStorage`, … | The content is not a well-formed compound file, or a stream's sector chain is malformed. |
-| <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | — | `OpenStream` / `OpenStorage` named an entry that does not exist; `StreamName` names it. |
+| <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> | - | `OpenStream` / `OpenStorage` named an entry that does not exist; `StreamName` names it. |
 
 > [!TIP]
 > Catch the base <xref:Bodu.IO.Compound.CompoundFileException> when you want to handle every compound-file failure uniformly, then inspect the concrete type or `Category` only where the distinction matters.
 
-This guide covers the read path. To *edit* a stream, open the file for write access and use the read-write cursor from `OpenStream(name, FileMode, FileAccess)` or `CreateStream` — see [Authoring compound files](authoring-compound-files.md).
+This guide covers the read path. To *edit* a stream, open the file for write access and use the read-write cursor from `OpenStream(name, FileMode, FileAccess)` or `CreateStream` - see [Authoring compound files](authoring-compound-files.md).
 
 ## Where to go next
 
-- [Buffered vs streaming access](streaming-and-buffering.md) — the `buffered` flag and the `CompoundStream` cursor in depth.
-- [Authoring compound files](authoring-compound-files.md) — create, edit, and commit writable containers.
-- [Reading property sets](property-sets.md) — pull authored metadata from the summary-information streams.
+- [Buffered vs streaming access](streaming-and-buffering.md) - the `buffered` flag and the `CompoundStream` cursor in depth.
+- [Authoring compound files](authoring-compound-files.md) - create, edit, and commit writable containers.
+- [Reading property sets](property-sets.md) - pull authored metadata from the summary-information streams.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound).

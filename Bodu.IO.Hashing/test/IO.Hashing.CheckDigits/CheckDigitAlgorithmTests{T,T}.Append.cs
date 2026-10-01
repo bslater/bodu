@@ -89,7 +89,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 
     /// <summary>
     /// Verifies that streaming a prefix of a known-answer body and reading <c>GetCurrentCheckDigit</c> matches
-    /// the static <c>Compute</c> result for the same prefix — cross-checking streaming parity with the
+    /// the static <c>Compute</c> result for the same prefix - cross-checking streaming parity with the
     /// allocate-free path at intermediate body lengths.
     /// </summary>
     /// <param name="name">A descriptive name for the vector.</param>

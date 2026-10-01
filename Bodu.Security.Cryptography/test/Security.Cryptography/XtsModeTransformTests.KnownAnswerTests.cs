@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 
 public sealed partial class XtsModeTransformTests
 {
-    // ── IEEE Std 1619-2007 Section 7 / NIST SP 800-38E — AES-128-XTS ──────────────────────────
+    // ── IEEE Std 1619-2007 Section 7 / NIST SP 800-38E - AES-128-XTS ──────────────────────────
     //
     // Each vector provides: Key1 (data cipher), Key2 (tweak cipher), sector number (tweak),
     // plaintext, and expected ciphertext. All are 16-byte (128-bit) blocks.
@@ -30,7 +30,7 @@ public sealed partial class XtsModeTransformTests
     //   Sector (tweak, LE 64-bit sector#=0x3333333333) = 33333333330000000000000000000000
     //   PT   = 4444444444444444444444444444444444444444444444444444444444444444
     //   CT   = d75b96e7429fbf9f6b6d5e9c2bbb4a4c (two blocks)
-    //          Wait — use the verified IEEE vector below.
+    //          Wait - use the verified IEEE vector below.
     //
     // Note: sector number is stored as 128-bit little-endian (low 8 bytes = sector index LE64).
 
@@ -107,8 +107,8 @@ public sealed partial class XtsModeTransformTests
     private const string Ieee1619ResourceName = "Bodu.Security.Cryptography.Xts.ieee1619-2007-xts.txt";
 
     /// <summary>
-    /// Loads every whole-block IEEE 1619-2007 vector — vectors 1 to 14 and 19, AES-128 and AES-256, with data units of
-    /// 32 and 512 bytes — as <see cref="DynamicDataAttribute" /> rows. <see cref="KeyedKnownAnswer.Key" /> holds
+    /// Loads every whole-block IEEE 1619-2007 vector - vectors 1 to 14 and 19, AES-128 and AES-256, with data units of
+    /// 32 and 512 bytes - as <see cref="DynamicDataAttribute" /> rows. <see cref="KeyedKnownAnswer.Key" /> holds
     /// <c>Key1 || Key2</c> as the standard presents the double-length key, and <see cref="BlockCipherKnownAnswer.Tweak" />
     /// the data unit's tweak.
     /// </summary>

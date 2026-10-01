@@ -18,13 +18,13 @@ dotnet run --project samples/Financial/<SampleName>
 | `Bodu.Financial.Samples.AggregatedRates` | Multi-provider aggregation: priority fallback, averaging, per-pair routing, and the `AddAggregatedRateProvider` DI builder | `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.DependencyInjection` |
 | `Bodu.Financial.Samples.CurrencyServices` | Ambient currency resolution (`CurrencyResolution`), named `MonetaryContext`s, the `AddFinancialService` host wiring | `Bodu.Financial`, `Bodu.Financial.DependencyInjection` |
 | `Bodu.Financial.Samples.CustomProvider` (+ `.Test`) | Writing your own `IDatedRateProvider` and validating it with the shipped contract-test bases | `Bodu.Financial`, `Bodu.Financial.ExchangeRates.Caching`, `Bodu.Financial.ExchangeRates.Testing` |
-| `Bodu.Financial.Samples.LiveRates` | **Online** (the one exception): fetch real published rates from a live provider — ECB active, RBA/BoE/Yahoo/OFX/OANDA/XE/Fixer/exchangerate.host/FRED/IMF comment-switchable — for a buffered "last Wednesday" date and its trailing week | `Bodu.Financial.ExchangeRates.Ecb` (+ the other ten provider packages) |
+| `Bodu.Financial.Samples.LiveRates` | **Online** (the one exception): fetch real published rates from a live provider - ECB active, RBA/BoE/Yahoo/OFX/OANDA/XE/Fixer/exchangerate.host/FRED/IMF comment-switchable - for a buffered "last Wednesday" date and its trailing week | `Bodu.Financial.ExchangeRates.Ecb` (+ the other ten provider packages) |
 
 ## Offline by default, live by choice
 
 The exchange-rate samples never touch the network. They build a
 `FixedDatedRateProvider` from a committed CSV of illustrative daily rates
-(`Data/aud-daily-2024H1.csv` — synthetic values approximating published 2024 H1 levels),
+(`Data/aud-daily-2024H1.csv` - synthetic values approximating published 2024 H1 levels),
 so output is deterministic and the samples work behind any firewall.
 
 Every place a live feed *could* be used carries a fenced comment block like this:
@@ -39,5 +39,5 @@ Every place a live feed *could* be used carries a fenced comment block like this
 // ----------------------------------------------------------------------------
 ```
 
-Uncomment, add the package, and the rest of the sample works unchanged — every provider
+Uncomment, add the package, and the rest of the sample works unchanged - every provider
 in the family serves the same `IDatedRateProvider` / `IRateProvider` contracts.

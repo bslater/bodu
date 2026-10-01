@@ -6,7 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-// Known-answer vectors — NIST SP 800-38A, Appendix F.1 (ECB mode, AES-128)
+// Known-answer vectors - NIST SP 800-38A, Appendix F.1 (ECB mode, AES-128)
 // Source: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
 //
 // ECB does not use an IV; an all-zero placeholder is passed to CreateTransform and ignored.
@@ -30,9 +30,9 @@ public sealed partial class EcbModeTransformTests
         // F.1.1 ECB-AES128 Encrypt
         yield return new object[]
         {
-            "NIST SP 800-38A F.1.1 — ECB-AES128",
+            "NIST SP 800-38A F.1.1 - ECB-AES128",
             NistKey128,
-            new byte[16], // IV placeholder — ECB ignores it
+            new byte[16], // IV placeholder - ECB ignores it
             NistPlaintext,
             Convert.FromHexString(
                 "3ad77bb40d7a3660a89ecaf32466ef97" +

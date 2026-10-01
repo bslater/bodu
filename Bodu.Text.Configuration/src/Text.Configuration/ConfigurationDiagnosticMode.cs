@@ -7,7 +7,7 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how the reader reacts to recoverable diagnostics — either throwing immediately, gathering them on the
+/// Controls how the reader reacts to recoverable diagnostics - either throwing immediately, gathering them on the
 /// resulting document, or silently ignoring them.
 /// </summary>
 public enum ConfigurationDiagnosticMode

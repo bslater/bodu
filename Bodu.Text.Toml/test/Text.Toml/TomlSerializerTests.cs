@@ -610,7 +610,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that <see cref="TomlElement.WriteTo" /> re-emits every value kind through a standalone writer,
-    /// producing the writer's canonical text — a nested table surfaces as a <c>[T]</c> header section rather than the
+    /// producing the writer's canonical text - a nested table surfaces as a <c>[T]</c> header section rather than the
     /// inline form it was parsed from.
     /// </summary>
     [TestMethod]

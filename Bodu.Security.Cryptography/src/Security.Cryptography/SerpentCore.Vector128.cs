@@ -6,6 +6,8 @@
 
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.Arm;
+using System.Runtime.Intrinsics.X86;
 using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
@@ -67,6 +69,101 @@ internal static partial class SerpentCore
                 DecryptRounds(ref x0, ref x1, ref x2, ref x3, ref roundKeys);
                 Store(x0, x1, x2, x3, ref output, offset);
             }
+        }
+
+        /// <summary>
+        /// Combines groups of four blocks of input by XOR with the keystream of four successive counter blocks each,
+        /// and advances the counter past them.
+        /// </summary>
+        /// <param name="roundKeys">The first of the 132 round-key words.</param>
+        /// <param name="counterHigh">The counter's high 64 bits; advanced past the blocks used.</param>
+        /// <param name="counterLow">The counter's low 64 bits; advanced past the blocks used.</param>
+        /// <param name="input">The first byte of the input.</param>
+        /// <param name="output">The first byte of the destination; it may be the input's first byte.</param>
+        /// <param name="groups">The number of groups of four blocks.</param>
+        /// <remarks>
+        /// The counter blocks never reach memory. Each lane's counter is held as four words in native order, one vector
+        /// per word, and a byte reversal turns them into the words Serpent reads from the big-endian block. The
+        /// counters advance by four a group with the carries between words propagated by masks, not branches, so the
+        /// time taken does not depend on the counter.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
+        internal static void XorCounterBlocks(ref uint roundKeys, ref ulong counterHigh, ref ulong counterLow, ref byte input, ref byte output, int groups)
+        {
+            Vector128<uint> c0 = Vector128.Create((uint)(counterHigh >> 32));
+            Vector128<uint> c1 = Vector128.Create((uint)counterHigh);
+            Vector128<uint> c2 = Vector128.Create((uint)(counterLow >> 32));
+            Vector128<uint> c3 = Vector128.Create((uint)counterLow);
+            AddToCounters(ref c0, ref c1, ref c2, ref c3, Vector128.Create(0u, 1u, 2u, 3u));
+
+            for (nint offset = 0, end = (nint)groups * GroupBytes; offset < end; offset += GroupBytes)
+            {
+                Vector128<uint> x0 = ReverseBytes(c0);
+                Vector128<uint> x1 = ReverseBytes(c1);
+                Vector128<uint> x2 = ReverseBytes(c2);
+                Vector128<uint> x3 = ReverseBytes(c3);
+
+                EncryptRounds(ref x0, ref x1, ref x2, ref x3, ref roundKeys);
+                XorStore(x0, x1, x2, x3, ref input, ref output, offset);
+                AddToCounters(ref c0, ref c1, ref c2, ref c3, Vector128.Create(4u));
+            }
+
+            AdvanceCounter(ref counterHigh, ref counterLow, (ulong)groups * 4);
+        }
+
+        /// <summary>
+        /// Adds a value to every lane's 128-bit counter, held as four words in native order, one vector per word from
+        /// the most significant, propagating each carry by masks.
+        /// </summary>
+        /// <param name="c0">The counters' most significant words.</param>
+        /// <param name="c1">The counters' second words.</param>
+        /// <param name="c2">The counters' third words.</param>
+        /// <param name="c3">The counters' least significant words.</param>
+        /// <param name="addend">The value added to each lane's counter.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AddToCounters(ref Vector128<uint> c0, ref Vector128<uint> c1, ref Vector128<uint> c2, ref Vector128<uint> c3, Vector128<uint> addend)
+        {
+            c3 += addend;
+
+            // A lane's least significant word carried if its sum is below the addend. A carry is all ones, so it adds
+            // one by subtraction, and it carries on from a word it wraps to zero.
+            Vector128<uint> carry = Vector128.LessThan(c3, addend);
+            c2 -= carry;
+            carry &= Vector128.Equals(c2, Vector128<uint>.Zero);
+            c1 -= carry;
+            carry &= Vector128.Equals(c1, Vector128<uint>.Zero);
+            c0 -= carry;
+        }
+
+        /// <summary>
+        /// Reverses the order of the bytes in each 32-bit lane: one byte shuffle on x64, and one <c>REV32</c> on ARM64.
+        /// </summary>
+        /// <param name="value">The words.</param>
+        /// <returns>The words with their bytes reversed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector128<uint> ReverseBytes(Vector128<uint> value) =>
+            AdvSimd.IsSupported
+                ? AdvSimd.ReverseElement8(value)
+                : Ssse3.Shuffle(value.AsByte(), Vector128.Create((byte)3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12)).AsUInt32();
+
+        /// <summary>
+        /// Transposes four vectors of words back into four blocks and combines them with four blocks of input by XOR.
+        /// </summary>
+        /// <param name="x0">The first word of each block.</param>
+        /// <param name="x1">The second word of each block.</param>
+        /// <param name="x2">The third word of each block.</param>
+        /// <param name="x3">The fourth word of each block.</param>
+        /// <param name="input">The first byte of the input.</param>
+        /// <param name="output">The first byte of the destination.</param>
+        /// <param name="offset">The offset of the first block.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void XorStore(Vector128<uint> x0, Vector128<uint> x1, Vector128<uint> x2, Vector128<uint> x3, ref byte input, ref byte output, nint offset)
+        {
+            ChaCha20Core.Transpose(ref x0, ref x1, ref x2, ref x3);
+            (Vector128.LoadUnsafe(ref input, (nuint)offset) ^ x0.AsByte()).StoreUnsafe(ref output, (nuint)offset);
+            (Vector128.LoadUnsafe(ref input, (nuint)(offset + BlockBytes)) ^ x1.AsByte()).StoreUnsafe(ref output, (nuint)(offset + BlockBytes));
+            (Vector128.LoadUnsafe(ref input, (nuint)(offset + (2 * BlockBytes))) ^ x2.AsByte()).StoreUnsafe(ref output, (nuint)(offset + (2 * BlockBytes)));
+            (Vector128.LoadUnsafe(ref input, (nuint)(offset + (3 * BlockBytes))) ^ x3.AsByte()).StoreUnsafe(ref output, (nuint)(offset + (3 * BlockBytes)));
         }
 
         /// <summary>

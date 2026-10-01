@@ -53,11 +53,11 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.</description>
+/// <description>Mode: standard unkeyed hash only - keyed hash and KDF modes are not exposed.</description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority — its
+/// <strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority - its
 /// tree structure is naturally parallel-friendly and outperforms <see cref="Blake2b" />, SHA-2, and SHA-3 on
 /// multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is fine. Use
 /// <see cref="Blake2b" /> if a configurable output size or RFC 7693-compatible MAC mode is required; use
@@ -83,7 +83,7 @@ public sealed class Blake3
     /// <summary>Size, in bytes, of a single input chunk (leaf of the hash tree).</summary>
     private const int ChunkSize = Blake3Core.ChunkBytes;
 
-    /// <summary>Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the Merkle tree height is bounded at 54 — any well-formed input fits within this bound.</summary>
+    /// <summary>Maximum possible depth of the chaining-value stack. BLAKE3 supports up to <c>2^54</c> chunks per message, so the Merkle tree height is bounded at 54 - any well-formed input fits within this bound.</summary>
     private const int MaxCvStackDepth = 54;
 
     /// <summary>Output length in bytes.</summary>
@@ -106,7 +106,7 @@ public sealed class Blake3
     /// <summary>The greatest number of threads one write may use; see <see cref="MaxDegreeOfParallelism" />.</summary>
     private readonly int _maxDegreeOfParallelism;
 
-    /// <summary>Current depth of <see cref="_cvStack" /> — the number of 8-word CV slices currently live, with the active top slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.</summary>
+    /// <summary>Current depth of <see cref="_cvStack" /> - the number of 8-word CV slices currently live, with the active top slice occupying words <c>[(_cvStackDepth - 1) * 8, _cvStackDepth * 8)</c> when non-zero.</summary>
     private int _cvStackDepth;
 
     /// <summary>
@@ -384,7 +384,7 @@ public sealed class Blake3
         Blake3Core.StoreChainingValue(leftCv, block);
         Blake3Core.StoreChainingValue(rightCv, block[Blake3Core.ChainingValueBytes..]);
 
-        // Parent nodes always use the key — the IV, for the unkeyed hash — as their chaining value input, counter 0.
+        // Parent nodes always use the key - the IV, for the unkeyed hash - as their chaining value input, counter 0.
         Blake3Core.InitializationVector.CopyTo(output);
         Blake3Core.Compress(output, block, 0UL, Blake3Core.BlockBytes, isRoot ? Blake3Core.Parent | Blake3Core.Root : Blake3Core.Parent);
 
@@ -485,7 +485,7 @@ public sealed class Blake3
     /// <remarks>
     /// <para>
     /// Implements the BLAKE3 push-chunk-chaining-value step from §2.1 of the specification, generalized to a subtree of
-    /// <c>2^<paramref name="level" /></c> chunks — a single chunk at level 0. After it the total chunk count is
+    /// <c>2^<paramref name="level" /></c> chunks - a single chunk at level 0. After it the total chunk count is
     /// <paramref name="chunkCount" />; the algorithm folds one tree level into the incoming CV for each trailing zero
     /// bit of that count above <paramref name="level" />. Each such bit indicates a balanced subtree of the
     /// corresponding height has just been completed, so the top stack entry (its left sibling) is popped and merged

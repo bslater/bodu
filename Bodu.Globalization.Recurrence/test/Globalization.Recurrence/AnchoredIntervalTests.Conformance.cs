@@ -27,7 +27,7 @@ public partial class AnchoredIntervalTests
 
     /// <summary>
     /// Verifies the coalescing contract: an evaluation two missed occurrences late answers due-ness identically to an
-    /// evaluation one minute after the first occurrence — the count of missed occurrences is never part of the
+    /// evaluation one minute after the first occurrence - the count of missed occurrences is never part of the
     /// answer.
     /// </summary>
     [TestMethod]

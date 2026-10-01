@@ -1,14 +1,14 @@
 # Bodu.Globalization.Calendar.Tool
 
 
-> **API stability — Preview.** The command-line surface — the verbs, their options, and the
-> `BODU-CAL-*` diagnostic ids — is largely settled but is still being finalized ahead of the 1.0
+> **API stability - Preview.** The command-line surface - the verbs, their options, and the
+> `BODU-CAL-*` diagnostic ids - is largely settled but is still being finalized ahead of the 1.0
 > release and may change; breaking changes can land in a minor version until then.
 >
-> This package is **not published to nuget.org** — see the
+> This package is **not published to nuget.org** - see the
 > [package matrix](../docs/docs/package-matrix.md#not-published-to-nugetorg). Build it from a clone.
 
-`bodu-calendar` — the command-line compiler and lint for Bodu notable-date rule packs.
+`bodu-calendar` - the command-line compiler and lint for Bodu notable-date rule packs.
 
 ```bash
 dotnet tool install -g Bodu.Globalization.Calendar.Tool
@@ -30,7 +30,7 @@ bodu-calendar info    holidays.bcal                   # summarize a compiled pac
 imports; the bundled common catalogues (`global-core`, `christian-western`, …) always resolve as a
 fallback.
 
-Packs load at run time with `NotableDateResourceLoader.LoadBinary` — no parsing, no validation,
+Packs load at run time with `NotableDateResourceLoader.LoadBinary` - no parsing, no validation,
 trim/AOT-friendly. See the [binary rule packs guide](../docs/guides/calendar/binary-rule-packs.md)
 for the format contract and the [validation diagnostics guide](../docs/guides/calendar/validation-diagnostics.md)
 for the complete code catalogue.

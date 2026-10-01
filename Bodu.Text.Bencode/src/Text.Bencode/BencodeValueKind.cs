@@ -13,7 +13,7 @@ namespace Bodu.Text.Bencode;
 /// </summary>
 /// <remarks>
 /// Bencode (BEP 3) has no boolean, null, or floating-point values, so the enumeration defines only the four value kinds
-/// the format supports — dictionaries, lists, byte strings, and integers.
+/// the format supports - dictionaries, lists, byte strings, and integers.
 /// </remarks>
 public enum BencodeValueKind
 {

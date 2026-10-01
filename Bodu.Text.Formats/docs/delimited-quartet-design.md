@@ -1,12 +1,12 @@
 # Delimited (CSV/TSV) → quartet design note
 
 **Date:** 2026-07-21
-**Status:** Design — implements tranche **T2**.
+**Status:** Design - implements tranche **T2**.
 **Relates to:** [`line-formats-quartet-redesign-assessment.md`](./line-formats-quartet-redesign-assessment.md).
 
 Delimited is the one line format whose value model is a genuine two-level tree
 (an array of records), so the full four-type quartet DOM is a natural fit. Its
-headline value — genuine row-at-a-time streaming — must survive the redesign and
+headline value - genuine row-at-a-time streaming - must survive the redesign and
 is promoted to a first-class `IAsyncEnumerable<TRecord>` surface.
 
 ## Value model
@@ -19,7 +19,7 @@ Document = an **array of homogeneous records**.
 Field values are always **string**; typed access is via format-local
 `ISpanParsable<T>` converters (assessment D4).
 
-## Token model — `DelimitedTokenType`
+## Token model - `DelimitedTokenType`
 
 ```
 None, StartArray, EndArray, StartObject, EndObject, PropertyName, String
@@ -63,7 +63,7 @@ quoting, `Flush`/`Dispose`/`Reset`, `BytesCommitted`/`BytesPending`.
 Document = `DelimitedArray`; record = `DelimitedObject` (header mode) or
 `DelimitedArray` (positional). Values string. This is the one line format where
 the full quartet DOM is idiomatic; **no comment trivia** (Delimited never
-retained comments — options only *skip* them).
+retained comments - options only *skip* them).
 
 ## Read-only DOM (`Text.Delimited.Document`)
 
@@ -76,7 +76,7 @@ array; `EnumerateArray()` over records; header names surfaced via
 Standard facade (buffered-in-full) **plus** the incremental surface:
 
 ```csharp
-// Buffered facade — parity with the quartet.
+// Buffered facade - parity with the quartet.
 static string Serialize<T>(T value, DelimitedSerializerOptions? options = null);   // T = collection
 static IReadOnlyList<TRecord> Deserialize<TRecord>(ReadOnlySpan<byte> utf8, ...);
 
@@ -120,6 +120,6 @@ One `Smoke` test.
 `Bodu.Financial.ExchangeRates.Imf` (`ImfReportParser`, TSV) and `.Boe`
 (`BoeRateCsvParser`, CSV) `using Bodu.Text.Delimited;` and call `Delimited.Parse`
 + `DelimitedDocument`/`DelimitedRow`/`DelimitedParseOptions`. Migrate both to the
-new `DelimitedDocument`/`DelimitedElement` DOM (or `DelimitedSerializer`) — their
+new `DelimitedDocument`/`DelimitedElement` DOM (or `DelimitedSerializer`) - their
 `Ragged` + `SkipRecord` options map directly onto the new
 `DelimitedReaderOptions`.

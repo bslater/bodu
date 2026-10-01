@@ -84,7 +84,7 @@ public partial class PstBTreeOnHeapTests
     }
 
     /// <summary>
-    /// Verifies that an empty tree — a zero root identifier — enumerates no records.
+    /// Verifies that an empty tree - a zero root identifier - enumerates no records.
     /// </summary>
     [TestMethod]
     public void EnumerateRecords_WhenTreeIsEmpty_ShouldYieldNothing()
@@ -129,7 +129,7 @@ public partial class PstBTreeOnHeapTests
     }
 
     /// <summary>
-    /// Verifies that a two-level tree — an index item over two leaf items — enumerates every leaf record in order.
+    /// Verifies that a two-level tree - an index item over two leaf items - enumerates every leaf record in order.
     /// </summary>
     [TestMethod]
     public void EnumerateRecords_WhenIndexedTree_ShouldDescendAndYieldEveryLeaf()
@@ -154,8 +154,8 @@ public partial class PstBTreeOnHeapTests
     }
 
     /// <summary>
-    /// Verifies keyed lookup across a leaf-only tree: hits return the record data, misses — below, between, and above
-    /// the stored keys — report absence.
+    /// Verifies keyed lookup across a leaf-only tree: hits return the record data, misses - below, between, and above
+    /// the stored keys - report absence.
     /// </summary>
     [TestMethod]
     public void TryFind_WhenLeafOnlyTree_ShouldFindPresentKeysAndMissAbsentOnes()

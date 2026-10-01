@@ -11,7 +11,7 @@ namespace Bodu.IO.Pst.Samples.PstBasics.Scenarios;
 /// <summary>
 /// Demonstrates the mail-store view layered on the container by <c>Bodu.Formats.Outlook.Pst</c>: the same
 /// file opened as an <see cref="OutlookMailStore" /> session, walking folders and messages with decoded MAPI
-/// properties, recipients, attachments, bodies, and named-property resolution — first over the Unicode
+/// properties, recipients, attachments, bodies, and named-property resolution - first over the Unicode
 /// sample, then over the ANSI sample, whose code-page strings decode through the same accessors.
 /// </summary>
 public static class ReadMailStore
@@ -74,7 +74,7 @@ public static class ReadMailStore
 
         foreach (OutlookMailMessage message in folder.EnumerateMessages())
         {
-            Console.WriteLine($"  {indent}  {message.Subject} — {message.SenderName}");
+            Console.WriteLine($"  {indent}  {message.Subject} - {message.SenderName}");
 
             foreach (OutlookRecipient recipient in message.Recipients)
                 Console.WriteLine($"{indent}    to {recipient.DisplayName ?? recipient.EmailAddress}");

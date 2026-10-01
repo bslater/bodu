@@ -16,8 +16,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Block-aligned streaming data is processed via <see cref="TransformBlock" />, and the final potentially partial block
-/// — including padding application or removal — is handled by <see cref="TransformFinalBlock" />.
+/// Block-aligned streaming data is processed via <see cref="TransformBlock" />, and the final potentially partial
+/// block - including padding application or removal - is handled by <see cref="TransformFinalBlock" />.
 /// </para>
 /// <para>
 /// When decrypting with a strippable padding mode, such as <see cref="PaddingMode.PKCS7" />, the last complete block of
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// mode and padding.
 /// </para>
 /// <para>
-/// Most callers never touch this type directly — they use
+/// Most callers never touch this type directly - they use
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> and
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> to configure encryption and let the existing
 /// transform infrastructure handle the wiring.
@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Most consumers never touch BlockCipherTransform directly — it is surfaced as the
+/// // Most consumers never touch BlockCipherTransform directly - it is surfaced as the
 /// // ICryptoTransform returned by every Bodu SymmetricAlgorithm. Typical usage:
 /// using SymmetricAlgorithm alg = new Twofish();
 /// alg.GenerateKey();
@@ -68,7 +68,7 @@ namespace Bodu.Security.Cryptography;
 /// alg.Mode    = CipherMode.CBC;
 /// alg.Padding = PaddingMode.PKCS7;
 ///
-/// // CreateEncryptor returns a BlockCipherTransform under the hood — a one-shot
+/// // CreateEncryptor returns a BlockCipherTransform under the hood - a one-shot
 /// // ICryptoTransform that pairs the block cipher with the configured mode and padding.
 /// using ICryptoTransform encryptor = alg.CreateEncryptor();
 /// using var output = new MemoryStream();
@@ -76,7 +76,7 @@ namespace Bodu.Security.Cryptography;
 ///     cs.Write(plaintext, 0, plaintext.Length);
 /// byte[] ciphertext = output.ToArray();
 ///
-/// // Reuse requires a fresh transform — BlockCipherTransform.CanReuseTransform is false.
+/// // Reuse requires a fresh transform - BlockCipherTransform.CanReuseTransform is false.
 ///]]>
 /// </code>
 /// </example>
@@ -311,7 +311,7 @@ public class BlockCipherTransform
             if (_encrypt)
             {
                 // Encrypt path: the padding scheme accepts any input length and emits an
-                // aligned buffer, so the alignment check belongs after Pad — not on the raw
+                // aligned buffer, so the alignment check belongs after Pad - not on the raw
                 // input. CryptoStream.FlushFinalBlock routinely arrives here with whatever
                 // residual sits in its buffer (including the 1..blockSize-1 bytes left over
                 // after the last aligned chunk has been forwarded to TransformBlock), and

@@ -10,7 +10,7 @@ namespace Bodu.Samples.Extensions.Configuration.Text.BridgeHosting;
 
 /// <summary>
 /// Entry point for the configuration-bridge sample: flowing Bodu text formats into the standard
-/// <c>Microsoft.Extensions.Configuration</c> pipeline — a <c>.boduconfig</c> cascade resolved for
+/// <c>Microsoft.Extensions.Configuration</c> pipeline - a <c>.boduconfig</c> cascade resolved for
 /// a target path, a TOML file flattened to configuration keys, and strongly typed
 /// <c>IOptions&lt;T&gt;</c> binding through dependency injection. Everything runs offline against
 /// the committed <c>Data/</c> files.

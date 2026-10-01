@@ -70,7 +70,7 @@ internal static partial class Log
 
     /// <summary>
     /// Logs the provenance of a served rate, recording whether it came from a wrapped source or the cache, the cache
-    /// backend that served it, and — for a cache serve — the age of the served data.
+    /// backend that served it, and - for a cache serve - the age of the served data.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="level">The level at which to log the message.</param>

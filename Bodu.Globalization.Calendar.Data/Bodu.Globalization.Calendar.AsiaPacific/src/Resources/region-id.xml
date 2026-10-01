@@ -35,22 +35,22 @@
 
   <NotableDates>
 
-    <!-- Chinese New Year (Tahun Baru Imlek) — first day of the Chinese lunisolar year. Strategy: Fixed lunisolar month/day. -->
+    <!-- Chinese New Year (Tahun Baru Imlek) - first day of the Chinese lunisolar year. Strategy: Fixed lunisolar month/day. -->
     <NotableDate id="chinese-new-year" displayName="Chinese New Year" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="id"><Applicability calendar="ChineseLunisolar"><Territory code="ID" /></Applicability><Strategy><Fixed month="1" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Isra and Mi'raj (Isra Mikraj) — 27 Rajab in the Hijri calendar. Tabular reckoning. Strategy: Fixed Hijri month/day. -->
+    <!-- Isra and Mi'raj (Isra Mikraj) - 27 Rajab in the Hijri calendar. Tabular reckoning. Strategy: Fixed Hijri month/day. -->
     <NotableDate id="isra-miraj" displayName="Isra and Mi'raj" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="id"><Applicability calendar="Hijri"><Territory code="ID" /></Applicability><Strategy><Fixed month="7" day="27" sweepCalendarYears="true" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Pancasila Day (Hari Lahir Pancasila) — 1 June, marking the 1945 Pancasila address. Strategy: Fixed day-of-month. -->
+    <!-- Pancasila Day (Hari Lahir Pancasila) - 1 June, marking the 1945 Pancasila address. Strategy: Fixed day-of-month. -->
     <NotableDate id="pancasila-day" displayName="Pancasila Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="id"><Applicability fromYear="2017"><Territory code="ID" /></Applicability><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
     </NotableDate>
 
-    <!-- Independence Day (Hari Kemerdekaan) — 17 August, marking the 1945 proclamation. Strategy: Fixed day-of-month. -->
+    <!-- Independence Day (Hari Kemerdekaan) - 17 August, marking the 1945 proclamation. Strategy: Fixed day-of-month. -->
     <NotableDate id="independence-day-id" displayName="Independence Day" category="PublicHoliday" defaultNonWorkingDay="true">
       <Rules><Rule id="id"><Applicability><Territory code="ID" /></Applicability><Strategy><Fixed month="August" day="17" /></Strategy></Rule></Rules>
     </NotableDate>

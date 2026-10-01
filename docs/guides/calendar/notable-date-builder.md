@@ -4,7 +4,7 @@ title: Authoring with the notable-date builder
 
 # Authoring with the notable-date builder
 
-`Bodu.Globalization.Calendar.Builder` is a fluent, chainable API for authoring notable-date documents in C#. It is the programmatic peer of the XML / JSON authoring path in [Authoring notable date rules](rule-authoring.md): both produce the same notable-date document, feed the same resolution pipeline, and validate through the same loader — but the builder keeps everything in code, so documents can be composed, cloned, serialized, and round-tripped without writing XML by hand.
+`Bodu.Globalization.Calendar.Builder` is a fluent, chainable API for authoring notable-date documents in C#. It is the programmatic peer of the XML / JSON authoring path in [Authoring notable date rules](rule-authoring.md): both produce the same notable-date document, feed the same resolution pipeline, and validate through the same loader - but the builder keeps everything in code, so documents can be composed, cloned, serialized, and round-tripped without writing XML by hand.
 
 For the vocabulary it assumes (document vs. resource, definition vs. rule, strategy, adjustment policy, nominal vs. observed) read [Core concepts](../../docs/calendar/concepts.md) first. For the full type list see the [`Bodu.Globalization.Calendar.Builder` reference](xref:Bodu.Globalization.Calendar.Builder).
 
@@ -37,7 +37,7 @@ NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("contoso.
 
 ## Rules and strategies
 
-<xref:Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder> sets the rule's scalars (`WithPriority`, `WithCategory`, `AsNonWorking`, `WithDurationDays`, `WithComment`, `AddTag`), its applicability (`ForCalendar`, `ForTerritory` / `ForTerritories`, `FromYear`, `ToYear`, `EveryYears`, `AnchorYear`, `OnlyYears`, `ExceptYears`), its adjustment references (`WithAdjustment`), and **exactly one** occurrence source — a single-date strategy or a frequency-based recurrence source. The most common:
+<xref:Bodu.Globalization.Calendar.Builder.NotableDateRuleBuilder> sets the rule's scalars (`WithPriority`, `WithCategory`, `AsNonWorking`, `WithDurationDays`, `WithComment`, `AddTag`), its applicability (`ForCalendar`, `ForTerritory` / `ForTerritories`, `FromYear`, `ToYear`, `EveryYears`, `AnchorYear`, `OnlyYears`, `ExceptYears`), its adjustment references (`WithAdjustment`), and **exactly one** occurrence source - a single-date strategy or a frequency-based recurrence source. The most common:
 
 ```csharp
 r.Fixed(1, 1);                                                       // 1 January (month name or number)
@@ -48,7 +48,7 @@ r.OffsetFromRule("easter-sunday", -2, ruleRef: "default");          // Good Frid
 r.Algorithm("western-easter");                                       // a named algorithm key
 ```
 
-The remaining single-date strategies (`OrdinalDayOfMonth`, `DayOfYear`, `IsoWeekDate`, `WeekdayNearRule`, `NthWeekdayFromRule`, `WorkingDayOffsetFromRule`, `WorkingDayInMonth`) and the recurrence sources (`DailyInterval`, `Weekly`, `MonthlyDay`, `MonthlyWeekday`) follow the same shape. Selecting a second strategy on the same rule throws <xref:System.InvalidOperationException> — each rule commits to one. See the [strategy reference](strategy-reference.md) for the full catalogue and [Date calculation algorithms](algorithms.md) for the strategy semantics and the `<Algorithm>` keys.
+The remaining single-date strategies (`OrdinalDayOfMonth`, `DayOfYear`, `IsoWeekDate`, `WeekdayNearRule`, `NthWeekdayFromRule`, `WorkingDayOffsetFromRule`, `WorkingDayInMonth`) and the recurrence sources (`DailyInterval`, `Weekly`, `MonthlyDay`, `MonthlyWeekday`) follow the same shape. Selecting a second strategy on the same rule throws <xref:System.InvalidOperationException> - each rule commits to one. See the [strategy reference](strategy-reference.md) for the full catalogue and [Date calculation algorithms](algorithms.md) for the strategy semantics and the `<Algorithm>` keys.
 
 ## Adjustment policies
 
@@ -80,11 +80,11 @@ builder.AddImport("global-core", i => i
         .WithAdjustment("weekend-to-monday")));
 ```
 
-An `AddImport` with no `Use` calls imports every concept the catalogue defines. Because the JSON subset cannot model imports, a document that calls `AddImport` serializes only as XML — see the note under [Materializing](#materializing-serializing-and-saving).
+An `AddImport` with no `Use` calls imports every concept the catalogue defines. Because the JSON subset cannot model imports, a document that calls `AddImport` serializes only as XML - see the note under [Materializing](#materializing-serializing-and-saving).
 
 ## Overrides
 
-`AddOverride` authors ID-targeted edits applied at load time. <xref:Bodu.Globalization.Calendar.Builder.OverrideBuilder> offers three operations — `AddRule` (add a rule to an existing concept), `PatchRule` (replace an existing rule), and `RemoveRule` (suppress one):
+`AddOverride` authors ID-targeted edits applied at load time. <xref:Bodu.Globalization.Calendar.Builder.OverrideBuilder> offers three operations - `AddRule` (add a rule to an existing concept), `PatchRule` (replace an existing rule), and `RemoveRule` (suppress one):
 
 ```csharp
 builder.AddOverride(o => o
@@ -106,14 +106,14 @@ builder.WithResolutionPolicy(p => p
 A finished builder produces the document in several forms:
 
 ```csharp
-// 1. A built, validated resource — ready for a NotableDateService.
+// 1. A built, validated resource - ready for a NotableDateService.
 NotableDateResource resource = builder.Build();                  // Build(resolver) when the document imports
 NotableDateService  service  = new NotableDateService(resource);
 
 // 2. An INotableDateResourceProvider (for the reloadable service / DI).
 INotableDateResourceProvider provider = builder.ToProvider();
 
-// 3. Serialized text — full-fidelity XML, or the JSON subset.
+// 3. Serialized text - full-fidelity XML, or the JSON subset.
 string xml  = builder.ToXml();      // also ToXDocument()
 string json = builder.ToJson();     // also ToJsonObject()
 
@@ -125,14 +125,14 @@ builder.Save("holidays.json");
 builder.Save("holidays.txt", NotableDateDocumentFormat.Xml);
 ```
 
-`Build()` serializes to XML and loads through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, so the built resource is exactly what the runtime would load — and the same validation applies (`Build()` throws <xref:Bodu.Globalization.Calendar.NotableDateValidationException> on an invalid document).
+`Build()` serializes to XML and loads through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, so the built resource is exactly what the runtime would load - and the same validation applies (`Build()` throws <xref:Bodu.Globalization.Calendar.NotableDateValidationException> on an invalid document).
 
 > [!NOTE]
-> XML is the full-fidelity format. `ToJson()` / `Save(*.json)` emit the narrower JSON subset and throw <xref:System.NotSupportedException> when the document uses a feature the JSON schema cannot model — imports, a non-Gregorian calendar, an XML-only trigger/action value, handler parameters, or scope year-bounds. Serialize those documents as XML.
+> XML is the full-fidelity format. `ToJson()` / `Save(*.json)` emit the narrower JSON subset and throw <xref:System.NotSupportedException> when the document uses a feature the JSON schema cannot model - imports, a non-Gregorian calendar, an XML-only trigger/action value, handler parameters, or scope year-bounds. Serialize those documents as XML.
 
 ## Round-tripping and cloning
 
-`FromXml` / `FromJson` parse a document back into a builder for editing, and `Load(path)` reads a file by extension — so you can load, mutate, and re-save:
+`FromXml` / `FromJson` parse a document back into a builder for editing, and `Load(path)` reads a file by extension - so you can load, mutate, and re-save:
 
 <!-- compile -->
 ```csharp
@@ -144,14 +144,14 @@ edited.Save("holidays.xml");
 NotableDateDocumentBuilder copy = edited.Clone();   // deep, independent copy
 ```
 
-Round-tripping carries precise guarantees — builder-canonical XML is byte-stable, JSON is identity within its subset, and both formats resolve the same occurrences. [Builder round-trip guarantees](round-trip-guarantees.md) states the full contract, including the XML → JSON lossiness boundary.
+Round-tripping carries precise guarantees - builder-canonical XML is byte-stable, JSON is identity within its subset, and both formats resolve the same occurrences. [Builder round-trip guarantees](round-trip-guarantees.md) states the full contract, including the XML → JSON lossiness boundary.
 
 ## Where to go next
 
-- [Builder round-trip guarantees](round-trip-guarantees.md) — exactly what `FromXml` / `ToXml`, `FromJson` / `ToJson`, and `Save` / `Load` guarantee.
-- [Authoring notable date rules](rule-authoring.md) — the XML / JSON document model the builder produces.
-- [NotableDateRule and adjustment-policy reference](rule-reference.md) — the per-element field reference.
-- [Date calculation algorithms](algorithms.md) — the strategy kinds and the `<Algorithm>` keys.
-- [Using NotableDateService](notable-dates.md) — resolving the documents you build.
-- [`Bodu.Globalization.Calendar.Builder` API reference](xref:Bodu.Globalization.Calendar.Builder) — the full type list.
-- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- [Builder round-trip guarantees](round-trip-guarantees.md) - exactly what `FromXml` / `ToXml`, `FromJson` / `ToJson`, and `Save` / `Load` guarantee.
+- [Authoring notable date rules](rule-authoring.md) - the XML / JSON document model the builder produces.
+- [NotableDateRule and adjustment-policy reference](rule-reference.md) - the per-element field reference.
+- [Date calculation algorithms](algorithms.md) - the strategy kinds and the `<Algorithm>` keys.
+- [Using NotableDateService](notable-dates.md) - resolving the documents you build.
+- [`Bodu.Globalization.Calendar.Builder` API reference](xref:Bodu.Globalization.Calendar.Builder) - the full type list.
+- **[Globalization & Calendars guides](../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.

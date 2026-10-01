@@ -123,7 +123,7 @@ internal static partial class Blake3Core
     internal static ReadOnlySpan<uint> InitializationVector => [Iv0, Iv1, Iv2, Iv3, Iv4, Iv5, Iv6, Iv7];
 
     /// <summary>
-    /// Compresses one block into a chaining value with the kernel dispatch selects.
+    /// Compresses one block into a chaining value with the kernel dispatch selects for a single block.
     /// </summary>
     /// <param name="chainingValue">
     /// The eight-word chaining value, replaced in place by the compression's output.
@@ -137,14 +137,14 @@ internal static partial class Blake3Core
     /// bytes.
     /// </exception>
     internal static void Compress(Span<uint> chainingValue, ReadOnlySpan<byte> block, ulong counter, uint blockLength, uint flags) =>
-        Compress(SelectKernel(), chainingValue, block, counter, blockLength, flags);
+        Compress(SelectSingleBlockKernel(), chainingValue, block, counter, blockLength, flags);
 
     /// <summary>
     /// Compresses one block into a chaining value with the specified kernel.
     /// </summary>
     /// <param name="kernel">
-    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects. Any other kind must be one the
-    /// processor supports.
+    /// The kernel; <see cref="KernelKind.Auto" /> for the one dispatch selects for a single block. Any other kind must
+    /// be one the processor supports.
     /// </param>
     /// <param name="chainingValue">
     /// The eight-word chaining value, replaced in place by the compression's output.
@@ -169,7 +169,7 @@ internal static partial class Blake3Core
         ref uint cv = ref MemoryMarshal.GetReference(chainingValue);
         ref byte m = ref MemoryMarshal.GetReference(block);
 
-        switch (kernel == KernelKind.Auto ? SelectKernel() : kernel)
+        switch (kernel == KernelKind.Auto ? SelectSingleBlockKernel() : kernel)
         {
             case KernelKind.Avx512:
             case KernelKind.Avx512Wide:
@@ -206,6 +206,10 @@ internal static partial class Blake3Core
     /// runtime clears it on processors whose clock drops under sustained 512-bit work, so there the eight-way kernel
     /// runs instead; <c>DOTNET_PreferredVectorBitWidth=512</c> opts such a processor in.
     /// </para>
+    /// <para>
+    /// The kind selected here compresses several inputs at once. A single block runs on the kernel
+    /// <see cref="SelectSingleBlockKernel" /> selects, which on ARM64 is the scalar kernel.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
@@ -220,6 +224,31 @@ internal static partial class Blake3Core
 
         return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;
     }
+
+    /// <summary>
+    /// Selects the kernel that compresses a single block: the one <see cref="SelectKernel" /> selects, except on ARM64,
+    /// where the scalar kernel runs in place of the 128-bit AdvSimd kernel.
+    /// </summary>
+    /// <returns>The kernel a single compression runs; never <see cref="KernelKind.Auto" />.</returns>
+    /// <remarks>
+    /// The 128-bit kernel spreads one compression's state across its lanes, and on the ARM64 processors measured the
+    /// scalar kernel compressed a block faster, so it waits on <see cref="SimdCapabilities.AdvSimdSingleState" />,
+    /// which is closed. The AdvSimd kernels that give each of up to four inputs a lane of their own ran faster than the
+    /// scalar kernel, and <see cref="SelectKernel" /> still selects them.
+    /// </remarks>
+    internal static KernelKind SelectSingleBlockKernel() =>
+        SingleBlockKernel(SelectKernel());
+
+    /// <summary>
+    /// Returns the kernel that compresses a single block for a kernel that compresses several inputs at once.
+    /// </summary>
+    /// <param name="kernel">The kernel; never <see cref="KernelKind.Auto" />.</param>
+    /// <returns>
+    /// <paramref name="kernel" />, or <see cref="KernelKind.Scalar" /> in place of <see cref="KernelKind.AdvSimd" />
+    /// while <see cref="SimdCapabilities.AdvSimdSingleState" /> is closed.
+    /// </returns>
+    private static KernelKind SingleBlockKernel(KernelKind kernel) =>
+        kernel == KernelKind.AdvSimd && !SimdCapabilities.AdvSimdSingleState ? KernelKind.Scalar : kernel;
 
     /// <summary>
     /// Determines whether the processor can run the specified kernel, whether or not the process allows vector code.

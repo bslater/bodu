@@ -71,7 +71,7 @@ public partial class MovingSumTests
     }
 
     /// <summary>
-    /// Verifies thousands of adds — many complete ring wrap-arounds — against the naive last-N oracle, over a mix of
+    /// Verifies thousands of adds - many complete ring wrap-arounds - against the naive last-N oracle, over a mix of
     /// alternating high/low values and long monotonic runs.
     /// </summary>
     [TestMethod]

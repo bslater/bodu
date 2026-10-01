@@ -42,7 +42,7 @@ public static partial class DateOnlyExtensions
     /// </list>
     /// <para>
     /// For the corresponding start of the week, use <see cref="GetFirstDateOfIsoWeek(int, int)" />. This member
-    /// delegates to <see cref="DateTimeExtensions.GetLastDateOfIsoWeek(int, int)" /> — the twins share one
+    /// delegates to <see cref="DateTimeExtensions.GetLastDateOfIsoWeek(int, int)" /> - the twins share one
     /// implementation, so both surfaces always agree.
     /// </para>
     /// </remarks>

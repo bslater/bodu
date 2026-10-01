@@ -21,7 +21,7 @@ public static partial class SpanExtensions
     /// <remarks>
     /// <para>
     /// This method is a zero-cost wrapper around the implicit conversion from <see cref="Span{T}" /> to
-    /// <see cref="ReadOnlySpan{T}" /> defined by the runtime. The compiler erases the call entirely — the emitted IL is
+    /// <see cref="ReadOnlySpan{T}" /> defined by the runtime. The compiler erases the call entirely - the emitted IL is
     /// identical to writing <c>(ReadOnlySpan&lt;T&gt;)source</c> at the call site.
     /// </para>
     /// <para>

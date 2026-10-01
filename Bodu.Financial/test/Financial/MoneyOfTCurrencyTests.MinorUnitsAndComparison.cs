@@ -170,12 +170,12 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Parser grammar — formal rejection grid for shapes that previously slipped through the heuristic check.
+    // Parser grammar - formal rejection grid for shapes that previously slipped through the heuristic check.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the parser rejects malformed token shapes — ISO concatenated with no space, embedded
-    /// symbols, and non-numeric tokens — that the prior heuristic "contains letter" check sometimes accepted
+    /// Verifies that the parser rejects malformed token shapes - ISO concatenated with no space, embedded
+    /// symbols, and non-numeric tokens - that the prior heuristic "contains letter" check sometimes accepted
     /// for the bare-numeric path.
     /// </summary>
     [TestMethod]

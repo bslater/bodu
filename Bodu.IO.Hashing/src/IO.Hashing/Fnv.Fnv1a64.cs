@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Fnv1a64.</strong> The recommended FNV variant when 32 bits would invite collisions — wider
+/// <strong>When to choose Fnv1a64.</strong> The recommended FNV variant when 32 bits would invite collisions - wider
 /// key spaces, content fingerprints, distributed cache keys. For inputs longer than ~16 bytes,
 /// <see cref="Bodu.IO.Hashing.MurmurHash3_128" /> or <see cref="Bodu.IO.Hashing.CityHash64" /> generally distribute
 /// better and run faster on modern 64-bit CPUs.

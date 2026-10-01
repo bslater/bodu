@@ -63,7 +63,7 @@ public sealed class OrientalOrthodoxKnownAnswerTests
     [TestMethod]
     [TestCategory("Regression")]
 
-    // 2024 — Orthodox Pascha 5 May.
+    // 2024 - Orthodox Pascha 5 May.
     [DataRow(2024, "oriental-orthodox-palm-sunday", 4, 28)]      // Pascha - 7
     [DataRow(2024, "oriental-orthodox-covenant-thursday", 5, 2)] // Pascha - 3
     [DataRow(2024, "oriental-orthodox-good-friday", 5, 3)]       // Pascha - 2
@@ -72,7 +72,7 @@ public sealed class OrientalOrthodoxKnownAnswerTests
     [DataRow(2024, "oriental-orthodox-ascension-day", 6, 13)]    // Pascha + 39
     [DataRow(2024, "oriental-orthodox-pentecost", 6, 23)]        // Pascha + 49
 
-    // 2025 — Orthodox Pascha 20 April.
+    // 2025 - Orthodox Pascha 20 April.
     [DataRow(2025, "oriental-orthodox-palm-sunday", 4, 13)]
     [DataRow(2025, "oriental-orthodox-covenant-thursday", 4, 17)]
     [DataRow(2025, "oriental-orthodox-good-friday", 4, 18)]

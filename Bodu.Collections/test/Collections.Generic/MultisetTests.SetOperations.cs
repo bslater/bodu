@@ -10,7 +10,7 @@ public partial class MultisetTests
 {
 
     // --------------------------------------------------------
-    // Except — empty operands
+    // Except - empty operands
     // --------------------------------------------------------
 
     /// <summary>
@@ -107,7 +107,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Intersect — empty operands
+    // Intersect - empty operands
     // --------------------------------------------------------
 
     /// <summary>
@@ -241,7 +241,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Sum — empty operands
+    // Sum - empty operands
     // --------------------------------------------------------
 
     /// <summary>
@@ -341,7 +341,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Union — empty operands
+    // Union - empty operands
     // --------------------------------------------------------
 
     /// <summary>

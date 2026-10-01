@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <para>
 /// The amanta month a new moon begins is identified by the sidereal zodiac sign the sun occupies at that new moon, so a
 /// festival's lunation is selected by solar position rather than by a fixed Gregorian search month. A leap month
-/// (adhika maasa) — two consecutive new moons in the same sign — is detected and the festival is taken in the true
+/// (adhika maasa) - two consecutive new moons in the same sign - is detected and the festival is taken in the true
 /// (nija) month, so intercalary years resolve correctly.
 /// </para>
 /// <para>

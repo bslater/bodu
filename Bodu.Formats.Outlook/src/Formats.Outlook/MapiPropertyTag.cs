@@ -64,7 +64,7 @@ public readonly struct MapiPropertyTag
     /// Gets the raw 32-bit tag value.
     /// </summary>
     /// <value>
-    /// The identifier in the high word and the type word — including the multi-valued flag — in the low word.
+    /// The identifier in the high word and the type word - including the multi-valued flag - in the low word.
     /// </value>
     public uint Value { get; }
 

@@ -1,11 +1,11 @@
-# Bodu.IO.Pst — MS-PST container exploration
+# Bodu.IO.Pst - MS-PST container exploration
 
 **Date:** 2026-07-31
 **Status:** Exploration / pre-implementation design note. No code
 exists; this document records the format anatomy, the layering
 decision, an API sketch, the fixture strategy, and the risks that must
 be settled before implementation starts.
-**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *New library
+**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) - *New library
 candidates → `Bodu.Formats.Outlook.Pst` / `Bodu.IO.Pst`*;
 [`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](../../Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md)
 (the shared MAPI value model this container's format reader consumes).
@@ -23,24 +23,24 @@ format semantics: `Bodu.IO.Compound` owns CFB, the proposed
 MS-PST does **not** fit either existing container. A `.pst` / `.ost`
 file is its own three-layer structure with no CFB inside:
 
-1. **NDB (Node Database)** — the storage layer: header, allocation
+1. **NDB (Node Database)** - the storage layer: header, allocation
    maps, two B-trees (blocks and nodes), blocks with trailers, data
    trees for large payloads, subnode trees, and the optional
    "compressible encryption" byte permutation.
-2. **LTP (Lists, Tables, Properties)** — the structured-data layer
+2. **LTP (Lists, Tables, Properties)** - the structured-data layer
    built on NDB nodes: Heap-on-Node, BTree-on-Heap, the Property
    Context (a property bag), and the Table Context (a typed row/column
    table).
-3. **Messaging** — MAPI semantics: the store object, the folder
+3. **Messaging** - MAPI semantics: the store object, the folder
    hierarchy, messages, recipients, attachments, and the named-property
    map.
 
 `Bodu.IO.Pst` owns layers 1 and 2 (the reusable, format-agnostic
-substrate — the analogue of CFB sectors + directory in
+substrate - the analogue of CFB sectors + directory in
 `Bodu.IO.Compound`). Layer 3 belongs to the future
 `Bodu.Formats.Outlook.Pst`, which translates LTP property bags and
 tables into the shared `Bodu.Formats.Outlook` MAPI value model. The
-boundary rule: **`Bodu.IO.Pst` never mentions MAPI** — it speaks node
+boundary rule: **`Bodu.IO.Pst` never mentions MAPI** - it speaks node
 ids, property ids, and wire type codes; folder/message/recipient
 semantics never leak below the format package.
 
@@ -54,13 +54,13 @@ semantics never leak below the format package.
   default since Outlook 2003), **≥ 36 = the 4 KiB-page OST variant**
   (WIP). Almost every structure below has an ANSI and a Unicode
   layout; the two differ in field widths and offsets, not concepts.
-- `bCryptMethod`: `None (0)`, `Permute (1)` — a fixed byte-substitution
-  table, `Cyclic (2)` — a rolling substitution keyed by the low DWORD
+- `bCryptMethod`: `None (0)`, `Permute (1)` - a fixed byte-substitution
+  table, `Cyclic (2)` - a rolling substitution keyed by the low DWORD
   of the block id, and the Windows-Information-Protection encrypted
   variant (`0x10`), which is out of scope. Permute/Cyclic apply to
-  data-block payloads only, never to pages or metadata — this is
+  data-block payloads only, never to pages or metadata - this is
   obfuscation, not cryptography.
-- Header and block trailers carry CRCs (the MS-PST §5.3 CRC — see
+- Header and block trailers carry CRCs (the MS-PST §5.3 CRC - see
   risk R3) plus the ROOT record: file EOF, allocation-map validity,
   and the BREFs (block id + absolute offset) of the two B-tree roots.
 
@@ -85,7 +85,7 @@ semantics never leak below the format package.
   partitions the namespace (normal folder, message, attachment,
   internal, contents-table, …) and well-known fixed NIDs anchor the
   file (message store `0x21`, name-to-id map `0x61`, root folder
-  `0x122`) — those constants matter to the format layer, but NID
+  `0x122`) - those constants matter to the format layer, but NID
   parsing itself is container-level.
 
 ### 2.3 LTP layer
@@ -124,7 +124,7 @@ Notes on the split:
 - **`Bodu.IO.Pst` returns wire-typed values** (`ushort` property type
   codes, raw little-endian payloads with typed accessors). The mapping
   to `MapiPropertyType` / `MapiProperty` is one thin translation in
-  the format package — keeping the container free of the
+  the format package - keeping the container free of the
   `Bodu.Formats.Outlook` dependency and usable by non-mail tooling
   (forensics, indexing).
 - Dependencies: `Bodu.Core` only. Same csproj shape as
@@ -232,19 +232,19 @@ Shape rationale:
 
 | # | Decision | Position |
 | --- | --- | --- |
-| P-D1 | Format variants | **Unicode (`wVer 23`) only at first.** ANSI and the 4 KiB OST variant are recognized and rejected with a precise `PstUnsupportedFormatException` (the `ExcelBinaryUnsupportedException` pattern); their layouts are kept in mind (width-parameterized readers) so adding them is additive. **Superseded 2026-09-04:** ANSI (`wVer` 14/15) is read. The readers had in fact hard-coded the Unicode widths; the ANSI work introduced the internal `PstLayout` descriptor (header, page and block trailers, B-tree strides, tree and subnode entry widths, row-matrix payload) that both variants now share, verified against the corpus rather than the specification text — the ANSI `ROOT` sits at 164, the ANSI page and block trailers place the block identifier before the checksum, the ANSI subnode block header has no padding dword, and the ANSI row index carries a two-byte row number. OST-4K remains rejected. |
-| P-D2 | Read/write | **Read-only, with authoring an explicit non-goal** for the foreseeable future — PST writing means allocation maps, free-space management, and CRC maintenance; no consumer needs it. |
+| P-D1 | Format variants | **Unicode (`wVer 23`) only at first.** ANSI and the 4 KiB OST variant are recognized and rejected with a precise `PstUnsupportedFormatException` (the `ExcelBinaryUnsupportedException` pattern); their layouts are kept in mind (width-parameterized readers) so adding them is additive. **Superseded 2026-09-04:** ANSI (`wVer` 14/15) is read. The readers had in fact hard-coded the Unicode widths; the ANSI work introduced the internal `PstLayout` descriptor (header, page and block trailers, B-tree strides, tree and subnode entry widths, row-matrix payload) that both variants now share, verified against the corpus rather than the specification text - the ANSI `ROOT` sits at 164, the ANSI page and block trailers place the block identifier before the checksum, the ANSI subnode block header has no padding dword, and the ANSI row index carries a two-byte row number. OST-4K remains rejected. |
+| P-D2 | Read/write | **Read-only, with authoring an explicit non-goal** for the foreseeable future - PST writing means allocation maps, free-space management, and CRC maintenance; no consumer needs it. |
 | P-D3 | Crypt methods | Permute and Cyclic both ship day one (files with either are common); the WIP-encrypted variant (`0x10`) is rejected. |
-| P-D4 | Search machinery | Search folders, search-update queues, and the DList are **skipped** — they are Outlook runtime state, not archive content. Their NIDs simply come back from `EnumerateNodes` untyped. |
+| P-D4 | Search machinery | Search folders, search-update queues, and the DList are **skipped** - they are Outlook runtime state, not archive content. Their NIDs simply come back from `EnumerateNodes` untyped. |
 | P-D5 | Concurrency | Same contract as `CompoundFile`: the session is single-threaded; no internal locking. Document it, don't guard it. |
 
-## 6. Fixture strategy — the key pre-implementation blocker
+## 6. Fixture strategy - the key pre-implementation blocker
 
 > **Resolved 2026-07-31.** A seed corpus is checked in at
 > [`../test/Fixtures/Reference/`](../test/Fixtures/Reference/): four
 > pstsdk test PSTs (Apache-2.0; two Unicode `wVer` 23, two ANSI `wVer`
 > 14) with verified headers, SHA-256 sums, a provenance `NOTICE.md`,
-> and `manifest.seed.json` — content expectations generated by an
+> and `manifest.seed.json` - content expectations generated by an
 > independent implementation (libpst's `lspst`) for the P0 spike to
 > assert against. The hand-built structural cases (item 3 below) and
 > the EDRM Enron scale tier remain P0/P2 work.
@@ -263,7 +263,7 @@ gating work item:
    files; each candidate's licence must be verified before check-in
    (the Compound reference-corpus precedent).
 3. **Hand-built structural cases.** Truncated headers, wrong CRCs,
-   cyclic-encoded blocks, oversized-payload data trees — small
+   cyclic-encoded blocks, oversized-payload data trees - small
    binary fixtures built by a test-only helper that patches bytes in
    copies of the reference files (not a PST writer).
 
@@ -281,30 +281,30 @@ start independently:
 | **P0** | Spike: header + NBT/BBT walk + block read with permute/cyclic + CRC, against the reference corpus | ✅ **Executed 2026-07-31.** `PstFile.OpenRead` / `EnumerateNodes` / `GetNode` and `PstNode.ReadAllBytes` / `OpenDataStream` / subnode access landed, with the data and subnode trees, tiered validation, and the `IO.Pst.Internal` §5.3 CRC; the corpus opens clean under `Strict` and the node census, heap-node signatures, and header CRCs are pinned by the test suite. R2 and R3 resolved (below). |
 | **P1** | LTP: HN, BTH, PC, TC surfaces | ✅ **Executed 2026-08-19** per [`ltp-implementation-plan.md`](ltp-implementation-plan.md): the heap-on-node over ordered block segments, the BTree-on-heap, and the public `PstNode.ReadPropertyContext` / `ReadTableContext` views (`PstPropertyContext` / `PstPropertyValue` / `PstTableContext` / `PstTableRow`), validated against the `lspst` oracle (folder names, subjects, senders, contents-table rows) and an every-node no-dangling-HNID sweep. |
 | **P2** | Hardening: validation levels, malformed-file sweeps, large-file streaming Regression, docs | ✅ **Executed 2026-08-31** (merged with P3 into the ROADMAP's single P2 gate; the numbering reconciliation is recorded in [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](../../Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)): `PstFileOptions.BlockCacheSize` decoded-block LRU, the streaming `PstDataStream` behind `OpenDataStream` with a mega-node memory-ceiling Regression, `PstNode.DataLength` + per-instance subnode caching, the `PstFileError` / `PstNodeNotFoundException` exception taxonomy, and bit-flip/truncation corruption sweeps over the corpus. Ships `Bodu.IO.Pst` (Preview) in release wave 3. |
-| **P3** | `Bodu.Formats.Outlook.Pst` (separate plan) | ✅ **Executed 2026-08-31** per the same plan: `OutlookMailStore` / `OutlookMailFolder` / `OutlookMailMessage` / `OutlookMailAttachment` over P1's surfaces in the shared value model — recipients, attachments, embedded messages, store-wide named-property resolution, and the text/HTML/compressed-RTF bodies — with the synthetic `PstMessagingFixtureBuilder` content oracle and format-level corruption sweeps. |
+| **P3** | `Bodu.Formats.Outlook.Pst` (separate plan) | ✅ **Executed 2026-08-31** per the same plan: `OutlookMailStore` / `OutlookMailFolder` / `OutlookMailMessage` / `OutlookMailAttachment` over P1's surfaces in the shared value model - recipients, attachments, embedded messages, store-wide named-property resolution, and the text/HTML/compressed-RTF bodies - with the synthetic `PstMessagingFixtureBuilder` content oracle and format-level corruption sweeps. |
 
 ## 8. Risks and open questions
 
-- **R1 — Spec-vs-reality drift.** Real-world PSTs (especially ones
+- **R1 - Spec-vs-reality drift.** Real-world PSTs (especially ones
   written by non-Outlook tools) deviate from MS-PST in padding,
   reference counts, and allocation metadata. Mitigation: the
   Compatible validation default + a corpus that includes third-party
   writers' output.
-- **R2 — Fixture provenance.** ✅ *Resolved* — the pstsdk reference
+- **R2 - Fixture provenance.** ✅ *Resolved* - the pstsdk reference
   corpus (2 Unicode + 2 ANSI files, Apache-2.0, `lspst` seed manifest)
   ships under `test/Fixtures/Reference/` with provenance and SHA-256
   pins (§6).
-- **R3 — The §5.3 CRC.** ✅ *Resolved in P0* — the checksum is a
+- **R3 - The §5.3 CRC.** ✅ *Resolved in P0* - the checksum is a
   reflected CRC-32 (polynomial `0xEDB88320`) with a **zero** initial
   value and **no** final complement, so it does not reduce to the
   catalogued CRC-32/ISO-HDLC; the small internal implementation ships
   as `IO.Pst.Internal.PstCrc`, pinned against every corpus header's
   `dwCRCPartial` by the test suite.
-- **R4 — Memory discipline.** B-tree pages and TC row matrices invite
+- **R4 - Memory discipline.** B-tree pages and TC row matrices invite
   accidental materialization. The streaming-first rule (§4) is a
   design invariant, enforced by a Regression test that reads a
   multi-hundred-MB fixture under a memory ceiling.
-- **R5 — ANSI/OST demand.** Deferring ANSI (P-D1) is a bet that
+- **R5 - ANSI/OST demand.** Deferring ANSI (P-D1) is a bet that
   post-2003 archives dominate. The width-parameterized internal
   readers keep the door open; revisit on the first real request.
   **Resolved 2026-09-04:** ANSI landed (see P-D1); only OST-4K remains
@@ -316,6 +316,6 @@ start independently:
 - The WIP-encrypted OST variant (`bCryptMethod 0x10`).
 - Search-folder evaluation and other Outlook runtime state (P-D4).
 - Password handling: the PST "password" is a CRC stored in the store
-  PC — it is not encryption, and honouring it would be theatre; the
+  PC - it is not encryption, and honouring it would be theatre; the
   reader ignores it (and the format package can surface it as data).
 - Any MAPI semantics below the format package (§3's boundary rule).

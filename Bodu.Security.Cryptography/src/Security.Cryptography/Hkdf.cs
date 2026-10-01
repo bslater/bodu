@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// HKDF turns input keying material that is merely high-entropy — such as a Diffie-Hellman shared secret — into one or
+/// HKDF turns input keying material that is merely high-entropy - such as a Diffie-Hellman shared secret - into one or
 /// more cryptographically strong, fixed-length keys.
 /// <see cref="Extract(HashAlgorithmName, ReadOnlySpan{byte}, ReadOnlySpan{byte})" /> concentrates the entropy of the
 /// input into a pseudorandom key (PRK) of one hash length;

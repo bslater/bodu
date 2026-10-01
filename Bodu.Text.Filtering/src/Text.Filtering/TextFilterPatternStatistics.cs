@@ -28,7 +28,7 @@ public sealed class TextFilterPatternStatistics
     public TextFilterPattern Pattern { get; }
 
     /// <summary>
-    /// Gets the number of evaluations this pattern decided — the include that admitted the value or the exclude that
+    /// Gets the number of evaluations this pattern decided - the include that admitted the value or the exclude that
     /// rejected it. Patterns that matched without deciding the outcome are not counted.
     /// </summary>
     public long HitCount { get; }

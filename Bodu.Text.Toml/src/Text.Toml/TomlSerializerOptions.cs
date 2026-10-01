@@ -265,8 +265,8 @@ public sealed partial class TomlSerializerOptions
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     /// <remarks>
     /// <para>
-    /// The limit bounds how deeply tables and arrays may nest. It is reached when serializing an object graph — or
-    /// deserializing a document — whose containers nest more levels deep than the effective limit, for example a chain
+    /// The limit bounds how deeply tables and arrays may nest. It is reached when serializing an object graph - or
+    /// deserializing a document - whose containers nest more levels deep than the effective limit, for example a chain
     /// of objects each holding the next, a dictionary of dictionaries, or arrays within arrays. Crossing it is reported
     /// as a catchable failure: <see cref="TomlSerializationException" /> while serializing, or
     /// <see cref="TomlFormatException" /> while deserializing. A reference cycle (an object reachable from itself) is a
@@ -275,8 +275,8 @@ public sealed partial class TomlSerializerOptions
     /// </para>
     /// <para>
     /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the library's hard
-    /// ceiling, <see cref="TomlLimits.AbsoluteMaxDepth" /> (64); setting a larger value — even
-    /// <see cref="int.MaxValue" /> — does not raise it. The ceiling exists because the serializer and parser recurse
+    /// ceiling, <see cref="TomlLimits.AbsoluteMaxDepth" /> (64); setting a larger value - even
+    /// <see cref="int.MaxValue" /> - does not raise it. The ceiling exists because the serializer and parser recurse
     /// one call-stack frame per nested container, so an unbounded depth on hostile or malformed input would exhaust the
     /// call stack and terminate the process with an uncatchable <see cref="StackOverflowException" />. Clamping
     /// converts that into the catchable exceptions above. Lowering this value below the default tightens the limit;

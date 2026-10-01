@@ -21,17 +21,17 @@ namespace Bodu.Formats.Outlook.Pst;
 /// format magic (<c>LZFu</c> compressed, <c>MELA</c> raw), and a CRC over the bytes that follow the header. The
 /// compressed body is an LZ77 variant over a 4096-byte circular dictionary preseeded with a 207-byte RTF prologue:
 /// control bytes are consumed bit by bit from the least significant bit, a clear bit copies a literal, and a set bit
-/// reads a big-endian 16-bit reference — a 12-bit dictionary offset and a 4-bit length stored as length − 2. A
+/// reads a big-endian 16-bit reference - a 12-bit dictionary offset and a 4-bit length stored as length − 2. A
 /// reference whose offset equals the current write position terminates the stream.
 /// </para>
 /// <para>
 /// The CRC is table-driven CRC-32 (reflected polynomial <c>0xEDB88320</c>) with a zero initial value and no final
-/// exclusive-or — the catalogued CRC-32 in <c>Bodu.IO.Hashing</c> applies the standard pre/post conditioning this
+/// exclusive-or - the catalogued CRC-32 in <c>Bodu.IO.Hashing</c> applies the standard pre/post conditioning this
 /// format omits, so the checksum runs the format's parameters over the shared <see cref="CrcCore" /> engine
 /// source-compiled from <c>Bodu.IO.Hashing/shared</c> (no package dependency).
 /// </para>
 /// <para>
-/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader —
+/// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader -
 /// <c>PidTagRtfCompressed</c> carries the same MS-OXRTFCP payload in a <c>.msg</c> substream and a PST property
 /// context. The consuming project selects the namespace and the format-specific exception/resource pair via its
 /// <c>DefineConstants</c> (<c>MSG</c> or <c>OUTLOOK_PST</c>).
@@ -113,7 +113,7 @@ internal static class CompressedRtf
 
         // The declared size sits outside the checksum, so it is bounded rather than trusted: a control byte governs
         // eight tokens and a two-byte reference yields at most seventeen bytes, so seventeen input bytes expand to at
-        // most 136 output bytes — eight to one — plus the dictionary the first references may replay.
+        // most 136 output bytes - eight to one - plus the dictionary the first references may replay.
         long ceiling = ((long)payload.Length * 8) + DictionarySize;
         if (rawSize > ceiling)
             throw MalformedData();
@@ -175,7 +175,7 @@ internal static class CompressedRtf
 
                 if ((control & (1 << bit)) != 0)
                 {
-                    // Dictionary reference: big-endian 16 bits — 12-bit offset, 4-bit (length - 2).
+                    // Dictionary reference: big-endian 16 bits - 12-bit offset, 4-bit (length - 2).
                     if (position + 2 > payload.Length)
                         throw MalformedData();
 

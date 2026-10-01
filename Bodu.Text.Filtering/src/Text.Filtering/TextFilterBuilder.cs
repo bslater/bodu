@@ -11,7 +11,7 @@ namespace Bodu.Text.Filtering;
 /// <c>Microsoft.Extensions.FileSystemGlobbing</c>'s <c>Matcher</c>.
 /// </summary>
 /// <remarks>
-/// Patterns accumulate in the order they are added — the order that becomes significant under
+/// Patterns accumulate in the order they are added - the order that becomes significant under
 /// <see cref="TextFilterEvaluationMode.LastMatchWins" />. The builder itself performs only per-pattern validation;
 /// grammar and regular-expression compilation errors surface from <see cref="Build" />.
 /// </remarks>

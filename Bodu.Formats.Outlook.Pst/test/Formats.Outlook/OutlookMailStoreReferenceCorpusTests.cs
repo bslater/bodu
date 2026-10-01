@@ -11,7 +11,7 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Full-decode sweeps over the real reference corpus: every folder, message, recipient, attachment, and body of every
-/// Unicode fixture must decode — under the tolerant and strict levels alike — exercising the complete messaging
+/// Unicode fixture must decode - under the tolerant and strict levels alike - exercising the complete messaging
 /// surface against writer-produced files.
 /// </summary>
 [TestClass]
@@ -65,7 +65,7 @@ public sealed class OutlookMailStoreReferenceCorpusTests
     }
 
     /// <summary>
-    /// Decodes one message's complete surface — properties, conveniences, bodies, recipients, and attachments —
+    /// Decodes one message's complete surface - properties, conveniences, bodies, recipients, and attachments -
     /// recursing into embedded messages.
     /// </summary>
     /// <param name="message">The message to decode.</param>

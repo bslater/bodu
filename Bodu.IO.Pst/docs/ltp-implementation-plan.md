@@ -1,7 +1,7 @@
-# Bodu.IO.Pst — P1 LTP layer (HN / BTH / PC / TC) implementation plan
+# Bodu.IO.Pst - P1 LTP layer (HN / BTH / PC / TC) implementation plan
 
 **Date:** 2026-08-19
-**Status:** **Executed 2026-08-19** — tranche **P1** of
+**Status:** **Executed 2026-08-19** - tranche **P1** of
 [`pst-container-exploration.md`](pst-container-exploration.md) §7,
 landed per the commit sequencing in §8. One deliberate deviation: the
 exact PC BTH shape (`cbKey`&#160;2 / `cbEnt`&#160;6) is enforced at
@@ -9,9 +9,9 @@ every validation level rather than Strict-only, because the record
 layout slices fixed offsets and a different shape cannot be decoded at
 all. One corpus finding recorded in the Regression suite: stored
 subjects carry the MS-PST two-character subject-prefix marker
-(U+0001 + length indicator), and `lspst`'s message counts are a floor —
+(U+0001 + length indicator), and `lspst`'s message counts are a floor -
 one fixture carries message nodes the oracle did not classify as Email.
-**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) — *New library
+**Relates to:** [`ROADMAP.md`](../../ROADMAP.md) - *New library
 candidates → `Bodu.Formats.Outlook.Pst`* and the per-project
 *`Bodu.IO.Pst`* section.
 
@@ -40,17 +40,17 @@ tranches.
 - **Unicode only (P-D1).** ANSI/OST rejection already happens at
   `PstHeader.Parse`; LTP readers keep offsets in named constants so the
   ANSI widths can be parameterized later (R5). *(Since 2026-09-04 the
-  ANSI format is read; the LTP layer needed two changes only — the
+  ANSI format is read; the LTP layer needed two changes only - the
   row-matrix block payload, 8,180 bytes against 8,176, and the two-byte
-  ANSI row-index number — both driven by the shared `PstLayout`.)*
+  ANSI row-index number - both driven by the shared `PstLayout`.)*
 
 ## 2. Format facts the implementation encodes (MS-PST §2.3)
 
-- **HN**: block 0 starts with HNHDR — `ibHnpm`(2) `bSig`(1, `0xEC`)
+- **HN**: block 0 starts with HNHDR - `ibHnpm`(2) `bSig`(1, `0xEC`)
   `bClientSig`(1: `0xBC` PC, `0x7C` TC, `0xB5` BTH) `hidUserRoot`(4)
   `rgbFillLevel`(4). Later blocks start with HNPAGEHDR (`ibHnpm`, 2),
-  except block index 8 and every 128 thereafter (HNBITMAPHDR, 66 bytes
-  — header parsing needs only `ibHnpm`, first in all three shapes).
+  except block index 8 and every 128 thereafter (HNBITMAPHDR, 66 bytes -
+  header parsing needs only `ibHnpm`, first in all three shapes).
   Each block carries an HNPAGEMAP at `ibHnpm`: `cAlloc`(2) `cFree`(2)
   `rgibAlloc[cAlloc+1]`(2 each), monotonically non-decreasing and in
   bounds. **HID** = 32-bit: type bits (low 5, must be 0), `hidIndex`
@@ -59,7 +59,7 @@ tranches.
   is the null heap id. **HIDs address individual data blocks**, so the
   HN reader consumes the node's data blocks as an ordered segment list,
   not the flattened payload `PstDataTree.Resolve` returns today.
-- **BTH**: `BTHHEADER` heap item — `bType`(1, `0xB5`) `cbKey`(1 ∈
+- **BTH**: `BTHHEADER` heap item - `bType`(1, `0xB5`) `cbKey`(1 ∈
   {2,4,8,16}) `cbEnt`(1) `bIdxLevels`(1) `hidRoot`(4). Index records
   `{key, hidNextLevel(4)}`; leaf records `{key, data(cbEnt)}`.
   `hidRoot == 0` → empty tree.
@@ -69,7 +69,7 @@ tranches.
   the dword (`0x0002/0x0003/0x0004/0x000A/0x000B/0x0001`); fixed
   8/16-byte types via HID (`0x0005/0x0006/0x0007/0x0014/0x0040` = 8,
   `0x0048` = 16); everything else (strings, binary, object, the
-  `0x1xxx` multi-valued forms) via **HNID** — low-5-bits-zero ⇒ HID
+  `0x1xxx` multi-valued forms) via **HNID** - low-5-bits-zero ⇒ HID
   into the heap, otherwise an NID into the owning node's subnode tree
   whose data payload is the value.
 - **TC**: heap (`bClientSig 0x7C`); `hidUserRoot` → TCINFO: `bType`(1,
@@ -90,7 +90,7 @@ tranches.
 
 | File | Responsibility |
 | --- | --- |
-| `PstDataTree.cs` *(modify)* | Add `ResolveSegments(source, blockId) → List<byte[]>` (ordered leaf data blocks); re-express `Resolve` as its concatenation — behavior unchanged. |
+| `PstDataTree.cs` *(modify)* | Add `ResolveSegments(source, blockId) → List<byte[]>` (ordered leaf data blocks); re-express `Resolve` as its concatenation - behavior unchanged. |
 | `PstHeapNode.cs` | HN parse over the segments; `ClientSignature`, `UserRootHid`, `GetItem(hid)` / `TryGetItem` with full bounds validation. |
 | `PstHnid.cs` | HID-vs-NID discrimination: `IsNull(hnid)` (== 0), `IsHeapId(hnid)` (`(hnid & 0x1F) == 0`). |
 | `PstBthHeader.cs` | `readonly record struct` (KeySize, DataSize, IndexLevels, RootHid). |
@@ -100,31 +100,31 @@ tranches.
 | `PstPcEntry.cs` | `readonly record struct` (PropertyId, WireType, RawValue). |
 | `PstPropertyContextReader.cs` | Validates `bClientSig 0xBC`, reads the BTH (`cbKey==2`, `cbEnt==6`), materializes the 8-byte records; values stay unresolved HNIDs. |
 | `PstTcInfo.cs` / `PstTcColumn.cs` | `readonly record struct`s for TCINFO (rgib ends, row-index HID, rows HNID, columns) and TCOLDESC. |
-| `PstTableContextReader.cs` | Validates `bClientSig 0x7C` / `bType 0x7C`, TCINFO/TCOLDESC extents; `EnumerateRowBlocks` (HID single heap item, or subnode blocks — the R4 streaming point); `TryLocateRow` via the row-index BTH. |
+| `PstTableContextReader.cs` | Validates `bClientSig 0x7C` / `bType 0x7C`, TCINFO/TCOLDESC extents; `EnumerateRowBlocks` (HID single heap item, or subnode blocks - the R4 streaming point); `TryLocateRow` via the row-index BTH. |
 
 ## 4. Public surface (`src/IO.Pst/`)
 
-- `PstNode.ReadPropertyContext()` / `ReadTableContext()` — wrong-kind
+- `PstNode.ReadPropertyContext()` / `ReadTableContext()` - wrong-kind
   node throws `PstFileFormatException`; each call re-reads from disk
   (documented; the LRU block cache is P2).
-- `PstPropertyContext : IReadOnlyCollection<PstPropertyValue>` —
+- `PstPropertyContext : IReadOnlyCollection<PstPropertyValue>` -
   `Count`, `Contains`, `TryGetValue`, `GetValue` (miss →
   `PstFileException`), enumeration in BTH (property-id) order. Value
   payloads resolve at access time.
-- `PstPropertyValue` (readonly struct) — `PropertyId`, `WireType` (raw
+- `PstPropertyValue` (readonly struct) - `PropertyId`, `WireType` (raw
   MS-OXCDATA code), `RawData` (resolved little-endian payload), typed
   accessors `GetInt16/GetInt32/GetInt64/GetBoolean/GetSingle/GetDouble/
-  GetGuid/GetString` (wire type `0x001F` UTF-16LE only — `0x001E` stays
+  GetGuid/GetString` (wire type `0x001F` UTF-16LE only - `0x001E` stays
   bytes; code pages are a format-layer concern) / `GetBytes`. Mismatch
   → `InvalidOperationException`. Multi-valued (`0x1xxx`) and
   `PtypObject` payloads surface raw; decoding them is P3's job.
-- `PstTableContext` — `Columns` (`IReadOnlyList<PstTableColumn>`),
+- `PstTableContext` - `Columns` (`IReadOnlyList<PstTableColumn>`),
   `RowCount` (row-index record count), streaming `EnumerateRows()`
   (matrix order, one block resident at a time), `TryGetRow(rowId)`.
-- `PstTableColumn` (readonly struct) — `PropertyId` (tag >> 16),
+- `PstTableColumn` (readonly struct) - `PropertyId` (tag >> 16),
   `WireType` (tag & 0xFFFF), `Width` (`cbData`); `ibData`/`iBit` stay
   internal.
-- `PstTableRow` — `RowId`, `TryGetCell(propertyId, out value)` (false
+- `PstTableRow` - `RowId`, `TryGetCell(propertyId, out value)` (false
   when the column is absent or the existence bit is clear),
   `EnumerateCells()`; a row copies its `RowWidth` bytes so rows outlive
   the block buffer; variable cells resolve their HNID on access.
@@ -150,11 +150,11 @@ New keys in `src/IO.Pst/PstResourceStrings.resx` (all formatted with
 (`InvalidOperationException` on mismatched typed accessors);
 `IO_KeyNotFound_PstProperty` (`PstFileException`, mirroring
 `IO_KeyNotFound_PstNode`). No new `PstUnsupportedFormatException`
-sites — P1 introduces no new unsupported-variant surface.
+sites - P1 introduces no new unsupported-variant surface.
 
 ## 7. Tests
 
-- `test/IO.Pst.Internal/PstLtpFixtureBuilder.cs` — builds HN/BTH/PC/TC
+- `test/IO.Pst.Internal/PstLtpFixtureBuilder.cs` - builds HN/BTH/PC/TC
   payload bytes; composed with the existing in-memory
   `PstFixtureBuilder`, so **no new binary fixtures are needed**.
 - Internal BVT partials per reader: `PstDataTreeTests` (extended with
@@ -172,7 +172,7 @@ sites — P1 introduces no new unsupported-variant surface.
   Contents/Hierarchy table row counts vs the manifest, swept under
   Compatible **and** Strict, plus an every-node no-dangling-HNID sweep
   (each PC/TC value payload resolves without throwing). Raw property
-  ids appear as literals with MS-OXPROPS comments — MAPI knowledge in
+  ids appear as literals with MS-OXPROPS comments - MAPI knowledge in
   *tests* does not breach the library boundary.
 
 ## 8. Commit sequencing (net-new; tests land alongside)

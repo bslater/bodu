@@ -9,7 +9,7 @@ namespace Bodu.Text.Bencode.Serialization;
 
 /// <summary>
 /// Produces a <see cref="BencodeConverter" /> for a family of types that cannot be served by a single
-/// <see cref="BencodeConverter{T}" /> — for example every <see cref="Nullable{T}" />, every enumeration, or every
+/// <see cref="BencodeConverter{T}" /> - for example every <see cref="Nullable{T}" />, every enumeration, or every
 /// collection.
 /// </summary>
 /// <remarks>
@@ -46,7 +46,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Produces a <see cref="TomlConverter" /> for a family of types that cannot be served by a single
-/// <see cref="TomlConverter{T}" /> — for example every <see cref="Nullable{T}" />, every enumeration, or every
+/// <see cref="TomlConverter{T}" /> - for example every <see cref="Nullable{T}" />, every enumeration, or every
 /// collection.
 /// </summary>
 /// <remarks>
@@ -83,7 +83,7 @@ namespace Bodu.Text.Yaml.Serialization;
 
 /// <summary>
 /// Produces a <see cref="YamlConverter" /> for a family of types that cannot be served by a single
-/// <see cref="YamlConverter{T}" /> — for example every <see cref="Nullable{T}" />, every enumeration, or every
+/// <see cref="YamlConverter{T}" /> - for example every <see cref="Nullable{T}" />, every enumeration, or every
 /// collection.
 /// </summary>
 /// <remarks>

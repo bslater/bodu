@@ -124,8 +124,8 @@ public sealed partial class Utf8TomlReaderTests
         {
         }
 
-        // The two complete expressions are consumed up to the second newline; the dangling key "long" — and the
-        // newline read in the same incomplete pass — roll back.
+        // The two complete expressions are consumed up to the second newline; the dangling key "long" - and the
+        // newline read in the same incomplete pass - roll back.
         Assert.AreEqual(11, reader.BytesConsumed);
 
         byte[] rest = [.. doc[11..], .. "er = 3\n"u8.ToArray()];

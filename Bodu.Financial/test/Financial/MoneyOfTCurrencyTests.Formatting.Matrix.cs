@@ -13,7 +13,7 @@ namespace Bodu.Financial;
 public partial class MoneyOfTCurrencyTests
 {
     // ---------------------------------------------------------------------------------------------------------------
-    // Default specifier (G / C / null) — ISO code + culture-grouped number across all minor-unit categories.
+    // Default specifier (G / C / null) - ISO code + culture-grouped number across all minor-unit categories.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -84,7 +84,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // C specifier — matched cultures (region currency == TCurrency). Output equals the BCL's native "C" format.
+    // C specifier - matched cultures (region currency == TCurrency). Output equals the BCL's native "C" format.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -143,7 +143,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // C specifier — mismatched cultures. Output embeds ISO in the locale's CurrencyPositivePattern slot.
+    // C specifier - mismatched cultures. Output embeds ISO in the locale's CurrencyPositivePattern slot.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -178,7 +178,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // ~ prefix — matched culture elides the designator; mismatched keeps it.
+    // ~ prefix - matched culture elides the designator; mismatched keeps it.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -259,7 +259,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Explicit precision suffix — must override both the currency's MinorUnits and the culture's CurrencyDecimalDigits.
+    // Explicit precision suffix - must override both the currency's MinorUnits and the culture's CurrencyDecimalDigits.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -316,7 +316,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Bare ~ — equivalent to ~G (elide-if-matched default).
+    // Bare ~ - equivalent to ~G (elide-if-matched default).
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -348,7 +348,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Neutral cultures and InvariantCulture — region behavior is platform-dependent for most neutral cultures,
+    // Neutral cultures and InvariantCulture - region behavior is platform-dependent for most neutral cultures,
     // so we assert only on InvariantCulture (always truly region-less) and a bare NumberFormatInfo (never matches).
     // ---------------------------------------------------------------------------------------------------------------
 
@@ -369,7 +369,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that a bare <see cref="NumberFormatInfo" /> provider — which carries no region context — also
+    /// Verifies that a bare <see cref="NumberFormatInfo" /> provider - which carries no region context - also
     /// falls back to the ISO-substitution form.
     /// </summary>
     [TestMethod]
@@ -383,7 +383,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge cases — boundary amounts.
+    // Edge cases - boundary amounts.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -432,7 +432,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Edge cases — invalid format strings.
+    // Edge cases - invalid format strings.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -491,7 +491,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Round-trip — Parse must recover any value formatted with default / C / G / N / F / D specifiers.
+    // Round-trip - Parse must recover any value formatted with default / C / G / N / F / D specifiers.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -523,7 +523,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     // ---------------------------------------------------------------------------------------------------------------
-    // Helpers — reflective dispatch into Money<TCurrency> from a string ISO code so [DataRow] can drive the matrix.
+    // Helpers - reflective dispatch into Money<TCurrency> from a string ISO code so [DataRow] can drive the matrix.
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>

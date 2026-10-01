@@ -351,7 +351,7 @@ public sealed partial class BencodeDocument
     }
 
     /// <summary>
-    /// Gets the complete encoded form of the value at the supplied row index — for a byte string this includes the
+    /// Gets the complete encoded form of the value at the supplied row index - for a byte string this includes the
     /// length prefix, for an integer the <c>i…e</c> framing, and for a container both delimiters and every child.
     /// </summary>
     /// <param name="index">The row index.</param>
@@ -550,7 +550,7 @@ public sealed partial class BencodeDocument
     /// <param name="reader">The reader, positioned on the value's first token.</param>
     /// <param name="rows">The growing flat metadata index to append to.</param>
     /// <param name="valueStart">
-    /// The byte offset where the value's encoded form begins — the reader's consumed count captured before the read
+    /// The byte offset where the value's encoded form begins - the reader's consumed count captured before the read
     /// that produced the current token.
     /// </param>
     /// <exception cref="BencodeFormatException">

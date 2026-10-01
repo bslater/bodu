@@ -8,8 +8,8 @@ here under their original permissive licenses.
 
 | Folder / files | Source | License |
 |---|---|---|
-| `valid/clean.dat`, `valid/example*.dat`, `valid/sample*.doc`, `valid/sample*.xls`, `valid/strange_*.dat`, `invalid/invalid_*.dat`, `invalid/strange_*.dat` | [`waveform-computing/compoundfiles`](https://github.com/waveform-computing/compoundfiles) — `tests/` | MIT — Copyright (c) 2014 Dave Jones |
-| `valid/test-ole-file.doc` | [`decalage2/olefile`](https://github.com/decalage2/olefile) — `tests/images/` | BSD-2-Clause — Copyright (c) 2005-2023 Philippe Lagadec |
+| `valid/clean.dat`, `valid/example*.dat`, `valid/sample*.doc`, `valid/sample*.xls`, `valid/strange_*.dat`, `invalid/invalid_*.dat`, `invalid/strange_*.dat` | [`waveform-computing/compoundfiles`](https://github.com/waveform-computing/compoundfiles) - `tests/` | MIT - Copyright (c) 2014 Dave Jones |
+| `valid/test-ole-file.doc` | [`decalage2/olefile`](https://github.com/decalage2/olefile) - `tests/images/` | BSD-2-Clause - Copyright (c) 2005-2023 Philippe Lagadec |
 
 The `invalid/` files are deliberately malformed compound files; the `valid/`
 files are well-formed (or, for `strange_*`, use unusual-but-recoverable layouts).

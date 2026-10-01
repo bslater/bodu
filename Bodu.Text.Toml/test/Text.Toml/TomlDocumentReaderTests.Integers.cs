@@ -11,7 +11,7 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
-    /// Verifies that decimal integers — bare, explicitly signed, and underscore-grouped — decode to their value.
+    /// Verifies that decimal integers - bare, explicitly signed, and underscore-grouped - decode to their value.
     /// </summary>
     /// <param name="literal">The integer literal under test.</param>
     /// <param name="expected">The expected decoded value.</param>

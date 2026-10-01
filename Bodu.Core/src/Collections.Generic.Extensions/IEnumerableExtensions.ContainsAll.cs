@@ -36,7 +36,7 @@ public static partial class IEnumerableExtensions
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfNull(items);
 
-        // Build the pending-needle set — O(|items|) memory — rather than materializing the haystack, whose size the
+        // Build the pending-needle set - O(|items|) memory - rather than materializing the haystack, whose size the
         // caller cannot bound (its sibling ContainsAny applies the same smaller-side discipline).
         var pending = new HashSet<T>(items, comparer);
         if (pending.Count == 0)

@@ -25,7 +25,7 @@
   <NotableDates>
 
     <!--
-      Independence Day (Yom Ha'atzmaut) — 5 Iyar in the Hebrew calendar, computed as 20 days after the imported
+      Independence Day (Yom Ha'atzmaut) - 5 Iyar in the Hebrew calendar, computed as 20 days after the imported
       Passover (15 Nisan) anchor. The official observance is postponed by a day or two in years where 5 Iyar would
       fall adjacent to the Sabbath; that postponement is not modeled here. Strategy: OffsetFromRule from Passover.
     -->

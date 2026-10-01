@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 
 /// <summary>
-/// Provides the shared, position-oriented <see cref="SourceText" /> primitives used by the documentation code fixes —
+/// Provides the shared, position-oriented <see cref="SourceText" /> primitives used by the documentation code fixes -
 /// resolving the document line ending, locating line boundaries, and recovering the indentation and <c>///</c> prefix
 /// of a doc-comment line. Centralizing them keeps every fix reading and re-emitting the surrounding doc-comment layout
 /// the same way.
@@ -113,8 +113,8 @@ internal static class DocCommentSource
     }
 
     /// <summary>
-    /// Recovers the documentation-comment prefix actually used on the line that contains the supplied position — the
-    /// <c>///</c> run plus a single following space when present — so synthesized blocks match the source style instead
+    /// Recovers the documentation-comment prefix actually used on the line that contains the supplied position - the
+    /// <c>///</c> run plus a single following space when present - so synthesized blocks match the source style instead
     /// of assuming a hardcoded prefix.
     /// </summary>
     /// <param name="text">The document text.</param>

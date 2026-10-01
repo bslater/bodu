@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// Together they exercise both key-schedule sanity (avalanche) and the published reference round-trip, sufficient
 /// to detect any divergence in round-key byte ordering or the Rule&#160;A / Rule&#160;B alternation.
 /// </remarks>
-/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
+/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 - Escrowed Encryption Standard (Skipjack)</seealso>
 internal sealed partial class SkipjackBlockCipherTests
 {
     private const string AllZeroPlaintext = "0000000000000000";

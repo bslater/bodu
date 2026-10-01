@@ -159,8 +159,8 @@ public partial class NavigableDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that a dictionary built from every size 0 through 64 remains fully consistent — key-sorted
-    /// enumeration, count, value fidelity, and rank round-trips — and continues to accept mutations, exercising every
+    /// Verifies that a dictionary built from every size 0 through 64 remains fully consistent - key-sorted
+    /// enumeration, count, value fidelity, and rank round-trips - and continues to accept mutations, exercising every
     /// bulk-build coloring shape.
     /// </summary>
     [TestMethod]

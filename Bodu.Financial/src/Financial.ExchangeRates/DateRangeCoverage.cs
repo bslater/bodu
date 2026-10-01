@@ -14,8 +14,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// The type answers one question precisely: has every day in a requested window already been seen? Unlike a single
 /// <c>(min, max)</c> envelope, it preserves interior gaps, so a window that straddles an unobserved stretch is
-/// correctly reported as not covered. Two intervals are merged only when they overlap or touch — the later interval
-/// begins on or before the day after the earlier one ends — so a genuine gap of one or more days keeps them separate.
+/// correctly reported as not covered. Two intervals are merged only when they overlap or touch - the later interval
+/// begins on or before the day after the earlier one ends - so a genuine gap of one or more days keeps them separate.
 /// </para>
 /// <para>
 /// Instances are not thread-safe; callers that mutate a shared instance must synchronize access themselves.

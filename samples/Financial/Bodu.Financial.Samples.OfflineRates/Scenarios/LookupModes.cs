@@ -43,11 +43,11 @@ public static class LookupModes
         if (!source.TryGetRate("AUD", "USD", saturday, RateLookupOptions.Exact, out _))
             Console.WriteLine($"  Exact              {saturday:yyyy-MM-dd} -> no observation (Saturday)");
 
-        // PreviousWithin(n): walk backwards up to n days — the classic "most recent published rate"
+        // PreviousWithin(n): walk backwards up to n days - the classic "most recent published rate"
         // rule used for valuations.
         Print("PreviousWithin(3)", source.GetRate("AUD", "USD", saturday, RateLookupOptions.PreviousWithin(3)));
 
-        // NextWithin(n): walk forwards up to n days — e.g. settle on the first fixing after a value date.
+        // NextWithin(n): walk forwards up to n days - e.g. settle on the first fixing after a value date.
         Print("NextWithin(3)   ", source.GetRate("AUD", "USD", saturday, RateLookupOptions.NextWithin(3)));
 
         // NearestWithin(n): whichever observation is closest in either direction.

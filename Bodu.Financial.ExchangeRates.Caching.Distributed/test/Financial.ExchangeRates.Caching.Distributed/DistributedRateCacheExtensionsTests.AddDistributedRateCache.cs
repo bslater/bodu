@@ -128,7 +128,7 @@ public sealed partial class DistributedRateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that invalid options — here, a white-space key prefix — fail fast through <c>ValidateOnStart</c> when
+    /// Verifies that invalid options - here, a white-space key prefix - fail fast through <c>ValidateOnStart</c> when
     /// the cache is resolved.
     /// </summary>
     [TestMethod]

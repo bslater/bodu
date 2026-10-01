@@ -111,7 +111,7 @@ public sealed class AustraliaKnownAnswerTests
 
     /// <summary>
     /// Verifies that a narrower subdivision rule shadows the broader national rule for the same concept: a
-    /// <c>AU-WA</c> query resolves exactly one Anzac Day — the Western Australian weekend-substitute rule — rather
+    /// <c>AU-WA</c> query resolves exactly one Anzac Day - the Western Australian weekend-substitute rule - rather
     /// than emitting both it and the national rule, while <c>AU-VIC</c> (which has no subdivision rule) falls back to
     /// the national rule with no substitute.
     /// </summary>

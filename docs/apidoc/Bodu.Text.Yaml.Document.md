@@ -10,11 +10,11 @@ uid: Bodu.Text.Yaml.Document
 
 ## Key types
 
-- <xref:Bodu.Text.Yaml.Document.YamlDocument> — the disposable owner: `Parse` (from `string` or `ReadOnlySpan<byte>`), `ParseAllDocuments` for `---` / `...` delimited streams, and `RootElement`.
-- <xref:Bodu.Text.Yaml.Document.YamlElement> — the value cursor: `ValueKind`, `ScalarStyle` (the original <xref:Bodu.Text.Yaml.YamlScalarStyle>), `GetString` / `GetInt64` / `GetDouble` / `GetBoolean`, `GetProperty` / `TryGetProperty`, an integer indexer, `GetSequenceLength`, `EnumerateSequence` / `EnumerateMapping`, and `WriteTo`.
-- <xref:Bodu.Text.Yaml.Document.YamlElement.SequenceEnumerator> / <xref:Bodu.Text.Yaml.Document.YamlElement.MappingEnumerator> — the struct enumerators returned by `EnumerateSequence` / `EnumerateMapping`.
-- <xref:Bodu.Text.Yaml.Document.YamlProperty> — a `Name` / `Value` pair yielded by `EnumerateMapping`.
-- <xref:Bodu.Text.Yaml.Document.YamlDocumentOptions> — `SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, and `MaxDepth`.
+- <xref:Bodu.Text.Yaml.Document.YamlDocument> - the disposable owner: `Parse` (from `string` or `ReadOnlySpan<byte>`), `ParseAllDocuments` for `---` / `...` delimited streams, and `RootElement`.
+- <xref:Bodu.Text.Yaml.Document.YamlElement> - the value cursor: `ValueKind`, `ScalarStyle` (the original <xref:Bodu.Text.Yaml.YamlScalarStyle>), `GetString` / `GetInt64` / `GetDouble` / `GetBoolean`, `GetProperty` / `TryGetProperty`, an integer indexer, `GetSequenceLength`, `EnumerateSequence` / `EnumerateMapping`, and `WriteTo`.
+- <xref:Bodu.Text.Yaml.Document.YamlElement.SequenceEnumerator> / <xref:Bodu.Text.Yaml.Document.YamlElement.MappingEnumerator> - the struct enumerators returned by `EnumerateSequence` / `EnumerateMapping`.
+- <xref:Bodu.Text.Yaml.Document.YamlProperty> - a `Name` / `Value` pair yielded by `EnumerateMapping`.
+- <xref:Bodu.Text.Yaml.Document.YamlDocumentOptions> - `SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, and `MaxDepth`.
 
 ## Example
 
@@ -33,4 +33,4 @@ foreach (YamlProperty property in root.EnumerateMapping())
 
 - **Aliases are transparent.** An element reached through an alias resolves to its anchored target; the tree is guaranteed acyclic.
 - **Multi-document streams.** The single-document `Parse` reads the first document; `ParseAllDocuments` returns every document, each independently disposable.
-- **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 5 — Inspect a document with the read-only DOM).
+- **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 5 - Inspect a document with the read-only DOM).

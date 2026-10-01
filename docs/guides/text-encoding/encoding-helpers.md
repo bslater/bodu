@@ -4,13 +4,13 @@ title: Encoding helpers and BOM detection
 
 # Encoding helpers and BOM detection
 
-Separate from the binary radix encodings (Base16–Base85, in `Bodu.Text.Encoding`), the **`Bodu.Text`** library ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
+Separate from the binary radix encodings (Base16-Base85, in `Bodu.Text.Encoding`), the **`Bodu.Text`** library ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
 
 Three types make up the surface:
 
-- <xref:Bodu.Text.StringEncodingExtensions> — extension methods on `string`.
-- <xref:Bodu.Text.EncodingExtensions> — extension methods on `System.Text.Encoding`.
-- <xref:Bodu.Text.EncodingDetection> — static BOM-sniffing.
+- <xref:Bodu.Text.StringEncodingExtensions> - extension methods on `string`.
+- <xref:Bodu.Text.EncodingExtensions> - extension methods on `System.Text.Encoding`.
+- <xref:Bodu.Text.EncodingDetection> - static BOM-sniffing.
 
 ## Converting strings to bytes
 
@@ -101,11 +101,11 @@ OperationStatus status = enc.EncodeChunk(charSpan, byteDestination, isFinal: tru
 |---|---|
 | <xref:Bodu.Text.StringEncodingExtensions> | `ToUtf8Bytes` / `ToBytes` / `ToBytesWithPreamble`, `EncodeUtf8To` / `TryEncodeUtf8To`, `WriteUtf8To`, `GetUtf8ByteCount`, pooled variants. |
 | <xref:Bodu.Text.EncodingExtensions> | `HasPreamble` / `StripPreamble` / `StartsWithPreamble` / `GetStringSkippingPreamble`, `IsUtf8` / `IsAscii` / `IsAnyUtf` / endianness checks, `WithExceptionFallbacks` / `WithReplacementFallbacks`, owned / pooled buffers, `EncodeChunk` / `DecodeChunk`. |
-| <xref:Bodu.Text.EncodingDetection> | `TryDetectByPreamble` — identify an encoding from a leading BOM. |
+| <xref:Bodu.Text.EncodingDetection> | `TryDetectByPreamble` - identify an encoding from a leading BOM. |
 
 ## Where to go next
 
-- [The IBinaryEncoding interface](binary-encodings-interface.md) — the binary-encoding contract (Base16–Base85).
-- [Bodu.Text.Encoding overview](index.md) — the full namespace map.
-- [Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding) — full namespace overview.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- [The IBinaryEncoding interface](binary-encodings-interface.md) - the binary-encoding contract (Base16-Base85).
+- [Bodu.Text.Encoding overview](index.md) - the full namespace map.
+- [Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding) - full namespace overview.
+- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.

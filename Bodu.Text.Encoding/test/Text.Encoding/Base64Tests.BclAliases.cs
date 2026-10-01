@@ -94,7 +94,7 @@ public sealed partial class Base64Tests
 
     /// <summary>
     /// Regression: verifies that <see cref="Base64.FromBase64String(string)" /> matches the lenient whitespace
-    /// behaviour of <see cref="System.Convert.FromBase64String(string)" /> — ASCII whitespace inside the encoded
+    /// behaviour of <see cref="System.Convert.FromBase64String(string)" /> - ASCII whitespace inside the encoded
     /// input is silently ignored. Before the fix the Bodu alias was stricter than the BCL.
     /// </summary>
     [TestMethod]
@@ -111,7 +111,7 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Regression: verifies that whitespace tolerance applies to leading, trailing, tab, and CR forms — matching
+    /// Regression: verifies that whitespace tolerance applies to leading, trailing, tab, and CR forms - matching
     /// the BCL exactly.
     /// </summary>
     /// <param name="input">An input with whitespace.</param>

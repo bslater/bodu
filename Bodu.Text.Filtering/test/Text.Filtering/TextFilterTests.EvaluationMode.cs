@@ -18,7 +18,7 @@ public partial class TextFilterTests
     private static readonly TextFilterOptions LastMatchWins = new() { Mode = TextFilterEvaluationMode.LastMatchWins };
 
     /// <summary>
-    /// Verifies that a later include re-admits a value an earlier exclude rejected — the gitignore re-inclusion
+    /// Verifies that a later include re-admits a value an earlier exclude rejected - the gitignore re-inclusion
     /// pattern.
     /// </summary>
     [TestMethod]
@@ -32,7 +32,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that an unmatched value is included — the gitignore-faithful default.
+    /// Verifies that an unmatched value is included - the gitignore-faithful default.
     /// </summary>
     [TestMethod]
     public void Evaluate_WhenNoRuleMatches_ForLastMatchWins_ShouldIncludeByDefault()
@@ -75,7 +75,7 @@ public partial class TextFilterTests
     }
 
     /// <summary>
-    /// Verifies that declaration order changes the outcome in ordered mode — the semantic difference from
+    /// Verifies that declaration order changes the outcome in ordered mode - the semantic difference from
     /// <see cref="TextFilterEvaluationMode.AnyMatch" />, where the same rules are order-independent.
     /// </summary>
     [TestMethod]

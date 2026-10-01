@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.Text.DotEnv.Document;
 
 /// <summary>
-/// Represents a single element — the root object or one of its string values — within a <see cref="DotEnvDocument" />,
+/// Represents a single element - the root object or one of its string values - within a <see cref="DotEnvDocument" />,
 /// shaped after <c>System.Text.Json</c>'s <c>JsonElement</c>.
 /// </summary>
 public readonly struct DotEnvElement

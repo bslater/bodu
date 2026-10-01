@@ -42,7 +42,7 @@ public partial class ThrowHelperTests
     }
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationSpanTooSmall{TSource, TDestination}" /> does
-    /// not throw — and on the ParamName-asserting overload reports nothing — when the destination span is
+    /// not throw - and on the ParamName-asserting overload reports nothing - when the destination span is
     /// at least as long as the source.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

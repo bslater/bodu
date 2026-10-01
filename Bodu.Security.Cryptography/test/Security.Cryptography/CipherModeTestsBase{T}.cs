@@ -22,9 +22,9 @@ namespace Bodu.Security.Cryptography;
 /// The inheritance hierarchy is:
 /// <code>
 ///   CipherModeTestsBase&lt;T&gt;
-///   ├── BlockCipherModeTests&lt;TMode&gt;    — IBlockCipherModeTransform modes (ECB, CBC, CFB, OFB, CTR, XTS, OCB, EAX, SIV, CTS)
+///   ├── BlockCipherModeTests&lt;TMode&gt;    - IBlockCipherModeTransform modes (ECB, CBC, CFB, OFB, CTR, XTS, OCB, EAX, SIV, CTS)
 ///   │   └── CbcModeTransformTests, CtrModeTransformTests, … (concrete)
-///   └── AeadBlockCipherModeTests&lt;TTest, TTransform&gt; — IAeadBlockCipherModeTransform modes (GCM, CCM, GCM-SIV)
+///   └── AeadBlockCipherModeTests&lt;TTest, TTransform&gt; - IAeadBlockCipherModeTransform modes (GCM, CCM, GCM-SIV)
 ///       └── GcmModeTransformTests, CcmModeTransformTests, … (concrete)
 /// </code>
 /// </para>
@@ -46,7 +46,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     /// <summary>
     /// Gets the name of the constructor parameter that receives the initialisation vector (or
     /// equivalent seed). Defaults to <c>"iv"</c>. Override when a specific mode uses a different
-    /// name — for example CTR uses <c>"initialCounter"</c>.
+    /// name - for example CTR uses <c>"initialCounter"</c>.
     /// </summary>
     protected virtual string IvParameterName => "iv";
 

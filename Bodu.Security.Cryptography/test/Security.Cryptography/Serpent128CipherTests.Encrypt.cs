@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 internal sealed partial class Serpent128CipherTests
 {
     /// <summary>
-    /// Verifies that the cipher — key schedule and rounds, both now over the S-box circuits — encrypts as the
+    /// Verifies that the cipher - key schedule and rounds, both now over the S-box circuits - encrypts as the
     /// table-driven reference does, for seeded keys of every Serpent key size and seeded blocks.
     /// </summary>
     /// <param name="keyBytes">The key length.</param>

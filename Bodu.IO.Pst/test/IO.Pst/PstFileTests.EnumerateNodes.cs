@@ -11,7 +11,7 @@ namespace Bodu.IO.Pst;
 public partial class PstFileTests
 {
     /// <summary>
-    /// Verifies that the node census of each Unicode fixture — total, folder, and message node counts — matches the
+    /// Verifies that the node census of each Unicode fixture - total, folder, and message node counts - matches the
     /// counts pinned during the P0 validation of the corpus.
     /// </summary>
     /// <param name="kat">The expected census row.</param>
@@ -48,7 +48,7 @@ public partial class PstFileTests
     }
 
     /// <summary>
-    /// Verifies that nodes stream out in ascending identifier order — the node B-tree's key order.
+    /// Verifies that nodes stream out in ascending identifier order - the node B-tree's key order.
     /// </summary>
     [TestMethod]
     public void EnumerateNodes_WhenUnicodeFixture_ShouldYieldAscendingIdentifiers()

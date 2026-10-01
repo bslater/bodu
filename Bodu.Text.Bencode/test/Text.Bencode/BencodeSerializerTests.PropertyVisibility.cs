@@ -15,8 +15,8 @@ namespace Bodu.Text.Bencode;
 /// properties, init-only properties, get-only properties, properties with non-public accessors, and the
 /// <see cref="IncludeAttribute" /> opt-in. It also pins a Bencode-specific shape that differs from the most
 /// permissive <see cref="System.Text.Json.JsonSerializer" /> configuration: a get-only scalar property is written but
-/// cannot be set on read. Field serialization — opt-in through
-/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" /> — is covered by
+/// cannot be set on read. Field serialization - opt-in through
+/// <see cref="BencodeSerializerOptions.IncludeFields" /> or <see cref="IncludeAttribute" /> - is covered by
 /// the <c>Fields</c> partial.
 /// </summary>
 public partial class BencodeSerializerTests

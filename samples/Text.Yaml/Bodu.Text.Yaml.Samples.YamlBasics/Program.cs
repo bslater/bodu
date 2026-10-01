@@ -9,7 +9,7 @@ using Bodu.Text.Yaml.Samples.YamlBasics.Scenarios;
 namespace Bodu.Text.Yaml.Samples.YamlBasics;
 
 /// <summary>
-/// Entry point for the YAML-basics sample: the <c>YamlSerializer</c> POCO surface — round trips,
+/// Entry point for the YAML-basics sample: the <c>YamlSerializer</c> POCO surface - round trips,
 /// YAML's implicit scalar typing, sequences and mappings binding to collections, naming policies
 /// and attributes, and the spec-version, style, and duplicate/merge-key knobs. Everything runs
 /// offline against the committed <c>Data/app-config.yaml</c>.

@@ -10,7 +10,7 @@ public partial class ConfigurationViewTests
 {
     /// <summary>
     /// Verifies that <see cref="ConfigurationView.GetBoolean(string)" /> rejects the common
-    /// non-EditorConfig boolean spellings — <c>yes</c>, <c>no</c>, <c>on</c>, <c>off</c>, <c>1</c>, <c>0</c>.
+    /// non-EditorConfig boolean spellings - <c>yes</c>, <c>no</c>, <c>on</c>, <c>off</c>, <c>1</c>, <c>0</c>.
     /// Pinning this contract protects against accidental relaxation that would silently make documents that
     /// rely on EditorConfig-strict semantics behave differently.
     /// </summary>
@@ -33,7 +33,7 @@ public partial class ConfigurationViewTests
 
     /// <summary>
     /// Verifies that <see cref="ConfigurationView.TryGetBoolean(string, out bool)" /> also rejects the
-    /// relaxed spellings — TryGet contract must agree with GetBoolean on what is and is not a boolean.
+    /// relaxed spellings - TryGet contract must agree with GetBoolean on what is and is not a boolean.
     /// </summary>
     [TestMethod]
     public void TryGetBoolean_WhenValueIsRelaxedSpelling_ShouldReturnFalse()

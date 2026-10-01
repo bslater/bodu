@@ -1,6 +1,6 @@
 # Outlook Format Samples
 
-Console applications demonstrating the Outlook format readers — `Bodu.Formats.Outlook.Msg` for a
+Console applications demonstrating the Outlook format readers - `Bodu.Formats.Outlook.Msg` for a
 single `.msg` message, over the shared `Bodu.Formats.Outlook` MAPI value model. Run one with:
 
 ```bash
@@ -8,7 +8,7 @@ dotnet run --project samples/Formats.Outlook/<SampleName>
 ```
 
 Every sample is offline and deterministic. The readers are read-only by design, so the message
-sample authors its own input with `Bodu.IO.Compound` rather than shipping a binary `.msg` fixture —
+sample authors its own input with `Bodu.IO.Compound` rather than shipping a binary `.msg` fixture -
 which also makes the container layout visible instead of opaque.
 
 ## Sample → pattern → package matrix
@@ -19,6 +19,6 @@ which also makes the container layout visible instead of opaque.
 
 ## Related
 
-- `samples/IO.Pst` — the `.pst` mail-store reader (`OutlookMailStore`) and the low-level
+- `samples/IO.Pst` - the `.pst` mail-store reader (`OutlookMailStore`) and the low-level
   `Bodu.IO.Pst` container layer beneath it.
-- `samples/IO.Compound` — the OLE2 container reader, editor, and writer a `.msg` is built on.
+- `samples/IO.Compound` - the OLE2 container reader, editor, and writer a `.msg` is built on.

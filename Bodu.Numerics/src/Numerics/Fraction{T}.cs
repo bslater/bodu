@@ -11,7 +11,7 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents an immutable exact rational number — a ratio of two integers — backed by an arbitrary
+/// Represents an immutable exact rational number - a ratio of two integers - backed by an arbitrary
 /// <see cref="IBinaryInteger{TSelf}" /> component type.
 /// </summary>
 /// <typeparam name="T">The integer type used to store the numerator and denominator.</typeparam>
@@ -33,7 +33,7 @@ namespace Bodu.Numerics;
 /// </para>
 /// <para>
 /// When <typeparamref name="T" /> is an unsigned integer type, negative rationals cannot be represented; operations
-/// that would produce a negative component — such as negating a non-zero value — throw an
+/// that would produce a negative component - such as negating a non-zero value - throw an
 /// <see cref="OverflowException" /> at run time.
 /// </para>
 /// </remarks>
@@ -295,7 +295,7 @@ public readonly partial struct Fraction<T>
     /// </exception>
     /// <remarks>
     /// The divisor is evaluated with <see cref="BigInteger" /> precision so that the magnitude of a signed minimum
-    /// value — whose absolute value is not itself representable by <typeparamref name="T" /> — is handled correctly.
+    /// value - whose absolute value is not itself representable by <typeparamref name="T" /> - is handled correctly.
     /// </remarks>
     public static T GreatestCommonDivisor(T left, T right) =>
         T.CreateChecked(BigInteger.GreatestCommonDivisor(
@@ -449,8 +449,8 @@ public readonly partial struct Fraction<T>
     /// <remarks>
     /// Boundedness is resolved from a fixed matrix of the built-in bounded <see cref="IBinaryInteger{TSelf}" /> types
     /// rather than by reflecting over <typeparamref name="T" />'s interfaces, so the probe is reflection-free and
-    /// NativeAOT-safe. An unbounded backing type such as <see cref="BigInteger" /> — or any custom integer type outside
-    /// this matrix — is reported as unbounded and therefore has no <see cref="MinValue" /> / <see cref="MaxValue" />.
+    /// NativeAOT-safe. An unbounded backing type such as <see cref="BigInteger" /> - or any custom integer type outside
+    /// this matrix - is reported as unbounded and therefore has no <see cref="MinValue" /> / <see cref="MaxValue" />.
     /// </remarks>
     private static bool TryGetBounds(out T minValue, out T maxValue)
     {

@@ -20,11 +20,11 @@ namespace Bodu.Collections.Generic.Trees;
 /// The automaton is built once from a complete pattern set via
 /// <see cref="Build(IEnumerable{KeyValuePair{string, TValue}})" /> and is immutable thereafter: its failure and output
 /// links are global invariants defined relative to the whole pattern set, so a pattern added later would invalidate the
-/// links wholesale — rebuild with the new set instead. Matching costs O(n + m) for text length n and m reported
+/// links wholesale - rebuild with the new set instead. Matching costs O(n + m) for text length n and m reported
 /// matches, independent of the number of patterns.
 /// </para>
 /// <para>
-/// Character comparison is ordinal. Matches — including overlapping and nested occurrences — are reported in a
+/// Character comparison is ordinal. Matches - including overlapping and nested occurrences - are reported in a
 /// deterministic order: ascending end index, then ascending pattern length. Because a lazily evaluated sequence cannot
 /// capture a <see cref="ReadOnlySpan{Char}" />, the lazy <see cref="EnumerateMatches(string)" /> takes a
 /// <see cref="string" />, while the eager <see cref="CountMatches(ReadOnlySpan{char})" /> and
@@ -72,7 +72,7 @@ public sealed class AhoCorasickAutomaton<TValue>
     /// </exception>
     /// <remarks>
     /// Unlike the unkeyed <see cref="AhoCorasickAutomaton.Build(IEnumerable{string})" />, a duplicate pattern key
-    /// throws rather than deduplicating, because two entries would compete for the key's value — mirroring the
+    /// throws rather than deduplicating, because two entries would compete for the key's value - mirroring the
     /// <see cref="Trie{TValue}" /> versus <see cref="Trie" /> add contracts.
     /// </remarks>
     public static AhoCorasickAutomaton<TValue> Build(IEnumerable<KeyValuePair<string, TValue>> patterns)
@@ -118,7 +118,7 @@ public sealed class AhoCorasickAutomaton<TValue>
     /// </summary>
     /// <param name="text">The text to scan.</param>
     /// <returns>
-    /// A lazily evaluated sequence of matches — overlapping and nested occurrences included — ordered ascending by end
+    /// A lazily evaluated sequence of matches - overlapping and nested occurrences included - ordered ascending by end
     /// index, then ascending by pattern length.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>

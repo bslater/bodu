@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Scenarios;
 
 /// <summary>
 /// Demonstrates a lambda-backed algorithm: <see cref="INotableDateAlgorithm" /> is a single method,
-/// so a five-line adapter turns any <c>Func&lt;int, DateOnly?&gt;</c> into a registrable algorithm —
+/// so a five-line adapter turns any <c>Func&lt;int, DateOnly?&gt;</c> into a registrable algorithm -
 /// the right shape when the mathematics is a couple of lines and will not be reused elsewhere.
 /// </summary>
 public static class DelegateAlgorithms

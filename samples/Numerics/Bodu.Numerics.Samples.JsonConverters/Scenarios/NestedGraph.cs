@@ -14,7 +14,7 @@ namespace Bodu.Numerics.Samples.JsonConverters.Scenarios;
 /// Demonstrates that the registered numerics converters compose inside a larger object graph: a
 /// <see cref="Portfolio" /> POCO mixing a string with a <see cref="Fraction{T}" />, an
 /// <see cref="Interval{T}" />, and an <see cref="IntervalSet{T}" /> serializes and re-reads in one
-/// call, with each numerics property rendered by its own converter — no per-property attributes.
+/// call, with each numerics property rendered by its own converter - no per-property attributes.
 /// </summary>
 public static class NestedGraph
 {

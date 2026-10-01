@@ -1,10 +1,10 @@
 # source: Holidays to be observed in Central Government Offices during the year 2026
-# publisher: Government of India — Department of Personnel and Training, Establishment (JCA) Section
+# publisher: Government of India - Department of Personnel and Training, Establishment (JCA) Section
 # url: https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf
 # accessed: 2026-08-03
-# license: redistribution rights unclear — transcribed facts only
+# license: redistribution rights unclear - transcribed facts only
 # notes: 51 rows: 17 gazetted/closed holidays and 34 restricted holidays for Delhi/New Delhi. Memo dated 2025-07-03. Printed weekday was independently recomputed for every row.
-# verification: bodu 2026-08-03 — 51 rows (17 gazetted + 34 restricted, Delhi/New Delhi); transcriber recomputed every printed weekday with 0 mismatches; lunar Islamic dates remain subject to the memorandum's own moon-sighting change provisions.
+# verification: bodu 2026-08-03 - 51 rows (17 gazetted + 34 restricted, Delhi/New Delhi); transcriber recomputed every printed weekday with 0 mismatches; lunar Islamic dates remain subject to the memorandum's own moon-sighting change provisions.
 # columns: year,holiday_type,name_as_printed,gregorian_date,weekday_as_printed,memo_number,memo_url
 year,holiday_type,name_as_printed,gregorian_date,weekday_as_printed,memo_number,memo_url
 2026,gazetted,Republic Day,2026-01-26,Monday,F.No.12/2/2023-JCA,https://dopt.gov.in/sites/default/files/Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%202026.pdf

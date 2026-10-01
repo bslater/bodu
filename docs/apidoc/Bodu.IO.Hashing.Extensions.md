@@ -6,11 +6,11 @@ uid: Bodu.IO.Hashing.Extensions
 
 ## Purpose
 
-**Bodu.IO.Hashing.Extensions** holds the extension methods for the BCL `NonCryptographicHashAlgorithm` base type that the Bodu hash algorithms derive from. (CRC lookup-table construction lives in <xref:Bodu.IO.Hashing.Checksums> — see <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder>.)
+**Bodu.IO.Hashing.Extensions** holds the extension methods for the BCL `NonCryptographicHashAlgorithm` base type that the Bodu hash algorithms derive from. (CRC lookup-table construction lives in <xref:Bodu.IO.Hashing.Checksums> - see <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder>.)
 
 ## Key types
 
-- <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> — convenience methods on `System.IO.Hashing.NonCryptographicHashAlgorithm` — `ComputeHash`, `AppendData`, and `VerifyHash` / `TryVerifyHash` (with stream-based async overloads) that fit between the BCL surface and the Bodu hash algorithms.
+- <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> - convenience methods on `System.IO.Hashing.NonCryptographicHashAlgorithm` - `ComputeHash`, `AppendData`, and `VerifyHash` / `TryVerifyHash` (with stream-based async overloads) that fit between the BCL surface and the Bodu hash algorithms.
 
 ## Example
 

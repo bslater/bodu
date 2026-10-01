@@ -12,8 +12,8 @@ using Bodu.Text.Toml.Document;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies that <see cref="TomlDocument.Parse(string)" /> and its overloads accept exactly the TOML grammar —
-/// rejecting malformed input and over-deep nesting with <see cref="TomlFormatException" /> — and honour the
+/// Verifies that <see cref="TomlDocument.Parse(string)" /> and its overloads accept exactly the TOML grammar -
+/// rejecting malformed input and over-deep nesting with <see cref="TomlFormatException" /> - and honour the
 /// specification version and depth limit selected through <see cref="TomlDocumentOptions" />.
 /// </summary>
 public partial class TomlDocumentTests
@@ -24,8 +24,8 @@ public partial class TomlDocumentTests
     /// </summary>
     /// <returns>One <c>[DynamicData]</c> row per malformed-input scenario.</returns>
     /// <remarks>
-    /// The rows sweep the grammar dimensions — key/value structure, strings and escapes, numbers, date-times, tables,
-    /// arrays, and inline tables — mirroring the reader-level malformed catalogue at the document layer.
+    /// The rows sweep the grammar dimensions - key/value structure, strings and escapes, numbers, date-times, tables,
+    /// arrays, and inline tables - mirroring the reader-level malformed catalogue at the document layer.
     /// </remarks>
     public static IEnumerable<object[]> MalformedDocuments()
     {

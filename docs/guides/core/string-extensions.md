@@ -4,16 +4,16 @@ title: String extensions
 
 # String extensions
 
-<xref:Bodu.Extensions.StringExtensions> is a static class of 77 extension methods on `string` that cover the small, recurring text chores the BCL leaves to every project: pulling a substring out by marker, wrapping and unwrapping, normalizing whitespace and line endings, ordinal predicates, null/empty coalescing, affix management, character filtering, identifier casing, slugs, safe file names, and truncation. Every method is pure — it returns a new string and never mutates its receiver.
+<xref:Bodu.Extensions.StringExtensions> is a static class of 77 extension methods on `string` that cover the small, recurring text chores the BCL leaves to every project: pulling a substring out by marker, wrapping and unwrapping, normalizing whitespace and line endings, ordinal predicates, null/empty coalescing, affix management, character filtering, identifier casing, slugs, safe file names, and truncation. Every method is pure - it returns a new string and never mutates its receiver.
 
 The surface is organized below by task. Each table gives the one-line contract and the behaviour on `null` or empty input; every example in this guide has been run against the library, and the values in the comments are the real outputs.
 
 > [!NOTE]
-> **Null and empty conventions.** Methods whose receiver is declared `string` (not `string?`) throw <xref:System.ArgumentNullException> when called on `null`; only the eight coalescing helpers in [Pattern 5](#pattern-5--null-empty-and-whitespace-coalescing) accept a `null` receiver. An empty receiver is always valid and yields the natural empty result (an empty string, an empty sequence, `false`, or — for the substring family — `null` because the marker cannot be found). Every string comparison defaults to <xref:System.StringComparison.Ordinal>; the methods that take a `StringComparison` parameter accept any member.
+> **Null and empty conventions.** Methods whose receiver is declared `string` (not `string?`) throw <xref:System.ArgumentNullException> when called on `null`; only the eight coalescing helpers in [Pattern 5](#pattern-5---null-empty-and-whitespace-coalescing) accept a `null` receiver. An empty receiver is always valid and yields the natural empty result (an empty string, an empty sequence, `false`, or - for the substring family - `null` because the marker cannot be found). Every string comparison defaults to <xref:System.StringComparison.Ordinal>; the methods that take a `StringComparison` parameter accept any member.
 
-## Pattern 1 — substring by marker
+## Pattern 1 - substring by marker
 
-`After` / `AfterLast` / `Before` / `BeforeLast` / `Between` return the text on one side of a marker, or `null` when the marker is absent — which makes them safe to chain with `??`.
+`After` / `AfterLast` / `Before` / `BeforeLast` / `Between` return the text on one side of a marker, or `null` when the marker is absent - which makes them safe to chain with `??`.
 
 <!-- compile -->
 ```csharp
@@ -26,7 +26,7 @@ string? path   = url.After("example.com");       // "/docs/guide.md?lang=en#intr
 string? file   = url.Between("/docs/", "?");     // "guide.md"
 string? ext    = url.AfterLast(".");             // "md?lang=en#intro"
 string? stem   = url.BeforeLast("?");            // "https://example.com/docs/guide.md"
-string? none   = url.After("ftp://");            // null — marker absent
+string? none   = url.After("ftp://");            // null - marker absent
 ```
 
 | Method | Returns | Marker absent |
@@ -39,7 +39,7 @@ string? none   = url.After("ftp://");            // null — marker absent
 
 The markers must not be `null` (`ArgumentNullException`). An empty marker matches at position 0, so `After("")` returns the whole string and `Before("")` returns an empty string.
 
-## Pattern 2 — wrapping and unwrapping
+## Pattern 2 - wrapping and unwrapping
 
 <!-- compile -->
 ```csharp
@@ -55,7 +55,7 @@ string braces   = name.Brace();              // {alpha}
 string custom   = name.Wrap("<<", ">>");     // <<alpha>>
 
 string inner    = "[alpha]".Unwrap("[", "]");   // alpha
-string partial  = "[alpha".Unwrap("[", "]");    // [alpha — both ends must be present
+string partial  = "[alpha".Unwrap("[", "]");    // [alpha - both ends must be present
 ```
 
 | Method | Behaviour | Empty receiver |
@@ -64,7 +64,7 @@ string partial  = "[alpha".Unwrap("[", "]");    // [alpha — both ends must be 
 | `Wrap(prefix, suffix)` | Prepends `prefix` and appends `suffix`. | Returns `prefix + suffix`. |
 | `Unwrap(prefix, suffix, comparison)` | Removes both only when **both** are present at their ends; otherwise returns the input unchanged. | Unchanged. |
 
-## Pattern 3 — whitespace, line endings, and lines
+## Pattern 3 - whitespace, line endings, and lines
 
 The whitespace family works on the whole string; the line family treats the string as a sequence of lines delimited by CRLF, CR, or LF.
 
@@ -75,7 +75,7 @@ using Bodu.Extensions;
 string raw = "  line one\r\n\r\n   line   two\rline three\n";
 
 string normalized = raw.NormalizeLineEndings();   // every CRLF / CR / LF becomes "\n"
-string collapsed  = raw.CollapseWhitespace();     // " line one line two line three " — runs become one space
+string collapsed  = raw.CollapseWhitespace();     // " line one line two line three " - runs become one space
 string compact    = raw.RemoveWhitespace();       // "lineonelinetwolinethree"
 
 foreach (string line in raw.SplitLines(removeEmptyLines: true))
@@ -93,9 +93,9 @@ string quoted    = block.PrefixLines("> ");       // "> select *\n> from users\n
 string back      = quoted.UnprefixLines("> ");    // == block
 string outdented = indented.Outdent(2);           // strips up to two leading spaces per line
 
-int a = "a\n".EnsureTrailingNewLine().Length;     // 2 — already terminated, unchanged
-int b = "a".EnsureTrailingNewLine().Length;       // 2 — "\n" appended
-int c = "a\r\n".RemoveTrailingNewLine().Length;   // 1 — one terminator removed
+int a = "a\n".EnsureTrailingNewLine().Length;     // 2 - already terminated, unchanged
+int b = "a".EnsureTrailingNewLine().Length;       // 2 - "\n" appended
+int c = "a\r\n".RemoveTrailingNewLine().Length;   // 1 - one terminator removed
 string joined = "a\r\nb\nc".RemoveLineEndings();  // "abc"
 ```
 
@@ -111,7 +111,7 @@ string joined = "a\r\nb\nc".RemoveLineEndings();  // "abc"
 | `EnsureTrailingNewLine(newline = "\n")` | Appends `newline` only when the string does not already end with it. |
 | `RemoveTrailingNewLine()` | Removes a single trailing CRLF, CR, or LF. |
 
-## Pattern 4 — ordinal predicates and replacement
+## Pattern 4 - ordinal predicates and replacement
 
 These are the `StringComparison.Ordinal` / `OrdinalIgnoreCase` forms of the BCL predicates, spelled out so a code review can see the comparison rule at the call site.
 
@@ -125,7 +125,7 @@ bool starts = header.StartsWithOrdinalIgnoreCase("content-type");   // true
 bool ends   = header.EndsWithOrdinal("json");                      // true
 bool has    = header.ContainsOrdinalIgnoreCase("APPLICATION");     // true
 bool same   = "JSON".EqualsOrdinalIgnoreCase("json");              // true
-bool oneOf  = "GET".IsOneOf("GET", "HEAD", "OPTIONS");             // true — ordinal
+bool oneOf  = "GET".IsOneOf("GET", "HEAD", "OPTIONS");             // true - ordinal
 bool oneOfI = "get".IsOneOf(StringComparer.OrdinalIgnoreCase, "GET", "HEAD");   // true
 
 string swapped = header.ReplaceOrdinalIgnoreCase("APPLICATION", "text");   // "Content-Type: text/json"
@@ -139,7 +139,7 @@ string swapped = header.ReplaceOrdinalIgnoreCase("APPLICATION", "text");   // "C
 | `IsOneOf(params values)` / `IsOneOf(comparer, params values)` | Ordinal, or the supplied comparer | throws |
 | `ReplaceOrdinalIgnoreCase(oldValue, newValue)` | Replaces every case-insensitive ordinal match; `newValue` may be `null` (removes). | throws |
 
-## Pattern 5 — null, empty, and whitespace coalescing
+## Pattern 5 - null, empty, and whitespace coalescing
 
 These eight are the only members declared on `string?`. They turn the `string.IsNullOrWhiteSpace` dance into one call.
 
@@ -173,18 +173,18 @@ bool   i = blank.HasText();                               // false
 | `HasText()` | `false` | `false` | `false` | `true` |
 | `EqualsOrdinalIgnoreCase(other)` | compares (`null` equals only `null`) | | | |
 
-## Pattern 6 — affixes and removal
+## Pattern 6 - affixes and removal
 
 <!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
 string withSlash = "logs".EnsureEndsWith("/");             // "logs/"
-string unchanged = "logs/".EnsureEndsWith("/");            // "logs/" — not doubled
+string unchanged = "logs/".EnsureEndsWith("/");            // "logs/" - not doubled
 string rooted    = "logs".EnsureStartsWith("/");           // "/logs"
 string bare      = "v1.2.3".RemovePrefix("v");             // "1.2.3"
 string noExt     = "report.PDF".RemoveSuffix(".pdf", StringComparison.OrdinalIgnoreCase);   // "report"
-string stripped  = "a-b-a".Remove("a");                    // "-b-" — every occurrence
+string stripped  = "a-b-a".Remove("a");                    // "-b-" - every occurrence
 string many      = "x=1; y=2".RemoveMany("=", ";");        // "x1 y2"
 string replaced  = "Hello {name}, {greeting}".ReplaceMany(new Dictionary<string, string>
 {
@@ -199,9 +199,9 @@ string replaced  = "Hello {name}, {greeting}".ReplaceMany(new Dictionary<string,
 | `RemovePrefix(prefix, comparison)` / `RemoveSuffix(suffix, comparison)` | Removes a **single** leading or trailing occurrence when present. |
 | `Remove(valueToRemove, comparison)` | Removes **every** occurrence. |
 | `RemoveMany(params valuesToRemove)` | Removes every occurrence of each entry, applied sequentially in array order (ordinal). |
-| `ReplaceMany(replacements)` | Applies each key → value replacement sequentially in the dictionary's enumeration order (ordinal). Because the passes are sequential, a later key can match text produced by an earlier replacement — order the dictionary deliberately. |
+| `ReplaceMany(replacements)` | Applies each key → value replacement sequentially in the dictionary's enumeration order (ordinal). Because the passes are sequential, a later key can match text produced by an earlier replacement - order the dictionary deliberately. |
 
-## Pattern 7 — character filtering
+## Pattern 7 - character filtering
 
 The `Keep*` family retains only the named Unicode category; the `Remove*` family drops it. `KeepWhere` / `RemoveWhere` take an arbitrary `Func<char, bool>`.
 
@@ -227,12 +227,12 @@ string noNums   = "a1b2".RemoveWhere(char.IsDigit); // "ab"
 | `KeepDigits()` / `RemoveDigits()` | Unicode decimal digits (`char.IsDigit`). |
 | `KeepLetters()` | Unicode letters (`char.IsLetter`). |
 | `KeepLettersAndDigits()` | Letters and digits. |
-| `RemovePunctuation()` | Unicode punctuation (`char.IsPunctuation`) — note that `#` and `!` are punctuation, so they go. |
+| `RemovePunctuation()` | Unicode punctuation (`char.IsPunctuation`) - note that `#` and `!` are punctuation, so they go. |
 | `RemoveControlCharacters()` | Unicode control characters (tab, CR, LF, …). |
 | `RemoveDiacritics()` | Decomposes to form D and drops combining marks, so `é` → `e`; base letters and everything else are preserved. |
 | `KeepWhere(predicate)` / `RemoveWhere(predicate)` | Your predicate, per `char`. |
 
-## Pattern 8 — identifier casing
+## Pattern 8 - identifier casing
 
 Nine casing conversions share one acronym-aware tokenizer: the input is split at separators (spaces, punctuation, underscores, hyphens), at lower-to-upper boundaries, at digit-to-letter boundaries, and at acronym-to-word boundaries (`XMLHttpRequest` → `XML`, `Http`, `Request`), then each word is re-cased and re-joined.
 
@@ -254,7 +254,7 @@ string sentence = "the API of the iPhone. a second sentence".ToSentenceCase();
                                             // "The api of the iPhone. A second sentence"
 ```
 
-The parameterless overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> — invariant culture, the built-in acronym list recognised for *splitting*, mixed-case brand words (`iPhone`, `eBay`) preserved, and every word re-cased (which is why `HTTP` becomes `Http` above). Pass a <xref:Bodu.Extensions.WordCasingOptions> to change that:
+The parameterless overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> - invariant culture, the built-in acronym list recognised for *splitting*, mixed-case brand words (`iPhone`, `eBay`) preserved, and every word re-cased (which is why `HTTP` becomes `Http` above). Pass a <xref:Bodu.Extensions.WordCasingOptions> to change that:
 
 <!-- compile -->
 ```csharp
@@ -273,7 +273,7 @@ string a = "the state of the API".ToTitleCase(options);   // "The State of the A
 string b = "the state of the API".ToTitleCase();          // "The State Of The Api"
 string c = "SQL server. XML files.".ToSentenceCase(SentenceCaseOptions.PreserveAcronyms);   // "SQL server. XML files."
 string d = "SQL server. XML files.".ToSentenceCase();     // "Sql server. Xml files."
-string e = "XMLHttpRequest".ToSnakeCase();                // "xml_http_request" — splitting is acronym-aware regardless
+string e = "XMLHttpRequest".ToSnakeCase();                // "xml_http_request" - splitting is acronym-aware regardless
 ```
 
 | Option | Default | Effect |
@@ -287,26 +287,26 @@ string e = "XMLHttpRequest".ToSnakeCase();                // "xml_http_request" 
 
 `ToTitleCase` and `ToSentenceCase` also accept the lighter flag enums <xref:Bodu.Extensions.TitleCaseOptions> (`None`, `LowerCaseSmallWords`, `PreserveAcronyms`) and <xref:Bodu.Extensions.SentenceCaseOptions> (`None`, `PreserveAcronyms`) when you do not need a custom word list or culture.
 
-## Pattern 9 — slugs, identifiers, and safe names
+## Pattern 9 - slugs, identifiers, and safe names
 
 <!-- compile -->
 ```csharp
 using Bodu.Extensions;
 
-string slug = "Crème Brûlée & Co. — 2024 Edition!".ToSlug();   // "creme-brulee-co-2024-edition"
+string slug = "Crème Brûlée & Co. - 2024 Edition!".ToSlug();   // "creme-brulee-co-2024-edition"
 
-string shortSlug = "Crème Brûlée & Co. — 2024 Edition!".ToSlug(new SlugOptions
+string shortSlug = "Crème Brûlée & Co. - 2024 Edition!".ToSlug(new SlugOptions
 {
     Separator = '_',
     Lowercase = false,
     MaxLength = 16,          // truncated at a separator boundary, never ends with '_'
 });                                                              // "Creme_Brulee_Co"
 
-string id       = "first name (legacy)".ToIdentifier();                        // "firstnamelegacy" — casing preserved
+string id       = "first name (legacy)".ToIdentifier();                        // "firstnamelegacy" - casing preserved
 string pascalId = "first name (legacy)".ToIdentifier(IdentifierCase.Pascal);   // "FirstNameLegacy"
 string camelId  = "first name (legacy)".ToIdentifier(IdentifierCase.Camel);    // "firstNameLegacy"
 string snakeId  = "first name (legacy)".ToIdentifier(IdentifierCase.Snake);    // "first_name_legacy"
-string leading  = "2fast".ToIdentifier();                                      // "_2fast" — cannot start with a digit
+string leading  = "2fast".ToIdentifier();                                      // "_2fast" - cannot start with a digit
 
 bool ok  = "_ok1".IsValidIdentifier();   // true
 bool bad = "1abc".IsValidIdentifier();   // false
@@ -319,11 +319,11 @@ string file = "report: q1/q2 <final>.pdf".ToSafeFileName();   // on Linux: "repo
 | `ToSlug()` / `ToSlug(SlugOptions)` | Diacritics normalized, punctuation dropped, words joined by <xref:Bodu.Extensions.SlugOptions.Separator> (`-`), lower-cased by default. `MaxLength` (0 = unlimited) truncates at a separator boundary so the slug never ends with a dangling separator. |
 | `ToIdentifier()` | Drops characters not permitted in a C# identifier and prefixes `_` when the result would start with a digit; original casing is kept. |
 | `ToIdentifier(IdentifierCase)` | As above, then reshapes the detected words to <xref:Bodu.Extensions.IdentifierCase> `Camel`, `Pascal`, or `Snake` (`Preserve` is the default). |
-| `IsValidIdentifier()` | A letter or `_` followed by letters, digits, `_`, or connector punctuation. It is a syntactic check — it does not reject C# keywords. |
+| `IsValidIdentifier()` | A letter or `_` followed by letters, digits, `_`, or connector punctuation. It is a syntactic check - it does not reject C# keywords. |
 | `ToSafeFileName()` | Replaces every character in <xref:System.IO.Path.GetInvalidFileNameChars> with `_`. The invalid set is **platform-dependent**: on Windows `:`, `<`, `>`, `"`, `|`, `?`, `*` and the control characters are replaced too; on Linux only `/` and NUL are. |
 | `ToSafePathSegment()` | The same set plus both directory separators, so the result can never escape into a parent or child segment. |
 
-## Pattern 10 — truncation, slicing, Base64, and parsing
+## Pattern 10 - truncation, slicing, Base64, and parsing
 
 <!-- compile -->
 ```csharp
@@ -332,16 +332,16 @@ using Bodu.Extensions;
 string text = "The quick brown fox jumps over the lazy dog";
 
 string t1 = text.Truncate(9);                // "The quick"
-string t2 = text.Truncate(12, "...");        // "The quick..." — the ellipsis counts toward maxLength
-string t3 = text.TruncateMiddle(15);         // "The qui…azy dog" — keeps both ends, 15 chars total
+string t2 = text.Truncate(12, "...");        // "The quick..." - the ellipsis counts toward maxLength
+string t3 = text.TruncateMiddle(15);         // "The qui…azy dog" - keeps both ends, 15 chars total
 string s1 = text.SliceSafe(40);              // "dog"
-string s2 = text.SliceSafe(40, 100);         // "dog" — length clamped to what remains
-string s3 = text.SliceSafe(99);              // "" — start past the end clamps to empty
+string s2 = text.SliceSafe(40, 100);         // "dog" - length clamped to what remains
+string s3 = text.SliceSafe(99);              // "" - start past the end clamps to empty
 
 string b64  = "The quick".ToBase64();                 // "VGhlIHF1aWNr" (UTF-8 by default)
 string back = "VGhlIHF1aWNr".FromBase64ToString();    // "The quick"
 
-int    n  = "42".Parse<int>() + 1;                    // 43 — any IParsable<T>, invariant culture
+int    n  = "42".Parse<int>() + 1;                    // 43 - any IParsable<T>, invariant culture
 bool   ok = "nope".TryParse<int>(out int value);      // false
 ```
 
@@ -356,12 +356,12 @@ bool   ok = "nope".TryParse<int>(out int value);      // false
 
 ## Choosing between similar members
 
-- **`After` vs `Substring`** — `After` returns `null` when the marker is absent instead of throwing on a computed index; prefer it whenever the marker is data-dependent.
-- **`CollapseWhitespace` vs `Trim`** — collapsing keeps one space at each end when the input had leading or trailing whitespace; call `Trim()` afterwards if you want none.
-- **`ToTitleCase(options)` vs `TextInfo.ToTitleCase`** — the BCL method only upper-cases each first letter and knows nothing about acronyms or minor words.
-- **`ToSlug` vs `ToKebabCase`** — both hyphenate, but only `ToSlug` strips diacritics and punctuation and enforces `MaxLength`; use kebab case for identifiers, slug for URLs.
-- **`ToSafeFileName` vs `ToSafePathSegment`** — the second additionally neutralizes `/` and `\` on every platform.
-- **Sorting and comparing** — none of these methods compare strings *for ordering*. For human-friendly ordering of `file2` before `file10`, use <xref:Bodu.Extensions.NaturalStringComparer> — see [Natural string comparer](natural-string-comparer.md).
+- **`After` vs `Substring`** - `After` returns `null` when the marker is absent instead of throwing on a computed index; prefer it whenever the marker is data-dependent.
+- **`CollapseWhitespace` vs `Trim`** - collapsing keeps one space at each end when the input had leading or trailing whitespace; call `Trim()` afterwards if you want none.
+- **`ToTitleCase(options)` vs `TextInfo.ToTitleCase`** - the BCL method only upper-cases each first letter and knows nothing about acronyms or minor words.
+- **`ToSlug` vs `ToKebabCase`** - both hyphenate, but only `ToSlug` strips diacritics and punctuation and enforces `MaxLength`; use kebab case for identifiers, slug for URLs.
+- **`ToSafeFileName` vs `ToSafePathSegment`** - the second additionally neutralizes `/` and `\` on every platform.
+- **Sorting and comparing** - none of these methods compare strings *for ordering*. For human-friendly ordering of `file2` before `file10`, use <xref:Bodu.Extensions.NaturalStringComparer> - see [Natural string comparer](natural-string-comparer.md).
 
 ## API summary
 
@@ -380,9 +380,9 @@ bool   ok = "nope".TryParse<int>(out int value);      // false
 
 ## Where to go next
 
-- [Natural string comparer](natural-string-comparer.md) — ordering strings with embedded numbers the way a person would.
-- [Date and time extensions](date-extensions.md) — the sibling `DateTime` / `DateOnly` surface in the same namespace.
-- [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) — the rest of `Bodu.Extensions`.
-- [Bodu.Core introduction](../../docs/core/index.md) — the package's namespaces and headline types.
-- [`Bodu.Extensions` API reference](xref:Bodu.Extensions) — every member with full signatures.
-- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.
+- [Natural string comparer](natural-string-comparer.md) - ordering strings with embedded numbers the way a person would.
+- [Date and time extensions](date-extensions.md) - the sibling `DateTime` / `DateOnly` surface in the same namespace.
+- [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) - the rest of `Bodu.Extensions`.
+- [Bodu.Core introduction](../../docs/core/index.md) - the package's namespaces and headline types.
+- [`Bodu.Extensions` API reference](xref:Bodu.Extensions) - every member with full signatures.
+- **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

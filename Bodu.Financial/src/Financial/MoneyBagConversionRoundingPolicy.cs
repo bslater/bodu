@@ -14,7 +14,7 @@ namespace Bodu.Financial;
 /// per-currency balances into a single target-currency total.
 /// </summary>
 /// <remarks>
-/// The two policies are deliberately spelled out because both are common — neither is wrong, and the choice depends on
+/// The two policies are deliberately spelled out because both are common - neither is wrong, and the choice depends on
 /// the accounting workflow. Aggregate-then-round (the default) suits FX position totals where per-line precision is
 /// irrelevant; per-line rounding suits ledger / tax workflows where each converted balance must settle independently at
 /// the destination precision before aggregation.
@@ -23,7 +23,7 @@ public enum MoneyBagConversionRoundingPolicy
 {
     /// <summary>
     /// Sum every converted balance as a raw <see cref="decimal" /> first, then round the aggregate once to the
-    /// destination currency's minor-unit precision. This is the default — it minimises the cumulative rounding error in
+    /// destination currency's minor-unit precision. This is the default - it minimises the cumulative rounding error in
     /// a portfolio FX total.
     /// </summary>
     SumRawThenRound = 0,

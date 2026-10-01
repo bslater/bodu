@@ -9,7 +9,7 @@ using Bodu.Globalization.Recurrence.Samples.SchedulingHost.Scenarios;
 namespace Bodu.Globalization.Recurrence.Samples.SchedulingHost;
 
 /// <summary>
-/// Entry point for the scheduling-host sample: the integrating view of the package — one adapter
+/// Entry point for the scheduling-host sample: the integrating view of the package - one adapter
 /// over all four schedule forms, configuration validated with defect messages an operator can act
 /// on, and a deterministic catch-up loop that shows why the library supplies no timer and reads no
 /// wall clock. Everything runs offline and deterministically.

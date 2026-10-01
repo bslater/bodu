@@ -6,8 +6,8 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for `Bodu.Core` under
 [`samples/Core/`](https://github.com/bslater/bodu/tree/master/samples/Core). All three samples
-are **offline and deterministic** — they run against fixed inputs and small committed byte
-fixtures — and are members of `bodu.slnx`, built and executed by CI, so the code they show
+are **offline and deterministic** - they run against fixed inputs and small committed byte
+fixtures - and are members of `bodu.slnx`, built and executed by CI, so the code they show
 cannot drift from the current API. Each sample's README documents every scenario individually:
 its intent, what the code does, the output to expect, and the APIs demonstrated.
 
@@ -21,7 +21,7 @@ dotnet run --project samples/Core/<SampleName>
 
 ### Bodu.Core.Samples.FunctionalRailway
 
-The `Bodu.Functional` seam — railway-oriented primitives that replace `null`, out-parameters,
+The `Bodu.Functional` seam - railway-oriented primitives that replace `null`, out-parameters,
 and exception-driven control flow with composable values: <xref:Bodu.Functional.Option`1> for
 absence (`Map`/`Bind`/`Filter`/`Match`), <xref:Bodu.Functional.Result> /
 <xref:Bodu.Functional.Result`1> for a validate → parse → transform railway that short-circuits
@@ -50,7 +50,7 @@ encoding (`ToUtf8Bytes`, `GetUtf8BytesPooled`, `TryEncodeUtf8To`). *Package: `Bo
 
 ## Related
 
-- [Collections samples](collections.md) — the specialized collection catalogue that builds on
+- [Collections samples](collections.md) - the specialized collection catalogue that builds on
   `Bodu.Core`.
-- [Numerics samples](numerics.md) — `Fraction<T>`, the interval algebra, and streaming
+- [Numerics samples](numerics.md) - `Fraction<T>`, the interval algebra, and streaming
   statistics.

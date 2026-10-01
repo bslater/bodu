@@ -29,8 +29,8 @@ public partial class ThrowHelperTests
     [DynamicData(nameof(GetNumericArrayTestData))]
     public void ThrowIfArrayContainsNonNumeric_WhenArrayIsNumeric_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayContainsNonNumeric(array);
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayContainsNonNumeric" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for arrays composed of BCL numeric primitives, nullable
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayContainsNonNumeric" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for arrays composed of BCL numeric primitives, nullable
     /// numerics, and null elements (which the documented contract ignores).
     /// </summary>
     /// <param name="testName">The data-row label.</param>

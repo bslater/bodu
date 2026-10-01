@@ -1,8 +1,8 @@
 ---
-title: Bodu.Financial.Serialization.Json — Getting started
+title: Bodu.Financial.Serialization.Json - Getting started
 ---
 
-# Bodu.Financial.Serialization.Json — Getting started
+# Bodu.Financial.Serialization.Json - Getting started
 
 Unfamiliar with terms like *policy*, *canonical object shape*, *compact form*, *scale*, or *keyed options*? Read [Core concepts](concepts.md) first.
 
@@ -24,7 +24,7 @@ using Bodu.Financial;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.Serialization.Json;
 
-// Registration is required — the core types carry no [JsonConverter] attribute.
+// Registration is required - the core types carry no [JsonConverter] attribute.
 var options = new JsonSerializerOptions().AddFinancialJsonConverters();   // Strict
 
 string json = JsonSerializer.Serialize(new Money<USD>(19.99m), options);
@@ -52,7 +52,7 @@ catch (JsonException ex)
 
 ```csharp
 Money invoice = JsonSerializer.Deserialize<Money>("""{ "amount": 2500, "currency": "JPY" }""", options);
-// JPY 2500 — rounded to the registry's zero minor units
+// JPY 2500 - rounded to the registry's zero minor units
 
 MoneyBag wallet = MoneyBag.Empty
     .Add(new Money<USD>(100m))
@@ -88,7 +88,7 @@ JsonSerializer.Serialize(unitPrice, options);   // {"amount":145.678912,"currenc
 JsonSerializer.Serialize(unitPrice, compact);   // "145.678912 USD"
 
 Money restored = JsonSerializer.Deserialize<Money>("\"145.678912 USD\"", compact);
-Console.WriteLine(restored.MinorUnits);         // 6 — inferred from the printed digits
+Console.WriteLine(restored.MinorUnits);         // 6 - inferred from the printed digits
 ```
 
 ### Transport an unsettled amount
@@ -97,7 +97,7 @@ Console.WriteLine(restored.MinorUnits);         // 6 — inferred from the print
 CalculatedMoney running = new CalculatedMoney(0.0325125m, CurrencyCode.USD);   // e.g. a per-unit rate not yet settled
 
 string wire = JsonSerializer.Serialize(running, options);
-// {"amount":0.0325125,"currency":"USD"} — the unrounded decimal verbatim
+// {"amount":0.0325125,"currency":"USD"} - the unrounded decimal verbatim
 
 CalculatedMoney received = JsonSerializer.Deserialize<CalculatedMoney>(wire, options);
 Money settled = received.RoundToMoney();        // one rounding event, after transport
@@ -124,7 +124,7 @@ The rate reader accepts both shapes under any policy, so a `Compact` writer and 
 
 ### Register one converter by hand
 
-When only one type needs a converter — or a single `TCurrency` — add it directly instead of the whole set:
+When only one type needs a converter - or a single `TCurrency` - add it directly instead of the whole set:
 
 ```csharp
 var narrow = new JsonSerializerOptions();
@@ -156,9 +156,9 @@ In a class, inject it with `[FromKeyedServices(FinancialJsonServiceCollectionExt
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — the converter table and scenario index.
-- **[Financial JSON serialization guide](../../guides/financial/json-serialization.md)** — every wire shape under every policy, the failure-mode table, and migration notes.
-- **[Bodu.Financial getting started](../financial/getting-started.md)** — the money types being serialized.
-- **[Bodu.Financial.Serialization.Json API reference](xref:Bodu.Financial.Serialization.Json)** — full type-by-type docs.
-- **[Runnable samples](../../samples/financial.md)** — `Bodu.Financial.Samples.JsonSerialization` runs the three policies side by side; `Bodu.Financial.Samples.UnitPricing` runs every scale shape.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - the converter table and scenario index.
+- **[Financial JSON serialization guide](../../guides/financial/json-serialization.md)** - every wire shape under every policy, the failure-mode table, and migration notes.
+- **[Bodu.Financial getting started](../financial/getting-started.md)** - the money types being serialized.
+- **[Bodu.Financial.Serialization.Json API reference](xref:Bodu.Financial.Serialization.Json)** - full type-by-type docs.
+- **[Runnable samples](../../samples/financial.md)** - `Bodu.Financial.Samples.JsonSerialization` runs the three policies side by side; `Bodu.Financial.Samples.UnitPricing` runs every scale shape.

@@ -47,7 +47,7 @@ public sealed partial class NotableDatePluginLoaderTests
 
     /// <summary>
     /// Verifies that disposing the handle unloads the plugin's collectible load context once nothing references the
-    /// plugin's types — closing the gap where a successfully loaded plugin was pinned for the life of the process.
+    /// plugin's types - closing the gap where a successfully loaded plugin was pinned for the life of the process.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenNothingReferencesThePlugin_ShouldUnloadTheLoadContext()

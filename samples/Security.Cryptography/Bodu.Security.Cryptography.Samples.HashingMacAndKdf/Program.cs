@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Samples.HashingMacAndKdf;
 /// <summary>
 /// Entry point for the hashing / MAC / KDF sample: unkeyed cryptographic hashes and the further hash families,
 /// keyed hashes and a one-time MAC, extendable-output functions, incremental hashing with verify, the hash-factory
-/// and hash-value surfaces, key-derivation functions, password hashing with encoded hashes, and one-time passwords —
+/// and hash-value surfaces, key-derivation functions, password hashing with encoded hashes, and one-time passwords -
 /// all over fixed inputs and keys so every line of output is deterministic.
 /// </summary>
 public static class Program

@@ -32,10 +32,10 @@ public sealed class StrategyResolutionWeekdayNearKnownAnswerTests
     /// <param name="expected">The expected resolved date in ISO format.</param>
     [TestMethod]
     [TestCategory("Regression")]
-    [DataRow("near-sat-onorafter-jun-20", 2024, "2024-06-22")]   // Midsummer 2024 — advances forward
+    [DataRow("near-sat-onorafter-jun-20", 2024, "2024-06-22")]   // Midsummer 2024 - advances forward
     [DataRow("near-sat-onorafter-jun-20", 2025, "2025-06-21")]   // Midsummer 2025
     [DataRow("near-sat-onorafter-oct-31", 2024, "2024-11-02")]   // window straddles the month end
-    [DataRow("near-wed-onorbefore-nov-22", 2024, "2024-11-20")]  // Repentance 2024 — retreats backward
+    [DataRow("near-wed-onorbefore-nov-22", 2024, "2024-11-20")]  // Repentance 2024 - retreats backward
     [DataRow("near-wed-onorbefore-nov-22", 2025, "2025-11-19")]  // Repentance 2025
     [DataRow("near-sat-onorafter-jun-21", 2025, "2025-06-21")]   // on-the-day, OnOrAfter returns the reference
     [DataRow("near-wed-onorbefore-nov-20", 2024, "2024-11-20")]  // on-the-day, OnOrBefore returns the reference

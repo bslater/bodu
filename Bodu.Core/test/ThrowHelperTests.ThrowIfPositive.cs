@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfPositive{T}(T, string)" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for zero and negative values across the
+    /// Verifies that <see cref="ThrowHelper.ThrowIfPositive{T}(T, string)" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for zero and negative values across the
     /// <see cref="int" />, <see cref="long" />, <see cref="double" />, and <see cref="decimal" /> overloads.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

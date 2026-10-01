@@ -30,7 +30,7 @@ public static partial class IEnumerableExtensions
     /// <para>
     /// <b>Source-enumerator lifetime.</b> The wrapper holds the source's enumerator open from the first enumeration
     /// until the source is fully consumed. Although the wrapper implements <see cref="IDisposable" />, that surface is
-    /// not reachable through the returned <see cref="IEnumerable{T}" /> — disposing an individual enumerator does not
+    /// not reachable through the returned <see cref="IEnumerable{T}" /> - disposing an individual enumerator does not
     /// release the source. A partially consumed cache that is then abandoned therefore pins the source enumerator (and
     /// whatever it holds) until the wrapper is garbage collected, unless the caller casts the returned sequence to
     /// <see cref="IDisposable" /> and disposes it explicitly.

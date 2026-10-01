@@ -7,8 +7,8 @@
 namespace Bodu.IO.Biff.Samples.BiffBasics.Scenarios;
 
 /// <summary>
-/// Demonstrates the physical view: <see cref="BiffReader.Read" /> frames every record of the stream — the codec
-/// names some of them through <see cref="BiffRecordType" />, and the rest are still counted by identifier — while
+/// Demonstrates the physical view: <see cref="BiffReader.Read" /> frames every record of the stream - the codec
+/// names some of them through <see cref="BiffRecordType" />, and the rest are still counted by identifier - while
 /// the <c>BOF</c> records establish the version and mark each substream.
 /// </summary>
 public static class RecordCensus

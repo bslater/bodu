@@ -1,8 +1,8 @@
 ---
-title: Bodu.Core — Getting started
+title: Bodu.Core - Getting started
 ---
 
-# Bodu.Core — Getting started
+# Bodu.Core - Getting started
 
 ## Install
 
@@ -57,7 +57,7 @@ if (!order.IsSuccess)
     logger.LogWarning("Rejected: {Message}", order.Error.Message);
 ```
 
-`default(Option<T>)` is `None` and `default(Result<T>)` is a failure with an empty error — an unassigned field is well-formed, never a phantom success.
+`default(Option<T>)` is `None` and `default(Result<T>)` is a failure with an empty error - an unassigned field is well-formed, never a phantom success.
 
 ### Pooled buffer (`PooledBufferBuilder<T>`)
 
@@ -76,7 +76,7 @@ byte[] json = builder.ToArrayAndDispose();   // snapshot, then return the rental
 
 ### Async coordination (`AsyncLock`)
 
-The awaitable peer of `lock` — waiting yields the thread instead of blocking it:
+The awaitable peer of `lock` - waiting yields the thread instead of blocking it:
 
 ```csharp
 using Bodu.Threading;
@@ -126,8 +126,8 @@ public static double Average(IReadOnlyList<int> values)
 
 ## Where to go next
 
-- **[Bodu.Core introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Core Foundations guides](../../guides/core/index.md)** — recipe-style walk-throughs for the headline types.
-- **[Bodu.Collections getting started](../collections/getting-started.md)** — the collection catalogue's install and samples.
-- **[Bodu.Collections.Concurrent getting started](../collections-concurrent/getting-started.md)** — the thread-safe collections.
-- **[Project introduction](../introduction.md)** — the per-library map, if you also need hashing, cryptography, calendar, or text utilities.
+- **[Bodu.Core introduction](index.md)** - namespaces, headline types, scenarios.
+- **[Core Foundations guides](../../guides/core/index.md)** - recipe-style walk-throughs for the headline types.
+- **[Bodu.Collections getting started](../collections/getting-started.md)** - the collection catalogue's install and samples.
+- **[Bodu.Collections.Concurrent getting started](../collections-concurrent/getting-started.md)** - the thread-safe collections.
+- **[Project introduction](../introduction.md)** - the per-library map, if you also need hashing, cryptography, calendar, or text utilities.

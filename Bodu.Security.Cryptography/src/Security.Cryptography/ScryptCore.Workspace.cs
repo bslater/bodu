@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 internal static partial class ScryptCore
 {
     /// <summary>
-    /// Owns the working memory of one ROMix worker — the <c>N</c> units of <c>V</c> and one unit of scratch — in native
+    /// Owns the working memory of one ROMix worker - the <c>N</c> units of <c>V</c> and one unit of scratch - in native
     /// memory, and clears it when released.
     /// </summary>
     /// <remarks>

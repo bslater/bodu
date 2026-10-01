@@ -28,7 +28,7 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
 | Coptic Christmas | Yes | National | Gregorian | inline | Fixed 7 Jan |
-| Orthodox Easter Sunday | — | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: orthodox-easter |
+| Orthodox Easter Sunday | - | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: orthodox-easter |
 
 ### Cultural
 
@@ -59,7 +59,7 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 | Ethiopian Christmas (Genna) | Yes | National | Gregorian | inline | Fixed 7 Jan |
 | Epiphany (Timkat) | Yes | National | Gregorian | inline | Fixed 19 Jan |
 | Finding of the True Cross (Meskel) | Yes | National | Gregorian | inline | Fixed 27 Sep |
-| Orthodox Easter Sunday | — | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: orthodox-easter |
+| Orthodox Easter Sunday | - | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: orthodox-easter |
 
 ## GH
 
@@ -85,7 +85,7 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Easter Sunday | — | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
 
 ## KE
 
@@ -109,7 +109,7 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Easter Sunday | — | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
 
 ## MA
 
@@ -154,7 +154,7 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Calendar | Source | When |
 |---|---|---|---|---|---|
-| Easter Sunday | — | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | Gregorian | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
 
 ## ZA
 
@@ -179,7 +179,7 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| Easter Sunday | — | National | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
+| Easter Sunday | - | National | [← africa-common](theme-civil-and-christian.md#africa-common) | Algorithm: western-easter |
 
 ---
 
@@ -187,6 +187,6 @@ Notable dates observed by each country in the **Africa** data pack, grouped by c
 
 ## See also
 
-- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
-- **[Bodu.Globalization.Calendar guides](../index.md)** — the full guide index for the calendar runtime and its companions.
+- **[Globalization & Calendars guides](../../topics/globalization-and-calendars.md)** - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.
+- **[Bodu.Globalization.Calendar guides](../index.md)** - the full guide index for the calendar runtime and its companions.
 

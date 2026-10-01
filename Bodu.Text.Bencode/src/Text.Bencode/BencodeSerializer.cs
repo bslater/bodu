@@ -292,7 +292,7 @@ public static class BencodeSerializer
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
     /// <remarks>
-    /// The stream is buffered in full before parsing — the span-based reader requires the complete document in memory —
+    /// The stream is buffered in full before parsing - the span-based reader requires the complete document in memory -
     /// so the stream's length is bounded by the 2 GiB managed-array ceiling.
     /// </remarks>
     public static T Deserialize<T>(Stream source, BencodeSerializerOptions? options = null)
@@ -322,7 +322,7 @@ public static class BencodeSerializer
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
     /// <remarks>
-    /// The stream is buffered in full before parsing — the span-based reader requires the complete document in memory —
+    /// The stream is buffered in full before parsing - the span-based reader requires the complete document in memory -
     /// so only the buffering copy is asynchronous; parsing and binding run synchronously once the copy completes.
     /// </remarks>
     public static async ValueTask<T> DeserializeAsync<T>(Stream source, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)

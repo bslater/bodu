@@ -32,7 +32,7 @@ public sealed class TextFilterOptions
     /// <see cref="TextFilterPattern.IgnoreCase" />.
     /// </value>
     /// <remarks>
-    /// Comparison is always ordinal — culture-sensitive comparison is not supported, because the engine's optimized
+    /// Comparison is always ordinal - culture-sensitive comparison is not supported, because the engine's optimized
     /// matchers operate on raw character values.
     /// </remarks>
     public bool IgnoreCase { get; init; } = true;

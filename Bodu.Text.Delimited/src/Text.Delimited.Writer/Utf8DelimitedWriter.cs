@@ -15,11 +15,11 @@ namespace Bodu.Text.Delimited.Writer;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Records are written between <see cref="WriteStartArray" /> and <see cref="WriteEndArray" />. An object record —
+/// Records are written between <see cref="WriteStartArray" /> and <see cref="WriteEndArray" />. An object record -
 /// <see cref="WriteStartObject" />, <see cref="WritePropertyName(string)" /> / <see cref="WriteString(string)" />
-/// pairs, then <see cref="WriteEndObject" /> — contributes a header row (from the first record's names) followed by a
-/// value row. A positional record — a nested <see cref="WriteStartArray" /> of <see cref="WriteString(string)" />
-/// values — contributes a value row with no header.
+/// pairs, then <see cref="WriteEndObject" /> - contributes a header row (from the first record's names) followed by a
+/// value row. A positional record - a nested <see cref="WriteStartArray" /> of <see cref="WriteString(string)" />
+/// values - contributes a value row with no header.
 /// </para>
 /// <para>
 /// Fields that contain the delimiter, the quote character, or a line break are automatically quoted, with internal

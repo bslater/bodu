@@ -11,7 +11,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// Drives <see cref="EnumerableKat{TInput, TExpected}" /> rows against
 /// <see cref="IEnumerableExtensions.WhereNotNull{TSource}(IEnumerable{TSource})" /> for reference
 /// types and nullable value types. Deferred-execution and null-source coverage stays in
-/// <see cref="IEnumerableExtensionsTests_WhereNotNull" /> — this class layers KAT-driven coverage on
+/// <see cref="IEnumerableExtensionsTests_WhereNotNull" /> - this class layers KAT-driven coverage on
 /// top without duplicating the binary-test behaviour those partials already capture.
 /// </summary>
 [TestClass]

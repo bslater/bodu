@@ -122,7 +122,7 @@ public partial class CountMinSketchTests
 
     /// <summary>
     /// Verifies that items hashed through a custom comparer share counters with any value the comparer treats as
-    /// equal — here a case-insensitive string comparer.
+    /// equal - here a case-insensitive string comparer.
     /// </summary>
     [TestMethod]
     public void Add_WhenCustomComparerSupplied_ShouldCountComparerEqualValuesTogether()

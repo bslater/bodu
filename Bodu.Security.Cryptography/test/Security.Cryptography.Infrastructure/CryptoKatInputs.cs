@@ -9,13 +9,13 @@ using System.Text;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Provides the canonical byte payloads reused as known-answer test inputs across cryptographic families — the empty
+/// Provides the canonical byte payloads reused as known-answer test inputs across cryptographic families - the empty
 /// input, the strings <c>"ABC"</c> and the quick-brown-fox pangram, sixteen zero bytes, and the <c>0x00..0xFE</c>
 /// sequence.
 /// </summary>
 /// <remarks>
 /// Arrays are allocated once and shared across all test runs. Test code must treat them as immutable even though
-/// <see cref="byte" /> arrays are mutable by the CLR — mutating a shared input would corrupt every other vector relying
+/// <see cref="byte" /> arrays are mutable by the CLR - mutating a shared input would corrupt every other vector relying
 /// on the same payload.
 /// </remarks>
 public static class CryptoKatInputs

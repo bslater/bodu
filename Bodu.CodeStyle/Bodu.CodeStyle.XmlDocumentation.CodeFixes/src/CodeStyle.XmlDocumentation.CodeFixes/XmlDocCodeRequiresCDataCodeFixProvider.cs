@@ -21,7 +21,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Bodu.CodeStyle.XmlDocumentation.CodeFixes;
 
 /// <summary>
-/// Provides code fixes for <c>BODU1405</c> — repairs <c>&lt;code&gt;</c> documentation elements so they begin with a
+/// Provides code fixes for <c>BODU1405</c> - repairs <c>&lt;code&gt;</c> documentation elements so they begin with a
 /// <c>&lt;![CDATA[…]]&gt;</c> section flush against the <c>///</c> doc-comment prefix.
 /// </summary>
 /// <remarks>
@@ -205,8 +205,8 @@ public sealed class XmlDocCodeRequiresCDataCodeFixProvider : CodeFixProvider
 
         // Compose the multi-line CDATA replacement: opener and closer each on their own line flush
         // against `///`. Every logical body line is re-emitted under the standard `/// ` prefix, so the
-        // physical doc-comment prefixes that introduced each source line are never embedded into — nor
-        // duplicated within — the CDATA content. Blank body lines collapse to a bare `///` with no
+        // physical doc-comment prefixes that introduced each source line are never embedded into - nor
+        // duplicated within - the CDATA content. Blank body lines collapse to a bare `///` with no
         // trailing whitespace.
         var sb = new StringBuilder();
         sb.Append(lineEnding);

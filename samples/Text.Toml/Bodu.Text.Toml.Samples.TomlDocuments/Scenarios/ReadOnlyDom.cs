@@ -9,7 +9,7 @@ using Bodu.Text.Toml.Document;
 namespace Bodu.Text.Toml.Samples.TomlDocuments.Scenarios;
 
 /// <summary>
-/// Demonstrates the read-only <see cref="TomlDocument" /> DOM — the <c>JsonDocument</c>-style
+/// Demonstrates the read-only <see cref="TomlDocument" /> DOM - the <c>JsonDocument</c>-style
 /// layer for inspect-without-materializing workflows: one parse, cheap <see cref="TomlElement" />
 /// cursors over it, typed getters, and safe probing for optional keys. The document owns the
 /// parsed data, so it is <see cref="IDisposable" />.

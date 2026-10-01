@@ -11,7 +11,7 @@ namespace Bodu.Collections.Probabilistic;
 /// <summary>
 /// Provides the shared hash-derivation routine used by the probabilistic sketch types (<see cref="BloomFilter{T}" />,
 /// <see cref="CountMinSketch{T}" />, and <see cref="HyperLogLog{T}" />) to expand an element's comparer-supplied hash
-/// code into the two 64-bit values required for Kirsch–Mitzenmacher double hashing. Sketches that need only a single
+/// code into the two 64-bit values required for Kirsch-Mitzenmacher double hashing. Sketches that need only a single
 /// 64-bit hash (<see cref="HyperLogLog{T}" />) consume the first value and discard the second.
 /// </summary>
 /// <remarks>
@@ -34,11 +34,11 @@ internal static class ProbabilisticHashing
     /// <summary>The SplitMix64 sequence increment (the 64-bit golden-ratio constant), used to separate the two seeds.</summary>
     private const ulong GoldenGamma = 0x9E3779B97F4A7C15UL;
 
-    /// <summary>Twice <see cref="GoldenGamma" /> modulo 2⁶⁴ — the second seed offset in the SplitMix64 sequence.</summary>
+    /// <summary>Twice <see cref="GoldenGamma" /> modulo 2⁶⁴ - the second seed offset in the SplitMix64 sequence.</summary>
     private const ulong GoldenGamma2 = 0x3C6EF372FE94F82AUL;
 
     /// <summary>
-    /// Derives the two 64-bit hash values for <paramref name="item" /> used to drive Kirsch–Mitzenmacher double hashing
+    /// Derives the two 64-bit hash values for <paramref name="item" /> used to drive Kirsch-Mitzenmacher double hashing
     /// (<c>g_i = h1 + i · h2</c>).
     /// </summary>
     /// <typeparam name="T">The type of the element being hashed.</typeparam>

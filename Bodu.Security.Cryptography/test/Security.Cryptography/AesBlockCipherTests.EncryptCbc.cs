@@ -43,7 +43,7 @@ public sealed partial class AesBlockCipherTests
 
     /// <summary>
     /// Verifies that the chained CBC path starts every chain from the chaining value it is given, even after a chain
-    /// that failed part-way — the cached platform chain is reset after each call.
+    /// that failed part-way - the cached platform chain is reset after each call.
     /// </summary>
     [TestMethod]
     public void EncryptCbc_WhenCalledAgain_ShouldStartFromTheGivenChainingValue()

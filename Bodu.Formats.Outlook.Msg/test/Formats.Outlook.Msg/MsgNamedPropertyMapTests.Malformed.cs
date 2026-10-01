@@ -13,7 +13,7 @@ public partial class MsgNamedPropertyMapTests
 {
     /// <summary>
     /// Verifies that a string entry whose offset sits at the top of the unsigned range is skipped under compatible
-    /// validation and throws the format exception under strict validation — never an argument exception from a
+    /// validation and throws the format exception under strict validation - never an argument exception from a
     /// wrapped bounds check.
     /// </summary>
     [TestMethod]
@@ -53,8 +53,8 @@ public partial class MsgNamedPropertyMapTests
     }
 
     /// <summary>
-    /// Verifies that an entry whose property index would wrap the mapped identifier out of the named range — onto
-    /// <c>PidTagSubject</c> here — is rejected rather than letting a named property impersonate a well-known tag.
+    /// Verifies that an entry whose property index would wrap the mapped identifier out of the named range - onto
+    /// <c>PidTagSubject</c> here - is rejected rather than letting a named property impersonate a well-known tag.
     /// </summary>
     [TestMethod]
     public void Load_WhenPropertyIndexWrapsIntoWellKnownRange_ShouldSkipOrThrowByValidationLevel()
@@ -74,7 +74,7 @@ public partial class MsgNamedPropertyMapTests
 
     /// <summary>
     /// Verifies that a string entry naming a whitespace-only property is treated as malformed content: skipped under
-    /// compatible validation and the format exception under strict — never the identity type's argument exception.
+    /// compatible validation and the format exception under strict - never the identity type's argument exception.
     /// </summary>
     [TestMethod]
     public void Load_WhenStringNameIsWhitespace_ShouldSkipOrThrowByValidationLevel()

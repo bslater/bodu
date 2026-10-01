@@ -17,7 +17,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// Code that knows the encoding at compile time should prefer the static methods on <see cref="Base16" />,
-/// <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, or <see cref="Base85" /> — they are slightly
+/// <see cref="Base32" />, <see cref="Base64" />, <see cref="Base58" />, or <see cref="Base85" /> - they are slightly
 /// faster (no virtual dispatch) and surface variant-specific options (line breaks, padding control, alternate variants)
 /// that the unified interface intentionally hides.
 /// </para>
@@ -25,7 +25,7 @@ namespace Bodu.Text.Encoding;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Pre-bound singleton — no allocation per call.
+/// // Pre-bound singleton - no allocation per call.
 /// IBinaryEncoding hex    = BinaryEncodings.Base16Upper;
 /// IBinaryEncoding jwt    = BinaryEncodings.Base64UrlSafe;
 /// IBinaryEncoding bitcoin = BinaryEncodings.Base58;
@@ -33,7 +33,7 @@ namespace Bodu.Text.Encoding;
 /// string encoded = jwt.Encode(payload);
 /// byte[] decoded = jwt.Decode(encoded);
 ///
-/// // Look up by name — accepts canonical names and well-known aliases.
+/// // Look up by name - accepts canonical names and well-known aliases.
 /// IBinaryEncoding fromConfig = BinaryEncodings.Get(appConfig["encoding"] ?? "base64");
 /// IBinaryEncoding fromAlias  = BinaryEncodings.Get("hex");           // same as Base16Lower
 ///]]>
@@ -48,14 +48,14 @@ public static class BinaryEncodings
     public static IBinaryEncoding Ascii85 { get; } = new Base85VariantAdapter(Base85Variant.Ascii85, "ascii85", "Adobe Ascii85 (! to u plus 'z' all-zero shortcut).");
 
     /// <summary>
-    /// Gets the lower-case hexadecimal (Base16) encoding — the same canonical form
+    /// Gets the lower-case hexadecimal (Base16) encoding - the same canonical form
     /// <see cref="global::Bodu.Text.Encoding.Base16.Encode(byte[], BaseFormattingOptions)" /> produces with default
     /// options.
     /// </summary>
     public static IBinaryEncoding Base16Lower { get; } = new Base16LowerAdapter();
 
     /// <summary>
-    /// Gets the upper-case hexadecimal (Base16) encoding — matches RFC 4648 §8 canonical case and
+    /// Gets the upper-case hexadecimal (Base16) encoding - matches RFC 4648 §8 canonical case and
     /// <see cref="System.Convert.ToHexString(byte[])" />.
     /// </summary>
     public static IBinaryEncoding Base16Upper { get; } = new Base16UpperAdapter();
@@ -82,13 +82,13 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base32ZBase32 { get; } = new Base32VariantAdapter(Base32Variant.ZBase32, "z-base-32", "z-base-32 (human-oriented lowercase alphabet; no padding).");
 
     /// <summary>
-    /// Gets the RFC 9285 Base45 encoding — the compact alphanumeric encoding used to carry binary data inside a QR
+    /// Gets the RFC 9285 Base45 encoding - the compact alphanumeric encoding used to carry binary data inside a QR
     /// code's Alphanumeric mode (no padding).
     /// </summary>
     public static IBinaryEncoding Base45 { get; } = new Base45Adapter();
 
     /// <summary>
-    /// Gets the Bitcoin/Flickr Base58 encoding — the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
+    /// Gets the Bitcoin/Flickr Base58 encoding - the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
     /// derivative protocols.
     /// </summary>
     public static IBinaryEncoding Base58 { get; } = new Base58VariantAdapter(Base58Variant.BitcoinFlickr, "base58", "Bitcoin/Flickr Base58 (1-9, A-Z minus O/I, a-z minus l).");

@@ -1,0 +1,18 @@
+{
+  "metadata": [
+    {
+      "includePrivateMembers": false,
+      "includeExplicitInterfaceImplementations": true,
+      "memberLayout": "samePage",
+      "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
+      "globalNamespaceId": "global",
+      "disableDefaultFilter": false,
+      "sourceLinkExclude": [
+        "**/obj/**",
+        "**/*.Designer.cs",
+        "**/*.g.cs"
+      ]
+    }
+  ]
+}

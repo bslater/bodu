@@ -37,6 +37,6 @@ public partial class MsgPropertyDecoderTests
         Assert.AreEqual(PropertyCount, properties.Count);
         Assert.IsTrue(
             stopwatch.Elapsed < TimeSpan.FromSeconds(5),
-            $"Decoding {PropertyCount} properties took {stopwatch.Elapsed.TotalSeconds:F1} s — the value-stream lookup is not linear.");
+            $"Decoding {PropertyCount} properties took {stopwatch.Elapsed.TotalSeconds:F1} s - the value-stream lookup is not linear.");
     }
 }

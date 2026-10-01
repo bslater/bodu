@@ -99,7 +99,7 @@ internal static partial class CryptographyHelper
     }
 
     /// <summary>
-    /// Fills the provided span with cryptographically secure random bytes, drawn uniformly over the full <c>0x00</c>–
+    /// Fills the provided span with cryptographically secure random bytes, drawn uniformly over the full <c>0x00</c>-
     /// <c>0xFF</c> range.
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
@@ -113,7 +113,7 @@ internal static partial class CryptographyHelper
 
     /// <summary>
     /// Returns a new byte array filled with cryptographically secure random bytes, drawn uniformly over the full
-    /// <c>0x00</c>–<c>0xFF</c> range.
+    /// <c>0x00</c>-<c>0xFF</c> range.
     /// </summary>
     /// <param name="length">The number of random bytes to generate. Must be greater than zero.</param>
     /// <returns>A <see cref="byte" /> array of the specified length containing uniformly random bytes.</returns>

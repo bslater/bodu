@@ -85,8 +85,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     }
 
     /// <summary>
-    /// Verifies that encrypting a partial final block — input length is one byte shy of
-    /// <see cref="ICryptoTransform.InputBlockSize" /> — and decrypting the padded ciphertext recovers
+    /// Verifies that encrypting a partial final block - input length is one byte shy of
+    /// <see cref="ICryptoTransform.InputBlockSize" /> - and decrypting the padded ciphertext recovers
     /// the partial plaintext exactly.
     /// </summary>
     [TestMethod]
@@ -117,9 +117,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     }
 
     /// <summary>
-    /// Verifies that a streaming encrypt — <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" />
+    /// Verifies that a streaming encrypt - <see cref="ICryptoTransform.TransformBlock(byte[], int, int, byte[], int)" />
     /// for the leading aligned chunk followed by <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" />
-    /// for the residual final block — round-trips through the paired decryptor.
+    /// for the residual final block - round-trips through the paired decryptor.
     /// </summary>
     [TestMethod]
     public void RoundTrip_WhenStreamingEncryptThenDecrypt_ShouldRecoverPlaintext()

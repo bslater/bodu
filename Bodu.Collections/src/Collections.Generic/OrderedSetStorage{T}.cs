@@ -14,7 +14,7 @@ namespace Bodu.Collections.Generic;
 /// <remarks>
 /// <para>
 /// Elements live in a contiguous <see cref="Array" /> for deterministic insertion order. A hand-rolled open-addressing
-/// hash table over two parallel <see cref="int" /> arrays — one of bucket heads, one of chain links — provides O(1)
+/// hash table over two parallel <see cref="int" /> arrays - one of bucket heads, one of chain links - provides O(1)
 /// average-case <see cref="Contains" /> and <see cref="IndexOf" />. The bucket count is always a power of two and the
 /// table is rehashed when the load factor exceeds three quarters.
 /// </para>
@@ -548,7 +548,7 @@ internal sealed class OrderedSetStorage<T>
     /// <param name="delta">The signed adjustment to apply.</param>
     /// <param name="slotCount">The number of live <see cref="_next" /> slots to sweep.</param>
     /// <remarks>
-    /// This is a pure integer sweep over the bucket and chain arrays — O(buckets + slots) with no user
+    /// This is a pure integer sweep over the bucket and chain arrays - O(buckets + slots) with no user
     /// <see cref="IEqualityComparer{T}.GetHashCode(T)" /> calls and no allocation, replacing the full rehash the
     /// shift-based mutators previously performed.
     /// </remarks>

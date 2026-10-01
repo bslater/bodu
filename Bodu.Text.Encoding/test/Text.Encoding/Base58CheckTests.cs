@@ -21,7 +21,7 @@ public sealed class Base58CheckTests
     private const string GenesisAddress = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa";
 
     /// <summary>
-    /// The 21-byte payload represented by <see cref="GenesisAddress" /> — a version byte (0x00) followed by the
+    /// The 21-byte payload represented by <see cref="GenesisAddress" /> - a version byte (0x00) followed by the
     /// 20-byte HASH-160 of the Genesis block public key.
     /// </summary>
     private static readonly byte[] GenesisPayload =
@@ -50,7 +50,7 @@ public sealed class Base58CheckTests
     [TestMethod]
     public void Decode_WhenChecksumIsCorrupted_ShouldThrowExactly()
     {
-        // Flip the last character of the Genesis address — almost certainly invalidates the checksum.
+        // Flip the last character of the Genesis address - almost certainly invalidates the checksum.
         char[] tampered = GenesisAddress.ToCharArray();
         tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
         string tamperedAddress = new(tampered);
@@ -132,11 +132,11 @@ public sealed class Base58CheckTests
     /// </summary>
     [TestMethod]
     public void IsValid_WhenInputTooShortForChecksum_ShouldReturnFalse() =>
-        // A single "1" decodes to a single zero byte — fewer bytes than the 4-byte checksum suffix.
+        // A single "1" decodes to a single zero byte - fewer bytes than the 4-byte checksum suffix.
         Assert.IsFalse(Base58Check.IsValid("1".AsSpan()));
 
     /// <summary>
-    /// Verifies that an empty payload round-trips — the encoded form is the Base58 of the 4-byte checksum alone.
+    /// Verifies that an empty payload round-trips - the encoded form is the Base58 of the 4-byte checksum alone.
     /// </summary>
     [TestMethod]
     public void RoundTrip_ForEmptyPayload_ShouldRecoverEmptyArray()

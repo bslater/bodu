@@ -84,7 +84,7 @@ public sealed class CalendarDataPackDiscoveryTests
     /// </summary>
     /// <param name="pack">The regional data pack whose factory creates the service.</param>
     /// <param name="territory">The territory code to resolve.</param>
-    /// <param name="year">The Gregorian year whose 1 January–31 December window is resolved.</param>
+    /// <param name="year">The Gregorian year whose 1 January-31 December window is resolved.</param>
     /// <returns>The notable dates emitted for the territory and year, in resolution order.</returns>
     private static IReadOnlyList<NotableDate> ResolveYear(RegionalCalendarDataPack pack, string territory, int year) =>
         pack.CreateService(territory)

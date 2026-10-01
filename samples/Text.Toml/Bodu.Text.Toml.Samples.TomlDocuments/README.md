@@ -3,7 +3,7 @@
 The layers beneath `TomlSerializer`, mirroring the `System.Text.Json` stack: the mutable
 `TomlNode` DOM (like `JsonNode`), the read-only `TomlDocument` DOM (like `JsonDocument`), and
 the allocation-free `Utf8TomlWriter`/`Utf8TomlReader` token surface (like `Utf8JsonWriter`/
-`Utf8JsonReader`) — including streaming reads across buffer boundaries. Pick the layer that
+`Utf8JsonReader`) - including streaming reads across buffer boundaries. Pick the layer that
 matches the job: serializer for typed graphs, node DOM for edit-in-place, document DOM for
 inspection, token layer for control.
 
@@ -13,10 +13,10 @@ Everything runs offline against the committed `Data/server-config.toml`.
 dotnet run --project samples/Text.Toml/Bodu.Text.Toml.Samples.TomlDocuments
 ```
 
-## Scenario 1 — MutableDom
+## Scenario 1 - MutableDom
 
 **Intent.** Show the `JsonNode`-style workflow: when you need to read *and rewrite* a TOML
-document without defining a POCO — a config editor, a migration script, a tool that grafts
+document without defining a POCO - a config editor, a migration script, a tool that grafts
 sections into existing files.
 
 **What it does.** Parses `Data/server-config.toml` into a `TomlNode` tree with
@@ -27,7 +27,7 @@ grafts it onto the root with `Add`. Finally it re-emits the edited tree as TOML 
 `ToUtf8Bytes()`.
 
 **What to expect.** The two original values read back, then the full emitted document showing
-all three edits — `workers = 16`, and the appended `[logging]` table with its inline array:
+all three edits - `workers = 16`, and the appended `[logging]` table with its inline array:
 
 ```text
 --- The mutable DOM - editing a document without a POCO ---
@@ -64,18 +64,18 @@ all three edits — `workers = 16`, and the appended `[logging]` table with its 
 (`root["tls"]!["certificate"]`), `TomlNode.GetValue<T>()`, `TomlValue.Create`,
 `TomlObject` collection initializers and `Add`, `TomlArray(params)`, `TomlNode.ToUtf8Bytes()`.
 
-## Scenario 2 — ReadOnlyDom
+## Scenario 2 - ReadOnlyDom
 
 **Intent.** Show the `JsonDocument`-style workflow: one parse, then cheap struct
-`TomlElement` cursors over the parsed data — the right layer when you only need to *inspect*
+`TomlElement` cursors over the parsed data - the right layer when you only need to *inspect*
 a document (feature flags, tool config probes) and want neither a POCO nor a mutable tree.
 The document owns the parsed data, hence `using`.
 
 **What it does.** Parses the same file with `TomlDocument.Parse`, drills down with
 `GetProperty` chains and reads leaves with the typed getters (`GetString`, `GetInt64`,
 `GetTimeOnly`, `GetBoolean`). It then enumerates the `[limits]` table with
-`EnumerateObject()` — no knowledge of its keys required, each property exposing `Name`,
-`Value`, and `ValueKind` — and probes for an absent `proxy` key with `TryGetProperty`
+`EnumerateObject()` - no knowledge of its keys required, each property exposing `Name`,
+`Value`, and `ValueKind` - and probes for an absent `proxy` key with `TryGetProperty`
 instead of catching an exception.
 
 **What to expect.** The four typed leaves (note `drain_timeout` arriving as a real
@@ -112,19 +112,19 @@ instead of catching an exception.
 `TomlDocument.RootElement`, `TomlElement.GetProperty` / `TryGetProperty`, typed getters,
 `TomlElement.EnumerateObject()`, `TomlProperty.Name` / `.Value`, `TomlElement.ValueKind`.
 
-## Scenario 3 — TokenReaderWriter
+## Scenario 3 - TokenReaderWriter
 
 **Intent.** Expose the lowest layer both DOMs and the serializer are built on: forward-only
 token emission and pulling over raw UTF-8, with no intermediate tree and no allocation. This
 is the layer for custom emitters, format converters, and hot paths.
 
 **What it does.** Constructs a `Utf8TomlWriter` over an `ArrayBufferWriter<byte>` and emits a
-document token by token — root scalars via the `(name, value)` convenience overloads, then a
+document token by token - root scalars via the `(name, value)` convenience overloads, then a
 nested `[health]` table via `WriteStartTable("health")` … `WriteEndTable()`, and `Flush()`.
 It prints the emitted TOML, then walks the same bytes with `Utf8TomlReader`, printing each
 `TokenType` and, for keys/strings/integers, the decoded value straight from `ValueSpan`.
 
-**What to expect.** The five emitted lines, then the token stream — note the shape: each
+**What to expect.** The five emitted lines, then the token stream - note the shape: each
 `key = value` pair surfaces as a `Key` token followed by a value token, and the table header
 surfaces as `TableHeader` followed by the `Key` carrying its name:
 
@@ -168,10 +168,10 @@ surfaces as `TableHeader` followed by the `Key` carrying its name:
 `WriteLocalTime`, `Flush()`; `Utf8TomlReader(ReadOnlySpan<byte>)`, `Read()`, `TokenType`,
 `ValueSpan`, `GetInt64()`.
 
-## Scenario 4 — StreamingReads
+## Scenario 4 - StreamingReads
 
-**Intent.** Show how to parse TOML that arrives in chunks — a socket, a pipeline, a file too
-large to buffer — using the `Utf8JsonReader` resumable-state pattern: the reader consumes
+**Intent.** Show how to parse TOML that arrives in chunks - a socket, a pipeline, a file too
+large to buffer - using the `Utf8JsonReader` resumable-state pattern: the reader consumes
 each slice as far as it can, holds back any partial token, and resumes from a captured
 `TomlReaderState`.
 
@@ -226,5 +226,5 @@ Bodu.Text.Toml.Samples.TomlDocuments/
 
 ## Related
 
-- `Bodu.Text.Toml.Samples.TomlBasics` — the `TomlSerializer` POCO surface above these layers.
+- `Bodu.Text.Toml.Samples.TomlBasics` - the `TomlSerializer` POCO surface above these layers.
 - Guides: `docs/guides/serialization/toml/`.

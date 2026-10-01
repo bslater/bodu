@@ -49,7 +49,7 @@ public enum Base85Variant : byte
     /// <see cref="Base85" /> emits a compact, self-delimiting partial tail (a final remainder of one, two, or three
     /// bytes becomes two, three, or four characters), which round-trips through
     /// <see cref="Base85.Decode(System.ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> without external
-    /// metadata — this is <b>not</b> the exact Git binary-patch line encoding, which always emits five characters per
+    /// metadata - this is <b>not</b> the exact Git binary-patch line encoding, which always emits five characters per
     /// group and carries the decoded byte count out of band. Use the <c>EncodeGitPadded</c> / <c>DecodeGitPadded</c>
     /// helpers for that patch-compatible primitive. This variant implements only the Git alphabet; it does not parse
     /// Git binary patches.

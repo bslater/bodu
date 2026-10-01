@@ -1,8 +1,8 @@
 ---
-title: Bodu.Extensions.Configuration.Text — Core concepts
+title: Bodu.Extensions.Configuration.Text - Core concepts
 ---
 
-# Bodu.Extensions.Configuration.Text — Core concepts
+# Bodu.Extensions.Configuration.Text - Core concepts
 
 This page is the vocabulary the rest of the documentation assumes. Read it once before the
 [getting-started samples](getting-started.md), and refer back whenever a term feels imprecise.
@@ -17,7 +17,7 @@ The library follows the three-part contract every `Microsoft.Extensions.Configur
 
 | Role | Type | Responsibility |
 |---|---|---|
-| **Source** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | Holds the configuration of "what to load and how" — the path, target path, parse and resolve options, reload behaviour. Implements `Build(IConfigurationBuilder)`. |
+| **Source** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | Holds the configuration of "what to load and how" - the path, target path, parse and resolve options, reload behaviour. Implements `Build(IConfigurationBuilder)`. |
 | **Provider** | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationProvider>, <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationProvider> | Performs the actual load. Subclasses `FileConfigurationProvider` / `StreamConfigurationProvider`; inherits change-token plumbing. Populates the inherited `Data` dictionary. |
 | **Loader** | *Internal (not public)* | Internal helper that parses a stream into a <xref:Bodu.Text.Configuration.ConfigurationDocument>, resolves it, and flattens the view into `Dictionary<string, string?>` for the provider. |
 
@@ -32,13 +32,13 @@ The two source types correspond to the two file shapes Microsoft ships:
 | <xref:Bodu.Extensions.Configuration.Text.TextConfigurationSource> | Path resolved through an `IFileProvider` | Yes |
 | <xref:Bodu.Extensions.Configuration.Text.TextStreamConfigurationSource> | Arbitrary `System.IO.Stream` | No |
 
-File sources are the common case — they layer naturally with `appsettings.json`, support hot reload, and accept the
+File sources are the common case - they layer naturally with `appsettings.json`, support hot reload, and accept the
 same path-based options every provider does. Stream sources are useful for tests, embedded resources, or in-memory
 fixtures where the configuration data does not live on disk.
 
 A third source, <xref:Bodu.Extensions.Configuration.Text.TomlConfigurationSource>, backs the read-only TOML bridge
 (`AddTomlFile` / `AddTomlStream`). It carries `Path`, `Optional`, and `Stream` but no `TargetPath`, `ParseOptions`,
-`ResolveOptions`, or `ReloadOnChange` — TOML has no glob-anchored resolution layer and the bridge is read-once. A
+`ResolveOptions`, or `ReloadOnChange` - TOML has no glob-anchored resolution layer and the bridge is read-once. A
 fourth, <xref:Bodu.Extensions.Configuration.Text.BencodeConfigurationSource>, backs the read-only Bencode bridge
 (`AddBencodeFile` / `AddBencodeStream`) with the same three-property shape; its documents must be dictionary-rooted.
 
@@ -63,7 +63,7 @@ logging.level.default = Warning
 the `[src/**]` pattern matches `src/MyApp/Program.cs`, so the resolved view picks up that section's properties on top
 of any earlier matches. When `TargetPath` is `null`, only unanchored patterns and preamble values contribute.
 
-`TargetPath` is **per source** — different sources in the same builder can have different anchors. If your application
+`TargetPath` is **per source** - different sources in the same builder can have different anchors. If your application
 needs configuration evaluated for several paths in parallel, add several sources with the same `Path` but different
 `TargetPath` values.
 
@@ -79,7 +79,7 @@ A source carries two optional bags:
 Both default to `null`, in which case the library uses
 <xref:Bodu.Text.Configuration.ConfigurationParseOptions.Bodu> and
 <xref:Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu>. Set them per-source when one file in a builder
-needs different semantics — for example, an EditorConfig-strict file alongside a Bodu-permissive one.
+needs different semantics - for example, an EditorConfig-strict file alongside a Bodu-permissive one.
 
 ```csharp
 builder.AddTextConfigurationFile(src =>
@@ -102,8 +102,8 @@ builder.AddTextConfiguration(optional: true, reloadOnChange: true);
 
 The probe runs against the builder's default file provider and looks for two file names in order:
 
-1. **`.boduconfig`** — the dotfile form, common in version-control-friendly repos.
-2. **`bodu.config`** — the plain form, common on Windows where dotfiles need explicit attribute toggles.
+1. **`.boduconfig`** - the dotfile form, common in version-control-friendly repos.
+2. **`bodu.config`** - the plain form, common on Windows where dotfiles need explicit attribute toggles.
 
 The first file found is added; if neither is present and `optional` is `true`, the helper returns the builder
 unchanged (it registers a `.boduconfig` source marked optional so the slot still exists). When neither is present and
@@ -124,7 +124,7 @@ unchanged (it registers a `.boduconfig` source marked optional so the slot still
 3. Triggers the standard `IConfiguration` reload tokens, so callers using `IOptionsMonitor<TOptions>` re-bind to the
    new values automatically.
 
-Reload is **not** atomic with respect to multiple providers — if your builder has three file sources and two change
+Reload is **not** atomic with respect to multiple providers - if your builder has three file sources and two change
 at once, the providers reload independently, in the order their watchers fire. This matches the MEC contract and is
 not specific to Bodu.
 
@@ -137,7 +137,7 @@ ends with that parse. If you need dynamic stream-backed inputs, rebuild the conf
 
 1. If a provider is supplied directly to the overload, use it.
 2. Otherwise, if the source's `FileProvider` is set, use that.
-3. Otherwise, defer to the builder's default file provider — typically a `PhysicalFileProvider` rooted at
+3. Otherwise, defer to the builder's default file provider - typically a `PhysicalFileProvider` rooted at
    `Directory.GetCurrentDirectory()`.
 
 Tests typically supply a `PhysicalFileProvider` rooted at a temp directory; production code typically relies on the
@@ -154,7 +154,7 @@ services.AddConfigurationOptions<ServiceOptions>(configuration, "service");
 services.Configure<ServiceOptions>(configuration.GetSection("service"));
 ```
 
-The wrapper exists for discoverability — call sites that reach for an `AddTextConfiguration*` API by IntelliSense
+The wrapper exists for discoverability - call sites that reach for an `AddTextConfiguration*` API by IntelliSense
 find an options helper with the same prefix. The shape is identical to the MEC version; callers who already use
 `Configure<T>` are not penalised, and callers who switch to `AddConfigurationOptions` are not locked in.
 
@@ -170,7 +170,7 @@ Both throw `ArgumentNullException` for null `services` / `configuration` / `sect
 
 ## Colon-delimited key model
 
-`IConfiguration` keys are colon-delimited by convention — `service:name`, `logging:level:default`. Bodu's reader
+`IConfiguration` keys are colon-delimited by convention - `service:name`, `logging:level:default`. Bodu's reader
 projects raw keys to the same shape under the default `DotToColon` mapping, so a file written as
 
 ```ini
@@ -182,7 +182,7 @@ logging.level.default = Information
 surfaces as `configuration["service:name"]`, `configuration["service:port"]`,
 `configuration["logging:level:default"]`. The mapping is the `Mapping` property on
 <xref:Bodu.Text.Configuration.ConfigurationKeyOptions>; switching it to
-<xref:Bodu.Text.Configuration.ConfigurationKeyMapping.Identity> emits keys unchanged — useful when the file is also
+<xref:Bodu.Text.Configuration.ConfigurationKeyMapping.Identity> emits keys unchanged - useful when the file is also
 consumed by tools that interpret dots as path separators (e.g. AppSettings patches).
 
 The projection is **lossy** by design. The flatten step in
@@ -196,7 +196,7 @@ discarded metadata.
 ## Pre-parsed document source
 
 <xref:Bodu.Extensions.Configuration.Text.TextConfigurationExtensions.AddTextConfigurationDocument*> takes an
-already-parsed <xref:Bodu.Text.Configuration.IniDocumentBase> — such as a <xref:Bodu.Text.Configuration.ConfigurationDocument> —
+already-parsed <xref:Bodu.Text.Configuration.IniDocumentBase> - such as a <xref:Bodu.Text.Configuration.ConfigurationDocument> -
 resolves it once against `targetPath`, and adds the flattened pairs via the in-memory provider. It is a **one-shot
 snapshot**: the document is captured by value when the method is called, so later edits to the document (or its backing
 file) are not reflected. Use it to share a single parse across several builders, or to feed a document built or mutated
@@ -204,8 +204,8 @@ in code. There is no reload-on-change for this overload.
 
 ## Where to go next
 
-- **[Getting started](getting-started.md)** — install + runnable minimal samples.
-- **[Bodu.Text.Configuration](../text-configuration/index.md)** — the underlying parser, resolver, and view.
-- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** — full type-by-type docs.
-- **[Introduction](index.md)** — the high-level shape of the library.
-- **[Configuration topic](../topics/configuration.md)** — this package and its sibling Bodu.Text.Configuration; the [topic concepts](../topics/configuration-concepts.md) page collects the shared vocabulary.
+- **[Getting started](getting-started.md)** - install + runnable minimal samples.
+- **[Bodu.Text.Configuration](../text-configuration/index.md)** - the underlying parser, resolver, and view.
+- **[Bodu.Extensions.Configuration.Text API reference](xref:Bodu.Extensions.Configuration.Text)** - full type-by-type docs.
+- **[Introduction](index.md)** - the high-level shape of the library.
+- **[Configuration topic](../topics/configuration.md)** - this package and its sibling Bodu.Text.Configuration; the [topic concepts](../topics/configuration-concepts.md) page collects the shared vocabulary.

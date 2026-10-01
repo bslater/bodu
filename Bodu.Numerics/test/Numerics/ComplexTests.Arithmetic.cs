@@ -99,7 +99,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that the reciprocal of an infinite value matches <see cref="System.Numerics.Complex.Reciprocal" />
-    /// (which is <c>NaN</c>, since <c>1 / ∞</c> under Smith's algorithm forms <c>∞/∞</c>) — pinning the actual .NET
+    /// (which is <c>NaN</c>, since <c>1 / ∞</c> under Smith's algorithm forms <c>∞/∞</c>) - pinning the actual .NET
     /// behaviour rather than the intuitive zero.
     /// </summary>
     [TestMethod]
@@ -142,7 +142,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that <see cref="Complex{T}.Abs" /> of an infinite component paired with a <c>NaN</c> component returns
-    /// positive infinity — the IEEE 754 <c>hypot</c> value (and the value of <see cref="double.Hypot(double, double)" /> on every
+    /// positive infinity - the IEEE 754 <c>hypot</c> value (and the value of <see cref="double.Hypot(double, double)" /> on every
     /// runtime). The result is asserted as a fixed constant rather than against <see cref="System.Numerics.Complex.Abs" />
     /// because that oracle is runtime-dependent for this input: .NET 8 returned <c>NaN</c> from a since-corrected guard,
     /// while .NET 9 and later return positive infinity. Pinning the stable IEEE value keeps the magnitude identical
@@ -161,7 +161,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that dividing by zero yields NaN components rather than an infinity, matching
-    /// <see cref="System.Numerics.Complex" /> — the <c>0/0</c> that Smith's algorithm forms for a zero divisor.
+    /// <see cref="System.Numerics.Complex" /> - the <c>0/0</c> that Smith's algorithm forms for a zero divisor.
     /// </summary>
     [TestMethod]
     [TestCategory(Bodu.Test.TestCategories.Regression)]

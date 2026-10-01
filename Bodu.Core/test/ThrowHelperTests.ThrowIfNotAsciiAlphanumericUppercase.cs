@@ -43,8 +43,8 @@ public partial class ThrowHelperTests
         });
     }
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase" /> does not throw — and on
-    /// the ParamName-asserting overload reports nothing — for accepted ASCII alphanumeric uppercase
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase" /> does not throw - and on
+    /// the ParamName-asserting overload reports nothing - for accepted ASCII alphanumeric uppercase
     /// characters at boundary positions of the accepted ranges.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

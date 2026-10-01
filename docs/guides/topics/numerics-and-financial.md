@@ -4,7 +4,7 @@ title: Numerics & Financial guides
 
 # Numerics & Financial guides
 
-Recipe-style walk-throughs for the **Numerics & Financial** topic — [`Bodu.Numerics`](../numerics/index.md), the exact-arithmetic value types `Fraction<T>`, `BigDecimal`, and `Complex<T>`, the range type `Interval<T>` (with its set-algebra family: `DiscreteInterval<T>`, `IntervalPair<T>`, and `IntervalSet<T>`), and the streaming statistics aggregates (`RunningStatistics<T>`, `RunningQuantile<T>`, `MovingSum<T>`, `MovingMinMax<T>`), and [`Bodu.Financial`](../financial/index.md), the money, currency, and exchange-rate stack built on top of them.
+Recipe-style walk-throughs for the **Numerics & Financial** topic - [`Bodu.Numerics`](../numerics/index.md), the exact-arithmetic value types `Fraction<T>`, `BigDecimal`, and `Complex<T>`, the range type `Interval<T>` (with its set-algebra family: `DiscreteInterval<T>`, `IntervalPair<T>`, and `IntervalSet<T>`), and the streaming statistics aggregates (`RunningStatistics<T>`, `RunningQuantile<T>`, `MovingSum<T>`, `MovingMinMax<T>`), and [`Bodu.Financial`](../financial/index.md), the money, currency, and exchange-rate stack built on top of them.
 
 If you are new to the topic, start with the [Numerics & Financial overview](../../docs/topics/numerics-and-financial.md) for the package boundaries and decision table, and the [Numerics & Financial concepts](../../docs/topics/numerics-and-financial-concepts.md) glossary for the shared vocabulary (canonical form, deferred rounding, `BigInteger` promotion, endpoint inclusivity, minor unit, allocation, provenance).
 
@@ -41,12 +41,12 @@ Exact rational arithmetic and first-class numeric ranges over the .NET generic-m
 
 <div class="bodu-card">
   <h3><a href="../numerics/interval-algebra.md">Interval algebra</a></h3>
-  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> — intersection, union, difference and symmetric difference, unbounded endpoints, the <code>&amp;</code> / <code>|</code> operators, and the N-ary <code>IntervalSet&lt;T&gt;</code>.</p>
+  <p>The set-algebra surface of <code>Interval&lt;T&gt;</code> - intersection, union, difference and symmetric difference, unbounded endpoints, the <code>&amp;</code> / <code>|</code> operators, and the N-ary <code>IntervalSet&lt;T&gt;</code>.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../numerics/discrete-intervals.md">Discrete integer intervals</a></h3>
-  <p><code>DiscreteInterval&lt;T&gt;</code> — the integer-domain interval with successor-aware emptiness and adjacency, distinct from the continuous <code>Interval&lt;T&gt;</code>.</p>
+  <p><code>DiscreteInterval&lt;T&gt;</code> - the integer-domain interval with successor-aware emptiness and adjacency, distinct from the continuous <code>Interval&lt;T&gt;</code>.</p>
 </div>
 
 <div class="bodu-card">
@@ -85,7 +85,7 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../financial/exchange-types.md">Exchange-rate types — a usage-scenario catalogue</a></h3>
+  <h3><a href="../financial/exchange-types.md">Exchange-rate types - a usage-scenario catalogue</a></h3>
   <p>Every FX type mapped to the scenario it was defined for, with a "reach for this when…" map and a decision walk-through.</p>
 </div>
 
@@ -96,12 +96,12 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 
 <div class="bodu-card">
   <h3><a href="../financial/exchange-rate-providers.md">Built-in exchange-rate providers</a></h3>
-  <p>The eleven live-feed packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF) — construction, warming, dependency injection, and composing with caching.</p>
+  <p>The eleven live-feed packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF) - construction, warming, dependency injection, and composing with caching.</p>
 </div>
 
 <div class="bodu-card">
   <h3><a href="../financial/exchange-rate-caching.md">Caching and aggregating exchange rates</a></h3>
-  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>) and grouping many providers with <code>AggregatingRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
+  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>) and grouping many providers with <code>AggregatingRateProvider</code> - priority fallback, averaging, and per-FX-pair routing.</p>
 </div>
 
 <div class="bodu-card">
@@ -111,7 +111,7 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 
 <div class="bodu-card">
   <h3><a href="../financial/dependency-injection.md">Dependency injection</a></h3>
-  <p>Register the stack with <code>AddFinancialService(...)</code> — currency lookups, monetary contexts, FX providers, options binding — and the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
+  <p>Register the stack with <code>AddFinancialService(...)</code> - currency lookups, monetary contexts, FX providers, options binding - and the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
 </div>
 
 </div>
@@ -120,15 +120,15 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 
 ## Suggested reading path
 
-1. **[Working with `Fraction<T>`](../numerics/fraction.md)** — the exact-arithmetic foundation everything else leans on.
-2. **[Working with `Interval<T>`](../numerics/interval.md)** — ranges as first-class values.
-3. **[Working with `Money<TCurrency>`](../financial/money.md)** — typed money, allocation, and the `ToFraction()` bridge back to exact rationals.
-4. **[Working with exchange rates](../financial/exchange-rates.md)** — the FX provider stack and provenance model.
-5. **[Dependency injection](../financial/dependency-injection.md)** — let the host compose the stack when you run under `Microsoft.Extensions`.
+1. **[Working with `Fraction<T>`](../numerics/fraction.md)** - the exact-arithmetic foundation everything else leans on.
+2. **[Working with `Interval<T>`](../numerics/interval.md)** - ranges as first-class values.
+3. **[Working with `Money<TCurrency>`](../financial/money.md)** - typed money, allocation, and the `ToFraction()` bridge back to exact rationals.
+4. **[Working with exchange rates](../financial/exchange-rates.md)** - the FX provider stack and provenance model.
+5. **[Dependency injection](../financial/dependency-injection.md)** - let the host compose the stack when you run under `Microsoft.Extensions`.
 
 ## See also
 
-- **[Numerics & Financial overview](../../docs/topics/numerics-and-financial.md)** — the topic landing page: package table, decision table, install commands.
-- **[Numerics & Financial concepts](../../docs/topics/numerics-and-financial-concepts.md)** — the cross-package vocabulary.
-- **[Bodu.Numerics getting started](../../docs/numerics/getting-started.md)** and **[Bodu.Financial getting started](../../docs/financial/getting-started.md)** — install + minimal runnable samples.
+- **[Numerics & Financial overview](../../docs/topics/numerics-and-financial.md)** - the topic landing page: package table, decision table, install commands.
+- **[Numerics & Financial concepts](../../docs/topics/numerics-and-financial-concepts.md)** - the cross-package vocabulary.
+- **[Bodu.Numerics getting started](../../docs/numerics/getting-started.md)** and **[Bodu.Financial getting started](../../docs/financial/getting-started.md)** - install + minimal runnable samples.
 - **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.Numerics](../numerics/index.md) · [Bodu.Financial](../financial/index.md).

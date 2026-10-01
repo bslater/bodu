@@ -31,8 +31,8 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="XorKeystreamBlocks(ReadOnlySpan{byte}, Span{byte})" />.
 /// </para>
 /// </remarks>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 — ChaCha20 and Poly1305 for IETF Protocols</seealso>
-/// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha — XChaCha:
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc8439">RFC 8439 - ChaCha20 and Poly1305 for IETF Protocols</seealso>
+/// <seealso href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha">draft-irtf-cfrg-xchacha - XChaCha:
 /// eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305</seealso> <seealso cref="ChaCha20" /> <seealso cref="XChaCha20" />
 internal sealed class ChaCha20StreamCipher
     : IBulkStreamCipher
@@ -153,8 +153,8 @@ internal sealed class ChaCha20StreamCipher
     /// <param name="nonce">The first 16 bytes (128 bits) of the 24-byte XChaCha20 nonce.</param>
     /// <param name="subkey">A span of at least 32 bytes that receives the derived subkey.</param>
     /// <remarks>
-    /// HChaCha20 runs the ChaCha20 round function over a state seeded with the constant, key, and 128-bit nonce, but —
-    /// unlike the keystream block function — does <em>not</em> add the original state back in. The subkey is the
+    /// HChaCha20 runs the ChaCha20 round function over a state seeded with the constant, key, and 128-bit nonce, but -
+    /// unlike the keystream block function - does <em>not</em> add the original state back in. The subkey is the
     /// concatenation of the first and last four words of the transformed state.
     /// </remarks>
     internal static void HChaCha20(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce, Span<byte> subkey)

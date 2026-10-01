@@ -68,7 +68,7 @@ public readonly partial struct Money<TCurrency>
     /// <returns>
     /// An array of <see cref="Money{TCurrency}" /> values whose length equals <paramref name="ratios" />.
     /// <see cref="ReadOnlySpan{T}.Length" /> and whose sum equals this instance. Residual minor units are distributed
-    /// by the <i>largest-remainder method</i> — each slot receives one extra unit in descending order of its fractional
+    /// by the <i>largest-remainder method</i> - each slot receives one extra unit in descending order of its fractional
     /// remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
     /// <exception cref="ArgumentException">

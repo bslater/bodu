@@ -15,7 +15,7 @@ namespace Bodu.Text.Toml.Serialization;
 
 /// <summary>
 /// Creates the serialization exceptions thrown by the shared serializer source. The factory surface is format-neutral;
-/// the format-specific branches preserve each format's pinned diagnostics contract — Bencode stamps the offending
+/// the format-specific branches preserve each format's pinned diagnostics contract - Bencode stamps the offending
 /// token's start offset into every exception, whereas TOML carries the message only because the enclosing converter
 /// stamps the source position and member path during unwind.
 /// </summary>

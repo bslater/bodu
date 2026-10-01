@@ -10,11 +10,11 @@ namespace Bodu.Collections.Concurrent.Samples.ThreadSafeCollections;
 
 /// <summary>
 /// Entry point for the thread-safe collections sample: the <c>Bodu.Collections.Generic.Concurrent</c>
-/// primitives — <c>ConcurrentCircularBuffer&lt;T&gt;</c> (a lock-free bounded ring),
+/// primitives - <c>ConcurrentCircularBuffer&lt;T&gt;</c> (a lock-free bounded ring),
 /// <c>ConcurrentHashSet&lt;T&gt;</c> (a lock-free split-ordered set), and
 /// <c>ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</c> (a lock-striped bounded cache with
 /// single-flight <c>GetOrAdd</c> and an <c>ItemEvicted</c> callback). Everything runs offline and
-/// prints deterministic output — the parallel scenario reports only order-independent aggregates.
+/// prints deterministic output - the parallel scenario reports only order-independent aggregates.
 /// </summary>
 public static class Program
 {

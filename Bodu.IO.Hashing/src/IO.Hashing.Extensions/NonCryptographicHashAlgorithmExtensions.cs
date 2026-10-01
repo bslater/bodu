@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.Extensions;
 
 /// <summary>
 /// Extends <see cref="NonCryptographicHashAlgorithm" /> with one-shot hashing, streaming and async input, and
-/// constant-time hash verification — the high-level surface that <see cref="NonCryptographicHashAlgorithm" /> itself
+/// constant-time hash verification - the high-level surface that <see cref="NonCryptographicHashAlgorithm" /> itself
 /// omits.
 /// </summary>
 /// <remarks>
@@ -30,14 +30,14 @@ namespace Bodu.IO.Hashing.Extensions;
 /// <item>
 /// <term>Append</term>
 /// <description>
-/// <c>AppendData</c> / <c>AppendDataAsync</c> — feed a buffer or stream into the algorithm's running state, with a
+/// <c>AppendData</c> / <c>AppendDataAsync</c> - feed a buffer or stream into the algorithm's running state, with a
 /// tunable read-buffer size for stream input.
 /// </description>
 /// </item>
 /// <item>
 /// <term>One-shot compute</term>
 /// <description>
-/// <c>ComputeHash</c> / <c>ComputeHashAsync</c> — append, finalize, and reset in a single call, returning the digest as
+/// <c>ComputeHash</c> / <c>ComputeHashAsync</c> - append, finalize, and reset in a single call, returning the digest as
 /// a freshly allocated <see cref="byte" /> array. Inputs include byte arrays, byte-array slices,
 /// <see cref="System.ReadOnlyMemory{T}" />, and <see cref="System.IO.Stream" />.
 /// </description>
@@ -45,7 +45,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// <item>
 /// <term>Throwing verification</term>
 /// <description>
-/// <c>VerifyHash</c> / <c>VerifyHashAsync</c> — compute the digest of an input and compare it against an expected value
+/// <c>VerifyHash</c> / <c>VerifyHashAsync</c> - compute the digest of an input and compare it against an expected value
 /// supplied as either bytes or a hexadecimal string. Returns <see langword="true" /> on match, throws on argument
 /// problems.
 /// </description>
@@ -53,7 +53,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// <item>
 /// <term>Try-pattern verification</term>
 /// <description>
-/// <c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> — non-throwing counterparts. Suitable when the expected hash is
+/// <c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> - non-throwing counterparts. Suitable when the expected hash is
 /// user-supplied and a malformed input should not surface as an exception.
 /// </description>
 /// </item>
@@ -63,7 +63,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})" />
 /// , so verification is constant-time and safe to use against attacker-supplied digests even though the underlying
 /// algorithm itself provides no preimage resistance. The algorithm instance is stateful and reset after each
-/// <c>ComputeHash</c> or <c>VerifyHash</c> call, but it is not thread-safe — share instances only behind explicit
+/// <c>ComputeHash</c> or <c>VerifyHash</c> call, but it is not thread-safe - share instances only behind explicit
 /// synchronization. Stream overloads do not dispose the supplied stream.
 /// </para>
 /// <example>

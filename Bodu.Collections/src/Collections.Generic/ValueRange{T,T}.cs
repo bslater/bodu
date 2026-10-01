@@ -9,14 +9,14 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a half-open range mapped to a value — the entry projection produced when enumerating a
+/// Represents a half-open range mapped to a value - the entry projection produced when enumerating a
 /// <see cref="RangeDictionary{TKey, TValue}" />.
 /// </summary>
 /// <typeparam name="TKey">The comparable endpoint type.</typeparam>
 /// <typeparam name="TValue">The value type associated with the range.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="ValueRange{TKey, TValue}" /> pairs a half-open range — <c>[StartInclusive, EndExclusive)</c> — with an
+/// <see cref="ValueRange{TKey, TValue}" /> pairs a half-open range - <c>[StartInclusive, EndExclusive)</c> - with an
 /// associated value, in the spirit of <see cref="KeyValuePair{TKey, TValue}" /> for keyed dictionaries. It is the
 /// element type returned by <see cref="RangeDictionary{TKey, TValue}" /> enumeration and the natural shape for any API
 /// that projects keyed ranges.

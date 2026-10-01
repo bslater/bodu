@@ -23,7 +23,7 @@ public sealed class StrategyResolutionRelativeWeekdayKnownAnswerTests
     private static readonly NotableDateService s_service = new(NotableDateFixtures.Load("strategy-relative-weekday.xml"));
 
     /// <summary>
-    /// Verifies that the United States Election Day pattern — the Tuesday on or after the first Monday of November —
+    /// Verifies that the United States Election Day pattern - the Tuesday on or after the first Monday of November -
     /// resolves across years, including the earliest (first Monday on 1 November) and latest (first Monday on 7
     /// November) positions.
     /// </summary>
@@ -58,8 +58,8 @@ public sealed class StrategyResolutionRelativeWeekdayKnownAnswerTests
     [DataRow("rel-sweep-07", 2024, "2024-10-14")]   // Relative == anchor, OnOrAfter lands on anchor
     [DataRow("rel-sweep-08", 2024, "2024-10-14")]   // Relative == anchor, OnOrBefore lands on anchor
     [DataRow("rel-sweep-09", 2024, "2024-10-14")]   // Relative == anchor, Nearest lands on anchor
-    [DataRow("rel-sweep-10", 2023, "2023-02-23")]   // 28-day February — Fourth and Last Thursday coincide
-    [DataRow("rel-sweep-11", 2024, "2024-02-29")]   // Leap-day anchor — fifth Thursday of February 2024
+    [DataRow("rel-sweep-10", 2023, "2023-02-23")]   // 28-day February - Fourth and Last Thursday coincide
+    [DataRow("rel-sweep-11", 2024, "2024-02-29")]   // Leap-day anchor - fifth Thursday of February 2024
     [DataRow("rel-sweep-12", 2024, "2024-03-03")]   // Leap-day anchor rolls forward across the month boundary
     [DataRow("rel-sweep-13", 2024, "2023-12-29")]   // Backward across the calendar-year boundary
     [DataRow("rel-sweep-14", 2024, "2025-01-01")]   // Forward across the calendar-year boundary

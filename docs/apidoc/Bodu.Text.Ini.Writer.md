@@ -10,8 +10,8 @@ uid: Bodu.Text.Ini.Writer
 
 ## Key types
 
-- <xref:Bodu.Text.Ini.Writer.Utf8IniWriter> — the `ref struct` writer: `WriteSectionHeader` for a `[name]` line, `WritePropertyName` followed by `WriteString` for one `key=value` line, `WriteComment` for a comment line, plus `Flush`, `Dispose`, `BytesCommitted`, and `BytesPending`.
-- <xref:Bodu.Text.Ini.Writer.IniWriterOptions> — `CommentPrefix`, the character (`;` by default) placed before comment text.
+- <xref:Bodu.Text.Ini.Writer.Utf8IniWriter> - the `ref struct` writer: `WriteSectionHeader` for a `[name]` line, `WritePropertyName` followed by `WriteString` for one `key=value` line, `WriteComment` for a comment line, plus `Flush`, `Dispose`, `BytesCommitted`, and `BytesPending`.
+- <xref:Bodu.Text.Ini.Writer.IniWriterOptions> - `CommentPrefix`, the character (`;` by default) placed before comment text.
 
 ## Example
 
@@ -38,6 +38,6 @@ writer.Flush();
 ## Notes
 
 - **Global entries first.** Any `WritePropertyName` / `WriteString` pair before the first `WriteSectionHeader` lands in the global (section-less) area.
-- **Literal values.** Values are written verbatim to end of line — there is no quoting layer in the INI dialect, so a value must not contain a line break.
+- **Literal values.** Values are written verbatim to end of line - there is no quoting layer in the INI dialect, so a value must not contain a line break.
 - **Flush to commit.** Bytes are staged until `Flush` (or `Dispose`).
 - **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [INI guide](~/guides/formats/ini.md).

@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// The loader computes the candidate's hash before this policy runs; the policy asserts equality in constant time.
 /// </para>
 /// <para>
-/// This gives byte-level tamper resistance without requiring a strong name. It does not roll with plugin versions —
+/// This gives byte-level tamper resistance without requiring a strong name. It does not roll with plugin versions -
 /// pinning a fresh digest when the plugin is updated is the consumer's responsibility. An assembly loaded in memory (no
 /// file, so no hash) is always rejected.
 /// </para>

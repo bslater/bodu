@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class DefaultingDictionaryTests
 {
     /// <summary>
-    /// Verifies that enumeration yields only actually-stored entries — lookups that did not materialize contribute
+    /// Verifies that enumeration yields only actually-stored entries - lookups that did not materialize contribute
     /// nothing.
     /// </summary>
     [TestMethod]

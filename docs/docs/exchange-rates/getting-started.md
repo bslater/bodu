@@ -1,8 +1,8 @@
 ---
-title: Bodu.Financial.ExchangeRates — Getting started
+title: Bodu.Financial.ExchangeRates - Getting started
 ---
 
-# Bodu.Financial.ExchangeRates — Getting started
+# Bodu.Financial.ExchangeRates - Getting started
 
 Unfamiliar with terms like *warm-then-lookup*, *bulk vs pair provider*, *history availability*, *payload cache*, or *single-flight*? Read [Core concepts](concepts.md) first.
 
@@ -64,7 +64,7 @@ RateRangeResult window = await ecb.GetRatesAsync(
     "EUR", "GBP",
     new DateOnly(2024, 1, 1), new DateOnly(2024, 1, 31));
 
-Console.WriteLine($"{window.Count} observations, {window.FirstObservedDate}–{window.LastObservedDate}");
+Console.WriteLine($"{window.Count} observations, {window.FirstObservedDate}-{window.LastObservedDate}");
 
 foreach (ExchangeRate rate in window)
     Console.WriteLine($"{rate.Date:yyyy-MM-dd} {rate.Rate}");
@@ -98,7 +98,7 @@ using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.DependencyInjection;
 
-// Composed on the financial builder — binds the Financial:Ecb section when configuration is supplied.
+// Composed on the financial builder - binds the Financial:Ecb section when configuration is supplied.
 builder.Services
     .AddFinancialService(builder.Configuration)
     .AddEcbExchangeRates(builder.Configuration);
@@ -114,7 +114,7 @@ IDatedRateProvider rates = app.Services.GetRequiredService<IDatedRateProvider>()
 RateLookupResult result = await rates.GetRateAsync("EUR", "USD", new DateOnly(2024, 1, 3));
 ```
 
-The matching `appsettings.json` section — every key below binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> and its nested <xref:Bodu.Financial.ExchangeRates.EcbEndpointOptions>, shown at their defaults:
+The matching `appsettings.json` section - every key below binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> and its nested <xref:Bodu.Financial.ExchangeRates.EcbEndpointOptions>, shown at their defaults:
 
 ```json
 {
@@ -140,7 +140,7 @@ The matching `appsettings.json` section — every key below binds to <xref:Bodu.
 }
 ```
 
-The one member that does not bind from configuration is `Feeds` — an `IReadOnlyList<EcbRateFeed>` whose elements carry a constructor, defaulting to `EcbRateFeed.Default` (the 90-day feed, then the full history). Set it through the `configure` callback, which runs after binding:
+The one member that does not bind from configuration is `Feeds` - an `IReadOnlyList<EcbRateFeed>` whose elements carry a constructor, defaulting to `EcbRateFeed.Default` (the 90-day feed, then the full history). Set it through the `configure` callback, which runs after binding:
 
 ```csharp
 builder.Services
@@ -215,8 +215,8 @@ The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the 
 
 | Member | Default | Effect |
 |---|---|---|
-| `EnableDiskCache` | `true` (ECB, BoE, IMF); `false` (RBA) | `false` substitutes the no-op <xref:Bodu.Financial.ExchangeRates.NullByteCache`1> — nothing is written or read. |
-| `CacheDirectory` | `null` | The folder that holds one file per download unit. `null` or blank resolves to a provider-named folder under the system temporary path — `bodu-ecb`, `bodu-boe`, `bodu-rba`, `bodu-imf` beneath `Path.GetTempPath()`. |
+| `EnableDiskCache` | `true` (ECB, BoE, IMF); `false` (RBA) | `false` substitutes the no-op <xref:Bodu.Financial.ExchangeRates.NullByteCache`1> - nothing is written or read. |
+| `CacheDirectory` | `null` | The folder that holds one file per download unit. `null` or blank resolves to a provider-named folder under the system temporary path - `bodu-ecb`, `bodu-boe`, `bodu-rba`, `bodu-imf` beneath `Path.GetTempPath()`. |
 | `RefreshInterval` | 12 hours | A cached file older than this is re-downloaded, so a feed that gains a new observation is refreshed. |
 
 ```csharp
@@ -260,11 +260,11 @@ Hand the snapshot to code that must never touch the network, or serialize the bo
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — vocabulary refresher.
-- **[Introduction](index.md)** — the provider family and the "which provider" table.
-- **[Built-in exchange-rate providers](../../guides/financial/exchange-rate-providers.md)** — every feed's warm-up methods and options in detail.
-- **[Caching and aggregating exchange rates](../../guides/financial/exchange-rate-caching.md)** — a read-through rate cache and multi-source aggregation in front of these providers.
-- **[Financial dependency injection](../../guides/financial/dependency-injection.md)** — `AddFinancialService`, the fluent builder, and swapping in a test double.
-- **[Testing your own provider](../../guides/financial/testing-providers.md)** — the contract-test bases and the offline stub handler.
-- **[Bodu.Financial.ExchangeRates API reference](xref:Bodu.Financial.ExchangeRates)** — full type-by-type docs.
-- **[Runnable samples](../../samples/financial.md)** — `LiveRates` (opt-in network), `CachedRates`, `AggregatedRates`, and `CustomProvider`.
+- **[Core concepts](concepts.md)** - vocabulary refresher.
+- **[Introduction](index.md)** - the provider family and the "which provider" table.
+- **[Built-in exchange-rate providers](../../guides/financial/exchange-rate-providers.md)** - every feed's warm-up methods and options in detail.
+- **[Caching and aggregating exchange rates](../../guides/financial/exchange-rate-caching.md)** - a read-through rate cache and multi-source aggregation in front of these providers.
+- **[Financial dependency injection](../../guides/financial/dependency-injection.md)** - `AddFinancialService`, the fluent builder, and swapping in a test double.
+- **[Testing your own provider](../../guides/financial/testing-providers.md)** - the contract-test bases and the offline stub handler.
+- **[Bodu.Financial.ExchangeRates API reference](xref:Bodu.Financial.ExchangeRates)** - full type-by-type docs.
+- **[Runnable samples](../../samples/financial.md)** - `LiveRates` (opt-in network), `CachedRates`, `AggregatedRates`, and `CustomProvider`.

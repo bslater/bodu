@@ -19,7 +19,7 @@ namespace Bodu.IO.Compound;
 /// <para>
 /// <see cref="CompoundStream" /> is a standard <see cref="Stream" /> cursor obtained from
 /// <see cref="CompoundStorage.OpenStream(string)" />, so it composes with the BCL surfaces that consume a
-/// <see cref="Stream" /> — <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />,
+/// <see cref="Stream" /> - <see cref="System.IO.StreamReader" />, <see cref="System.IO.BinaryReader" />,
 /// <see cref="Stream.CopyTo(Stream)" />, and the deserializers built on top of them.
 /// </para>
 /// <para>
@@ -36,7 +36,7 @@ namespace Bodu.IO.Compound;
 /// <see cref="Write(byte[], int, int)" /> and <see cref="SetLength(long)" /> mutate the buffer. The edits are staged in
 /// memory and are persisted to the underlying destination only when <see cref="CompoundFile.Commit" /> is called;
 /// closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable cursor
-/// holds at most <see cref="int.MaxValue" /> bytes — payloads beyond that are authored through the deferred stream
+/// holds at most <see cref="int.MaxValue" /> bytes - payloads beyond that are authored through the deferred stream
 /// sources on <see cref="Bodu.IO.Compound.Builders.CompoundStorageBuilder" /> (<c>AddStream(name, openRead, length)</c>
 /// or <c>AddStreamFromFile</c>), which never buffer the whole payload.
 /// </para>
@@ -576,8 +576,8 @@ public sealed class CompoundStream
     /// changed since the last flush.
     /// </summary>
     /// <param name="disposing">
-    /// Whether the cursor is being disposed. A disposing flush transfers the write buffer to the node without copying —
-    /// the dying cursor can no longer mutate it — while a mid-life flush stores a snapshot copy so later cursor writes
+    /// Whether the cursor is being disposed. A disposing flush transfers the write buffer to the node without copying -
+    /// the dying cursor can no longer mutate it - while a mid-life flush stores a snapshot copy so later cursor writes
     /// cannot alias already-flushed node content.
     /// </param>
     /// <remarks>

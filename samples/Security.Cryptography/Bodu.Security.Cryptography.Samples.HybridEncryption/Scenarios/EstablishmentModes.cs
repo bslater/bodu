@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography.Samples.HybridEncryption.Scenarios;
 
 /// <summary>
-/// Demonstrates the four RFC 9180 establishment modes — <see cref="HpkeMode.Base" />, <see cref="HpkeMode.Psk" />,
-/// <see cref="HpkeMode.Auth" /> and <see cref="HpkeMode.AuthPsk" /> — and what each one adds to the key schedule.
+/// Demonstrates the four RFC 9180 establishment modes - <see cref="HpkeMode.Base" />, <see cref="HpkeMode.Psk" />,
+/// <see cref="HpkeMode.Auth" /> and <see cref="HpkeMode.AuthPsk" /> - and what each one adds to the key schedule.
 /// </summary>
 public static class EstablishmentModes
 {

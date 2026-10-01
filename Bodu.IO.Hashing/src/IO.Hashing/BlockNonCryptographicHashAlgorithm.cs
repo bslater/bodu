@@ -10,13 +10,13 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time —
+/// Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time -
 /// handles residual buffering, block alignment, total-length tracking, snapshot-based <c>GetCurrentHash</c>, and
 /// optional final-block padding so that derived implementations only need to express the per-block compression step.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
+/// Many non-cryptographic hashes - Murmur, CityHash, Pearson, the FNV variants - define their compression step over a
 /// fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
 /// that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
 /// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm" /> centralizes that machinery so derived types
@@ -28,31 +28,31 @@ namespace Bodu.IO.Hashing;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="ProcessBlock(System.ReadOnlySpan{byte})" /> — compress a single complete block.
+/// <see cref="ProcessBlock(System.ReadOnlySpan{byte})" /> - compress a single complete block.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="PadBlock(System.ReadOnlySpan{byte}, ulong)" /> — pad the final partial block and encode the total message
+/// <see cref="PadBlock(System.ReadOnlySpan{byte}, ulong)" /> - pad the final partial block and encode the total message
 /// length.
 /// </description>
 /// </item>
 /// <item>
-/// <description><see cref="ProcessFinalBlock" /> — emit the final digest from the accumulator.</description>
+/// <description><see cref="ProcessFinalBlock" /> - emit the final digest from the accumulator.</description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="Clone" /> — produce a state-equivalent copy used for non-destructive snapshotting.
+/// <see cref="Clone" /> - produce a state-equivalent copy used for non-destructive snapshotting.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="ResetState" /> (optional) — restore algorithm-specific accumulators on <see cref="Reset" />.
+/// <see cref="ResetState" /> (optional) - restore algorithm-specific accumulators on <see cref="Reset" />.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="ShouldPadFinalBlock" /> / <see cref="AllowUnalignedFinalBlock" /> (optional) — opt out of padding, or
+/// <see cref="ShouldPadFinalBlock" /> / <see cref="AllowUnalignedFinalBlock" /> (optional) - opt out of padding, or
 /// pass the padded result as a single block instead of splitting it block-aligned.
 /// </description>
 /// </item>
@@ -68,8 +68,8 @@ namespace Bodu.IO.Hashing;
 /// <see cref="ResetState" />.
 /// </para>
 /// <para>
-/// <strong>Snapshot helpers for derived <see cref="Clone" /> implementations.</strong> Three protected accessors —
-/// <see cref="ResidualByteCount" />, <see cref="ResidualBytes" />, and <see cref="TotalLength" /> — expose the
+/// <strong>Snapshot helpers for derived <see cref="Clone" /> implementations.</strong> Three protected accessors -
+/// <see cref="ResidualByteCount" />, <see cref="ResidualBytes" />, and <see cref="TotalLength" /> - expose the
 /// base-class state, and <see cref="CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm)" /> performs the
 /// corresponding write-side step. Derived <see cref="Clone" /> implementations typically allocate a new instance, copy
 /// algorithm-specific accumulators field-by-field, and finish with a call to
@@ -79,13 +79,13 @@ namespace Bodu.IO.Hashing;
 /// <strong>Suitability.</strong> Like every other type in <c>Bodu.IO.Hashing</c>, derivations of this class produce
 /// <em>non-cryptographic</em> digests intended for integrity checks, fingerprinting, hash-table keys, and bloom-filter
 /// inputs. They do not provide preimage or collision resistance and must not be used for password hashing, message
-/// authentication, or any security-sensitive context — use a member of <c>Bodu.Security.Cryptography</c> or the BCL's
+/// authentication, or any security-sensitive context - use a member of <c>Bodu.Security.Cryptography</c> or the BCL's
 /// <see cref="System.Security.Cryptography.HashAlgorithm" /> hierarchy instead. Instances are not thread-safe; share
 /// behind explicit synchronization.
 /// </para>
 /// <para>
-/// <strong>Related family.</strong> For error detection over a constrained ASCII text domain — card numbers, account
-/// identifiers, and serial codes — see the separate check-digit family rooted at
+/// <strong>Related family.</strong> For error detection over a constrained ASCII text domain - card numbers, account
+/// identifiers, and serial codes - see the separate check-digit family rooted at
 /// <see cref="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm" />. It is intentionally <em>not</em> part of the
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm" /> hierarchy: it consumes <see cref="char" /> sequences
 /// and emits a <see cref="char" />/<see cref="string" /> check value rather than a byte digest.

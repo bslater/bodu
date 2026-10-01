@@ -14,7 +14,7 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that the private <c>Slot</c> struct declares its hot fields (<c>Sequence</c> and <c>Value</c>) before
     /// its cache-line padding fields. Under <see cref="System.Runtime.InteropServices.LayoutKind.Sequential" /> the
     /// declaration order is the memory order, so the padding must trail the hot fields to isolate one slot's hot
-    /// fields from the next slot's — padding declared ahead of them does not.
+    /// fields from the next slot's - padding declared ahead of them does not.
     /// </summary>
     /// <remarks>
     /// This guards the intent of the false-sharing mitigation; the actual throughput benefit is validated by a

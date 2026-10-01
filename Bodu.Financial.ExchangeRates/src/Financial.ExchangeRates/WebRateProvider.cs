@@ -20,8 +20,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <strong>HttpClient ownership.</strong> A derived provider constructed without a caller-supplied client builds and
 /// owns its own (typically through <see cref="RateProviderHttpClientFactory.Create(string?, TimeSpan, long)" />),
 /// passing it to this base so it is disposed with the provider. A provider constructed with a caller-supplied client
-/// passes <see langword="null" /> as the owned client, leaving its lifetime — and its HTTP contract (user agent,
-/// timeout) — to the caller. This is the path a dependency-injection registration uses, supplying a client from
+/// passes <see langword="null" /> as the owned client, leaving its lifetime - and its HTTP contract (user agent,
+/// timeout) - to the caller. This is the path a dependency-injection registration uses, supplying a client from
 /// <c>IHttpClientFactory</c>.
 /// </para>
 /// <para>
@@ -284,7 +284,7 @@ public abstract class WebRateProvider
     /// <remarks>
     /// The load is delegated to the feed-specific
     /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" />, so it warms whatever unit
-    /// the provider downloads — a single pair, an era, a feed, or a date range — to cover the requested window.
+    /// the provider downloads - a single pair, an era, a feed, or a date range - to cover the requested window.
     /// </remarks>
     public Task LoadPairAsync(
         string fromIsoCode,
@@ -353,8 +353,8 @@ public abstract class WebRateProvider
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     /// <remarks>
-    /// The snapshot is the instance this provider itself reads from — it is rebuilt once per fetch, so handing it out
-    /// costs nothing — and it is pinned at call time: later fetches replace it wholesale and never mutate an instance
+    /// The snapshot is the instance this provider itself reads from - it is rebuilt once per fetch, so handing it out
+    /// costs nothing - and it is pinned at call time: later fetches replace it wholesale and never mutate an instance
     /// already handed out. Use it for deterministic, offline, disposal-independent lookups over what has been loaded.
     /// Its <see cref="FixedDatedRateProvider.Book" /> is the same instance <see cref="GetLoadedBook" /> returns at the
     /// same moment.
@@ -409,7 +409,7 @@ public abstract class WebRateProvider
     /// concurrent callers requesting the same endpoint window share a single fetch rather than each issuing a duplicate
     /// request. Derived types call this from
     /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" /> with a key identifying the
-    /// unit they download — an era, a feed, a date range, a pair-and-window.
+    /// unit they download - an era, a feed, a date range, a pair-and-window.
     /// </summary>
     /// <param name="key">The key identifying the load; equal keys share one in-flight fetch.</param>
     /// <param name="load">The fetch to run on a miss, invoked with a token decoupled from any single caller.</param>
@@ -424,7 +424,7 @@ public abstract class WebRateProvider
     /// </exception>
     /// <remarks>
     /// The shared fetch runs under <see cref="CancellationToken.None" />, so one caller's cancellation abandons only
-    /// its own wait and never faults the fetch for the other joiners — appropriate for the idempotent cache-warming
+    /// its own wait and never faults the fetch for the other joiners - appropriate for the idempotent cache-warming
     /// loads whose result populates the shared snapshot. The in-flight entry is released as soon as the fetch
     /// completes, including on failure, so a fault never poisons the key and the next caller starts a fresh attempt.
     /// </remarks>

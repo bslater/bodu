@@ -40,7 +40,7 @@ public partial class MovingMinMaxTests
     }
 
     /// <summary>
-    /// Verifies thousands of adds — many complete deque wrap-arounds and sequence-number windows — against the naive
+    /// Verifies thousands of adds - many complete deque wrap-arounds and sequence-number windows - against the naive
     /// last-N oracle, over a mix of alternating high/low values and long monotonic runs.
     /// </summary>
     [TestMethod]

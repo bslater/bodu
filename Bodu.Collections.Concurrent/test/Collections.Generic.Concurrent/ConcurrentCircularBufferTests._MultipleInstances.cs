@@ -34,7 +34,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that concurrent enqueues against two distinct buffers never cross-contaminate — each buffer's contents come only from its own producer.
+    /// Verifies that concurrent enqueues against two distinct buffers never cross-contaminate - each buffer's contents come only from its own producer.
     /// </summary>
     [TestMethod]
     public void MultipleInstances_WhenUsedConcurrently_ShouldMaintainSeparateState()

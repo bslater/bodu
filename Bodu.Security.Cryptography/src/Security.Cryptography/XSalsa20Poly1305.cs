@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>Wire format is not libsodium combined-mode.</strong> libsodium <c>crypto_secretbox_easy</c> emits
 /// <c>tag ‖ ciphertext</c>; this type emits <c>ciphertext ‖ tag</c> to match the rest of the Bodu AEAD surface. The
-/// ciphertext and tag bytes are identical — only the order differs. Use <see cref="ToLibsodiumCombined" /> /
+/// ciphertext and tag bytes are identical - only the order differs. Use <see cref="ToLibsodiumCombined" /> /
 /// <see cref="FromLibsodiumCombined" /> at the interop boundary to convert between the two layouts.
 /// </para>
 /// <para>

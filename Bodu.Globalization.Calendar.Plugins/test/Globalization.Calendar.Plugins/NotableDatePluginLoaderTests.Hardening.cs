@@ -144,7 +144,7 @@ public sealed partial class NotableDatePluginLoaderTests
     }
 
     /// <summary>
-    /// Verifies that a plugin faulting mid-enumeration leaves the registry unchanged — registration is atomic — and
+    /// Verifies that a plugin faulting mid-enumeration leaves the registry unchanged - registration is atomic - and
     /// surfaces the failure as <see cref="NotableDatePluginException" />.
     /// </summary>
     [TestMethod]
@@ -213,8 +213,8 @@ public sealed partial class NotableDatePluginLoaderTests
     }
 
     /// <summary>
-    /// Verifies that a plugin key colliding with a key already present in the target registry — for example one
-    /// contributed by another plugin — is rejected by default.
+    /// Verifies that a plugin key colliding with a key already present in the target registry - for example one
+    /// contributed by another plugin - is rejected by default.
     /// </summary>
     [TestMethod]
     public void RegisterAlgorithms_WhenKeyCollidesWithExistingRegistration_ShouldThrowNotableDatePluginException()

@@ -11,7 +11,7 @@ namespace Bodu.Core.Samples.FunctionalRailway.Scenarios;
 /// <summary>
 /// Demonstrates <see cref="Memoizer" />: wrapping a pure function so repeated calls with the same
 /// argument return the cached result instead of recomputing. The invocation counter is the
-/// load-bearing evidence — it advances once per distinct argument, never per call.
+/// load-bearing evidence - it advances once per distinct argument, never per call.
 /// </summary>
 public static class Memoization
 {

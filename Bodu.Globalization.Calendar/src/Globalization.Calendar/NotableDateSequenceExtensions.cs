@@ -44,7 +44,7 @@ public static class NotableDateSequenceExtensions
     /// <param name="occurrences">The resolved occurrences to expand.</param>
     /// <returns>
     /// The occurrences plus the synthesized actual occurrences, ordered by date, then notable-date id, then rule id
-    /// (ordinal) — the same ordering contract as <see cref="INotableDateService.Resolve(DateRange, string)" />. When no
+    /// (ordinal) - the same ordering contract as <see cref="INotableDateService.Resolve(DateRange, string)" />. When no
     /// occurrence requires expansion, the input instance is returned unchanged.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="occurrences" /> is <see langword="null" />.</exception>

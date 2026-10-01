@@ -17,7 +17,7 @@ namespace Bodu.Numerics;
 /// <typeparam name="T">The numeric type of the samples.</typeparam>
 /// <remarks>
 /// <para>
-/// Samples are absorbed one at a time through <see cref="Add" /> in O(1) time and O(1) space — the accumulator never
+/// Samples are absorbed one at a time through <see cref="Add" /> in O(1) time and O(1) space - the accumulator never
 /// stores the samples themselves. The minimum and maximum are tracked exactly in <typeparamref name="T" />; the mean
 /// and the variance moments are accumulated in <see cref="double" /> (each sample is widened with
 /// <see cref="double.CreateChecked{TOther}(TOther)" />), so those results are floating-point estimates regardless of
@@ -26,7 +26,7 @@ namespace Bodu.Numerics;
 /// </para>
 /// <para>
 /// This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <see langword="ref" />; do
-/// not capture it in a lambda or iterator that expects reference semantics — each copy accumulates independently from
+/// not capture it in a lambda or iterator that expects reference semantics - each copy accumulates independently from
 /// the point of the copy. That copy behaviour is also the supported way to checkpoint: assigning the accumulator to
 /// another variable snapshots its state. The <see langword="default" /> value is the valid empty accumulator.
 /// </para>

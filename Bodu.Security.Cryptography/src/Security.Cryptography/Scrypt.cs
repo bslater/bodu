@@ -27,9 +27,9 @@ namespace Bodu.Security.Cryptography;
 /// own, so the time falls and the memory rises with the threads; the derived key never depends on them.
 /// </para>
 /// <para>
-/// The working memory — <c>V</c>, <c>128 · N · r</c> bytes — is held in native memory and reused across derivations, in
+/// The working memory - <c>V</c>, <c>128 · N · r</c> bytes - is held in native memory and reused across derivations, in
 /// the same reserve as Argon2's matrix, so a derivation neither allocates it on the collected heap nor waits for it to
-/// be zeroed. Up to one buffer per processor stays reserved — cleared — for up to thirty seconds after the last
+/// be zeroed. Up to one buffer per processor stays reserved - cleared - for up to thirty seconds after the last
 /// derivation; the <c>Bodu.Security.Cryptography.Argon2.DisableMatrixReuse</c> <see cref="AppContext" /> switch
 /// releases each buffer as soon as its derivation ends instead. Every buffer holding a password-derived value is
 /// cleared before it is released; values the JIT keeps in registers or its own stack slots are beyond the library's
@@ -91,7 +91,7 @@ public sealed class Scrypt
     /// <summary>
     /// Initializes a new instance of the <see cref="Scrypt" /> class with the specified cost parameters.
     /// </summary>
-    /// <param name="costN">The CPU/memory cost parameter <c>N</c> — a power of two greater than one.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c> - a power of two greater than one.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -109,7 +109,7 @@ public sealed class Scrypt
     /// Initializes a new instance of the <see cref="Scrypt" /> class with the specified cost parameters and bound on
     /// the threads each derivation may use.
     /// </summary>
-    /// <param name="costN">The CPU/memory cost parameter <c>N</c> — a power of two greater than one.</param>
+    /// <param name="costN">The CPU/memory cost parameter <c>N</c> - a power of two greater than one.</param>
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <param name="maxDegreeOfParallelism">
@@ -153,8 +153,8 @@ public sealed class Scrypt
     /// <para>
     /// A derivation keeps its working memory within the 2 GiB ceiling on a single <c>V</c> however high the bound,
     /// running on fewer threads when its units are large, so an encoded hash from an untrusted source cannot multiply
-    /// the memory a verification takes. It stays on the calling thread when its units are small — under 1 MiB of
-    /// <c>V</c> each — where handing them to other threads costs more than it saves.
+    /// the memory a verification takes. It stays on the calling thread when its units are small - under 1 MiB of
+    /// <c>V</c> each - where handing them to other threads costs more than it saves.
     /// </para>
     /// </remarks>
     public int MaxDegreeOfParallelism { get; }

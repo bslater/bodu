@@ -41,7 +41,7 @@ public partial class AsconAead128Tests
     {
         byte[] aad = [0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE,
                              0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
-                             0x01]; // 17 bytes — exercises partial AD block
+                             0x01]; // 17 bytes - exercises partial AD block
         byte[] plaintext = new byte[32];
         for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(0xFF - i);
 

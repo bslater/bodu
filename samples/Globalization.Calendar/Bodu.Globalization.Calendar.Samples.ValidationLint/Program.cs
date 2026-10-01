@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.ValidationLint;
 /// <summary>
 /// Entry point for the validation-lint sample: linting authored documents with
 /// <c>NotableDateDocumentBuilder.Validate()</c> / <c>TryBuild(...)</c>, and linting arbitrary rule-pack
-/// text with <c>NotableDateResourceLoader.TryLoad</c> — collecting stable <c>BODU-CAL-*</c> diagnostics
+/// text with <c>NotableDateResourceLoader.TryLoad</c> - collecting stable <c>BODU-CAL-*</c> diagnostics
 /// instead of catching exceptions.
 /// </summary>
 public static class Program

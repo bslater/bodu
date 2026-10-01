@@ -19,8 +19,8 @@ namespace Bodu.Text.Toml;
 /// </para>
 /// <para>
 /// <see cref="Bodu.Text.Toml.Reader.TomlDocumentReader" /> projects the parsed document onto a single, normalized,
-/// nested token stream. TOML expresses table structure in several different ways — out-of-line <c>[table]</c> and
-/// <c>[[array-of-tables]]</c> headers, dotted keys, and inline <c>{ … }</c> tables — yet all of them describe the same
+/// nested token stream. TOML expresses table structure in several different ways - out-of-line <c>[table]</c> and
+/// <c>[[array-of-tables]]</c> headers, dotted keys, and inline <c>{ … }</c> tables - yet all of them describe the same
 /// logical shape. The normalized stream collapses these forms so that a caller sees a uniform sequence of
 /// <see cref="StartTable" /> / <see cref="EndTable" /> and <see cref="StartArray" /> / <see cref="EndArray" />
 /// boundaries with intervening <see cref="PropertyName" /> and scalar tokens, regardless of how the source spelled the
@@ -50,13 +50,13 @@ public enum TomlTokenType
     EndTable,
 
     /// <summary>
-    /// The start of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
+    /// The start of an array, or - in the normalized stream - of an array-of-tables surfaced as an array whose elements
     /// are tables.
     /// </summary>
     StartArray,
 
     /// <summary>
-    /// The end of an array, or — in the normalized stream — of an array-of-tables surfaced as an array whose elements
+    /// The end of an array, or - in the normalized stream - of an array-of-tables surfaced as an array whose elements
     /// are tables.
     /// </summary>
     EndArray,

@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
-/// Computes Nowruz — the first day of the Solar Hijri year — from the true vernal-equinox instant at the Tehran
+/// Computes Nowruz - the first day of the Solar Hijri year - from the true vernal-equinox instant at the Tehran
 /// standard meridian, following the official Iranian calendar rule.
 /// </summary>
 /// <remarks>
@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// <para>
 /// The equinox instant comes from the Meeus chapter 27 series in dynamical time and is reduced to Universal Time with a
-/// ΔT estimate (Espenak–Meeus polynomial expressions), so the result tracks the observationally anchored civil calendar
+/// ΔT estimate (Espenak-Meeus polynomial expressions), so the result tracks the observationally anchored civil calendar
 /// rather than an arithmetic intercalation cycle. This is the opt-in astronomical variant behind the
 /// <c>tehran-nowruz</c> algorithm key; the tabular resources remain the default.
 /// </para>
@@ -61,7 +61,7 @@ internal static class TehranEquinoxCalculator
     /// <returns>The ΔT estimate in seconds.</returns>
     /// <remarks>
     /// <para>
-    /// Uses the Espenak–Meeus polynomial expressions for 1986–2005 and 2005–2050, and the long-term parabola
+    /// Uses the Espenak-Meeus polynomial expressions for 1986-2005 and 2005-2050, and the long-term parabola
     /// <c>−20 + 32u²</c> (with <c>u</c> in centuries from 1820) elsewhere. The boundary decision is only sensitive to
     /// ΔT when the equinox falls within ΔT of apparent noon, so coarse accuracy outside the fitted ranges suffices.
     /// </para>
@@ -86,7 +86,7 @@ internal static class TehranEquinoxCalculator
     }
 
     /// <summary>
-    /// Returns the equation of time — apparent minus mean solar time — in minutes for the supplied date, using the
+    /// Returns the equation of time - apparent minus mean solar time - in minutes for the supplied date, using the
     /// Spencer harmonic fit.
     /// </summary>
     /// <param name="date">The date to evaluate.</param>

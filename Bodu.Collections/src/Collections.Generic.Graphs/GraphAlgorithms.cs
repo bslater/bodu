@@ -10,8 +10,8 @@ namespace Bodu.Collections.Generic.Graphs;
 /// Provides traversal, ordering, connectivity, and shortest-path algorithms over <see cref="Graph{T}" />.
 /// </summary>
 /// <remarks>
-/// The algorithms reuse the library's existing primitives — <see cref="Deque{T}" /> for breadth-first frontiers and
-/// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> for Dijkstra relaxation — and evaluate iteratively so they
+/// The algorithms reuse the library's existing primitives - <see cref="Deque{T}" /> for breadth-first frontiers and
+/// <see cref="IndexedPriorityQueue{TElement, TPriority}" /> for Dijkstra relaxation - and evaluate iteratively so they
 /// do not overflow the stack on large or deep graphs.
 /// </remarks>
 public static partial class GraphAlgorithms

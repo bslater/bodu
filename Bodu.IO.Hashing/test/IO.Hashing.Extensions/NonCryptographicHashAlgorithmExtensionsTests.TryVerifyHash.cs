@@ -26,7 +26,7 @@ namespace Bodu.IO.Hashing.Extensions;
 public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
 
-    // ─── Argument validation — exceptions still thrown ────────────────────────────────────────
+    // ─── Argument validation - exceptions still thrown ────────────────────────────────────────
 
     /// <summary>
     /// Verifies that a <see langword="null" /> algorithm receiver still raises <see cref="ArgumentNullException" />.

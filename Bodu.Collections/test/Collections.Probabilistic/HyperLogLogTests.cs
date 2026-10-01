@@ -32,7 +32,7 @@ public sealed partial class HyperLogLogTests
 
     /// <summary>
     /// A reference-type equality comparer whose <see cref="object.Equals(object)" /> is reference-based, so two
-    /// instances are never equal — used to drive the <see cref="HyperLogLog{T}.MergeWith" /> comparer-compatibility
+    /// instances are never equal - used to drive the <see cref="HyperLogLog{T}.MergeWith" /> comparer-compatibility
     /// checks.
     /// </summary>
     private sealed class ReferenceOnlyIntComparer

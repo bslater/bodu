@@ -24,7 +24,7 @@ namespace Bodu.Collections.Generic.Trees;
 /// <para>
 /// The public surface mirrors <see cref="Trie" /> member-for-member, so the two types are drop-in interchangeable;
 /// prefer <see cref="RadixTrie" /> when keys share long unbranching runs (URLs, file paths, identifiers). Enumeration
-/// order — through <see cref="GetEnumerator" /> or <see cref="KeysWithPrefix(string)" /> — is unspecified in this
+/// order - through <see cref="GetEnumerator" /> or <see cref="KeysWithPrefix(string)" /> - is unspecified in this
 /// version. The trie is not thread-safe for concurrent mutation. For an associative variant that maps keys to values,
 /// see <see cref="RadixTrie{TValue}" />.
 /// </para>

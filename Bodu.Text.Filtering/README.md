@@ -1,11 +1,11 @@
 # Bodu.Text.Filtering
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A high-performance include/exclude filtering engine for lists of text values. A set of glob
 (wildcard) and regex patterns compiles once into a `TextFilter`, which then classifies each
-pattern by evaluation cost and runs the cheapest matchers first — so filtering 100k+ items
-against 10–100+ patterns stays fast even when some patterns are regexes.
+pattern by evaluation cost and runs the cheapest matchers first - so filtering 100k+ items
+against 10-100+ patterns stays fast even when some patterns are regexes.
 
 ```csharp
 using Bodu.Text.Filtering;
@@ -40,7 +40,7 @@ globbing engines rather than inventing new semantics:
 An item is evaluated against the compiled pattern set according to the configured
 `TextFilterEvaluationMode`:
 
-- **`AnyMatch`** (default — Ant/MSBuild-style sets): an item is accepted iff *(the include set
+- **`AnyMatch`** (default - Ant/MSBuild-style sets): an item is accepted iff *(the include set
   is empty OR at least one include matches)* AND *no exclude matches*. Group matching is an
   order-independent OR, so the engine is free to evaluate patterns cheapest-first.
 - **`LastMatchWins`** (gitignore-style ordered rules): the last matching rule's action decides;
@@ -96,5 +96,5 @@ dotnet run -c Release --project Bodu.Text.Filtering/bench/Bodu.Text.Filtering.Be
 
 `TextFilter` keeps always-on counters (items evaluated / accepted / excluded / not-included,
 per-pattern hit counts, regex timeouts, opt-in timing) exposed via `GetStatistics()`, and an
-optional `ITextFilterObserver` invoked per decision with the deciding pattern — a single null
+optional `ITextFilterObserver` invoked per decision with the deciding pattern - a single null
 check when unattached.

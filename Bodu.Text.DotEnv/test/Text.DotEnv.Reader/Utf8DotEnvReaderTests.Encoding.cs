@@ -11,8 +11,8 @@ using Bodu.Text.DotEnv.Reader;
 namespace Bodu.Text.DotEnv.Reader;
 
 /// <summary>
-/// Contains encoding and line-handling robustness tests for <see cref="Utf8DotEnvReader" /> — BOM stripping, line-ending
-/// variants, and UTF-8 multibyte values — mirroring the classic interop defect classes.
+/// Contains encoding and line-handling robustness tests for <see cref="Utf8DotEnvReader" /> - BOM stripping, line-ending
+/// variants, and UTF-8 multibyte values - mirroring the classic interop defect classes.
 /// </summary>
 public partial class Utf8DotEnvReaderTests
 {

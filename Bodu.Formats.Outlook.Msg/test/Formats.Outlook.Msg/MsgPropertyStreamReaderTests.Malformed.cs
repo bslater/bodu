@@ -31,7 +31,7 @@ public partial class MsgPropertyStreamReaderTests
     }
 
     /// <summary>
-    /// Verifies that a payload valid for the root shape is rejected for a kind with a larger implied record area —
+    /// Verifies that a payload valid for the root shape is rejected for a kind with a larger implied record area -
     /// the header size is kind-specific.
     /// </summary>
     [TestMethod]

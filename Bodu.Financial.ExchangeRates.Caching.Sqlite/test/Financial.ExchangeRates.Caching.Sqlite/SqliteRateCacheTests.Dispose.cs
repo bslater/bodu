@@ -10,7 +10,7 @@ public sealed partial class SqliteRateCacheTests
 {
     /// <summary>
     /// Verifies that disposing the cache releases every pooled connection to its database file: the write-ahead-log
-    /// sidecar is checkpointed away — which SQLite does only when the <em>last</em> connection closes — and the
+    /// sidecar is checkpointed away - which SQLite does only when the <em>last</em> connection closes - and the
     /// database file is immediately deletable.
     /// </summary>
     /// <remarks>

@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 /// <remarks>
 /// The helpers improve failure diagnostics for byte-sequence comparisons (first differing index plus full hex
-/// renderings). Exception assertions are intentionally not wrapped here — tests keep <c>Assert.ThrowsExactly</c> calls
+/// renderings). Exception assertions are intentionally not wrapped here - tests keep <c>Assert.ThrowsExactly</c> calls
 /// explicit at the call site per repository convention.
 /// </remarks>
 internal static class CryptoAssert

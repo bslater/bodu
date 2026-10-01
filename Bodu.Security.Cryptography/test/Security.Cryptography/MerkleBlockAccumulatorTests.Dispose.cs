@@ -38,7 +38,7 @@ public partial class MerkleBlockAccumulatorTests
     }
 
     /// <summary>
-    /// Verifies that a finished root obtained before disposal remains valid afterwards — disposal releases the
+    /// Verifies that a finished root obtained before disposal remains valid afterwards - disposal releases the
     /// algorithm, not results already returned.
     /// </summary>
     [TestMethod]

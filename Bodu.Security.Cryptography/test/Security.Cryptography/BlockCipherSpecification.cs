@@ -50,7 +50,7 @@ public sealed record BlockCipherSpecification
     public byte[]? TestTweak { get; init; } = null;
 
     /// <summary>
-    /// Gets a value indicating whether the cipher is deterministic — identical inputs always produce identical outputs
+    /// Gets a value indicating whether the cipher is deterministic - identical inputs always produce identical outputs
     /// regardless of instance or call count. Defaults to <see langword="true" />.
     /// </summary>
     public bool IsDeterministic { get; init; } = true;

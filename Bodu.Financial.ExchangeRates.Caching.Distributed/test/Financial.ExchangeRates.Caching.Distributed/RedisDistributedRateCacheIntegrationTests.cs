@@ -75,7 +75,7 @@ public sealed class RedisDistributedRateCacheIntegrationTests
 
     /// <summary>
     /// Verifies that many concurrent same-pair range writes from two instances over one live Redis store leave the
-    /// per-pair blob internally consistent — one row whose rate is a writer's, with the window covered — proving the
+    /// per-pair blob internally consistent - one row whose rate is a writer's, with the window covered - proving the
     /// last-write-wins blob set holds under real network races, not just an in-memory store.
     /// </summary>
     [TestMethod]

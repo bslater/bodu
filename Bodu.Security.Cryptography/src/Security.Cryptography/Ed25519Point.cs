@@ -184,16 +184,129 @@ internal readonly partial struct Ed25519Point
     }
 
     /// <summary>
+    /// Adds a point in affine Niels form to this point, leaving the sum in completed coordinates.
+    /// </summary>
+    /// <param name="other">The point to add, in affine Niels form.</param>
+    /// <returns>The sum of the two points, in completed coordinates.</returns>
+    /// <remarks>
+    /// The mixed addition of Hisil, Wong, Carter, and Dawson for a = −1 with the second point's Z one
+    /// (madd-2008-hwcd-3), before its final multiplications, which the conversion out of completed coordinates
+    /// performs: three multiplications. Like <see cref="Add(in Ed25519Point)" />, it is complete.
+    /// </remarks>
+    internal readonly CompletedPoint Add(in AffineNielsPoint other)
+    {
+        var a = Curve25519FieldElement.Multiply(Curve25519FieldElement.Add(_y, _x), other.YPlusX);
+        var b = Curve25519FieldElement.Multiply(Curve25519FieldElement.Subtract(_y, _x), other.YMinusX);
+        var c = Curve25519FieldElement.Multiply(other.XY2d, _t);
+        var d = Curve25519FieldElement.Add(_z, _z);
+
+        return new CompletedPoint(
+            Curve25519FieldElement.Subtract(a, b),
+            Curve25519FieldElement.Add(a, b),
+            Curve25519FieldElement.Add(d, c),
+            Curve25519FieldElement.Subtract(d, c));
+    }
+
+    /// <summary>
+    /// Subtracts a point in affine Niels form from this point, leaving the difference in completed coordinates.
+    /// </summary>
+    /// <param name="other">The point to subtract, in affine Niels form.</param>
+    /// <returns>The difference of the two points, in completed coordinates.</returns>
+    /// <remarks>
+    /// Adds the negation (y − x, y + x, −2d·x·y) of <paramref name="other" />, reading its coordinates in the
+    /// negation's order rather than forming it.
+    /// </remarks>
+    internal readonly CompletedPoint Subtract(in AffineNielsPoint other)
+    {
+        var a = Curve25519FieldElement.Multiply(Curve25519FieldElement.Add(_y, _x), other.YMinusX);
+        var b = Curve25519FieldElement.Multiply(Curve25519FieldElement.Subtract(_y, _x), other.YPlusX);
+        var c = Curve25519FieldElement.Multiply(other.XY2d, _t);
+        var d = Curve25519FieldElement.Add(_z, _z);
+
+        return new CompletedPoint(
+            Curve25519FieldElement.Subtract(a, b),
+            Curve25519FieldElement.Add(a, b),
+            Curve25519FieldElement.Subtract(d, c),
+            Curve25519FieldElement.Add(d, c));
+    }
+
+    /// <summary>
+    /// Adds a point in projective Niels form to this point, leaving the sum in completed coordinates.
+    /// </summary>
+    /// <param name="other">The point to add, in projective Niels form.</param>
+    /// <returns>The sum of the two points, in completed coordinates.</returns>
+    /// <remarks>
+    /// The unified addition of <see cref="Add(in Ed25519Point)" /> before its final multiplications, with the second
+    /// point's sum, difference and product with 2d formed beforehand: four multiplications.
+    /// </remarks>
+    internal readonly CompletedPoint Add(in ProjectiveNielsPoint other)
+    {
+        var a = Curve25519FieldElement.Multiply(Curve25519FieldElement.Add(_y, _x), other.YPlusX);
+        var b = Curve25519FieldElement.Multiply(Curve25519FieldElement.Subtract(_y, _x), other.YMinusX);
+        var c = Curve25519FieldElement.Multiply(other.T2d, _t);
+        var zz = Curve25519FieldElement.Multiply(_z, other.Z);
+        var d = Curve25519FieldElement.Add(zz, zz);
+
+        return new CompletedPoint(
+            Curve25519FieldElement.Subtract(a, b),
+            Curve25519FieldElement.Add(a, b),
+            Curve25519FieldElement.Add(d, c),
+            Curve25519FieldElement.Subtract(d, c));
+    }
+
+    /// <summary>
+    /// Subtracts a point in projective Niels form from this point, leaving the difference in completed coordinates.
+    /// </summary>
+    /// <param name="other">The point to subtract, in projective Niels form.</param>
+    /// <returns>The difference of the two points, in completed coordinates.</returns>
+    /// <remarks>
+    /// Adds the negation (Y − X, Y + X, Z, −2d·T) of <paramref name="other" />, reading its coordinates in the
+    /// negation's order rather than forming it.
+    /// </remarks>
+    internal readonly CompletedPoint Subtract(in ProjectiveNielsPoint other)
+    {
+        var a = Curve25519FieldElement.Multiply(Curve25519FieldElement.Add(_y, _x), other.YMinusX);
+        var b = Curve25519FieldElement.Multiply(Curve25519FieldElement.Subtract(_y, _x), other.YPlusX);
+        var c = Curve25519FieldElement.Multiply(other.T2d, _t);
+        var zz = Curve25519FieldElement.Multiply(_z, other.Z);
+        var d = Curve25519FieldElement.Add(zz, zz);
+
+        return new CompletedPoint(
+            Curve25519FieldElement.Subtract(a, b),
+            Curve25519FieldElement.Add(a, b),
+            Curve25519FieldElement.Subtract(d, c),
+            Curve25519FieldElement.Add(d, c));
+    }
+
+    /// <summary>
+    /// Converts this point to projective Niels form (Y + X, Y − X, Z, 2d·T).
+    /// </summary>
+    /// <returns>The same point in projective Niels form.</returns>
+    internal readonly ProjectiveNielsPoint ToProjectiveNiels() =>
+        new(
+            Curve25519FieldElement.Add(_y, _x),
+            Curve25519FieldElement.Subtract(_y, _x),
+            _z,
+            Curve25519FieldElement.Multiply(_t, s_d2));
+
+    /// <summary>
+    /// Converts this point to projective coordinates by dropping the extended coordinate.
+    /// </summary>
+    /// <returns>The same point in projective coordinates (X : Y : Z).</returns>
+    internal readonly ProjectivePoint ToProjective() =>
+        new(_x, _y, _z);
+
+    /// <summary>
     /// Doubles this point.
     /// </summary>
     /// <returns>The point added to itself.</returns>
     /// <remarks>
     /// <para>
     /// Uses the dedicated extended-coordinate doubling of Hisil, Wong, Carter, and Dawson (dbl-2008-hwcd) for a = −1:
-    /// four squarings and four multiplications, where <see cref="Add" /> needs nine multiplications. It does not read
-    /// T, and it is complete: the new Z is (y² − x²)(y² − x² − 2) up to a factor, and since d is a non-square neither
-    /// factor can vanish for a point on the curve, so it is correct for every point, the identity and the points of
-    /// small order included.
+    /// four squarings and four multiplications, where <see cref="Add(in Ed25519Point)" /> needs nine multiplications.
+    /// It does not read T, and it is complete: the new Z is (y² − x²)(y² − x² − 2) up to a factor, and since d is a
+    /// non-square neither factor can vanish for a point on the curve, so it is correct for every point, the identity
+    /// and the points of small order included.
     /// </para>
     /// <para>
     /// The formula gives the point (E·F : G·H : F·G : E·H), where E = (X + Y)² − X² − Y², G = Y² − X², F = G − 2Z², and

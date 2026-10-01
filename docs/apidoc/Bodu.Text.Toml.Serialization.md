@@ -10,11 +10,11 @@ uid: Bodu.Text.Toml.Serialization
 
 ## Key types
 
-- <xref:Bodu.Text.Toml.Serialization.TomlConverter> — the non-generic root (`CanConvert`) that `TomlSerializerOptions.Converters` holds.
-- <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> — the per-type base: implement `Read` and `Write` for `T`.
-- <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory> — the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
-- <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> / <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter`1> — enums as member-name strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
-- <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1> — enums as their underlying integer.
+- <xref:Bodu.Text.Toml.Serialization.TomlConverter> - the non-generic root (`CanConvert`) that `TomlSerializerOptions.Converters` holds.
+- <xref:Bodu.Text.Toml.Serialization.TomlConverter`1> - the per-type base: implement `Read` and `Write` for `T`.
+- <xref:Bodu.Text.Toml.Serialization.TomlConverterFactory> - the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
+- <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> / <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter`1> - enums as member-name strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
+- <xref:Bodu.Text.Toml.Serialization.TomlNumberEnumConverter`1> - enums as their underlying integer.
 
 ## Example
 

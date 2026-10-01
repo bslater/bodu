@@ -10,8 +10,8 @@ public partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — when the string length matches the expected length
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - when the string length matches the expected length
     /// exactly.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

@@ -6,7 +6,7 @@ title: Testing your own provider
 
 Testing exchange-rate code splits into two problems. Code that *consumes* rates needs a
 deterministic <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> it can inject; code that
-*produces* rates — a provider you wrote, or a shipped provider whose wiring you want to prove —
+*produces* rates - a provider you wrote, or a shipped provider whose wiring you want to prove -
 needs to run hermetically against a canned payload and pass the same contract the built-in
 providers pass. Everything on this page is offline: no sample touches the network.
 
@@ -21,9 +21,9 @@ the built-in providers themselves derive from.
 > a NuGet package: its project file is marked `<IsPackable>false</IsPackable>` and `<IsTestProject>true</IsTestProject>`.
 > It is available by project reference inside the repository (the shipped provider test projects
 > and the [CustomProvider sample](../../samples/financial.md#bodufinancialsamplescustomprovider--test)
-> reference it that way); a consumer outside the repository copies the three source files —
+> reference it that way); a consumer outside the repository copies the three source files -
 > `StubHttpMessageHandler`, `DatedRateProviderContractTests<TProvider>`, and
-> `PairWebRateProviderContractTests<TProvider, TSeries>` — into their own test project. The
+> `PairWebRateProviderContractTests<TProvider, TSeries>` - into their own test project. The
 > `IsTestProject` flag pulls in MSTest through the repository's build targets, so a referencing
 > test project needs nothing beyond its own MSTest reference.
 
@@ -35,7 +35,7 @@ the built-in providers themselves derive from.
 </ItemGroup>
 ```
 
-## Pattern 1 — `FixedDatedRateProvider` is the recommended test double
+## Pattern 1 - `FixedDatedRateProvider` is the recommended test double
 
 Code that consumes <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> should be tested
 against <xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider>, not a mock: it is the real
@@ -60,7 +60,7 @@ For larger fixtures, build the book with
 <xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder>, or load a committed CSV the way the
 [OfflineRates sample](../../samples/financial.md#bodufinancialsamplesofflinerates) does.
 
-## Pattern 2 — fixed providers in DI for application tests
+## Pattern 2 - fixed providers in DI for application tests
 
 Under dependency injection, register the fixed providers on the financial builder so a service
 that depends on the contracts sees deterministic data.
@@ -89,8 +89,8 @@ services.AddFinancialService(financial => financial
 using ServiceProvider provider = services.BuildServiceProvider();
 ```
 
-The provider registrations use `TryAdd` semantics — the first registration for each contract
-wins — so register the fakes before the production wiring runs. To override a registration that
+The provider registrations use `TryAdd` semantics - the first registration for each contract
+wins - so register the fakes before the production wiring runs. To override a registration that
 is already present, replace its descriptor. `FixedDatedRateProvider` implements only the dated
 contract; pin it to a date with <xref:Bodu.Financial.ExchangeRates.DatedRateProviderAdapter>
 to stand in for the timeless one as well:
@@ -105,14 +105,14 @@ services.Replace(ServiceDescriptor.Singleton<IRateProvider>(
     new DatedRateProviderAdapter(fake, new DateOnly(2024, 1, 15))));   // the timeless surface, pinned to one date
 ```
 
-Avoid calling `UseCurrencyResolution` in unit tests — it mutates process-wide ambient state.
+Avoid calling `UseCurrencyResolution` in unit tests - it mutates process-wide ambient state.
 When a test must exercise a custom ambient lookup, prefer the flow-scoped
 `CurrencyResolution.PushScoped(...)`, which restores the previous lookup on dispose (see the
 [DI guide](dependency-injection.md#swapping-in-a-test-double)).
 
-## Pattern 3 — `StubHttpMessageHandler` drives a real provider offline
+## Pattern 3 - `StubHttpMessageHandler` drives a real provider offline
 
-<xref:Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler> is an `HttpMessageHandler`
+`StubHttpMessageHandler` is an `HttpMessageHandler`
 that answers **every** request with one canned body and status code, and records what it saw.
 Hand it to an `HttpClient`, hand that client to a provider's `(HttpClient, options)`
 constructor, and the whole download-parse-accumulate path runs with no network. Its surface:
@@ -120,11 +120,11 @@ constructor, and the whole download-parse-accumulate path runs with no network. 
 | Member | Description |
 |---|---|
 | `StubHttpMessageHandler(byte[] content, HttpStatusCode statusCode = OK)` | The body and status returned for every request. |
-| `RequestCount` | How many requests reached the handler — the assertion that proves coalescing and coverage tracking. |
-| `LastRequestUri` | The URI of the most recent request — proves the options built the URL you expect. |
-| `LastAuthorization` | The `Authorization` header of the most recent request, or `null` — proves a bearer token went on the wire. |
+| `RequestCount` | How many requests reached the handler - the assertion that proves coalescing and coverage tracking. |
+| `LastRequestUri` | The URI of the most recent request - proves the options built the URL you expect. |
+| `LastAuthorization` | The `Authorization` header of the most recent request, or `null` - proves a bearer token went on the wire. |
 
-A bulk provider — the ECB, fed a two-day `eurofxref` document. `EnableDiskCache` is turned off so
+A bulk provider - the ECB, fed a two-day `eurofxref` document. `EnableDiskCache` is turned off so
 the test writes nothing under the temporary path:
 
 ```csharp
@@ -158,7 +158,7 @@ await ecb.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
 
 RateLookupResult usd = ecb.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 Console.WriteLine(usd.Rate.Rate);                       // 1.0545
-Console.WriteLine(handler.RequestCount);                // 1 — one feed download covered the whole window
+Console.WriteLine(handler.RequestCount);                // 1 - one feed download covered the whole window
 Console.WriteLine(handler.LastRequestUri);              // https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml
 ```
 
@@ -184,8 +184,8 @@ using var fixer = new FixerRateProvider(new HttpClient(handler), new FixerRatePr
 await fixer.LoadPairAsync("EUR", "USD", new DateOnly(2023, 1, 2), new DateOnly(2023, 1, 4));
 
 Console.WriteLine(fixer.GetRate("EUR", "USD", new DateOnly(2023, 1, 3)).Rate.Rate);   // 1.0546
-Console.WriteLine(handler.LastRequestUri!.Query.Contains("access_key=test-key"));     // True — the key went on the wire
-Console.WriteLine(handler.LastAuthorization is null);                                  // True — Fixer keys the query, not the header
+Console.WriteLine(handler.LastRequestUri!.Query.Contains("access_key=test-key"));     // True - the key went on the wire
+Console.WriteLine(handler.LastAuthorization is null);                                  // True - Fixer keys the query, not the header
 ```
 
 A non-success status code exercises the transport-failure path. A hand-built client has no
@@ -203,7 +203,7 @@ try
 }
 catch (HttpRequestException ex)
 {
-    Console.WriteLine(ex.StatusCode);   // ServiceUnavailable — no resilience pipeline on a hand-built client
+    Console.WriteLine(ex.StatusCode);   // ServiceUnavailable - no resilience pipeline on a hand-built client
 }
 ```
 
@@ -211,14 +211,14 @@ catch (HttpRequestException ex)
 > The stub returns the same body whatever the URL, so one handler serves a provider that issues
 > several requests per warm-up (a multi-era RBA load, an ECB provider whose window spans the
 > 90-day and full-history feeds). When a test needs different bodies per URL, write a small
-> `HttpMessageHandler` of your own — the stub is deliberately minimal.
+> `HttpMessageHandler` of your own - the stub is deliberately minimal.
 
-## Pattern 4 — a file-backed `IPairRateSource<TSeries>`
+## Pattern 4 - a file-backed `IPairRateSource<TSeries>`
 
 A pair provider built on <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> delegates its
 fetch-and-parse to an <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1>. A provider that
-exposes a constructor taking that seam — as the `AcmeRateProvider` from
-[Writing your own web provider](custom-web-provider.md) does — can be driven from a committed
+exposes a constructor taking that seam - as the `AcmeRateProvider` from
+[Writing your own web provider](custom-web-provider.md) does - can be driven from a committed
 data file with no HTTP at all, which keeps the coverage tracking, single-flight coalescing, and
 lookup surface under test while the network is out of the picture. The shipped providers keep
 their source constructors internal, so this recipe applies to providers you write.
@@ -276,11 +276,11 @@ Console.WriteLine(acme.GetRate("AUD", "USD", new DateOnly(2024, 1, 15)).Rate.Rat
 Console.WriteLine(source.RequestCount);                                                // 1
 ```
 
-## Pattern 5 — `NullRateCache` keeps the composition, drops the caching
+## Pattern 5 - `NullRateCache` keeps the composition, drops the caching
 
 When a test composes the production wiring but must observe every miss reaching the source,
-substitute <xref:Bodu.Financial.ExchangeRates.Caching.NullRateCache> — it stores nothing, so
-every lookup is a miss — through the `cacheFactory` parameter rather than by removing the
+substitute <xref:Bodu.Financial.ExchangeRates.Caching.NullRateCache> - it stores nothing, so
+every lookup is a miss - through the `cacheFactory` parameter rather than by removing the
 caching registration:
 
 ```csharp
@@ -302,7 +302,7 @@ For a test that *does* want caching but no disk, `InMemoryRateCache` is the same
 [caching guide's backend table](exchange-rate-caching.md#persistent-and-shared-backends)
 lists all of them.
 
-## Pattern 6 — deriving the dated-provider contract
+## Pattern 6 - deriving the dated-provider contract
 
 Any custom `IDatedRateProvider` should pass the shared contract. Derive
 `DatedRateProviderContractTests<TProvider>` from the Testing project, supply a seeded provider
@@ -351,7 +351,7 @@ This exact class runs in the repository: the
 consumer-shaped `CsvFileRateProvider` whose companion test project derives the base and passes
 it in CI.
 
-## Pattern 7 — deriving the pair-web-provider contract
+## Pattern 7 - deriving the pair-web-provider contract
 
 Providers built on <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> additionally derive
 `PairWebRateProviderContractTests<TProvider, TSeries>`, which layers the pair warm-up lifecycle
@@ -362,7 +362,7 @@ test states. It adds one abstract member:
 
 | Member | Kind | Purpose |
 |---|---|---|
-| `ExpectedHistoryAvailability` | abstract | The depth the provider must advertise — an intentional `Unbounded` included — so a new provider cannot forget to declare it. |
+| `ExpectedHistoryAvailability` | abstract | The depth the provider must advertise - an intentional `Unbounded` included - so a new provider cannot forget to declare it. |
 
 Point the provider at a stub handler (or a file-backed source) so the contract runs
 hermetically. The provider's `AllowSynchronousNetworkAccess` is switched on so the base's
@@ -410,8 +410,8 @@ public sealed class AcmeRateProviderContractTests
 
 ## Where to go next
 
-- [Writing your own web provider](custom-web-provider.md) — the provider these contract tests validate.
-- [Financial dependency injection](dependency-injection.md) — registering fakes and the `TryAdd` rules.
-- [Caching and aggregating exchange rates](exchange-rate-caching.md) — the cache backends, including the in-memory and null ones tests reach for.
-- [Runnable samples](../../samples/financial.md) — `CustomProvider` and its `.Test` companion run this page's patterns in CI.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic.
+- [Writing your own web provider](custom-web-provider.md) - the provider these contract tests validate.
+- [Financial dependency injection](dependency-injection.md) - registering fakes and the `TryAdd` rules.
+- [Caching and aggregating exchange rates](exchange-rate-caching.md) - the cache backends, including the in-memory and null ones tests reach for.
+- [Runnable samples](../../samples/financial.md) - `CustomProvider` and its `.Test` companion run this page's patterns in CI.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic.

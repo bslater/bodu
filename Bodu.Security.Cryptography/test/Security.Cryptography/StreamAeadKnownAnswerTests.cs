@@ -297,7 +297,7 @@ public class StreamAeadKnownAnswerTests
 
     /// <summary>
     /// Computes the expected XSalsa20-Poly1305 (RFC 8439 framing) ciphertext and tag by composing the public
-    /// <see cref="XSalsa20" /> keystream with the public <see cref="Poly1305" /> MAC — an implementation path
+    /// <see cref="XSalsa20" /> keystream with the public <see cref="Poly1305" /> MAC - an implementation path
     /// independent of <c>Poly1305AeadCore</c>.
     /// </summary>
     /// <param name="key">The 32-byte key.</param>

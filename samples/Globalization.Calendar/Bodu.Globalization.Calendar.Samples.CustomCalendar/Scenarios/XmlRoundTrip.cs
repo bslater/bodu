@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 
 /// <summary>
 /// Demonstrates the persistence round trip: author fluently, save the document to XML, load it back
-/// (with the plain resource loader — the path any non-builder consumer uses), and serve it. The
+/// (with the plain resource loader - the path any non-builder consumer uses), and serve it. The
 /// document on disk is the distributable artifact; the builder is just one way to produce it.
 /// </summary>
 public static class XmlRoundTrip

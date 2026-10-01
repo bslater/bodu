@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same
-/// calls that already feed a flat digest — without a second pass over the input.
+/// calls that already feed a flat digest - without a second pass over the input.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -21,15 +21,15 @@ namespace Bodu.Security.Cryptography;
 /// <c>MerkleTree.ComputeRootOfBlocks</c> computes over the same bytes at the same block size.
 /// </para>
 /// <para>
-/// Memory is one block plus one pending hash per tree level — logarithmic in the leaf count — unless
+/// Memory is one block plus one pending hash per tree level - logarithmic in the leaf count - unless
 /// <see cref="RetainsLeafHashes" /> was requested, in which case every leaf hash is kept so
 /// <see cref="FinishComputation" /> can hand back a <see cref="MerkleBlockComputation" /> for building authentication
 /// paths. A final short block is hashed at its actual length, never padded, and an input that ends exactly on a block
 /// boundary produces no empty leaf. An empty input folds to the empty tree's root, <c>H()</c>.
 /// </para>
 /// <para>
-/// <strong>Lifecycle.</strong> Append until the input ends, then call one of the <c>Finish</c> members — any number of
-/// times, they return the same result — and <see cref="Reset" /> to start over with the same algorithm and buffer.
+/// <strong>Lifecycle.</strong> Append until the input ends, then call one of the <c>Finish</c> members - any number of
+/// times, they return the same result - and <see cref="Reset" /> to start over with the same algorithm and buffer.
 /// Appending after a finish throws; a reset clears the finished state. An instance owns one
 /// <see cref="HashAlgorithm" /> from the tree's factory and is used from one thread at a time; dispose it when done. A
 /// <see cref="MerkleTreeDiagnostics" /> supplied at creation keeps recording across resets, so use a fresh accumulator

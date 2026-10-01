@@ -55,7 +55,7 @@ public partial class EvictingDictionaryTests
 
     /// <summary>
     /// Verifies that enumeration order under the <see cref="EvictingDictionaryPolicy.FirstInFirstOut" /> policy matches insertion
-    /// order — the eviction-priority order for FIFO.
+    /// order - the eviction-priority order for FIFO.
     /// </summary>
     [TestMethod]
     public void GetOrderedItems_WhenPolicyIsFifo_ShouldReturnItemsInInsertionOrder()
@@ -93,7 +93,7 @@ public partial class EvictingDictionaryTests
 
     /// <summary>
     /// Verifies that enumeration order under the <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed" /> policy reflects access
-    /// order — least-recently used first.
+    /// order - least-recently used first.
     /// </summary>
     [TestMethod]
     public void GetOrderedItems_WhenPolicyIsLru_ShouldReturnItemsInAccessOrder()
@@ -111,7 +111,7 @@ public partial class EvictingDictionaryTests
 
     /// <summary>
     /// Verifies that enumeration order under the <see cref="EvictingDictionaryPolicy.MostRecentlyUsed" /> policy walks the order
-    /// list in reverse — most recently used first.
+    /// list in reverse - most recently used first.
     /// </summary>
     [TestMethod]
     public void GetOrderedItems_WhenPolicyIsMru_ShouldReturnItemsInReverseAccessOrder()
@@ -128,7 +128,7 @@ public partial class EvictingDictionaryTests
 
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> does not mutate dictionary state when
-    /// repeatedly called — the count, eviction count, total touches, and key ordering remain identical before and after.
+    /// repeatedly called - the count, eviction count, total touches, and key ordering remain identical before and after.
     /// </summary>
     [TestMethod]
     public void PeekEvictionCandidate_WhenCalled_ShouldNotMutateDictionaryState()

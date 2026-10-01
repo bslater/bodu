@@ -11,8 +11,8 @@ using System.Runtime.ExceptionServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the Argon2 memory-hard function defined by RFC 9106 — the pre-hashing digest, the slicewise memory fill
-/// with per-variant reference indexing, the compression function <c>G</c>, and the finalization — shared by the
+/// Implements the Argon2 memory-hard function defined by RFC 9106 - the pre-hashing digest, the slicewise memory fill
+/// with per-variant reference indexing, the compression function <c>G</c>, and the finalization - shared by the
 /// <see cref="Argon2d" />, <see cref="Argon2i" />, and <see cref="Argon2id" /> public types.
 /// </summary>
 /// <remarks>
@@ -22,8 +22,8 @@ namespace Bodu.Security.Cryptography;
 /// block reads only its reference block and, on passes that XOR, its own previous contents.
 /// </para>
 /// <para>
-/// Every buffer that holds a password-derived word — the matrix, H0, the per-segment scratch, and the buffers used to
-/// build the first and last blocks — is cleared before it is released. Values the JIT keeps in registers or spills to
+/// Every buffer that holds a password-derived word - the matrix, H0, the per-segment scratch, and the buffers used to
+/// build the first and last blocks - is cleared before it is released. Values the JIT keeps in registers or spills to
 /// its own stack slots are beyond the library's reach.
 /// </para>
 /// </remarks>
@@ -147,13 +147,22 @@ internal static partial class Argon2Core
     }
 
     /// <summary>
-    /// Selects the widest compression kernel the processor supports and the process allows: AVX2, then AdvSimd on
-    /// ARM64, then SSSE3, then the scalar kernel.
+    /// Selects the compression kernel dispatch runs: on x64 the widest the processor supports and the process allows,
+    /// AVX2, then SSSE3; on ARM64 the hybrid kernel, which works rows and columns in pairs over AdvSimd and the general
+    /// registers at once; and the scalar kernel everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
+    /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// On ARM64 the hybrid kernel ran 1.24 to 1.28 times as fast as the scalar kernel on a Neoverse N2 and 1.3 to 1.6
+    /// times as fast as the AdvSimd kernel on an Apple M1, under .NET 8 and .NET 10 alike. The AdvSimd kernel, which
+    /// holds one row in eight vector registers, ran slower than the scalar kernel on the N2 and runs only where a
+    /// caller names it.
+    /// </para>
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
@@ -161,7 +170,7 @@ internal static partial class Argon2Core
             return KernelKind.Avx2;
 
         if (SimdCapabilities.AdvSimd)
-            return KernelKind.AdvSimd;
+            return KernelKind.AdvSimdHybrid;
 
         return SimdCapabilities.Ssse3 ? KernelKind.Ssse3 : KernelKind.Scalar;
     }
@@ -179,7 +188,7 @@ internal static partial class Argon2Core
     {
         KernelKind.Auto or KernelKind.Scalar => true,
         KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
-        KernelKind.AdvSimd => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
+        KernelKind.AdvSimd or KernelKind.AdvSimdHybrid => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
         KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
         _ => false,
     };
@@ -209,6 +218,10 @@ internal static partial class Argon2Core
 
             case KernelKind.Ssse3:
                 FillMemory<Vector128Kernel<Ssse3Isa>>(matrix, geometry, workers);
+                break;
+
+            case KernelKind.AdvSimdHybrid:
+                FillMemory<HybridKernel<AdvSimdIsa>>(matrix, geometry, workers);
                 break;
 
             default:

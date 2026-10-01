@@ -29,7 +29,7 @@ public partial class OutlookMailAttachmentTests
 
     /// <summary>
     /// Verifies that opening the content stream of an embedded-message attachment throws
-    /// <see cref="NotSupportedException" /> — the payload is a message object, not a byte stream.
+    /// <see cref="NotSupportedException" /> - the payload is a message object, not a byte stream.
     /// </summary>
     [TestMethod]
     public void OpenContentStream_WhenEmbeddedMessageAttachment_ShouldThrowNotSupportedException()
@@ -83,12 +83,12 @@ public partial class OutlookMailAttachmentTests
         Assert.AreEqual(builder.LargeAttachmentLength, total);
         Assert.IsTrue(
             maxDelta < CeilingBytes,
-            $"Opening a {total / (1024 * 1024)} MB attachment allocated {maxDelta / (1024 * 1024)} MB — the payload is being copied.");
+            $"Opening a {total / (1024 * 1024)} MB attachment allocated {maxDelta / (1024 * 1024)} MB - the payload is being copied.");
     }
 
     /// <summary>
-    /// Verifies that the whole path — enumerating the attachment, reading its method and properties, and streaming
-    /// its content — stays under a memory ceiling far below a deferred payload's size, and yields every byte.
+    /// Verifies that the whole path - enumerating the attachment, reading its method and properties, and streaming
+    /// its content - stays under a memory ceiling far below a deferred payload's size, and yields every byte.
     /// </summary>
     [TestMethod]
     [TestCategory(Bodu.Test.TestCategories.Regression)]
@@ -123,6 +123,6 @@ public partial class OutlookMailAttachmentTests
 
         Assert.AreEqual(builder.LargeAttachmentLength, total);
         Assert.IsTrue(maxDelta < CeilingBytes,
-            $"Reading a {builder.LargeAttachmentLength / (1024 * 1024)} MB attachment peaked {maxDelta / (1024 * 1024)} MB above baseline — the payload is being materialized.");
+            $"Reading a {builder.LargeAttachmentLength / (1024 * 1024)} MB attachment peaked {maxDelta / (1024 * 1024)} MB above baseline - the payload is being materialized.");
     }
 }

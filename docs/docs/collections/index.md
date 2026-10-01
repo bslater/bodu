@@ -1,16 +1,16 @@
 ---
-title: Bodu.Collections — Introduction
+title: Bodu.Collections - Introduction
 ---
 
 # Bodu.Collections
 
 ![Bodu.Collections](../../images/hero-collections.svg)
 
-**Bodu.Collections** is the specialized generic-collection catalogue of the Bodu suite and a member of the **[Core Foundations](../topics/core-foundations.md)** topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of `Bodu.Core` — the namespaces are unchanged (`Bodu.Collections.Generic` and its siblings), only the package boundary moved. The package depends on [`Bodu.Core`](../core/index.md) for shared primitives such as `ThrowHelper` and the `IRandomGenerator` abstraction; see the [package matrix](../package-matrix.md) for the full dependency map.
+**Bodu.Collections** is the specialized generic-collection catalogue of the Bodu suite and a member of the **[Core Foundations](../topics/core-foundations.md)** topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of `Bodu.Core` - the namespaces are unchanged (`Bodu.Collections.Generic` and its siblings), only the package boundary moved. The package depends on [`Bodu.Core`](../core/index.md) for shared primitives such as `ThrowHelper` and the `IRandomGenerator` abstraction; see the [package matrix](../package-matrix.md) for the full dependency map.
 
-The thread-safe variants — `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache in the `Bodu.Collections.Generic.Concurrent` namespace — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.
+The thread-safe variants - `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache in the `Bodu.Collections.Generic.Concurrent` namespace - ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.
 
-![Bodu.Collections namespace map — the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency](../../images/diagrams/collections-namespace-map.svg)
+![Bodu.Collections namespace map - the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency](../../images/diagrams/collections-namespace-map.svg)
 
 ## Namespaces and headline types
 
@@ -38,18 +38,18 @@ Bounded, ordered, navigable, and range-keyed collections, many built around a sh
 | <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> | Overlap-storing interval trees over a max-endpoint augmented red-black tree: closed `[low, high]` intervals that may freely overlap, O(log n + k) stabbing (`QueryPoint`) and window (`QueryOverlaps`) queries, O(log n) `Intersects` / `IntersectsPoint`, duplicate intervals permitted (per-node count / per-node value list). The only member of the range family that stores overlaps. |
 
 ### `Bodu.Collections.Specialized`
-The members of the package that serve a specialised purpose rather than acting as general-purpose containers. The packed bit set references nothing else in the package, and nothing else references it — which is why it sits apart from the catalogue rather than inside it. See the [bit set](../../guides/core/bit-set.md) guide and the <xref:Bodu.Collections.Specialized> overview. (The RFC 6962 Merkle tree formerly in this namespace now ships as `MerkleTree` in [Bodu.Security.Cryptography](../cryptography/index.md).)
+The members of the package that serve a specialised purpose rather than acting as general-purpose containers. The packed bit set references nothing else in the package, and nothing else references it - which is why it sits apart from the catalogue rather than inside it. See the [bit set](../../guides/core/bit-set.md) guide and the <xref:Bodu.Collections.Specialized> overview. (The RFC 6962 Merkle tree formerly in this namespace now ships as `MerkleTree` in [Bodu.Security.Cryptography](../cryptography/index.md).)
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Specialized.BitSet> | Growable packed bit set with Java `BitSet` semantics: auto-grow on `Set`/`Flip`, reads beyond capacity return `false`, `NextSetBit` / `NextClearBit` / `Cardinality` queries, in-place `And` / `Or` / `Xor` / `AndNot`, and a non-boxing enumerator over set-bit indices. |
 
 ### `Bodu.Collections.Probabilistic`
-Approximate "sketch" structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
+Approximate "sketch" structures that trade exactness for a fixed memory footprint - each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the [Probabilistic collections](../../guides/core/probabilistic-collections.md) guide and the <xref:Bodu.Collections.Probabilistic> overview.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports `UnionWith` merging and version-checked export/import. |
+| <xref:Bodu.Collections.Probabilistic.BloomFilter`1> | Approximate set membership sized from an expected item count and target false-positive rate. No false negatives - added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports `UnionWith` merging and version-checked export/import. |
 | <xref:Bodu.Collections.Probabilistic.CountMinSketch`1> | Approximate per-element frequency counting sized from `epsilon` / `delta`. Never underestimates; with probability at least `1 − δ` an estimate is at most the true count plus `ε · TotalCount`. Supports `MergeWith` (cell-wise sum) and export/import. |
 | <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> | Approximate distinct-element (cardinality) counting in `2^precision` one-byte registers with ~`1.04/√m` relative standard error. `MergeWith` (register-wise max) is lossless and never double-counts shared elements. |
 
@@ -68,12 +68,12 @@ The trie family and an n-ary tree. See the [Tries and text search](../../guides/
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Collections.Generic.Trees.Trie>, <xref:Bodu.Collections.Generic.Trees.Trie`1> | A string set and a string-keyed map with prefix queries (`StartsWith`, `KeysWithPrefix`). |
-| <xref:Bodu.Collections.Generic.Trees.RadixTrie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count — the better fit for long keys with sparse branching (URLs, paths, identifiers). |
+| <xref:Bodu.Collections.Generic.Trees.RadixTrie>, <xref:Bodu.Collections.Generic.Trees.RadixTrie`1> | Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count - the better fit for long keys with sparse branching (URLs, paths, identifiers). |
 | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton>, <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton`1> | Immutable multi-pattern text matchers built once from a pattern set: `EnumerateMatches` reports every (overlapping, nested) occurrence of every pattern in one O(text + matches) pass, in a pinned (end index, pattern length) order, with span-based `CountMatches` / `HasMatch` conveniences; the keyed variant carries a value per pattern onto each match. |
 | <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Collections.Generic.Concurrent` (companion package)
-The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, and the lock-striped <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`) — ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
+The thread-safe variants - the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, and the lock-striped <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`) - ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
 
 ## Scenarios this library covers
 
@@ -86,7 +86,7 @@ The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concur
 | Index-aware set with O(1) lookup-by-position | <xref:Bodu.Collections.Generic.IndexedSet`1> |
 | Nearest-neighbour, rank, and range queries over sorted data | <xref:Bodu.Collections.Generic.NavigableSet`1>, <xref:Bodu.Collections.Generic.NavigableDictionary`2> |
 | Range-keyed lookup table | <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> |
-| Intervals that overlap — stabbing and window queries | <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> |
+| Intervals that overlap - stabbing and window queries | <xref:Bodu.Collections.Generic.IntervalTree`1>, <xref:Bodu.Collections.Generic.IntervalTree`2> |
 | Multi-map / multi-set semantics | <xref:Bodu.Collections.Generic.MultiValueDictionary`2>, <xref:Bodu.Collections.Generic.Multiset`1> |
 | Two-way lookup between unique keys and unique values | <xref:Bodu.Collections.Generic.BiDictionary`2> |
 | Priority queue with in-place priority updates (Dijkstra, A*) | <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> |
@@ -100,8 +100,8 @@ The thread-safe variants — the lock-free <xref:Bodu.Collections.Generic.Concur
 
 A handful of conventions run through the whole package; knowing them up front explains why the types look the way they do.
 
-- **One toggle, not two classes.** Where a collection has to choose between *reject* and *make room* on overflow, that choice is a single settable property — `AllowOverwrite` on <xref:Bodu.Collections.Generic.CircularBuffer`1>, `AllowGrow` (with <xref:Bodu.Collections.Generic.DequeOverflowPolicy>) on <xref:Bodu.Collections.Generic.Deque`1> — rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a `Try…` peer that substitutes a `false` return.
-- **Fail-fast where it is cheap, snapshot where it is not.** The single-threaded collections detect concurrent structural mutation with a version counter and throw <xref:System.InvalidOperationException> from the enumerator — the BCL contract. The lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> (in the companion [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package) instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.
+- **One toggle, not two classes.** Where a collection has to choose between *reject* and *make room* on overflow, that choice is a single settable property - `AllowOverwrite` on <xref:Bodu.Collections.Generic.CircularBuffer`1>, `AllowGrow` (with <xref:Bodu.Collections.Generic.DequeOverflowPolicy>) on <xref:Bodu.Collections.Generic.Deque`1> - rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a `Try…` peer that substitutes a `false` return.
+- **Fail-fast where it is cheap, snapshot where it is not.** The single-threaded collections detect concurrent structural mutation with a version counter and throw <xref:System.InvalidOperationException> from the enumerator - the BCL contract. The lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> (in the companion [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package) instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.
 - **Struct enumerators.** Every collection's `GetEnumerator()` returns a `struct`, so a `foreach` over a concrete-typed variable allocates nothing; enumerating through an `IEnumerable<T>` reference boxes as usual.
 - **Reads can mutate.** Recency-based caches (<xref:Bodu.Collections.Generic.EvictingDictionary`2> under LRU/MRU/LFU/SecondChance, <xref:Bodu.Collections.Generic.SequencedDictionary`2> in access-order mode) update ordering metadata on a successful lookup. That is why even concurrent read-read on these types needs external synchronisation.
 - **Validation flows through one helper.** Every public entry point validates its arguments through `Bodu.Core`'s <xref:Bodu.ThrowHelper>, so exception type, message, and parameter-name capture stay uniform across the suite.
@@ -109,11 +109,11 @@ A handful of conventions run through the whole package; knowing them up front ex
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** — the collection vocabulary the rest of the documentation assumes.
-- **[Getting started](getting-started.md)** — install the package and run a minimal sample for the headline types.
-- **[Choosing a collection](../../guides/core/choosing-a-collection.md)** — the decision guide across the whole catalogue.
-- **[Collections guides](../../guides/core/index.md)** — recipe-style walk-throughs for every headline type.
-- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full namespace overview.
-- **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** — the thread-safe companion package.
-- **[Bodu.Core introduction](../core/index.md)** — the foundation package this one builds on.
-- **[Core Foundations topic](../topics/core-foundations.md)** — how the three packages and the `Bodu.Text` namespace utilities fit together.
+- **[Core concepts](concepts.md)** - the collection vocabulary the rest of the documentation assumes.
+- **[Getting started](getting-started.md)** - install the package and run a minimal sample for the headline types.
+- **[Choosing a collection](../../guides/core/choosing-a-collection.md)** - the decision guide across the whole catalogue.
+- **[Collections guides](../../guides/core/index.md)** - recipe-style walk-throughs for every headline type.
+- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** - full namespace overview.
+- **[Bodu.Collections.Concurrent introduction](../collections-concurrent/index.md)** - the thread-safe companion package.
+- **[Bodu.Core introduction](../core/index.md)** - the foundation package this one builds on.
+- **[Core Foundations topic](../topics/core-foundations.md)** - how the three packages and the `Bodu.Text` namespace utilities fit together.

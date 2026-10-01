@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <see cref="Equals(HashValue)" /> compares content in constant time via
 /// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />,
-/// so even the ordinary equality operators are safe when the comparison is security-relevant — for example validating a
+/// so even the ordinary equality operators are safe when the comparison is security-relevant - for example validating a
 /// received digest against a locally computed one. <see cref="FixedTimeEquals(HashValue)" /> remains available and
 /// behaves identically, making the intent explicit at the call site.
 /// </para>
@@ -163,7 +163,7 @@ public readonly struct HashValue
     /// <see langword="true" /> if both values contain identical bytes; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// The byte comparison is constant-time in content — it runs through
+    /// The byte comparison is constant-time in content - it runs through
     /// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so its duration
     /// depends only on the operand length, not on where the bytes first differ. A length mismatch returns
     /// <see langword="false" /> immediately (the length is not secret). <see cref="FixedTimeEquals(HashValue)" />

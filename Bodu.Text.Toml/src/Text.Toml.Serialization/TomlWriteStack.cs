@@ -80,8 +80,8 @@ internal sealed class TomlWriteStack
     /// </summary>
     /// <param name="message">The fully formatted, culture-aware failure message.</param>
     /// <remarks>
-    /// The path is captured from the live segment stack at the instant of detection — the deepest point of the
-    /// traversal, before any parent has unwound — so it names the value where the failure occurred.
+    /// The path is captured from the live segment stack at the instant of detection - the deepest point of the
+    /// traversal, before any parent has unwound - so it names the value where the failure occurred.
     /// </remarks>
     internal void SetFailure(string message) =>
         _failure ??= new TomlSerializationException(message) { Path = BuildPath() };

@@ -134,7 +134,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that a null byte-array input returns <see langword="false" /> rather than
-    /// throwing — the try-pattern treats this as a verification failure, not a programmer error.
+    /// throwing - the try-pattern treats this as a verification failure, not a programmer error.
     /// </summary>
     [TestMethod]
     public void TryVerifyHash_WhenInputIsNull_ShouldReturnFalse()
@@ -236,7 +236,7 @@ public partial class HashAlgorithmExtensionsTests
     // ─── Argument validation ──────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that a null algorithm receiver raises <see cref="ArgumentNullException" /> —
+    /// Verifies that a null algorithm receiver raises <see cref="ArgumentNullException" /> -
     /// the extension method cannot dispatch without a receiver.
     /// </summary>
     [TestMethod]
@@ -251,7 +251,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that a null algorithm still raises <see cref="ArgumentNullException" /> even
-    /// when the expected hash is also null — receiver validation takes precedence over the
+    /// when the expected hash is also null - receiver validation takes precedence over the
     /// graceful null-data handling.
     /// </summary>
     [TestMethod]

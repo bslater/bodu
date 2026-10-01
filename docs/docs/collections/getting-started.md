@@ -1,8 +1,8 @@
 ---
-title: Bodu.Collections — Getting started
+title: Bodu.Collections - Getting started
 ---
 
-# Bodu.Collections — Getting started
+# Bodu.Collections - Getting started
 
 ## Install
 
@@ -10,7 +10,7 @@ title: Bodu.Collections — Getting started
 dotnet add package Bodu.Collections
 ```
 
-Targets `net8.0`. No external runtime dependencies — `Bodu.Collections` references only `Bodu.Core` (pulled in automatically) for shared argument validation and the random-generator abstraction. The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`) ship in the companion [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md) package.
+Targets `net8.0`. No external runtime dependencies - `Bodu.Collections` references only `Bodu.Core` (pulled in automatically) for shared argument validation and the random-generator abstraction. The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`) ship in the companion [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md) package.
 
 ## Minimal samples
 
@@ -49,7 +49,7 @@ Policies: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRe
 
 ### Time-based expiry (`EvictingDictionaryExpiration`)
 
-Layer a time-to-live on top of the capacity policy — sliding renewal on read, a testable `TimeProvider`, and lazy reclamation via `RemoveExpired()`:
+Layer a time-to-live on top of the capacity policy - sliding renewal on read, a testable `TimeProvider`, and lazy reclamation via `RemoveExpired()`:
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -63,7 +63,7 @@ var sessions = new EvictingDictionary<string, Session>(
 sessions["user-42"] = session;                    // 20-minute sliding lifetime
 sessions.Add("one-shot", token, TimeSpan.FromSeconds(30)); // per-entry override
 
-int reclaimed = sessions.RemoveExpired();          // no background timer — reconcile on demand
+int reclaimed = sessions.RemoveExpired();          // no background timer - reconcile on demand
 ```
 
 ### Deque (`Deque<T>`)
@@ -83,7 +83,7 @@ string last  = deque.RemoveLast();  // "c"
 
 ### Sequenced dictionary (`SequencedDictionary<TKey, TValue>`)
 
-An insertion- (or access-) ordered map with O(1) access to and removal of either end — the .NET analogue of Java's `LinkedHashMap`:
+An insertion- (or access-) ordered map with O(1) access to and removal of either end - the .NET analogue of Java's `LinkedHashMap`:
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -100,7 +100,7 @@ if (lru.Count > 100)
 
 ### Indexed priority queue (`IndexedPriorityQueue<TElement, TPriority>`)
 
-A min-heap that supports O(log n) priority updates by element identity — the shape Dijkstra and A* need:
+A min-heap that supports O(log n) priority updates by element identity - the shape Dijkstra and A* need:
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -110,7 +110,7 @@ pq.Enqueue("source", 0);
 pq.EnqueueOrUpdate("a", 7);    // add, or update if already queued
 pq.EnqueueOrUpdate("a", 3);    // O(log n) decrease-key, no duplicate
 
-var (element, priority) = pq.Dequeue();   // ("source", 0) — smallest priority first
+var (element, priority) = pq.Dequeue();   // ("source", 0) - smallest priority first
 ```
 
 ### Navigable set (`NavigableSet<T>`)
@@ -122,19 +122,19 @@ using Bodu.Collections.Generic;
 
 var prices = new NavigableSet<decimal> { 9.99m, 24.50m, 49.00m, 99.00m };
 
-_ = prices.TryGetFloor(30.00m, out decimal floor);     // 24.50 — greatest ≤ probe
-_ = prices.TryGetCeiling(30.00m, out decimal ceiling); // 49.00 — least ≥ probe
+_ = prices.TryGetFloor(30.00m, out decimal floor);     // 24.50 - greatest ≤ probe
+_ = prices.TryGetCeiling(30.00m, out decimal ceiling); // 49.00 - least ≥ probe
 
-int rank = prices.IndexOf(49.00m);                     // 2 — elements before it in sort order
-decimal cheapest = prices.GetAt(0);                    // 9.99 — select by rank
-int midRange = prices.CountInRange(10.00m, 50.00m);    // 2 — counted without enumerating
+int rank = prices.IndexOf(49.00m);                     // 2 - elements before it in sort order
+decimal cheapest = prices.GetAt(0);                    // 9.99 - select by rank
+int midRange = prices.CountInRange(10.00m, 50.00m);    // 2 - counted without enumerating
 ```
 
 `NavigableDictionary<TKey, TValue>` offers the same query families over key-sorted entries.
 
 ### Bloom filter (`BloomFilter<T>`)
 
-Approximate membership in fixed memory — no false negatives, tunable false-positive rate:
+Approximate membership in fixed memory - no false negatives, tunable false-positive rate:
 
 ```csharp
 using Bodu.Collections.Probabilistic;
@@ -145,16 +145,16 @@ seen.Add("user:42");
 
 if (!seen.MightContain(candidate))
 {
-    // Definitively new — a Bloom filter never reports false negatives.
+    // Definitively new - a Bloom filter never reports false negatives.
     Process(candidate);
 }
 ```
 
 ## Where to go next
 
-- **[Bodu.Collections introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Core concepts](concepts.md)** — the collection vocabulary (overflow policies, eviction, navigation, sketches).
-- **[Choosing a collection](../../guides/core/choosing-a-collection.md)** — the decision guide across the catalogue.
-- **[Collections guides](../../guides/core/index.md)** — recipe-style walk-throughs for every headline type.
-- **[Bodu.Collections.Concurrent getting started](../collections-concurrent/getting-started.md)** — the thread-safe companion package.
-- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** — full type-by-type docs.
+- **[Bodu.Collections introduction](index.md)** - namespaces, headline types, scenarios.
+- **[Core concepts](concepts.md)** - the collection vocabulary (overflow policies, eviction, navigation, sketches).
+- **[Choosing a collection](../../guides/core/choosing-a-collection.md)** - the decision guide across the catalogue.
+- **[Collections guides](../../guides/core/index.md)** - recipe-style walk-throughs for every headline type.
+- **[Bodu.Collections.Concurrent getting started](../collections-concurrent/getting-started.md)** - the thread-safe companion package.
+- **[Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic)** - full type-by-type docs.

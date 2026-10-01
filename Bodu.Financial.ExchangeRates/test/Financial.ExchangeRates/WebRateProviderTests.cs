@@ -10,8 +10,8 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies the common warm-up and discovery surface <see cref="WebRateProvider" /> contributes to every
-/// provider — <see cref="WebRateProvider.LoadPairAsync" /> and
-/// <see cref="WebRateProvider.GetLoadedPairs" /> — exercised through a bulk, single-base feed double.
+/// provider - <see cref="WebRateProvider.LoadPairAsync" /> and
+/// <see cref="WebRateProvider.GetLoadedPairs" /> - exercised through a bulk, single-base feed double.
 /// </summary>
 [TestClass]
 public partial class WebRateProviderTests

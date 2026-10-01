@@ -34,8 +34,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing an object graph with an indirect reference cycle — a parent reachable from itself
-    /// through a child's back-reference — throws <see cref="TomlSerializationException" /> identifying the cycle rather
+    /// Verifies that serializing an object graph with an indirect reference cycle - a parent reachable from itself
+    /// through a child's back-reference - throws <see cref="TomlSerializationException" /> identifying the cycle rather
     /// than recursing until the stack is exhausted.
     /// </summary>
     [TestMethod]

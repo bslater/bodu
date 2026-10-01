@@ -17,15 +17,15 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Derived classes supply the state width (in 32-bit words), the round count, and their own <see cref="Encrypt" /> and
-/// <see cref="Decrypt" /> implementations. The base class exposes the Serpent S-boxes <c>S0..S7</c> and their inverses
-/// (Osvik's Boolean circuits, from <see cref="SerpentCore" />), the bitsliced linear transform
-/// <see cref="LinearTransform" /> and its inverse <see cref="InverseLinearTransform" />, and the round-key expansion
-/// helper <see cref="ExpandPrekeys" /> driven by the golden-ratio constant <c>phi = 0x9E3779B9</c>.
+/// <see cref="Decrypt" /> implementations, whose rounds run in <see cref="SerpentCore" />. The base class exposes the
+/// Serpent S-boxes <c>S0..S7</c> the key schedules apply (Osvik's Boolean circuits, from <see cref="SerpentCore" />)
+/// and the round-key expansion helper <see cref="ExpandPrekeys" /> driven by the golden-ratio constant
+/// <c>phi = 0x9E3779B9</c>.
 /// </para>
 /// <para>
 /// Serpent operates on four 32-bit words in bitsliced form. Each bit position across those four words represents one
 /// 4-bit S-box input. The helpers in this base class keep that representation explicit so the concrete ciphers can
-/// share the standard S-box, inverse S-box, linear-transform, and key-schedule operations.
+/// share the standard key-schedule operations.
 /// </para>
 /// <para>
 /// External callers cannot derive new variants: the constructor and protected members are scoped
@@ -118,55 +118,6 @@ public abstract partial class SerpentBlockCipherBase
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private protected static void ApplySBox(int sBoxIndex, ref uint x0, ref uint x1, ref uint x2, ref uint x3) =>
         SerpentCore.SBox(sBoxIndex, ref x0, ref x1, ref x2, ref x3);
-
-    /// <summary>
-    /// Applies the inverse of the Serpent S-box identified by <paramref name="sBoxIndex" /> to the four 32-bit words in
-    /// bitsliced form.
-    /// </summary>
-    /// <param name="sBoxIndex">The inverse S-box index in the range <c>0..7</c>.</param>
-    /// <param name="x0">The first state word, modified in place.</param>
-    /// <param name="x1">The second state word, modified in place.</param>
-    /// <param name="x2">The third state word, modified in place.</param>
-    /// <param name="x3">The fourth state word, modified in place.</param>
-    /// <remarks>
-    /// Decryption uses the same bitsliced representation as <see cref="ApplySBox" />, through the circuits for
-    /// <c>InvS0..InvS7</c>, so each round can reverse the corresponding encryption S-box layer.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private protected static void ApplyInverseSBox(int sBoxIndex, ref uint x0, ref uint x1, ref uint x2, ref uint x3) =>
-        SerpentCore.InverseSBox(sBoxIndex, ref x0, ref x1, ref x2, ref x3);
-
-    /// <summary>
-    /// Applies the Serpent bitsliced linear transform <c>L</c> to a four-word sub-state.
-    /// </summary>
-    /// <param name="x0">The first state word, modified in place.</param>
-    /// <param name="x1">The second state word, modified in place.</param>
-    /// <param name="x2">The third state word, modified in place.</param>
-    /// <param name="x3">The fourth state word, modified in place.</param>
-    /// <remarks>
-    /// Serpent applies this linear diffusion layer after the S-box layer in every encryption round except the final
-    /// round. The sequence below follows the specification exactly: rotate <c>x0</c> and <c>x2</c>, mix by XOR and
-    /// shifts, rotate <c>x1</c> and <c>x3</c>, mix again, then apply the final rotations to <c>x0</c> and <c>x2</c>.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private protected static void LinearTransform(ref uint x0, ref uint x1, ref uint x2, ref uint x3) =>
-        SerpentCore.LinearTransform(ref x0, ref x1, ref x2, ref x3);
-
-    /// <summary>
-    /// Applies the inverse of the Serpent bitsliced linear transform to a four-word sub-state.
-    /// </summary>
-    /// <param name="x0">The first state word, modified in place.</param>
-    /// <param name="x1">The second state word, modified in place.</param>
-    /// <param name="x2">The third state word, modified in place.</param>
-    /// <param name="x3">The fourth state word, modified in place.</param>
-    /// <remarks>
-    /// Decryption applies this inverse diffusion layer before the inverse S-box for all non-final rounds. The
-    /// operations are the exact reverse of <see cref="LinearTransform" />, with rotations inverted and XOR mixes
-    /// replayed in reverse order.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private protected static void InverseLinearTransform(ref uint x0, ref uint x1, ref uint x2, ref uint x3) =>
-        SerpentCore.InverseLinearTransform(ref x0, ref x1, ref x2, ref x3);
 
     /// <summary>
     /// Runs the Serpent prekey recurrence to populate the prekey buffer.

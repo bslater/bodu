@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Notable-date resolution is synchronous, CPU-bound work — there is no I/O to overlap — so these projections do not
+/// Notable-date resolution is synchronous, CPU-bound work - there is no I/O to overlap - so these projections do not
 /// offload to the thread pool. Instead the requested range is resolved one civil year at a time, occurrences are
 /// yielded as each year completes, and the iterator yields control cooperatively between years so a consumer awaiting
 /// the sequence observes progress (and cancellation) at year granularity rather than only after the whole range has
@@ -55,7 +55,7 @@ public static class NotableDateServiceAsyncExtensions
     /// </param>
     /// <param name="cancellationToken">The token observed between resolved years to cancel the stream.</param>
     /// <returns>
-    /// An asynchronous sequence of the occurrences emitted in the range, ordered by date then identity — the same
+    /// An asynchronous sequence of the occurrences emitted in the range, ordered by date then identity - the same
     /// occurrences the synchronous range overloads return.
     /// </returns>
     /// <exception cref="ArgumentNullException">

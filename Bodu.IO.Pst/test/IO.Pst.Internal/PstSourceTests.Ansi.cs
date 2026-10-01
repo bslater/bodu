@@ -28,7 +28,7 @@ public partial class PstSourceTests
 
     /// <summary>
     /// Verifies that an ANSI block is read through its 12-byte trailer and that, under strict validation, a corrupted
-    /// block identifier — which the ANSI trailer places before the checksum — is reported as an invalid block.
+    /// block identifier - which the ANSI trailer places before the checksum - is reported as an invalid block.
     /// </summary>
     [TestMethod]
     public void ReadBlock_WhenAnsiTrailerBlockIdIsCorrupt_ShouldThrowInvalidBlock()
@@ -46,7 +46,7 @@ public partial class PstSourceTests
     }
 
     /// <summary>
-    /// Verifies that, under strict validation, a corrupted ANSI block checksum — the trailer's last four bytes — is
+    /// Verifies that, under strict validation, a corrupted ANSI block checksum - the trailer's last four bytes - is
     /// reported as an invalid block.
     /// </summary>
     [TestMethod]

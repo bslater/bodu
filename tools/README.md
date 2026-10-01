@@ -34,13 +34,13 @@ dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.cspr
 
 The generators share a single filter:
 
-- **`-MaxSize <bits>`** — upper bound on CRC width. Entries whose `size` exceeds this value are skipped entirely: no enum member, no catalogue row, no name-lookup entry, no test row. The generated documentation page lists them in a separate "not supported" section for transparency. Defaults to `64` (the widest width representable as a `ulong`, matching `CrcStandard.MaxSize`).
+- **`-MaxSize <bits>`** - upper bound on CRC width. Entries whose `size` exceeds this value are skipped entirely: no enum member, no catalogue row, no name-lookup entry, no test row. The generated documentation page lists them in a separate "not supported" section for transparency. Defaults to `64` (the widest width representable as a `ulong`, matching `CrcStandard.MaxSize`).
 
 Currently only `CRC-82/DARC` is excluded by the default limit.
 
 ## Common standards
 
-A short list of commonly-used CRCs is exposed as **hand-maintained** `public static CrcStandard` properties on `CrcStandard` (in `CrcStandard.cs`). They delegate to `Get(CrcStandards.X)` so they share the lazy cache with the rest of the catalogue — they're purely a source-level convenience and add no storage cost beyond the shared cache slot.
+A short list of commonly-used CRCs is exposed as **hand-maintained** `public static CrcStandard` properties on `CrcStandard` (in `CrcStandard.cs`). They delegate to `Get(CrcStandards.X)` so they share the lazy cache with the rest of the catalogue - they're purely a source-level convenience and add no storage cost beyond the shared cache slot.
 
 Currently exposed:
 
@@ -51,7 +51,7 @@ Currently exposed:
 - `CrcStandard.CRC16_KERMIT`
 - `CrcStandard.CRC16_MODBUS`
 - `CrcStandard.CRC16_XMODEM`
-- `CrcStandard.CRC32_ISOHDLC` — the default used by `new Crc()`
+- `CrcStandard.CRC32_ISOHDLC` - the default used by `new Crc()`
 - `CrcStandard.CRC32_ISCSI` (`CRC-32C` / Castagnoli)
 - `CrcStandard.CRC32_BZIP2`
 - `CrcStandard.CRC64_ECMA182`
@@ -93,9 +93,9 @@ pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -SkipBuild
 pwsh ./tools/Update-CodeStyleAnalyzer.ps1 -ExcludeProjectPattern @()
 ```
 
-When the target is a solution, the script drops projects that don't exercise the XML-documentation analyzer — by default any `/bench/` project — by generating a temporary solution filter (`.slnf`) listing only the kept projects and restoring/building that. `-ExcludeProjectPattern` takes one or more regexes tested against each project path; pass `@()` to build the whole solution unfiltered, or add patterns to skip more. The parameter is ignored when `-Target` is a single project.
+When the target is a solution, the script drops projects that don't exercise the XML-documentation analyzer - by default any `/bench/` project - by generating a temporary solution filter (`.slnf`) listing only the kept projects and restoring/building that. `-ExcludeProjectPattern` takes one or more regexes tested against each project path; pass `@()` to build the whole solution unfiltered, or add patterns to skip more. The parameter is ignored when `-Target` is a single project.
 
-The analyzer is always packed in **Release** (the configuration committed to `local-packages/` and used by CI); `-Configuration` governs only the consumer restore/build. Packing runs under the SDK 8 pin in `Bodu.CodeStyle/global.json` while the consumer build runs under the repo-root SDK 10 pin — each `dotnet` invocation resolves its own SDK from its working directory. After a successful run, commit the regenerated `local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg` alongside your source changes. See `Bodu.CodeStyle/README.md` for the full analyzer-authoring workflow.
+The analyzer is always packed in **Release** (the configuration committed to `local-packages/` and used by CI); `-Configuration` governs only the consumer restore/build. Packing runs under the SDK 8 pin in `Bodu.CodeStyle/global.json` while the consumer build runs under the repo-root SDK 10 pin - each `dotnet` invocation resolves its own SDK from its working directory. After a successful run, commit the regenerated `local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg` alongside your source changes. See `Bodu.CodeStyle/README.md` for the full analyzer-authoring workflow.
 
 ## Remote branch cleanup (PowerShell 7+)
 
@@ -118,7 +118,7 @@ pwsh ./tools/Remove-StaleRemoteBranches.ps1 -OlderThanDays 7
 branch, *or* when its pull request is merged and nothing was pushed to it afterwards. The pull request is
 the load-bearing half: `git branch --merged` answers by ancestry, and this repository squash-merges, so
 the squash commit is not a descendant of the branch it came from and ancestry recognises none of them.
-Comparing file content instead does not work either — the base branch legitimately changes those files
+Comparing file content instead does not work either - the base branch legitimately changes those files
 afterwards, and branches predating the history rewrite share no merge base at all.
 
 The "nothing pushed afterwards" half matters just as much: a branch can be pushed to after its pull
@@ -126,6 +126,6 @@ request merged, and those commits are work nobody reviewed. Three such branches 
 carrying nine later commits that added 46 documentation guides.
 
 Without `gh` on `PATH`, or when `gh pr list` fails, only ancestry is available. The script warns, prints
-`PR lookup: UNAVAILABLE`, and reports squash-merged branches as unmerged — so it finds nothing to delete
+`PR lookup: UNAVAILABLE`, and reports squash-merged branches as unmerged - so it finds nothing to delete
 rather than guessing. Never reach for `-IncludeUnmerged` to work around that: it disables the landed test
 altogether and will offer up branches whose work exists nowhere else.

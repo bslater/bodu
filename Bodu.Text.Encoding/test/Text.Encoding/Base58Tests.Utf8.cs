@@ -14,7 +14,7 @@ public sealed partial class Base58Tests
     /// <summary>
     /// Verifies that <see cref="Base58.DecodeFromUtf8" /> reports <c>bytesConsumed = 0</c> and <c>bytesWritten = 0</c>
     /// on <see cref="OperationStatus.DestinationTooSmall" />. Base58 cannot commit partial output (it decodes through
-    /// big-integer divmod into a scratch buffer), so the contract is "all-or-nothing" — the caller retries with a
+    /// big-integer divmod into a scratch buffer), so the contract is "all-or-nothing" - the caller retries with a
     /// larger destination.
     /// </summary>
     [TestMethod]

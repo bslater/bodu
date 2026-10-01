@@ -5,17 +5,17 @@ mean, variance in one pass), the fixed-window `MovingSum<T>` / `MovingMinMax<T>`
 `RunningQuantile<T>` percentile estimator, and the arbitrary-precision `BigDecimal`. Four scenarios
 cover each in turn.
 
-Everything runs offline over fixed input streams — deterministic output every run. Double formatting
+Everything runs offline over fixed input streams - deterministic output every run. Double formatting
 uses `CultureInfo.InvariantCulture` so the output never varies by machine culture.
 
 ```bash
 dotnet run --project samples/Numerics/Bodu.Numerics.Samples.StreamingStatistics
 ```
 
-## Scenario 1 — RunningStats
+## Scenario 1 - RunningStats
 
 **Intent.** Show `RunningStatistics<T>` as a single-pass accumulator that tracks count, min/max,
-mean, and variance as values arrive — never storing the stream — using Welford's numerically stable
+mean, and variance as values arrive - never storing the stream - using Welford's numerically stable
 update.
 
 **What it does.** Folds the fixed stream `{2, 4, 4, 4, 5, 5, 7, 9}` in with `Add`, reads back every
@@ -48,13 +48,13 @@ Bessel's correction), and the combined two-halves mean matching the single-pass 
 
 > **Note on member names.** The type exposes `Minimum`/`Maximum` (not `Min`/`Max`) and splits
 > variance/standard deviation into `Population*` and `Sample*` variants rather than a single
-> `Variance`/`StandardDeviation` member — this sample shows both variants.
+> `Variance`/`StandardDeviation` member - this sample shows both variants.
 
 **APIs demonstrated.** `RunningStatistics<T>.Add`, `.Count`, `.Minimum`, `.Maximum`, `.Mean`,
 `.PopulationVariance`, `.PopulationStandardDeviation`, `.SampleVariance`,
 `.SampleStandardDeviation`, `RunningStatistics<T>.Combine`.
 
-## Scenario 2 — SlidingWindows
+## Scenario 2 - SlidingWindows
 
 **Intent.** Show the fixed-window accumulators `MovingSum<T>` and `MovingMinMax<T>`: each keeps only
 the most recent `Capacity` values, so as new values arrive the oldest drop out and the running sum /
@@ -92,19 +92,19 @@ value evicts the oldest, so by the last row the window holds only `{20, 6, 6}` s
 **APIs demonstrated.** `new MovingSum<T>(int)`, `MovingSum<T>.Add`, `.Sum`, `.Mean`, `.Count`,
 `.Capacity`, `.IsFull`; `new MovingMinMax<T>(int)`, `MovingMinMax<T>.Add`, `.Minimum`, `.Maximum`.
 
-## Scenario 3 — Quantiles
+## Scenario 3 - Quantiles
 
 **Intent.** Show `RunningQuantile<T>` as a streaming percentile estimator that approximates a chosen
-quantile from a single pass, holding only a handful of markers instead of the whole stream — the
+quantile from a single pass, holding only a handful of markers instead of the whole stream - the
 classic technique for tracking a median or a p95 latency online.
 
 **What it does.** Creates a median estimator with `CreateMedian()` and a p95 estimator with `new
 RunningQuantile<double>(0.95)`, then feeds all 100 integers `0..99` (in a fixed non-sorted stride
 order) through both.
 
-**What to expect.** After 100 samples the estimates track the true values closely — the true median
+**What to expect.** After 100 samples the estimates track the true values closely - the true median
 of `0..99` is `49.5` and the true p95 is about `94`; the single-pass estimates land at `50.51` and
-`95.43` (an estimator, not an exact quantile — the small offset is expected):
+`95.43` (an estimator, not an exact quantile - the small offset is expected):
 
 ```text
 --- RunningQuantile<T> - streaming percentiles ---
@@ -126,7 +126,7 @@ of `0..99` is `49.5` and the true p95 is about `94`; the single-pass estimates l
 **APIs demonstrated.** `RunningQuantile<T>.CreateMedian`, `new RunningQuantile<double>(double)`,
 `RunningQuantile<T>.Add`, `.Estimate`, `.Probability`, `.Count`.
 
-## Scenario 4 — BigDecimalArithmetic
+## Scenario 4 - BigDecimalArithmetic
 
 **Intent.** Show `BigDecimal` as an arbitrary-precision decimal built from an unscaled `BigInteger`
 and a base-10 scale: arithmetic is exact and scale-preserving, while division and rounding are
@@ -181,6 +181,6 @@ Bodu.Numerics.Samples.StreamingStatistics/
 
 ## Related
 
-- `Bodu.Numerics.Samples.Fractions` — the exact-rational `Fraction<T>`.
-- `Bodu.Numerics.Samples.Intervals` — the interval algebra over the same numeric surface.
+- `Bodu.Numerics.Samples.Fractions` - the exact-rational `Fraction<T>`.
+- `Bodu.Numerics.Samples.Intervals` - the interval algebra over the same numeric surface.
 ```

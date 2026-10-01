@@ -11,7 +11,7 @@
   <NotableDates>
 
     <!--
-      New Year's Day — 1 January, the first day of the Gregorian year. The single country-neutral concept in this
+      New Year's Day - 1 January, the first day of the Gregorian year. The single country-neutral concept in this
       minimal catalogue, carrying the bare fixed-date strategy under rule id "default" for territories to import and
       re-scope. Strategy: Fixed day-of-month.
     -->

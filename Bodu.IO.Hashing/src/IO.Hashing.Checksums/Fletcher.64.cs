@@ -34,7 +34,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </list>
 /// <para>
 /// <strong>When to choose Fletcher64.</strong> Pick <see cref="Fletcher64" /> for very large datasets where the 32-bit
-/// collision floor becomes a concern — multi-gigabyte file integrity, large block-storage checksums, or high-throughput
+/// collision floor becomes a concern - multi-gigabyte file integrity, large block-storage checksums, or high-throughput
 /// logging pipelines. For stronger error detection at comparable width prefer <see cref="Crc" /> with
 /// <see cref="CrcStandard.CRC64_XZ" /> or <see cref="CrcStandard.CRC64_ECMA182" />.
 /// </para>

@@ -103,7 +103,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <c>IsPositive</c> and <c>IsNegative</c>
-    /// are both <see langword="false" /> at zero — the boundary value belongs to neither half-line.
+    /// are both <see langword="false" /> at zero - the boundary value belongs to neither half-line.
     /// </summary>
     [TestMethod]
     public void IsPositiveAndIsNegative_WhenZero_ShouldBothReturnFalse()

@@ -60,7 +60,7 @@ public partial class WeekPatternTests
 
     /// <summary>
     /// Verifies that the private serialisation constructor throws <see cref="SerializationException" />
-    /// when the stored bitmask value exceeds the valid range of 0–127.
+    /// when the stored bitmask value exceeds the valid range of 0-127.
     /// </summary>
     [TestMethod]
     public void SerializationCtor_WhenStoredValueIsOutOfRange_ShouldThrowExactly()

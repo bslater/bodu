@@ -51,7 +51,7 @@ public class IntervalJsonConverterPolicyTests
     }
 
     /// <summary>
-    /// Verifies that the core <see cref="Interval{T}" /> type carries no <c>[JsonConverter]</c> attribute — the library
+    /// Verifies that the core <see cref="Interval{T}" /> type carries no <c>[JsonConverter]</c> attribute - the library
     /// is serialization-agnostic, so JSON support requires registering the converters from this package.
     /// </summary>
     [TestMethod]
@@ -113,7 +113,7 @@ public class IntervalJsonConverterPolicyTests
     }
 
     /// <summary>
-    /// Verifies that Strict rejects a JSON token at the top level — only the canonical object is accepted.
+    /// Verifies that Strict rejects a JSON token at the top level - only the canonical object is accepted.
     /// </summary>
     [TestMethod]
     public void StrictPolicy_WhenReadingCompactString_ShouldThrowJsonException()
@@ -292,7 +292,7 @@ public class IntervalJsonConverterPolicyTests
     }
 
     /// <summary>
-    /// Verifies that Compact reads reject a JSON object — only the bracket string form is accepted.
+    /// Verifies that Compact reads reject a JSON object - only the bracket string form is accepted.
     /// </summary>
     [TestMethod]
     public void CompactPolicy_WhenReadingObjectForm_ShouldThrowJsonException()

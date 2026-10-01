@@ -8,7 +8,7 @@ namespace Bodu.Test.IO;
 
 /// <summary>
 /// A fully delegating stream wrapper that counts read operations and bytes read, while preserving the inner stream's
-/// seek and position semantics. Useful for asserting how often a reader touches its source — for example, that a cache
+/// seek and position semantics. Useful for asserting how often a reader touches its source - for example, that a cache
 /// layer eliminates repeat reads.
 /// </summary>
 /// <remarks>

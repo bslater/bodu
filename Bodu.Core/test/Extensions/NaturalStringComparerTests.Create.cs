@@ -26,8 +26,8 @@ public partial class NaturalStringComparerTests
     }
 
     /// <summary>
-    /// Verifies that a comparer created for German honours that culture's collation — <c>"ä"</c> sorts with
-    /// <c>"a"</c>, before <c>"b"</c> — where <see cref="NaturalStringComparer.Ordinal" /> orders the same pair by
+    /// Verifies that a comparer created for German honours that culture's collation - <c>"ä"</c> sorts with
+    /// <c>"a"</c>, before <c>"b"</c> - where <see cref="NaturalStringComparer.Ordinal" /> orders the same pair by
     /// code point.
     /// </summary>
     [TestMethod]

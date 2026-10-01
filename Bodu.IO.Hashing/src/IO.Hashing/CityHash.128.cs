@@ -20,7 +20,7 @@ namespace Bodu.IO.Hashing;
 /// constants <c>K0</c>, <c>K1</c> for shorter inputs), then delegates to <c>CityHash128WithSeed</c>. For inputs shorter
 /// than 128 bytes, <c>CityMurmur</c> folds the message into the seeded accumulator; for longer inputs, a main loop
 /// consumes 128-byte blocks using two pairs of seeded weak-hash accumulators before a tail pass over the remaining
-/// 0–127 bytes.
+/// 0-127 bytes.
 /// </para>
 /// <para>
 /// The digest is emitted as two consecutive little-endian 64-bit words (<c>First</c> followed by <c>Second</c>),
@@ -45,7 +45,7 @@ namespace Bodu.IO.Hashing;
 /// </list>
 /// <para>
 /// <strong>When to choose CityHash128.</strong> Pick <see cref="CityHash128" /> for low-collision fingerprinting of
-/// large key spaces — content-addressed storage, deduplication, two-hash cuckoo / split-key schemes that can use the
+/// large key spaces - content-addressed storage, deduplication, two-hash cuckoo / split-key schemes that can use the
 /// two 64-bit halves independently. <see cref="MurmurHash3_128" /> is the closest alternative; it supports a
 /// constructor seed but is typically slightly slower on long inputs on 64-bit CPUs.
 /// </para>

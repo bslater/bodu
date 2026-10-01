@@ -12,7 +12,7 @@ public partial class FractionTests
 {
     /// <summary>
     /// Verifies that <see cref="Fraction{T}.TryCreate(T, T, out Fraction{T})" /> reports failure when the canonical
-    /// numerator cannot be represented by the backing type — here, negating <see cref="int.MinValue" /> overflows.
+    /// numerator cannot be represented by the backing type - here, negating <see cref="int.MinValue" /> overflows.
     /// </summary>
     [TestMethod]
     public void TryCreate_WhenCanonicalNumeratorOverflowsBackingType_ShouldReturnFalse()

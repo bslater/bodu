@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <summary>
 /// Verifies <see cref="CachingRateOptions.SkipInverseRangeProbeWhenDirectCovered" />: disabled (the default) pins the
 /// historical always-probe behaviour, and enabled skips the inverse read whenever the direct pair holds any fresh
-/// coverage while still probing — and serving — the inverse when the direct pair is completely empty.
+/// coverage while still probing - and serving - the inverse when the direct pair is completely empty.
 /// </summary>
 public sealed partial class CachingRateProviderTests
 {
@@ -25,8 +25,8 @@ public sealed partial class CachingRateProviderTests
     private static readonly DateOnly ProbeEnd = new(2023, 1, 6);
 
     /// <summary>
-    /// Verifies that with the option off (the default), a direct-coverage miss still probes the inverse pair —
-    /// two snapshot reads — pinning the historical behaviour.
+    /// Verifies that with the option off (the default), a direct-coverage miss still probes the inverse pair -
+    /// two snapshot reads - pinning the historical behaviour.
     /// </summary>
     [TestMethod]
     public async Task GetRatesAsync_WhenSkipDisabledAndDirectMiss_ShouldProbeInverse()

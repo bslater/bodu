@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a key-sorted dictionary augmented with order statistics — an <see cref="IDictionary{TKey, TValue}" />
+/// Represents a key-sorted dictionary augmented with order statistics - an <see cref="IDictionary{TKey, TValue}" />
 /// that keeps its entries in key comparer order and answers nearest-neighbour ( <see cref="TryGetFloorEntry" /> /
 /// <see cref="TryGetCeilingEntry" /> / <see cref="TryGetHigherEntry" /> / <see cref="TryGetLowerEntry" />), rank/select
 /// ( <see cref="IndexOfKey" /> / <see cref="GetAt" />), and range-counting queries in O(log n).
@@ -45,12 +45,12 @@ namespace Bodu.Collections.Generic;
 /// quotes.Add(10.25m, "mid");
 /// quotes.Add(10.50m, "ask");
 ///
-/// quotes.TryGetFloorEntry(10.30m, out var floor);   // (10.25, "mid") — greatest key <= 10.30
-/// quotes.TryGetCeilingKey(10.30m, out decimal ask); // 10.50 — least key >= 10.30
+/// quotes.TryGetFloorEntry(10.30m, out var floor);   // (10.25, "mid") - greatest key <= 10.30
+/// quotes.TryGetCeilingKey(10.30m, out decimal ask); // 10.50 - least key >= 10.30
 ///
-/// int rank = quotes.IndexOfKey(10.25m);             // 1 — zero-based rank in key order
-/// var median = quotes.GetAt(quotes.Count / 2);      // (10.25, "mid") — entry with the k-th smallest key
-/// int inBand = quotes.CountInRange(10.00m, 10.30m); // 2 — O(log n), no iteration
+/// int rank = quotes.IndexOfKey(10.25m);             // 1 - zero-based rank in key order
+/// var median = quotes.GetAt(quotes.Count / 2);      // (10.25, "mid") - entry with the k-th smallest key
+/// int inBand = quotes.CountInRange(10.00m, 10.30m); // 2 - O(log n), no iteration
 ///]]>
 /// </code>
 /// </example>
@@ -108,7 +108,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
     /// The key ordering comparer, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <remarks>
-    /// The source is sorted by key and built directly into a balanced tree — O(n log n) overall, O(n) after the sort.
+    /// The source is sorted by key and built directly into a balanced tree - O(n log n) overall, O(n) after the sort.
     /// Comparer-equal duplicate keys are rejected, matching the <see cref="Dictionary{TKey, TValue}" />
     /// collection-constructor contract.
     /// </remarks>
@@ -292,7 +292,7 @@ public sealed partial class NavigableDictionary<TKey, TValue>
     /// <see cref="EqualityComparer{T}.Default" />; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This method performs a linear O(n) walk over the entries — values are not indexed. Use
+    /// This method performs a linear O(n) walk over the entries - values are not indexed. Use
     /// <see cref="ContainsKey" /> for the O(log n) key lookup.
     /// </remarks>
     public bool ContainsValue(TValue value)

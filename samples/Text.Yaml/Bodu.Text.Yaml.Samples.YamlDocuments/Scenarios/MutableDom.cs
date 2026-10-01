@@ -9,7 +9,7 @@ using Bodu.Text.Yaml.Nodes;
 namespace Bodu.Text.Yaml.Samples.YamlDocuments.Scenarios;
 
 /// <summary>
-/// Demonstrates the mutable <see cref="YamlNode" /> DOM — the <c>JsonNode</c>-style layer for
+/// Demonstrates the mutable <see cref="YamlNode" /> DOM - the <c>JsonNode</c>-style layer for
 /// edit-in-place workflows: parse a document into a tree, read and rewrite values with indexers,
 /// graft new mappings in, and emit the result, all without defining a POCO.
 /// </summary>

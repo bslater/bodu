@@ -1,7 +1,7 @@
 # Bodu.Text.Configuration.Samples.ConfigCascade
 
 The `Bodu.Text.Configuration` pipeline end to end: an EditorConfig-inspired, INI-backed
-configuration model with three separable phases — **parse** (`ConfigurationDocument`),
+configuration model with three separable phases - **parse** (`ConfigurationDocument`),
 **resolve** (`.Resolve(targetPath)` → `ConfigurationView`), and **write** (`Save`). Four
 scenarios cover diagnostics-collecting parses, the path-targeted cascade, the `unset`
 semantics and dialect presets, and rewriting a file without destroying its comments.
@@ -11,12 +11,12 @@ Everything runs offline against the committed `Data/sample.boduconfig`.
 dotnet run --project samples/Text.Configuration/Bodu.Text.Configuration.Samples.ConfigCascade
 ```
 
-## Scenario 1 — ParseAndDiagnostics
+## Scenario 1 - ParseAndDiagnostics
 
 **Intent.** Contrast the two parse entry points and when each is right: `Parse`/`Load` throw
 on the first structural error (generated files should never be half-read), while
 `ParseWithDiagnostics` under the `Relaxed` profile collects every problem as a
-`ConfigurationDiagnostic` and still returns a usable document — what an editor or linter
+`ConfigurationDiagnostic` and still returns a usable document - what an editor or linter
 needs to show all errors at once.
 
 **What it does.** Loads the clean committed file, then parses deliberately flawed text (a
@@ -51,10 +51,10 @@ diagnostic's severity, code, and line number. Note the default (`Bodu`) profile 
 `ConfigurationParseOptions.Relaxed` (profile presets), `ConfigurationParseResult.Document` /
 `.Diagnostics`, `ConfigurationDiagnostic.Severity` / `.Code` / `.Location.LineNumber`.
 
-## Scenario 2 — ResolveCascade
+## Scenario 2 - ResolveCascade
 
 **Intent.** Show the heart of the library: resolution is *per target path*. Every section
-whose glob matches the path contributes its keys, later sections overriding earlier ones —
+whose glob matches the path contributes its keys, later sections overriding earlier ones -
 so one file expresses org-wide defaults plus per-tree exceptions, exactly like
 `.editorconfig`.
 
@@ -95,9 +95,9 @@ file (only `[*]` applies). It then shows the typed getters on one view: `GetEnum
 order, `ConfigurationView.GetInt32` / `TryGetInt32` / `GetEnum<T>` / `GetBoolean` /
 `GetString(key, fallback)`.
 
-## Scenario 3 — UnsetAndPresets
+## Scenario 3 - UnsetAndPresets
 
-**Intent.** Explain what a literal `unset` value means — and that it is a *dialect decision*.
+**Intent.** Explain what a literal `unset` value means - and that it is a *dialect decision*.
 Under `TreatAsLiteral` (the default `Bodu` profile) the string `"unset"` is just a value;
 under `RemoveEffectiveValue` (EditorConfig semantics) it erases the value inherited from
 earlier sections. The canonical option sets (`ConfigurationResolveOptions.Bodu` /
@@ -133,7 +133,7 @@ set to show it bundles `RemoveEffectiveValue` (the key is simply absent from the
 (`ConfigurationUnsetValueMode.TreatAsLiteral` / `.RemoveEffectiveValue`),
 `ConfigurationResolveOptions.EditorConfigCompatible` / `.For(ConfigurationProfile...)`.
 
-## Scenario 4 — SaveRoundTrip
+## Scenario 4 - SaveRoundTrip
 
 **Intent.** Show the write phase for tooling that edits config files humans own: the parsed
 document *is* the INI model underneath, so existing sections mutate in place; new sections
@@ -185,8 +185,8 @@ Bodu.Text.Configuration.Samples.ConfigCascade/
 
 ## Related
 
-- `Bodu.Extensions.Configuration.Text.Samples.BridgeHosting` — flowing the same file format
+- `Bodu.Extensions.Configuration.Text.Samples.BridgeHosting` - flowing the same file format
   into `Microsoft.Extensions.Configuration` / `IOptions<T>`.
-- `Bodu.Text.Formats.Samples.ConfigFiles` — the plain INI and DotEnv formats, for when you
+- `Bodu.Text.Formats.Samples.ConfigFiles` - the plain INI and DotEnv formats, for when you
   don't need path-targeted cascades.
 - Guides: `docs/guides/text-configuration/`.

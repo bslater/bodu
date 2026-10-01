@@ -116,7 +116,7 @@ public partial class RangeSetTests
         Assert.IsFalse(enumerator.MoveNext());
     }
     // --------------------------------------------------------
-    // GetEnumerator — typed struct
+    // GetEnumerator - typed struct
     // --------------------------------------------------------
 
     /// <summary>

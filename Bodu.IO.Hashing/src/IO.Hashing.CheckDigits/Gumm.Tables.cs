@@ -35,7 +35,7 @@ public sealed partial class Gumm
     /// <remarks>
     /// <c>T(e, x) = (e, e(a - x) + b)</c> with <c>a = 2</c> and <c>b = 1</c>. <c>T</c> is a permutation of <i>D</i><sub>5</sub>,
     /// and because <c>a</c> and <c>b</c> are both nonzero modulo five it satisfies the anti-symmetry property under
-    /// which <c>T(u) * v = T(v) * u</c> (and <c>u * T(v) = v * T(u)</c>) implies <c>u = v</c> — the property that
+    /// which <c>T(u) * v = T(v) * u</c> (and <c>u * T(v) = v * T(u)</c>) implies <c>u = v</c> - the property that
     /// guarantees detection of every adjacent transposition.
     /// </remarks>
     private static readonly byte[] s_t = [3, 2, 1, 0, 4, 9, 5, 6, 7, 8];

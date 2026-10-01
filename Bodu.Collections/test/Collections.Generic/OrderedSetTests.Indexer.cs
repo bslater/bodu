@@ -28,7 +28,7 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Verifies that the indexer reflects removals — every surviving element shifts to the slot it would
+    /// Verifies that the indexer reflects removals - every surviving element shifts to the slot it would
     /// occupy in a newly-built set with the same insertion sequence.
     /// </summary>
     [TestMethod]

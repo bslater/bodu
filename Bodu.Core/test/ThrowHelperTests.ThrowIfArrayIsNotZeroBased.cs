@@ -29,8 +29,8 @@ public partial class ThrowHelperTests
     [DynamicData(nameof(GetZeroBasedArrayTestData))]
     public void ThrowIfArrayIsNotZeroBased_WhenArrayIsZeroBased_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotZeroBased" /> does not throw — and on the
-    /// ParamName-asserting overload reports nothing — for zero-based arrays.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotZeroBased" /> does not throw - and on the
+    /// ParamName-asserting overload reports nothing - for zero-based arrays.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
     /// <param name="array">The array passed to the guard.</param>

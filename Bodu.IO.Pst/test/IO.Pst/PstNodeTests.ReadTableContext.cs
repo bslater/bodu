@@ -68,8 +68,8 @@ public partial class PstNodeTests
     }
 
     /// <summary>
-    /// Verifies that malformed table geometry — regressing region offsets, a bitmap too small for the declared
-    /// columns, and a column overrunning the cell region — is rejected.
+    /// Verifies that malformed table geometry - regressing region offsets, a bitmap too small for the declared
+    /// columns, and a column overrunning the cell region - is rejected.
     /// </summary>
     /// <param name="testName">The scenario name.</param>
     /// <param name="endOffset4">The declared end of the 4-byte region.</param>

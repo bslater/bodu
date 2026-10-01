@@ -34,7 +34,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Single-call computation — returns the two-digit check as a string.
+/// // Single-call computation - returns the two-digit check as a string.
 /// string check = Iso7064Mod97_10.Compute("794");   // "44"
 ///
 /// // Full-sequence validation.
@@ -89,14 +89,14 @@ public sealed class Iso7064Mod97_10
 
     /// <summary>
     /// Determines whether the supplied sequence, comprising a body followed by a two-digit MOD 97-10 check code, is
-    /// consistent — that is, whether its running remainder (with letters expanded and the check code absorbed) equals
+    /// consistent - that is, whether its running remainder (with letters expanded and the check code absorbed) equals
     /// <c>1</c>.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check code.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under MOD 97-10; otherwise, <see langword="false" />
-    /// — including the case where <paramref name="valueIncludingCheck" /> is empty or contains any character outside
-    /// the alphanumeric uppercase alphabet.
+    /// <see langword="true" /> if the sequence evaluates as valid under MOD 97-10; otherwise,
+    /// <see langword="false" /> - including the case where <paramref name="valueIncludingCheck" /> is empty or contains
+    /// any character outside the alphanumeric uppercase alphabet.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

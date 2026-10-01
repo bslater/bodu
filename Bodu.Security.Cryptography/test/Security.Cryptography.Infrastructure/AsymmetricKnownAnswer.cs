@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Serves as the base for asymmetric known-answer test vectors — key agreement, signature, key encapsulation, key
+/// Serves as the base for asymmetric known-answer test vectors - key agreement, signature, key encapsulation, key
 /// generation, and key validation. Adds the optional <see cref="ParameterSet" /> designator shared by the post-quantum
 /// families.
 /// </summary>

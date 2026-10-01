@@ -29,7 +29,7 @@ namespace Bodu.Financial.ExchangeRates;
 public sealed class XeRateProviderOptions
     : WebRateProviderOptions
 {
-    /// <summary>The estimated depth, in days, of the server-determined window the XE.com charting endpoint returns — approximately ten years, matching the deepest range the XE currency charts expose.</summary>
+    /// <summary>The estimated depth, in days, of the server-determined window the XE.com charting endpoint returns - approximately ten years, matching the deepest range the XE currency charts expose.</summary>
     internal const int EstimatedChartingWindowDays = 3650;
 
     /// <summary>
@@ -37,7 +37,7 @@ public sealed class XeRateProviderOptions
     /// address and an estimated ten-year rolling history window.
     /// </summary>
     /// <remarks>
-    /// The charting endpoint accepts no date bounds — XE returns a server-determined window — so the advertised
+    /// The charting endpoint accepts no date bounds - XE returns a server-determined window - so the advertised
     /// <see cref="WebRateProviderOptions.HistoryAvailability" /> is an estimate of that window (<see cref="EstimatedChartingWindowDays" />
     /// days, matching the deepest range the XE currency charts expose) rather than a published contract. Adjust the
     /// property if the observed window differs.

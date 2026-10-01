@@ -14,8 +14,15 @@ permissions:
   issues: write
 
 jobs:
+  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
+  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
+  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
   build-test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-26.04]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
@@ -33,7 +40,7 @@ jobs:
         run: bash bld/check-folder-namespace-alignment.sh
 
       # Same rationale: bash-only and seconds to run, so a malformed manifest or a shipping package
-      # missing its README, tier banner or icon fails here rather than in a release run — after a tag
+      # missing its README, tier banner or icon fails here rather than in a release run - after a tag
       # has been pushed and a nuget.org version can no longer be withdrawn.
       - name: Check release manifest
         run: bash bld/check-release-manifest.sh
@@ -165,7 +172,7 @@ jobs:
           fi
 
           # Samples multi-target, so --framework is required: `dotnet run` refuses to guess.
-          # They run on the newest supported framework — the sample code itself is identical
+          # They run on the newest supported framework - the sample code itself is identical
           # across legs, and both legs are already compiled by the Build step above, so running
           # each sample twice would double the step's wall-clock for no additional signal.
           for proj in $projects; do
@@ -179,7 +186,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: test-results-trx
+          name: test-results-trx-${{ matrix.os }}
           path: TestResults/**/*.trx
           retention-days: 14
           if-no-files-found: error
@@ -338,7 +345,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: test-results-failed-trx
+          name: test-results-failed-trx-${{ matrix.os }}
           path: FailedTestResults/**/*.failed.trx
           retention-days: 14
           if-no-files-found: ignore
@@ -347,13 +354,16 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: failed-tests-summary
+          name: failed-tests-summary-${{ matrix.os }}
           path: failed-tests-summary.md
           retention-days: 14
           if-no-files-found: ignore
 
       - name: Comment failed test summary on PR
-        if: always() && github.event_name == 'pull_request'
+        # Only the first image in the list comments. A second comment would repeat every failure the
+        # two images share and ask Claude to review it twice; the other image's failures are in its
+        # own job summary and test report.
+        if: always() && github.event_name == 'pull_request' && strategy.job-index == 0
         uses: actions/github-script@v9
         with:
           script: |
@@ -375,7 +385,7 @@ jobs:
             const maxBodyLength = 60000;
             let body = [
               marker,
-              '## CI failed test summary',
+              '## CI failed test summary (${{ matrix.os }})',
               '',
               summary,
               '',
@@ -424,7 +434,7 @@ jobs:
         if: always()
         uses: dorny/test-reporter@v3
         with:
-          name: MSTest Results
+          name: MSTest Results (${{ matrix.os }})
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false
@@ -438,9 +448,14 @@ jobs:
   # repositories), on both frameworks, so both kernels are held to the same vectors as the x64 ones and the SIMD
   # opt-out is proven on ARM64 too. SimdCapabilitiesTests fails if the AdvSimd gate is closed here, so the job cannot
   # silently fall back to the scalar Argon2 kernel; the PMULL gate opens wherever the processor lists 'pmull' among
-  # the features the step below reports. It proves correctness; performance is measured separately.
+  # the features the step below reports. It proves correctness; performance is measured separately. Like the
+  # job above, it runs on both Ubuntu 24.04 and 26.04 until 24.04 is dropped.
   build-test-arm64:
-    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04-arm, ubuntu-26.04-arm]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
@@ -524,7 +539,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: test-results-trx-arm64
+          name: test-results-trx-${{ matrix.os }}
           path: TestResults/**/*.trx
           retention-days: 14
           if-no-files-found: error
@@ -533,7 +548,7 @@ jobs:
         if: always()
         uses: dorny/test-reporter@v3
         with:
-          name: MSTest Results (ARM64)
+          name: MSTest Results (${{ matrix.os }})
           path: TestResults/**/*.trx
           reporter: dotnet-trx
           fail-on-error: false

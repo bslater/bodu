@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// Each file records the bound <c>Provider</c> and the pair's <c>From</c> and <c>To</c> currency codes as top-level
-/// keys — making the file self-describing rather than identified only by its name and folder — followed by a TOML array
+/// keys - making the file self-describing rather than identified only by its name and folder - followed by a TOML array
 /// of tables under <c>Entries</c>, one table per dated rate, and a second array of tables under <c>Coverage</c>, one
 /// table per recorded fetch window. Decimal rates are written as quoted strings (<see cref="TomlDecimalHandling.String" />)
 /// so the full precision and scale round-trips exactly; dates and instants use TOML's native RFC 3339 forms.
@@ -29,9 +29,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// has no <c>Provider</c>/<c>From</c>/<c>To</c> keys.
 /// </para>
 /// <para>
-/// Files are laid out by the configured <see cref="FileRateCacheOptions.Layout" /> — by default a single file per pair
+/// Files are laid out by the configured <see cref="FileRateCacheOptions.Layout" /> - by default a single file per pair
 /// under a per-provider subdirectory, or one file per calendar period when a partitioned layout is selected. Malformed
-/// content is treated as an empty result, and all file-level resilience — including atomic temp-and-move writes — is
+/// content is treated as an empty result, and all file-level resilience - including atomic temp-and-move writes - is
 /// provided by <see cref="FileRateCacheBase{TOptions}" />.
 /// </para>
 /// </remarks>

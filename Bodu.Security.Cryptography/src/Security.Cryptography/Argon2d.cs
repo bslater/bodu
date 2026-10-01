@@ -7,12 +7,12 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes the Argon2d password-hashing and key-derivation function (RFC 9106) — the variant that uses data-dependent
+/// Computes the Argon2d password-hashing and key-derivation function (RFC 9106) - the variant that uses data-dependent
 /// memory addressing, maximizing time-memory trade-off resistance at the cost of exposing memory access patterns to
 /// side-channel observation. This class cannot be inherited.
 /// </summary>
 /// <remarks>
-/// Argon2d is appropriate where side-channel timing attacks are not a concern — for example cryptocurrency and
+/// Argon2d is appropriate where side-channel timing attacks are not a concern - for example cryptocurrency and
 /// proof-of-work workloads. For password hashing on shared hardware, prefer <see cref="Argon2id" />.
 /// </remarks>
 public sealed class Argon2d

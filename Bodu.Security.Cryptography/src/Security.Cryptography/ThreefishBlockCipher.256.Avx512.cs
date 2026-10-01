@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// AVX-512 vectorised implementation of <see cref="Threefish256Cipher" />. The four 64-bit state words are split across
-/// two <see cref="Vector128{T}" /> registers — <c>lo</c> holds the even-position words <c>(b0, b2)</c> and <c>hi</c>
+/// two <see cref="Vector128{T}" /> registers - <c>lo</c> holds the even-position words <c>(b0, b2)</c> and <c>hi</c>
 /// the odd-position words <c>(b1, b3)</c>. Each round performs a vector add, a per-lane variable rotate (<c>VPROLVQ</c>
 /// ), an XOR, and a single 64-bit lane swap on <c>hi</c> that realigns it for the next round's MIX pairing.
 /// </summary>
@@ -21,13 +21,13 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Threefish-256 alternates between two MIX pair patterns within a 4-round group: <c>(0,1)(2,3)</c> at rounds 0 and 2,
 /// and <c>(0,3)(2,1)</c> at rounds 1 and 3. With the state split into even/odd halves, the alternation reduces to a
-/// single swap of <c>hi</c>'s two lanes — applied four times in a row, the swaps cycle back to canonical layout, which
+/// single swap of <c>hi</c>'s two lanes - applied four times in a row, the swaps cycle back to canonical layout, which
 /// is exactly where the subkey injection lands.
 /// </para>
 /// <para>
 /// Gated on <see cref="Avx512F.VL.IsSupported" /> because the per-lane variable rotate runs on
-/// <see cref="Vector128{T}" />. SIMD gain on Threefish-256 is the smallest of the three variants — the 128-bit working
-/// width matches scalar register count and the per-instruction overhead is high relative to the work — but the
+/// <see cref="Vector128{T}" />. SIMD gain on Threefish-256 is the smallest of the three variants - the 128-bit working
+/// width matches scalar register count and the per-instruction overhead is high relative to the work - but the
 /// implementation keeps the family pattern consistent and provides a measured reduction in scalar instruction count per
 /// round.
 /// </para>

@@ -13,8 +13,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// AVX-512 vectorised implementation of <see cref="Threefish512Cipher" />. The eight 64-bit state words are split
-/// across two <see cref="Vector256{T}" /> registers — <c>lo</c> holds the even-position words <c>(x0, x2, x4, x6)</c>
-/// and <c>hi</c> the odd-position words <c>(x1, x3, x5, x7)</c> — and each round applies a vector add, a per-lane
+/// across two <see cref="Vector256{T}" /> registers - <c>lo</c> holds the even-position words <c>(x0, x2, x4, x6)</c>
+/// and <c>hi</c> the odd-position words <c>(x1, x3, x5, x7)</c> - and each round applies a vector add, a per-lane
 /// variable rotate (<c>VPROLVQ</c>), an XOR, and a pair of lane shuffles that realign the registers for the next
 /// round's MIX pairing.
 /// </summary>
@@ -36,19 +36,19 @@ public sealed partial class Threefish512Cipher
 {
     /// <summary>The <c>VPERMQ</c> control byte that rotates the <c>lo</c> register's four lanes left by one position for the forward inter-round shuffle.</summary>
     /// <remarks>
-    /// Selects lanes <c>(1, 2, 3, 0)</c> — a left-rotate by one.
+    /// Selects lanes <c>(1, 2, 3, 0)</c> - a left-rotate by one.
     /// </remarks>
     private const byte ShuffleLoForward = 0x39;
 
     /// <summary>The <c>VPERMQ</c> control byte that rotates the <c>lo</c> register's four lanes right by one position for the Decrypt pass.</summary>
     /// <remarks>
-    /// Selects lanes <c>(3, 0, 1, 2)</c> — a right-rotate by one.
+    /// Selects lanes <c>(3, 0, 1, 2)</c> - a right-rotate by one.
     /// </remarks>
     private const byte ShuffleLoInverse = 0x93;
 
     /// <summary>The <c>VPERMQ</c> control byte that swaps lanes 1 and 3 of the <c>hi</c> register; an involution, so the same byte serves both the forward and inverse directions.</summary>
     /// <remarks>
-    /// Selects lanes <c>(0, 3, 2, 1)</c> — swap 1 and 3 (self-inverse).
+    /// Selects lanes <c>(0, 3, 2, 1)</c> - swap 1 and 3 (self-inverse).
     /// </remarks>
     private const byte ShuffleHiSwap13 = 0x6C;
 
@@ -177,7 +177,7 @@ public sealed partial class Threefish512Cipher
 
         // Walk the subkey-injection / round groups in reverse. Each inverse-round applies the inverse
         // shuffle first to undo the previous forward shuffle, then UNMIX with the rotation that round
-        // used originally — so the loop body mirrors EncryptAvx512 in reverse order.
+        // used originally - so the loop body mirrors EncryptAvx512 in reverse order.
         for (int d = (72 / 4) - 1; d >= 1; d -= 2)
         {
             int dm9 = d % 9, dm3 = d % 3;
@@ -194,7 +194,7 @@ public sealed partial class Threefish512Cipher
                 Unsafe.Add(ref keyRef, dm9 + 6) + Unsafe.Add(ref tweakRef, dm3 + 1),
                 Unsafe.Add(ref keyRef, dm9 + 8) + (ulong)(d + 1));
 
-            // Reverse the second 4 rounds (rotations R28..R31, R24..R27, R20..R23, R16..R19) — four
+            // Reverse the second 4 rounds (rotations R28..R31, R24..R27, R20..R23, R16..R19) - four
             // inverse shuffles cycle the registers back through layouts L3, L2, L1, L0 = canonical.
             SimdRoundInverse(ref lo, ref hi, s_rotVec7);
             SimdRoundInverse(ref lo, ref hi, s_rotVec6);

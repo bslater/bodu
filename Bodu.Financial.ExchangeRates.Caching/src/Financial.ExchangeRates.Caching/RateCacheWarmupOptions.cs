@@ -14,8 +14,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The warmed window defaults to a rolling look-back from the current UTC date — <c>[today −
-/// <see cref="LookbackDays" />, today]</c>, evaluated when the warm-up runs — so a service that restarts daily always
+/// The warmed window defaults to a rolling look-back from the current UTC date - <c>[today −
+/// <see cref="LookbackDays" />, today]</c>, evaluated when the warm-up runs - so a service that restarts daily always
 /// warms its recent history. Either bound can be pinned with <see cref="StartDate" /> or <see cref="EndDate" />; a
 /// pinned bound replaces its rolling default independently of the other.
 /// </para>

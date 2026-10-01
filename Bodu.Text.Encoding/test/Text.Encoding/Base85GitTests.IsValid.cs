@@ -74,7 +74,7 @@ public sealed partial class Base85GitTests
         byte[] withoutPrefixStyle = Base85.Decode("<~0RjUA~>".AsSpan(), Base85Variant.GitCompact);
         byte[] payloadOnly = Base85.Decode("0RjUA".AsSpan(), Base85Variant.GitCompact);
 
-        // AllowPrefix has no effect for Git — the delimiter characters are decoded as data either way ...
+        // AllowPrefix has no effect for Git - the delimiter characters are decoded as data either way ...
         CollectionAssert.AreEqual(withoutPrefixStyle, withDelimiters);
 
         // ... so the result differs from decoding the bare payload.

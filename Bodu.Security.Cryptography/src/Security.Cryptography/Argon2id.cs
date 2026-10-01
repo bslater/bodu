@@ -7,7 +7,7 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes the Argon2id password-hashing and key-derivation function (RFC 9106) — the hybrid variant that uses
+/// Computes the Argon2id password-hashing and key-derivation function (RFC 9106) - the hybrid variant that uses
 /// data-independent addressing for the first half of the first pass and data-dependent addressing thereafter. This is
 /// the RECOMMENDED default for password hashing. This class cannot be inherited.
 /// </summary>

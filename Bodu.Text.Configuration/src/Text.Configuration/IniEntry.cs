@@ -21,7 +21,7 @@ namespace Bodu.Text.Configuration;
 /// <see cref="IniSection.SetEntry(string, string)" />, which replaces the entry while preserving its trivia.
 /// </para>
 /// <para>
-/// The comment trivia — <see cref="InlineComment" /> and the <see cref="LeadingComments" /> list — remains editable so
+/// The comment trivia - <see cref="InlineComment" /> and the <see cref="LeadingComments" /> list - remains editable so
 /// that annotations can be attached when authoring a document. The <see cref="LineNumber" /> reflects parser-assigned
 /// trivia and is read-only.
 /// </para>

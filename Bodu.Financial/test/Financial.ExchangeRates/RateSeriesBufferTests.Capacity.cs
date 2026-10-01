@@ -10,7 +10,7 @@ public partial class RateSeriesBufferTests
 {
     /// <summary>
     /// Verifies that growing from zero capacity through many inserts produces a strictly ascending, complete buffer
-    /// — exercising the doubling growth path inside <see cref="RateSeriesBuffer" />.
+    /// - exercising the doubling growth path inside <see cref="RateSeriesBuffer" />.
     /// </summary>
     [TestMethod]
     public void Capacity_WhenManyInsertsForceGrowth_ShouldPreserveAllObservations()

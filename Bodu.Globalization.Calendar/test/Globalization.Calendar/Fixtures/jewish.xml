@@ -5,10 +5,10 @@
   sweep (sweepCalendarYears); three further observances are exact, invariant day offsets authored as OffsetFromRule.
   Expected dates are sourced from Hebcal (https://www.hebcal.com), whose computation matches the base class library's
   HebrewCalendar. Authored months and days mirror v1 exactly:
-    Rosh Hashanah  Tishri/01  (durationDays 2)        — Tishri is month 1, stable across leap years
-    Hanukkah       Kislev/25  (durationDays 8)        — Kislev is month 3, stable across leap years
-    Purim          LastAdar/14                        — alias resolves to Adar II (month 7) in leap years, Adar I (month 6) otherwise
-    Passover       Nisan/15   (durationDays 7)        — alias resolves to month 8 in leap years, month 7 otherwise
+    Rosh Hashanah  Tishri/01  (durationDays 2)        - Tishri is month 1, stable across leap years
+    Hanukkah       Kislev/25  (durationDays 8)        - Kislev is month 3, stable across leap years
+    Purim          LastAdar/14                        - alias resolves to Adar II (month 7) in leap years, Adar I (month 6) otherwise
+    Passover       Nisan/15   (durationDays 7)        - alias resolves to month 8 in leap years, month 7 otherwise
     Yom Kippur     Rosh Hashanah + 9 days
     Sukkot         Rosh Hashanah + 14 days (durationDays 7)
     Shavuot        Passover + 50 days

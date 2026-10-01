@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="tf-title tf-desc">
-  <title id="tf-title">Threefish round function — MIX, permute, subkey injection</title>
+  <title id="tf-title">Threefish round function - MIX, permute, subkey injection</title>
   <desc id="tf-desc">The Threefish round operates on a pair of 64-bit words through the MIX function: x0 plus x1 modulo 2 to the 64, then x1 rotated left by a round-dependent constant, then XORed with the new x0. After every MIX layer the words are permuted, and a subkey is added to every word once every four rounds. Threefish-256 uses 4 words over 72 rounds, Threefish-512 uses 8 words over 72 rounds, and Threefish-1024 uses 16 words over 80 rounds.</desc>
 
   <defs>
@@ -38,11 +38,11 @@
     <rect class="panel" width="800" height="300" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Threefish — the round: MIX ⟶ word permutation ⟶ subkey every 4 rounds</text>
+    <text class="title" x="16" y="20">Threefish - the round: MIX ⟶ word permutation ⟶ subkey every 4 rounds</text>
     <text class="formula" x="784" y="38" text-anchor="end">y₀ = x₀ ⊞ x₁;   y₁ = (x₁ ≪ Rᵈ) ⊕ y₀</text>
 
     <!-- MIX function group -->
-    <text class="sub" x="30" y="74">MIX(x₀, x₁) — one word pair</text>
+    <text class="sub" x="30" y="74">MIX(x₀, x₁) - one word pair</text>
 
     <!-- input words -->
     <g transform="translate(70 100)">
@@ -97,7 +97,7 @@
       <rect class="subkey" x="-58" y="-30" width="116" height="60" rx="6" fill="#475569" stroke="#64748B"/>
       <text class="box-text" x="0" y="-8">word</text>
       <text class="box-text" x="0" y="8">permutation</text>
-      <text class="sub-muted" x="0" y="24" text-anchor="middle">π — shuffle words</text>
+      <text class="sub-muted" x="0" y="24" text-anchor="middle">π - shuffle words</text>
     </g>
     <path class="wire-perm" d="M 350 100 L 472 110" marker-end="url(#tf-arr-p)"/>
     <path class="wire-perm" d="M 450 180 L 472 170" marker-end="url(#tf-arr-p)"/>
@@ -120,12 +120,12 @@
     <!-- variant legend -->
     <g transform="translate(620 60)">
       <text class="sub" x="0" y="0">Variants:</text>
-      <text class="sub-muted" x="0" y="16">Threefish-256 — 4 words · 72 rounds</text>
-      <text class="sub-muted" x="0" y="31">Threefish-512 — 8 words · 72 rounds</text>
-      <text class="sub-muted" x="0" y="46">Threefish-1024 — 16 words · 80 rounds</text>
+      <text class="sub-muted" x="0" y="16">Threefish-256 - 4 words · 72 rounds</text>
+      <text class="sub-muted" x="0" y="31">Threefish-512 - 8 words · 72 rounds</text>
+      <text class="sub-muted" x="0" y="46">Threefish-1024 - 16 words · 80 rounds</text>
     </g>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="284">Each round mixes every word pair, permutes the words, and — at rounds 0, 4, 8, … — injects a tweak-dependent subkey.</text>
+    <text class="sub" x="20" y="284">Each round mixes every word pair, permutes the words, and - at rounds 0, 4, 8, … - injects a tweak-dependent subkey.</text>
   </g>
 </svg>

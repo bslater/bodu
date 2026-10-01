@@ -1,13 +1,13 @@
 # Bodu.Financial.ExchangeRates.Fixer
 
-> **API stability — Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Fixer**
 (`fixer.io`) foreign-exchange REST service.
 
 It fetches the Fixer time-series and single-date endpoints, parses the JSON response, and
 serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values through the
-standard `IDatedRateProvider` and `IRateProvider` contracts — so it composes with
+standard `IDatedRateProvider` and `IRateProvider` contracts - so it composes with
 `Money.ConvertTo`, the caching and aggregating providers, and the rest of the
 Bodu.Financial FX stack. The same interfaces and DI shape as every other provider, a
 different data source.
@@ -34,7 +34,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 - **Plan limits.** The free plan is locked to a EUR base and to the latest and single-date
   endpoints; changing the base currency and the time-series endpoint require a paid plan. A
   request the account's plan does not permit surfaces as a fetch failure, not a pre-empted
-  request — on the free plan, request pairs whose source currency is EUR (or rely on the
+  request - on the free plan, request pairs whose source currency is EUR (or rely on the
   inverse-lookup fallback).
 - **API key required.** Set `ApiKey`; it is presented as the `access_key` query parameter.
 - **No provider-local disk cache.** For durable caching, compose with
@@ -57,7 +57,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ## Dependency injection
 
 The package ships its own `AddFixerExchangeRates` registration in the
-`Bodu.Financial.ExchangeRates` namespace — there is no separate `*.DependencyInjection`
+`Bodu.Financial.ExchangeRates` namespace - there is no separate `*.DependencyInjection`
 package.
 
 ```csharp

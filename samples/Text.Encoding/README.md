@@ -7,7 +7,7 @@ sample is a standalone project; run one with:
 dotnet run --project samples/Text.Encoding/<SampleName>
 ```
 
-Every sample is pure computation over fixed payloads — offline and deterministic, no data
+Every sample is pure computation over fixed payloads - offline and deterministic, no data
 files. The `CustomEncoding.Test` project runs with the library test suites in CI.
 
 ## Sample → pattern → package matrix

@@ -73,7 +73,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
         Assert.IsFalse(algorithm.VerifyHash(s_sampleData, wrong));
     }
-    // ─── Byte-array overload — matching input ─────────────────────────────────────────────────
+    // ─── Byte-array overload - matching input ─────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that the byte-array overload returns <see langword="true" /> when the input matches the expected hash.
@@ -287,7 +287,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public void VerifyHash_WhenStreamCalledAfterAppend_ShouldIgnorePriorState()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Append(new byte[] { 100, 200 }); // prior state — must be discarded
+        algorithm.Append(new byte[] { 100, 200 }); // prior state - must be discarded
 
         using MemoryStream stream = new(s_sampleData);
 

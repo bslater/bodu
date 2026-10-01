@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public partial class RunningQuantileTests
 {
     /// <summary>
-    /// Verifies that a strictly ascending stream — repeated high-side marker movement — keeps the median estimate
+    /// Verifies that a strictly ascending stream - repeated high-side marker movement - keeps the median estimate
     /// near the exact median.
     /// </summary>
     [TestMethod]
@@ -26,7 +26,7 @@ public partial class RunningQuantileTests
     }
 
     /// <summary>
-    /// Verifies that a strictly descending stream — repeated low-side marker movement — keeps the median estimate
+    /// Verifies that a strictly descending stream - repeated low-side marker movement - keeps the median estimate
     /// near the exact median.
     /// </summary>
     [TestMethod]
@@ -43,7 +43,7 @@ public partial class RunningQuantileTests
     }
 
     /// <summary>
-    /// Verifies that a duplicate-heavy stream — equal marker heights — keeps the marker ordering intact: the median
+    /// Verifies that a duplicate-heavy stream - equal marker heights - keeps the marker ordering intact: the median
     /// estimate stays between the mass points that straddle the exact median. P²'s parabolic interpolation
     /// deliberately smooths between discrete mass points, so exact-median equality is not the contract here.
     /// </summary>
@@ -63,7 +63,7 @@ public partial class RunningQuantileTests
     }
 
     /// <summary>
-    /// Verifies that a two-point distribution — the common telemetry fast-path/slow-path shape — keeps the median
+    /// Verifies that a two-point distribution - the common telemetry fast-path/slow-path shape - keeps the median
     /// estimate between the two mass points and near the interpolated exact median.
     /// </summary>
     [TestMethod]
@@ -112,7 +112,7 @@ public partial class RunningQuantileTests
 
     /// <summary>
     /// Verifies the affine-equivariance law: estimating over the transformed stream a·x + b (a &gt; 0) equals
-    /// transforming the estimate, up to floating-point rounding — the P² update is linear in the marker heights.
+    /// transforming the estimate, up to floating-point rounding - the P² update is linear in the marker heights.
     /// </summary>
     [TestMethod]
     public void Estimate_WhenStreamIsAffineTransformed_ShouldTransformTheEstimate()

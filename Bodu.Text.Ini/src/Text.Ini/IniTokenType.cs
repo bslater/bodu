@@ -43,13 +43,13 @@ public enum IniTokenType
     Comment,
 
     /// <summary>
-    /// The start of an object — the document root or a section. Emitted only by the normalized
+    /// The start of an object - the document root or a section. Emitted only by the normalized
     /// <see cref="Bodu.Text.Ini.Reader.IniDocumentReader" />.
     /// </summary>
     StartObject,
 
     /// <summary>
-    /// The end of an object — the document root or a section. Emitted only by the normalized
+    /// The end of an object - the document root or a section. Emitted only by the normalized
     /// <see cref="Bodu.Text.Ini.Reader.IniDocumentReader" />.
     /// </summary>
     EndObject,

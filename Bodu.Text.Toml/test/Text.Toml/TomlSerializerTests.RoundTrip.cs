@@ -14,7 +14,7 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies that every value the <see cref="TomlSerializer" /> can emit is read back by the same serializer to an
-/// equal value — the serializer must never produce a document that its own <c>Deserialize</c> rejects or decodes to a
+/// equal value - the serializer must never produce a document that its own <c>Deserialize</c> rejects or decodes to a
 /// different value.
 /// </summary>
 public partial class TomlSerializerTests

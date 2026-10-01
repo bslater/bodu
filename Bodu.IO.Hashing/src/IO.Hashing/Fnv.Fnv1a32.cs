@@ -33,7 +33,7 @@ namespace Bodu.IO.Hashing;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Fnv1a32.</strong> The recommended 32-bit FNV variant — better avalanche than
+/// <strong>When to choose Fnv1a32.</strong> The recommended 32-bit FNV variant - better avalanche than
 /// <see cref="Fnv132" /> at identical cost. Pick it for hash-table keying of short strings or identifiers when 32 bits
 /// is enough; reach for <see cref="MurmurHash3_32" /> on inputs longer than ~16 bytes or when SMHasher quality matters,
 /// and for <see cref="Fnv1a64" /> when 64 bits would meaningfully reduce collisions.

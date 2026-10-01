@@ -11,7 +11,7 @@ using System.Text;
 namespace Bodu.CodeStyle.XmlDocumentation;
 
 /// <summary>
-/// Provides the shared, Roslyn-free text primitives for working with the logical content of a documentation comment —
+/// Provides the shared, Roslyn-free text primitives for working with the logical content of a documentation comment -
 /// stripping the physical <c>///</c> prefixes, recovering logical body lines, and canonicalizing prose to a single
 /// line. These are the doc-comment text operations shared by the formatter and by the content-quality code fixes so
 /// they all reduce and re-emit doc-comment text the same way.

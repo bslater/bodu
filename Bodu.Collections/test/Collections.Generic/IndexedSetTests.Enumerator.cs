@@ -132,7 +132,7 @@ public partial class IndexedSetTests
         Assert.IsFalse(enumerator.MoveNext());
     }
     // --------------------------------------------------------
-    // GetEnumerator — typed struct
+    // GetEnumerator - typed struct
     // --------------------------------------------------------
 
     /// <summary>

@@ -10,8 +10,8 @@ using System.Buffers.Binary;
 namespace Bodu.IO.Biff.Samples.BiffBasics.Scenarios;
 
 /// <summary>
-/// Demonstrates <see cref="BiffWriter" />: a minimal BIFF8 workbook stream — globals with a shared string table and
-/// one bound sheet, then the sheet with every cell kind — assembled with <see cref="BiffWriter.BytesCommitted" />
+/// Demonstrates <see cref="BiffWriter" />: a minimal BIFF8 workbook stream - globals with a shared string table and
+/// one bound sheet, then the sheet with every cell kind - assembled with <see cref="BiffWriter.BytesCommitted" />
 /// supplying the sheet offset, and read straight back through <see cref="BiffReader" />. The same code under
 /// <see cref="BiffVersion.Biff5" /> writes code-page text and the BIFF5 layouts instead.
 /// </summary>

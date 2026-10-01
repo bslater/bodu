@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// <see cref="string.Trim()" /> applied to <paramref name="value" />.
     /// </returns>
     /// <remarks>
-    /// Avoids the common mistake of writing <c>value?.Trim() ?? string.Empty</c> manually — the <see langword="null" />
+    /// Avoids the common mistake of writing <c>value?.Trim() ?? string.Empty</c> manually - the <see langword="null" />
     /// propagation precedes the trim call so callers can safely chain further string operations on the result.
     /// </remarks>
     public static string TrimOrEmpty(this string? value) =>

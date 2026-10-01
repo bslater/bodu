@@ -15,7 +15,7 @@ public static partial class DateOnlyExtensions
     /// The ISO 8601 year to evaluate. Must be between the <c>Year</c> property values of
     /// <see cref="DateOnly.MinValue" /> and <see cref="DateOnly.MaxValue" />, inclusive.
     /// </param>
-    /// <returns>The number of ISO 8601 weeks in the supplied year — either 52 or 53.</returns>
+    /// <returns>The number of ISO 8601 weeks in the supplied year - either 52 or 53.</returns>
     /// <remarks>
     /// <para>
     /// According to ISO 8601, a year contains 53 weeks if either of the following is true:
@@ -33,7 +33,7 @@ public static partial class DateOnlyExtensions
     /// </list>
     /// <para>
     /// All other years contain exactly 52 weeks. This member delegates to
-    /// <see cref="DateTimeExtensions.GetIsoWeeksInYear(int)" /> — the twins share one implementation, so both surfaces
+    /// <see cref="DateTimeExtensions.GetIsoWeeksInYear(int)" /> - the twins share one implementation, so both surfaces
     /// always agree.
     /// </para>
     /// </remarks>

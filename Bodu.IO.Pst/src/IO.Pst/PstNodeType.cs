@@ -7,7 +7,7 @@
 namespace Bodu.IO.Pst;
 
 /// <summary>
-/// Identifies the kind of object a node holds — the five type bits of a <see cref="PstNodeId" /> (the <c>NID_TYPE_*</c>
+/// Identifies the kind of object a node holds - the five type bits of a <see cref="PstNodeId" /> (the <c>NID_TYPE_*</c>
 /// values of MS-PST §2.2.2.1).
 /// </summary>
 public enum PstNodeType

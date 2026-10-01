@@ -76,7 +76,7 @@ public partial class AsconXof128Tests
 
     /// <summary>
     /// Verifies that <see cref="AsconXof128.HashData" /> produces different outputs for consecutive
-    /// input lengths — i.e., adding one byte to the message always changes the output.
+    /// input lengths - i.e., adding one byte to the message always changes the output.
     /// </summary>
     [TestMethod]
 
@@ -134,7 +134,7 @@ public partial class AsconXof128Tests
 
     /// <summary>
     /// Verifies that <see cref="AsconXof128.HashData" /> reproduces, byte-for-byte, the exact output of every vector in
-    /// the official ascon-c <c>LWC_XOF_KAT_128_512</c> reference file — the full 1025-row corpus, loaded dynamically
+    /// the official ascon-c <c>LWC_XOF_KAT_128_512</c> reference file - the full 1025-row corpus, loaded dynamically
     /// from the embedded resource, pinning the entire data path to the published NIST SP 800-232 KAT.
     /// </summary>
     /// <param name="vector">The XOF known-answer vector under test.</param>

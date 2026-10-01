@@ -39,7 +39,7 @@ public static class RateCachingExtensions
     /// An optional factory producing the <see cref="IRateCache" /> from the service provider and the provider name.
     /// When <see langword="null" />, a default <see cref="TomlFileRateCache" /> bound to
     /// <paramref name="providerName" /> under the options' <c>CacheDirectory</c> is used. Supply a factory to choose
-    /// the storage structure — for example a JSON cache, a partitioned file layout, or a SQLite or distributed cache.
+    /// the storage structure - for example a JSON cache, a partitioned file layout, or a SQLite or distributed cache.
     /// </param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
@@ -49,7 +49,7 @@ public static class RateCachingExtensions
     /// Thrown when <paramref name="providerName" /> or <paramref name="sectionName" /> is empty or white space.
     /// </exception>
     /// <remarks>
-    /// The source <typeparamref name="TProvider" /> must already be registered — for example through its provider
+    /// The source <typeparamref name="TProvider" /> must already be registered - for example through its provider
     /// package's registration such as <c>AddRbaExchangeRates</c>. This method resolves the registered instance and
     /// wraps it in a caching decorator; it does not construct the source or its own dependencies (such as its
     /// <see cref="HttpClient" />), so registering only the cache without the source fails when the provider is

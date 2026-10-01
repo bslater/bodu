@@ -10,8 +10,8 @@ uid: Bodu.Text.Bencode.Writer
 
 ## Key types
 
-- <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> — the `ref struct` writer: `WriteStartList` / `WriteEndList`, `WriteStartDictionary` / `WriteEndDictionary`, `WritePropertyName`, `WriteInteger`, `WriteString` / `WriteByteString`, the name-plus-value conveniences, and `WriteRawValue`.
-- <xref:Bodu.Text.Bencode.Writer.BencodeWriterOptions> — `MaxDepth` and `AllowMultipleRootValues`.
+- <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> - the `ref struct` writer: `WriteStartList` / `WriteEndList`, `WriteStartDictionary` / `WriteEndDictionary`, `WritePropertyName`, `WriteInteger`, `WriteString` / `WriteByteString`, the name-plus-value conveniences, and `WriteRawValue`.
+- <xref:Bodu.Text.Bencode.Writer.BencodeWriterOptions> - `MaxDepth` and `AllowMultipleRootValues`.
 
 ## Example
 
@@ -32,7 +32,7 @@ writer.WriteEndDictionary();
 
 ## Notes
 
-- **Canonical ordering is automatic.** Each dictionary's entries are buffered and sorted bytewise when it is closed; root values and list items stream straight to the destination. There is no `Flush` — bytes are committed as they are emitted.
+- **Canonical ordering is automatic.** Each dictionary's entries are buffered and sorted bytewise when it is closed; root values and list items stream straight to the destination. There is no `Flush` - bytes are committed as they are emitted.
 - **Grammar is enforced.** A property name outside a dictionary, a mismatched container end, a duplicate key, or a second root value (without `AllowMultipleRootValues`) throws <xref:System.InvalidOperationException>.
 - **No booleans, floats, or date-times.** Reduce such values to an integer or byte string in a converter before writing.
-- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 9 — Process tokens by hand).
+- **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 9 - Process tokens by hand).

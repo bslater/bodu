@@ -28,7 +28,7 @@ public partial class DatedRateProviderAdapterTests
     }
 
     /// <summary>
-    /// Verifies that the adapter propagates exceptions thrown by the inner provider — for example, when no rate is
+    /// Verifies that the adapter propagates exceptions thrown by the inner provider - for example, when no rate is
     /// available under the pinned date.
     /// </summary>
     [TestMethod]

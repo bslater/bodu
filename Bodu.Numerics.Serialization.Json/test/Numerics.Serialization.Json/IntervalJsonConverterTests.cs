@@ -38,8 +38,8 @@ public class IntervalJsonConverterTests
     }
 
     /// <summary>
-    /// Verifies that deserializing the canonical object form rejects malformed payloads — a duplicate property, a
-    /// missing required property, or a non-numeric endpoint — with a <see cref="JsonException" />.
+    /// Verifies that deserializing the canonical object form rejects malformed payloads - a duplicate property, a
+    /// missing required property, or a non-numeric endpoint - with a <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
     [DataRow("{\"lower\":1,\"upper\":2,\"upper\":3,\"lowerInclusive\":true,\"upperInclusive\":true}", DisplayName = "Duplicate upper")]

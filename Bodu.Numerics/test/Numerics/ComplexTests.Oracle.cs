@@ -109,7 +109,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that the magnitude-selecting <see cref="System.Numerics.INumberBase{TSelf}" /> members agree with
-    /// <see cref="System.Numerics.Complex" /> whenever the two operands have distinct magnitudes — the meaningful
+    /// <see cref="System.Numerics.Complex" /> whenever the two operands have distinct magnitudes - the meaningful
     /// contract. Selection between two exactly-equal magnitudes is implementation-defined for a non-ordered complex
     /// type and is exercised separately in the generic-math tests.
     /// </summary>
@@ -166,7 +166,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that the transcendental functions agree with <see cref="System.Numerics.Complex" /> across the edge
-    /// domain — signed zeros, the non-finite specials, and very large and very small magnitudes — that the moderate
+    /// domain - signed zeros, the non-finite specials, and very large and very small magnitudes - that the moderate
     /// sweep does not reach. This exercises the <c>Tan</c>/<c>Tanh</c> large-argument branch, the <c>Sqrt</c>
     /// overflow-rescale and infinity branches, and every function's non-finite handling. The comparison tolerates a
     /// non-finite result (an infinity is matched exactly, a NaN is skipped) so only a genuine finite divergence fails.
@@ -227,7 +227,7 @@ public partial class ComplexTests
     /// Verifies that <see cref="Complex{T}.Asin" />, <see cref="Complex{T}.Acos" />, and <see cref="Complex{T}.Atan" />
     /// agree with <see cref="System.Numerics.Complex" /> across the interior, the branch cuts (the real axis outside
     /// <c>[-1, 1]</c> for asin / acos, the imaginary axis outside <c>[-i, i]</c> for atan), the branch-cut signed-zero
-    /// sides, and the <c>atan(±i)</c> singularities — so the branch-cut placement is pinned against the framework, not
+    /// sides, and the <c>atan(±i)</c> singularities - so the branch-cut placement is pinned against the framework, not
     /// merely a self-consistent closed form.
     /// </summary>
     [TestMethod]

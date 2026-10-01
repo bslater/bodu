@@ -175,7 +175,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that stringified integer keys are written in the dictionary's insertion order rather than sorted, so
-    /// the key <c>2</c> precedes the key <c>10</c> when inserted first — TOML output preserves document order, in
+    /// the key <c>2</c> precedes the key <c>10</c> when inserted first - TOML output preserves document order, in
     /// contrast to the canonical bytewise key sorting of the Bencode serializer.
     /// </summary>
     [TestMethod]
@@ -273,7 +273,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that a <see cref="Guid" />-keyed dictionary uses the 32-digit hyphenated ("D") format as a bare table
-    /// key — hexadecimal digits and hyphens all fall within the bare-key grammar — and round-trips exactly.
+    /// key - hexadecimal digits and hyphens all fall within the bare-key grammar - and round-trips exactly.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenGuidKeyedDictionary_ShouldUseBareHyphenatedKey()
@@ -306,8 +306,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="char" />-keyed dictionary uses single-character keys — bare when the character falls
-    /// within the bare-key grammar and basic-quoted otherwise — and round-trips.
+    /// Verifies that a <see cref="char" />-keyed dictionary uses single-character keys - bare when the character falls
+    /// within the bare-key grammar and basic-quoted otherwise - and round-trips.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenCharKeyedDictionary_ShouldQuoteNonBareKeys()

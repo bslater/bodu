@@ -48,19 +48,19 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm" /> for any classic
-/// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
+/// Merkle-Damgård cryptographic hash - the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
 /// designs that finalize by appending a length-encoding pad to the last partial block. For the BLAKE-family pattern
 /// (final-block flag, no length-encoding pad) derive from <see cref="DeferredFinalBlockHashAlgorithm" /> instead. For a
-/// keyed Merkle–Damgård hash (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />, which adds key
+/// keyed Merkle-Damgård hash (Poly1305, SipHash) derive from <see cref="KeyedBlockHashAlgorithm" />, which adds key
 /// handling on top of this base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
-/// <c>BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base in <c>Bodu.IO.Hashing</c> is the right pick — it integrates
+/// <c>BlockNonCryptographicHashAlgorithm&lt;T&gt;</c> base in <c>Bodu.IO.Hashing</c> is the right pick - it integrates
 /// with <c>NonCryptographicHashAlgorithm</c> rather than <see cref="HashAlgorithm" />.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Consume through a concrete derivative — the base class drives buffering and finalization.
+/// // Consume through a concrete derivative - the base class drives buffering and finalization.
 /// using HashAlgorithm hash = new Tiger();      // 512-bit block, 192-bit digest
 /// byte[] digest = hash.ComputeHash("hello"u8.ToArray());
 ///
@@ -194,10 +194,10 @@ public abstract class BlockHashAlgorithm
     /// input is padded and aligned to the block size required by the algorithm, often with trailing zeroes and encoded
     /// length information.
     /// </summary>
-    /// <param name="block">The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</param>
+    /// <param name="block">The final block of unprocessed input, typically containing 0 to BlockSize-1 bytes.</param>
     /// <param name="messageLength">
     /// The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
-    /// <paramref name="block" />. This is the value most Merkle–Damgård length encodings append.
+    /// <paramref name="block" />. This is the value most Merkle-Damgård length encodings append.
     /// </param>
     /// <returns>
     /// A padded byte array consisting of one or more full blocks that include the input data and message length
@@ -206,11 +206,11 @@ public abstract class BlockHashAlgorithm
     /// <remarks>
     /// <para>
     /// The returned array must be aligned to the algorithm’s block size. Padding schemes often include a leading '1'
-    /// bit, followed by zero bytes, and end with a length field (e.g., as in Merkle–Damgård construction).
+    /// bit, followed by zero bytes, and end with a length field (e.g., as in Merkle-Damgård construction).
     /// </para>
     /// <para>
     /// This overload and the span-writing <see cref="PadBlock(ReadOnlySpan{byte}, ulong, Span{byte})" /> overload
-    /// default to delegating to each other, so a derived class must override <strong>exactly one</strong> of them —
+    /// default to delegating to each other, so a derived class must override <strong>exactly one</strong> of them -
     /// preferably the span-writing form, which avoids a heap allocation per finalization.
     /// </para>
     /// </remarks>
@@ -230,16 +230,16 @@ public abstract class BlockHashAlgorithm
     /// Pads the final partial block of input data into <paramref name="destination" /> and appends the encoded total
     /// message length, without allocating a padded copy on the heap.
     /// </summary>
-    /// <param name="block">The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</param>
+    /// <param name="block">The final block of unprocessed input, typically containing 0 to BlockSize-1 bytes.</param>
     /// <param name="messageLength">
     /// The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
-    /// <paramref name="block" />. This is the value most Merkle–Damgård length encodings append.
+    /// <paramref name="block" />. This is the value most Merkle-Damgård length encodings append.
     /// </param>
     /// <param name="destination">
     /// The span receiving the padded block or blocks; at least two blocks (<c>2 × BlockSize / 8</c> bytes) long. The
     /// caller clears the span after processing.
     /// </param>
-    /// <returns>The number of bytes written — one or two whole blocks, ready for <see cref="ProcessBlock" />.</returns>
+    /// <returns>The number of bytes written - one or two whole blocks, ready for <see cref="ProcessBlock" />.</returns>
     /// <remarks>
     /// The default implementation delegates to the array-returning <see cref="PadBlock(ReadOnlySpan{byte}, ulong)" />
     /// overload and clears the intermediate array; see that overload's remarks for the override contract.

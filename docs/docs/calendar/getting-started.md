@@ -1,8 +1,8 @@
 ---
-title: Bodu.Globalization.Calendar — Getting started
+title: Bodu.Globalization.Calendar - Getting started
 ---
 
-# Bodu.Globalization.Calendar — Getting started
+# Bodu.Globalization.Calendar - Getting started
 
 Unfamiliar with terms like *document*, *resource*, *rule*, *nominal date*, or *territory*? Read [Core concepts](concepts.md) first.
 
@@ -58,7 +58,7 @@ IReadOnlyList<NotableDate> jan = service.Resolve(new DateOnly(2026, 1, 1), "US")
 Console.WriteLine(jan[0].DisplayName);                                // New Year's Day
 ```
 
-A document that uses `<Imports>` must be loaded with a resolver so import names can be fetched — pass `CommonNotableDateResources.Resolver` to pull from the bundled catalogues:
+A document that uses `<Imports>` must be loaded with a resolver so import names can be fetched - pass `CommonNotableDateResources.Resolver` to pull from the bundled catalogues:
 
 ```csharp
 NotableDateResource resource =
@@ -107,7 +107,7 @@ IReadOnlyList<NotableDate> firstHalf = service.Resolve(2026, "AU-NSW", filter);
 
 ```csharp
 using Bodu.Globalization.Calendar;
-using Bodu.Extensions;                       // NotableDateOnlyExtensions — not auto-imported
+using Bodu.Extensions;                       // NotableDateOnlyExtensions - not auto-imported
 
 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -118,7 +118,7 @@ DateOnly inFive    = today.AddWorkingDays(5, service, "AU-NSW");
 int      between   = today.WorkingDaysBetween(inFive, service, "AU-NSW");
 ```
 
-The same operations exist over `DateTime` and `DateTimeOffset` (`NotableDateTimeExtensions`, `NotableDateTimeOffsetExtensions`, also in `Bodu.Extensions`). Every method accepts an optional `Bodu.Core` `WeekPattern` to override the default Monday–Friday working week — e.g. `today.NextWorkingDay(service, "AE", WeekPattern.SundayToThursday)`.
+The same operations exist over `DateTime` and `DateTimeOffset` (`NotableDateTimeExtensions`, `NotableDateTimeOffsetExtensions`, also in `Bodu.Extensions`). Every method accepts an optional `Bodu.Core` `WeekPattern` to override the default Monday-Friday working week - e.g. `today.NextWorkingDay(service, "AE", WeekPattern.SundayToThursday)`.
 
 ### Register a custom algorithm
 
@@ -139,7 +139,7 @@ NotableDateService  service  = new NotableDateService(
     resource, new NotableDateServiceOptions { Algorithms = registry });
 ```
 
-Custom collaborators — algorithm registry, collision resolver, adjustment / trigger handlers, and code-first providers — are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> (an object with `init`-only properties); there is no positional-collaborator constructor. The single-argument `new NotableDateService(resource)` covers the built-in path.
+Custom collaborators - algorithm registry, collision resolver, adjustment / trigger handlers, and code-first providers - are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions> (an object with `init`-only properties); there is no positional-collaborator constructor. The single-argument `new NotableDateService(resource)` covers the built-in path.
 
 Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) need no registration. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
 
@@ -174,9 +174,9 @@ builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"
 
 ## Where to go next
 
-- **[Bodu.Globalization.Calendar introduction](index.md)** — mental model, headline types, scenarios.
-- **[Core concepts](concepts.md)** — vocabulary used across the rest of the documentation.
-- **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
-- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** — full type-by-type docs.
-- **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` resources.
-- **[Runnable samples](../../samples/calendar.md)** — offline sample projects under `samples/Globalization.Calendar/` you can `dotnet run` and copy from.
+- **[Bodu.Globalization.Calendar introduction](index.md)** - mental model, headline types, scenarios.
+- **[Core concepts](concepts.md)** - vocabulary used across the rest of the documentation.
+- **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** - `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
+- **[Bodu.Globalization.Calendar API reference](xref:Bodu.Globalization.Calendar)** - full type-by-type docs.
+- **[Calendar data packs guide](../../guides/calendar/data-packs.md)** - composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` resources.
+- **[Runnable samples](../../samples/calendar.md)** - offline sample projects under `samples/Globalization.Calendar/` you can `dotnet run` and copy from.

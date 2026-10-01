@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml.Samples.TomlBasics.Scenarios;
 /// <summary>
 /// Demonstrates TOML's headline feature over JSON: four native date-time kinds. An offset
 /// date-time is an exact instant; a local date-time, local date, and local time deliberately carry
-/// no zone — and the serializer maps each to the matching .NET type instead of forcing everything
+/// no zone - and the serializer maps each to the matching .NET type instead of forcing everything
 /// through <see cref="DateTime" />.
 /// </summary>
 public static class TemporalKinds

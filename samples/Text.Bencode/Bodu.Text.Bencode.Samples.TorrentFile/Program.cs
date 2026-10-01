@@ -10,7 +10,7 @@ namespace Bodu.Text.Bencode.Samples.TorrentFile;
 
 /// <summary>
 /// Entry point for the torrent-file sample: reading a real BitTorrent metainfo file (BEP 3) with
-/// <c>Bodu.Text.Bencode</c> — DOM inspection, canonical byte-exact round trips, computing the
+/// <c>Bodu.Text.Bencode</c> - DOM inspection, canonical byte-exact round trips, computing the
 /// info-hash from a raw element slice, and typed POCO mapping. Everything runs offline against
 /// the committed <c>Data/sample.torrent</c>.
 /// </summary>

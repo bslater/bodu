@@ -4,7 +4,7 @@ title: Numeric, enum, array, span, and stream extensions
 
 # Numeric, enum, array, span, and stream extensions
 
-Beyond the [string](string-extensions.md) and [date](date-extensions.md) families, `Bodu.Extensions` carries a set of small, focused helper classes for numbers, comparables, enums, arrays, spans, streams, and raw byte buffers. None of them holds state — every member is a pure function of its arguments — so they are safe to call from any thread.
+Beyond the [string](string-extensions.md) and [date](date-extensions.md) families, `Bodu.Extensions` carries a set of small, focused helper classes for numbers, comparables, enums, arrays, spans, streams, and raw byte buffers. None of them holds state - every member is a pure function of its arguments - so they are safe to call from any thread.
 
 | Class | What it adds |
 |---|---|
@@ -17,13 +17,13 @@ Beyond the [string](string-extensions.md) and [date](date-extensions.md) familie
 
 Every example was run; the comments are the real outputs.
 
-## Pattern 1 — `NumericExtensions`
+## Pattern 1 - `NumericExtensions`
 
 ```csharp
 using Bodu.Extensions;
 
 byte[] digits   = 90210u.ToDigitArray();                    // [9, 0, 2, 1, 0]
-uint reversed   = 90210u.ReverseDigits();                   // 1209 — leading zero dropped
+uint reversed   = 90210u.ReverseDigits();                   // 1209 - leading zero dropped
 uint rotL       = 12345u.RotateDigitsLeft();                // 23451
 uint rotR       = 12345u.RotateDigitsRight(2);              // 45123
 
@@ -35,17 +35,17 @@ int gcdAll = new[] { 12, 18, 30 }.GreatestCommonDivisor();  // 6
 int lcm    = 4.LeastCommonMultiple(6);                      // 12
 long lcmAll = new long[] { 4, 6, 10 }.LeastCommonMultiple();// 60
 
-uint bitsFlipped = 0b0000_0001u.ReverseBits();              // 0x80000000 — full 32-bit mirror
-byte nibble      = ((byte)0b0110).ReverseBits(bitLength: 4);// 6 — mirror within the low 4 bits only
+uint bitsFlipped = 0b0000_0001u.ReverseBits();              // 0x80000000 - full 32-bit mirror
+byte nibble      = ((byte)0b0110).ReverseBits(bitLength: 4);// 6 - mirror within the low 4 bits only
 uint bytesSwapped = 0x12345678u.ReverseBytes();             // 0x78563412
-uint wordsSwapped = 0x12345678u.ReverseWords();             // 0x34127856 — 16-bit halves exchanged
+uint wordsSwapped = 0x12345678u.ReverseWords();             // 0x34127856 - 16-bit halves exchanged
 uint rotl = 0x80000001u.RotateBitsLeft(1);                  // 3
 ushort rotr = ((ushort)1).RotateBitsRight(1);               // 32768
 
 double sig  = 123456.789.RoundToSignificantDigits(4);       // 123500
 decimal sigD = 0.00123456m.RoundToSignificantDigits(2);     // 0.0012
 
-byte[] le = 0x0102u.GetBytes();                             // 02-01-00-00 — little-endian
+byte[] le = 0x0102u.GetBytes();                             // 02-01-00-00 - little-endian
 byte[] be = 0x0102u.GetBytes(asBigEndian: true);            // 00-00-01-02
 ```
 
@@ -58,9 +58,9 @@ byte[] be = 0x0102u.GetBytes(asBigEndian: true);            // 00-00-01-02
 | Rounding | `RoundToSignificantDigits(digits)` on `double` and `decimal` |
 | Extraction | `GetBytes<T>(asBigEndian = false)` for any unmanaged `T` |
 
-Rotation counts must lie in `[0, width]` (0 and the full width are no-ops; anything else throws `ArgumentOutOfRangeException`), `RoundToSignificantDigits` accepts 1–15 significant digits for `double` (`ArgumentOutOfRangeException` otherwise), and the array forms of `GreatestCommonDivisor` / `LeastCommonMultiple` reject an empty array.
+Rotation counts must lie in `[0, width]` (0 and the full width are no-ops; anything else throws `ArgumentOutOfRangeException`), `RoundToSignificantDigits` accepts 1-15 significant digits for `double` (`ArgumentOutOfRangeException` otherwise), and the array forms of `GreatestCommonDivisor` / `LeastCommonMultiple` reject an empty array.
 
-## Pattern 2 — `ComparableExtensions` and `ComparableHelper`
+## Pattern 2 - `ComparableExtensions` and `ComparableHelper`
 
 The extension forms work on any `IComparable<T>` (with an `IComparer<T>` overload each); the bounds may be `null` to mean "unbounded" for reference types and, for `Clamp` on value types, `Nullable<T>`.
 
@@ -70,18 +70,18 @@ using Bodu.Extensions;
 int clamped  = 15.Clamp(0, 10);                  // 10
 int floor    = (-3).AtLeast(0);                  // 0
 int ceiling  = 42.AtMost(10);                    // 10
-bool inside  = 5.IsBetween(1, 10);               // true — inclusive
-bool reversed = 5.IsBetween(10, 1);              // true — bound order does not matter
+bool inside  = 5.IsBetween(1, 10);               // true - inclusive
+bool reversed = 5.IsBetween(10, 1);              // true - bound order does not matter
 bool outside = 15.IsOutside(1, 10);              // true
-int upperOnly = 5.Clamp(min: null, max: 3);      // 3 — null bound = unbounded (value types use Nullable<T>)
+int upperOnly = 5.Clamp(min: null, max: 3);      // 3 - null bound = unbounded (value types use Nullable<T>)
 bool strIn   = "m".IsBetween("a", "z");          // true
-bool strNull = "m".IsBetween(null, "z");         // false — a null bound on a reference type never matches
+bool strNull = "m".IsBetween(null, "z");         // false - a null bound on a reference type never matches
 bool greater = "b".IsGreaterThan("a");           // true
 int max = 3.Max(7), min = 3.Min(7);              // 7, 3
 bool sameCi  = "Apple".IsEqualTo("apple", StringComparer.OrdinalIgnoreCase);   // true
 
 string? first = ComparableHelper.Coalesce<string>(null, "b");   // "b"
-string? larger = ComparableHelper.Max<string>("a", null);       // "a" — null is ignored, not treated as smallest
+string? larger = ComparableHelper.Max<string>("a", null);       // "a" - null is ignored, not treated as smallest
 bool bothNull = ComparableHelper.Min<string>(null, null) is null;   // true
 ```
 
@@ -94,7 +94,7 @@ bool bothNull = ComparableHelper.Min<string>(null, null) is null;   // true
 | `Min(other)` / `Max(other)` | Pairwise. |
 | `ComparableHelper.Min` / `Max` / `Coalesce` | Static, nullable-aware: a `null` operand is skipped and the other returned; both `null` gives `null`. |
 
-## Pattern 3 — `EnumExtensions` and `Enums`
+## Pattern 3 - `EnumExtensions` and `Enums`
 
 <!-- compile -->
 ```csharp
@@ -121,12 +121,12 @@ bool both = access.HasAllFlags(Access.Read | Access.Write);  // true
 bool any  = access.HasAnyFlag(Access.Execute);               // false
 access = access.ClearFlag(Access.Read).ToggleFlag(Access.Execute);   // Write, Execute
 
-string desc    = Access.Read.GetDescription();               // "Read access"   — [Description]
-string display = Access.Read.GetDisplayName();               // "Read"          — [Display(Name)]
-string fallback = Access.Execute.GetDisplayName();           // "Execute access" — falls back to [Description], then the name
+string desc    = Access.Read.GetDescription();               // "Read access"   - [Description]
+string display = Access.Read.GetDisplayName();               // "Read"          - [Display(Name)]
+string fallback = Access.Execute.GetDisplayName();           // "Execute access" - falls back to [Description], then the name
 bool hasDesc   = Access.None.TryGetDescription(out string d); // false; d == "None" (the member name)
 
-Access[] all  = Enums.GetValues<Access>();                   // None, Read, Write, Execute — a copy of the cached array
+Access[] all  = Enums.GetValues<Access>();                   // None, Read, Write, Execute - a copy of the cached array
 string[] names = Enums.GetNames<Access>();
 bool parsed   = Enums.TryParse("write", ignoreCase: true, out Access w);       // true, Write
 bool unknown  = Enums.TryParse("Bogus", out Access _);                          // false
@@ -135,7 +135,7 @@ bool byDesc   = Enums.TryParseDescription("Execute access", out Access x);     /
 
 `SetFlag` / `ClearFlag` / `ToggleFlag` / `HasAllFlags` / `HasAnyFlag` work on any enum, converting through the underlying integer without boxing. The attribute readers are generic over `TEnum` and read the attributes once per enum type into a static cache; `GetValues` and `GetNames` return a fresh copy of their cached arrays on every call, so callers may mutate the result freely. `GetDisplayName` prefers `[Display(Name = …)]`, then `[Description]`, then the member name; `GetDescription` prefers `[Description]` and falls back to the name; `TryGetDescription` reports whether an attribute was actually found.
 
-## Pattern 4 — `ArrayExtensions` and `SpanExtensions`
+## Pattern 4 - `ArrayExtensions` and `SpanExtensions`
 
 <!-- compile -->
 ```csharp
@@ -144,12 +144,12 @@ using Bodu.Extensions;
 int[] source = { 1, 2, 3, 4, 5 };
 
 int[] middle   = source.Slice(1, 3);            // 2, 3, 4
-int[] partRev  = source.ToReversed(1, 3);       // 1, 4, 3, 2, 5 — a new array; source untouched
+int[] partRev  = source.ToReversed(1, 3);       // 1, 4, 3, 2, 5 - a new array; source untouched
 int[] rangeRev = source.ToReversed(..2);        // 2, 1, 3, 4, 5
 int[] padL     = source.PadLeft(7, 0);          // 0, 0, 1, 2, 3, 4, 5
 int[] padR     = source.PadRight(6, 9);         // 1, 2, 3, 4, 5, 9
 int[] copy     = source.Copy();
-copy.Clear(1, 2);                               // 1, 0, 0, 4, 5 — in place, source untouched
+copy.Clear(1, 2);                               // 1, 0, 0, 4, 5 - in place, source untouched
 
 int[,] matrix     = new[] { new[] { 1, 2, 3 }, new[] { 4, 5, 6 } }.ToMatrix(transpose: false);   // 2×3
 int[,] transposed = new[] { new[] { 1, 2, 3 }, new[] { 4, 5, 6 } }.ToMatrix(transpose: true);    // 3×2; [2, 1] == 6
@@ -164,13 +164,13 @@ Span<int> reversed = readOnly.ToReversed();     // new buffer: 3, 2, 1; span sti
 | `Copy()` | Shallow copy. |
 | `Slice(index[, count])` | New array. |
 | `PadLeft(totalLength, padValue)` / `PadRight(totalLength, padValue)` | Returns the input unchanged when already long enough. |
-| `ToReversed()` / `ToReversed(index, count)` / `ToReversed(Range)` | **Returns a new array** — unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. Named `ToReversed` to match `SpanExtensions.ToReversed` below and the BCL's `To*` convention for materializing a new collection; the old name `Reverse` also collided with `Enumerable.Reverse<TSource>(TSource[])`, added in .NET 10. An array binds to this overload rather than the span one, which takes a conversion. |
+| `ToReversed()` / `ToReversed(index, count)` / `ToReversed(Range)` | **Returns a new array** - unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. Named `ToReversed` to match `SpanExtensions.ToReversed` below and the BCL's `To*` convention for materializing a new collection; the old name `Reverse` also collided with `Enumerable.Reverse<TSource>(TSource[])`, added in .NET 10. An array binds to this overload rather than the span one, which takes a conversion. |
 | `Clear()` / `Clear(index[, count])` | In place; generic and non-generic forms. |
 | `ToMatrix(transpose)` | Jagged `T[][]` → rectangular `T[,]`; every row must have the same length. |
 | `AsReadOnly()` | `Span<T>` → `ReadOnlySpan<T>` without a cast. |
 | `ToReversed()` (+ `(index, count)` / `Range`) | The span counterpart of the array member above: a reversed **copy** into a new array-backed `Span<T>`; the source is not modified. |
 
-## Pattern 5 — `StreamExtensions` and `BufferConverter`
+## Pattern 5 - `StreamExtensions` and `BufferConverter`
 
 <!-- compile -->
 ```csharp
@@ -179,9 +179,9 @@ using Bodu.Extensions;
 using var stream = new MemoryStream();
 stream.WriteAllBytes(new byte[] { 0x78, 0x56, 0x34, 0x12, 0x01, 0x00 });
 stream.Position = 0;
-byte[] all = stream.ReadAllBytes();                        // 6 bytes — reads to the end from the current position
+byte[] all = stream.ReadAllBytes();                        // 6 bytes - reads to the end from the current position
 
-uint first    = all.Read<uint>(0);                         // 0x12345678 — little-endian reinterpretation
+uint first    = all.Read<uint>(0);                         // 0x12345678 - little-endian reinterpretation
 ushort second = all.Read<ushort>(4);                       // 1
 ushort[] words = all.ToArray<ushort>(0, 3);                // 0x5678, 0x1234, 0x0001
 
@@ -189,7 +189,7 @@ byte[] target = new byte[4];
 0xAABBCCDDu.CopyTo(target, 0);                             // DD-CC-BB-AA
 
 Span<uint> swap = stackalloc uint[] { 0x11223344 };
-swap.SwapEndian();                                         // 0x44332211 — in place
+swap.SwapEndian();                                         // 0x44332211 - in place
 ```
 
 <!-- compile -->
@@ -215,8 +215,8 @@ byte[] bytes = await stream.ReadAllBytesAsync();           // 3 bytes
 
 ## Where to go next
 
-- [String extensions](string-extensions.md) and [Date and time extensions](date-extensions.md) — the two large families in the same namespace.
-- [Pooled buffer builder](pooled-buffer-builder.md) — `ArrayPool<T>`-backed accumulation when the byte payload is built incrementally.
-- [Sequence operators and generators](sequence-operators.md) — the `IEnumerable<T>` / `IList<T>` / `IDictionary<TKey,TValue>` helpers.
-- [`Bodu.Extensions` API reference](xref:Bodu.Extensions) — every overload with full signatures.
-- **[Core Foundations guides](../topics/core-foundations.md)** — every guide in this topic.
+- [String extensions](string-extensions.md) and [Date and time extensions](date-extensions.md) - the two large families in the same namespace.
+- [Pooled buffer builder](pooled-buffer-builder.md) - `ArrayPool<T>`-backed accumulation when the byte payload is built incrementally.
+- [Sequence operators and generators](sequence-operators.md) - the `IEnumerable<T>` / `IList<T>` / `IDictionary<TKey,TValue>` helpers.
+- [`Bodu.Extensions` API reference](xref:Bodu.Extensions) - every overload with full signatures.
+- **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

@@ -28,8 +28,14 @@ internal static partial class VectorRotation
         /// <param name="count">The number of bits to rotate each lane by.</param>
         /// <returns>The rotated lanes.</returns>
         /// <remarks>
+        /// <para>
         /// <paramref name="count" /> must be a constant from 1 to 31; it is not validated. Because it is a constant,
         /// the choice between the forms folds away when the call is inlined.
+        /// </para>
+        /// <para>
+        /// The right shift is the portable operator, as in <see cref="Ssse3.RotateLeft" />: .NET 8 does not fold a
+        /// computed count such as <c>(byte)(32 - count)</c> into an intrinsic's immediate.
+        /// </para>
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<uint> RotateLeft(Vector128<uint> value, [ConstantExpected(Min = 1, Max = 31)] byte count) => count switch

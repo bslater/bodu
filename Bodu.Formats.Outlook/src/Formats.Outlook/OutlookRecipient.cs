@@ -12,7 +12,7 @@ namespace Bodu.Formats.Outlook;
 /// <remarks>
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every recipient property
 /// remains reachable through <see cref="Properties" />. The format readers construct instances from whichever container
-/// structure carries the recipient — a <c>.msg</c> recipient storage or a PST recipient-table row — so the type itself
+/// structure carries the recipient - a <c>.msg</c> recipient storage or a PST recipient-table row - so the type itself
 /// is container-free.
 /// </remarks>
 public sealed class OutlookRecipient

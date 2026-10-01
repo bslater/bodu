@@ -15,8 +15,8 @@ using Bodu.Text.Bencode.Serialization;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies that an authentic single-file <c>.torrent</c> fixture — with real SHA-1 piece digests that are not valid
-/// UTF-8 — parses identically through all three read surfaces (the token reader, the read-only document, and the
+/// Verifies that an authentic single-file <c>.torrent</c> fixture - with real SHA-1 piece digests that are not valid
+/// UTF-8 - parses identically through all three read surfaces (the token reader, the read-only document, and the
 /// serializer's POCO binding), pinning lossless binary <c>pieces</c> handling end to end and the
 /// info-hash-from-raw-bytes workflow.
 /// </summary>
@@ -69,7 +69,7 @@ public class TorrentFixtureTests
 
     /// <summary>
     /// Verifies that the document surface reproduces the torrent's scalar fields and that hashing the raw bytes of
-    /// the <c>info</c> element yields the fixture's known info-hash — the workflow
+    /// the <c>info</c> element yields the fixture's known info-hash - the workflow
     /// <see cref="BencodeElement.GetRawBytes" /> exists for.
     /// </summary>
     [TestMethod]
@@ -109,8 +109,8 @@ public class TorrentFixtureTests
     }
 
     /// <summary>
-    /// Verifies that the serializer binds the torrent to a POCO model — including the binary <c>pieces</c> field as
-    /// a byte array — and re-serializes it byte for byte.
+    /// Verifies that the serializer binds the torrent to a POCO model - including the binary <c>pieces</c> field as
+    /// a byte array - and re-serializes it byte for byte.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenTorrentFixture_ShouldBindPocoAndRoundTripExactBytes()

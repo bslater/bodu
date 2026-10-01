@@ -12,7 +12,7 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// <para>
 /// Base85 packs four input bytes into a 32-bit unsigned integer, then divides by 85 four times to emit five output
-/// characters per four-byte group — a payload expansion of 25 %, compared to Base64's 33 % and Base16's 100 %.
+/// characters per four-byte group - a payload expansion of 25 %, compared to Base64's 33 % and Base16's 100 %.
 /// </para>
 /// <para>
 /// The Adobe Ascii85 variant recognises the character <c>z</c> as a shortcut for four zero bytes and permits partial
@@ -28,9 +28,9 @@ namespace Bodu.Text.Encoding;
 /// Base85 has no padding character. The <see cref="BaseFormattingOptions.UpperCase" />,
 /// <see cref="BaseFormattingOptions.InsertSpacing" />, <see cref="BaseFormattingOptions.InsertLineBreaks" />, and
 /// <see cref="BaseFormattingOptions.OmitPadding" /> flags are ignored on the encode side.
-/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" /> variant
-/// — when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag is
-/// ignored for <see cref="Base85Variant.Z85" />.
+/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" />
+/// variant - when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag
+/// is ignored for <see cref="Base85Variant.Z85" />.
 /// </para>
 /// <para>
 /// On the decode side, <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input.
@@ -43,14 +43,14 @@ namespace Bodu.Text.Encoding;
 ///<![CDATA[
 /// byte[] data = "hello world"u8.ToArray();
 ///
-/// // Adobe Ascii85 (default) — the form used by PostScript and PDF, with the 'z' shortcut for all-zero groups.
+/// // Adobe Ascii85 (default) - the form used by PostScript and PDF, with the 'z' shortcut for all-zero groups.
 /// string ascii85 = Base85.Encode(data);
 ///
 /// // Wrap the output in the Adobe <~ ... ~> delimiter pair.
 /// string delimited = Base85.Encode(data, BaseFormattingOptions.IncludePrefix);
 ///
-/// // ZeroMQ Z85 — shell-safe alphabet; the input must be a multiple of four bytes.
-/// byte[] padded = "hello wor"u8.ToArray();    // 9 bytes — pad to 12 before encoding
+/// // ZeroMQ Z85 - shell-safe alphabet; the input must be a multiple of four bytes.
+/// byte[] padded = "hello wor"u8.ToArray();    // 9 bytes - pad to 12 before encoding
 /// string z85    = Base85.Encode(padded.AsSpan(0, 8), Base85Variant.Z85);
 ///
 /// // Round-trip.

@@ -6,14 +6,14 @@ title: Polymorphic converters
 
 A converter factory dispatches over a *family* of types rather than a single type. Where a [hand-written converter](converters.md) handles one fixed `T`, a `YamlConverterFactory` (<xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>) decides *at resolution time* whether it applies to a requested type and builds the right concrete converter for it. This is the mechanism behind two common shapes:
 
-- **Open-generic families** — every closed `Money<TCurrency>`, every `Stack<T>`, where one factory serves an unbounded set of closed types.
-- **Tagged (discriminated) hierarchies** — a base type with a `kind` key whose value selects which derived type to materialize.
+- **Open-generic families** - every closed `Money<TCurrency>`, every `Stack<T>`, where one factory serves an unbounded set of closed types.
+- **Tagged (discriminated) hierarchies** - a base type with a `kind` key whose value selects which derived type to materialize.
 
 This guide builds on [Writing converters](converters.md); read that first for the single-type `Read` / `Write` pattern, the precedence ladder, and the statelessness rules. Everything here is YAML; the sibling libraries ([Bodu.Text.Toml](../toml/index.md), [Bodu.Text.Bencode](../bencode/index.md)) follow the identical shape against their own reader/writer pair.
 
 ## What YAML does without a factory
 
-Before writing one, it is worth knowing how far the built-ins go. The serializer already dispatches on the **runtime** type when writing, so a `Circle` held in a `Shape`-typed member serializes with `Circle`'s members — but with no discriminator, because nothing knows the family exists:
+Before writing one, it is worth knowing how far the built-ins go. The serializer already dispatches on the **runtime** type when writing, so a `Circle` held in a `Shape`-typed member serializes with `Circle`'s members - but with no discriminator, because nothing knows the family exists:
 
 <!-- compile -->
 ```csharp
@@ -58,9 +58,9 @@ public abstract bool CanConvert(Type typeToConvert);
 public abstract YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options);
 ```
 
-The serializer treats the factory exactly like any other converter in the [resolution order](converters.md): member attribute, then type attribute, then `options.Converters`, then built-ins. When the candidate is a factory it calls `CanConvert(type)`; on `true` it calls `CreateConverter(type, options)` **once per closed type**, verifies that the returned converter's own `CanConvert` accepts the type, and caches the result. The factory itself never reads or writes a value — `CreateConverter` returns an ordinary `YamlConverter<T>` that does the work.
+The serializer treats the factory exactly like any other converter in the [resolution order](converters.md): member attribute, then type attribute, then `options.Converters`, then built-ins. When the candidate is a factory it calls `CanConvert(type)`; on `true` it calls `CreateConverter(type, options)` **once per closed type**, verifies that the returned converter's own `CanConvert` accepts the type, and caches the result. The factory itself never reads or writes a value - `CreateConverter` returns an ordinary `YamlConverter<T>` that does the work.
 
-## Pattern 1 — an open-generic family
+## Pattern 1 - an open-generic family
 
 To serve every closed `Money<TCurrency>` from one registration, match the open generic in `CanConvert` and close `MoneyConverter<>` over the requested type argument in `CreateConverter`:
 
@@ -80,7 +80,7 @@ public sealed class MoneyConverterFactory : YamlConverterFactory
 }
 ```
 
-`MoneyConverter<TCurrency>` is an ordinary `YamlConverter<Money<TCurrency>>` written as in [Writing converters](converters.md) Pattern 1 — here it stores the amount as a fixed-point string scalar:
+`MoneyConverter<TCurrency>` is an ordinary `YamlConverter<Money<TCurrency>>` written as in [Writing converters](converters.md) Pattern 1 - here it stores the amount as a fixed-point string scalar:
 
 ```csharp
 public sealed class MoneyConverter<TCurrency> : YamlConverter<Money<TCurrency>>
@@ -105,11 +105,11 @@ string w = YamlSerializer.Serialize(new Wallet { Cash = new(12.5m), Savings = ne
 // Savings: "1000.00"
 ```
 
-The writer quotes the scalars because they would otherwise resolve as floats on the way back in — YAML's implicit typing is why a string-shaped wire form needs the quotes, and `WriteString` adds them for you. This is the same machinery the built-in nullable, enum, collection, and dictionary converters use.
+The writer quotes the scalars because they would otherwise resolve as floats on the way back in - YAML's implicit typing is why a string-shaped wire form needs the quotes, and `WriteString` adds them for you. This is the same machinery the built-in nullable, enum, collection, and dictionary converters use.
 
-## Pattern 2 — a tagged (discriminated) hierarchy
+## Pattern 2 - a tagged (discriminated) hierarchy
 
-The richer case is a base type whose concrete shape is chosen by a discriminator key. Model the family as a closed set of derived types and a `kind` tag — the `Shape` / `Circle` pair above, plus a second subtype:
+The richer case is a base type whose concrete shape is chosen by a discriminator key. Model the family as a closed set of derived types and a `kind` tag - the `Shape` / `Circle` pair above, plus a second subtype:
 
 ```csharp
 public sealed class Rectangle : Shape
@@ -137,9 +137,9 @@ public sealed class ShapeConverterFactory : YamlConverterFactory
 
 `CanConvert` returns `true` for `Shape` itself and for any `Circle` / `Rectangle` member declared as the base type, so a property typed `Shape Outline { get; set; }` routes through the factory regardless of which concrete value it currently holds.
 
-## Pattern 3 — reading and writing the discriminator
+## Pattern 3 - reading and writing the discriminator
 
-The concrete converter is a `YamlConverter<Shape>`. On entry to `Read` the reader is positioned on the mapping's `StartMapping` token; the converter walks the composed token stream — a key scalar followed by the value's token, through to the matching `EndMapping` — collecting the discriminator and the payload fields, then constructs the matching derived type:
+The concrete converter is a `YamlConverter<Shape>`. On entry to `Read` the reader is positioned on the mapping's `StartMapping` token; the converter walks the composed token stream - a key scalar followed by the value's token, through to the matching `EndMapping` - collecting the discriminator and the payload fields, then constructs the matching derived type:
 
 ```csharp
 using Bodu.Text.Yaml;
@@ -187,7 +187,7 @@ public sealed class ShapeConverter : YamlConverter<Shape>
 
     public override void Write(Utf8YamlWriter writer, Shape value, YamlSerializerOptions options)
     {
-        // Dispatch on the runtime type so the right payload — including the tag — is written.
+        // Dispatch on the runtime type so the right payload - including the tag - is written.
         switch (value)
         {
             case Circle c:
@@ -215,9 +215,9 @@ public sealed class ShapeConverter : YamlConverter<Shape>
 The key moves:
 
 - **Override `CanConvert` on the converter too.** After a factory creates a converter the serializer verifies that the *converter* accepts the requested type. `YamlConverter<Shape>.CanConvert` defaults to an exact match, which would reject `Circle` when the factory is asked for a member declared as the subtype; widening it to `IsAssignableFrom` keeps the factory and its product in agreement.
-- **Walk the composed token stream.** `Utf8YamlReader` presents an already-composed tree — anchors, aliases, and merge keys are resolved before the first token is delivered, and a block mapping and a flow mapping produce the same `StartMapping` / key / value / `EndMapping` sequence — so a single read loop handles every spelling. Call `Skip()` to step over an unknown member's whole value, including nested mappings and sequences.
+- **Walk the composed token stream.** `Utf8YamlReader` presents an already-composed tree - anchors, aliases, and merge keys are resolved before the first token is delivered, and a block mapping and a flow mapping produce the same `StartMapping` / key / value / `EndMapping` sequence - so a single read loop handles every spelling. Call `Skip()` to step over an unknown member's whole value, including nested mappings and sequences.
 - **Dispatch on the runtime type when writing.** The `switch` over the concrete subtype emits the discriminator plus exactly that type's payload, so the value round-trips back through `Read`.
-- **Fail with the serialization exception.** A missing or unknown tag is a *well-formed value that does not fit*, so throw <xref:Bodu.Text.Yaml.YamlSerializationException> — the same family the built-in converters throw — not <xref:Bodu.Text.Yaml.YamlFormatException>, which is reserved for syntactically invalid documents.
+- **Fail with the serialization exception.** A missing or unknown tag is a *well-formed value that does not fit*, so throw <xref:Bodu.Text.Yaml.YamlSerializationException> - the same family the built-in converters throw - not <xref:Bodu.Text.Yaml.YamlFormatException>, which is reserved for syntactically invalid documents.
 
 With the factory registered, a document holding a base-typed member and a base-typed list carries the tag everywhere:
 
@@ -276,16 +276,16 @@ A factory occupies the same slots and obeys the same precedence as a single-type
 For a *family*, the natural placements are a type-level attribute on the base type, or a single registration on the options:
 
 ```csharp
-// Option A — annotate the base type so every Shape-typed member uses the factory.
+// Option A - annotate the base type so every Shape-typed member uses the factory.
 [Converter(typeof(ShapeConverterFactory))]
 public abstract class Shape { /* … */ }
 
-// Option B — register once on the options.
+// Option B - register once on the options.
 var options = new YamlSerializerOptions();
 options.Converters.Add(new ShapeConverterFactory());
 ```
 
-The two placements are not equivalent. The type-level attribute is looked up on the *declared* type of a member and is not inherited, so it governs members declared as `Shape` — a member declared as `Circle` resolves `Circle`'s own converter, which is the plain object mapping unless `Circle` carries its own attribute:
+The two placements are not equivalent. The type-level attribute is looked up on the *declared* type of a member and is not inherited, so it governs members declared as `Shape` - a member declared as `Circle` resolves `Circle`'s own converter, which is the plain object mapping unless `Circle` carries its own attribute:
 
 ```csharp
 public sealed class Holder
@@ -310,14 +310,14 @@ Three ordering consequences are worth keeping in mind:
 
 - **The first match wins, and order in `options.Converters` matters.** When more than one factory could claim a type, the earlier registration is asked first. Register the most specific factory ahead of any broader one whose `CanConvert` would also return `true`.
 - **`CreateConverter` runs once per closed type and is cached.** A factory matching an open generic produces one converter per closed type (`Money<Usd>`, `Money<Eur>`, …), each cached independently on the options.
-- **Register before first use.** As with all converters, a `YamlSerializerOptions` instance freezes the first time it is used (or via `MakeReadOnly()`); add factories before then, and reuse one options instance so the resolution and reflection work is paid once — see [Serializer options: freezing, caching, and thread safety](../options-and-lifetime.md).
+- **Register before first use.** As with all converters, a `YamlSerializerOptions` instance freezes the first time it is used (or via `MakeReadOnly()`); add factories before then, and reuse one options instance so the resolution and reflection work is paid once - see [Serializer options: freezing, caching, and thread safety](../options-and-lifetime.md).
 
 ## Where to go next
 
-- [Writing converters](converters.md) — the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
-- [Built-in converter catalog](builtin-converters.md) — the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
-- [Mapping attributes](attributes.md) — `[Converter]` placement and the precedence ladder in detail.
-- [Serialization callbacks](callbacks.md) — the lifecycle hooks a converter-handled type gives up, and how to keep them on the members instead.
-- The sibling guides — [TOML polymorphic converters](../toml/polymorphic-converters.md) and [Bencode polymorphic converters](../bencode/polymorphic-converters.md).
-- API reference — <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>, <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1>, <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>.
+- [Writing converters](converters.md) - the single-type `Read` / `Write` pattern, the precedence ladder, and converter statelessness.
+- [Built-in converter catalog](builtin-converters.md) - the families that already have a factory (nullable, enum, collection, dictionary) and their wire forms.
+- [Mapping attributes](attributes.md) - `[Converter]` placement and the precedence ladder in detail.
+- [Serialization callbacks](callbacks.md) - the lifecycle hooks a converter-handled type gives up, and how to keep them on the members instead.
+- The sibling guides - [TOML polymorphic converters](../toml/polymorphic-converters.md) and [Bencode polymorphic converters](../bencode/polymorphic-converters.md).
+- API reference - <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory>, <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1>, <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader>, <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>.
 - [Bodu serializer guides](../index.md) and the [Text & Serialization guides](../../topics/text-and-serialization.md).

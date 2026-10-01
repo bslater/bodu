@@ -17,7 +17,7 @@ public sealed partial class TextFilter
     /// <returns>A deferred sequence of the accepted values.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// Evaluation is deferred: values are evaluated — and statistics updated — as the result is enumerated.
+    /// Evaluation is deferred: values are evaluated - and statistics updated - as the result is enumerated.
     /// <see langword="null" /> elements are dropped without being evaluated, since no pattern can match them.
     /// </remarks>
     public IEnumerable<string> Filter(IEnumerable<string> source)

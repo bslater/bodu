@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// This is the classic single-flight (request-coalescing) pattern: when several callers request the same key while a
 /// fetch is already running, they join the running task instead of starting duplicate work. The in-flight entry is
-/// removed as soon as the operation completes — including when it faults — so a failure never poisons the key and the
+/// removed as soon as the operation completes - including when it faults - so a failure never poisons the key and the
 /// next caller starts a fresh attempt. Callers that join an in-flight operation observe its outcome, including its
 /// exception.
 /// </para>
@@ -164,7 +164,7 @@ public sealed class SingleFlightCoordinator<TKey>
             _ = FulfillAsync(key, operation, promise);
         }
 
-        // Every caller — winner and joiner alike — observes only its own cancellation while awaiting the shared result.
+        // Every caller - winner and joiner alike - observes only its own cancellation while awaiting the shared result.
         return inFlight.WaitAsync(cancellationToken);
     }
 
@@ -196,7 +196,7 @@ public sealed class SingleFlightCoordinator<TKey>
             _ = FulfillAsync(key, operation, promise);
         }
 
-        // Every caller — winner and joiner alike — observes only its own cancellation while awaiting the shared result.
+        // Every caller - winner and joiner alike - observes only its own cancellation while awaiting the shared result.
         return ((Task<TResult>)inFlight).WaitAsync(cancellationToken);
     }
 

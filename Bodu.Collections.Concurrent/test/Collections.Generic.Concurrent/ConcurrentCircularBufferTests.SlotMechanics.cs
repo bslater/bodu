@@ -25,7 +25,7 @@ public partial class ConcurrentCircularBufferTests
         for (int i = 0; i < 4; i++)
             buffer.Enqueue(new TestItem(i));
 
-        // Drain three, refill three — head and tail each wrap past slot 0.
+        // Drain three, refill three - head and tail each wrap past slot 0.
         buffer.TryDequeue(out _);
         buffer.TryDequeue(out _);
         buffer.TryDequeue(out _);
@@ -122,7 +122,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
         buffer.Enqueue(new TestItem(3));
 
-        // Re-publish slots: drain three, fill three — each underlying slot now carries a higher Sequence value.
+        // Re-publish slots: drain three, fill three - each underlying slot now carries a higher Sequence value.
         buffer.TryDequeue(out _);
         buffer.TryDequeue(out _);
         buffer.TryDequeue(out _);

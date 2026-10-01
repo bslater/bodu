@@ -34,7 +34,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 
     /// <summary>
     /// Verifies that encrypting the same plaintext block twice in succession against the same cipher instance
-    /// produces identical ciphertext — confirming the engine is deterministic and stateless between calls.
+    /// produces identical ciphertext - confirming the engine is deterministic and stateless between calls.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(BlockCipherVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
@@ -54,7 +54,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     }
 
     /// <summary>
-    /// Verifies that the ciphertext produced by <c>Encrypt</c> is not equal to its plaintext input — guarding
+    /// Verifies that the ciphertext produced by <c>Encrypt</c> is not equal to its plaintext input - guarding
     /// against a no-op or identity-transform regression at the cipher tier.
     /// </summary>
     [TestMethod]

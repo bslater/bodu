@@ -12,7 +12,7 @@ namespace Bodu.Functional;
 /// <remarks>
 /// <para>
 /// The members mirror the static surface of <see cref="Option{T}" /> so callers can write <c>Option.Some(3)</c> instead
-/// of <c>Option&lt;int&gt;.Some(3)</c>, and add <see cref="FromNullable{T}(T?)" /> — the <see cref="Nullable{T}" />
+/// of <c>Option&lt;int&gt;.Some(3)</c>, and add <see cref="FromNullable{T}(T?)" /> - the <see cref="Nullable{T}" />
 /// lift that the implicit conversion on the generic type cannot express.
 /// </para>
 /// </remarks>

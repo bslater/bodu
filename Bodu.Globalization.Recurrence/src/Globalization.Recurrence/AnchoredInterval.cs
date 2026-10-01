@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Recurrence;
 /// <para>
 /// The occurrence series of an anchored interval is <c>anchor + k·interval</c> for <c>k ≥ 1</c>: the anchor itself is
 /// <b>not</b> an occurrence. The anchor models an instant such as "the last completed run", "first enrolment", or
-/// "contract start" — its meaning is entirely the caller's; this type never interprets it. Like
+/// "contract start" - its meaning is entirely the caller's; this type never interprets it. Like
 /// <see cref="RecurrenceRule" />, the interval carries no anchor of its own: the anchor is supplied to every occurrence
 /// query, so the same interval can be applied to different anchors.
 /// </para>

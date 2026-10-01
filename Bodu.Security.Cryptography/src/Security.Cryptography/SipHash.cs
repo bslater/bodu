@@ -44,10 +44,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and bloom
-/// filters against collision-based denial-of-service attacks — Python, Ruby, Rust, Perl, and OpenBSD's stdlib all use
+/// filters against collision-based denial-of-service attacks - Python, Ruby, Rust, Perl, and OpenBSD's stdlib all use
 /// it for that purpose. Pick <see cref="SipHash64" /> when 64 bits is enough; pick <see cref="SipHash128" /> when
 /// collision pressure on the tag width matters. For protocol-level message authentication over long messages prefer
-/// HMAC-SHA-256 or <see cref="Blake2b" />-MAC. Do not use SipHash where the key may be exposed — its security target is
+/// HMAC-SHA-256 or <see cref="Blake2b" />-MAC. Do not use SipHash where the key may be exposed - its security target is
 /// hash-flooding resistance, not generic MAC strength.
 /// </para>
 /// </remarks>
@@ -248,7 +248,7 @@ public abstract class SipHash
     }
 
     /// <summary>
-    /// Produces the SipHash final padding block: copies the residual 0–7 bytes into an 8-byte buffer and places the low
+    /// Produces the SipHash final padding block: copies the residual 0-7 bytes into an 8-byte buffer and places the low
     /// byte of <paramref name="messageLength" /> into the last slot.
     /// </summary>
     /// <param name="block">The residual input bytes; length must be in <c>[0..7]</c>.</param>

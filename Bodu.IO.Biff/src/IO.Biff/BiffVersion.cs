@@ -10,8 +10,8 @@ namespace Bodu.IO.Biff;
 /// Identifies the version of the Binary Interchange File Format (BIFF) a record stream is encoded in.
 /// </summary>
 /// <remarks>
-/// The version governs how several records lay out their fields — string representation, the width of row indices in
-/// <c>DIMENSIONS</c>, the presence of the shared string table — and the maximum payload a single record may carry. A
+/// The version governs how several records lay out their fields - string representation, the width of row indices in
+/// <c>DIMENSIONS</c>, the presence of the shared string table - and the maximum payload a single record may carry. A
 /// reader establishes the version from the first beginning-of-file record it encounters; a writer is created with the
 /// version it emits.
 /// </remarks>

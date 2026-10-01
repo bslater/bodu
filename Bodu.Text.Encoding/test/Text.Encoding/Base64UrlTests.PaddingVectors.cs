@@ -15,7 +15,7 @@ namespace Bodu.Text.Encoding;
 public sealed class Base64UrlTests_PaddingVectors
 {
     /// <summary>
-    /// Verifies that <see cref="Base64Url.Decode(string)" /> accepts the unpadded form "AQ" — the canonical
+    /// Verifies that <see cref="Base64Url.Decode(string)" /> accepts the unpadded form "AQ" - the canonical
     /// URL-safe encoding of the single byte 0x01.
     /// </summary>
     [TestMethod]
@@ -39,7 +39,7 @@ public sealed class Base64UrlTests_PaddingVectors
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64Url.Decode(string)" /> accepts "AQ=" — the lenient padding rules
+    /// Verifies that <see cref="Base64Url.Decode(string)" /> accepts "AQ=" - the lenient padding rules
     /// re-pad a non-multiple-of-four input by appending the missing padding characters before delegating to the
     /// BCL decoder, so a single trailing '=' is treated as partial padding rather than rejected.
     /// </summary>
@@ -92,7 +92,7 @@ public sealed class Base64UrlTests_PaddingVectors
 
     /// <summary>
     /// Verifies that <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> with
-    /// <see cref="Base64Variant.Standard" /> rejects unpadded input — the standard variant requires canonical
+    /// <see cref="Base64Variant.Standard" /> rejects unpadded input - the standard variant requires canonical
     /// padding unless <see cref="BaseFormatStyles.AllowMissingPadding" /> is supplied explicitly.
     /// </summary>
     [TestMethod]
@@ -145,7 +145,7 @@ public sealed class Base64UrlTests_PaddingVectors
     {
         Assert.IsFalse(Base64Url.IsValid("AQ=".AsSpan()));
 
-        // Decode still accepts the same input — the asymmetry is what the test pins.
+        // Decode still accepts the same input - the asymmetry is what the test pins.
         byte[] decoded = Base64Url.Decode("AQ=");
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }

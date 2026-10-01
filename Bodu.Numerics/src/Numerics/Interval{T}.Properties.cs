@@ -45,7 +45,7 @@ public readonly partial struct Interval<T>
         (_flags & UpperInclusiveFlag) != 0;
 
     /// <summary>
-    /// Gets a value indicating whether the lower side is unbounded — the interval extends to <c>-&#x221E;</c> with no
+    /// Gets a value indicating whether the lower side is unbounded - the interval extends to <c>-&#x221E;</c> with no
     /// finite lower limit.
     /// </summary>
     /// <value>
@@ -56,7 +56,7 @@ public readonly partial struct Interval<T>
         (_flags & LowerUnboundedFlag) != 0;
 
     /// <summary>
-    /// Gets a value indicating whether the upper side is unbounded — the interval extends to <c>+&#x221E;</c> with no
+    /// Gets a value indicating whether the upper side is unbounded - the interval extends to <c>+&#x221E;</c> with no
     /// finite upper limit.
     /// </summary>
     /// <value>
@@ -67,7 +67,7 @@ public readonly partial struct Interval<T>
         (_flags & UpperUnboundedFlag) != 0;
 
     /// <summary>
-    /// Gets a value indicating whether both endpoints are finite — the interval has a concrete lower and upper limit.
+    /// Gets a value indicating whether both endpoints are finite - the interval has a concrete lower and upper limit.
     /// </summary>
     /// <value><see langword="true" /> when neither side is unbounded; otherwise <see langword="false" />.</value>
     public bool IsBounded =>
@@ -83,12 +83,12 @@ public readonly partial struct Interval<T>
     /// <list type="bullet">
     /// <item>
     /// <description>
-    /// <see cref="Lower" /> is strictly greater than <see cref="Upper" /> — the bounds are inverted.
+    /// <see cref="Lower" /> is strictly greater than <see cref="Upper" /> - the bounds are inverted.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <see cref="Lower" /> equals <see cref="Upper" /> and at least one endpoint is open — for example <c>(5, 5]</c>,
+    /// <see cref="Lower" /> equals <see cref="Upper" /> and at least one endpoint is open - for example <c>(5, 5]</c>,
     /// <c>[5, 5)</c>, and <c>(5, 5)</c> are all empty because no value of <typeparamref name="T" /> can satisfy both
     /// endpoint constraints. <c>[5, 5]</c> is non-empty and represents the single point <c>5</c>; see
     /// <see cref="IsDegenerate" />.
@@ -100,10 +100,10 @@ public readonly partial struct Interval<T>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
-    /// Interval<int>.Closed(1, 5).IsEmpty;     // False — [1, 5] holds values
-    /// Interval<int>.Open(5, 5).IsEmpty;       // True  — (5, 5) admits no value
-    /// Interval<int>.Closed(5, 1).IsEmpty;     // True  — inverted bounds
-    /// Interval<int>.Closed(5, 5).IsEmpty;     // False — the single point 5
+    /// Interval<int>.Closed(1, 5).IsEmpty;     // False - [1, 5] holds values
+    /// Interval<int>.Open(5, 5).IsEmpty;       // True  - (5, 5) admits no value
+    /// Interval<int>.Closed(5, 1).IsEmpty;     // True  - inverted bounds
+    /// Interval<int>.Closed(5, 5).IsEmpty;     // False - the single point 5
     ///]]>
     /// </code>
     /// </example>
@@ -111,7 +111,7 @@ public readonly partial struct Interval<T>
         IsBounded && (_lower > _upper || (_lower == _upper && (!LowerInclusive || !UpperInclusive)));
 
     /// <summary>
-    /// Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower
+    /// Gets a value indicating whether the interval represents a single point - a closed-closed interval whose lower
     /// and upper endpoints are equal.
     /// </summary>
     /// <value>
@@ -123,7 +123,7 @@ public readonly partial struct Interval<T>
         IsBounded && _lower == _upper && LowerInclusive && UpperInclusive;
 
     /// <summary>
-    /// Gets the algebraic length of the interval — the difference between its upper and lower endpoints.
+    /// Gets the algebraic length of the interval - the difference between its upper and lower endpoints.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -134,7 +134,7 @@ public readonly partial struct Interval<T>
     /// <para>
     /// For integer types, callers wanting the count of integers contained in the interval should compute it directly
     /// from <see cref="Lower" />, <see cref="Upper" />, <see cref="LowerInclusive" />, and
-    /// <see cref="UpperInclusive" /> — endpoint inclusion matters for that semantic, and this property does not model
+    /// <see cref="UpperInclusive" /> - endpoint inclusion matters for that semantic, and this property does not model
     /// it.
     /// </para>
     /// <para>

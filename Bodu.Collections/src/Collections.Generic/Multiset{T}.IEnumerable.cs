@@ -17,8 +17,8 @@ public sealed partial class Multiset<T>
     /// </summary>
     /// <returns>An <see cref="Enumerator" /> for the multiset.</returns>
     /// <remarks>
-    /// The enumerator captures a structural-version token at creation. Any subsequent structural modification —
-    /// including <see cref="Add(T)" />, <see cref="Remove" />, <see cref="RemoveAll" />, and <see cref="Clear" /> —
+    /// The enumerator captures a structural-version token at creation. Any subsequent structural modification -
+    /// including <see cref="Add(T)" />, <see cref="Remove" />, <see cref="RemoveAll" />, and <see cref="Clear" /> -
     /// invalidates the enumerator. The next call to <see cref="Enumerator.MoveNext" /> or
     /// <see cref="Enumerator.Reset" /> throws <see cref="InvalidOperationException" />.
     /// </remarks>

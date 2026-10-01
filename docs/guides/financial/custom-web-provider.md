@@ -5,27 +5,27 @@ title: Writing your own web provider
 # Writing your own web provider
 
 The eleven built-in providers are thin: each one supplies a feed-specific fetch and parse, and
-inherits everything else — the immutable snapshot, the full synchronous and asynchronous lookup
+inherits everything else - the immutable snapshot, the full synchronous and asynchronous lookup
 matrix, inverse fallback, request coalescing, `HttpClient` ownership, history advertisement, and
-the dependency-injection registration — from two base classes in `Bodu.Financial.ExchangeRates`.
+the dependency-injection registration - from two base classes in `Bodu.Financial.ExchangeRates`.
 A provider for a feed Bodu does not ship is the same amount of code. This page builds one,
 `AcmeRateProvider`, over a fictional CSV endpoint, registers it with the same `Financial:Acme`
 shape the built-in providers use, and proves it with the shipped contract tests. Every sample
-runs offline against a <xref:Bodu.Financial.ExchangeRates.Testing.StubHttpMessageHandler>.
+runs offline against a `StubHttpMessageHandler`.
 
 Two bases, one choice:
 
 | Base | Derive when the feed… | You implement | The base owns |
 |---|---|---|---|
 | <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> | returns **one currency pair per request** (Yahoo, OFX, Fixer, FRED, …) | an `IPairRateSource<TSeries>` (fetch + parse) and `ProviderId` | per-pair coverage tracking, single-flight coalescing per pair-and-window, series discovery, logging |
-| <xref:Bodu.Financial.ExchangeRates.WebRateProvider> | returns **many pairs per download** — a whole file, an era, a month (ECB, RBA, BoE, IMF) | `EnsureLoadedAsync`, `IsLoaded`, `ProviderId`, `AllowSynchronousNetworkAccess`, `DefaultLookback` | the accumulator, the snapshot, the lookup matrix, coalescing through `LoadCoalescedAsync` |
+| <xref:Bodu.Financial.ExchangeRates.WebRateProvider> | returns **many pairs per download** - a whole file, an era, a month (ECB, RBA, BoE, IMF) | `EnsureLoadedAsync`, `IsLoaded`, `ProviderId`, `AllowSynchronousNetworkAccess`, `DefaultLookback` | the accumulator, the snapshot, the lookup matrix, coalescing through `LoadCoalescedAsync` |
 
 `PairWebRateProvider<TSeries>` itself derives from `WebRateProvider`, so both shapes end up with
 the same public surface: `IDatedRateProvider`, `IRateProvider`,
 <xref:Bodu.Financial.ExchangeRates.IPairRateLoader>, and
 <xref:Bodu.Financial.ExchangeRates.IHistoricalRateProvider>.
 
-## Pattern 1 — the options type
+## Pattern 1 - the options type
 
 Derive <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>. The base carries the shared
 surface (`BaseAddress`, `HttpTimeout`, `UserAgent`, `AllowSynchronousNetworkAccess`,
@@ -83,7 +83,7 @@ aggregation layers consult it to skip or clamp doomed fetches, and the pair cont
 fails when a provider forgets to set it. `RateHistoryAvailability.Since(date)` describes a
 fixed floor, `RollingDays(n)` a window that moves with the clock.
 
-## Pattern 2 — the series-info type
+## Pattern 2 - the series-info type
 
 `GetAvailablePairs()` on a pair provider returns one `TSeries` per fetched pair. Keep it a small
 immutable class exposing at least the `CurrencyPair`, plus whatever the feed reports (a ticker,
@@ -107,7 +107,7 @@ public sealed class AcmeSeriesInfo
 }
 ```
 
-## Pattern 3 — the source: fetch and parse
+## Pattern 3 - the source: fetch and parse
 
 <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1> is the seam between the provider and the
 network. It receives a <xref:Bodu.Financial.ExchangeRates.CurrencyPairRequest> (pair plus
@@ -117,8 +117,8 @@ The provider stamps its own `ProviderId` on every observation, so the source nev
 provider name.
 
 Two contracts matter inside it. A payload the parser cannot read is reported as
-<xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> — the shared
-`FormatException` subtype every provider raises — so callers, the resilience pipeline (which
+<xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> - the shared
+`FormatException` subtype every provider raises - so callers, the resilience pipeline (which
 never retries it), and the pair base's failure logging all recognize it. A transport failure is
 left to `HttpClient`: `EnsureSuccessStatusCode` (or `GetByteArrayAsync`) raises
 `HttpRequestException`, which the base logs at `DownloadFailedLogLevel` and rethrows.
@@ -193,16 +193,16 @@ internal sealed class AcmeRateSource : IPairRateSource<AcmeSeriesInfo>
 ```
 
 > [!TIP]
-> Parse with `CultureInfo.InvariantCulture` throughout — a feed's dates and decimals are wire
-> formats, not user-facing text — and reject non-positive rates: the snapshot reciprocates a
+> Parse with `CultureInfo.InvariantCulture` throughout - a feed's dates and decimals are wire
+> formats, not user-facing text - and reject non-positive rates: the snapshot reciprocates a
 > rate for inverse lookups, and a zero would surface far from the row that caused it.
 
-## Pattern 4 — the provider
+## Pattern 4 - the provider
 
 The provider contributes the identity and the constructors. Follow the shipped convention of
 three: options-only (builds and **owns** an `HttpClient` through
 <xref:Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory>), `HttpClient` + options (the
-caller's client, never disposed — the DI shape and the test shape), and source + options (the
+caller's client, never disposed - the DI shape and the test shape), and source + options (the
 seam a file-backed source plugs into). The `PairWebRateProvider<TSeries>` constructor takes the
 source, the options, an optional logger, the owned client or `null`, and an optional
 `TimeProvider`; it validates the options for you.
@@ -216,7 +216,7 @@ public sealed class AcmeRateProvider : PairWebRateProvider<AcmeSeriesInfo>
 {
     public const string ProviderName = "Acme";
 
-    // Options only: the provider builds and owns its HttpClient (no retry — see the DI registration).
+    // Options only: the provider builds and owns its HttpClient (no retry - see the DI registration).
     public AcmeRateProvider(AcmeRateProviderOptions options, ILogger? logger = null, TimeProvider? timeProvider = null)
         : this(options, CreateOwnedClient(options), logger, timeProvider)
     {
@@ -252,7 +252,7 @@ public sealed class AcmeRateProvider : PairWebRateProvider<AcmeSeriesInfo>
 That is the whole provider. `AllowSynchronousNetworkAccess`, `DefaultLookback`, and
 `HistoryAvailability` are forwarded from the options by the pair base (which seals the first
 two); `FormatPairForLog` is the one further virtual worth overriding when the feed has a
-better label than `FROM/TO` — a ticker, say — for its download log lines. Exercised against a
+better label than `FROM/TO` - a ticker, say - for its download log lines. Exercised against a
 stub, the inherited machinery is visible end to end:
 
 ```csharp
@@ -294,7 +294,7 @@ catch (ExchangeRateFormatException ex)
 }
 ```
 
-## Pattern 5 — the bulk shape: deriving `WebRateProvider` directly
+## Pattern 5 - the bulk shape: deriving `WebRateProvider` directly
 
 When one download covers many pairs, derive <xref:Bodu.Financial.ExchangeRates.WebRateProvider>
 directly. The contract is five abstract members plus a handful of protected helpers:
@@ -307,11 +307,11 @@ directly. The contract is five abstract members plus a handful of protected help
 | `EnsureLoadedAsync(pair, start, end, ct)` | abstract method | Fetch and accumulate whatever unit covers the window, idempotently. A feed that ignores the pair may ignore it. |
 | `IsLoaded(pair, start, end)` | abstract method | Whether the window is already covered, so the synchronous path can skip a blocking fetch. |
 | `HistoryAvailability` | virtual property | `Unbounded` unless overridden. |
-| `ValidateRangeRequest(...)` | virtual method | Reject pairs the feed cannot carry — throw <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> — before any download. |
+| `ValidateRangeRequest(...)` | virtual method | Reject pairs the feed cannot carry - throw <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> - before any download. |
 | `CreateRangeInvertedException` / `FormatRateNotFound` | virtual | Feed-specific exception types and messages. |
 | `OnObservationIngested` / `OnSynchronousNetworkFetch` | virtual | Diagnostics hooks; the pair base uses them for its logging. |
 | `SyncRoot` | protected property | Hold it while accumulating so a fetch publishes atomically. |
-| `AddObservations(rates, fetchedAtUtc)` then `RebuildSnapshot()` | protected methods | Upsert a batch under `ProviderId` and swap in the new immutable snapshot — both under `SyncRoot`. |
+| `AddObservations(rates, fetchedAtUtc)` then `RebuildSnapshot()` | protected methods | Upsert a batch under `ProviderId` and swap in the new immutable snapshot - both under `SyncRoot`. |
 | `LoadCoalescedAsync(key, load, ct)` | protected method | Run a load once per key; concurrent callers with the same key share the in-flight fetch. |
 | `TimeProvider` | protected property | The clock, for the `fetchedAtUtc` stamp. |
 | `Dispose(bool)` | virtual | Extend to release resources; the base disposes an owned client. |
@@ -419,7 +419,7 @@ public sealed class AcmeFeedRateProvider : WebRateProvider
 
 The sequencing inside `LoadFeedCoreAsync` is the pattern every bulk provider follows: check
 coverage under `SyncRoot`, download **outside** the lock, then accumulate and publish under
-the lock. Readers never wait for a download — they read the previous snapshot until
+the lock. Readers never wait for a download - they read the previous snapshot until
 `RebuildSnapshot` swaps in the new one.
 
 ```csharp
@@ -431,22 +431,22 @@ using var feed = new AcmeFeedRateProvider(new HttpClient(handler), new Uri("http
 await feed.LoadFeedAsync();
 
 Console.WriteLine(feed.GetRate("AUD", "EUR", new DateOnly(2024, 1, 16)).Rate.Rate);   // 0.6120
-Console.WriteLine(feed.GetRate("EUR", "AUD", new DateOnly(2024, 1, 16)).Rate.IsInverted); // True — inverse fallback
+Console.WriteLine(feed.GetRate("EUR", "AUD", new DateOnly(2024, 1, 16)).Rate.IsInverted); // True - inverse fallback
 Console.WriteLine(feed.GetLoadedPairs().Count);                                        // 2
 Console.WriteLine(handler.RequestCount);                                               // 1
 ```
 
 A real bulk provider would additionally track *which* windows or units are loaded (a
 <xref:Bodu.Financial.ExchangeRates.DateRangeCoverage> per pair, an era set, a month set),
-override `ValidateRangeRequest` for a single-base feed, and keep a payload cache — the shipped
+override `ValidateRangeRequest` for a single-base feed, and keep a payload cache - the shipped
 ECB, RBA, BoE, and IMF sources are the worked references.
 
-## Pattern 6 — registering with `AddWebRateProvider`
+## Pattern 6 - registering with `AddWebRateProvider`
 
 <xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions.AddWebRateProvider*> in the
 `Bodu.Financial.ExchangeRates.DependencyInjection` package is the machinery every
-`Add<Source>ExchangeRates` delegates to. Its short overload — for an options type derived from
-`WebRateProviderOptions` — binds the section, wires `TryValidate` into `ValidateOnStart`,
+`Add<Source>ExchangeRates` delegates to. Its short overload - for an options type derived from
+`WebRateProviderOptions` - binds the section, wires `TryValidate` into `ValidateOnStart`,
 registers a named `HttpClient` with the standard resilience handler (user agent and per-attempt
 timeout from the options), and registers the provider singleton as `IDatedRateProvider` and
 `IRateProvider`. Your package's extension method supplies only what differs:
@@ -483,7 +483,7 @@ public static class AcmeServiceCollectionExtensions
 The full overload takes the same parameters plus explicit `validateOptions`, `getUserAgent`,
 and `getHttpTimeout` selectors, for an options type that does not derive from
 `WebRateProviderOptions` (the way BoE's nested-endpoint options are registered). Either way the
-consumer experience matches the built-in providers exactly — section, validation, resilience
+consumer experience matches the built-in providers exactly - section, validation, resilience
 hook, and all:
 
 ```csharp
@@ -516,9 +516,9 @@ RateLookupResult usd = await rates.GetRateAsync("AUD", "USD", new DateOnly(2024,
 
 From here the provider is indistinguishable from a shipped one: wrap it with
 `AddCachedRateProvider<AcmeRateProvider>("Acme", …)`, make it an aggregation child, or warm it at
-startup — see [Configuring rate caching from appsettings](caching-configuration.md).
+startup - see [Configuring rate caching from appsettings](caching-configuration.md).
 
-## Pattern 7 — proving it with the contract tests
+## Pattern 7 - proving it with the contract tests
 
 Derive `PairWebRateProviderContractTests<AcmeRateProvider, AcmeSeriesInfo>` from the
 in-repository `Bodu.Financial.ExchangeRates.Testing` project (a bulk-shaped provider derives
@@ -571,19 +571,19 @@ for.
 |---|---|
 | <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> | Base for your options: shared keys, `TryValidate` / `Validate`, `TryValidateCore` hook, `MapCurrency`. |
 | <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1> | `GetPairAsync(CurrencyPairRequest, CancellationToken)` → `PairRateData<TSeries>`; the fetch-and-parse seam. |
-| <xref:Bodu.Financial.ExchangeRates.PairRateData`1> | `(Pair, Observations, Series)` — window-restricted `RateObservation`s plus the series metadata. |
+| <xref:Bodu.Financial.ExchangeRates.PairRateData`1> | `(Pair, Observations, Series)` - window-restricted `RateObservation`s plus the series metadata. |
 | <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> | Per-pair coverage, coalescing, discovery, and logging over a source; you supply `ProviderId`. |
 | <xref:Bodu.Financial.ExchangeRates.WebRateProvider> | The accumulator, snapshot, and lookup matrix; you supply the fetch, coverage check, and identity. |
 | <xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> | Throw for any payload the parser rejects. |
 | <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> | Throw from `ValidateRangeRequest` for a pair the feed structurally cannot carry. |
-| <xref:Bodu.Financial.ExchangeRates.RateHistoryAvailability> | `Unbounded`, `Since(date)`, `RollingDays(n)` — declare it in the options constructor. |
+| <xref:Bodu.Financial.ExchangeRates.RateHistoryAvailability> | `Unbounded`, `Since(date)`, `RollingDays(n)` - declare it in the options constructor. |
 | <xref:Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory> | Builds the owned client for the options-only constructor. |
 | <xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions.AddWebRateProvider*> | The DI registration your `AddAcmeRates` delegates to. |
 
 ## Where to go next
 
-- [Testing your own provider](testing-providers.md) — the stub, the file-backed source, and both contract bases in detail.
-- [Configuring providers from appsettings](provider-configuration.md) — the section shape and resilience pipeline your registration inherits.
-- [Built-in exchange-rate providers](exchange-rate-providers.md) — the eleven worked references, and their failure modes.
-- [Working with exchange rates](exchange-rates.md) — the contracts and provenance model your provider serves.
-- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** — every guide in this topic.
+- [Testing your own provider](testing-providers.md) - the stub, the file-backed source, and both contract bases in detail.
+- [Configuring providers from appsettings](provider-configuration.md) - the section shape and resilience pipeline your registration inherits.
+- [Built-in exchange-rate providers](exchange-rate-providers.md) - the eleven worked references, and their failure modes.
+- [Working with exchange rates](exchange-rates.md) - the contracts and provenance model your provider serves.
+- **[Numerics & Financial guides](../topics/numerics-and-financial.md)** - every guide in this topic.

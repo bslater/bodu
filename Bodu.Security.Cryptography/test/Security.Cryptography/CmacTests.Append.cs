@@ -10,7 +10,7 @@ public sealed partial class CmacTests
 {
     /// <summary>
     /// Verifies that the MAC matches a block-at-a-time reference at lengths on both sides of every boundary the
-    /// incremental CMAC handles — a block, the chained-call threshold, and a 4 KiB chunk — for a cipher that chains
+    /// incremental CMAC handles - a block, the chained-call threshold, and a 4 KiB chunk - for a cipher that chains
     /// natively and one that does not.
     /// </summary>
     [TestMethod]
@@ -32,8 +32,8 @@ public sealed partial class CmacTests
     }
 
     /// <summary>
-    /// Verifies that appending a message in pieces — empty ones, pieces that end on and off block boundaries, and a
-    /// last piece that completes a block — gives the same MAC as appending it whole.
+    /// Verifies that appending a message in pieces - empty ones, pieces that end on and off block boundaries, and a
+    /// last piece that completes a block - gives the same MAC as appending it whole.
     /// </summary>
     [TestMethod]
     public void Append_WhenMessageIsAppendedInPieces_ShouldMatchAppendingItWhole()

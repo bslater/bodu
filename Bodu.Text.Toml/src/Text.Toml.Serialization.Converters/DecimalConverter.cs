@@ -23,8 +23,8 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </para>
 /// <para>
 /// On read the converter accepts a TOML float, integer, or string regardless of the configured handling, so a document
-/// produced under one setting can be read under either. A float outside the <see cref="decimal" /> range — including
-/// the <c>nan</c> and <c>inf</c> sentinels — and a string that is not an invariant-culture decimal surface as
+/// produced under one setting can be read under either. A float outside the <see cref="decimal" /> range - including
+/// the <c>nan</c> and <c>inf</c> sentinels - and a string that is not an invariant-culture decimal surface as
 /// serialization errors.
 /// </para>
 /// </remarks>

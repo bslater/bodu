@@ -216,7 +216,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     }
 
     /// <summary>
-    /// Verifies that every yielded batch aliases the same pooled buffer — the documented pooled contract — so a
+    /// Verifies that every yielded batch aliases the same pooled buffer - the documented pooled contract - so a
     /// <see cref="ReadOnlyMemory{T}" /> retained across an iteration step observes the next batch's contents rather
     /// than an independent snapshot.
     /// </summary>
@@ -236,7 +236,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
             }
             else
             {
-                // The retained first window aliases the shared buffer, which now holds the second batch's data —
+                // The retained first window aliases the shared buffer, which now holds the second batch's data -
                 // asserted while the buffer is still rented by the in-flight enumeration.
                 CollectionAssert.AreEqual(new[] { 4, 5, 6 }, batch.ToArray());
                 CollectionAssert.AreEqual(new[] { 4, 5, 6 }, first.ToArray());

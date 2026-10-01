@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Kept <see langword="internal" /> — like <see cref="IRateCacheSnapshotReader" /> — so the public
+/// Kept <see langword="internal" /> - like <see cref="IRateCacheSnapshotReader" /> - so the public
 /// <see cref="IRateCache" /> contract is unchanged: third-party caches remain synchronous and are served through the
 /// decorator's synchronous helpers on both surfaces. <see cref="RateCacheBase{TOptions}" /> implements this interface
 /// for every derived backend, defaulting each member to its synchronous counterpart so only backends with genuinely

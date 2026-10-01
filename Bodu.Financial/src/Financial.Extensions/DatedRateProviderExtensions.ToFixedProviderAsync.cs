@@ -33,7 +33,7 @@ public static partial class DatedRateProviderExtensions
     /// <remarks>
     /// <para>
     /// Pairs are fetched sequentially through
-    /// <see cref="IDatedRateProvider.GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)" /> — the
+    /// <see cref="IDatedRateProvider.GetRatesAsync(string, string, DateOnly, DateOnly, CancellationToken)" /> - the
     /// shipped web providers already coalesce and rate-limit their downloads, so parallel fan-out buys little and risks
     /// hammering a feed. Exceptions a source raises for an unserved pair propagate unchanged.
     /// </para>

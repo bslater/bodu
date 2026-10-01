@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Compiles the financial documentation guide examples that are explicitly opted in, so a code sample cannot silently
-/// drift from the public API it documents — the class of error (a renamed or removed member in a shown snippet) that
+/// drift from the public API it documents - the class of error (a renamed or removed member in a shown snippet) that
 /// prose review misses.
 /// </summary>
 /// <remarks>

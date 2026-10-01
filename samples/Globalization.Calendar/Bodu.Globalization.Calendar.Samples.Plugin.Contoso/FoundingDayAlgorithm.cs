@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar.Samples.Plugin.Contoso;
 /// observed on the Friday of that week so it always sits adjacent to a weekend.
 /// </summary>
 /// <remarks>
-/// An algorithm answers exactly one question — "what date in this year?" — and returns
+/// An algorithm answers exactly one question - "what date in this year?" - and returns
 /// <see langword="null" /> for years it does not apply to. Everything else (category, territory,
 /// weekend adjustment, whether it is a working day) stays declarative in the rule that references it.
 /// </remarks>

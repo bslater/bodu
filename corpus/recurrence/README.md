@@ -16,8 +16,8 @@ classes accordingly:
 | Directory | Source class | What it is |
 |---|---|---|
 | `rfc5545/` | `official-published` | The standard's own §3.8.5.3 examples, transcribed from the normative text |
-| `libical/` | `third-party-comparison` | The reference C implementation's test corpus — evidence, not authority |
-| `cronos/` | `third-party-comparison` | A widely used .NET cron implementation's test suite — evidence, not authority |
+| `libical/` | `third-party-comparison` | The reference C implementation's test corpus - evidence, not authority |
+| `cronos/` | `third-party-comparison` | A widely used .NET cron implementation's test suite - evidence, not authority |
 
 Cron is worse off than recurrence rules here. There is no cron RFC at all: the closest thing to a
 specification is the `crontab(5)` man page shipped with Vixie cron and its cronie descendant, and
@@ -33,18 +33,18 @@ rrule.js, which is an explicit port). Agreement between dateutil and rrule.js is
 independent confirmation. Bodu's engine is a third, written from the RFC.
 
 This is not hypothetical. The cross-library review that preceded this corpus found cases where
-**python-dateutil is wrong and Bodu is right** — most notably `BYSETPOS` truncating the first
+**python-dateutil is wrong and Bodu is right** - most notably `BYSETPOS` truncating the first
 weekly period to the part on or after `DTSTART` instead of indexing the whole period
 ([libical#795](https://github.com/libical/libical/issues/795),
 [dateutil#1398](https://github.com/dateutil/dateutil/issues/1398)). A loader that treated any one
 implementation's output as ground truth would have regressed that. Disagreements are classified,
 never silently resolved.
 
-## `rfc5545/` — the normative examples
+## `rfc5545/` - the normative examples
 
-- `rfc5545-recurrence-examples.csv` — 39 examples: description, `DTSTART`, `RRULE`, flags, and the
+- `rfc5545-recurrence-examples.csv` - 39 examples: description, `DTSTART`, `RRULE`, flags, and the
   expected occurrence dates.
-- `extract-rfc5545-examples.py` — the extractor, committed so the table is reproducible from the
+- `extract-rfc5545-examples.py` - the extractor, committed so the table is reproducible from the
   RFC rather than hand-maintained.
 
 The RFC writes expected occurrences as prose: `(1997 9:00 AM EDT) September 2-11`, with month
@@ -59,9 +59,9 @@ Regenerate with:
 python3 corpus/recurrence/rfc5545/extract-rfc5545-examples.py <rfc5545.html>
 ```
 
-## `libical/` — the reference-implementation corpus
+## `libical/` - the reference-implementation corpus
 
-`libical-recur-expectations.csv` — 57 rules derived from libical's `test-data/recur.txt`. libical
+`libical-recur-expectations.csv` - 57 rules derived from libical's `test-data/recur.txt`. libical
 asserts occurrence **counts** (`X-EXPECT-NUMEVENTS`), not date lists. Counts are a weaker oracle
 than dates but catch exactly the two failure modes that matter most: emitting an occurrence twice,
 and dropping one. Both were real Bodu defects found and fixed immediately before this corpus
@@ -74,9 +74,9 @@ redistribution rights are confirmed, this directory holds a **derived** table pl
 SHA-256, the same link-and-hash pattern used for the IMD and SGPC material. If the maintainer
 decides the MPL file may be vendored, the derived table can be replaced by the original.
 
-## `cronos/` — the cron vector table
+## `cronos/` - the cron vector table
 
-`cronos-cron-vectors.csv` — 1,354 rows derived from Cronos's `CronExpressionFacts`, the densest
+`cronos-cron-vectors.csv` - 1,354 rows derived from Cronos's `CronExpressionFacts`, the densest
 public collection of cron vectors we could find. Unlike the two recurrence tables it asserts several
 different things, recorded in a `kind` column: `next` (the next occurrence, inclusive),
 `unreachable` (an expression that can never fire), `invalid` (must be rejected), `equal` /
@@ -94,21 +94,21 @@ below was established by running the rows rather than assumed:
 
 | Divergence | Cronos | Bodu (Vixie) |
 |---|---|---|
-| `L`, `W`, `#`, `?` tokens | Accepted | Rejected — a planned follow-on, not silently ignored |
+| `L`, `W`, `#`, `?` tokens | Accepted | Rejected - a planned follow-on, not silently ignored |
 | Reversed ranges (`55-5`, `FRI-TUE`) | Wrap around the field | Rejected |
 | Both day fields restricted | Intersection | **Union**, per `entry.c`'s `DOM_STAR`/`DOW_STAR` flags |
-| Step wider than its range (`*/60`) | Rejected | Accepted, selecting the range start — cronie only *warns* |
-| `@every_second`, `@every_minute` | Accepted | Rejected — not in `crontab(5)`'s macro set |
+| Step wider than its range (`*/60`) | Rejected | Accepted, selecting the range start - cronie only *warns* |
+| `@every_second`, `@every_minute` | Accepted | Rejected - not in `crontab(5)`'s macro set |
 | `ToString` of a zero seconds field | Elided | Rendered, like every other field of the declared format |
 
 The DOM/DOW rule is the one worth dwelling on, because it is the divergence most likely to be read
 as a Bodu bug. Vixie decides whether a day field is "restricted" from its **leading character**, so
-`*/2` is unrestricted (leading `*`) while the set-equivalent `1-31/2` is restricted — and the two
+`*/2` is unrestricted (leading `*`) while the set-equivalent `1-31/2` is restricted - and the two
 therefore select different days when a day-of-week field is also present. That is not a rationalizable
 rule; it is what `src/entry.c` does.
 
-There is no table for it here, because the one implementation that models both readings — croniter,
-whose `implement_cron_bug` flag switches between them — **defaults to the reading cronie does not
+There is no table for it here, because the one implementation that models both readings - croniter,
+whose `implement_cron_bug` flag switches between them - **defaults to the reading cronie does not
 have**, so a bulk derivation from croniter would disagree with us on exactly the rows we would want
 it for. Its `test_dom_dow_vixie_cron_bug` is used directly instead: both of its four-occurrence
 sequences are asserted verbatim in `CronExpressionTests`, the intersection against
@@ -130,7 +130,7 @@ python3 corpus/recurrence/cronos/extract-cronos-vectors.py <CronExpressionFacts.
 ## Scope exclusions (recorded, never silently skipped)
 
 Every table carries a `flags` column, and the reconciliation tests **report every excluded row**
-rather than quietly passing over it — by name for the two recurrence corpora, and as a per-flag
+rather than quietly passing over it - by name for the two recurrence corpora, and as a per-flag
 tally for the much larger Cronos table. The exclusions are deliberate scope boundaries of the
 library, not gaps in the corpus:
 
@@ -158,7 +158,7 @@ A UTC-valued `UNTIL` against a zoned start is the one case where that reasoning 
 rather than assuming. The library compares the bound as a wall clock, so its cutoff differs from
 the zone-resolved one by the start's offset. Every such row in both corpora was run and matched:
 no occurrence falls inside that offset window, so the two readings bracket the same set. That is a
-property of these particular vectors, not a theorem — a future row where an occurrence does land
+property of these particular vectors, not a theorem - a future row where an occurrence does land
 in the window would surface as a difference, which is the signal we want rather than a silent
 exclusion.
 

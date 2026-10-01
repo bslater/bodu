@@ -12,13 +12,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The Luhn algorithm — sometimes called the <i>modulus 10</i> or <i>mod 10</i> algorithm — was designed by Hans Peter
+/// The Luhn algorithm - sometimes called the <i>modulus 10</i> or <i>mod 10</i> algorithm - was designed by Hans Peter
 /// Luhn at IBM in 1954 and entered the public domain shortly afterwards. It is the check-digit scheme used by most
 /// credit card numbers, many national identification numbers, IMEI numbers, and numerous other serial encodings.
 /// </para>
 /// <para>
 /// Working right-to-left over the sequence, every second digit (starting with the digit immediately to the left of the
-/// check digit) is doubled. When doubling produces a two-digit value, the digits are summed — equivalently one
+/// check digit) is doubled. When doubling produces a two-digit value, the digits are summed - equivalently one
 /// subtracts nine. The check digit is the value that makes the total sum divisible by ten.
 /// </para>
 /// <para>
@@ -103,11 +103,11 @@ public sealed class Luhn
 
     /// <summary>
     /// Determines whether the supplied sequence, comprising a body followed by a trailing Luhn check digit, is
-    /// consistent — that is, whether the digit sum evaluates to a multiple of ten.
+    /// consistent - that is, whether the digit sum evaluates to a multiple of ten.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under Luhn; otherwise, <see langword="false" /> —
+    /// <see langword="true" /> if the sequence evaluates as valid under Luhn; otherwise, <see langword="false" /> -
     /// including the case where <paramref name="digitsIncludingCheck" /> is empty or contains a character outside the
     /// range <c>'0'</c> to <c>'9'</c>.
     /// </returns>

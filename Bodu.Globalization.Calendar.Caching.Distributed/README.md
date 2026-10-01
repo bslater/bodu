@@ -1,10 +1,10 @@
 # Bodu.Globalization.Calendar.Caching.Distributed
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A **shared** storage backend for the
 [`Bodu.Globalization.Calendar.Caching`](https://www.nuget.org/packages/Bodu.Globalization.Calendar.Caching)
-notable-date cache, over any `Microsoft.Extensions.Caching.Distributed.IDistributedCache` — Redis,
+notable-date cache, over any `Microsoft.Extensions.Caching.Distributed.IDistributedCache` - Redis,
 SQL Server, or any other implementation. One instance computes a civil year; every instance reads it.
 
 > Backend selection and the full options surface are covered in
@@ -33,7 +33,7 @@ services.AddRedisNotableDateCache(/* … */);         // Redis convenience overl
 | `DistributedNotableDateCacheOptions` | Key prefix and entry configuration |
 | `DistributedNotableDateCacheExtensions` | The `AddDistributedNotableDateCache` / `AddRedisNotableDateCache` registrations |
 
-It is a storage backend only — the caching *policy* (per-year units, time-to-live plus
+It is a storage backend only - the caching *policy* (per-year units, time-to-live plus
 resource-version invalidation, single-flight cold misses, best-effort storage) lives in
 `CachingNotableDateService` and is identical across every backend.
 

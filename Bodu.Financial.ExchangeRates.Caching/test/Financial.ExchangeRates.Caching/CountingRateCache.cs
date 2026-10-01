@@ -7,8 +7,8 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// An <see cref="IRateCache" /> test double that delegates to an in-memory cache while counting every read, and —
-/// unlike the in-memory cache itself — deliberately does <b>not</b> implement the snapshot-read seam, so the caching
+/// An <see cref="IRateCache" /> test double that delegates to an in-memory cache while counting every read, and -
+/// unlike the in-memory cache itself - deliberately does <b>not</b> implement the snapshot-read seam, so the caching
 /// decorator's fallback path can be exercised and its read counts asserted.
 /// </summary>
 internal sealed class CountingRateCache

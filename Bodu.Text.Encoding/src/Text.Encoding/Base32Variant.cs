@@ -40,14 +40,14 @@ public enum Base32Variant : byte
     HexExtended = 1,
 
     /// <summary>
-    /// Crockford Base32 — alphabet <c>0-9</c> then <c>A-Z</c> with <c>I</c>, <c>L</c>, <c>O</c>, and <c>U</c> excluded
+    /// Crockford Base32 - alphabet <c>0-9</c> then <c>A-Z</c> with <c>I</c>, <c>L</c>, <c>O</c>, and <c>U</c> excluded
     /// to reduce visual ambiguity. The decoder aliases <c>I</c>/<c>L</c> to <c>1</c> and <c>O</c> to <c>0</c>. No
     /// padding is emitted by default.
     /// </summary>
     Crockford = 2,
 
     /// <summary>
-    /// z-base-32 — a lowercase, human-oriented alphabet designed for spoken transmission. No padding is emitted by
+    /// z-base-32 - a lowercase, human-oriented alphabet designed for spoken transmission. No padding is emitted by
     /// default.
     /// </summary>
     ZBase32 = 3,

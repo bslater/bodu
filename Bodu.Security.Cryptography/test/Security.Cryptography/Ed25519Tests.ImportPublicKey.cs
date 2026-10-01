@@ -10,7 +10,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Contains Ed25519-specific tests for <see cref="Ed25519.ImportPublicKey" /> — the RFC 8032 point-encoding
+/// Contains Ed25519-specific tests for <see cref="Ed25519.ImportPublicKey" /> - the RFC 8032 point-encoding
 /// validation; the public-only-instance and length-validation contract is inherited from the asymmetric base.
 /// </summary>
 public sealed partial class Ed25519Tests

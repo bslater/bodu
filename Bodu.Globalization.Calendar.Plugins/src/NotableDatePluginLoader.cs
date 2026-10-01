@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// algorithms into a <see cref="NotableDateAlgorithmRegistry" /> with one of the <c>RegisterAlgorithms</c> overloads,
 /// then pass that registry to both <see cref="NotableDateResourceLoader" /> (so documents may reference the plugin's
 /// algorithm keys during validation) and the <see cref="NotableDateService" /> (so they resolve at query time). Always
-/// supply a production-grade <see cref="IPluginTrustPolicy" /> — <see cref="AllowAllPluginTrustPolicy" /> is for
+/// supply a production-grade <see cref="IPluginTrustPolicy" /> - <see cref="AllowAllPluginTrustPolicy" /> is for
 /// development only.
 /// </para>
 /// <para>
@@ -83,7 +83,7 @@ public static class NotableDatePluginLoader
     /// This overload offers a weaker guarantee than the path-based
     /// <see cref="LoadFrom(string, IPluginTrustPolicy, ILogger?)" /> and must not be used for untrusted input. The
     /// assembly is <b>already loaded</b> when the trust policy runs, so any module initializer or type-load side effect
-    /// it carries has had the opportunity to execute <i>before</i> the trust check — a rejection here cannot prevent
+    /// it carries has had the opportunity to execute <i>before</i> the trust check - a rejection here cannot prevent
     /// code that ran at load time.
     /// </para>
     /// <para>
@@ -176,7 +176,7 @@ public static class NotableDatePluginLoader
     /// <para>
     /// This overload behaves like <see cref="LoadFrom(string, IPluginTrustPolicy, ILogger?)" /> but additionally hands
     /// ownership of the plugin's collectible <see cref="AssemblyLoadContext" /> to the caller: disposing the returned
-    /// handle initiates the unload. Unloading completes only once nothing references the plugin's types — a registry
+    /// handle initiates the unload. Unloading completes only once nothing references the plugin's types - a registry
     /// still holding the plugin's algorithms (or a service over that registry) keeps the context alive.
     /// </para>
     /// </remarks>
@@ -211,7 +211,7 @@ public static class NotableDatePluginLoader
         byte[] image = File.ReadAllBytes(fullPath);
         byte[] hash = SHA256.HashData(image);
 
-        // Use a collectible context so a rejected — or failed — plugin can be unloaded rather than pinned for the life
+        // Use a collectible context so a rejected - or failed - plugin can be unloaded rather than pinned for the life
         // of the process. Mapping the image into the context does not run plugin code; activation, which does, happens
         // only after the trust check below passes.
         AssemblyLoadContext context = new($"NotableDatePlugin:{Path.GetFileNameWithoutExtension(fullPath)}", isCollectible: true);

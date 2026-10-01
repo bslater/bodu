@@ -5,13 +5,13 @@ The `Bodu.Functional` seam from `Bodu.Core`: the railway-oriented primitives tha
 cover optional values, fallible pipelines, typed choices, memoized pure functions, and the
 awaitable companions.
 
-Everything runs offline with fixed inputs — deterministic output every run.
+Everything runs offline with fixed inputs - deterministic output every run.
 
 ```bash
 dotnet run --project samples/Core/Bodu.Core.Samples.FunctionalRailway
 ```
 
-## Scenario 1 — OptionBasics
+## Scenario 1 - OptionBasics
 
 **Intent.** Show `Option<T>` as a total replacement for a nullable return: a lookup either yields
 a value (`Some`) or explicitly none (`None`), and callers transform the value without ever
@@ -48,7 +48,7 @@ verdict:
 **APIs demonstrated.** `Option.Some` / `Option.None<T>`, `Option<T>.Map`, `Option<T>.Filter`,
 `Option<T>.Match`, `Option<T>.GetValueOrDefault`, `Option<T>.IsSome`.
 
-## Scenario 2 — ResultRailway
+## Scenario 2 - ResultRailway
 
 **Intent.** Compose a validate → parse → transform pipeline with `Result<T>` where the first
 failing step short-circuits the rest, carrying a `ResultError` to the end instead of throwing.
@@ -82,7 +82,7 @@ the step that rejected them, each with its specific message:
 **APIs demonstrated.** `Result.Success<T>` / `Result.Failure<T>`, `ResultError.FromMessage`,
 `Result<T>.Bind`, `Result<T>.Map`, `Result<T>.Tap`, `Result<T>.Match`.
 
-## Scenario 3 — EitherChoice
+## Scenario 3 - EitherChoice
 
 **Intent.** Demonstrate `Either<TLeft, TRight>` as a typed either/or where neither side is
 privileged (unlike `Result`, whose right side is specifically an error).
@@ -115,17 +115,17 @@ reports `isLeft=False` and renders the bank identifier:
 **APIs demonstrated.** `Either<TLeft, TRight>.Left` / `.Right`, `Either<,>.MapLeft` / `.MapRight`,
 `Either<,>.Match`, `Either<,>.IsLeft`.
 
-## Scenario 4 — Memoization
+## Scenario 4 - Memoization
 
 **Intent.** Show `Memoizer` caching a pure function so repeated calls with the same argument return
-the stored result. The invocation counter is the evidence — it advances once per distinct argument,
+the stored result. The invocation counter is the evidence - it advances once per distinct argument,
 never per call.
 
 **What it does.** Wraps a counted squaring function with `Memoizer.Memoize`, calls it ten times over
 four distinct arguments, then calls it once more for an argument already seen.
 
 **What to expect.** Ten calls, four distinct arguments, so the underlying function ran exactly four
-times — and the extra `square(13)` is served from the cache without advancing the counter:
+times - and the extra `square(13)` is served from the cache without advancing the counter:
 
 ```text
 --- Memoizer - cache a pure function ---
@@ -147,7 +147,7 @@ times — and the extra `square(13)` is served from the cache without advancing 
 
 **APIs demonstrated.** `Memoizer.Memoize<TArg, TResult>`.
 
-## Scenario 5 — AsyncRailway
+## Scenario 5 - AsyncRailway
 
 **Intent.** Show the Task-based companions (`MapAsync`/`BindAsync`/`MatchAsync`): the same railway
 composition, but each step is awaitable, so a pipeline of asynchronous operations reads as one
@@ -195,6 +195,6 @@ Bodu.Core.Samples.FunctionalRailway/
 
 ## Related
 
-- `Bodu.Core.Samples.CoreToolbox` — sequences, pooled buffers, the enumerable operators, string and
+- `Bodu.Core.Samples.CoreToolbox` - sequences, pooled buffers, the enumerable operators, string and
   numeric extensions, `WeekPattern`, and the async threading primitives.
-- `Bodu.Core.Samples.TextEncoding` — BOM detection, transcoding, and pooled string encoding.
+- `Bodu.Core.Samples.TextEncoding` - BOM detection, transcoding, and pooled string encoding.

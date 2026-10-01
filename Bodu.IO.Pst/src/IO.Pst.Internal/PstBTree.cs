@@ -10,12 +10,12 @@ using System.Globalization;
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Walks the two on-disk B-trees — the node B-tree (NBT) and the block B-tree (BBT) — over 512-byte <c>BTPAGE</c>s:
+/// Walks the two on-disk B-trees - the node B-tree (NBT) and the block B-tree (BBT) - over 512-byte <c>BTPAGE</c>s:
 /// in-order enumeration and keyed search.
 /// </summary>
 /// <remarks>
 /// A <c>BTPAGE</c> holds its entries at stride <c>cbEnt</c> in the first 488 bytes; <c>cLevel</c> above zero means the
-/// entries are <c>BTENTRY</c> references to child pages, and zero means leaf entries — <c>NBTENTRY</c> for the node
+/// entries are <c>BTENTRY</c> references to child pages, and zero means leaf entries - <c>NBTENTRY</c> for the node
 /// tree, <c>BBTENTRY</c> for the block tree. Search descends by the greatest key at or below the target.
 /// </remarks>
 internal static class PstBTree
@@ -98,7 +98,7 @@ internal static class PstBTree
     /// <param name="depth">The number of pages above this one.</param>
     /// <returns>The leaf entries.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The page's level is not the one its parent implies, or the tree is deeper than the format allows — a crafted
+    /// The page's level is not the one its parent implies, or the tree is deeper than the format allows - a crafted
     /// page referencing itself or an ancestor cannot recurse without bound.
     /// </exception>
     private static IEnumerable<TEntry> EnumerateLeaves<TEntry>(

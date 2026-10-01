@@ -68,7 +68,7 @@ public class CompoundSynthesizedCorruptionTests
         var header = CfbHeader.Parse(bytes);
         int entry = FindEntryOffset(bytes, header, "Big");
 
-        // ~3 GB — larger than the container and larger than int.MaxValue. Before the bound, Minimal padded to this via
+        // ~3 GB - larger than the container and larger than int.MaxValue. Before the bound, Minimal padded to this via
         // `new byte[size]`, throwing OverflowException instead of the reader's CompoundFileFormatException contract.
         BinaryPrimitives.WriteUInt64LittleEndian(bytes.AsSpan(entry + SizeOffset), 3_000_000_000UL);
 
@@ -160,7 +160,7 @@ public class CompoundSynthesizedCorruptionTests
 
     /// <summary>
     /// Verifies that a regular-sector chain that cycles back on itself does not amplify the intermediate
-    /// allocation — the accumulated payload can never exceed the container, because each distinct sector
+    /// allocation - the accumulated payload can never exceed the container, because each distinct sector
     /// contributes at most once. The pre-fix count-guard walked the self-loop up to <c>_fat.Length</c> times,
     /// writing one sector per iteration, so a small crafted cycle produced far more bytes than the whole file.
     /// </summary>

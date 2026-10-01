@@ -75,7 +75,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 — A Description of the Camellia Encryption Algorithm
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 - A Description of the Camellia Encryption Algorithm
 /// </seealso> <seealso cref="Camellia"/>
 public sealed class CamelliaBlockCipher
     : IBlockCipher
@@ -537,11 +537,11 @@ public sealed class CamelliaBlockCipher
         // k7, k8 = KL <<< 45
         (_k[6], _k[7]) = RotL128(klHi, klLo, 45);
 
-        // k9 = (KA <<< 45) >> 64 — upper half only.
+        // k9 = (KA <<< 45) >> 64 - upper half only.
         (ulong hi, _) = RotL128(kaHi, kaLo, 45);
         _k[8] = hi;
 
-        // k10 = (KL <<< 60) & MASK64 — lower half only.
+        // k10 = (KL <<< 60) & MASK64 - lower half only.
         (_, ulong lo) = RotL128(klHi, klLo, 60);
         _k[9] = lo;
 

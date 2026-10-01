@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class MultisetTests
 {
     // --------------------------------------------------------
-    // Add(T, int) — parameterised count
+    // Add(T, int) - parameterised count
     // --------------------------------------------------------
 
     /// <summary>
@@ -34,7 +34,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // CopyTo — parameterised array size and offset
+    // CopyTo - parameterised array size and offset
     // --------------------------------------------------------
 
     /// <summary>
@@ -62,7 +62,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Except — various left/right count combinations
+    // Except - various left/right count combinations
     // --------------------------------------------------------
 
     /// <summary>
@@ -89,7 +89,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Intersect — various left/right count combinations
+    // Intersect - various left/right count combinations
     // --------------------------------------------------------
 
     /// <summary>
@@ -115,7 +115,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Remove — decrements from various initial counts
+    // Remove - decrements from various initial counts
     // --------------------------------------------------------
 
     /// <summary>
@@ -139,7 +139,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Sum — various left/right count combinations
+    // Sum - various left/right count combinations
     // --------------------------------------------------------
 
     /// <summary>
@@ -166,7 +166,7 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Union — various left/right count combinations
+    // Union - various left/right count combinations
     // --------------------------------------------------------
 
     /// <summary>

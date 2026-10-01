@@ -1,7 +1,7 @@
 # Bodu.Financial.Samples.UnitPricing
 
-Carrying prices at a higher precision than a currency's minor units — a six-decimal-place share
-price in two-decimal USD — and serializing and deserializing them so the extra decimal places
+Carrying prices at a higher precision than a currency's minor units - a six-decimal-place share
+price in two-decimal USD - and serializing and deserializing them so the extra decimal places
 survive the round-trip. A plain `Money` is settlement-grade and rounds to the currency's registered
 minor units on construction; this sample shows the two ways to keep more precision (`Money` with an
 explicit scale, and unrounded `CalculatedMoney`) and how the `Bodu.Financial.Serialization.Json`
@@ -46,10 +46,10 @@ preserved.
 ```
 
 The `"scale"` property appears **only** when a value's precision differs from its currency's
-registered minor units — ordinary money keeps the two-field `{"amount","currency"}` shape, so
+registered minor units - ordinary money keeps the two-field `{"amount","currency"}` shape, so
 existing payloads are unaffected. On read, the reported `MinorUnits` is restored to `6`; the trailing
 zeros are carried by that scale, not by the stored decimal, so `12.5` still formats as
-`12.500000`. The terse Compact string form round-trips the precision too — the amount is printed at
+`12.500000`. The terse Compact string form round-trips the precision too - the amount is printed at
 the value's minor units (`"145.678912 USD"`) and the reader infers the scale from the number of
 fractional digits, so no separate `scale` token is needed.
 
@@ -61,8 +61,8 @@ fractional digits, so no separate `scale` token is needed.
 
 ### CalculatedUnitPrice (`Scenarios/CalculatedUnitPrice.cs`)
 
-**Intent.** When a price is genuinely un-settled — a per-unit rate that has not yet become a cash
-amount — `CalculatedMoney` is the right carrier. It is never rounded on construction, so its decimal
+**Intent.** When a price is genuinely un-settled - a per-unit rate that has not yet become a cash
+amount - `CalculatedMoney` is the right carrier. It is never rounded on construction, so its decimal
 already holds every significant digit (and trailing zeros) and serializes verbatim, with no scale
 metadata required. Rounding happens exactly once, at settlement.
 
@@ -83,7 +83,7 @@ x 40,000 units (unrounded): 1300.5000000 USD
 ```
 
 `CalculatedMoney` serializes as the same `{"amount","currency"}` object as `Money`, but without a
-`scale` property — the unrounded decimal is the precision. The line total stays unrounded through the
+`scale` property - the unrounded decimal is the precision. The line total stays unrounded through the
 multiplication and only becomes `1300.50` at the final settlement.
 
 **APIs demonstrated.** `CalculatedMoney` constructor, the `CalculatedMoney * long` operator,
@@ -94,7 +94,7 @@ multiplication and only becomes `1300.50` at the final settlement.
 
 **Intent.** Precision has to survive inside real object graphs, not just a bare value. This scenario
 puts six-place prices inside a POCO portfolio, serializes the whole document, reads it back, and
-settles each position — proving the scale round-trips through nested properties.
+settles each position - proving the scale round-trips through nested properties.
 
 **What it does.** Defines a `Holding(string Ticker, long Shares, Money UnitPrice)` record, builds a
 three-line portfolio with six-place unit prices, serializes it indented under Strict, deserializes
@@ -162,9 +162,9 @@ Bodu.Financial.Samples.UnitPricing/
 
 ## Related
 
-- `Bodu.Financial.Samples.MoneyBasics` — the rounding tiers (`Money`, `Money<TCurrency>`,
+- `Bodu.Financial.Samples.MoneyBasics` - the rounding tiers (`Money`, `Money<TCurrency>`,
   `CalculatedMoney`), allocation, and formatting that this sample builds on.
-- `Bodu.Financial.Samples.JsonSerialization` — the full converter registration, the three
+- `Bodu.Financial.Samples.JsonSerialization` - the full converter registration, the three
   `FinancialJsonPolicy` wire shapes, and the keyed dependency-injection registration.
 
 ## NuGet equivalent

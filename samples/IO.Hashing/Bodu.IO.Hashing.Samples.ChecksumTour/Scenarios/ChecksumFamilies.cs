@@ -11,7 +11,7 @@ namespace Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 /// <summary>
 /// Demonstrates the three checksum families over the same committed file: CRC (error-detecting,
 /// protocol-grade), Adler (RFC 1950, fast with weaker small-input mixing), and Fletcher
-/// (position-sensitive) — and shows the property checksums exist for: a single flipped bit
+/// (position-sensitive) - and shows the property checksums exist for: a single flipped bit
 /// changes every digest.
 /// </summary>
 public static class ChecksumFamilies

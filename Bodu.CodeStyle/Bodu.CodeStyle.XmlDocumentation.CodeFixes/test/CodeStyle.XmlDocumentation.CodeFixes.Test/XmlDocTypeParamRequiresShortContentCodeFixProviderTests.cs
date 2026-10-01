@@ -114,7 +114,7 @@ public sealed class XmlDocTypeParamRequiresShortContentCodeFixProviderTests
     /// <summary>
     /// Verifies that Fix All over two long <c>&lt;typeparam&gt;</c> elements in the same doc comment with no
     /// existing <c>&lt;remarks&gt;</c> produces a single synthesized <c>&lt;remarks&gt;</c> block containing
-    /// both relocated paragraphs in source order — not two competing or overlapping remarks insertions.
+    /// both relocated paragraphs in source order - not two competing or overlapping remarks insertions.
     /// </summary>
     [TestMethod]
     public async Task CodeFix_WhenMultipleTypeParamsAndNoRemarks_FixAll_ShouldEmitSingleRemarksWithBothParas()

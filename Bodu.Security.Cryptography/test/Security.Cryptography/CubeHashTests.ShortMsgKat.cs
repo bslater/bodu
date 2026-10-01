@@ -14,7 +14,7 @@ public partial class CubeHashTests
     //
     // Loaded dynamically from the embedded NIST SHA-3 Round 2 ShortMsgKAT files for CubeHash
     // (D. J. Bernstein), one per output size. These pin the standard parameterization Bodu builds by
-    // default — initialization 16, per-block 16, finalization 32 rounds, 32-byte block — at 224/256/
+    // default - initialization 16, per-block 16, finalization 32 rounds, 32-byte block - at 224/256/
     // 384/512-bit output. Only byte-aligned records are consumed. Bodu's non-standard round configs
     // (CubeHash80/160/300, 10-round, …) have no published vectors and are covered separately.
 

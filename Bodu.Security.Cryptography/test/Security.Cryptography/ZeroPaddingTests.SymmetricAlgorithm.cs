@@ -10,8 +10,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Zero-padding round-trip tests driven across every concrete <see cref="SymmetricAlgorithm" />
-/// declared in the library. Zero padding is non-self-describing — when the trailing plaintext
-/// bytes happen to be zero, <see cref="ZeroPadding.Unpad" /> cannot tell padding from data — so
+/// declared in the library. Zero padding is non-self-describing - when the trailing plaintext
+/// bytes happen to be zero, <see cref="ZeroPadding.Unpad" /> cannot tell padding from data - so
 /// these tests focus on the contract for already-aligned inputs (no padding added, pure
 /// round-trip) and the documented partial-block behaviour where the prefix is preserved but
 /// trailing zero bytes are appended to make the input block-aligned.
@@ -20,7 +20,7 @@ public sealed partial class ZeroPaddingTests
 {
     /// <summary>
     /// Verifies that an empty plaintext under <see cref="PaddingMode.Zeros" /> produces an
-    /// empty ciphertext through a <see cref="CryptoStream" /> — zero padding adds nothing
+    /// empty ciphertext through a <see cref="CryptoStream" /> - zero padding adds nothing
     /// when the input is already at a block boundary, and zero bytes is trivially aligned.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -43,7 +43,7 @@ public sealed partial class ZeroPaddingTests
 
     /// <summary>
     /// Verifies that a block-aligned plaintext round-trips through <see cref="CryptoStream" />
-    /// under <see cref="PaddingMode.Zeros" /> — already-aligned data needs no padding, so the
+    /// under <see cref="PaddingMode.Zeros" /> - already-aligned data needs no padding, so the
     /// ciphertext keeps the original length and the recovered plaintext matches byte-for-byte.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -69,7 +69,7 @@ public sealed partial class ZeroPaddingTests
     /// <summary>
     /// Verifies that a sub-block plaintext under <see cref="PaddingMode.Zeros" /> preserves
     /// the original prefix on decrypt, even though <see cref="ZeroPadding.Unpad" /> cannot
-    /// strip the trailing zero bytes — they are indistinguishable from legitimate plaintext
+    /// strip the trailing zero bytes - they are indistinguishable from legitimate plaintext
     /// zeros, so the recovered output is the original prefix plus padding zeros up to the
     /// next block boundary.
     /// </summary>

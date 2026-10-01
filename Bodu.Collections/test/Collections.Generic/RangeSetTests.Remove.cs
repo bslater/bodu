@@ -67,7 +67,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Remove(T, T) — full / partial / split
+    // Remove(T, T) - full / partial / split
     // --------------------------------------------------------
 
     /// <summary>
@@ -161,7 +161,7 @@ public partial class RangeSetTests
     }
 
     // --------------------------------------------------------
-    // Remove(T, T) — empty / non-overlapping
+    // Remove(T, T) - empty / non-overlapping
     // --------------------------------------------------------
 
     /// <summary>
@@ -194,7 +194,7 @@ public partial class RangeSetTests
         });
     }
     // --------------------------------------------------------
-    // Remove(T, T) — argument validation
+    // Remove(T, T) - argument validation
     // --------------------------------------------------------
 
     /// <summary>

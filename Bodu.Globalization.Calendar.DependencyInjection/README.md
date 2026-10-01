@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.DependencyInjection
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 `Microsoft.Extensions.DependencyInjection` integration for `Bodu.Globalization.Calendar`. Registers an `INotableDateService` over a supplied `NotableDateResource` so the calendar engine can be injected into application services.
 

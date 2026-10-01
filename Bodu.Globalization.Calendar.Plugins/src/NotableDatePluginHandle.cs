@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// A handle is produced by <see cref="NotableDatePluginLoader.LoadFromFile" />. Disposing it initiates an unload of the
 /// plugin's collectible load context; the runtime reclaims the context only once nothing references the plugin's types
 /// any longer. In particular, algorithms the plugin registered into a
-/// <see cref="Algorithms.NotableDateAlgorithmRegistry" /> — and any service holding that registry — keep the context
+/// <see cref="Algorithms.NotableDateAlgorithmRegistry" /> - and any service holding that registry - keep the context
 /// alive until they are discarded, so tear down consumers of the plugin before (or promptly after) disposing the
 /// handle.
 /// </para>

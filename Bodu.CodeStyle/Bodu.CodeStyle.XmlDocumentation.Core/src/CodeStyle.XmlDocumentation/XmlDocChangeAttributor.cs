@@ -24,7 +24,7 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 /// to output emits one per-tag change record. Inside any such scope the walker only looks for inline-XML token
 /// differences (<c>&lt;see /&gt;</c>, <c>&lt;c&gt;…&lt;/c&gt;</c>, <c>&lt;paramref /&gt;</c>,
 /// <c>&lt;typeparamref /&gt;</c>) and attributes those to the inline tag. Nested block tags inside a top-level scope
-/// are deliberately not separately attributed in this version — suppressing the enclosing block tag silences the whole
+/// are deliberately not separately attributed in this version - suppressing the enclosing block tag silences the whole
 /// subtree, which matches the user-suppression model expressed in <c>.editorconfig</c>.
 /// </para>
 /// <para>
@@ -71,12 +71,12 @@ internal static class XmlDocChangeAttributor
 
         // The tokenizer normalises whitespace inside inline-tag attribute sections, so token-level comparison
         // misses cases like `<see cref="X"\n     langword="null" />` → `<see cref="X" langword="null" />`. Do
-        // a separate raw-string scan to catch those — the source substrings carry the original whitespace.
+        // a separate raw-string scan to catch those - the source substrings carry the original whitespace.
         ScanRawInlineTagDifferences(inputContent, outputContent, options.InlineTags, builder, seenTags);
 
         if (builder.Count == 0)
         {
-            // Texts differ but the structured walk produced no attribution — emit a single cross-cutting
+            // Texts differ but the structured walk produced no attribution - emit a single cross-cutting
             // change so the analyzer still reports the difference (defensive fallback).
             builder.Add(CreateCrossCutting());
         }

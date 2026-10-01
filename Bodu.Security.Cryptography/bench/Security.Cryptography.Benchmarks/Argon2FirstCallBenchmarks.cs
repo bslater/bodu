@@ -10,7 +10,7 @@ using BenchmarkDotNet.Engines;
 namespace Bodu.Security.Cryptography.Benchmarks;
 
 /// <summary>
-/// Measures the first Argon2id derivation in a fresh process — what a command-line unlock waits through — at RFC 9106's
+/// Measures the first Argon2id derivation in a fresh process - what a command-line unlock waits through - at RFC 9106's
 /// second recommended cost.
 /// </summary>
 /// <remarks>

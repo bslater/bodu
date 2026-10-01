@@ -6,7 +6,7 @@
 
 namespace Bodu.Security.Cryptography;
 
-// Known-answer vectors — NIST SP 800-38A, Appendix F.2.1 (CBC mode, AES-128)
+// Known-answer vectors - NIST SP 800-38A, Appendix F.2.1 (CBC mode, AES-128)
 // Source: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf
 public sealed partial class CbcModeTransformTests
 {
@@ -27,7 +27,7 @@ public sealed partial class CbcModeTransformTests
     {
         yield return new object[]
         {
-            "NIST SP 800-38A F.2.1 — CBC-AES128",
+            "NIST SP 800-38A F.2.1 - CBC-AES128",
             CbcNistKey128,
             CbcNistIv,
             CbcNistPlaintext,

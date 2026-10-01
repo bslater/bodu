@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Curated <see cref="Serpent128Cipher" /> known-answer test vectors. Transcribed verbatim from the Serpent NESSIE
-/// submission by Ross Anderson, Eli Biham, and Lars Knudsen — the same vectors that accompanied the AES candidate
+/// submission by Ross Anderson, Eli Biham, and Lars Knudsen - the same vectors that accompanied the AES candidate
 /// submission and are echoed across every interoperable Serpent implementation.
 /// </summary>
 /// <remarks>
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The corpus combines five 128-bit-key entries from the NESSIE submission's <c>BlockCipherVectorTest</c> fixture
-/// (tests 0, 1, 2, 9, and 10 — the entries whose key length is 16 bytes) with one additional row capturing the
+/// (tests 0, 1, 2, 9, and 10 - the entries whose key length is 16 bytes) with one additional row capturing the
 /// encryption of the AES standard plaintext under the incrementing-byte key. Together they exercise the all-zero
 /// baseline, the high-bit avalanche case, a self-similar repeating-byte key/plaintext, and the two AES-standard
 /// reverse-engineered vectors that round-trip the canonical AES test pattern.

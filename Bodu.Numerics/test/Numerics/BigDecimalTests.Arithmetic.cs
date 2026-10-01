@@ -9,7 +9,7 @@ namespace Bodu.Numerics;
 public partial class BigDecimalTests
 {
     /// <summary>
-    /// Verifies that addition aligns scales and is exact — including the classic <c>0.1 + 0.2 == 0.3</c>.
+    /// Verifies that addition aligns scales and is exact - including the classic <c>0.1 + 0.2 == 0.3</c>.
     /// </summary>
     [TestMethod]
     public void Add_WhenScalesDiffer_ShouldAlignAndSumExactly()
@@ -154,7 +154,7 @@ public partial class BigDecimalTests
     [TestMethod]
     public void Pow_WhenScaleTimesExponentOverflowsInt_ShouldThrowOverflowException()
     {
-        BigDecimal value = BD(1, 2); // 0.01 — mantissa 1, scale 2
+        BigDecimal value = BD(1, 2); // 0.01 - mantissa 1, scale 2
 
         Assert.ThrowsExactly<OverflowException>(() => _ = BigDecimal.Pow(value, int.MaxValue));
     }

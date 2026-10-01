@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// Both helpers run only during static twiddle-table construction over public constants, so they are not written for
-/// constant-time execution — the values involved carry no secrets.
+/// constant-time execution - the values involved carry no secrets.
 /// </remarks>
 internal static class LatticeCommon
 {
@@ -42,7 +42,7 @@ internal static class LatticeCommon
     }
 
     /// <summary>
-    /// Reverses the low <paramref name="bitCount" /> bits of an index (the NTT twiddle-table permutation — BitRev₇ for
+    /// Reverses the low <paramref name="bitCount" /> bits of an index (the NTT twiddle-table permutation - BitRev₇ for
     /// ML-KEM, BitRev₈ for ML-DSA).
     /// </summary>
     /// <param name="value">The index in [0, 2^<paramref name="bitCount" />).</param>

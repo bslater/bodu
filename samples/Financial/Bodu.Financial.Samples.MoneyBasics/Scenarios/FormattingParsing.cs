@@ -11,7 +11,7 @@ namespace Bodu.Financial.Samples.MoneyBasics.Scenarios;
 
 /// <summary>
 /// Demonstrates the shared format-specifier vocabulary, the fluent <see cref="MoneyFormatterBuilder" />,
-/// and the four <see cref="MoneyParseMode" /> parsing strictness levels — including the invariant
+/// and the four <see cref="MoneyParseMode" /> parsing strictness levels - including the invariant
 /// round-trip form that survives storage and transport losslessly.
 /// </summary>
 public static class FormattingParsing

@@ -10,15 +10,15 @@ files.
 dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HashingMacAndKdf
 ```
 
-Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
-records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+Every scenario opens by printing a **What / Why / Expect** banner - the same three things this README
+records per scenario - so a transcript stands on its own and a reader can tell a correct run from a broken
 one without opening the source. The `text` blocks below show the value lines only; run the sample to see
 the banner above each of them.
 
-## Scenario 1 — CryptographicHashes
+## Scenario 1 - CryptographicHashes
 
 **Intent.** Show that a spread of the library's unkeyed hashes are all ordinary `HashAlgorithm`
-implementations — a single helper drives every one of them.
+implementations - a single helper drives every one of them.
 
 **What it does.** Hashes the pangram `"The quick brown fox jumps over the lazy dog"` with BLAKE2b-512,
 BLAKE3-256, Tiger/192, the three Skein sizes, and Whirlpool via `ComputeHash`, printing each digest and its
@@ -45,7 +45,7 @@ sample against the canonical value.
 **APIs demonstrated.** `Blake2b`, `Blake3`, `Tiger`, `Skein256` / `Skein512` / `Skein1024`, `Whirlpool`,
 all through `HashAlgorithm.ComputeHash`.
 
-## Scenario 2 — MoreHashFamilies
+## Scenario 2 - MoreHashFamilies
 
 **Intent.** Cover the hash families Scenario 1 does not reach, and show the two ways this library varies a hash
 without introducing a new type: constructor parameters, and a variant property.
@@ -54,8 +54,8 @@ without introducing a new type: constructor parameters, and a variant property.
 at its default, at a narrower output, and with its round and block parameters tuned; `AsconCxof128` squeezing under
 two different customization strings; and Tiger/Tiger2 and the three Whirlpool revisions selected by property.
 
-**What to expect.** BLAKE2s is the 32-bit sibling of BLAKE2b — a smaller state and word size, so the better fit on
-32-bit and embedded targets — and its size is chosen at construction. `AsconHashA256` is the reduced-round variant
+**What to expect.** BLAKE2s is the 32-bit sibling of BLAKE2b - a smaller state and word size, so the better fit on
+32-bit and embedded targets - and its size is chosen at construction. `AsconHashA256` is the reduced-round variant
 and must differ from `AsconHash256`. The customizable XOF is the interesting one: the same message under two
 different customization strings yields unrelated output, which is domain separation done by the primitive rather
 than by the caller prepending a label and hoping it cannot be confused with the data:
@@ -92,7 +92,7 @@ than by the caller prepending a label and hoping it cannot be confused with the 
 
 Two details worth noting. `WhirlpoolInfo1` is Whirlpool-0; the earlier revisions remain implemented because data
 hashed under them still exists, but only `WhirlpoolInfo3` should be used for new work. And Tiger and Tiger2 differ
-only in the padding byte that starts the final block — one byte of specification, an entirely different digest.
+only in the padding byte that starts the final block - one byte of specification, an entirely different digest.
 
 CubeHash's parameters are a design space, not a performance dial: changing the rounds or block size produces a
 different function, and a narrower output is not a truncation of a wider one.
@@ -102,12 +102,12 @@ different function, and a narrower output is not a truncation of a wider one.
 `.Absorb` / `.Squeeze`, `Tiger.Variant` with `TigerHashingVariant.Tiger` / `.Tiger2`, `Whirlpool.Version` with
 `WhirlpoolVersion.WhirlpoolInfo1` / `.WhirlpoolInfo2` / `.WhirlpoolInfo3`.
 
-## Scenario 3 — KeyedHashesAndMac
+## Scenario 3 - KeyedHashesAndMac
 
 **Intent.** Distinguish the keyed constructions from the plain hashes: the tag now depends on a key. Show
 SipHash (a keyed PRF), BLAKE2b's keyed-MAC mode, and Poly1305 (a one-time authenticator).
 
-**What it does.** Tags the message `"authenticate me"` under fixed keys — the SipHash reference key
+**What it does.** Tags the message `"authenticate me"` under fixed keys - the SipHash reference key
 `00 01 … 0f`, a fixed 32-byte BLAKE2b key, and a fixed 32-byte Poly1305 one-time key.
 
 **What to expect.**
@@ -123,13 +123,13 @@ message: "authenticate me"
 ```
 
 The key is set through the `KeyedHashAlgorithm` surface (`{ Key = … }`); a non-empty key is what switches
-BLAKE2b into MAC mode. Poly1305 reports `CanReuseTransform == false` because it is single-use — a fresh
+BLAKE2b into MAC mode. Poly1305 reports `CanReuseTransform == false` because it is single-use - a fresh
 instance and key per message.
 
 **APIs demonstrated.** `SipHash64`, `SipHash128`, keyed `Blake2b`, `Poly1305`, the `KeyedHashAlgorithm.Key`
 initializer.
 
-## Scenario 4 — ExtendableOutput
+## Scenario 4 - ExtendableOutput
 
 **Intent.** Show extendable-output functions, whose output length is a caller choice rather than a fixed
 digest size, and the prefix property that makes them a stream.
@@ -156,7 +156,7 @@ is one output stream read to whatever length you ask for.
 **APIs demonstrated.** `Shake` (output length chosen at construction), `AsconXof128.Absorb` / `Squeeze` /
 `Initialize`.
 
-## Scenario 5 — StreamingAndVerify
+## Scenario 5 - StreamingAndVerify
 
 **Intent.** Show incremental hashing across arbitrary fragment boundaries and the constant-time comparison
 helper used to check a digest without a timing side channel.
@@ -183,7 +183,7 @@ Streaming and one-shot agree because the algorithm buffers fragments into whole 
 **APIs demonstrated.** The `AppendData(ReadOnlySpan<byte>)` and `VerifyHash(byte[], string)` extensions,
 `TransformFinalBlock` / `Hash`.
 
-## Scenario 6 — FactoriesAndValues
+## Scenario 6 - FactoriesAndValues
 
 **Intent.** Show the two supporting surfaces a consumer composing hashes reaches for, and the reason each exists: a
 `HashAlgorithm` is stateful, and a `byte[]` digest compares by reference.
@@ -194,7 +194,7 @@ independent instance producing the same digest, and shows a factory carrying con
 
 **What to expect.** The factory seam is why `MerkleTree`'s constructor takes `Func<HashAlgorithm>` rather than a
 `HashAlgorithm`: a component that hashes on behalf of its caller cannot hold one instance, because two concurrent
-calls would corrupt each other. On the value side, the first line is the trap — two `byte[]` digests of the same
+calls would corrupt each other. On the value side, the first line is the trap - two `byte[]` digests of the same
 message are not `==` to each other, while `HashValue` compares structurally:
 
 ```text
@@ -218,13 +218,13 @@ message are not `==` to each other, while `HashValue` compares structurally:
 ```
 
 `TryParseHex` rejects odd-length and non-hex input by returning `false` rather than throwing, so it is safe on
-untrusted text — useful when an expected digest arrives from a manifest or a config file.
+untrusted text - useful when an expected digest arrives from a manifest or a config file.
 
 **APIs demonstrated.** `HashAlgorithmFactory.From<T>`, `IHashAlgorithmFactory<T>.Create`,
 `DelegateHashAlgorithmFactory<T>`, `HashValue.FromBytes` / `.ParseHex` / `.TryParseHex` / `.Length` / `.IsEmpty` /
 `operator ==` / `operator !=`.
 
-## Scenario 7 — KeyDerivation
+## Scenario 7 - KeyDerivation
 
 **Intent.** Show the three key-derivation functions the library ships, all producing a stable 32-byte key
 from a fixed password and salt.
@@ -243,12 +243,12 @@ Argon2id (memory-hard, small cost parameters to stay fast), and scrypt (`N=1024,
 ```
 
 The salt is fixed here purely so the sample reproduces; a real deployment uses a fresh random salt per
-password. The cost parameters are deliberately small for a fast sample run — production values are much
+password. The cost parameters are deliberately small for a fast sample run - production values are much
 higher.
 
 **APIs demonstrated.** `Hkdf.DeriveKey`, `Argon2id.DeriveKey` with `Argon2Parameters`, `Scrypt.DeriveKey`.
 
-## Scenario 8 — PasswordHashing
+## Scenario 8 - PasswordHashing
 
 **Intent.** Cover the password-hashing surface Scenario 7 does not reach: the three Argon2 variants and what
 separates them, the PHC string format that is what you actually store, and `ScryptParameters` as a bound parameter
@@ -259,7 +259,7 @@ encoded hash with `Argon2id.Hash`, verifies it against the right and wrong passw
 part of the encoded value. Finally binds a `ScryptParameters` to a `Scrypt` instance, derives twice, and compares
 against the positional static overload and against a higher cost.
 
-**What to expect.** The three variants give three different values — the variant is not a tuning knob. The encoded
+**What to expect.** The three variants give three different values - the variant is not a tuning knob. The encoded
 value carries the variant, version, parameters and salt inside itself, which is what lets old credentials keep
 verifying after the cost parameters are raised for new ones:
 
@@ -288,7 +288,7 @@ verifying after the cost parameters are raised for new ones:
 The variant choice is about what the attacker is assumed to have. Argon2d uses data-dependent memory access:
 strongest against GPU cracking, but its access pattern leaks through timing. Argon2i is data-independent:
 side-channel resistant, weaker against time-memory trade-offs. Argon2id is the hybrid and RFC 9106's
-recommendation — reach for it by default.
+recommendation - reach for it by default.
 
 Cost parameters are deliberately small here so the sample stays fast; real deployments should be tuned to the
 hardware.
@@ -297,7 +297,7 @@ hardware.
 `.Hash` / `.Verify`, `Argon2Parameters`, `ScryptParameters` (`CostN` / `BlockSizeR` / `Parallelization`),
 `Scrypt(ScryptParameters)` / `.Parameters` / `.GetBytes`, `Scrypt.DeriveKey`.
 
-## Scenario 9 — OneTimePasswords
+## Scenario 9 - OneTimePasswords
 
 **Intent.** Show counter-based (HOTP) and time-based (TOTP) one-time passwords generated and verified from a
 fixed secret, using the canonical RFC test key so the codes are the published reference values.
@@ -321,7 +321,7 @@ time-step later with a zero window.
 ```
 
 The three HOTP codes are exactly the RFC 4226 Appendix D vectors (`755224`, `287082`, `359152`), and the
-TOTP code is the 6-digit truncation of the RFC 6238 `T=59s` value — determinism here comes from injecting a
+TOTP code is the 6-digit truncation of the RFC 6238 `T=59s` value - determinism here comes from injecting a
 fixed `DateTimeOffset` rather than reading the clock.
 
 **APIs demonstrated.** `Hotp.GenerateCode` / `Hotp.VerifyCode`, `Totp.GenerateCode` / `Totp.VerifyCode`
@@ -347,6 +347,6 @@ Bodu.Security.Cryptography.Samples.HashingMacAndKdf/
 
 ## Related
 
-- `Bodu.Security.Cryptography.Samples.SymmetricAndAead` — block ciphers, cipher modes, AEAD, stream ciphers.
-- `Bodu.Security.Cryptography.Samples.AsymmetricKeys` — X25519, Ed25519, ML-KEM, ML-DSA.
-- `Bodu.Security.Cryptography.Samples.CustomHash` — authoring a custom hash on the `BlockHashAlgorithm` base.
+- `Bodu.Security.Cryptography.Samples.SymmetricAndAead` - block ciphers, cipher modes, AEAD, stream ciphers.
+- `Bodu.Security.Cryptography.Samples.AsymmetricKeys` - X25519, Ed25519, ML-KEM, ML-DSA.
+- `Bodu.Security.Cryptography.Samples.CustomHash` - authoring a custom hash on the `BlockHashAlgorithm` base.

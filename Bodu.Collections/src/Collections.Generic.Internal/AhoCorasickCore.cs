@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic.Internal;
 /// keyed automatons reuse a single implementation.
 /// </summary>
 /// <remarks>
-/// Character transitions are ordinal — the automaton types deliberately do not accept a custom
+/// Character transitions are ordinal - the automaton types deliberately do not accept a custom
 /// <see cref="IEqualityComparer{Char}" />, because a comparer would have to govern failure-link construction as well as
 /// matching; callers who need folded matching normalize patterns and text up front.
 /// </remarks>
@@ -70,7 +70,7 @@ internal static class AhoCorasickCore
     /// <typeparam name="TValue">The value type stored at pattern-terminating states.</typeparam>
     /// <param name="root">The root state of the goto trie.</param>
     /// <remarks>
-    /// Links are global invariants of the complete pattern set — this pass must run after every pattern has been added,
+    /// Links are global invariants of the complete pattern set - this pass must run after every pattern has been added,
     /// which is why the automaton types are immutable once built.
     /// </remarks>
     public static void BuildLinks<TValue>(AhoCorasickNode<TValue> root)
@@ -139,7 +139,7 @@ internal static class AhoCorasickCore
     }
 
     /// <summary>
-    /// Returns the first pattern-terminating state reportable from <paramref name="state" /> — the state itself when
+    /// Returns the first pattern-terminating state reportable from <paramref name="state" /> - the state itself when
     /// terminal, otherwise its output link.
     /// </summary>
     /// <typeparam name="TValue">The value type stored at pattern-terminating states.</typeparam>

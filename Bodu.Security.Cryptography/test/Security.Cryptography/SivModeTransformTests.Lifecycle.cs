@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// Mode-specific lifecycle tests for <see cref="SivModeTransform" />. The shared
 /// <see cref="AeadBlockCipherModeTests{TTest, TTransform}" /> base verifies the generic
 /// AEAD contract (lifecycle bookkeeping, tag-mismatch zeroing, AAD ordering); this file
-/// pins down the property that distinguishes SIV from every other AEAD in the library —
+/// pins down the property that distinguishes SIV from every other AEAD in the library -
 /// <strong>deterministic IV derivation</strong>. RFC 5297 specifies that the synthetic IV
 /// is computed from the key, AAD, and plaintext via S2V/CMAC, so re-encrypting the same
 /// triple under any user-supplied IV must yield identical ciphertext.
@@ -20,7 +20,7 @@ public sealed partial class SivModeTransformTests
     /// <summary>
     /// Verifies that encrypting the same <c>(plaintext, AAD)</c> pair twice with two different
     /// user-supplied IVs produces identical ciphertext. The synthetic IV is derived from the
-    /// data, so the user-supplied IV is ignored — the defining contract of AES-SIV.
+    /// data, so the user-supplied IV is ignored - the defining contract of AES-SIV.
     /// </summary>
     [TestMethod]
     public void Encrypt_SamePlaintextAndAad_DifferentSuppliedIVs_ShouldProduceIdenticalOutput()
@@ -47,7 +47,7 @@ public sealed partial class SivModeTransformTests
 
     /// <summary>
     /// Verifies that two distinct plaintexts encrypted under the same supplied IV produce
-    /// different ciphertexts — the synthetic IV depends on the message, so distinct messages
+    /// different ciphertexts - the synthetic IV depends on the message, so distinct messages
     /// yield distinct synthetic IVs and therefore distinct ciphertext + tag pairs.
     /// </summary>
     [TestMethod]
@@ -75,7 +75,7 @@ public sealed partial class SivModeTransformTests
 
     /// <summary>
     /// Verifies that encrypting the same plaintext under two different AAD streams produces
-    /// different ciphertexts — AAD is one of the inputs to S2V and so changes the synthetic IV.
+    /// different ciphertexts - AAD is one of the inputs to S2V and so changes the synthetic IV.
     /// </summary>
     [TestMethod]
     public void Encrypt_DifferentAad_SamePlaintextAndIV_ShouldProduceDifferentOutputs()

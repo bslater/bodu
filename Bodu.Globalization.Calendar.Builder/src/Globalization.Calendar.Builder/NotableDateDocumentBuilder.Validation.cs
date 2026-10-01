@@ -12,13 +12,13 @@ public sealed partial class NotableDateDocumentBuilder
     private const string BuilderIncompleteCode = "BODU-CAL-BUILDER-INCOMPLETE";
 
     /// <summary>
-    /// Lints the document, returning every diagnostic the canonical loader's validation would produce — errors,
-    /// warnings, and informational messages — without throwing.
+    /// Lints the document, returning every diagnostic the canonical loader's validation would produce - errors,
+    /// warnings, and informational messages - without throwing.
     /// </summary>
     /// <returns>The collected diagnostics; empty when the document is valid.</returns>
     /// <remarks>
-    /// Validation runs the same pipeline as <see cref="Build()" /> — the document is serialized to XML and passed
-    /// through <see cref="NotableDateResourceLoader" /> — so a clean result guarantees <see cref="Build()" /> succeeds
+    /// Validation runs the same pipeline as <see cref="Build()" /> - the document is serialized to XML and passed
+    /// through <see cref="NotableDateResourceLoader" /> - so a clean result guarantees <see cref="Build()" /> succeeds
     /// for the same document. A document too incomplete to serialize (a missing resource identifier, a concept with no
     /// rules, a rule with no strategy) is reported as a <c>BODU-CAL-BUILDER-INCOMPLETE</c> error diagnostic rather than
     /// an exception.

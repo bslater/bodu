@@ -70,4 +70,35 @@ public partial class XmlDocFormatterTests
             Assert.AreNotEqual("    /// .", line, "Trailing '.' must not be orphaned onto its own line.");
         }
     }
+
+    /// <summary>
+    /// Verifies that at every line length the formatter never opens a wrapped line with a token Markdown reads as the
+    /// start of a block (DocFX renders documentation text as Markdown, so such a line becomes a list, heading or
+    /// quote), and that the output is unchanged when formatted again.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenWrapWouldOpenLineWithMarkdownBlockMarker_ShouldKeepMarkerOnPreviousLine()
+    {
+        var input =
+            "/// <summary>\r\n" +
+            "    /// Its full precision - including trailing zeros - is kept, a + b * c is summed, step 1. runs first,\r\n" +
+            "    /// and a value &gt; zero # counts.\r\n" +
+            "    /// </summary>\r\n";
+        var blockMarker = new System.Text.RegularExpressions.Regex(@"^\s*/// (?:[-+*](?: |$)|1[.)](?: |$)|#{1,6}(?: |$)|&gt;)");
+
+        for (var width = 24; width <= 100; width++)
+        {
+            XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(width);
+            XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), options);
+
+            foreach (var line in result.FormattedText.Split(["\r\n"], System.StringSplitOptions.None))
+            {
+                Assert.IsFalse(blockMarker.IsMatch(line), $"At width {width} the line '{line}' opens with a Markdown block marker.");
+            }
+
+            XmlDocFormatResult again = CreateFormatter().FormatTrivia(result.FormattedText, CreateContext(), options);
+
+            Assert.AreEqual(result.FormattedText, again.FormattedText, $"At width {width} a second pass changed the output.");
+        }
+    }
 }

@@ -123,7 +123,7 @@ public sealed partial class Base85Tests
 
     /// <summary>
     /// Verifies that the Ascii85 decoder rejects an input that contains a six-character sequence (a complete 5-char
-    /// group plus a single trailing character — invalid).
+    /// group plus a single trailing character - invalid).
     /// </summary>
     [TestMethod]
     public void Decode_WhenAscii85SixCharSequenceWithTrailingSingleChar_ShouldThrowExactly()

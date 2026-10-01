@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------------------------------------------
-# generate-icons.sh — rasterizes every bld/icons/svg/<PackageId>.svg to a 128x128 bld/icons/<PackageId>.png.
+# generate-icons.sh - rasterizes every bld/icons/svg/<PackageId>.svg to a 128x128 bld/icons/<PackageId>.png.
 #
 # The PNGs are checked in and packed as each package's NuGet <PackageIcon> (see bld/Packaging.props), so this
 # script only needs to run when an icon SVG changes. It uses rsvg-convert when available and otherwise falls

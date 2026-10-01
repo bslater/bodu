@@ -16,7 +16,7 @@ namespace Bodu.Text.Ini;
 public enum IniValueKind
 {
     /// <summary>
-    /// An object — the document (section names) or a section (key names).
+    /// An object - the document (section names) or a section (key names).
     /// </summary>
     Object = 0,
 

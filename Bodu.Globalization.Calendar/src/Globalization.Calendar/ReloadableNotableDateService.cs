@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// This service is a drop-in replacement for <see cref="NotableDateService" /> in scenarios where the underlying data
-/// is reloaded at runtime — for example a dependency-injection singleton whose source document changes. Each query
+/// is reloaded at runtime - for example a dependency-injection singleton whose source document changes. Each query
 /// reads the provider's current resource; when it differs from the one the inner service was built from, a fresh inner
 /// service is constructed. Construction is cheap, so reloads are inexpensive.
 /// </para>
@@ -132,7 +132,7 @@ public sealed class ReloadableNotableDateService
         Tuple<NotableDateResource, NotableDateService> snapshot = _snapshot;
 
         // Steady state: the provider still supplies the resource the snapshot was built from, so the query proceeds
-        // without taking the gate — reloads are rare and queries are hot.
+        // without taking the gate - reloads are rare and queries are hot.
         if (ReferenceEquals(current, snapshot.Item1))
             return snapshot.Item2;
 

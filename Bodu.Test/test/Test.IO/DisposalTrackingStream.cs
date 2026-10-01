@@ -18,22 +18,22 @@ namespace Bodu.Test.IO;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="SyncWriteCount" /> — number of calls to the synchronous <see cref="Write(byte[], int, int)" /> path.
+/// <see cref="SyncWriteCount" /> - number of calls to the synchronous <see cref="Write(byte[], int, int)" /> path.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="AsyncWriteCount" /> — number of calls to the asynchronous
+/// <see cref="AsyncWriteCount" /> - number of calls to the asynchronous
 /// <see cref="WriteAsync(Memory{byte}, CancellationToken)" /> path.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="SyncDisposeCalled" /> — whether <see cref="Dispose" /> was called (via <c>Dispose(true)</c>).
+/// <see cref="SyncDisposeCalled" /> - whether <see cref="Dispose" /> was called (via <c>Dispose(true)</c>).
 /// </description>
 /// </item>
 /// <item>
-/// <description><see cref="AsyncDisposeCalled" /> — whether <see cref="DisposeAsync" /> was called.</description>
+/// <description><see cref="AsyncDisposeCalled" /> - whether <see cref="DisposeAsync" /> was called.</description>
 /// </item>
 /// </list>
 /// <para>

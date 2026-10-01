@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to use CTS.</strong> Pick CTS when ciphertext length must equal plaintext length and the input is not
-/// block-aligned — typical in fixed-size record formats, network frames with strict size budgets, and on-disk layouts
+/// block-aligned - typical in fixed-size record formats, network frames with strict size budgets, and on-disk layouts
 /// where adding padding bytes is impossible. CTS shares CBC's lack of authentication and its sequential nature; for new
 /// general-purpose encryption an AEAD mode (<see cref="GcmModeTransform" />, <see cref="EaxModeTransform" />) is
 /// preferable. The variant implemented here is CS3 / IEEE 1619 (the order used by NIST SP 800-38A Addendum and most
@@ -111,7 +111,7 @@ public sealed class CtsModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the seed and running CBC chaining vector so that
     /// key-equivalent state does not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not
-    /// disposed by this type — ownership remains with the caller.
+    /// disposed by this type - ownership remains with the caller.
     /// </summary>
     /// <remarks>
     /// Idempotent.
@@ -144,7 +144,7 @@ public sealed class CtsModeTransform
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
         CryptographyThrowHelper.ThrowIfInvalidOverlap(input, output);
 
-        // If perfectly block-aligned (or exactly one block), use plain CBC — no stealing needed.
+        // If perfectly block-aligned (or exactly one block), use plain CBC - no stealing needed.
         if (input.Length % blockSize == 0)
             return encrypt ? EncryptCbc(input, output) : DecryptCbc(input, output);
 

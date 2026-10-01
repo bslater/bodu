@@ -1,8 +1,8 @@
 # Bodu.Text.Serialization
 
-> **API stability — Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-The shared serialization core for the Bodu `System.Text.Json`-shaped text serializers ([Bencode](https://www.nuget.org/packages/Bodu.Text.Bencode), [TOML](https://www.nuget.org/packages/Bodu.Text.Toml), [YAML](https://www.nuget.org/packages/Bodu.Text.Yaml), [Delimited](https://www.nuget.org/packages/Bodu.Text.Delimited), [DotEnv](https://www.nuget.org/packages/Bodu.Text.DotEnv), [INI](https://www.nuget.org/packages/Bodu.Text.Ini)). It carries the format-agnostic pieces those libraries have in common: the declarative attribute family, the shaping enums, the serialization callback interfaces, and the property naming policies — all in the single `Bodu.Text.Serialization` namespace, so one `[PropertyName]` or `NamingPolicy.CamelCase` works identically across every format.
+The shared serialization core for the Bodu `System.Text.Json`-shaped text serializers ([Bencode](https://www.nuget.org/packages/Bodu.Text.Bencode), [TOML](https://www.nuget.org/packages/Bodu.Text.Toml), [YAML](https://www.nuget.org/packages/Bodu.Text.Yaml), [Delimited](https://www.nuget.org/packages/Bodu.Text.Delimited), [DotEnv](https://www.nuget.org/packages/Bodu.Text.DotEnv), [INI](https://www.nuget.org/packages/Bodu.Text.Ini)). It carries the format-agnostic pieces those libraries have in common: the declarative attribute family, the shaping enums, the serialization callback interfaces, and the property naming policies - all in the single `Bodu.Text.Serialization` namespace, so one `[PropertyName]` or `NamingPolicy.CamelCase` works identically across every format.
 
 ## Installation
 
@@ -10,7 +10,7 @@ The shared serialization core for the Bodu `System.Text.Json`-shaped text serial
 dotnet add package Bodu.Text.Serialization
 ```
 
-Targets `net8.0`. You rarely install this package directly — each per-format serializer package references it, so it arrives transitively with `Bodu.Text.Toml`, `Bodu.Text.Yaml`, and their siblings. Reference it directly only when a model assembly should carry the mapping attributes without depending on any specific format.
+Targets `net8.0`. You rarely install this package directly - each per-format serializer package references it, so it arrives transitively with `Bodu.Text.Toml`, `Bodu.Text.Yaml`, and their siblings. Reference it directly only when a model assembly should carry the mapping attributes without depending on any specific format.
 
 ## API shape
 
@@ -40,7 +40,7 @@ public sealed class Profile
 
 ## Shared engine source
 
-Beyond the compiled assembly, the package's repository folder also hosts the `shared/**` engine source — the metadata resolver (`MetadataResolver` / `TypeMetadata` / `PropertyMetadata`), the structural converter factories (nullable / dictionary / collection / object), and the converter pipeline — which the per-format packages compile into themselves under their format symbol (`BENCODE`, `TOML`, `YAML`, …). That source is a repository-level implementation detail: it ships inside each format assembly, not in this package, so this package stays a small attribute/contract library whose only dependency is `Bodu.Core`.
+Beyond the compiled assembly, the package's repository folder also hosts the `shared/**` engine source - the metadata resolver (`MetadataResolver` / `TypeMetadata` / `PropertyMetadata`), the structural converter factories (nullable / dictionary / collection / object), and the converter pipeline - which the per-format packages compile into themselves under their format symbol (`BENCODE`, `TOML`, `YAML`, …). That source is a repository-level implementation detail: it ships inside each format assembly, not in this package, so this package stays a small attribute/contract library whose only dependency is `Bodu.Core`.
 
 ## Testing
 

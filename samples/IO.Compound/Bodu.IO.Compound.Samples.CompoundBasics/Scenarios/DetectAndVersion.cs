@@ -13,7 +13,7 @@ namespace Bodu.IO.Compound.Samples.CompoundBasics.Scenarios;
 /// Demonstrates format detection and the version knob: <see cref="CompoundFile.IsCompoundFile(ReadOnlySpan{byte})" />
 /// answers "is this bytes an OLE2 container?" from the 8-byte signature without a full parse,
 /// and <see cref="CompoundBuildOptions.Version" /> selects v3 (512-byte sectors) or v4
-/// (4096-byte sectors) when authoring — visible directly in the emitted container size.
+/// (4096-byte sectors) when authoring - visible directly in the emitted container size.
 /// </summary>
 public static class DetectAndVersion
 {

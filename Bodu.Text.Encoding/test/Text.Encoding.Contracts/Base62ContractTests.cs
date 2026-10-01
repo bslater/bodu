@@ -12,7 +12,7 @@ namespace Bodu.Text.Encoding.Contracts;
 /// tests live in the <c>Base62Tests.*.cs</c> partials.
 /// </summary>
 /// <remarks>
-/// The <c>TEncoding</c> type parameter is a documentation marker — the contract is exercised through the protected
+/// The <c>TEncoding</c> type parameter is a documentation marker - the contract is exercised through the protected
 /// adapter methods. Because <see cref="Base62" /> is a <c>static class</c> it cannot be passed as a type argument; this
 /// subclass uses <see cref="object" /> as the placeholder.
 /// </remarks>

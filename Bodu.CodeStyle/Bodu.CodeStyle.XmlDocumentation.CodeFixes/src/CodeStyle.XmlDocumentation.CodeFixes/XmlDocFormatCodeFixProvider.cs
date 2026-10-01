@@ -61,7 +61,7 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
     /// <remarks>
     /// The formatting analyzer reports one diagnostic per changed tag, so a single documentation comment can carry
     /// several diagnostics at the same trivia. Each of those diagnostics, however, carries the identical whole-comment
-    /// replacement (the canonical formatted text), so the batch fixer's merge collapses them to one edit — there is no
+    /// replacement (the canonical formatted text), so the batch fixer's merge collapses them to one edit - there is no
     /// overlapping or conflicting replacement. The
     /// <c>CodeFix_WhenTwoTagsMisformattedInOneComment_FixAll_ShouldReformatOnce</c> test guards this.
     /// </remarks>
@@ -93,7 +93,7 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
 
             // Preprocessor directives between the doc comment and the documented member are not a barrier
             // to the fix. The rewrite is a deterministic reformat of the doc trivia text driven only by
-            // the trivia content, the surrounding indentation, and the configured wrap width — none of
+            // the trivia content, the surrounding indentation, and the configured wrap width - none of
             // which depend on which member the trivia ultimately attaches to under any given build
             // configuration. Replacing the trivia at its source position preserves correctness under all
             // configurations, including when a `#if`/`#elif`/`#else`/`#endif` block selects between

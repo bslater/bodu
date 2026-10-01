@@ -13,8 +13,8 @@ public partial class CurrencyPairJsonConverterTests
 {
 
     /// <summary>
-    /// Verifies that malformed payloads — a non-object root under Strict, a missing property, or a slashless compact
-    /// string — are rejected with a <see cref="JsonException" />.
+    /// Verifies that malformed payloads - a non-object root under Strict, a missing property, or a slashless compact
+    /// string - are rejected with a <see cref="JsonException" />.
     /// </summary>
     [TestMethod]
     public void WhenPayloadMalformed_ShouldThrowJsonException()

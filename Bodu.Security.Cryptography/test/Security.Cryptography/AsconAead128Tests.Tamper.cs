@@ -96,7 +96,7 @@ public partial class AsconAead128Tests
 
     /// <summary>
     /// Verifies that <see cref="AsconAead128.Decrypt" /> clears the keyed sponge state when authentication fails, so
-    /// a rejected message does not leave the full 320-bit permutation state — key- and plaintext-derived — live in the
+    /// a rejected message does not leave the full 320-bit permutation state - key- and plaintext-derived - live in the
     /// transform instance until disposal.
     /// </summary>
     [TestMethod]

@@ -10,8 +10,8 @@ public sealed partial class ThrowHelperTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> does not throw — and on
-    /// the ParamName-asserting overload reports nothing — for valid <c>(array, offset, count)</c> triples
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> does not throw - and on
+    /// the ParamName-asserting overload reports nothing - for valid <c>(array, offset, count)</c> triples
     /// whose window fits inside the backing array.
     /// </summary>
     /// <param name="testName">The data-row label.</param>
@@ -36,8 +36,8 @@ public sealed partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> throws the expected
-    /// exception type with the expected <c>ParamName</c> — disambiguating across <c>array</c>,
-    /// <c>offset</c>, and <c>count</c> — for null arrays and out-of-range offset/count values. This is the
+    /// exception type with the expected <c>ParamName</c> - disambiguating across <c>array</c>,
+    /// <c>offset</c>, and <c>count</c> - for null arrays and out-of-range offset/count values. This is the
     /// critical disambiguation contract for multi-parameter guards.
     /// </summary>
     /// <param name="testName">The data-row label.</param>

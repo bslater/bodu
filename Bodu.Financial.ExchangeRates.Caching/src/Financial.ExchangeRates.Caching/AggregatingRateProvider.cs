@@ -19,12 +19,12 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// The aggregator is itself a provider on both the dated <see cref="IDatedRateProvider" /> and timeless
-/// <see cref="IRateProvider" /> surfaces, so it composes anywhere a provider is expected — including wrapping each
+/// <see cref="IRateProvider" /> surfaces, so it composes anywhere a provider is expected - including wrapping each
 /// child in its own <see cref="CachingRateProvider" /> so the grouping sits above the per-source cache. Same-currency
 /// identity is handled here before any strategy is consulted.
 /// </para>
 /// <para>
-/// Aggregation combines <em>distinct sources</em> — children that differ in who published the rate — for resilience and
+/// Aggregation combines <em>distinct sources</em> - children that differ in who published the rate - for resilience and
 /// coverage, and is orthogonal to the tiered read-through that a <see cref="CachingRateProvider" /> forms by stacking
 /// caches over a <em>single</em> source. The two nest: an aggregator child can itself be a stacked cache over a source.
 /// Reach for aggregation for fallback, an averaged rate, or per-pair routing across providers; reach for stacking to
@@ -174,7 +174,7 @@ public sealed class AggregatingRateProvider
 
         // Resolve every route (and the default order) to its candidate array once: the name->provider map and each
         // route's provider order are immutable after construction, so per-call resolution would rebuild identical
-        // arrays. This also freezes routing at construction — mutating the options' routes afterwards has no effect,
+        // arrays. This also freezes routing at construction - mutating the options' routes afterwards has no effect,
         // making explicit the contract the constructor-time validation always implied.
         _routes = new Dictionary<CurrencyPair, (NamedDatedRateProvider[] Candidates, IRateAggregationStrategy Strategy)>(_options.Routes.Count);
         foreach (KeyValuePair<CurrencyPair, CurrencyPairRoute> entry in _options.Routes)

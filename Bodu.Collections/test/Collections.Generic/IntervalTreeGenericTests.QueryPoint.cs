@@ -48,7 +48,7 @@ public partial class IntervalTreeGenericTests
     }
 
     /// <summary>
-    /// Verifies that the lazy stabbing sequence is fail-fast — mutating the tree mid-iteration throws
+    /// Verifies that the lazy stabbing sequence is fail-fast - mutating the tree mid-iteration throws
     /// <see cref="InvalidOperationException" /> on the next advance.
     /// </summary>
     [TestMethod]

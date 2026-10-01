@@ -10,7 +10,7 @@ public partial class OrderedSetTests
 {
 
     // --------------------------------------------------------
-    // Add(T) — comparer interaction
+    // Add(T) - comparer interaction
     // --------------------------------------------------------
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial class OrderedSetTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
     // --------------------------------------------------------
-    // Add(T) — argument validation
+    // Add(T) - argument validation
     // --------------------------------------------------------
 
     /// <summary>
@@ -61,7 +61,7 @@ public partial class OrderedSetTests
     }
 
     // --------------------------------------------------------
-    // Add(T) — single-item behaviour
+    // Add(T) - single-item behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -96,7 +96,7 @@ public partial class OrderedSetTests
     }
 
     // --------------------------------------------------------
-    // AddRange — behaviour
+    // AddRange - behaviour
     // --------------------------------------------------------
 
     /// <summary>
@@ -145,7 +145,7 @@ public partial class OrderedSetTests
     }
 
     // --------------------------------------------------------
-    // AddRange — argument validation
+    // AddRange - argument validation
     // --------------------------------------------------------
 
     /// <summary>

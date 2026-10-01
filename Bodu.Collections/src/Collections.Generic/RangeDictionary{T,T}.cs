@@ -17,7 +17,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">The value type.</typeparam>
 /// <remarks>
 /// <para>
-/// Entries are stored in three parallel arrays — one for the inclusive start of each range, one for the exclusive end,
+/// Entries are stored in three parallel arrays - one for the inclusive start of each range, one for the exclusive end,
 /// and one for the associated value. Lookups use binary search across the start endpoints, followed by a single
 /// end-boundary check. Insertions and removals shift the affected suffix of each array.
 /// </para>

@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Verifies the public <see cref="AesBlockCipher" /> adapter against the shared
-/// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> suite — including BlockSize, Encrypt, Decrypt,
-/// disposal, and FIPS-197 known-answer coverage across the three AES key sizes — plus a small set of
+/// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> suite - including BlockSize, Encrypt, Decrypt,
+/// disposal, and FIPS-197 known-answer coverage across the three AES key sizes - plus a small set of
 /// adapter-specific contract tests (constructor argument validation, BCL output parity, double dispose).
 /// </summary>
 [TestClass]
@@ -79,7 +79,7 @@ public sealed partial class AesBlockCipherTests
 
     /// <summary>
     /// Verifies that <see cref="AesBlockCipher" /> produces byte-for-byte identical output to the
-    /// BCL's <see cref="Aes.EncryptEcb(ReadOnlySpan{byte}, Span{byte}, PaddingMode)" /> — confirming
+    /// BCL's <see cref="Aes.EncryptEcb(ReadOnlySpan{byte}, Span{byte}, PaddingMode)" /> - confirming
     /// the adapter applies no additional transformation beyond delegating to the underlying engine.
     /// </summary>
     [TestMethod]

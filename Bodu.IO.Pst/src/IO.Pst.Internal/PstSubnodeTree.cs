@@ -10,7 +10,7 @@ using System.Globalization;
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Parses a node's subnode tree — the private namespace of child nodes an <c>SLBLOCK</c> holds directly or an
+/// Parses a node's subnode tree - the private namespace of child nodes an <c>SLBLOCK</c> holds directly or an
 /// <c>SIBLOCK</c> spreads over multiple <c>SLBLOCK</c>s.
 /// </summary>
 internal static class PstSubnodeTree
@@ -59,7 +59,7 @@ internal static class PstSubnodeTree
         ReadOnlySpan<byte> body = block.AsSpan(layout.SubnodeBlockHeaderSize);
         if (level == 0)
         {
-            // SLBLOCK: SLENTRY rows — node id, data block id, nested subnode block id (24 bytes Unicode, 12 ANSI).
+            // SLBLOCK: SLENTRY rows - node id, data block id, nested subnode block id (24 bytes Unicode, 12 ANSI).
             int entrySize = layout.SubnodeLeafEntrySize;
             if (count * entrySize > body.Length)
                 throw Malformed(blockId);
@@ -78,7 +78,7 @@ internal static class PstSubnodeTree
         }
         else if (level == 1 && allowIndex)
         {
-            // SIBLOCK: SIENTRY rows — node id, SLBLOCK id (16 bytes Unicode, 8 ANSI).
+            // SIBLOCK: SIENTRY rows - node id, SLBLOCK id (16 bytes Unicode, 8 ANSI).
             int entrySize = layout.SubnodeIndexEntrySize;
             if (count * entrySize > body.Length)
                 throw Malformed(blockId);

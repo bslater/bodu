@@ -1,23 +1,23 @@
 # Bodu.IO.Compound.Samples.CompoundBasics
 
-The OLE2 / Compound File Binary (CFB) container via `Bodu.IO.Compound` — the
+The OLE2 / Compound File Binary (CFB) container via `Bodu.IO.Compound` - the
 structured-storage envelope inside legacy Office files (`.doc`, `.xls`, `.msg`): a
 "filesystem in a file" of nested storages and named streams. Four scenarios cover authoring
 with the staged builder API and reading back, the OLE property sets that carry document
 metadata, format detection plus the v3/v4 version knob, and walking a real committed `.doc`.
 Everything runs offline against in-memory containers and two committed fixtures
-(`Data/golden-v3.cfb`, 8 KB; `Data/sample1.doc`, 29 KB — copied from the library's test
+(`Data/golden-v3.cfb`, 8 KB; `Data/sample1.doc`, 29 KB - copied from the library's test
 fixtures).
 
 ```bash
 dotnet run --project samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics
 ```
 
-## Scenario 1 — AuthorAndReadBack
+## Scenario 1 - AuthorAndReadBack
 
 **Intent.** Show the authoring loop: containers are built bottom-up with
 `CompoundStorageBuilder` (storages nest, streams carry bytes), written to any `Stream`, and
-read back through `CompoundFile` — a full structured-storage round trip with no file on disk
+read back through `CompoundFile` - a full structured-storage round trip with no file on disk
 and no application-format knowledge.
 
 **What it does.** Creates a root with a `Manifest` stream and a nested `Payload` storage
@@ -42,10 +42,10 @@ back verbatim.
 `CompoundStorageBuilder.WriteTo(Stream)`, `CompoundFile.Open`, `CompoundStorage.EnumerateEntries`
 / `.EnumerateStreams` / `.OpenStorage` / `.OpenStream`.
 
-## Scenario 2 — OlePropertySets
+## Scenario 2 - OlePropertySets
 
-**Intent.** Show OLE property sets — the metadata (title, author, timestamps) legacy Office
-files carry in the well-known `\x05SummaryInformation` stream — in both directions: author
+**Intent.** Show OLE property sets - the metadata (title, author, timestamps) legacy Office
+files carry in the well-known `\x05SummaryInformation` stream - in both directions: author
 one with the typed builder, and read one back from a real Word file with the typed accessor,
 no raw property-set parsing required.
 
@@ -71,12 +71,12 @@ committed `sample1.doc` and prints the metadata Word 2000 wrote into it decades 
 `CompoundFile.CommitAsync`, `CompoundFile.TryGetSummaryInformation`, the typed
 `SummaryInformation` properties.
 
-## Scenario 3 — DetectAndVersion
+## Scenario 3 - DetectAndVersion
 
 **Intent.** Two operational questions: "is this byte buffer an OLE2 container at all?"
-(answered from the 8-byte signature by `IsCompoundFile`, no parse required — the right
+(answered from the 8-byte signature by `IsCompoundFile`, no parse required - the right
 pre-check before handing bytes to a full open), and "which format version should I author?"
-(`CompoundBuildOptions.Version`: v3 with 512-byte sectors vs v4 with 4096-byte sectors — a
+(`CompoundBuildOptions.Version`: v3 with 512-byte sectors vs v4 with 4096-byte sectors - a
 size/alignment trade-off that is directly visible in the emitted bytes).
 
 **What it does.** Probes the two committed fixtures and a plain-text buffer with
@@ -100,11 +100,11 @@ both read through the same API.
 **APIs demonstrated.** `CompoundFile.IsCompoundFile(ReadOnlySpan<byte>)`,
 `CompoundBuildOptions.Version` + `CompoundFileVersion.V3`/`.V4`.
 
-## Scenario 4 — StreamsAndEntries
+## Scenario 4 - StreamsAndEntries
 
 **Intent.** Read a real-world container without any application knowledge: the committed
 Word 97-2003 fixture is walked purely through the storage/stream surface, showing the
-directory metadata `CompoundEntryInfo` exposes and that stream bytes are just bytes — the
+directory metadata `CompoundEntryInfo` exposes and that stream bytes are just bytes - the
 package's whole job is the envelope, not the Word format.
 
 **What it does.** Recursively dumps `sample1.doc`'s tree (streams with sizes, the
@@ -147,11 +147,11 @@ Bodu.IO.Compound.Samples.CompoundBasics/
 
 > Note: the scenario class is named `OlePropertySets` (not `PropertySets`) because inside
 > the `Bodu.IO.Compound.*` namespace tree the simple name `PropertySets` resolves to the
-> `Bodu.IO.Compound.PropertySets` namespace, not a type — the same shadowing rule the
+> `Bodu.IO.Compound.PropertySets` namespace, not a type - the same shadowing rule the
 > Text.Formats samples document.
 
 ## Related
 
-- `Bodu.Formats.Excel.Binary` samples (`samples/Formats.Excel/`) — the BIFF8 `.xls` reader
+- `Bodu.Formats.Excel.Binary` samples (`samples/Formats.Excel/`) - the BIFF8 `.xls` reader
   built on this container format.
 - Guides: `docs/guides/io-compound/`.

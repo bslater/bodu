@@ -1,5 +1,5 @@
 ---
-title: Line formats — parser policies
+title: Line formats - parser policies
 ---
 
 # Parser policies
@@ -42,7 +42,7 @@ The DotEnv dialect follows the mainstream `dotenv` implementations:
 The `Utf8IniReader` dialect is deliberately conservative (the `configparser`-compatible reading):
 
 - `=` is the only key/value delimiter; a `:` line is malformed.
-- A value runs literally to the end of the line — quotes are preserved and an inline `;` or `#` is **content**, not a comment.
+- A value runs literally to the end of the line - quotes are preserved and an inline `;` or `#` is **content**, not a comment.
 - Both `;` and `#` start full-line comments (`IniReaderOptions.DisallowHashComments` restricts to `;`).
 - A leading UTF-8 BOM is skipped; LF, CRLF, and lone-CR line endings are equivalent.
 
@@ -53,7 +53,7 @@ Duplicate handling is a **document-model** policy (`IniDocumentOptions`, also su
 | `DuplicateSectionBehavior` | `Merge` (later `[section]` blocks append to the first) / `Disallowed` | `Merge` |
 | `DuplicateKeyBehavior` | `LastWins` / `FirstWins` / `Disallowed` | `LastWins` |
 
-A global key that collides with a section of the same name is always rejected (`IniFormatException`), because both would claim the same root property; `IniSerializerOptions.GlobalSectionName` maps the global entries to a reserved root key instead of hoisting them, which removes the ambiguity. `IniSerializerDefaults.Strict` selects `Disallowed` for both duplicate policies — Python `configparser` strict mode.
+A global key that collides with a section of the same name is always rejected (`IniFormatException`), because both would claim the same root property; `IniSerializerOptions.GlobalSectionName` maps the global entries to a reserved root key instead of hoisting them, which removes the ambiguity. `IniSerializerDefaults.Strict` selects `Disallowed` for both duplicate policies - Python `configparser` strict mode.
 
 ## Where to go next
 

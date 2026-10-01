@@ -13,7 +13,7 @@ namespace Bodu.Text.Yaml;
 /// file), its classification under the Bodu YAML Core Tree Profile, and the vector's input and expectation content.
 /// </summary>
 /// <remarks>
-/// The vector mirrors the upstream layout — <c>in.yaml</c> is the input document and <c>in.json</c> is the canonical
+/// The vector mirrors the upstream layout - <c>in.yaml</c> is the input document and <c>in.json</c> is the canonical
 /// JSON expectation when the suite publishes one. The <see cref="Category" /> is derived by
 /// <see cref="YamlTestCorpusReader" /> from the case structure and the profile's by-name classification sets.
 /// </remarks>

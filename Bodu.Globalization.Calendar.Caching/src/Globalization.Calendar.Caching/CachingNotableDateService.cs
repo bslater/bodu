@@ -27,9 +27,9 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// itself with no copying.
 /// </para>
 /// <para>
-/// Output ordering relies on the <see cref="INotableDateCache" /> ordering contract — cached occurrences round-trip in
+/// Output ordering relies on the <see cref="INotableDateCache" /> ordering contract - cached occurrences round-trip in
 /// the order supplied, which is the wrapped service's date-then-identity ordering, and emitted dates in one civil year
-/// always precede the next year's — so assembled results are ordered without re-sorting. As a safeguard, the assembled
+/// always precede the next year's - so assembled results are ordered without re-sorting. As a safeguard, the assembled
 /// result is verified with a linear scan, and only a non-conforming cache backend pays a full sort.
 /// </para>
 /// <para>
@@ -165,7 +165,7 @@ public sealed class CachingNotableDateService
             IReadOnlyList<NotableDate> year = ResolveYear(territory, firstYear, version, ttl, now);
 
             // Whole-civil-year window (the Resolve(year, territory) extension shape): the cached year list is the
-            // answer itself — no clipping, no copying.
+            // answer itself - no clipping, no copying.
             if (range.StartDate.DayOfYear == 1 && range.EndDate.Month == 12 && range.EndDate.Day == 31)
                 return EnsureOrdered(year);
 
@@ -227,7 +227,7 @@ public sealed class CachingNotableDateService
                 matched.Add(unfiltered[i]);
         }
 
-        // Everything matched: hand back the unfiltered list itself — the unfiltered overload already returns shared
+        // Everything matched: hand back the unfiltered list itself - the unfiltered overload already returns shared
         // cached lists, so this exposes nothing new.
         return matched.Count == unfiltered.Count ? unfiltered : matched;
     }
@@ -252,10 +252,10 @@ public sealed class CachingNotableDateService
     /// <paramref name="lastYear" /> precedes <paramref name="firstYear" />.
     /// </exception>
     /// <remarks>
-    /// Territories are warmed sequentially — year resolution is a synchronous, CPU-bound computation with no I/O to
+    /// Territories are warmed sequentially - year resolution is a synchronous, CPU-bound computation with no I/O to
     /// overlap. A territory whose resolution fails is logged at
-    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped — the remaining territories still warm
-    /// — and is excluded from the returned count. Later queries for any warmed year are cache hits until the
+    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped - the remaining territories still
+    /// warm - and is excluded from the returned count. Later queries for any warmed year are cache hits until the
     /// time-to-live or a resource-version change expires them.
     /// </remarks>
     public int Warm(IEnumerable<string> territories, int firstYear, int lastYear)
@@ -331,8 +331,8 @@ public sealed class CachingNotableDateService
     }
 
     /// <summary>
-    /// Computes one civil year through the wrapped service and writes it to the cache — the shared miss path of the
-    /// per-year and batch read branches — coalescing concurrent misses for the same cold year onto one computation.
+    /// Computes one civil year through the wrapped service and writes it to the cache - the shared miss path of the
+    /// per-year and batch read branches - coalescing concurrent misses for the same cold year onto one computation.
     /// </summary>
     /// <param name="territory">
     /// The requested territory code, passed through unmodified; the cache normalizes it.
@@ -349,11 +349,11 @@ public sealed class CachingNotableDateService
     /// <remarks>
     /// The wrapped service has no coalescing of its own (year resolution is a synchronous, CPU-bound computation), so
     /// without this guard N concurrent misses for the same cold year would run N identical computations. The first
-    /// caller for a key computes and stores; concurrent callers share the same <see cref="Lazy{T}" /> result —
+    /// caller for a key computes and stores; concurrent callers share the same <see cref="Lazy{T}" /> result -
     /// including its exception when the computation faults. The in-flight entry is removed once the value is realized,
     /// so a faulted computation never poisons the key and the next caller retries fresh. Background refresh-ahead
     /// recomputes share this single-flight guard, so a genuine miss that arrives while a refresh is computing joins the
-    /// refresh flight and is served the refreshed value — such a joining caller is counted as neither a hit nor a miss,
+    /// refresh flight and is served the refreshed value - such a joining caller is counted as neither a hit nor a miss,
     /// because the creator of the flight determines which diagnostics its computation emits.
     /// </remarks>
     private IReadOnlyList<NotableDate> ComputeAndStoreYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now, bool refreshAhead = false)
@@ -371,8 +371,8 @@ public sealed class CachingNotableDateService
                 () =>
                 {
                     // Double-check the cache before computing a genuine miss: because a completed flight is removed as
-                    // soon as its creator returns, a caller that observed the miss before that store — but reached
-                    // GetOrAdd after the removal — would otherwise create a fresh flight and recompute a year already
+                    // soon as its creator returns, a caller that observed the miss before that store - but reached
+                    // GetOrAdd after the removal - would otherwise create a fresh flight and recompute a year already
                     // cached. This re-read closes that stampede window, serving the just-stored year instead of running
                     // the wrapped service a second time; such a late joiner is counted as neither a hit nor a miss,
                     // matching the accounting of a caller that joins an in-flight computation. A background
@@ -410,15 +410,15 @@ public sealed class CachingNotableDateService
         }
         finally
         {
-            // Remove the completed (or faulted) flight so later misses — after expiry or a failure — start fresh
+            // Remove the completed (or faulted) flight so later misses - after expiry or a failure - start fresh
             // rather than observing a cached Lazy exception forever.
             _inFlight.TryRemove(key, out _);
         }
     }
 
     /// <summary>
-    /// Reads a single civil year's cached entry through the same seam the miss originated from — the batch reader when
-    /// the backend supports it, or the per-year lookup otherwise — so the single-flight stampede re-check never
+    /// Reads a single civil year's cached entry through the same seam the miss originated from - the batch reader when
+    /// the backend supports it, or the per-year lookup otherwise - so the single-flight stampede re-check never
     /// introduces a per-year read on a batch-capable backend.
     /// </summary>
     /// <param name="territory">
@@ -447,8 +447,8 @@ public sealed class CachingNotableDateService
     /// <param name="computedAtUtc">The instant the served entry was computed.</param>
     /// <param name="now">The serving lookup's instant.</param>
     /// <remarks>
-    /// The pending registration is published <em>before</em> the task starts — a completion source's task is added
-    /// under the key first, and only a successful add spawns the worker — so a concurrent aged hit can never slip in
+    /// The pending registration is published <em>before</em> the task starts - a completion source's task is added
+    /// under the key first, and only a successful add spawns the worker - so a concurrent aged hit can never slip in
     /// between a worker finishing and its registration appearing. The worker captures the schedule-time version token
     /// (a mid-flight resource reload merely writes an entry under the stale version, which is never read again) but
     /// takes a fresh computation instant when it runs, and routes through <see cref="ComputeAndStoreYear" /> so it
@@ -513,7 +513,7 @@ public sealed class CachingNotableDateService
     /// </summary>
     /// <returns>The current resource-version token.</returns>
     /// <remarks>
-    /// The common case — the observed resource has not changed since the previous query — is a single volatile read and
+    /// The common case - the observed resource has not changed since the previous query - is a single volatile read and
     /// a reference comparison, with no lock. The lock is taken only when a reload has swapped the resource reference,
     /// deriving the new token once and publishing the immutable pair atomically.
     /// </remarks>
@@ -535,7 +535,7 @@ public sealed class CachingNotableDateService
             if (version is not null && ReferenceEquals(version.Item1, current))
                 return version.Item2;
 
-            // A reload swaps the resource reference; bump the generation so the token — and therefore every cache key —
+            // A reload swaps the resource reference; bump the generation so the token - and therefore every cache key -
             // changes even when the new resource carries the same identifier and schema version as the old one.
             _generation++;
             string token = string.Format(
@@ -585,7 +585,7 @@ public sealed class CachingNotableDateService
     /// </summary>
     /// <param name="occurrences">The assembled occurrences.</param>
     /// <returns>
-    /// <paramref name="occurrences" /> itself when already ordered — the common case for every conforming backend — or
+    /// <paramref name="occurrences" /> itself when already ordered - the common case for every conforming backend - or
     /// a sorted copy otherwise.
     /// </returns>
     private static IReadOnlyList<NotableDate> EnsureOrdered(IReadOnlyList<NotableDate> occurrences)

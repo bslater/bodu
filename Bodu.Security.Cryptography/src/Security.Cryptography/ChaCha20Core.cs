@@ -351,7 +351,8 @@ internal static partial class ChaCha20Core
     /// four or eight blocks takes 0.9 to 1.2 times as long, and a step of sixteen 1.4 to 1.6 times as long, for
     /// ChaCha20 and Salsa20 alike. With 16 registers the AVX2 and SSSE3 kernels spill: a step takes 1.7 to 2.0 times as
     /// long for ChaCha20, and 2.0 to 3.5 times for Salsa20, whose rotations all take two shifts. The estimate follows
-    /// ChaCha20. The ARM64 kernel, which has not been measured, is taken to cost as the AVX2 and SSSE3 kernels do.
+    /// ChaCha20. The ARM64 kernel is taken to cost as the AVX2 and SSSE3 kernels do; on a Neoverse N2, a 64-byte
+    /// message sealed as fast under its plan as under the scalar kernel's.
     /// </para>
     /// <para>
     /// The keystream a step produces is the same whichever kernel runs it, so the estimates only choose between ways of

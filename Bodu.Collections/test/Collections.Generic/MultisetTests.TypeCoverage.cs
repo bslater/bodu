@@ -177,7 +177,7 @@ public partial class MultisetTests
     /// <summary>Value-type element with structural (value-based) equality via record struct.</summary>
     private readonly record struct Point(int X, int Y);
 
-    /// <summary>Reference-type element with no overridden equality — uses reference identity.</summary>
+    /// <summary>Reference-type element with no overridden equality - uses reference identity.</summary>
     private sealed class Widget
     {
 

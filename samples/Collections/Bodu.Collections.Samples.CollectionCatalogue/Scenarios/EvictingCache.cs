@@ -16,7 +16,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// </summary>
 /// <remarks>
 /// The detail that catches people is that a <em>read</em> mutates eviction order under LRU. The indexer looks like
-/// a pure lookup and is not: it is what keeps a hot key alive. That cuts both ways — a diagnostic peek at a cache
+/// a pure lookup and is not: it is what keeps a hot key alive. That cuts both ways - a diagnostic peek at a cache
 /// entry silently promotes it, which is exactly why <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" />
 /// exists as a separate, non-promoting call.
 /// </remarks>

@@ -110,7 +110,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that the tangent of a value with a large imaginary component saturates to the imaginary unit instead of
-    /// overflowing to NaN — the numpy #3010 / #5518 defect that a naive <c>sin/cos</c> quotient exhibits.
+    /// overflowing to NaN - the numpy #3010 / #5518 defect that a naive <c>sin/cos</c> quotient exhibits.
     /// </summary>
     [TestMethod]
     [TestCategory(Bodu.Test.TestCategories.Regression)]
@@ -187,7 +187,7 @@ public partial class ComplexTests
 
     /// <summary>
     /// Verifies that the square root of a negative real value with a signed-zero imaginary component matches
-    /// <see cref="System.Numerics.Complex" /> — pinning the branch-cut convention .NET actually uses (the positive
+    /// <see cref="System.Numerics.Complex" /> - pinning the branch-cut convention .NET actually uses (the positive
     /// imaginary root for both zero signs) rather than the C99 sign-carrying variant.
     /// </summary>
     [TestMethod]
@@ -218,7 +218,7 @@ public partial class ComplexTests
     }
 
     /// <summary>
-    /// Verifies that raising zero to a non-zero power returns zero — including a negative exponent, where .NET returns
+    /// Verifies that raising zero to a non-zero power returns zero - including a negative exponent, where .NET returns
     /// zero rather than the infinity that real <see cref="Math.Pow(double, double)" /> produces.
     /// </summary>
     [TestMethod]

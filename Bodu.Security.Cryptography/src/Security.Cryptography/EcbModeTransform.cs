@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="ECB panel — each plaintext block is encrypted independently to its ciphertext block with no feedback."/>
+/// <img src="../images/diagrams/classic-modes.svg" alt="ECB panel - each plaintext block is encrypted independently to its ciphertext block with no feedback."/>
 /// </para>
 /// <para>
 /// Encryption computes <c>Cᵢ = E(Pᵢ)</c> and decryption <c>Pᵢ = D(Cᵢ)</c>; no initialization vector is used. See <b>
@@ -25,15 +25,15 @@ namespace Bodu.Security.Cryptography;
 /// authenticated mode unless ECB is required as a primitive inside a larger construction.
 /// </para>
 /// <para>
-/// <strong>When to use ECB.</strong> Only as a building block inside a larger, well-understood construction — for
+/// <strong>When to use ECB.</strong> Only as a building block inside a larger, well-understood construction - for
 /// example, encrypting a single fixed-length tweak inside an XTS or wide-block scheme. For protecting arbitrary
 /// plaintext, use <see cref="CbcModeTransform" /> as a baseline, <see cref="CtrModeTransform" /> when random access or
 /// stream-cipher behavior is wanted, or one of the AEAD modes (<see cref="GcmModeTransform" />,
 /// <see cref="EaxModeTransform" />, …) when authentication matters.
 /// </para>
 /// <para>
-/// Because ECB has no chaining state, the transform is stateless — repeated <see cref="Transform" /> calls produce the
-/// same result for the same input — and is trivially parallelisable.
+/// Because ECB has no chaining state, the transform is stateless - repeated <see cref="Transform" /> calls produce the
+/// same result for the same input - and is trivially parallelisable.
 /// </para>
 /// </remarks>
 /// <example>
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#ecb--almost-never">ECB walk-through in the cipher-modes
+/// <seealso href="../guides/cryptography/cipher-modes.html#ecb---almost-never">ECB walk-through in the cipher-modes
 /// guide</seealso>
 public sealed class EcbModeTransform
     : IBlockCipherModeTransform
@@ -96,7 +96,7 @@ public sealed class EcbModeTransform
     /// <summary>
     /// Releases the resources used by this instance. ECB holds no per-message chaining state, so this is a no-op beyond
     /// satisfying the <see cref="IBlockCipherModeTransform" /> contract. The underlying <see cref="IBlockCipher" /> is
-    /// not disposed by this type — ownership remains with the caller.
+    /// not disposed by this type - ownership remains with the caller.
     /// </summary>
     public void Dispose()
     {

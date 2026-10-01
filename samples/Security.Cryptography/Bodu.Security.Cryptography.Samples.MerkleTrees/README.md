@@ -1,6 +1,6 @@
 # Bodu.Security.Cryptography.Samples.MerkleTrees
 
-The RFC 6962 Merkle-tree surface: `MerkleTree` and its family — `MerkleBlockAccumulator`,
+The RFC 6962 Merkle-tree surface: `MerkleTree` and its family - `MerkleBlockAccumulator`,
 `MerkleBlockComputation`, and the optional `MerkleTreeDiagnostics` trace recorder. Seven scenarios covering the
 commitment (roots and proofs), the length-bound root that closes RFC 6962's tree-size ambiguity, the append-only
 guarantee, the blocked/streaming/async surface, write-time accumulation, the fan-out and parallelism knobs, and
@@ -19,16 +19,16 @@ For NuGet consumers:
 dotnet add package Bodu.Security.Cryptography
 ```
 
-Every scenario opens by printing a **What / Why / Expect** banner — the same three things this README
-records per scenario — so a transcript stands on its own and a reader can tell a correct run from a broken
+Every scenario opens by printing a **What / Why / Expect** banner - the same three things this README
+records per scenario - so a transcript stands on its own and a reader can tell a correct run from a broken
 one without opening the source. The `text` blocks below show the value lines only; run the sample to see
 the banner above each of them.
 
-## Scenario 1 — Commitments
+## Scenario 1 - Commitments
 
 **Intent.** Show the core commitment: one root hash stands for a whole list, and a logarithmic audit path proves
-one entry's membership against it without revealing the rest. Show *why* the RFC prefixes its hashes — the domain
-separation that closes the second-preimage attack — and that verification is total, so a verifier can be fed
+one entry's membership against it without revealing the rest. Show *why* the RFC prefixes its hashes - the domain
+separation that closes the second-preimage attack - and that verification is total, so a verifier can be fed
 attacker-supplied values without a `try`/`catch`.
 
 **What it does.** Commits to a seven-entry audit log, prints the root, then contrasts `HashLeaf(e)` with a plain
@@ -38,7 +38,7 @@ wrong index, and feeds three malformed inputs.
 
 **What to expect.** `HashLeaf(e[0])` differs from `SHA256(e[0])` because a leaf is `H(0x00 ‖ entry)`; a one-entry
 tree's root *is* that leaf hash, with no node hashing at all. The seven-entry path is three steps (⌈log₂ 7⌉).
-Verification then fails for every corruption — including the malformed inputs, which return `false` rather than
+Verification then fails for every corruption - including the malformed inputs, which return `false` rather than
 throwing:
 
 ```text
@@ -62,15 +62,15 @@ throwing:
 ```
 
 The empty root `e3b0c442...` is the SHA-256 of the empty string, exactly as the RFC specifies. Note also that the
-tree takes a hash-algorithm *factory*, not an instance — that is what makes `MerkleTree` immutable, stateless,
+tree takes a hash-algorithm *factory*, not an instance - that is what makes `MerkleTree` immutable, stateless,
 shareable across threads, and deliberately not `IDisposable`.
 
 **APIs demonstrated.** `MerkleTree(Func<HashAlgorithm>)`, `.HashLength`, `.FanOut`, `.IsBinary`, `.HashLeaf`,
 `.HashNode`, `.ComputeRoot`, `.AuthenticationPath`, `.VerifyInclusion`, `.VerifyInclusionOfLeafHash`.
 
-## Scenario 2 — SizeBinding
+## Scenario 2 - SizeBinding
 
-**Intent.** Demonstrate RFC 6962's tree-size ambiguity — and that it is *specified behaviour, not a defect* — then
+**Intent.** Demonstrate RFC 6962's tree-size ambiguity - and that it is *specified behaviour, not a defect* - then
 show the length-bound root that closes it. Read this before using `VerifyInclusion` anywhere the tree size comes
 from the party being audited: its `treeSize` argument is trusted input, not something the root authenticates.
 
@@ -82,7 +82,7 @@ showing two inputs with the *same* block count but different bound roots.
 
 **What to expect.** Both unbound verifications return `True`. That is not a bug: a four-leaf tree's path for leaf 0
 has exactly the length a three-leaf tree's first path wants and walks to the same head, so the size check alone
-cannot tell them apart. The consequence is concrete — a holder of a four-block object that has lost block 3 could
+cannot tell them apart. The consequence is concrete - a holder of a four-block object that has lost block 3 could
 declare a three-block object, never be challenged for block 3, and pass every audit for ever. The bound verifier
 rejects all three misstatements:
 
@@ -110,21 +110,21 @@ strictly stronger, because it also pins the final block's length. `BindRoot` com
 **APIs demonstrated.** `.ComputeRoot`, `.AuthenticationPath`, `.VerifyInclusion`, `.BindRoot`,
 `.VerifyInclusionBound`, `MerkleTree.BlockCount`.
 
-## Scenario 3 — Consistency
+## Scenario 3 - Consistency
 
 **Intent.** Show the append-only guarantee. An inclusion proof answers "is this entry in the log?"; a consistency
-proof answers the harder question "is this the same log I saw last time, only longer?" — which is what stops an
+proof answers the harder question "is this the same log I saw last time, only longer?" - which is what stops an
 operator quietly rewriting history.
 
 **What it does.** Takes two snapshots of the same log (at 4 entries and at 7), computes the consistency proof over
 the current list plus the earlier size, and verifies it from the two roots alone. It checks the degenerate `n → n`
-case, then rewrites entry 1 — *inside* the published snapshot — and appends as normal; then rewrites entry 5 —
-*after* the snapshot — for contrast. It finishes with a reversed size pair, a mis-sized proof step, and the
+case, then rewrites entry 1 - *inside* the published snapshot - and appends as normal; then rewrites entry 5 -
+*after* the snapshot - for contrast. It finishes with a reversed size pair, a mis-sized proof step, and the
 leaf-hash overload.
 
 **What to expect.** The genuine extension verifies from the two signed roots, with the auditor never seeing an
 entry. Rewriting entry 1 fails: the forged log's root is a perfectly valid Merkle root, but the proof step is
-unchanged (entries 4–6 were not touched), so the verifier still folds the old root it holds into `e8da82b2…` —
+unchanged (entries 4-6 were not touched), so the verifier still folds the old root it holds into `e8da82b2…` -
 which is not the root being claimed. Rewriting entry 5 still verifies, and that is the guarantee working as
 defined rather than a hole: a 4 → 7 proof attests only that the first four entries are unchanged and in order.
 Catching a later amendment needs an auditor holding a signed root at size 7, which is why auditors keep every root
@@ -153,31 +153,31 @@ they are given.
 
 A single proof step suffices here because 4 is a power of two and exactly RFC 6962's split point for 7: the old
 tree is already the complete left subtree of the new one, so `MTH(7) = H(0x01 ‖ root@4 ‖ MTH(e4..e6))` and only
-that right-hand hash is missing. It is also why the rewrite is unforgeable — the old root is a signed value the
+that right-hand hash is missing. It is also why the rewrite is unforgeable - the old root is a signed value the
 operator does not control, so producing a step that folds with it into the forged root would be a second-preimage
-break on SHA-256. The last line matters operationally — an operator keeping a running list of leaf hashes need
+break on SHA-256. The last line matters operationally - an operator keeping a running list of leaf hashes need
 not retain the entries to answer an auditor.
 
 **APIs demonstrated.** `.ConsistencyProof`, `.ConsistencyProofOfLeafHashes`, `.VerifyConsistency`, `.ComputeRoot`,
 `.HashLeaf`.
 
-## Scenario 4 — BlockedInputs
+## Scenario 4 - BlockedInputs
 
 **Intent.** Show the blocked surface, which treats one large input as a sequence of fixed-size leaves rather than a
-list of entries — the shape you want for files and blobs. Show that the span, stream, async, and
+list of entries - the shape you want for files and blobs. Show that the span, stream, async, and
 from-leaf-hashes paths are four routes to *one* answer, and finish with `VerifyBlockInclusion`, the fail-closed
 possession check that derives the tree size instead of trusting a claimed one.
 
 **What it does.** Builds a 3,372-byte payload (three whole 1 KiB blocks plus a 300-byte tail) and prints the static
-block arithmetic for each block. It computes the commitment five ways — from a span, from a `Stream`, via
-`ComputeBlockedAsync`, via `ComputeRootOfBlocksAsync`, and from the leaf hashes alone — and compares every root. It
+block arithmetic for each block. It computes the commitment five ways - from a span, from a `Stream`, via
+`ComputeBlockedAsync`, via `ComputeRootOfBlocksAsync`, and from the leaf hashes alone - and compares every root. It
 then publishes the bound root and answers a challenge for block 2, before retrying with a flipped byte and with an
 understated length.
 
-**What to expect.** The final block is 300 bytes — short, not padded, which is what makes the block count exact.
+**What to expect.** The final block is 300 bytes - short, not padded, which is what makes the block count exact.
 All five roots agree. `MerkleBlockComputation` carries the leaf hashes, so paths can be issued later without
 re-reading the input, and it exposes the same block arithmetic already bound to its own length and block size. The
-challenge is answered, and both cheats fail — the path alone is not the answer, because the block is re-hashed
+challenge is answered, and both cheats fail - the path alone is not the answer, because the block is re-hashed
 during verification:
 
 ```text
@@ -212,22 +212,22 @@ writer that will never issue a proof, because it does not retain leaf hashes.
 `MerkleBlockComputation.Root` / `.InputLength` / `.BlockSize` / `.BlockCount` / `.LeafHashes` / `.BlockOffset` /
 `.BlockLength`.
 
-## Scenario 5 — StreamingWriter
+## Scenario 5 - StreamingWriter
 
 **Intent.** Show `MerkleBlockAccumulator`, the push-style writer-side counterpart to Scenario 4's pull-style API. A
 writer that already streams bytes to storage and feeds them to an incremental digest can give the Merkle root the
-same shape — no second pass over the input. The load-bearing guarantee is that the root does not depend on how the
+same shape - no second pass over the input. The load-bearing guarantee is that the root does not depend on how the
 input was split across calls.
 
 **What it does.** Computes the reference root with `ComputeRootOfBlocks`, then accumulates the same 1,371-byte
-payload under six different `Append` chunk patterns — one call, one byte at a time, exactly one block, 100-byte,
-1,000-byte, and an irregular 7/500/13 cycle — and compares each result. It then shows `Finish` being idempotent,
+payload under six different `Append` chunk patterns - one call, one byte at a time, exactly one block, 100-byte,
+1,000-byte, and an irregular 7/500/13 cycle - and compares each result. It then shows `Finish` being idempotent,
 `Append` after a finish throwing, `Reset` clearing state, the empty input, `FinishBound`, and finally
 `retainLeafHashes: true` with `FinishComputation` to issue an authentication path.
 
 **What to expect.** All six chunk patterns land on the same root, with the same `Length` and `LeafCount`, because
-`Append` re-blocks internally. Memory is one block plus one pending hash per level — logarithmic in the leaf count
-— so this works on inputs far larger than memory:
+`Append` re-blocks internally. Memory is one block plus one pending hash per level - logarithmic in the leaf count -
+so this works on inputs far larger than memory:
 
 ```text
   payload       : 1371 bytes, block size 256
@@ -251,18 +251,18 @@ payload under six different `Append` chunk patterns — one call, one byte at a 
 `Finish` is idempotent, so a writer can ask for the root defensively; `Reset` lets one accumulator serve a sequence
 of objects. An empty input folds to the empty tree's root rather than failing, so a zero-byte object needs no
 special casing. `FinishBound` is `BindRoot` applied to `Finish` and `Length`, so the writer never has to track the
-length itself. Leaf hashes are discarded as they are folded unless retained — that is what keeps memory
-logarithmic — and `FinishComputation` hands back the same `MerkleBlockComputation` the pull-style API produces.
+length itself. Leaf hashes are discarded as they are folded unless retained - that is what keeps memory
+logarithmic - and `FinishComputation` hands back the same `MerkleBlockComputation` the pull-style API produces.
 
 **APIs demonstrated.** `.CreateBlockAccumulator(int, bool, MerkleTreeDiagnostics?)`,
 `MerkleBlockAccumulator.Append` / `.Finish` / `.FinishBound` / `.FinishComputation` / `.Reset` / `.Dispose` /
 `.Length` / `.LeafCount` / `.IsFinished` / `.RetainsLeafHashes`, `.ComputeRootOfBlocks`, `.BindRoot`,
 `.VerifyBlockInclusion`.
 
-## Scenario 6 — ShapeAndParallelism
+## Scenario 6 - ShapeAndParallelism
 
 **Intent.** Distinguish the two constructor knobs, because they differ in kind. `maxDegreeOfParallelism` is an
-optimisation that must never change the answer; `fanOut` changes the tree's shape, so it changes the root — and
+optimisation that must never change the answer; `fanOut` changes the tree's shape, so it changes the root - and
 takes the proof surface away with it.
 
 **What it does.** Computes the seven-entry root and a 64 KiB blocked root at degrees 1, 2, 4 and −1, comparing each
@@ -274,7 +274,7 @@ parallelism.
 while the fold and any observer stay on the caller thread and in order (1 is sequential, −1 unbounded, ≥ 2 a bounded
 worker count). Each fan-out is a genuinely different tree with a different root. Because RFC 6962's proof formats
 are defined only for a binary tree, the proof members on a wider tree throw `NotSupportedException` rather than
-silently inventing a non-interoperable proof — while root computation still works, which is the legitimate use of a
+silently inventing a non-interoperable proof - while root computation still works, which is the legitimate use of a
 wide tree:
 
 ```text
@@ -294,18 +294,18 @@ wide tree:
   fan-out 4 + degree 2   : 0f918cfa... == sequential fan-out 4: True
 ```
 
-Note the fan-out-2 root is the same `e8da82b2...` every other scenario publishes — the default *is* RFC 6962's
+Note the fan-out-2 root is the same `e8da82b2...` every other scenario publishes - the default *is* RFC 6962's
 tree.
 
 **APIs demonstrated.** `MerkleTree(Func<HashAlgorithm>, int fanOut, int maxDegreeOfParallelism)`, `.FanOut`,
 `.MaxDegreeOfParallelism`, `.IsBinary`, `.ComputeRoot`, `.ComputeRootOfBlocks`, and the `NotSupportedException`
 contract on `.AuthenticationPath` / `.ConsistencyProof`.
 
-## Scenario 7 — DiagnosticsTrace
+## Scenario 7 - DiagnosticsTrace
 
 **Intent.** Show `MerkleTreeDiagnostics`, the optional trace recorder. A root value alone cannot show that the fold
-wired the right children to the right parents — any bug producing a self-consistent wrong tree still produces one
-root — so the trace exists to make the intermediate structure inspectable and independently checkable.
+wired the right children to the right parents - any bug producing a self-consistent wrong tree still produces one
+root - so the trace exists to make the intermediate structure inspectable and independently checkable.
 
 **What it does.** Records a deliberately small four-entry tree, walks it level by level, reads the `Root` node and
 confirms its hash is the value the computation returned, runs `Validate`, re-runs `Validate` with the *wrong*
@@ -332,7 +332,7 @@ method that returns `true` unconditionally:
 ```
 
 `WriteTo` then renders the full trace. Its real output carries every node's full 64-character hash plus its child
-hashes on one line, so the excerpt below **elides the child columns** (`<-  ...`) for width — run the sample to
+hashes on one line, so the excerpt below **elides the child columns** (`<-  ...`) for width - run the sample to
 see them:
 
 ```text
@@ -361,8 +361,8 @@ not retained. A trace therefore proves the fold's internal consistency, not that
 input you think. Recording also costs memory proportional to the node count, so it is a diagnostic aid rather than
 something to leave enabled in production.
 
-`WriteTo` writes ASCII only — the rules are `=` and `-`, a child list reads `parent <- child + child`, and
-the root level is marked `*` — so the trace survives a console on any code page and a paste into a bug
+`WriteTo` writes ASCII only - the rules are `=` and `-`, a child list reads `parent <- child + child`, and
+the root level is marked `*` - so the trace survives a console on any code page and a paste into a bug
 report unchanged.
 
 **APIs demonstrated.** `MerkleTreeDiagnostics()`, `.GetLevelCount`, `.GetLevel`, `.GetAllNodes`, `.Root`,
@@ -388,9 +388,9 @@ Bodu.Security.Cryptography.Samples.MerkleTrees/
 
 ## Related
 
-- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` — the hash, MAC, XOF and KDF surface these trees are built
+- `Bodu.Security.Cryptography.Samples.HashingMacAndKdf` - the hash, MAC, XOF and KDF surface these trees are built
   on, including the `SHA256.Create`-style factories `MerkleTree` takes.
-- `Bodu.Security.Cryptography.Samples.AsymmetricKeys` — signing a published root is the natural next step; X25519,
+- `Bodu.Security.Cryptography.Samples.AsymmetricKeys` - signing a published root is the natural next step; X25519,
   Ed25519, ML-KEM and ML-DSA live there.
-- `Bodu.Collections.Samples.BitSets` — the RFC 6962 tree formerly lived in `Bodu.Collections.Specialized`; that
+- `Bodu.Collections.Samples.BitSets` - the RFC 6962 tree formerly lived in `Bodu.Collections.Specialized`; that
   namespace now holds `BitSet` alone, and a commitment consumer takes this package instead.
