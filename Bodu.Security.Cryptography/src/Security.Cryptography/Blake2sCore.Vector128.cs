@@ -21,10 +21,18 @@ internal static partial class Blake2sCore
     /// The instruction set supplying the rotations of <c>G</c> and the lane rotations.
     /// </typeparam>
     /// <remarks>
+    /// <para>
     /// The working vector is held as four rows of four words, so lane <c>i</c> of the rows is column <c>i</c> and one
-    /// vector <c>G</c> mixes all four columns. Rotating the second, third and fourth rows by one, two and three lanes
-    /// turns the diagonals into columns for the second half of a round, and rotating them back restores the rows. Each
-    /// round's message words are gathered straight from the block as the schedule σ names them.
+    /// vector <c>G</c> mixes all four columns. Rotating the first row by three lanes and the third and fourth by one
+    /// and two turns the diagonals into columns for the second half of a round, lane <c>i</c> holding the diagonal
+    /// through word <c>i</c> of the second row, and rotating them back restores the rows. The second row stays in
+    /// place: it is the row that each half of a round computes last and that the next half reads first, so no rotation
+    /// stands between the two.
+    /// </para>
+    /// <para>
+    /// Each round's message words are gathered straight from the block as the schedule σ names them, the diagonal
+    /// half's in the order its lanes hold the diagonals.
+    /// </para>
     /// </remarks>
     internal readonly struct Vector128Kernel<TIsa>
         where TIsa : struct, IVector128Isa
@@ -60,8 +68,8 @@ internal static partial class Blake2sCore
                     ref d,
                     Load(ref block, ref s, 0, 2, 4, 6),
                     Load(ref block, ref s, 1, 3, 5, 7),
-                    Load(ref block, ref s, 8, 10, 12, 14),
-                    Load(ref block, ref s, 9, 11, 13, 15));
+                    Load(ref block, ref s, 14, 8, 10, 12),
+                    Load(ref block, ref s, 15, 9, 11, 13));
             }
 
             (h0 ^ a ^ c).StoreUnsafe(ref h);
@@ -92,15 +100,15 @@ internal static partial class Blake2sCore
         {
             G(ref a, ref b, ref c, ref d, columnX, columnY);
 
-            b = TIsa.RotateLanes1(b);
-            c = TIsa.RotateLanes2(c);
-            d = TIsa.RotateLanes3(d);
+            a = TIsa.RotateLanes3(a);
+            c = TIsa.RotateLanes1(c);
+            d = TIsa.RotateLanes2(d);
 
             G(ref a, ref b, ref c, ref d, diagonalX, diagonalY);
 
-            b = TIsa.RotateLanes3(b);
-            c = TIsa.RotateLanes2(c);
-            d = TIsa.RotateLanes1(d);
+            a = TIsa.RotateLanes1(a);
+            c = TIsa.RotateLanes3(c);
+            d = TIsa.RotateLanes2(d);
         }
 
         /// <summary>
