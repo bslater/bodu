@@ -325,6 +325,7 @@
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.ChecksumTour/Bodu.IO.Hashing.Samples.ChecksumTour.csproj" />
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit.Test/Bodu.IO.Hashing.Samples.CustomCheckDigit.Test.csproj" />
     <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.CustomCheckDigit/Bodu.IO.Hashing.Samples.CustomCheckDigit.csproj" />
+    <Project Path="samples/IO.Hashing/Bodu.IO.Hashing.Samples.FileIntegrity/Bodu.IO.Hashing.Samples.FileIntegrity.csproj" />
   </Folder>
   <Folder Name="/Samples/IO.Pst/">
     <Project Path="samples/IO.Pst/Bodu.IO.Pst.Samples.PstBasics/Bodu.IO.Pst.Samples.PstBasics.csproj" />
