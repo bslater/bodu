@@ -202,6 +202,7 @@ byte[] digest = await HashAlgorithmHelper.HashDataAsync(HashAlgorithmFactory.Fro
 ## Where to go next
 
 - [Interoperating with System.Security.Cryptography](bcl-interop.md) - `CryptoStream` and the `HashAlgorithm` lifecycle.
+- [Runnable samples](../../samples/cryptography.md) - `Bodu.Security.Cryptography.Samples.StreamingPipelines` runs these members end to end: stream-to-stream and async encryption, download verification, and an encrypt-then-MAC sealed file.
 - [Using Merkle trees](merkle-trees.md) - fan-out, Tiger-Tree hashes, and diagnostics.
 - [Streaming, async, and resumable hashing](../io-hashing/streaming-and-async.md) - the same story for the non-cryptographic checksums, including `HashingStream`.
 - **[Hashing & Cryptography guides](../topics/hashing-and-cryptography.md)** - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.
