@@ -149,6 +149,12 @@ public static partial class SymmetricAlgorithmExtensions
     /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is
     /// <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// If reading or transforming fails partway through, the exception propagates and <paramref name="targetStream" />
+    /// holds only the output already written: the transform is never finalized, so no final block is appended to the
+    /// partial output. Treat a target that saw a failure as incomplete and discard it. Neither stream is disposed. See
+    /// <see cref="ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)" />.
+    /// </remarks>
     public static int Decrypt(this SymmetricAlgorithm algorithm, Stream sourceStream, Stream targetStream)
         => algorithm.Decrypt(sourceStream, targetStream, DefaultBufferSize);
 
@@ -172,6 +178,12 @@ public static partial class SymmetricAlgorithmExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="bufferSize" /> is less than or equal to zero.
     /// </exception>
+    /// <remarks>
+    /// If reading or transforming fails partway through, the exception propagates and <paramref name="targetStream" />
+    /// holds only the output already written: the transform is never finalized, so no final block is appended to the
+    /// partial output. Treat a target that saw a failure as incomplete and discard it. Neither stream is disposed. See
+    /// <see cref="ICryptoTransformExtensions.Transform(ICryptoTransform, Stream, Stream, int)" />.
+    /// </remarks>
     /// <example>
     /// <code>
     ///<![CDATA[
