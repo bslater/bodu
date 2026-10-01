@@ -1,0 +1,28 @@
+name: Documentation
+description: Report a missing, unclear, or broken page on the documentation site or in a README.
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If the documentation contradicts what a package actually does, please use the **Bug report** form instead.
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The URL of the page, or the path of the file in the repository.
+      placeholder: https://bslater.github.io/bodu/docs/getting-started.html
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is missing, unclear, or broken.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested change
+      description: Optional. How the page should read instead.

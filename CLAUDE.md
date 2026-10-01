@@ -138,6 +138,7 @@ Nullable reference types are enabled everywhere. `ImplicitUsings` is enabled acr
 - Analyzers in use: **StyleCop.Analyzers**, **Roslynator.Analyzers**, **Microsoft.CodeAnalysis.NetAnalyzers**, **AsyncFixer**, **VisualStudio.Threading.Analyzers**. Treat analyzer warnings as actionable - fix rather than suppress unless there is a strong reason.
 - Licence header template: `Bodu.sln.licenseheader` (carries `company="Bodu Pty. Ltd."`, matching `stylecop.json:companyName` - preserve the banner exactly as used in existing files).
 - `.filenesting.json` nests partial-class files: any `<Base>.<Part>.cs` file nests under `<Base>.cs`. Keep partial splits consistent with this pattern.
+- Community health files: the root `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, and `CODE_OF_CONDUCT.md`, the issue forms under `.github/ISSUE_TEMPLATE/`, and `.github/pull_request_template.md`. `CONTRIBUTING.md` restates this file's setup, test-tier, CI-reproduction, and convention guidance for human contributors, so a change to any of those here is made there too. The bug-report form's fields follow the issue sections in **Tracking Defects** below.
 - CI: `.github/workflows/docfx-build-publish.yml` builds the DocFX site on every pull request and push to `master` or a `v*` tag, through `bld/docs/build-api-docs.sh` (see **API documentation pipeline** below), and publishes it to the `gh-pages` branch: `/dev/` from `master`, the root and `/<series>/` from a release tag.
 
 ### Common Commands
