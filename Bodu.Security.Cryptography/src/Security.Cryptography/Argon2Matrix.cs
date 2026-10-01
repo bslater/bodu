@@ -97,7 +97,7 @@ internal sealed unsafe class Argon2Matrix
     /// </remarks>
     internal ref ulong Block(int index)
     {
-        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual((uint)index, (uint)BlockCount, nameof(index));
+        ThrowHelper.ThrowIfGreaterThanOrEqual((uint)index, (uint)BlockCount, nameof(index));
 
         return ref _words[(nuint)(uint)index * WordsPerBlock];
     }

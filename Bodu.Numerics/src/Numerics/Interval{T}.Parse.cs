@@ -44,7 +44,7 @@ public readonly partial struct Interval<T> :
     /// </example>
     public static Interval<T> Parse(string s, IFormatProvider? provider)
     {
-        ArgumentNullException.ThrowIfNull(s);
+        ThrowHelper.ThrowIfNull(s);
         return Parse(s.AsSpan(), provider);
     }
 

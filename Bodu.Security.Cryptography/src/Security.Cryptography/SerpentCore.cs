@@ -60,9 +60,9 @@ internal static partial class SerpentCore
     [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
     internal static void EncryptBlock(ReadOnlySpan<uint> roundKeys, ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(roundKeys.Length, RoundKeyWords, nameof(roundKeys));
-        ArgumentOutOfRangeException.ThrowIfLessThan(input.Length, BlockBytes, nameof(input));
-        ArgumentOutOfRangeException.ThrowIfLessThan(output.Length, BlockBytes, nameof(output));
+        ThrowHelper.ThrowIfLessThan(roundKeys.Length, RoundKeyWords, nameof(roundKeys));
+        ThrowHelper.ThrowIfLessThan(input.Length, BlockBytes, nameof(input));
+        ThrowHelper.ThrowIfLessThan(output.Length, BlockBytes, nameof(output));
 
         uint x0 = BinaryPrimitives.ReadUInt32LittleEndian(input);
         uint x1 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
@@ -92,9 +92,9 @@ internal static partial class SerpentCore
     [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.AggressiveOptimization)]
     internal static void DecryptBlock(ReadOnlySpan<uint> roundKeys, ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(roundKeys.Length, RoundKeyWords, nameof(roundKeys));
-        ArgumentOutOfRangeException.ThrowIfLessThan(input.Length, BlockBytes, nameof(input));
-        ArgumentOutOfRangeException.ThrowIfLessThan(output.Length, BlockBytes, nameof(output));
+        ThrowHelper.ThrowIfLessThan(roundKeys.Length, RoundKeyWords, nameof(roundKeys));
+        ThrowHelper.ThrowIfLessThan(input.Length, BlockBytes, nameof(input));
+        ThrowHelper.ThrowIfLessThan(output.Length, BlockBytes, nameof(output));
 
         uint x0 = BinaryPrimitives.ReadUInt32LittleEndian(input);
         uint x1 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
@@ -313,9 +313,9 @@ internal static partial class SerpentCore
     /// <exception cref="ArgumentException">The length of <paramref name="input" /> is not a multiple of 16.</exception>
     private static void TransformBlocks(KernelKind kernel, bool encrypt, ReadOnlySpan<uint> roundKeys, ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(roundKeys.Length, RoundKeyWords, nameof(roundKeys));
+        ThrowHelper.ThrowIfLessThan(roundKeys.Length, RoundKeyWords, nameof(roundKeys));
         if (input.Length % BlockBytes != 0) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, BlockBytes), nameof(input));
-        ArgumentOutOfRangeException.ThrowIfLessThan(output.Length, input.Length, nameof(output));
+        ThrowHelper.ThrowIfLessThan(output.Length, input.Length, nameof(output));
 
         if (kernel == KernelKind.Auto)
             kernel = SelectKernel();

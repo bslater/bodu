@@ -27,7 +27,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotEqual{T}(T, T, string)" /> throws
-    /// <see cref="ArgumentException" /> for every <see cref="GuardInvalidKat{Int32}" /> row whose operands
+    /// <see cref="ArgumentOutOfRangeException" /> for every <see cref="GuardInvalidKat{Int32}" /> row whose operands
     /// differ.
     /// </summary>
     /// <param name="kat">The KAT row supplying a differing operand pair and the expected exception type.</param>
@@ -58,7 +58,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotEqual{T}(T, T, string)" /> throws
-    /// <see cref="ArgumentException" /> for every <see cref="GuardInvalidKat{String}" /> row whose operands
+    /// <see cref="ArgumentOutOfRangeException" /> for every <see cref="GuardInvalidKat{String}" /> row whose operands
     /// differ.
     /// </summary>
     /// <param name="kat">The KAT row supplying a differing operand pair and the expected exception type.</param>
@@ -76,7 +76,7 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotEqual{T}(T, T, string)" /> reports the explicitly
-    /// supplied <c>paramName</c> on the thrown <see cref="ArgumentException" />.
+    /// supplied <c>paramName</c> on the thrown <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     /// <param name="kat">The KAT row supplying a differing operand pair and the expected <c>ParamName</c>.</param>
     [TestMethod]
@@ -111,10 +111,10 @@ public partial class ThrowHelperTests
     /// <returns>The known invalid rows for the integer overload.</returns>
     private static IEnumerable<object?[]> ThrowIfNotEqualIntInvalidCases()
     {
-        yield return new object?[] { new GuardInvalidKat<int>("zero vs one", 0, 1, typeof(ArgumentException)) };
-        yield return new object?[] { new GuardInvalidKat<int>("one vs two", 1, 2, typeof(ArgumentException)) };
-        yield return new object?[] { new GuardInvalidKat<int>("negative vs zero", -1, 0, typeof(ArgumentException)) };
-        yield return new object?[] { new GuardInvalidKat<int>("MinValue vs MaxValue", int.MinValue, int.MaxValue, typeof(ArgumentException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("zero vs one", 0, 1, typeof(ArgumentOutOfRangeException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("one vs two", 1, 2, typeof(ArgumentOutOfRangeException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("negative vs zero", -1, 0, typeof(ArgumentOutOfRangeException)) };
+        yield return new object?[] { new GuardInvalidKat<int>("MinValue vs MaxValue", int.MinValue, int.MaxValue, typeof(ArgumentOutOfRangeException)) };
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public partial class ThrowHelperTests
     /// <returns>The known invalid rows for the string overload.</returns>
     private static IEnumerable<object?[]> ThrowIfNotEqualStringInvalidCases()
     {
-        yield return new object?[] { new GuardInvalidKat<string>("hello vs world", "hello", "world", typeof(ArgumentException)) };
+        yield return new object?[] { new GuardInvalidKat<string>("hello vs world", "hello", "world", typeof(ArgumentOutOfRangeException)) };
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public partial class ThrowHelperTests
     /// <returns>Invalid rows whose <c>ParamName</c> the helper must propagate to the thrown exception.</returns>
     private static IEnumerable<object?[]> ThrowIfNotEqualParamNameCases()
     {
-        yield return new object?[] { new GuardInvalidKat<int>("explicit paramName=value", 10, 42, typeof(ArgumentException), "value") };
+        yield return new object?[] { new GuardInvalidKat<int>("explicit paramName=value", 10, 42, typeof(ArgumentOutOfRangeException), "value") };
     }
 
 }

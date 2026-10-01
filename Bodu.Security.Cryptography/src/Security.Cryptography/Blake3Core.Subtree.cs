@@ -43,8 +43,8 @@ internal static partial class Blake3Core
     internal static void CompressChunks(KernelKind kernel, ReadOnlySpan<byte> chunks, ReadOnlySpan<uint> key, ulong counter, uint flags, Span<byte> chainingValues)
     {
         if (chunks.Length % ChunkBytes != 0) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, ChunkBytes), nameof(chunks));
-        ArgumentOutOfRangeException.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
-        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValues.Length, chunks.Length / ChunkBytes * ChainingValueBytes, nameof(chainingValues));
+        ThrowHelper.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
+        ThrowHelper.ThrowIfLessThan(chainingValues.Length, chunks.Length / ChunkBytes * ChainingValueBytes, nameof(chainingValues));
 
         HashMany(
             kernel,
@@ -92,8 +92,8 @@ internal static partial class Blake3Core
     internal static void CompressParents(KernelKind kernel, ReadOnlySpan<byte> children, ReadOnlySpan<uint> key, uint flags, Span<byte> chainingValues)
     {
         if (children.Length % BlockBytes != 0) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, BlockBytes), nameof(children));
-        ArgumentOutOfRangeException.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
-        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValues.Length, children.Length / BlockBytes * ChainingValueBytes, nameof(chainingValues));
+        ThrowHelper.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
+        ThrowHelper.ThrowIfLessThan(chainingValues.Length, children.Length / BlockBytes * ChainingValueBytes, nameof(chainingValues));
 
         HashMany(
             kernel,
@@ -160,8 +160,8 @@ internal static partial class Blake3Core
     internal static void CompressSubtree(KernelKind kernel, ReadOnlySpan<byte> input, ReadOnlySpan<uint> key, ulong counter, uint flags, Span<uint> chainingValue)
     {
         if (input.Length % ChunkBytes != 0 || !BitOperations.IsPow2(input.Length / ChunkBytes)) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Arg_Invalid_Blake3SubtreeChunkCount, ChunkBytes), nameof(input));
-        ArgumentOutOfRangeException.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
-        ArgumentOutOfRangeException.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
+        ThrowHelper.ThrowIfLessThan(key.Length, ChainingValueWords, nameof(key));
+        ThrowHelper.ThrowIfLessThan(chainingValue.Length, ChainingValueWords, nameof(chainingValue));
 
         CompressSubtreeCore(kernel == KernelKind.Auto ? SelectKernel() : kernel, input, key, counter, flags, chainingValue);
     }

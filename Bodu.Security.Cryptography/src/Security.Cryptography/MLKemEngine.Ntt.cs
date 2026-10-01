@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLKemEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -55,7 +55,7 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void Ntt(KernelKind kernel, Span<int> f)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(f.Length, N, nameof(f));
+        ThrowHelper.ThrowIfLessThan(f.Length, N, nameof(f));
 
         // The length is checked above, so the kernels address the coefficients by reference, without a bounds check on
         // each access.
@@ -127,7 +127,7 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void InvNtt(KernelKind kernel, Span<int> f)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(f.Length, N, nameof(f));
+        ThrowHelper.ThrowIfLessThan(f.Length, N, nameof(f));
 
         ref int coefficients = ref MemoryMarshal.GetReference(f);
         if (Resolve(kernel) == KernelKind.Avx2)
@@ -203,9 +203,9 @@ internal static partial class MLKemEngine
     /// </remarks>
     internal static void MultiplyNtt(KernelKind kernel, ReadOnlySpan<int> left, ReadOnlySpan<int> right, Span<int> destination)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(left.Length, N, nameof(left));
-        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
-        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, N, nameof(destination));
+        ThrowHelper.ThrowIfLessThan(left.Length, N, nameof(left));
+        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
+        ThrowHelper.ThrowIfLessThan(destination.Length, N, nameof(destination));
 
         if (Resolve(kernel) == KernelKind.Avx2)
         {

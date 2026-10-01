@@ -32,8 +32,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         int bufferSize = 81920,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(algorithm);
-        ArgumentNullException.ThrowIfNull(source);
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfZeroOrNegative(bufferSize);
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);

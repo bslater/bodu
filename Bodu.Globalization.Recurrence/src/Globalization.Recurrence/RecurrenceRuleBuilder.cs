@@ -172,7 +172,7 @@ public sealed class RecurrenceRuleBuilder
     /// <returns>The same builder instance so calls can be chained.</returns>
     public RecurrenceRuleBuilder ByDay(params WeekDayNum[] days)
     {
-        ArgumentNullException.ThrowIfNull(days);
+        ThrowHelper.ThrowIfNull(days);
         _byDay = (WeekDayNum[])days.Clone();
         return this;
     }
@@ -184,7 +184,7 @@ public sealed class RecurrenceRuleBuilder
     /// <returns>The same builder instance so calls can be chained.</returns>
     public RecurrenceRuleBuilder ByDay(params DayOfWeek[] days)
     {
-        ArgumentNullException.ThrowIfNull(days);
+        ThrowHelper.ThrowIfNull(days);
         _byDay = Array.ConvertAll(days, day => new WeekDayNum(0, day));
         return this;
     }
@@ -284,7 +284,7 @@ public sealed class RecurrenceRuleBuilder
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range.</exception>
     private static int[] ValidateUInt(int[] values, int lo, int hi, string part)
     {
-        ArgumentNullException.ThrowIfNull(values, part);
+        ThrowHelper.ThrowIfNull(values, part);
         foreach (int value in values)
         {
             if (value < lo || value > hi)
@@ -315,7 +315,7 @@ public sealed class RecurrenceRuleBuilder
     /// </exception>
     private static int[] ValidateSigned(int[] values, int magLo, int magHi, string part)
     {
-        ArgumentNullException.ThrowIfNull(values, part);
+        ThrowHelper.ThrowIfNull(values, part);
         foreach (int value in values)
         {
             int magnitude = Math.Abs(value);

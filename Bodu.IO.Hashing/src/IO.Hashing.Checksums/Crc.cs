@@ -159,7 +159,7 @@ public sealed class Crc
     public Crc(CrcStandard crcStandard)
         : base(hashLengthInBytes: HashLengthInBytesFor(crcStandard))
     {
-        ArgumentNullException.ThrowIfNull(crcStandard);
+        ThrowHelper.ThrowIfNull(crcStandard);
 
         _standard = crcStandard;
         _hashSizeBits = crcStandard.Size;

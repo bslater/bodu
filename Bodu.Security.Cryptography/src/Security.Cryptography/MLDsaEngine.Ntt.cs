@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MLDsaEngine.Ntt.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void Ntt(KernelKind kernel, Span<int> w)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(w.Length, N, nameof(w));
+        ThrowHelper.ThrowIfLessThan(w.Length, N, nameof(w));
 
         // The length is checked above, so the kernels address the coefficients by reference, without a bounds check on
         // each access.
@@ -145,7 +145,7 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void InvNtt(KernelKind kernel, Span<int> w)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(w.Length, N, nameof(w));
+        ThrowHelper.ThrowIfLessThan(w.Length, N, nameof(w));
 
         ref int coefficients = ref MemoryMarshal.GetReference(w);
         if (Resolve(kernel) == KernelKind.Avx2)
@@ -233,9 +233,9 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void MultiplyNtt(KernelKind kernel, ReadOnlySpan<int> montgomeryLeft, ReadOnlySpan<int> right, Span<int> destination)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
-        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
-        ArgumentOutOfRangeException.ThrowIfLessThan(destination.Length, N, nameof(destination));
+        ThrowHelper.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
+        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
+        ThrowHelper.ThrowIfLessThan(destination.Length, N, nameof(destination));
 
         ref int left = ref MemoryMarshal.GetReference(montgomeryLeft);
         ref int factor = ref MemoryMarshal.GetReference(right);
@@ -292,9 +292,9 @@ internal static partial class MLDsaEngine
     /// </remarks>
     internal static void MultiplyAccumulateNtt(KernelKind kernel, ReadOnlySpan<int> montgomeryLeft, ReadOnlySpan<int> right, Span<int> accumulator)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
-        ArgumentOutOfRangeException.ThrowIfLessThan(right.Length, N, nameof(right));
-        ArgumentOutOfRangeException.ThrowIfLessThan(accumulator.Length, N, nameof(accumulator));
+        ThrowHelper.ThrowIfLessThan(montgomeryLeft.Length, N, nameof(montgomeryLeft));
+        ThrowHelper.ThrowIfLessThan(right.Length, N, nameof(right));
+        ThrowHelper.ThrowIfLessThan(accumulator.Length, N, nameof(accumulator));
 
         ref int left = ref MemoryMarshal.GetReference(montgomeryLeft);
         ref int factor = ref MemoryMarshal.GetReference(right);
