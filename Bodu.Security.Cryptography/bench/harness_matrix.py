@@ -72,7 +72,7 @@ BLAKE2_FILTERS = ['hash/Bodu BLAKE2', 'kernel/BLAKE2']
 
 # Each suite: its harness arguments, and the configurations it runs in.
 SUITES = {
-    'blake2': (['--crypto-harness', *BLAKE2_FILTERS], ['vector', 'avx2', '1.0.0']),
+    'blake2': (['--crypto-harness', *BLAKE2_FILTERS], ['vector', 'avx2', 'ssse3', '1.0.0']),
     'crypto': (['--crypto-harness', *CRYPTO_FILTERS], ['vector', 'scalar', '1.0.0']),
     'x64': (['--crypto-harness', *X64_FILTERS], ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']),
     'argon2': (['--argon2-harness'], ['vector', 'scalar', '1.0.0']),
