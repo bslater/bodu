@@ -16,18 +16,24 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="NonCryptographicHashAlgorithmExtensions.ComputeHashAsync" /> incorporates any
-    /// state previously accumulated on the algorithm before reading from the stream.
+    /// Verifies that <see cref="NonCryptographicHashAlgorithmExtensions.ComputeHashAsync" /> discards any state
+    /// previously accumulated on the algorithm, so the digest reflects only the bytes read from the stream and
+    /// matches the synchronous stream overload - the defect reported in issue #741, where the earlier bytes were
+    /// folded into the result.
     /// </summary>
     [TestMethod]
-    public async Task ComputeHashAsync_WhenAlgorithmHasPriorState_ShouldIncludePriorBytesInHash()
+    public async Task ComputeHashAsync_WhenAlgorithmHasPriorState_ShouldDiscardPriorState()
     {
+        MonitoringNonCryptographicHashAlgorithm syncAlgorithm = CreateAlgorithm();
+        syncAlgorithm.AppendData(new ReadOnlySpan<byte>([25]));
+        byte[] expected = syncAlgorithm.ComputeHash(new MemoryStream(s_sampleData));
+
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>([25]));
-        byte[] expected = BitConverter.GetBytes((uint)(25 + 1 + 2 + 3 + 4));
 
         byte[] result = await algorithm.ComputeHashAsync(new MemoryStream(s_sampleData));
 
+        CollectionAssert.AreEqual(s_sampleHash, expected);
         CollectionAssert.AreEqual(expected, result);
     }
     // ─── Argument validation ──────────────────────────────────────────────────────────────────
