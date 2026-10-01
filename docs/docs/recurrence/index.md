@@ -8,7 +8,7 @@ title: Bodu.Globalization.Recurrence - Introduction
 
 **Bodu.Globalization.Recurrence** evaluates recurring schedules expressed in the industry-standard textual grammars - RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every form parses from text, renders back to canonical text, compares by value, and answers the two questions a scheduler asks: *when is the next occurrence?* and *when was the previous one?* It is an independent sibling of the notable-date engine in the **[Globalization & Calendars](../topics/globalization-and-calendars.md)** topic.
 
-The package is published as **Preview**: the API surface is stable enough to evaluate and build on, but may still change between releases without a major-version bump. It depends only on `Bodu.Core` and carries no calendar data.
+The package is published as **Stable**: the public API surface is committed, and breaking changes are reserved for a major-version bump. It depends only on `Bodu.Core` and carries no calendar data.
 
 ## The four schedule forms
 

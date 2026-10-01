@@ -11,7 +11,7 @@ SourceLink, and framework-style XML documentation on every public member. The li
 
 - **Documentation:** <https://bslater.github.io/bodu/>
 - **Getting started:** [cross-library tour](https://bslater.github.io/bodu/docs/getting-started.html)
-- **Package matrix:** [every package and what it depends on](https://bslater.github.io/bodu/docs/package-matrix.html)
+- **Package matrix:** [every package, what it depends on, and its API-stability tier](https://bslater.github.io/bodu/docs/package-matrix.html)
 
 ## Packages
 

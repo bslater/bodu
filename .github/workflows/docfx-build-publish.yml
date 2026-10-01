@@ -137,8 +137,9 @@ jobs:
 
     - name: Check documentation coverage guard rails
       # Orphaned pages, namespaces without an apidoc overview, prose identifiers
-      # that do not exist in src/, package-status claims that disagree with
-      # docs/docs/package-matrix.md, the per-package definition of done
+      # that do not exist in src/, package-matrix.md rows that disagree with the
+      # tier their package's README.md declares, package-status claims that
+      # disagree with docs/docs/package-matrix.md, the per-package definition of done
       # (landing page, guides, samples page) declared in
       # bld/docs-checks/package-docs-map.txt, and the publication check: every
       # packable package accounted for by bld/release-manifest.txt, an install

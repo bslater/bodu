@@ -14,7 +14,7 @@ dotnet add package Bodu.Globalization.Recurrence
 
 Targets `net8.0`. **Depends on** `Bodu.Core` only - no calendar data, no time-zone database, and no dependency on `Bodu.Globalization.Calendar`.
 
-Status: **Preview** (see the [package matrix](../package-matrix.md)).
+Status: **Stable** (see the [package matrix](../package-matrix.md)).
 
 Every sample below is a pure function of the instants it is handed: substitute your own "now" and the answers are reproducible in a test.
 

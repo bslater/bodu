@@ -35,5 +35,5 @@ catch-up. See the [samples catalogue](~/samples/recurrence.md).
 
 ## Notes
 
-- **Preview.** The package is published for early evaluation; the public API surface is still taking shape and may change between releases without a major-version bump.
+- **Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump.
 - **An independent sibling of the calendar engine.** `Bodu.Globalization.Calendar` and this package share no dependency in either direction: the calendar's `<Recurrence>` sources (`<DailyInterval>`, `<Weekly>`, `<MonthlyDay>`, `<MonthlyWeekday>`) are its own `IDateRecurrenceStrategy` types, while this package is the standalone, data-free scheduling grammar for RFC 5545 rules, cron, and anchored intervals. Calendar-aware filtering of a recurrence stream is composition from outside - see the [recurrence guide](~/guides/recurrence/index.md) - and the [package matrix](~/docs/package-matrix.md) shows how the globalization family fits together.
