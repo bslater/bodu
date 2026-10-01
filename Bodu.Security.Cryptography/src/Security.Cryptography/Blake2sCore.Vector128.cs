@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -134,12 +135,28 @@ internal static partial class Blake2sCore
         /// <param name="k2">The σ entry naming the word for lane 2.</param>
         /// <param name="k3">The σ entry naming the word for lane 3.</param>
         /// <returns>The four words.</returns>
+        /// <remarks>
+        /// Where SSE4.1 is available the vector is built a word at a time, so that each word's load folds into the
+        /// <c>vmovd</c> or <c>vpinsrd</c> that places it. Built from four arguments at once, the JIT loaded the first
+        /// three words into general registers, each with its own index arithmetic, and then moved them across to the
+        /// vector registers.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Vector128<uint> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3) =>
-            Vector128.Create(
+        private static Vector128<uint> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3)
+        {
+            if (Sse41.IsSupported)
+            {
+                return Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k0)))
+                    .WithElement(1, M(ref block, Unsafe.Add(ref schedule, k1)))
+                    .WithElement(2, M(ref block, Unsafe.Add(ref schedule, k2)))
+                    .WithElement(3, M(ref block, Unsafe.Add(ref schedule, k3)));
+            }
+
+            return Vector128.Create(
                 M(ref block, Unsafe.Add(ref schedule, k0)),
                 M(ref block, Unsafe.Add(ref schedule, k1)),
                 M(ref block, Unsafe.Add(ref schedule, k2)),
                 M(ref block, Unsafe.Add(ref schedule, k3)));
+        }
     }
 }

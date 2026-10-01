@@ -221,8 +221,12 @@ internal static partial class Blake2bCore
     /// <param name="block">The first byte of the block.</param>
     /// <param name="index">The word's index, from 0 to 15.</param>
     /// <returns>The message word.</returns>
+    /// <remarks>
+    /// The index is native-sized so that a vector kernel's gather, which reads it from σ, scales it within the address
+    /// rather than in a register of its own, and the load can fold into the instruction that inserts the word.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong M(ref byte block, int index)
+    private static ulong M(ref byte block, nuint index)
     {
         ulong word = Unsafe.ReadUnaligned<ulong>(ref Unsafe.Add(ref block, index * sizeof(ulong)));
         return BitConverter.IsLittleEndian ? word : BinaryPrimitives.ReverseEndianness(word);

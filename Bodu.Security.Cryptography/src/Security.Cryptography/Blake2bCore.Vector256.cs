@@ -138,12 +138,15 @@ internal static partial class Blake2bCore
         /// <param name="k2">The σ entry naming the word for lane 2.</param>
         /// <param name="k3">The σ entry naming the word for lane 3.</param>
         /// <returns>The four words.</returns>
+        /// <remarks>
+        /// Each half is built a word at a time, so that each word's load folds into the <c>vmovq</c> or <c>vpinsrq</c>
+        /// that places it. Built from four arguments at once, the JIT loaded three of the words into general registers,
+        /// each with its own index arithmetic, and then moved them across to the vector registers.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector256<ulong> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3) =>
             Vector256.Create(
-                M(ref block, Unsafe.Add(ref schedule, k0)),
-                M(ref block, Unsafe.Add(ref schedule, k1)),
-                M(ref block, Unsafe.Add(ref schedule, k2)),
-                M(ref block, Unsafe.Add(ref schedule, k3)));
+                Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k0))).WithElement(1, M(ref block, Unsafe.Add(ref schedule, k1))),
+                Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k2))).WithElement(1, M(ref block, Unsafe.Add(ref schedule, k3))));
     }
 }
