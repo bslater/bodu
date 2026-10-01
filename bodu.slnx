@@ -344,6 +344,7 @@
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HashingMacAndKdf/Bodu.Security.Cryptography.Samples.HashingMacAndKdf.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.HybridEncryption/Bodu.Security.Cryptography.Samples.HybridEncryption.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.MerkleTrees/Bodu.Security.Cryptography.Samples.MerkleTrees.csproj" />
+    <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.StreamingPipelines/Bodu.Security.Cryptography.Samples.StreamingPipelines.csproj" />
     <Project Path="samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.SymmetricAndAead/Bodu.Security.Cryptography.Samples.SymmetricAndAead.csproj" />
   </Folder>
   <Folder Name="/Samples/Text.Bencode/">
