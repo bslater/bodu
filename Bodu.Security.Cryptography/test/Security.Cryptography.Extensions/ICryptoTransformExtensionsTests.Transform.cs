@@ -6,6 +6,7 @@
 
 using System.Security.Cryptography;
 using System.Text;
+using Bodu.Test.IO;
 
 namespace Bodu.Security.Cryptography.Extensions;
 
@@ -546,6 +547,58 @@ public partial class ICryptoTransformExtensionsTests
         encryptor.Transform(source, target, bufferSize: algorithm.BlockSize / 8);
 
         Assert.IsTrue(target.CanWrite, "Target stream should remain open after Transform.");
+    }
+
+    /// <summary>
+    /// Verifies that when the source stream faults partway through,
+    /// <see cref="ICryptoTransformExtensions.Transform(ICryptoTransform,Stream,Stream,int)" /> propagates the fault and
+    /// leaves only the whole blocks already transformed in the target, without appending a finalized padding block -
+    /// the defect reported in issue #740.
+    /// </summary>
+    [TestMethod]
+    public void Transform_Stream_WhenSourceFaultsMidStream_ShouldNotWriteFinalBlock()
+    {
+        byte[] plainText = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        byte[] fullCipherText = aes.EncryptCbc(plainText, aes.IV, PaddingMode.PKCS7);
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+
+        // The first 40-byte read succeeds and the second throws: two whole blocks (32 bytes) are written through
+        // and the 8-byte tail must never be finalized.
+        using var source = new FaultingStream(plainText, throwAfterBytes: 40);
+        using var target = new MemoryStream();
+
+        Assert.ThrowsExactly<IOException>(() =>
+        {
+            encryptor.Transform(source, target, bufferSize: 40);
+        });
+
+        CollectionAssert.AreEqual(fullCipherText[..32], target.ToArray(),
+            "Only the whole blocks transformed before the fault may reach the target.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.Transform(ICryptoTransform,Stream,Stream,int)" /> flushes the
+    /// final block of a target that is itself a <see cref="CryptoStream" /> after a successful transform, as chaining one
+    /// <see cref="CryptoStream" /> into another does.
+    /// </summary>
+    [TestMethod]
+    public void Transform_Stream_WhenTargetIsCryptoStream_ShouldFlushItsFinalBlock()
+    {
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+        using ICryptoTransform chainedEncryptor = aes.CreateEncryptor();
+        using var sink = new MemoryStream();
+        using var chained = new CryptoStream(sink, chainedEncryptor, CryptoStreamMode.Write, leaveOpen: true);
+        using var source = new MemoryStream(new byte[40]);
+
+        encryptor.Transform(source, chained, bufferSize: 16);
+
+        Assert.IsTrue(chained.HasFlushedFinalBlock, "A chained CryptoStream target must be finalized on success.");
     }
 
     // ---------------------------------------------------------------------------------------------------------------

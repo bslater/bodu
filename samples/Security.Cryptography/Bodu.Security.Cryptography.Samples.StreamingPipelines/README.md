@@ -73,15 +73,16 @@ through `TransformAsync(Stream, Stream, int)` over the transform `Aes.CreateEncr
 `Transform(ReadOnlySpan<byte>)`, comparing all three with the framework's one-shot `Aes.EncryptCbc`.
 
 **What to expect.** The awaited ciphertext is byte-identical to the synchronous one. The cancelled call throws
-`TaskCanceledException` (an `OperationCanceledException`); the extensions do not roll back what they have written,
-so a target stream that saw a cancellation must be discarded. All three `Aes` routes agree with `EncryptCbc`, which is
-the proof that no chaining or padding detail differs from the framework's own implementation:
+`TaskCanceledException` (an `OperationCanceledException`) before anything is written, so the target is still empty.
+A cancellation that lands mid-stream leaves the whole blocks already written, never a finalized padding block, so a
+target that saw any cancellation is still incomplete and must be discarded. All three `Aes` routes agree with
+`EncryptCbc`, which is the proof that no chaining or padding detail differs from the framework's own implementation:
 
 ```text
   Twofish-256 CBC/PKCS7, awaited
     EncryptAsync == Encrypt(byte[]) : True
     DecryptAsync recovers payload   : True
-    cancelled token                 : TaskCanceledException (discard the partial target)
+    cancelled token                 : TaskCanceledException, target length 0 B
 
   System.Security.Cryptography.Aes-256 CBC/PKCS7 (EncryptCbc: 204816 B, ct d7509b21e57d55c0...)
     Encrypt(Stream, Stream)         : True
