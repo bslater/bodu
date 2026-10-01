@@ -26,6 +26,20 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <paramref name="bufferSize" /> is less than or equal to zero.
     /// </exception>
     /// <exception cref="OperationCanceledException">The operation was canceled.</exception>
+    /// <remarks>
+    /// <para>
+    /// This method is a one-shot computation, the asynchronous counterpart of
+    /// <see cref="ComputeHash(NonCryptographicHashAlgorithm, Stream, int)" />: any pending state on
+    /// <paramref name="algorithm" /> is discarded before reading begins, <paramref name="source" /> is read from its
+    /// current position until no more bytes are available, and the algorithm is reset to its initial state on exit via
+    /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
+    /// </para>
+    /// <para>
+    /// The stream is not rewound before hashing and is not closed or disposed when hashing completes. Use
+    /// <see cref="AppendDataAsync(NonCryptographicHashAlgorithm, Stream, int, CancellationToken)" /> to incorporate
+    /// data into the running state without resetting.
+    /// </para>
+    /// </remarks>
     public static async ValueTask<byte[]> ComputeHashAsync(
         this NonCryptographicHashAlgorithm algorithm,
         Stream source,
@@ -35,6 +49,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(algorithm);
         ThrowHelper.ThrowIfNull(source);
         ThrowHelper.ThrowIfZeroOrNegative(bufferSize);
+
+        algorithm.Reset();
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try

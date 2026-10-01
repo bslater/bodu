@@ -79,6 +79,8 @@ The library uses four exception families with consistent meaning. The table list
 
 Two rules follow. First, **a failed authentication is `CryptographicException`** everywhere - AEAD tags, Poly1305, signature verification does *not* throw but returns `false` (`Ed25519.VerifyData`, `MLDsa.VerifyData`, `Hotp.VerifyCode` return `false` for a wrong or wrongly sized input). Second, the *same* mistake surfaces differently by layer: a bad key length is `ArgumentException` on an engine and `CryptographicException` on its wrapper, because the wrapper follows the BCL `SymmetricAlgorithm` convention. Catch `CryptographicException` on the wrapper path and `ArgumentException` when you compose engines yourself.
 
+An exception from a stream encryption or decryption (`Encrypt` / `Decrypt` / `EncryptAsync` / `DecryptAsync` over streams, and `Transform` / `TransformAsync` over an `ICryptoTransform`), whether a cancellation or a failing source, leaves the target holding only the output already written. The transform is never finalized, so no padded final block is appended that could make a partial ciphertext pass for a complete one; discard any target that saw an exception. See [Streams and async](streaming-and-async.md).
+
 ## Single-use rules
 
 | Object | Rule | Violation |

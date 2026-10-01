@@ -224,6 +224,111 @@ public partial class ICryptoTransformExtensionsTests
             "Round-trip encrypt+decrypt must recover the original plaintext.");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// writes nothing to the target when the cancellation token is already cancelled, rather than a finalized padding
+    /// block that decrypts to an empty message - the defect reported in issue #740.
+    /// </summary>
+    [TestMethod]
+    public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldLeaveTargetEmpty()
+    {
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+        using var source = new MemoryStream(new byte[64]);
+        using var target = new MemoryStream();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+        {
+            await encryptor.TransformAsync(source, target, bufferSize: 64, cts.Token);
+        });
+
+        Assert.AreEqual(0L, target.Length, "A pre-cancelled transform must not write to the target.");
+    }
+
+    /// <summary>
+    /// Verifies that when cancellation is requested between reads,
+    /// <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// leaves only the whole blocks already transformed in the target and does not append a finalized padding block
+    /// for the buffered tail - the defect reported in issue #740.
+    /// </summary>
+    [TestMethod]
+    public async Task TransformAsync_Stream_WhenCancelledMidStream_ShouldNotWriteFinalBlock()
+    {
+        byte[] plainText = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        byte[] fullCipherText = aes.EncryptCbc(plainText, aes.IV, PaddingMode.PKCS7);
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+        using var cts = new CancellationTokenSource();
+
+        // The first 40-byte read reaches the transform, which writes two whole blocks (32 bytes) through and buffers
+        // an 8-byte tail; the second read cancels the token, so that tail must never be finalized.
+        using var source = new CancellationTriggerStream(new MemoryStream(plainText), cts, cancelAfterRead: 2);
+        using var target = new MemoryStream();
+
+        await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () =>
+        {
+            await encryptor.TransformAsync(source, target, bufferSize: 40, cts.Token);
+        });
+
+        CollectionAssert.AreEqual(fullCipherText[..32], target.ToArray(),
+            "Only the whole blocks transformed before cancellation may reach the target.");
+    }
+
+    /// <summary>
+    /// Verifies that when the source stream faults partway through,
+    /// <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// propagates the fault and leaves only the whole blocks already transformed in the target, without appending a
+    /// finalized padding block - the defect reported in issue #740.
+    /// </summary>
+    [TestMethod]
+    public async Task TransformAsync_Stream_WhenSourceFaultsMidStream_ShouldNotWriteFinalBlock()
+    {
+        byte[] plainText = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        byte[] fullCipherText = aes.EncryptCbc(plainText, aes.IV, PaddingMode.PKCS7);
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+        using var source = new FaultingStream(plainText, throwAfterBytes: 40);
+        using var target = new MemoryStream();
+
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+        {
+            await encryptor.TransformAsync(source, target, bufferSize: 40);
+        });
+
+        CollectionAssert.AreEqual(fullCipherText[..32], target.ToArray(),
+            "Only the whole blocks transformed before the fault may reach the target.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
+    /// flushes the final block of a target that is itself a <see cref="CryptoStream" /> after a successful transform, as
+    /// chaining one <see cref="CryptoStream" /> into another does.
+    /// </summary>
+    [TestMethod]
+    public async Task TransformAsync_Stream_WhenTargetIsCryptoStream_ShouldFlushItsFinalBlock()
+    {
+        using var aes = Aes.Create();
+        aes.Key = new byte[32];
+        aes.IV = new byte[16];
+        using ICryptoTransform encryptor = aes.CreateEncryptor();
+        using ICryptoTransform chainedEncryptor = aes.CreateEncryptor();
+        using var sink = new MemoryStream();
+        await using var chained = new CryptoStream(sink, chainedEncryptor, CryptoStreamMode.Write, leaveOpen: true);
+        using var source = new MemoryStream(new byte[40]);
+
+        await encryptor.TransformAsync(source, chained, bufferSize: 16);
+
+        Assert.IsTrue(chained.HasFlushedFinalBlock, "A chained CryptoStream target must be finalized on success.");
+    }
+
     // ---------------------------------------------------------------------------------------------------------------
     // TransformAsync(ReadOnlyMemory<byte>, Memory<byte>, CancellationToken)
     // ---------------------------------------------------------------------------------------------------------------

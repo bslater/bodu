@@ -30,6 +30,13 @@ public static partial class SymmetricAlgorithmExtensions
     /// <exception cref="OperationCanceledException">
     /// The operation was canceled via <paramref name="cancellationToken" />.
     /// </exception>
+    /// <remarks>
+    /// If the operation is cancelled or fails partway through, the exception propagates and
+    /// <paramref name="targetStream" /> holds only the output already written: the transform is never finalized, so no
+    /// final block is appended to the partial output, and a token that is already cancelled writes nothing at all.
+    /// Treat a target that saw a failure as incomplete and discard it. Neither stream is disposed. See
+    /// <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)" />.
+    /// </remarks>
     public static Task DecryptAsync(
         this SymmetricAlgorithm algorithm,
         Stream sourceStream,
@@ -61,6 +68,13 @@ public static partial class SymmetricAlgorithmExtensions
     /// <exception cref="OperationCanceledException">
     /// The operation was canceled via <paramref name="cancellationToken" />.
     /// </exception>
+    /// <remarks>
+    /// If the operation is cancelled or fails partway through, the exception propagates and
+    /// <paramref name="targetStream" /> holds only the output already written: the transform is never finalized, so no
+    /// final block is appended to the partial output, and a token that is already cancelled writes nothing at all.
+    /// Treat a target that saw a failure as incomplete and discard it. Neither stream is disposed. See
+    /// <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)" />.
+    /// </remarks>
     /// <example>
     /// <code>
     ///<![CDATA[
