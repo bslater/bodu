@@ -88,14 +88,19 @@ internal static partial class Blake2bCore
         /// <param name="d">Two words of the fourth row.</param>
         /// <param name="x">The first message word of each <c>G</c>.</param>
         /// <param name="y">The second message word of each <c>G</c>.</param>
+        /// <remarks>
+        /// Each message word is added to <paramref name="a" /> before <paramref name="b" /> is. The row
+        /// <paramref name="b" /> is the last that the step before computes, so adding it last leaves one addition, not
+        /// two, waiting on it.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void G(ref Vector128<ulong> a, ref Vector128<ulong> b, ref Vector128<ulong> c, ref Vector128<ulong> d, Vector128<ulong> x, Vector128<ulong> y)
         {
-            a += b + x;
+            a = a + x + b;
             d = TIsa.RotateRight32(d ^ a);
             c += d;
             b = TIsa.RotateRight24(b ^ c);
-            a += b + y;
+            a = a + y + b;
             d = TIsa.RotateRight16(d ^ a);
             c += d;
             b = b ^ c;
