@@ -46,12 +46,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-24.04-arm
-            suites: crypto,argon2,sweep
-          - os: macos-15
-            suites: crypto,argon2,sweep
+          # TEMPORARY (issue #743): three x64 jobs, each a fresh draw from the hosted pool, on the BLAKE2 suite alone, so
+          # that one dispatch has three chances at an AMD Zen 4 with AVX-512. Restore the three entries before merging.
           - os: ubuntu-24.04
-            suites: argon2,sweep,x64
+            suites: blake2
+            copy: 1
+          - os: ubuntu-24.04
+            suites: blake2
+            copy: 2
+          - os: ubuntu-24.04
+            suites: blake2
+            copy: 3
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
 
@@ -102,7 +107,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: crypto-benchmarks-${{ matrix.os }}
+          name: crypto-benchmarks-${{ matrix.os }}-${{ matrix.copy }}
           path: |
             bench-results/**/*.txt
             !bench-results/bin/**
