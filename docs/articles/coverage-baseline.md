@@ -13,22 +13,22 @@ Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Co
 | `Bodu.Extensions.Configuration.Text` | Stable | 97.3% | 87.5% | 256 / 263 |
 | `Bodu.Financial` | Stable | 97.3% | 86.9% | 3600 / 3700 |
 | `Bodu.Financial.DependencyInjection` | Stable | 100% | 100% | 43 / 43 |
-| `Bodu.Financial.ExchangeRates` | Preview | 91% | 84.8% | 332 / 365 |
-| `Bodu.Financial.ExchangeRates.Boe` | Stable | 91.1% | 85.3% | 267 / 293 |
+| `Bodu.Financial.ExchangeRates` | Stable | 91% | 84.8% | 332 / 365 |
+| `Bodu.Financial.ExchangeRates.Boe` | Preview | 91.1% | 85.3% | 267 / 293 |
 | `Bodu.Financial.ExchangeRates.Caching` | Stable | 91.6% | 88.6% | 1368 / 1493 |
 | `Bodu.Financial.ExchangeRates.Caching.Distributed` | Stable | 93.5% | 91.9% | 172 / 184 |
 | `Bodu.Financial.ExchangeRates.Caching.Sqlite` | Stable | 94.8% | 94.8% | 308 / 325 |
 | `Bodu.Financial.ExchangeRates.DependencyInjection` | Stable | 100% | 100% | 70 / 70 |
-| `Bodu.Financial.ExchangeRates.Ecb` | Stable | 91.7% | 81% | 254 / 277 |
+| `Bodu.Financial.ExchangeRates.Ecb` | Preview | 91.7% | 81% | 254 / 277 |
 | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | Preview | 95.3% | 73.7% | 143 / 150 |
 | `Bodu.Financial.ExchangeRates.Fixer` | Preview | 96.7% | 75% | 147 / 152 |
 | `Bodu.Financial.ExchangeRates.Fred` | Preview | 99.3% | 93.5% | 135 / 136 |
 | `Bodu.Financial.ExchangeRates.Imf` | Preview | 90.9% | 88.5% | 289 / 318 |
 | `Bodu.Financial.ExchangeRates.Oanda` | Preview | 97% | 89.2% | 164 / 169 |
-| `Bodu.Financial.ExchangeRates.Ofx` | Stable | 97.6% | 88.9% | 124 / 127 |
-| `Bodu.Financial.ExchangeRates.Rba` | Stable | 94.4% | 89.5% | 303 / 321 |
+| `Bodu.Financial.ExchangeRates.Ofx` | Preview | 97.6% | 88.9% | 124 / 127 |
+| `Bodu.Financial.ExchangeRates.Rba` | Preview | 94.4% | 89.5% | 303 / 321 |
 | `Bodu.Financial.ExchangeRates.Xe` | Experimental | 95.4% | 86.6% | 228 / 239 |
-| `Bodu.Financial.ExchangeRates.Yahoo` | Stable | 96% | 73.1% | 143 / 149 |
+| `Bodu.Financial.ExchangeRates.Yahoo` | Preview | 96% | 73.1% | 143 / 149 |
 | `Bodu.Financial.Serialization.Json` | Stable | 95% | 89.4% | 551 / 580 |
 | `Bodu.Formats.Excel.Binary` | Stable | 92.6% | 85.4% | 731 / 789 |
 | `Bodu.Formats.Outlook` | Preview | 95.9% | 88.9% | 71 / 74 |
@@ -47,26 +47,26 @@ Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Co
 | `Bodu.Globalization.Calendar.MiddleEast` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Plugins` | Stable | 92% | 82.7% | 208 / 226 |
 | `Bodu.Globalization.Calendar.Tool` | Preview | 99.2% | 98.4% | 130 / 131 |
-| `Bodu.Globalization.Recurrence` | Preview | 91.3% | 89.4% | 1314 / 1439 |
+| `Bodu.Globalization.Recurrence` | Stable | 91.3% | 89.4% | 1314 / 1439 |
 | `Bodu.IO.Compound` | Stable | 98.8% | 94.1% | 2220 / 2247 |
 | `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2518 / 2551 |
 | `Bodu.IO.Hashing (shared source)` | Stable | 100% | 100% | 48 / 48 |
 | `Bodu.IO.Pst` | Preview | 100% | 100% | 408 / 408 |
 | `Bodu.Numerics` | Stable | 94.2% | 91% | 2090 / 2219 |
-| `Bodu.Numerics.Serialization.Json` | Preview | 92.5% | 83.6% | 494 / 534 |
+| `Bodu.Numerics.Serialization.Json` | Stable | 92.5% | 83.6% | 494 / 534 |
 | `Bodu.Security.Cryptography` | Stable | 98.4% | 94.1% | 13684 / 13912 |
 | `Bodu.Text.Bencode` | Stable | 93.1% | 91.7% | 1525 / 1638 |
 | `Bodu.Text.Configuration` | Stable | 95.5% | 94.7% | 1134 / 1187 |
-| `Bodu.Text.Delimited` | Preview | 91.7% | 85.9% | 824 / 899 |
-| `Bodu.Text.DotEnv` | Preview | 90.3% | 86.7% | 652 / 722 |
+| `Bodu.Text.Delimited` | Stable | 91.7% | 85.9% | 824 / 899 |
+| `Bodu.Text.DotEnv` | Stable | 90.3% | 86.7% | 652 / 722 |
 | `Bodu.Text.Encoding` | Stable | 95.5% | 93.8% | 3036 / 3178 |
-| `Bodu.Text.Filtering` | Preview | 98.3% | 97.7% | 458 / 466 |
-| `Bodu.Text.Formats` | Preview | n/a | n/a | n/a |
-| `Bodu.Text.Ini` | Preview | 90.7% | 85.3% | 830 / 915 |
+| `Bodu.Text.Filtering` | Stable | 98.3% | 97.7% | 458 / 466 |
+| `Bodu.Text.Formats` | Stable | n/a | n/a | n/a |
+| `Bodu.Text.Ini` | Stable | 90.7% | 85.3% | 830 / 915 |
 | `Bodu.Text.Serialization` | Stable | 100% | 100% | 72 / 72 |
 | `Bodu.Text.Serialization (shared source)` | Stable | 93.4% | 89% | 606 / 649 |
 | `Bodu.Text.Toml` | Stable | 95.5% | 92.8% | 2988 / 3130 |
-| `Bodu.Text.Yaml` | Preview | 90.7% | 88.9% | 2435 / 2685 |
+| `Bodu.Text.Yaml` | Stable | 90.7% | 88.9% | 2435 / 2685 |
 | `Caching (shared source)` | Stable | 92.7% | 93.8% | 102 / 110 |
 
 ### Excluded by design

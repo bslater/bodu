@@ -8,7 +8,7 @@ title: Bodu.Financial.ExchangeRates - Introduction
 
 **Bodu.Financial.ExchangeRates** is the web-provider infrastructure package of the `Bodu.Financial` family - the layer every live exchange-rate feed is built on. It ships the two abstract provider bases (<xref:Bodu.Financial.ExchangeRates.WebRateProvider> for feeds that publish one base currency in bulk, <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> for feeds queried one currency pair at a time), the shared <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, and the fetch machinery those bases share: single-flight request coalescing, an on-disk raw-response cache, `HttpClient` construction, and the pair-load contracts. Eleven per-source packages - the Bank of England, the European Central Bank, the Reserve Bank of Australia, Yahoo Finance, OFX, XE.com, OANDA, Fixer, exchangerate.host, FRED, and the IMF - sit on top, each isolating one feed's HTTP and parsing dependencies. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
-`Bodu.Financial.ExchangeRates` is a **Preview** package.
+`Bodu.Financial.ExchangeRates` is a **Stable** package.
 
 It depends only on `Bodu.Financial`, `Bodu.Core`, and `Microsoft.Extensions.Logging.Abstractions`; the core FX contracts, value types, and in-memory providers it implements live in the core `Bodu.Financial` package, which carries no HTTP machinery at all.
 
@@ -86,12 +86,12 @@ Each per-source package ships its provider, its options type, and its own `Add<S
 
 | Package | Feed | Coverage | API key | Base class | Status | DI registration |
 |---|---|---|---|---|---|---|
-| `Bodu.Financial.ExchangeRates.Rba` | Reserve Bank of Australia `.xls` workbooks | AUD base, historical eras | No | `WebRateProvider` (bulk) | Stable | `AddRbaExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Ecb` | European Central Bank `eurofxref` XML | EUR base, since 1999 | No | `WebRateProvider` (bulk) | Stable | `AddEcbExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Boe` | Bank of England IADB CSV | GBP base, daily spot | No | `WebRateProvider` (bulk) | Stable | `AddBoeExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Rba` | Reserve Bank of Australia `.xls` workbooks | AUD base, historical eras | No | `WebRateProvider` (bulk) | Preview | `AddRbaExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Ecb` | European Central Bank `eurofxref` XML | EUR base, since 1999 | No | `WebRateProvider` (bulk) | Preview | `AddEcbExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Boe` | Bank of England IADB CSV | GBP base, daily spot | No | `WebRateProvider` (bulk) | Preview | `AddBoeExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Imf` | IMF Representative Exchange Rates TSV | USD base, daily, monthly report | No | `WebRateProvider` (bulk) | Preview | `AddImfExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Stable | `AddYahooExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Stable | `AddOfxExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddYahooExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddOfxExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Xe` | XE.com charting-rates JSON | Any pair | No (token scraped) | `PairWebRateProvider<TSeries>` | Experimental | `AddXeExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Preview | `AddOandaExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fixer` | fixer.io time-series / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFixerExchangeRates` |

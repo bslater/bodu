@@ -8,7 +8,7 @@ title: Bodu.Numerics.Serialization.Json - Introduction
 
 **Bodu.Numerics.Serialization.Json** is the `System.Text.Json` companion to [`Bodu.Numerics`](../numerics/index.md). It ships the converters and converter factories that round-trip the numeric value types - <xref:Bodu.Numerics.Fraction`1>, <xref:Bodu.Numerics.Interval`1>, <xref:Bodu.Numerics.DiscreteInterval`1>, <xref:Bodu.Numerics.IntervalSet`1>, <xref:Bodu.Numerics.BigDecimal>, and <xref:Bodu.Numerics.Complex`1> - a single <xref:Bodu.Numerics.Serialization.Json.NumericsJsonPolicy> that selects one coherent wire shape for all of them, the one-call `AddNumericsJsonConverters` registration, and the `ToJson` / `FromJson` convenience helpers for fractions. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
-`Bodu.Numerics.Serialization.Json` is a **Preview** package. The core library is deliberately serialization-agnostic - its value types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json` - so JSON support is opt-in, and a consumer of just `Fraction<T>` pays nothing for the serializer.
+`Bodu.Numerics.Serialization.Json` is a **Stable** package. The core library is deliberately serialization-agnostic - its value types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json` - so JSON support is opt-in, and a consumer of just `Fraction<T>` pays nothing for the serializer.
 
 ## Core mental model
 
