@@ -6,10 +6,11 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for `Bodu.IO.Hashing` under
 [`samples/IO.Hashing/`](https://github.com/bslater/bodu/tree/master/samples/IO.Hashing). All
-three are **offline and deterministic** - fixed inputs plus one small committed text file -
-and are members of `bodu.slnx`, built and executed by CI; the contract-test companion runs
-with the test suites. Each README documents every scenario individually: its intent, what the
-code does, the output to expect, and the APIs demonstrated.
+four are **offline and deterministic** - fixed inputs, one small committed text file, and
+release files generated with fixed contents into a temporary folder - and are members of
+`bodu.slnx`, built and executed by CI; the contract-test companion runs with the test suites.
+Each README documents every scenario individually: its intent, what the code does, the output
+to expect, and the APIs demonstrated.
 
 Run any of them from the repository root:
 
@@ -32,6 +33,19 @@ the original input (the append-only-log pattern); and FNV-1a / MurmurHash3 / Cit
 deterministic bucket routing, clearly labelled *not cryptographic*. *Package:
 `Bodu.IO.Hashing`.*
 
+### Bodu.IO.Hashing.Samples.FileIntegrity
+
+The <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> surface over real
+files: a checksum manifest for a release folder built straight from `FileStream`s with
+`ComputeHash(Stream)` and `ComputeHashAsync(Stream)`, with the same extensions running over
+`System.IO.Hashing`'s own `Crc32` (byte-identical to <xref:Bodu.IO.Hashing.Checksums.Crc>'s
+CRC-32/ISO-HDLC) and `XxHash64`; an `OK` / `BAD` / `MISSING` / `INVALID` checker for a damaged
+folder and manifest, built on the `TryVerifyHash(byte[], byte[], out bool)` overload that
+separates "could not verify" from "does not match", with `VerifyHash` / `VerifyHashAsync`
+checking large files from their streams; and a file delivered as numbered parts digested in
+order with `AppendData(Stream)` / `AppendDataAsync(Stream)` - no reassembled copy - with the
+out-of-order digest shown to differ. *Package: `Bodu.IO.Hashing`.*
+
 ### Bodu.IO.Hashing.Samples.CheckDigits
 
 The identifier-validation surface: `IsValid` across domains (IBAN, ISBN-10/13, EAN-13, Luhn
@@ -52,6 +66,21 @@ polymorphism. The companion test project derives the library's
 compute/validate/corruption contract the built-in schemes pass. *Package:
 `Bodu.IO.Hashing`.*
 
+## Extension methods in the samples
+
+<xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> extends
+`System.IO.Hashing.NonCryptographicHashAlgorithm`, so it serves every algorithm in the package
+and the framework's own hashes alike. All of it is shown in `FileIntegrity`:
+
+| Members | Scenario |
+|---|---|
+| `ComputeHash(Stream)`, `ComputeHashAsync(Stream)` | BuildManifest |
+| `TryVerifyHash(byte[], byte[], out bool)`, `VerifyHash(Stream, string)`, `VerifyHashAsync(Stream, string)` | VerifyManifest |
+| `AppendData(Stream)`, `AppendDataAsync(Stream)` | MultiPartDigests |
+
+[Streaming, async, and resumable hashing](../guides/io-hashing/streaming-and-async.md) lists
+every member with its default buffer size and cancellation behaviour.
+
 ## Guarded documentation
 
 The guides under [`docs/guides/io-hashing/`](../guides/io-hashing/index.md) carry
@@ -64,5 +93,8 @@ declarations that wrapped non-disposable hash types in `using var`.
 
 - [IO.Hashing guides](../guides/io-hashing/index.md) - per-family pages, the CRC catalogue,
   and the check-digit reference.
+- [Security.Cryptography samples](cryptography.md) - the cryptographic side, where
+  `StreamingPipelines` runs the same stream and verify extension shapes over cryptographic
+  hashes and ciphers.
 - [IO.Compound samples](io-compound.md) and [Excel samples](excel.md) - the sibling IO-group
   sample families.

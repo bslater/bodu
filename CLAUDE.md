@@ -301,6 +301,22 @@ Local developer machines are untouched (the hook short-circuits when `CLAUDE_COD
   In these cases, use disposable local branches and delete them once the work is pushed.
 - **Push** to the session branch when changes are ready; do not push to `master` directly.
 
+### Tracking Defects
+
+Every defect we identify gets a GitHub issue in `bslater/bodu`, so it can be tracked and closed. This applies to
+library bugs, documentation that contradicts behaviour, and tests that pin the wrong behaviour, whether or not the
+defect is in the current task's scope.
+
+- **Open the issue when the defect is found**, labelled `bug`, before moving on. Use the sections the existing issues
+  use: `## Summary`, `## Location` (file:line), `## Reproduction` (the smallest call sequence and what it does),
+  `## Expected behaviour`, and `## Suggested fix`. Cite the documentation the behaviour contradicts and any test that
+  pins the current behaviour.
+- **Out of scope stays out of scope.** A defect outside the current task is not fixed silently in the same pull
+  request; it gets its own red-green change (see *Test-First for Fixes (Red-Green)*). Link the issue from the pull
+  request that found it, and say what the current change does to work around it, if anything.
+- **In scope still gets an issue.** A defect fixed in the same pull request is opened first and closed by that pull
+  request with `Fixes #<n>` in its description.
+
 ## Test Conventions
 
 - Framework: **MSTest** (`Microsoft.VisualStudio.TestTools.UnitTesting`, `[TestClass]` / `[TestMethod]`). Do **not** introduce xUnit or NUnit.
