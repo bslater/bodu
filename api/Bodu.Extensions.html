@@ -94,9 +94,9 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Packages</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
 </div>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
 </div>
     </dd></dl>
   </div>
@@ -104,71 +104,71 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Extensions</strong> is the extension-method surface of <code>Bodu.Core</code>. It carries 15+ static classes covering date / time, numeric, span, array, string, enum, comparable, sequence, and stream operations — the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.</p>
+<p><strong>Bodu.Extensions</strong> is the extension-method surface of <code>Bodu.Core</code>. It carries 15+ static classes covering date / time, numeric, span, array, string, enum, comparable, sequence, and stream operations - the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.</p>
 <p>This is the single highest-leverage namespace in <code>Bodu.Core</code> by surface area. Reach for it when you need a <code>DateTime</code> calendar / week operation that the BCL doesn't ship, when you need a <code>decimal</code>-aware significant-digit rounding helper, when you need string <code>SliceSafe</code> / <code>Wrap</code> / <code>Quote</code> / <code>ToSlug</code> / case-conversion utilities, or when you need bit / byte rotation and reversal across the unsigned integer types.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> — <code>Bodu.Extensions</code> summary table.</li>
-<li><strong><a href="../docs/core/getting-started.html">Bodu.Core getting started</a></strong> — date-arithmetic minimal samples.</li>
+<li><strong><a href="../docs/core/index.html">Bodu.Core introduction</a></strong> - <code>Bodu.Extensions</code> summary table.</li>
+<li><strong><a href="../docs/core/getting-started.html">Bodu.Core getting started</a></strong> - date-arithmetic minimal samples.</li>
 </ul>
 <h2 id="key-types-grouped-by-concern">Key types grouped by concern</h2>
 <p><strong>Date and time</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> — first / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. 50+ methods.</li>
-<li><a class="xref" href="Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> — <code>DateOnly</code>-specific equivalents plus <code>Age</code> calculation.</li>
-<li><a class="xref" href="Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions.html">DateTimeFormatInfoExtensions</a> — a single helper, <code>LastDayOfWeek(this DateTimeFormatInfo)</code>, giving the day that closes a culture's week (derived from its <code>FirstDayOfWeek</code>). Lives in the sibling <a class="xref" href="Bodu.Globalization.Extensions.html">Bodu.Globalization.Extensions</a> namespace.</li>
-<li><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>, <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a>, <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProviderExtensions.html">IWeekendDefinitionProviderExtensions</a> — pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.</li>
-<li><a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> — a built-in <code>IQuarterDefinitionProvider</code> that derives quarters from a fiscal-week pattern (<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.</li>
-<li><a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>, <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> — working-day bitmask helpers.</li>
+<li><a class="xref" href="Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> - first / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. 50+ methods.</li>
+<li><a class="xref" href="Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> - <code>DateOnly</code>-specific equivalents plus <code>Age</code> calculation.</li>
+<li><a class="xref" href="Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions.html">DateTimeFormatInfoExtensions</a> - a single helper, <code>LastDayOfWeek(this DateTimeFormatInfo)</code>, giving the day that closes a culture's week (derived from its <code>FirstDayOfWeek</code>). Lives in the sibling <a class="xref" href="Bodu.Globalization.Extensions.html">Bodu.Globalization.Extensions</a> namespace.</li>
+<li><a class="xref" href="Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a>, <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a>, <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProviderExtensions.html">IWeekendDefinitionProviderExtensions</a> - pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.</li>
+<li><a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a> - a built-in <code>IQuarterDefinitionProvider</code> that derives quarters from a fiscal-week pattern (<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.</li>
+<li><a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>, <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> - working-day bitmask helpers.</li>
 </ul>
 <p><strong>Calendar-shape enums</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> — the quarter-year start convention: <code>JanuaryToDecember</code> (calendar year), <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code>, <code>March25ToMarch24</code>, <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>, and <code>Custom</code> (supplied through an <code>IQuarterDefinitionProvider</code>).</li>
-<li><a class="xref" href="Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a> — truncation resolution.</li>
-<li><a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> — fiscal-week enumeration.</li>
-<li><a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> — <code>First</code>, <code>Second</code>, <code>Third</code>, <code>Fourth</code>, <code>Fifth</code>, <code>Last</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a> - the quarter-year start convention: <code>JanuaryToDecember</code> (calendar year), <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code>, <code>March25ToMarch24</code>, <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>, and <code>Custom</code> (supplied through an <code>IQuarterDefinitionProvider</code>).</li>
+<li><a class="xref" href="Bodu.Extensions.DateTimeResolution.html">DateTimeResolution</a> - truncation resolution.</li>
+<li><a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> - fiscal-week enumeration.</li>
+<li><a class="xref" href="Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> - <code>First</code>, <code>Second</code>, <code>Third</code>, <code>Fourth</code>, <code>Fifth</code>, <code>Last</code>.</li>
 </ul>
 <p><strong>Numeric</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.NumericExtensions.html">NumericExtensions</a> — <code>Digits</code>, <code>GetBytes</code>, <code>GreatestCommonDivisor</code>, <code>IsPrime</code>, <code>LeastCommonMultiple</code>, <code>ReverseBits</code>, <code>ReverseBytes</code>, <code>ReverseWords</code>, <code>RotateBitsLeft</code> / <code>Right</code>, <code>RoundToSignificantDigits</code>, unchecked arithmetic helpers.</li>
+<li><a class="xref" href="Bodu.Extensions.NumericExtensions.html">NumericExtensions</a> - <code>Digits</code>, <code>GetBytes</code>, <code>GreatestCommonDivisor</code>, <code>IsPrime</code>, <code>LeastCommonMultiple</code>, <code>ReverseBits</code>, <code>ReverseBytes</code>, <code>ReverseWords</code>, <code>RotateBitsLeft</code> / <code>Right</code>, <code>RoundToSignificantDigits</code>, unchecked arithmetic helpers.</li>
 </ul>
 <p><strong>Span, array, stream, buffer</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.SpanExtensions.html">SpanExtensions</a> — <code>AsReadOnly</code>, <code>ToReversed</code> (copying; contrast the in-place BCL <code>MemoryExtensions.Reverse</code>).</li>
-<li><a class="xref" href="Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a> — <code>Clear</code>, <code>Copy</code>, <code>Pad</code>, <code>Reverse</code>, <code>Slice</code>, <code>ToMatrix</code>.</li>
-<li><a class="xref" href="Bodu.Extensions.StreamExtensions.html">StreamExtensions</a> — <code>ReadAllBytes</code> / <code>ReadAllBytesAsync</code> / <code>WriteAllBytes</code> / <code>WriteAllBytesAsync</code>.</li>
-<li><a class="xref" href="Bodu.Extensions.BufferConverter.html">BufferConverter</a> — <code>CopyTo</code>, <code>Read</code>, <code>SwapEndian</code>, <code>ToArray</code> over byte buffers and primitive types.</li>
+<li><a class="xref" href="Bodu.Extensions.SpanExtensions.html">SpanExtensions</a> - <code>AsReadOnly</code>, <code>ToReversed</code> (copying; contrast the in-place BCL <code>MemoryExtensions.Reverse</code>).</li>
+<li><a class="xref" href="Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a> - <code>Clear</code>, <code>Copy</code>, <code>Pad</code>, <code>Reverse</code>, <code>Slice</code>, <code>ToMatrix</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.StreamExtensions.html">StreamExtensions</a> - <code>ReadAllBytes</code> / <code>ReadAllBytesAsync</code> / <code>WriteAllBytes</code> / <code>WriteAllBytesAsync</code>.</li>
+<li><a class="xref" href="Bodu.Extensions.BufferConverter.html">BufferConverter</a> - <code>CopyTo</code>, <code>Read</code>, <code>SwapEndian</code>, <code>ToArray</code> over byte buffers and primitive types.</li>
 </ul>
 <p><strong>Strings</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.StringExtensions.html">StringExtensions</a> — <code>After</code>, <code>Before</code>, <code>Between</code>, <code>Brace</code>, <code>Bracket</code>, <code>CollapseWhitespace</code>, <code>Contains</code> / <code>EndsWith</code> / <code>StartsWith</code> variants, <code>EnsureEndsWith</code> / <code>EnsureStartsWith</code>, <code>Indent</code>, <code>IsValidIdentifier</code>, <code>Keep</code> / <code>Remove</code> variants, <code>NormalizeLineEndings</code>, <code>Outdent</code>, <code>Parenthesize</code>, <code>Parse</code>, <code>PrefixLines</code>, <code>Quote</code>, <code>RemoveControlCharacters</code>, <code>RemoveDiacritics</code>, <code>SliceSafe</code>, case conversions (<code>ToCamelCase</code>, <code>ToPascalCase</code>, <code>ToSnakeCase</code>, <code>ToKebabCase</code>, …), <code>Truncate</code>, <code>Unwrap</code>, <code>Wrap</code>, slug generation.</li>
-<li><a class="xref" href="Bodu.Extensions.IdentifierCase.html">IdentifierCase</a> — case convention enum used by <code>IsValidIdentifier</code> / case conversions.</li>
-<li><a class="xref" href="Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a>, <a class="xref" href="Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a>, <a class="xref" href="Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a>, <a class="xref" href="Bodu.Extensions.SlugOptions.html">SlugOptions</a> — option flags consumed by the casing helpers.</li>
+<li><a class="xref" href="Bodu.Extensions.StringExtensions.html">StringExtensions</a> - <code>After</code>, <code>Before</code>, <code>Between</code>, <code>Brace</code>, <code>Bracket</code>, <code>CollapseWhitespace</code>, <code>Contains</code> / <code>EndsWith</code> / <code>StartsWith</code> variants, <code>EnsureEndsWith</code> / <code>EnsureStartsWith</code>, <code>Indent</code>, <code>IsValidIdentifier</code>, <code>Keep</code> / <code>Remove</code> variants, <code>NormalizeLineEndings</code>, <code>Outdent</code>, <code>Parenthesize</code>, <code>Parse</code>, <code>PrefixLines</code>, <code>Quote</code>, <code>RemoveControlCharacters</code>, <code>RemoveDiacritics</code>, <code>SliceSafe</code>, case conversions (<code>ToCamelCase</code>, <code>ToPascalCase</code>, <code>ToSnakeCase</code>, <code>ToKebabCase</code>, …), <code>Truncate</code>, <code>Unwrap</code>, <code>Wrap</code>, slug generation.</li>
+<li><a class="xref" href="Bodu.Extensions.IdentifierCase.html">IdentifierCase</a> - case convention enum used by <code>IsValidIdentifier</code> / case conversions.</li>
+<li><a class="xref" href="Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a>, <a class="xref" href="Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a>, <a class="xref" href="Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a>, <a class="xref" href="Bodu.Extensions.SlugOptions.html">SlugOptions</a> - option flags consumed by the casing helpers.</li>
 </ul>
 <p><strong>Comparable</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a> — <code>AtLeast</code>, <code>AtMost</code>, <code>Clamp</code>, <code>IsBetween</code>, <code>IsGreaterThan</code>, <code>Max</code>, <code>Min</code>, …</li>
-<li><a class="xref" href="Bodu.Extensions.ComparableHelper.html">ComparableHelper</a> — <code>Coalesce</code>, <code>Max</code>, <code>Min</code> over nullable comparables.</li>
+<li><a class="xref" href="Bodu.Extensions.ComparableExtensions.html">ComparableExtensions</a> - <code>AtLeast</code>, <code>AtMost</code>, <code>Clamp</code>, <code>IsBetween</code>, <code>IsGreaterThan</code>, <code>Max</code>, <code>Min</code>, …</li>
+<li><a class="xref" href="Bodu.Extensions.ComparableHelper.html">ComparableHelper</a> - <code>Coalesce</code>, <code>Max</code>, <code>Min</code> over nullable comparables.</li>
 </ul>
 <p><strong>Enums</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Extensions.EnumExtensions.html">EnumExtensions</a> — flag operations: <code>SetFlag</code>, <code>ClearFlag</code>, <code>HasAllFlags</code>, <code>HasAnyFlag</code>, <code>ToggleFlag</code>, plus bit-conversion helpers between flag enums and their underlying integer representations.</li>
+<li><a class="xref" href="Bodu.Extensions.EnumExtensions.html">EnumExtensions</a> - flag operations: <code>SetFlag</code>, <code>ClearFlag</code>, <code>HasAllFlags</code>, <code>HasAnyFlag</code>, <code>ToggleFlag</code>, plus bit-conversion helpers between flag enums and their underlying integer representations.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
-// Calendar arithmetic — first Monday of July, ISO week, age.
+// Calendar arithmetic - first Monday of July, ISO week, age.
 DateTime monday = new DateTime(2026, 7, 1).FirstDateOfWeekInMonth(DayOfWeek.Monday);
 DateTime endQ   = DateTime.Today.LastDateOfQuarter();
 int isoWeek    = DateTime.Today.IsoWeekOfYear();
 int age        = new DateOnly(1990, 5, 4).Age();
 
-// Numeric — bit operations and rounding.
+// Numeric - bit operations and rounding.
 uint rotated   = 0xDEADBEEFu.RotateBitsLeft(8);
 uint reversed  = 0x12345678u.ReverseBytes();         // 0x78563412
 decimal scaled = 1234.5678m.RoundToSignificantDigits(3);  // 1230
 
-// Strings — slug, case conversion, between.
+// Strings - slug, case conversion, between.
 string slug = &quot;Hello, World!&quot;.ToSlug();              // &quot;hello-world&quot;
 string snake = &quot;FirstName&quot;.ToSnakeCase();            // &quot;first_name&quot;
 string url = &quot;https://example.com/a/b?x=1&quot;.Between(&quot;//&quot;, &quot;/&quot;);  // &quot;example.com&quot;
@@ -196,9 +196,9 @@ Classes
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.ArrayExtensions.html">ArrayExtensions</a></dt>
-      <dd><p>Provides allocation-aware operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> instances — clearing, copying, slicing, and reversing
-— that either match the missing primitives on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> or supply more ergonomic counterparts to the BCL
-helpers.</p>
+      <dd><p>Provides allocation-aware operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> instances - clearing, copying, slicing, and
+reversing - that either match the missing primitives on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.array">Array</a> or supply more ergonomic counterparts
+to the BCL helpers.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -214,7 +214,7 @@ helpers.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.ComparableHelper.html">ComparableHelper</a></dt>
-      <dd><p>Provides null-tolerant ordering helpers — <code>Min</code>, <code>Max</code>, and <code>Coalesce</code> — for pairs of operands.
+      <dd><p>Provides null-tolerant ordering helpers - <code>Min</code>, <code>Max</code>, and <code>Coalesce</code> - for pairs of operands.
 <code>Min</code> and <code>Max</code> require <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.icomparable-1">IComparable&lt;T&gt;</a> operands (reference types may be
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>); <code>Coalesce</code> is unconstrained and additionally accepts <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.nullable-1">Nullable&lt;T&gt;</a> value
 types.</p>
@@ -222,21 +222,21 @@ types.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a></dt>
-      <dd><p>Provides calendar-arithmetic operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> — age, period anchors, weekday navigation, week
-and quarter numbering, and culture-aware formatting helpers — that complement the small surface shipped with
+      <dd><p>Provides calendar-arithmetic operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> - age, period anchors, weekday navigation, week
+and quarter numbering, and culture-aware formatting helpers - that complement the small surface shipped with
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> itself.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a></dt>
       <dd><p>Provides calendar-arithmetic, period-anchoring, ISO-aware, and tick-level operations over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>
-for code that outgrows the BCL surface — fiscal calendars, ISO 8601 week numbering, weekend rules, and
+for code that outgrows the BCL surface - fiscal calendars, ISO 8601 week numbering, weekend rules, and
 high-throughput tick math.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.EnumExtensions.html">EnumExtensions</a></dt>
-      <dd><p>Provides non-boxing bitwise helpers for flag-style enumerations — membership tests and add, remove, and toggle
+      <dd><p>Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle
 operations that work uniformly across every enum underlying type.</p>
 </dd>
     </dl>
@@ -249,7 +249,7 @@ their <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.compon
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.FiscalWeekQuarterProvider.html">FiscalWeekQuarterProvider</a></dt>
       <dd><p>Provides quarter boundary logic for a week-based retail fiscal calendar using a configurable
-<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> (5–4–4, 4–5–4, or 4–4–5 week distribution).</p>
+<a class="xref" href="Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a> (5-4-4, 4-5-4, or 4-4-5 week distribution).</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -290,8 +290,8 @@ delegating to the <a class="xref" href="https://learn.microsoft.com/dotnet/api/s
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.NumericExtensions.html">NumericExtensions</a></dt>
-      <dd><p>Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and
-word swaps, bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol
+      <dd><p>Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and
+word swaps, bit reversal and rotation, and unchecked arithmetic helpers - for hashing, serialization, and protocol
 code.</p>
 </dd>
     </dl>
@@ -303,19 +303,19 @@ code.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.SpanExtensions.html">SpanExtensions</a></dt>
-      <dd><p>Provides span-shaping helpers — read-only conversion and copy-and-reverse operations — for code that already
+      <dd><p>Provides span-shaping helpers - read-only conversion and copy-and-reverse operations - for code that already
 operates on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.StreamExtensions.html">StreamExtensions</a></dt>
-      <dd><p>Provides whole-payload read and write helpers for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — synchronous and asynchronous
+      <dd><p>Provides whole-payload read and write helpers for <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> - synchronous and asynchronous
 operations that consume or emit an entire byte buffer in a single call.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.StringExtensions.html">StringExtensions</a></dt>
-      <dd><p>Provides ergonomic, allocation-aware extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that fill gaps in the BCL —
+      <dd><p>Provides ergonomic, allocation-aware extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> that fill gaps in the BCL -
 positive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,
 substring windowing, case conversion, identifier sanitisation, and generic parsing.</p>
 </dd>
@@ -352,7 +352,7 @@ Enums
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a></dt>
-      <dd><p>Specifies how quarters (Q1–Q4) are defined within a given calendar-based system.</p>
+      <dd><p>Specifies how quarters (Q1-Q4) are defined within a given calendar-based system.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -408,7 +408,7 @@ second Tuesday of the month&quot;.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

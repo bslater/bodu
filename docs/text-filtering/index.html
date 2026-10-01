@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Filtering — Introduction | BODU </title>
+      <title>Bodu.Text.Filtering - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Filtering — Introduction | BODU ">
+      <meta name="title" content="Bodu.Text.Filtering - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -90,16 +90,16 @@
 <p><img src="../../images/hero-text-filtering.svg" alt="Bodu.Text.Filtering"></p>
 <p><code>Bodu.Text.Filtering</code> filters lists of text values through include/exclude pattern sets. Glob
 (wildcard) and regular-expression patterns compile once into an immutable
-<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> that is then applied to any number of values —
-designed for bulk work in the 100k+ values × 10–100+ patterns range, with built-in telemetry that
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> that is then applied to any number of values -
+designed for bulk work in the 100k+ values × 10-100+ patterns range, with built-in telemetry that
 reports what matched, what was vetoed, and by which pattern.</p>
 <p>Part of the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
 <h2 id="core-mental-model">Core mental model</h2>
 <p>A filter is a compiled set of <strong>rules</strong>. Each rule is a
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPattern.html"><code>TextFilterPattern</code></a>: a pattern text, an <strong>action</strong>
 (include or exclude), a <strong>kind</strong> (glob or regex), and an optional per-pattern case override. You
-compile the set once — with <code>TextFilter.Build</code>, <code>TextFilter.Parse</code>, or a
-<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a> — and then ask it questions:
+compile the set once - with <code>TextFilter.Build</code>, <code>TextFilter.Parse</code>, or a
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a> - and then ask it questions:
 <code>IsMatch(value)</code>, <code>Evaluate(value)</code> (which also reports the deciding pattern), or
 <code>Filter(sequence)</code>.</p>
 <p>The library deliberately adopts designs users already know from established tools:</p>
@@ -137,10 +137,10 @@ compile the set once — with <code>TextFilter.Build</code>, <code>TextFilter.Pa
 <p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterEvaluationMode.html"><code>TextFilterEvaluationMode</code></a> selects how rules
 combine:</p>
 <ul>
-<li><strong><code>AnyMatch</code></strong> (default) — the Ant / MSBuild set model. A value is accepted when the include set
+<li><strong><code>AnyMatch</code></strong> (default) - the Ant / MSBuild set model. A value is accepted when the include set
 is empty <strong>or</strong> at least one include matches, <strong>and</strong> no exclude matches. Declaration order never
 affects the outcome, which frees the engine to evaluate the cheapest patterns first.</li>
-<li><strong><code>LastMatchWins</code></strong> — the gitignore model. Rules form one ordered list; the last matching rule's
+<li><strong><code>LastMatchWins</code></strong> - the gitignore model. Rules form one ordered list; the last matching rule's
 action decides, and unmatched values are included. A later include re-admits what an earlier
 exclude rejected; allowlists start with an exclude-everything rule (<code>!*</code>).</li>
 </ul>
@@ -181,7 +181,7 @@ case-insensitive by default.</p>
 </tr>
 </tbody>
 </table>
-<p>Anything richer is a <code>TextFilterPatternKind.Regex</code> pattern — compiled preferring the linear-time
+<p>Anything richer is a <code>TextFilterPatternKind.Regex</code> pattern - compiled preferring the linear-time
 <code>NonBacktracking</code> engine, always with a match timeout, and timeouts fail safe (a timed-out exclude
 still vetoes).</p>
 <h2 id="cost-tiers">Cost tiers</h2>
@@ -189,13 +189,13 @@ still vetoes).</p>
 is evaluated cheapest-first with short-circuiting:</p>
 <p><code>*</code> (match-all) → literal equality → prefix / suffix (<code>abc*</code>, <code>*abc</code>, <code>abc*def</code>) → contains
 (<code>*abc*</code>) → general wildcard matcher → regex.</p>
-<p><code>{error,warn}*</code> expands at build time into two cheap prefix matchers — alternation costs nothing at
+<p><code>{error,warn}*</code> expands at build time into two cheap prefix matchers - alternation costs nothing at
 evaluation time.</p>
 <h2 id="main-types">Main types</h2>
 <h3 id="the-engine">The engine</h3>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> — <code>Build</code> / <code>Parse</code>, <code>IsMatch</code>, <code>Evaluate</code>, <code>GetMatchingPatterns</code>, <code>Filter</code> / <code>FilterToList</code>, <code>GetStatistics</code>, <code>Observer</code>.</li>
-<li><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a> — fluent <code>AddInclude</code> / <code>AddExclude</code> / <code>AddIncludeRegex</code> / <code>AddParsed</code>.</li>
+<li><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a> - <code>Build</code> / <code>Parse</code>, <code>IsMatch</code>, <code>Evaluate</code>, <code>GetMatchingPatterns</code>, <code>Filter</code> / <code>FilterToList</code>, <code>GetStatistics</code>, <code>Observer</code>.</li>
+<li><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a> - fluent <code>AddInclude</code> / <code>AddExclude</code> / <code>AddIncludeRegex</code> / <code>AddParsed</code>.</li>
 </ul>
 <h3 id="the-model">The model</h3>
 <ul>
@@ -210,18 +210,18 @@ evaluation time.</p>
 </ul>
 <h2 id="common-scenarios">Common scenarios</h2>
 <ul>
-<li><strong>Log/line selection</strong> — keep <code>error*</code>/<code>warn*</code> lines, veto <code>*debug*</code> noise, stream through <code>Filter</code>.</li>
-<li><strong>Name allowlists and blocklists</strong> — parse a config file's raw lines with the gitignore conventions.</li>
-<li><strong>Routing and diagnostics</strong> — <code>Evaluate</code> reports the deciding pattern; <code>GetMatchingPatterns</code> reports every matching pattern.</li>
-<li><strong>Filter tuning</strong> — per-pattern hit counts show which patterns actually decide outcomes at volume.</li>
+<li><strong>Log/line selection</strong> - keep <code>error*</code>/<code>warn*</code> lines, veto <code>*debug*</code> noise, stream through <code>Filter</code>.</li>
+<li><strong>Name allowlists and blocklists</strong> - parse a config file's raw lines with the gitignore conventions.</li>
+<li><strong>Routing and diagnostics</strong> - <code>Evaluate</code> reports the deciding pattern; <code>GetMatchingPatterns</code> reports every matching pattern.</li>
+<li><strong>Filter tuning</strong> - per-pattern hit counts show which patterns actually decide outcomes at volume.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the vocabulary: actions, kinds, modes, tiers, deciding patterns.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install and minimal samples.</li>
-<li><strong><a href="../../guides/text-filtering/index.html">Guides</a></strong> — pattern grammar, evaluation modes, telemetry.</li>
-<li><strong><a href="../../samples/text-filtering.html">Runnable samples</a></strong> — the FilteringTour console sample.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.html">API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the vocabulary: actions, kinds, modes, tiers, deciding patterns.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install and minimal samples.</li>
+<li><strong><a href="../../guides/text-filtering/index.html">Guides</a></strong> - pattern grammar, evaluation modes, telemetry.</li>
+<li><strong><a href="../../samples/text-filtering.html">Runnable samples</a></strong> - the FilteringTour console sample.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.html">API reference</a></strong> - full type-by-type docs.</li>
 </ul>
 
 </article>
@@ -241,7 +241,7 @@ evaluation time.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

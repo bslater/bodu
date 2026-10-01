@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Encoding_BinaryEncodingExtensions" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BinaryEncodingExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BinaryEncodingExtensions Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs">BinaryEncodingExtensions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs">BinaryEncodingExtensions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides fluent extension methods on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a> arrays, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> of byte and
@@ -163,7 +163,7 @@ BinaryEncodingExtensions Class
   <h2 id="Bodu_Text_Encoding_BinaryEncodingExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">byte[] data = "hello"u8.ToArray();
 
-// Direct shortcuts — discoverable from IntelliSense via the byte[] receiver.
+// Direct shortcuts - discoverable from IntelliSense via the byte[] receiver.
 string hex     = data.ToBase16String();                  // "68656c6c6f"
 string base32  = data.ToBase32String();                  // "NBSWY3DP"
 string base64  = data.ToBase64String();                  // "aGVsbG8="
@@ -180,7 +180,7 @@ byte[] decoded = encoded.Decode(chosen);</code></pre>
 
   <h2 id="Bodu_Text_Encoding_BinaryEncodingExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-These extensions exist purely for ergonomic discoverability — typing <code>bytes.</code> in an editor brings up
+These extensions exist purely for ergonomic discoverability - typing <code>bytes.</code> in an editor brings up
 <code>ToBase16String</code>, <code>ToBase64String</code>, <code>ToBase58String</code>, and so on. They delegate without overhead to
 the static <a class="xref" href="Bodu.Text.Encoding.Base16.html">Base16</a>, <a class="xref" href="Bodu.Text.Encoding.Base32.html">Base32</a>, <a class="xref" href="Bodu.Text.Encoding.Base64.html">Base64</a>, <a class="xref" href="Bodu.Text.Encoding.Base58.html">Base58</a>, and
 <a class="xref" href="Bodu.Text.Encoding.Base85.html">Base85</a> classes.
@@ -202,7 +202,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_Decode_System_String_Bodu_Text_Encoding_IBinaryEncoding_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Decode(System.String,Bodu.Text.Encoding.IBinaryEncoding)">
   Decode(string, IBinaryEncoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -257,7 +257,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_Encode_System_Byte___Bodu_Text_Encoding_IBinaryEncoding_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.Encode(System.Byte[],Bodu.Text.Encoding.IBinaryEncoding)">
   Encode(byte[], IBinaryEncoding)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -309,7 +309,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase16String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase16String(System.String)">
   FromBase16String(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -361,7 +361,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase32String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase32String(System.String)">
   FromBase32String(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -413,7 +413,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase58String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase58String(System.String)">
   FromBase58String(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -465,7 +465,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase64String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase64String(System.String)">
   FromBase64String(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -517,7 +517,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_FromBase85String_System_String_" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.FromBase85String(System.String)">
   FromBase85String(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -569,7 +569,7 @@ extension surface.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_GetBase64EncodedLength_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.GetBase64EncodedLength(System.ReadOnlySpan{System.Byte})">
   GetBase64EncodedLength(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -613,7 +613,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String(System.Byte[])">
   ToBase16String(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -662,7 +662,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase16String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase16String(System.ReadOnlySpan{System.Byte})">
   ToBase16String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -705,7 +705,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String(System.Byte[])">
   ToBase32String(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -754,7 +754,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase32String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase32String(System.ReadOnlySpan{System.Byte})">
   ToBase32String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -797,7 +797,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String(System.Byte[])">
   ToBase58String(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -846,7 +846,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase58String(System.ReadOnlySpan{System.Byte})">
   ToBase58String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -889,7 +889,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String(System.Byte[])">
   ToBase64String(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -938,7 +938,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64String(System.ReadOnlySpan{System.Byte})">
   ToBase64String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -981,7 +981,7 @@ including any trailing <code>=</code> padding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase64UrlString_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase64UrlString(System.ReadOnlySpan{System.Byte})">
   ToBase64UrlString(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1025,7 +1025,7 @@ omitting trailing <code>=</code> padding (the JWT and OAuth convention).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_Byte___" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String(System.Byte[])">
   ToBase85String(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1074,7 +1074,7 @@ omitting trailing <code>=</code> padding (the JWT and OAuth convention).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_ToBase85String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.ToBase85String(System.ReadOnlySpan{System.Byte})">
   ToBase85String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1117,7 +1117,7 @@ omitting trailing <code>=</code> padding (the JWT and OAuth convention).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64FromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64FromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
   TryDecodeBase64FromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1168,7 +1168,7 @@ without throwing when the destination is too small.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryDecodeBase64UrlFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryDecodeBase64UrlFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
   TryDecodeBase64UrlFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1223,7 +1223,7 @@ padding is typically omitted.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64ToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64ToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
   TryEncodeBase64ToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1280,7 +1280,7 @@ file streams, log sinks).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_BinaryEncodingExtensions_TryEncodeBase64UrlToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.BinaryEncodingExtensions.TryEncodeBase64UrlToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
   TryEncodeBase64UrlToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Encoding/src/Text.Encoding/BinaryEncodingExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1352,7 +1352,7 @@ file streams, log sinks).</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

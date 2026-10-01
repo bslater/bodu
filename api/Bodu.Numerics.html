@@ -106,44 +106,44 @@
 <p>Reach for this library when you need rational or decimal arithmetic that does not lose precision to floating-point drift, complex arithmetic over <code>float</code> / <code>double</code> / <code>Half</code>, a single representation for closed / open / half-open intervals (and unions of them), a precision escape hatch for chained calculations that would otherwise accumulate rounding error, or constant-space summaries of a stream of samples.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/numerics/index.html">Bodu.Numerics introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../docs/numerics/getting-started.html">Bodu.Numerics getting started</a></strong> — install and minimal samples for <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code>.</li>
-<li><strong><a href="../guides/numerics/index.html">Bodu.Numerics guides</a></strong> — recipe-style walk-throughs: <a href="../guides/numerics/fraction.html"><code>Fraction&lt;T&gt;</code></a>, <a href="../guides/numerics/bigdecimal.html"><code>BigDecimal</code></a>, <a href="../guides/numerics/interval.html"><code>Interval&lt;T&gt;</code></a>, <a href="../guides/numerics/interval-algebra.html">interval algebra</a>, <a href="../guides/numerics/discrete-intervals.html">discrete intervals</a>, <a href="../guides/numerics/running-statistics.html">running statistics</a>, <a href="../guides/numerics/generic-math-constraints.html">generic-math constraints</a>, <a href="../guides/numerics/json-serialization.html">JSON serialization</a>.</li>
+<li><strong><a href="../docs/numerics/index.html">Bodu.Numerics introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../docs/numerics/getting-started.html">Bodu.Numerics getting started</a></strong> - install and minimal samples for <code>Fraction&lt;T&gt;</code> and <code>Interval&lt;T&gt;</code>.</li>
+<li><strong><a href="../guides/numerics/index.html">Bodu.Numerics guides</a></strong> - recipe-style walk-throughs: <a href="../guides/numerics/fraction.html"><code>Fraction&lt;T&gt;</code></a>, <a href="../guides/numerics/bigdecimal.html"><code>BigDecimal</code></a>, <a href="../guides/numerics/interval.html"><code>Interval&lt;T&gt;</code></a>, <a href="../guides/numerics/interval-algebra.html">interval algebra</a>, <a href="../guides/numerics/discrete-intervals.html">discrete intervals</a>, <a href="../guides/numerics/running-statistics.html">running statistics</a>, <a href="../guides/numerics/generic-math-constraints.html">generic-math constraints</a>, <a href="../guides/numerics/json-serialization.html">JSON serialization</a>.</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong>Rational arithmetic</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> — immutable rational with auto-reduction to canonical form, <code>BigInteger</code>-promoted intermediates for safe arithmetic, and the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface. Backed by any <code>IBinaryInteger&lt;T&gt;</code> — <code>int</code>, <code>long</code>, <code>BigInteger</code>, or a custom type.</li>
+<li><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a> - immutable rational with auto-reduction to canonical form, <code>BigInteger</code>-promoted intermediates for safe arithmetic, and the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface. Backed by any <code>IBinaryInteger&lt;T&gt;</code> - <code>int</code>, <code>long</code>, <code>BigInteger</code>, or a custom type.</li>
 </ul>
 <p><strong>Arbitrary-precision decimals</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> — immutable <code>BigInteger</code> unscaled value paired with an <code>int</code> scale. Unbounded (no overflow), exact add / subtract / multiply, precision-controlled division, value-based equality across scales, and the full <code>INumber&lt;BigDecimal&gt;</code> / <code>ISignedNumber&lt;BigDecimal&gt;</code> surface.</li>
+<li><a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a> - immutable <code>BigInteger</code> unscaled value paired with an <code>int</code> scale. Unbounded (no overflow), exact add / subtract / multiply, precision-controlled division, value-based equality across scales, and the full <code>INumber&lt;BigDecimal&gt;</code> / <code>ISignedNumber&lt;BigDecimal&gt;</code> surface.</li>
 </ul>
 <p><strong>Complex numbers</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> — immutable complex number over any <code>IFloatingPointIeee754&lt;T&gt;</code> component type; the generic counterpart of the <code>double</code>-only <code>System.Numerics.Complex</code>, with arithmetic, <code>Conjugate</code> / <code>Reciprocal</code>, the elementary functions (<code>Sqrt</code>, <code>Exp</code>, <code>Log</code>, <code>Pow</code>, trigonometric and hyperbolic), parsing / formatting, and the <code>INumberBase&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface (complex numbers do not order, so not <code>INumber&lt;T&gt;</code>). Guide: <a href="../guides/numerics/complex.html">Working with <code>Complex&lt;T&gt;</code></a>.</li>
+<li><a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> - immutable complex number over any <code>IFloatingPointIeee754&lt;T&gt;</code> component type; the generic counterpart of the <code>double</code>-only <code>System.Numerics.Complex</code>, with arithmetic, <code>Conjugate</code> / <code>Reciprocal</code>, the elementary functions (<code>Sqrt</code>, <code>Exp</code>, <code>Log</code>, <code>Pow</code>, trigonometric and hyperbolic), parsing / formatting, and the <code>INumberBase&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface (complex numbers do not order, so not <code>INumber&lt;T&gt;</code>). Guide: <a href="../guides/numerics/complex.html">Working with <code>Complex&lt;T&gt;</code></a>.</li>
 </ul>
 <blockquote>
 <p>JSON support is serialization-agnostic in this package; the converters ship in the companion <a class="xref" href="Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json</a> package.</p>
 </blockquote>
 <p><strong>Bounded intervals</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> — immutable interval over any <code>INumber&lt;T&gt;</code> endpoint type. Independent endpoint inclusivity on each side expresses all four conventional shapes; one canonical <code>Empty</code> instance covers every degenerate / inverted-bound case.</li>
-<li><a class="xref" href="Bodu.Numerics.Interval.html">Interval</a> — non-generic helper class with factory methods that infer the endpoint type from arguments (<code>Interval.Closed(1.5, 2.5)</code> → <code>Interval&lt;double&gt;</code>).</li>
-<li><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.DiscreteInterval.html">DiscreteInterval</a> — the integer-domain counterpart over any <code>IBinaryInteger&lt;T&gt;</code>: every shape canonicalizes to closed integer bounds, so successor-adjacent runs merge and an open interval over consecutive integers is empty. See the <a href="../guides/numerics/discrete-intervals.html">discrete intervals guide</a>.</li>
-<li><a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a> — allocation-free results of a binary <code>Difference</code> / <code>SymmetricDifference</code>: zero, one, or two disjoint pieces, each with a <code>ToIntervalSet()</code> bridge.</li>
-<li><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> — immutable normalized union of disjoint, non-adjacent intervals; the N-ary home for <code>Union</code> / <code>Intersect</code> / <code>Except</code> / <code>Complement</code>. See the <a href="../guides/numerics/interval-algebra.html">interval algebra guide</a>.</li>
+<li><a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> - immutable interval over any <code>INumber&lt;T&gt;</code> endpoint type. Independent endpoint inclusivity on each side expresses all four conventional shapes; one canonical <code>Empty</code> instance covers every degenerate / inverted-bound case.</li>
+<li><a class="xref" href="Bodu.Numerics.Interval.html">Interval</a> - non-generic helper class with factory methods that infer the endpoint type from arguments (<code>Interval.Closed(1.5, 2.5)</code> → <code>Interval&lt;double&gt;</code>).</li>
+<li><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.DiscreteInterval.html">DiscreteInterval</a> - the integer-domain counterpart over any <code>IBinaryInteger&lt;T&gt;</code>: every shape canonicalizes to closed integer bounds, so successor-adjacent runs merge and an open interval over consecutive integers is empty. See the <a href="../guides/numerics/discrete-intervals.html">discrete intervals guide</a>.</li>
+<li><a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a> - allocation-free results of a binary <code>Difference</code> / <code>SymmetricDifference</code>: zero, one, or two disjoint pieces, each with a <code>ToIntervalSet()</code> bridge.</li>
+<li><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> - immutable normalized union of disjoint, non-adjacent intervals; the N-ary home for <code>Union</code> / <code>Intersect</code> / <code>Except</code> / <code>Complement</code>. See the <a href="../guides/numerics/interval-algebra.html">interval algebra guide</a>.</li>
 </ul>
 <p><strong>Statistics aggregates</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html">RunningQuantile&lt;T&gt;</a> — single-pass, constant-space stream accumulators (Welford count / min / max / mean / variance with a parallel <code>Combine</code> merge; a P² streaming quantile estimator).</li>
-<li><a class="xref" href="Bodu.Numerics.MovingSum-1.html">MovingSum&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.MovingMinMax-1.html">MovingMinMax&lt;T&gt;</a> — rolling-window sum / mean and min / max of the most recent N samples in amortized O(1). See the <a href="../guides/numerics/running-statistics.html">running statistics guide</a>.</li>
+<li><a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html">RunningQuantile&lt;T&gt;</a> - single-pass, constant-space stream accumulators (Welford count / min / max / mean / variance with a parallel <code>Combine</code> merge; a P² streaming quantile estimator).</li>
+<li><a class="xref" href="Bodu.Numerics.MovingSum-1.html">MovingSum&lt;T&gt;</a>, <a class="xref" href="Bodu.Numerics.MovingMinMax-1.html">MovingMinMax&lt;T&gt;</a> - rolling-window sum / mean and min / max of the most recent N samples in amortized O(1). See the <a href="../guides/numerics/running-statistics.html">running statistics guide</a>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using System.Numerics;
 using Bodu.Numerics;
 
-// Exact rational arithmetic — no floating-point drift.
+// Exact rational arithmetic - no floating-point drift.
 Fraction&lt;int&gt; sum = Fraction&lt;int&gt;.Create(1, 3) + Fraction&lt;int&gt;.Create(1, 5);
 Console.WriteLine(sum);        // &quot;8/15&quot;
 
@@ -154,14 +154,14 @@ Console.WriteLine(piApprox);   // &quot;355/113&quot;
 // Bounded intervals with independent endpoint inclusivity.
 var window = Interval&lt;int&gt;.ClosedOpen(0, 100);
 Console.WriteLine(window.Contains(99));   // True
-Console.WriteLine(window.Contains(100));  // False — upper exclusive
+Console.WriteLine(window.Contains(100));  // False - upper exclusive
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Canonical form.</strong> Every <code>Fraction&lt;T&gt;</code> is GCD-reduced on construction, with the sign on the numerator and the denominator strictly positive. <code>Fraction&lt;int&gt;.Create(2, 4)</code> and <code>Fraction&lt;int&gt;.Create(1, 2)</code> are indistinguishable; there is no unreduced form.</li>
 <li><strong>Overflow handling.</strong> Arithmetic operations promote operands to <code>BigInteger</code>, evaluate exactly, then narrow back to <code>T</code>. Overflow on narrowing raises <code>OverflowException</code>. Use <code>Fraction&lt;BigInteger&gt;</code> to eliminate the narrowing step entirely.</li>
 <li><strong>The empty interval is unique.</strong> Any <code>Interval&lt;T&gt;</code> constructed with inverted bounds, or with equal bounds and at least one open endpoint, compares equal to <code>Interval&lt;T&gt;.Empty</code> and shares its hash code.</li>
-<li><strong>Generic-math first.</strong> The value types implement the relevant <code>INumber</code>-style interfaces — including <code>IParsable&lt;T&gt;</code>, <code>ISpanParsable&lt;T&gt;</code>, <code>ISpanFormattable</code>, and <code>IUtf8SpanFormattable</code> — so they slot into algorithms written against the generic-math abstractions without bespoke wrappers.</li>
+<li><strong>Generic-math first.</strong> The value types implement the relevant <code>INumber</code>-style interfaces - including <code>IParsable&lt;T&gt;</code>, <code>ISpanParsable&lt;T&gt;</code>, <code>ISpanFormattable</code>, and <code>IUtf8SpanFormattable</code> - so they slot into algorithms written against the generic-math abstractions without bespoke wrappers.</li>
 <li><strong>Cross-package.</strong> <code>Bodu.Financial.Money&lt;TCurrency&gt;</code> round-trips through <code>Fraction&lt;BigInteger&gt;</code> via <code>ToFraction()</code> / <code>FromFraction()</code> / <code>MultiplyExact()</code> for sub-minor-unit-precise monetary chains; see the <a class="xref" href="Bodu.Financial.html">Bodu.Financial overview</a>.</li>
 <li><strong>See also:</strong> the <a href="../guides/numerics/fraction.html"><code>Fraction&lt;T&gt;</code> guide</a>, the <a href="../guides/numerics/bigdecimal.html"><code>BigDecimal</code> guide</a>, the <a href="../guides/numerics/interval.html"><code>Interval&lt;T&gt;</code> guide</a>, the <a href="../guides/numerics/interval-algebra.html">interval algebra</a> and <a href="../guides/numerics/discrete-intervals.html">discrete intervals</a> guides, and the <a href="../guides/numerics/running-statistics.html">running statistics guide</a>.</li>
 </ul>
@@ -206,20 +206,20 @@ Structs
 </h3>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.BigDecimal.html">BigDecimal</a></dt>
-      <dd><p>Represents an immutable, arbitrary-precision decimal number — a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> unscaled value together
+      <dd><p>Represents an immutable, arbitrary-precision decimal number - a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.biginteger">BigInteger</a> unscaled value together
 with a base-ten scale.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a></dt>
-      <dd><p>Represents an immutable complex number — a value with a real and an imaginary component — backed by an arbitrary
+      <dd><p>Represents an immutable complex number - a value with a real and an imaginary component - backed by an arbitrary
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ifloatingpointieee754-1">IFloatingPointIeee754&lt;TSelf&gt;</a> component type.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.DiscreteIntervalPair-1.html">DiscreteIntervalPair&lt;T&gt;</a></dt>
       <dd><p>Represents the result of a binary <a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a> set operation as zero, one, or two disjoint,
-non-adjacent intervals in ascending order — the discrete counterpart to <a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>.</p>
+non-adjacent intervals in ascending order - the discrete counterpart to <a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -229,20 +229,20 @@ non-adjacent intervals in ascending order — the discrete counterpart to <a cla
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a></dt>
-      <dd><p>Represents an immutable interval over a discrete integer domain — a set of consecutive integers of type
-<code class="typeparamref">T</code> — with successor/predecessor-aware emptiness and adjacency.</p>
+      <dd><p>Represents an immutable interval over a discrete integer domain - a set of consecutive integers of type
+<code class="typeparamref">T</code> - with successor/predecessor-aware emptiness and adjacency.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a></dt>
-      <dd><p>Represents an immutable exact rational number — a ratio of two integers — backed by an arbitrary
+      <dd><p>Represents an immutable exact rational number - a ratio of two integers - backed by an arbitrary
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ibinaryinteger-1">IBinaryInteger&lt;TSelf&gt;</a> component type.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a></dt>
-      <dd><p>Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending order
-— the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.</p>
+      <dd><p>Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending
+order - the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -253,7 +253,7 @@ non-adjacent intervals in ascending order — the discrete counterpart to <a cla
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a></dt>
       <dd><p>Represents an immutable set of values as a normalized collection of disjoint, non-adjacent
-<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> pieces in ascending order — the general result of interval algebra that can produce a
+<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> pieces in ascending order - the general result of interval algebra that can produce a
 disconnected range.</p>
 </dd>
     </dl>
@@ -298,7 +298,7 @@ Welford's numerically stable online algorithm.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

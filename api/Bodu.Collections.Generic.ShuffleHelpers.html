@@ -8,7 +8,7 @@
       <meta name="title" content="ShuffleHelpers Class
  | BODU ">
       
-      <meta name="description" content="Provides in-place and yield-based Fisher–Yates randomization over arrays, spans, memory regions, and arbitrary  sources.">
+      <meta name="description" content="Provides in-place and yield-based Fisher-Yates randomization over arrays, spans, memory regions, and arbitrary  sources.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Generic_ShuffleHelpers" data-uid="Bodu.Collections.Generic.ShuffleHelpers" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ShuffleHelpers Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,12 +102,12 @@ ShuffleHelpers Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Collections.html">Collections</a>.<a class="xref" href="Bodu.Collections.Generic.html">Generic</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs">ShuffleHelpers.Shuffle.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs">ShuffleHelpers.Shuffle.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides in-place and yield-based Fisher–Yates randomization over arrays, spans, memory regions, and arbitrary
+  <div class="markdown summary"><p>Provides in-place and yield-based Fisher-Yates randomization over arrays, spans, memory regions, and arbitrary
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> sources.</p>
 </div>
 
@@ -161,7 +161,7 @@ ShuffleHelpers Class
 
 
   <h2 id="Bodu_Collections_Generic_ShuffleHelpers_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Deterministic shuffle of an array — useful for tests and reproducible demos.
+  <pre><code class="lang-csharp">// Deterministic shuffle of an array - useful for tests and reproducible demos.
 var deck = Enumerable.Range(1, 52).ToArray();
 IRandomGenerator rng = new XorShiftRandom(seed: 42);
 ShuffleHelpers.Shuffle(deck, rng);
@@ -173,14 +173,14 @@ foreach (int card in ShuffleHelpers.ShuffleAndYield(deck, rng, count: 5))
 
   <h2 id="Bodu_Collections_Generic_ShuffleHelpers_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-The helpers implement the canonical Fisher–Yates (Knuth) shuffle: each position from the end of the live region down
+The helpers implement the canonical Fisher-Yates (Knuth) shuffle: each position from the end of the live region down
 to index 1 swaps with a uniformly chosen earlier position. The resulting permutation is uniform when the supplied
 <a class="xref" href="Bodu.IRandomGenerator.html">IRandomGenerator</a> produces uniform draws over <code>[0, exclusiveMax)</code>.
 </p>
 <p>
 Two surface shapes are exposed. <code>Shuffle</code> mutates the supplied buffer in place and runs in O(n) time with no
 extra allocation. <code>ShuffleAndYield</code> produces a deferred sequence of the shuffled elements; the <code>count</code>
-overloads short-circuit after the first <code>count</code> draws and are equivalent to a partial Fisher–Yates — useful for
+overloads short-circuit after the first <code>count</code> draws and are equivalent to a partial Fisher-Yates - useful for
 sampling-without-replacement when only a prefix of the shuffle is needed.
 </p>
 <p>
@@ -201,7 +201,7 @@ permutations, key shuffling, or any context where an attacker can observe output
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Collections.Generic.IEnumerable{``0},Bodu.IRandomGenerator)">
   ShuffleAndYield&lt;T&gt;(IEnumerable&lt;T&gt;, IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -243,7 +243,7 @@ permutations, key shuffling, or any context where an attacker can observe output
 
 
   <h4 class="section" id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The source is enumerated exactly once, when the result is first iterated — safe for one-shot sequences and
+  <div class="markdown level1 remarks"><p>The source is enumerated exactly once, when the result is first iterated - safe for one-shot sequences and
 sequences with side effects.</p>
 </div>
 
@@ -263,11 +263,11 @@ sequences with side effects.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Collections_Generic_IEnumerable___0__Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Collections.Generic.IEnumerable{``0},Bodu.IRandomGenerator,System.Int32)">
   ShuffleAndYield&lt;T&gt;(IEnumerable&lt;T&gt;, IRandomGenerator, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Lazily yields a randomized subset of an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> using a partial Fisher–Yates shuffle.</p>
+  <div class="markdown level1 summary"><p>Lazily yields a randomized subset of an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> using a partial Fisher-Yates shuffle.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -335,7 +335,7 @@ entire source is buffered in memory before shuffling begins. The original sequen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Memory___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Memory{``0},Bodu.IRandomGenerator)">
   ShuffleAndYield&lt;T&gt;(Memory&lt;T&gt;, IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -387,7 +387,7 @@ entire source is buffered in memory before shuffling begins. The original sequen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_Memory___0__Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.Memory{``0},Bodu.IRandomGenerator,System.Int32)">
   ShuffleAndYield&lt;T&gt;(Memory&lt;T&gt;, IRandomGenerator, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -445,7 +445,7 @@ entire source is buffered in memory before shuffling begins. The original sequen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_ReadOnlySpan___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.ReadOnlySpan{``0},Bodu.IRandomGenerator)">
   ShuffleAndYield&lt;T&gt;(ReadOnlySpan&lt;T&gt;, IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -497,7 +497,7 @@ entire source is buffered in memory before shuffling begins. The original sequen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1_System_ReadOnlySpan___0__Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(System.ReadOnlySpan{``0},Bodu.IRandomGenerator,System.Int32)">
   ShuffleAndYield&lt;T&gt;(ReadOnlySpan&lt;T&gt;, IRandomGenerator, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -555,7 +555,7 @@ entire source is buffered in memory before shuffling begins. The original sequen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1___0___Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(``0[],Bodu.IRandomGenerator)">
   ShuffleAndYield&lt;T&gt;(T[], IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -613,11 +613,11 @@ entire source is buffered in memory before shuffling begins. The original sequen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_ShuffleAndYield__1___0___Bodu_IRandomGenerator_System_Int32_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.ShuffleAndYield``1(``0[],Bodu.IRandomGenerator,System.Int32)">
   ShuffleAndYield&lt;T&gt;(T[], IRandomGenerator, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.ShuffleAndYield.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Yields a randomized subset of the specified array by copying and shuffling it using a partial Fisher–Yates
+  <div class="markdown level1 summary"><p>Yields a randomized subset of the specified array by copying and shuffling it using a partial Fisher-Yates
 algorithm.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -683,11 +683,11 @@ shuffling are deferred until the result is first iterated.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Memory___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.Shuffle``1(System.Memory{``0},Bodu.IRandomGenerator)">
   Shuffle&lt;T&gt;(Memory&lt;T&gt;, IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Performs an in-place Fisher–Yates shuffle over a memory region.</p>
+  <div class="markdown level1 summary"><p>Performs an in-place Fisher-Yates shuffle over a memory region.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -739,11 +739,11 @@ span. The original memory region is modified.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Span___0__Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.Shuffle``1(System.Span{``0},Bodu.IRandomGenerator)">
   Shuffle&lt;T&gt;(Span&lt;T&gt;, IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Performs an in-place Fisher–Yates shuffle over a span of elements.</p>
+  <div class="markdown level1 summary"><p>Performs an in-place Fisher-Yates shuffle over a span of elements.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -775,7 +775,7 @@ span. The original memory region is modified.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1_System_Span___0__Bodu_IRandomGenerator__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This method modifies the span in-place using the Fisher–Yates algorithm. It is optimized for shuffling
+  <div class="markdown level1 remarks"><p>This method modifies the span in-place using the Fisher-Yates algorithm. It is optimized for shuffling
 stack-allocated or pooled data, and does not allocate memory.</p>
 </div>
 
@@ -795,11 +795,11 @@ stack-allocated or pooled data, and does not allocate memory.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1___0___Bodu_IRandomGenerator_" data-uid="Bodu.Collections.Generic.ShuffleHelpers.Shuffle``1(``0[],Bodu.IRandomGenerator)">
   Shuffle&lt;T&gt;(T[], IRandomGenerator)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Collections.Generic/ShuffleHelpers.Shuffle.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Performs an in-place Fisher–Yates shuffle over the provided array.</p>
+  <div class="markdown level1 summary"><p>Performs an in-place Fisher-Yates shuffle over the provided array.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -831,7 +831,7 @@ stack-allocated or pooled data, and does not allocate memory.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_ShuffleHelpers_Shuffle__1___0___Bodu_IRandomGenerator__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This method modifies the original array using the Fisher–Yates algorithm. Each element has an equal probability
+  <div class="markdown level1 remarks"><p>This method modifies the original array using the Fisher-Yates algorithm. Each element has an equal probability
 of ending up in any position.</p>
 </div>
 
@@ -873,7 +873,7 @@ of ending up in any position.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

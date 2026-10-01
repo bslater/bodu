@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Extensions_TweakableSymmetricAlgorithmExtensions" data-uid="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 TweakableSymmetricAlgorithmExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ TweakableSymmetricAlgorithmExtensions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs">TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs">TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Extends <a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> with try-pattern transform creation
@@ -164,8 +164,8 @@ that surfaces invalid key, IV, or tweak material as a <a href="https://learn.mic
 
   <h2 id="Bodu_Security_Cryptography_Extensions_TweakableSymmetricAlgorithmExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Tweakable block ciphers — Threefish in this library, and tweakable variants used as building blocks for AEAD
-constructions — accept a third keying input alongside the key and IV: the <em>tweak</em>. The tweak is a per-message
+Tweakable block ciphers - Threefish in this library, and tweakable variants used as building blocks for AEAD
+constructions - accept a third keying input alongside the key and IV: the <em>tweak</em>. The tweak is a per-message
 value that varies the cipher's behavior without renegotiating a key, making it a natural fit for disk encryption,
 authenticated modes, and protocols that bind ciphertext to a position or message identifier. Constructing an
 encryptor or decryptor for one of these algorithms requires all three values to be valid in concert; the BCL-style
@@ -200,7 +200,7 @@ if (!tf.TryCreateEncryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTr
     return BadRequest("invalid key, iv, or tweak");
 using (encryptor) { /* … encrypt with the validated transform … */ }
 
-// 2. Round-trip pairing — same try-pattern shape for the decryptor.
+// 2. Round-trip pairing - same try-pattern shape for the decryptor.
 if (tf.TryCreateDecryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTransform? decryptor))
 {
     using (decryptor) { /* … decrypt … */ }
@@ -218,7 +218,7 @@ if (tf.TryCreateDecryptor(suppliedKey, suppliedIv, suppliedTweak, out ICryptoTra
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_TweakableSymmetricAlgorithmExtensions_TryCreateDecryptor_Bodu_Security_Cryptography_TweakableSymmetricAlgorithm_System_Byte___System_Byte___System_Byte___System_Security_Cryptography_ICryptoTransform__" data-uid="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor(Bodu.Security.Cryptography.TweakableSymmetricAlgorithm,System.Byte[],System.Byte[],System.Byte[],System.Security.Cryptography.ICryptoTransform@)">
   TryCreateDecryptor(TweakableSymmetricAlgorithm, byte[], byte[], byte[], out ICryptoTransform?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -285,7 +285,7 @@ Use this overload when all keying material must be supplied explicitly.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_TweakableSymmetricAlgorithmExtensions_TryCreateDecryptor_Bodu_Security_Cryptography_TweakableSymmetricAlgorithm_System_Security_Cryptography_ICryptoTransform__" data-uid="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor(Bodu.Security.Cryptography.TweakableSymmetricAlgorithm,System.Security.Cryptography.ICryptoTransform@)">
   TryCreateDecryptor(TweakableSymmetricAlgorithm, out ICryptoTransform?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateDecryptor.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -351,7 +351,7 @@ use <a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_TweakableSymmetricAlgorithmExtensions_TryCreateEncryptor_Bodu_Security_Cryptography_TweakableSymmetricAlgorithm_System_Byte___System_Byte___System_Byte___System_Security_Cryptography_ICryptoTransform__" data-uid="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor(Bodu.Security.Cryptography.TweakableSymmetricAlgorithm,System.Byte[],System.Byte[],System.Byte[],System.Security.Cryptography.ICryptoTransform@)">
   TryCreateEncryptor(TweakableSymmetricAlgorithm, byte[], byte[], byte[], out ICryptoTransform?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -418,7 +418,7 @@ Use this overload when all keying material must be supplied explicitly.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_TweakableSymmetricAlgorithmExtensions_TryCreateEncryptor_Bodu_Security_Cryptography_TweakableSymmetricAlgorithm_System_Security_Cryptography_ICryptoTransform__" data-uid="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor(Bodu.Security.Cryptography.TweakableSymmetricAlgorithm,System.Security.Cryptography.ICryptoTransform@)">
   TryCreateEncryptor(TweakableSymmetricAlgorithm, out ICryptoTransform?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/TweakableSymmetricAlgorithmExtensions.TryCreateEncryptor.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -506,7 +506,7 @@ use <a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetr
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

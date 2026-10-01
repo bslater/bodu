@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="reading-property-sets">Reading property sets</h1>
 
-<p>Many compound files carry authored document metadata — title, author, timestamps, page and word counts — in two conventionally-named OLE property-set streams: <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code>. The <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a> namespace parses those streams into typed views, and <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> exposes convenience <code>TryGet*</code> methods for the standard pair.</p>
+<p>Many compound files carry authored document metadata - title, author, timestamps, page and word counts - in two conventionally-named OLE property-set streams: <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code>. The <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a> namespace parses those streams into typed views, and <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> exposes convenience <code>TryGet*</code> methods for the standard pair.</p>
 <p>A property set is a code-paged, sectioned key/value map: integer property IDs map to typed values (strings, integers, booleans, <code>FILETIME</code> timestamps). The typed views translate the well-known IDs into named properties so callers never touch the raw IDs.</p>
-<h2 id="pattern-1--summary-information">Pattern 1 — summary information</h2>
+<h2 id="pattern-1---summary-information">Pattern 1 - summary information</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.PropertySets;
 
@@ -103,8 +103,8 @@ if (file.TryGetSummaryInformation(out SummaryInformation? summary))
     Console.WriteLine(summary.WordCount);       // int?
 }
 </code></pre>
-<p><code>TryGetSummaryInformation</code> returns <code>false</code> when the root storage has no summary-information stream, so it is safe to call on any file. Every property is nullable — an absent or wrong-typed value reads as <code>null</code> rather than throwing. The view covers the standard fields: <code>Title</code>, <code>Subject</code>, <code>Author</code>, <code>Keywords</code>, <code>Comments</code>, <code>Template</code>, <code>LastAuthor</code>, <code>RevisionNumber</code>, <code>TotalEditTime</code>, <code>LastPrinted</code>, <code>CreateTime</code>, <code>LastSaveTime</code>, <code>PageCount</code>, <code>WordCount</code>, <code>CharacterCount</code>, <code>ApplicationName</code>, and <code>Security</code>.</p>
-<h2 id="pattern-2--document-summary-information">Pattern 2 — document summary information</h2>
+<p><code>TryGetSummaryInformation</code> returns <code>false</code> when the root storage has no summary-information stream, so it is safe to call on any file. Every property is nullable - an absent or wrong-typed value reads as <code>null</code> rather than throwing. The view covers the standard fields: <code>Title</code>, <code>Subject</code>, <code>Author</code>, <code>Keywords</code>, <code>Comments</code>, <code>Template</code>, <code>LastAuthor</code>, <code>RevisionNumber</code>, <code>TotalEditTime</code>, <code>LastPrinted</code>, <code>CreateTime</code>, <code>LastSaveTime</code>, <code>PageCount</code>, <code>WordCount</code>, <code>CharacterCount</code>, <code>ApplicationName</code>, and <code>Security</code>.</p>
+<h2 id="pattern-2---document-summary-information">Pattern 2 - document summary information</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.PropertySets;
 
@@ -116,7 +116,7 @@ if (file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? docSum
 }
 </code></pre>
 <p><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.DocumentSummaryInformation.html">DocumentSummaryInformation</a> reads the second standard stream, with the presentation- and document-oriented fields: <code>Category</code>, <code>PresentationTarget</code>, <code>Bytes</code>, <code>LineCount</code>, <code>ParagraphCount</code>, <code>SlideCount</code>, <code>NoteCount</code>, <code>HiddenCount</code>, <code>MultimediaClipCount</code>, <code>ScaleCrop</code>, and more.</p>
-<h2 id="pattern-3--the-raw-property-set">Pattern 3 — the raw property set</h2>
+<h2 id="pattern-3---the-raw-property-set">Pattern 3 - the raw property set</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.PropertySets;
 
@@ -130,14 +130,14 @@ if (set.TryGetValue(propertyId: 2, out OlePropertyValue? value))
     Console.WriteLine(value.AsString());
 </code></pre>
 <p>When you need a property the typed views do not surface, drop to <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a>. It exposes the <code>FormatId</code>, <code>ClassId</code>, <code>CodePage</code>, and <code>Sections</code>, and a <code>TryGetValue(int propertyId, out OlePropertyValue)</code> lookup. Each <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertyValue.html">OlePropertyValue</a> carries <code>As*</code> accessors (<code>AsString</code>, <code>AsInt32</code>, <code>AsBoolean</code>, <code>AsDateTimeOffset</code>, <code>AsTimeSpan</code>) that return the value when the stored type matches and <code>null</code> otherwise.</p>
-<p>You can also reach a property set on any storage — not just the well-known two on the root — by opening the stream and parsing it:</p>
+<p>You can also reach a property set on any storage - not just the well-known two on the root - by opening the stream and parsing it:</p>
 <pre><code class="lang-csharp">if (storage.TryOpenPropertySet(&quot;\x05SummaryInformation&quot;, out OlePropertySet? set))
 {
     // ...
 }
 </code></pre>
 <p><code>TryOpenPropertySet</code> opens the named child stream and parses it as a property set in one step, raising <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFileFormatException.html">CompoundFileFormatException</a> only when a stream by that name exists but is not a well-formed property set.</p>
-<h2 id="pattern-4--writing-property-sets-back">Pattern 4 — writing property sets back</h2>
+<h2 id="pattern-4---writing-property-sets-back">Pattern 4 - writing property sets back</h2>
 <p>On a writable file (opened for update, or created from scratch), <code>SetSummaryInformation</code> and <code>SetDocumentSummaryInformation</code> are the write counterparts of the <code>TryGet*</code> pair: they stage the record's underlying property set as the well-known root stream, creating or replacing it, and the edit is persisted by <code>Commit</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
@@ -157,11 +157,11 @@ using (var file = CompoundFile.Create(destination, leaveOpen: true))
 }
 </code></pre>
 <p>The same shape covers read-modify-write: <code>TryGetSummaryInformation</code>, mutate the record's <code>PropertySet</code> (or rebuild it through a builder), then <code>SetSummaryInformation</code> and <code>Commit</code>. For non-standard streams, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html#Bodu_IO_Compound_CompoundStorage_WritePropertySet_">WritePropertySet</a> writes any <a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.OlePropertySet.html">OlePropertySet</a> into a named stream on any storage.</p>
-<p>The writer emits every value shape the reader parses — including vector (<code>VT_VECTOR</code>) values such as a document summary's heading pairs and titles of parts — so a set read from a real document can always be written back. One nuance: a variant vector's elements re-emit with a type word inferred from each element's CLR value, so the guarantee for variant elements is <em>value</em> identity rather than byte identity (for example, a <code>VT_FILETIME</code>-tagged element surfaces as <code>long</code> and re-emits as <code>VT_I8</code>; both read back to the same value).</p>
+<p>The writer emits every value shape the reader parses - including vector (<code>VT_VECTOR</code>) values such as a document summary's heading pairs and titles of parts - so a set read from a real document can always be written back. One nuance: a variant vector's elements re-emit with a type word inferred from each element's CLR value, so the guarantee for variant elements is <em>value</em> identity rather than byte identity (for example, a <code>VT_FILETIME</code>-tagged element surfaces as <code>long</code> and re-emits as <code>VT_I8</code>; both read back to the same value).</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="reading-compound-files.html">Reading compound files</a> — open and navigate to reach a storage.</li>
-<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> — how the underlying stream bytes are read.</li>
+<li><a href="reading-compound-files.html">Reading compound files</a> - open and navigate to reach a storage.</li>
+<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> - how the underlying stream bytes are read.</li>
 <li><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets API reference</a>.</li>
 </ul>
 
@@ -182,7 +182,7 @@ using (var file = CompoundFile.Create(destination, leaveOpen: true))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

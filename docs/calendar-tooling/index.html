@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar tooling — Introduction | BODU </title>
+      <title>Bodu.Globalization.Calendar tooling - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar tooling — Introduction | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar tooling - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,11 +88,11 @@
 <h1 id="boduglobalizationcalendar-tooling">Bodu.Globalization.Calendar tooling</h1>
 
 <p><img src="../../images/hero-calendar-tool.svg" alt="Bodu.Globalization.Calendar.Tool"></p>
-<p>The calendar <strong>toolchain</strong> is two Preview packages that sit <em>before</em> the runtime loads a document: <strong><code>Bodu.Globalization.Calendar.Tool</code></strong>, the <code>bodu-calendar</code> command-line tool that lints notable-date XML / JSON documents with the stable <code>BODU-CAL-*</code> diagnostics and compiles them to sealed <code>.bcal</code> binary rule packs, and <strong><code>Bodu.Globalization.Calendar.Build</code></strong>, the MSBuild integration that runs that compiler incrementally on every build. Both belong to the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic and share one code path — the Build task is a thin <code>ToolTask</code> over <code>bodu-calendar compile</code>, so a document that passes on the command line passes in the build and vice versa.</p>
+<p>The calendar <strong>toolchain</strong> is two Preview packages that sit <em>before</em> the runtime loads a document: <strong><code>Bodu.Globalization.Calendar.Tool</code></strong>, the <code>bodu-calendar</code> command-line tool that lints notable-date XML / JSON documents with the stable <code>BODU-CAL-*</code> diagnostics and compiles them to sealed <code>.bcal</code> binary rule packs, and <strong><code>Bodu.Globalization.Calendar.Build</code></strong>, the MSBuild integration that runs that compiler incrementally on every build. Both belong to the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic and share one code path - the Build task is a thin <code>ToolTask</code> over <code>bodu-calendar compile</code>, so a document that passes on the command line passes in the build and vice versa.</p>
 <p>A compiled pack loads through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a><code>.LoadBinary(Stream)</code> without re-parsing or re-validating; the <a href="../../guides/calendar/binary-rule-packs.html">binary rule packs guide</a> explains when a pack is worth it and what the format guarantees.</p>
-<h2 id="bodu-calendar--the-command-line-tool"><code>bodu-calendar</code> — the command-line tool</h2>
+<h2 id="bodu-calendar---the-command-line-tool"><code>bodu-calendar</code> - the command-line tool</h2>
 <h3 id="install">Install</h3>
-<p>This tool is <a href="../package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a> — pack it from a clone and install it from that feed:</p>
+<p>This tool is <a href="../package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a> - pack it from a clone and install it from that feed:</p>
 <pre><code class="lang-bash"># Not on nuget.org: pack the tool from a clone and install it from that local feed.
 dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
 dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
@@ -118,7 +118,7 @@ bodu-calendar info    &lt;file.bcal&gt;
 </tr>
 <tr>
 <td><code>compile</code></td>
-<td>Validates the same way, then writes the sealed <code>.bcal</code> pack — but refuses to write anything from a document that fails validation. Prints the resource id, pack path, size, and payload SHA-256 digest on success.</td>
+<td>Validates the same way, then writes the sealed <code>.bcal</code> pack - but refuses to write anything from a document that fails validation. Prints the resource id, pack path, size, and payload SHA-256 digest on success.</td>
 </tr>
 <tr>
 <td><code>info</code></td>
@@ -147,7 +147,7 @@ bodu-calendar info    &lt;file.bcal&gt;
 </tr>
 <tr>
 <td><code>-h</code>, <code>--help</code>, <code>help</code></td>
-<td>—</td>
+<td>-</td>
 <td>Prints usage to standard error.</td>
 </tr>
 </tbody>
@@ -166,7 +166,7 @@ bodu-calendar info    &lt;file.bcal&gt;
 <tr>
 <td><code>0</code></td>
 <td><code>CalendarTool.ExitSuccess</code></td>
-<td>The verb succeeded — the document is valid, the pack was written, or the pack was read.</td>
+<td>The verb succeeded - the document is valid, the pack was written, or the pack was read.</td>
 </tr>
 <tr>
 <td><code>1</code></td>
@@ -180,14 +180,14 @@ bodu-calendar info    &lt;file.bcal&gt;
 </tr>
 </tbody>
 </table>
-<p>Diagnostics print <strong>one per line</strong> as <code>[Severity] CODE: message</code> — the <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> <code>ToString()</code> form — so build logs, editors, and CI annotations can match on the stable code:</p>
+<p>Diagnostics print <strong>one per line</strong> as <code>[Severity] CODE: message</code> - the <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> <code>ToString()</code> form - so build logs, editors, and CI annotations can match on the stable code:</p>
 <pre><code class="lang-text">$ bodu-calendar lint holidays.xml
 [Error] BODU-CAL-SCHEMA: The notable-date document XML failed schema validation: The element 'Rules' in namespace 'urn:bodu:globalization:calendar' has incomplete content. List of possible elements expected: 'Rule' in namespace 'urn:bodu:globalization:calendar'.
 [Error] BODU-CAL-ADJREF: Rule 'fixed' references undefined adjustment policy 'weekend-roll'.
-holidays.xml: FAILED — 2 error(s), 2 total diagnostic(s).
+holidays.xml: FAILED - 2 error(s), 2 total diagnostic(s).
 
 $ bodu-calendar lint contoso-holidays.xml
-contoso-holidays.xml: OK — resource 'contoso-holidays' is valid (0 diagnostic(s)).
+contoso-holidays.xml: OK - resource 'contoso-holidays' is valid (0 diagnostic(s)).
 
 $ bodu-calendar compile contoso-holidays.xml -o packs/holidays.bcal
 Compiled 'contoso-holidays' -&gt; packs/holidays.bcal (275 bytes, sha256 85504d61441ee72109a3325c0859c7a7a40f2139ef5afc9cc23d012ba3b5a63d).
@@ -195,15 +195,15 @@ Compiled 'contoso-holidays' -&gt; packs/holidays.bcal (275 bytes, sha256 85504d6
 $ bodu-calendar info packs/holidays.bcal
 packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 notable date(s), 1 adjustment policy(ies), payload sha256 85504d61441ee72109a3325c0859c7a7a40f2139ef5afc9cc23d012ba3b5a63d.
 </code></pre>
-<p><code>lint</code> writes diagnostics to standard output; <code>compile</code> writes them to standard error when it fails. A missing input file is reported (exit <code>1</code>) before the extension is examined, so an existing file with an extension other than <code>.xml</code> / <code>.json</code> is what produces the usage error. The full code table, with the condition behind each code, is in <a href="../../guides/calendar/validation-diagnostics.html">Calendar validation diagnostics</a>. The tool's entry point is also callable in process — <code>CalendarTool.Run(args, output, error)</code> — which is how the Build task and the test suite drive it; see the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Tool.html">namespace overview</a>.</p>
-<h2 id="boduglobalizationcalendarbuild--the-msbuild-integration"><code>Bodu.Globalization.Calendar.Build</code> — the MSBuild integration</h2>
+<p><code>lint</code> writes diagnostics to standard output; <code>compile</code> writes them to standard error when it fails. A missing input file is reported (exit <code>1</code>) before the extension is examined, so an existing file with an extension other than <code>.xml</code> / <code>.json</code> is what produces the usage error. The full code table, with the condition behind each code, is in <a href="../../guides/calendar/validation-diagnostics.html">Calendar validation diagnostics</a>. The tool's entry point is also callable in process - <code>CalendarTool.Run(args, output, error)</code> - which is how the Build task and the test suite drive it; see the <a class="xref" href="../../api/Bodu.Globalization.Calendar.Tool.html">namespace overview</a>.</p>
+<h2 id="boduglobalizationcalendarbuild---the-msbuild-integration"><code>Bodu.Globalization.Calendar.Build</code> - the MSBuild integration</h2>
 <p><img src="../../images/hero-calendar-build.svg" alt="Bodu.Globalization.Calendar.Build"></p>
 <h3 id="install-1">Install</h3>
 <p>This package is <a href="../package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>. To use it from a clone, reference the project directly:</p>
 <pre><code class="lang-xml">&lt;ProjectReference Include=&quot;../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj&quot;
                   ReferenceOutputAssembly=&quot;false&quot; OutputItemType=&quot;Analyzer&quot; /&gt;
 </code></pre>
-<p>A <strong>development dependency</strong>: the package ships the task assembly under <code>tasks/</code>, the <code>.targets</code> under <code>build/</code>, and the framework-dependent <code>bodu-calendar</code> binaries under <code>tools/</code>. It adds <strong>no runtime reference</strong> to the consuming project — reference <code>Bodu.Globalization.Calendar</code> yourself to load the packs it produces.</p>
+<p>A <strong>development dependency</strong>: the package ships the task assembly under <code>tasks/</code>, the <code>.targets</code> under <code>build/</code>, and the framework-dependent <code>bodu-calendar</code> binaries under <code>tools/</code>. It adds <strong>no runtime reference</strong> to the consuming project - reference <code>Bodu.Globalization.Calendar</code> yourself to load the packs it produces.</p>
 <p>Status: <strong>Preview</strong>.</p>
 <h3 id="notabledatepack-items"><code>NotableDatePack</code> items</h3>
 <p>Declare each document to compile as a <code>NotableDatePack</code> item; <code>ResolverDir</code> metadata plays the role of <code>--resolver-dir</code>:</p>
@@ -214,7 +214,7 @@ packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 nota
 </code></pre>
 <p>Each item compiles to <code>$(NotableDatePackOutputPath)&lt;Filename&gt;.bcal</code> and is added to the project output directory (as <code>&lt;Filename&gt;.bcal</code> beside the application), ready for <code>NotableDateResourceLoader.LoadBinary</code>. An invalid document <strong>fails the build</strong>, with the tool's <code>BODU-CAL-*</code> diagnostic lines surfaced in the build log at high importance so they are visible even at minimal verbosity.</p>
 <h3 id="incremental-behavior">Incremental behavior</h3>
-<p>The <code>CompileNotableDatePacks</code> target declares each item as an <code>Inputs</code> / <code>Outputs</code> pair, so MSBuild skips every document whose <code>.bcal</code> is newer than its source — an unchanged document is never recompiled. The pack format is byte-stable (the same resource always encodes to the same bytes), which keeps downstream up-to-date checks sound. The target runs before <code>AssignTargetPaths</code> so the compiled packs can join the normal copy-to-output step.</p>
+<p>The <code>CompileNotableDatePacks</code> target declares each item as an <code>Inputs</code> / <code>Outputs</code> pair, so MSBuild skips every document whose <code>.bcal</code> is newer than its source - an unchanged document is never recompiled. The pack format is byte-stable (the same resource always encodes to the same bytes), which keeps downstream up-to-date checks sound. The target runs before <code>AssignTargetPaths</code> so the compiled packs can join the normal copy-to-output step.</p>
 <h3 id="properties-and-overrides">Properties and overrides</h3>
 <table>
 <thead>
@@ -261,17 +261,17 @@ packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 nota
 <tr>
 <td><code>Input</code></td>
 <td>yes</td>
-<td>The <code>.xml</code> / <code>.json</code> document — the item's <code>Identity</code>.</td>
+<td>The <code>.xml</code> / <code>.json</code> document - the item's <code>Identity</code>.</td>
 </tr>
 <tr>
 <td><code>Output</code></td>
 <td>yes</td>
-<td>The pack path — <code>$(NotableDatePackOutputPath)%(Filename).bcal</code>. Its directory is created before the tool runs.</td>
+<td>The pack path - <code>$(NotableDatePackOutputPath)%(Filename).bcal</code>. Its directory is created before the tool runs.</td>
 </tr>
 <tr>
 <td><code>ToolDll</code></td>
 <td>yes</td>
-<td>The tool assembly, executed through the <code>dotnet</code> host (<code>dotnet exec --roll-forward Major</code>, so any newer installed runtime works) — <code>$(BoduCalendarToolDll)</code>.</td>
+<td>The tool assembly, executed through the <code>dotnet</code> host (<code>dotnet exec --roll-forward Major</code>, so any newer installed runtime works) - <code>$(BoduCalendarToolDll)</code>.</td>
 </tr>
 <tr>
 <td><code>ResolverDir</code></td>
@@ -283,11 +283,11 @@ packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 nota
 <p>You would normally never call the task directly; declare <code>NotableDatePack</code> items and let the targets drive it. If you do need to, the <code>dotnet</code> host must be on the <code>PATH</code>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../guides/calendar/binary-rule-packs.html">Binary rule packs</a></strong> — when to use a pack, producing and loading packs from code (<code>SaveBinary</code> / <code>LoadBinary</code>), the format guarantees and layout, and the command-line and build sections this page expands on.</li>
-<li><strong><a href="../../guides/calendar/validation-diagnostics.html">Calendar validation diagnostics</a></strong> — every <code>BODU-CAL-*</code> code the tool can print, its severity, and the condition behind it.</li>
-<li><strong><a href="../calendar-builder/index.html">Bodu.Globalization.Calendar.Builder</a></strong> — authoring the documents the tool compiles, including <code>SaveBinary</code> for compiling from code.</li>
-<li><strong><a href="../../guides/calendar/rule-authoring.html">Authoring notable date rules</a></strong> — the XML / JSON schema the tool validates.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Tool.html">Bodu.Globalization.Calendar.Tool API reference</a></strong> — <code>CalendarTool.Run</code> and the exit-code constants.</li>
+<li><strong><a href="../../guides/calendar/binary-rule-packs.html">Binary rule packs</a></strong> - when to use a pack, producing and loading packs from code (<code>SaveBinary</code> / <code>LoadBinary</code>), the format guarantees and layout, and the command-line and build sections this page expands on.</li>
+<li><strong><a href="../../guides/calendar/validation-diagnostics.html">Calendar validation diagnostics</a></strong> - every <code>BODU-CAL-*</code> code the tool can print, its severity, and the condition behind it.</li>
+<li><strong><a href="../calendar-builder/index.html">Bodu.Globalization.Calendar.Builder</a></strong> - authoring the documents the tool compiles, including <code>SaveBinary</code> for compiling from code.</li>
+<li><strong><a href="../../guides/calendar/rule-authoring.html">Authoring notable date rules</a></strong> - the XML / JSON schema the tool validates.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Tool.html">Bodu.Globalization.Calendar.Tool API reference</a></strong> - <code>CalendarTool.Run</code> and the exit-code constants.</li>
 </ul>
 
 </article>
@@ -307,7 +307,7 @@ packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 nota
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -87,12 +87,12 @@
         <article data-uid="">
 <h1 id="boduiopst-guides">Bodu.IO.Pst guides</h1>
 
-<p>Recipe-style walk-throughs for <strong>Bodu.IO.Pst</strong>, the low-level, read-only container reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats). The package reads the node database (NDB) — header, node and block B-trees, block data with the format's content encodings decoded and checksums verified, multi-block data trees, per-node subnode trees — and the LTP layer over it: heap-on-node, BTree-on-heap, and the property-context and table-context views with wire-typed values.</p>
-<p>The library has no MAPI knowledge: it exposes nodes, raw payloads, and property bags whose values keep their on-disk wire types, and leaves <em>meaning</em> (subjects, senders, folders) to the caller. The mail-store reader in <a href="../outlook/index.html">Bodu.Formats.Outlook.Pst</a> is built directly on top of it — the same container/format split as <code>Bodu.IO.Compound</code> beneath <code>Bodu.Formats.Excel.Binary</code>.</p>
+<p>Recipe-style walk-throughs for <strong>Bodu.IO.Pst</strong>, the low-level, read-only container reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats). The package reads the node database (NDB) - header, node and block B-trees, block data with the format's content encodings decoded and checksums verified, multi-block data trees, per-node subnode trees - and the LTP layer over it: heap-on-node, BTree-on-heap, and the property-context and table-context views with wire-typed values.</p>
+<p>The library has no MAPI knowledge: it exposes nodes, raw payloads, and property bags whose values keep their on-disk wire types, and leaves <em>meaning</em> (subjects, senders, folders) to the caller. The mail-store reader in <a href="../outlook/index.html">Bodu.Formats.Outlook.Pst</a> is built directly on top of it - the same container/format split as <code>Bodu.IO.Compound</code> beneath <code>Bodu.Formats.Excel.Binary</code>.</p>
 <p>If you are new to the library, start with the <a href="../../docs/io-pst/index.html">introduction</a>, the <a href="../../docs/io-pst/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/io-pst/getting-started.html">getting-started page</a>. The guides below assume you know the vocabulary (node, NID, data tree, subnode tree, heap-on-node, property context, table context).</p>
 <h2 id="how-the-library-works">How the library works</h2>
-<p>A PST file is a flat, B-tree-indexed database of <strong>nodes</strong> in a single file. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> opens it as a disposable session; every object — folders, messages, tables, internal maps — is a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a> addressed by a 32-bit <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> whose five low bits carry the node's <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a>. A node has a data payload (assembled transparently from its data tree), a private subnode tree, and two LTP views over its heap: <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a>, the property bag, and <a class="xref" href="../../api/Bodu.IO.Pst.PstTableContext.html">PstTableContext</a>, the table.</p>
-<p>Reads are lazy and seek the source on demand — the file is never buffered whole. Opening parses only the header; node lookups walk the node B-tree; payloads resolve when asked for, through a bounded least-recently-used cache of decoded blocks; and every payload has a streaming twin (<code>OpenDataStream</code>, <code>TryOpenValueStream</code>, <code>TryOpenCellStream</code>) that keeps one block resident regardless of the logical size. The session is single-threaded.</p>
+<p>A PST file is a flat, B-tree-indexed database of <strong>nodes</strong> in a single file. <a class="xref" href="../../api/Bodu.IO.Pst.PstFile.html">PstFile</a> opens it as a disposable session; every object - folders, messages, tables, internal maps - is a <a class="xref" href="../../api/Bodu.IO.Pst.PstNode.html">PstNode</a> addressed by a 32-bit <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeId.html">PstNodeId</a> whose five low bits carry the node's <a class="xref" href="../../api/Bodu.IO.Pst.PstNodeType.html">PstNodeType</a>. A node has a data payload (assembled transparently from its data tree), a private subnode tree, and two LTP views over its heap: <a class="xref" href="../../api/Bodu.IO.Pst.PstPropertyContext.html">PstPropertyContext</a>, the property bag, and <a class="xref" href="../../api/Bodu.IO.Pst.PstTableContext.html">PstTableContext</a>, the table.</p>
+<p>Reads are lazy and seek the source on demand - the file is never buffered whole. Opening parses only the header; node lookups walk the node B-tree; payloads resolve when asked for, through a bounded least-recently-used cache of decoded blocks; and every payload has a streaming twin (<code>OpenDataStream</code>, <code>TryOpenValueStream</code>, <code>TryOpenCellStream</code>) that keeps one block resident regardless of the logical size. The session is single-threaded.</p>
 <blockquote>
 <p>These guides cover the container. For folders, messages, recipients, attachments, and bodies with MAPI semantics, see <a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a>.</p>
 </blockquote>
@@ -118,7 +118,7 @@
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="reading-nodes-and-tables.html">Reading nodes and tables</a></h3>
-  <p>Open a file, construct and decode node identifiers, walk the node directory and a node's subnodes, and read the two LTP views — the property context with its typed accessors and the table context with streaming rows and keyed lookup.</p>
+  <p>Open a file, construct and decode node identifiers, walk the node directory and a node's subnodes, and read the two LTP views - the property context with its typed accessors and the table context with streaming rows and keyed lookup.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="streaming-and-validation.html">Streaming and validation</a></h3>
@@ -131,16 +131,16 @@
 </div>
 <h2 id="suggested-reading-path">Suggested reading path</h2>
 <ol>
-<li><strong><a href="reading-nodes-and-tables.html">Reading nodes and tables</a></strong> — the open → look up → read recipe every other use builds on.</li>
-<li><strong><a href="streaming-and-validation.html">Streaming and validation</a></strong> — once payloads are large, input is untrusted, or you need to say <em>why</em> a file was rejected.</li>
-<li><strong><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a></strong> — when you want messages rather than nodes.</li>
+<li><strong><a href="reading-nodes-and-tables.html">Reading nodes and tables</a></strong> - the open → look up → read recipe every other use builds on.</li>
+<li><strong><a href="streaming-and-validation.html">Streaming and validation</a></strong> - once payloads are large, input is untrusted, or you need to say <em>why</em> a file was rejected.</li>
+<li><strong><a href="../outlook/reading-pst-mail-stores.html">Reading .pst mail stores</a></strong> - when you want messages rather than nodes.</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../../samples/io-pst.html">Runnable samples</a> — the offline PstBasics sample under <code>samples/IO.Pst/</code>: detection and open, the node and table views, streaming under <code>Strict</code>, and the mail-store view over the same Unicode and ANSI fixtures.</li>
-<li><a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst API reference</a> — every type and member.</li>
-<li><a href="../outlook/index.html">Bodu.Formats.Outlook guides</a> — the readers that share the MAPI value model.</li>
-<li><a href="../../docs/package-matrix.html">Package matrix</a> — where Bodu.IO.Pst sits in the suite and its dependency stack.</li>
+<li><a href="../../samples/io-pst.html">Runnable samples</a> - the offline PstBasics sample under <code>samples/IO.Pst/</code>: detection and open, the node and table views, streaming under <code>Strict</code>, and the mail-store view over the same Unicode and ANSI fixtures.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Pst.html">Bodu.IO.Pst API reference</a> - every type and member.</li>
+<li><a href="../outlook/index.html">Bodu.Formats.Outlook guides</a> - the readers that share the MAPI value model.</li>
+<li><a href="../../docs/package-matrix.html">Package matrix</a> - where Bodu.IO.Pst sits in the suite and its dependency stack.</li>
 </ul>
 
 </article>
@@ -160,7 +160,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-labelledby="ed-t ed-d">
-  <title id="ed-t">EvictingDictionary&lt;TKey, TValue&gt; — fixed-capacity cache with three eviction policies</title>
+  <title id="ed-t">EvictingDictionary&lt;TKey, TValue&gt; - fixed-capacity cache with three eviction policies</title>
   <desc id="ed-d">An EvictingDictionary stores key-value entries up to a fixed Capacity. Each entry carries metadata: insertion timestamp, last-access timestamp, and access count. When a write would exceed Capacity, the configured policy selects a victim. FirstInFirstOut evicts the earliest inserted entry, LeastRecentlyUsed evicts the entry accessed furthest in the past, and LeastFrequentlyUsed evicts the entry with the smallest access count. Reads via the indexer or TryGetValue update the metadata; Touch promotes a key without reading its value.</desc>
 
   <defs>
@@ -42,10 +42,10 @@
     <rect class="pan" width="800" height="340" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">EvictingDictionary&lt;TKey, TValue&gt; — fixed-capacity cache with three eviction policies</text>
+    <text class="ttl" x="16" y="20">EvictingDictionary&lt;TKey, TValue&gt; - fixed-capacity cache with three eviction policies</text>
 
     <!-- ─────────────────── Storage strip (top) ─────────────────── -->
-    <text class="mut-l" x="20" y="56">Storage — Capacity = 4 (Count == Capacity, next write triggers eviction)</text>
+    <text class="mut-l" x="20" y="56">Storage - Capacity = 4 (Count == Capacity, next write triggers eviction)</text>
 
     <!-- 4 entries side by side. Each cell 158x60, centred at x = 92 + i*168, y = 96 -->
     <g transform="translate(0 96)">
@@ -88,7 +88,7 @@
     <line class="wt" x1="708" y1="96" x2="685" y2="96" marker-end="url(#ed-at)"/>
 
     <!-- ─────────────────── Three-policy lanes ─────────────────── -->
-    <text class="lbl-l" x="20" y="178">Eviction order tracked per policy — head of lane is the next victim:</text>
+    <text class="lbl-l" x="20" y="178">Eviction order tracked per policy - head of lane is the next victim:</text>
 
     <!-- FIFO lane -->
     <g transform="translate(20 196)">

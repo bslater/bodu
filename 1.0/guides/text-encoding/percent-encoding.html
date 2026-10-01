@@ -102,10 +102,10 @@ It encodes and decodes a value according to an explicitly selected component rul
 <h2 id="quick-reference">Quick reference</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Encoding;
 
-// URI component (default) — only unreserved characters pass through.
+// URI component (default) - only unreserved characters pass through.
 string component = PercentEncoding.EncodeString(&quot;a/b?c=d&quot;);                 // a%2Fb%3Fc%3Dd
 
-// Form field — space becomes '+'.
+// Form field - space becomes '+'.
 string field = PercentEncoding.EncodeString(&quot;a b+c&quot;, mode: PercentEncodingMode.FormUrlEncoded); // a+b%2Bc
 
 // Round-trip.
@@ -131,7 +131,7 @@ string value = PercentEncoding.DecodeString(&quot;a%2Fb&quot;);                 
 <tr>
 <td><code>PathSegment</code></td>
 <td>unreserved + sub-delims + <code>:</code> <code>@</code> (encodes <code>/</code> <code>?</code> <code>#</code>)</td>
-<td>One path segment — encode each segment, then join with <code>/</code></td>
+<td>One path segment - encode each segment, then join with <code>/</code></td>
 </tr>
 <tr>
 <td><code>Query</code></td>
@@ -181,7 +181,7 @@ PercentEncoding.Encode(&quot;#&quot;u8, PercentEncodingMode.Query);          // 
 </tr>
 </tbody>
 </table>
-<p><code>+</code> is treated as a space <strong>only</strong> in <code>FormUrlEncoded</code> mode — in every other mode it is a literal plus byte.</p>
+<p><code>+</code> is treated as a space <strong>only</strong> in <code>FormUrlEncoded</code> mode - in every other mode it is a literal plus byte.</p>
 <h2 id="hex-casing">Hex casing</h2>
 <p>Encoding always emits <strong>uppercase</strong> hex (<code>%2F</code>, <code>%E2%80%BD</code>), the form RFC 3986 recommends for producers. Decoding
 accepts <strong>both</strong> cases, which RFC 3986 defines as equivalent:</p>
@@ -204,12 +204,12 @@ PercentEncoding.DecodeString(&quot;%E2%80%BD&quot;);               // ‽
 // Supply any System.Text.Encoding; its decoder fallback governs invalid input.
 PercentEncoding.DecodeString(&quot;%FF&quot;);                     // &quot;�&quot; (UTF-8 replacement fallback)
 </code></pre>
-<p>The byte-oriented <code>Decode</code> / <code>TryDecode</code> reject non-ASCII source characters — Unicode belongs in <code>DecodeString</code>.</p>
+<p>The byte-oriented <code>Decode</code> / <code>TryDecode</code> reject non-ASCII source characters - Unicode belongs in <code>DecodeString</code>.</p>
 <h2 id="validation-and-sizing">Validation and sizing</h2>
 <pre><code class="lang-csharp">PercentEncoding.IsValid(&quot;a%2Fb&quot;);                            // true
 PercentEncoding.IsValid(&quot;%GG&quot;);                              // false
-PercentEncoding.IsValid(&quot;a b&quot;);                              // false — literal space is not canonical
-PercentEncoding.IsValid(&quot;a/b?c&quot;, PercentEncodingMode.Query); // true — '/' and '?' are allowed in a query
+PercentEncoding.IsValid(&quot;a b&quot;);                              // false - literal space is not canonical
+PercentEncoding.IsValid(&quot;a/b?c&quot;, PercentEncodingMode.Query); // true - '/' and '?' are allowed in a query
 
 PercentEncoding.GetEncodedLength(value, mode);           // exact encoded length
 PercentEncoding.GetMaxEncodedLength(value.Length);       // worst case = length * 3
@@ -217,19 +217,19 @@ PercentEncoding.TryGetDecodedLength(text, out int n, mode); // exact decoded len
 </code></pre>
 <p><code>IsValid</code> checks <strong>canonical</strong> conformance for the mode: a literal character the mode would percent-encode (a space, or
 <code>#</code> in a URI component) makes it return <code>false</code>, while a percent-escaped octet such as <code>%2F</code> is always accepted.
-<code>Decode</code> is more lenient — it still recovers a literal reserved character — so <code>IsValid(x) == true</code> implies <code>Decode(x)</code>
+<code>Decode</code> is more lenient - it still recovers a literal reserved character - so <code>IsValid(x) == true</code> implies <code>Decode(x)</code>
 succeeds, but not the reverse. <code>TryGetDecodedLength</code> mirrors <code>Decode</code>, so it can size a buffer for any decodable input.</p>
 <h2 id="span-path">Span path</h2>
 <pre><code class="lang-csharp">char[] buffer = new char[PercentEncoding.GetMaxEncodedLength(value.Length)];
 bool ok = PercentEncoding.TryEncode(value, buffer, out int written, PercentEncodingMode.UriComponent);
 </code></pre>
-<p><code>TryEncode</code> / <code>TryDecode</code> never throw — they return <code>false</code> and write <code>0</code> for an undefined mode, malformed input, or an
+<p><code>TryEncode</code> / <code>TryDecode</code> never throw - they return <code>false</code> and write <code>0</code> for an undefined mode, malformed input, or an
 undersized destination.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="quoted-printable.html">Quoted-Printable guide</a></strong> — the MIME body <code>=HH</code> escape encoding.</li>
-<li><strong><a href="base64.html">Base64 guide</a></strong> — the URL-safe variant when you need compact transport rather than readable URLs.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic.</li>
+<li><strong><a href="quoted-printable.html">Quoted-Printable guide</a></strong> - the MIME body <code>=HH</code> escape encoding.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> - the URL-safe variant when you need compact transport rather than readable URLs.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -249,7 +249,7 @@ undersized destination.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

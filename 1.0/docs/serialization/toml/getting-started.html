@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Toml — Getting started | BODU </title>
+      <title>Bodu.Text.Toml - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Toml — Getting started | BODU ">
+      <meta name="title" content="Bodu.Text.Toml - Getting started | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -88,7 +88,7 @@
 <h1 id="getting-started">Getting started</h1>
 
 <h2 id="install">Install</h2>
-<p>Add the package. Its one library dependency, the shared <strong>Bodu.Text.Serialization</strong> package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.</p>
+<p>Add the package. Its one library dependency, the shared <strong>Bodu.Text.Serialization</strong> package (the attribute family, naming policies, and callback interfaces), is restored transitively - there is nothing else to add.</p>
 <pre><code class="lang-shell">dotnet add package Bodu.Text.Toml
 </code></pre>
 <p>It targets <code>net8.0</code>.</p>
@@ -140,7 +140,7 @@ string text = TomlSerializer.Serialize(telemetry);
 // Ratio = inf
 // Samples = 4096
 </code></pre>
-<p><code>DateTimeOffset</code>, <code>DateTime</code> (<code>Unspecified</code>), <code>DateOnly</code>, and <code>TimeOnly</code> map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the <code>decimal</code> and <code>byte[]</code> representation choices, is in the <a href="../../../guides/serialization/toml/using.html#pattern-2--know-the-type-mapping">type-mapping table</a> and the <a href="../../../guides/serialization/toml/builtin-converters.html">built-in converter catalog</a>.</p>
+<p><code>DateTimeOffset</code>, <code>DateTime</code> (<code>Unspecified</code>), <code>DateOnly</code>, and <code>TimeOnly</code> map one-to-one onto offset date-time, local date-time, local date, and local time. The full per-type catalogue, including the <code>decimal</code> and <code>byte[]</code> representation choices, is in the <a href="../../../guides/serialization/toml/using.html#pattern-2---know-the-type-mapping">type-mapping table</a> and the <a href="../../../guides/serialization/toml/builtin-converters.html">built-in converter catalog</a>.</p>
 <h2 id="rename-members">Rename members</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Serialization;
 using Bodu.Text.Toml;
@@ -163,7 +163,7 @@ node[&quot;server&quot;]![&quot;port&quot;] = 9090;
 byte[] back = node.ToUtf8Bytes();
 </code></pre>
 <h2 id="read-a-document-without-a-model">Read a document without a model</h2>
-<p>For inspection only, the <strong>read-only DOM</strong> is the lighter choice — a low-allocation view over the parsed buffer, walked through <code>RootElement</code>:</p>
+<p>For inspection only, the <strong>read-only DOM</strong> is the lighter choice - a low-allocation view over the parsed buffer, walked through <code>RootElement</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Toml.Document;
 
 string toml = &quot;&quot;&quot;
@@ -178,7 +178,7 @@ TomlElement server = doc.RootElement.GetProperty(&quot;server&quot;);
 string host = server.GetProperty(&quot;host&quot;).GetString();   // &quot;localhost&quot;
 long   port = server.GetProperty(&quot;port&quot;).GetInt64();    // 8080
 </code></pre>
-<p><code>TomlDocument</code> is disposable — wrap it in <code>using</code> and copy out any values that must outlive it.</p>
+<p><code>TomlDocument</code> is disposable - wrap it in <code>using</code> and copy out any values that must outlive it.</p>
 <h2 id="round-trip-through-a-stream">Round-trip through a Stream</h2>
 <p><code>TomlSerializer</code> reads and writes <code>Stream</code> directly, with async variants:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Toml;
@@ -197,8 +197,8 @@ await using (FileStream stream = File.OpenRead(&quot;server.toml&quot;))
 <h2 id="when-something-goes-wrong">When something goes wrong</h2>
 <p>Failures split into two exception types, so you can tell <em>bad input</em> apart from <em>wrong type</em>:</p>
 <ul>
-<li>A <strong>malformed document</strong> — input the grammar rejects — raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a>. Because TOML files are edited by hand, the exception carries the <strong>line, column, and offset</strong> of the failure.</li>
-<li>A document that <strong>parses but cannot bind</strong> to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>.</li>
+<li>A <strong>malformed document</strong> - input the grammar rejects - raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlFormatException.html">TomlFormatException</a>. Because TOML files are edited by hand, the exception carries the <strong>line, column, and offset</strong> of the failure.</li>
+<li>A document that <strong>parses but cannot bind</strong> to your type - a type mismatch, a missing required member, a value the format cannot represent - raises <a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>.</li>
 </ul>
 <pre><code class="lang-csharp">try
 {
@@ -215,11 +215,11 @@ catch (TomlSerializationException ex)
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Text.Toml introduction</a></strong> — what is specific to TOML: the rich value model, spec versions, positioned diagnostics.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the TOML vocabulary, including the full value-mapping table.</li>
-<li><strong><a href="../../../guides/serialization/toml/using.html">Using TOML</a></strong> — type mapping, spec versions, the DOMs, and streams.</li>
-<li><strong><a href="../../../guides/serialization/toml/converters.html">Writing converters</a></strong> — custom shapes with <code>TomlConverter&lt;T&gt;</code>.</li>
-<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> — where the serializers sit among the codecs and document formats.</li>
+<li><strong><a href="index.html">Bodu.Text.Toml introduction</a></strong> - what is specific to TOML: the rich value model, spec versions, positioned diagnostics.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the TOML vocabulary, including the full value-mapping table.</li>
+<li><strong><a href="../../../guides/serialization/toml/using.html">Using TOML</a></strong> - type mapping, spec versions, the DOMs, and streams.</li>
+<li><strong><a href="../../../guides/serialization/toml/converters.html">Writing converters</a></strong> - custom shapes with <code>TomlConverter&lt;T&gt;</code>.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> - where the serializers sit among the codecs and document formats.</li>
 </ul>
 
 </article>
@@ -239,7 +239,7 @@ catch (TomlSerializationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

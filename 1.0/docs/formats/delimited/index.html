@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Delimited — Introduction | BODU </title>
+      <title>Bodu.Text.Delimited - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Delimited — Introduction | BODU ">
+      <meta name="title" content="Bodu.Text.Delimited - Introduction | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -89,8 +89,8 @@
 
 <p><img src="../../../images/hero-delimited.svg" alt="Bodu.Text.Delimited"></p>
 <h1 id="bodutextdelimited">Bodu.Text.Delimited</h1>
-<p><strong>Bodu.Text.Delimited</strong> reads and writes delimited tabular text — RFC 4180 CSV, TSV, and the dialects in between — as a standalone <code>System.Text.Json</code>-shaped library: a forward-only <code>ref struct</code> reader/writer pair over UTF-8 bytes, a typed record serializer with a truly incremental streaming surface, a mutable node DOM, and a read-only document DOM. It is one of the three <a href="../index.html">Bodu line formats</a> and shares the <a href="../../serialization/core/index.html">Bodu.Text.Serialization</a> attribute, naming-policy, and callback vocabulary with every other Bodu serializer.</p>
-<p>The wire is <strong>string-only</strong>: the serializer converts scalars with <code>InvariantCulture</code> at the binding layer, and real-world input is handled through explicit dialect policies — field-count mismatches, malformed records, and duplicate headers each have an opt-in leniency knob rather than a silent default. For trimming and ahead-of-time compilation, the serializer also accepts a compile-time <a href="../generators.html">record factory</a> in place of reflection.</p>
+<p><strong>Bodu.Text.Delimited</strong> reads and writes delimited tabular text - RFC 4180 CSV, TSV, and the dialects in between - as a standalone <code>System.Text.Json</code>-shaped library: a forward-only <code>ref struct</code> reader/writer pair over UTF-8 bytes, a typed record serializer with a truly incremental streaming surface, a mutable node DOM, and a read-only document DOM. It is one of the three <a href="../index.html">Bodu line formats</a> and shares the <a href="../../serialization/core/index.html">Bodu.Text.Serialization</a> attribute, naming-policy, and callback vocabulary with every other Bodu serializer.</p>
+<p>The wire is <strong>string-only</strong>: the serializer converts scalars with <code>InvariantCulture</code> at the binding layer, and real-world input is handled through explicit dialect policies - field-count mismatches, malformed records, and duplicate headers each have an opt-in leniency knob rather than a silent default. For trimming and ahead-of-time compilation, the serializer also accepts a compile-time <a href="../generators.html">record factory</a> in place of reflection.</p>
 <p>Part of the <strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
 <h2 id="install">Install</h2>
 <pre><code class="lang-shell">dotnet add package Bodu.Text.Delimited
@@ -123,7 +123,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Delimited.Nodes.DelimitedNode.html">DelimitedNode</a> / <a class="xref" href="../../../api/Bodu.Text.Delimited.Nodes.DelimitedArray.html">DelimitedArray</a> / <a class="xref" href="../../../api/Bodu.Text.Delimited.Nodes.DelimitedObject.html">DelimitedObject</a> / <a class="xref" href="../../../api/Bodu.Text.Delimited.Nodes.DelimitedValue.html">DelimitedValue</a></td>
-<td>Mutable DOM — parse, edit, write back.</td>
+<td>Mutable DOM - parse, edit, write back.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Delimited.Document.DelimitedDocument.html">DelimitedDocument</a> / <a class="xref" href="../../../api/Bodu.Text.Delimited.Document.DelimitedElement.html">DelimitedElement</a> / <a class="xref" href="../../../api/Bodu.Text.Delimited.Document.DelimitedProperty.html">DelimitedProperty</a></td>
@@ -156,11 +156,11 @@ string back = DelimitedSerializer.Serialize(trades);                 // header r
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../index.html">Line formats introduction</a></strong>, <strong><a href="../concepts.html">Core concepts</a></strong>, and <strong><a href="../getting-started.html">Getting started</a></strong> — the umbrella trio shared by all three formats.</li>
-<li><strong><a href="../../../guides/formats/delimited.html">Using delimited (CSV / TSV)</a></strong> — documents, typed records, streaming, dialects, dirty input.</li>
-<li><strong><a href="../generators.html">Reflection-free binding</a></strong> — the <code>[DelimitedRecord]</code> source generator and the factory overloads.</li>
-<li><strong><a href="../../../samples/formats.html">Runnable samples</a></strong> — the <code>DelimitedData</code> sample project.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>.</li>
+<li><strong><a href="../index.html">Line formats introduction</a></strong>, <strong><a href="../concepts.html">Core concepts</a></strong>, and <strong><a href="../getting-started.html">Getting started</a></strong> - the umbrella trio shared by all three formats.</li>
+<li><strong><a href="../../../guides/formats/delimited.html">Using delimited (CSV / TSV)</a></strong> - documents, typed records, streaming, dialects, dirty input.</li>
+<li><strong><a href="../generators.html">Reflection-free binding</a></strong> - the <code>[DelimitedRecord]</code> source generator and the factory overloads.</li>
+<li><strong><a href="../../../samples/formats.html">Runnable samples</a></strong> - the <code>DelimitedData</code> sample project.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../../api/Bodu.Text.Delimited.html">Bodu.Text.Delimited</a>.</li>
 </ul>
 
 </article>
@@ -180,7 +180,7 @@ string back = DelimitedSerializer.Serialize(trades);                 // header r
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_BlockHashAlgorithm" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BlockHashAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ BlockHashAlgorithm Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs">BlockHashAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs">BlockHashAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Base class for hash algorithms that consume input in fixed-size blocks and pad the final partial block before
@@ -409,7 +409,7 @@ on behalf of derived implementations; the residual buffer, running byte total, a
 
 
   <h2 id="Bodu_Security_Cryptography_BlockHashAlgorithm_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Consume through a concrete derivative — the base class drives buffering and finalization.
+  <pre><code class="lang-csharp">// Consume through a concrete derivative - the base class drives buffering and finalization.
 using HashAlgorithm hash = new Tiger();      // 512-bit block, 192-bit digest
 byte[] digest = hash.ComputeHash("hello"u8.ToArray());
 
@@ -445,12 +445,12 @@ constraint.
 </p>
 <p>
 <strong>When to derive from this class.</strong> Pick <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> for any classic
-Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
+Merkle-Damgård cryptographic hash - the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
 designs that finalize by appending a length-encoding pad to the last partial block. For the BLAKE-family pattern
 (final-block flag, no length-encoding pad) derive from <a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> instead. For a
-keyed Merkle–Damgård hash (Poly1305, SipHash) derive from <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a>, which adds key
+keyed Merkle-Damgård hash (Poly1305, SipHash) derive from <a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a>, which adds key
 handling on top of this base. For non-cryptographic block hashes (Fletcher, CRC) the parallel
-<code>BlockNonCryptographicHashAlgorithm&lt;T&gt;</code> base in <code>Bodu.IO.Hashing</code> is the right pick — it integrates
+<code>BlockNonCryptographicHashAlgorithm&lt;T&gt;</code> base in <code>Bodu.IO.Hashing</code> is the right pick - it integrates
 with <code>NonCryptographicHashAlgorithm</code> rather than <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>.
 </p>
 </div>
@@ -465,7 +465,7 @@ with <code>NonCryptographicHashAlgorithm</code> rather than <a class="xref" href
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.#ctor(System.Int32)">
   BlockHashAlgorithm(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -531,7 +531,7 @@ SHA-like construction may expect 64 or 128 bytes per block.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_AllowUnalignedFinalBlock" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.AllowUnalignedFinalBlock">
   AllowUnalignedFinalBlock
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -572,7 +572,7 @@ padded result may be passed as a single block (e.g., Poly1305-style).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.HashCore(System.ReadOnlySpan{System.Byte})">
   HashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -628,7 +628,7 @@ immediately processed; any remaining bytes are stored until more data arrives or
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_HashFinal" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.HashFinal">
   HashFinal()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -674,7 +674,7 @@ immediately processed; any remaining bytes are stored until more data arrives or
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64)">
   PadBlock(ReadOnlySpan&lt;byte&gt;, ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -691,11 +691,11 @@ length information.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
-    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</p>
+    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize-1 bytes.</p>
 </dd>
     <dt><code>messageLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
     <dd><p>The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
-<code class="paramref">block</code>. This is the value most Merkle–Damgård length encodings append.</p>
+<code class="paramref">block</code>. This is the value most Merkle-Damgård length encodings append.</p>
 </dd>
   </dl>
 
@@ -716,11 +716,11 @@ encoding, ready to be passed to <a class="xref" href="Bodu.Security.Cryptography
   <h4 class="section" id="Bodu_Security_Cryptography_BlockHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 The returned array must be aligned to the algorithm’s block size. Padding schemes often include a leading '1'
-bit, followed by zero bytes, and end with a length field (e.g., as in Merkle–Damgård construction).
+bit, followed by zero bytes, and end with a length field (e.g., as in Merkle-Damgård construction).
 </p>
 <p>
 This overload and the span-writing <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__">PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)</a> overload
-default to delegating to each other, so a derived class must override <strong>exactly one</strong> of them —
+default to delegating to each other, so a derived class must override <strong>exactly one</strong> of them -
 preferably the span-writing form, which avoids a heap allocation per finalization.
 </p>
 </div>
@@ -735,7 +735,7 @@ preferably the span-writing form, which avoids a heap allocation per finalizatio
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Span{System.Byte})">
   PadBlock(ReadOnlySpan&lt;byte&gt;, ulong, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -751,11 +751,11 @@ message length, without allocating a padded copy on the heap.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>block</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
-    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize–1 bytes.</p>
+    <dd><p>The final block of unprocessed input, typically containing 0 to BlockSize-1 bytes.</p>
 </dd>
     <dt><code>messageLength</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
     <dd><p>The total number of message bytes consumed by the algorithm, <strong>including</strong> the bytes in
-<code class="paramref">block</code>. This is the value most Merkle–Damgård length encodings append.</p>
+<code class="paramref">block</code>. This is the value most Merkle-Damgård length encodings append.</p>
 </dd>
     <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd><p>The span receiving the padded block or blocks; at least two blocks (<code>2 × BlockSize / 8</code> bytes) long. The
@@ -766,7 +766,7 @@ caller clears the span after processing.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The number of bytes written — one or two whole blocks, ready for <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a>.</p>
+    <dd><p>The number of bytes written - one or two whole blocks, ready for <a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html#Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a>.</p>
 </dd>
   </dl>
 
@@ -791,7 +791,7 @@ overload and clears the intermediate array; see that overload's remarks for the 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.ProcessBlock(System.ReadOnlySpan{System.Byte})">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -838,7 +838,7 @@ input blocks and is not responsible for padding or finalization steps.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -880,7 +880,7 @@ little-endian).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BlockHashAlgorithm_ShouldPadFinalBlock" data-uid="Bodu.Security.Cryptography.BlockHashAlgorithm.ShouldPadFinalBlock">
   ShouldPadFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -951,7 +951,7 @@ override this method to implement their own logic for padding behavior. By defau
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

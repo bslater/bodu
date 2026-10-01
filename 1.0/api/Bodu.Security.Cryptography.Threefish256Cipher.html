@@ -8,7 +8,7 @@
       <meta name="title" content="Threefish256Cipher Class
  | BODU ">
       
-      <meta name="description" content="AVX-512 vectorised implementation of . The four 64-bit state words are split across two  registers — lo holds the even-position words (b0, b2) and hi the odd-position words (b1, b3). Each round performs a vector add, a per-lane variable rotate (VPROLVQ ), an XOR, and a single 64-bit lane swap on hi that realigns it for the next round&#39;s MIX pairing.">
+      <meta name="description" content="AVX-512 vectorised implementation of . The four 64-bit state words are split across two  registers - lo holds the even-position words (b0, b2) and hi the odd-position words (b1, b3). Each round performs a vector add, a per-lane variable rotate (VPROLVQ ), an XOR, and a single 64-bit lane swap on hi that realigns it for the next round&#39;s MIX pairing.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Threefish256Cipher" data-uid="Bodu.Security.Cryptography.Threefish256Cipher" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Threefish256Cipher Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.Avx512.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.Avx512.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,13 +102,13 @@ Threefish256Cipher Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.Avx512.cs">ThreefishBlockCipher.256.Avx512.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.Avx512.cs">ThreefishBlockCipher.256.Avx512.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a>. The four 64-bit state words are split across
-two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> registers — <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>
+two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> registers - <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>
 the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>
 ), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>
 </div>
@@ -191,7 +191,7 @@ the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, 
 
 
   <h2 id="Bodu_Security_Cryptography_Threefish256Cipher_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Direct single-block use — most callers should prefer the Threefish256 SymmetricAlgorithm.
+  <pre><code class="lang-csharp">// Direct single-block use - most callers should prefer the Threefish256 SymmetricAlgorithm.
 byte[] key   = new byte[32];   // 256-bit key
 byte[] tweak = new byte[16];   // 128-bit tweak
 RandomNumberGenerator.Fill(key);
@@ -212,13 +212,13 @@ cipher.Decrypt(ciphertext, roundtrip);
   <div class="markdown level0 remarks"><p>
 Threefish-256 alternates between two MIX pair patterns within a 4-round group: <code>(0,1)(2,3)</code> at rounds 0 and 2,
 and <code>(0,3)(2,1)</code> at rounds 1 and 3. With the state split into even/odd halves, the alternation reduces to a
-single swap of <code>hi</code>'s two lanes — applied four times in a row, the swaps cycle back to canonical layout, which
+single swap of <code>hi</code>'s two lanes - applied four times in a row, the swaps cycle back to canonical layout, which
 is exactly where the subkey injection lands.
 </p>
 <p>
 Gated on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.x86.avx512f.vl.issupported">IsSupported</a> because the per-lane variable rotate runs on
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a>. SIMD gain on Threefish-256 is the smallest of the three variants — the 128-bit working
-width matches scalar register count and the per-instruction overhead is high relative to the work — but the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a>. SIMD gain on Threefish-256 is the smallest of the three variants - the 128-bit working
+width matches scalar register count and the per-instruction overhead is high relative to the work - but the
 implementation keeps the family pattern consistent and provides a measured reduction in scalar instruction count per
 round.
 </p>
@@ -234,7 +234,7 @@ round.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher__ctor_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.#ctor(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   Threefish256Cipher(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -277,7 +277,7 @@ round.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_KeySize" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.KeySize">
   KeySize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.Avx512.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.Avx512.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -317,7 +317,7 @@ round.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_BlockSize" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.BlockSize">
   BlockSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -359,7 +359,7 @@ decrypt, slice) convert to bytes at the call site as <code>BlockSize / 8</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_BlockWords" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.BlockWords">
   BlockWords
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -395,7 +395,7 @@ decrypt, slice) convert to bytes at the call site as <code>BlockSize / 8</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_RotationSchedule" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.RotationSchedule">
   RotationSchedule
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -431,7 +431,7 @@ decrypt, slice) convert to bytes at the call site as <code>BlockSize / 8</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_Rounds" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.Rounds">
   Rounds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -471,7 +471,7 @@ decrypt, slice) convert to bytes at the call site as <code>BlockSize / 8</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -527,7 +527,7 @@ folds to a compile-time constant that removes the branch, otherwise it reduces t
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish256Cipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Threefish256Cipher.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/ThreefishBlockCipher.256.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -590,7 +590,7 @@ folds to a compile-time constant that removes the branch, otherwise it reduces t
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+      <div><span><a href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.
              SymmetricAlgorithm</a></span></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.Threefish256.html">Threefish256</a></div>
   </div>
@@ -611,7 +611,7 @@ folds to a compile-time constant that removes the branch, otherwise it reduces t
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

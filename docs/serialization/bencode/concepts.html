@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Bencode — Core concepts | BODU </title>
+      <title>Bodu.Text.Bencode - Core concepts | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Bencode — Core concepts | BODU ">
+      <meta name="title" content="Bodu.Text.Bencode - Core concepts | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="core-concepts">Core concepts</h1>
 
-<p>This page describes the vocabulary and shape of <strong>Bodu.Text.Bencode</strong>. Its sibling serializers — <a href="../toml/index.html">Bodu.Text.Toml</a> and <a href="../yaml/index.html">Bodu.Text.Yaml</a> — share the same architecture, so what you learn here transfers with the prefix changed; see the <a href="../index.html">family introduction</a> for the cross-library view.</p>
+<p>This page describes the vocabulary and shape of <strong>Bodu.Text.Bencode</strong>. Its sibling serializers - <a href="../toml/index.html">Bodu.Text.Toml</a> and <a href="../yaml/index.html">Bodu.Text.Yaml</a> - share the same architecture, so what you learn here transfers with the prefix changed; see the <a href="../index.html">family introduction</a> for the cross-library view.</p>
 <p>Part of the <strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
 <h2 id="the-serializer">The serializer</h2>
 <p>The static <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> is the high-level entry point. <code>Serialize&lt;T&gt;</code> writes an object graph to Bencode; <code>Deserialize&lt;T&gt;</code> binds Bencode back to a type. Each has overloads over the format's natural surfaces:</p>
@@ -113,7 +113,7 @@
 </tr>
 </tbody>
 </table>
-<p>Every overload accepts an optional <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a>; the async pair takes it before the <code>CancellationToken</code>. There are no <code>TryDeserialize</code>-style members — wrap a call in a <code>try</code>/<code>catch</code> over the two exception types when reading untrusted input.</p>
+<p>Every overload accepts an optional <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a>; the async pair takes it before the <code>CancellationToken</code>. There are no <code>TryDeserialize</code>-style members - wrap a call in a <code>try</code>/<code>catch</code> over the two exception types when reading untrusted input.</p>
 <h2 id="options">Options</h2>
 <p><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a> configures the serializer:</p>
 <table>
@@ -178,10 +178,10 @@
 </tbody>
 </table>
 <p>Construct one from a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerDefaults.html">BencodeSerializerDefaults</a> value to start from a scenario's conventions: <code>General</code> leaves names unchanged with default-case matching; <code>Web</code> applies camel-case naming and case-insensitive matching.</p>
-<p><code>AllowUnsortedKeys</code> and <code>AllowDuplicateKeys</code> relax only the <em>read</em> path — the writer is unconditionally canonical, so anything written is byte-for-byte BEP 3 regardless of how lenient the read was.</p>
-<p>An options instance becomes read-only the first time it is used — or eagerly via <code>MakeReadOnly()</code> (<code>IsReadOnly</code> reports the state) — and then caches its resolved converters and type metadata. Mutating a frozen instance throws <code>InvalidOperationException</code>. Configure one options object and reuse it across many operations.</p>
+<p><code>AllowUnsortedKeys</code> and <code>AllowDuplicateKeys</code> relax only the <em>read</em> path - the writer is unconditionally canonical, so anything written is byte-for-byte BEP 3 regardless of how lenient the read was.</p>
+<p>An options instance becomes read-only the first time it is used - or eagerly via <code>MakeReadOnly()</code> (<code>IsReadOnly</code> reports the state) - and then caches its resolved converters and type metadata. Mutating a frozen instance throws <code>InvalidOperationException</code>. Configure one options object and reuse it across many operations.</p>
 <h2 id="converters-and-resolution">Converters and resolution</h2>
-<p>A <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> converts one type, reading through the <a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> and writing through the <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a>. A <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a> produces converters for a family of types (every <code>Nullable&lt;T&gt;</code>, every enum, every collection) — the same pattern the built-in converters use.</p>
+<p>A <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a> converts one type, reading through the <a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> and writing through the <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a>. A <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a> produces converters for a family of types (every <code>Nullable&lt;T&gt;</code>, every enum, every collection) - the same pattern the built-in converters use.</p>
 <p>For a given type the serializer resolves a converter by checking, in order:</p>
 <ol>
 <li>a member-level converter attribute (<code>[Converter(typeof(…))]</code>);</li>
@@ -193,20 +193,20 @@
 <h2 id="attributes-callbacks-and-naming-policies">Attributes, callbacks, and naming policies</h2>
 <p>The full serialization surface lives in the <code>Bodu.Text.Bencode.Serialization</code> namespace:</p>
 <ul>
-<li><strong>Attributes</strong> — <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, <code>[PropertyOrder]</code>, <code>[Constructor]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[NamingPolicy]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>, <code>[StringEnumMemberName]</code>.</li>
-<li><strong>Callbacks</strong> — the <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> interfaces, run at the matching point in the pipeline.</li>
-<li><strong>Naming policies</strong> — <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a><code>.CamelCase</code>, <code>.SnakeCaseLower</code> / <code>.SnakeCaseUpper</code>, <code>.KebabCaseLower</code> / <code>.KebabCaseUpper</code>, plus the <code>BencodeSerializerDefaults.Web</code> preset.</li>
-<li><strong>Enum converters</strong> — a string-enum converter (member names) and a number-enum converter.</li>
+<li><strong>Attributes</strong> - <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, <code>[PropertyOrder]</code>, <code>[Constructor]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[NamingPolicy]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>, <code>[StringEnumMemberName]</code>.</li>
+<li><strong>Callbacks</strong> - the <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> interfaces, run at the matching point in the pipeline.</li>
+<li><strong>Naming policies</strong> - <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a><code>.CamelCase</code>, <code>.SnakeCaseLower</code> / <code>.SnakeCaseUpper</code>, <code>.KebabCaseLower</code> / <code>.KebabCaseUpper</code>, plus the <code>BencodeSerializerDefaults.Web</code> preset.</li>
+<li><strong>Enum converters</strong> - a string-enum converter (member names) and a number-enum converter.</li>
 </ul>
 <h2 id="the-document-object-models">The document object models</h2>
 <p>When you do not want a model, the library offers two DOMs:</p>
 <ul>
-<li><strong>Mutable</strong> — <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> with the concrete <code>BencodeObject</code> (a keyed dictionary node), <code>BencodeArray</code> (a list node), and <code>BencodeValue</code> (a scalar node). <code>Parse</code> a document into a tree, index into it with <code>node[&quot;key&quot;]</code> / <code>node[index]</code>, mutate it, and write it back with <code>ToByteArray()</code>. Scalars convert with implicit operators (<code>string</code>, <code>long</code>, <code>int</code>, <code>ulong</code>, <code>byte[]</code> → <code>BencodeNode</code>) and explicit operators back the other way, and the tree supports <code>DeepClone()</code>, <code>DeepEquals(…)</code>, <code>ReplaceWith(…)</code>, and <code>GetPath()</code>. <code>Parse</code> returns <code>null</code> for an empty document.</li>
-<li><strong>Read-only</strong> — <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> with <code>BencodeElement</code> and <code>BencodeProperty</code>. A low-allocation view over a parsed buffer, walked through <code>RootElement</code>: <code>GetProperty</code> / <code>TryGetProperty</code>, the integer indexer for lists, <code>EnumerateObject()</code> / <code>EnumerateArray()</code>, and typed getters (<code>GetString</code>, <code>GetBytes</code>, <code>GetInt64</code>, <code>GetUInt64</code>, and the <code>TryGet…</code> pair). Each element's kind is a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a> (<code>Object</code>, <code>Array</code>, <code>ByteString</code>, <code>Integer</code>). <code>BencodeDocument</code> is disposable — it owns a pooled buffer, so wrap it in <code>using</code> and <code>Clone()</code> out any element that must outlive it.</li>
+<li><strong>Mutable</strong> - <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> with the concrete <code>BencodeObject</code> (a keyed dictionary node), <code>BencodeArray</code> (a list node), and <code>BencodeValue</code> (a scalar node). <code>Parse</code> a document into a tree, index into it with <code>node[&quot;key&quot;]</code> / <code>node[index]</code>, mutate it, and write it back with <code>ToByteArray()</code>. Scalars convert with implicit operators (<code>string</code>, <code>long</code>, <code>int</code>, <code>ulong</code>, <code>byte[]</code> → <code>BencodeNode</code>) and explicit operators back the other way, and the tree supports <code>DeepClone()</code>, <code>DeepEquals(…)</code>, <code>ReplaceWith(…)</code>, and <code>GetPath()</code>. <code>Parse</code> returns <code>null</code> for an empty document.</li>
+<li><strong>Read-only</strong> - <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> with <code>BencodeElement</code> and <code>BencodeProperty</code>. A low-allocation view over a parsed buffer, walked through <code>RootElement</code>: <code>GetProperty</code> / <code>TryGetProperty</code>, the integer indexer for lists, <code>EnumerateObject()</code> / <code>EnumerateArray()</code>, and typed getters (<code>GetString</code>, <code>GetBytes</code>, <code>GetInt64</code>, <code>GetUInt64</code>, and the <code>TryGet…</code> pair). Each element's kind is a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a> (<code>Object</code>, <code>Array</code>, <code>ByteString</code>, <code>Integer</code>). <code>BencodeDocument</code> is disposable - it owns a pooled buffer, so wrap it in <code>using</code> and <code>Clone()</code> out any element that must outlive it.</li>
 </ul>
 <h2 id="the-low-level-reader-and-writer">The low-level reader and writer</h2>
 <p><a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> and <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> are forward-only, allocation-free <code>ref struct</code> token machines over <code>ReadOnlySpan&lt;byte&gt;</code> and <code>IBufferWriter&lt;byte&gt;</code> respectively. The serializer and every converter are built on this pair; reach for it directly to process tokens without binding to a model.</p>
-<p>The reader is positioned on a token by <code>Read()</code> (which returns <code>false</code> at the end), and the token is classified by <code>TokenType</code> — a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a> with the values <code>None</code>, <code>StartList</code>, <code>EndList</code>, <code>StartDictionary</code>, <code>EndDictionary</code>, <code>PropertyName</code>, <code>Integer</code>, and <code>ByteString</code>. A Bencode dictionary surfaces as alternating <code>PropertyName</code> and value tokens between <code>StartDictionary</code> and <code>EndDictionary</code>. Once positioned, value getters read the current token without advancing:</p>
+<p>The reader is positioned on a token by <code>Read()</code> (which returns <code>false</code> at the end), and the token is classified by <code>TokenType</code> - a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a> with the values <code>None</code>, <code>StartList</code>, <code>EndList</code>, <code>StartDictionary</code>, <code>EndDictionary</code>, <code>PropertyName</code>, <code>Integer</code>, and <code>ByteString</code>. A Bencode dictionary surfaces as alternating <code>PropertyName</code> and value tokens between <code>StartDictionary</code> and <code>EndDictionary</code>. Once positioned, value getters read the current token without advancing:</p>
 <table>
 <thead>
 <tr>
@@ -242,14 +242,14 @@
 <p>Bencode maps the BCL types it can represent natively and rejects the rest unless a converter handles them.</p>
 <p><code>string</code>, <code>byte[]</code>, and memory-of-byte map to byte strings; the integer family (through <code>ulong.MaxValue</code>, including the 128-bit types within the 64-bit surfaces) maps to <code>i…e</code>; enums map to member-name byte strings; collections (including queues, stacks, and the concurrent collections) map to lists; objects and dictionaries map to dictionaries with keys in canonical ascending bytewise order. Dictionary keys may be strings, integers, enums, <code>Guid</code>, <code>bool</code>, or <code>char</code>, stringified on the wire. Booleans, floating-point, and date-times have <strong>no</strong> Bencode form and require a registered converter. An <code>object</code>-typed member writes its runtime type and reads back as a <code>BencodeElement</code>. A <code>null</code> member is omitted on write; public fields participate via <code>IncludeFields</code> or <code>[Include]</code>.</p>
 <h2 id="errors">Errors</h2>
-<p>A malformed document raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> (carrying the byte <code>Offset</code> where parsing failed) — truncated data, non-canonical integers, trailing bytes, and, unless the matching leniency option is set, out-of-order or duplicate dictionary keys. A document that parses but cannot bind to your type — a type mismatch, a missing required member, a value out of range for the target — raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> (carrying the byte <code>BytesOffset</code> of the failing value where one is known).</p>
+<p>A malformed document raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> (carrying the byte <code>Offset</code> where parsing failed) - truncated data, non-canonical integers, trailing bytes, and, unless the matching leniency option is set, out-of-order or duplicate dictionary keys. A document that parses but cannot bind to your type - a type mismatch, a missing required member, a value out of range for the target - raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> (carrying the byte <code>BytesOffset</code> of the failing value where one is known).</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Text.Bencode introduction</a></strong> — what is specific to the format: byte strings, canonical output, the kinds it cannot represent.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install and the first round trip.</li>
-<li><strong><a href="../../../guides/serialization/bencode/using.html">Using Bencode</a></strong> — the worked walk-through.</li>
-<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the shared family shape.</li>
-<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> — where the serializers sit among the codecs and document formats.</li>
+<li><strong><a href="index.html">Bodu.Text.Bencode introduction</a></strong> - what is specific to the format: byte strings, canonical output, the kinds it cannot represent.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install and the first round trip.</li>
+<li><strong><a href="../../../guides/serialization/bencode/using.html">Using Bencode</a></strong> - the worked walk-through.</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> - the shared family shape.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> - where the serializers sit among the codecs and document formats.</li>
 </ul>
 
 </article>
@@ -269,7 +269,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

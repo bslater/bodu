@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar — Getting started | BODU </title>
+      <title>Bodu.Globalization.Calendar - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar — Getting started | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduglobalizationcalendar--getting-started">Bodu.Globalization.Calendar — Getting started</h1>
+<h1 id="boduglobalizationcalendar---getting-started">Bodu.Globalization.Calendar - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>document</em>, <em>resource</em>, <em>rule</em>, <em>nominal date</em>, or <em>territory</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
@@ -130,7 +130,7 @@ NotableDateService  service  = new NotableDateService(resource);
 IReadOnlyList&lt;NotableDate&gt; jan = service.Resolve(new DateOnly(2026, 1, 1), &quot;US&quot;);
 Console.WriteLine(jan[0].DisplayName);                                // New Year's Day
 </code></pre>
-<p>A document that uses <code>&lt;Imports&gt;</code> must be loaded with a resolver so import names can be fetched — pass <code>CommonNotableDateResources.Resolver</code> to pull from the bundled catalogues:</p>
+<p>A document that uses <code>&lt;Imports&gt;</code> must be loaded with a resolver so import names can be fetched - pass <code>CommonNotableDateResources.Resolver</code> to pull from the bundled catalogues:</p>
 <pre><code class="lang-csharp">NotableDateResource resource =
     NotableDateResourceLoader.Load(xml, CommonNotableDateResources.Resolver);
 </code></pre>
@@ -163,7 +163,7 @@ IReadOnlyList&lt;NotableDate&gt; firstHalf = service.Resolve(2026, &quot;AU-NSW&
 <p><code>NotableDateFilter</code> is built via static factory methods (<code>ForCategory</code>, <code>ForAnyCategory</code>, <code>WithName</code>, <code>WithId</code>, <code>WithTag</code>, <code>WithMinDuration</code>, <code>IsNonWorkingDay</code>, <code>WasAdjusted</code>, <code>InDateRange</code>, …) and combined with <code>And</code>, <code>Or</code>, <code>Not</code>, <code>AllOf</code>, <code>AnyOf</code>.</p>
 <h3 id="working-day-arithmetic-over-a-dateonly">Working-day arithmetic over a <code>DateOnly</code></h3>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
-using Bodu.Extensions;                       // NotableDateOnlyExtensions — not auto-imported
+using Bodu.Extensions;                       // NotableDateOnlyExtensions - not auto-imported
 
 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -173,7 +173,7 @@ DateOnly nextOpen  = today.NextWorkingDay(service, &quot;AU-NSW&quot;);
 DateOnly inFive    = today.AddWorkingDays(5, service, &quot;AU-NSW&quot;);
 int      between   = today.WorkingDaysBetween(inFive, service, &quot;AU-NSW&quot;);
 </code></pre>
-<p>The same operations exist over <code>DateTime</code> and <code>DateTimeOffset</code> (<code>NotableDateTimeExtensions</code>, <code>NotableDateTimeOffsetExtensions</code>, also in <code>Bodu.Extensions</code>). Every method accepts an optional <code>Bodu.Core</code> <code>WeekPattern</code> to override the default Monday–Friday working week — e.g. <code>today.NextWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday)</code>.</p>
+<p>The same operations exist over <code>DateTime</code> and <code>DateTimeOffset</code> (<code>NotableDateTimeExtensions</code>, <code>NotableDateTimeOffsetExtensions</code>, also in <code>Bodu.Extensions</code>). Every method accepts an optional <code>Bodu.Core</code> <code>WeekPattern</code> to override the default Monday-Friday working week - e.g. <code>today.NextWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday)</code>.</p>
 <h3 id="register-a-custom-algorithm">Register a custom algorithm</h3>
 <p>When a date is computed rather than fixed, implement <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> and reference it from the rule by key:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
@@ -189,7 +189,7 @@ NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ =&gt; null,
 NotableDateService  service  = new NotableDateService(
     resource, new NotableDateServiceOptions { Algorithms = registry });
 </code></pre>
-<p>Custom collaborators — algorithm registry, collision resolver, adjustment / trigger handlers, and code-first providers — are supplied through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> (an object with <code>init</code>-only properties); there is no positional-collaborator constructor. The single-argument <code>new NotableDateService(resource)</code> covers the built-in path.</p>
+<p>Custom collaborators - algorithm registry, collision resolver, adjustment / trigger handlers, and code-first providers - are supplied through <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> (an object with <code>init</code>-only properties); there is no positional-collaborator constructor. The single-argument <code>new NotableDateService(resource)</code> covers the built-in path.</p>
 <p>Built-in keys (<code>western-easter</code>, <code>orthodox-easter</code>, <code>qingming</code>, <code>vesak</code>, <code>losar</code>, <code>matariki</code>, the Hindu-festival keys, …) need no registration. See <a href="../../guides/calendar/algorithms.html">Date calculation algorithms</a>.</p>
 <h3 id="swap-the-rule-set-at-runtime">Swap the rule set at runtime</h3>
 <p>A resource is immutable, so runtime change means loading a new resource and swapping it in:</p>
@@ -213,12 +213,12 @@ builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quo
 <p><code>INotableDateService</code> is registered as a singleton. See the <a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a> for the reloadable workflow and lifetime semantics.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Globalization.Calendar introduction</a></strong> — mental model, headline types, scenarios.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary used across the rest of the documentation.</li>
-<li><strong><a href="../../guides/calendar/index.html">Bodu.Globalization.Calendar guides</a></strong> — <code>NotableDateService</code> patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs guide</a></strong> — composing <code>AmericasCalendarData</code> / <code>EuropeCalendarData</code> / <code>AsiaPacificCalendarData</code> resources.</li>
-<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> — offline sample projects under <code>samples/Globalization.Calendar/</code> you can <code>dotnet run</code> and copy from.</li>
+<li><strong><a href="index.html">Bodu.Globalization.Calendar introduction</a></strong> - mental model, headline types, scenarios.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary used across the rest of the documentation.</li>
+<li><strong><a href="../../guides/calendar/index.html">Bodu.Globalization.Calendar guides</a></strong> - <code>NotableDateService</code> patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs guide</a></strong> - composing <code>AmericasCalendarData</code> / <code>EuropeCalendarData</code> / <code>AsiaPacificCalendarData</code> resources.</li>
+<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> - offline sample projects under <code>samples/Globalization.Calendar/</code> you can <code>dotnet run</code> and copy from.</li>
 </ul>
 
 </article>
@@ -238,7 +238,7 @@ builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource(&quo
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

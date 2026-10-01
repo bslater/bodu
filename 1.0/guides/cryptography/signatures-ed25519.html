@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="signatures-with-ed25519">Signatures with Ed25519</h1>
 
-<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> is the EdDSA signature scheme over edwards25519 defined in RFC 8032 (the &quot;pure&quot; variant). It produces <strong>deterministic</strong> 64-byte signatures from a 32-byte private seed at a 128-bit security level: the same message signed twice under the same key yields the identical signature, and no per-signature nonce is consumed — which removes the catastrophic nonce-reuse failure mode of ECDSA-style schemes. This guide is for developers signing messages and verifying them with a distributed public key.</p>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> is the EdDSA signature scheme over edwards25519 defined in RFC 8032 (the &quot;pure&quot; variant). It produces <strong>deterministic</strong> 64-byte signatures from a 32-byte private seed at a 128-bit security level: the same message signed twice under the same key yields the identical signature, and no per-signature nonce is consumed - which removes the catastrophic nonce-reuse failure mode of ECDSA-style schemes. This guide is for developers signing messages and verifying them with a distributed public key.</p>
 <p>Ed25519 signs and verifies; it agrees no keys. For establishing a shared secret, see <a href="key-agreement-x25519.html">X25519</a>. For a quantum-resistant signature scheme, see <a href="ml-dsa.html">ML-DSA</a>.</p>
 <h2 id="fixed-sizes-at-a-glance">Fixed sizes at a glance</h2>
 <table>
@@ -117,12 +117,12 @@
 <tr>
 <td>Hash</td>
 <td>SHA-512</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>Security level</td>
 <td>128 bits</td>
-<td>—</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
@@ -141,15 +141,15 @@ byte[] signature = signer.SignData(message);   // 64 bytes
 bool valid = signer.VerifyData(message, signature);   // true
 </code></pre>
 <p>The same instance can both sign and verify while it holds the private key, but the typical deployment splits the two roles across machines.</p>
-<p><code>SignData</code> and <code>VerifyData</code> each have a span overload — <code>SignData(data, destination)</code> writes the 64-byte signature into a caller-supplied buffer with no allocation — for hot paths or pooled buffers. Query <code>HasPrivateKey</code> / <code>HasPublicKey</code> to see which halves an instance currently holds: a signer holds both, a verifier holds only the public half.</p>
+<p><code>SignData</code> and <code>VerifyData</code> each have a span overload - <code>SignData(data, destination)</code> writes the 64-byte signature into a caller-supplied buffer with no allocation - for hot paths or pooled buffers. Query <code>HasPrivateKey</code> / <code>HasPublicKey</code> to see which halves an instance currently holds: a signer holds both, a verifier holds only the public half.</p>
 <h2 id="key-distribution">Key distribution</h2>
 <p>The signer keeps the private seed secret; the public key is distributed to every party that needs to verify. The public key carries no secret and can be embedded in config, served over the network, or pinned in source.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using var signer = Ed25519.Create();
 signer.GenerateKey();
 
-byte[] privateSeed = signer.ExportPrivateKey();   // 32 bytes — keep secret, store in a vault
-byte[] publicKey = signer.ExportPublicKey();      // 32 bytes — distribute freely
+byte[] privateSeed = signer.ExportPrivateKey();   // 32 bytes - keep secret, store in a vault
+byte[] publicKey = signer.ExportPublicKey();      // 32 bytes - distribute freely
 </code></pre>
 <p>To restore a signer from stored material, import the seed; the public key is re-derived automatically:</p>
 <pre><code class="lang-csharp">using var restored = Ed25519.Create();
@@ -170,25 +170,25 @@ verifier.ImportPublicKey(publicKey);
 if (!verifier.VerifyData(message, signature))
     throw new InvalidOperationException(&quot;Signature verification failed.&quot;);
 </code></pre>
-<p><code>ImportPublicKey</code> validates the encoding by fully decompressing the point — a non-canonical or off-curve 32-byte value throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at import time, so a malformed key never reaches verification.</p>
+<p><code>ImportPublicKey</code> validates the encoding by fully decompressing the point - a non-canonical or off-curve 32-byte value throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> at import time, so a malformed key never reaches verification.</p>
 <h2 id="verification-never-throws-on-a-bad-signature">Verification never throws on a bad signature</h2>
-<p><code>VerifyData</code> returns <code>false</code> for <strong>every</strong> invalid input — a wrong-length signature, a tampered message, a non-canonical R, or an S component at or above the group order (the RFC 8032 malleability check). It throws only when the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>). Treat the boolean result as the sole signal:</p>
+<p><code>VerifyData</code> returns <code>false</code> for <strong>every</strong> invalid input - a wrong-length signature, a tampered message, a non-canonical R, or an S component at or above the group order (the RFC 8032 malleability check). It throws only when the instance holds no public key (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>). Treat the boolean result as the sole signal:</p>
 <pre><code class="lang-csharp">bool ok = verifier.VerifyData(message, signature);
 if (!ok)
 {
-    // Reject — do not branch on why; any failure is a failure.
+    // Reject - do not branch on why; any failure is a failure.
 }
 </code></pre>
 <p>Because all inputs to verification are public, verification time may vary with the inputs; that is acceptable and expected.</p>
 <h2 id="recording-the-signatures-wire-format">Recording the signature's wire format</h2>
-<p>An Ed25519 signature is the raw 64-byte <code>R ‖ S</code> string with no framing — <code>SignatureFormat.Raw</code>. That is unambiguous on its own, but when a signature travels through a layer that also handles ECDSA (which circulates as both ASN.1 DER and fixed-width P1363), wrap it in a <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> so the consumer reads the encoding instead of inferring it:</p>
+<p>An Ed25519 signature is the raw 64-byte <code>R ‖ S</code> string with no framing - <code>SignatureFormat.Raw</code>. That is unambiguous on its own, but when a signature travels through a layer that also handles ECDSA (which circulates as both ASN.1 DER and fixed-width P1363), wrap it in a <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> so the consumer reads the encoding instead of inferring it:</p>
 <pre><code class="lang-csharp">SignatureValue value = SignatureValue.FromBytes(signature, SignatureFormat.Raw);
 
 // 'value.FixedTimeEquals(other)' compares the bytes in constant time;
 // 'value.Format' tells a polymorphic verifier this is a raw EdDSA signature, not DER or P1363.
 </code></pre>
 <h2 id="determinism">Determinism</h2>
-<p>Ed25519 signatures are deterministic by design: identical key and message always produce identical output. This is a feature — there is no signing randomness to mismanage — but it means you cannot distinguish two signings of the same message. If you need each signing to differ, include a unique element (timestamp, counter, nonce) in the signed message itself.</p>
+<p>Ed25519 signatures are deterministic by design: identical key and message always produce identical output. This is a feature - there is no signing randomness to mismanage - but it means you cannot distinguish two signings of the same message. If you need each signing to differ, include a unique element (timestamp, counter, nonce) in the signed message itself.</p>
 <h2 id="what-ed25519-is-not">What Ed25519 is not</h2>
 <ul>
 <li><strong>Not key agreement.</strong> It establishes no shared secret; use <a href="key-agreement-x25519.html">X25519</a> for that.</li>
@@ -197,10 +197,10 @@ if (!ok)
 </ul>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — where Ed25519 sits in the family.</li>
-<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> — the companion curve algorithm for shared secrets.</li>
-<li><a href="ml-dsa.html">ML-DSA post-quantum signatures</a> — the quantum-resistant signature scheme.</li>
-<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — API reference.</li>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> - where Ed25519 sits in the family.</li>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> - the companion curve algorithm for shared secrets.</li>
+<li><a href="ml-dsa.html">ML-DSA post-quantum signatures</a> - the quantum-resistant signature scheme.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.Ed25519.html">Ed25519</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> - API reference.</li>
 </ul>
 
 </article>
@@ -220,7 +220,7 @@ if (!ok)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

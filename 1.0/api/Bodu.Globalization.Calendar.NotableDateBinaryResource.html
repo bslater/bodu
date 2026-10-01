@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_NotableDateBinaryResource" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 NotableDateBinaryResource Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ NotableDateBinaryResource Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Globalization.html">Globalization</a>.<a class="xref" href="Bodu.Globalization.Calendar.html">Calendar</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.0.1</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs">NotableDateBinaryResource.PayloadReader.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.PayloadReader.cs">NotableDateBinaryResource.PayloadReader.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Writes and reads the sealed notable-date binary rule-pack format (<code>.bcal</code>): a compact, integrity-checked,
@@ -164,7 +164,7 @@ reflection-free encoding of a validated <a class="xref" href="Bodu.Globalization
   <h2 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 A pack is written from an already-built resource, so only content that passed the canonical loader's validation is
-ever encoded, and reading a pack skips parsing and validation entirely — the trim- and AOT-friendly load path. The
+ever encoded, and reading a pack skips parsing and validation entirely - the trim- and AOT-friendly load path. The
 format is <em>sealed</em>: it enumerates the engine's strategy, recurrence, and duration types exhaustively with
 one-byte discriminators, carries no type names and no extension points, and the reader rejects unknown versions,
 unknown discriminators, undefined enum values, out-of-range references, truncation, and payload-digest mismatches
@@ -186,7 +186,7 @@ up-to-date checks.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Read_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Read(System.IO.Stream)">
   Read(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.Reader.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.Reader.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -239,7 +239,7 @@ corrupted, or carries a value outside the sealed format's tables.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_" data-uid="Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream)">
   Write(NotableDateResource, Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDateBinaryResource.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -313,7 +313,7 @@ corrupted, or carries a value outside the sealed format's tables.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

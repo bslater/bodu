@@ -109,7 +109,7 @@
 </tr>
 <tr>
 <td><code>IsSubdivision</code></td>
-<td><code>true</code> when <code>Subdivision</code> is non-null — the code names a subdivision rather than a whole country.</td>
+<td><code>true</code> when <code>Subdivision</code> is non-null - the code names a subdivision rather than a whole country.</td>
 </tr>
 <tr>
 <td><code>IsEmpty</code></td>
@@ -129,29 +129,29 @@ string code = auNsw;                 // implicit → &quot;AU-NSW&quot;
 TerritoryCode au = auNsw.Parent;     // → AU
 bool isSub = auNsw.IsSubdivision;    // → true
 
-TerritoryCode gb = (TerritoryCode)&quot;GB-SCT&quot;;   // explicit cast — throws on a malformed code
+TerritoryCode gb = (TerritoryCode)&quot;GB-SCT&quot;;   // explicit cast - throws on a malformed code
 </code></pre>
 <p><code>TerritoryCode</code> is a value type with full <code>==</code> / <code>!=</code> equality, so two codes parsed from <code>&quot;AU-NSW&quot;</code> and <code>&quot;  au-nsw &quot;</code> compare equal.</p>
 <h2 id="parsing">Parsing</h2>
 <p><code>TerritoryCode</code> provides both throwing and non-throwing parsers, plus a list parser for comma-separated input:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
-// Throwing parse — use when the input is trusted authored data.
+// Throwing parse - use when the input is trusted authored data.
 TerritoryCode au    = TerritoryCode.Parse(&quot;AU&quot;);
 TerritoryCode auNsw = TerritoryCode.Parse(&quot;AU-NSW&quot;);
 
-// Try-parse — use for user input or external data.
+// Try-parse - use for user input or external data.
 if (TerritoryCode.TryParse(userInput, out TerritoryCode territory))
 {
     // territory is canonical here.
 }
 
-// Comma-separated list — convenient for multi-territory query parameters.
+// Comma-separated list - convenient for multi-territory query parameters.
 IReadOnlyList&lt;TerritoryCode&gt; territories =
     TerritoryCode.ParseList(&quot;AU-NSW, AU-VIC, NZ&quot;);
 </code></pre>
 <p>The library normalizes whitespace and casing during parsing, so <code>&quot;  au-nsw  &quot;</code> and <code>&quot;AU-NSW&quot;</code> parse to the same value.</p>
-<p>Because the service and extensions accept plain strings, you rarely need to parse explicitly — pass <code>&quot;AU-NSW&quot;</code> directly. Parse when you want to inspect a code's <code>Country</code>, <code>Subdivision</code>, or <code>Parent</code>, or to validate untrusted input before querying.</p>
+<p>Because the service and extensions accept plain strings, you rarely need to parse explicitly - pass <code>&quot;AU-NSW&quot;</code> directly. Parse when you want to inspect a code's <code>Country</code>, <code>Subdivision</code>, or <code>Parent</code>, or to validate untrusted input before querying.</p>
 <h2 id="containment">Containment</h2>
 <p><img src="../../images/diagrams/calendar-territory-containment.svg" alt="TerritoryCode containment hierarchy"></p>
 <p><code>TerritoryCode.Contains(other)</code> returns <code>true</code> when <code>other</code> is within the scope of the current territory:</p>
@@ -206,12 +206,12 @@ IReadOnlyList&lt;TerritoryCode&gt; territories =
 <pre><code class="lang-csharp">TerritoryCode au    = TerritoryCode.Parse(&quot;AU&quot;);
 TerritoryCode auNsw = TerritoryCode.Parse(&quot;AU-NSW&quot;);
 
-bool a = au.Contains(auNsw);    // true  — AU ⊇ AU-NSW
-bool b = auNsw.Contains(au);    // false — a subdivision does not contain its country
+bool a = au.Contains(auNsw);    // true  - AU ⊇ AU-NSW
+bool b = auNsw.Contains(au);    // false - a subdivision does not contain its country
 </code></pre>
 <h2 id="authoring-territory-scope-in-a-document">Authoring territory scope in a document</h2>
 <p>A rule narrows its applicability by listing <code>&lt;Territory code=&quot;…&quot;&gt;</code> elements inside its <code>&lt;Applicability&gt;</code>. A rule with no <code>&lt;Territory&gt;</code> is globally applicable. Use the country code to cover a whole country, or a subdivision code to cover one region:</p>
-<pre><code class="lang-xml">&lt;!-- National holiday — applies to every Australian subdivision. --&gt;
+<pre><code class="lang-xml">&lt;!-- National holiday - applies to every Australian subdivision. --&gt;
 &lt;NotableDate id=&quot;australia-day&quot; displayName=&quot;Australia Day&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
   &lt;Rules&gt;
     &lt;Rule id=&quot;default&quot;&gt;
@@ -223,7 +223,7 @@ bool b = auNsw.Contains(au);    // false — a subdivision does not contain its 
   &lt;/Rules&gt;
 &lt;/NotableDate&gt;
 
-&lt;!-- Regional public holiday — applies only to Victoria. --&gt;
+&lt;!-- Regional public holiday - applies only to Victoria. --&gt;
 &lt;NotableDate id=&quot;melbourne-cup-day&quot; displayName=&quot;Melbourne Cup Day&quot; category=&quot;PublicHoliday&quot; defaultNonWorkingDay=&quot;true&quot;&gt;
   &lt;Rules&gt;
     &lt;Rule id=&quot;default&quot;&gt;
@@ -274,23 +274,23 @@ foreach (string code in territories)
 <li>Author the national rule <strong>once</strong> at the country level (<code>&lt;Territory code=&quot;AU&quot; /&gt;</code>).</li>
 <li>For each subdivision that genuinely differs, author a separate concept or rule scoped to that subdivision (<code>&lt;Territory code=&quot;AU-NT&quot; /&gt;</code>), or suppress the national rule for that subdivision with a <code>&lt;RemoveRule&gt;</code> override and add the variant.</li>
 </ul>
-<p>Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct — scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The <a href="holiday-patterns.html">holiday patterns guide</a> shows worked examples for both shapes.</p>
+<p>Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct - scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The <a href="holiday-patterns.html">holiday patterns guide</a> shows worked examples for both shapes.</p>
 <h2 id="data-pack-conventions">Data-pack conventions</h2>
 <p>The official <code>Bodu.Globalization.Calendar.&lt;Region&gt;</code> companion packages follow the conventions above:</p>
 <ul>
 <li>National rules are authored at the country level (<code>AU</code>, <code>US</code>, <code>GB</code>).</li>
 <li>State / province / region variants use the canonical ISO 3166-2 subdivision suffix (<code>AU-NSW</code>, <code>US-CA</code>, <code>GB-SCT</code>).</li>
-<li>Cross-country composition (e.g. <em>EU bank holidays</em>) is <strong>not</strong> modelled via territory code — each country ships its own rule set under its own ISO code. Cross-cutting groupings belong in tags.</li>
+<li>Cross-country composition (e.g. <em>EU bank holidays</em>) is <strong>not</strong> modelled via territory code - each country ships its own rule set under its own ISO code. Cross-cutting groupings belong in tags.</li>
 </ul>
 <p>See <a href="data-packs.html">Calendar data packs</a> for the per-pack helpers.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../docs/calendar/concepts.html">Core concepts</a></strong> — the vocabulary at a glance.</li>
-<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> — how containment shapes query results.</li>
-<li><strong><a href="rule-authoring.html">Authoring notable date rules</a></strong> — full authoring workflow with worked examples.</li>
-<li><strong><a href="data-packs.html">Calendar data packs</a></strong> — region-specific bundled rule sets.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — generated API surface.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><strong><a href="../../docs/calendar/concepts.html">Core concepts</a></strong> - the vocabulary at a glance.</li>
+<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> - how containment shapes query results.</li>
+<li><strong><a href="rule-authoring.html">Authoring notable date rules</a></strong> - full authoring workflow with worked examples.</li>
+<li><strong><a href="data-packs.html">Calendar data packs</a></strong> - region-specific bundled rule sets.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> - generated API surface.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -310,7 +310,7 @@ foreach (string code in territories)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

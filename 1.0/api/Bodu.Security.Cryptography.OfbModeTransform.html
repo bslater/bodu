@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_OfbModeTransform" data-uid="Bodu.Security.Cryptography.OfbModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 OfbModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ OfbModeTransform Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs">OfbModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs">OfbModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies the Output Feedback (OFB) mode transformation to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, turning it into
@@ -198,14 +198,14 @@ int written = ofb.Transform(plaintext, ciphertext, encrypt: true);</code></pre>
 
   <h2 id="Bodu_Security_Cryptography_OfbModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/classic-modes.svg" alt="OFB panel — the cipher's output keystream feeds forward into the next cipher input, independent of plaintext.">
+<img src="../images/diagrams/classic-modes.svg" alt="OFB panel - the cipher's output keystream feeds forward into the next cipher input, independent of plaintext.">
 </p>
 <p>
 The keystream is produced by repeatedly encrypting the feedback register: <code>Oᵢ = E(Oᵢ₋₁)</code> with <code>O₀ = IV</code>,
 and the output is <code>Pᵢ ⊕ Oᵢ</code>. See <b>panel 4</b> of the diagram above: the dashed feedback arrows run between
-cipher <em>output</em> and the next cipher <em>input</em> — in contrast to CFB (panel 3), where feedback runs from
-ciphertext. That structural difference is what makes OFB a synchronous stream cipher — the keystream is independent
-of the plaintext — and immune to bit-flip propagation.
+cipher <em>output</em> and the next cipher <em>input</em> - in contrast to CFB (panel 3), where feedback runs from
+ciphertext. That structural difference is what makes OFB a synchronous stream cipher - the keystream is independent
+of the plaintext - and immune to bit-flip propagation.
 </p>
 <p>
 The initialization vector must equal the cipher block size in length and must never be reused under the same key,
@@ -213,7 +213,7 @@ otherwise keystreams collide and confidentiality is lost.
 </p>
 <p>
 <strong>When to use OFB.</strong> Pick OFB only for legacy interop. For stream-cipher behavior
-<a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> is the modern default — it parallelizes, supports random access, and is the mode
+<a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> is the modern default - it parallelizes, supports random access, and is the mode
 used by every major AEAD construction. OFB's main historical advantage was that bit errors in transmission do not
 propagate, but unauthenticated stream ciphers cannot detect those errors at all, so the guarantee is rarely useful
 in practice. As with CFB, OFB has no built-in authentication; reach for an AEAD mode (
@@ -235,7 +235,7 @@ can be precomputed and cached if needed.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OfbModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.OfbModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   OfbModeTransform(IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -286,13 +286,13 @@ initialization vector.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OfbModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.OfbModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Releases the resources used by this instance and zeroes the running feedback register so that key-equivalent
 keystream state does not linger in memory after disposal. The underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> is not
-disposed by this type — ownership remains with the caller.</p>
+disposed by this type - ownership remains with the caller.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -322,7 +322,7 @@ disposed by this type — ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_OfbModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.OfbModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/OfbModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -386,7 +386,7 @@ disposed by this type — ownership remains with the caller.</p>
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/cipher-modes.html#ofb--synchronous-stream-cipher">OFB walk-through in the
+      <div><span><a href="../guides/cryptography/cipher-modes.html#ofb---synchronous-stream-cipher">OFB walk-through in the
              cipher-modes guide</a></span></div>
   </div>
 
@@ -406,7 +406,7 @@ disposed by this type — ownership remains with the caller.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

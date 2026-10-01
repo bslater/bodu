@@ -89,8 +89,8 @@
 
 <p>The repository ships a runnable, self-contained sample project for <code>Bodu.Text.Bencode</code> under
 <a href="https://github.com/bslater/bodu/tree/master/samples/Text.Bencode"><code>samples/Text.Bencode/</code></a>.
-It is <strong>offline and deterministic</strong> — every scenario reads one committed 278-byte
-<code>Data/sample.torrent</code> fixture — and is a member of <code>bodu.slnx</code>, built and executed by CI. The
+It is <strong>offline and deterministic</strong> - every scenario reads one committed 278-byte
+<code>Data/sample.torrent</code> fixture - and is a member of <code>bodu.slnx</code>, built and executed by CI. The
 README documents every scenario individually: its intent, what the code does, the output to
 expect, and the APIs demonstrated.</p>
 <p>Run it from the repository root:</p>
@@ -98,27 +98,27 @@ expect, and the APIs demonstrated.</p>
 </code></pre>
 <h2 id="the-sample">The sample</h2>
 <h3 id="bodutextbencodesamplestorrentfile">Bodu.Text.Bencode.Samples.TorrentFile</h3>
-<p>A real BitTorrent metainfo file (BEP 3) — the format Bencode was invented for — read,
+<p>A real BitTorrent metainfo file (BEP 3) - the format Bencode was invented for - read,
 verified, and re-authored through all of the library's layers:</p>
 <ul>
-<li><strong>ParseTorrent</strong> — the read-only <a class="xref" href="../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> DOM:
+<li><strong>ParseTorrent</strong> - the read-only <a class="xref" href="../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> DOM:
 one parse, cheap <a class="xref" href="../api/Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a> cursors, <code>GetString</code> vs
 <code>GetBytes</code> for text vs binary byte strings (the <code>pieces</code> SHA-1 run), and <code>TryGetProperty</code>
 probing for optional keys.</li>
-<li><strong>CanonicalRoundTrip</strong> — Bencode's defining property: keys ascend in raw-byte order, so a
+<li><strong>CanonicalRoundTrip</strong> - Bencode's defining property: keys ascend in raw-byte order, so a
 value has exactly one encoding. Parse → re-emit reproduces the file byte for byte; the
 <a class="xref" href="../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> sorts each dictionary as it closes and
 rejects duplicates; the strict <a class="xref" href="../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> rejects
 unsorted input unless <a class="xref" href="../api/Bodu.Text.Bencode.Reader.BencodeReaderOptions.html#Bodu_Text_Bencode_Reader_BencodeReaderOptions_AllowUnsortedKeys">AllowUnsortedKeys</a>
 opts into lenient ingestion.</li>
-<li><strong>InfoHashRawSlice</strong> — the info-hash is the SHA-1 of the <code>info</code> dictionary's <em>exact encoded
+<li><strong>InfoHashRawSlice</strong> - the info-hash is the SHA-1 of the <code>info</code> dictionary's <em>exact encoded
 bytes</em>: <code>BencodeElement.GetRawBytes()</code> hands back precisely that slice, and
 <code>Utf8BencodeWriter.WriteRawValue</code> splices it untouched into a re-authored torrent, proving
-the hash survives. The digest renders through <code>Bodu.Text.Encoding</code>'s <code>Base16</code> — a
+the hash survives. The digest renders through <code>Bodu.Text.Encoding</code>'s <code>Base16</code> - a
 cross-package demonstration.</li>
-<li><strong>PocoTorrent</strong> — the typed layer: <a class="xref" href="../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> maps the
+<li><strong>PocoTorrent</strong> - the typed layer: <a class="xref" href="../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> maps the
 metainfo onto POCOs whose <code>[PropertyName]</code> attributes carry the keys with spaces
-(<code>creation date</code>, <code>piece length</code>), with <code>byte[]</code> binding for binary values — and even the
+(<code>creation date</code>, <code>piece length</code>), with <code>byte[]</code> binding for binary values - and even the
 POCO round trip is byte-exact.</li>
 </ul>
 <p><em>Packages: <code>Bodu.Text.Bencode</code>, <code>Bodu.Text.Encoding</code> (info-hash rendering).</em></p>
@@ -130,10 +130,10 @@ against the current public API by <code>DocumentationSnippetCompileTests</code> 
 project (Regression tier).</p>
 <h2 id="related">Related</h2>
 <ul>
-<li><a href="../guides/serialization/bencode/index.html">Bencode guides</a> — the full serializer, DOM, and
+<li><a href="../guides/serialization/bencode/index.html">Bencode guides</a> - the full serializer, DOM, and
 reader/writer documentation.</li>
-<li><a href="toml.html">TOML samples</a> — the same System.Text.Json-aligned stack for TOML.</li>
-<li><a href="text-encoding.html">Text.Encoding samples</a> — the <code>Base16</code> surface used by the info-hash
+<li><a href="toml.html">TOML samples</a> - the same System.Text.Json-aligned stack for TOML.</li>
+<li><a href="text-encoding.html">Text.Encoding samples</a> - the <code>Base16</code> surface used by the info-hash
 scenario.</li>
 </ul>
 
@@ -154,7 +154,7 @@ scenario.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

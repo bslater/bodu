@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="cp-t cp-d">
-  <title id="cp-t">NotableDateService — resolution pipeline</title>
-  <desc id="cp-d">A rule document and optional overrides are layered into an effective rule set. The resolver dispatches each rule by strategy — Fixed, DayOfWeekInMonth, Algorithm, or OffsetFromRule — producing a nominal date. The adjuster evaluates AdjustmentPolicy shifts and yields the observed date. Resolved dates settle per ResolutionPolicy and are returned by Resolve.</desc>
+  <title id="cp-t">NotableDateService - resolution pipeline</title>
+  <desc id="cp-d">A rule document and optional overrides are layered into an effective rule set. The resolver dispatches each rule by strategy - Fixed, DayOfWeekInMonth, Algorithm, or OffsetFromRule - producing a nominal date. The adjuster evaluates AdjustmentPolicy shifts and yields the observed date. Resolved dates settle per ResolutionPolicy and are returned by Resolve.</desc>
 
   <defs>
     <style>
@@ -36,7 +36,7 @@
     <rect class="pan" width="800" height="280" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">NotableDateService — resolution pipeline</text>
+    <text class="ttl" x="16" y="20">NotableDateService - resolution pipeline</text>
 
     <!-- INPUT: NotableDateResource -->
     <g transform="translate(20 52)">
@@ -102,6 +102,6 @@
       <text class="mut" x="95" y="28">IReadOnlyList&lt;NotableDate&gt;</text>
     </g>
 
-    <text class="mut" x="400" y="252" text-anchor="middle">ResolutionPolicy — duplicate, collision, and priority settings settle the final list</text>
+    <text class="mut" x="400" y="252" text-anchor="middle">ResolutionPolicy - duplicate, collision, and priority settings settle the final list</text>
   </g>
 </svg>

@@ -1,4 +1,4 @@
-# Package artwork manifest — one row per packable NuGet package: <PackageId> <hero-banner-file>.
+# Package artwork manifest - one row per packable NuGet package: <PackageId> <hero-banner-file>.
 # Every packable project under **/src/*.csproj (excluding Bodu.CodeStyle/**, archive/**) must have
 # exactly one distinct hero banner; CI validates coverage, distinctness, and orphans against this file.
 # Non-package art (namespace/format/family banners) is allowlisted in the workflow, not listed here.

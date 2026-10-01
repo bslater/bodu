@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="using-base45">Using Base45</h1>
 
-<p><code>Base45</code> implements the encoding defined by <a href="https://www.rfc-editor.org/rfc/rfc9285">RFC 9285</a> — the compact
+<p><code>Base45</code> implements the encoding defined by <a href="https://www.rfc-editor.org/rfc/rfc9285">RFC 9285</a> - the compact
 alphanumeric format designed to carry binary data inside a QR code's <strong>Alphanumeric mode</strong>. Its best-known deployment
 is the EU Digital COVID Certificate (the HCERT payload), but it suits any scenario where bytes must travel through a
 QR code's restricted 45-character symbol set with the smallest possible footprint.</p>
@@ -117,21 +117,21 @@ Encoding binary as Base64 forces the QR code into the far less dense Byte mode; 
 producing a meaningfully smaller symbol. The 50 % size overhead of Base45 itself is more than repaid by the denser QR
 encoding it unlocks.</p>
 <h2 id="space-is-a-data-character">Space is a data character</h2>
-<p>The space character is part of the Base45 alphabet, so it carries data — it is <strong>not</strong> ignorable whitespace. The
+<p>The space character is part of the Base45 alphabet, so it carries data - it is <strong>not</strong> ignorable whitespace. The
 <code>IgnoreWhitespace</code> style strips only tab, carriage return, and line feed; it never strips spaces:</p>
-<pre><code class="lang-csharp">Base45.Decode(&quot;%69 VD92EX0&quot;);                               // valid — the space is data
+<pre><code class="lang-csharp">Base45.Decode(&quot;%69 VD92EX0&quot;);                               // valid - the space is data
 Base45.Decode(&quot;%69 VD9\n2EX0&quot;, BaseFormatStyles.IgnoreWhitespace);  // newline stripped, then decoded
 </code></pre>
 <h2 id="strictness">Strictness</h2>
 <p>Base45 is <strong>strict</strong> per RFC 9285. The decoder rejects:</p>
 <ul>
 <li>characters outside the 45-symbol alphabet;</li>
-<li>a final group of a single character (1, 4, 7, … characters — only 2-character and 3-character terminal groups are legal);</li>
+<li>a final group of a single character (1, 4, 7, … characters - only 2-character and 3-character terminal groups are legal);</li>
 <li>a three-character group whose value exceeds <code>0xFFFF</code> (would not fit in two bytes);</li>
 <li>a two-character group whose value exceeds <code>0xFF</code>.</li>
 </ul>
-<pre><code class="lang-csharp">Base45.Decode(&quot;GGW&quot;);   // FormatException — 0x10000, out of 16-bit range
-Base45.Decode(&quot;0&quot;);     // FormatException — illegal single-character terminal group
+<pre><code class="lang-csharp">Base45.Decode(&quot;GGW&quot;);   // FormatException - 0x10000, out of 16-bit range
+Base45.Decode(&quot;0&quot;);     // FormatException - illegal single-character terminal group
 </code></pre>
 <p><code>Decode</code> throws <code>FormatException</code> on any of these; <code>TryDecode</code> returns <code>false</code> instead.</p>
 <h2 id="span-path-and-sizing">Span path and sizing</h2>
@@ -142,21 +142,21 @@ int written = Base45.Encode(payload, destination);
 
 int maxBytes = Base45.GetMaxDecodedLength(text.Length);  // decode upper bound
 </code></pre>
-<p>Base45 is <strong>not streamable</strong> — it has no <code>OperationStatus</code> path. Each call needs the entire input: pass the whole
+<p>Base45 is <strong>not streamable</strong> - it has no <code>OperationStatus</code> path. Each call needs the entire input: pass the whole
 payload (encode) or the whole string (decode) as a single span.</p>
 <h2 id="validation">Validation</h2>
 <pre><code class="lang-csharp">Base45.IsValid(&quot;BB8&quot;);        // true
-Base45.IsValid(&quot;bb8&quot;);        // false — lower case is not in the alphabet
-Base45.IsBase45Digit(' ');    // true  — space is a data symbol
+Base45.IsValid(&quot;bb8&quot;);        // false - lower case is not in the alphabet
+Base45.IsBase45Digit(' ');    // true  - space is a data symbol
 Base45.IsBase45Digit('a');    // false
 </code></pre>
 <p><code>IsValid</code> returns <code>true</code> only for input the strict decoder would accept (subject to any <code>BaseFormatStyles</code> you pass).</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="base62.html">Base62 guide</a></strong> — compact identifiers without QR-specific constraints.</li>
-<li><strong><a href="base64.html">Base64 guide</a></strong> — when density matters less than ubiquity.</li>
-<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> — Base45 is registered as <code>BinaryEncodings.Base45</code> for runtime selection.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> — every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+<li><strong><a href="base62.html">Base62 guide</a></strong> - compact identifiers without QR-specific constraints.</li>
+<li><strong><a href="base64.html">Base64 guide</a></strong> - when density matters less than ubiquity.</li>
+<li><strong><a href="binary-encodings-interface.html"><code>IBinaryEncoding</code> interface</a></strong> - Base45 is registered as <code>BinaryEncodings.Base45</code> for runtime selection.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
 </ul>
 
 </article>
@@ -176,7 +176,7 @@ Base45.IsBase45Digit('a');    // false
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

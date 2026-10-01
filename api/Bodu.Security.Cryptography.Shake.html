@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Shake" data-uid="Bodu.Security.Cryptography.Shake" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Shake Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Shake Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs">Shake.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs">Shake.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a hash using the <code>SHAKE</code> family of extendable output functions (XOFs) as defined in NIST FIPS 202.
@@ -365,7 +365,7 @@ byte[] longer = shake256.ComputeHash(message);</code></pre>
 </p>
 <ul><li>SHAKE128: rate = 168 bytes, capacity = 32 bytes, security level = 128 bits.</li><li>SHAKE256: rate = 136 bytes, capacity = 64 bytes, security level = 256 bits.</li></ul>
 <p>
-Unlike the fixed-length SHA-3 variants, SHAKE is an XOF — the output length is independent of the security parameter
+Unlike the fixed-length SHA-3 variants, SHAKE is an XOF - the output length is independent of the security parameter
 and may be any positive multiple of 8 bits. The domain separation byte <code>0x1F</code> distinguishes SHAKE from SHA-3 (
 <code>0x06</code>) and from raw Keccak. Multi-rate padding (pad10*1) appends the domain byte, zero or more zero bytes, and
 a <code>0x80</code> byte at the last position of the final rate block.
@@ -380,7 +380,7 @@ exactly <code>outputBits / 8</code> bytes regardless of which security level is 
 </p>
 <ul><li>State: 1600 bits (200 bytes); Keccak-f[1600] permutation.</li><li>Output size: configurable, any positive multiple of 8 bits.</li><li>Security level: 128 (SHAKE128) or 256 (SHAKE256).</li><li>Domain separation: <code>0x1F</code>; multi-rate padding (pad10*1).</li><li>Specification: NIST FIPS 202.</li></ul>
 <p>
-<strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required — KMAC
+<strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required - KMAC
 inputs, post-quantum signature schemes, hash-based DRBGs, and any protocol that needs more than the fixed-length
 output of SHA-3 / SHA-256. For ordinary fixed-length hashing prefer SHA-3 (FIPS 202) or <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a>
 (faster on commodity hardware). Use SHAKE128 when 128-bit security is sufficient and throughput matters; use
@@ -398,7 +398,7 @@ SHAKE256 when the higher capacity is required.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake__ctor" data-uid="Bodu.Security.Cryptography.Shake.#ctor">
   Shake()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -429,7 +429,7 @@ SHAKE256 when the higher capacity is required.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake__ctor_System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Shake.#ctor(System.Int32,System.Int32)">
   Shake(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -481,7 +481,7 @@ or 256.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_AlgorithmName" data-uid="Bodu.Security.Cryptography.Shake.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -512,7 +512,7 @@ or 256.</p>
   <h4 class="section" id="Bodu_Security_Cryptography_Shake_AlgorithmName_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
 telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
 error reporting.</p>
 </div>
 
@@ -526,7 +526,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Shake.CanReuseTransform">
   CanReuseTransform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -563,7 +563,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Shake.CanTransformMultipleBlocks">
   CanTransformMultipleBlocks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -600,7 +600,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_HashSize" data-uid="Bodu.Security.Cryptography.Shake.HashSize">
   HashSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -654,7 +654,7 @@ already been absorbed throws <a class="xref" href="https://learn.microsoft.com/d
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_SecurityLevel" data-uid="Bodu.Security.Cryptography.Shake.SecurityLevel">
   SecurityLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -695,7 +695,7 @@ already been absorbed throws <a class="xref" href="https://learn.microsoft.com/d
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Shake.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -733,7 +733,7 @@ only unmanaged resources.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Shake.HashCore(System.ReadOnlySpan{System.Byte})">
   HashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -779,7 +779,7 @@ override.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_HashFinal" data-uid="Bodu.Security.Cryptography.Shake.HashFinal">
   HashFinal()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -817,7 +817,7 @@ the requested number of output bytes from the sponge state.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Shake_Initialize" data-uid="Bodu.Security.Cryptography.Shake.Initialize">
   Initialize()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Shake.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -891,7 +891,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

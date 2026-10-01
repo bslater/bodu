@@ -90,15 +90,15 @@
 <p><code>Money&lt;TCurrency&gt;</code> is an immutable, value-equatable monetary amount
 whose currency is encoded in the type parameter, not stored as a
 runtime field. This shifts the compiler from &quot;no idea what currency
-this is&quot; to &quot;knows at every call site,&quot; so the obvious error —
-adding USD to JPY — fails the build instead of slipping through to
+this is&quot; to &quot;knows at every call site,&quot; so the obvious error -
+adding USD to JPY - fails the build instead of slipping through to
 production.</p>
 <pre><code class="lang-csharp">using Bodu.Financial;
 using Bodu.Financial.Currencies;
 
 Money&lt;USD&gt; dinner = new Money&lt;USD&gt;(54.30m);
 Money&lt;USD&gt; tip    = dinner * 0.18m;
-Money&lt;USD&gt; total  = dinner + tip;       // OK — same currency
+Money&lt;USD&gt; total  = dinner + tip;       // OK - same currency
 
 Money&lt;JPY&gt; sushi = new Money&lt;JPY&gt;(2500m);
 var oops = dinner + sushi;              // Compile error
@@ -107,7 +107,7 @@ var oops = dinner + sushi;              // Compile error
 <p>Every currency ships as a sealed tag class in
 <code>Bodu.Financial.Currencies</code>. The class only exists to carry the static
 metadata <code>Money&lt;TCurrency&gt;</code> needs (the ISO 4217 code and minor-unit
-precision) — there is no instance to create:</p>
+precision) - there is no instance to create:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">public sealed class USD : ICurrency
 {
@@ -119,14 +119,14 @@ precision) — there is no instance to create:</p>
 <p>The shipped catalogue covers 155 active ISO 4217 currencies (plus 29
 historic ones), including all three minor-unit categories:</p>
 <ul>
-<li><code>MinorUnits = 0</code> — <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, etc.</li>
-<li><code>MinorUnits = 2</code> — <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, and the
+<li><code>MinorUnits = 0</code> - <code>JPY</code>, <code>KRW</code>, <code>CLP</code>, <code>ISK</code>, <code>VND</code>, <code>XAF</code>, <code>XOF</code>, etc.</li>
+<li><code>MinorUnits = 2</code> - <code>USD</code>, <code>EUR</code>, <code>GBP</code>, <code>AUD</code>, <code>CAD</code>, <code>CHF</code>, and the
 vast majority of others.</li>
-<li><code>MinorUnits = 3</code> — <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
+<li><code>MinorUnits = 3</code> - <code>BHD</code>, <code>IQD</code>, <code>JOD</code>, <code>KWD</code>, <code>LYD</code>, <code>OMR</code>, <code>TND</code>.</li>
 </ul>
 <p>The bundled tags are not privileged: you can declare your own type
-implementing <code>ICurrency</code> — its <code>IsoCode</code> must be three uppercase ASCII
-letters — to mint a <code>Money&lt;TCurrency&gt;</code> for a unit outside the shipped
+implementing <code>ICurrency</code> - its <code>IsoCode</code> must be three uppercase ASCII
+letters - to mint a <code>Money&lt;TCurrency&gt;</code> for a unit outside the shipped
 set. Such a tag stays in the generic world; bridging it to the
 runtime-tagged <code>Money</code> requires a code the shipped <code>CurrencyCode</code>
 catalogue defines (see <a href="#runtime-tagged-amounts-money">Runtime-tagged amounts</a>).</p>
@@ -134,10 +134,10 @@ catalogue defines (see <a href="#runtime-tagged-amounts-money">Runtime-tagged am
 <p>The primary constructor rounds the amount to the currency's
 minor-unit precision using banker's rounding
 (<code>MidpointRounding.ToEven</code>):</p>
-<pre><code class="lang-csharp">new Money&lt;USD&gt;(1.235m);              // 1.24m   — banker's rounding
-new Money&lt;USD&gt;(1.245m);              // 1.24m   — round-half-to-even
-new Money&lt;JPY&gt;(99.6m);               // 100m    — JPY has 0 minor units
-new Money&lt;BHD&gt;(12.3456m);            // 12.346m — BHD has 3 minor units
+<pre><code class="lang-csharp">new Money&lt;USD&gt;(1.235m);              // 1.24m   - banker's rounding
+new Money&lt;USD&gt;(1.245m);              // 1.24m   - round-half-to-even
+new Money&lt;JPY&gt;(99.6m);               // 100m    - JPY has 0 minor units
+new Money&lt;BHD&gt;(12.3456m);            // 12.346m - BHD has 3 minor units
 </code></pre>
 <p>For a different rounding rule, pass it explicitly:</p>
 <!-- compile -->
@@ -158,12 +158,12 @@ var zero  = Zero&lt;JPY&gt;();
 initializer.</p>
 <h2 id="same-currency-arithmetic">Same-currency arithmetic</h2>
 <p>Addition, subtraction, comparison, and unary negation require the
-same <code>TCurrency</code> on both sides — that's the whole point of the
+same <code>TCurrency</code> on both sides - that's the whole point of the
 type-parameter design. Scalar multiplication and division accept a
 <code>decimal</code> and round the result to the minor-unit precision:</p>
 <pre><code class="lang-csharp">Money&lt;USD&gt; total   = Of&lt;USD&gt;(54.30m) + Of&lt;USD&gt;(8.20m);
 Money&lt;USD&gt; doubled = Of&lt;USD&gt;(19.99m) * 2m;
-Money&lt;USD&gt; share   = Of&lt;USD&gt;(10m)    / 3m;        // 3.33m  — rounded
+Money&lt;USD&gt; share   = Of&lt;USD&gt;(10m)    / 3m;        // 3.33m  - rounded
 
 // Money / Money produces a dimensionless ratio:
 decimal ratio = Of&lt;USD&gt;(10m) / Of&lt;USD&gt;(4m);       // 2.5m
@@ -177,8 +177,8 @@ helpers that arithmetic alone does not give you. On both <code>Money&lt;TCurrenc
 (<a class="xref" href="../../api/Bodu.Financial.Extensions.MoneyOfTCurrencyExtensions.html">MoneyOfTCurrencyExtensions</a>) and the
 runtime-tagged <code>Money</code> (<a class="xref" href="../../api/Bodu.Financial.Extensions.MoneyExtensions.html">MoneyExtensions</a>),
 <code>Abs</code>, <code>Sign</code>, <code>IsZero</code>, <code>IsNegative</code>, and <code>IsPositive</code> are <strong>extension
-properties</strong> — the library is built with the C# 14 compiler, so they read
-without parentheses — and <code>Clamp</code>, <code>Min</code>, and <code>Max</code> are plain static
+properties</strong> - the library is built with the C# 14 compiler, so they read
+without parentheses - and <code>Clamp</code>, <code>Min</code>, and <code>Max</code> are plain static
 helpers on the typed class, because a two-operand comparison reads better
 unprefixed than as <code>a.Max(b)</code>:</p>
 <!-- compile -->
@@ -237,20 +237,20 @@ Console.WriteLine(runtime.Abs.IsPositive);   // True
 <tr>
 <td><code>Clamp(value, min, max)</code></td>
 <td>static</td>
-<td>—</td>
+<td>-</td>
 <td>Inclusive range; <code>ArgumentException</code> when <code>min</code> exceeds <code>max</code>.</td>
 </tr>
 <tr>
 <td><code>Min(left, right)</code> / <code>Max(left, right)</code></td>
 <td>static</td>
-<td>—</td>
+<td>-</td>
 <td>The smaller / larger of two amounts.</td>
 </tr>
 <tr>
 <td><code>ToCompactString(format, provider, precision)</code></td>
 <td>method</td>
 <td>method</td>
-<td>Abbreviated <code>K</code> / <code>M</code> / <code>B</code> rendering — see <a href="#compact-formatting">Compact formatting</a>.</td>
+<td>Abbreviated <code>K</code> / <code>M</code> / <code>B</code> rendering - see <a href="#compact-formatting">Compact formatting</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -260,9 +260,9 @@ Console.WriteLine(runtime.Abs.IsPositive);   // True
 classic extension <em>methods</em> (<code>balance.Abs()</code>, <code>balance.IsZero()</code>); the shipped packages use
 the property form. <code>Clamp</code>, <code>Min</code>, and <code>Max</code> are static in both.</p>
 </div>
-<p>The typed conversion helpers that pair <code>Money&lt;TCurrency&gt;</code> with a rate provider —
+<p>The typed conversion helpers that pair <code>Money&lt;TCurrency&gt;</code> with a rate provider -
 <code>ConvertTo&lt;TSource, TTarget&gt;</code> and <code>ConvertToWithRate&lt;TSource, TTarget&gt;</code> in
-<a class="xref" href="../../api/Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a> — live in the same
+<a class="xref" href="../../api/Bodu.Financial.Extensions.MoneyOfTCurrencyExchangeRateExtensions.html">MoneyOfTCurrencyExchangeRateExtensions</a> - live in the same
 namespace; see <a href="exchange-rates.html#audit-grade-conversion-through-moneytcurrency">Audit-grade conversion</a>
 in the exchange-rates guide.</p>
 <h2 id="cross-currency-conversion">Cross-currency conversion</h2>
@@ -277,17 +277,17 @@ Money&lt;EUR&gt; eur = usd.Convert&lt;EUR&gt;(0.93m);    // 93.00 EUR (2 dp)
 <code>MidpointRounding.ToEven</code> and can be overridden.</p>
 <h2 id="allocation">Allocation</h2>
 <p><code>Allocate(parts)</code> splits the amount into the requested number of
-shares whose sum equals the original — the residual minor units are
+shares whose sum equals the original - the residual minor units are
 distributed one per share from the start of the array:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Money&lt;USD&gt;[] shares = new Money&lt;USD&gt;(0.10m).Allocate(3);
-// [0.04, 0.03, 0.03]  — sums to exactly 0.10
+// [0.04, 0.03, 0.03]  - sums to exactly 0.10
 </code></pre>
 <p>This is sign-stable: a negative amount distributes the residual in
 the same direction.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Money&lt;USD&gt;[] losses = new Money&lt;USD&gt;(-10m).Allocate(3);
-// [-3.34, -3.33, -3.33]  — sums to exactly -10
+// [-3.34, -3.33, -3.33]  - sums to exactly -10
 </code></pre>
 <p>Ratio-based allocation handles weighted splits:</p>
 <!-- compile -->
@@ -308,13 +308,13 @@ always sum back to the original amount with no penny lost or invented.</p>
 down the edge behaviour and how allocation interacts with <code>MoneyBag</code> and the
 <code>MonetaryContext</code>.</p>
 <p><strong>The residual rule is a fixed policy, not a parameter.</strong> Both overloads
-distribute leftover minor units by the largest-remainder (Hamilton) method —
+distribute leftover minor units by the largest-remainder (Hamilton) method -
 each slot receives one extra unit in descending order of its fractional
 remainder, ties broken by ascending input order. That algorithm is the single
 member of <a class="xref" href="../../api/Bodu.Financial.AllocationPolicy.html">AllocationPolicy</a> (<code>LargestRemainder</code>), and it is
 also the value carried by <a class="xref" href="../../api/Bodu.Financial.MonetaryContext.html">MonetaryContext</a> through its
 <code>Allocation</code> property. Note that <code>Allocate(int)</code> and
-<code>Allocate(ReadOnlySpan&lt;decimal&gt;)</code> do <strong>not</strong> take a <code>MonetaryContext</code> — they
+<code>Allocate(ReadOnlySpan&lt;decimal&gt;)</code> do <strong>not</strong> take a <code>MonetaryContext</code> - they
 always round to the currency's own minor-unit precision and always sum back to
 the original. The context's <code>Allocation</code> policy documents the strategy the
 library applies; it is not a per-call knob on these methods today.</p>
@@ -338,7 +338,7 @@ new Money&lt;USD&gt;(0.02m).Allocate(5);        // [0.01, 0.01, 0, 0, 0]
 <code>ArgumentOutOfRangeException</code>.</p>
 <p><strong><code>MoneyBag</code> aggregates across currencies but does not allocate them as a unit.</strong>
 A <a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a> tracks one balance per currency, so to split a
-multi-currency position you allocate each currency's slot independently — each
+multi-currency position you allocate each currency's slot independently - each
 <code>Allocate</code> call sums back exactly within its own currency:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">MoneyBag bag = MoneyBag.Empty
@@ -349,8 +349,8 @@ Money&lt;USD&gt;[] usdSplit = bag.GetBalance&lt;USD&gt;()!.Value.Allocate(3);   
 Money&lt;EUR&gt;[] eurSplit = bag.GetBalance&lt;EUR&gt;()!.Value.Allocate(3);   // [33.00, 33.00, 33.00]
 </code></pre>
 <p><strong>Where <code>MonetaryContext</code> does change rounding.</strong> The context governs the
-<em>operation</em> boundaries — multiplication, division, conversion, and the
-settlement of a <code>CalculatedMoney</code> — not the residual distribution. So when you
+<em>operation</em> boundaries - multiplication, division, conversion, and the
+settlement of a <code>CalculatedMoney</code> - not the residual distribution. So when you
 need a non-banker's rounding rule before splitting, apply it at the multiply step
 and allocate the rounded result, which then sums back exactly under the fixed
 largest-remainder rule:</p>
@@ -364,15 +364,15 @@ Money&lt;USD&gt; commission = new Money&lt;USD&gt;(17m).Multiply(0.125m, awayFro
 Money&lt;USD&gt;[] shares = commission.Allocate(3);                                // sums to 2.13
 </code></pre>
 <p><code>MoneyBag.ConvertTo&lt;TTarget&gt;</code> takes a related but separate
-<a class="xref" href="../../api/Bodu.Financial.MoneyBagConversionRoundingPolicy.html">MoneyBagConversionRoundingPolicy</a> — <code>SumRawThenRound</code>
+<a class="xref" href="../../api/Bodu.Financial.MoneyBagConversionRoundingPolicy.html">MoneyBagConversionRoundingPolicy</a> - <code>SumRawThenRound</code>
 (round once after summing every converted balance, the default) or
-<code>RoundEachCurrencyThenSum</code> (round each converted balance first) — which decides
+<code>RoundEachCurrencyThenSum</code> (round each converted balance first) - which decides
 where the single rounding event lands when collapsing a bag to one currency.</p>
 <h2 id="exact-arithmetic-for-long-chains">Exact arithmetic for long chains</h2>
 <p>Every operation that needs to round (<code>*</code>, <code>/</code>, <code>Convert</code>) rounds at
 the call site. When a calculation chains several such steps, the
-errors accumulate. For exact intermediate arithmetic — compound
-interest, tax stacking, percentage-of-percentage — round-trip
+errors accumulate. For exact intermediate arithmetic - compound
+interest, tax stacking, percentage-of-percentage - round-trip
 through <code>Fraction&lt;BigInteger&gt;</code>:</p>
 <pre><code class="lang-csharp">Money&lt;USD&gt; principal = new Money&lt;USD&gt;(1000m);
 Fraction&lt;BigInteger&gt; monthlyRate = Fraction&lt;BigInteger&gt;.Create(5, 1200);  // 5%/12
@@ -384,13 +384,13 @@ for (int i = 0; i &lt; 24; i++)
 
 Money&lt;USD&gt; balance = Money&lt;USD&gt;.FromFraction(exact);   // one rounding event
 </code></pre>
-<p>The common case — multiply once by a fraction — has a shortcut:</p>
+<p>The common case - multiply once by a fraction - has a shortcut:</p>
 <pre><code class="lang-csharp">Money&lt;USD&gt; result = principal.MultiplyExact(growth);
 </code></pre>
 <h2 id="deferred-rounding-with-calculatedmoney">Deferred rounding with <code>CalculatedMoney</code></h2>
 <p><code>Fraction&lt;BigInteger&gt;</code> is mathematically exact but heavyweight. When
-you only need to defer rounding across a chain of <code>decimal</code> steps —
-not full rational exactness — <code>CalculatedMoney</code> is the lighter middle
+you only need to defer rounding across a chain of <code>decimal</code> steps -
+not full rational exactness - <code>CalculatedMoney</code> is the lighter middle
 tier. It is a runtime-tagged, high-precision amount that carries the
 full <code>decimal</code> precision through arithmetic and rounds <strong>once</strong>, at the
 settlement boundary:</p>
@@ -401,7 +401,7 @@ Money settled = running.RoundToMoney();          // single rounding event → Mo
 Money&lt;USD&gt; usd = settled.As&lt;USD&gt;();
 </code></pre>
 <p><code>ToCalculated()</code> is available on both <code>Money&lt;TCurrency&gt;</code> and the
-runtime <code>Money</code>, and always returns the runtime <code>CalculatedMoney</code> —
+runtime <code>Money</code>, and always returns the runtime <code>CalculatedMoney</code> -
 there is no generic <code>CalculatedMoney&lt;TCurrency&gt;</code>. Arithmetic (<code>+</code>, <code>-</code>,
 <code>*</code>, <code>/</code>, and the named <code>Multiply</code> / <code>Divide</code>) preserves precision, and
 mixing two different currencies throws <code>InvalidOperationException</code> at
@@ -412,7 +412,7 @@ control the rounding strategy, scale, and cash rounding, or a bare
 </code></pre>
 <p>Pick the tier that fits the calculation: <code>Money&lt;TCurrency&gt;</code> rounds at
 every step (settlement-grade), <code>CalculatedMoney</code> defers rounding at
-full <code>decimal</code> precision (28–29 significant digits), and
+full <code>decimal</code> precision (28-29 significant digits), and
 <code>Fraction&lt;BigInteger&gt;</code> is exact. Reach for <code>CalculatedMoney</code> in tax
 apportionment and unit-rate products where <code>decimal</code> precision is
 sufficient, and for <code>Fraction</code> only when the chain must be exact.</p>
@@ -474,7 +474,7 @@ m.ToString(&quot;F0&quot;, CultureInfo.InvariantCulture);   // &quot;1235&quot;
 formatting APIs in modern .NET.</p>
 <h3 id="locale-aware-formatting-with-l">Locale-aware formatting with <code>L</code></h3>
 <p>The <code>L</code> specifier renders the amount through the culture's native
-<code>NumberFormatInfo.CurrencyPositivePattern</code> — symbol position,
+<code>NumberFormatInfo.CurrencyPositivePattern</code> - symbol position,
 decimal separator, grouping separator, and parenthesised negatives
 all follow what the locale would do for <code>decimal.ToString(&quot;C&quot;)</code>. The
 catch is the currency symbol itself: the locale picks a symbol from
@@ -484,13 +484,13 @@ ISO code when the locale's currency differs from <code>TCurrency</code>:</p>
 var jpy = new Money&lt;JPY&gt;(1234m);
 var eur = new Money&lt;EUR&gt;(1234.56m);
 
-// Culture's region currency matches — use the local symbol:
+// Culture's region currency matches - use the local symbol:
 usd.ToString(&quot;L&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;$1,234.56&quot;
 jpy.ToString(&quot;L&quot;, new CultureInfo(&quot;ja-JP&quot;));   // &quot;¥1,234&quot;
 eur.ToString(&quot;L&quot;, new CultureInfo(&quot;de-DE&quot;));   // &quot;1.234,56 €&quot;
 eur.ToString(&quot;L&quot;, new CultureInfo(&quot;fr-FR&quot;));   // &quot;1 234,56 €&quot;
 
-// Currencies differ — substitute the ISO code in the locale's slot:
+// Currencies differ - substitute the ISO code in the locale's slot:
 jpy.ToString(&quot;L&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;JPY 1,234&quot;
 usd.ToString(&quot;L&quot;, new CultureInfo(&quot;de-DE&quot;));   // &quot;1.234,56 USD&quot;
 </code></pre>
@@ -506,29 +506,29 @@ to the ISO-substitution form, which always works regardless of
 region.</p>
 <h3 id="eliding-the-currency-when-redundant">Eliding the currency when redundant</h3>
 <p>Prefixing any of <code>C</code>, <code>G</code>, or <code>L</code> with <code>~</code> drops the currency
-designator <em>only when the culture already implies it</em> — useful for
+designator <em>only when the culture already implies it</em> - useful for
 logs and exports where the active culture is uniform and the ISO
 code adds noise on every line, but you still want a guard against a
 stray foreign-currency value sneaking through:</p>
 <pre><code class="lang-csharp">var usd = new Money&lt;USD&gt;(1234.56m);
 var jpy = new Money&lt;JPY&gt;(1234m);
 
-usd.ToString(&quot;~C&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;1,234.56&quot;    — elided
-jpy.ToString(&quot;~C&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;JPY 1,234&quot;   — kept
+usd.ToString(&quot;~C&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;1,234.56&quot;    - elided
+jpy.ToString(&quot;~C&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;JPY 1,234&quot;   - kept
 
-usd.ToString(&quot;~L&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;19.99&quot;       — elided
-jpy.ToString(&quot;~L&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;JPY 1,234&quot;   — kept
+usd.ToString(&quot;~L&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;19.99&quot;       - elided
+jpy.ToString(&quot;~L&quot;, new CultureInfo(&quot;en-US&quot;));   // &quot;JPY 1,234&quot;   - kept
 </code></pre>
 <p>The &quot;matches&quot; test uses <code>RegionInfo.ISOCurrencySymbol</code> for the
 culture passed to the formatter (not <code>CultureInfo.CurrentCulture</code>
 unless that's what was passed). Neutral cultures and the invariant
-culture never match, so <code>~</code> is safe to apply unconditionally — when
+culture never match, so <code>~</code> is safe to apply unconditionally - when
 the formatter has no region context, the ISO code stays in the
 output.</p>
 <h3 id="reusable-formatting-with-moneyformatter">Reusable formatting with <code>MoneyFormatter</code></h3>
 <p>The format strings above are convenient for one-offs, but when you
-need to apply the <em>same</em> formatting decisions repeatedly — across a
-report, an export, or a UI surface — build a reusable
+need to apply the <em>same</em> formatting decisions repeatedly - across a
+report, an export, or a UI surface - build a reusable
 <a class="xref" href="../../api/Bodu.Financial.MoneyFormatter.html">MoneyFormatter</a> once with
 <a class="xref" href="../../api/Bodu.Financial.MoneyFormatterBuilder.html">MoneyFormatterBuilder</a> and call it per value. The
 formatter operates on the runtime-tagged <a class="xref" href="../../api/Bodu.Financial.Money.html">Money</a>,
@@ -543,7 +543,7 @@ so it can format any currency through a single instance:</p>
 string a = formatter.Format(new Money&lt;USD&gt;(1234.56m).ToMoney());  // &quot;1,234.56&quot;
 string b = formatter.Format(new Money&lt;JPY&gt;(1234m).ToMoney());     // &quot;JPY 1,234&quot;
 </code></pre>
-<p>The builder mirrors the format-string options as fluent calls —
+<p>The builder mirrors the format-string options as fluent calls -
 <code>WithIsoCode()</code> / <code>WithSymbol()</code> / <code>WithEnglishName()</code> /
 <code>WithNumericOnly()</code> select the <a class="xref" href="../../api/Bodu.Financial.CurrencyDisplay.html">CurrencyDisplay</a>
 mode (<code>IsoCode</code>, <code>Symbol</code>, <code>EnglishName</code>, <code>None</code>); <code>WithCulture</code>,
@@ -576,9 +576,9 @@ Money&lt;USD&gt;.Parse(&quot;$19.99&quot;, CultureInfo.InvariantCulture);      /
 <p><code>IParsable&lt;Money&lt;TCurrency&gt;&gt;</code> and <code>ISpanParsable&lt;Money&lt;TCurrency&gt;&gt;</code>
 are implemented for the generic-math interface set.</p>
 <h3 id="tuning-parse-behaviour-with-moneyparseoptions">Tuning parse behaviour with <code>MoneyParseOptions</code></h3>
-<p>The strictness above is the default. To relax or retarget it — for
+<p>The strictness above is the default. To relax or retarget it - for
 example when importing a spreadsheet column or round-tripping a value
-your own formatter produced — pass a
+your own formatter produced - pass a
 <a class="xref" href="../../api/Bodu.Financial.MoneyParseOptions.html">MoneyParseOptions</a> whose
 <a class="xref" href="../../api/Bodu.Financial.MoneyParseMode.html">MoneyParseMode</a> selects the policy:</p>
 <table>
@@ -615,7 +615,7 @@ uses the same options object when parsing a value whose currency is not
 known until run time.</p>
 <h2 id="json">JSON</h2>
 <p>JSON support ships in the companion <code>Bodu.Financial.Serialization.Json</code>
-package; register its converters before serializing — the core types
+package; register its converters before serializing - the core types
 carry no <code>[JsonConverter]</code> attribute:</p>
 <pre><code class="lang-csharp">using Bodu.Financial.Serialization.Json;
 
@@ -624,7 +624,7 @@ var options = new JsonSerializerOptions().AddFinancialJsonConverters();
 <pre><code class="lang-json">{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }
 </code></pre>
 <p>The deserializer verifies the <code>&quot;currency&quot;</code> field matches
-<code>TCurrency.IsoCode</code> and throws <code>JsonException</code> on mismatch — drift
+<code>TCurrency.IsoCode</code> and throws <code>JsonException</code> on mismatch - drift
 between the persisted currency and the code's expectation surfaces as
 an error rather than a silent re-interpretation.</p>
 <h2 id="cash-rounding">Cash rounding</h2>
@@ -642,7 +642,7 @@ banker's rounding by default:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">new Money&lt;CHF&gt;(12.34m).RoundToCash();    // CHF 12.35
 new Money&lt;NZD&gt;(5.07m).RoundToCash();     // NZD 5.10
-new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 — no-op, no cash increment
+new Money&lt;USD&gt;(19.99m).RoundToCash();    // USD 19.99 - no-op, no cash increment
 </code></pre>
 <p>Pass <code>MidpointRounding.AwayFromZero</code> to round midpoints up instead of
 toward the nearest even denomination:</p>
@@ -650,13 +650,13 @@ toward the nearest even denomination:</p>
 <pre><code class="lang-csharp">new Money&lt;NZD&gt;(5.05m).RoundToCash();                                // NZD 5.00 (banker's down to even)
 new Money&lt;NZD&gt;(5.05m).RoundToCash(MidpointRounding.AwayFromZero);   // NZD 5.10
 </code></pre>
-<p>Cash rounding is for physical cash totals only — electronic
+<p>Cash rounding is for physical cash totals only - electronic
 transactions retain the full <code>MinorUnits</code> precision. Use the method at
 the point where the total becomes a cash payment, not at every
 intermediate step.</p>
 <h2 id="stochastic-rounding">Stochastic rounding</h2>
-<p>Every rounding rule that always resolves a midpoint the same way — banker's,
-away from zero, toward zero — is deterministic and therefore <em>biased</em> over a
+<p>Every rounding rule that always resolves a midpoint the same way - banker's,
+away from zero, toward zero - is deterministic and therefore <em>biased</em> over a
 long series of operations in one direction: a fee schedule that rounds a
 million half-cents down loses half a cent a million times. <code>MonetaryContext</code>
 carries the rounding rule as an <code>IRoundingStrategy</code>, and
@@ -666,7 +666,7 @@ equal to the discarded fraction and <em>down</em> otherwise, so the expected val
 each rounding equals the raw amount and the drift cancels out in aggregate.</p>
 <p>That property costs determinism. Two roundings of the same input may differ,
 which is exactly what makes the strategy unsuitable for anything a reader must
-be able to recompute — an invoice line, a tax figure, a ledger posting — and
+be able to recompute - an invoice line, a tax figure, a ledger posting - and
 suitable for statistical allocations, simulations, and internal rebalancing
 where the <em>sum</em> matters more than any one row. The draw comes from an injected
 sampler, so a test can pin the direction, and a seeded <code>Random</code> gives a
@@ -679,7 +679,7 @@ using Bodu.Financial.Currencies;
 var context = new MonetaryContext { Rounding = StochasticRoundingStrategy.Shared };
 
 var unitPrice = new Money&lt;USD&gt;(0.10m);
-Money&lt;USD&gt; lineTotal = unitPrice.Multiply(0.35m, context);   // 0.035 rounds to 0.03 or 0.04 — 50/50 here
+Money&lt;USD&gt; lineTotal = unitPrice.Multiply(0.35m, context);   // 0.035 rounds to 0.03 or 0.04 - 50/50 here
 
 // Over many roundings the mean converges on the raw amount; a fixed midpoint rule would drift.
 decimal raw = 0.035m;
@@ -699,14 +699,14 @@ var random = new Random(42);
 var seeded = new StochasticRoundingStrategy(random.NextDouble);
 Console.WriteLine(seeded.Round(2.345m, 2));
 </code></pre>
-<p>The rule is applied on the number line — &quot;up&quot; is toward positive infinity —
+<p>The rule is applied on the number line - &quot;up&quot; is toward positive infinity -
 so negative amounts are unbiased in the same way as positive ones, and a value
 already exact at the target scale is returned unchanged. <code>Shared</code> is backed by
 <code>Random.Shared</code> and safe for concurrent use; a strategy over your own <code>Random</code>
 instance is only as thread-safe as that instance. The sampler must return a
 value in <code>[0, 1)</code>; the scale must be between <code>0</code> and <code>28</code>.</p>
 <h2 id="historic-currencies">Historic currencies</h2>
-<p>The shipped catalogue includes 29 demonetized currencies — the
+<p>The shipped catalogue includes 29 demonetized currencies - the
 twenty Euro-zone predecessors (ATS, BEF, CYP, DEM, EEK, ESP, FIM,
 FRF, GRD, HRK, IEP, ITL, LTL, LUF, LVL, MTL, NLG, PTE, SIT, SKK) plus
 nine other notable replacements (AZM, GHC, MZM, ROL, SRG, TMM, VEB,
@@ -721,9 +721,9 @@ Money&lt;DEM&gt;.SuccessorIsoCode;      // &quot;EUR&quot;
 // Arithmetic still works normally:
 Money&lt;DEM&gt; total = new Money&lt;DEM&gt;(100m) + new Money&lt;DEM&gt;(50m);   // DEM 150.00
 </code></pre>
-<p>For runtime processing of legacy ledgers — for example, validating
+<p>For runtime processing of legacy ledgers - for example, validating
 that an imported journal entry's currency was active on its posting
-date — read the metadata from <code>CurrencyRegistry</code>:</p>
+date - read the metadata from <code>CurrencyRegistry</code>:</p>
 <pre><code class="lang-csharp">CurrencyInfo info = CurrencyRegistry.Get(entry.IsoCode);
 if (info.IsHistoric &amp;&amp; entry.PostedOn &gt; info.DemonetizedOn)
     throw new InvalidOperationException(
@@ -733,12 +733,12 @@ if (info.IsHistoric &amp;&amp; entry.PostedOn &gt; info.DemonetizedOn)
 <p><code>Money</code> is the runtime-tagged sister of <code>Money&lt;TCurrency&gt;</code>. The
 currency is carried as a <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>
 field rather than a type parameter, so the same code path handles any
-shipped currency at runtime — useful for deserialisation, generic
+shipped currency at runtime - useful for deserialisation, generic
 invoicing engines, and FX systems where the currency comes from data,
 not type.</p>
 <pre><code class="lang-csharp">// `options` has the financial converters registered (see the JSON section above).
 Money invoice = JsonSerializer.Deserialize&lt;Money&gt;(payload, options)!;
-// invoice could be &quot;USD 19.99&quot;, &quot;EUR 19.99&quot;, or &quot;JPY 200&quot; — same code.
+// invoice could be &quot;USD 19.99&quot;, &quot;EUR 19.99&quot;, or &quot;JPY 200&quot; - same code.
 </code></pre>
 <p>Arithmetic semantics match <code>Money&lt;T&gt;</code> but cross-currency operations
 throw <code>InvalidOperationException</code> at runtime instead of failing the
@@ -758,8 +758,8 @@ bool ok = runtime.TryAs(out Money&lt;USD&gt; result);        // safe, returns fa
 </code></pre>
 <p><code>Money</code> rounds to the <code>MinorUnits</code> resolved for its
 <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> on construction. The
-runtime currency set is the shipped ISO 4217 catalogue — active and
-historic — that the enum enumerates; a code outside it cannot be
+runtime currency set is the shipped ISO 4217 catalogue - active and
+historic - that the enum enumerates; a code outside it cannot be
 constructed, so a mistyped or unsupported currency fails fast rather
 than silently adopting a default precision.</p>
 <h2 id="mixed-currency-portfolios-moneybag">Mixed-currency portfolios: <code>MoneyBag</code></h2>
@@ -771,7 +771,7 @@ ledger positions across currencies without silently merging them:</p>
     .Add(new Money&lt;JPY&gt;(10_000m));
 
 wallet.GetBalance&lt;USD&gt;();              // Money&lt;USD&gt; 100.00
-wallet.GetBalance(CurrencyCode.EUR);   // Money — EUR 50.00
+wallet.GetBalance(CurrencyCode.EUR);   // Money - EUR 50.00
 wallet.Count;                          // 3
 </code></pre>
 <p>Operators chain naturally:</p>
@@ -799,8 +799,8 @@ pair is in the table, so a typical &quot;USD → X&quot; set of rates is enough
 to convert in both directions.</p>
 <h3 id="auditable-bag-conversion">Auditable bag conversion</h3>
 <p><code>ConvertTo&lt;TTarget&gt;</code> answers &quot;what is this bag worth in AUD?&quot; and nothing
-else. When the answer has to be <em>explained</em> — a month-end revaluation, a
-customer statement, a reconciliation — <code>ConvertToWithAudit&lt;TTarget&gt;</code> returns
+else. When the answer has to be <em>explained</em> - a month-end revaluation, a
+customer statement, a reconciliation - <code>ConvertToWithAudit&lt;TTarget&gt;</code> returns
 the same total together with one
 <a class="xref" href="../../api/Bodu.Financial.MoneyBagConversionLine.html">MoneyBagConversionLine</a> per source currency: the raw
 balance, the exact <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> that
@@ -849,8 +849,8 @@ foreach (MoneyBagConversionLine line in audit.Lines)   // ISO-lexicographic: AUD
 <p>The audit is a <code>readonly record struct</code> of <code>(Total, Lines)</code>; <code>Lines</code> is in
 ISO-lexicographic order, the same order the bag itself enumerates, so a
 report built from it is stable across runs. The dated
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> is required — an
-audit without a resolved date is not one — and any date-resolution policy the
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> is required - an
+audit without a resolved date is not one - and any date-resolution policy the
 provider accepts can be passed; <code>null</code> means <code>RateLookupOptions.Exact</code>.</p>
 <p>The optional last argument, a
 <a class="xref" href="../../api/Bodu.Financial.MoneyBagConversionRoundingPolicy.html">MoneyBagConversionRoundingPolicy</a>, decides <em>where</em> the
@@ -871,20 +871,20 @@ Money&lt;AUD&gt; sumThenRound = ledger.ConvertToWithAudit&lt;AUD&gt;(rates, new 
 Money&lt;AUD&gt; roundEachThenSum = ledger.ConvertToWithAudit&lt;AUD&gt;(
     rates, new DateOnly(2024, 3, 15), null, MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum).Total;
 
-Console.WriteLine($&quot;{sumThenRound} vs {roundEachThenSum}&quot;);   // AUD 31.51 vs AUD 31.50 — the half-cents round away separately
+Console.WriteLine($&quot;{sumThenRound} vs {roundEachThenSum}&quot;);   // AUD 31.51 vs AUD 31.50 - the half-cents round away separately
 </code></pre>
 <p>The same policy parameter is accepted by the plain <code>ConvertTo&lt;TTarget&gt;</code> overloads,
 so a bag can be totalled line-rounded without producing the audit.</p>
 <h2 id="currencies-outside-the-shipped-catalogue">Currencies outside the shipped catalogue</h2>
 <p>The runtime <code>Money</code> identifies its currency with the
 <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a> enum, which enumerates the
-full ISO 4217 set — every active code plus the historic ones above. That
+full ISO 4217 set - every active code plus the historic ones above. That
 set is closed: there is no runtime registration seam, so a code the enum
 does not define cannot be constructed as a <code>Money</code>. The trade-off is
-deliberate — a mistyped or unsupported currency fails fast instead of
+deliberate - a mistyped or unsupported currency fails fast instead of
 flowing through the system as a silently accepted value.</p>
-<p>For a <em>generic</em> amount in a unit outside that set — a commodity weight, a
-loyalty-point unit, a pre-decimal currency — declare your own <code>ICurrency</code>
+<p>For a <em>generic</em> amount in a unit outside that set - a commodity weight, a
+loyalty-point unit, a pre-decimal currency - declare your own <code>ICurrency</code>
 tag and use <code>Money&lt;TCurrency&gt;</code>. The tag supplies its own precision and
 never consults the runtime catalogue:</p>
 <pre><code class="lang-csharp">public sealed class XPT : ICurrency      // troy ounces of platinum, say
@@ -899,20 +899,20 @@ Money&lt;XPT&gt; holding = new Money&lt;XPT&gt;(12.3456m);   // generic arithmet
 <p>A custom tag's <code>IsoCode</code> must be three uppercase ASCII letters, and the
 value stays in the generic world: because <code>XPT</code> is not a <code>CurrencyCode</code>
 member, it cannot bridge to the runtime-tagged <code>Money</code>. To substitute or
-restrict the metadata used for the <em>shipped</em> currencies — for a test, or
-an alternate data source — install a custom <code>ICurrencyLookup</code> through
+restrict the metadata used for the <em>shipped</em> currencies - for a test, or
+an alternate data source - install a custom <code>ICurrencyLookup</code> through
 <code>CurrencyResolution</code> (next section).</p>
 <h2 id="swapping-the-currency-catalogue-currencyresolution">Swapping the currency catalogue: <code>CurrencyResolution</code></h2>
 <p>Runtime <code>Money</code> resolves its <a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyCode.html">CurrencyCode</a>
 to minor-unit precision through an <em>ambient</em> <code>ICurrencyLookup</code>, exposed
 as <code>CurrencyResolution.Current</code>. By default this is a registry-backed
 lookup, so ordinary construction and metadata resolution behave exactly
-as described above — you only need this seam when you want to substitute
+as described above - you only need this seam when you want to substitute
 the catalogue (a custom data source, or a fixed set for a test).</p>
 <p>Replace the process-wide default once at start-up:</p>
 <pre><code class="lang-csharp">CurrencyResolution.SetDefault(myCurrencyLookup);
 </code></pre>
-<p>Or install a temporary, flow-scoped override — ideal for tests, since
+<p>Or install a temporary, flow-scoped override - ideal for tests, since
 it is restored on dispose and isolated per async control flow:</p>
 <pre><code class="lang-csharp">using (CurrencyResolution.PushScoped(myCurrencyLookup))
 {
@@ -921,7 +921,7 @@ it is restored on dispose and isolated per async control flow:</p>
     var m = new Money(1.239m, CurrencyCode.BHD);   // precision via the scoped catalogue
 }   // previous lookup restored here
 </code></pre>
-<p><code>Money&lt;TCurrency&gt;</code> is unaffected — its precision comes from the
+<p><code>Money&lt;TCurrency&gt;</code> is unaffected - its precision comes from the
 <code>TCurrency</code> tag, not the ambient lookup. Only the runtime <code>Money</code>
 resolution paths (construction, <code>MinorUnits</code>, <code>From</code>, parsing, and
 formatting) consult <code>CurrencyResolution.Current</code>.</p>
@@ -943,11 +943,11 @@ provider.UseCurrencyResolution();   // ambient default = the DI lookup
 <pre><code class="lang-json">{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }
 </code></pre>
 <p>Deserialisation on <code>Money&lt;TCurrency&gt;</code> rejects payloads whose
-<code>&quot;currency&quot;</code> field does not match <code>TCurrency.IsoCode</code> —
+<code>&quot;currency&quot;</code> field does not match <code>TCurrency.IsoCode</code> -
 currency drift surfaces as <code>JsonException</code>, not as a silently
 re-interpreted amount. <code>Money</code> accepts any code the shipped
 <code>CurrencyCode</code> catalogue defines, rounding to that currency's
-<code>MinorUnits</code>, and rejects one it does not — an unknown or custom
+<code>MinorUnits</code>, and rejects one it does not - an unknown or custom
 code in the payload throws rather than deserialising.</p>
 <p><code>MoneyBag</code> uses a <code>{ &quot;balances&quot;: { ... } }</code> wrapper:</p>
 <pre><code class="lang-json">{ &quot;balances&quot;: { &quot;USD&quot;: 100.00, &quot;EUR&quot;: 50.00, &quot;JPY&quot;: 10000 } }
@@ -958,7 +958,7 @@ arbitrary-precision number support.</p>
 <p>To switch the wire shape, register the converters under an explicit
 <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a>. The <code>Compact</code>
 policy collapses each money to a single string and a bag to a flat
-ISO-keyed object — smaller on the wire and readable in a log line:</p>
+ISO-keyed object - smaller on the wire and readable in a log line:</p>
 <pre><code class="lang-csharp">using Bodu.Financial.Serialization.Json;
 
 var options = new JsonSerializerOptions();
@@ -968,12 +968,12 @@ JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);   // &quot;19.9
 JsonSerializer.Serialize(wallet, options);                   // { &quot;USD&quot;: 100.00, &quot;EUR&quot;: 50.00 }
 </code></pre>
 <p><code>Lenient</code> keeps the <code>Strict</code> shape but normalises lowercase ISO codes
-to uppercase and trims surrounding whitespace before validation — for
+to uppercase and trims surrounding whitespace before validation - for
 ingesting spreadsheets and external feeds, not as a canonical storage
 shape. The same call registers converters for <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>
 and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> too.</p>
-<p>A <code>Money</code> carrying an explicit minor-unit scale — a unit price finer
-than the currency's registered precision — additionally emits a
+<p>A <code>Money</code> carrying an explicit minor-unit scale - a unit price finer
+than the currency's registered precision - additionally emits a
 <code>scale</code> property in the object shape
 (<code>{ &quot;amount&quot;: 145.678912, &quot;currency&quot;: &quot;USD&quot;, &quot;scale&quot;: 6 }</code>) so the
 precision survives the round-trip; unrounded <code>CalculatedMoney</code>
@@ -984,20 +984,20 @@ serialises its full decimal verbatim. See
 <li><strong>Calculations that genuinely span unknown currencies.</strong> When you
 cannot fix the currency at the type-system level (for example, a
 generic invoicing engine that handles arbitrary user-supplied
-currencies), use <code>Money</code> instead — the trade-off is runtime
+currencies), use <code>Money</code> instead - the trade-off is runtime
 cross-currency checks rather than compile-time ones.</li>
 <li><strong>Mixed-currency totals.</strong> Use <code>MoneyBag</code> and a single
 <code>ConvertTo&lt;TTarget&gt;</code> call at the boundary where the total is
 materialised.</li>
 <li><strong>Storage of foreign-exchange spot rates or other ratios.</strong> Use
-<code>Fraction&lt;BigInteger&gt;</code> directly — those values are dimensionless
+<code>Fraction&lt;BigInteger&gt;</code> directly - those values are dimensionless
 and benefit from exact rational arithmetic.</li>
 <li><strong>Sub-minor-unit precision.</strong> <code>Money&lt;TCurrency&gt;</code> rounds to the
 currency's minor-unit precision on construction. For unit prices at
 a known finer scale (for example, half-pennies in gas pricing or a
 six-place share price), use the runtime-tagged <code>Money</code> with an
 explicit scale via <code>Money.FromExplicitScale</code>, or carry the
-calculation in <code>CalculatedMoney</code> — see
+calculation in <code>CalculatedMoney</code> - see
 <a href="monetary-precision.html">Monetary precision &amp; unit pricing</a>. For
 exact multi-step arithmetic, promote to <code>Fraction&lt;BigInteger&gt;</code> and
 snap to <code>Money&lt;TCurrency&gt;</code> only at the persistence boundary.</li>
@@ -1007,15 +1007,15 @@ snap to <code>Money&lt;TCurrency&gt;</code> only at the persistence boundary.</l
 <li><a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag</code> API reference</a></li>
-<li><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html"><code>CalculatedMoney</code> API reference</a> — the deferred-rounding tier.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html"><code>CalculatedMoney</code> API reference</a> - the deferred-rounding tier.</li>
 <li><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a></li>
-<li><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyResolution.html"><code>CurrencyResolution</code></a> — the ambient currency-lookup seam.</li>
+<li><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyResolution.html"><code>CurrencyResolution</code></a> - the ambient currency-lookup seam.</li>
 <li><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html"><code>IRateProvider</code></a></li>
 <li><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code> static factory helpers</a></li>
 <li><a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html"><code>ICurrency</code> interface</a></li>
-<li><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html"><code>Fraction&lt;T&gt;</code> API reference</a> — the
+<li><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html"><code>Fraction&lt;T&gt;</code> API reference</a> - the
 exact-arithmetic escape hatch.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
 </ul>
 
 </article>
@@ -1035,7 +1035,7 @@ exact-arithmetic escape hatch.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

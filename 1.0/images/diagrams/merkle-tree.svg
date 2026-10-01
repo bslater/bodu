@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 570" role="img" aria-labelledby="merkle-title merkle-desc">
   <title id="merkle-title">Merkle tree hash construction over fixed-size blocks</title>
-  <desc id="merkle-desc">Input bytes are divided into fixed-size blocks; each block is hashed to a leaf under the 0x00 prefix; leaves are paired and hashed level by level under the 0x01 prefix until a single root hash remains. The diagram shows block size (B), the default fan-out of two, a short final block hashed at its actual length, and a lone leaf promoted to the next level unchanged rather than re-hashed — the RFC 6962 shape.</desc>
+  <desc id="merkle-desc">Input bytes are divided into fixed-size blocks; each block is hashed to a leaf under the 0x00 prefix; leaves are paired and hashed level by level under the 0x01 prefix until a single root hash remains. The diagram shows block size (B), the default fan-out of two, a short final block hashed at its actual length, and a lone leaf promoted to the next level unchanged rather than re-hashed - the RFC 6962 shape.</desc>
   <defs>
     <style>
       .bg { fill: #0F172A; }
@@ -33,7 +33,7 @@
     <rect class="panel" width="800" height="550" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">Merkle Tree — block size B, fan-out F = 2 (RFC 6962)</text>
+    <text class="title" x="16" y="20">Merkle Tree - block size B, fan-out F = 2 (RFC 6962)</text>
     <text class="formula" x="784" y="38" text-anchor="end">leaves: H(0x00 ‖ Bₖ) · internal: H(0x01 ‖ left ‖ right) · lone node: promoted unchanged</text>
 
     <!-- ========================================================== -->
@@ -103,7 +103,7 @@
     </g>
 
     <!-- ========================================================== -->
-    <!-- Row 3: Level 1 — pairs (L₁,L₂) → N₁, (L₃,L₄) → N₂, (L₅,L₆) → N₃; L₇ promoted -->
+    <!-- Row 3: Level 1 - pairs (L₁,L₂) → N₁, (L₃,L₄) → N₂, (L₅,L₆) → N₃; L₇ promoted -->
     <!-- ========================================================== -->
     <g transform="translate(0 220)">
       <text class="level" x="16" y="12">Level 1</text>
@@ -131,7 +131,7 @@
     </g>
 
     <!-- ========================================================== -->
-    <!-- Row 4: Level 2 — (N₁,N₂) → M₁, (N₃,L₇) → M₂ -->
+    <!-- Row 4: Level 2 - (N₁,N₂) → M₁, (N₃,L₇) → M₂ -->
     <!-- ========================================================== -->
     <g transform="translate(0 310)">
       <text class="level" x="16" y="12">Level 2</text>
@@ -151,7 +151,7 @@
     </g>
 
     <!-- ========================================================== -->
-    <!-- Row 5: Root — (M₁,M₂) → Root -->
+    <!-- Row 5: Root - (M₁,M₂) → Root -->
     <!-- ========================================================== -->
     <g transform="translate(0 400)">
       <text class="level" x="16" y="12">Level 3 (root)</text>

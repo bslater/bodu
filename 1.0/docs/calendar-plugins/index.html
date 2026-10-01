@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar.Plugins — Introduction | BODU </title>
+      <title>Bodu.Globalization.Calendar.Plugins - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar.Plugins — Introduction | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.Plugins - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,14 +88,14 @@
 <h1 id="boduglobalizationcalendarplugins">Bodu.Globalization.Calendar.Plugins</h1>
 
 <p><img src="../../images/hero-calendar-plugins.svg" alt="Bodu.Globalization.Calendar.Plugins"></p>
-<p><strong>Bodu.Globalization.Calendar.Plugins</strong> loads external assemblies that contribute custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations — astronomical calculators, ecclesiastical computus variants, gazetted-table lookups — into the calendar runtime, behind an explicit, deny-by-default trust gate. It is a companion to the runtime in the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
+<p><strong>Bodu.Globalization.Calendar.Plugins</strong> loads external assemblies that contribute custom <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a> implementations - astronomical calculators, ecclesiastical computus variants, gazetted-table lookups - into the calendar runtime, behind an explicit, deny-by-default trust gate. It is a companion to the runtime in the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
 <p>Use it only when algorithms must be discovered from assemblies you do not compile into the host. An application that consumes the built-in algorithms or the curated <a href="../calendar-data/index.html">data packs</a> never needs it, and an in-process custom algorithm needs only the runtime's <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a><code>.Register(key, algorithm)</code>.</p>
 <h2 id="the-loading-pipeline">The loading pipeline</h2>
 <ol>
-<li><strong>Trust.</strong> The host supplies an <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a>. The loader builds a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginTrustContext.html">PluginTrustContext</a> — assembly name, path, SHA-256 file hash, and strong-name public-key token — and the policy answers with a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginTrustResult.html">PluginTrustResult</a> (<code>Trusted()</code> or <code>Rejected(reason)</code>). Trust is evaluated <strong>before</strong> the plugin's entry-point type is activated, so an untrusted assembly's constructors never run.</li>
+<li><strong>Trust.</strong> The host supplies an <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.IPluginTrustPolicy.html">IPluginTrustPolicy</a>. The loader builds a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginTrustContext.html">PluginTrustContext</a> - assembly name, path, SHA-256 file hash, and strong-name public-key token - and the policy answers with a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginTrustResult.html">PluginTrustResult</a> (<code>Trusted()</code> or <code>Rejected(reason)</code>). Trust is evaluated <strong>before</strong> the plugin's entry-point type is activated, so an untrusted assembly's constructors never run.</li>
 <li><strong>Discovery.</strong> The assembly must declare its entry point once at assembly level with <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginAttribute.html">NotableDatePluginAttribute</a> (<code>[assembly: NotableDatePlugin(typeof(ContosoPlugin))]</code>). The type implements <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.INotableDatePlugin.html">INotableDatePlugin</a> (<code>Name</code>, <code>Version</code>) and, to contribute algorithms, <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.INotableDateAlgorithmPlugin.html">INotableDateAlgorithmPlugin</a> (<code>GetAlgorithms()</code> returning key / algorithm pairs).</li>
-<li><strong>Activation.</strong> The loader instantiates the entry-point type. Failures are typed: <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a> (with <code>AssemblyName</code> and the policy's <code>Reason</code>), <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a>, or <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a> (with <code>PluginType</code>) — all deriving from <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a>.</li>
-<li><strong>Registration.</strong> <code>RegisterAlgorithms</code> copies the plugin's contributed keys into a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>. Registration is atomic — the contribution is fully staged and validated before the registry is touched — and a key that collides with a built-in or already-registered algorithm is <strong>rejected</strong> unless the host opts in.</li>
+<li><strong>Activation.</strong> The loader instantiates the entry-point type. Failures are typed: <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginNotTrustedException.html">PluginNotTrustedException</a> (with <code>AssemblyName</code> and the policy's <code>Reason</code>), <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginMissingAttributeException.html">PluginMissingAttributeException</a>, or <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.PluginActivationException.html">PluginActivationException</a> (with <code>PluginType</code>) - all deriving from <a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginException.html">NotableDatePluginException</a>.</li>
+<li><strong>Registration.</strong> <code>RegisterAlgorithms</code> copies the plugin's contributed keys into a <a class="xref" href="../../api/Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a>. Registration is atomic - the contribution is fully staged and validated before the registry is touched - and a key that collides with a built-in or already-registered algorithm is <strong>rejected</strong> unless the host opts in.</li>
 <li><strong>Wiring.</strong> The registry is passed to both <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a> (so documents may reference the plugin's keys during validation) and <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> (so <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> rules resolve at query time).</li>
 </ol>
 <h2 id="the-loader">The loader</h2>
@@ -117,16 +117,16 @@
 <tr>
 <td><code>LoadFromFile(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.NotableDatePluginHandle.html">NotableDatePluginHandle</a></td>
-<td>The same load, but the returned handle owns the collectible load context: <code>Dispose()</code> initiates an unload (<code>IsUnloadable</code> reports whether one is pending). Unloading completes only once nothing references the plugin's types — a registry still holding its algorithms keeps the context alive.</td>
+<td>The same load, but the returned handle owns the collectible load context: <code>Dispose()</code> initiates an unload (<code>IsUnloadable</code> reports whether one is pending). Unloading completes only once nothing references the plugin's types - a registry still holding its algorithms keeps the context alive.</td>
 </tr>
 <tr>
 <td><code>LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)</code></td>
 <td><code>INotableDatePlugin</code></td>
-<td>An assembly you have already loaded. <strong>Weaker guarantee</strong> — module initializers have already run before the trust check, and the hash is re-read from <code>Assembly.Location</code> rather than the loaded bytes — so never use it for untrusted input.</td>
+<td>An assembly you have already loaded. <strong>Weaker guarantee</strong> - module initializers have already run before the trust check, and the hash is re-read from <code>Assembly.Location</code> rather than the loaded bytes - so never use it for untrusted input.</td>
 </tr>
 <tr>
 <td><code>RegisterAlgorithms(INotableDatePlugin plugin, NotableDateAlgorithmRegistry registry, ILogger? logger = null)</code></td>
-<td><code>int</code> — the number of algorithms registered</td>
+<td><code>int</code> - the number of algorithms registered</td>
 <td>Default registration: colliding keys are rejected. A plugin that is not an <code>INotableDateAlgorithmPlugin</code> contributes nothing and returns <code>0</code>.</td>
 </tr>
 <tr>
@@ -160,7 +160,7 @@
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.CompositePluginTrustPolicy.html">CompositePluginTrustPolicy</a><code>(params IPluginTrustPolicy[] policies)</code></td>
 <td><strong>Every</strong> composed policy admits; the first rejection short-circuits and its reason is surfaced.</td>
-<td>Fails closed — an empty composite rejects everything. Compose strong-name + hash for both provenance and integrity.</td>
+<td>Fails closed - an empty composite rejects everything. Compose strong-name + hash for both provenance and integrity.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy.html">DelegatingPluginTrustPolicy</a><code>(Func&lt;PluginTrustContext, PluginTrustResult&gt; decide)</code></td>
@@ -174,7 +174,7 @@
 </tr>
 </tbody>
 </table>
-<p>The <a href="../../guides/calendar/plugin-trust.html">plugin trust guide</a> states the security boundary plainly — what the gate does and does not evaluate, why user-writable locations should be rejected, and how registration is gated a second time.</p>
+<p>The <a href="../../guides/calendar/plugin-trust.html">plugin trust guide</a> states the security boundary plainly - what the gate does and does not evaluate, why user-writable locations should be rejected, and how registration is gated a second time.</p>
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.Globalization.Calendar.Plugins
 </code></pre>
@@ -185,7 +185,7 @@
 using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.Plugins;
 
-// Provenance (strong-name token) and integrity (pinned SHA-256) — both must pass.
+// Provenance (strong-name token) and integrity (pinned SHA-256) - both must pass.
 IPluginTrustPolicy trust = new CompositePluginTrustPolicy(
     new StrongNamePluginTrustPolicy([&quot;c0ffee1234567890&quot;]),
     new FileHashPluginTrustPolicy(new Dictionary&lt;string, byte[]&gt;
@@ -215,14 +215,14 @@ const string xml = &quot;&quot;&quot;
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ =&gt; null, registry);
 var service = new NotableDateService(resource, new NotableDateServiceOptions { Algorithms = registry });
 </code></pre>
-<p>To unload later, take a handle instead — <code>using NotableDatePluginHandle handle = NotableDatePluginLoader.LoadFromFile(path, trust);</code> — and discard the registry and service before disposing it. Authoring the plugin side (the assembly attribute, the <code>INotableDateAlgorithmPlugin</code> implementation, and an <code>INotableDateAlgorithm</code> returning <code>DateOnly? Calculate(int year)</code>) is shown in <a href="../../guides/calendar/building-the-service.html#authoring-a-plugin">Building and extending the service</a>.</p>
+<p>To unload later, take a handle instead - <code>using NotableDatePluginHandle handle = NotableDatePluginLoader.LoadFromFile(path, trust);</code> - and discard the registry and service before disposing it. Authoring the plugin side (the assembly attribute, the <code>INotableDateAlgorithmPlugin</code> implementation, and an <code>INotableDateAlgorithm</code> returning <code>DateOnly? Calculate(int year)</code>) is shown in <a href="../../guides/calendar/building-the-service.html#authoring-a-plugin">Building and extending the service</a>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../guides/calendar/plugin-trust.html">Calendar plugin trust</a></strong> — the security boundary, what the gate evaluates, the bundled policies, the second gate at registration, and unloading.</li>
-<li><strong><a href="../../guides/calendar/building-the-service.html">Building and extending the service</a></strong> — authoring a plugin, loading and registering it, trust policies, and the plugin exception hierarchy alongside the runtime's other extension seams.</li>
-<li><strong><a href="../../guides/calendar/algorithms.html">Date-calculation algorithms</a></strong> — the built-in <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> catalogue a plugin extends.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.html">Bodu.Globalization.Calendar.Plugins API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../calendar/index.html">Bodu.Globalization.Calendar introduction</a></strong> — the runtime the plugins extend.</li>
+<li><strong><a href="../../guides/calendar/plugin-trust.html">Calendar plugin trust</a></strong> - the security boundary, what the gate evaluates, the bundled policies, the second gate at registration, and unloading.</li>
+<li><strong><a href="../../guides/calendar/building-the-service.html">Building and extending the service</a></strong> - authoring a plugin, loading and registering it, trust policies, and the plugin exception hierarchy alongside the runtime's other extension seams.</li>
+<li><strong><a href="../../guides/calendar/algorithms.html">Date-calculation algorithms</a></strong> - the built-in <code>&lt;Algorithm key=&quot;…&quot;&gt;</code> catalogue a plugin extends.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Plugins.html">Bodu.Globalization.Calendar.Plugins API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../calendar/index.html">Bodu.Globalization.Calendar introduction</a></strong> - the runtime the plugins extend.</li>
 </ul>
 
 </article>
@@ -242,7 +242,7 @@ var service = new NotableDateService(resource, new NotableDateServiceOptions { A
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

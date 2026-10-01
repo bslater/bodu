@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Recurrence — Introduction | BODU </title>
+      <title>Bodu.Globalization.Recurrence - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Recurrence — Introduction | BODU ">
+      <meta name="title" content="Bodu.Globalization.Recurrence - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,7 +88,7 @@
 <h1 id="boduglobalizationrecurrence">Bodu.Globalization.Recurrence</h1>
 
 <p><img src="../../images/hero-recurrence.svg" alt="Bodu.Globalization.Recurrence"></p>
-<p><strong>Bodu.Globalization.Recurrence</strong> evaluates recurring schedules expressed in the industry-standard textual grammars — RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every form parses from text, renders back to canonical text, compares by value, and answers the two questions a scheduler asks: <em>when is the next occurrence?</em> and <em>when was the previous one?</em> It is an independent sibling of the notable-date engine in the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
+<p><strong>Bodu.Globalization.Recurrence</strong> evaluates recurring schedules expressed in the industry-standard textual grammars - RFC 5545 (iCalendar) recurrence rules, Vixie-style cron expressions, and instant-anchored intervals in the RFC 5545 duration grammar. Every form parses from text, renders back to canonical text, compares by value, and answers the two questions a scheduler asks: <em>when is the next occurrence?</em> and <em>when was the previous one?</em> It is an independent sibling of the notable-date engine in the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
 <p>The package is published as <strong>Preview</strong>: the API surface is stable enough to evaluate and build on, but may still change between releases without a major-version bump. It depends only on <code>Bodu.Core</code> and carries no calendar data.</p>
 <h2 id="the-four-schedule-forms">The four schedule forms</h2>
 <table>
@@ -105,7 +105,7 @@
 <td>RFC 5545 recurrence rule</td>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRule.html">RecurrenceRule</a></td>
 <td><code>FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR</code></td>
-<td>Calendar-aligned. A base frequency (<code>DAILY</code> … <code>YEARLY</code>) refined by <code>INTERVAL</code>, bounded by <code>COUNT</code> or <code>UNTIL</code>, and filtered by the <code>BY*</code> parts. The rule carries no start of its own — the series start (<code>DTSTART</code>) is passed to every query.</td>
+<td>Calendar-aligned. A base frequency (<code>DAILY</code> … <code>YEARLY</code>) refined by <code>INTERVAL</code>, bounded by <code>COUNT</code> or <code>UNTIL</code>, and filtered by the <code>BY*</code> parts. The rule carries no start of its own - the series start (<code>DTSTART</code>) is passed to every query.</td>
 </tr>
 <tr>
 <td>Composed rule set</td>
@@ -130,8 +130,8 @@
 <h2 id="the-common-contract">The common contract</h2>
 <p>Whatever the form, the query surface is the same, so a host can put all four behind one adapter:</p>
 <ul>
-<li><strong><code>GetNextOccurrence(after, inclusive)</code></strong> returns the first occurrence strictly after <code>after</code> — or at <code>after</code> when <code>inclusive</code> is <code>true</code> — as a nullable value; <code>null</code> means the schedule produces nothing further (a <code>COUNT</code> exhausted, an <code>UNTIL</code> passed, or a cron expression that can never match).</li>
-<li><strong><code>GetPreviousOccurrence(before, inclusive)</code></strong> returns the last occurrence strictly before <code>before</code> — or at <code>before</code> when <code>inclusive</code> is <code>true</code>. Due-ness is a one-line comparison over this answer: <code>lastCompleted &lt; schedule.GetPreviousOccurrence(now, inclusive: true)</code>.</li>
+<li><strong><code>GetNextOccurrence(after, inclusive)</code></strong> returns the first occurrence strictly after <code>after</code> - or at <code>after</code> when <code>inclusive</code> is <code>true</code> - as a nullable value; <code>null</code> means the schedule produces nothing further (a <code>COUNT</code> exhausted, an <code>UNTIL</code> passed, or a cron expression that can never match).</li>
+<li><strong><code>GetPreviousOccurrence(before, inclusive)</code></strong> returns the last occurrence strictly before <code>before</code> - or at <code>before</code> when <code>inclusive</code> is <code>true</code>. Due-ness is a one-line comparison over this answer: <code>lastCompleted &lt; schedule.GetPreviousOccurrence(now, inclusive: true)</code>.</li>
 <li>Both queries have <strong><code>DateTime</code> and <code>DateTimeOffset</code> overloads</strong>. The <code>DateTime</code> overloads preserve the argument's <code>Kind</code>; the <code>DateTimeOffset</code> overloads evaluate on the wall-clock time and reattach the argument's offset. The rule-based forms additionally expose windowed and open-ended <code>GetOccurrences</code> enumerators.</li>
 <li><strong><code>Parse</code> / <code>TryParse</code></strong> follow the BCL <code>IParsable&lt;T&gt;</code> shape, and every form adds a <strong><code>TryParse(s, out result, out failureMessage)</code></strong> overload whose message names the specific defect (<code>The cron field '25' is not valid.</code>, <code>The COUNT and UNTIL rule parts cannot both appear in the same rule.</code>) rather than a generic &quot;invalid format&quot;.</li>
 <li><strong><code>ToString()</code></strong> renders the canonical text, which re-parses to an equal value; <strong><code>Equals</code></strong> compares by value, so a host can detect a changed schedule by comparing the parsed objects rather than the raw strings.</li>
@@ -139,12 +139,12 @@
 <h3 id="purity">Purity</h3>
 <p>Every answer is a pure function of its arguments. No member reads the wall clock (<code>DateTime.Now</code>, <code>DateTimeOffset.UtcNow</code>) or consults the machine time zone (<code>TimeZoneInfo.Local</code>); the library's own test suite enforces this with a metadata scan. Consequences:</p>
 <ul>
-<li>Tests are deterministic — supply the &quot;now&quot; you want to test against.</li>
+<li>Tests are deterministic - supply the &quot;now&quot; you want to test against.</li>
 <li>The library never owns a timer, stores a last-run, or marks an occurrence consumed. Missed occurrences coalesce structurally: an evaluation long after five missed occurrences answers exactly as an evaluation just after the first one, because the answer is an instant, not a backlog.</li>
 <li>Daylight-saving transitions are the caller's concern. The rule-based forms carry no time zone; a host that wants a <em>local-time</em> schedule across a transition re-derives the offset on each evaluation and passes it in. See <a href="concepts.html#offsets-and-daylight-saving">Core concepts</a>.</li>
 </ul>
 <h3 id="independence-from-the-calendar-engine">Independence from the calendar engine</h3>
-<p><code>Bodu.Globalization.Recurrence</code> and <code>Bodu.Globalization.Calendar</code> share no dependency in either direction. The calendar engine's own <code>&lt;Recurrence&gt;</code> sources (<code>&lt;DailyInterval&gt;</code>, <code>&lt;Weekly&gt;</code>, <code>&lt;MonthlyDay&gt;</code>, <code>&lt;MonthlyWeekday&gt;</code>) are calendar-internal strategies for resolving notable dates; this package is the standalone, data-free scheduling grammar. Calendar-aware filtering of a recurrence stream — &quot;the next weekday occurrence that is not a public holiday&quot; — is composition from outside: enumerate here, filter with a <code>NotableDateService</code> there. The <a href="../../guides/recurrence/index.html#calendar-aware-filtering-is-composition-not-a-feature">recurrence guide</a> shows the pattern.</p>
+<p><code>Bodu.Globalization.Recurrence</code> and <code>Bodu.Globalization.Calendar</code> share no dependency in either direction. The calendar engine's own <code>&lt;Recurrence&gt;</code> sources (<code>&lt;DailyInterval&gt;</code>, <code>&lt;Weekly&gt;</code>, <code>&lt;MonthlyDay&gt;</code>, <code>&lt;MonthlyWeekday&gt;</code>) are calendar-internal strategies for resolving notable dates; this package is the standalone, data-free scheduling grammar. Calendar-aware filtering of a recurrence stream - &quot;the next weekday occurrence that is not a public holiday&quot; - is composition from outside: enumerate here, filter with a <code>NotableDateService</code> there. The <a href="../../guides/recurrence/index.html#calendar-aware-filtering-is-composition-not-a-feature">recurrence guide</a> shows the pattern.</p>
 <h2 id="which-form-do-i-need">Which form do I need?</h2>
 <table>
 <thead>
@@ -178,7 +178,7 @@
 <tr>
 <td>&quot;Every 4 hours after the previous run completed&quot;</td>
 <td><code>AnchoredInterval</code></td>
-<td>Instant-aligned rather than calendar-aligned — the spacing is measured from an anchor the caller supplies.</td>
+<td>Instant-aligned rather than calendar-aligned - the spacing is measured from an anchor the caller supplies.</td>
 </tr>
 <tr>
 <td>A schedule bounded to <em>n</em> occurrences or an end date</td>
@@ -222,7 +222,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceFrequency.html">RecurrenceFrequency</a></td>
-<td><code>Secondly</code> … <code>Yearly</code> — the <code>FREQ</code> scale. Sub-daily frequencies parse and round-trip, but enumerating them is not yet supported.</td>
+<td><code>Secondly</code> … <code>Yearly</code> - the <code>FREQ</code> scale. Sub-daily frequencies parse and round-trip, but enumerating them is not yet supported.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Recurrence.WeekDayNum.html">WeekDayNum</a></td>
@@ -232,12 +232,12 @@
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — occurrence vs. due-ness, anchor / <code>DTSTART</code>, inclusive boundaries, <code>WKST</code>, the <code>BY*</code> parts and <code>BYSETPOS</code>, the cron day-field rule and search horizon, the duration grammar, offsets and daylight saving, value equality.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install plus a parse → next / previous → enumerate sample for each form, the builder, a set round trip, and defect-naming <code>TryParse</code>.</li>
-<li><strong><a href="../../guides/recurrence/index.html">Recurrence and scheduling guide</a></strong> — choosing a form, the due-ness recipe, calendar-aware filtering by composition, bounded searches, and conformance.</li>
-<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> — one console project per form plus a scheduling host that puts all four behind one adapter.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> — how this package sits beside the calendar engine and its companions.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - occurrence vs. due-ness, anchor / <code>DTSTART</code>, inclusive boundaries, <code>WKST</code>, the <code>BY*</code> parts and <code>BYSETPOS</code>, the cron day-field rule and search horizon, the duration grammar, offsets and daylight saving, value equality.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install plus a parse → next / previous → enumerate sample for each form, the builder, a set round trip, and defect-naming <code>TryParse</code>.</li>
+<li><strong><a href="../../guides/recurrence/index.html">Recurrence and scheduling guide</a></strong> - choosing a form, the due-ness recipe, calendar-aware filtering by composition, bounded searches, and conformance.</li>
+<li><strong><a href="../../samples/recurrence.html">Runnable samples</a></strong> - one console project per form plus a scheduling host that puts all four behind one adapter.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Recurrence.html">Bodu.Globalization.Recurrence API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> - how this package sits beside the calendar engine and its companions.</li>
 </ul>
 
 </article>
@@ -257,7 +257,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

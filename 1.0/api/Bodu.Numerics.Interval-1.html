@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Numerics_Interval_1" data-uid="Bodu.Numerics.Interval`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Interval&lt;T&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Interval&lt;T&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics">Bodu.Numerics</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs">Interval{T}.Factories.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs">Interval{T}.Factories.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable, bounded interval over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> type, with independent open or
@@ -203,13 +203,13 @@ closed endpoints on each side.</p>
   <h2 id="Bodu_Numerics_Interval_1_examples">Examples</h2>
   <pre><code class="lang-csharp">using Bodu.Numerics;
 
-// Scheduling windows — closed-open at the end keeps adjacent slots disjoint.
+// Scheduling windows - closed-open at the end keeps adjacent slots disjoint.
 var morning = Interval&lt;int&gt;.ClosedOpen(9, 12);
 var meeting = Interval&lt;int&gt;.ClosedOpen(11, 13);
 bool clash   = morning.Overlaps(meeting);            // True
 var conflict = morning.Intersect(meeting);           // [11, 12)
 
-// Validation predicate — a percentage in [0, 100].
+// Validation predicate - a percentage in [0, 100].
 var percentage = Interval&lt;double&gt;.Closed(0.0, 100.0);
 bool ok = percentage.Contains(99.5);                 // True
 
@@ -224,7 +224,7 @@ q1.TryUnion(q2, out var firstHalf);                  // firstHalf = [0, 181)</co
 <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> is the value-typed building block for working with numeric ranges as first-class data.
 Rather than encoding a range as a <code>(min, max)</code> tuple or a pair of <code>bool</code> predicates and threading the
 inclusivity convention through every call site, an interval carries both endpoints and their inclusivity in a single
-immutable value, with set algebra — membership, containment, intersection, union, overlap, adjacency — defined on
+immutable value, with set algebra - membership, containment, intersection, union, overlap, adjacency - defined on
 the type. Reach for it whenever the range itself is a value the code passes around, validates against, intersects,
 merges, or persists. <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> is more general than <code>System.Range</code> (which is integer-only and
 always <code>[start, end)</code>) and safer than untyped tuples or <code>(bool, bool)</code> flags, where the inclusivity
@@ -240,12 +240,12 @@ consumer-defined numeric types.
 An interval is the set of values <code>x</code> such that <code>Lower ≤ x ≤ Upper</code> (closed-closed),
 <code>Lower &lt; x &lt; Upper</code> (open-open), <code>Lower ≤ x &lt; Upper</code> (closed-open), or
 <code>Lower &lt; x ≤ Upper</code> (open-closed). Endpoint inclusion is independent for the two sides and is
-preserved through every operation defined on the type. The closed-open shape — <code>[a, b)</code> — is the most common in
+preserved through every operation defined on the type. The closed-open shape - <code>[a, b)</code> - is the most common in
 programming contexts because adjacent half-open intervals partition a span with no overlap and no gap, matching the
 conventions of <code>System.Range</code>, LINQ's <code>Enumerable.Range</code>, and slice iterators.
 </p>
 <p>
-An interval is <b>empty</b> when its bounds do not admit any value — either <code>Lower &gt; Upper</code>, or
+An interval is <b>empty</b> when its bounds do not admit any value - either <code>Lower &gt; Upper</code>, or
 <code>Lower ≡ Upper</code> with at least one endpoint open. All empty intervals are equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a>
 by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1.equals">Equals(T)</a>, and a structural pattern-match against an empty instance always returns
 the same canonical projection regardless of how the empty value was constructed. The default-constructed
@@ -253,8 +253,8 @@ the same canonical projection regardless of how the empty value was constructed.
 than as a malformed value.
 </p>
 <p>
-Unbounded intervals — those with no lower limit, no upper limit, or neither, written <code>(-∞, b]</code>,
-<code>[a, +∞)</code>, or <code>(-∞, +∞)</code> — are representable through the <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_AtLeast__0_">AtLeast(T)</a>,
+Unbounded intervals - those with no lower limit, no upper limit, or neither, written <code>(-∞, b]</code>,
+<code>[a, +∞)</code>, or <code>(-∞, +∞)</code> - are representable through the <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_AtLeast__0_">AtLeast(T)</a>,
 <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_GreaterThan__0_">GreaterThan(T)</a>, <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_AtMost__0_">AtMost(T)</a>, <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_LessThan__0_">LessThan(T)</a>, and <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_All">All</a>
 factories. An unbounded endpoint carries no concrete value and is always open (infinity is never a member);
 <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_LowerUnbounded">LowerUnbounded</a> and <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_UpperUnbounded">UpperUnbounded</a> report which sides, if any, are unbounded, and
@@ -280,7 +280,7 @@ empty interval) via <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Num
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1__ctor__0__0_System_Boolean_System_Boolean_" data-uid="Bodu.Numerics.Interval`1.#ctor(`0,`0,System.Boolean,System.Boolean)">
   Interval(T, T, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -342,11 +342,11 @@ and compares equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_N
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_All" data-uid="Bodu.Numerics.Interval`1.All">
   All
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the unbounded interval <code>(-∞, +∞)</code> — the interval that contains every value of
+  <div class="markdown level1 summary"><p>Gets the unbounded interval <code>(-∞, +∞)</code> - the interval that contains every value of
 <code class="typeparamref">T</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -386,11 +386,11 @@ all.ToString();                  // "(-∞, +∞)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Empty" data-uid="Bodu.Numerics.Interval`1.Empty">
   Empty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the canonical empty interval — the interval that contains no values. Equal by
+  <div class="markdown level1 summary"><p>Gets the canonical empty interval - the interval that contains no values. Equal by
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1.equals">Equals(T)</a> to every other empty <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> over the same
 <code class="typeparamref">T</code>.</p>
 </div>
@@ -444,11 +444,11 @@ was never assigned reads as the empty interval rather than as a malformed value.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_IsBounded" data-uid="Bodu.Numerics.Interval`1.IsBounded">
   IsBounded
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets a value indicating whether both endpoints are finite — the interval has a concrete lower and upper limit.</p>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether both endpoints are finite - the interval has a concrete lower and upper limit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -481,11 +481,11 @@ was never assigned reads as the empty interval rather than as a malformed value.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_IsDegenerate" data-uid="Bodu.Numerics.Interval`1.IsDegenerate">
   IsDegenerate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets a value indicating whether the interval represents a single point — a closed-closed interval whose lower
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the interval represents a single point - a closed-closed interval whose lower
 and upper endpoints are equal.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -521,7 +521,7 @@ and upper endpoints are equal.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_IsEmpty" data-uid="Bodu.Numerics.Interval`1.IsEmpty">
   IsEmpty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -547,10 +547,10 @@ and upper endpoints are equal.</p>
 
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_IsEmpty_examples">Examples</h4>
-  <pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).IsEmpty;     // False — [1, 5] holds values
-Interval&lt;int&gt;.Open(5, 5).IsEmpty;       // True  — (5, 5) admits no value
-Interval&lt;int&gt;.Closed(5, 1).IsEmpty;     // True  — inverted bounds
-Interval&lt;int&gt;.Closed(5, 5).IsEmpty;     // False — the single point 5</code></pre>
+  <pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).IsEmpty;     // False - [1, 5] holds values
+Interval&lt;int&gt;.Open(5, 5).IsEmpty;       // True  - (5, 5) admits no value
+Interval&lt;int&gt;.Closed(5, 1).IsEmpty;     // True  - inverted bounds
+Interval&lt;int&gt;.Closed(5, 5).IsEmpty;     // False - the single point 5</code></pre>
 
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_IsEmpty_remarks">Remarks</h4>
@@ -558,9 +558,9 @@ Interval&lt;int&gt;.Closed(5, 5).IsEmpty;     // False — the single point 5</c
 An interval is empty when its bounds cannot admit any value. Two cases produce an empty interval:
 </p>
 <ul><li>
-<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a> is strictly greater than <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a> — the bounds are inverted.
+<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a> is strictly greater than <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a> - the bounds are inverted.
 </li><li>
-<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a> equals <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a> and at least one endpoint is open — for example <code>(5, 5]</code>,
+<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a> equals <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a> and at least one endpoint is open - for example <code>(5, 5]</code>,
 <code>[5, 5)</code>, and <code>(5, 5)</code> are all empty because no value of <code class="typeparamref">T</code> can satisfy both
 endpoint constraints. <code>[5, 5]</code> is non-empty and represents the single point <code>5</code>; see
 <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_IsDegenerate">IsDegenerate</a>.
@@ -577,11 +577,11 @@ endpoint constraints. <code>[5, 5]</code> is non-empty and represents the single
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Length" data-uid="Bodu.Numerics.Interval`1.Length">
   Length
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the algebraic length of the interval — the difference between its upper and lower endpoints.</p>
+  <div class="markdown level1 summary"><p>Gets the algebraic length of the interval - the difference between its upper and lower endpoints.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -612,7 +612,7 @@ measure of <code>[1, 2]</code>, <code>(1, 2)</code>, <code>[1, 2)</code>, and <c
 <p>
 For integer types, callers wanting the count of integers contained in the interval should compute it directly
 from <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a>, <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a>, <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_LowerInclusive">LowerInclusive</a>, and
-<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_UpperInclusive">UpperInclusive</a> — endpoint inclusion matters for that semantic, and this property does not model
+<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_UpperInclusive">UpperInclusive</a> - endpoint inclusion matters for that semantic, and this property does not model
 it.
 </p>
 <p>
@@ -637,7 +637,7 @@ infinite and not representable in <code class="typeparamref">T</code>, so this p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Lower" data-uid="Bodu.Numerics.Interval`1.Lower">
   Lower
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -674,7 +674,7 @@ infinite and not representable in <code class="typeparamref">T</code>, so this p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_LowerInclusive" data-uid="Bodu.Numerics.Interval`1.LowerInclusive">
   LowerInclusive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -712,11 +712,11 @@ infinite and not representable in <code class="typeparamref">T</code>, so this p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_LowerUnbounded" data-uid="Bodu.Numerics.Interval`1.LowerUnbounded">
   LowerUnbounded
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets a value indicating whether the lower side is unbounded — the interval extends to <code>-∞</code> with no
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the lower side is unbounded - the interval extends to <code>-∞</code> with no
 finite lower limit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -751,7 +751,7 @@ finite lower limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Upper" data-uid="Bodu.Numerics.Interval`1.Upper">
   Upper
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -788,7 +788,7 @@ finite lower limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_UpperInclusive" data-uid="Bodu.Numerics.Interval`1.UpperInclusive">
   UpperInclusive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -826,11 +826,11 @@ finite lower limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_UpperUnbounded" data-uid="Bodu.Numerics.Interval`1.UpperUnbounded">
   UpperUnbounded
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets a value indicating whether the upper side is unbounded — the interval extends to <code>+∞</code> with no
+  <div class="markdown level1 summary"><p>Gets a value indicating whether the upper side is unbounded - the interval extends to <code>+∞</code> with no
 finite upper limit.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -869,11 +869,11 @@ finite upper limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_AtLeast__0_" data-uid="Bodu.Numerics.Interval`1.AtLeast(`0)">
   AtLeast(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates the lower-bounded interval <code>[lower, +∞)</code> — every value greater than or equal to
+  <div class="markdown level1 summary"><p>Creates the lower-bounded interval <code>[lower, +∞)</code> - every value greater than or equal to
 <code class="paramref">lower</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -918,11 +918,11 @@ nonNegative.ToString();                            // "[0, +∞)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_AtMost__0_" data-uid="Bodu.Numerics.Interval`1.AtMost(`0)">
   AtMost(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper]</code> — every value less than or equal to
+  <div class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper]</code> - every value less than or equal to
 <code class="paramref">upper</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -952,7 +952,7 @@ nonNegative.ToString();                            // "[0, +∞)"</code></pre>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_AtMost__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var capped = Interval&lt;double&gt;.AtMost(5.0);   // (-∞, 5]
-capped.Contains(5.0);                        // True — closed upper
+capped.Contains(5.0);                        // True - closed upper
 capped.ToString();                           // "(-∞, 5]"</code></pre>
 
 
@@ -967,11 +967,11 @@ capped.ToString();                           // "(-∞, 5]"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Closed__0__0_" data-uid="Bodu.Numerics.Interval`1.Closed(`0,`0)">
   Closed(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates a closed-closed interval — <code>[lower, upper]</code> — that includes both endpoints.</p>
+  <div class="markdown level1 summary"><p>Creates a closed-closed interval - <code>[lower, upper]</code> - that includes both endpoints.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1003,8 +1003,8 @@ capped.ToString();                           // "(-∞, 5]"</code></pre>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Closed__0__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var percentage = Interval&lt;int&gt;.Closed(0, 100);   // [0, 100]
-percentage.Contains(0);                          // True — closed lower
-percentage.Contains(100);                        // True — closed upper
+percentage.Contains(0);                          // True - closed lower
+percentage.Contains(100);                        // True - closed upper
 percentage.ToString();                           // "[0, 100]"
 
 // Inverted bounds collapse to Empty.
@@ -1013,7 +1013,7 @@ Interval&lt;int&gt;.Closed(10, 5).IsEmpty;             // True</code></pre>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Closed__0__0__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-The closed-closed shape — also called <i>inclusive</i> — is the natural choice for ranges where both boundary
+The closed-closed shape - also called <i>inclusive</i> - is the natural choice for ranges where both boundary
 values are valid members of the set: a percentage in <code>[0, 100]</code>, a die roll in <code>[1, 6]</code>, a thermometer
 reading in <code>[-273.15, +∞)</code>. Prefer <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_ClosedOpen__0__0_">ClosedOpen(T, T)</a> for spans, slices, and scheduling
 windows where adjacent ranges should partition cleanly.
@@ -1035,11 +1035,11 @@ the two endpoints are equal, the returned interval is a degenerate single-point 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ClosedOpen__0__0_" data-uid="Bodu.Numerics.Interval`1.ClosedOpen(`0,`0)">
   ClosedOpen(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates a closed-open interval — <code>[lower, upper)</code> — that includes the lower endpoint and excludes the upper
+  <div class="markdown level1 summary"><p>Creates a closed-open interval - <code>[lower, upper)</code> - that includes the lower endpoint and excludes the upper
 endpoint.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1072,9 +1072,9 @@ endpoint.</p>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_ClosedOpen__0__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var window = Interval&lt;int&gt;.ClosedOpen(0, 100);   // [0, 100)
-window.Contains(0);                              // True  — closed lower
+window.Contains(0);                              // True  - closed lower
 window.Contains(99);                             // True
-window.Contains(100);                            // False — open upper
+window.Contains(100);                            // False - open upper
 
 // Adjacent half-open windows merge with no overlap and no gap.
 var q1 = Interval&lt;int&gt;.ClosedOpen(0, 90);
@@ -1086,8 +1086,8 @@ q1.TryUnion(q2, out var firstHalf);              // firstHalf = [0, 181)</code><
   <div class="markdown level1 remarks"><p>
 The closed-open shape is the most common in programming contexts: a range starting at an inclusive lower bound
 and ending before an exclusive upper bound matches the conventions of <code>System.Range</code>, LINQ's
-<code>Enumerable.Range</code>, and most iterator protocols. Adjacent closed-open intervals partition a span cleanly —
-<code>[0, 90)</code> and <code>[90, 181)</code> together cover exactly <code>[0, 181)</code> with no overlap and no gap — so this
+<code>Enumerable.Range</code>, and most iterator protocols. Adjacent closed-open intervals partition a span cleanly -
+<code>[0, 90)</code> and <code>[90, 181)</code> together cover exactly <code>[0, 181)</code> with no overlap and no gap - so this
 shape is the default choice for scheduling windows, bucket boundaries, and time slots.
 </p>
 </div>
@@ -1102,11 +1102,11 @@ shape is the default choice for scheduling windows, bucket boundaries, and time 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Contains_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Contains(Bodu.Numerics.Interval{`0})">
   Contains(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Determines whether this interval fully contains <code class="paramref">other</code> — every value of
+  <div class="markdown level1 summary"><p>Determines whether this interval fully contains <code class="paramref">other</code> - every value of
 <code class="paramref">other</code> is also a value of this interval.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1139,16 +1139,16 @@ interval; only the empty interval contains the empty interval as a non-empty mem
   <h4 class="section" id="Bodu_Numerics_Interval_1_Contains_Bodu_Numerics_Interval__0___examples">Examples</h4>
   <pre><code class="lang-csharp">var outer = Interval&lt;int&gt;.Closed(0, 10);
 
-outer.Contains(Interval&lt;int&gt;.Closed(2, 8));        // True — strict subset
-outer.Contains(Interval&lt;int&gt;.Closed(0, 10));       // True — equal sets
-outer.Contains(Interval&lt;int&gt;.Closed(2, 11));       // False — exceeds upper
-outer.Contains(Interval&lt;int&gt;.Empty);               // True — ∅ ⊆ every set
+outer.Contains(Interval&lt;int&gt;.Closed(2, 8));        // True - strict subset
+outer.Contains(Interval&lt;int&gt;.Closed(0, 10));       // True - equal sets
+outer.Contains(Interval&lt;int&gt;.Closed(2, 11));       // False - exceeds upper
+outer.Contains(Interval&lt;int&gt;.Empty);               // True - ∅ ⊆ every set
 
 // Endpoint inclusivity is honored: an open lower fits inside a closed lower at the same value.
 var closed = Interval&lt;int&gt;.Closed(0, 10);          // [0, 10]
 var open   = Interval&lt;int&gt;.Open(0, 10);            // (0, 10)
 closed.Contains(open);                             // True
-open.Contains(closed);                             // False — closed includes 0 and 10</code></pre>
+open.Contains(closed);                             // False - closed includes 0 and 10</code></pre>
 
 
 
@@ -1162,7 +1162,7 @@ open.Contains(closed);                             // False — closed includes 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Contains__0_" data-uid="Bodu.Numerics.Interval`1.Contains(`0)">
   Contains(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1198,12 +1198,12 @@ including itself.</p>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Contains__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var window = Interval&lt;int&gt;.ClosedOpen(1, 5);   // [1, 5)
-window.Contains(1);                            // True  — closed lower
-window.Contains(4);                            // True  — interior
-window.Contains(5);                            // False — open upper
-window.Contains(0);                            // False — outside
+window.Contains(1);                            // True  - closed lower
+window.Contains(4);                            // True  - interior
+window.Contains(5);                            // False - open upper
+window.Contains(0);                            // False - outside
 
-Interval&lt;int&gt;.Empty.Contains(0);               // False — the empty interval contains nothing</code></pre>
+Interval&lt;int&gt;.Empty.Contains(0);               // False - the empty interval contains nothing</code></pre>
 
 
 
@@ -1217,12 +1217,12 @@ Interval&lt;int&gt;.Empty.Contains(0);               // False — the empty inte
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Difference_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Difference(Bodu.Numerics.Interval{`0})">
   Difference(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns this interval with the values of <code class="paramref">other</code> removed — the set difference
-<code>this \ other</code> — as zero, one, or two disjoint intervals.</p>
+  <div class="markdown level1 summary"><p>Returns this interval with the values of <code class="paramref">other</code> removed - the set difference
+<code>this \ other</code> - as zero, one, or two disjoint intervals.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1259,7 +1259,7 @@ Interval&lt;double&gt;.All.Difference(Interval&lt;double&gt;.Closed(3, 5));     
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Difference_Bodu_Numerics_Interval__0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>The endpoint at each cut flips inclusivity: removing a closed bound leaves an open bound on the remainder, and
-vice versa. Unbounded operands are handled naturally — for example the difference of <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_All">All</a> and a
+vice versa. Unbounded operands are handled naturally - for example the difference of <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_All">All</a> and a
 finite interval yields the two half-lines around it.</p>
 </div>
 
@@ -1273,11 +1273,11 @@ finite interval yields the two half-lines around it.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Equals(Bodu.Numerics.Interval{`0})">
   Equals(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Determines whether this interval equals <code class="paramref">other</code> as a set — same lower endpoint, same upper
+  <div class="markdown level1 summary"><p>Determines whether this interval equals <code class="paramref">other</code> as a set - same lower endpoint, same upper
 endpoint, and matching inclusivity on each side. Any two empty intervals are equal regardless of the bounds used
 to construct them.</p>
 </div>
@@ -1319,7 +1319,7 @@ to construct them.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Equals_System_Object_" data-uid="Bodu.Numerics.Interval`1.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1363,7 +1363,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_GetHashCode" data-uid="Bodu.Numerics.Interval`1.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1401,11 +1401,11 @@ non-empty intervals hash on their endpoints and inclusivity flags.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_GreaterThan__0_" data-uid="Bodu.Numerics.Interval`1.GreaterThan(`0)">
   GreaterThan(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates the lower-bounded interval <code>(lower, +∞)</code> — every value strictly greater than
+  <div class="markdown level1 summary"><p>Creates the lower-bounded interval <code>(lower, +∞)</code> - every value strictly greater than
 <code class="paramref">lower</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1435,7 +1435,7 @@ non-empty intervals hash on their endpoints and inclusivity flags.</p>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_GreaterThan__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var positive = Interval&lt;double&gt;.GreaterThan(0.0);   // (0, +∞)
-positive.Contains(0.0);                             // False — open lower
+positive.Contains(0.0);                             // False - open lower
 positive.ToString();                                // "(0, +∞)"</code></pre>
 
 
@@ -1450,11 +1450,11 @@ positive.ToString();                                // "(0, +∞)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Intersect(Bodu.Numerics.Interval{`0})">
   Intersect(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the intersection of this interval with <code class="paramref">other</code> — the interval of values shared by
+  <div class="markdown level1 summary"><p>Returns the intersection of this interval with <code class="paramref">other</code> - the interval of values shared by
 both.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1484,7 +1484,7 @@ both.</p>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0___examples">Examples</h4>
   <pre><code class="lang-csharp">Interval&lt;int&gt;.Closed(1, 5).Intersect(Interval&lt;int&gt;.Closed(3, 7));   // [3, 5]
-Interval&lt;int&gt;.Closed(1, 3).Intersect(Interval&lt;int&gt;.Closed(5, 7));   // ∅ — disjoint
+Interval&lt;int&gt;.Closed(1, 3).Intersect(Interval&lt;int&gt;.Closed(5, 7));   // ∅ - disjoint
 
 // On ties, the stricter (open) inclusivity wins.
 var closed = Interval&lt;int&gt;.Closed(1, 5);   // [1, 5]
@@ -1509,11 +1509,11 @@ operands. For example, <code>[1, 5]</code> intersected with <code>(1, 5)</code> 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_LessThan__0_" data-uid="Bodu.Numerics.Interval`1.LessThan(`0)">
   LessThan(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper)</code> — every value strictly less than
+  <div class="markdown level1 summary"><p>Creates the upper-bounded interval <code>(-∞, upper)</code> - every value strictly less than
 <code class="paramref">upper</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1543,7 +1543,7 @@ operands. For example, <code>[1, 5]</code> intersected with <code>(1, 5)</code> 
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_LessThan__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var belowFive = Interval&lt;double&gt;.LessThan(5.0);   // (-∞, 5)
-belowFive.Contains(5.0);                          // False — open upper
+belowFive.Contains(5.0);                          // False - open upper
 belowFive.ToString();                             // "(-∞, 5)"</code></pre>
 
 
@@ -1558,11 +1558,11 @@ belowFive.ToString();                             // "(-∞, 5)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Open__0__0_" data-uid="Bodu.Numerics.Interval`1.Open(`0,`0)">
   Open(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates an open-open interval — <code>(lower, upper)</code> — that excludes both endpoints.</p>
+  <div class="markdown level1 summary"><p>Creates an open-open interval - <code>(lower, upper)</code> - that excludes both endpoints.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1594,7 +1594,7 @@ belowFive.ToString();                             // "(-∞, 5)"</code></pre>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Open__0__0__examples">Examples</h4>
   <pre><code class="lang-csharp">var strictlyPositive = Interval&lt;double&gt;.Open(0.0, double.PositiveInfinity);  // (0, +∞)
-strictlyPositive.Contains(0.0);                                              // False — open lower
+strictlyPositive.Contains(0.0);                                              // False - open lower
 strictlyPositive.Contains(1e-300);                                           // True
 
 // Equal bounds with both endpoints open are empty.
@@ -1603,12 +1603,12 @@ Interval&lt;int&gt;.Open(5, 5).IsEmpty;                                         
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Open__0__0__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-The open-open shape — also called <i>exclusive</i> — is the natural choice for strict inequalities such as
+The open-open shape - also called <i>exclusive</i> - is the natural choice for strict inequalities such as
 <code>0 &lt; rate &lt; 1</code> or "between but not at" semantics where neither boundary value is itself a member.
 </p>
 <p>
 When <code class="paramref">lower</code> is greater than or equal to <code class="paramref">upper</code>, the returned interval is
-empty — there is no value strictly between two equal or inverted bounds.
+empty - there is no value strictly between two equal or inverted bounds.
 </p>
 </div>
 
@@ -1622,11 +1622,11 @@ empty — there is no value strictly between two equal or inverted bounds.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_OpenClosed__0__0_" data-uid="Bodu.Numerics.Interval`1.OpenClosed(`0,`0)">
   OpenClosed(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates an open-closed interval — <code>(lower, upper]</code> — that excludes the lower endpoint and includes the
+  <div class="markdown level1 summary"><p>Creates an open-closed interval - <code>(lower, upper]</code> - that excludes the lower endpoint and includes the
 upper endpoint.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1660,15 +1660,15 @@ upper endpoint.</p>
   <h4 class="section" id="Bodu_Numerics_Interval_1_OpenClosed__0__0__examples">Examples</h4>
   <pre><code class="lang-csharp">// Billing tier: anything above $1,000 up to and including $10,000.
 var tier = Interval&lt;decimal&gt;.OpenClosed(1000m, 10_000m);   // (1000, 10000]
-tier.Contains(1000m);                                       // False — open lower
-tier.Contains(10_000m);                                     // True  — closed upper
+tier.Contains(1000m);                                       // False - open lower
+tier.Contains(10_000m);                                     // True  - closed upper
 tier.ToString();                                            // "(1000, 10000]"</code></pre>
 
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_OpenClosed__0__0__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 The open-closed shape is the mirror image of <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_ClosedOpen__0__0_">ClosedOpen(T, T)</a> and the natural choice for ranges
-expressed as "strictly greater than X, up to and including Y" — a billing tier above a threshold, a histogram
+expressed as "strictly greater than X, up to and including Y" - a billing tier above a threshold, a histogram
 bin that owns its upper edge, or a tax bracket that exits at one boundary and enters at the next.
 </p>
 </div>
@@ -1683,7 +1683,7 @@ bin that owns its upper edge, or a tax bracket that exits at one boundary and en
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Overlaps_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Overlaps(Bodu.Numerics.Interval{`0})">
   Overlaps(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1718,17 +1718,17 @@ empty interval shares no values with any interval and is therefore never overlap
   <h4 class="section" id="Bodu_Numerics_Interval_1_Overlaps_Bodu_Numerics_Interval__0___examples">Examples</h4>
   <pre><code class="lang-csharp">var a = Interval&lt;int&gt;.Closed(1, 5);
 var b = Interval&lt;int&gt;.Closed(3, 7);
-a.Overlaps(b);                                                     // True — share [3, 5]
+a.Overlaps(b);                                                     // True - share [3, 5]
 
 // Touching at a boundary but not both including it: NOT overlapping.
-Interval&lt;int&gt;.ClosedOpen(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10));   // False — neither holds 5 jointly
-Interval&lt;int&gt;.OpenClosed(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10));   // True  — both include 5
+Interval&lt;int&gt;.ClosedOpen(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10));   // False - neither holds 5 jointly
+Interval&lt;int&gt;.OpenClosed(1, 5).Overlaps(Interval&lt;int&gt;.Closed(5, 10));   // True  - both include 5
 
-Interval&lt;int&gt;.Closed(1, 2).Overlaps(Interval&lt;int&gt;.Closed(5, 6));   // False — disjoint</code></pre>
+Interval&lt;int&gt;.Closed(1, 2).Overlaps(Interval&lt;int&gt;.Closed(5, 6));   // False - disjoint</code></pre>
 
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Overlaps_Bodu_Numerics_Interval__0___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Two intervals that touch but do not share any value — for example <code>[1, 2)</code> and <code>[2, 3]</code> — do not
+  <div class="markdown level1 remarks"><p>Two intervals that touch but do not share any value - for example <code>[1, 2)</code> and <code>[2, 3]</code> - do not
 overlap, because no single value belongs to both. To test whether they are adjacent (touching), inspect the
 endpoints directly.</p>
 </div>
@@ -1743,7 +1743,7 @@ endpoints directly.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_String_" data-uid="Bodu.Numerics.Interval`1.Parse(System.String)">
   Parse(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1758,7 +1758,7 @@ endpoints directly.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The text to parse — for example <code>&quot;[1, 5)&quot;</code>, <code>&quot;(0, 1)&quot;</code>, or <code>&quot;∅&quot;</code>.</p>
+    <dd><p>The text to parse - for example <code>&quot;[1, 5)&quot;</code>, <code>&quot;(0, 1)&quot;</code>, or <code>&quot;∅&quot;</code>.</p>
 </dd>
   </dl>
 
@@ -1795,11 +1795,11 @@ endpoints directly.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Singleton__0_" data-uid="Bodu.Numerics.Interval`1.Singleton(`0)">
   Singleton(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Creates a degenerate interval that contains the single value <code class="paramref">value</code> — equivalent to
+  <div class="markdown level1 summary"><p>Creates a degenerate interval that contains the single value <code class="paramref">value</code> - equivalent to
 <code>[value, value]</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -1854,12 +1854,12 @@ that composes uniformly with multi-value filters, or as the seed of a union that
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_SymmetricDifference_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.SymmetricDifference(Bodu.Numerics.Interval{`0})">
   SymmetricDifference(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the symmetric difference of this interval and <code class="paramref">other</code> — the values in exactly one of
-the two, <code>(this \ other) ∪ (other \ this)</code> — as zero, one, or two disjoint intervals.</p>
+  <div class="markdown level1 summary"><p>Returns the symmetric difference of this interval and <code class="paramref">other</code> - the values in exactly one of
+the two, <code>(this \ other) ∪ (other \ this)</code> - as zero, one, or two disjoint intervals.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1902,7 +1902,7 @@ Interval&lt;int&gt;.Closed(0, 5).SymmetricDifference(Interval&lt;int&gt;.Closed(
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ToString" data-uid="Bodu.Numerics.Interval`1.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1950,7 +1950,7 @@ Interval&lt;double&gt;.Closed(1, 5).ToString("F2"); // "[1.00, 5.00]"</code></pr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ToString_System_String_" data-uid="Bodu.Numerics.Interval`1.ToString(System.String)">
   ToString(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1994,7 +1994,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.ToString(System.String,System.IFormatProvider)">
   ToString(string?, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2041,7 +2041,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2094,7 +2094,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2147,7 +2147,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_String_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.String,Bodu.Numerics.Interval{`0}@)">
   TryParse(string?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2194,7 +2194,7 @@ culture.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryUnion(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0}@)">
   TryUnion(Interval&lt;T&gt;, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2232,15 +2232,15 @@ separate intervals to represent.</p>
 
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0____examples">Examples</h4>
-  <pre><code class="lang-csharp">// Adjacent — [1, 5) ∪ [5, 10] → [1, 10]
+  <pre><code class="lang-csharp">// Adjacent - [1, 5) ∪ [5, 10] → [1, 10]
 Interval&lt;int&gt;.ClosedOpen(1, 5).TryUnion(Interval&lt;int&gt;.Closed(5, 10), out var contiguous);
 // contiguous == [1, 10], result == true
 
-// Overlapping — [1, 5] ∪ [3, 7] → [1, 7]
+// Overlapping - [1, 5] ∪ [3, 7] → [1, 7]
 Interval&lt;int&gt;.Closed(1, 5).TryUnion(Interval&lt;int&gt;.Closed(3, 7), out var merged);
 // merged == [1, 7], result == true
 
-// Disjoint — [1, 5) ∪ (5, 10] is not contiguous (no operand contains 5).
+// Disjoint - [1, 5) ∪ (5, 10] is not contiguous (no operand contains 5).
 bool ok = Interval&lt;int&gt;.ClosedOpen(1, 5).TryUnion(Interval&lt;int&gt;.OpenClosed(5, 10), out _);
 // ok == false
 
@@ -2282,11 +2282,11 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_BitwiseAnd_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_BitwiseAnd(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator &amp;(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the intersection of two intervals — the values shared by both — as an operator alias for
+  <div class="markdown level1 summary"><p>Returns the intersection of two intervals - the values shared by both - as an operator alias for
 <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -2332,7 +2332,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_BitwiseOr_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_BitwiseOr(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator |(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2389,7 +2389,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_Equality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_Equality(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator ==(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2435,7 +2435,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_Inequality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_Inequality(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator !=(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2485,7 +2485,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
   Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2537,7 +2537,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2552,7 +2552,7 @@ intervals.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
-    <dd><p>The text to parse — for example <code>&quot;[1, 5)&quot;</code>, <code>&quot;(0, 1)&quot;</code>, or <code>&quot;∅&quot;</code>.</p>
+    <dd><p>The text to parse - for example <code>&quot;[1, 5)&quot;</code>, <code>&quot;(0, 1)&quot;</code>, or <code>&quot;∅&quot;</code>.</p>
 </dd>
     <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
     <dd><p>The culture used to parse each endpoint.</p>
@@ -2589,7 +2589,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.String,System.IFormatProvider)">
   Parse(string, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2604,7 +2604,7 @@ intervals.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The text to parse — for example <code>&quot;[1, 5)&quot;</code>, <code>&quot;(0, 1)&quot;</code>, or <code>&quot;∅&quot;</code>.</p>
+    <dd><p>The text to parse - for example <code>&quot;[1, 5)&quot;</code>, <code>&quot;(0, 1)&quot;</code>, or <code>&quot;∅&quot;</code>.</p>
 </dd>
     <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
     <dd><p>The culture used to parse each endpoint.</p>
@@ -2634,7 +2634,7 @@ string text = closedOpen.ToString();                    // "[1, 5)"
 
 if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
 {
-    // reached — "1..5" is not ISO 31-11 notation
+    // reached - "1..5" is not ISO 31-11 notation
 }</code></pre>
 
 
@@ -2658,7 +2658,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
   TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2707,7 +2707,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
   TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2756,7 +2756,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
   TryParse(string?, IFormatProvider?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2827,7 +2827,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

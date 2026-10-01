@@ -105,11 +105,11 @@
 <p><strong>Bodu.Text.Bencode.Nodes</strong> is the mutable document object model of <a class="xref" href="Bodu.Text.Bencode.html">Bodu.Text.Bencode</a>, shaped after <code>System.Text.Json.Nodes</code>. Parse bytes into an editable tree, build one from scratch, change it, and write it back through the <a class="xref" href="Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a>. For read-only inspection with fewer allocations, use the sibling <a class="xref" href="Bodu.Text.Bencode.Document.html">Bodu.Text.Bencode.Document</a> tier; for typed binding, use the <a class="xref" href="Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> — abstract base: <code>Parse</code>, <code>AsObject</code> / <code>AsArray</code> / <code>AsValue</code>, <code>GetValue&lt;T&gt;</code>, <code>GetValueKind</code>, <code>WriteTo</code>, <code>ToByteArray</code>, <code>DeepEquals</code>, and the implicit conversions from <code>string</code>, integers, and <code>byte[]</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a> — a dictionary node keyed by string, with <code>Add</code> / <code>Remove</code> / <code>TryGetValue</code> and an indexer.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a> — a list node implementing <code>IList&lt;BencodeNode?&gt;</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> — an integer or byte-string leaf, created via <code>Create</code> and read via <code>GetValue&lt;T&gt;</code> / <code>TryGetValue&lt;T&gt;</code>.</li>
-<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNodeOptions.html">BencodeNodeOptions</a> — parsing options for <code>Parse</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> - abstract base: <code>Parse</code>, <code>AsObject</code> / <code>AsArray</code> / <code>AsValue</code>, <code>GetValue&lt;T&gt;</code>, <code>GetValueKind</code>, <code>WriteTo</code>, <code>ToByteArray</code>, <code>DeepEquals</code>, and the implicit conversions from <code>string</code>, integers, and <code>byte[]</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a> - a dictionary node keyed by string, with <code>Add</code> / <code>Remove</code> / <code>TryGetValue</code> and an indexer.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a> - a list node implementing <code>IList&lt;BencodeNode?&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a> - an integer or byte-string leaf, created via <code>Create</code> and read via <code>GetValue&lt;T&gt;</code> / <code>TryGetValue&lt;T&gt;</code>.</li>
+<li><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNodeOptions.html">BencodeNodeOptions</a> - parsing options for <code>Parse</code>.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Nodes;
@@ -124,7 +124,7 @@ byte[] back = root.ToByteArray();    // keys re-emitted in canonical order
 <ul>
 <li><strong>Canonical on write.</strong> Insertion order is kept in memory, but <code>WriteTo</code> / <code>ToByteArray</code> always emit dictionary keys in bytewise order.</li>
 <li><strong>Parent tracking.</strong> A node belongs to at most one parent; adding an attached node elsewhere throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.</li>
-<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> guide (Pattern 7 — Use a document model instead of a type).</li>
+<li><strong>See also:</strong> the <a href="../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> and the <a href="../guides/serialization/bencode/using.html">Using Bencode</a> guide (Pattern 7 - Use a document model instead of a type).</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -140,7 +140,7 @@ Classes
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a></dt>
       <dd><p>Represents a single node in a mutable Bencode (BEP 3) document object model, serving as the base for the three
-concrete node kinds — <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a>, <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a>, and <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a>.</p>
+concrete node kinds - <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObject.html">BencodeObject</a>, <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeArray.html">BencodeArray</a>, and <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -150,7 +150,7 @@ concrete node kinds — <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeObj
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeValue.html">BencodeValue</a></dt>
-      <dd><p>Represents a scalar Bencode (BEP 3) value — either an integer or a byte string — within a node tree.</p>
+      <dd><p>Represents a scalar Bencode (BEP 3) value - either an integer or a byte string - within a node tree.</p>
 </dd>
     </dl>
     <h3 id="structs">
@@ -179,7 +179,7 @@ Structs
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

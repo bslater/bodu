@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 448" role="img" aria-labelledby="cnm-t cnm-d">
-  <title id="cnm-t">Bodu.Core — namespace map</title>
+  <title id="cnm-t">Bodu.Core - namespace map</title>
   <desc id="cnm-d">Bodu.Core is organised into eight focused namespaces. Bodu holds top-level primitives including WeekPattern, ThrowHelper, and the random-generator abstraction. Bodu.Buffers provides pooled buffer infrastructure. Bodu.Threading provides async coordination primitives. Bodu.Functional provides memoization and the railway primitives Option, Result, and Either. The Collections extension namespaces add sequence-shaping helpers. Bodu.Extensions covers date, numeric, span, and array helpers. Bodu.Text and Bodu.Xml.Linq provide text and XML helpers. The specialized collection catalogue ships separately in the Bodu.Collections package, with thread-safe variants in Bodu.Collections.Concurrent.</desc>
 
   <defs>
@@ -25,8 +25,8 @@
     <rect class="cnm-pan" width="820" height="428" rx="8"/>
     <rect class="cnm-hdr" width="820" height="46" rx="8"/>
     <rect class="cnm-hdr" y="38" width="820" height="8"/>
-    <text class="cnm-ttl" x="16" y="29">Bodu.Core — eight focused namespaces</text>
-    <text class="cnm-form" x="804" y="29" text-anchor="end">the foundation package — shared by every other Bodu library</text>
+    <text class="cnm-ttl" x="16" y="29">Bodu.Core - eight focused namespaces</text>
+    <text class="cnm-form" x="804" y="29" text-anchor="end">the foundation package - shared by every other Bodu library</text>
 
     <!-- Row 1 -->
     <g transform="translate(14 60)">
@@ -101,7 +101,7 @@
       <text class="cnm-role" x="12" y="42">XML helpers</text>
       <text class="cnm-type" x="12" y="62">LINQ-to-XML helpers</text>
       <text class="cnm-type" x="12" y="80">used internally by</text>
-      <text class="cnm-type" x="12" y="98">other packages —</text>
+      <text class="cnm-type" x="12" y="98">other packages -</text>
       <text class="cnm-type" x="12" y="116">available publicly</text>
     </g>
 

@@ -96,15 +96,15 @@ named after the namespace segment they demonstrate (<code>Core/</code>, <code>Co
 This section catalogues them; each domain page walks its samples individually.</p>
 <p>Every sample:</p>
 <ul>
-<li><strong>runs offline by default</strong> — no network, no accounts, no API keys. Exchange-rate samples
+<li><strong>runs offline by default</strong> - no network, no accounts, no API keys. Exchange-rate samples
 read committed static data files; calendar samples use the embedded data packs. Where a live
 feed <em>could</em> be used, a fenced comment block shows the exact switch, and the one deliberately
 online sample (<code>Bodu.Financial.Samples.LiveRates</code>) is clearly marked and excluded from CI
 execution.</li>
-<li><strong>is deterministic</strong> — running a sample twice prints the same output, so samples double as
+<li><strong>is deterministic</strong> - running a sample twice prints the same output, so samples double as
 executable documentation and as CI smoke tests. Every sample is a member of <code>bodu.slnx</code>
 (API drift breaks the build) and is executed by the CI samples step.</li>
-<li><strong>is documented to a fixed README standard</strong> — one section per scenario stating the intent,
+<li><strong>is documented to a fixed README standard</strong> - one section per scenario stating the intent,
 what the code does, the output to expect (with the load-bearing lines explained), and the
 APIs demonstrated.</li>
 <li>references the library projects via <code>ProjectReference</code>, with the equivalent
@@ -136,7 +136,7 @@ APIs demonstrated.</li>
 <tr>
 <td><a href="collections-concurrent.html">Collections.Concurrent</a></td>
 <td>1 project</td>
-<td>The thread-safe variants — <code>ConcurrentCircularBuffer</code>, <code>ConcurrentHashSet</code>, and <code>ConcurrentEvictingDictionary</code> (single-flight <code>GetOrAdd</code>, <code>ItemEvicted</code>) — with a parallel workload that asserts only deterministic aggregates</td>
+<td>The thread-safe variants - <code>ConcurrentCircularBuffer</code>, <code>ConcurrentHashSet</code>, and <code>ConcurrentEvictingDictionary</code> (single-flight <code>GetOrAdd</code>, <code>ItemEvicted</code>) - with a parallel workload that asserts only deterministic aggregates</td>
 </tr>
 <tr>
 <td><a href="financial.html">Financial</a></td>
@@ -175,8 +175,8 @@ APIs demonstrated.</li>
 </tr>
 <tr>
 <td><a href="io-hashing.html">IO.Hashing</a></td>
-<td>3 projects + 1 test project</td>
-<td>The 112-standard parametric CRC catalogue, checksum families with corruption detection, streaming/resumable digests, non-cryptographic bucket routing, identifier check digits across domains with error-class comparisons, and a custom scheme proven by the shared contract-test base</td>
+<td>4 projects + 1 test project</td>
+<td>The 112-standard parametric CRC catalogue, checksum families with corruption detection, streaming/resumable digests, non-cryptographic bucket routing, file manifests built and checked through the stream, async, and verify extensions (including over <code>System.IO.Hashing</code>'s own <code>Crc32</code>), multi-part digests without reassembly, identifier check digits across domains with error-class comparisons, and a custom scheme proven by the shared contract-test base</td>
 </tr>
 <tr>
 <td><a href="numerics.html">Numerics</a></td>
@@ -185,8 +185,8 @@ APIs demonstrated.</li>
 </tr>
 <tr>
 <td><a href="cryptography.html">Security.Cryptography</a></td>
-<td>4 projects + 1 test project</td>
-<td>Cryptographic and keyed hashes, XOFs, KDFs and one-time passwords; block ciphers, cipher modes, AEAD and stream ciphers; X25519/Ed25519 and ML-KEM/ML-DSA; and a consumer-authored hash proven against the shared <code>BlockHashAlgorithmTests</code> contract base — all with fixed RFC/NIST key material for reproducible output</td>
+<td>8 projects + 1 test project</td>
+<td>Cryptographic and keyed hashes, XOFs, KDFs and one-time passwords; block ciphers, cipher modes and padding, AEAD and stream ciphers; X25519/Ed25519 and ML-KEM/ML-DSA; RFC 9180 HPKE; RFC 6962 Merkle trees; stream-to-stream and async encryption, download verification, and an encrypt-then-MAC sealed file through the extension methods (including over the BCL's own <code>Aes</code>); and a consumer-authored hash proven against the shared <code>BlockHashAlgorithmTests</code> contract base - all with fixed RFC/NIST key material for reproducible output</td>
 </tr>
 <tr>
 <td><a href="bencode.html">Text.Bencode</a></td>
@@ -226,13 +226,13 @@ APIs demonstrated.</li>
 </tbody>
 </table>
 <h2 id="testing-companions">Testing companions</h2>
-<p>Five samples ship test projects that derive the repository's contract-test bases —
+<p>Five samples ship test projects that derive the repository's contract-test bases -
 <code>DatedRateProviderContractTests&lt;T&gt;</code> (from the in-repo <code>Bodu.Financial.ExchangeRates.Testing</code>
 project, which is not published to NuGet), <code>CalendarDataTestsBase</code> (repository-internal),
 <code>BinaryEncodingContractTests&lt;TEncoding&gt;</code> (from the <code>Bodu.Text.Encoding</code> test suite),
 <code>CheckDigitContractTests&lt;TAlgorithm&gt;</code> (from the <code>Bodu.IO.Hashing</code> test suite), and
 <code>BlockHashAlgorithmTests&lt;TTest, TAlgorithm, TVariant&gt;</code> (from the <code>Bodu.Security.Cryptography</code>
-test suite) — demonstrating how consumer-written providers, calendars, algorithms, encodings,
+test suite) - demonstrating how consumer-written providers, calendars, algorithms, encodings,
 check-digit schemes, and hash algorithms are validated against the same contracts the built-in
 implementations pass. All run in CI with the library suites.</p>
 
@@ -253,7 +253,7 @@ implementations pass. All run in CI with the library suites.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

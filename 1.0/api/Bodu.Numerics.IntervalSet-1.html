@@ -8,7 +8,7 @@
       <meta name="title" content="IntervalSet&lt;T&gt; Struct
  | BODU ">
       
-      <meta name="description" content="Represents an immutable set of values as a normalized collection of disjoint, non-adjacent  pieces in ascending order — the general result of interval algebra that can produce a disconnected range.">
+      <meta name="description" content="Represents an immutable set of values as a normalized collection of disjoint, non-adjacent  pieces in ascending order - the general result of interval algebra that can produce a disconnected range.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Numerics_IntervalSet_1" data-uid="Bodu.Numerics.IntervalSet`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IntervalSet&lt;T&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ IntervalSet&lt;T&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics">Bodu.Numerics</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs">IntervalSet{T}.SetOperations.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs">IntervalSet{T}.SetOperations.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable set of values as a normalized collection of disjoint, non-adjacent
-<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> pieces in ascending order — the general result of interval algebra that can produce a
+<a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> pieces in ascending order - the general result of interval algebra that can produce a
 disconnected range.</p>
 </div>
 
@@ -197,7 +197,7 @@ disconnected range.</p>
 
   <h2 id="Bodu_Numerics_IntervalSet_1_examples">Examples</h2>
   <pre><code class="lang-csharp">var set = IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(2, 5), Interval&lt;int&gt;.Closed(8, 9));
-set.Count;                 // 2 — [1, 5] and [8, 9] (the first two coalesced)
+set.Count;                 // 2 - [1, 5] and [8, 9] (the first two coalesced)
 set.Contains(4);           // True
 set.Complement();          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)</code></pre>
 
@@ -207,7 +207,7 @@ set.Complement();          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)</code></pre>
 Where <a class="xref" href="Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a> models a single connected range and <a class="xref" href="Bodu.Numerics.IntervalPair-1.html">IntervalPair&lt;T&gt;</a> the at-most-two
 pieces of a binary difference, <a class="xref" href="Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a> models an arbitrary union of ranges. Overlapping and
 adjacent inputs are coalesced at construction, so the pieces are always disjoint, non-adjacent, sorted, and free of
-empty entries — a canonical form in which set equality is piecewise equality.
+empty entries - a canonical form in which set equality is piecewise equality.
 </p>
 <p>
 The type is the home for the operations a single interval cannot express as one value: N-ary
@@ -226,7 +226,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Count" data-uid="Bodu.Numerics.IntervalSet`1.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -263,11 +263,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Empty" data-uid="Bodu.Numerics.IntervalSet`1.Empty">
   Empty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the empty set — the set containing no values.</p>
+  <div class="markdown level1 summary"><p>Gets the empty set - the set containing no values.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -300,7 +300,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_IsEmpty" data-uid="Bodu.Numerics.IntervalSet`1.IsEmpty">
   IsEmpty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -337,7 +337,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Item_System_Int32_" data-uid="Bodu.Numerics.IntervalSet`1.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -390,11 +390,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Complement" data-uid="Bodu.Numerics.IntervalSet`1.Complement">
   Complement()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the complement of this set — every value not in the set, over the whole line
+  <div class="markdown level1 summary"><p>Returns the complement of this set - every value not in the set, over the whole line
 <code>(-∞, +∞)</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -431,7 +431,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Contains__0_" data-uid="Bodu.Numerics.IntervalSet`1.Contains(`0)">
   Contains(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -474,7 +474,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Encloses_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Encloses(Bodu.Numerics.Interval{`0})">
   Encloses(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -521,11 +521,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Equals_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Equals(Bodu.Numerics.IntervalSet{`0})">
   Equals(IntervalSet&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Determines whether this set equals <code class="paramref">other</code> — the same normalized pieces in the same order.</p>
+  <div class="markdown level1 summary"><p>Determines whether this set equals <code class="paramref">other</code> - the same normalized pieces in the same order.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -564,7 +564,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Equals_System_Object_" data-uid="Bodu.Numerics.IntervalSet`1.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -608,11 +608,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.IntervalSet{`0})">
   Except(IntervalSet&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">other</code> removed — the set difference.</p>
+  <div class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">other</code> removed - the set difference.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -651,11 +651,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Except_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Except(Bodu.Numerics.Interval{`0})">
   Except(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">interval</code> removed — the set difference.</p>
+  <div class="markdown level1 summary"><p>Returns this set with the members of <code class="paramref">interval</code> removed - the set difference.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -698,7 +698,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_From_System_Collections_Generic_IEnumerable_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.IntervalSet`1.From(System.Collections.Generic.IEnumerable{Bodu.Numerics.Interval{`0}})">
   From(IEnumerable&lt;Interval&lt;T&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -747,7 +747,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_GetEnumerator" data-uid="Bodu.Numerics.IntervalSet`1.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -784,7 +784,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_GetHashCode" data-uid="Bodu.Numerics.IntervalSet`1.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -821,11 +821,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.IntervalSet{`0})">
   Intersect(IntervalSet&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">other</code> — the members in both.</p>
+  <div class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">other</code> - the members in both.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -864,11 +864,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Intersect(Bodu.Numerics.Interval{`0})">
   Intersect(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">interval</code> — the members shared with it.</p>
+  <div class="markdown level1 summary"><p>Returns the intersection of this set with <code class="paramref">interval</code> - the members shared with it.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -911,7 +911,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Of_Bodu_Numerics_Interval__0____" data-uid="Bodu.Numerics.IntervalSet`1.Of(Bodu.Numerics.Interval{`0}[])">
   Of(params Interval&lt;T&gt;[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -960,11 +960,11 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_ToString" data-uid="Bodu.Numerics.IntervalSet`1.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns a set-notation string representation — the pieces joined by the union symbol, or the empty-set glyph.</p>
+  <div class="markdown level1 summary"><p>Returns a set-notation string representation - the pieces joined by the union symbol, or the empty-set glyph.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -997,7 +997,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.IntervalSet{`0})">
   Union(IntervalSet&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1040,7 +1040,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_Union_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.IntervalSet`1.Union(Bodu.Numerics.Interval{`0})">
   Union(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1091,7 +1091,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_op_Equality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Equality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
   operator ==(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1137,7 +1137,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_IntervalSet_1_op_Inequality_Bodu_Numerics_IntervalSet__0__Bodu_Numerics_IntervalSet__0__" data-uid="Bodu.Numerics.IntervalSet`1.op_Inequality(Bodu.Numerics.IntervalSet{`0},Bodu.Numerics.IntervalSet{`0})">
   operator !=(IntervalSet&lt;T&gt;, IntervalSet&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/IntervalSet%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1205,7 +1205,7 @@ in the set, over the whole line). It composes with <a class="xref" href="Bodu.Nu
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

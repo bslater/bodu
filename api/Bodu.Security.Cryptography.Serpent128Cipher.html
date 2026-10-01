@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Serpent128Cipher" data-uid="Bodu.Security.Cryptography.Serpent128Cipher" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Serpent128Cipher Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Serpent128Cipher Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs">Serpent128Cipher.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs">Serpent128Cipher.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Implements the canonical <code>Serpent</code> block cipher, which operates on 128-bit (16-byte) blocks using a 128, 192,
@@ -190,7 +190,7 @@ or 256-bit key.</p>
 
   <h2 id="Bodu_Security_Cryptography_Serpent128Cipher_examples">Examples</h2>
   <pre><code class="lang-csharp">// Direct single-block use. For most workloads prefer the Serpent128 SymmetricAlgorithm wrapper.
-byte[] key = new byte[32];   // 128, 192, or 256 bits — Serpent pads shorter keys to 256
+byte[] key = new byte[32];   // 128, 192, or 256 bits - Serpent pads shorter keys to 256
 RandomNumberGenerator.Fill(key);
 
 using var cipher = new Serpent128Cipher(key);
@@ -206,7 +206,7 @@ cipher.Decrypt(ciphertext, roundtrip);
 
   <h2 id="Bodu_Security_Cryptography_Serpent128Cipher_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Serpent is a 32-round substitution–permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
+Serpent is a 32-round substitution-permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
 Advanced Encryption Standard (AES) candidate. Each round applies a round-key XOR, one of the eight 4-bit S-boxes
 <code>S0..S7</code>, and the bitsliced linear transformation <code>L</code>. The final round replaces <code>L</code> with a post-round
 key XOR. Shorter keys are padded to 256 bits by appending a <code>1</code> bit followed by zeros, per the Serpent
@@ -239,7 +239,7 @@ does not depend on either.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher__ctor_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.#ctor(System.ReadOnlySpan{System.Byte})">
   Serpent128Cipher(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -287,7 +287,7 @@ per the Serpent specification.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher_BlockSize" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.BlockSize">
   BlockSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -333,7 +333,7 @@ decrypt, slice) convert to bytes at the call site as <code>BlockSize / 8</code>.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -384,7 +384,7 @@ is supported only when the implementation explicitly permits it; otherwise the s
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -427,7 +427,7 @@ to clear expanded round keys, tweak material, and other sensitive buffers before
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -482,7 +482,7 @@ is supported only when the implementation explicitly permits it; otherwise the s
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher_Bodu_Security_Cryptography_IBlockCipher_DecryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.Bodu#Security#Cryptography#IBlockCipher#DecryptBlocks(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   IBlockCipher.DecryptBlocks(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -537,7 +537,7 @@ when to override.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Serpent128Cipher_Bodu_Security_Cryptography_IBlockCipher_EncryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.Serpent128Cipher.Bodu#Security#Cryptography#IBlockCipher#EncryptBlocks(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   IBlockCipher.EncryptBlocks(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Serpent128Cipher.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -570,7 +570,7 @@ when to override.</p>
   <h4 class="section" id="Bodu_Security_Cryptography_Serpent128Cipher_Bodu_Security_Cryptography_IBlockCipher_EncryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>The default implementation calls <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_Security_Cryptography_IBlockCipher_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a> once per block. Implementations backed by a primitive
 with per-call setup cost (for example a wrapped BCL cipher context) should override this to amortize that cost
-across the whole run. Callers that process independent blocks — ECB and the keystream layer of CTR-based modes —
+across the whole run. Callers that process independent blocks - ECB and the keystream layer of CTR-based modes -
 should prefer this over a per-block loop.</p>
 </div>
 
@@ -620,7 +620,7 @@ should prefer this over a per-block loop.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Filtering_TextFilter" data-uid="Bodu.Text.Filtering.TextFilter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 TextFilter Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.CompiledPattern.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.CompiledPattern.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ TextFilter Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Filtering.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Filtering">Bodu.Text.Filtering</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.CompiledPattern.cs">TextFilter.CompiledPattern.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.CompiledPattern.cs">TextFilter.CompiledPattern.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable, compiled include/exclude text filter that evaluates values against a set of wildcard and
@@ -182,18 +182,18 @@ regular-expression patterns, running the cheapest pattern strategies first.</p>
   <div class="markdown level0 remarks"><p>
 A filter is built once from its patterns via <a class="xref" href="Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_Build_System_Collections_Generic_IEnumerable_Bodu_Text_Filtering_TextFilterPattern__">Build(IEnumerable&lt;TextFilterPattern&gt;)</a> (or parsed from
 raw lines via <a class="xref" href="Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_Parse_System_Collections_Generic_IEnumerable_System_String__">Parse(IEnumerable&lt;string&gt;)</a>) and then evaluated many times. At build time every wildcard
-pattern is classified into the cheapest strategy its shape permits — whole-string equality for literals,
+pattern is classified into the cheapest strategy its shape permits - whole-string equality for literals,
 prefix/suffix comparison for <code>abc*</code> / <code>*abc</code> / <code>abc*def</code>, substring search for <code>*abc*</code>, the
-general wildcard matcher otherwise — and regular expressions compile preferring the linear-time
+general wildcard matcher otherwise - and regular expressions compile preferring the linear-time
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regexoptions#system-text-regularexpressions-regexoptions-nonbacktracking">NonBacktracking</a> engine. In <a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html#Bodu_Text_Filtering_TextFilterEvaluationMode_AnyMatch">AnyMatch</a> mode the
 include and exclude groups are additionally evaluated cheapest-strategy-first, which cannot change the outcome
 because group matching is an order-independent OR.
 </p>
 <p>
 <b>Semantics.</b> In <a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html#Bodu_Text_Filtering_TextFilterEvaluationMode_AnyMatch">AnyMatch</a> (the default), a value is accepted when the
-include set is empty or at least one include matches, and no exclude matches — the Ant / MSBuild model. In
+include set is empty or at least one include matches, and no exclude matches - the Ant / MSBuild model. In
 <a class="xref" href="Bodu.Text.Filtering.TextFilterEvaluationMode.html#Bodu_Text_Filtering_TextFilterEvaluationMode_LastMatchWins">LastMatchWins</a>, the last matching rule decides and unmatched values are
-included — the gitignore model.
+included - the gitignore model.
 </p>
 <p>
 <b>Thread safety.</b> The compiled matching state is immutable, so <a class="xref" href="Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_IsMatch_System_String_">IsMatch(string)</a>,
@@ -213,7 +213,7 @@ statistics counters are deliberately not interlocked and may undercount under co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_IgnoreCase" data-uid="Bodu.Text.Filtering.TextFilter.IgnoreCase">
   IgnoreCase
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -249,7 +249,7 @@ statistics counters are deliberately not interlocked and may undercount under co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Mode" data-uid="Bodu.Text.Filtering.TextFilter.Mode">
   Mode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -285,7 +285,7 @@ statistics counters are deliberately not interlocked and may undercount under co
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Observer" data-uid="Bodu.Text.Filtering.TextFilter.Observer">
   Observer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -325,7 +325,7 @@ evaluating thread; exceptions it throws propagate to the caller of the evaluatin
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Patterns" data-uid="Bodu.Text.Filtering.TextFilter.Patterns">
   Patterns
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -365,7 +365,7 @@ evaluating thread; exceptions it throws propagate to the caller of the evaluatin
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Build_System_Collections_Generic_IEnumerable_Bodu_Text_Filtering_TextFilterPattern__" data-uid="Bodu.Text.Filtering.TextFilter.Build(System.Collections.Generic.IEnumerable{Bodu.Text.Filtering.TextFilterPattern})">
   Build(IEnumerable&lt;TextFilterPattern&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -421,7 +421,7 @@ regular-expression pattern is not valid (the original parse failure is preserved
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Build_System_Collections_Generic_IEnumerable_Bodu_Text_Filtering_TextFilterPattern__Bodu_Text_Filtering_TextFilterOptions_" data-uid="Bodu.Text.Filtering.TextFilter.Build(System.Collections.Generic.IEnumerable{Bodu.Text.Filtering.TextFilterPattern},Bodu.Text.Filtering.TextFilterOptions)">
   Build(IEnumerable&lt;TextFilterPattern&gt;, TextFilterOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -485,7 +485,7 @@ regular-expression pattern is not valid (the original parse failure is preserved
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Evaluate_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Filtering.TextFilter.Evaluate(System.ReadOnlySpan{System.Char})">
   Evaluate(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -528,7 +528,7 @@ regular-expression pattern is not valid (the original parse failure is preserved
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Filter_System_Collections_Generic_IEnumerable_System_String__" data-uid="Bodu.Text.Filtering.TextFilter.Filter(System.Collections.Generic.IEnumerable{System.String})">
   Filter(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Filter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Filter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -561,7 +561,7 @@ regular-expression pattern is not valid (the original parse failure is preserved
 
 
   <h4 class="section" id="Bodu_Text_Filtering_TextFilter_Filter_System_Collections_Generic_IEnumerable_System_String___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Evaluation is deferred: values are evaluated — and statistics updated — as the result is enumerated.
+  <div class="markdown level1 remarks"><p>Evaluation is deferred: values are evaluated - and statistics updated - as the result is enumerated.
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> elements are dropped without being evaluated, since no pattern can match them.</p>
 </div>
 
@@ -581,7 +581,7 @@ regular-expression pattern is not valid (the original parse failure is preserved
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_FilterToList_System_Collections_Generic_IReadOnlyList_System_String__" data-uid="Bodu.Text.Filtering.TextFilter.FilterToList(System.Collections.Generic.IReadOnlyList{System.String})">
   FilterToList(IReadOnlyList&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Filter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Filter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -634,7 +634,7 @@ regular-expression pattern is not valid (the original parse failure is preserved
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_GetMatchingPatterns_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Filtering.TextFilter.GetMatchingPatterns(System.ReadOnlySpan{System.Char})">
   GetMatchingPatterns(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -667,8 +667,8 @@ regular-expression pattern is not valid (the original parse failure is preserved
 
 
   <h4 class="section" id="Bodu_Text_Filtering_TextFilter_GetMatchingPatterns_System_ReadOnlySpan_System_Char___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This diagnostic surface tests all patterns without short-circuiting — unlike <a class="xref" href="Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_Evaluate_System_ReadOnlySpan_System_Char__">Evaluate(ReadOnlySpan&lt;char&gt;)</a>, which
-stops at the deciding pattern — and does not update the filter's statistics or invoke the observer. A pattern
+  <div class="markdown level1 remarks"><p>This diagnostic surface tests all patterns without short-circuiting - unlike <a class="xref" href="Bodu.Text.Filtering.TextFilter.html#Bodu_Text_Filtering_TextFilter_Evaluate_System_ReadOnlySpan_System_Char__">Evaluate(ReadOnlySpan&lt;char&gt;)</a>, which
+stops at the deciding pattern - and does not update the filter's statistics or invoke the observer. A pattern
 whose brace alternation expanded into several matchers is reported once. Regular-expression timeouts follow the
 same fail-safe rule as evaluation (a timed-out exclude reports as matching).</p>
 </div>
@@ -683,7 +683,7 @@ same fail-safe rule as evaluation (a timed-out exclude reports as matching).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_GetStatistics" data-uid="Bodu.Text.Filtering.TextFilter.GetStatistics">
   GetStatistics()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Statistics.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Statistics.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -720,7 +720,7 @@ same fail-safe rule as evaluation (a timed-out exclude reports as matching).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_IsMatch_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Filtering.TextFilter.IsMatch(System.ReadOnlySpan{System.Char})">
   IsMatch(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -763,7 +763,7 @@ same fail-safe rule as evaluation (a timed-out exclude reports as matching).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_IsMatch_System_String_" data-uid="Bodu.Text.Filtering.TextFilter.IsMatch(System.String)">
   IsMatch(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Evaluate.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -812,7 +812,7 @@ same fail-safe rule as evaluation (a timed-out exclude reports as matching).</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Parse_System_Collections_Generic_IEnumerable_System_String__" data-uid="Bodu.Text.Filtering.TextFilter.Parse(System.Collections.Generic.IEnumerable{System.String})">
   Parse(IEnumerable&lt;string&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -847,7 +847,7 @@ same fail-safe rule as evaluation (a timed-out exclude reports as matching).</p>
   <h4 class="section" id="Bodu_Text_Filtering_TextFilter_Parse_System_Collections_Generic_IEnumerable_System_String___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Each line is trimmed and parsed as a wildcard pattern: blank lines and lines starting with <code>#</code> are skipped,
 a leading <code>!</code> makes the pattern an exclude, and <code>!</code> / <code>#</code> escape a literal leading <code>!</code> or
-<code>#</code>. Regular-expression patterns cannot be expressed in line form — declare them via
+<code>#</code>. Regular-expression patterns cannot be expressed in line form - declare them via
 <a class="xref" href="Bodu.Text.Filtering.TextFilterPattern.html">TextFilterPattern</a> or <a class="xref" href="Bodu.Text.Filtering.TextFilterBuilder.html">TextFilterBuilder</a>.</p>
 </div>
 
@@ -870,7 +870,7 @@ a leading <code>!</code> makes the pattern an exclude, and <code>!</code> / <cod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_Parse_System_Collections_Generic_IEnumerable_System_String__Bodu_Text_Filtering_TextFilterOptions_" data-uid="Bodu.Text.Filtering.TextFilter.Parse(System.Collections.Generic.IEnumerable{System.String},Bodu.Text.Filtering.TextFilterOptions)">
   Parse(IEnumerable&lt;string&gt;, TextFilterOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -934,7 +934,7 @@ semantics.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Filtering_TextFilter_ResetStatistics" data-uid="Bodu.Text.Filtering.TextFilter.ResetStatistics">
   ResetStatistics()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Statistics.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Text.Filtering/src/Text.Filtering/TextFilter.Statistics.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -987,7 +987,7 @@ semantics.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

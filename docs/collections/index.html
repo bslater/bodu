@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Collections — Introduction | BODU </title>
+      <title>Bodu.Collections - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Collections — Introduction | BODU ">
+      <meta name="title" content="Bodu.Collections - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,9 +88,9 @@
 <h1 id="boducollections">Bodu.Collections</h1>
 
 <p><img src="../../images/hero-collections.svg" alt="Bodu.Collections"></p>
-<p><strong>Bodu.Collections</strong> is the specialized generic-collection catalogue of the Bodu suite and a member of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of <code>Bodu.Core</code> — the namespaces are unchanged (<code>Bodu.Collections.Generic</code> and its siblings), only the package boundary moved. The package depends on <a href="../core/index.html"><code>Bodu.Core</code></a> for shared primitives such as <code>ThrowHelper</code> and the <code>IRandomGenerator</code> abstraction; see the <a href="../package-matrix.html">package matrix</a> for the full dependency map.</p>
-<p>The thread-safe variants — <code>ConcurrentCircularBuffer&lt;T&gt;</code>, <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache in the <code>Bodu.Collections.Generic.Concurrent</code> namespace — ship in the companion <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> package, which depends on this one.</p>
-<p><img src="../../images/diagrams/collections-namespace-map.svg" alt="Bodu.Collections namespace map — the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency"></p>
+<p><strong>Bodu.Collections</strong> is the specialized generic-collection catalogue of the Bodu suite and a member of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of <code>Bodu.Core</code> - the namespaces are unchanged (<code>Bodu.Collections.Generic</code> and its siblings), only the package boundary moved. The package depends on <a href="../core/index.html"><code>Bodu.Core</code></a> for shared primitives such as <code>ThrowHelper</code> and the <code>IRandomGenerator</code> abstraction; see the <a href="../package-matrix.html">package matrix</a> for the full dependency map.</p>
+<p>The thread-safe variants - <code>ConcurrentCircularBuffer&lt;T&gt;</code>, <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache in the <code>Bodu.Collections.Generic.Concurrent</code> namespace - ship in the companion <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> package, which depends on this one.</p>
+<p><img src="../../images/diagrams/collections-namespace-map.svg" alt="Bodu.Collections namespace map - the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency"></p>
 <h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
 <h3 id="boducollectionsgeneric"><code>Bodu.Collections.Generic</code></h3>
 <p>Bounded, ordered, navigable, and range-keyed collections, many built around a shared ring-backed primitive.</p>
@@ -173,7 +173,7 @@
 </tbody>
 </table>
 <h3 id="boducollectionsspecialized"><code>Bodu.Collections.Specialized</code></h3>
-<p>The members of the package that serve a specialised purpose rather than acting as general-purpose containers. The packed bit set references nothing else in the package, and nothing else references it — which is why it sits apart from the catalogue rather than inside it. See the <a href="../../guides/core/bit-set.html">bit set</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Specialized.html">Bodu.Collections.Specialized</a> overview. (The RFC 6962 Merkle tree formerly in this namespace now ships as <code>MerkleTree</code> in <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.)</p>
+<p>The members of the package that serve a specialised purpose rather than acting as general-purpose containers. The packed bit set references nothing else in the package, and nothing else references it - which is why it sits apart from the catalogue rather than inside it. See the <a href="../../guides/core/bit-set.html">bit set</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Specialized.html">Bodu.Collections.Specialized</a> overview. (The RFC 6962 Merkle tree formerly in this namespace now ships as <code>MerkleTree</code> in <a href="../cryptography/index.html">Bodu.Security.Cryptography</a>.)</p>
 <table>
 <thead>
 <tr>
@@ -189,7 +189,7 @@
 </tbody>
 </table>
 <h3 id="boducollectionsprobabilistic"><code>Bodu.Collections.Probabilistic</code></h3>
-<p>Approximate &quot;sketch&quot; structures that trade exactness for a fixed memory footprint — each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the <a href="../../guides/core/probabilistic-collections.html">Probabilistic collections</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Probabilistic.html">Bodu.Collections.Probabilistic</a> overview.</p>
+<p>Approximate &quot;sketch&quot; structures that trade exactness for a fixed memory footprint - each is sized once from its constructor arguments and carries a quantified, one-sided error bound. See the <a href="../../guides/core/probabilistic-collections.html">Probabilistic collections</a> guide and the <a class="xref" href="../../api/Bodu.Collections.Probabilistic.html">Bodu.Collections.Probabilistic</a> overview.</p>
 <table>
 <thead>
 <tr>
@@ -200,7 +200,7 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a></td>
-<td>Approximate set membership sized from an expected item count and target false-positive rate. No false negatives — added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports <code>UnionWith</code> merging and version-checked export/import.</td>
+<td>Approximate set membership sized from an expected item count and target false-positive rate. No false negatives - added elements are always reported present; never-added elements are misreported at roughly the design rate. Supports <code>UnionWith</code> merging and version-checked export/import.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a></td>
@@ -252,7 +252,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a></td>
-<td>Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count — the better fit for long keys with sparse branching (URLs, paths, identifiers).</td>
+<td>Path-compressed (PATRICIA-style) siblings of the tries with the identical member-for-member surface: string edge labels split on insert and re-fuse on remove, so node count tracks key count - the better fit for long keys with sparse branching (URLs, paths, identifiers).</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a></td>
@@ -265,7 +265,7 @@
 </tbody>
 </table>
 <h3 id="boducollectionsgenericconcurrent-companion-package"><code>Bodu.Collections.Generic.Concurrent</code> (companion package)</h3>
-<p>The thread-safe variants — the lock-free <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a>, the lock-free split-ordered <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a>, and the lock-striped <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>) — ship in the companion <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> package, which depends on <code>Bodu.Collections</code>.</p>
+<p>The thread-safe variants - the lock-free <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a>, the lock-free split-ordered <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a>, and the lock-striped <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>) - ship in the companion <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> package, which depends on <code>Bodu.Collections</code>.</p>
 <h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
 <table>
 <thead>
@@ -304,7 +304,7 @@
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a></td>
 </tr>
 <tr>
-<td>Intervals that overlap — stabbing and window queries</td>
+<td>Intervals that overlap - stabbing and window queries</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a></td>
 </tr>
 <tr>
@@ -344,8 +344,8 @@
 <h2 id="design-principles">Design principles</h2>
 <p>A handful of conventions run through the whole package; knowing them up front explains why the types look the way they do.</p>
 <ul>
-<li><strong>One toggle, not two classes.</strong> Where a collection has to choose between <em>reject</em> and <em>make room</em> on overflow, that choice is a single settable property — <code>AllowOverwrite</code> on <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>, <code>AllowGrow</code> (with <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a>) on <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> — rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a <code>Try…</code> peer that substitutes a <code>false</code> return.</li>
-<li><strong>Fail-fast where it is cheap, snapshot where it is not.</strong> The single-threaded collections detect concurrent structural mutation with a version counter and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> from the enumerator — the BCL contract. The lock-free <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> (in the companion <a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a> package) instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.</li>
+<li><strong>One toggle, not two classes.</strong> Where a collection has to choose between <em>reject</em> and <em>make room</em> on overflow, that choice is a single settable property - <code>AllowOverwrite</code> on <a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>, <code>AllowGrow</code> (with <a class="xref" href="../../api/Bodu.Collections.Generic.DequeOverflowPolicy.html">DequeOverflowPolicy</a>) on <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> - rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a <code>Try…</code> peer that substitutes a <code>false</code> return.</li>
+<li><strong>Fail-fast where it is cheap, snapshot where it is not.</strong> The single-threaded collections detect concurrent structural mutation with a version counter and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a> from the enumerator - the BCL contract. The lock-free <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> (in the companion <a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a> package) instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.</li>
 <li><strong>Struct enumerators.</strong> Every collection's <code>GetEnumerator()</code> returns a <code>struct</code>, so a <code>foreach</code> over a concrete-typed variable allocates nothing; enumerating through an <code>IEnumerable&lt;T&gt;</code> reference boxes as usual.</li>
 <li><strong>Reads can mutate.</strong> Recency-based caches (<a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> under LRU/MRU/LFU/SecondChance, <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> in access-order mode) update ordering metadata on a successful lookup. That is why even concurrent read-read on these types needs external synchronisation.</li>
 <li><strong>Validation flows through one helper.</strong> Every public entry point validates its arguments through <code>Bodu.Core</code>'s <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a>, so exception type, message, and parameter-name capture stay uniform across the suite.</li>
@@ -353,14 +353,14 @@
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the collection vocabulary the rest of the documentation assumes.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run a minimal sample for the headline types.</li>
-<li><strong><a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a></strong> — the decision guide across the whole catalogue.</li>
-<li><strong><a href="../../guides/core/index.html">Collections guides</a></strong> — recipe-style walk-throughs for every headline type.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></strong> — full namespace overview.</li>
-<li><strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> — the thread-safe companion package.</li>
-<li><strong><a href="../core/index.html">Bodu.Core introduction</a></strong> — the foundation package this one builds on.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — how the three packages and the <code>Bodu.Text</code> namespace utilities fit together.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the collection vocabulary the rest of the documentation assumes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install the package and run a minimal sample for the headline types.</li>
+<li><strong><a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a></strong> - the decision guide across the whole catalogue.</li>
+<li><strong><a href="../../guides/core/index.html">Collections guides</a></strong> - recipe-style walk-throughs for every headline type.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></strong> - full namespace overview.</li>
+<li><strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> - the thread-safe companion package.</li>
+<li><strong><a href="../core/index.html">Bodu.Core introduction</a></strong> - the foundation package this one builds on.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> - how the three packages and the <code>Bodu.Text</code> namespace utilities fit together.</li>
 </ul>
 
 </article>
@@ -380,7 +380,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -88,7 +88,7 @@
 <h1 id="using-aead-modes">Using AEAD modes</h1>
 
 <p><strong>Authenticated encryption with associated data (AEAD)</strong> combines confidentiality with integrity: the ciphertext carries a tag that detects any tampering with the ciphertext <em>or</em> with the associated metadata (headers, protocol fields, etc.) that travels alongside it.</p>
-<p><code>Bodu.Security.Cryptography</code> ships six AEAD mode transforms, each implementing <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a>. All of them target a 16-byte (128-bit) block cipher — in practice, AES.</p>
+<p><code>Bodu.Security.Cryptography</code> ships six AEAD mode transforms, each implementing <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a>. All of them target a 16-byte (128-bit) block cipher - in practice, AES.</p>
 <table>
 <thead>
 <tr>
@@ -115,7 +115,7 @@
 <td><strong>OCB3</strong></td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a></td>
 <td>RFC 7253</td>
-<td>Single-pass with offsets; configurable tag length (<code>tagSize</code> in bits — 64 / 96 / 128).</td>
+<td>Single-pass with offsets; configurable tag length (<code>tagSize</code> in bits - 64 / 96 / 128).</td>
 </tr>
 <tr>
 <td><strong>EAX</strong></td>
@@ -127,7 +127,7 @@
 <td><strong>SIV</strong></td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a></td>
 <td>RFC 5297</td>
-<td>Misuse-resistant — same message encrypts to the same ciphertext, but confidentiality is preserved. Needs two independent AES keys.</td>
+<td>Misuse-resistant - same message encrypts to the same ciphertext, but confidentiality is preserved. Needs two independent AES keys.</td>
 </tr>
 <tr>
 <td><strong>GCM-SIV</strong></td>
@@ -137,15 +137,15 @@
 </tr>
 </tbody>
 </table>
-<p><img src="../../images/diagrams/aead-mode.svg" alt="Generic AEAD mode data flow — encryption, associated data, and authentication tag"></p>
+<p><img src="../../images/diagrams/aead-mode.svg" alt="Generic AEAD mode data flow - encryption, associated data, and authentication tag"></p>
 <h2 id="the-aead-contract">The AEAD contract</h2>
 <p>An AEAD construction delivers all three classical security properties in a single pass:</p>
 <ul>
-<li><strong>Confidentiality</strong> — the ciphertext reveals nothing about the plaintext without the key.</li>
-<li><strong>Integrity</strong> — any modification of the ciphertext, the tag, or the AAD is detected on decryption.</li>
-<li><strong>Authenticity</strong> — a valid tag could only have been produced by a holder of the key.</li>
+<li><strong>Confidentiality</strong> - the ciphertext reveals nothing about the plaintext without the key.</li>
+<li><strong>Integrity</strong> - any modification of the ciphertext, the tag, or the AAD is detected on decryption.</li>
+<li><strong>Authenticity</strong> - a valid tag could only have been produced by a holder of the key.</li>
 </ul>
-<p>A raw cipher (CBC, CTR, …) gives confidentiality <em>only</em>: a flipped ciphertext byte still decrypts, just to corrupted plaintext, with nothing to flag the tampering. AEAD folds the authentication step into the same operation that produces the ciphertext, so there is no &quot;decrypt, then check the tag separately&quot; path that a caller can mis-sequence — <code>Decrypt</code> either returns the plaintext or throws.</p>
+<p>A raw cipher (CBC, CTR, …) gives confidentiality <em>only</em>: a flipped ciphertext byte still decrypts, just to corrupted plaintext, with nothing to flag the tampering. AEAD folds the authentication step into the same operation that produces the ciphertext, so there is no &quot;decrypt, then check the tag separately&quot; path that a caller can mis-sequence - <code>Decrypt</code> either returns the plaintext or throws.</p>
 <p>Three inputs shape every call:</p>
 <table>
 <thead>
@@ -164,18 +164,18 @@
 <tr>
 <td><strong>Nonce / IV</strong></td>
 <td>Per-message public input that keeps identical plaintexts from encrypting identically.</td>
-<td><strong>Unique</strong> per message under a given key — see the per-mode notes for size and reuse consequences.</td>
+<td><strong>Unique</strong> per message under a given key - see the per-mode notes for size and reuse consequences.</td>
 </tr>
 <tr>
 <td><strong>AAD</strong></td>
-<td>Associated data — headers or framing authenticated but <strong>not</strong> encrypted.</td>
+<td>Associated data - headers or framing authenticated but <strong>not</strong> encrypted.</td>
 <td>Public; must match byte-for-byte at decrypt time or the tag check fails.</td>
 </tr>
 </tbody>
 </table>
 <p>The output is the ciphertext (same length as the plaintext) followed by a fixed-size <strong>tag</strong>. Decryption recomputes the tag over the ciphertext and AAD and compares it in constant time; a mismatch throws and releases no plaintext.</p>
-<h2 id="prerequisites--an-aes-iblockcipher">Prerequisites — an AES <code>IBlockCipher</code></h2>
-<p>Every mode transform in this family takes an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> as its primitive <strong>and assumes a 16-byte (128-bit) block size</strong>. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules — so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>, which wraps the BCL's hardware-accelerated <code>Aes</code>, is the only primitive that fits.</p>
+<h2 id="prerequisites---an-aes-iblockcipher">Prerequisites - an AES <code>IBlockCipher</code></h2>
+<p>Every mode transform in this family takes an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> as its primitive <strong>and assumes a 16-byte (128-bit) block size</strong>. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules - so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>, which wraps the BCL's hardware-accelerated <code>Aes</code>, is the only primitive that fits.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -184,8 +184,8 @@ byte[] key = RandomNumberGenerator.GetBytes(16);  // AES-128; 24 or 32 also vali
 using var cipher = new AesBlockCipher(key);
 </code></pre>
 <p><code>AesBlockCipher</code> implements <code>IBlockCipher</code>, exposes a 16-byte block size, and forwards single-block encrypt / decrypt calls to <code>Aes.EncryptEcb</code> / <code>Aes.DecryptEcb</code>. It is the glue that makes every mode transform below usable.</p>
-<p>If you need authenticated encryption with one of the <em>non-128-bit</em> ciphers (Skipjack, Blowfish, or Threefish), see the <a href="composing-primitives.html">composing primitives guide</a> — you can still use the classic mode transforms (CBC, CTR, etc.) directly with their primitives, and layer your own MAC (HMAC, Poly1305) over the resulting ciphertext for an encrypt-then-MAC construction.</p>
-<h2 id="prerequisites--the-extension-methods">Prerequisites — the extension methods</h2>
+<p>If you need authenticated encryption with one of the <em>non-128-bit</em> ciphers (Skipjack, Blowfish, or Threefish), see the <a href="composing-primitives.html">composing primitives guide</a> - you can still use the classic mode transforms (CBC, CTR, etc.) directly with their primitives, and layer your own MAC (HMAC, Poly1305) over the resulting ciphertext for an encrypt-then-MAC construction.</p>
+<h2 id="prerequisites---the-extension-methods">Prerequisites - the extension methods</h2>
 <p>Calling an <code>IAeadBlockCipherModeTransform</code> directly requires four steps:</p>
 <ol>
 <li>Call <code>ProcessAssociatedData(aad)</code> (even if the AAD is empty).</li>
@@ -200,7 +200,7 @@ byte[] cipherWithTag = aead.Encrypt(plaintext, associatedData: associatedData);
 byte[] recovered     = aead.Decrypt(cipherWithTag, associatedData: associatedData);
 </code></pre>
 <p>The examples below all use those extension methods.</p>
-<h2 id="gcm--the-workhorse">GCM — the workhorse</h2>
+<h2 id="gcm---the-workhorse">GCM - the workhorse</h2>
 <p>GCM is the default choice for almost any authenticated-encryption workload. It's single-pass, hardware-accelerated, and part of TLS 1.3.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
@@ -211,25 +211,25 @@ byte[] plaintext = System.Text.Encoding.UTF8.GetBytes(&quot;secret payload&quot;
 byte[] aad       = System.Text.Encoding.UTF8.GetBytes(&quot;correlation-id:42&quot;);
 
 byte[] key   = RandomNumberGenerator.GetBytes(32);        // AES-256
-byte[] nonce = RandomNumberGenerator.GetBytes(12);        // 96-bit GCM nonce — exactly 12 bytes
+byte[] nonce = RandomNumberGenerator.GetBytes(12);        // 96-bit GCM nonce - exactly 12 bytes
 
-// Encrypt — produces ciphertext || 16-byte tag
+// Encrypt - produces ciphertext || 16-byte tag
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
     cipherWithTag = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, associatedData: aad);
 
-// Decrypt — throws CryptographicException if the ciphertext or AAD has been tampered with
+// Decrypt - throws CryptographicException if the ciphertext or AAD has been tampered with
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
     recovered = new GcmModeTransform(cipher, nonce).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
 <div class="WARNING">
 <h5>Warning</h5>
-<p><strong>Never reuse a <code>(key, nonce)</code> pair.</strong> Doing so in GCM is catastrophic — the XOR of two ciphertexts recovers the XOR of the plaintexts, <em>and</em> an attacker can recover the hash key H and forge arbitrary messages. If you cannot guarantee nonce uniqueness, use SIV or GCM-SIV instead.</p>
+<p><strong>Never reuse a <code>(key, nonce)</code> pair.</strong> Doing so in GCM is catastrophic - the XOR of two ciphertexts recovers the XOR of the plaintexts, <em>and</em> an attacker can recover the hash key H and forge arbitrary messages. If you cannot guarantee nonce uniqueness, use SIV or GCM-SIV instead.</p>
 </div>
 <h3 id="on-the-12-byte-nonce">On the 12-byte nonce</h3>
-<p><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> implements the standard 96-bit-nonce profile of NIST SP 800-38D: every constructor (<code>byte[]</code>, <code>ReadOnlySpan&lt;byte&gt;</code>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.html">Nonce</a>) requires <strong>exactly 12 bytes</strong> and throws <code>ArgumentException</code> for any other length. The transform derives the initial counter block J0 (<code>nonce ‖ 0x00000001</code>) internally — do not build J0 yourself or pass a 16-byte block.</p>
-<h2 id="ccm--a-two-pass-alternative">CCM — a two-pass alternative</h2>
+<p><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> implements the standard 96-bit-nonce profile of NIST SP 800-38D: every constructor (<code>byte[]</code>, <code>ReadOnlySpan&lt;byte&gt;</code>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.html">Nonce</a>) requires <strong>exactly 12 bytes</strong> and throws <code>ArgumentException</code> for any other length. The transform derives the initial counter block J0 (<code>nonce ‖ 0x00000001</code>) internally - do not build J0 yourself or pass a 16-byte block.</p>
+<h2 id="ccm---a-two-pass-alternative">CCM - a two-pass alternative</h2>
 <p>CCM is the standard AEAD in constrained and legacy environments (Bluetooth LE, older IPsec profiles, IEEE 802.11i). It pairs CTR encryption with CBC-MAC over the formatted message. The library's implementation fixes the deployment profile most commonly used: 12-byte nonce, 16-byte tag, up to 2²⁴−1 byte messages.</p>
 <pre><code class="lang-csharp">byte[] key = RandomNumberGenerator.GetBytes(16);
 byte[] iv  = new byte[16];
@@ -244,7 +244,7 @@ using (var cipher = new AesBlockCipher(key))
     recovered = new CcmModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
 <p>Only the first 12 bytes of the IV are consumed as the nonce; the remaining bytes are ignored.</p>
-<h2 id="ocb3--single-pass-rfc-7253">OCB3 — single-pass, RFC 7253</h2>
+<h2 id="ocb3---single-pass-rfc-7253">OCB3 - single-pass, RFC 7253</h2>
 <p>OCB3 achieves single-pass AEAD through an offset trick: the same per-block offset drives both the cipher and the MAC accumulator. It's typically the fastest software AEAD on CPUs without AES-GCM hardware, and the tag length is configurable.</p>
 <pre><code class="lang-csharp">byte[] key = RandomNumberGenerator.GetBytes(16);
 byte[] iv  = new byte[16];
@@ -253,17 +253,17 @@ RandomNumberGenerator.Fill(iv.AsSpan(0, 12));  // first 12 bytes are the OCB3 no
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
     // tagSize is in *bits*; default 128. Pass `tagSize: 96` or `tagSize: 64`
-    // for the smaller RFC 7253 variants — it must be a multiple of 8 in [8, 128].
+    // for the smaller RFC 7253 variants - it must be a multiple of 8 in [8, 128].
     cipherWithTag = new OcbModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 
 byte[] recovered;
 using (var cipher = new AesBlockCipher(key))
     recovered = new OcbModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
-<h2 id="eax--two-pass-fse-2004">EAX — two-pass, FSE 2004</h2>
-<p>EAX (Bellare, Rogaway and Wagner) is a two-pass authenticated-encryption mode that pairs CTR encryption with OMAC1 authentication. Three OMAC invocations — one each over the nonce, the associated data, and the ciphertext — are XOR-combined to form the tag. EAX has no length-extension restrictions on the nonce or message and avoids GCM's polynomial-MAC pitfalls, making it a safe choice when you need an alternative to GCM without giving up performance to a misuse-resistant mode.</p>
+<h2 id="eax---two-pass-fse-2004">EAX - two-pass, FSE 2004</h2>
+<p>EAX (Bellare, Rogaway and Wagner) is a two-pass authenticated-encryption mode that pairs CTR encryption with OMAC1 authentication. Three OMAC invocations - one each over the nonce, the associated data, and the ciphertext - are XOR-combined to form the tag. EAX has no length-extension restrictions on the nonce or message and avoids GCM's polynomial-MAC pitfalls, making it a safe choice when you need an alternative to GCM without giving up performance to a misuse-resistant mode.</p>
 <pre><code class="lang-csharp">byte[] key = RandomNumberGenerator.GetBytes(16);
-byte[] iv  = RandomNumberGenerator.GetBytes(16);  // EAX nonce — must equal the cipher block size
+byte[] iv  = RandomNumberGenerator.GetBytes(16);  // EAX nonce - must equal the cipher block size
 
 byte[] cipherWithTag;
 using (var cipher = new AesBlockCipher(key))
@@ -274,9 +274,9 @@ using (var cipher = new AesBlockCipher(key))
     recovered = new EaxModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
 <p>The nonce is the raw value <code>N</code>; the transform internally derives the initial CTR counter as <code>OMAC^0(N)</code> and the authentication tag as <code>OMAC^0(N) ⊕ OMAC^1(aad) ⊕ OMAC^2(ciphertext)</code>. The tag length is fixed at 16 bytes.</p>
-<h2 id="siv--misuse-resistant">SIV — misuse-resistant</h2>
-<p>SIV (RFC 5297) derives its IV from the message itself, so encrypting the same plaintext twice with the same key produces the same ciphertext — but confidentiality is preserved beyond confirming equality, and the scheme does not fail catastrophically on accidental nonce reuse. Use SIV when you cannot guarantee a unique nonce per message (for example, for deterministic key wrapping or for messages replayed across retries).</p>
-<p>SIV uses two independent AES keys — one for the S2V / CMAC authentication pass (<code>K₁</code>), one for the CTR encryption pass (<code>K₂</code>):</p>
+<h2 id="siv---misuse-resistant">SIV - misuse-resistant</h2>
+<p>SIV (RFC 5297) derives its IV from the message itself, so encrypting the same plaintext twice with the same key produces the same ciphertext - but confidentiality is preserved beyond confirming equality, and the scheme does not fail catastrophically on accidental nonce reuse. Use SIV when you cannot guarantee a unique nonce per message (for example, for deterministic key wrapping or for messages replayed across retries).</p>
+<p>SIV uses two independent AES keys - one for the S2V / CMAC authentication pass (<code>K₁</code>), one for the CTR encryption pass (<code>K₂</code>):</p>
 <pre><code class="lang-csharp">byte[] s2vKey = RandomNumberGenerator.GetBytes(16);  // K₁
 byte[] ctrKey = RandomNumberGenerator.GetBytes(16);  // K₂
 byte[] iv     = new byte[16];                        // accepted for interface compatibility
@@ -291,14 +291,14 @@ using (var s2v = new AesBlockCipher(s2vKey))
 using (var ctr = new AesBlockCipher(ctrKey))
     recovered = new SivModeTransform(s2v, ctr, iv).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
-<p>The <code>iv</code> argument is kept for interface compatibility but is not used — SIV derives its synthetic IV from the AAD and plaintext.</p>
+<p>The <code>iv</code> argument is kept for interface compatibility but is not used - SIV derives its synthetic IV from the AAD and plaintext.</p>
 <p>The associated data is S2V's one associated-data string when it is non-empty. Empty associated data, or none, contributes no string, because the transform cannot tell the two apart; implementations that always pass the associated data as a string, even an empty one, compute a different synthetic IV for such messages.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>Earlier releases computed the synthetic IV of an empty plaintext with the wrong padding constant, which does not match RFC 5297. Data they sealed with an empty plaintext does not decrypt with this release; every non-empty plaintext is unchanged.</p>
 </div>
-<h2 id="gcm-siv--the-modern-replacement-for-gcm">GCM-SIV — the modern replacement for GCM</h2>
-<p>GCM-SIV (RFC 8452) is a misuse-resistant AEAD with GCM-like performance. It's the preferred choice when you want GCM's speed <em>and</em> need to tolerate accidental nonce reuse. The construction uses AES internally, but with a key-derivation step — so the constructor takes a master cipher <strong>and</strong> a factory that produces a new cipher for the derived per-message key.</p>
+<h2 id="gcm-siv---the-modern-replacement-for-gcm">GCM-SIV - the modern replacement for GCM</h2>
+<p>GCM-SIV (RFC 8452) is a misuse-resistant AEAD with GCM-like performance. It's the preferred choice when you want GCM's speed <em>and</em> need to tolerate accidental nonce reuse. The construction uses AES internally, but with a key-derivation step - so the constructor takes a master cipher <strong>and</strong> a factory that produces a new cipher for the derived per-message key.</p>
 <pre><code class="lang-csharp">byte[] masterKey = RandomNumberGenerator.GetBytes(16);
 byte[] iv        = new byte[16];
 RandomNumberGenerator.Fill(iv.AsSpan(0, 12));  // first 12 bytes are the nonce
@@ -317,19 +317,19 @@ using (var master = new AesBlockCipher(masterKey))
         static k =&gt; new AesBlockCipher(k),
         iv).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
-<p>The factory expression <code>static k =&gt; new AesBlockCipher(k)</code> is the canonical form — the <code>static</code> modifier avoids a closure allocation.</p>
+<p>The factory expression <code>static k =&gt; new AesBlockCipher(k)</code> is the canonical form - the <code>static</code> modifier avoids a closure allocation.</p>
 <p>RFC 8452 defines GCM-SIV for 128- and 256-bit master keys, and the per-message key it derives is as long as the master key. With an <code>AesBlockCipher</code> master the transform reads the key size itself, so a 32-byte master key hands the factory a 32-byte key and the message is encrypted with AES-256. Any other <code>IBlockCipher</code> master derives a 16-byte key unless you pass the size: <code>new GcmSivModeTransform(master, factory, iv, keySize: 256)</code>.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>Earlier releases derived a 16-byte per-message key for AES-256 master keys too, which does not match RFC 8452. Data they sealed under a 256-bit master key does not decrypt with this release; AES-128 output is unchanged.</p>
 </div>
 <h2 id="one-transform-one-message">One-transform, one-message</h2>
-<p>Every AEAD transform in this library is <strong>stateful and single-use</strong>. A second call to <code>Encrypt</code> or <code>Decrypt</code> on the same instance — <em>including after a tag-mismatch failure</em> — throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. The contract is enforced uniformly across <code>GcmModeTransform</code>, <code>CcmModeTransform</code>, <code>EaxModeTransform</code>, <code>OcbModeTransform</code>, <code>GcmSivModeTransform</code>, and <code>SivModeTransform</code>.</p>
-<p>The pattern throughout these examples —</p>
+<p>Every AEAD transform in this library is <strong>stateful and single-use</strong>. A second call to <code>Encrypt</code> or <code>Decrypt</code> on the same instance - <em>including after a tag-mismatch failure</em> - throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. The contract is enforced uniformly across <code>GcmModeTransform</code>, <code>CcmModeTransform</code>, <code>EaxModeTransform</code>, <code>OcbModeTransform</code>, <code>GcmSivModeTransform</code>, and <code>SivModeTransform</code>.</p>
+<p>The pattern throughout these examples is this one:</p>
 <pre><code class="lang-csharp">using (var cipher = new AesBlockCipher(key))
     cipherWithTag = new GcmModeTransform(cipher, iv).Encrypt(plaintext, associatedData: aad);
 </code></pre>
-<p>— constructs a fresh <code>AesBlockCipher</code> and a fresh <code>GcmModeTransform</code> inside the <code>using</code>, runs one encryption, and lets them both fall out of scope. Build a separate transform for the matching <code>Decrypt</code>:</p>
+<p>It constructs a fresh <code>AesBlockCipher</code> and a fresh <code>GcmModeTransform</code> inside the <code>using</code>, runs one encryption, and lets them both fall out of scope. Build a separate transform for the matching <code>Decrypt</code>:</p>
 <pre><code class="lang-csharp">using (var cipher = new AesBlockCipher(key))
     recovered = new GcmModeTransform(cipher, iv).Decrypt(cipherWithTag, associatedData: aad);
 </code></pre>
@@ -340,9 +340,9 @@ var aead = new GcmModeTransform(cipher, iv);
 byte[] first  = aead.Encrypt(plaintextA, associatedData: aad);
 byte[] second = aead.Encrypt(plaintextB, associatedData: aad); // throws InvalidOperationException
 </code></pre>
-<p>The same enforcement applies to <code>Decrypt</code>. After a <code>CryptographicException</code> from a tag-mismatch, the instance is also burned — recover by constructing a fresh transform with the same <code>(key, nonce)</code>, never by retrying on the same one.</p>
+<p>The same enforcement applies to <code>Decrypt</code>. After a <code>CryptographicException</code> from a tag-mismatch, the instance is also burned - recover by constructing a fresh transform with the same <code>(key, nonce)</code>, never by retrying on the same one.</p>
 <h2 id="tamper-detection">Tamper detection</h2>
-<p>Decrypt throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> if <strong>any</strong> part of the ciphertext, the tag, or the AAD has been modified since encryption. The extension methods do not catch it — callers must decide whether to log, retry, or reject:</p>
+<p>Decrypt throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> if <strong>any</strong> part of the ciphertext, the tag, or the AAD has been modified since encryption. The extension methods do not catch it - callers must decide whether to log, retry, or reject:</p>
 <pre><code class="lang-csharp">try
 {
     byte[] plaintext = aead.Decrypt(cipherWithTag, associatedData: aad);
@@ -350,7 +350,7 @@ byte[] second = aead.Encrypt(plaintextB, associatedData: aad); // throws Invalid
 }
 catch (CryptographicException)
 {
-    // Tag did not verify — reject the message entirely.
+    // Tag did not verify - reject the message entirely.
     // Do not act on any partial plaintext (the extension method does not leak any).
 }
 </code></pre>
@@ -363,24 +363,24 @@ using Bodu.Security.Cryptography;
 using Bodu.Security.Cryptography.Extensions;
 
 byte[] key   = RandomNumberGenerator.GetBytes(32);   // AES-256
-byte[] nonce = RandomNumberGenerator.GetBytes(12);   // 96-bit nonce — GcmModeTransform requires exactly 12 bytes
+byte[] nonce = RandomNumberGenerator.GetBytes(12);   // 96-bit nonce - GcmModeTransform requires exactly 12 bytes
 
 byte[] plaintext = System.Text.Encoding.UTF8.GetBytes(&quot;transfer £250 to account 9921&quot;);
 byte[] aad       = System.Text.Encoding.UTF8.GetBytes(&quot;txn-id:7f3a&quot;);
 
-// Encrypt — ciphertext || 16-byte tag.
+// Encrypt - ciphertext || 16-byte tag.
 byte[] sealed_;
 using (var cipher = new AesBlockCipher(key))
     sealed_ = new GcmModeTransform(cipher, nonce).Encrypt(plaintext, associatedData: aad);
 
-// Honest decrypt — recovers the original plaintext.
+// Honest decrypt - recovers the original plaintext.
 using (var cipher = new AesBlockCipher(key))
 {
     byte[] recovered = new GcmModeTransform(cipher, nonce).Decrypt(sealed_, associatedData: aad);
     // recovered.SequenceEqual(plaintext) == true
 }
 
-// Tampered decrypt — flip one ciphertext byte and watch the tag reject it.
+// Tampered decrypt - flip one ciphertext byte and watch the tag reject it.
 sealed_[0] ^= 0x01;
 using (var cipher = new AesBlockCipher(key))
 {
@@ -390,19 +390,19 @@ using (var cipher = new AesBlockCipher(key))
     }
     catch (CryptographicException)
     {
-        // Expected — reject the message; never act on partial output.
+        // Expected - reject the message; never act on partial output.
     }
 }
 </code></pre>
 <p>Modifying the AAD instead of the ciphertext fails identically: pass a different <code>aad</code> to <code>Decrypt</code> and the tag check throws even though every ciphertext byte is intact.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="encryption-basics.html">Encryption basics</a> — the Key / IV / Tweak / Padding lifecycle for the non-AEAD ciphers.</li>
-<li><a href="cipher-modes.html">Cipher block modes</a> — the five classic non-authenticated modes (ECB / CBC / CFB / OFB / CTR).</li>
-<li><a href="stream-ciphers.html#authenticated-stream-ciphers--poly1305-aead">Stream ciphers § authenticated stream ciphers</a> — the ready-made <code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305Aead</code>, and NaCl <code>secretbox</code> (<code>XSalsa20Poly1305</code>) constructions when you want AEAD over a stream cipher rather than AES.</li>
-<li><a href="ascon-aead.html">ASCON AEAD</a> — lightweight authenticated encryption.</li>
+<li><a href="encryption-basics.html">Encryption basics</a> - the Key / IV / Tweak / Padding lifecycle for the non-AEAD ciphers.</li>
+<li><a href="cipher-modes.html">Cipher block modes</a> - the five classic non-authenticated modes (ECB / CBC / CFB / OFB / CTR).</li>
+<li><a href="stream-ciphers.html#authenticated-stream-ciphers---poly1305-aead">Stream ciphers § authenticated stream ciphers</a> - the ready-made <code>XChaCha20Poly1305</code>, <code>XSalsa20Poly1305Aead</code>, and NaCl <code>secretbox</code> (<code>XSalsa20Poly1305</code>) constructions when you want AEAD over a stream cipher rather than AES.</li>
+<li><a href="ascon-aead.html">ASCON AEAD</a> - lightweight authenticated encryption.</li>
 <li>API reference: [<a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>] · [<a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a>] · [<a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a>].</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -422,7 +422,7 @@ using (var cipher = new AesBlockCipher(key))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 380" role="img" aria-labelledby="xls-t xls-d">
-  <title id="xls-t">BIFF (.xls) — a record stream read out of a compound file</title>
-  <desc id="xls-d">An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes, Bodu.IO.Biff decodes the records, and Bodu.Formats.Excel.Binary interprets them. ExcelBinaryWorkbook.OpenRead parses the workbook globals once — the date system, the shared string table, the number-format table, and the sheet directory — then reads each sheet on demand by seeking to its stream offset. A sheet is surfaced either through the forward-only ExcelWorksheetReader or the materialized, randomly addressable ExcelWorksheet, both yielding ExcelCell values classified as string, number, boolean, or error.</desc>
+  <title id="xls-t">BIFF (.xls) - a record stream read out of a compound file</title>
+  <desc id="xls-d">An Excel binary workbook is a BIFF5 or BIFF8 record stream stored inside the Workbook stream of an OLE2 compound file. Bodu.IO.Compound supplies the Workbook stream's bytes, Bodu.IO.Biff decodes the records, and Bodu.Formats.Excel.Binary interprets them. ExcelBinaryWorkbook.OpenRead parses the workbook globals once - the date system, the shared string table, the number-format table, and the sheet directory - then reads each sheet on demand by seeking to its stream offset. A sheet is surfaced either through the forward-only ExcelWorksheetReader or the materialized, randomly addressable ExcelWorksheet, both yielding ExcelCell values classified as string, number, boolean, or error.</desc>
 
   <defs>
     <style>
@@ -32,8 +32,8 @@
     <rect class="xb-pan" width="800" height="360" rx="8"/>
     <rect class="xb-hdr" width="800" height="46" rx="8"/>
     <rect class="xb-hdr" y="38" width="800" height="8"/>
-    <text class="xb-ttl" x="16" y="22">BIFF (.xls) — a record stream read out of a compound file</text>
-    <text class="xb-form" x="784" y="22" text-anchor="end">Excel 5.0–2003 · .xls</text>
+    <text class="xb-ttl" x="16" y="22">BIFF (.xls) - a record stream read out of a compound file</text>
+    <text class="xb-form" x="784" y="22" text-anchor="end">Excel 5.0-2003 · .xls</text>
     <text class="xb-mut" x="16" y="38">ExcelBinaryWorkbook reads the BIFF5 / BIFF8 records from the container's Workbook stream</text>
 
     <!-- ─────────────── Container layer (left) ─────────────── -->
@@ -52,7 +52,7 @@
     <text class="xb-mono" x="222" y="114" text-anchor="middle" font-size="11">read</text>
 
     <!-- ─────────────── Workbook globals (center) ─────────────── -->
-    <text class="xb-lbl" x="252" y="78">Workbook globals — parsed once</text>
+    <text class="xb-lbl" x="252" y="78">Workbook globals - parsed once</text>
     <g transform="translate(252 88)">
       <rect class="xb-biff" width="250" height="92" rx="7"/>
       <g transform="translate(14 16)">
@@ -73,7 +73,7 @@
     <text class="xb-mut" x="252" y="196">date system · strings · formats · sheet offsets</text>
 
     <!-- ─────────────── Per-sheet read (lower band) ─────────────── -->
-    <text class="xb-lbl" x="28" y="228">Per-sheet substream — read on demand (seek to lbPlyPos)</text>
+    <text class="xb-lbl" x="28" y="228">Per-sheet substream - read on demand (seek to lbPlyPos)</text>
     <g transform="translate(28 238)">
       <rect class="xb-biff" width="220" height="100" rx="7"/>
       <text class="xb-mono" x="14" y="24">Sheet substream</text>

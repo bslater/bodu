@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="choosing-a-collection">Choosing a collection</h1>
 
-<p>Bodu.Collections ships more than a dozen collection types (with the thread-safe variants in Bodu.Collections.Concurrent). This page is the decision guide — it answers &quot;which collection should I reach for?&quot; without making the reader walk every namespace. For the full namespace map, start with the <a href="../../docs/collections/index.html">Bodu.Collections introduction</a>; for vocabulary, read the <a href="../../docs/collections/concepts.html">Bodu.Collections concepts</a>.</p>
+<p>Bodu.Collections ships more than a dozen collection types (with the thread-safe variants in Bodu.Collections.Concurrent). This page is the decision guide - it answers &quot;which collection should I reach for?&quot; without making the reader walk every namespace. For the full namespace map, start with the <a href="../../docs/collections/index.html">Bodu.Collections introduction</a>; for vocabulary, read the <a href="../../docs/collections/concepts.html">Bodu.Collections concepts</a>.</p>
 <h2 id="quick-decision-tree">Quick decision tree</h2>
 <ol>
 <li><strong>Do you need a key-value store?</strong>
@@ -99,7 +99,7 @@
 <li>One-to-one in both directions, with O(1) value-to-key lookup → <a class="xref" href="../../api/Bodu.Collections.Generic.BiDictionary-2.html">BiDictionary&lt;TKey, TValue&gt;</a>.</li>
 <li>Overrides layered over defaults, first layer wins, writes to the first layer → <a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a>.</li>
 <li>Missing keys should materialize a stored default on indexer read → <a class="xref" href="../../api/Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a>.</li>
-<li>Two independent keys (row + column) with live row/column projections → <a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a>. For flat two-key lookup alone, prefer <code>Dictionary&lt;(TRow, TColumn), TValue&gt;</code> — adopt <code>Table</code> only for the views.</li>
+<li>Two independent keys (row + column) with live row/column projections → <a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a>. For flat two-key lookup alone, prefer <code>Dictionary&lt;(TRow, TColumn), TValue&gt;</code> - adopt <code>Table</code> only for the views.</li>
 <li>Key-sorted, with floor/ceiling/rank/select and range counting → <a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a>.</li>
 </ul>
 </li>
@@ -126,14 +126,14 @@
 <li><strong>Do you need string-keyed prefix lookups or multi-pattern text search?</strong>
 <ul>
 <li>Membership and prefix queries over string keys → <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie.html">Trie</a> (or <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> to carry a value per key).</li>
-<li>The same surface over long keys with sparse branching (URLs, paths, identifiers) → <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> — path-compressed, drop-in interchangeable with the tries.</li>
+<li>The same surface over long keys with sparse branching (URLs, paths, identifiers) → <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> - path-compressed, drop-in interchangeable with the tries.</li>
 <li>Find every occurrence of many patterns inside a text in one pass → <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> (or <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton-1.html">AhoCorasickAutomaton&lt;TValue&gt;</a> to carry a value per pattern).</li>
 </ul>
 </li>
 <li><strong>Do you need a priority queue with key-based updates?</strong> → <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a>.</li>
 <li><strong>Can the answer be approximate?</strong> When the exact structure no longer fits in memory and a quantified error is acceptable → the <code>Bodu.Collections.Probabilistic</code> sketches; see <a href="#approximate-probabilistic-collections">Approximate (probabilistic) collections</a> below.</li>
 </ol>
-<p>If none of the above fit, the BCL types (<code>List&lt;T&gt;</code>, <code>Dictionary&lt;TKey,TValue&gt;</code>, <code>HashSet&lt;T&gt;</code>, <code>Queue&lt;T&gt;</code>, <code>Stack&lt;T&gt;</code>) are the right choice. Bodu.Collections does not duplicate BCL primitives — every type below adds a contract the BCL does not provide.</p>
+<p>If none of the above fit, the BCL types (<code>List&lt;T&gt;</code>, <code>Dictionary&lt;TKey,TValue&gt;</code>, <code>HashSet&lt;T&gt;</code>, <code>Queue&lt;T&gt;</code>, <code>Stack&lt;T&gt;</code>) are the right choice. Bodu.Collections does not duplicate BCL primitives - every type below adds a contract the BCL does not provide.</p>
 <p>The remainder of this page deepens that tree into per-axis tables, real-world scenarios, and a list of anti-patterns that come up most often when picking between similar types.</p>
 <h2 id="decision-tables">Decision tables</h2>
 <h3 id="by-access-pattern">By access pattern</h3>
@@ -164,7 +164,7 @@
 <tr>
 <td>Min-heap priority queue with O(1) lookup-by-element</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a></td>
-<td>Required by Dijkstra, Prim, A* — the <code>Update</code> / <code>EnqueueOrUpdate</code> calls the BCL <code>PriorityQueue&lt;TElement,TPriority&gt;</code> cannot perform.</td>
+<td>Required by Dijkstra, Prim, A* - the <code>Update</code> / <code>EnqueueOrUpdate</code> calls the BCL <code>PriorityQueue&lt;TElement,TPriority&gt;</code> cannot perform.</td>
 </tr>
 <tr>
 <td>Range-keyed lookup (interval → value)</td>
@@ -179,7 +179,7 @@
 <tr>
 <td>Overlap-storing interval index (stabbing / window queries)</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-1.html">IntervalTree&lt;T&gt;</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a></td>
-<td>The only range type that <strong>stores</strong> overlapping intervals — <code>RangeDictionary</code> rejects overlapping inserts, <code>RangeSet</code> merges them, and <code>Bodu.Numerics</code>' <code>IntervalSet&lt;T&gt;</code> normalizes to disjoint ranges. Closed <code>[low, high]</code> endpoints; O(log n + k) <code>QueryPoint</code> / <code>QueryOverlaps</code>, O(log n) <code>Intersects</code>.</td>
+<td>The only range type that <strong>stores</strong> overlapping intervals - <code>RangeDictionary</code> rejects overlapping inserts, <code>RangeSet</code> merges them, and <code>Bodu.Numerics</code>' <code>IntervalSet&lt;T&gt;</code> normalizes to disjoint ranges. Closed <code>[low, high]</code> endpoints; O(log n + k) <code>QueryPoint</code> / <code>QueryOverlaps</code>, O(log n) <code>Intersects</code>.</td>
 </tr>
 <tr>
 <td>Cache with policy-driven eviction</td>
@@ -209,12 +209,12 @@
 <tr>
 <td>Two-key map with row/column projections</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a></td>
-<td>Guava <code>Table</code> shape: live <code>Row</code> / <code>Column</code> views over a row-major store. Column-axis operations are O(rows) — no second index. A plain <code>Dictionary&lt;(TRow, TColumn), TValue&gt;</code> covers lookup-only use.</td>
+<td>Guava <code>Table</code> shape: live <code>Row</code> / <code>Column</code> views over a row-major store. Column-axis operations are O(rows) - no second index. A plain <code>Dictionary&lt;(TRow, TColumn), TValue&gt;</code> covers lookup-only use.</td>
 </tr>
 <tr>
 <td>Auto-materializing defaults on indexer read</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.DefaultingDictionary-2.html">DefaultingDictionary&lt;TKey, TValue&gt;</a></td>
-<td>Python <code>defaultdict</code> semantics: only the indexer getter invokes the value factory and stores the result — <code>TryGetValue</code>/<code>ContainsKey</code> never materialize. The <code>GetOrAdd</code> extension stays the per-call-site option.</td>
+<td>Python <code>defaultdict</code> semantics: only the indexer getter invokes the value factory and stores the result - <code>TryGetValue</code>/<code>ContainsKey</code> never materialize. The <code>GetOrAdd</code> extension stays the per-call-site option.</td>
 </tr>
 <tr>
 <td>Dense integer membership as packed bits</td>
@@ -229,7 +229,7 @@
 <tr>
 <td>Prefix lookup over long, sparsely branching keys</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie.html">RadixTrie</a> / <a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a></td>
-<td>Same member-for-member surface as the tries over path-compressed string edges — node count tracks key count, not total key length.</td>
+<td>Same member-for-member surface as the tries over path-compressed string edges - node count tracks key count, not total key length.</td>
 </tr>
 <tr>
 <td>Multi-pattern text search (all occurrences, one pass)</td>
@@ -256,7 +256,7 @@
 <tr>
 <td>Fixed capacity, overwrite on full</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a> with <code>AllowOverwrite = true</code></td>
-<td>Sliding-window semantics — the default.</td>
+<td>Sliding-window semantics - the default.</td>
 </tr>
 <tr>
 <td>Fixed capacity, evict by policy on full</td>
@@ -322,7 +322,7 @@
 </tr>
 </tbody>
 </table>
-<p>The non-concurrent types are <strong>not</strong> thread-safe even for concurrent reads — <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> mutates LRU and LFU metadata on read, and <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> mutates the element-to-slot map on every heap operation. Wrap with a lock or <code>ReaderWriterLockSlim</code> when sharing a single instance.</p>
+<p>The non-concurrent types are <strong>not</strong> thread-safe even for concurrent reads - <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> mutates LRU and LFU metadata on read, and <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a> mutates the element-to-slot map on every heap operation. Wrap with a lock or <code>ReaderWriterLockSlim</code> when sharing a single instance.</p>
 <h3 id="by-ordering-and-uniqueness">By ordering and uniqueness</h3>
 <table>
 <thead>
@@ -361,7 +361,7 @@
 <tr>
 <td>Sorted by priority, unique elements, mutable priorities</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a></td>
-<td><code>Enqueue</code> of an existing element throws — use <code>EnqueueOrUpdate</code>.</td>
+<td><code>Enqueue</code> of an existing element throws - use <code>EnqueueOrUpdate</code>.</td>
 </tr>
 <tr>
 <td>Sorted by interval</td>
@@ -371,7 +371,7 @@
 <tr>
 <td>Key-value pairs, insertion- or access-ordered</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a></td>
-<td>Preserves a stable encounter order; access-order mode moves an entry to the tail on read. Unbounded — does not evict.</td>
+<td>Preserves a stable encounter order; access-order mode moves an entry to the tail on read. Unbounded - does not evict.</td>
 </tr>
 <tr>
 <td>Key-value pairs, key-sorted, positional queries</td>
@@ -416,7 +416,7 @@
 <p>The <code>Bodu.Collections.Probabilistic</code> namespace trades exactness for a fixed memory footprint: each sketch is sized once at construction and answers queries over arbitrarily long streams in O(1) space, with an error bound you choose up front.</p>
 <div class="WARNING">
 <h5>Warning</h5>
-<p>These types are <strong>approximate — do not use them for exact membership or exact counting.</strong> A Bloom filter can report a never-added element as present, a count-min estimate can exceed the true count, and a HyperLogLog cardinality is a statistical estimate. When the answer must be exact, stay with the exact types above.</p>
+<p>These types are <strong>approximate - do not use them for exact membership or exact counting.</strong> A Bloom filter can report a never-added element as present, a count-min estimate can exceed the true count, and a HyperLogLog cardinality is a statistical estimate. When the answer must be exact, stay with the exact types above.</p>
 </div>
 <table>
 <thead>
@@ -488,7 +488,7 @@
 </tr>
 <tr>
 <td>Find every booking that clashes with a proposed meeting slot.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a> — overlaps are stored, <code>QueryOverlaps</code> lists the clashes.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.IntervalTree-2.html">IntervalTree&lt;TKey, TValue&gt;</a> - overlaps are stored, <code>QueryOverlaps</code> lists the clashes.</td>
 </tr>
 <tr>
 <td>Run Dijkstra's algorithm on a weighted graph.</td>
@@ -504,11 +504,11 @@
 </tr>
 <tr>
 <td>Layer request-scoped overrides over shared defaults.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a> — overrides first, defaults behind.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.LayeredDictionary-2.html">LayeredDictionary&lt;TKey, TValue&gt;</a> - overrides first, defaults behind.</td>
 </tr>
 <tr>
 <td>Pivot values by two keys and slice by either axis.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> — <code>Row</code> / <code>Column</code> live projections; keep the most-sliced axis on the row side.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Table-3.html">Table&lt;TRow, TColumn, TValue&gt;</a> - <code>Row</code> / <code>Column</code> live projections; keep the most-sliced axis on the row side.</td>
 </tr>
 <tr>
 <td>Group items into lists without seeding empty lists.</td>
@@ -520,11 +520,11 @@
 </tr>
 <tr>
 <td>Find the nearest price at or below a limit, or the k-th smallest sample.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a> — <code>TryGetFloor</code> / <code>GetAt</code> in O(log n).</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableSet-1.html">NavigableSet&lt;T&gt;</a> - <code>TryGetFloor</code> / <code>GetAt</code> in O(log n).</td>
 </tr>
 <tr>
 <td>Look up the tax bracket, tier, or time-series entry in effect at a key.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a> — <code>TryGetFloorEntry</code> / <code>Range</code> in O(log n).</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.NavigableDictionary-2.html">NavigableDictionary&lt;TKey, TValue&gt;</a> - <code>TryGetFloorEntry</code> / <code>Range</code> in O(log n).</td>
 </tr>
 <tr>
 <td>Count occurrences of tokens in a corpus.</td>
@@ -532,15 +532,15 @@
 </tr>
 <tr>
 <td>Suggest completions for a typed prefix.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> — <code>ItemsWithPrefix</code> in O(prefix + matches).</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.Trie-1.html">Trie&lt;TValue&gt;</a> - <code>ItemsWithPrefix</code> in O(prefix + matches).</td>
 </tr>
 <tr>
 <td>Route requests by longest shared path segments.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> — compressed edges keep URL/path tables compact.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.RadixTrie-1.html">RadixTrie&lt;TValue&gt;</a> - compressed edges keep URL/path tables compact.</td>
 </tr>
 <tr>
 <td>Flag every banned keyword in a document in one pass.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> — <code>EnumerateMatches</code> reports all (overlapping) occurrences; <code>HasMatch</code> for a quick yes/no.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Generic.Trees.AhoCorasickAutomaton.html">AhoCorasickAutomaton</a> - <code>EnumerateMatches</code> reports all (overlapping) occurrences; <code>HasMatch</code> for a quick yes/no.</td>
 </tr>
 <tr>
 <td>Maintain a list of items in entry order while ensuring uniqueness.</td>
@@ -556,37 +556,37 @@
 </tr>
 <tr>
 <td>Skip re-crawling URLs already visited, tolerating rare false skips.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> — approximate; never misses a visited URL.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.BloomFilter-1.html">BloomFilter&lt;T&gt;</a> - approximate; never misses a visited URL.</td>
 </tr>
 <tr>
 <td>Find the most frequent requests in a high-cardinality stream.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a> — approximate; never undercounts.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.CountMinSketch-1.html">CountMinSketch&lt;T&gt;</a> - approximate; never undercounts.</td>
 </tr>
 <tr>
 <td>Count unique visitors without storing every id.</td>
-<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> — approximate; ~1.04/√m standard error.</td>
+<td><a class="xref" href="../../api/Bodu.Collections.Probabilistic.HyperLogLog-1.html">HyperLogLog&lt;T&gt;</a> - approximate; ~1.04/√m standard error.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="anti-patterns">Anti-patterns</h2>
 <ul>
-<li><strong>Do not use <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> when you only need single-ended FIFO.</strong> A <code>CircularBuffer&lt;T&gt;</code> with <code>AllowOverwrite = false</code> expresses the constraint more clearly and is the same shape under the hood — both inherit from <a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a>.</li>
-<li><strong>Do not use <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> as a general dictionary.</strong> It evicts on overflow even when you would prefer growth — choose the BCL <code>Dictionary&lt;TKey,TValue&gt;</code> when the working set is unbounded, or <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> when you also need a stable iteration order.</li>
-<li><strong>Do not confuse <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> with the BCL <code>OrderedDictionary&lt;TKey,TValue&gt;</code> (.NET 9+).</strong> The BCL type is <em>positional</em> — index-addressable with <code>Insert</code>/<code>RemoveAt</code>. <code>SequencedDictionary&lt;TKey,TValue&gt;</code> has no positional surface; it gives O(1) ends and O(1) keyed removal instead, and adds an optional access-order (LRU) mode. (On <code>net8.0</code> the BCL type is unavailable regardless.)</li>
+<li><strong>Do not use <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a> when you only need single-ended FIFO.</strong> A <code>CircularBuffer&lt;T&gt;</code> with <code>AllowOverwrite = false</code> expresses the constraint more clearly and is the same shape under the hood - both inherit from <a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a>.</li>
+<li><strong>Do not use <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> as a general dictionary.</strong> It evicts on overflow even when you would prefer growth - choose the BCL <code>Dictionary&lt;TKey,TValue&gt;</code> when the working set is unbounded, or <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> when you also need a stable iteration order.</li>
+<li><strong>Do not confuse <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a> with the BCL <code>OrderedDictionary&lt;TKey,TValue&gt;</code> (.NET 9+).</strong> The BCL type is <em>positional</em> - index-addressable with <code>Insert</code>/<code>RemoveAt</code>. <code>SequencedDictionary&lt;TKey,TValue&gt;</code> has no positional surface; it gives O(1) ends and O(1) keyed removal instead, and adds an optional access-order (LRU) mode. (On <code>net8.0</code> the BCL type is unavailable regardless.)</li>
 <li><strong>Do not assume the non-concurrent types are safe under concurrent reads.</strong> Reads on <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> mutate eviction metadata; reads on every collection rely on a structural-version counter that is not interlocked. Wrap with external synchronisation or pick the explicit concurrent variant.</li>
-<li><strong>Do not pair <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List&lt;T&gt;</a> &quot;to also enforce uniqueness&quot;.</strong> <code>IndexedSet&lt;T&gt;</code> already implements <code>IList&lt;T&gt;</code> with O(1) <code>Contains</code> and <code>IndexOf</code> — keeping two structures in sync introduces drift bugs.</li>
+<li><strong>Do not pair <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a> with <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List&lt;T&gt;</a> &quot;to also enforce uniqueness&quot;.</strong> <code>IndexedSet&lt;T&gt;</code> already implements <code>IList&lt;T&gt;</code> with O(1) <code>Contains</code> and <code>IndexOf</code> - keeping two structures in sync introduces drift bugs.</li>
 <li><strong>Do not implement an LRU cache by hand around <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> + <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a>.</strong> <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> already provides LRU, LFU, FIFO, MRU, Random, and Second-Chance through a single <code>EvictingDictionaryPolicy</code> selector.</li>
 <li><strong>Do not allocate a fresh <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a> per call to &quot;reuse the pool&quot;.</strong> The pool is global; the builder is the rental handle. For repeated rebuilds, call <code>Reset</code> to keep the current rented buffer.</li>
 </ul>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespace map and headline types.</li>
-<li><a href="../../docs/collections/concepts.html">Bodu.Collections concepts</a> — vocabulary: fixed-capacity, ring-backed, eviction policy, range-keyed.</li>
-<li><a href="circular-buffer.html">Circular buffer</a>, <a href="deque.html">Deque</a>, <a href="evicting-dictionary.html">Evicting dictionary</a>, <a href="range-dictionary.html">Range dictionary</a>, <a href="indexed-priority-queue.html">Indexed priority queue</a> — per-type walk-throughs.</li>
-<li><a href="concurrent-collections.html">Concurrent collections</a> — the thread-safe variants in detail.</li>
-<li><a href="probabilistic-collections.html">Probabilistic collections (sketches)</a> — the approximate <code>BloomFilter&lt;T&gt;</code> / <code>CountMinSketch&lt;T&gt;</code> / <code>HyperLogLog&lt;T&gt;</code> trio.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> - namespace map and headline types.</li>
+<li><a href="../../docs/collections/concepts.html">Bodu.Collections concepts</a> - vocabulary: fixed-capacity, ring-backed, eviction policy, range-keyed.</li>
+<li><a href="circular-buffer.html">Circular buffer</a>, <a href="deque.html">Deque</a>, <a href="evicting-dictionary.html">Evicting dictionary</a>, <a href="range-dictionary.html">Range dictionary</a>, <a href="indexed-priority-queue.html">Indexed priority queue</a> - per-type walk-throughs.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> - the thread-safe variants in detail.</li>
+<li><a href="probabilistic-collections.html">Probabilistic collections (sketches)</a> - the approximate <code>BloomFilter&lt;T&gt;</code> / <code>CountMinSketch&lt;T&gt;</code> / <code>HyperLogLog&lt;T&gt;</code> trio.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -606,7 +606,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

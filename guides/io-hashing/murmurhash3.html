@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="using-murmurhash3">Using MurmurHash3</h1>
 
-<p>MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the <a href="https://github.com/aappleby/smhasher">SMHasher</a> reference repository. It produces excellent avalanche behavior — every input bit influences every output bit — and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).</p>
+<p>MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the <a href="https://github.com/aappleby/smhasher">SMHasher</a> reference repository. It produces excellent avalanche behavior - every input bit influences every output bit - and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).</p>
 <p><img src="../../images/diagrams/murmurhash3-mix.svg" alt="MurmurHash3 mixing: each block is scrambled with constants c1, c2 and rotations before folding into the accumulator, followed by an xor-shift and multiply avalanche finalization"></p>
 <p><strong>Bodu.IO.Hashing</strong> provides two variants:</p>
 <table>
@@ -118,7 +118,7 @@
 <blockquote>
 <p><strong>Not cryptographic.</strong> MurmurHash3 must not be used for password hashing, digital signatures, or any application that requires adversarial collision resistance. An attacker who can choose inputs can construct collisions. For adversary-facing use, reach for <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</p>
 </blockquote>
-<h2 id="pattern-1--compute-a-32-bit-digest">Pattern 1 — compute a 32-bit digest</h2>
+<h2 id="pattern-1---compute-a-32-bit-digest">Pattern 1 - compute a 32-bit digest</h2>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing;
 
@@ -129,7 +129,7 @@ murmur.Append(data);
 byte[] digest = murmur.GetCurrentHash();   // 4 bytes
 uint h = BitConverter.ToUInt32(digest);
 </code></pre>
-<h2 id="pattern-2--compute-a-128-bit-digest">Pattern 2 — compute a 128-bit digest</h2>
+<h2 id="pattern-2---compute-a-128-bit-digest">Pattern 2 - compute a 128-bit digest</h2>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing;
 
@@ -139,8 +139,8 @@ using var murmur = new MurmurHash3_128();
 murmur.Append(data);
 byte[] digest = murmur.GetCurrentHash();   // 16 bytes
 </code></pre>
-<p>Use the 128-bit variant when you need a wider fingerprint space — for example, as a Bloom filter hash or as a deduplication key over a large corpus.</p>
-<h2 id="pattern-3--seeded-hash-for-independent-lanes">Pattern 3 — seeded hash for independent lanes</h2>
+<p>Use the 128-bit variant when you need a wider fingerprint space - for example, as a Bloom filter hash or as a deduplication key over a large corpus.</p>
+<h2 id="pattern-3---seeded-hash-for-independent-lanes">Pattern 3 - seeded hash for independent lanes</h2>
 <p>Both variants accept a <code>seed</code> at construction time. Two instances with different seeds produce independent hash functions over the same input, which is useful for Bloom filters (which need multiple independent hashes) and for A/B routing.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -154,16 +154,16 @@ h2.Append(data);
 uint slot1 = BitConverter.ToUInt32(h1.GetCurrentHash()) % (uint)buckets;
 uint slot2 = BitConverter.ToUInt32(h2.GetCurrentHash()) % (uint)buckets;
 </code></pre>
-<p>The seed is not a cryptographic key — it does not provide adversarial resistance.</p>
-<h2 id="pattern-4--append--getcurrenthash--reset-lifecycle">Pattern 4 — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
-<p>MurmurHash3 is a one-shot algorithm internally. The <code>Append</code> calls accumulate bytes in an internal buffer; <code>GetCurrentHash</code> applies the full mixing pass once all data is available. The call is non-destructive — the buffer is preserved so you can continue appending after a snapshot.</p>
+<p>The seed is not a cryptographic key - it does not provide adversarial resistance.</p>
+<h2 id="pattern-4---append--getcurrenthash--reset-lifecycle">Pattern 4 - <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
+<p>MurmurHash3 is a one-shot algorithm internally. The <code>Append</code> calls accumulate bytes in an internal buffer; <code>GetCurrentHash</code> applies the full mixing pass once all data is available. The call is non-destructive - the buffer is preserved so you can continue appending after a snapshot.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
 using var murmur = new MurmurHash3_32();
 
 murmur.Append(header);
 murmur.Append(body);
-byte[] partial = murmur.GetCurrentHash();   // snapshot — mixes all bytes appended so far
+byte[] partial = murmur.GetCurrentHash();   // snapshot - mixes all bytes appended so far
 murmur.Append(trailer);
 byte[] full = murmur.GetCurrentHash();
 
@@ -173,7 +173,7 @@ murmur.Reset();                             // discards the buffer and resets to
 <h5>Note</h5>
 <p>The internal buffer grows with each <code>Append</code>. For very large inputs (hundreds of MB) where you do not want to hold the entire payload in memory, prefer a constant-memory streaming algorithm such as <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, or <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a>.</p>
 </div>
-<h2 id="pattern-5--bloom-filter-with-two-hash-functions">Pattern 5 — Bloom filter with two hash functions</h2>
+<h2 id="pattern-5---bloom-filter-with-two-hash-functions">Pattern 5 - Bloom filter with two hash functions</h2>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing;
 
@@ -242,10 +242,10 @@ bool MightContain(string item)
 </tr>
 <tr>
 <td>Streaming (constant memory)</td>
-<td>No — buffers input</td>
+<td>No - buffers input</td>
 <td>Yes</td>
-<td>No — buffers input</td>
-<td>No — buffers input</td>
+<td>No - buffers input</td>
+<td>No - buffers input</td>
 </tr>
 <tr>
 <td>Relative throughput (large inputs)</td>
@@ -263,15 +263,15 @@ bool MightContain(string item)
 </tr>
 </tbody>
 </table>
-<p>Reach for <strong>MurmurHash3</strong> when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche — for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer <strong>CityHash</strong> (in Bodu) or <code>System.IO.Hashing.XxHash64</code> (in the BCL). For constant-memory streaming, prefer <strong>FNV-1a</strong> or <strong>CRC</strong>.</p>
+<p>Reach for <strong>MurmurHash3</strong> when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche - for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer <strong>CityHash</strong> (in Bodu) or <code>System.IO.Hashing.XxHash64</code> (in the BCL). For constant-memory streaming, prefer <strong>FNV-1a</strong> or <strong>CRC</strong>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="cityhash.html">Using CityHash</a> — fastest throughput on large inputs.</li>
-<li><a href="fnv.html">Using FNV</a> — constant-memory streaming alternative.</li>
-<li><a href="pearson.html">Using Pearson</a> — configurable output width from 8 to 2048 bits.</li>
-<li><a href="../../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a> — when to use a fingerprint vs a checksum vs a check digit.</li>
-<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="cityhash.html">Using CityHash</a> - fastest throughput on large inputs.</li>
+<li><a href="fnv.html">Using FNV</a> - constant-memory streaming alternative.</li>
+<li><a href="pearson.html">Using Pearson</a> - configurable output width from 8 to 2048 bits.</li>
+<li><a href="../../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a> - when to use a fingerprint vs a checksum vs a check digit.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> - key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -291,7 +291,7 @@ bool MightContain(string item)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

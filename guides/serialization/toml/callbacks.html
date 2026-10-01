@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="serialization-callbacks">Serialization callbacks</h1>
 
-<p>The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks — <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, and <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline — no registration or attribute is required. The interfaces live in the shared <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> package, so the sibling libraries (<a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../yaml/index.html">Bodu.Text.Yaml</a>) honour exactly the same four hooks.</p>
+<p>The TOML serializer lets a type participate in its own serialization lifecycle by implementing one or more callback interfaces. TOML exposes four hooks - <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, and <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a>. The serializer detects the interfaces on the value's type and invokes them at the matching point in the pipeline - no registration or attribute is required. The interfaces live in the shared <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a> package, so the sibling libraries (<a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../yaml/index.html">Bodu.Text.Yaml</a>) honour exactly the same four hooks.</p>
 <table>
 <thead>
 <tr>
@@ -119,8 +119,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-1--apply-defaults-that-survive-omitted-keys">Pattern 1 — Apply defaults that survive omitted keys</h2>
-<p>Member initializers run at construction, but a key present in the input then overwrites them — there is no way to distinguish &quot;key absent&quot; from &quot;key set to the initializer value&quot; after the fact. <code>OnDeserializing</code> runs after construction and <em>before</em> member assignment, so a value it assigns persists exactly when the input omits the key:</p>
+<h2 id="pattern-1---apply-defaults-that-survive-omitted-keys">Pattern 1 - Apply defaults that survive omitted keys</h2>
+<p>Member initializers run at construction, but a key present in the input then overwrites them - there is no way to distinguish &quot;key absent&quot; from &quot;key set to the initializer value&quot; after the fact. <code>OnDeserializing</code> runs after construction and <em>before</em> member assignment, so a value it assigns persists exactly when the input omits the key:</p>
 <pre><code class="lang-csharp">public sealed class ServerConfig : IOnDeserializing
 {
     public int Port { get; set; }
@@ -129,12 +129,12 @@
         Port = 8080;
 }
 </code></pre>
-<pre><code class="lang-csharp">TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;&quot;).Port            // 8080 — key omitted, default survives
-TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port = 9090&quot;).Port // 9090 — key present, default overwritten
+<pre><code class="lang-csharp">TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;&quot;).Port            // 8080 - key omitted, default survives
+TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port = 9090&quot;).Port // 9090 - key present, default overwritten
 </code></pre>
-<p>For a type built through a parameterized constructor the callback necessarily runs after the constructor has consumed its bound arguments — the instance does not exist any earlier.</p>
-<h2 id="pattern-2--validate-after-deserialization">Pattern 2 — Validate after deserialization</h2>
-<p><code>OnDeserialized</code> is the last step of deserialization for the instance, so it observes the fully materialized object — including required members, extension data, and populated collections. Throwing from it fails the deserialization:</p>
+<p>For a type built through a parameterized constructor the callback necessarily runs after the constructor has consumed its bound arguments - the instance does not exist any earlier.</p>
+<h2 id="pattern-2---validate-after-deserialization">Pattern 2 - Validate after deserialization</h2>
+<p><code>OnDeserialized</code> is the last step of deserialization for the instance, so it observes the fully materialized object - including required members, extension data, and populated collections. Throwing from it fails the deserialization:</p>
 <pre><code class="lang-csharp">public sealed class ServerConfig : IOnDeserialized
 {
     public int Port { get; set; }
@@ -147,7 +147,7 @@ TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port = 9090&quot;).Port // 
 }
 </code></pre>
 <p>This complements <code>[Required]</code> (which checks presence, not validity): the attribute rejects an absent key, the callback rejects a present-but-invalid value.</p>
-<h2 id="pattern-3--derive-state-before-serialization">Pattern 3 — Derive state before serialization</h2>
+<h2 id="pattern-3---derive-state-before-serialization">Pattern 3 - Derive state before serialization</h2>
 <p><code>OnSerializing</code> runs before the value's members are written, so any mutation it performs is reflected in the emitted output. Use it to stamp timestamps, recompute checksums, or normalize state at the moment of writing:</p>
 <pre><code class="lang-csharp">public sealed class Snapshot : IOnSerializing
 {
@@ -157,7 +157,7 @@ TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port = 9090&quot;).Port // 
         SavedAt = DateTime.UtcNow;
 }
 </code></pre>
-<h2 id="pattern-4--observe-a-completed-write">Pattern 4 — Observe a completed write</h2>
+<h2 id="pattern-4---observe-a-completed-write">Pattern 4 - Observe a completed write</h2>
 <p><code>OnSerialized</code> runs after the value's table/dictionary has been closed: it observes the completed write rather than influencing the output. Use it to restore state changed by <code>OnSerializing</code>, or to track writes:</p>
 <pre><code class="lang-csharp">public sealed class Snapshot : IOnSerialized
 {
@@ -168,7 +168,7 @@ TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Port = 9090&quot;).Port // 
         WriteCount++;
 }
 </code></pre>
-<h2 id="pattern-5--end-to-end-a-self-describing-validated-manifest">Pattern 5 — End to end: a self-describing, validated manifest</h2>
+<h2 id="pattern-5---end-to-end-a-self-describing-validated-manifest">Pattern 5 - End to end: a self-describing, validated manifest</h2>
 <p>The hooks combine naturally: <code>OnSerializing</code> keeps a computed member fresh at the moment of writing, and <code>OnDeserialized</code> rejects a document where the same invariant does not hold. Throw the format's serialization exception (<a class="xref" href="../../../api/Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a>) so callers handle validation failures in the same catch clause as every other binding error:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Toml;
 using Bodu.Text.Toml.Serialization;
@@ -180,7 +180,7 @@ public sealed class Manifest : IOnSerializing, IOnDeserialized
     public int FileCount { get; set; }
 
     void IOnSerializing.OnSerializing() =&gt;
-        FileCount = Files.Count;   // refreshed on every write — never stale
+        FileCount = Files.Count;   // refreshed on every write - never stale
 
     void IOnDeserialized.OnDeserialized()
     {
@@ -194,7 +194,7 @@ public sealed class Manifest : IOnSerializing, IOnDeserialized
 // → Files = [&quot;a.txt&quot;, &quot;b.txt&quot;, &quot;c.txt&quot;]
 //   FileCount = 3
 </code></pre>
-<p>Deserializing validates the fully materialized instance — a document whose count disagrees with its list fails, and a consistent one binds:</p>
+<p>Deserializing validates the fully materialized instance - a document whose count disagrees with its list fails, and a consistent one binds:</p>
 <pre><code class="lang-csharp">TomlSerializer.Deserialize&lt;Manifest&gt;(&quot;FileCount = 2&quot;);
 // → throws TomlSerializationException: FileCount does not match the number of entries in Files.
 
@@ -227,7 +227,7 @@ Manifest ok = TomlSerializer.Deserialize&lt;Manifest&gt;(&quot;&quot;&quot;
 </tr>
 <tr>
 <td>3</td>
-<td><strong><code>OnDeserializing</code></strong> fires — after construction, before any member is assigned.</td>
+<td><strong><code>OnDeserializing</code></strong> fires - after construction, before any member is assigned.</td>
 <td>The table/dictionary is opened.</td>
 </tr>
 <tr>
@@ -247,25 +247,25 @@ Manifest ok = TomlSerializer.Deserialize&lt;Manifest&gt;(&quot;&quot;&quot;
 </tr>
 </tbody>
 </table>
-<p>Two consequences worth noting. On read, the member <em>converters</em> run before <code>OnDeserializing</code> — the hook cannot influence how values are parsed, only what happens to the instance before they are assigned. On write, <code>OnSerializing</code> runs before the value's table or dictionary is opened, so mutations it makes are always reflected in the output.</p>
+<p>Two consequences worth noting. On read, the member <em>converters</em> run before <code>OnDeserializing</code> - the hook cannot influence how values are parsed, only what happens to the instance before they are assigned. On write, <code>OnSerializing</code> runs before the value's table or dictionary is opened, so mutations it makes are always reflected in the output.</p>
 <h2 id="interplay-with-custom-converters">Interplay with custom converters</h2>
-<p>The four hooks are invoked by the object-mapping converter — the catch-all that writes a plain class or struct as a table/dictionary. A type claimed by a <em>custom</em> converter (via <code>[Converter]</code> or <code>options.Converters</code>) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so <strong>none of the callbacks fire for that type, even when it implements the interfaces</strong>. If a converter-handled type needs lifecycle behavior, perform it inside the converter's <code>Read</code> / <code>Write</code>.</p>
-<p>Member-level converters and callbacks compose, however: a callback-bearing type whose <em>members</em> use custom converters still fires all four hooks — the custom converters simply do the per-member reading and writing in phases 1 and 4 above.</p>
+<p>The four hooks are invoked by the object-mapping converter - the catch-all that writes a plain class or struct as a table/dictionary. A type claimed by a <em>custom</em> converter (via <code>[Converter]</code> or <code>options.Converters</code>) bypasses that path entirely: the serializer hands the value to your converter and never enters the member-mapping phase, so <strong>none of the callbacks fire for that type, even when it implements the interfaces</strong>. If a converter-handled type needs lifecycle behavior, perform it inside the converter's <code>Read</code> / <code>Write</code>.</p>
+<p>Member-level converters and callbacks compose, however: a callback-bearing type whose <em>members</em> use custom converters still fires all four hooks - the custom converters simply do the per-member reading and writing in phases 1 and 4 above.</p>
 <h2 id="scope-and-ordering">Scope and ordering</h2>
 <ul>
-<li>The callbacks apply to values written as tables/dictionaries through the object mapping — the path a plain class or struct takes. A value claimed by a scalar converter has no member-writing phase and no callbacks.</li>
+<li>The callbacks apply to values written as tables/dictionaries through the object mapping - the path a plain class or struct takes. A value claimed by a scalar converter has no member-writing phase and no callbacks.</li>
 <li>They fire for nested objects too, innermost completing first on write and on read.</li>
 <li>Within one instance the order is always construct → <code>OnDeserializing</code> → member assignment → <code>OnDeserialized</code>, and <code>OnSerializing</code> → member writing → <code>OnSerialized</code>.</li>
 <li>The hooks pair naturally: state established in <code>OnSerializing</code> can be torn down in <code>OnSerialized</code>, and defaults set in <code>OnDeserializing</code> can be validated in <code>OnDeserialized</code>.</li>
 </ul>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="attributes.html">Mapping attributes</a> — <code>[Required]</code> and friends; declarative presence checks that the callbacks complement with value validation.</li>
-<li><a href="converters.html">Writing converters</a> — the customization seam that <em>replaces</em> the object mapping (and with it, the callbacks) for a type.</li>
-<li><a href="using.html">Using TOML</a> — the format walk-through, including the error-handling pattern that catches the exception thrown from <code>OnDeserialized</code>.</li>
-<li><a href="../../../docs/serialization/toml/concepts.html">Core concepts</a> — where the callbacks sit in the family vocabulary.</li>
+<li><a href="attributes.html">Mapping attributes</a> - <code>[Required]</code> and friends; declarative presence checks that the callbacks complement with value validation.</li>
+<li><a href="converters.html">Writing converters</a> - the customization seam that <em>replaces</em> the object mapping (and with it, the callbacks) for a type.</li>
+<li><a href="using.html">Using TOML</a> - the format walk-through, including the error-handling pattern that catches the exception thrown from <code>OnDeserialized</code>.</li>
+<li><a href="../../../docs/serialization/toml/concepts.html">Core concepts</a> - where the callbacks sit in the family vocabulary.</li>
 <li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a>.</li>
 </ul>
 
 </article>
@@ -285,7 +285,7 @@ Manifest ok = TomlSerializer.Deserialize&lt;Manifest&gt;(&quot;&quot;&quot;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

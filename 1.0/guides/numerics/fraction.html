@@ -99,19 +99,19 @@ generic-math algorithms without bespoke wrappers.</p>
 <code>uint</code>, <code>long</code>, <code>ulong</code>, <code>Int128</code>, <code>UInt128</code>, <code>BigInteger</code>, and
 consumer-defined integer types built on the generic-math interfaces.
 Use <code>Fraction&lt;BigInteger&gt;</code> whenever a calculation chains several
-multiplications or divisions — overflow is not possible and there is
+multiplications or divisions - overflow is not possible and there is
 no narrowing step.</p>
 <h2 id="creating-fractions">Creating fractions</h2>
 <p>Use the static factory methods on <code>Fraction&lt;T&gt;</code> directly when the
 backing type is fixed. Unlike <code>Interval&lt;T&gt;</code>, there is no non-generic
-helper class for inference — pick the backing type up front.</p>
+helper class for inference - pick the backing type up front.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Numerics;
 
 // Two-argument factories normalise on construction.
 Fraction&lt;int&gt; half     = Fraction&lt;int&gt;.Create(1, 2);     // 1/2
-Fraction&lt;int&gt; twoFourths = Fraction&lt;int&gt;.Create(2, 4);   // 1/2 — auto-reduced
-Fraction&lt;int&gt; negThirds  = Fraction&lt;int&gt;.Create(3, -4);  // -3/4 — sign flipped to numerator
+Fraction&lt;int&gt; twoFourths = Fraction&lt;int&gt;.Create(2, 4);   // 1/2 - auto-reduced
+Fraction&lt;int&gt; negThirds  = Fraction&lt;int&gt;.Create(3, -4);  // -3/4 - sign flipped to numerator
 
 // Single-argument factory for whole numbers.
 Fraction&lt;int&gt; seven = new Fraction&lt;int&gt;(7);              // 7/1
@@ -133,13 +133,13 @@ near <code>T.MinValue</code>) throws <code>OverflowException</code>.</li>
 conditions through a <code>false</code> return without throwing.</p>
 <h3 id="from-other-numeric-types">From other numeric types</h3>
 <!-- compile -->
-<pre><code class="lang-csharp">Fraction&lt;int&gt;.FromDecimal(0.125m);              // 1/8 — exact decimal
-Fraction&lt;int&gt;.FromDouble(0.5);                  // 1/2 — exact for round halves
-Fraction&lt;BigInteger&gt;.FromDouble(Math.PI);       // Very large rational — Math.PI bits
+<pre><code class="lang-csharp">Fraction&lt;int&gt;.FromDecimal(0.125m);              // 1/8 - exact decimal
+Fraction&lt;int&gt;.FromDouble(0.5);                  // 1/2 - exact for round halves
+Fraction&lt;BigInteger&gt;.FromDouble(Math.PI);       // Very large rational - Math.PI bits
 Fraction&lt;int&gt;.FromBigInteger(7, 3);             // Narrows BigInteger → int safely
 </code></pre>
 <p><code>FromDecimal</code> is exact: it decomposes the <code>decimal</code>'s mantissa and
-scale. <code>FromDouble</code> is exact in the IEEE 754 sense — it decomposes the
+scale. <code>FromDouble</code> is exact in the IEEE 754 sense - it decomposes the
 <code>double</code>'s mantissa and exponent, which may produce a fraction with a
 very large denominator for values that look &quot;nice&quot; in base 10
 (<code>FromDouble(0.1)</code> is not <code>1/10</code>). For a <em>best rational
@@ -150,7 +150,7 @@ approximation</em> to a real number within a denominator bound, use
 <h3 id="best-rational-approximation">Best rational approximation</h3>
 <!-- compile -->
 <pre><code class="lang-csharp">Fraction&lt;int&gt; piApprox = Fraction&lt;int&gt;.Approximate(Math.PI, maxDenominator: 1000);
-// 355/113 — the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
+// 355/113 - the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
 </code></pre>
 <p><code>Approximate(value, maxDenominator)</code> uses convergents of the
 continued-fraction expansion to find the best rational with
@@ -163,7 +163,7 @@ bound.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Fraction&lt;int&gt; phi = Fraction&lt;int&gt;.Create(610, 377);
 int[] coeffs = phi.ToContinuedFraction();
-// [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] — golden-ratio convergent
+// [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] - golden-ratio convergent
 
 Fraction&lt;int&gt; reconstructed = Fraction&lt;int&gt;.FromContinuedFraction(coeffs);
 </code></pre>
@@ -188,20 +188,20 @@ on non-finite input, and the <code>string</code> overload throws
 value too large for <code>T</code> is bounded <em>before</em> it is narrowed.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var pi = Fraction&lt;int&gt;.Create(355, 113);
-pi.LimitDenominator(100);                    // 311/99 — closest with denominator ≤ 100
-Fraction&lt;int&gt;.Approximate(0.1, 1000);        // 1/10 — recovers the intended rational from a double
+pi.LimitDenominator(100);                    // 311/99 - closest with denominator ≤ 100
+Fraction&lt;int&gt;.Approximate(0.1, 1000);        // 1/10 - recovers the intended rational from a double
 </code></pre>
 <h2 id="canonical-form">Canonical form</h2>
 <p>Every <code>Fraction&lt;T&gt;</code> is reduced to GCD-normalised form, with the sign
 on the numerator and the denominator strictly positive. This means
-<code>2/4</code> and <code>1/2</code> are indistinguishable after construction — there is
+<code>2/4</code> and <code>1/2</code> are indistinguishable after construction - there is
 no unreduced form to preserve. Equality compares the canonical
 components, so <code>Fraction&lt;int&gt;.Create(2, 4) == Fraction&lt;int&gt;.Create(1, 2)</code>
 is <code>true</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var a = Fraction&lt;int&gt;.Create(2, 4);    // 1/2
 var b = Fraction&lt;int&gt;.Create(1, 2);    // 1/2
-var c = Fraction&lt;int&gt;.Create(-3, -6);  // 1/2 — both negatives cancel
+var c = Fraction&lt;int&gt;.Create(-3, -6);  // 1/2 - both negatives cancel
 
 Console.WriteLine(a == b);             // True
 Console.WriteLine(a == c);             // True
@@ -246,7 +246,7 @@ representation <code>(numerator: 0, denominator: 0)</code> is interpreted as
 </tr>
 <tr>
 <td><code>IsImproper</code></td>
-<td>Magnitude at least one — the negation of <code>IsProper</code>.</td>
+<td>Magnitude at least one - the negation of <code>IsProper</code>.</td>
 </tr>
 <tr>
 <td><code>IsUnit</code></td>
@@ -262,11 +262,11 @@ representation <code>(numerator: 0, denominator: 0)</code> is interpreted as
 </tr>
 <tr>
 <td><code>IsCanonical</code></td>
-<td>Always <code>true</code> — the type maintains the invariant.</td>
+<td>Always <code>true</code> - the type maintains the invariant.</td>
 </tr>
 <tr>
 <td><code>IsReducible</code></td>
-<td>Always <code>false</code> — there is no unreduced form to reduce.</td>
+<td>Always <code>false</code> - there is no unreduced form to reduce.</td>
 </tr>
 </tbody>
 </table>
@@ -274,7 +274,7 @@ representation <code>(numerator: 0, denominator: 0)</code> is interpreted as
 <h2 id="static-constants">Static constants</h2>
 <pre><code class="lang-csharp">Fraction&lt;int&gt;.Zero;       // 0/1
 Fraction&lt;int&gt;.One;        // 1/1
-Fraction&lt;int&gt;.MinusOne;   // -1/1 — throws OverflowException if T is unsigned
+Fraction&lt;int&gt;.MinusOne;   // -1/1 - throws OverflowException if T is unsigned
 Fraction&lt;int&gt;.MinValue;   // T.MinValue/1
 Fraction&lt;int&gt;.MaxValue;   // T.MaxValue/1
 </code></pre>
@@ -290,18 +290,18 @@ a + b;     // 5/6
 a - b;     // -1/6
 a * b;     // 1/6
 a / b;     // 2/3
-a % b;     // 1/3   — remainder of the floored quotient
+a % b;     // 1/3   - remainder of the floored quotient
 -a;        // -1/3
 ++a;       // 4/3
 </code></pre>
 <p>Convenience methods cover the common patterns:</p>
 <pre><code class="lang-csharp">a.Abs();                       // magnitude
 a.Negate();                    // unary negation
-a.Reciprocal();                // 3/1 — throws DivideByZeroException on 0
+a.Reciprocal();                // 3/1 - throws DivideByZeroException on 0
 a.Invert();                    // alias for Reciprocal()
-a.Pow(3);                      // 1/27 — negative exponents allowed via reciprocal
-a.Squared();                   // 1/9 — alias for a * a
-a.Cubed();                     // 1/27 — alias for a * a * a
+a.Pow(3);                      // 1/27 - negative exponents allowed via reciprocal
+a.Squared();                   // 1/9 - alias for a * a
+a.Cubed();                     // 1/27 - alias for a * a * a
 a.Remainder(b);                // alias for a % b
 </code></pre>
 <p><code>Pow</code> is defined for the whole <code>int</code> exponent range:</p>
@@ -309,7 +309,7 @@ a.Remainder(b);                // alias for a % b
 <li><code>Pow(0)</code> returns <code>One</code> for every value, <strong>including</strong> <code>Fraction&lt;T&gt;.Zero</code> (the conventional <code>0⁰ = 1</code>).</li>
 <li>A negative exponent raises the <em>reciprocal</em> to the corresponding magnitude, so <code>Fraction&lt;int&gt;.Create(2, 3).Pow(-2)</code> is <code>9/4</code>. Applying a negative exponent to zero throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a>, and an exponent magnitude exceeding <code>int.MaxValue</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a>.</li>
 </ul>
-<p>The <code>%</code> operator (and its <code>Remainder</code> alias) returns the remainder of the <em>floored-quotient</em> division and carries the <strong>sign of the dividend</strong> — so <code>Fraction&lt;int&gt;.Create(7, 2) % Fraction&lt;int&gt;.Create(1, 1)</code> is <code>1/2</code>. Dividing by zero throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a>.</p>
+<p>The <code>%</code> operator (and its <code>Remainder</code> alias) returns the remainder of the <em>floored-quotient</em> division and carries the <strong>sign of the dividend</strong> - so <code>Fraction&lt;int&gt;.Create(7, 2) % Fraction&lt;int&gt;.Create(1, 1)</code> is <code>1/2</code>. Dividing by zero throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dividebyzeroexception">DivideByZeroException</a>.</p>
 <h3 id="overflow-handling">Overflow handling</h3>
 <p>Arithmetic operations promote operands to <code>BigInteger</code>, evaluate
 exactly, then narrow back to <code>T</code>. Overflow on narrowing raises
@@ -322,13 +322,13 @@ var doubled = huge + huge;     // OverflowException
 entirely:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var hugeBI = Fraction&lt;BigInteger&gt;.Create(int.MaxValue, 1);
-var doubledBI = hugeBI + hugeBI;   // 4294967294/1 — no overflow
+var doubledBI = hugeBI + hugeBI;   // 4294967294/1 - no overflow
 </code></pre>
 <h3 id="unsigned-backing-types">Unsigned backing types</h3>
 <p><code>Fraction&lt;T&gt;</code> accepts unsigned backing types (<code>uint</code>, <code>ulong</code>, <code>byte</code>,
 …) but negative values cannot be represented. Any operation that
 would produce a negative numerator on an unsigned backing type throws
-<code>OverflowException</code> at runtime — including <code>MinusOne</code>, unary <code>-</code>,
+<code>OverflowException</code> at runtime - including <code>MinusOne</code>, unary <code>-</code>,
 <code>Negate()</code>, the reciprocal of a value larger than one, and certain
 subtraction patterns.</p>
 <h2 id="comparison-and-equality">Comparison and equality</h2>
@@ -337,13 +337,13 @@ var b = Fraction&lt;int&gt;.Create(2, 5);
 
 a &lt; b;                                      // True
 a.CompareTo(b);                             // -1
-Fraction&lt;int&gt;.Compare(a, b);                // -1 — static cross-multiply
+Fraction&lt;int&gt;.Compare(a, b);                // -1 - static cross-multiply
 
 Fraction&lt;int&gt;.Min(a, b);                    // 1/3
 Fraction&lt;int&gt;.Max(a, b);                    // 2/5
 Fraction&lt;int&gt;.Clamp(value, lo: a, hi: b);   // clamps to [1/3, 2/5]
 </code></pre>
-<p>Equality compares canonical components, not raw structural fields —
+<p>Equality compares canonical components, not raw structural fields -
 because the canonical form is unique, two fractions are equal exactly
 when they represent the same rational value. The hash code is derived
 from the same canonical components, so equal fractions share a hash
@@ -353,7 +353,7 @@ code.</p>
 Fraction&lt;int&gt; three = 3;
 
 // Explicit narrowing conversions to numeric types.
-decimal d = (decimal) Fraction&lt;int&gt;.Create(1, 4);   // 0.25m — throws on decimal overflow
+decimal d = (decimal) Fraction&lt;int&gt;.Create(1, 4);   // 0.25m - throws on decimal overflow
 double  x = (double)  Fraction&lt;int&gt;.Create(1, 3);   // 0.3333333333333333
 float   f = (float)   Fraction&lt;int&gt;.Create(1, 3);   // 0.33333334
 
@@ -361,7 +361,7 @@ float   f = (float)   Fraction&lt;int&gt;.Create(1, 3);   // 0.33333334
 Fraction&lt;long&gt;.Create(very_large, 1).TryToDecimal(out decimal v);
 
 // Truncated integer extraction.
-Fraction&lt;int&gt;.Create(7, 3).ToInteger();             // 2 — truncates toward zero
+Fraction&lt;int&gt;.Create(7, 3).ToInteger();             // 2 - truncates toward zero
 Fraction&lt;int&gt;.Create(-7, 3).ToBigInteger();         // -2
 
 // Cross-backing-type conversion.
@@ -402,7 +402,7 @@ in <code>TOther</code> with <code>OverflowException</code>.</p>
 <td><code>ToDouble</code> / <code>ToSingle</code></td>
 <td>out</td>
 <td>rounded to <code>double</code> / <code>float</code></td>
-<td>never throws — saturates to <code>±Infinity</code> outside the finite range; <code>TryToDouble</code> / <code>TryToSingle</code> return <code>false</code> in that case</td>
+<td>never throws - saturates to <code>±Infinity</code> outside the finite range; <code>TryToDouble</code> / <code>TryToSingle</code> return <code>false</code> in that case</td>
 </tr>
 <tr>
 <td><code>ToInteger</code> / <code>ToBigInteger</code> / <code>GetWholePart</code></td>
@@ -426,21 +426,21 @@ in <code>TOther</code> with <code>OverflowException</code>.</p>
 x.Floor();        // 2/1
 x.Ceiling();      // 3/1
 x.Truncate();     // 2/1
-x.Round();        // 2/1 — banker's rounding (to-even)
+x.Round();        // 2/1 - banker's rounding (to-even)
 x.Round(MidpointRounding.AwayFromZero);  // 3/1
 
 x.GetWholePart();      // 2 (T)
 x.GetFractionalPart(); // 1/3
 var (whole, frac) = x.ToMixedParts();    // (2, 1/3)
-var (w, fn, fd) = x;                     // (2, 1, 3) — three-way Deconstruct: whole, fractional numerator, denominator
+var (w, fn, fd) = x;                     // (2, 1, 3) - three-way Deconstruct: whole, fractional numerator, denominator
 
-var (n, d) = Fraction&lt;int&gt;.Create(7, 3); // (7, 3) — Deconstruct over canonical components
+var (n, d) = Fraction&lt;int&gt;.Create(7, 3); // (7, 3) - Deconstruct over canonical components
 </code></pre>
 <p>The full <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.midpointrounding">MidpointRounding</a> enum is supported on <code>Round</code>.</p>
 <h2 id="generic-math">Generic math</h2>
 <p><code>Fraction&lt;T&gt;</code> implements <code>INumber&lt;Fraction&lt;T&gt;&gt;</code> and
 <code>ISignedNumber&lt;Fraction&lt;T&gt;&gt;</code>. The standard identities and predicates
-are provided — but as <strong>explicit interface implementations</strong>, so they
+are provided - but as <strong>explicit interface implementations</strong>, so they
 are not callable on the concrete type: <code>Fraction&lt;int&gt;.AdditiveIdentity</code>
 or <code>Fraction&lt;int&gt;.IsNaN(x)</code> does not compile. They are reached through
 a generic type parameter constrained to the interface, which is exactly
@@ -452,8 +452,8 @@ how every generic-math algorithm consumes them:</p>
     T one  = T.MultiplicativeIdentity;  // 1/1
 
     T.IsZero(T.Zero);                   // True
-    T.IsInteger(x);                     // True for 4/2 — canonical is 2/1
-    T.IsNaN(x);                         // False — Fraction&lt;T&gt; is never NaN
+    T.IsInteger(x);                     // True for 4/2 - canonical is 2/1
+    T.IsNaN(x);                         // False - Fraction&lt;T&gt; is never NaN
     T.IsFinite(x);                      // True
     T.IsRealNumber(x);                  // True
 
@@ -471,8 +471,8 @@ public counterpart on the concrete type: <code>Fraction&lt;T&gt;.Zero</code>, <c
 <code>IsInteger</code>, <code>IsProper</code>, <code>IsNegative</code>, and <code>IsPositive</code> are the
 classification predicates.</p>
 <p>This means <code>Fraction&lt;T&gt;</code> slots into algorithms written against the
-<code>INumber</code> abstractions — <code>Sum</code>, <code>Aggregate</code>, generic linear-algebra
-routines — without special-casing.</p>
+<code>INumber</code> abstractions - <code>Sum</code>, <code>Aggregate</code>, generic linear-algebra
+routines - without special-casing.</p>
 <p><code>MaxMagnitude</code> / <code>MinMagnitude</code> compare absolute values and break a tie
 by sign, mirroring the BCL convention: <code>MaxMagnitude</code> prefers the
 positive operand on a magnitude tie, <code>MinMagnitude</code> the negative one.
@@ -500,9 +500,9 @@ static T Saturating&lt;T, TOther&gt;(TOther value)
     where TOther : INumberBase&lt;TOther&gt; =&gt;
     T.CreateSaturating(value);
 
-Checked&lt;Fraction&lt;int&gt;, int&gt;(42);           // 42/1 — exact integer source
-Checked&lt;Fraction&lt;int&gt;, decimal&gt;(0.25m);    // 1/4  — exact decimal source
-Saturating&lt;Fraction&lt;int&gt;, double&gt;(1e30);   // MaxValue — clamps instead of throwing
+Checked&lt;Fraction&lt;int&gt;, int&gt;(42);           // 42/1 - exact integer source
+Checked&lt;Fraction&lt;int&gt;, decimal&gt;(0.25m);    // 1/4  - exact decimal source
+Saturating&lt;Fraction&lt;int&gt;, double&gt;(1e30);   // MaxValue - clamps instead of throwing
 </code></pre>
 <p>See <a href="generic-math-constraints.html">Generic-math constraints</a> for the
 constraint sets to use when writing such routines.</p>
@@ -529,11 +529,11 @@ constraint sets to use when writing such routines.</p>
 </tr>
 <tr>
 <td><code>&quot;2 1/3&quot;</code></td>
-<td>Mixed numbers: 7/3 — sign applies to whole result</td>
+<td>Mixed numbers: 7/3 - sign applies to whole result</td>
 </tr>
 <tr>
 <td><code>&quot;½&quot;</code>, <code>&quot;⅖&quot;</code></td>
-<td>Unicode vulgar fractions (18 glyphs — see <a href="formatting-and-parsing.html">Formatting and parsing</a>)</td>
+<td>Unicode vulgar fractions (18 glyphs - see <a href="formatting-and-parsing.html">Formatting and parsing</a>)</td>
 </tr>
 <tr>
 <td><code>&quot;2⅜&quot;</code></td>
@@ -541,7 +541,7 @@ constraint sets to use when writing such routines.</p>
 </tr>
 <tr>
 <td><code>&quot;50%&quot;</code>, <code>&quot;3/4%&quot;</code></td>
-<td>Percentage form — trailing <code>%</code> divides denominator by 100</td>
+<td>Percentage form - trailing <code>%</code> divides denominator by 100</td>
 </tr>
 </tbody>
 </table>
@@ -588,7 +588,7 @@ Fraction&lt;int&gt;.TryParse(&quot;nope&quot;, out var _); // false
 x.ToString();         // &quot;7/3&quot;
 x.ToString(&quot;M&quot;);      // &quot;2 1/3&quot;
 x.ToString(&quot;U&quot;);      // &quot;2⅓&quot;
-x.ToString(&quot;P&quot;);      // &quot;700/3%&quot; — 7/3 × 100 = 700/3, already in lowest terms
+x.ToString(&quot;P&quot;);      // &quot;700/3%&quot; - 7/3 × 100 = 700/3, already in lowest terms
 </code></pre>
 <p>The percentage form is a <em>ratio</em>, not a mixed number: <code>Fraction&lt;int&gt;.Create(7, 4).ToString(&quot;P&quot;)</code> is <code>&quot;175%&quot;</code> (700/4 reduces to 175/1) and <code>Fraction&lt;int&gt;.Create(3, 4).ToString(&quot;P&quot;)</code> is <code>&quot;75%&quot;</code>. Any specifier other than <code>G</code>/<code>M</code>/<code>U</code>/<code>P</code> (case-insensitive) throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>.</p>
 <p>Helper convenience methods:
@@ -598,7 +598,7 @@ x.ToString(&quot;P&quot;);      // &quot;700/3%&quot; — 7/3 × 100 = 700/3, al
 <code>ToPercentString(provider)</code>.</p>
 <h2 id="json">JSON</h2>
 <p>JSON support ships in the companion
-<code>Bodu.Numerics.Serialization.Json</code> package — the core library is
+<code>Bodu.Numerics.Serialization.Json</code> package - the core library is
 serialization-agnostic. Register the converters with
 <code>AddNumericsJsonConverters</code>; the default <code>Strict</code> policy emits the
 canonical <strong>object</strong> form:</p>
@@ -655,7 +655,7 @@ costs a GCD per operation, and the <code>BigInteger</code> intermediate is not
 free either. For hot inner loops where overflow cannot happen and
 exactness is not required, plain <code>int</code> arithmetic is faster.</li>
 <li><strong>NaN / infinity semantics.</strong> <code>Fraction&lt;T&gt;</code> does not model <code>NaN</code> or
-infinity — division by zero throws, non-finite <code>double</code> input to
+infinity - division by zero throws, non-finite <code>double</code> input to
 <code>FromDouble</code> throws, and the IEEE 754 propagation rules do not
 apply. If you need NaN-aware arithmetic, stay with <code>double</code>.</li>
 <li><strong>Storage in an unsigned backing type when negative values are
@@ -668,9 +668,9 @@ a signed backing type or model the sign separately.</li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html"><code>Fraction&lt;T&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverter-1.html"><code>FractionJsonConverter&lt;T&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html"><code>FractionJsonConverterFactory</code></a></li>
-<li><a href="interval.html"><code>Interval&lt;T&gt;</code> guide</a> — the other <code>Bodu.Numerics</code> value type.</li>
-<li><a href="../financial/money.html"><code>Money&lt;TCurrency&gt;</code> guide</a> — uses <code>Fraction&lt;BigInteger&gt;</code> as the precision escape hatch via <code>ToFraction()</code> / <code>FromFraction()</code> / <code>MultiplyExact()</code>.</li>
-<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> — every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
+<li><a href="interval.html"><code>Interval&lt;T&gt;</code> guide</a> - the other <code>Bodu.Numerics</code> value type.</li>
+<li><a href="../financial/money.html"><code>Money&lt;TCurrency&gt;</code> guide</a> - uses <code>Fraction&lt;BigInteger&gt;</code> as the precision escape hatch via <code>ToFraction()</code> / <code>FromFraction()</code> / <code>MultiplyExact()</code>.</li>
+<li><strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial guides</a></strong> - every guide in this topic, across Bodu.Numerics and Bodu.Financial.</li>
 </ul>
 
 </article>
@@ -690,7 +690,7 @@ a signed backing type or model the sign separately.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

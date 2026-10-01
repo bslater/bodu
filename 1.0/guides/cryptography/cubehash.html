@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="using-cubehash">Using CubeHash</h1>
 
-<p>CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation (&quot;Cube&quot;), parameterized by round counts and block size so you can dial the speed / margin trade-off. The default configuration reproduces the <strong>CubeHash 16/32–512</strong> variant submitted to the SHA-3 contest.</p>
+<p>CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation (&quot;Cube&quot;), parameterized by round counts and block size so you can dial the speed / margin trade-off. The default configuration reproduces the <strong>CubeHash 16/32-512</strong> variant submitted to the SHA-3 contest.</p>
 <p>The type is <a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a>, and it derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>.</p>
 <h2 id="tunable-parameters-at-a-glance">Tunable parameters at a glance</h2>
 <table>
@@ -104,37 +104,37 @@
 <td><code>HashSize</code></td>
 <td>512 bits</td>
 <td>One of <strong>224, 256, 384, 512</strong> (<code>CubeHash.MinHashSize</code> = 224, <code>MaxHashSize</code> = 512)</td>
-<td>Output width — a discrete set, not any multiple of 8.</td>
+<td>Output width - a discrete set, not any multiple of 8.</td>
 </tr>
 <tr>
 <td><code>TransformBlockSize</code></td>
 <td>32 bytes</td>
-<td>1–128 (<code>MinInputBlockSize</code> / <code>MaxInputBlockSize</code>)</td>
+<td>1-128 (<code>MinInputBlockSize</code> / <code>MaxInputBlockSize</code>)</td>
 <td>Bytes absorbed per permutation call. Larger = faster per byte.</td>
 </tr>
 <tr>
 <td><code>Rounds</code></td>
 <td>16</td>
-<td>1–4096 (<code>MinRounds</code> / <code>MaxRounds</code>)</td>
+<td>1-4096 (<code>MinRounds</code> / <code>MaxRounds</code>)</td>
 <td>Permutation rounds between blocks. More rounds = more margin, slower.</td>
 </tr>
 <tr>
 <td><code>InitializationRounds</code></td>
 <td>16</td>
-<td>1–4096</td>
+<td>1-4096</td>
 <td>Permutation rounds during init.</td>
 </tr>
 <tr>
 <td><code>FinalizationRounds</code></td>
 <td>32</td>
-<td>1–4096</td>
+<td>1-4096</td>
 <td>Permutation rounds after the last block.</td>
 </tr>
 </tbody>
 </table>
 <p><code>CubeHash</code> derives directly from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so the standard <code>ComputeHash</code> / <code>TransformBlock</code> lifecycle applies. A <code>HashSize</code> outside the permitted set throws <code>ArgumentOutOfRangeException</code> at construction (or when the setter runs).</p>
-<p>The published naming convention is <strong>CubeHash <code>r+b</code>/<code>w+f</code>-<code>h</code></strong> — initialization rounds <code>i</code>, transform rounds <code>r</code>, block size <code>b</code>, finalization rounds <code>f</code>, output bits <code>h</code>. <code>AlgorithmName</code> reflects the current configuration, e.g. <code>&quot;CubeHash16+16/32+32-512&quot;</code>.</p>
-<h2 id="pattern-1--default-cubehash-the-sha-3-submission">Pattern 1 — default CubeHash (the SHA-3 submission)</h2>
+<p>The published naming convention is <strong>CubeHash <code>r+b</code>/<code>w+f</code>-<code>h</code></strong> - initialization rounds <code>i</code>, transform rounds <code>r</code>, block size <code>b</code>, finalization rounds <code>f</code>, output bits <code>h</code>. <code>AlgorithmName</code> reflects the current configuration, e.g. <code>&quot;CubeHash16+16/32+32-512&quot;</code>.</p>
+<h2 id="pattern-1---default-cubehash-the-sha-3-submission">Pattern 1 - default CubeHash (the SHA-3 submission)</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.Security.Cryptography;
@@ -145,15 +145,15 @@ using var cube = new CubeHash();              // default 512-bit output, 16/32-5
 byte[] digest = cube.ComputeHash(data);       // 64 bytes
 </code></pre>
 <p>This is the configuration referenced by most published CubeHash test vectors.</p>
-<h2 id="pattern-2--a-shorter-digest">Pattern 2 — a shorter digest</h2>
+<h2 id="pattern-2---a-shorter-digest">Pattern 2 - a shorter digest</h2>
 <p>Reduce the hash size before hashing begins:</p>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
 using var cube = new CubeHash { HashSize = 256 };   // 32-byte digest
 byte[] digest = cube.ComputeHash(data);
 </code></pre>
-<p><code>HashSize</code> must be one of 224, 256, 384, or 512 bits — the same discrete set the SHA-3 submission defined, not an arbitrary multiple of 8. It is only settable before the first <code>ComputeHash</code> / <code>TransformBlock</code> — changing it mid-stream would invalidate the state, so the setter throws once hashing has started.</p>
-<h2 id="pattern-3--trading-speed-for-margin">Pattern 3 — trading speed for margin</h2>
+<p><code>HashSize</code> must be one of 224, 256, 384, or 512 bits - the same discrete set the SHA-3 submission defined, not an arbitrary multiple of 8. It is only settable before the first <code>ComputeHash</code> / <code>TransformBlock</code> - changing it mid-stream would invalidate the state, so the setter throws once hashing has started.</p>
+<h2 id="pattern-3---trading-speed-for-margin">Pattern 3 - trading speed for margin</h2>
 <p>Increase the transform rounds or the block size to move along the speed / margin curve:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -179,7 +179,7 @@ using var safe = new CubeHash
 <pre><code class="lang-csharp">Console.WriteLine(fast.AlgorithmName);   // e.g. &quot;CubeHash16+8/64+32-256&quot;
 Console.WriteLine(safe.AlgorithmName);   // e.g. &quot;CubeHash16+32/16+64-512&quot;
 </code></pre>
-<h2 id="pattern-4--streaming">Pattern 4 — streaming</h2>
+<h2 id="pattern-4---streaming">Pattern 4 - streaming</h2>
 <p>CubeHash plugs into the BCL streaming shape:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -189,13 +189,13 @@ using var cube = new CubeHash();
 using var stream = File.OpenRead(&quot;archive.bin&quot;);
 byte[] digest = cube.ComputeHash(stream);
 </code></pre>
-<p><code>CanReuseTransform</code> is <code>true</code>, so the same <code>CubeHash</code> instance can hash multiple independent inputs in a loop — call <code>Initialize()</code> between messages, or just let the next <code>ComputeHash</code> reset the state for you.</p>
-<h2 id="pattern-5--matching-published-test-vectors">Pattern 5 — matching published test vectors</h2>
+<p><code>CanReuseTransform</code> is <code>true</code>, so the same <code>CubeHash</code> instance can hash multiple independent inputs in a loop - call <code>Initialize()</code> between messages, or just let the next <code>ComputeHash</code> reset the state for you.</p>
+<h2 id="pattern-5---matching-published-test-vectors">Pattern 5 - matching published test vectors</h2>
 <p>The CubeHash test-vector files in the NIST competition submission use the notation <code>CubeHash i+r/b+f-h</code>. To reproduce a specific vector, set all four parameters plus <code>HashSize</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
-// CubeHash 16+32/32+32-256 — a common reference configuration.
+// CubeHash 16+32/32+32-256 - a common reference configuration.
 using var cube = new CubeHash
 {
     InitializationRounds = 16,
@@ -207,22 +207,22 @@ using var cube = new CubeHash
 </code></pre>
 <h2 id="security-caveats">Security caveats</h2>
 <ul>
-<li><strong>Status.</strong> CubeHash was a first-round SHA-3 <em>submission</em> — it did not advance to the final round (the finalists were BLAKE, Grøstl, JH, Keccak, and Skein). The default <code>16/32</code> configuration is unbroken but conservative parameterizations exist precisely because the low-round variants have a thinner margin; do not reduce <code>Rounds</code> below the default for security-sensitive use.</li>
-<li><strong>Output size vs security level.</strong> As with any digest, an n-bit output gives ≈ n-bit pre-image resistance but only ≈ n/2-bit collision resistance. The 224-bit minimum therefore offers 112-bit collision resistance — pick 256 or wider when collisions matter.</li>
-<li><strong>Length extension.</strong> CubeHash is a sponge construction, so it is immune to length extension and is safe to use as a keyed MAC by prepending the key (HMAC is unnecessary) — but no native MAC mode is exposed here; for a built-in keyed mode reach for <a href="skein.html">Skein</a> or <a href="blake.html">BLAKE2b</a>.</li>
+<li><strong>Status.</strong> CubeHash was a first-round SHA-3 <em>submission</em> - it did not advance to the final round (the finalists were BLAKE, Grøstl, JH, Keccak, and Skein). The default <code>16/32</code> configuration is unbroken but conservative parameterizations exist precisely because the low-round variants have a thinner margin; do not reduce <code>Rounds</code> below the default for security-sensitive use.</li>
+<li><strong>Output size vs security level.</strong> As with any digest, an n-bit output gives ≈ n-bit pre-image resistance but only ≈ n/2-bit collision resistance. The 224-bit minimum therefore offers 112-bit collision resistance - pick 256 or wider when collisions matter.</li>
+<li><strong>Length extension.</strong> CubeHash is a sponge construction, so it is immune to length extension and is safe to use as a keyed MAC by prepending the key (HMAC is unnecessary) - but no native MAC mode is exposed here; for a built-in keyed mode reach for <a href="skein.html">Skein</a> or <a href="blake.html">BLAKE2b</a>.</li>
 </ul>
 <h2 id="when-to-use-cubehash">When to use CubeHash</h2>
 <ul>
 <li><strong>Research</strong> into sponge constructions, SHA-3 alternatives, or round-count vs speed trade-offs.</li>
 <li><strong>Interoperability</strong> with systems that use a specific CubeHash parameterization.</li>
 </ul>
-<p>For new work without an interoperability requirement, the BCL's SHA-2 and SHA-3 families are hardware-accelerated and have broader analysis behind them. CubeHash's value is its knob-turnable parameter space — useful when that is specifically what you want.</p>
+<p>For new work without an interoperability requirement, the BCL's SHA-2 and SHA-3 families are hardware-accelerated and have broader analysis behind them. CubeHash's value is its knob-turnable parameter space - useful when that is specifically what you want.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="hashing.html">Hashing overview</a> — where CubeHash sits next to Tiger, SipHash, Snefru, and the non-cryptographic families.</li>
-<li><a href="tiger.html">Using Tiger</a>, <a href="snefru.html">Using Snefru</a> — the other cryptographic digests in this package.</li>
+<li><a href="hashing.html">Hashing overview</a> - where CubeHash sits next to Tiger, SipHash, Snefru, and the non-cryptographic families.</li>
+<li><a href="tiger.html">Using Tiger</a>, <a href="snefru.html">Using Snefru</a> - the other cryptographic digests in this package.</li>
 <li><a class="xref" href="../../api/Bodu.Security.Cryptography.html">Bodu.Security.Cryptography namespace page</a>.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -242,7 +242,7 @@ using var cube = new CubeHash
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

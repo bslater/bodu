@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BufferedBlockHashAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ BufferedBlockHashAlgorithm Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs">BufferedBlockHashAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs">BufferedBlockHashAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides the shared infrastructure for hash algorithms that consume input in fixed-size blocks. Owns the residual
@@ -385,7 +385,7 @@ delegation.</p>
 
 
   <h2 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Consume a concrete derivative through the standard HashAlgorithm contract — the base
+  <pre><code class="lang-csharp">// Consume a concrete derivative through the standard HashAlgorithm contract - the base
 // class drives the residual buffer and the block-aligned compression loop for you.
 using HashAlgorithm hash = new Blake2b();      // DeferredFinalBlockHashAlgorithm&lt;T&gt;
 byte[] digest1 = hash.ComputeHash("hello"u8.ToArray());
@@ -419,26 +419,26 @@ Override and call <code>base.Initialize()</code> first.
 by the algorithm family.
 </li><li><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm.hashfinal">HashFinal()</a> finalizes the computation and returns the digest.</li></ul>
 <p>
-<strong>Don't derive from this class directly.</strong> Use one of the four pattern-specific bases that extend it —
+<strong>Don't derive from this class directly.</strong> Use one of the four pattern-specific bases that extend it -
 the buffering loops and finalization shapes differ enough that the right derivation point depends on which family
 the algorithm belongs to:
 </p>
-<ul><li><span class="term">Merkle–Damgård, unkeyed</span>
-<a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> — Tiger, Whirlpool, Snefru, the SHA-2 family, classic block-padding hashes that
+<ul><li><span class="term">Merkle-Damgård, unkeyed</span>
+<a class="xref" href="Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> - Tiger, Whirlpool, Snefru, the SHA-2 family, classic block-padding hashes that
 finalize by padding the last partial block.
-</li><li><span class="term">Merkle–Damgård, keyed</span>
-<a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> — Poly1305, SipHash, and any keyed hash whose finalization is "pad then
+</li><li><span class="term">Merkle-Damgård, keyed</span>
+<a class="xref" href="Bodu.Security.Cryptography.KeyedBlockHashAlgorithm.html">KeyedBlockHashAlgorithm</a> - Poly1305, SipHash, and any keyed hash whose finalization is "pad then
 compress".
 </li><li><span class="term">Blake-style, unkeyed</span>
-<a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> — BLAKE3 and other algorithms that need to defer the last full block
+<a class="xref" href="Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> - BLAKE3 and other algorithms that need to defer the last full block
 so a finalization flag can be set.
 </li><li><span class="term">Blake-style, optionally keyed</span>
-<a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> — BLAKE2b, BLAKE2s, and the RFC 7693 keyed-MAC variants of
+<a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> - BLAKE2b, BLAKE2s, and the RFC 7693 keyed-MAC variants of
 BLAKE-family hashes.
 </li></ul>
 <p>
 Derive from <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html">BufferedBlockHashAlgorithm</a> directly only when implementing a <em>new</em> buffering
-pattern that doesn't fit either family — e.g. a sponge construction with a non-Merkle–Damgård finalization step.
+pattern that doesn't fit either family - e.g. a sponge construction with a non-Merkle-Damgård finalization step.
 </p>
 </div>
 
@@ -452,7 +452,7 @@ pattern that doesn't fit either family — e.g. a sponge construction with a non
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.#ctor(System.Int32)">
   BufferedBlockHashAlgorithm(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -507,7 +507,7 @@ reset their own algorithm-specific state so the two halves stay in sync.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_BlockSize" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.BlockSize">
   BlockSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -547,7 +547,7 @@ reset their own algorithm-specific state so the two halves stay in sync.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_AlgorithmName" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -578,7 +578,7 @@ reset their own algorithm-specific state so the two halves stay in sync.</p>
   <h4 class="section" id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_AlgorithmName_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
 telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
 error reporting.</p>
 </div>
 
@@ -592,7 +592,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_IsDisposed" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.IsDisposed">
   IsDisposed
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -620,10 +620,10 @@ error reporting.</p>
 
 
   <h4 class="section" id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_IsDisposed_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Derived classes follow the canonical dispose pattern — guard the body of their own <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_Dispose_System_Boolean_">Dispose(bool)</a>
+  <div class="markdown level1 remarks"><p>Derived classes follow the canonical dispose pattern - guard the body of their own <a class="xref" href="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.html#Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_Dispose_System_Boolean_">Dispose(bool)</a>
 override with <code>if (IsDisposed) return;</code>, clear their own state when <code>disposing</code> is
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and call <code>base.Dispose(disposing)</code> last. Derived classes must not declare a
-private <code>_disposed</code> field of their own — the latch is owned exclusively by this base class.</p>
+private <code>_disposed</code> field of their own - the latch is owned exclusively by this base class.</p>
 </div>
 
 
@@ -640,7 +640,7 @@ private <code>_disposed</code> field of their own — the latch is owned exclusi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -688,7 +688,7 @@ Derived classes that hold algorithm-specific state, buffers, keys, or other secr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_HashCore_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.HashCore(System.Byte[],System.Int32,System.Int32)">
   HashCore(byte[], int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -760,7 +760,7 @@ data.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_HashCore_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.HashCore(System.ReadOnlySpan{System.Byte})">
   HashCore(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -806,7 +806,7 @@ override.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_Initialize" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.Initialize">
   Initialize()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -858,7 +858,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_ThrowIfDisposed" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.ThrowIfDisposed">
   ThrowIfDisposed()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -895,7 +895,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_BufferedBlockHashAlgorithm_ThrowIfInvalidState" data-uid="Bodu.Security.Cryptography.BufferedBlockHashAlgorithm.ThrowIfInvalidState">
   ThrowIfInvalidState()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/BufferedBlockHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -954,7 +954,7 @@ Once the base call returns, the residual buffer is empty, <span class="xref">Bod
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

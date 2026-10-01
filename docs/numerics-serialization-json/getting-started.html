@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Numerics.Serialization.Json — Getting started | BODU </title>
+      <title>Bodu.Numerics.Serialization.Json - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Numerics.Serialization.Json — Getting started | BODU ">
+      <meta name="title" content="Bodu.Numerics.Serialization.Json - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodunumericsserializationjson--getting-started">Bodu.Numerics.Serialization.Json — Getting started</h1>
+<h1 id="bodunumericsserializationjson---getting-started">Bodu.Numerics.Serialization.Json - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>policy</em>, <em>factory vs closed converter</em>, <em>raw JSON number</em>, or <em>unbounded marker</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
@@ -98,7 +98,7 @@
 using Bodu.Numerics;
 using Bodu.Numerics.Serialization.Json;
 
-// Registration is required — the core types carry no [JsonConverter] attribute.
+// Registration is required - the core types carry no [JsonConverter] attribute.
 var options = new JsonSerializerOptions().AddNumericsJsonConverters();   // Strict
 
 string json = JsonSerializer.Serialize(new Fraction&lt;int&gt;(3, 4), options);
@@ -117,7 +117,7 @@ JsonSerializer.Serialize(new Fraction&lt;int&gt;(8, 15), compact);            //
 // Lenient accepts a top-level string and the min/max aliases on read; it writes the Strict shape.
 Fraction&lt;int&gt; fromText = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt;(&quot;\&quot;8/15\&quot;&quot;, lenient);
 Interval&lt;int&gt; fromFeed = JsonSerializer.Deserialize&lt;Interval&lt;int&gt;&gt;(
-    &quot;&quot;&quot;{ &quot;min&quot;: 1, &quot;max&quot;: 5 }&quot;&quot;&quot;, lenient);                               // [1, 5] — flags default to closed
+    &quot;&quot;&quot;{ &quot;min&quot;: 1, &quot;max&quot;: 5 }&quot;&quot;&quot;, lenient);                               // [1, 5] - flags default to closed
 </code></pre>
 <h3 id="intervals-discrete-intervals-and-sets">Intervals, discrete intervals, and sets</h3>
 <pre><code class="lang-csharp">Interval&lt;int&gt; window = Interval&lt;int&gt;.ClosedOpen(1, 5);
@@ -134,14 +134,14 @@ JsonSerializer.Serialize(Interval&lt;int&gt;.Empty, options);                 //
 IntervalSet&lt;int&gt; set = IntervalSet&lt;int&gt;.Of(Interval&lt;int&gt;.Closed(1, 3), Interval&lt;int&gt;.Closed(8, 9));
 JsonSerializer.Serialize(set, compact);                                 // [&quot;[1, 3]&quot;,&quot;[8, 9]&quot;]
 </code></pre>
-<p><code>DiscreteInterval&lt;T&gt;</code> serializes through the same interval shape over its canonical closed bounds. The pair result types (<code>IntervalPair&lt;T&gt;</code>, <code>DiscreteIntervalPair&lt;T&gt;</code>) are not serializable — convert them with <code>ToIntervalSet()</code> first.</p>
+<p><code>DiscreteInterval&lt;T&gt;</code> serializes through the same interval shape over its canonical closed bounds. The pair result types (<code>IntervalPair&lt;T&gt;</code>, <code>DiscreteIntervalPair&lt;T&gt;</code>) are not serializable - convert them with <code>ToIntervalSet()</code> first.</p>
 <h3 id="arbitrary-precision-without-loss">Arbitrary precision without loss</h3>
 <pre><code class="lang-csharp">using System.Numerics;
 
 var precise = new Fraction&lt;BigInteger&gt;(BigInteger.Parse(&quot;123456789012345678901234567890&quot;), 7);
 
 string exact = JsonSerializer.Serialize(precise, options);
-// {&quot;numerator&quot;:123456789012345678901234567890,&quot;denominator&quot;:7} — raw JSON numbers, nothing truncated
+// {&quot;numerator&quot;:123456789012345678901234567890,&quot;denominator&quot;:7} - raw JSON numbers, nothing truncated
 
 // Consumers that cannot carry big JSON numbers may quote the components instead.
 Fraction&lt;BigInteger&gt; quoted = JsonSerializer.Deserialize&lt;Fraction&lt;BigInteger&gt;&gt;(
@@ -202,12 +202,12 @@ string payload = JsonSerializer.Serialize(
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — the converter table and scenario index.</li>
-<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> — the full wire-format reference, worked examples per policy, and the failure-mode table.</li>
-<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> — the value types being serialized.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../samples/numerics.html">Runnable samples</a></strong> — <code>Bodu.Numerics.Samples.JsonConverters</code> runs every shape on this page.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the converter table and scenario index.</li>
+<li><strong><a href="../../guides/numerics/json-serialization.html">Numerics JSON serialization guide</a></strong> - the full wire-format reference, worked examples per policy, and the failure-mode table.</li>
+<li><strong><a href="../numerics/getting-started.html">Bodu.Numerics getting started</a></strong> - the value types being serialized.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../samples/numerics.html">Runnable samples</a></strong> - <code>Bodu.Numerics.Samples.JsonConverters</code> runs every shape on this page.</li>
 </ul>
 
 </article>
@@ -227,7 +227,7 @@ string payload = JsonSerializer.Serialize(
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

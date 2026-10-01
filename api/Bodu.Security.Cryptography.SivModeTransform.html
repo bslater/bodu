@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_SivModeTransform" data-uid="Bodu.Security.Cryptography.SivModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SivModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ SivModeTransform Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs">SivModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs">SivModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies Synthetic Initialization Vector (SIV) mode to two underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> instances,
@@ -217,7 +217,7 @@ using Bodu.Security.Cryptography.Extensions;
 // SIV uses a doubled key: first half drives the MAC, second half drives CTR encryption.
 using IBlockCipher s2v = new AesBlockCipher(macKey);
 using IBlockCipher ctr = new AesBlockCipher(encKey);
-byte[] iv = new byte[s2v.BlockSize / 8]; // ignored by SIV — present for interface compatibility
+byte[] iv = new byte[s2v.BlockSize / 8]; // ignored by SIV - present for interface compatibility
 using IAeadBlockCipherModeTransform siv = new SivModeTransform(s2v, ctr, iv);
 
 byte[] sealed_ = siv.Encrypt(plaintext, associatedData: header);</code></pre>
@@ -225,18 +225,18 @@ byte[] sealed_ = siv.Encrypt(plaintext, associatedData: header);</code></pre>
 
   <h2 id="Bodu_Security_Cryptography_SivModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter.">
+<img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow - SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter.">
 </p>
 <p>
-SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b> — S2V/CMAC
-over the associated data and plaintext produces the synthetic IV, which is both the tag and the CTR counter base —
+SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b> - S2V/CMAC
+over the associated data and plaintext produces the synthetic IV, which is both the tag and the CTR counter base -
 and only then does the top pipeline encrypt the plaintext under that derived counter. That reversal is what makes
 SIV misuse-resistant: re-encrypting the same message yields the same ciphertext, but confidentiality is not lost
 beyond confirming message equality.
 </p>
 <p>
 SIV requires two independent ciphers keyed with different material:
-<ul><li><code>s2vCipher</code> (K₁) — used by CMAC and S2V to derive the synthetic IV.</li><li><code>ctrCipher</code> (K₂) — used by AES-CTR to encrypt the plaintext.</li></ul>
+<ul><li><code>s2vCipher</code> (K₁) - used by CMAC and S2V to derive the synthetic IV.</li><li><code>ctrCipher</code> (K₂) - used by AES-CTR to encrypt the plaintext.</li></ul>
 
 <p>
 The S2V algorithm (RFC 5297 Section 2.4) accumulates all associated data blocks and the plaintext into a single
@@ -252,12 +252,12 @@ Ciphertext is output as <code>C || SIV</code> (ciphertext then tag), consistent 
 <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> convention.
 </p>
 <p>
-<strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted — key wrapping
+<strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted - key wrapping
 (RFC 5297 §6 / RFC 5649), envelope encryption schemes that need stable ciphertext for deduplication, or any context
 that cannot maintain a per-message nonce. SIV is two-pass and slower than <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> on
 commodity hardware, but it has the strongest misuse-resistance profile in this library: re-encrypting the same
 <code>(plaintext, AAD)</code> tuple produces the same ciphertext, but distinct messages remain confidential and authentic.
-<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> is the RFC 8452 alternative — same misuse-resistance category, different MAC
+<a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a> is the RFC 8452 alternative - same misuse-resistance category, different MAC
 (POLYVAL) and key schedule, typically faster on AES-NI/PCLMULQDQ hardware.
 </p>
 </div>
@@ -272,7 +272,7 @@ commodity hardware, but it has the strongest misuse-resistance profile in this l
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SivModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.SivModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   SivModeTransform(IBlockCipher, IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -330,7 +330,7 @@ block size.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SivModeTransform_TagSize" data-uid="Bodu.Security.Cryptography.SivModeTransform.TagSize">
   TagSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -371,7 +371,7 @@ block size.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SivModeTransform_Decrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.SivModeTransform.Decrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Decrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -440,7 +440,7 @@ throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invali
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The instance has already encrypted or decrypted a message, including after a previous tag-mismatch failure. AEAD
-transforms are single-use per message — construct a fresh instance.</p>
+transforms are single-use per message - construct a fresh instance.</p>
 </dd>
   </dl>
 
@@ -453,7 +453,7 @@ transforms are single-use per message — construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SivModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.SivModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -488,7 +488,7 @@ caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SivModeTransform_Encrypt_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__" data-uid="Bodu.Security.Cryptography.SivModeTransform.Encrypt(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
   Encrypt(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -531,7 +531,7 @@ at least <code>plaintext.Length + (TagSize / 8)</code> bytes long.</p>
     <dd><p><code class="paramref">output</code> is too small.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    <dd><p>The instance has already encrypted or decrypted a message. AEAD transforms are single-use per message -
 construct a fresh instance.</p>
 </dd>
   </dl>
@@ -545,7 +545,7 @@ construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_SivModeTransform_ProcessAssociatedData_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.SivModeTransform.ProcessAssociatedData(System.ReadOnlySpan{System.Byte})">
   ProcessAssociatedData(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/SivModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -597,7 +597,7 @@ construct a fresh instance.</p>
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/aead-modes.html#siv--misuse-resistant">SIV walk-through in the AEAD-modes
+      <div><span><a href="../guides/cryptography/aead-modes.html#siv---misuse-resistant">SIV walk-through in the AEAD-modes
              guide</a></span></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></div>
       <div><a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a></div>
@@ -619,7 +619,7 @@ construct a fresh instance.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

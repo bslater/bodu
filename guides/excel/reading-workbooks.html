@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="reading-workbooks">Reading workbooks</h1>
 
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> opens an Excel binary workbook (<code>.xls</code> — BIFF8 for Excel 97–2003, BIFF5 for Excel 5.0/95) and exposes its sheets and cell values. This guide covers the open path: open from a path or stream, list the sheets, govern ownership and optional work, and read the authored document properties.</p>
-<p>The mental model is a disposable session over the container. Opening parses the workbook globals — the date system, the shared string table, the number-format table, and the sheet directory — once, then reads each sheet on demand.</p>
-<h2 id="pattern-1--open-from-a-path">Pattern 1 — open from a path</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> opens an Excel binary workbook (<code>.xls</code> - BIFF8 for Excel 97-2003, BIFF5 for Excel 5.0/95) and exposes its sheets and cell values. This guide covers the open path: open from a path or stream, list the sheets, govern ownership and optional work, and read the authored document properties.</p>
+<p>The mental model is a disposable session over the container. Opening parses the workbook globals - the date system, the shared string table, the number-format table, and the sheet directory - once, then reads each sheet on demand.</p>
+<h2 id="pattern-1---open-from-a-path">Pattern 1 - open from a path</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
@@ -97,12 +97,12 @@ using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xl
 
 Console.WriteLine($&quot;{workbook.Worksheets.Count} sheet(s), {workbook.DateSystem} date system&quot;);
 </code></pre>
-<p><code>OpenRead</code> opens the file, verifies it is a compound file carrying a BIFF8 or BIFF5 workbook stream (the detected version is exposed through <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion">BiffVersion</a>), and parses the globals — the record framing and decoding are supplied by <code>Bodu.IO.Biff</code>. The returned workbook is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>; the <code>using</code> declaration disposes it and closes the underlying file. A <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_FileInfo_">OpenRead(FileInfo)</a> overload accepts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a> when you already have one in hand and want the same path-owning behaviour.</p>
+<p><code>OpenRead</code> opens the file, verifies it is a compound file carrying a BIFF8 or BIFF5 workbook stream (the detected version is exposed through <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_BiffVersion">BiffVersion</a>), and parses the globals - the record framing and decoding are supplied by <code>Bodu.IO.Biff</code>. The returned workbook is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a>; the <code>using</code> declaration disposes it and closes the underlying file. A <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_OpenRead_System_IO_FileInfo_">OpenRead(FileInfo)</a> overload accepts a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a> when you already have one in hand and want the same path-owning behaviour.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p>The workbook owns the open compound-file container and seeks back into it every time you open a sheet. Keep the workbook alive for as long as you read its sheets, and do not dispose it until every <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> over it is finished — a reader returned by <code>OpenWorksheet</code> decodes from a buffer it captured at open, but <code>OpenWorksheet</code> / <code>ReadWorksheet</code> themselves seek into the live container and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> after the workbook is disposed.</p>
+<p>The workbook owns the open compound-file container and seeks back into it every time you open a sheet. Keep the workbook alive for as long as you read its sheets, and do not dispose it until every <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelWorksheetReader.html">ExcelWorksheetReader</a> over it is finished - a reader returned by <code>OpenWorksheet</code> decodes from a buffer it captured at open, but <code>OpenWorksheet</code> / <code>ReadWorksheet</code> themselves seek into the live container and throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a> after the workbook is disposed.</p>
 </div>
-<h2 id="pattern-2--open-from-a-stream-you-own">Pattern 2 — open from a stream you own</h2>
+<h2 id="pattern-2---open-from-a-stream-you-own">Pattern 2 - open from a stream you own</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using Stream source = await httpClient.GetStreamAsync(uri);
@@ -113,7 +113,7 @@ seekable.Position = 0;
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(seekable, leaveOpen: true);
 </code></pre>
 <p>The stream overload reads from the stream's current position. Pass <code>leaveOpen: true</code> to keep a caller-owned stream open after the workbook is disposed; the default disposes it with the workbook. The source must be seekable, because the reader seeks to each sheet's recorded offset.</p>
-<h2 id="pattern-3--list-the-sheets-and-their-used-ranges">Pattern 3 — list the sheets and their used ranges</h2>
+<h2 id="pattern-3---list-the-sheets-and-their-used-ranges">Pattern 3 - list the sheets and their used ranges</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;rates.xls&quot;);
@@ -138,8 +138,8 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
     // ... read the data sheet ...
 }
 </code></pre>
-<p>The workbook's declared date system is available up front through <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a> (read from the <code>DATEMODE</code> record); pass it to <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> when converting date-formatted cells rather than assuming the 1900 default — see <a href="cell-values-and-dates.html">Cell values and dates</a>.</p>
-<h2 id="pattern-4--skip-optional-work-for-throughput">Pattern 4 — skip optional work for throughput</h2>
+<p>The workbook's declared date system is available up front through <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html#Bodu_Formats_Excel_ExcelBinaryWorkbook_DateSystem">DateSystem</a> (read from the <code>DATEMODE</code> record); pass it to <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelSerialDate.html">ExcelSerialDate</a> when converting date-formatted cells rather than assuming the 1900 default - see <a href="cell-values-and-dates.html">Cell values and dates</a>.</p>
+<h2 id="pattern-4---skip-optional-work-for-throughput">Pattern 4 - skip optional work for throughput</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
@@ -152,8 +152,8 @@ var options = new ExcelBinaryReaderOptions
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(File.OpenRead(&quot;rates.xls&quot;), options);
 </code></pre>
-<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a> trades optional metadata work for speed. For a pure numeric, time-series read — where only row, column, and numeric value matter — clearing both flags skips the property-set parse and the number-format interpretation. Use the <code>Open(stream, options)</code> overload to supply them; <code>OpenRead</code> uses the defaults (read everything, own the stream).</p>
-<h2 id="pattern-5--read-authored-document-properties">Pattern 5 — read authored document properties</h2>
+<p><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryReaderOptions.html">ExcelBinaryReaderOptions</a> trades optional metadata work for speed. For a pure numeric, time-series read - where only row, column, and numeric value matter - clearing both flags skips the property-set parse and the number-format interpretation. Use the <code>Open(stream, options)</code> overload to supply them; <code>OpenRead</code> uses the defaults (read everything, own the stream).</p>
+<h2 id="pattern-5---read-authored-document-properties">Pattern 5 - read authored document properties</h2>
 <pre><code class="lang-csharp">using Bodu.Formats.Excel;
 
 using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.OpenRead(&quot;report.xls&quot;);
@@ -184,7 +184,7 @@ Console.WriteLine(props.LastSaved);
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException.html">ExcelBinaryWorkbookStreamNotFoundException</a></td>
-<td>A valid compound file with no <code>Workbook</code> (or legacy <code>Book</code>) stream — not a spreadsheet.</td>
+<td>A valid compound file with no <code>Workbook</code> (or legacy <code>Book</code>) stream - not a spreadsheet.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryUnsupportedException.html">ExcelBinaryUnsupportedException</a></td>
@@ -196,14 +196,14 @@ Console.WriteLine(props.LastSaved);
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryFormatException.html">ExcelBinaryFormatException</a></td>
-<td>A BIFF record is malformed — raised while reading, not at open.</td>
+<td>A BIFF record is malformed - raised while reading, not at open.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="cell-values-and-dates.html">Cell values and dates</a> — interpret cell kinds and convert serial dates.</li>
-<li><a href="worksheets-and-rows.html">Streaming vs materialized</a> — choose the cell surface that fits your access pattern.</li>
+<li><a href="cell-values-and-dates.html">Cell values and dates</a> - interpret cell kinds and convert serial dates.</li>
+<li><a href="worksheets-and-rows.html">Streaming vs materialized</a> - choose the cell surface that fits your access pattern.</li>
 <li><a class="xref" href="../../api/Bodu.Formats.Excel.html">Bodu.Formats.Excel API reference</a>.</li>
 </ul>
 
@@ -224,7 +224,7 @@ Console.WriteLine(props.LastSaved);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

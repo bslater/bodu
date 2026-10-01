@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Numerics_Serialization_Json_ComplexJsonConverter_1" data-uid="Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ComplexJsonConverter&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ComplexJsonConverter&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Numerics.Serialization.Json.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics.Serialization.Json">Bodu.Numerics.Serialization.Json</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs">ComplexJsonConverter{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs">ComplexJsonConverter{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Converts a <a class="xref" href="Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a> to and from JSON using the policy supplied at construction.</p>
@@ -128,7 +128,7 @@ ComplexJsonConverter&lt;T&gt; Class
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.serialization.jsonconverter">JsonConverter</a></div>
-      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.serialization.jsonconverter-1">JsonConverter</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Complex%7BT%7D.Arithmetic.cs">Complex</a>&lt;T&gt;&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.serialization.jsonconverter-1">JsonConverter</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Complex%7BT%7D.Arithmetic.cs">Complex</a>&lt;T&gt;&gt;</div>
       <div><span class="xref">ComplexJsonConverter&lt;T&gt;</span></div>
     </dd>
   </dl>
@@ -205,16 +205,16 @@ ComplexJsonConverter&lt;T&gt; Class
 The converter shape is selected by <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html">NumericsJsonPolicy</a>:
 </p>
 <ul><li>
-<a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Strict">Strict</a> — canonical object form <code>{ "real": 3, "imaginary": 4 }</code>; rejects
+<a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Strict">Strict</a> - canonical object form <code>{ "real": 3, "imaginary": 4 }</code>; rejects
 duplicate properties and non-object tokens. A finite component is written as a JSON number; a non-finite component
 is written as one of the JSON strings <code>"NaN"</code>, <code>"Infinity"</code>, or <code>"-Infinity"</code>, since JSON numbers
 cannot represent those values. Either representation is accepted on read.
 </li><li>
-<a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Lenient">Lenient</a> — same object shape as <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Strict">Strict</a>, but a
+<a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Lenient">Lenient</a> - same object shape as <a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Strict">Strict</a>, but a
 top-level JSON string token is accepted and routed through
 <a class="xref" href="Bodu.Numerics.Complex-1.html#Bodu_Numerics_Complex_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_">Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a> as a tolerant fallback.
 </li><li>
-<a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Compact">Compact</a> — string form <code>"&lt;3; 4&gt;"</code>; reads delegate to
+<a class="xref" href="Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html#Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_Compact">Compact</a> - string form <code>"&lt;3; 4&gt;"</code>; reads delegate to
 <a class="xref" href="Bodu.Numerics.Complex-1.html#Bodu_Numerics_Complex_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Complex__0___">TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Complex&lt;T&gt;)</a> and writes call
 <a class="xref" href="Bodu.Numerics.Complex-1.html#Bodu_Numerics_Complex_1_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> with the invariant culture.
 </li></ul>
@@ -230,7 +230,7 @@ top-level JSON string token is accepted and routed through
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Serialization_Json_ComplexJsonConverter_1__ctor" data-uid="Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1.#ctor">
   ComplexJsonConverter()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -262,7 +262,7 @@ top-level JSON string token is accepted and routed through
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Serialization_Json_ComplexJsonConverter_1__ctor_Bodu_Numerics_Serialization_Json_NumericsJsonPolicy_" data-uid="Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1.#ctor(Bodu.Numerics.Serialization.Json.NumericsJsonPolicy)">
   ComplexJsonConverter(NumericsJsonPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -310,7 +310,7 @@ top-level JSON string token is accepted and routed through
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Serialization_Json_ComplexJsonConverter_1_Read_System_Text_Json_Utf8JsonReader__System_Type_System_Text_Json_JsonSerializerOptions_" data-uid="Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
   Read(ref Utf8JsonReader, Type, JsonSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -337,7 +337,7 @@ top-level JSON string token is accepted and routed through
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Complex%7BT%7D.Arithmetic.cs">Complex</a>&lt;T&gt;</dt>
+    <dt><a class="xref" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Complex%7BT%7D.Arithmetic.cs">Complex</a>&lt;T&gt;</dt>
     <dd><p>The converted value.</p>
 </dd>
   </dl>
@@ -359,7 +359,7 @@ top-level JSON string token is accepted and routed through
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Serialization_Json_ComplexJsonConverter_1_Write_System_Text_Json_Utf8JsonWriter_Bodu_Numerics_Complex__0__System_Text_Json_JsonSerializerOptions_" data-uid="Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1.Write(System.Text.Json.Utf8JsonWriter,Bodu.Numerics.Complex{`0},System.Text.Json.JsonSerializerOptions)">
   Write(Utf8JsonWriter, Complex&lt;T&gt;, JsonSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics.Serialization.Json/src/Numerics.Serialization.Json/ComplexJsonConverter%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -376,7 +376,7 @@ top-level JSON string token is accepted and routed through
     <dt><code>writer</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.utf8jsonwriter">Utf8JsonWriter</a></dt>
     <dd><p>The writer to write to.</p>
 </dd>
-    <dt><code>value</code> <a class="xref" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/Complex%7BT%7D.Arithmetic.cs">Complex</a>&lt;T&gt;</dt>
+    <dt><code>value</code> <a class="xref" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/Complex%7BT%7D.Arithmetic.cs">Complex</a>&lt;T&gt;</dt>
     <dd><p>The value to convert to JSON.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonserializeroptions">JsonSerializerOptions</a></dt>
@@ -424,7 +424,7 @@ top-level JSON string token is accepted and routed through
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

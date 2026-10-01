@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SqliteRateCacheOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ SqliteRateCacheOptions Class
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Caching.Sqlite.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Caching.Sqlite">Bodu.Financial.ExchangeRates.Caching.Sqlite</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs">SqliteRateCacheOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs">SqliteRateCacheOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Configures a SQLite-backed <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a>: the provider inherited from <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheOptions.html">RateCacheOptions</a>
@@ -194,8 +194,8 @@ connection-level concurrency settings applied on open.</p>
 
   <h2 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-The database location is supplied either as a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_DatabaseFilePath">DatabaseFilePath</a> — the simplest form, a path to a
-SQLite file that is created on first use — or as a fully specified <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_ConnectionString">ConnectionString</a> for advanced
+The database location is supplied either as a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_DatabaseFilePath">DatabaseFilePath</a> - the simplest form, a path to a
+SQLite file that is created on first use - or as a fully specified <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_ConnectionString">ConnectionString</a> for advanced
 scenarios such as a shared in-memory database or custom connection flags. At least one must be set;
 <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_ConnectionString">ConnectionString</a> takes precedence when both are supplied.
 </p>
@@ -203,10 +203,10 @@ scenarios such as a shared in-memory database or custom connection flags. At lea
 A single database file may be shared by several caches: each cache stores exactly one provider, and the provider is
 the leading column of the rate and coverage keys, so multiple single-provider caches pointed at the same file keep
 their series partitioned with no collisions. <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_UseWriteAheadLogging">UseWriteAheadLogging</a> and <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.html#Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_BusyTimeout">BusyTimeout</a>
-govern how concurrent writers — multiple cache instances, or separate processes — sharing one file behave.
+govern how concurrent writers - multiple cache instances, or separate processes - sharing one file behave.
 </p>
 <p>
-Expiry is not a storage concern — it is supplied per call by the caching provider — so this type carries only the
+Expiry is not a storage concern - it is supplied per call by the caching provider - so this type carries only the
 storage location and connection settings in addition to the bound provider.
 </p>
 </div>
@@ -221,7 +221,7 @@ storage location and connection settings in addition to the bound provider.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.#ctor">
   SqliteRateCacheOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -255,7 +255,7 @@ storage location and connection settings in addition to the bound provider.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_BusyTimeout" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.BusyTimeout">
   BusyTimeout
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -298,7 +298,7 @@ swallow as a silently dropped write.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_ConnectionString" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.ConnectionString">
   ConnectionString
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -330,7 +330,7 @@ Takes precedence over <a class="xref" href="Bodu.Financial.ExchangeRates.Caching
 shared in-memory database (<code>Data Source=name;Mode=Memory;Cache=Shared</code>) or custom connection flags.
 </p>
 <p>
-A supplied value is not parsed or validated when the options are constructed — only its presence is checked. A
+A supplied value is not parsed or validated when the options are constructed - only its presence is checked. A
 malformed or unusable connection string is therefore not rejected up front; it surfaces later at connect time,
 where the cache's best-effort behaviour degrades to an empty read or a skipped write rather than throwing.
 </p>
@@ -346,7 +346,7 @@ where the cache's best-effort behaviour degrades to an empty read or a skipped w
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_DatabaseFilePath" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.DatabaseFilePath">
   DatabaseFilePath
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -388,7 +388,7 @@ creating the file and any missing schema on first use.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_UseWriteAheadLogging" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.UseWriteAheadLogging">
   UseWriteAheadLogging
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -419,7 +419,7 @@ creating the file and any missing schema on first use.</p>
   <div class="markdown level1 remarks"><p>
 WAL lets readers run concurrently with a writer and lifts write throughput when several caches or processes
 share one file, which is the recommended mode for a database holding more than one provider's series. The
-setting is applied best-effort: a database that does not support WAL — notably an in-memory database — is left
+setting is applied best-effort: a database that does not support WAL - notably an in-memory database - is left
 in its native journal mode rather than failing.
 </p>
 <p>
@@ -441,7 +441,7 @@ Disable it for storage where WAL is unsupported or undesirable, such as some net
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_TryValidate_System_String__" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.TryValidate(System.String@)">
   TryValidate(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -491,7 +491,7 @@ invariants after invoking the base implementation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_Caching_SqliteRateCacheOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.Caching.SqliteRateCacheOptions.Validate">
   Validate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Financial.ExchangeRates.Caching.Sqlite/src/Financial.ExchangeRates.Caching/SqliteRateCacheOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -557,7 +557,7 @@ invariants after invoking the base implementation.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

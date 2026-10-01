@@ -89,9 +89,9 @@
 
 <p>The BLAKE family is the modern alternative to SHA-2 and SHA-3 for general-purpose cryptographic hashing. <code>Bodu.Security.Cryptography</code> ships all three variants:</p>
 <ul>
-<li><strong>BLAKE2b</strong> — 64-bit-platform-optimised; 128–512-bit output; built-in MAC mode.</li>
-<li><strong>BLAKE2s</strong> — 32-bit-platform-optimised; 128–256-bit output; built-in MAC mode.</li>
-<li><strong>BLAKE3</strong> — high-throughput, tree-structured; 256-bit fixed output; parallelisable across cores on long inputs.</li>
+<li><strong>BLAKE2b</strong> - 64-bit-platform-optimised; 128-512-bit output; built-in MAC mode.</li>
+<li><strong>BLAKE2s</strong> - 32-bit-platform-optimised; 128-256-bit output; built-in MAC mode.</li>
+<li><strong>BLAKE3</strong> - high-throughput, tree-structured; 256-bit fixed output; parallelisable across cores on long inputs.</li>
 </ul>
 <div class="NOTE">
 <h5>Note</h5>
@@ -113,16 +113,16 @@
 <tbody>
 <tr>
 <td><strong>BLAKE2b</strong></td>
-<td>128–512 bits (any multiple of 8 up to 512)</td>
-<td>0–64 bytes</td>
+<td>128-512 bits (any multiple of 8 up to 512)</td>
+<td>0-64 bytes</td>
 <td>128 bytes</td>
 <td>12</td>
 <td>Faster than SHA-512 on 64-bit software</td>
 </tr>
 <tr>
 <td><strong>BLAKE2s</strong></td>
-<td>128–256 bits</td>
-<td>0–32 bytes</td>
+<td>128-256 bits</td>
+<td>0-32 bytes</td>
 <td>64 bytes</td>
 <td>10</td>
 <td>Lightweight, 32-bit platforms / embedded</td>
@@ -137,7 +137,7 @@
 </tr>
 </tbody>
 </table>
-<p>All three derive from RFC 7693 (BLAKE2) and the BLAKE3 spec respectively. None are known to be broken. BLAKE2b / BLAKE2s are <em>plain digests</em> (fixed output chosen at construction); BLAKE3 is <em>tree-structured</em> internally but still presents a fixed 256-bit digest here — for a true extendable output reach for <a href="shake.html">SHAKE</a>. As with any digest, an n-bit output gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance.</p>
+<p>All three derive from RFC 7693 (BLAKE2) and the BLAKE3 spec respectively. None are known to be broken. BLAKE2b / BLAKE2s are <em>plain digests</em> (fixed output chosen at construction); BLAKE3 is <em>tree-structured</em> internally but still presents a fixed 256-bit digest here - for a true extendable output reach for <a href="shake.html">SHAKE</a>. As with any digest, an n-bit output gives ≈ n-bit pre-image resistance and ≈ n/2-bit collision resistance.</p>
 <p><code>Blake2b</code> and <code>Blake2s</code> sit on Bodu's <a class="xref" href="../../api/Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> (the <code>Key</code> property drives MAC mode); <code>Blake3</code> sits on <a class="xref" href="../../api/Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm.html">DeferredFinalBlockHashAlgorithm</a> (no key surface). All three are <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> instances, so the standard <code>ComputeHash</code> / <code>TransformBlock</code> lifecycle and the <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> helpers apply.</p>
 <h2 id="when-to-pick-which">When to pick which</h2>
 <ul>
@@ -153,7 +153,7 @@
 using var hasher = new Blake2b();
 byte[] hash = hasher.ComputeHash(payload);   // 64 bytes
 
-// Custom output size — 256 bits.
+// Custom output size - 256 bits.
 using var blake2b256 = new Blake2b(hashSize: 256);
 byte[] hash256 = blake2b256.ComputeHash(payload);   // 32 bytes
 </code></pre>
@@ -167,7 +167,7 @@ mac.Key = macKey;
 
 byte[] tag = mac.ComputeHash(payload);
 </code></pre>
-<p>Set <code>Key</code> to a non-empty byte array (0 – 64 bytes) to switch to BLAKE2b-MAC mode (RFC 7693 §2.8). The key is zero-padded to 128 bytes and prepended as the first message block. Empty key = plain hash.</p>
+<p>Set <code>Key</code> to a non-empty byte array (0 - 64 bytes) to switch to BLAKE2b-MAC mode (RFC 7693 §2.8). The key is zero-padded to 128 bytes and prepended as the first message block. Empty key = plain hash.</p>
 <p>BLAKE2b-MAC is the right primitive when HMAC-SHA-512 would be overkill and you want a single algorithm that does plain hash and MAC.</p>
 <h3 id="streaming">Streaming</h3>
 <pre><code class="lang-csharp">using var hasher = new Blake2b(hashSize: 512);
@@ -186,7 +186,7 @@ using var hasher = new Blake2s();                                  // default 25
 using var b160   = new Blake2s(hashSize: 160);                     // 160-bit
 using var mac    = new Blake2s(hashSize: 256) { Key = macKey };    // 0-32 byte key
 </code></pre>
-<p>Permitted output sizes: 128, 160, 192, 224, or 256 bits. Key length: 0 – 32 bytes (BLAKE2s-MAC mode). The streaming pattern is identical to BLAKE2b.</p>
+<p>Permitted output sizes: 128, 160, 192, 224, or 256 bits. Key length: 0 - 32 bytes (BLAKE2s-MAC mode). The streaming pattern is identical to BLAKE2b.</p>
 <p>The only meaningful difference from BLAKE2b is the platform-optimisation tier: BLAKE2s uses 32-bit arithmetic, so on 64-bit platforms BLAKE2b is faster per byte. On 32-bit platforms BLAKE2s is faster.</p>
 <h2 id="blake3">BLAKE3</h2>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -194,14 +194,14 @@ using var mac    = new Blake2s(hashSize: 256) { Key = macKey };    // 0-32 byte 
 using var hasher = new Blake3();
 byte[] hash = hasher.ComputeHash(payload);   // always 32 bytes (256 bits)
 </code></pre>
-<p>BLAKE3's output is fixed at 256 bits in this implementation. The underlying spec supports XOF-style squeezing of arbitrary-length output by repeatedly invoking the root compression; that surface is not exposed by <code>Bodu.Security.Cryptography.Blake3</code> — reach for <code>Bodu.Security.Cryptography.Shake</code> if you need a true XOF.</p>
-<p>BLAKE3's headline feature is the tree structure: input is split into 1024-byte chunks, each chunk is compressed block-by-block, and chunk chaining values are folded pairwise up a binary tree until a single root remains. No chunk depends on another, so this implementation compresses whole chunks many at once, one to each lane of a vector register — sixteen, eight or four depending on the processor (see <a href="hardware-acceleration.html">Hardware acceleration</a>) — and a write of a few kilobytes or more runs several times faster than BLAKE2b.</p>
+<p>BLAKE3's output is fixed at 256 bits in this implementation. The underlying spec supports XOF-style squeezing of arbitrary-length output by repeatedly invoking the root compression; that surface is not exposed by <code>Bodu.Security.Cryptography.Blake3</code> - reach for <code>Bodu.Security.Cryptography.Shake</code> if you need a true XOF.</p>
+<p>BLAKE3's headline feature is the tree structure: input is split into 1024-byte chunks, each chunk is compressed block-by-block, and chunk chaining values are folded pairwise up a binary tree until a single root remains. No chunk depends on another, so this implementation compresses whole chunks many at once, one to each lane of a vector register - sixteen, eight or four depending on the processor (see <a href="hardware-acceleration.html">Hardware acceleration</a>) - and a write of a few kilobytes or more runs several times faster than BLAKE2b.</p>
 <h3 id="hashing-on-several-threads">Hashing on several threads</h3>
 <p>The same independence lets one large input use several cores. Pass a bound on the threads each write may use:</p>
 <pre><code class="lang-csharp">using var hasher = new Blake3(maxDegreeOfParallelism: -1);   // up to one thread per processor
 byte[] hash = hasher.ComputeHash(largeFile);                  // same digest as new Blake3()
 </code></pre>
-<p>The digest never depends on the bound. A write with at least 256 KiB of whole chunks is divided into 64 KiB parts, which the calling thread and the workers claim as each finishes the last; a smaller write stays on the calling thread. The default is <code>1</code>: a service that hashes many inputs at once already keeps every core busy, so raise the bound to hash one large input — a file, a download, a snapshot — faster.</p>
+<p>The digest never depends on the bound. A write with at least 256 KiB of whole chunks is divided into 64 KiB parts, which the calling thread and the workers claim as each finishes the last; a smaller write stays on the calling thread. The default is <code>1</code>: a service that hashes many inputs at once already keeps every core busy, so raise the bound to hash one large input - a file, a download, a snapshot - faster.</p>
 <h3 id="streaming-1">Streaming</h3>
 <pre><code class="lang-csharp">using var hasher = new Blake3();
 
@@ -216,27 +216,27 @@ byte[] hash = hasher.Hash!;
 <p>The BLAKE3 spec defines a keyed-hash mode and a key-derivation mode. Both require initialisation with a key, and the chunk-flags input is set differently. <strong>This implementation does not expose either mode.</strong> For keyed hashing reach for BLAKE2b-MAC or BLAKE2s-MAC; for KDF, reach for the BCL <code>HKDF</code> class.</p>
 <h2 id="security-caveats">Security caveats</h2>
 <ul>
-<li><strong>Output truncation.</strong> All three algorithms are designed so that <em>truncating</em> a longer output to fewer bytes gives a hash with reduced security level. BLAKE2b's 128-bit output has only 64-bit collision resistance — adequate for non-cryptographic fingerprints but not for cryptographic commitment. Pick a size that matches your threat model.</li>
-<li><strong>Length extension.</strong> Unlike Merkle–Damgård designs (MD5, SHA-1, SHA-256, SHA-512), all three BLAKE variants are immune to length-extension attacks. You can use them as a MAC by simply prepending the key (BLAKE2b-MAC / BLAKE2s-MAC); HMAC is unnecessary.</li>
-<li><strong>Output size mutation.</strong> <code>HashSize</code> on BLAKE2b / BLAKE2s is mutable before the first <code>TransformBlock</code>. Once hashing begins, the algorithm parameters are fixed — changing them mid-stream throws.</li>
+<li><strong>Output truncation.</strong> All three algorithms are designed so that <em>truncating</em> a longer output to fewer bytes gives a hash with reduced security level. BLAKE2b's 128-bit output has only 64-bit collision resistance - adequate for non-cryptographic fingerprints but not for cryptographic commitment. Pick a size that matches your threat model.</li>
+<li><strong>Length extension.</strong> Unlike Merkle-Damgård designs (MD5, SHA-1, SHA-256, SHA-512), all three BLAKE variants are immune to length-extension attacks. You can use them as a MAC by simply prepending the key (BLAKE2b-MAC / BLAKE2s-MAC); HMAC is unnecessary.</li>
+<li><strong>Output size mutation.</strong> <code>HashSize</code> on BLAKE2b / BLAKE2s is mutable before the first <code>TransformBlock</code>. Once hashing begins, the algorithm parameters are fixed - changing them mid-stream throws.</li>
 </ul>
 <h2 id="when-not-to-use-blake">When <em>not</em> to use BLAKE</h2>
 <ul>
 <li><strong>You need a fixed-spec hash for interoperability.</strong> Reach for SHA-256 / SHA-512 (BCL) or SHA-3 (BCL on .NET 8+). BLAKE is unbroken but less universally available.</li>
-<li><strong>You need an XOF.</strong> Reach for <a href="shake.html">SHAKE</a> — BLAKE3 does support XOF in principle, but this implementation does not expose it.</li>
-<li><strong>You need authenticated encryption.</strong> Reach for <a href="aead-modes.html">AEAD modes</a> — combining a hash with a cipher correctly is the hard part; AEAD modes hide the foot-guns.</li>
-<li><strong>You need a non-cryptographic fingerprint.</strong> Reach for <a class="xref" href="../../api/Bodu.IO.Hashing.html"><code>Bodu.IO.Hashing</code></a> (FNV, MurmurHash3, CityHash, CRC) — much faster, no cryptographic guarantees.</li>
+<li><strong>You need an XOF.</strong> Reach for <a href="shake.html">SHAKE</a> - BLAKE3 does support XOF in principle, but this implementation does not expose it.</li>
+<li><strong>You need authenticated encryption.</strong> Reach for <a href="aead-modes.html">AEAD modes</a> - combining a hash with a cipher correctly is the hard part; AEAD modes hide the foot-guns.</li>
+<li><strong>You need a non-cryptographic fingerprint.</strong> Reach for <a class="xref" href="../../api/Bodu.IO.Hashing.html"><code>Bodu.IO.Hashing</code></a> (FNV, MurmurHash3, CityHash, CRC) - much faster, no cryptographic guarantees.</li>
 </ul>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="hashing.html">Hashing overview</a> — the framework's overall hash story.</li>
-<li><a href="merkle-trees.html">Merkle trees and proofs</a> — the RFC 6962 tree over any inner digest, for verifiable commitments.</li>
-<li><a href="tiger.html">Tiger</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a> — other digests in the package.</li>
-<li><a href="shake.html">SHAKE</a> — extendable output function.</li>
+<li><a href="hashing.html">Hashing overview</a> - the framework's overall hash story.</li>
+<li><a href="merkle-trees.html">Merkle trees and proofs</a> - the RFC 6962 tree over any inner digest, for verifiable commitments.</li>
+<li><a href="tiger.html">Tiger</a>, <a href="skein.html">Skein</a>, <a href="whirlpool.html">Whirlpool</a> - other digests in the package.</li>
+<li><a href="shake.html">SHAKE</a> - extendable output function.</li>
 <li><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html"><code>Bodu.Security.Cryptography.Blake2b</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2s.html"><code>Bodu.Security.Cryptography.Blake2s</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html"><code>Bodu.Security.Cryptography.Blake3</code> API reference</a></li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -256,7 +256,7 @@ byte[] hash = hasher.Hash!;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

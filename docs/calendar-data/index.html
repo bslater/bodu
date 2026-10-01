@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar data packs — Introduction | BODU </title>
+      <title>Bodu.Globalization.Calendar data packs - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar data packs — Introduction | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar data packs - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,7 +88,7 @@
 <h1 id="boduglobalizationcalendar-data-packs">Bodu.Globalization.Calendar data packs</h1>
 
 <p><img src="../../images/hero-calendar-americas.svg" alt="Bodu.Globalization.Calendar.Americas"></p>
-<p>The <strong><code>Bodu.Globalization.Calendar.&lt;Region&gt;</code></strong> packages are the curated holiday data for the calendar runtime: five independent NuGet packages — <strong>Americas</strong>, <strong>AsiaPacific</strong>, <strong>Europe</strong>, <strong>MiddleEast</strong>, and <strong>Africa</strong> — each embedding one self-contained rule document per country (national rules plus the subdivisions the pack authors, such as <code>AU-NSW</code>, <code>CA-ON</code>, <code>DE-BY</code>, <code>GB-SCT</code>, <code>US-CA</code>) and exposing a single <code>&lt;Region&gt;CalendarData</code> factory. They are part of the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic and ship on their own cadence, so a rule correction never forces a runtime rebuild.</p>
+<p>The <strong><code>Bodu.Globalization.Calendar.&lt;Region&gt;</code></strong> packages are the curated holiday data for the calendar runtime: five independent NuGet packages - <strong>Americas</strong>, <strong>AsiaPacific</strong>, <strong>Europe</strong>, <strong>MiddleEast</strong>, and <strong>Africa</strong> - each embedding one self-contained rule document per country (national rules plus the subdivisions the pack authors, such as <code>AU-NSW</code>, <code>CA-ON</code>, <code>DE-BY</code>, <code>GB-SCT</code>, <code>US-CA</code>) and exposing a single <code>&lt;Region&gt;CalendarData</code> factory. They are part of the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic and ship on their own cadence, so a rule correction never forces a runtime rebuild.</p>
 <p>Install only the regions you need. The runtime <code>Bodu.Globalization.Calendar</code> is required by every pack; nothing else is.</p>
 <h2 id="the-pack-surface">The pack surface</h2>
 <p>Every <code>&lt;Region&gt;CalendarData</code> type is <code>static</code>, lives in the <code>Bodu.Globalization.Calendar</code> namespace (not a <code>.Data</code> sub-namespace, so one <code>using</code> covers the runtime and the packs), and exposes exactly three members:</p>
@@ -106,11 +106,11 @@
 </tr>
 <tr>
 <td><code>static NotableDateResource LoadResource(string territory)</code></td>
-<td>Loads the immutable, validated <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> for the country owning <code>territory</code> — a country code or one of its subdivisions (<code>&quot;US&quot;</code>, <code>&quot;CA-ON&quot;</code>, <code>&quot;AU-WA&quot;</code>). Throws <code>ArgumentException</code> when the country is not in the pack. Imports are resolved automatically.</td>
+<td>Loads the immutable, validated <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResource.html">NotableDateResource</a> for the country owning <code>territory</code> - a country code or one of its subdivisions (<code>&quot;US&quot;</code>, <code>&quot;CA-ON&quot;</code>, <code>&quot;AU-WA&quot;</code>). Throws <code>ArgumentException</code> when the country is not in the pack. Imports are resolved automatically.</td>
 </tr>
 <tr>
 <td><code>static NotableDateService CreateService(string territory)</code></td>
-<td><code>new NotableDateService(LoadResource(territory))</code> — a ready-to-query <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a>.</td>
+<td><code>new NotableDateService(LoadResource(territory))</code> - a ready-to-query <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -147,10 +147,10 @@
 </tr>
 </tbody>
 </table>
-<p>Where a country has subdivision-specific holidays the pack authors them under ISO 3166-2 codes — the Australian states and territories, the Canadian provinces, the German <em>Länder</em>, the US states, the UK nations (<code>GB-ENG</code>, <code>GB-SCT</code>, <code>GB-WLS</code>, <code>GB-NIR</code>), the Alsace-Moselle <em>départements</em> (<code>FR-57</code>, <code>FR-67</code>, <code>FR-68</code>), and the Brazilian and Mexican states with authored rules. The <a href="../../guides/calendar/data-packs.html#per-pack-reference">per-pack reference</a> and the <a href="../../guides/calendar/catalogue/index.html">notable-date catalogue</a> list what each territory actually observes.</p>
+<p>Where a country has subdivision-specific holidays the pack authors them under ISO 3166-2 codes - the Australian states and territories, the Canadian provinces, the German <em>Länder</em>, the US states, the UK nations (<code>GB-ENG</code>, <code>GB-SCT</code>, <code>GB-WLS</code>, <code>GB-NIR</code>), the Alsace-Moselle <em>départements</em> (<code>FR-57</code>, <code>FR-67</code>, <code>FR-68</code>), and the Brazilian and Mexican states with authored rules. The <a href="../../guides/calendar/data-packs.html#per-pack-reference">per-pack reference</a> and the <a href="../../guides/calendar/catalogue/index.html">notable-date catalogue</a> list what each territory actually observes.</p>
 <h2 id="region-hubs-and-the-common-catalogues">Region hubs and the common catalogues</h2>
-<p>Concepts are authored once in the runtime's bundled <strong>common catalogues</strong> — <code>global-core</code>, <code>christian-western</code>, <code>christian-orthodox</code>, <code>catholic</code>, <code>global-islamic</code> / <code>global-islamic-umm-al-qura</code>, <code>global-jewish</code>, <code>global-buddhist</code>, <code>global-hindu</code>, <code>global-persian</code>, and the rest — and a country document <em>imports</em> the concepts it observes, supplying its own territory scope, non-working status, and adjustment policies through <code>&lt;Use&gt;</code> directives. The runtime's <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateResources.html">CommonNotableDateResources</a> resolves those names: <code>Resolve(string)</code> returns a catalogue's XML, <code>Resolve(CommonNotableDateCatalog)</code> / <code>Load(CommonNotableDateCatalog)</code> address one by the <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateCatalog.html">CommonNotableDateCatalog</a> enum (<code>GlobalCore</code>, <code>ChristianWestern</code>, <code>GlobalIslamic</code>, …), and <code>Resolver</code> is the <code>Func&lt;string, string?&gt;</code> a loader takes.</p>
-<p>Four packs also ship a <strong>region hub</strong> — <code>americas-common</code>, <code>europe-common</code>, <code>middleeast-common</code>, <code>africa-common</code> — an embedded document that re-exports the shared concepts the region's countries have in common (and occasionally defines a few of its own), so <code>region-us.xml</code> imports <code>americas-common</code> rather than each catalogue directly. The pack's <code>LoadResource</code> serves the hub from its own embedded resources and falls back to <code>CommonNotableDateResources.Resolve</code> for everything else; the AsiaPacific documents import the common catalogues directly. You never wire a resolver by hand for a pack territory.</p>
+<p>Concepts are authored once in the runtime's bundled <strong>common catalogues</strong> - <code>global-core</code>, <code>christian-western</code>, <code>christian-orthodox</code>, <code>catholic</code>, <code>global-islamic</code> / <code>global-islamic-umm-al-qura</code>, <code>global-jewish</code>, <code>global-buddhist</code>, <code>global-hindu</code>, <code>global-persian</code>, and the rest - and a country document <em>imports</em> the concepts it observes, supplying its own territory scope, non-working status, and adjustment policies through <code>&lt;Use&gt;</code> directives. The runtime's <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateResources.html">CommonNotableDateResources</a> resolves those names: <code>Resolve(string)</code> returns a catalogue's XML, <code>Resolve(CommonNotableDateCatalog)</code> / <code>Load(CommonNotableDateCatalog)</code> address one by the <a class="xref" href="../../api/Bodu.Globalization.Calendar.CommonNotableDateCatalog.html">CommonNotableDateCatalog</a> enum (<code>GlobalCore</code>, <code>ChristianWestern</code>, <code>GlobalIslamic</code>, …), and <code>Resolver</code> is the <code>Func&lt;string, string?&gt;</code> a loader takes.</p>
+<p>Four packs also ship a <strong>region hub</strong> - <code>americas-common</code>, <code>europe-common</code>, <code>middleeast-common</code>, <code>africa-common</code> - an embedded document that re-exports the shared concepts the region's countries have in common (and occasionally defines a few of its own), so <code>region-us.xml</code> imports <code>americas-common</code> rather than each catalogue directly. The pack's <code>LoadResource</code> serves the hub from its own embedded resources and falls back to <code>CommonNotableDateResources.Resolve</code> for everything else; the AsiaPacific documents import the common catalogues directly. You never wire a resolver by hand for a pack territory.</p>
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash"># The runtime is required by every pack:
 dotnet add package Bodu.Globalization.Calendar
@@ -184,14 +184,14 @@ if (AsiaPacificCalendarData.SupportedCountries.Contains(&quot;AU&quot;))
 var today = new DateOnly(2026, 12, 24);
 Console.WriteLine(today.AddWorkingDays(2, service, &quot;US&quot;));               // skips 25 Dec and the weekend
 </code></pre>
-<p>Several territories in one host — for example an Americas service and a Europe service — are simply several services; the <a href="../../guides/calendar/data-packs.html#compose-several-territories">data packs guide</a> shows composing them and registering pack resources through dependency injection.</p>
+<p>Several territories in one host - for example an Americas service and a Europe service - are simply several services; the <a href="../../guides/calendar/data-packs.html#compose-several-territories">data packs guide</a> shows composing them and registering pack resources through dependency injection.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs guide</a></strong> — the pack surface in detail, wiring one pack into a service, composing several territories, loading the resource only, DI registration, algorithm-backed rules, and the per-pack reference.</li>
-<li><strong><a href="../../guides/calendar/catalogue/index.html">Notable-date catalogue</a></strong> — every concept the shipped data contains, by theme and by region, with the region hubs and the comparison matrix.</li>
-<li><strong><a href="../../guides/calendar/territories.html">Territories</a></strong> — how territory containment composes national and subdivision rules.</li>
-<li><strong><a href="../../guides/calendar/working-days.html">Working-day arithmetic</a></strong> — <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>NextWorkingDay</code>, and friends over a pack-backed service.</li>
-<li><strong><a href="../calendar/index.html">Bodu.Globalization.Calendar introduction</a></strong> — the runtime the packs feed, and the <a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> where the five factories are documented.</li>
+<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs guide</a></strong> - the pack surface in detail, wiring one pack into a service, composing several territories, loading the resource only, DI registration, algorithm-backed rules, and the per-pack reference.</li>
+<li><strong><a href="../../guides/calendar/catalogue/index.html">Notable-date catalogue</a></strong> - every concept the shipped data contains, by theme and by region, with the region hubs and the comparison matrix.</li>
+<li><strong><a href="../../guides/calendar/territories.html">Territories</a></strong> - how territory containment composes national and subdivision rules.</li>
+<li><strong><a href="../../guides/calendar/working-days.html">Working-day arithmetic</a></strong> - <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>NextWorkingDay</code>, and friends over a pack-backed service.</li>
+<li><strong><a href="../calendar/index.html">Bodu.Globalization.Calendar introduction</a></strong> - the runtime the packs feed, and the <a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a> where the five factories are documented.</li>
 </ul>
 
 </article>
@@ -211,7 +211,7 @@ Console.WriteLine(today.AddWorkingDays(2, service, &quot;US&quot;));            
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

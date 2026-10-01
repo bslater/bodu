@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="as-title as-desc">
-  <title id="as-title">ASCON sponge construction — absorb and squeeze over a 320-bit state</title>
+  <title id="as-title">ASCON sponge construction - absorb and squeeze over a 320-bit state</title>
   <desc id="as-desc">The ASCON sponge maintains a 320-bit state held as five 64-bit words S0 through S4. The state is split into a rate portion, into which message blocks are XORed during the absorb phase and from which output blocks are read during the squeeze phase, and a capacity portion, which is never touched directly and carries the security margin. Between every block the Ascon-p permutation is applied to the full 320-bit state.</desc>
 
   <defs>
@@ -42,12 +42,12 @@
     <rect class="panel" width="800" height="300" rx="8"/>
     <rect class="header" width="800" height="46" rx="8"/>
     <rect class="header" y="38" width="800" height="8"/>
-    <text class="title" x="16" y="20">ASCON sponge — 320-bit state, absorb then squeeze</text>
+    <text class="title" x="16" y="20">ASCON sponge - 320-bit state, absorb then squeeze</text>
     <text class="formula" x="784" y="38" text-anchor="end">state = rate ‖ capacity;   permute with Ascon-p between blocks</text>
 
     <!-- state: 5 x 64-bit words -->
     <g transform="translate(40 90)">
-      <text class="sub" x="0" y="-12">320-bit state — five 64-bit words</text>
+      <text class="sub" x="0" y="-12">320-bit state - five 64-bit words</text>
       <rect class="rate" x="0"  y="0"  width="120" height="22" rx="3"/>
       <rect class="rate" x="0"  y="24" width="120" height="22" rx="3"/>
       <rect class="capacity" x="0"  y="48" width="120" height="22" rx="3"/>
@@ -89,7 +89,7 @@
     </g>
     <line class="wire-msg" x1="346" y1="250" x2="404" y2="246" marker-end="url(#as-arr-m)"/>
     <path class="wire-msg" d="M 420 232 L 420 188" marker-end="url(#as-arr-m)"/>
-    <text class="sub-muted" x="220" y="270">ABSORB — XOR each block into the rate, then permute</text>
+    <text class="sub-muted" x="220" y="270">ABSORB - XOR each block into the rate, then permute</text>
 
     <!-- Squeeze phase -->
     <g transform="translate(620 130)">
@@ -97,13 +97,13 @@
       <text class="box-text" x="0" y="5" fill="#1E293B" font-size="12">output block</text>
     </g>
     <path class="wire-out" d="M 486 130 L 568 130" marker-end="url(#as-arr-o)"/>
-    <text class="sub-muted" x="560" y="170" text-anchor="middle">SQUEEZE — read the rate, permute, repeat</text>
+    <text class="sub-muted" x="560" y="170" text-anchor="middle">SQUEEZE - read the rate, permute, repeat</text>
 
     <!-- permutation loop -->
     <path class="wire" d="M 486 165 C 540 200, 540 95, 486 116" stroke-dasharray="4 3" marker-end="url(#as-arr)"/>
     <text class="sub-muted" x="556" y="142" text-anchor="start">loop</text>
 
     <!-- footer note -->
-    <text class="sub" x="20" y="290">Only the rate is XOR-visible — the capacity is never touched directly, which is what bounds the construction's security.</text>
+    <text class="sub" x="20" y="290">Only the rate is XOR-visible - the capacity is never touched directly, which is what bounds the construction's security.</text>
   </g>
 </svg>

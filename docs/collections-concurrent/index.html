@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Collections.Concurrent — Introduction | BODU </title>
+      <title>Bodu.Collections.Concurrent - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Collections.Concurrent — Introduction | BODU ">
+      <meta name="title" content="Bodu.Collections.Concurrent - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,9 +88,9 @@
 <h1 id="boducollectionsconcurrent">Bodu.Collections.Concurrent</h1>
 
 <p><img src="../../images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent"></p>
-<p><strong>Bodu.Collections.Concurrent</strong> ships the thread-safe members of the Bodu collection catalogue — the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code>, the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and two bounded caches: the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> — as a focused companion package in the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. The dependency chain is <code>Bodu.Core</code> ← <a href="../collections/index.html"><code>Bodu.Collections</code></a> ← <code>Bodu.Collections.Concurrent</code>: this package references <code>Bodu.Collections</code> (and through it <code>Bodu.Core</code>), so installing it brings the whole family. The namespace is unchanged from the original split — every type lives in <code>Bodu.Collections.Generic.Concurrent</code>.</p>
-<p>Reach for this package when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock. External locking around <code>CircularBuffer&lt;T&gt;</code>, <code>HashSet&lt;T&gt;</code>, or <code>EvictingDictionary&lt;TKey,TValue&gt;</code> works, but it serialises every operation behind a single monitor; the concurrent variants coordinate more finely — per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache — so disjoint operations proceed in parallel.</p>
-<p><img src="../../images/diagrams/collections-concurrent-namespace-map.svg" alt="Bodu.Collections.Concurrent namespace map — the thread-safe types over the Bodu.Collections and Bodu.Core dependency chain"></p>
+<p><strong>Bodu.Collections.Concurrent</strong> ships the thread-safe members of the Bodu collection catalogue - the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code>, the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and two bounded caches: the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> - as a focused companion package in the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic. The dependency chain is <code>Bodu.Core</code> ← <a href="../collections/index.html"><code>Bodu.Collections</code></a> ← <code>Bodu.Collections.Concurrent</code>: this package references <code>Bodu.Collections</code> (and through it <code>Bodu.Core</code>), so installing it brings the whole family. The namespace is unchanged from the original split - every type lives in <code>Bodu.Collections.Generic.Concurrent</code>.</p>
+<p>Reach for this package when the same collection is accessed by multiple producers and consumers and you need predictable concurrent semantics rather than an external lock. External locking around <code>CircularBuffer&lt;T&gt;</code>, <code>HashSet&lt;T&gt;</code>, or <code>EvictingDictionary&lt;TKey,TValue&gt;</code> works, but it serialises every operation behind a single monitor; the concurrent variants coordinate more finely - per-slot sequence numbers (Vyukov MPMC) for the buffer, a lock-free split-ordered list for the set, and independently locked policy segments (lock striping) for the cache - so disjoint operations proceed in parallel.</p>
+<p><img src="../../images/diagrams/collections-concurrent-namespace-map.svg" alt="Bodu.Collections.Concurrent namespace map - the thread-safe types over the Bodu.Collections and Bodu.Core dependency chain"></p>
 <h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
 <h3 id="boducollectionsgenericconcurrent"><code>Bodu.Collections.Generic.Concurrent</code></h3>
 <table>
@@ -107,7 +107,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a></td>
-<td>Thread-safe unordered set of unique elements backed by a lock-free split-ordered list: elements live in one Harris–Michael lock-free linked list keyed by bit-reversed hashes, so every operation is lock-free and growth never rehashes a node. Implements <code>ISet&lt;T&gt;</code>; elements must be non-null (<code>T : notnull</code>).</td>
+<td>Thread-safe unordered set of unique elements backed by a lock-free split-ordered list: elements live in one Harris-Michael lock-free linked list keyed by bit-reversed hashes, so every operation is lock-free and growth never rehashes a node. Implements <code>ISet&lt;T&gt;</code>; elements must be non-null (<code>T : notnull</code>).</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a></td>
@@ -153,7 +153,7 @@
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a></td>
 </tr>
 <tr>
-<td>Cache-stampede protection — expensive value built at most once per key</td>
+<td>Cache-stampede protection - expensive value built at most once per key</td>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> (<code>GetOrAdd</code> runs the factory single-flight per key)</td>
 </tr>
 <tr>
@@ -164,21 +164,21 @@
 </table>
 <h2 id="design-notes">Design notes</h2>
 <ul>
-<li><strong>Lock-free ring and set, lock-striped cache.</strong> The buffer coordinates producers and consumers with per-slot sequence numbers (CAS updates, 64-byte cache-line padding against false sharing); the set applies single-CAS mutations to a split-ordered list — neither takes a <code>lock</code> anywhere, so a preempted thread can never stall the others. The cache stripes its capacity across independently locked policy segments, so only same-segment writers contend.</li>
-<li><strong>Snapshot enumeration, never fail-fast.</strong> Every type enumerates without ever throwing on concurrent modification — the deliberate inverse of the fail-fast contract on the single-threaded catalogue, because a fail-fast version token cannot be maintained without a lock. The buffer and the cache capture coherent snapshots; the set performs a weakly consistent lock-free traversal.</li>
+<li><strong>Lock-free ring and set, lock-striped cache.</strong> The buffer coordinates producers and consumers with per-slot sequence numbers (CAS updates, 64-byte cache-line padding against false sharing); the set applies single-CAS mutations to a split-ordered list - neither takes a <code>lock</code> anywhere, so a preempted thread can never stall the others. The cache stripes its capacity across independently locked policy segments, so only same-segment writers contend.</li>
+<li><strong>Snapshot enumeration, never fail-fast.</strong> Every type enumerates without ever throwing on concurrent modification - the deliberate inverse of the fail-fast contract on the single-threaded catalogue, because a fail-fast version token cannot be maintained without a lock. The buffer and the cache capture coherent snapshots; the set performs a weakly consistent lock-free traversal.</li>
 <li><strong>Approximate reads are named as such.</strong> <code>Count</code> on the buffer is a point-in-time estimate that never blocks; the set's <code>Count</code> is a lock-free interlocked counter that is exact at quiescence; the cache's <code>ApproximateCount</code> sums per-segment counters lock-free while its exact <code>Count</code> acquires every segment lock for a coherent answer. Choose by need, not by habit.</li>
-<li><strong>Eviction under contention.</strong> With <code>AllowOverwrite = true</code>, a producer that finds the buffer full silently overwrites the oldest entry and raises <code>ItemEvicted</code> afterwards; the evicting dictionary raises the same post-commit <code>ItemEvicted</code> after releasing its segment lock. In both cases handler exceptions are swallowed and there is no pre-eviction veto — a committed concurrent eviction cannot be unwound. See <a href="concepts.html">concepts</a> for the contrast with the single-threaded event contracts.</li>
-<li><strong>Exact per segment, approximate globally.</strong> The evicting dictionary runs its policy exactly within each segment over a fixed slice of the capacity (slices sum to <code>Capacity</code> exactly), so global eviction order is approximate while the capacity bound stays strict — the standard trade of production concurrent caches.</li>
-<li><strong><code>SyncRoot</code> throws.</strong> Matching the BCL <code>ConcurrentQueue&lt;T&gt;</code>, the explicit <code>ICollection.SyncRoot</code> on every type throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> — there is nothing meaningful to lock on.</li>
+<li><strong>Eviction under contention.</strong> With <code>AllowOverwrite = true</code>, a producer that finds the buffer full silently overwrites the oldest entry and raises <code>ItemEvicted</code> afterwards; the evicting dictionary raises the same post-commit <code>ItemEvicted</code> after releasing its segment lock. In both cases handler exceptions are swallowed and there is no pre-eviction veto - a committed concurrent eviction cannot be unwound. See <a href="concepts.html">concepts</a> for the contrast with the single-threaded event contracts.</li>
+<li><strong>Exact per segment, approximate globally.</strong> The evicting dictionary runs its policy exactly within each segment over a fixed slice of the capacity (slices sum to <code>Capacity</code> exactly), so global eviction order is approximate while the capacity bound stays strict - the standard trade of production concurrent caches.</li>
+<li><strong><code>SyncRoot</code> throws.</strong> Matching the BCL <code>ConcurrentQueue&lt;T&gt;</code>, the explicit <code>ICollection.SyncRoot</code> on every type throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> - there is nothing meaningful to lock on.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the concurrency vocabulary: MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run a minimal sample for each type.</li>
-<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> — the full walk-through: construction, consistency table, bulk operations, when <em>not</em> to use these types.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> — full namespace overview.</li>
-<li><strong><a href="../collections/index.html">Bodu.Collections introduction</a></strong> — the single-threaded catalogue this package extends.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — how the three packages fit together.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the concurrency vocabulary: MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install the package and run a minimal sample for each type.</li>
+<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> - the full walk-through: construction, consistency table, bulk operations, when <em>not</em> to use these types.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> - full namespace overview.</li>
+<li><strong><a href="../collections/index.html">Bodu.Collections introduction</a></strong> - the single-threaded catalogue this package extends.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> - how the three packages fit together.</li>
 </ul>
 
 </article>
@@ -198,7 +198,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

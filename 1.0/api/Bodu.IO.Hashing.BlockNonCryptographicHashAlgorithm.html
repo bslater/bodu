@@ -8,7 +8,7 @@
       <meta name="title" content="BlockNonCryptographicHashAlgorithm Class
  | BODU ">
       
-      <meta name="description" content="Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time — handles residual buffering, block alignment, total-length tracking, snapshot-based GetCurrentHash, and optional final-block padding so that derived implementations only need to express the per-block compression step.">
+      <meta name="description" content="Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time - handles residual buffering, block alignment, total-length tracking, snapshot-based GetCurrentHash, and optional final-block padding so that derived implementations only need to express the per-block compression step.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BlockNonCryptographicHashAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,10 +104,10 @@ BlockNonCryptographicHashAlgorithm Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs">BlockNonCryptographicHashAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs">BlockNonCryptographicHashAlgorithm.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time —
+  <div class="markdown summary"><p>Base class for non-cryptographic hash algorithms whose internal state advances one fixed-size block at a time -
 handles residual buffering, block alignment, total-length tracking, snapshot-based <code>GetCurrentHash</code>, and
 optional final-block padding so that derived implementations only need to express the per-block compression step.</p>
 </div>
@@ -353,7 +353,7 @@ public sealed class MyBlockHash : BlockNonCryptographicHashAlgorithm
 
   <h2 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
+Many non-cryptographic hashes - Murmur, CityHash, Pearson, the FNV variants - define their compression step over a
 fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
 that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
 once on finalization. <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html">BlockNonCryptographicHashAlgorithm</a> centralizes that machinery so derived types
@@ -363,16 +363,16 @@ only express the algorithm-specific behavior.
 <strong>Inheritance contract.</strong> Derived classes implement four members and may override two more:
 </p>
 <ul><li>
-<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a> — compress a single complete block.
+<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__">ProcessBlock(ReadOnlySpan&lt;byte&gt;)</a> - compress a single complete block.
 </li><li>
-<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_">PadBlock(ReadOnlySpan&lt;byte&gt;, ulong)</a> — pad the final partial block and encode the total message
+<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_">PadBlock(ReadOnlySpan&lt;byte&gt;, ulong)</a> - pad the final partial block and encode the total message
 length.
-</li><li><a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ProcessFinalBlock">ProcessFinalBlock()</a> — emit the final digest from the accumulator.</li><li>
-<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Clone">Clone()</a> — produce a state-equivalent copy used for non-destructive snapshotting.
+</li><li><a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ProcessFinalBlock">ProcessFinalBlock()</a> - emit the final digest from the accumulator.</li><li>
+<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Clone">Clone()</a> - produce a state-equivalent copy used for non-destructive snapshotting.
 </li><li>
-<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResetState">ResetState()</a> (optional) — restore algorithm-specific accumulators on <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Reset">Reset()</a>.
+<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResetState">ResetState()</a> (optional) - restore algorithm-specific accumulators on <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Reset">Reset()</a>.
 </li><li>
-<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ShouldPadFinalBlock">ShouldPadFinalBlock()</a> / <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_AllowUnalignedFinalBlock">AllowUnalignedFinalBlock</a> (optional) — opt out of padding, or
+<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ShouldPadFinalBlock">ShouldPadFinalBlock()</a> / <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_AllowUnalignedFinalBlock">AllowUnalignedFinalBlock</a> (optional) - opt out of padding, or
 pass the padded result as a single block instead of splitting it block-aligned.
 </li></ul>
 <p>
@@ -386,8 +386,8 @@ disturbing further input. <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptogr
 <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResetState">ResetState()</a>.
 </p>
 <p>
-<strong>Snapshot helpers for derived <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Clone">Clone()</a> implementations.</strong> Three protected accessors —
-<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResidualByteCount">ResidualByteCount</a>, <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResidualBytes">ResidualBytes</a>, and <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_TotalLength">TotalLength</a> — expose the
+<strong>Snapshot helpers for derived <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Clone">Clone()</a> implementations.</strong> Three protected accessors -
+<a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResidualByteCount">ResidualByteCount</a>, <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResidualBytes">ResidualBytes</a>, and <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_TotalLength">TotalLength</a> - expose the
 base-class state, and <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_CopyResidualStateFrom_Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_">CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm)</a> performs the
 corresponding write-side step. Derived <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html#Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Clone">Clone()</a> implementations typically allocate a new instance, copy
 algorithm-specific accumulators field-by-field, and finish with a call to
@@ -397,13 +397,13 @@ algorithm-specific accumulators field-by-field, and finish with a call to
 <strong>Suitability.</strong> Like every other type in <code>Bodu.IO.Hashing</code>, derivations of this class produce
 <em>non-cryptographic</em> digests intended for integrity checks, fingerprinting, hash-table keys, and bloom-filter
 inputs. They do not provide preimage or collision resistance and must not be used for password hashing, message
-authentication, or any security-sensitive context — use a member of <code>Bodu.Security.Cryptography</code> or the BCL's
+authentication, or any security-sensitive context - use a member of <code>Bodu.Security.Cryptography</code> or the BCL's
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> hierarchy instead. Instances are not thread-safe; share
 behind explicit synchronization.
 </p>
 <p>
-<strong>Related family.</strong> For error detection over a constrained ASCII text domain — card numbers, account
-identifiers, and serial codes — see the separate check-digit family rooted at
+<strong>Related family.</strong> For error detection over a constrained ASCII text domain - card numbers, account
+identifiers, and serial codes - see the separate check-digit family rooted at
 <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>. It is intentionally <em>not</em> part of the
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> hierarchy: it consumes <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a> sequences
 and emits a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>/<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a> check value rather than a byte digest.
@@ -420,7 +420,7 @@ and emits a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm__ctor_System_Int32_System_Int32_" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.#ctor(System.Int32,System.Int32)">
   BlockNonCryptographicHashAlgorithm(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -470,7 +470,7 @@ output size and block size.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_BlockSizeBytes" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.BlockSizeBytes">
   BlockSizeBytes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -510,7 +510,7 @@ output size and block size.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_AllowUnalignedFinalBlock" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.AllowUnalignedFinalBlock">
   AllowUnalignedFinalBlock
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -547,7 +547,7 @@ padded result may be passed as a single block.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResidualByteCount" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.ResidualByteCount">
   ResidualByteCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -586,7 +586,7 @@ padded result may be passed as a single block.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResidualBytes" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.ResidualBytes">
   ResidualBytes
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -625,7 +625,7 @@ padded result may be passed as a single block.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_TotalLength" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.TotalLength">
   TotalLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -669,7 +669,7 @@ call to <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{System.Byte})">
   Append(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -706,7 +706,7 @@ call to <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Clone" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.Clone">
   Clone()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -744,7 +744,7 @@ call to <a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_CopyResidualStateFrom_Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.CopyResidualStateFrom(Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm)">
   CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -788,7 +788,7 @@ derived types to duplicate the running input-alignment state.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_GetCurrentHashCore_System_Span_System_Byte__" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.GetCurrentHashCore(System.Span{System.Byte})">
   GetCurrentHashCore(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -825,7 +825,7 @@ derived types to duplicate the running input-alignment state.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_PadBlock_System_ReadOnlySpan_System_Byte__System_UInt64_" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.PadBlock(System.ReadOnlySpan{System.Byte},System.UInt64)">
   PadBlock(ReadOnlySpan&lt;byte&gt;, ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -873,7 +873,7 @@ encoding, ready to be passed to <a class="xref" href="Bodu.IO.Hashing.BlockNonCr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ProcessBlock_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.ProcessBlock(System.ReadOnlySpan{System.Byte})">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -916,7 +916,7 @@ encoding, ready to be passed to <a class="xref" href="Bodu.IO.Hashing.BlockNonCr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ProcessFinalBlock" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -953,7 +953,7 @@ encoding, ready to be passed to <a class="xref" href="Bodu.IO.Hashing.BlockNonCr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_Reset" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -984,7 +984,7 @@ encoding, ready to be passed to <a class="xref" href="Bodu.IO.Hashing.BlockNonCr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ResetState" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.ResetState">
   ResetState()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1020,7 +1020,7 @@ The default implementation does nothing.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_BlockNonCryptographicHashAlgorithm_ShouldPadFinalBlock" data-uid="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.ShouldPadFinalBlock">
   ShouldPadFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/BlockNonCryptographicHashAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1089,7 +1089,7 @@ residual bytes should be processed verbatim without explicit padding.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

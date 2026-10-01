@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Skein512" data-uid="Bodu.Security.Cryptography.Skein512" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Skein512 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Skein512 Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs">Skein.512.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs">Skein.512.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a hash using the <code>Skein-512</code> variant of the Skein hash function, built on top of the
@@ -394,12 +394,12 @@ sequence from zero up to <a class="xref" href="Bodu.Security.Cryptography.Skein.
 <p>
 <strong>Parameters at a glance.</strong>
 </p>
-<ul><li>State / block size: 512 bits (64 bytes).</li><li>Output sizes: 128, 160, 224, 256, 384, or 512 bits — default 512.</li><li>
+<ul><li>State / block size: 512 bits (64 bytes).</li><li>Output sizes: 128, 160, 224, 256, 384, or 512 bits - default 512.</li><li>
 Underlying cipher: <a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a> tweakable block cipher under UBI mode.
-</li><li>Optional variable-length key: 0–<a class="xref" href="Bodu.Security.Cryptography.Skein.html#Bodu_Security_Cryptography_Skein_MaxKeySize">MaxKeySize</a> / 8 bytes.</li></ul>
+</li><li>Optional variable-length key: 0-<a class="xref" href="Bodu.Security.Cryptography.Skein.html#Bodu_Security_Cryptography_Skein_MaxKeySize">MaxKeySize</a> / 8 bytes.</li></ul>
 <p>
 <strong>When to choose Skein-512.</strong> The general-purpose Skein default, recommended by the Skein 1.3
-specification — pick this when reproducing or interoperating with Skein-based digests. For new code without an
+specification - pick this when reproducing or interoperating with Skein-based digests. For new code without an
 interop requirement <a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> is faster on contemporary 64-bit hardware and SHA-2 / SHA-3 are more
 widely deployed. Use <a class="xref" href="Bodu.Security.Cryptography.Skein256.html">Skein256</a> for narrower state, <a class="xref" href="Bodu.Security.Cryptography.Skein1024.html">Skein1024</a> for the widest.
 </p>
@@ -415,7 +415,7 @@ widely deployed. Use <a class="xref" href="Bodu.Security.Cryptography.Skein256.h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Skein512__ctor" data-uid="Bodu.Security.Cryptography.Skein512.#ctor">
   Skein512()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -446,7 +446,7 @@ widely deployed. Use <a class="xref" href="Bodu.Security.Cryptography.Skein256.h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Skein512__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Skein512.#ctor(System.Int32)">
   Skein512(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Skein.512.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -520,7 +520,7 @@ or <code>512</code>.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

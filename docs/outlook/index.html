@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Formats.Outlook — Introduction | BODU </title>
+      <title>Bodu.Formats.Outlook - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Formats.Outlook — Introduction | BODU ">
+      <meta name="title" content="Bodu.Formats.Outlook - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,7 +88,7 @@
 <h1 id="boduformatsoutlook">Bodu.Formats.Outlook</h1>
 
 <p><img src="../../images/hero-outlook.svg" alt="Bodu.Formats.Outlook"></p>
-<p><strong>Bodu.Formats.Outlook</strong> is the shared MAPI value model for the Outlook format readers, and the name of the three-package family that reads Outlook's two on-disk formats. Part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic, the core package carries property tags and types, decoded property values with a tag-addressed collection, named-property identities, the recipient and attachment enumerations, and the shared exception base — with no container knowledge of its own. Two readers build on it: <strong>Bodu.Formats.Outlook.Msg</strong> opens a single message (<code>.msg</code> / MS-OXMSG) over the <a href="../io-compound/index.html"><code>Bodu.IO.Compound</code></a> OLE2 container, and <strong>Bodu.Formats.Outlook.Pst</strong> opens a personal-folders mail store (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <a href="../io-pst/index.html"><code>Bodu.IO.Pst</code></a> node database. Both readers are <strong>read-only</strong> — no authoring, no MAPI session emulation.</p>
+<p><strong>Bodu.Formats.Outlook</strong> is the shared MAPI value model for the Outlook format readers, and the name of the three-package family that reads Outlook's two on-disk formats. Part of the <strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O</a></strong> topic, the core package carries property tags and types, decoded property values with a tag-addressed collection, named-property identities, the recipient and attachment enumerations, and the shared exception base - with no container knowledge of its own. Two readers build on it: <strong>Bodu.Formats.Outlook.Msg</strong> opens a single message (<code>.msg</code> / MS-OXMSG) over the <a href="../io-compound/index.html"><code>Bodu.IO.Compound</code></a> OLE2 container, and <strong>Bodu.Formats.Outlook.Pst</strong> opens a personal-folders mail store (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <a href="../io-pst/index.html"><code>Bodu.IO.Pst</code></a> node database. Both readers are <strong>read-only</strong> - no authoring, no MAPI session emulation.</p>
 <p>Every public type in all three packages lives in the single flattened <code>Bodu.Formats.Outlook</code> namespace (the package names keep their <code>.Msg</code> / <code>.Pst</code> suffixes; the namespace does not). Consumers add one <code>using Bodu.Formats.Outlook;</code>, and a <code>.msg</code> recipient and a <code>.pst</code> recipient are the same <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a> type over the same <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a>. The container-specific decoders stay <code>internal</code> under <code>Bodu.Formats.Outlook.Msg</code> and <code>Bodu.Formats.Outlook.Pst</code>.</p>
 <table>
 <thead>
@@ -107,7 +107,7 @@
 <tr>
 <td><strong>Property collection</strong></td>
 <td><a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a></td>
-<td>The decoded properties of one object — message, folder, recipient, attachment, store — addressed by tag or by identifier, with typed accessors.</td>
+<td>The decoded properties of one object - message, folder, recipient, attachment, store - addressed by tag or by identifier, with typed accessors.</td>
 </tr>
 <tr>
 <td><strong>Named property</strong></td>
@@ -151,7 +151,7 @@
 </tr>
 <tr>
 <td>Either, in a library that only models properties</td>
-<td>The value model alone — tags, collections, named-property identities — without a container</td>
+<td>The value model alone - tags, collections, named-property identities - without a container</td>
 <td><code>Bodu.Formats.Outlook</code></td>
 <td>Preview</td>
 </tr>
@@ -169,7 +169,7 @@
 </tr>
 </tbody>
 </table>
-<p>The two readers reference <code>Bodu.Formats.Outlook</code> transitively, so installing either one is enough for its format. Install both when an application handles <code>.msg</code> attachments extracted from a <code>.pst</code> — the value model, the recipient type, and the enumerations are shared, so code written against one reader's property surface carries over to the other.</p>
+<p>The two readers reference <code>Bodu.Formats.Outlook</code> transitively, so installing either one is enough for its format. Install both when an application handles <code>.msg</code> attachments extracted from a <code>.pst</code> - the value model, the recipient type, and the enumerations are shared, so code written against one reader's property surface carries over to the other.</p>
 <h2 id="key-concepts">Key concepts</h2>
 <table>
 <thead>
@@ -193,7 +193,7 @@
 </tr>
 <tr>
 <td><strong>Session</strong></td>
-<td>The disposable root object — a message or a mail store — that owns the container. Every folder, message, recipient, and attachment obtained from it is a view bound to its lifetime.</td>
+<td>The disposable root object - a message or a mail store - that owns the container. Every folder, message, recipient, and attachment obtained from it is a view bound to its lifetime.</td>
 </tr>
 <tr>
 <td><strong>Code page</strong></td>
@@ -205,7 +205,7 @@
 </tr>
 <tr>
 <td><strong>Validation level</strong></td>
-<td>How much cross-checking a read performs — the container's own level, reused: <code>CompoundValidationLevel</code> for <code>.msg</code>, <code>PstValidationLevel</code> for <code>.pst</code>.</td>
+<td>How much cross-checking a read performs - the container's own level, reused: <code>CompoundValidationLevel</code> for <code>.msg</code>, <code>PstValidationLevel</code> for <code>.pst</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -217,13 +217,13 @@
 <li><strong>Bounded resources.</strong> Both option types cap embedded-message nesting, decompressed RTF size, and the attachment payload decoded inline; the <code>.pst</code> options additionally bound node materialization. See <a href="concepts.html#resource-limits">resource limits</a>.</li>
 <li><strong>PST variants.</strong> The mail-store reader opens Unicode and ANSI files; the OST variant is rejected by the container with <a class="xref" href="../../api/Bodu.IO.Pst.PstUnsupportedFormatException.html">PstUnsupportedFormatException</a>. Search folders are excluded from folder enumeration.</li>
 </ul>
-<h2 id="worked-example--a-message-and-a-mail-store">Worked example — a message and a mail store</h2>
+<h2 id="worked-example---a-message-and-a-mail-store">Worked example - a message and a mail store</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 
 using var message = OutlookMessage.OpenRead(&quot;invoice.msg&quot;);
 
-Console.WriteLine($&quot;{message.Subject} — {message.SenderName} &lt;{message.SenderEmailAddress}&gt;&quot;);
+Console.WriteLine($&quot;{message.Subject} - {message.SenderName} &lt;{message.SenderEmailAddress}&gt;&quot;);
 foreach (OutlookRecipient recipient in message.Recipients)
     Console.WriteLine($&quot;  {recipient.RecipientType}: {recipient.DisplayName}&quot;);
 </code></pre>
@@ -236,7 +236,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 {
     Console.WriteLine(folder.DisplayName);
     foreach (OutlookMailMessage item in folder.EnumerateMessages())
-        Console.WriteLine($&quot;  {item.Subject} — {item.SenderName}&quot;);
+        Console.WriteLine($&quot;  {item.Subject} - {item.SenderName}&quot;);
 }
 </code></pre>
 <h2 id="common-scenarios">Common scenarios</h2>
@@ -306,8 +306,8 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 </tr>
 </tbody>
 </table>
-<h2 id="headline-types--">Headline types — <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a></h2>
-<p><strong>Value model — <code>Bodu.Formats.Outlook</code></strong></p>
+<h2 id="headline-types---">Headline types - <a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook</a></h2>
+<p><strong>Value model - <code>Bodu.Formats.Outlook</code></strong></p>
 <table>
 <thead>
 <tr>
@@ -354,7 +354,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 </tr>
 </tbody>
 </table>
-<p><strong>Message reader — <code>Bodu.Formats.Outlook.Msg</code></strong></p>
+<p><strong>Message reader - <code>Bodu.Formats.Outlook.Msg</code></strong></p>
 <table>
 <thead>
 <tr>
@@ -381,7 +381,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 </tr>
 </tbody>
 </table>
-<p><strong>Mail-store reader — <code>Bodu.Formats.Outlook.Pst</code></strong></p>
+<p><strong>Mail-store reader - <code>Bodu.Formats.Outlook.Pst</code></strong></p>
 <table>
 <thead>
 <tr>
@@ -418,12 +418,12 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — property-tag anatomy, named-property resolution, recipients and attachment methods, code pages, compressed RTF, validation levels, and the resource limits.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal samples for both readers: sniff, open, walk, read bodies, open attached messages, resolve named properties.</li>
-<li><strong><a href="../../guides/outlook/index.html">Bodu.Formats.Outlook guides</a></strong> — <a href="../../guides/outlook/reading-msg-files.html">reading <code>.msg</code> files</a> and <a href="../../guides/outlook/properties-and-named-properties.html">properties and named properties</a>.</li>
-<li><strong><a href="../io-pst/index.html">Bodu.IO.Pst</a></strong> and <strong><a href="../io-compound/index.html">Bodu.IO.Compound</a></strong> — the containers beneath the two readers; the <a href="../../samples/io-pst.html">PST runnable sample</a>.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> — the readers alongside their containers and the Excel reader.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - property-tag anatomy, named-property resolution, recipients and attachment methods, code pages, compressed RTF, validation levels, and the resource limits.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal samples for both readers: sniff, open, walk, read bodies, open attached messages, resolve named properties.</li>
+<li><strong><a href="../../guides/outlook/index.html">Bodu.Formats.Outlook guides</a></strong> - <a href="../../guides/outlook/reading-msg-files.html">reading <code>.msg</code> files</a> and <a href="../../guides/outlook/properties-and-named-properties.html">properties and named properties</a>.</li>
+<li><strong><a href="../io-pst/index.html">Bodu.IO.Pst</a></strong> and <strong><a href="../io-compound/index.html">Bodu.IO.Compound</a></strong> - the containers beneath the two readers; the <a href="../../samples/io-pst.html">PST runnable sample</a>.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Formats.Outlook.html">Bodu.Formats.Outlook API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../topics/binary-formats.html">Binary Formats &amp; I/O topic overview</a></strong> - the readers alongside their containers and the Excel reader.</li>
 </ul>
 
 </article>
@@ -443,7 +443,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

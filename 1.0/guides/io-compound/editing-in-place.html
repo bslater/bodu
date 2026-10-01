@@ -87,15 +87,15 @@
         <article data-uid="">
 <h1 id="editing-an-existing-container-in-place">Editing an existing container in place</h1>
 
-<p><a href="authoring-compound-files.html">Authoring compound files</a> shows two ways to write: build a detached tree with <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> and serialize it once, or create a fresh writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and <code>Commit</code>. This guide covers the third: open a container that already exists — a <code>.doc</code>, an <code>.xls</code>, a <code>.msg</code> — for update, mutate it through the same storage and stream surface you read it with, and write it back to the same destination with a single <code>Commit</code>, or throw the edits away with <code>Revert</code>.</p>
+<p><a href="authoring-compound-files.html">Authoring compound files</a> shows two ways to write: build a detached tree with <a class="xref" href="../../api/Bodu.IO.Compound.Builders.CompoundStorageBuilder.html">CompoundStorageBuilder</a> and serialize it once, or create a fresh writable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> and <code>Commit</code>. This guide covers the third: open a container that already exists - a <code>.doc</code>, an <code>.xls</code>, a <code>.msg</code> - for update, mutate it through the same storage and stream surface you read it with, and write it back to the same destination with a single <code>Commit</code>, or throw the edits away with <code>Revert</code>.</p>
 <p>The samples run against <code>sample1.doc</code> from the <a href="../../samples/io-compound.html">runnable compound-file sample</a>, a Word 2000 document copied as <code>report.doc</code>; the quoted output is what they print.</p>
 <h2 id="how-update-mode-works">How update mode works</h2>
-<p><code>CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite)</code> — or the stream overload <code>Open(stream, FileMode.Open, FileAccess.ReadWrite, leaveOpen)</code> — mirrors <code>System.IO.Packaging.Package.Open</code>. It reads the whole existing container once, parses it, and loads the hierarchy into an in-memory <strong>staging tree</strong>: every storage's metadata and every stream's full payload. It also keeps an independent <strong>baseline</strong> clone of that tree. From then on:</p>
+<p><code>CompoundFile.Open(path, FileMode.Open, FileAccess.ReadWrite)</code> - or the stream overload <code>Open(stream, FileMode.Open, FileAccess.ReadWrite, leaveOpen)</code> - mirrors <code>System.IO.Packaging.Package.Open</code>. It reads the whole existing container once, parses it, and loads the hierarchy into an in-memory <strong>staging tree</strong>: every storage's metadata and every stream's full payload. It also keeps an independent <strong>baseline</strong> clone of that tree. From then on:</p>
 <ul>
 <li><code>RootStorage</code> and everything beneath it operate on the staging tree. Reads see your edits immediately; the destination sees nothing.</li>
-<li><code>IsDirty</code> turns <code>true</code> on the first mutation — opening a writable cursor counts, even before anything is written — and <code>false</code> after <code>Commit</code> or <code>Revert</code>.</li>
-<li><code>Commit</code> (or <code>CommitAsync</code>) truncates the destination and <strong>rewrites the whole container</strong> from the staging tree. There is no in-place patching of sectors — the layout is recomputed from scratch every time.</li>
-<li><code>Revert</code> resets the staging tree to the baseline — the state loaded <strong>at open</strong>.</li>
+<li><code>IsDirty</code> turns <code>true</code> on the first mutation - opening a writable cursor counts, even before anything is written - and <code>false</code> after <code>Commit</code> or <code>Revert</code>.</li>
+<li><code>Commit</code> (or <code>CommitAsync</code>) truncates the destination and <strong>rewrites the whole container</strong> from the staging tree. There is no in-place patching of sectors - the layout is recomputed from scratch every time.</li>
+<li><code>Revert</code> resets the staging tree to the baseline - the state loaded <strong>at open</strong>.</li>
 <li><code>Dispose</code> without <code>Commit</code> leaves the destination exactly as it was.</li>
 </ul>
 <p>The mode/access combinations <code>Open(stream, mode, access)</code> accepts:</p>
@@ -116,7 +116,7 @@
 <tr>
 <td><code>Open</code></td>
 <td><code>ReadWrite</code></td>
-<td><strong>Update mode</strong> — loads the existing content for editing.</td>
+<td><strong>Update mode</strong> - loads the existing content for editing.</td>
 </tr>
 <tr>
 <td><code>Create</code> / <code>CreateNew</code></td>
@@ -131,7 +131,7 @@
 <tr>
 <td><code>Open</code></td>
 <td><code>Write</code></td>
-<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> — mutating an existing file requires read access, because update loads a snapshot first.</td>
+<td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a> - mutating an existing file requires read access, because update loads a snapshot first.</td>
 </tr>
 <tr>
 <td>anything else</td>
@@ -141,7 +141,7 @@
 </tbody>
 </table>
 <p>The path overload adds a <code>FileShare</code> (default <code>FileShare.Read</code>) and owns the <code>FileStream</code> it opens; <code>FileNotFoundException</code> surfaces when <code>Open</code> names a file that does not exist.</p>
-<h2 id="pattern-1--add-a-stream-to-an-existing-doc-and-commit">Pattern 1 — add a stream to an existing <code>.doc</code> and commit</h2>
+<h2 id="pattern-1---add-a-stream-to-an-existing-doc-and-commit">Pattern 1 - add a stream to an existing <code>.doc</code> and commit</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using System.Text;
 
@@ -186,8 +186,8 @@ notes?.Dispose();
 // True
 </code></pre>
 <p>The stream must be seekable (update mode rewinds it to load the snapshot) and writable (for <code>Commit</code>). <code>Commit</code> on a non-seekable destination appends the container at the current position rather than truncating.</p>
-<h2 id="pattern-2--replace-a-streams-bytes">Pattern 2 — replace a stream's bytes</h2>
-<p>A writable file hands out a <strong>read-write cursor</strong> from <code>OpenStream(name, FileMode, FileAccess)</code> — a real <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> whose <code>CanWrite</code> is <code>true</code> — and the <code>FileMode</code> decides what the cursor starts with:</p>
+<h2 id="pattern-2---replace-a-streams-bytes">Pattern 2 - replace a stream's bytes</h2>
+<p>A writable file hands out a <strong>read-write cursor</strong> from <code>OpenStream(name, FileMode, FileAccess)</code> - a real <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> whose <code>CanWrite</code> is <code>true</code> - and the <code>FileMode</code> decides what the cursor starts with:</p>
 <table>
 <thead>
 <tr>
@@ -263,7 +263,7 @@ Console.WriteLine(Encoding.UTF8.GetString(read.ReadAllBytes()));
 </code></pre>
 <div class="NOTE">
 <h5>Note</h5>
-<p>A writable cursor buffers its payload in memory and flushes it into the staging tree when it is flushed or disposed — <strong>dispose the cursor before you <code>Commit</code></strong>, or the bytes you wrote are not yet in the tree. <code>Flush()</code> stores a snapshot mid-life; <code>Dispose()</code> transfers the buffer. The cursor caps its payload at <code>int.MaxValue</code> bytes; larger payloads belong to the builder's deferred sources (see <a href="streaming-and-buffering.html">Buffered vs streaming access</a>). <code>SetLength</code> shrinks or grows the payload.</p>
+<p>A writable cursor buffers its payload in memory and flushes it into the staging tree when it is flushed or disposed - <strong>dispose the cursor before you <code>Commit</code></strong>, or the bytes you wrote are not yet in the tree. <code>Flush()</code> stores a snapshot mid-life; <code>Dispose()</code> transfers the buffer. The cursor caps its payload at <code>int.MaxValue</code> bytes; larger payloads belong to the builder's deferred sources (see <a href="streaming-and-buffering.html">Buffered vs streaming access</a>). <code>SetLength</code> shrinks or grows the payload.</p>
 </div>
 <p>The non-throwing form takes the same mode and access:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
@@ -301,9 +301,9 @@ file.Revert();                                                    // keep the fi
 
 // removed=True missing=False dirty=True
 </code></pre>
-<p><code>Rename</code> applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> for a missing source or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> for a taken target name. <code>Delete</code> removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules — at most 31 UTF-16 code units, no <code>/</code> or null characters, compared case-insensitively — and the <code>\x05</code> / <code>\x01</code> control prefixes are part of the name.</p>
-<p>A writable storage also exposes its directory metadata as settable properties — <code>ClassId</code>, <code>CreationTime</code>, <code>ModifiedTime</code>, <code>StateBits</code> — which <code>Commit</code> writes exactly as set and never stamps for you.</p>
-<h2 id="pattern-3--revert-after-a-failed-edit">Pattern 3 — revert after a failed edit</h2>
+<p><code>Rename</code> applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.keynotfoundexception">KeyNotFoundException</a> for a missing source or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> for a taken target name. <code>Delete</code> removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules - at most 31 UTF-16 code units, no <code>/</code> or null characters, compared case-insensitively - and the <code>\x05</code> / <code>\x01</code> control prefixes are part of the name.</p>
+<p>A writable storage also exposes its directory metadata as settable properties - <code>ClassId</code>, <code>CreationTime</code>, <code>ModifiedTime</code>, <code>StateBits</code> - which <code>Commit</code> writes exactly as set and never stamps for you.</p>
+<h2 id="pattern-3---revert-after-a-failed-edit">Pattern 3 - revert after a failed edit</h2>
 <p>Because nothing reaches the destination until <code>Commit</code>, a multi-step edit that fails part-way is undone by a single <code>Revert</code>:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
@@ -328,7 +328,7 @@ static byte[] Transform() =&gt;
 // edit failed: unsupported document version; IsDirty=True
 // reverted: IsDirty=False, WordDocument present=True
 </code></pre>
-<p>Disposing instead of reverting has the same effect on the destination — the staged edits are simply dropped — so <code>Revert</code> matters when you intend to keep using the session.</p>
+<p>Disposing instead of reverting has the same effect on the destination - the staged edits are simply dropped - so <code>Revert</code> matters when you intend to keep using the session.</p>
 <div class="WARNING">
 <h5>Warning</h5>
 <p><code>Revert</code> restores the baseline captured <strong>at open</strong>, not the state of the last <code>Commit</code>. After a <code>Commit</code>, a <code>Revert</code> silently stages the open-time content again and reports <code>IsDirty == false</code> even though the destination now holds the committed edits; a second <code>Commit</code> would write the original content back out. If you need a &quot;commit, then keep editing, then undo just the recent edits&quot; flow, close and reopen the file after committing.</p>
@@ -358,7 +358,7 @@ file.Commit();                                                    // ...which th
 <tbody>
 <tr>
 <td>Edits are invisible to the destination until <code>Commit</code>.</td>
-<td>Yes — the destination is not touched by any mutation, cursor, or <code>Revert</code>.</td>
+<td>Yes - the destination is not touched by any mutation, cursor, or <code>Revert</code>.</td>
 </tr>
 <tr>
 <td>Disposing without <code>Commit</code> leaves the destination unchanged.</td>
@@ -366,7 +366,7 @@ file.Commit();                                                    // ...which th
 </tr>
 <tr>
 <td>A <code>Commit</code> writes every staged edit or none of them <em>as far as the staging tree goes</em>.</td>
-<td>Yes — the layout is computed from the whole tree before the first byte is written.</td>
+<td>Yes - the layout is computed from the whole tree before the first byte is written.</td>
 </tr>
 <tr>
 <td>A <code>Commit</code> that faults or is cancelled mid-write leaves the destination intact.</td>
@@ -374,11 +374,11 @@ file.Commit();                                                    // ...which th
 </tr>
 <tr>
 <td>Unchanged streams keep their bytes; storages keep their <code>ClassId</code>, timestamps, and state bits.</td>
-<td>Yes — the rewrite preserves entry metadata and payloads; only the sector layout is recomputed.</td>
+<td>Yes - the rewrite preserves entry metadata and payloads; only the sector layout is recomputed.</td>
 </tr>
 <tr>
 <td>The output is byte-identical to the input when nothing changed.</td>
-<td>No — a rewrite may lay sectors out differently from the original writer.</td>
+<td>No - a rewrite may lay sectors out differently from the original writer.</td>
 </tr>
 <tr>
 <td>Concurrent use of one <code>CompoundFile</code>.</td>
@@ -417,7 +417,7 @@ Console.WriteLine($&quot;IsDirty={file.IsDirty}&quot;);
 
 // IsDirty=False
 </code></pre>
-<p>The rewrite preserves what the original writer recorded — the root storage's class identifier and timestamps, and every untouched payload byte for byte:</p>
+<p>The rewrite preserves what the original writer recorded - the root storage's class identifier and timestamps, and every untouched payload byte for byte:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
 using CompoundFile before = CompoundFile.OpenRead(&quot;report.doc&quot;);
@@ -435,7 +435,7 @@ Console.WriteLine($&quot;WordDocument identical: {a.ReadAllBytes().AsSpan().Sequ
 // WordDocument identical: True
 </code></pre>
 <h2 id="in-place-editing-versus-the-builder-round-trip">In-place editing versus the builder round-trip</h2>
-<p>The builder path in <a href="authoring-compound-files.html">Authoring compound files</a> reaches the same outcome — load, mutate, write — with a different shape:</p>
+<p>The builder path in <a href="authoring-compound-files.html">Authoring compound files</a> reaches the same outcome - load, mutate, write - with a different shape:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.Builders;
 using System.Text;
@@ -471,7 +471,7 @@ Console.WriteLine(new FileInfo(&quot;report-rebuilt.doc&quot;).Length);
 </tr>
 <tr>
 <td>Writing bytes</td>
-<td>Through a <code>Stream</code> cursor — seek, patch, append</td>
+<td>Through a <code>Stream</code> cursor - seek, patch, append</td>
 <td>Whole payloads: <code>ReadOnlyMemory&lt;byte&gt;</code>, a deferred opener, or a file path</td>
 </tr>
 <tr>
@@ -499,11 +499,11 @@ Console.WriteLine(new FileInfo(&quot;report-rebuilt.doc&quot;).Length);
 <p>Reach for in-place editing when you want <code>Stream</code> semantics over the bytes or a single file handle from open to commit. Reach for the builder when the output goes somewhere else, payloads are too large to buffer, or you want to choose the sector version.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="authoring-compound-files.html">Authoring compound files</a> — the builder and create-mode paths, options, and naming rules.</li>
-<li><a href="custom-property-sets.html">Authoring custom property sets</a> — <code>WritePropertySet</code> and the OLE property-set model, the commonest reason to edit a document in place.</li>
-<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> — the writable cursor's memory profile and the asynchronous commit.</li>
-<li><a href="reading-compound-files.html">Reading compound files</a> — the navigation surface the write path reuses.</li>
-<li><a href="index.html">Bodu.IO.Compound guides</a> — every guide in this topic.</li>
+<li><a href="authoring-compound-files.html">Authoring compound files</a> - the builder and create-mode paths, options, and naming rules.</li>
+<li><a href="custom-property-sets.html">Authoring custom property sets</a> - <code>WritePropertySet</code> and the OLE property-set model, the commonest reason to edit a document in place.</li>
+<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> - the writable cursor's memory profile and the asynchronous commit.</li>
+<li><a href="reading-compound-files.html">Reading compound files</a> - the navigation surface the write path reuses.</li>
+<li><a href="index.html">Bodu.IO.Compound guides</a> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -523,7 +523,7 @@ Console.WriteLine(new FileInfo(&quot;report-rebuilt.doc&quot;).Length);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Extensions.Configuration.Text — Getting started | BODU </title>
+      <title>Bodu.Extensions.Configuration.Text - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Extensions.Configuration.Text — Getting started | BODU ">
+      <meta name="title" content="Bodu.Extensions.Configuration.Text - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduextensionsconfigurationtext--getting-started">Bodu.Extensions.Configuration.Text — Getting started</h1>
+<h1 id="boduextensionsconfigurationtext---getting-started">Bodu.Extensions.Configuration.Text - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>source</em>, <em>provider</em>, <em>target path</em>, <em>conventional probe</em>, <em>reload-on-change</em>, or <em>options
 binding</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
@@ -97,7 +97,7 @@ binding</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <li><code>Bodu.Core</code> and <code>Bodu.Text.Configuration</code> (the parser, resolver, and view).</li>
 <li><code>Microsoft.Extensions.Configuration</code>, <code>Microsoft.Extensions.Configuration.FileExtensions</code>,
 <code>Microsoft.Extensions.Configuration.Binder</code>, <code>Microsoft.Extensions.FileProviders.Physical</code>,
-<code>Microsoft.Extensions.Options.ConfigurationExtensions</code>, and the associated abstractions packages — all at the .NET
+<code>Microsoft.Extensions.Options.ConfigurationExtensions</code>, and the associated abstractions packages - all at the .NET
 8.0 LTS line.</li>
 </ul>
 <h2 id="minimal-samples">Minimal samples</h2>
@@ -111,7 +111,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 string? logLevel = configuration[&quot;logging:level:default&quot;];
 </code></pre>
-<p>The overload is named to match the JSON provider's <code>AddJsonFile</code> — same arguments, same defaults, same shape. The
+<p>The overload is named to match the JSON provider's <code>AddJsonFile</code> - same arguments, same defaults, same shape. The
 file is required by default; pass <code>optional: true</code> to tolerate a missing file.</p>
 <h3 id="conventional-file-probe">Conventional file probe</h3>
 <pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
@@ -130,7 +130,7 @@ single conventional configuration file in its working directory.</p>
         reloadOnChange: true)
     .Build();
 </code></pre>
-<p>The <code>targetPath</code> is handed to <code>ConfigurationDocument.Resolve(targetPath)</code> — sections whose header globs match
+<p>The <code>targetPath</code> is handed to <code>ConfigurationDocument.Resolve(targetPath)</code> - sections whose header globs match
 contribute to the resolved view, in source order, last-wins.</p>
 <h3 id="configure-via-callback">Configure via callback</h3>
 <pre><code class="lang-csharp">using Bodu.Text.Configuration;
@@ -153,7 +153,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 </code></pre>
 <p>The callback receives the <a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.TextConfigurationSource.html">TextConfigurationSource</a> directly, so every
-property is reachable. Use this overload when several knobs need to be set together — a one-liner overload exists for
+property is reachable. Use this overload when several knobs need to be set together - a one-liner overload exists for
 the common &quot;just give me the file&quot; case.</p>
 <h3 id="load-from-a-stream">Load from a stream</h3>
 <pre><code class="lang-csharp">using MemoryStream stream = new(Encoding.UTF8.GetBytes(&quot;&quot;&quot;
@@ -168,7 +168,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? name = configuration[&quot;service:name&quot;];   // &quot;Bodu&quot;
 int port = configuration.GetValue&lt;int&gt;(&quot;service:port&quot;);
 </code></pre>
-<p>Stream sources are one-shot — no reload-on-change. Useful for tests, embedded resources, and HTTP-fetched
+<p>Stream sources are one-shot - no reload-on-change. Useful for tests, embedded resources, and HTTP-fetched
 configuration.</p>
 <h3 id="add-a-toml-file-or-stream">Add a TOML file or stream</h3>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
@@ -180,7 +180,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 string? level = configuration[&quot;logging:level&quot;];   // from [logging] level = &quot;...&quot;
 </code></pre>
-<p>The TOML bridge flattens the table hierarchy into the same colon-delimited key space — <code>[logging.console]</code> with
+<p>The TOML bridge flattens the table hierarchy into the same colon-delimited key space - <code>[logging.console]</code> with
 <code>includeScopes = true</code> surfaces as <code>configuration[&quot;logging:console:includeScopes&quot;]</code>. It is read-once and read-only, so
 there is no <code>reloadOnChange</code> parameter; for stream input use <code>AddTomlStream(stream)</code>.</p>
 <h3 id="add-a-bencode-file-or-stream">Add a Bencode file or stream</h3>
@@ -194,7 +194,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration[&quot;logging:level&quot;];   // from d7:loggingd5:level5:Debugee
 </code></pre>
 <p>The Bencode bridge has the same read-once, read-only shape as the TOML bridge; for stream input use
-<code>AddBencodeStream(stream)</code>. The document root must be a Bencode dictionary — nested dictionaries flatten to one
+<code>AddBencodeStream(stream)</code>. The document root must be a Bencode dictionary - nested dictionaries flatten to one
 colon-delimited segment per level and list elements to zero-based index segments.</p>
 <h3 id="add-a-pre-parsed-document">Add a pre-parsed document</h3>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
@@ -210,7 +210,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 </code></pre>
 <p><code>AddTextConfigurationDocument</code> resolves the document once and adds the flattened pairs in-memory. It takes a one-shot
-snapshot — later edits to the document do not flow into the built configuration, and there is no reload-on-change.</p>
+snapshot - later edits to the document do not flow into the built configuration, and there is no reload-on-change.</p>
 <h3 id="bind-to-a-poco-via-di">Bind to a POCO via DI</h3>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
@@ -236,7 +236,7 @@ sealed class ServiceOptions
 <pre><code class="lang-csharp">services.AddConfigurationOptions&lt;ServiceOptions&gt;(configuration.GetSection(&quot;service&quot;));
 </code></pre>
 <h3 id="combine-with-other-providers">Combine with other providers</h3>
-<p>The Bodu source layers with anything else in the builder. Standard MEC precedence applies — later sources override
+<p>The Bodu source layers with anything else in the builder. Standard MEC precedence applies - later sources override
 earlier ones for the same key:</p>
 <pre><code class="lang-csharp">IConfiguration configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -258,7 +258,7 @@ ChangeToken.OnChange(
 </code></pre>
 <p>The file watcher is attached through the configured <code>IFileProvider</code>. Edits, atomic replaces, and <code>touch</code> all trigger
 a reload.</p>
-<h2 id="pattern--bodu--ioptionsmonitor-for-hot-swappable-settings">Pattern — Bodu + IOptionsMonitor for hot-swappable settings</h2>
+<h2 id="pattern---bodu--ioptionsmonitor-for-hot-swappable-settings">Pattern - Bodu + IOptionsMonitor for hot-swappable settings</h2>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -276,15 +276,15 @@ services.AddConfigurationOptions&lt;FeatureOptions&gt;(configuration, &quot;feat
 using ServiceProvider provider = services.BuildServiceProvider();
 IOptionsMonitor&lt;FeatureOptions&gt; monitor = provider.GetRequiredService&lt;IOptionsMonitor&lt;FeatureOptions&gt;&gt;();
 
-monitor.OnChange(updated =&gt; Console.WriteLine($&quot;Reload — beta = {updated.BetaEnabled}&quot;));
+monitor.OnChange(updated =&gt; Console.WriteLine($&quot;Reload - beta = {updated.BetaEnabled}&quot;));
 </code></pre>
-<p><code>IOptionsMonitor&lt;T&gt;</code> re-binds automatically whenever the underlying file changes — there is no manual reload step.</p>
+<p><code>IOptionsMonitor&lt;T&gt;</code> re-binds automatically whenever the underlying file changes - there is no manual reload step.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — vocabulary refresher.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — type map and scenario index.</li>
-<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> — the underlying parser, resolver, and view.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - vocabulary refresher.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - type map and scenario index.</li>
+<li><strong><a href="../text-configuration/index.html">Bodu.Text.Configuration</a></strong> - the underlying parser, resolver, and view.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Extensions.Configuration.Text.html">Bodu.Extensions.Configuration.Text API reference</a></strong> - full type-by-type docs.</li>
 </ul>
 
 </article>
@@ -304,7 +304,7 @@ monitor.OnChange(updated =&gt; Console.WriteLine($&quot;Reload — beta = {updat
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm" data-uid="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AlphanumericCheckDigitAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ AlphanumericCheckDigitAlgorithm Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs">AlphanumericCheckDigitAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs">AlphanumericCheckDigitAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents the abstract base class from which single-character check-digit algorithms that operate on a wider input
@@ -209,7 +209,7 @@ alphabet, or whose check character may be the sentinel <code>'X'</code>, derive.
 
 
   <h2 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Use a concrete derivative through the abstract surface — ISIN accepts a mix of
+  <pre><code class="lang-csharp">// Use a concrete derivative through the abstract surface - ISIN accepts a mix of
 // ASCII letters (the country code) and digits.
 AlphanumericCheckDigitAlgorithm algo = new Isin();
 algo.Append("US037833100");                          // Apple Inc.
@@ -224,7 +224,7 @@ CheckDigitOutputAlphabet outputs = algo.OutputAlphabet;</code></pre>
   <div class="markdown level0 remarks"><p>
 Parallel in design to <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>, this base relaxes two constraints: the input may be any
 subset of ASCII declared by <a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_InputAlphabet">InputAlphabet</a> (decimal digits, or decimal digits and uppercase Latin
-letters), and the emitted check character may be any value of <a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_OutputAlphabet">OutputAlphabet</a> — notably including the
+letters), and the emitted check character may be any value of <a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_OutputAlphabet">OutputAlphabet</a> - notably including the
 <code>'X'</code> sentinel used by ISBN-10 and ISO 7064 MOD 11-2 to represent the check value ten.
 </p>
 <p>
@@ -235,8 +235,8 @@ performs error detection over a constrained ASCII text alphabet and emits a sing
 are kept distinct by design rather than unified under one base type.
 </p>
 <p>
-The streaming surface — <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a>,
-<a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a>, and <a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_GetCurrentCheckDigit">GetCurrentCheckDigit()</a> — will nonetheless feel familiar
+The streaming surface - <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a>, and <a class="xref" href="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_GetCurrentCheckDigit">GetCurrentCheckDigit()</a> - will nonetheless feel familiar
 to anyone who has used a hash algorithm: input is accumulated, the computation can be restarted, and reading the
 current check character is non-destructive and idempotent. That resemblance is incidental convenience, not a shared
 contract. Concrete implementations document their empty-body behavior.
@@ -259,7 +259,7 @@ applications.</p></div>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.#ctor">
   AlphanumericCheckDigitAlgorithm()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -294,7 +294,7 @@ applications.</p></div>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_InputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.InputAlphabet">
   InputAlphabet
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -331,7 +331,7 @@ applications.</p></div>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_OutputAlphabet" data-uid="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.OutputAlphabet">
   OutputAlphabet
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -372,7 +372,7 @@ applications.</p></div>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_GetCurrentCheckDigit" data-uid="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.GetCurrentCheckDigit">
   GetCurrentCheckDigit()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -414,7 +414,7 @@ with identical results between appends.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_AlphanumericCheckDigitAlgorithm_GetCurrentCheckValue" data-uid="Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.GetCurrentCheckValue">
   GetCurrentCheckValue()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/AlphanumericCheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -485,7 +485,7 @@ with identical results between appends. The single-character branches also expos
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

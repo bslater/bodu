@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar.Caching — Core concepts | BODU </title>
+      <title>Bodu.Globalization.Calendar.Caching - Core concepts | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar.Caching — Core concepts | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.Caching - Core concepts | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduglobalizationcalendarcaching--core-concepts">Bodu.Globalization.Calendar.Caching — Core concepts</h1>
+<h1 id="boduglobalizationcalendarcaching---core-concepts">Bodu.Globalization.Calendar.Caching - Core concepts</h1>
 
 <p>This page is the vocabulary the rest of the caching documentation assumes. Read it once before the
 <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/calendar/caching/notable-date-caching.html">caching guide</a>,
@@ -93,18 +93,18 @@ and refer back whenever a term feels imprecise.</p>
 <p>Part of the <strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> topic.</p>
 <p>For the high-level shape of the library, start with the <a href="index.html">introduction</a>.</p>
 <h2 id="decorator-vs-service">Decorator vs service</h2>
-<p>The <strong>service</strong> is any <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> — the engine's
+<p>The <strong>service</strong> is any <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> - the engine's
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a>, a data pack's <code>CreateService(...)</code> result, or the reloadable
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a>. It is a pure computer: given a resource, a territory,
 and a year, it resolves the same occurrences every time and knows nothing about caching.</p>
 <p>The <strong>decorator</strong> is <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a>. It implements the same
 interface, holds the wrapped service as its <em>inner</em> service, and answers each query from an
-<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> — calling the inner service only on a miss. Because the
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> - calling the inner service only on a miss. Because the
 two share a contract, consumers never know which one they hold. Under dependency injection,
 <code>AddCachedNotableDateService</code> swaps the decorator into the container's <code>INotableDateService</code> slot and makes the
 previous registration the inner service.</p>
-<p>The decorator is not a second engine. Every observable behavior of the wrapped service — inverted-range handling,
-filter semantics, discovery methods — is delegated or reproduced exactly; caching only changes <em>when</em> a year is
+<p>The decorator is not a second engine. Every observable behavior of the wrapped service - inverted-range handling,
+filter semantics, discovery methods - is delegated or reproduced exactly; caching only changes <em>when</em> a year is
 computed.</p>
 <h2 id="cache-key-and-cache-unit">Cache key and cache unit</h2>
 <p>The <strong>cache unit</strong> is one territory's occurrences for one whole civil (Gregorian) year, represented by a
@@ -120,11 +120,11 @@ computed.</p>
 <tbody>
 <tr>
 <td>Territory</td>
-<td>Trimmed and upper-cased with the invariant culture, so <code>us</code>, <code>US </code>, and <code>US</code> address one entry. <code>AU-NSW</code> and <code>AU</code> are distinct — a subdivision query inherits its parent's rules inside the engine, not inside the cache.</td>
+<td>Trimmed and upper-cased with the invariant culture, so <code>us</code>, <code>US </code>, and <code>US</code> address one entry. <code>AU-NSW</code> and <code>AU</code> are distinct - a subdivision query inherits its parent's rules inside the engine, not inside the cache.</td>
 </tr>
 <tr>
 <td>Year</td>
-<td>The civil year, <code>1</code>–<code>9999</code>.</td>
+<td>The civil year, <code>1</code>-<code>9999</code>.</td>
 </tr>
 <tr>
 <td>Resource version</td>
@@ -136,7 +136,7 @@ computed.</p>
 through the same per-year entries; the assembled occurrences are then clipped to the requested window by their
 emitted <code>Date</code>. The unit is deliberately coarse: resolving one year is a pure function of resource, territory, and
 year, and a single-day query for a cached year costs a cache read rather than a recompute. A year that yields no
-occurrences is still a valid, cacheable entry — it records that the year <em>was</em> computed.</p>
+occurrences is still a valid, cacheable entry - it records that the year <em>was</em> computed.</p>
 <p>A <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateFilter.html">NotableDateFilter</a> is never part of the key. The filtered <code>Resolve</code> overloads
 apply the filter to the assembled unfiltered result, so every filter shares the same cached years.</p>
 <h2 id="hit-miss-coalesced-flight-and-refresh-ahead">Hit, miss, coalesced flight, and refresh-ahead</h2>
@@ -158,7 +158,7 @@ apply the filter to the assembled unfiltered result, so every filter shares the 
 </tr>
 <tr>
 <td><strong>Coalesced flight</strong></td>
-<td>A second caller misses the same <code>(territory, year, version)</code> while the first computation is still running. It joins the in-flight computation (a <code>Lazy&lt;T&gt;</code> per key) instead of starting its own, so <em>N</em> concurrent cold callers cost one engine computation. A faulted computation is not memoized — the next caller retries fresh.</td>
+<td>A second caller misses the same <code>(territory, year, version)</code> while the first computation is still running. It joins the in-flight computation (a <code>Lazy&lt;T&gt;</code> per key) instead of starting its own, so <em>N</em> concurrent cold callers cost one engine computation. A faulted computation is not memoized - the next caller retries fresh.</td>
 </tr>
 <tr>
 <td><strong>Refresh-ahead</strong></td>
@@ -166,10 +166,10 @@ apply the filter to the assembled unfiltered result, so every filter shares the 
 </tr>
 </tbody>
 </table>
-<p>Refresh-ahead is access-triggered — no timers run, and only a year that was actually served can schedule a
+<p>Refresh-ahead is access-triggered - no timers run, and only a year that was actually served can schedule a
 recompute. Disposing the decorator prevents new recomputes and abandons pending ones without draining them.</p>
 <h2 id="time-to-live-vs-resource-version">Time-to-live vs resource version</h2>
-<p>Freshness has two independent triggers, and the <strong>cache</strong> — not the decorator — evaluates both on every call, using
+<p>Freshness has two independent triggers, and the <strong>cache</strong> - not the decorator - evaluates both on every call, using
 the <code>ttl</code> and <code>asOf</code> arguments it is handed.</p>
 <p><strong>Time-to-live</strong> (<code>NotableDateCachingOptions.Ttl</code>, default 30 days) expires an entry a fixed duration after its
 <code>ComputedAtUtc</code>. The comparison is strict: an entry exactly one time-to-live old is stale. Because notable-date
@@ -178,14 +178,14 @@ invalidation mechanism; there is no upper bound, and an extreme duration effecti
 shape it:</p>
 <ul>
 <li><strong>Jitter</strong> (<code>TtlJitter</code>, default <code>0</code>, range <code>[0, 1)</code>) deterministically shaves up to that fraction off a territory's
-effective time-to-live, derived from a stable hash of the normalized territory — never from randomness — so
+effective time-to-live, derived from a stable hash of the normalized territory - never from randomness - so
 territories warmed together do not all expire at the same instant, and a given territory behaves identically
 across processes and under test. Jitter only ever shortens the duration.</li>
 <li><strong>Refresh-ahead</strong> (<code>RefreshAheadFraction</code>, default <code>0</code>, range <code>[0, 1)</code>) is described above.</li>
 </ul>
 <p><strong>Resource version</strong> is the ordinal token every entry is keyed by. An entry is served only when its
 <code>ResourceVersion</code> equals the requested one, and a <code>StoreYear</code> drops every existing entry whose version differs from
-the one being written — so a version change invalidates a territory's cache wholesale, regardless of the
+the one being written - so a version change invalidates a territory's cache wholesale, regardless of the
 time-to-live. The token comes from one of two places:</p>
 <table>
 <thead>
@@ -205,12 +205,12 @@ time-to-live. The token comes from one of two places:</p>
 </tr>
 </tbody>
 </table>
-<p>Validity is a third, silent check: an entry with a null territory or version, a year outside <code>1</code>–<code>9999</code>, or a
+<p>Validity is a third, silent check: an entry with a null territory or version, a year outside <code>1</code>-<code>9999</code>, or a
 <code>ComputedAtUtc</code> more than one minute ahead of <code>asOf</code> (clock skew tolerance) is treated as absent on read and dropped
 on write, so a tampered or malformed store never surfaces a nonsensical result.</p>
 <h2 id="warm-up">Warm-up</h2>
 <p>A <strong>warm-up</strong> pre-pays the year computations a cold cache would otherwise charge to the first user requests. It goes
-through the normal read-through path — cold years compute and store, already-cached years cost only a cache read — so
+through the normal read-through path - cold years compute and store, already-cached years cost only a cache read - so
 it is safe to repeat.</p>
 <ul>
 <li><code>CachingNotableDateService.Warm(territories, firstYear, lastYear)</code> warms an inclusive span of civil years for each
@@ -219,8 +219,8 @@ skipped; the return value is the number of territories warmed.</li>
 <li><code>AddNotableDateCacheWarmup(...)</code> registers a hosted service that calls <code>Warm</code> after the host has started, one
 territory at a time, without ever blocking or crashing the host. The span comes from
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheWarmupOptions.html">NotableDateCacheWarmupOptions</a>: a rolling window of <code>YearsBehind</code>
-(default <code>0</code>) and <code>YearsAhead</code> (default <code>1</code>) around the current UTC year — recomputed on every run, so a long-lived
-deployment stays current across restarts — with either bound pinned by <code>FirstYear</code> / <code>LastYear</code>. <code>Territories</code>
+(default <code>0</code>) and <code>YearsAhead</code> (default <code>1</code>) around the current UTC year - recomputed on every run, so a long-lived
+deployment stays current across restarts - with either bound pinned by <code>FirstYear</code> / <code>LastYear</code>. <code>Territories</code>
 must be non-empty, or startup validation fails. When the registered <code>INotableDateService</code> is not the caching
 decorator, the run logs <code>EventId 4625</code> and no-ops; register <code>AddCachedNotableDateService</code> first.</li>
 </ul>
@@ -241,7 +241,7 @@ tell whether the computed year actually landed:</p>
 </tr>
 <tr>
 <td><code>Skipped</code></td>
-<td>The cache intentionally stores nothing — <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a> — so nothing was persisted and nothing was expected to be.</td>
+<td>The cache intentionally stores nothing - <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NullNotableDateCache.html">NullNotableDateCache</a> - so nothing was persisted and nothing was expected to be.</td>
 </tr>
 <tr>
 <td><code>Failed</code></td>
@@ -249,14 +249,14 @@ tell whether the computed year actually landed:</p>
 </tr>
 </tbody>
 </table>
-<p>The decorator itself ignores the status — its result is already computed — but a custom backend or a diagnostic
+<p>The decorator itself ignores the status - its result is already computed - but a custom backend or a diagnostic
 wrapper can act on it.</p>
 <h2 id="storage-failure-policy">Storage failure policy</h2>
 <p>Every shipped backend is <strong>best-effort</strong> by default: a read that fails returns an empty result (a miss), a write that
 fails returns <code>Failed</code>, and <code>Clear</code> swallows faults. The exceptions treated as storage failures are
 <code>IOException</code> and <code>UnauthorizedAccessException</code> for the file caches, <code>SqliteException</code> and <code>IOException</code> for SQLite,
-and any non-cancellation exception for the distributed cache. Row-level corruption — an unreadable occurrence blob, a
-malformed TOML or JSON file — is data damage rather than a storage failure: the affected rows are skipped, the file is
+and any non-cancellation exception for the distributed cache. Row-level corruption - an unreadable occurrence blob, a
+malformed TOML or JSON file - is data damage rather than a storage failure: the affected rows are skipped, the file is
 reported (<code>EventId 4604</code>), and the next successful write repairs it.</p>
 <p>Two switches on <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCacheOptions.html">NotableDateCacheOptions</a> tighten the policy:</p>
 <table>
@@ -332,10 +332,10 @@ reported (<code>EventId 4604</code>), and the next successful write repairs it.<
 <p>The abstract storage seam (<code>ReadEntries</code> / <code>WriteEntries</code>) is <code>protected internal</code>, opened to the companion SQLite
 and distributed packages. A backend outside the family implements the public
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.INotableDateCache.html">INotableDateCache</a> contract directly, as
-<code>NullNotableDateCache</code> does — see <a href="getting-started.html#implement-a-custom-cache">Getting started</a>.</p>
+<code>NullNotableDateCache</code> does - see <a href="getting-started.html#implement-a-custom-cache">Getting started</a>.</p>
 <h2 id="observability">Observability</h2>
 <p><strong>Logs.</strong> The decorator logs each hit and miss at the levels set on
-<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html">NotableDateCachingOptions</a> — <code>CacheHitLogLevel</code> and <code>CacheMissLogLevel</code>,
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.NotableDateCachingOptions.html">NotableDateCachingOptions</a> - <code>CacheHitLogLevel</code> and <code>CacheMissLogLevel</code>,
 both defaulting to <code>Information</code> (set them to <code>Debug</code> in production once the cache is trusted). Every message
 carries a stable event id:</p>
 <table>
@@ -462,19 +462,19 @@ observed resource reference changes, and refresh-ahead registrations are publish
 writes to one territory in one process cannot interleave and lose a year. Across processes the guarantees are the
 backend's: the file caches write atomically (a reader never sees a partial file) and re-parse a file another process
 changed; SQLite serializes writers through its own locking with the configured <code>BusyTimeout</code>; the distributed cache
-has no atomic read-modify-write, so cross-process writes to the same territory are last-write-wins — acceptable for a
+has no atomic read-modify-write, so cross-process writes to the same territory are last-write-wins - acceptable for a
 best-effort cache whose entries are recomputable.</p>
-<p><strong>Lifetime.</strong> Every cache is designed to live as long as the service it backs — a singleton under DI. The SQLite cache
+<p><strong>Lifetime.</strong> Every cache is designed to live as long as the service it backs - a singleton under DI. The SQLite cache
 holds a keep-alive connection (so a shared in-memory database survives between operations) and must be disposed;
 the container disposes it when it created it. The in-memory cache's contents die with the instance. Time is taken
 from an injected <code>TimeProvider</code> (<code>TimeProvider.System</code> by default), so freshness is testable with a synthetic clock.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install and runnable minimal samples.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — the package family, headline types, and scenario index.</li>
-<li><strong><a href="../../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> — worked patterns and troubleshooting.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.html">Bodu.Globalization.Calendar.Caching API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> — the runtime and its companions; the <a href="../topics/globalization-and-calendars-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install and runnable minimal samples.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the package family, headline types, and scenario index.</li>
+<li><strong><a href="../../guides/calendar/caching/notable-date-caching.html">Caching notable dates guide</a></strong> - worked patterns and troubleshooting.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.html">Bodu.Globalization.Calendar.Caching API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars topic</a></strong> - the runtime and its companions; the <a href="../topics/globalization-and-calendars-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
 </ul>
 
 </article>
@@ -494,7 +494,7 @@ from an injected <code>TimeProvider</code> (<code>TimeProvider.System</code> by 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_Pjw32" data-uid="Bodu.IO.Hashing.Pjw32" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Pjw32 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Pjw32 Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs">Pjw32.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs">Pjw32.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 32-bit non-cryptographic hash using Peter J. Weinberger's PJW shift-and-fold algorithm (as described in
@@ -312,7 +312,7 @@ XOR-folded back into the low-order bits, producing a well-distributed hash for i
 </p>
 <p>
 <strong>When to choose PJW32.</strong> PJW is the symbol-table hash from Aho/Sethi/Ullman's "Compilers: Principles,
-Techniques, and Tools" (the "Dragon Book") and the precursor to the ELF hash family (<a class="xref" href="Bodu.IO.Hashing.Elf64.html">Elf64</a>) — pick it
+Techniques, and Tools" (the "Dragon Book") and the precursor to the ELF hash family (<a class="xref" href="Bodu.IO.Hashing.Elf64.html">Elf64</a>) - pick it
 when interoperating with compiler-generated symbol tables or reproducing a digest from an algorithm based on the
 Dragon Book formulation. For general-purpose hash-table keying prefer <a class="xref" href="Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a> (closely related but
 better-distributing) or <a class="xref" href="Bodu.IO.Hashing.MurmurHash3_32.html">MurmurHash3_32</a> (much better distribution on inputs longer than ~16 bytes).
@@ -343,7 +343,7 @@ byte[] digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Pjw32__ctor" data-uid="Bodu.IO.Hashing.Pjw32.#ctor">
   Pjw32()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -378,7 +378,7 @@ byte[] digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Pjw32_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.Pjw32.Append(System.ReadOnlySpan{System.Byte})">
   Append(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -415,7 +415,7 @@ byte[] digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Pjw32_GetCurrentHashCore_System_Span_System_Byte__" data-uid="Bodu.IO.Hashing.Pjw32.GetCurrentHashCore(System.Span{System.Byte})">
   GetCurrentHashCore(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -452,7 +452,7 @@ byte[] digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Pjw32_Reset" data-uid="Bodu.IO.Hashing.Pjw32.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/Pjw32.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -505,7 +505,7 @@ byte[] digest = pjw.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

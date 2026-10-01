@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </div>
     </dd></dl>
   </div>
@@ -107,111 +107,111 @@
 <p>For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, classic string hashes) see the companion <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> package, which is built on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>.</p>
 <h2 id="static-documentation">Static documentation</h2>
 <ul>
-<li><strong><a href="../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../docs/cryptography/getting-started.html">Bodu.Security.Cryptography getting started</a></strong> — install and minimal samples for ciphers, AEAD, keyed hashes, and digests.</li>
-<li><strong><a href="../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> — encryption basics, cipher modes, padding, composing primitives, stream ciphers, AEAD modes, keyed and cryptographic hashing, the ASCON family.</li>
-<li><strong><a href="../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a></strong> — the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).</li>
+<li><strong><a href="../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../docs/cryptography/getting-started.html">Bodu.Security.Cryptography getting started</a></strong> - install and minimal samples for ciphers, AEAD, keyed hashes, and digests.</li>
+<li><strong><a href="../guides/cryptography/index.html">Bodu.Security.Cryptography guides</a></strong> - encryption basics, cipher modes, padding, composing primitives, stream ciphers, AEAD modes, keyed and cryptographic hashing, the ASCON family.</li>
+<li><strong><a href="../docs/io-hashing/index.html">Bodu.IO.Hashing introduction</a></strong> - the sibling library, for non-cryptographic checksums and fingerprints (no adversary model).</li>
 </ul>
 <h2 id="key-types">Key types</h2>
 <p><strong>Standard block ciphers</strong> (<code>SymmetricAlgorithm</code> lifecycle)</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> — 64-bit block, 80-bit key. <strong>Legacy / interoperability use only.</strong></li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> — 64-bit block, 32–448-bit key. Well-studied legacy algorithm with an expensive key schedule.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a> — 128-bit block, 128 / 192 / 256-bit key (RFC 3713; ISO/IEC 18033-3).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Twofish.html">Twofish</a> — 128-bit block, 128 / 192 / 256-bit key (Schneier et al., AES finalist).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> — 128-bit block, 128 / 192 / 256-bit key (Anderson / Biham / Knudsen, AES finalist; highest margin).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> - 64-bit block, 80-bit key. <strong>Legacy / interoperability use only.</strong></li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> - 64-bit block, 32-448-bit key. Well-studied legacy algorithm with an expensive key schedule.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Camellia.html">Camellia</a> - 128-bit block, 128 / 192 / 256-bit key (RFC 3713; ISO/IEC 18033-3).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Twofish.html">Twofish</a> - 128-bit block, 128 / 192 / 256-bit key (Schneier et al., AES finalist).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> - 128-bit block, 128 / 192 / 256-bit key (Anderson / Biham / Knudsen, AES finalist; highest margin).</li>
 </ul>
 <p><strong>Tweakable block ciphers</strong> (<a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> lifecycle, adds <code>Tweak</code> / <code>GenerateTweak()</code>)</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Threefish256.html">Threefish256</a>, <a class="xref" href="Bodu.Security.Cryptography.Threefish512.html">Threefish512</a>, <a class="xref" href="Bodu.Security.Cryptography.Threefish1024.html">Threefish1024</a> — 256 / 512 / 1024-bit blocks and keys, all with a 128-bit tweak. Threefish-512 is the recommended general-purpose variant; Threefish-256 underpins Skein-256.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a> — wide-block tweakable Serpent constructions (non-standard).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Threefish256.html">Threefish256</a>, <a class="xref" href="Bodu.Security.Cryptography.Threefish512.html">Threefish512</a>, <a class="xref" href="Bodu.Security.Cryptography.Threefish1024.html">Threefish1024</a> - 256 / 512 / 1024-bit blocks and keys, all with a 128-bit tweak. Threefish-512 is the recommended general-purpose variant; Threefish-256 underpins Skein-256.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Serpent256.html">Serpent256</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent512.html">Serpent512</a>, <a class="xref" href="Bodu.Security.Cryptography.Serpent1024.html">Serpent1024</a> - wide-block tweakable Serpent constructions (non-standard).</li>
 </ul>
-<p><strong>Stream ciphers</strong> (<a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> lifecycle — a standalone <code>IDisposable</code> base, not a <code>SymmetricAlgorithm</code>: <code>Key</code>, <code>Nonce</code> / <code>NonceSize</code>, <code>GenerateKey()</code> / <code>GenerateNonce()</code>, <code>CreateTransform()</code>, with <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> as aliases of the same self-inverse transform; no block mode, no padding. <strong>Confidentiality-only — no authentication</strong>)</p>
+<p><strong>Stream ciphers</strong> (<a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> lifecycle - a standalone <code>IDisposable</code> base, not a <code>SymmetricAlgorithm</code>: <code>Key</code>, <code>Nonce</code> / <code>NonceSize</code>, <code>GenerateKey()</code> / <code>GenerateNonce()</code>, <code>CreateTransform()</code>, with <code>CreateEncryptor()</code> / <code>CreateDecryptor()</code> as aliases of the same self-inverse transform; no block mode, no padding. <strong>Confidentiality-only - no authentication</strong>)</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a> — 256-bit key, 96-bit nonce, 32-bit counter (Bernstein; RFC 8439). The modern default.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a> — 256-bit key, 192-bit nonce; extended-nonce ChaCha20 via an HChaCha20 subkey, so the nonce can be chosen at random.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a> — 128- or 256-bit key, 64-bit nonce, 64-bit counter (Bernstein; eSTREAM).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a> — 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a> — 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a> — 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.TransformMode.html">TransformMode</a> — the keystream-cipher contract and the encrypt/decrypt direction selector shared by the stream ciphers above.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a> - 256-bit key, 96-bit nonce, 32-bit counter (Bernstein; RFC 8439). The modern default.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a> - 256-bit key, 192-bit nonce; extended-nonce ChaCha20 via an HChaCha20 subkey, so the nonce can be chosen at random.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a> - 128- or 256-bit key, 64-bit nonce, 64-bit counter (Bernstein; eSTREAM).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a> - 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a> - 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a> - 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IStreamCipher.html">IStreamCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.TransformMode.html">TransformMode</a> - the keystream-cipher contract and the encrypt/decrypt direction selector shared by the stream ciphers above.</li>
 </ul>
 <p><strong>Authenticated stream ciphers</strong> (Poly1305 AEAD over the extended-nonce stream ciphers)</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> — abstract base for the stream-cipher AEAD constructions; provides span and <code>byte[]</code> <code>Encrypt</code> / <code>Decrypt</code> with associated data and in-place support.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a> — XChaCha20-Poly1305 AEAD with associated data (wire <code>ciphertext ‖ tag</code>).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a> — XSalsa20-Poly1305 AEAD (RFC 8439 framing) with associated data.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> — the NaCl / libsodium <code>secretbox</code> construction (no associated data), with <code>ToLibsodiumCombined</code> / <code>FromLibsodiumCombined</code> layout converters.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a> — the AEAD and stream-AEAD transform contracts these constructions implement.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> - abstract base for the stream-cipher AEAD constructions; provides span and <code>byte[]</code> <code>Encrypt</code> / <code>Decrypt</code> with associated data and in-place support.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a> - XChaCha20-Poly1305 AEAD with associated data (wire <code>ciphertext ‖ tag</code>).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a> - XSalsa20-Poly1305 AEAD (RFC 8439 framing) with associated data.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a> - the NaCl / libsodium <code>secretbox</code> construction (no associated data), with <code>ToLibsodiumCombined</code> / <code>FromLibsodiumCombined</code> layout converters.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a> - the AEAD and stream-AEAD transform contracts these constructions implement.</li>
 </ul>
-<p><strong>Cipher composition</strong> — block-cipher contracts, mode transforms, padding strategies</p>
+<p><strong>Cipher composition</strong> - block-cipher contracts, mode transforms, padding strategies</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> — block-cipher contract; implemented by every cipher and by <code>AesBlockCipher</code>.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> — an <code>IBlockCipher</code> adapter over the BCL <code>Aes</code> engine — the bridge between AES and the AEAD mode transforms.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipher.html">SerpentBlockCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.ThreefishBlockCipher.html">ThreefishBlockCipher</a> — the raw <code>IBlockCipher</code> engines (and the <a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipherBase.html">SerpentBlockCipherBase</a> base) that back the Serpent and Threefish <code>SymmetricAlgorithm</code> wrappers; use them directly to drive a mode transform without the full algorithm lifecycle.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> — compose any <code>IBlockCipher</code> with a mode and a padding strategy. The factory builds the five classic modes — <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, <code>CTR</code> — and throws <code>NotSupportedException</code> for every other <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> value (<code>CTS</code>, <code>XTS</code>, <code>OCB</code>, <code>EAX</code>, <code>SIV</code>), which are constructed directly as transforms instead.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>, <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> — the library's extended block-mode and padding enums (the latter mirrors <code>System.Security.Cryptography.PaddingMode</code> and adds <code>ISO7816_4</code>).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> — per-block / per-stripe transform contracts; the latter adds AEAD nonce / tag / associated-data semantics.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> - block-cipher contract; implemented by every cipher and by <code>AesBlockCipher</code>.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> - an <code>IBlockCipher</code> adapter over the BCL <code>Aes</code> engine - the bridge between AES and the AEAD mode transforms.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipher.html">SerpentBlockCipher</a>, <a class="xref" href="Bodu.Security.Cryptography.ThreefishBlockCipher.html">ThreefishBlockCipher</a> - the raw <code>IBlockCipher</code> engines (and the <a class="xref" href="Bodu.Security.Cryptography.SerpentBlockCipherBase.html">SerpentBlockCipherBase</a> base) that back the Serpent and Threefish <code>SymmetricAlgorithm</code> wrappers; use them directly to drive a mode transform without the full algorithm lifecycle.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.BlockCipherTransform.html">BlockCipherTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> - compose any <code>IBlockCipher</code> with a mode and a padding strategy. The factory builds the five classic modes - <code>ECB</code>, <code>CBC</code>, <code>CFB</code>, <code>OFB</code>, <code>CTR</code> - and throws <code>NotSupportedException</code> for every other <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> value (<code>CTS</code>, <code>XTS</code>, <code>OCB</code>, <code>EAX</code>, <code>SIV</code>), which are constructed directly as transforms instead.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>, <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> - the library's extended block-mode and padding enums (the latter mirrors <code>System.Security.Cryptography.PaddingMode</code> and adds <code>ISO7816_4</code>).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html">IBlockCipherModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> - per-block / per-stripe transform contracts; the latter adds AEAD nonce / tag / associated-data semantics.</li>
 <li>Classic mode transforms: <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CbcModeTransform.html">CbcModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CfbModeTransform.html">CfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OfbModeTransform.html">OfbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a>.</li>
 <li>AEAD mode transforms: <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.CcmModeTransform.html">CcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.GcmSivModeTransform.html">GcmSivModeTransform</a>.</li>
 <li>Padding: <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> with built-in strategies <a class="xref" href="Bodu.Security.Cryptography.Pkcs7Padding.html">Pkcs7Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.NoPadding.html">NoPadding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso10126Padding.html">Iso10126Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Iso7816_4Padding.html">Iso7816_4Padding</a>, <a class="xref" href="Bodu.Security.Cryptography.Ansix923Padding.html">Ansix923Padding</a>, selected via <a class="xref" href="Bodu.Security.Cryptography.PaddingFactory.html">PaddingFactory</a>.</li>
 </ul>
 <p><strong>Cryptographic hashes</strong> (<code>HashAlgorithm</code> lifecycle)</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a> — 128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms; two padding variants (Tiger / Tiger2).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.CubeHash.html">CubeHash</a> — Bernstein's SHA-3 competition candidate.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a>, <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> — Ralph Merkle's hash (<strong>cryptanalytically broken</strong>; included for research and interoperability).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> — 512-bit digest (ISO/IEC 10118-3) with an AES-derived round function.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>, <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a>, <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> — modern high-throughput digests; BLAKE3 is parallel and tree-structured.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Skein256.html">Skein256</a>, <a class="xref" href="Bodu.Security.Cryptography.Skein512.html">Skein512</a>, <a class="xref" href="Bodu.Security.Cryptography.Skein1024.html">Skein1024</a> — Skein UBI-mode digests built on Threefish.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Shake.html">Shake</a> — Keccak XOF (FIPS 202).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> — the <a href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1">RFC 6962</a> Merkle Tree Hash over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> the caller supplies as a <code>Func&lt;HashAlgorithm&gt;</code>, as one immutable, stateless instance. Roots come from a list of entries (<code>ComputeRoot</code> / <code>ComputeRootOfLeafHashes</code>), from a stream, memory, or span cut into fixed-size blocks (<code>ComputeBlocked</code> / <code>ComputeRootOfBlocks</code>, with <code>…Async</code> twins), or incrementally through <code>CreateBlockAccumulator</code>. Proofs are <code>AuthenticationPath</code> and <code>ConsistencyProof</code> on the prover side and <code>VerifyInclusion</code>, <code>VerifyInclusionOfLeafHash</code>, <code>VerifyInclusionBound</code>, <code>VerifyBlockInclusion</code>, and <code>VerifyConsistency</code> on the verifier side; every verifier returns <code>false</code> for malformed input rather than throwing. <code>HashLeaf</code>, <code>HashNode</code>, and <code>BindRoot</code> expose the three domain-separated primitives. Parallel leaf hashing (<code>maxDegreeOfParallelism</code>) and a wider, explicitly non-RFC fan-out (<code>fanOut</code>, on which the proof members throw) are constructor options.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a> — the push-style counterpart for a writer: <code>Append</code> the bytes as they arrive, and <code>Finish</code> / <code>FinishBound</code> / <code>FinishComputation</code> produce the same root, length-bound root, or block computation that a single pass over the whole input would.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> — the result of a block-mode pass: the <code>Root</code>, the <code>InputLength</code> and <code>BlockSize</code> it was computed over, and the ordered <code>LeafHashes</code> an authentication path needs.</li>
-<li>The static <code>MerkleTree.BlockCount</code> / <code>BlockOffset</code> / <code>BlockLength</code> members — the block arithmetic as standalone 64-bit helpers for a verifier that holds only the numbers.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a> (with its nested <code>Node</code> record) — an optional recorder every root computation accepts and fills with every leaf and internal node the fold produces, re-validated against a fresh <code>HashAlgorithm</code> with <code>Validate</code> and dumped one node per line with <code>WriteTo</code>.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a> - 128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms; two padding variants (Tiger / Tiger2).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.CubeHash.html">CubeHash</a> - Bernstein's SHA-3 competition candidate.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a>, <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> - Ralph Merkle's hash (<strong>cryptanalytically broken</strong>; included for research and interoperability).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a> - 512-bit digest (ISO/IEC 10118-3) with an AES-derived round function.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Blake2b.html">Blake2b</a>, <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a>, <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> - modern high-throughput digests; BLAKE3 is parallel and tree-structured.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Skein256.html">Skein256</a>, <a class="xref" href="Bodu.Security.Cryptography.Skein512.html">Skein512</a>, <a class="xref" href="Bodu.Security.Cryptography.Skein1024.html">Skein1024</a> - Skein UBI-mode digests built on Threefish.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Shake.html">Shake</a> - Keccak XOF (FIPS 202).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> - the <a href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1">RFC 6962</a> Merkle Tree Hash over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> the caller supplies as a <code>Func&lt;HashAlgorithm&gt;</code>, as one immutable, stateless instance. Roots come from a list of entries (<code>ComputeRoot</code> / <code>ComputeRootOfLeafHashes</code>), from a stream, memory, or span cut into fixed-size blocks (<code>ComputeBlocked</code> / <code>ComputeRootOfBlocks</code>, with <code>…Async</code> twins), or incrementally through <code>CreateBlockAccumulator</code>. Proofs are <code>AuthenticationPath</code> and <code>ConsistencyProof</code> on the prover side and <code>VerifyInclusion</code>, <code>VerifyInclusionOfLeafHash</code>, <code>VerifyInclusionBound</code>, <code>VerifyBlockInclusion</code>, and <code>VerifyConsistency</code> on the verifier side; every verifier returns <code>false</code> for malformed input rather than throwing. <code>HashLeaf</code>, <code>HashNode</code>, and <code>BindRoot</code> expose the three domain-separated primitives. Parallel leaf hashing (<code>maxDegreeOfParallelism</code>) and a wider, explicitly non-RFC fan-out (<code>fanOut</code>, on which the proof members throw) are constructor options.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a> - the push-style counterpart for a writer: <code>Append</code> the bytes as they arrive, and <code>Finish</code> / <code>FinishBound</code> / <code>FinishComputation</code> produce the same root, length-bound root, or block computation that a single pass over the whole input would.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> - the result of a block-mode pass: the <code>Root</code>, the <code>InputLength</code> and <code>BlockSize</code> it was computed over, and the ordered <code>LeafHashes</code> an authentication path needs.</li>
+<li>The static <code>MerkleTree.BlockCount</code> / <code>BlockOffset</code> / <code>BlockLength</code> members - the block arithmetic as standalone 64-bit helpers for a verifier that holds only the numbers.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a> (with its nested <code>Node</code> record) - an optional recorder every root computation accepts and fills with every leaf and internal node the fold produces, re-validated against a fresh <code>HashAlgorithm</code> with <code>Validate</code> and dumped one node per line with <code>WriteTo</code>.</li>
 </ul>
 <p><strong>Keyed hashes / MACs</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> — 64-bit PRF; collision-resistant for hash-table protection.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> — 128-bit SipHash variant for longer-output keyed hashing.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a> — one-time authenticator (RFC 8439); pairs with a stream cipher for an AEAD construction.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> - 64-bit PRF; collision-resistant for hash-table protection.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SipHash128.html">SipHash128</a> - 128-bit SipHash variant for longer-output keyed hashing.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a> - one-time authenticator (RFC 8439); pairs with a stream cipher for an AEAD construction.</li>
 </ul>
-<p><strong>ASCON family — NIST SP 800-232</strong></p>
+<p><strong>ASCON family - NIST SP 800-232</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a> — 256-bit sponge digests (12- and 8-round variants), over the shared <a class="xref" href="Bodu.Security.Cryptography.AsconHash.html">AsconHash</a> base.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a> — variable-length / customizable XOF.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> — sponge-based authenticated encryption (no separate block cipher required).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a> - 256-bit sponge digests (12- and 8-round variants), over the shared <a class="xref" href="Bodu.Security.Cryptography.AsconHash.html">AsconHash</a> base.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a>, <a class="xref" href="Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a> - variable-length / customizable XOF.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.AsconAead128.html">AsconAead128</a> - sponge-based authenticated encryption (no separate block cipher required).</li>
 </ul>
 <p><strong>Extensions and helpers</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.html">TweakableSymmetricAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a> — ergonomic one-shot, async, and verify helpers.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a> — <code>byte[]</code>-returning one-shot <code>Encrypt</code> / <code>Decrypt</code> over the stream ciphers and the Poly1305 stream-AEAD transforms.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.html">TweakableSymmetricAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a> - ergonomic one-shot, async, and verify helpers.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a>, <a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a> - <code>byte[]</code>-returning one-shot <code>Encrypt</code> / <code>Decrypt</code> over the stream ciphers and the Poly1305 stream-AEAD transforms.</li>
 <li>Secure-zeroization, padding guards, and cryptographically secure random generation ship as internal infrastructure; consumers reach them through the public surfaces (<code>GenerateKey()</code> / <code>GenerateIV()</code> / <code>GenerateNonce()</code> / <code>GenerateTweak()</code> on the algorithm types, <code>Nonce.Random</code>, <code>HashAlgorithmExtensions.VerifyHash</code>).</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a>, <a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a>, <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a>, <a class="xref" href="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> — helper utilities for <code>HashAlgorithm</code> consumers and factory abstractions used by the keyed constructions.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> — abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmHelper.html">HashAlgorithmHelper</a>, <a class="xref" href="Bodu.Security.Cryptography.HashAlgorithmFactory.html">HashAlgorithmFactory</a>, <a class="xref" href="Bodu.Security.Cryptography.IHashAlgorithmFactory-1.html">IHashAlgorithmFactory&lt;T&gt;</a>, <a class="xref" href="Bodu.Security.Cryptography.DelegateHashAlgorithmFactory-1.html">DelegateHashAlgorithmFactory&lt;T&gt;</a> - helper utilities for <code>HashAlgorithm</code> consumers and factory abstractions used by the keyed constructions.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html">KeyedDeferredFinalBlockHashAlgorithm</a> - abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).</li>
 </ul>
-<p><strong>Asymmetric — signatures, key agreement, KEM, HPKE</strong> (<code>AsymmetricAlgorithm</code> lifecycle over <a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a>)</p>
+<p><strong>Asymmetric - signatures, key agreement, KEM, HPKE</strong> (<code>AsymmetricAlgorithm</code> lifecycle over <a class="xref" href="Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm.html">RawKeyAsymmetricAlgorithm</a>)</p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> — RFC 8032 EdDSA signatures; <a class="xref" href="Bodu.Security.Cryptography.X25519.html">X25519</a> — RFC 7748 key agreement. Both carry RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER and RFC 7468 PEM in addition to raw keys.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> (over <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>) — FIPS 204 post-quantum signatures; <a class="xref" href="Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> (over <a class="xref" href="Bodu.Security.Cryptography.MLKem.html">MLKem</a>) — FIPS 203 post-quantum KEM. Raw FIPS encodings only.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Hpke.html">Hpke</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeSender.html">HpkeSender</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeReceiver.html">HpkeReceiver</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a> (with the <a class="xref" href="Bodu.Security.Cryptography.HpkeKem.html">HpkeKem</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeKdf.html">HpkeKdf</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeAead.html">HpkeAead</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeMode.html">HpkeMode</a> selectors) — RFC 9180 hybrid public-key encryption: one-shot <code>Hpke.Seal</code> / <code>Hpke.Open</code>, or the sender / receiver contexts for multi-message sessions and the exporter interface.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a>, <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — signature-encoding selector and value type shared by the signature schemes.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Ed25519.html">Ed25519</a> - RFC 8032 EdDSA signatures; <a class="xref" href="Bodu.Security.Cryptography.X25519.html">X25519</a> - RFC 7748 key agreement. Both carry RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER and RFC 7468 PEM in addition to raw keys.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.MLDsa44.html">MLDsa44</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a>, <a class="xref" href="Bodu.Security.Cryptography.MLDsa87.html">MLDsa87</a> (over <a class="xref" href="Bodu.Security.Cryptography.MLDsa.html">MLDsa</a>) - FIPS 204 post-quantum signatures; <a class="xref" href="Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, <a class="xref" href="Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> (over <a class="xref" href="Bodu.Security.Cryptography.MLKem.html">MLKem</a>) - FIPS 203 post-quantum KEM. Raw FIPS encodings only.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hpke.html">Hpke</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeSender.html">HpkeSender</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeReceiver.html">HpkeReceiver</a>, <a class="xref" href="Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a> (with the <a class="xref" href="Bodu.Security.Cryptography.HpkeKem.html">HpkeKem</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeKdf.html">HpkeKdf</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeAead.html">HpkeAead</a> / <a class="xref" href="Bodu.Security.Cryptography.HpkeMode.html">HpkeMode</a> selectors) - RFC 9180 hybrid public-key encryption: one-shot <code>Hpke.Seal</code> / <code>Hpke.Open</code>, or the sender / receiver contexts for multi-message sessions and the exporter interface.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SignatureFormat.html">SignatureFormat</a>, <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> - signature-encoding selector and value type shared by the signature schemes.</li>
 </ul>
 <p><strong>Key derivation and password hashing</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a> (over <a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a>, with <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a>) — RFC 9106 memory-hard password hashing.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> (with <a class="xref" href="Bodu.Security.Cryptography.ScryptParameters.html">ScryptParameters</a>) — RFC 7914 memory-hard password hashing.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> — RFC 5869 HMAC extract-and-expand (<code>Extract</code> / <code>Expand</code> / <code>DeriveKey</code>) for high-entropy input.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a>, <a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a> (over <a class="xref" href="Bodu.Security.Cryptography.Argon2.html">Argon2</a>, with <a class="xref" href="Bodu.Security.Cryptography.Argon2Parameters.html">Argon2Parameters</a>) - RFC 9106 memory-hard password hashing.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> (with <a class="xref" href="Bodu.Security.Cryptography.ScryptParameters.html">ScryptParameters</a>) - RFC 7914 memory-hard password hashing.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hkdf.html">Hkdf</a> - RFC 5869 HMAC extract-and-expand (<code>Extract</code> / <code>Expand</code> / <code>DeriveKey</code>) for high-entropy input.</li>
 </ul>
 <p><strong>One-time passwords</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Hotp.html">Hotp</a> (RFC 4226), <a class="xref" href="Bodu.Security.Cryptography.Totp.html">Totp</a> (RFC 6238) — static <code>GenerateCode</code> / <code>VerifyCode</code> helpers; <a class="xref" href="Bodu.Security.Cryptography.OtpHashAlgorithm.html">OtpHashAlgorithm</a> selects SHA-1 / SHA-256 / SHA-512.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Hotp.html">Hotp</a> (RFC 4226), <a class="xref" href="Bodu.Security.Cryptography.Totp.html">Totp</a> (RFC 6238) - static <code>GenerateCode</code> / <code>VerifyCode</code> helpers; <a class="xref" href="Bodu.Security.Cryptography.OtpHashAlgorithm.html">OtpHashAlgorithm</a> selects SHA-1 / SHA-256 / SHA-512.</li>
 </ul>
 <p><strong>Value types</strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.HashValue.html">HashValue</a>, <a class="xref" href="Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a>, <a class="xref" href="Bodu.Security.Cryptography.Nonce.html">Nonce</a>, <a class="xref" href="Bodu.Security.Cryptography.Salt.html">Salt</a>, <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> — immutable <code>readonly struct</code> wrappers for a digest, an AEAD tag, a nonce, a KDF salt, and a signature, with strict hex parsing / formatting and fixed-time equality where it matters.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a> — a disposable holder for sensitive byte material that pins its buffer and zeroes it on disposal.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.HashValue.html">HashValue</a>, <a class="xref" href="Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a>, <a class="xref" href="Bodu.Security.Cryptography.Nonce.html">Nonce</a>, <a class="xref" href="Bodu.Security.Cryptography.Salt.html">Salt</a>, <a class="xref" href="Bodu.Security.Cryptography.SignatureValue.html">SignatureValue</a> - immutable <code>readonly struct</code> wrappers for a digest, an AEAD tag, a nonce, a KDF salt, and a signature, with strict hex parsing / formatting and fixed-time equality where it matters.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.SecretBytes.html">SecretBytes</a> - a disposable holder for sensitive byte material that pins its buffer and zeroes it on disposal.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
@@ -230,16 +230,16 @@ ulong slot = BitConverter.ToUInt64(sip.ComputeHash(data));
 <li><strong>Security caveats.</strong>
 <ul>
 <li><a class="xref" href="Bodu.Security.Cryptography.Skipjack.html">Skipjack</a> is provided for historical and research purposes. It has an 80-bit key and a 64-bit block; <strong>do not use it for new systems</strong>.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> is well-studied but dated; prefer Threefish, AES, or Camellia / Twofish / Serpent for new designs — its 64-bit block limits the safe encryption volume per key.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> and <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> are cryptanalytically broken — interop / research only.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Blowfish.html">Blowfish</a> is well-studied but dated; prefer Threefish, AES, or Camellia / Twofish / Serpent for new designs - its 64-bit block limits the safe encryption volume per key.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> and <a class="xref" href="Bodu.Security.Cryptography.Snefru256.html">Snefru256</a> are cryptanalytically broken - interop / research only.</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.SipHash64.html">SipHash64</a> is keyed and collision-resistant but short-output; use it for hash-table protection and message authentication over small inputs, not as a drop-in for a MAC like HMAC-SHA256.</li>
 <li><a class="xref" href="Bodu.Security.Cryptography.Tiger.html">Tiger</a> is a classic cryptographic hash. Prefer BCL-provided SHA-2 / SHA-3 for new designs; use Tiger for interoperability with existing Tiger-based systems.</li>
-<li>The stream ciphers (<a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a>, <a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a>, <a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a>, <a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a>, <a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a>, <a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a>) are <strong>raw and unauthenticated</strong>. A <code>(key, nonce)</code> pair must encrypt at most one message — reuse reveals the XOR of the plaintexts — and ciphertext integrity is not protected. Pair them with a MAC (encrypt-then-MAC with <a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>) or prefer an AEAD construction. A 64-bit nonce (<code>Salsa20</code>, <code>Rabbit</code>) is too short to choose randomly; use a counter, or an extended-nonce variant (<code>XChaCha20</code> / <code>XSalsa20</code>).</li>
+<li>The stream ciphers (<a class="xref" href="Bodu.Security.Cryptography.ChaCha20.html">ChaCha20</a>, <a class="xref" href="Bodu.Security.Cryptography.XChaCha20.html">XChaCha20</a>, <a class="xref" href="Bodu.Security.Cryptography.Salsa20.html">Salsa20</a>, <a class="xref" href="Bodu.Security.Cryptography.XSalsa20.html">XSalsa20</a>, <a class="xref" href="Bodu.Security.Cryptography.Rabbit.html">Rabbit</a>, <a class="xref" href="Bodu.Security.Cryptography.Hc128.html">Hc128</a>) are <strong>raw and unauthenticated</strong>. A <code>(key, nonce)</code> pair must encrypt at most one message - reuse reveals the XOR of the plaintexts - and ciphertext integrity is not protected. Pair them with a MAC (encrypt-then-MAC with <a class="xref" href="Bodu.Security.Cryptography.Poly1305.html">Poly1305</a>) or prefer an AEAD construction. A 64-bit nonce (<code>Salsa20</code>, <code>Rabbit</code>) is too short to choose randomly; use a counter, or an extended-nonce variant (<code>XChaCha20</code> / <code>XSalsa20</code>).</li>
 <li>For error-detection and hash-table distribution (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, and the classic short hashes) use the non-cryptographic types in <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a>.</li>
 </ul>
 </li>
-<li><strong>Thread safety.</strong> Instances of the cipher and hash types follow the standard .NET convention: <strong>not thread-safe</strong> during a single <code>TransformBlock</code> / <code>ComputeHash</code> / encryption session. Create one instance per logical operation, or synchronize externally. AEAD mode transforms (<code>GcmModeTransform</code>, etc.) are <strong>single-use per message</strong> — construct a fresh transform on the encrypt side and another on the decrypt side.</li>
-<li><strong>Allocation discipline.</strong> Hot-path types allocate their working buffers in the constructor and reuse them, and every algorithm zeroes its secret material (keys, nonces, tweaks, sponge state) at disposal time — always <code>using</code> an instance.</li>
+<li><strong>Thread safety.</strong> Instances of the cipher and hash types follow the standard .NET convention: <strong>not thread-safe</strong> during a single <code>TransformBlock</code> / <code>ComputeHash</code> / encryption session. Create one instance per logical operation, or synchronize externally. AEAD mode transforms (<code>GcmModeTransform</code>, etc.) are <strong>single-use per message</strong> - construct a fresh transform on the encrypt side and another on the decrypt side.</li>
+<li><strong>Allocation discipline.</strong> Hot-path types allocate their working buffers in the constructor and reuse them, and every algorithm zeroes its secret material (keys, nonces, tweaks, sponge state) at disposal time - always <code>using</code> an instance.</li>
 <li><strong>Determinism and portability.</strong> All algorithms produce identical byte-for-byte output across platforms and architectures for the same input and configuration.</li>
 <li><strong>See also:</strong> <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> for CRC, Fletcher, Adler, and other non-cryptographic hashes; the <a href="../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a>, the <a href="../guides/cryptography/encryption-basics.html">encryption basics guide</a>, the <a href="../guides/cryptography/aead-modes.html">AEAD modes guide</a>, and the <a href="../guides/cryptography/hashing.html">hashing guide</a>.</li>
 </ul>
@@ -283,21 +283,21 @@ RFC 9106.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Argon2d.html">Argon2d</a></dt>
-      <dd><p>Computes the Argon2d password-hashing and key-derivation function (RFC 9106) — the variant that uses data-dependent
+      <dd><p>Computes the Argon2d password-hashing and key-derivation function (RFC 9106) - the variant that uses data-dependent
 memory addressing, maximizing time-memory trade-off resistance at the cost of exposing memory access patterns to
 side-channel observation. This class cannot be inherited.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Argon2i.html">Argon2i</a></dt>
-      <dd><p>Computes the Argon2i password-hashing and key-derivation function (RFC 9106) — the variant that uses
+      <dd><p>Computes the Argon2i password-hashing and key-derivation function (RFC 9106) - the variant that uses
 data-independent memory addressing, making it resistant to side-channel timing attacks. This class cannot be
 inherited.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Argon2id.html">Argon2id</a></dt>
-      <dd><p>Computes the Argon2id password-hashing and key-derivation function (RFC 9106) — the hybrid variant that uses
+      <dd><p>Computes the Argon2id password-hashing and key-derivation function (RFC 9106) - the hybrid variant that uses
 data-independent addressing for the first half of the first pass and data-dependent addressing thereafter. This is
 the RECOMMENDED default for password hashing. This class cannot be inherited.</p>
 </dd>
@@ -570,8 +570,8 @@ cannot be inherited.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.HpkeSuite.html">HpkeSuite</a></dt>
-      <dd><p>Describes a complete HPKE cipher suite — the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation
-Function (KDF), and an Authenticated Encryption with Associated Data (AEAD) function — and exposes the derived
+      <dd><p>Describes a complete HPKE cipher suite - the combination of a Key Encapsulation Mechanism (KEM), a Key Derivation
+Function (KDF), and an Authenticated Encryption with Associated Data (AEAD) function - and exposes the derived
 element lengths defined by RFC 9180. Instances are immutable.</p>
 </dd>
     </dl>
@@ -615,7 +615,7 @@ inherited.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.MLDsa65.html">MLDsa65</a></dt>
-      <dd><p>Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6×5, NIST security category 3 — the most widely
+      <dd><p>Provides the ML-DSA-65 parameter set of NIST FIPS 204 (matrix 6×5, NIST security category 3 - the most widely
 recommended general-purpose set). This class cannot be inherited.</p>
 </dd>
     </dl>
@@ -647,13 +647,13 @@ AES-128). This class cannot be inherited.</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.MLKem768.html">MLKem768</a></dt>
       <dd><p>Provides the ML-KEM-768 parameter set of NIST FIPS 203 (module rank 3, NIST security category 3, comparable to
-AES-192) — the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.</p>
+AES-192) - the parameter set most widely deployed for TLS hybrid key exchange. This class cannot be inherited.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html">MerkleBlockAccumulator</a></dt>
       <dd><p>Accumulates a byte stream into fixed-size Merkle leaves as it is written, so a root can be produced from the same
-calls that already feed a flat digest — without a second pass over the input.</p>
+calls that already feed a flat digest - without a second pass over the input.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -664,7 +664,7 @@ over, and the ordered leaf hashes an authentication path is built from.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a></dt>
-      <dd><p>The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the
+      <dd><p>The block arithmetic every consumer of block mode shares - the number of blocks a byte length divides into, and the
 offset and length of each one.</p>
 </dd>
     </dl>
@@ -720,7 +720,7 @@ specified in RFC 8439.</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a></dt>
       <dd><p>Provides the common <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a> implementation shared by the extended-nonce Poly1305 AEAD
-constructions — argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
+constructions - argument validation, buffer-overlap rules, single-use lifecycle, and secure clearing of retained key
 material. Derived types supply the keystream engine and, when required, an alternative framing.</p>
 </dd>
     </dl>
@@ -940,7 +940,7 @@ family (Threefish-256, Threefish-512, and Threefish-1024).</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a></dt>
       <dd><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish1024Cipher.html">Threefish1024Cipher</a>. The sixteen 64-bit state words are split
-across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector512-1">Vector512&lt;T&gt;</a> registers — <code>loVec</code> holds the eight even-position words
+across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector512-1">Vector512&lt;T&gt;</a> registers - <code>loVec</code> holds the eight even-position words
 <code>(x0, x2, x4, x6, x8, x10, x12, x14)</code> and <code>hiVec</code> the eight odd-position words
 <code>(x1, x3, x5, x7, x9, x11, x13, x15)</code>. Each round performs a vector add, a per-lane variable rotate (
 <code>VPROLVQ</code>), an XOR, and a pair of single-source <code>VPERMQ</code> shuffles that realign the registers for the next
@@ -956,7 +956,7 @@ round's MIX pairing.</p>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a></dt>
       <dd><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish256Cipher.html">Threefish256Cipher</a>. The four 64-bit state words are split across
-two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> registers — <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>
+two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector128-1">Vector128&lt;T&gt;</a> registers - <code>lo</code> holds the even-position words <code>(b0, b2)</code> and <code>hi</code>
 the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, a per-lane variable rotate (<code>VPROLVQ</code>
 ), an XOR, and a single 64-bit lane swap on <code>hi</code> that realigns it for the next round's MIX pairing.</p>
 </dd>
@@ -970,8 +970,8 @@ the odd-position words <code>(b1, b3)</code>. Each round performs a vector add, 
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a></dt>
       <dd><p>AVX-512 vectorised implementation of <a class="xref" href="Bodu.Security.Cryptography.Threefish512Cipher.html">Threefish512Cipher</a>. The eight 64-bit state words are split
-across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a> registers — <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>
-and <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> — and each round applies a vector add, a per-lane
+across two <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.runtime.intrinsics.vector256-1">Vector256&lt;T&gt;</a> registers - <code>lo</code> holds the even-position words <code>(x0, x2, x4, x6)</code>
+and <code>hi</code> the odd-position words <code>(x1, x3, x5, x7)</code> - and each round applies a vector add, a per-lane
 variable rotate (<code>VPROLVQ</code>), an XOR, and a pair of lane shuffles that realign the registers for the next
 round's MIX pairing.</p>
 </dd>
@@ -1110,7 +1110,7 @@ decrypts data and produces or verifies an integrity tag.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a></dt>
-      <dd><p>Represents an authenticated encryption with associated data (AEAD) transform — the construction-neutral surface
+      <dd><p>Represents an authenticated encryption with associated data (AEAD) transform - the construction-neutral surface
 shared by block-cipher AEAD modes (<a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a>) and stream-cipher AEADs (
 <a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a>). A single call encrypts or decrypts a message together with its associated
 data; associated data is optional and defaults to empty.</p>
@@ -1139,7 +1139,7 @@ CTR) over a block cipher primitive.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.IStreamAeadTransform.html">IStreamAeadTransform</a></dt>
-      <dd><p>Represents a stream-cipher authenticated-encryption (AEAD) transform — an <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a> backed by a
+      <dd><p>Represents a stream-cipher authenticated-encryption (AEAD) transform - an <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a> backed by a
 stream cipher and a one-time message-authentication code rather than a block-cipher mode. The extended-nonce
 Poly1305 AEADs (<a class="xref" href="Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a>, <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305.html">XSalsa20Poly1305</a>,
 <a class="xref" href="Bodu.Security.Cryptography.XSalsa20Poly1305Aead.html">XSalsa20Poly1305Aead</a> ) implement this surface.</p>
@@ -1236,7 +1236,7 @@ values and extends that surface with additional padding schemes that are not par
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

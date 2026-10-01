@@ -87,8 +87,8 @@
         <article data-uid="">
 <h1 id="sequenced-dictionary">Sequenced dictionary</h1>
 
-<p><code>SequencedDictionary&lt;TKey, TValue&gt;</code> is a dictionary that preserves the order in which entries are encountered and gives O(1) access to — and removal of — the first and last entries. It is the .NET analogue of Java's <code>LinkedHashMap</code>, and realizes the same <em>sequenced</em> (encounter-order) contract: a well-defined first and last entry with constant-time access to each.</p>
-<p>It is <strong>unbounded</strong> — it never evicts. For a fixed-capacity cache with a built-in eviction policy, reach for <a href="evicting-dictionary.html"><code>EvictingDictionary&lt;TKey, TValue&gt;</code></a> instead.</p>
+<p><code>SequencedDictionary&lt;TKey, TValue&gt;</code> is a dictionary that preserves the order in which entries are encountered and gives O(1) access to - and removal of - the first and last entries. It is the .NET analogue of Java's <code>LinkedHashMap</code>, and realizes the same <em>sequenced</em> (encounter-order) contract: a well-defined first and last entry with constant-time access to each.</p>
+<p>It is <strong>unbounded</strong> - it never evicts. For a fixed-capacity cache with a built-in eviction policy, reach for <a href="evicting-dictionary.html"><code>EvictingDictionary&lt;TKey, TValue&gt;</code></a> instead.</p>
 <h2 id="ordering-modes">Ordering modes</h2>
 <p>The ordering mode is chosen at construction and is fixed for the lifetime of the instance:</p>
 <table>
@@ -110,13 +110,13 @@
 <tr>
 <td>Access order</td>
 <td><code>new SequencedDictionary&lt;K,V&gt;(accessOrder: true)</code></td>
-<td>Yes — a read or indexed update moves the entry to the tail.</td>
+<td>Yes - a read or indexed update moves the entry to the tail.</td>
 <td>Least- / most-<strong>recently-used</strong> entry.</td>
 </tr>
 </tbody>
 </table>
 <p>In access-order mode, a successful lookup (<code>this[key]</code> getter or <code>TryGetValue</code>) and an indexed value update move the affected entry to the end of the iteration order. <code>ContainsKey</code>, <code>TryGetFirst</code>/<code>TryGetLast</code>, and <code>First</code>/<code>Last</code> are pure reads and never reorder.</p>
-<h2 id="pattern-1--insertion-ordered-map">Pattern 1 — insertion-ordered map</h2>
+<h2 id="pattern-1---insertion-ordered-map">Pattern 1 - insertion-ordered map</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var headers = new SequencedDictionary&lt;string, string&gt;();
@@ -128,7 +128,7 @@ headers.Add(&quot;User-Agent&quot;, &quot;bodu/1.0&quot;);
 foreach (var (name, value) in headers)
     Console.WriteLine($&quot;{name}: {value}&quot;);
 </code></pre>
-<h2 id="pattern-2--o1-ends-as-a-queue-like-store">Pattern 2 — O(1) ends as a queue-like store</h2>
+<h2 id="pattern-2---o1-ends-as-a-queue-like-store">Pattern 2 - O(1) ends as a queue-like store</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var pending = new SequencedDictionary&lt;Guid, WorkItem&gt;();
@@ -140,7 +140,7 @@ if (pending.TryGetFirst(out var oldest))
 
 pending.TryRemoveFirst(out _);   // dequeue the head
 </code></pre>
-<h2 id="pattern-3--least-recently-used-cache">Pattern 3 — least-recently-used cache</h2>
+<h2 id="pattern-3---least-recently-used-cache">Pattern 3 - least-recently-used cache</h2>
 <p>Access-order mode makes the least-recently-used entry the <code>First</code> entry, so an unbounded LRU with manual trimming is a few lines:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -161,20 +161,20 @@ byte[] GetOrLoad(string key)
     return data;
 }
 </code></pre>
-<h2 id="pattern-4--assignment-semantics">Pattern 4 — assignment semantics</h2>
+<h2 id="pattern-4---assignment-semantics">Pattern 4 - assignment semantics</h2>
 <p><code>Add</code> follows the strict BCL <code>Dictionary&lt;TKey, TValue&gt;.Add</code> contract and throws on a duplicate key. The indexer upserts: a new key is appended to the tail, and an existing key's value is updated in place (and, in access-order mode, moved to the tail).</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var map = new SequencedDictionary&lt;string, int&gt;();
 map.Add(&quot;a&quot;, 1);
-map[&quot;a&quot;] = 10;          // updates in place — order unchanged in insertion mode
+map[&quot;a&quot;] = 10;          // updates in place - order unchanged in insertion mode
 // map.Add(&quot;a&quot;, 2);     // would throw ArgumentException (duplicate key)
 </code></pre>
 <h2 id="thread-safety">Thread safety</h2>
 <p><code>SequencedDictionary&lt;TKey, TValue&gt;</code> is <strong>not thread-safe</strong>. In access-order mode reads mutate the iteration order, so even concurrent read-read is unsafe without external synchronization. Wrap with a lock or <code>ReaderWriterLockSlim</code> when sharing a single instance across threads.</p>
 <h2 id="relationship-to-ordereddictionarytkey-tvalue">Relationship to <code>OrderedDictionary&lt;TKey, TValue&gt;</code></h2>
-<p>The BCL's <code>OrderedDictionary&lt;TKey, TValue&gt;</code> (.NET 9+) is <em>positional</em> — index-addressable with <code>Insert(index, …)</code>, <code>RemoveAt(index)</code>, and O(1) random access by position, but O(n) removal of a non-tail entry. <code>SequencedDictionary&lt;TKey, TValue&gt;</code> exposes <strong>no</strong> positional surface; it trades index access for O(1) removal of either end and O(1) removal of any entry by key, and adds the access-order mode. On Bodu's <code>net8.0</code> target the BCL <code>OrderedDictionary&lt;TKey, TValue&gt;</code> is not available regardless.</p>
+<p>The BCL's <code>OrderedDictionary&lt;TKey, TValue&gt;</code> (.NET 9+) is <em>positional</em> - index-addressable with <code>Insert(index, …)</code>, <code>RemoveAt(index)</code>, and O(1) random access by position, but O(n) removal of a non-tail entry. <code>SequencedDictionary&lt;TKey, TValue&gt;</code> exposes <strong>no</strong> positional surface; it trades index access for O(1) removal of either end and O(1) removal of any entry by key, and adds the access-order mode. On Bodu's <code>net8.0</code> target the BCL <code>OrderedDictionary&lt;TKey, TValue&gt;</code> is not available regardless.</p>
 <h2 id="api-summary">API summary</h2>
 <table>
 <thead>
@@ -244,11 +244,11 @@ map[&quot;a&quot;] = 10;          // updates in place — order unchanged in ins
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="evicting-dictionary.html">Evicting dictionary</a> — fixed-capacity cache with FIFO / LRU / LFU eviction policies.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide across the namespace.</li>
-<li><a href="index.html">Bodu.Collections guide index</a> — all key types at a glance.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> - fixed-capacity cache with FIFO / LRU / LFU eviction policies.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide across the namespace.</li>
+<li><a href="index.html">Bodu.Collections guide index</a> - all key types at a glance.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -268,7 +268,7 @@ map[&quot;a&quot;] = 10;          // updates in place — order unchanged in ins
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

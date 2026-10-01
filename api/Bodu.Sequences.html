@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
 </div>
     </dd></dl>
   </div>
@@ -102,14 +102,14 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-core.svg" alt="Bodu.Core"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Sequences</strong> is the home of <code>SequenceGenerator</code> — lazily evaluated <code>IEnumerable&lt;T&gt;</code> <em>producers</em> that mirror the conventions of <code>System.Linq.Enumerable</code> and complement it with sequence shapes the BCL does not provide directly. Reach for it when you need a counted or descending range, a bounded or unbounded repeat, a state-machine-style generator, or one of several well-known mathematical series, all without materializing an intermediate collection.</p>
-<p>Unlike the <code>Bodu.Collections.*</code> namespaces — which hold container data structures and the extension methods that operate on existing sequences — this namespace holds only the static factories that <em>create</em> sequences from scratch.</p>
+<p><strong>Bodu.Sequences</strong> is the home of <code>SequenceGenerator</code> - lazily evaluated <code>IEnumerable&lt;T&gt;</code> <em>producers</em> that mirror the conventions of <code>System.Linq.Enumerable</code> and complement it with sequence shapes the BCL does not provide directly. Reach for it when you need a counted or descending range, a bounded or unbounded repeat, a state-machine-style generator, or one of several well-known mathematical series, all without materializing an intermediate collection.</p>
+<p>Unlike the <code>Bodu.Collections.*</code> namespaces - which hold container data structures and the extension methods that operate on existing sequences - this namespace holds only the static factories that <em>create</em> sequences from scratch.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a> — the single static factory class.
+<li><a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a> - the single static factory class.
 <ul>
-<li><strong>General-purpose primitives</strong> — <code>Range</code> (inclusive start/stop with inferred or explicit step over <code>int</code>, plus a count-bounded <code>long</code> overload), <code>NextWhile</code> (a state-machine generator driven by a seed, a predicate, and a successor function — value, indexed, and custom-state overloads), and <code>Factory</code> (adapts a delegate-returned <code>IEnumerator&lt;T&gt;</code> into a re-enumerable <code>IEnumerable&lt;T&gt;</code>).</li>
-<li><strong>Named mathematical series</strong> — <code>Fibonacci</code>, <code>Farey</code>, <code>Leibniz</code>, <code>LookAndSay</code>, <code>ThueMorse</code>.</li>
+<li><strong>General-purpose primitives</strong> - <code>Range</code> (inclusive start/stop with inferred or explicit step over <code>int</code>, plus a count-bounded <code>long</code> overload), <code>NextWhile</code> (a state-machine generator driven by a seed, a predicate, and a successor function - value, indexed, and custom-state overloads), and <code>Factory</code> (adapts a delegate-returned <code>IEnumerator&lt;T&gt;</code> into a re-enumerable <code>IEnumerable&lt;T&gt;</code>).</li>
+<li><strong>Named mathematical series</strong> - <code>Fibonacci</code>, <code>Farey</code>, <code>Leibniz</code>, <code>LookAndSay</code>, <code>ThueMorse</code>.</li>
 </ul>
 </li>
 </ul>
@@ -123,7 +123,7 @@ foreach (int n in SequenceGenerator.Range(start: 10, stop: 0, step: -2))
 // Fibonacci numbers within a value window (not a fixed count).
 long[] fibs = SequenceGenerator.Fibonacci(min: 0, max: 100).ToArray();
 
-// A stateful generator — powers of two while they stay positive.
+// A stateful generator - powers of two while they stay positive.
 IEnumerable&lt;int&gt; powers = SequenceGenerator.NextWhile(
     initialValue: 1,
     conditionHandler: v =&gt; v &gt; 0,
@@ -133,7 +133,7 @@ IEnumerable&lt;int&gt; powers = SequenceGenerator.NextWhile(
 <ul>
 <li><strong>Deferred and allocation-light.</strong> Every member returns a deferred sequence; nothing is produced until the consumer iterates, and allocation is limited to the iterator state.</li>
 <li><strong>Single-pass side effects.</strong> Re-enumerating a returned sequence re-invokes the supplied delegates. Materialise with <code>ToArray()</code> / <code>ToList()</code> for a stable snapshot.</li>
-<li><strong>Unbounded shapes exist.</strong> <code>Range(start, stop, step: 0)</code> and a never-failing <code>NextWhile</code> predicate produce infinite sequences — bound them with <code>Take</code> / <code>TakeWhile</code>. For a fixed-length single-value feed, use the BCL <code>Enumerable.Repeat</code>.</li>
+<li><strong>Unbounded shapes exist.</strong> <code>Range(start, stop, step: 0)</code> and a never-failing <code>NextWhile</code> predicate produce infinite sequences - bound them with <code>Take</code> / <code>TakeWhile</code>. For a fixed-length single-value feed, use the BCL <code>Enumerable.Repeat</code>.</li>
 <li><strong>Argument validation.</strong> Public factories validate their arguments via <a class="xref" href="Bodu.ThrowHelper.html">ThrowHelper</a>.</li>
 <li><strong>See also:</strong> the <a href="../docs/core/index.html">Bodu.Core introduction</a>, the <a class="xref" href="Bodu.Collections.Generic.html">Bodu.Collections.Generic</a> container types, and the <a class="xref" href="Bodu.Collections.Generic.Extensions.html">Bodu.Collections.Generic.Extensions</a> sequence-shaping extension methods.</li>
 </ul>
@@ -146,9 +146,9 @@ Classes
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a></dt>
       <dd><p>Provides static factory methods that produce lazily evaluated <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable&lt;T&gt;</a> sequences without
-materializing the underlying collection — both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,
+materializing the underlying collection - both general-purpose shapes (<code>Range</code>, <code>NextWhile</code>,
 <code>Factory</code>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
-Thue–Morse).</p>
+Thue-Morse).</p>
 </dd>
     </dl>
 
@@ -169,7 +169,7 @@ Thue–Morse).</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

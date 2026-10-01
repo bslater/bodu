@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Blake2b" data-uid="Bodu.Security.Cryptography.Blake2b" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Blake2b Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ Blake2b Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs">Blake2b.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs">Blake2b.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a hash using the <code>BLAKE2b</code> cryptographic hash algorithm, designed by Jean-Philippe Aumasson, Samuel
@@ -384,17 +384,17 @@ bytes are serialized in little-endian order then truncated to the configured out
 </p>
 <p>
 Supplying a non-empty <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm.html#Bodu_Security_Cryptography_KeyedDeferredFinalBlockHashAlgorithm_Key">Key</a> switches the instance into the keyed
-<code>BLAKE2b-MAC</code> mode defined in RFC 7693 Section 2.8. The key (1–64 bytes) is zero-padded to 128 bytes and
+<code>BLAKE2b-MAC</code> mode defined in RFC 7693 Section 2.8. The key (1-64 bytes) is zero-padded to 128 bytes and
 prepended as the first message block, and the key length is encoded into the parameter block so that keyed and
 unkeyed digests of the same message are always distinct.
 </p>
 <p>
 <strong>Parameters at a glance.</strong>
 </p>
-<ul><li>Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.</li><li>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</li><li>Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</li><li>Specification: RFC 7693; optimized for 64-bit hosts.</li></ul>
+<ul><li>Output size: configurable - 128, 160, 192, 224, 256, 384, or 512 bits.</li><li>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</li><li>Optional key: 1-64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</li><li>Specification: RFC 7693; optimized for 64-bit hosts.</li></ul>
 <p>
 <strong>When to choose BLAKE2b.</strong> The right pick on 64-bit platforms when SHA-2 / SHA-3 throughput matters
-but compatibility with those standards is not required — BLAKE2b is faster than SHA-512 in software while offering
+but compatibility with those standards is not required - BLAKE2b is faster than SHA-512 in software while offering
 the same security level. Use <a class="xref" href="Bodu.Security.Cryptography.Blake2s.html">Blake2s</a> on 32-bit hosts or for output sizes up to 32 bytes. For
 tree-hashing or genuinely large parallel workloads <a class="xref" href="Bodu.Security.Cryptography.Blake3.html">Blake3</a> is faster again. As a keyed MAC,
 BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-hash overhead of HMAC.
@@ -411,7 +411,7 @@ BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-ha
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b__ctor" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor">
   Blake2b()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -442,7 +442,7 @@ BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-ha
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b__ctor_System_Int32_" data-uid="Bodu.Security.Cryptography.Blake2b.#ctor(System.Int32)">
   Blake2b(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -488,7 +488,7 @@ BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-ha
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_MaxKeySize" data-uid="Bodu.Security.Cryptography.Blake2b.MaxKeySize">
   MaxKeySize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -528,7 +528,7 @@ BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-ha
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_AlgorithmName" data-uid="Bodu.Security.Cryptography.Blake2b.AlgorithmName">
   AlgorithmName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -559,7 +559,7 @@ BLAKE2b-MAC is competitive with HMAC-SHA-256 / Poly1305 and avoids the double-ha
   <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_AlgorithmName_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
 telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-side-effect-free — the value may be queried before any input has been consumed and after disposal as part of
+side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
 error reporting.</p>
 </div>
 
@@ -573,7 +573,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_CanReuseTransform" data-uid="Bodu.Security.Cryptography.Blake2b.CanReuseTransform">
   CanReuseTransform
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -610,7 +610,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_CanTransformMultipleBlocks" data-uid="Bodu.Security.Cryptography.Blake2b.CanTransformMultipleBlocks">
   CanTransformMultipleBlocks
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -647,7 +647,7 @@ error reporting.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_HashSize" data-uid="Bodu.Security.Cryptography.Blake2b.HashSize">
   HashSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -706,7 +706,7 @@ the value is immutable until <a class="xref" href="https://learn.microsoft.com/d
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake2b.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -756,7 +756,7 @@ cleared further down the dispose chain.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_InitializeHashState" data-uid="Bodu.Security.Cryptography.Blake2b.InitializeHashState">
   InitializeHashState()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -793,7 +793,7 @@ encoding, as <a class="xref" href="Bodu.Security.Cryptography.KeyedDeferredFinal
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean_" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessBlock(System.ReadOnlySpan{System.Byte},System.UInt64,System.Boolean)">
   ProcessBlock(ReadOnlySpan&lt;byte&gt;, ulong, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -829,8 +829,9 @@ counter (the BLAKE2 <code>t0</code> input).</p>
 
 
   <h4 class="section" id="Bodu_Security_Cryptography_Blake2b_ProcessBlock_System_ReadOnlySpan_System_Byte__System_UInt64_System_Boolean__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Compression runs on the widest kernel <span class="xref">Bodu.Security.Cryptography.Blake2bCore</span> selects: AVX-512, then AVX2, then the scalar
-kernel, each gate honoring the process-wide SIMD opt-out.</p>
+  <div class="markdown level1 remarks"><p>Compression runs on the kernel <span class="xref">Bodu.Security.Cryptography.Blake2bCore</span> selects: AVX-512, then AVX2, then SSSE3 on x64, and
+the scalar kernel on ARM64, where it ran faster than the AdvSimd kernel, and everywhere else; each gate honors
+the process-wide SIMD opt-out.</p>
 </div>
 
 
@@ -843,7 +844,7 @@ kernel, each gate honoring the process-wide SIMD opt-out.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Blake2b_ProcessFinalBlock" data-uid="Bodu.Security.Cryptography.Blake2b.ProcessFinalBlock">
   ProcessFinalBlock()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/Blake2b.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -913,7 +914,7 @@ expected by consumers of the algorithm (typically little-endian for Blake-family
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

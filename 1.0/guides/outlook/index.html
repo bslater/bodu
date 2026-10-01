@@ -91,9 +91,9 @@
 <p>A <code>.msg</code> file <em>is</em> an OLE2 compound file: the message's properties live in a <code>__properties_version1.0</code> stream of fixed 16-byte records, variable-length values live in <code>__substg1.0_</code> streams named by their property tag, and recipients and attachments are indexed child storages. The container is read by <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, on which the reader is built.</p>
 <h2 id="how-the-library-works">How the library works</h2>
 <p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMessage.html">OutlookMessage</a> opens the container and eagerly decodes the root property stream, so the property surface is available without further I/O. Recipients, attachments, and the named-property mapping are materialized lazily on first access. Attachment payloads stream directly from the container, and an attached message opens recursively as a nested session sharing the root's container.</p>
-<p>Both packages share the flattened <code>Bodu.Formats.Outlook</code> namespace: the value model — <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a>, <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiProperty.html">MapiProperty</a>, the tag-addressed <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a>, and <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a> — carries no container knowledge, so the <code>.pst</code> mail-store reader, <code>Bodu.Formats.Outlook.Pst</code> (over <code>Bodu.IO.Pst</code>; see the <a href="../../docs/io-pst/index.html">Bodu.IO.Pst introduction</a>), shares it unchanged.</p>
+<p>Both packages share the flattened <code>Bodu.Formats.Outlook</code> namespace: the value model - <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyTag.html">MapiPropertyTag</a>, <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiProperty.html">MapiProperty</a>, the tag-addressed <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiPropertyCollection.html">MapiPropertyCollection</a>, and <a class="xref" href="../../api/Bodu.Formats.Outlook.MapiNamedProperty.html">MapiNamedProperty</a> - carries no container knowledge, so the <code>.pst</code> mail-store reader, <code>Bodu.Formats.Outlook.Pst</code> (over <code>Bodu.IO.Pst</code>; see the <a href="../../docs/io-pst/index.html">Bodu.IO.Pst introduction</a>), shares it unchanged.</p>
 <blockquote>
-<p>These guides cover the read path only — the reader never writes <code>.msg</code> files, emulates a MAPI session, or de-encapsulates RTF into HTML.</p>
+<p>These guides cover the read path only - the reader never writes <code>.msg</code> files, emulates a MAPI session, or de-encapsulates RTF into HTML.</p>
 </blockquote>
 <h2 id="namespace-map">Namespace map</h2>
 <table>
@@ -114,10 +114,10 @@
 </table>
 <h2 id="guides">Guides</h2>
 <ul>
-<li><strong><a href="reading-msg-files.html">Reading .msg files</a></strong> — opening a message from a path or stream, the scalar and body conveniences, recipients, attachments, and nested messages.</li>
-<li><strong><a href="reading-pst-mail-stores.html">Reading .pst mail stores</a></strong> — opening a mail store, walking the folder hierarchy, message conveniences and bodies, recipients, attachments and embedded messages, store-wide named properties, and the two exception families.</li>
-<li><strong><a href="properties-and-named-properties.html">Properties and named properties</a></strong> — the raw property surface, typed accessors, tags and wire types, and resolving named properties.</li>
-<li><strong><a href="reader-options-and-limits.html">Reader options and resource limits</a></strong> — every option on both readers, what <code>Strict</code> changes, and what surfaces when a limit trips.</li>
+<li><strong><a href="reading-msg-files.html">Reading .msg files</a></strong> - opening a message from a path or stream, the scalar and body conveniences, recipients, attachments, and nested messages.</li>
+<li><strong><a href="reading-pst-mail-stores.html">Reading .pst mail stores</a></strong> - opening a mail store, walking the folder hierarchy, message conveniences and bodies, recipients, attachments and embedded messages, store-wide named properties, and the two exception families.</li>
+<li><strong><a href="properties-and-named-properties.html">Properties and named properties</a></strong> - the raw property surface, typed accessors, tags and wire types, and resolving named properties.</li>
+<li><strong><a href="reader-options-and-limits.html">Reader options and resource limits</a></strong> - every option on both readers, what <code>Strict</code> changes, and what surfaces when a limit trips.</li>
 </ul>
 
 </article>
@@ -137,7 +137,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Formats_Outlook_OutlookMailStore" data-uid="Bodu.Formats.Outlook.OutlookMailStore" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 OutlookMailStore Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ OutlookMailStore Class
   <dl><dt>Assembly</dt><dd>Bodu.Formats.Outlook.Pst.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Formats.Outlook.Pst">Bodu.Formats.Outlook.Pst</a> <span class="bodu-package-version">0.7.1</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs">OutlookMailStore.NamedProperties.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs">OutlookMailStore.NamedProperties.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a disposable, read-only session over an Outlook personal-folders mail store (a <code>.pst</code> file, MS-PST
@@ -189,13 +189,13 @@ shared MAPI value model.</p>
   <div class="markdown level0 remarks"><p>
 The session owns its <a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a> container (and the source stream unless it is left open); every
 <a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html">OutlookMailFolder</a> and <a class="xref" href="Bodu.Formats.Outlook.OutlookMailMessage.html">OutlookMailMessage</a> obtained from it is a view bound to the
-session's lifetime — disposing the store invalidates them all. Reads are lazy and streaming-first: opening parses
+session's lifetime - disposing the store invalidates them all. Reads are lazy and streaming-first: opening parses
 only the container header, folder and message enumerations stream table rows, and each object decodes its properties
 once on first access.
 </p>
 <p>
-The session is single-threaded, matching the container's documented contract: its members — and the members of every
-view obtained from it — must not be called concurrently.
+The session is single-threaded, matching the container's documented contract: its members - and the members of every
+view obtained from it - must not be called concurrently.
 </p>
 <example>
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
@@ -206,7 +206,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 {
     Console.WriteLine(folder.DisplayName);
     foreach (OutlookMailMessage message in folder.EnumerateMessages())
-        Console.WriteLine($"  {message.Subject} — {message.SenderName}");
+        Console.WriteLine($"  {message.Subject} - {message.SenderName}");
 }</code></pre>
 </example>
 </div>
@@ -221,7 +221,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_DisplayName" data-uid="Bodu.Formats.Outlook.OutlookMailStore.DisplayName">
   DisplayName
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -264,7 +264,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_Properties" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Properties">
   Properties
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -310,7 +310,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_RootFolder" data-uid="Bodu.Formats.Outlook.OutlookMailStore.RootFolder">
   RootFolder
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -337,7 +337,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 
 
   <h4 class="section" id="Bodu_Formats_Outlook_OutlookMailStore_RootFolder_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The root folder itself is structural — user folders (the IPM subtree) hang beneath it. Walk
+  <div class="markdown level1 remarks"><p>The root folder itself is structural - user folders (the IPM subtree) hang beneath it. Walk
 <a class="xref" href="Bodu.Formats.Outlook.OutlookMailFolder.html#Bodu_Formats_Outlook_OutlookMailFolder_EnumerateSubfolders">EnumerateSubfolders()</a> to reach them.</p>
 </div>
 
@@ -364,7 +364,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_Dispose" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -395,7 +395,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_IsPstFile_System_IO_Stream_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.IsPstFile(System.IO.Stream)">
   IsPstFile(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -444,7 +444,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_Open_System_IO_Stream_Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.Open(System.IO.Stream,Bodu.Formats.Outlook.OutlookMailStoreReaderOptions,System.Boolean)">
   Open(Stream, OutlookMailStoreReaderOptions, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -508,7 +508,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_OpenRead_System_IO_Stream_System_Boolean_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.OpenRead(System.IO.Stream,System.Boolean)">
   OpenRead(Stream, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -569,7 +569,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_OpenRead_System_String_" data-uid="Bodu.Formats.Outlook.OutlookMailStore.OpenRead(System.String)">
   OpenRead(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -624,7 +624,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_TryGetNamedPropertyId_Bodu_Formats_Outlook_MapiNamedProperty_System_UInt16__" data-uid="Bodu.Formats.Outlook.OutlookMailStore.TryGetNamedPropertyId(Bodu.Formats.Outlook.MapiNamedProperty,System.UInt16@)">
   TryGetNamedPropertyId(MapiNamedProperty, out ushort)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -687,7 +687,7 @@ message and attachment of the session.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Formats_Outlook_OutlookMailStore_TryGetPropertyName_Bodu_Formats_Outlook_MapiPropertyTag_Bodu_Formats_Outlook_MapiNamedProperty__" data-uid="Bodu.Formats.Outlook.OutlookMailStore.TryGetPropertyName(Bodu.Formats.Outlook.MapiPropertyTag,Bodu.Formats.Outlook.MapiNamedProperty@)">
   TryGetPropertyName(MapiPropertyTag, out MapiNamedProperty)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Formats.Outlook.Pst/src/Formats.Outlook/OutlookMailStore.NamedProperties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -767,7 +767,7 @@ message and attachment of the session.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

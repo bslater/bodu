@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Numerics_RunningQuantile_1" data-uid="Bodu.Numerics.RunningQuantile`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 RunningQuantile&lt;T&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ RunningQuantile&lt;T&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics">Bodu.Numerics</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs">RunningQuantile{T}.Properties.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs">RunningQuantile{T}.Properties.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Estimates a single quantile of a sample stream in one forward pass and constant space, using the P² algorithm of
@@ -212,7 +212,7 @@ var p95 = new RunningQuantile&lt;int&gt;(0.95);</code></pre>
   <div class="markdown level0 remarks"><p>
 The estimator maintains five markers that track the minimum, the maximum, the target quantile, and the two quantiles
 halfway between it and the extremes, adjusting the middle markers with piecewise-parabolic (hence "P²")
-interpolation as samples arrive. Each <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html#Bodu_Numerics_RunningQuantile_1_Add__0_">Add(T)</a> is O(1) and the state is a fixed scalar block — the samples
+interpolation as samples arrive. Each <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html#Bodu_Numerics_RunningQuantile_1_Add__0_">Add(T)</a> is O(1) and the state is a fixed scalar block - the samples
 themselves are never stored. Samples are widened to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a> with
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double.createchecked">CreateChecked&lt;TOther&gt;(TOther)</a>, so <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html#Bodu_Numerics_RunningQuantile_1_Estimate">Estimate</a> is always a floating-point estimate.
 </p>
@@ -224,12 +224,12 @@ and index instead.
 </p>
 <p>
 This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref">ref</a>; do
-not capture it in a lambda or iterator that expects reference semantics — each copy accumulates independently from
+not capture it in a lambda or iterator that expects reference semantics - each copy accumulates independently from
 the point of the copy, which is also the supported way to checkpoint. The <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a> value is a
 valid empty <em>median</em> estimator; use the constructor for any other probability.
 </p>
 <p>
-Unlike <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, two P² estimators cannot be merged — the marker states of two partitions
+Unlike <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a>, two P² estimators cannot be merged - the marker states of two partitions
 do not compose. Partition-and-combine workloads should carry the mergeable moments in
 <a class="xref" href="Bodu.Numerics.RunningStatistics-1.html">RunningStatistics&lt;T&gt;</a> and reserve this type for single-stream use. Samples must be finite: NaN and
 infinite values are rejected by <a class="xref" href="Bodu.Numerics.RunningQuantile-1.html#Bodu_Numerics_RunningQuantile_1_Add__0_">Add(T)</a>.
@@ -246,7 +246,7 @@ infinite values are rejected by <a class="xref" href="Bodu.Numerics.RunningQuant
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1__ctor_System_Double_" data-uid="Bodu.Numerics.RunningQuantile`1.#ctor(System.Double)">
   RunningQuantile(double)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -293,7 +293,7 @@ infinite values are rejected by <a class="xref" href="Bodu.Numerics.RunningQuant
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_Count" data-uid="Bodu.Numerics.RunningQuantile`1.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -330,7 +330,7 @@ infinite values are rejected by <a class="xref" href="Bodu.Numerics.RunningQuant
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_Estimate" data-uid="Bodu.Numerics.RunningQuantile`1.Estimate">
   Estimate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -375,7 +375,7 @@ equal the quantile obtained by sorting all observed samples.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_IsEmpty" data-uid="Bodu.Numerics.RunningQuantile`1.IsEmpty">
   IsEmpty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -412,7 +412,7 @@ equal the quantile obtained by sorting all observed samples.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_Probability" data-uid="Bodu.Numerics.RunningQuantile`1.Probability">
   Probability
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -453,7 +453,7 @@ equal the quantile obtained by sorting all observed samples.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_Add__0_" data-uid="Bodu.Numerics.RunningQuantile`1.Add(`0)">
   Add(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -500,7 +500,7 @@ for unbounded integer sample types such as <a class="xref" href="https://learn.m
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_CreateMedian" data-uid="Bodu.Numerics.RunningQuantile`1.CreateMedian">
   CreateMedian()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -537,7 +537,7 @@ for unbounded integer sample types such as <a class="xref" href="https://learn.m
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_Reset" data-uid="Bodu.Numerics.RunningQuantile`1.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -568,7 +568,7 @@ for unbounded integer sample types such as <a class="xref" href="https://learn.m
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_RunningQuantile_1_ToString" data-uid="Bodu.Numerics.RunningQuantile`1.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Numerics/src/Numerics/RunningQuantile%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -627,7 +627,7 @@ for unbounded integer sample types such as <a class="xref" href="https://learn.m
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

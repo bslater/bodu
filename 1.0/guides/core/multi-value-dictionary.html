@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="multi-value-dictionary">Multi-value dictionary</h1>
 
-<p><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a> maps each key to an ordered <em>list</em> of values — a one-to-many dictionary (a multimap). It removes the boilerplate of the common <code>Dictionary&lt;TKey, List&lt;TValue&gt;&gt;</code> pattern: there is no &quot;create the list if the key is missing&quot; dance, the indexer never returns <code>null</code>, and value insertion order is preserved per key.</p>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.MultiValueDictionary-2.html">MultiValueDictionary&lt;TKey, TValue&gt;</a> maps each key to an ordered <em>list</em> of values - a one-to-many dictionary (a multimap). It removes the boilerplate of the common <code>Dictionary&lt;TKey, List&lt;TValue&gt;&gt;</code> pattern: there is no &quot;create the list if the key is missing&quot; dance, the indexer never returns <code>null</code>, and value insertion order is preserved per key.</p>
 <p>Keys are compared with an <code>IEqualityComparer&lt;TKey&gt;</code> supplied at construction.</p>
-<h2 id="pattern-1--group-values-under-keys">Pattern 1 — group values under keys</h2>
+<h2 id="pattern-1---group-values-under-keys">Pattern 1 - group values under keys</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var byCorrelation = new MultiValueDictionary&lt;string, LogEntry&gt;();
@@ -99,11 +99,11 @@ foreach (LogEntry entry in entries)
 
 IReadOnlyList&lt;LogEntry&gt; forId = byCorrelation[&quot;abc-123&quot;];   // never null
 </code></pre>
-<p>The indexer returns an empty, read-only view when the key is absent — it never throws and never returns <code>null</code>, so callers can iterate unconditionally:</p>
-<pre><code class="lang-csharp">foreach (LogEntry e in byCorrelation[&quot;missing-key&quot;])   // safe — empty sequence
+<p>The indexer returns an empty, read-only view when the key is absent - it never throws and never returns <code>null</code>, so callers can iterate unconditionally:</p>
+<pre><code class="lang-csharp">foreach (LogEntry e in byCorrelation[&quot;missing-key&quot;])   // safe - empty sequence
     Process(e);
 </code></pre>
-<h2 id="pattern-2--add-many-values-at-once">Pattern 2 — add many values at once</h2>
+<h2 id="pattern-2---add-many-values-at-once">Pattern 2 - add many values at once</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">var routes = new MultiValueDictionary&lt;string, string&gt;();
 
@@ -116,12 +116,12 @@ IReadOnlyList&lt;string&gt; gets = routes.GetValues(&quot;GET&quot;);   // /user
 <pre><code class="lang-csharp">if (routes.TryGetValues(&quot;DELETE&quot;, out IReadOnlyList&lt;string&gt; deletes))
     Console.WriteLine(deletes.Count);
 </code></pre>
-<h2 id="pattern-3--removing-values-and-keys">Pattern 3 — removing values and keys</h2>
+<h2 id="pattern-3---removing-values-and-keys">Pattern 3 - removing values and keys</h2>
 <pre><code class="lang-csharp">bool removedOne = routes.Remove(&quot;GET&quot;, &quot;/health&quot;);  // removes a single value
 bool removedKey = routes.RemoveAll(&quot;POST&quot;);         // removes the key and all its values
 </code></pre>
 <p><code>Remove(key, value)</code> removes one matching value and returns <code>false</code> when the pair is absent; <code>RemoveAll(key)</code> drops the key entirely.</p>
-<h2 id="pattern-4--membership-and-counts">Pattern 4 — membership and counts</h2>
+<h2 id="pattern-4---membership-and-counts">Pattern 4 - membership and counts</h2>
 <pre><code class="lang-csharp">bool hasKey   = routes.ContainsKey(&quot;GET&quot;);                 // true
 bool hasPair  = routes.ContainsValue(&quot;GET&quot;, &quot;/users&quot;);     // true
 
@@ -129,17 +129,17 @@ int totalValues  = routes.Count;       // total values across all keys
 int distinctKeys = routes.KeyCount;    // number of keys
 </code></pre>
 <p>Note the distinction: <code>Count</code> is the total number of <em>values</em> stored, while <code>KeyCount</code> is the number of <em>keys</em>.</p>
-<h2 id="pattern-5--enumerating">Pattern 5 — enumerating</h2>
+<h2 id="pattern-5---enumerating">Pattern 5 - enumerating</h2>
 <p>Enumerating the dictionary yields each key paired with its value list:</p>
 <pre><code class="lang-csharp">foreach (KeyValuePair&lt;string, IReadOnlyList&lt;string&gt;&gt; group in routes)
     Console.WriteLine($&quot;{group.Key}: {group.Value.Count} routes&quot;);
 </code></pre>
-<p>To iterate the flat sequence of <code>(key, value)</code> pairs — one row per value — use <code>Flatten</code>:</p>
+<p>To iterate the flat sequence of <code>(key, value)</code> pairs - one row per value - use <code>Flatten</code>:</p>
 <pre><code class="lang-csharp">foreach (KeyValuePair&lt;string, string&gt; pair in routes.Flatten())
     Console.WriteLine($&quot;{pair.Key} → {pair.Value}&quot;);
 </code></pre>
 <p>The <code>Keys</code> collection exposes the distinct keys; <code>Values</code> and <code>ReadOnlyValues</code> expose the flattened values.</p>
-<h2 id="pattern-6--custom-key-comparison">Pattern 6 — custom key comparison</h2>
+<h2 id="pattern-6---custom-key-comparison">Pattern 6 - custom key comparison</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">var headers = new MultiValueDictionary&lt;string, string&gt;(StringComparer.OrdinalIgnoreCase);
 headers.Add(&quot;Accept&quot;, &quot;text/html&quot;);
@@ -152,18 +152,18 @@ IReadOnlyList&lt;string&gt; accept = headers[&quot;ACCEPT&quot;];   // both valu
 <pre><code class="lang-csharp">var tags = new MultiValueDictionary&lt;string, string&gt;(
     MultiValueBacking.Set,
     StringComparer.OrdinalIgnoreCase,    // key comparer
-    StringComparer.OrdinalIgnoreCase);   // value comparer — drives deduplication
+    StringComparer.OrdinalIgnoreCase);   // value comparer - drives deduplication
 
 tags.Add(&quot;doc-1&quot;, &quot;Draft&quot;);
-tags.Add(&quot;doc-1&quot;, &quot;DRAFT&quot;);     // duplicate per the value comparer — ignored
+tags.Add(&quot;doc-1&quot;, &quot;DRAFT&quot;);     // duplicate per the value comparer - ignored
 tags.Add(&quot;doc-1&quot;, &quot;review&quot;);
 
 Console.WriteLine(tags.Count);        // 2
-Console.WriteLine(tags[&quot;doc-1&quot;][0]);  // &quot;Draft&quot; — first occurrence and its casing win
+Console.WriteLine(tags[&quot;doc-1&quot;][0]);  // &quot;Draft&quot; - first occurrence and its casing win
 Console.WriteLine(tags.Backing);      // Set
 </code></pre>
-<p>Under <code>Set</code> backing the value comparer also drives <code>Remove(key, value)</code> and <code>ContainsValue(key, value)</code> — <code>tags.Remove(&quot;doc-1&quot;, &quot;draft&quot;)</code> removes <code>&quot;Draft&quot;</code>. Suppressed duplicate adds are not structural changes, so they do not invalidate active enumerators. Under <code>List</code> backing the value comparer is stored and reported by <code>ValueComparer</code> but not consulted; value operations use default equality, exactly as before the option existed.</p>
-<p>The backing and value comparer are fixed at construction. Ordering guarantee: per-key values are always exposed in insertion order (first-occurrence order under <code>Set</code>), through the same <code>IReadOnlyList&lt;TValue&gt;</code> views as <code>List</code> backing. The trade-off is that each <code>Set</code>-backed add scans the key's existing values linearly to detect duplicates — the cost that keeps the values ordered and the list-typed view contract intact, and a good fit for the typically small per-key buckets of a multimap.</p>
+<p>Under <code>Set</code> backing the value comparer also drives <code>Remove(key, value)</code> and <code>ContainsValue(key, value)</code> - <code>tags.Remove(&quot;doc-1&quot;, &quot;draft&quot;)</code> removes <code>&quot;Draft&quot;</code>. Suppressed duplicate adds are not structural changes, so they do not invalidate active enumerators. Under <code>List</code> backing the value comparer is stored and reported by <code>ValueComparer</code> but not consulted; value operations use default equality, exactly as before the option existed.</p>
+<p>The backing and value comparer are fixed at construction. Ordering guarantee: per-key values are always exposed in insertion order (first-occurrence order under <code>Set</code>), through the same <code>IReadOnlyList&lt;TValue&gt;</code> views as <code>List</code> backing. The trade-off is that each <code>Set</code>-backed add scans the key's existing values linearly to detect duplicates - the cost that keeps the values ordered and the list-typed view contract intact, and a good fit for the typically small per-key buckets of a multimap.</p>
 <h2 id="api-summary">API summary</h2>
 <table>
 <thead>
@@ -237,10 +237,10 @@ Console.WriteLine(tags.Backing);      // Set
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
-<li><a href="multiset.html">Multiset</a> — when you need value <em>counts</em> rather than value <em>lists</em>.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a href="multiset.html">Multiset</a> - when you need value <em>counts</em> rather than value <em>lists</em>.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -260,7 +260,7 @@ Console.WriteLine(tags.Backing);      // Set
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

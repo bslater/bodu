@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.IO.Hashing — Getting started | BODU </title>
+      <title>Bodu.IO.Hashing - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.IO.Hashing — Getting started | BODU ">
+      <meta name="title" content="Bodu.IO.Hashing - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,14 +85,14 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduiohashing--getting-started">Bodu.IO.Hashing — Getting started</h1>
+<h1 id="boduiohashing---getting-started">Bodu.IO.Hashing - Getting started</h1>
 
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.IO.Hashing
 </code></pre>
 <p>Targets <code>net8.0</code>. Depends on <code>Bodu.Core</code> and the BCL <code>System.IO.Hashing</code> package.</p>
-<h2 id="minimal-samples--one-per-subfamily">Minimal samples — one per subfamily</h2>
-<h3 id="checksum--crc-32">Checksum — CRC-32</h3>
+<h2 id="minimal-samples---one-per-subfamily">Minimal samples - one per subfamily</h2>
+<h3 id="checksum---crc-32">Checksum - CRC-32</h3>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing.Checksums;
 
@@ -103,7 +103,7 @@ crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 </code></pre>
 <p><code>CRC32_ISOHDLC</code> is the canonical zlib / PNG / Ethernet CRC-32. Swap it for <code>CRC32_ISCSI</code>, <code>CRC16_MODBUS</code>, <code>CRC64_XZ</code>, or any of the 112 entries in the <a href="../../guides/io-hashing/crc-catalogue.html">CRC catalogue</a>.</p>
-<h3 id="checksum--fletcher-32">Checksum — Fletcher-32</h3>
+<h3 id="checksum---fletcher-32">Checksum - Fletcher-32</h3>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing.Checksums;
 
@@ -114,7 +114,7 @@ fletcher.Append(data);
 byte[] checksum = fletcher.GetCurrentHash();
 </code></pre>
 <p>Fletcher's twin-accumulator structure catches transpositions that a simple sum or XOR misses. Choose <code>Fletcher16</code> / <code>Fletcher32</code> / <code>Fletcher64</code> based on your output width.</p>
-<h3 id="fingerprint--fnv-1a-64">Fingerprint — FNV-1a 64</h3>
+<h3 id="fingerprint---fnv-1a-64">Fingerprint - FNV-1a 64</h3>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing;
 
@@ -124,8 +124,8 @@ using var fnv = new Fnv1a64();
 fnv.Append(data);
 ulong key = BitConverter.ToUInt64(fnv.GetCurrentHash());
 </code></pre>
-<p>Constant-memory and streaming. For SIMD-friendly throughput on large buffers, swap in <code>CityHash64</code>. For seeded hashes used in databases or probabilistic data structures, use <code>MurmurHash3_128</code>. For xxHash specifically, prefer <code>System.IO.Hashing.XxHash64</code> from the BCL — Bodu does not duplicate it.</p>
-<h3 id="fingerprint--pearson-with-custom-output-width">Fingerprint — Pearson with custom output width</h3>
+<p>Constant-memory and streaming. For SIMD-friendly throughput on large buffers, swap in <code>CityHash64</code>. For seeded hashes used in databases or probabilistic data structures, use <code>MurmurHash3_128</code>. For xxHash specifically, prefer <code>System.IO.Hashing.XxHash64</code> from the BCL - Bodu does not duplicate it.</p>
+<h3 id="fingerprint---pearson-with-custom-output-width">Fingerprint - Pearson with custom output width</h3>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
 using var hash = new Pearson(hashSizeBits: 256, tableType: Pearson.PearsonTableType.Pearson);
@@ -133,14 +133,14 @@ hash.Append(data);
 byte[] digest = hash.GetCurrentHash(); // 32 bytes
 </code></pre>
 <p><code>Pearson</code> accepts any output width from 8 bits to 2048 bits in 8-bit steps; the nested <code>Pearson.PearsonTableType</code> enum selects one of the four built-in permutation tables, and a third constructor overload takes your own 256-byte permutation.</p>
-<h3 id="check-digit--luhn-credit-card">Check digit — Luhn (credit card)</h3>
+<h3 id="check-digit---luhn-credit-card">Check digit - Luhn (credit card)</h3>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
 
 bool valid = Luhn.IsValid(&quot;4539148803436467&quot;);   // payload includes the check digit
-char digit = Luhn.Compute(&quot;453914880343646&quot;);    // payload excludes it — returns the digit to append
+char digit = Luhn.Compute(&quot;453914880343646&quot;);    // payload excludes it - returns the digit to append
 </code></pre>
-<p>Every single-character scheme exposes the same pair: <code>Compute(ReadOnlySpan&lt;char&gt;)</code> returns the <code>char</code> to append to a payload that does <em>not</em> yet carry the check; <code>IsValid(ReadOnlySpan&lt;char&gt;)</code> validates a payload that <em>does</em>. Substitute <code>Damm</code>, <code>Verhoeff</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>Isin</code>, or <code>AbaRoutingNumber</code> — the contract is identical. The multi-character schemes (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a>) return a <code>string</code> from <code>Compute</code> instead.</p>
-<h3 id="check-digit--iban-multi-character">Check digit — IBAN (multi-character)</h3>
+<p>Every single-character scheme exposes the same pair: <code>Compute(ReadOnlySpan&lt;char&gt;)</code> returns the <code>char</code> to append to a payload that does <em>not</em> yet carry the check; <code>IsValid(ReadOnlySpan&lt;char&gt;)</code> validates a payload that <em>does</em>. Substitute <code>Damm</code>, <code>Verhoeff</code>, <code>Ean13</code>, <code>Gtin14</code>, <code>UpcA</code>, <code>Isin</code>, or <code>AbaRoutingNumber</code> - the contract is identical. The multi-character schemes (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Iban.html">Iban</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Lei.html">Lei</a>) return a <code>string</code> from <code>Compute</code> instead.</p>
+<h3 id="check-digit---iban-multi-character">Check digit - IBAN (multi-character)</h3>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.CheckDigits;
 
 bool valid = Iban.IsValid(&quot;GB82WEST12345698765432&quot;);
@@ -154,10 +154,10 @@ byte[] digest   = hash.ComputeHash(data);            // Append + GetCurrentHash 
 bool   match    = hash.VerifyHash(data, digest);     // recompute and compare against the byte[]
 bool   matchHex = hash.VerifyHash(data, Convert.ToHexString(digest)); // or compare against a stored hex string
 </code></pre>
-<p><code>ComputeHash</code> resets the instance and returns the one-shot digest, so the same instance is immediately reusable. <code>VerifyHash</code> has overloads taking either a <code>byte[]</code> digest or a hex <code>string</code>, and <code>Stream</code>-based forms that hash the stream first. <code>TryVerifyHash</code> returns <code>false</code> instead of throwing when the candidate is malformed (wrong length, non-hex characters) — the safer choice over user-supplied input.</p>
+<p><code>ComputeHash</code> resets the instance and returns the one-shot digest, so the same instance is immediately reusable. <code>VerifyHash</code> has overloads taking either a <code>byte[]</code> digest or a hex <code>string</code>, and <code>Stream</code>-based forms that hash the stream first. <code>TryVerifyHash</code> returns <code>false</code> instead of throwing when the candidate is malformed (wrong length, non-hex characters) - the safer choice over user-supplied input.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p><code>VerifyHash</code> compares with <code>SequenceEqual</code> and short-circuits on the first mismatching byte — it is <strong>not</strong> constant-time and must not be used to check an authenticator supplied by an untrusted caller. These are error-detection comparisons. For constant-time verification of a keyed digest, use the <code>Bodu.Security.Cryptography</code> <code>VerifyHash</code> overloads, which call <code>CryptographicOperations.FixedTimeEquals</code>.</p>
+<p><code>VerifyHash</code> compares with <code>SequenceEqual</code> and short-circuits on the first mismatching byte - it is <strong>not</strong> constant-time and must not be used to check an authenticator supplied by an untrusted caller. These are error-detection comparisons. For constant-time verification of a keyed digest, use the <code>Bodu.Security.Cryptography</code> <code>VerifyHash</code> overloads, which call <code>CryptographicOperations.FixedTimeEquals</code>.</p>
 </div>
 <h3 id="async-streaming-over-a-stream">Async streaming over a <code>Stream</code></h3>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
@@ -171,11 +171,11 @@ byte[] digest = await hash.ComputeHashAsync(fs);     // rents a pooled buffer, a
 <p><code>AppendDataAsync</code>, <code>ComputeHashAsync</code>, <code>VerifyHashAsync</code>, and <code>TryVerifyHashAsync</code> are the streaming-friendly equivalents; each accepts an optional <code>bufferSize</code> and a <code>CancellationToken</code>. They rent the working buffer from <code>ArrayPool&lt;byte&gt;.Shared</code>, so hashing a large file allocates only the final digest.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.IO.Hashing introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="../cryptography/index.html">Bodu.Security.Cryptography</a></strong> — the sibling library, for keyed and cryptographic hashes with a formal adversary model.</li>
-<li><strong><a href="../../guides/io-hashing/index.html">Bodu.IO.Hashing guides</a></strong> — per-algorithm walk-throughs.</li>
-<li><strong><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="../../guides/io-hashing/crc-catalogue.html">CRC catalogue</a></strong> — the full RevEng-catalogue table of named CRC standards.</li>
+<li><strong><a href="index.html">Bodu.IO.Hashing introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="../cryptography/index.html">Bodu.Security.Cryptography</a></strong> - the sibling library, for keyed and cryptographic hashes with a formal adversary model.</li>
+<li><strong><a href="../../guides/io-hashing/index.html">Bodu.IO.Hashing guides</a></strong> - per-algorithm walk-throughs.</li>
+<li><strong><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="../../guides/io-hashing/crc-catalogue.html">CRC catalogue</a></strong> - the full RevEng-catalogue table of named CRC standards.</li>
 </ul>
 
 </article>
@@ -195,7 +195,7 @@ byte[] digest = await hash.ComputeHashAsync(fs);     // rents a pooled buffer, a
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

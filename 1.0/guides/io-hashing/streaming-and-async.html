@@ -88,8 +88,8 @@
 <h1 id="streaming-async-and-resumable-hashing">Streaming, async, and resumable hashing</h1>
 
 <p>Every algorithm in <code>Bodu.IO.Hashing</code> derives from <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code>, whose core is <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code>. Three things build on that core for data that does not fit in one span: <a class="xref" href="../../api/Bodu.IO.Hashing.HashingStream.html">HashingStream</a> computes a digest as a side effect of ordinary stream I/O; <a class="xref" href="../../api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.html">NonCryptographicHashAlgorithmExtensions</a> adds the <code>Stream</code>, <code>async</code>, and verify overloads; and <a class="xref" href="../../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> lets a stored digest be extended with new bytes without re-reading the original input. This page walks through all three and ends with the digest byte-order table you need when comparing results across tools.</p>
-<h2 id="pattern-1--hashingstream-while-copying">Pattern 1 — <code>HashingStream</code> while copying</h2>
-<p><code>HashingStream(Stream innerStream, NonCryptographicHashAlgorithm algorithm, bool leaveOpen = false)</code> is a pass-through stream. Bytes are fed to the algorithm whichever way they flow — reads append what the inner stream actually returned, writes append after the inner stream accepted them — so one pass over the data both moves it and checksums it. <code>CanSeek</code> is always <code>false</code> (seeking would let bytes bypass or re-enter the digest; <code>Seek</code> and <code>SetLength</code> throw <code>NotSupportedException</code>), and the algorithm is yours: the stream never disposes it.</p>
+<h2 id="pattern-1---hashingstream-while-copying">Pattern 1 - <code>HashingStream</code> while copying</h2>
+<p><code>HashingStream(Stream innerStream, NonCryptographicHashAlgorithm algorithm, bool leaveOpen = false)</code> is a pass-through stream. Bytes are fed to the algorithm whichever way they flow - reads append what the inner stream actually returned, writes append after the inner stream accepted them - so one pass over the data both moves it and checksums it. <code>CanSeek</code> is always <code>false</code> (seeking would let bytes bypass or re-enter the digest; <code>Seek</code> and <code>SetLength</code> throw <code>NotSupportedException</code>), and the algorithm is yours: the stream never disposes it.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Checksums;
@@ -104,7 +104,7 @@ var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 using (var hashing = new HashingStream(source, crc, leaveOpen: true))
 {
     hashing.CopyTo(destination);                  // every byte read from the source is fed to the CRC
-    byte[] soFar = hashing.GetCurrentHash();      // 707A0D67 — non-destructive snapshot
+    byte[] soFar = hashing.GetCurrentHash();      // 707A0D67 - non-destructive snapshot
 }
 
 byte[] digest = crc.GetCurrentHash();             // same value; the algorithm outlives the stream
@@ -123,7 +123,7 @@ hashing.Write(&quot;abcdef&quot;u8);
 byte[] second = hashing.GetCurrentHash();         // Fletcher-32 of &quot;abcdef&quot; alone: 08180255
 </code></pre>
 <p><code>Read</code>, <code>Write</code>, <code>ReadByte</code>, <code>WriteByte</code>, and the <code>Memory&lt;byte&gt;</code> / <code>Task</code> async overloads are all routed through the algorithm; <code>Flush</code> / <code>FlushAsync</code> and <code>DisposeAsync</code> forward to the inner stream (which is disposed unless <code>leaveOpen</code> is <code>true</code>). Like the algorithm it wraps, a <code>HashingStream</code> is not thread-safe.</p>
-<h2 id="pattern-2--the-extension-surface">Pattern 2 — the extension surface</h2>
+<h2 id="pattern-2---the-extension-surface">Pattern 2 - the extension surface</h2>
 <p><a class="xref" href="../../api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.html">NonCryptographicHashAlgorithmExtensions</a> covers <code>byte[]</code>, span, <code>string</code> + <code>Encoding</code>, and <code>Stream</code> inputs. The stream members:</p>
 <table>
 <thead>
@@ -150,7 +150,7 @@ byte[] second = hashing.GetCurrentHash();         // Fletcher-32 of &quot;abcdef
 <tr>
 <td><code>AppendData(Stream source, int bufferSize = 4096)</code> / <code>AppendDataAsync(Stream, int = 4096, CancellationToken)</code></td>
 <td>4 KiB</td>
-<td><strong>No</strong> — call <code>GetCurrentHash</code> when done</td>
+<td><strong>No</strong> - call <code>GetCurrentHash</code> when done</td>
 <td>accumulate several sources into one digest</td>
 </tr>
 <tr>
@@ -192,8 +192,8 @@ var running = new Crc(CrcStandard.CRC32_ISCSI);
 await running.AppendDataAsync(s4, bufferSize: 4096);                           // not finalized …
 byte[] same = running.GetCurrentHash();                                         // … until you ask
 </code></pre>
-<h2 id="pattern-3--resuming-from-a-stored-digest">Pattern 3 — resuming from a stored digest</h2>
-<p><a class="xref" href="../../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> is implemented by <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, the FNV family (<a class="xref" href="../../api/Bodu.IO.Hashing.Fnv132.html">Fnv132</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv164.html">Fnv164</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>), <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> — every algorithm whose digest <em>is</em> (or reversibly encodes) the full working state. The interface exposes <code>HashLengthInBytes</code>, three <code>ComputeHashFrom(previousHash, newData)</code> overloads (span; <code>byte[]</code>; <code>byte[]</code> with offset and length), and the allocation-free <code>TryComputeHashFrom(previousHash, newData, destination, out bytesWritten)</code>. The result equals a single pass over the concatenated input; the original bytes are never needed again.</p>
+<h2 id="pattern-3---resuming-from-a-stored-digest">Pattern 3 - resuming from a stored digest</h2>
+<p><a class="xref" href="../../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> is implemented by <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, the FNV family (<a class="xref" href="../../api/Bodu.IO.Hashing.Fnv132.html">Fnv132</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv164.html">Fnv164</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>), <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> - every algorithm whose digest <em>is</em> (or reversibly encodes) the full working state. The interface exposes <code>HashLengthInBytes</code>, three <code>ComputeHashFrom(previousHash, newData)</code> overloads (span; <code>byte[]</code>; <code>byte[]</code> with offset and length), and the allocation-free <code>TryComputeHashFrom(previousHash, newData, destination, out bytesWritten)</code>. The result equals a single pass over the concatenated input; the original bytes are never needed again.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.IO.Hashing;
 using Bodu.IO.Hashing;
@@ -218,7 +218,7 @@ foreach (NonCryptographicHashAlgorithm algorithm in new NonCryptographicHashAlgo
     bool ok = resumable.TryComputeHashFrom(stored, tail, destination, out int written);
 }
 </code></pre>
-<p>How each family resumes differs, and it dictates the one rule: <strong>resume only with the same algorithm and parameters</strong>. <code>Crc</code> reverse-finalizes the digest (undoing XOR-out, output reflection, and width masking) to recover the register, so a digest from a different <code>CrcStandard</code> yields garbage. FNV applies no finalization — the digest is the accumulator. Fletcher and Adler digests carry both accumulators (<code>B ‖ A</code>), which seed the sums directly. A <code>previousHash</code> whose length is not <code>HashLengthInBytes</code> throws <code>ArgumentException</code> (<code>previousHash</code>). The fingerprints that mix or finalize irreversibly — CityHash, MurmurHash3, Pearson, the classic string hashes — do not implement the interface.</p>
+<p>How each family resumes differs, and it dictates the one rule: <strong>resume only with the same algorithm and parameters</strong>. <code>Crc</code> reverse-finalizes the digest (undoing XOR-out, output reflection, and width masking) to recover the register, so a digest from a different <code>CrcStandard</code> yields garbage. FNV applies no finalization - the digest is the accumulator. Fletcher and Adler digests carry both accumulators (<code>B ‖ A</code>), which seed the sums directly. A <code>previousHash</code> whose length is not <code>HashLengthInBytes</code> throws <code>ArgumentException</code> (<code>previousHash</code>). The fingerprints that mix or finalize irreversibly - CityHash, MurmurHash3, Pearson, the classic string hashes - do not implement the interface.</p>
 <h2 id="digest-byte-order">Digest byte order</h2>
 <p><code>GetCurrentHash</code> serializes the final register in an order that is <strong>not</strong> uniform across the library. When a value looks &quot;reversed&quot; next to another tool, this is why:</p>
 <table>
@@ -263,7 +263,7 @@ foreach (NonCryptographicHashAlgorithm algorithm in new NonCryptographicHashAlgo
 </tr>
 </tbody>
 </table>
-<p>So <code>BitConverter.ToUInt32(new Crc().ComputeHash(&quot;123456789&quot;u8.ToArray()))</code> yields <code>0xCBF43926</code> on a little-endian host, while the Adler and Fletcher arrays drop straight into a big-endian zlib trailer. Bodu's Fletcher consumes input <strong>one byte at a time</strong> at every width (so its Fletcher-32 is not the 16-bit-word variant some references tabulate) — see <a href="fletcher.html">Using Fletcher</a>. The <a href="../../docs/io-hashing/concepts.html#endianness">concepts page</a> covers the CRC reflection parameters, which are a separate question from digest byte order.</p>
+<p>So <code>BitConverter.ToUInt32(new Crc().ComputeHash(&quot;123456789&quot;u8.ToArray()))</code> yields <code>0xCBF43926</code> on a little-endian host, while the Adler and Fletcher arrays drop straight into a big-endian zlib trailer. Bodu's Fletcher consumes input <strong>one byte at a time</strong> at every width (so its Fletcher-32 is not the 16-bit-word variant some references tabulate) - see <a href="fletcher.html">Using Fletcher</a>. The <a href="../../docs/io-hashing/concepts.html#endianness">concepts page</a> covers the CRC reflection parameters, which are a separate question from digest byte order.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Checksums;
@@ -305,11 +305,11 @@ uint crcWord = BitConverter.ToUInt32(crc32);                                    
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="crc.html#pattern-6--resume-from-a-stored-digest">Using CRC</a> — the CRC-specific reverse-finalization in more depth.</li>
-<li><a href="fletcher.html">Using Fletcher</a> and <a href="adler.html">Using Adler</a> — the twin-accumulator checksums this page resumes.</li>
-<li><a href="../cryptography/streaming-and-async.html">Streams and async</a> — the equivalent surfaces for the cryptographic hashes and ciphers.</li>
-<li><a href="../../samples/io-hashing.html">Runnable samples</a> — <code>Bodu.IO.Hashing.Samples.ChecksumTour</code> exercises <code>HashingStream</code> and resumable hashing over a committed file.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="crc.html#pattern-6---resume-from-a-stored-digest">Using CRC</a> - the CRC-specific reverse-finalization in more depth.</li>
+<li><a href="fletcher.html">Using Fletcher</a> and <a href="adler.html">Using Adler</a> - the twin-accumulator checksums this page resumes.</li>
+<li><a href="../cryptography/streaming-and-async.html">Streams and async</a> - the equivalent surfaces for the cryptographic hashes and ciphers.</li>
+<li><a href="../../samples/io-hashing.html">Runnable samples</a> - <code>Bodu.IO.Hashing.Samples.ChecksumTour</code> exercises <code>HashingStream</code> and resumable hashing over a committed file, and <code>Bodu.IO.Hashing.Samples.FileIntegrity</code> runs the extension surface over real files: manifests, a manifest checker, and multi-part digests.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -329,7 +329,7 @@ uint crcWord = BitConverter.ToUInt32(crc32);                                    
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

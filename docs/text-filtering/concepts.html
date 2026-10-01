@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Filtering — Core concepts | BODU </title>
+      <title>Bodu.Text.Filtering - Core concepts | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Filtering — Core concepts | BODU ">
+      <meta name="title" content="Bodu.Text.Filtering - Core concepts | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodutextfiltering--core-concepts">Bodu.Text.Filtering — Core concepts</h1>
+<h1 id="bodutextfiltering---core-concepts">Bodu.Text.Filtering - Core concepts</h1>
 
 <p>This page is the vocabulary the rest of the documentation assumes. Read it once before the
 <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/text-filtering/index.html">guides</a>,
@@ -95,14 +95,14 @@ and refer back whenever a term feels imprecise.</p>
 <h2 id="pattern-action-kind">Pattern, action, kind</h2>
 <p>A <strong>pattern</strong> (<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPattern.html"><code>TextFilterPattern</code></a>) is one immutable
 rule. Its <strong>action</strong> (<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterAction.html"><code>TextFilterAction</code></a>) says what a
-match means — <code>Include</code> admits matching values, <code>Exclude</code> rejects them. Its <strong>kind</strong>
+match means - <code>Include</code> admits matching values, <code>Exclude</code> rejects them. Its <strong>kind</strong>
 (<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterPatternKind.html"><code>TextFilterPatternKind</code></a>) says how the text is
-interpreted — <code>Wildcard</code> (the glob grammar) or <code>Regex</code> (a .NET regular expression). A pattern can
+interpreted - <code>Wildcard</code> (the glob grammar) or <code>Regex</code> (a .NET regular expression). A pattern can
 also carry a per-pattern case override; otherwise it inherits the filter's default.</p>
 <h2 id="compiled-filter">Compiled filter</h2>
-<p>Patterns do nothing on their own. They compile — via
+<p>Patterns do nothing on their own. They compile - via
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter.Build</code></a>, <code>TextFilter.Parse</code>, or a
-<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a> — into an immutable
+<a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterBuilder.html"><code>TextFilterBuilder</code></a> - into an immutable
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilter.html"><code>TextFilter</code></a>. Grammar errors and regex syntax errors surface
 at build time, not per value. The compiled matching state is immutable, so a filter is safe to use
 from multiple threads.</p>
@@ -110,31 +110,31 @@ from multiple threads.</p>
 <p><a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterEvaluationMode.html"><code>TextFilterEvaluationMode</code></a> selects the
 combination semantics:</p>
 <ul>
-<li><strong><code>AnyMatch</code></strong> — includes and excludes are unordered sets. Accepted ⇔ (include set empty OR ≥ 1
+<li><strong><code>AnyMatch</code></strong> - includes and excludes are unordered sets. Accepted ⇔ (include set empty OR ≥ 1
 include matches) AND no exclude matches. The Ant / MSBuild model.</li>
-<li><strong><code>LastMatchWins</code></strong> — one ordered rule list; the last matching rule decides; unmatched values are
+<li><strong><code>LastMatchWins</code></strong> - one ordered rule list; the last matching rule decides; unmatched values are
 included. The gitignore model, including <code>!</code> re-inclusion.</li>
 </ul>
 <h2 id="include-all-default">Include-all default</h2>
-<p>In <code>AnyMatch</code> mode a filter with <em>no include patterns</em> accepts everything an exclude does not veto —
+<p>In <code>AnyMatch</code> mode a filter with <em>no include patterns</em> accepts everything an exclude does not veto -
 the way <code>.gitignore</code> and MSBuild <code>Remove</code> items behave. Declaring even one include flips the filter
 into allowlist behavior: now a value must positively match an include.</p>
 <h2 id="cost-tier">Cost tier</h2>
-<p>At build time each glob is classified into the cheapest strategy its shape permits — match-all,
-literal, prefix, suffix, prefix-and-suffix, contains, or the general wildcard matcher — and regexes
+<p>At build time each glob is classified into the cheapest strategy its shape permits - match-all,
+literal, prefix, suffix, prefix-and-suffix, contains, or the general wildcard matcher - and regexes
 form the most expensive tier. In <code>AnyMatch</code> mode each group is evaluated cheapest-first with
 short-circuiting; this is purely an optimization, because set matching is an order-independent OR.</p>
 <h2 id="deciding-pattern">Deciding pattern</h2>
-<p>Every evaluation reaches a <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterDecision.html"><code>TextFilterDecision</code></a> —
-<code>IncludedByDefault</code>, <code>Included</code>, <code>Excluded</code>, or <code>NotIncluded</code> — and, when a pattern caused the
+<p>Every evaluation reaches a <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterDecision.html"><code>TextFilterDecision</code></a> -
+<code>IncludedByDefault</code>, <code>Included</code>, <code>Excluded</code>, or <code>NotIncluded</code> - and, when a pattern caused the
 outcome, <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterResult.html"><code>TextFilterResult.Pattern</code></a> reports it: the
 include that admitted the value or the exclude that vetoed it. In <code>AnyMatch</code> mode, when several
 patterns could have matched, the reported pattern is one of them (the cheapest); in <code>LastMatchWins</code>
 it is exactly the last matching rule. <code>GetMatchingPatterns</code> reports <em>every</em> matching pattern when
 diagnostics need the full picture.</p>
 <h2 id="telemetry">Telemetry</h2>
-<p>A filter keeps always-on counters — evaluated / accepted / excluded / not-included, per-pattern
-<strong>hit counts</strong> credited to the deciding pattern, and regex-timeout counts — exposed as an immutable
+<p>A filter keeps always-on counters - evaluated / accepted / excluded / not-included, per-pattern
+<strong>hit counts</strong> credited to the deciding pattern, and regex-timeout counts - exposed as an immutable
 <a class="xref" href="../../api/Bodu.Text.Filtering.TextFilterStatistics.html"><code>TextFilterStatistics</code></a> snapshot. An optional
 <a class="xref" href="../../api/Bodu.Text.Filtering.ITextFilterObserver.html"><code>ITextFilterObserver</code></a> sees every decision as it
 happens; when unattached the evaluation path pays only a null check.</p>
@@ -145,10 +145,10 @@ decision fails safe by action: a timed-out include does not admit the value; a t
 still vetoes it. The event is counted and visible to the observer.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install and minimal samples.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — the type map and scenario index.</li>
-<li><strong><a href="../../guides/text-filtering/index.html">Guides</a></strong> — deep dives on the grammar, modes, and telemetry.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.html">API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install and minimal samples.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the type map and scenario index.</li>
+<li><strong><a href="../../guides/text-filtering/index.html">Guides</a></strong> - deep dives on the grammar, modes, and telemetry.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Filtering.html">API reference</a></strong> - full type-by-type docs.</li>
 </ul>
 
 </article>
@@ -168,7 +168,7 @@ still vetoes it. The event is counted and visible to the observer.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

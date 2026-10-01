@@ -87,14 +87,14 @@
         <article data-uid="">
 <h1 id="using-fletcher">Using Fletcher</h1>
 
-<p>The Fletcher checksum family maintains two running accumulators, <strong>A</strong> and <strong>B</strong>, reduced modulo <code>M = 2^(N ⁄ 2) − 1</code> (255 for Fletcher-16, 65535 for Fletcher-32, 4294967295 for Fletcher-64). Each input <strong>byte</strong> updates <code>A = (A + byte) mod M</code>, then <code>B = (B + A) mod M</code>. The final output is <code>B ‖ A</code> written <strong>big-endian</strong>. Because <code>B</code> depends on the running <code>A</code>, Fletcher catches transpositions — swapping two bytes changes <code>B</code> even though the simple sum <code>A</code> is unchanged — which a plain additive checksum misses.</p>
+<p>The Fletcher checksum family maintains two running accumulators, <strong>A</strong> and <strong>B</strong>, reduced modulo <code>M = 2^(N ⁄ 2) − 1</code> (255 for Fletcher-16, 65535 for Fletcher-32, 4294967295 for Fletcher-64). Each input <strong>byte</strong> updates <code>A = (A + byte) mod M</code>, then <code>B = (B + A) mod M</code>. The final output is <code>B ‖ A</code> written <strong>big-endian</strong>. Because <code>B</code> depends on the running <code>A</code>, Fletcher catches transpositions - swapping two bytes changes <code>B</code> even though the simple sum <code>A</code> is unchanged - which a plain additive checksum misses.</p>
 <p><img src="../../images/diagrams/fletcher-accumulators.svg" alt="Fletcher twin-accumulator structure"></p>
 <p><strong>Bodu.IO.Hashing</strong> provides three widths: <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a>. All three derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>, share the abstract <code>Fletcher</code> base, and live in the <code>Bodu.IO.Hashing.Checksums</code> namespace.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>Bodu's modulus is <code>2^(N ⁄ 2) − 1</code>, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original <code>2^k − 1</code> form, which reduces with a fast fold rather than a division. All three widths consume input <strong>one byte at a time</strong> regardless of <em>N</em> — there is no word-size blocking.</p>
+<p>Bodu's modulus is <code>2^(N ⁄ 2) − 1</code>, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original <code>2^k − 1</code> form, which reduces with a fast fold rather than a division. All three widths consume input <strong>one byte at a time</strong> regardless of <em>N</em> - there is no word-size blocking.</p>
 </div>
-<h2 id="pattern-1--compute-a-digest-in-one-call">Pattern 1 — compute a digest in one call</h2>
+<h2 id="pattern-1---compute-a-digest-in-one-call">Pattern 1 - compute a digest in one call</h2>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing.Checksums;
 
@@ -106,7 +106,7 @@ byte[] digest = fletcher.GetCurrentHash();
 string hex = Convert.ToHexString(digest);  // 4 bytes, 8 hex characters, big-endian B‖A
 </code></pre>
 <p>Swap <code>Fletcher32</code> for <code>Fletcher16</code> or <code>Fletcher64</code> depending on how much collision space you need.</p>
-<h2 id="pattern-2--the-append--getcurrenthash--reset-lifecycle">Pattern 2 — the <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
+<h2 id="pattern-2---the-append--getcurrenthash--reset-lifecycle">Pattern 2 - the <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
 <p>The BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> exposes three methods that Fletcher honors verbatim:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 
@@ -115,13 +115,13 @@ var fletcher = new Fletcher64();
 fletcher.Append(chunk1);                  // update A and B
 fletcher.Append(chunk2);                  // continue
 byte[] partial = fletcher.GetCurrentHash(); // snapshot, non-destructive
-fletcher.Append(chunk3);                  // still works — GetCurrentHash did not change state
+fletcher.Append(chunk3);                  // still works - GetCurrentHash did not change state
 byte[] full = fletcher.GetCurrentHash();
 
 fletcher.Reset();                         // back to zeroed A and B
 </code></pre>
 <p><code>GetCurrentHash</code> finalizes on a copy of the accumulators, so calling it mid-stream is cheap and safe.</p>
-<h2 id="pattern-3--streaming-over-a-file">Pattern 3 — streaming over a file</h2>
+<h2 id="pattern-3---streaming-over-a-file">Pattern 3 - streaming over a file</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 
 var fletcher = new Fletcher32();
@@ -138,7 +138,7 @@ using (FileStream fs = File.OpenRead(&quot;archive.bin&quot;))
 
 byte[] fingerprint = fletcher.GetCurrentHash();
 </code></pre>
-<p>All three widths consume input one byte at a time, so any chunk boundary is safe — <code>Append</code> over a 64 KB buffer and <code>Append</code> 65 536 times byte-by-byte produce the same digest. The width affects only the modulus and the output size, not how input is fed in.</p>
+<p>All three widths consume input one byte at a time, so any chunk boundary is safe - <code>Append</code> over a 64 KB buffer and <code>Append</code> 65 536 times byte-by-byte produce the same digest. The width affects only the modulus and the output size, not how input is fed in.</p>
 <h2 id="picking-a-width">Picking a width</h2>
 <table>
 <thead>
@@ -170,11 +170,11 @@ byte[] fingerprint = fletcher.GetCurrentHash();
 </tr>
 </tbody>
 </table>
-<h2 id="what-fletcher-catches--and-what-it-misses">What Fletcher catches — and what it misses</h2>
+<h2 id="what-fletcher-catches---and-what-it-misses">What Fletcher catches - and what it misses</h2>
 <p>Fletcher detects every single-bit error and every adjacent-byte transposition, at a fraction of CRC's per-byte cost. It does not match a CRC's burst guarantee, and the <code>2^k − 1</code> modulus introduces a documented blind spot:</p>
 <ul>
 <li>Because <code>0</code> and <code>M</code> are congruent under the modulus, a byte that should drive an accumulator to <code>M</code> leaves it at <code>0</code> instead. A run of bytes whose contribution is a multiple of <code>M</code> can therefore go undetected.</li>
-<li>A block of all-<code>0x00</code> bytes is indistinguishable from an absent block of the same length — both leave <code>A</code> and <code>B</code> unchanged. Fletcher cannot detect the insertion or deletion of zero bytes.</li>
+<li>A block of all-<code>0x00</code> bytes is indistinguishable from an absent block of the same length - both leave <code>A</code> and <code>B</code> unchanged. Fletcher cannot detect the insertion or deletion of zero bytes.</li>
 <li>There is no per-position burst guarantee of the kind a polynomial CRC provides.</li>
 </ul>
 <p>These are acceptable when you control both endpoints and the channel is benign; they are why a wire format that must survive an arbitrary physical link specifies a CRC instead.</p>
@@ -183,12 +183,12 @@ byte[] fingerprint = fletcher.GetCurrentHash();
 <li><strong>CRC</strong> is defined by polynomial arithmetic over GF(2). It is better at detecting bursts of errors that align with its polynomial structure. Reach for it when you need to match a standard on the wire (zlib, PNG, Modbus, etc.).</li>
 <li><strong>Fletcher</strong> is defined by two running sums. It is cheaper to compute on a general-purpose CPU and still catches transpositions. Reach for it when you control both endpoints and want a simple, fast, position-dependent checksum.</li>
 </ul>
-<p>Both are <strong>non-cryptographic</strong> — neither resists a motivated adversary. If you need authentication, see the <a href="../cryptography/hashing.html">cryptography hashing guide</a> (SipHash, Tiger, Merkle trees).</p>
+<p>Both are <strong>non-cryptographic</strong> - neither resists a motivated adversary. If you need authentication, see the <a href="../cryptography/hashing.html">cryptography hashing guide</a> (SipHash, Tiger, Merkle trees).</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="crc.html">Using CRC</a> — the other checksum family in this package.</li>
-<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="crc.html">Using CRC</a> - the other checksum family in this package.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> - key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -208,7 +208,7 @@ byte[] fingerprint = fletcher.GetCurrentHash();
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

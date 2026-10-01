@@ -8,7 +8,7 @@
       <meta name="title" content="IntervalTree&lt;T&gt; Class
  | BODU ">
       
-      <meta name="description" content="Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries ( — all intervals containing a point) and overlap-window queries ( — all intervals intersecting a window) in O(log n + k).">
+      <meta name="description" content="Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries ( - all intervals containing a point) and overlap-window queries ( - all intervals intersecting a window) in O(log n + k).">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Generic_IntervalTree_1" data-uid="Bodu.Collections.Generic.IntervalTree`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IntervalTree&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,12 +104,12 @@ IntervalTree&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs">IntervalTree{T}.Enumerator.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs">IntervalTree{T}.Enumerator.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries (<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a>
-— all intervals containing a point) and overlap-window queries (<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> — all intervals
-intersecting a window) in O(log n + k).</p>
+  <div class="markdown summary"><p>Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries
+(<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a> - all intervals containing a point) and overlap-window queries
+(<a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> - all intervals intersecting a window) in O(log n + k).</p>
 </div>
 
   <div class="codewrapper">
@@ -195,13 +195,13 @@ intersecting a window) in O(log n + k).</p>
   <h2 id="Bodu_Collections_Generic_IntervalTree_1_examples">Examples</h2>
   <pre><code class="lang-csharp">var bookings = new IntervalTree&lt;int&gt;();
 bookings.Add(9, 11);    // 09:00-11:00
-bookings.Add(10, 12);   // 10:00-12:00 — overlaps are stored, not merged
+bookings.Add(10, 12);   // 10:00-12:00 - overlaps are stored, not merged
 bookings.Add(14, 15);
 
 foreach ((int low, int high) in bookings.QueryPoint(10))
     Console.WriteLine($"[{low}, {high}]");            // [9, 11] then [10, 12]
 
-bool clash = bookings.Intersects(11, 13);             // true — [10, 12] reaches into the window</code></pre>
+bool clash = bookings.Intersects(11, 13);             // true - [10, 12] reaches into the window</code></pre>
 
 
   <h2 id="Bodu_Collections_Generic_IntervalTree_1_remarks">Remarks</h2>
@@ -215,11 +215,11 @@ so queries prune whole subtrees that cannot reach the probe. See
 This type is the only member of the Bodu range family that <em>stores</em> overlapping intervals.
 <a class="xref" href="Bodu.Collections.Generic.RangeSet-1.html">RangeSet&lt;T&gt;</a> and <a class="xref" href="Bodu.Collections.Generic.RangeDictionary-2.html">RangeDictionary&lt;TKey, TValue&gt;</a> are sorted non-overlapping maps that
 merge or reject overlapping inserts, and <code>Bodu.Numerics</code>' <code>IntervalSet&lt;T&gt;</code> normalizes its contents
-to disjoint ranges — reach for this type when the overlaps themselves are the data.
+to disjoint ranges - reach for this type when the overlaps themselves are the data.
 </p>
 <p>
 Intervals are closed on both ends: [low, high] contains every point x with low &lt;= x &lt;= high under the active
-comparer, and low equal to high is a valid degenerate interval. Duplicate intervals are permitted — each
+comparer, and low equal to high is a valid degenerate interval. Duplicate intervals are permitted - each
 <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Add__0__0_">Add(T, T)</a> of an existing (low, high) pair increments a per-node multiplicity, and <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Remove__0__0_">Remove(T, T)</a>
 removes one occurrence at a time. <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Count">Count</a> and enumeration include duplicates.
 </p>
@@ -238,7 +238,7 @@ This type is not thread-safe.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1__ctor" data-uid="Bodu.Collections.Generic.IntervalTree`1.#ctor">
   IntervalTree()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -269,7 +269,7 @@ This type is not thread-safe.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1__ctor_System_Collections_Generic_IComparer__0__" data-uid="Bodu.Collections.Generic.IntervalTree`1.#ctor(System.Collections.Generic.IComparer{`0})">
   IntervalTree(IComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -310,7 +310,7 @@ This type is not thread-safe.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Comparer" data-uid="Bodu.Collections.Generic.IntervalTree`1.Comparer">
   Comparer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -347,7 +347,7 @@ This type is not thread-safe.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Count" data-uid="Bodu.Collections.Generic.IntervalTree`1.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -388,7 +388,7 @@ This type is not thread-safe.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Add__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Add(`0,`0)">
   Add(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -419,7 +419,7 @@ This type is not thread-safe.
 
   <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Add__0__0__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Overlapping intervals are always accepted, and adding an interval equal to one already stored records a
-duplicate occurrence rather than being rejected — the per-node multiplicity is incremented and
+duplicate occurrence rather than being rejected - the per-node multiplicity is incremented and
 <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_Count">Count</a> grows by one.</p>
 </div>
 
@@ -442,7 +442,7 @@ duplicate occurrence rather than being rejected — the per-node multiplicity is
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Clear" data-uid="Bodu.Collections.Generic.IntervalTree`1.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -473,7 +473,7 @@ duplicate occurrence rather than being rejected — the per-node multiplicity is
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Contains__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Contains(`0,`0)">
   Contains(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -533,7 +533,7 @@ duplicate occurrence rather than being rejected — the per-node multiplicity is
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_GetEnumerator" data-uid="Bodu.Collections.Generic.IntervalTree`1.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -571,7 +571,7 @@ duplicate intervals once per occurrence.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Intersects__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Intersects(`0,`0)">
   Intersects(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -608,7 +608,7 @@ duplicate intervals once per occurrence.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Intersects__0__0__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This is the early-exit form of <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> — a single O(log n) descent regardless of how many
+  <div class="markdown level1 remarks"><p>This is the early-exit form of <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_">QueryOverlaps(T, T)</a> - a single O(log n) descent regardless of how many
 intervals match.</p>
 </div>
 
@@ -631,7 +631,7 @@ intervals match.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_IntersectsPoint__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.IntersectsPoint(`0)">
   IntersectsPoint(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -664,7 +664,7 @@ intervals match.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_IntersectsPoint__0__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This is the early-exit form of <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a> — a single O(log n) descent regardless of how many
+  <div class="markdown level1 remarks"><p>This is the early-exit form of <a class="xref" href="Bodu.Collections.Generic.IntervalTree-1.html#Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_">QueryPoint(T)</a> - a single O(log n) descent regardless of how many
 intervals match.</p>
 </div>
 
@@ -684,7 +684,7 @@ intervals match.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.QueryOverlaps(`0,`0)">
   QueryOverlaps(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -722,13 +722,13 @@ in ascending (low, high) order.</p>
 
   <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_QueryOverlaps__0__0__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-An interval matches when it shares at least one point with the window — touching at a single common endpoint
+An interval matches when it shares at least one point with the window - touching at a single common endpoint
 counts, because both the stored intervals and the window are closed. Duplicate intervals are repeated once per
 stored occurrence. Iterating costs O(log n + k) for k reported intervals in the common case.
 </p>
 <p>
 The sequence is live: each fresh iteration re-resolves against the tree's current state. Within a single
-iteration it is fail-fast — any structural mutation causes the next advance to throw
+iteration it is fail-fast - any structural mutation causes the next advance to throw
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
 </p>
 </div>
@@ -752,7 +752,7 @@ iteration it is fail-fast — any structural mutation causes the next advance to
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_QueryPoint__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.QueryPoint(`0)">
   QueryPoint(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Queries.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -793,7 +793,7 @@ reported intervals in the common case.
 </p>
 <p>
 The sequence is live: each fresh iteration re-resolves against the tree's current state. Within a single
-iteration it is fail-fast — any structural mutation causes the next advance to throw
+iteration it is fail-fast - any structural mutation causes the next advance to throw
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
 </p>
 </div>
@@ -814,7 +814,7 @@ iteration it is fail-fast — any structural mutation causes the next advance to
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_Remove__0__0_" data-uid="Bodu.Collections.Generic.IntervalTree`1.Remove(`0,`0)">
   Remove(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -851,7 +851,7 @@ interval is not stored.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_IntervalTree_1_Remove__0__0__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Only an exact (low, high) match is removed — intervals that merely overlap the arguments are untouched. When the
+  <div class="markdown level1 remarks"><p>Only an exact (low, high) match is removed - intervals that merely overlap the arguments are untouched. When the
 interval is stored more than once, one occurrence is removed per call; the node itself is deleted only when its
 multiplicity reaches zero.</p>
 </div>
@@ -879,7 +879,7 @@ multiplicity reaches zero.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_System_Collections_Generic_IEnumerable_System_ValueTuple_T_T___GetEnumerator" data-uid="Bodu.Collections.Generic.IntervalTree`1.System#Collections#Generic#IEnumerable{System#ValueTuple{T,T}}#GetEnumerator">
   IEnumerable&lt;(T, T)&gt;.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -916,7 +916,7 @@ multiplicity reaches zero.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_IntervalTree_1_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Generic.IntervalTree`1.System#Collections#IEnumerable#GetEnumerator">
   IEnumerable.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Generic/IntervalTree%7BT%7D.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -975,7 +975,7 @@ multiplicity reaches zero.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

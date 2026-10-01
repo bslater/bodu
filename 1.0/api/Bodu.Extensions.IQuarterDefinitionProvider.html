@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_IQuarterDefinitionProvider" data-uid="Bodu.Extensions.IQuarterDefinitionProvider" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IQuarterDefinitionProvider Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ IQuarterDefinitionProvider Interface
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs">IQuarterDefinitionProvider.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs">IQuarterDefinitionProvider.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Defines a provider interface for custom quarter calculation logic based on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> or
@@ -150,13 +150,13 @@ IQuarterDefinitionProvider Interface
 
   <h2 id="Bodu_Extensions_IQuarterDefinitionProvider_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Implementations describe a recurring quarter rule — a fiscal or logical calendar definition that is independent of
+Implementations describe a recurring quarter rule - a fiscal or logical calendar definition that is independent of
 any single year. Year-specific values, such as quarter start and end dates or whether a fiscal year contains a 53rd
 week, are derived on demand from the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a> input, or from an explicit
 <code>fiscalYear</code> argument.
 </p>
 <p>
-Example use cases include 4–4–5 calendars, academic terms, retail fiscal calendars, or historical reporting quarters
+Example use cases include 4-4-5 calendars, academic terms, retail fiscal calendars, or historical reporting quarters
 that do not align with calendar or standard financial quarters.
 </p>
 <p>
@@ -195,7 +195,7 @@ Methods that support this interface include:
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetFiscalYear_System_DateOnly_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetFiscalYear(System.DateOnly)">
   GetFiscalYear(DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -244,7 +244,7 @@ Methods that support this interface include:
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetFiscalYear_System_DateTime_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetFiscalYear(System.DateTime)">
   GetFiscalYear(DateTime)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -301,11 +301,11 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarter_System_DateOnly_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarter(System.DateOnly)">
   GetQuarter(DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the quarter number (1–4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
+  <div class="markdown level1 summary"><p>Returns the quarter number (1-4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -350,11 +350,11 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarter_System_DateTime_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarter(System.DateTime)">
   GetQuarter(DateTime)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the quarter number (1–4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
+  <div class="markdown level1 summary"><p>Returns the quarter number (1-4) that contains the specified <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime">DateTime</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -399,7 +399,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterEnd_System_DateTime_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterEnd(System.DateTime)">
   GetQuarterEnd(DateTime)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -449,11 +449,11 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterEnd_System_Int32_System_Int32_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterEnd(System.Int32,System.Int32)">
   GetQuarterEnd(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1–4) within the given fiscal year.</p>
+  <div class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1-4) within the given fiscal year.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -464,7 +464,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The quarter number (1–4).</p>
+    <dd><p>The quarter number (1-4).</p>
 </dd>
     <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
     <dd><p>The fiscal year whose quarter boundary is being requested.</p>
@@ -501,7 +501,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterEndDate_System_DateOnly_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterEndDate(System.DateOnly)">
   GetQuarterEndDate(DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -550,11 +550,11 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterEndDate_System_Int32_System_Int32_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterEndDate(System.Int32,System.Int32)">
   GetQuarterEndDate(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1–4) within the given fiscal year.</p>
+  <div class="markdown level1 summary"><p>Returns the last day of the specified quarter number (1-4) within the given fiscal year.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -565,7 +565,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The quarter number (1–4).</p>
+    <dd><p>The quarter number (1-4).</p>
 </dd>
     <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
     <dd><p>The fiscal year whose quarter boundary is being requested.</p>
@@ -602,7 +602,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterStart_System_DateTime_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterStart(System.DateTime)">
   GetQuarterStart(DateTime)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -652,11 +652,11 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterStart_System_Int32_System_Int32_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterStart(System.Int32,System.Int32)">
   GetQuarterStart(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1–4) within the given fiscal year.</p>
+  <div class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1-4) within the given fiscal year.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -667,7 +667,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The quarter number (1–4).</p>
+    <dd><p>The quarter number (1-4).</p>
 </dd>
     <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
     <dd><p>The fiscal year whose quarter boundary is being requested.</p>
@@ -704,7 +704,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterStartDate_System_DateOnly_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterStartDate(System.DateOnly)">
   GetQuarterStartDate(DateOnly)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -753,11 +753,11 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetQuarterStartDate_System_Int32_System_Int32_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetQuarterStartDate(System.Int32,System.Int32)">
   GetQuarterStartDate(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1–4) within the given fiscal year.</p>
+  <div class="markdown level1 summary"><p>Returns the first day of the specified quarter number (1-4) within the given fiscal year.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -768,7 +768,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>quarter</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The quarter number (1–4).</p>
+    <dd><p>The quarter number (1-4).</p>
 </dd>
     <dt><code>fiscalYear</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
     <dd><p>The fiscal year whose quarter boundary is being requested.</p>
@@ -805,7 +805,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_GetWeeksInFiscalYear_System_Int32_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.GetWeeksInFiscalYear(System.Int32)">
   GetWeeksInFiscalYear(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -848,7 +848,7 @@ observed calendar year. Implementations may override with a more efficient or mo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_IQuarterDefinitionProvider_Is53WeekFiscalYear_System_Int32_" data-uid="Bodu.Extensions.IQuarterDefinitionProvider.Is53WeekFiscalYear(System.Int32)">
   Is53WeekFiscalYear(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/IQuarterDefinitionProvider.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -914,7 +914,7 @@ spans 364 days (52 complete weeks).</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

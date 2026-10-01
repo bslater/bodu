@@ -88,7 +88,7 @@
 <h1 id="json-serialization">JSON serialization</h1>
 
 <p><code>Bodu.Numerics.Serialization.Json</code> is the companion package that round-trips the <code>Bodu.Numerics</code> value types through <code>System.Text.Json</code>. It covers <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.Interval-1.html">Interval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.DiscreteInterval-1.html">DiscreteInterval&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.IntervalSet-1.html">IntervalSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Numerics.BigDecimal.html">BigDecimal</a>, and <a class="xref" href="../../api/Bodu.Numerics.Complex-1.html">Complex&lt;T&gt;</a>.</p>
-<p>The core <code>Bodu.Numerics</code> library is deliberately <strong>serialization-agnostic</strong> — the value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code>. JSON support is opt-in through this package, so a consumer of just <code>Fraction&lt;T&gt;</code> pays nothing for the serializer. Install it alongside the core package:</p>
+<p>The core <code>Bodu.Numerics</code> library is deliberately <strong>serialization-agnostic</strong> - the value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code>. JSON support is opt-in through this package, so a consumer of just <code>Fraction&lt;T&gt;</code> pays nothing for the serializer. Install it alongside the core package:</p>
 <pre><code class="lang-shell">dotnet add package Bodu.Numerics.Serialization.Json
 </code></pre>
 <h2 id="registration">Registration</h2>
@@ -144,10 +144,10 @@ Fraction&lt;int&gt; value = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt;&gt
 </tbody>
 </table>
 <p><code>DiscreteInterval&lt;T&gt;</code> serializes through the <code>Interval&lt;T&gt;</code> shape over its canonical closed integer bounds (compact form <code>&quot;[1, 5]&quot;</code>), and <code>IntervalSet&lt;T&gt;</code> serializes as a JSON <strong>array</strong> of its <code>Interval&lt;T&gt;</code> pieces (empty set → <code>[]</code>). Both honour the selected policy.</p>
-<p><code>BigDecimal</code> serializes as the canonical object <code>{ &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }</code> under <code>Strict</code> (the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly) and as the plain decimal string <code>&quot;12.340&quot;</code> under <code>Compact</code>. <code>Lenient</code> reads either shape. The string form is used for <code>Compact</code> — rather than a bare JSON number — because many consumers narrow long numbers to IEEE-754 <code>double</code>.</p>
-<p><code>Complex&lt;T&gt;</code> serializes as the canonical object <code>{ &quot;real&quot;: 3, &quot;imaginary&quot;: 4 }</code> under <code>Strict</code> and <code>Lenient</code> — a finite component is a JSON number, while a non-finite one is written as the string <code>&quot;NaN&quot;</code>, <code>&quot;Infinity&quot;</code>, or <code>&quot;-Infinity&quot;</code> (either form is accepted on read) — and as the <code>&quot;&lt;3; 4&gt;&quot;</code> string under <code>Compact</code>, delegating to <code>Complex&lt;T&gt;.ToString</code> / <code>TryParse</code> under the invariant culture.</p>
-<p>Under <code>Strict</code> and <code>Lenient</code>, property names compare case-insensitively, duplicate properties are rejected, and unknown properties are ignored. <code>Lenient</code> writes the same shape as <code>Strict</code> — it only differs on <em>read</em>, where it is an <em>import</em> convenience; persist with <code>Strict</code> or <code>Compact</code>. Compact reads delegate to each type's <code>TryParse</code> path under the invariant culture, so payloads are stable regardless of the ambient culture.</p>
-<h2 id="worked-example--each-policy">Worked example — each policy</h2>
+<p><code>BigDecimal</code> serializes as the canonical object <code>{ &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }</code> under <code>Strict</code> (the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly) and as the plain decimal string <code>&quot;12.340&quot;</code> under <code>Compact</code>. <code>Lenient</code> reads either shape. The string form is used for <code>Compact</code> - rather than a bare JSON number - because many consumers narrow long numbers to IEEE-754 <code>double</code>.</p>
+<p><code>Complex&lt;T&gt;</code> serializes as the canonical object <code>{ &quot;real&quot;: 3, &quot;imaginary&quot;: 4 }</code> under <code>Strict</code> and <code>Lenient</code> - a finite component is a JSON number, while a non-finite one is written as the string <code>&quot;NaN&quot;</code>, <code>&quot;Infinity&quot;</code>, or <code>&quot;-Infinity&quot;</code> (either form is accepted on read) - and as the <code>&quot;&lt;3; 4&gt;&quot;</code> string under <code>Compact</code>, delegating to <code>Complex&lt;T&gt;.ToString</code> / <code>TryParse</code> under the invariant culture.</p>
+<p>Under <code>Strict</code> and <code>Lenient</code>, property names compare case-insensitively, duplicate properties are rejected, and unknown properties are ignored. <code>Lenient</code> writes the same shape as <code>Strict</code> - it only differs on <em>read</em>, where it is an <em>import</em> convenience; persist with <code>Strict</code> or <code>Compact</code>. Compact reads delegate to each type's <code>TryParse</code> path under the invariant culture, so payloads are stable regardless of the ambient culture.</p>
+<h2 id="worked-example---each-policy">Worked example - each policy</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">var options = new JsonSerializerOptions().AddNumericsJsonConverters();               // Strict
 var compact = new JsonSerializerOptions().AddNumericsJsonConverters(NumericsJsonPolicy.Compact);
@@ -189,12 +189,12 @@ JsonSerializer.Serialize(set, compact);                          // → [&quot;[
 </tr>
 <tr>
 <td>Manual <code>options.Converters.Add(...)</code> of a factory or closed converter</td>
-<td>Whatever you add — e.g. only fractions, or only one backing type</td>
+<td>Whatever you add - e.g. only fractions, or only one backing type</td>
 <td>Any policy, per instance: <code>new FractionJsonConverterFactory(NumericsJsonPolicy.Compact)</code> covers every <code>Fraction&lt;T&gt;</code>; <code>new FractionJsonConverter&lt;int&gt;(NumericsJsonPolicy.Compact)</code> covers <code>Fraction&lt;int&gt;</code> only.</td>
 </tr>
 </tbody>
 </table>
-<p><code>AddNumericsJsonConverters</code> returns the same <code>JsonSerializerOptions</code> instance for inline chaining. It throws <code>ArgumentNullException</code> for a null options instance, <code>ArgumentOutOfRangeException</code> for an undefined policy value, and <code>InvalidOperationException</code> when the options instance has already been used for (de)serialization and its <code>Converters</code> collection has become read-only — configure options before first use.</p>
+<p><code>AddNumericsJsonConverters</code> returns the same <code>JsonSerializerOptions</code> instance for inline chaining. It throws <code>ArgumentNullException</code> for a null options instance, <code>ArgumentOutOfRangeException</code> for an undefined policy value, and <code>InvalidOperationException</code> when the options instance has already been used for (de)serialization and its <code>Converters</code> collection has become read-only - configure options before first use.</p>
 <h2 id="convenience-helpers">Convenience helpers</h2>
 <p><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonExtensions.html">FractionJsonExtensions</a> offers <code>ToJson()</code> / <code>FromJson&lt;T&gt;(string)</code> wrappers that configure a fresh options instance per call:</p>
 <!-- compile -->
@@ -203,13 +203,13 @@ JsonSerializer.Serialize(set, compact);                          // → [&quot;[
 string text = new Fraction&lt;int&gt;(-7, 8).ToJson();                 // &quot;{&quot;numerator&quot;:-7,&quot;denominator&quot;:8}&quot;
 Fraction&lt;int&gt; back = FractionJsonExtensions.FromJson&lt;int&gt;(text);
 </code></pre>
-<p>These helpers call the reflection-based <code>JsonSerializer</code> and are annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code> — using them in a trimmed or native-AOT app produces the standard analyzer warnings. For repeated serialization, build one <code>JsonSerializerOptions</code> with <code>AddNumericsJsonConverters</code> and reuse it.</p>
+<p>These helpers call the reflection-based <code>JsonSerializer</code> and are annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code> - using them in a trimmed or native-AOT app produces the standard analyzer warnings. For repeated serialization, build one <code>JsonSerializerOptions</code> with <code>AddNumericsJsonConverters</code> and reuse it.</p>
 <h2 id="trimming-and-aot">Trimming and AOT</h2>
 <p>The converters are reflection-free at the value level: <code>AddNumericsJsonConverters</code> registers the factory set, and you point a source-generated <code>JsonSerializerContext</code> at your DTO so the trimmer can see the closed types. Prefer that path over the <code>ToJson()</code> / <code>FromJson()</code> helpers whenever trimming or AOT is in play.</p>
 <h2 id="how-the-converters-resolve-the-generic-parameter">How the converters resolve the generic parameter</h2>
-<p><code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, and <code>Complex&lt;T&gt;</code> are open generics, so the registered entries are <em>factories</em> that bind the concrete <code>T</code> per request and produce the matching closed converter. You never instantiate the closed converters directly — register the factory (via <code>AddNumericsJsonConverters</code> or by adding it to <code>Converters</code>) and serialize as normal. <code>BigDecimal</code> is non-generic, so it registers as a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a> rather than a factory.</p>
-<h2 id="custom-backing-types--fractionbiginteger-without-precision-loss">Custom backing types — <code>Fraction&lt;BigInteger&gt;</code> without precision loss</h2>
-<p>The object-form converter writes each component as a <em>raw</em> JSON number — not through the writer's <code>Int64</code> / <code>decimal</code> primitives — so a <code>BigInteger</code>-backed fraction round-trips at any magnitude:</p>
+<p><code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, and <code>Complex&lt;T&gt;</code> are open generics, so the registered entries are <em>factories</em> that bind the concrete <code>T</code> per request and produce the matching closed converter. You never instantiate the closed converters directly - register the factory (via <code>AddNumericsJsonConverters</code> or by adding it to <code>Converters</code>) and serialize as normal. <code>BigDecimal</code> is non-generic, so it registers as a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a> rather than a factory.</p>
+<h2 id="custom-backing-types---fractionbiginteger-without-precision-loss">Custom backing types - <code>Fraction&lt;BigInteger&gt;</code> without precision loss</h2>
+<p>The object-form converter writes each component as a <em>raw</em> JSON number - not through the writer's <code>Int64</code> / <code>decimal</code> primitives - so a <code>BigInteger</code>-backed fraction round-trips at any magnitude:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Numerics;
 
@@ -223,7 +223,7 @@ string json = JsonSerializer.Serialize(precise, options);
 Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigInteger&gt;&gt;(json, options);
 // → exact round-trip; nothing was truncated through long or decimal
 </code></pre>
-<p>On read, each component accepts either a JSON number or a numeric <em>string</em> token, parsed as <code>T</code> under the invariant culture — so systems that cannot carry arbitrary-precision JSON numbers can quote them instead:</p>
+<p>On read, each component accepts either a JSON number or a numeric <em>string</em> token, parsed as <code>T</code> under the invariant culture - so systems that cannot carry arbitrary-precision JSON numbers can quote them instead:</p>
 <pre><code class="lang-csharp">JsonSerializer.Deserialize&lt;Fraction&lt;BigInteger&gt;&gt;(
     &quot;&quot;&quot;{ &quot;numerator&quot;: &quot;123456789012345678901234567890&quot;, &quot;denominator&quot;: &quot;7&quot; }&quot;&quot;&quot;, options);
 // → same value as above
@@ -243,7 +243,7 @@ Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigI
 <tr>
 <td>Token is not an object (e.g. a bare string under <code>Strict</code>)</td>
 <td><code>Strict</code></td>
-<td><code>JsonException</code> — object form expected. (<code>Lenient</code> routes a top-level string through the compact parser instead.)</td>
+<td><code>JsonException</code> - object form expected. (<code>Lenient</code> routes a top-level string through the compact parser instead.)</td>
 </tr>
 <tr>
 <td>Missing <code>&quot;numerator&quot;</code> / <code>&quot;denominator&quot;</code> (fraction) or a bounded side's <code>&quot;lower&quot;</code> / <code>&quot;upper&quot;</code> (interval)</td>
@@ -253,12 +253,12 @@ Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigI
 <tr>
 <td>Duplicate property (e.g. <code>&quot;numerator&quot;</code> twice)</td>
 <td><code>Strict</code>, <code>Lenient</code></td>
-<td><code>JsonException</code> — duplicates are rejected, never last-wins.</td>
+<td><code>JsonException</code> - duplicates are rejected, never last-wins.</td>
 </tr>
 <tr>
 <td><code>&quot;denominator&quot;: 0</code></td>
 <td><code>Strict</code>, <code>Lenient</code></td>
-<td><code>JsonException</code> — a zero denominator is invalid on the wire.</td>
+<td><code>JsonException</code> - a zero denominator is invalid on the wire.</td>
 </tr>
 <tr>
 <td>Missing <code>&quot;lowerInclusive&quot;</code> / <code>&quot;upperInclusive&quot;</code> on a bounded side</td>
@@ -268,7 +268,7 @@ Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigI
 <tr>
 <td><code>{ &quot;empty&quot;: true }</code> carrying extra endpoint or unbounded properties</td>
 <td><code>Strict</code>, <code>Lenient</code></td>
-<td><code>JsonException</code> — the empty form must stand alone.</td>
+<td><code>JsonException</code> - the empty form must stand alone.</td>
 </tr>
 <tr>
 <td>Component value that is neither a number nor a parseable numeric string</td>
@@ -283,21 +283,21 @@ Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigI
 <tr>
 <td>Non-array token for an <code>IntervalSet&lt;T&gt;</code></td>
 <td>all</td>
-<td><code>JsonException</code> — an interval set is a JSON array of pieces.</td>
+<td><code>JsonException</code> - an interval set is a JSON array of pieces.</td>
 </tr>
 </tbody>
 </table>
 <p>Unknown properties are <em>ignored</em> (skipped), matching the BCL convention for forward compatibility.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> — the rational type being serialized.</li>
-<li><a href="interval.html">Working with <code>Interval&lt;T&gt;</code></a> — the interval type and its bracket notation.</li>
-<li><a href="formatting-and-parsing.html">Formatting and parsing <code>Fraction&lt;T&gt;</code></a> — the text forms the <code>Compact</code> policy delegates to.</li>
-<li><a href="index.html">Bodu.Numerics guides</a> — the member overview for this package.</li>
-<li><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic guides</a> — every guide in the topic.</li>
-<li><a href="../../docs/topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a> — package boundaries and the decision table.</li>
+<li><a href="fraction.html">Working with <code>Fraction&lt;T&gt;</code></a> - the rational type being serialized.</li>
+<li><a href="interval.html">Working with <code>Interval&lt;T&gt;</code></a> - the interval type and its bracket notation.</li>
+<li><a href="formatting-and-parsing.html">Formatting and parsing <code>Fraction&lt;T&gt;</code></a> - the text forms the <code>Compact</code> policy delegates to.</li>
+<li><a href="index.html">Bodu.Numerics guides</a> - the member overview for this package.</li>
+<li><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic guides</a> - every guide in the topic.</li>
+<li><a href="../../docs/topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a> - package boundaries and the decision table.</li>
 <li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.NumericsJsonPolicy.html"><code>NumericsJsonPolicy</code></a> · <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.FractionJsonConverterFactory.html"><code>FractionJsonConverterFactory</code></a> · <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory.html"><code>IntervalJsonConverterFactory</code></a></li>
-<li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a> — full namespace overview.</li>
+<li><a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.html">Bodu.Numerics.Serialization.Json API reference</a> - full namespace overview.</li>
 </ul>
 
 </article>
@@ -317,7 +317,7 @@ Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigI
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

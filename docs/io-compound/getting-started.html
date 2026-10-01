@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.IO.Compound — Getting started | BODU </title>
+      <title>Bodu.IO.Compound - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.IO.Compound — Getting started | BODU ">
+      <meta name="title" content="Bodu.IO.Compound - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduiocompound--getting-started">Bodu.IO.Compound — Getting started</h1>
+<h1 id="boduiocompound---getting-started">Bodu.IO.Compound - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>compound file</em>, <em>storage</em>, <em>stream</em>, <em>sector chain</em>, or <em>property set</em>? Read <a href="concepts.html">Core concepts</a> first.</p>
 <h2 id="install">Install</h2>
@@ -100,7 +100,7 @@ using CompoundFile file = CompoundFile.Open(File.OpenRead(&quot;book.xls&quot;))
 CompoundStream workbook = file.RootStorage.OpenStream(&quot;Workbook&quot;);
 byte[] bytes = workbook.ReadAllBytes();
 </code></pre>
-<p><code>CompoundFile.Open</code> reads the source from its current position to the end. The returned instance is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> — the <code>using</code> declaration disposes it and closes the source unless <code>leaveOpen: true</code> was passed.</p>
+<p><code>CompoundFile.Open</code> reads the source from its current position to the end. The returned instance is <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a> - the <code>using</code> declaration disposes it and closes the source unless <code>leaveOpen: true</code> was passed.</p>
 <h2 id="probe-before-opening">Probe before opening</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
@@ -124,7 +124,7 @@ foreach (CompoundEntryInfo info in file.RootStorage.EnumerateEntries())
 foreach (CompoundStorage child in file.RootStorage.EnumerateStorages())
     Console.WriteLine($&quot;[{child.Name}]&quot;);
 </code></pre>
-<p><code>EnumerateEntries</code> yields a metadata snapshot for every direct child; <code>EnumerateStorages</code> and <code>EnumerateStreams</code> yield the navigable child storages and stream entries. All three enumerate in <strong>directory (canonical) order</strong> — the in-order traversal of each storage's red-black child tree — and are scoped to direct children only. Names carry their control prefixes verbatim, so a lookup of a summary-information stream must pass the literal <code>\x05</code>-prefixed name.</p>
+<p><code>EnumerateEntries</code> yields a metadata snapshot for every direct child; <code>EnumerateStorages</code> and <code>EnumerateStreams</code> yield the navigable child storages and stream entries. All three enumerate in <strong>directory (canonical) order</strong> - the in-order traversal of each storage's red-black child tree - and are scoped to direct children only. Names carry their control prefixes verbatim, so a lookup of a summary-information stream must pass the literal <code>\x05</code>-prefixed name.</p>
 <h2 id="walk-the-whole-tree-recursively">Walk the whole tree recursively</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
@@ -144,7 +144,7 @@ static void Walk(CompoundStorage storage, int depth = 0)
 using CompoundFile file = CompoundFile.OpenRead(&quot;message.msg&quot;);
 Walk(file.RootStorage);
 </code></pre>
-<p><code>EnumerateStorages</code> returns navigable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> objects, so descending into a <code>.msg</code> attachment or a Word formatting storage is just a recursive call — there is no path syntax, you walk one storage at a time.</p>
+<p><code>EnumerateStorages</code> returns navigable <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> objects, so descending into a <code>.msg</code> attachment or a Word formatting storage is just a recursive call - there is no path syntax, you walk one storage at a time.</p>
 <h2 id="read-a-large-stream-incrementally">Read a large stream incrementally</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
@@ -157,7 +157,7 @@ using var reader = new StreamReader(stream, Encoding.Unicode);
 
 string text = reader.ReadToEnd();
 </code></pre>
-<p><code>OpenStream(name)</code> returns a read-only, seekable <code>CompoundStream</code> you can hand to any <code>Stream</code> consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload. (On a writable file, the <code>OpenStream(name, FileMode, FileAccess)</code> overload and <code>CreateStream</code> return a read-write cursor instead — see the <a href="../../guides/io-compound/authoring-compound-files.html">authoring guide</a>.)</p>
+<p><code>OpenStream(name)</code> returns a read-only, seekable <code>CompoundStream</code> you can hand to any <code>Stream</code> consumer. Under a streaming file it reads sectors on demand; under a buffered file it works over the in-memory payload. (On a writable file, the <code>OpenStream(name, FileMode, FileAccess)</code> overload and <code>CreateStream</code> return a read-write cursor instead - see the <a href="../../guides/io-compound/authoring-compound-files.html">authoring guide</a>.)</p>
 <h2 id="read-document-metadata">Read document metadata</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 using Bodu.IO.Compound.PropertySets;
@@ -196,7 +196,7 @@ try
 }
 catch (CompoundFileFormatException ex)
 {
-    // ex.Category is a stable CompoundFileError — InvalidSignature, TruncatedFile,
+    // ex.Category is a stable CompoundFileError - InvalidSignature, TruncatedFile,
     // FatCycle, DirectoryCycle, StreamChainTooShort, and so on.
     Console.WriteLine($&quot;Not a usable compound file: {ex.Category}&quot;);
 }
@@ -204,10 +204,10 @@ catch (CompoundFileFormatException ex)
 <p>A modern <code>.xlsx</code> / <code>.docx</code> (a ZIP archive, not OLE2) fails the signature check and surfaces <code>CompoundFileError.InvalidSignature</code>. Probe first with <code>CompoundFile.IsCompoundFile</code> when a non-compound input is an expected outcome rather than an error.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the vocabulary behind these samples: header, FAT/mini-FAT, the red-black directory, validation levels, and the error categories.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — headline types and common scenarios.</li>
-<li><strong><a href="../../guides/io-compound/index.html">Bodu.IO.Compound guides</a></strong> — reading files, buffered vs streaming access, and property sets.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the vocabulary behind these samples: header, FAT/mini-FAT, the red-black directory, validation levels, and the error categories.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - headline types and common scenarios.</li>
+<li><strong><a href="../../guides/io-compound/index.html">Bodu.IO.Compound guides</a></strong> - reading files, buffered vs streaming access, and property sets.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound</a>.</li>
 </ul>
 
 </article>
@@ -227,7 +227,7 @@ catch (CompoundFileFormatException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

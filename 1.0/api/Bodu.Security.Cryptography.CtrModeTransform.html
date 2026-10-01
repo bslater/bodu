@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_CtrModeTransform" data-uid="Bodu.Security.Cryptography.CtrModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CtrModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ CtrModeTransform Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs">CtrModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs">CtrModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies Counter (CTR) mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, turning it into a synchronous stream
@@ -202,24 +202,24 @@ int written = ctr.Transform(plaintext, ciphertext, encrypt: true);
 
   <h2 id="Bodu_Security_Cryptography_CtrModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-<img src="../images/diagrams/classic-modes.svg" alt="CTR panel — independent counter blocks are encrypted to form a keystream, then XORed with plaintext.">
+<img src="../images/diagrams/classic-modes.svg" alt="CTR panel - independent counter blocks are encrypted to form a keystream, then XORed with plaintext.">
 </p>
 <p>
 CTR is self-inverse: the same <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html#Bodu_Security_Cryptography_CtrModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> operation is applied for both encryption and decryption. The
 cipher's <em>encrypt</em> primitive is always used; the decrypt primitive is never called. See <b>panel 5</b> of the
-diagram above: each cell has its own counter block <code>CTRᵢ</code> and no arrows connect one cell to the next — meaning
+diagram above: each cell has its own counter block <code>CTRᵢ</code> and no arrows connect one cell to the next - meaning
 the keystream is trivially parallelisable and supports random-access seeking into the middle of a message.
 </p>
 <p>
 That independence is also where the sharpest pitfall lives. To protect against keystream reuse, the transform tracks
 counter wrap-around: once the block-width counter rolls over its full 2^n value space back to zero, the next call to
 <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html#Bodu_Security_Cryptography_CtrModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a>. Reusing a <code>(key, nonce)</code> pair across
-messages is catastrophic — the XOR of two ciphertexts recovers the XOR of the two plaintexts — so callers must
+messages is catastrophic - the XOR of two ciphertexts recovers the XOR of the two plaintexts - so callers must
 ensure each counter value is used at most once per key.
 </p>
 <p>
 <strong>When to use CTR.</strong> The right confidentiality-only mode for new code that needs random access,
-parallelisable encryption, or a stream-cipher shape — disk encryption layers without authentication, network
+parallelisable encryption, or a stream-cipher shape - disk encryption layers without authentication, network
 protocols where authentication is provided separately, and anywhere a precomputed keystream is useful. CTR is also
 the keystream layer of the major AEAD modes; if you need authentication as well, reach for
 <a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> (CTR + GHASH) or <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a> (CTR + OMAC) directly rather than
@@ -241,7 +241,7 @@ with available cores or SIMD width.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CtrModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.CtrModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   CtrModeTransform(IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -294,13 +294,13 @@ with available cores or SIMD width.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CtrModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.CtrModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Releases the resources used by this instance and zeroes the retained counter state so that key-equivalent
 counter values do not linger in memory after disposal. The underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> is not
-disposed by this type — ownership remains with the caller.</p>
+disposed by this type - ownership remains with the caller.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -330,7 +330,7 @@ disposed by this type — ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CtrModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.CtrModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/CtrModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -372,7 +372,8 @@ disposed by this type — ownership remains with the caller.</p>
   <h4 class="section" id="Bodu_Security_Cryptography_CtrModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Each call consumes one counter block per whole or partial block of input; the unused keystream of a final
 partial block is discarded rather than carried into the next call. Counter blocks are encrypted a run at a time
-through <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_Security_Cryptography_IBlockCipher_EncryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">EncryptBlocks(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>.</p>
+through <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_Security_Cryptography_IBlockCipher_EncryptBlocks_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__">EncryptBlocks(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;)</a>, except under <a class="xref" href="Bodu.Security.Cryptography.Serpent128Cipher.html">Serpent128Cipher</a>, whose kernels
+form the counter blocks in registers and combine their keystream with the input as they store it.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -399,7 +400,7 @@ through <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_
 
   <h2 id="seealso">See Also</h2>
   <div class="seealso">
-      <div><span><a href="../guides/cryptography/cipher-modes.html#ctr--parallel-seekable-stream-shaped">CTR walk-through in
+      <div><span><a href="../guides/cryptography/cipher-modes.html#ctr---parallel-seekable-stream-shaped">CTR walk-through in
              the cipher-modes guide</a></span></div>
   </div>
 
@@ -419,7 +420,7 @@ through <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html#Bodu_
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

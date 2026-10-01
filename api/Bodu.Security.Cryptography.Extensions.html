@@ -94,7 +94,7 @@
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
   <div class="facts text-secondary">
     <dl class="bodu-package"><dt>Package</dt><dd>
-      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+      <div><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </div>
     </dd></dl>
   </div>
@@ -105,12 +105,12 @@
 <p><strong>Bodu.Security.Cryptography.Extensions</strong> holds the extension-method surfaces that compose on top of the BCL cryptography types and the Bodu cipher / hash bases. The types here add convenience methods that keep the cipher / hash usage sites concise without pulling additional dependencies into the core algorithms.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a> — convenience methods on <code>System.Security.Cryptography.SymmetricAlgorithm</code> for one-shot encrypt / decrypt over spans and arrays.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a> — convenience methods on <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> for one-shot stream-cipher encrypt / decrypt and span-friendly variants.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.html">TweakableSymmetricAlgorithmExtensions</a> — convenience methods on <a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> — Threefish — including tweak-passing one-shot APIs.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> — convenience methods on <code>System.Security.Cryptography.HashAlgorithm</code> for one-shot hashing over spans and string / encoding pairs.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a> — convenience methods on <code>System.Security.Cryptography.ICryptoTransform</code> for one-shot transform-block / transform-final-block use without managing intermediate buffers.</li>
-<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a> — <code>byte[]</code>-returning <code>Encrypt</code> / <code>Decrypt</code> overloads over the stream-cipher AEAD transforms (<a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> and friends), so callers can seal / open a message without sizing the output span by hand.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions.html">SymmetricAlgorithmExtensions</a> - convenience methods on <code>System.Security.Cryptography.SymmetricAlgorithm</code> for one-shot encrypt / decrypt over spans and arrays.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions.html">SymmetricStreamAlgorithmExtensions</a> - convenience methods on <a class="xref" href="Bodu.Security.Cryptography.SymmetricStreamAlgorithm.html">SymmetricStreamAlgorithm</a> for one-shot stream-cipher encrypt / decrypt and span-friendly variants.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions.html">TweakableSymmetricAlgorithmExtensions</a> - convenience methods on <a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> - Threefish - including tweak-passing one-shot APIs.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions.html">HashAlgorithmExtensions</a> - convenience methods on <code>System.Security.Cryptography.HashAlgorithm</code> for one-shot hashing over spans and string / encoding pairs.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a> - convenience methods on <code>System.Security.Cryptography.ICryptoTransform</code> for one-shot transform-block / transform-final-block use without managing intermediate buffers.</li>
+<li><a class="xref" href="Bodu.Security.Cryptography.Extensions.AeadTransformExtensions.html">AeadTransformExtensions</a> - <code>byte[]</code>-returning <code>Encrypt</code> / <code>Decrypt</code> overloads over the stream-cipher AEAD transforms (<a class="xref" href="Bodu.Security.Cryptography.Poly1305AeadTransform.html">Poly1305AeadTransform</a> and friends), so callers can seal / open a message without sizing the output span by hand.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -122,7 +122,7 @@ blowfish.GenerateIV();
 blowfish.BlockMode    = CipherModeKind.CBC;
 blowfish.BlockPadding = PaddingModeKind.PKCS7;
 
-// SymmetricAlgorithmExtensions.Encrypt / Decrypt: one-shot over a span or array —
+// SymmetricAlgorithmExtensions.Encrypt / Decrypt: one-shot over a span or array -
 // creates the transform, runs it, and disposes it for you.
 byte[] ciphertext = blowfish.Encrypt(plaintext);
 byte[] plain      = blowfish.Decrypt(ciphertext);
@@ -130,7 +130,7 @@ byte[] plain      = blowfish.Decrypt(ciphertext);
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Allocation-aware overloads.</strong> Where the BCL surface only ships allocating variants, the extensions add span-based or buffer-passing overloads.</li>
-<li><strong>No new primitives.</strong> This namespace adds no new cipher or hash <em>algorithms</em> — it ships only the convenience surfaces. The algorithms themselves live in the parent <a class="xref" href="Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a> namespace.</li>
+<li><strong>No new primitives.</strong> This namespace adds no new cipher or hash <em>algorithms</em> - it ships only the convenience surfaces. The algorithms themselves live in the parent <a class="xref" href="Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a> namespace.</li>
 <li><strong>See also:</strong> the <a href="../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a>, the <a href="../guides/cryptography/encryption-basics.html">encryption basics guide</a>, the <a href="../guides/cryptography/composing-primitives.html">composing primitives guide</a>.</li>
 </ul>
 </div>
@@ -161,7 +161,7 @@ verification against expected digests supplied as bytes, spans, memory, or hex s
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions.html">ICryptoTransformExtensions</a></dt>
       <dd><p>Extends <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.icryptotransform">ICryptoTransform</a> with one-shot, span/memory-aware, stream-to-stream, and async transform
-helpers — sized buffers, finalization, and stream pumping rolled into single calls.</p>
+helpers - sized buffers, finalization, and stream pumping rolled into single calls.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -202,7 +202,7 @@ that surfaces invalid key, IV, or tweak material as a <a href="https://learn.mic
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

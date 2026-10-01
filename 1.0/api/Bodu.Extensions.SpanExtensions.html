@@ -8,7 +8,7 @@
       <meta name="title" content="SpanExtensions Class
  | BODU ">
       
-      <meta name="description" content="Provides span-shaping helpers — read-only conversion and copy-and-reverse operations — for code that already operates on  or .">
+      <meta name="description" content="Provides span-shaping helpers - read-only conversion and copy-and-reverse operations - for code that already operates on  or .">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_SpanExtensions" data-uid="Bodu.Extensions.SpanExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 SpanExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.AsReadOnly.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.AsReadOnly.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,12 +102,12 @@ SpanExtensions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<a class="xref" href="Bodu.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.0.1</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.AsReadOnly.cs">SpanExtensions.AsReadOnly.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.AsReadOnly.cs">SpanExtensions.AsReadOnly.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides span-shaping helpers — read-only conversion and copy-and-reverse operations — for code that already
+  <div class="markdown summary"><p>Provides span-shaping helpers - read-only conversion and copy-and-reverse operations - for code that already
 operates on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> or <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a>.</p>
 </div>
 
@@ -166,7 +166,7 @@ operates on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> is the right tool for stack-allocated, zero-copy work, but the BCL only ships a small number
 of transformations on it directly. This class adds two operations: a free <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> -&gt;
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> conversion that makes intent visible to callers, and a family of copy-and-reverse
-operators that accept either an index/count pair or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> — matching the surface used by
+operators that accept either an index/count pair or a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range">Range</a> - matching the surface used by
 <code>ArrayExtensions.Reverse</code> so the same call shape works regardless of whether the caller holds a span or an
 array.
 </p>
@@ -176,24 +176,24 @@ The API surface is intentionally narrow: <code>AsReadOnly</code> for capability-
 windowed reversal. Unlike the in-place <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, every <code>ToReversed</code>
 overload copies the full source into a newly heap-allocated array and reverses the nominated window on that copy;
 the returned <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> wraps the fresh allocation, and the source memory is never modified. This is
-also why the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> overloads can return a writeable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> — it aliases the
+also why the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> overloads can return a writeable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> - it aliases the
 copy, not the read-only source.
 </p>
 <p>
 <code>AsReadOnly</code> is allocation-free; the <code>ToReversed</code> overloads allocate one array per call. Reversing a
-partial window copies all elements and reverses only those inside the window. The methods are not thread-safe —
+partial window copies all elements and reverses only those inside the window. The methods are not thread-safe -
 concurrent access to the underlying buffer must be synchronized externally.
 </p>
 <example>
 <pre><code class="lang-csharp">Span&lt;int&gt; buffer = stackalloc int[] { 1, 2, 3, 4, 5, 6 };
 
-// Reverse only the trailing window using a Range — returns a new heap-backed span.
+// Reverse only the trailing window using a Range - returns a new heap-backed span.
 Span&lt;int&gt; reversed = buffer.ToReversed(2..); // =&gt; { 1, 2, 6, 5, 4, 3 }; buffer is unchanged
 
 // Narrow the surface before handing the span to a read-only consumer.
 ReadOnlySpan&lt;int&gt; view = buffer.AsReadOnly();
 
-// Reverse the full span — again into a fresh copy.
+// Reverse the full span - again into a fresh copy.
 Span&lt;int&gt; full = buffer.ToReversed(); // =&gt; { 6, 5, 4, 3, 2, 1 }; buffer is unchanged</code></pre>
 </example>
 </div>
@@ -208,7 +208,7 @@ Span&lt;int&gt; full = buffer.ToReversed(); // =&gt; { 6, 5, 4, 3, 2, 1 }; buffe
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_AsReadOnly__1_System_Span___0__" data-uid="Bodu.Extensions.SpanExtensions.AsReadOnly``1(System.Span{``0})">
   AsReadOnly&lt;T&gt;(Span&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.AsReadOnly.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.AsReadOnly.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -251,7 +251,7 @@ No data is copied.</p>
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_AsReadOnly__1_System_Span___0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 This method is a zero-cost wrapper around the implicit conversion from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span&lt;T&gt;</a> to
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> defined by the runtime. The compiler erases the call entirely — the emitted IL is
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan&lt;T&gt;</a> defined by the runtime. The compiler erases the call entirely - the emitted IL is
 identical to writing <code>(ReadOnlySpan&lt;T&gt;)source</code> at the call site.
 </p>
 <p>
@@ -275,7 +275,7 @@ intent-expressing wrapper over an implicit conversion rather than requiring call
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.ReadOnlySpan{``0})">
   ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -318,7 +318,7 @@ intent-expressing wrapper over an implicit conversion rather than requiring call
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
-this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+this method never mutates <code class="paramref">source</code> - the reversal is applied to a fresh heap-allocated copy.
 </p>
 <p>
 Delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a> with <code>start = 0</code> and
@@ -336,7 +336,7 @@ Delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.html#Bodu_Exte
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.ReadOnlySpan{``0},System.Int32,System.Int32)">
   ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -395,7 +395,7 @@ Span&lt;int&gt; result = data.AsSpan().ToReversed(index: 1, count: 3); // [ 1, 4
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
-this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+this method never mutates <code class="paramref">source</code> - the reversal is applied to a fresh heap-allocated copy.
 </p>
 <p>
 This is the canonical public implementation. The full-span overload (<a class="xref" href="Bodu.Extensions.SpanExtensions.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;)</a>)
@@ -429,7 +429,7 @@ SIMD-accelerated copy and reversal.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.ReadOnlySpan{``0},System.Range)">
   ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, Range)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -484,7 +484,7 @@ Span&lt;int&gt; fromEnd = data.AsSpan().ToReversed(^4..^1); // [ 1, 4, 3, 2, 5 ]
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Range__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
-this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+this method never mutates <code class="paramref">source</code> - the reversal is applied to a fresh heap-allocated copy.
 </p>
 <p>
 Resolves <code class="paramref">range</code> to an offset and length via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a> and
@@ -516,7 +516,7 @@ resulting offset and length are then validated and forwarded to
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.Span{``0})">
   ToReversed&lt;T&gt;(Span&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -559,7 +559,7 @@ resulting offset and length are then validated and forwarded to
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
-this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+this method never mutates <code class="paramref">source</code> - the reversal is applied to a fresh heap-allocated copy.
 </p>
 <p>
 Delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__System_Int32_System_Int32_">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;, int, int)</a> with <code>start = 0</code> and
@@ -577,7 +577,7 @@ Delegates to <a class="xref" href="Bodu.Extensions.SpanExtensions.html#Bodu_Exte
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Int32_System_Int32_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.Span{``0},System.Int32,System.Int32)">
   ToReversed&lt;T&gt;(Span&lt;T&gt;, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -636,7 +636,7 @@ Span&lt;int&gt; result = data.AsSpan().ToReversed(index: 1, count: 3); // [ 1, 4
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Int32_System_Int32__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
-this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+this method never mutates <code class="paramref">source</code> - the reversal is applied to a fresh heap-allocated copy.
 </p>
 <p>
 This is the canonical public implementation. The full-span overload (<a class="xref" href="Bodu.Extensions.SpanExtensions.html#Bodu_Extensions_SpanExtensions_ToReversed__1_System_ReadOnlySpan___0__">ToReversed&lt;T&gt;(ReadOnlySpan&lt;T&gt;)</a>)
@@ -670,7 +670,7 @@ SIMD-accelerated copy and reversal.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Range_" data-uid="Bodu.Extensions.SpanExtensions.ToReversed``1(System.Span{``0},System.Range)">
   ToReversed&lt;T&gt;(Span&lt;T&gt;, Range)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Core/src/Extensions/SpanExtensions.ToReversed.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -725,7 +725,7 @@ Span&lt;int&gt; fromEnd = data.AsSpan().ToReversed(^4..^1); // [ 1, 4, 3, 2, 5 ]
   <h4 class="section" id="Bodu_Extensions_SpanExtensions_ToReversed__1_System_Span___0__System_Range__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Unlike the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.memoryextensions.reverse">Reverse&lt;T&gt;(Span&lt;T&gt;)</a>, which reverses a span <em>in place</em>,
-this method never mutates <code class="paramref">source</code> — the reversal is applied to a fresh heap-allocated copy.
+this method never mutates <code class="paramref">source</code> - the reversal is applied to a fresh heap-allocated copy.
 </p>
 <p>
 Resolves <code class="paramref">range</code> to an offset and length via <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.range.getoffsetandlength">GetOffsetAndLength(int)</a> and
@@ -779,7 +779,7 @@ resulting offset and length are then validated and forwarded to
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

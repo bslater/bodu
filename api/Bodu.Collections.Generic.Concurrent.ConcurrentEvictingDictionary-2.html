@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ConcurrentEvictingDictionary&lt;TKey, TValue&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ConcurrentEvictingDictionary&lt;TKey, TValue&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Collections.Concurrent.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections.Concurrent">Bodu.Collections.Concurrent</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs">ConcurrentEvictingDictionary{T,T}.Atomic.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs">ConcurrentEvictingDictionary{T,T}.Atomic.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a thread-safe, fixed-capacity dictionary that automatically removes entries based on a chosen eviction
@@ -215,8 +215,8 @@ Parallel.ForEach(requests, request =&gt;
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> is the thread-safe variant of
 <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>. It partitions its capacity across a fixed number of internal <em>segments</em>,
 each guarded by its own monitor: the key comparer's hash routes every key to exactly one segment, so operations on
-keys owned by different segments proceed in parallel. Reads are writes in an evicting cache — a lookup repositions
-the key for recency-tracked policies — so even <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a> takes its segment's lock; the striping
+keys owned by different segments proceed in parallel. Reads are writes in an evicting cache - a lookup repositions
+the key for recency-tracked policies - so even <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a> takes its segment's lock; the striping
 keeps that contention local.
 </p>
 <p>
@@ -228,9 +228,9 @@ constructor (or a capacity of 1) to obtain a single segment whose eviction seque
 exactly.
 </p>
 <p>
-The single-key operations — <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_">Add(TKey, TValue)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_">TryAdd(TKey, TValue)</a>,
+The single-key operations - <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_">Add(TKey, TValue)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_">TryAdd(TKey, TValue)</a>,
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1__">TryRemove(TKey, out TValue)</a>, the indexer,
-and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_">GetOrAdd(TKey, TValue)</a> — are each individually atomic and lock only the owning segment.
+and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_">GetOrAdd(TKey, TValue)</a> - are each individually atomic and lock only the owning segment.
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsEmpty">IsEmpty</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Clear">Clear()</a>, <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ToArray">ToArray()</a>, and the snapshot
 properties acquire every segment lock and therefore observe a coherent point-in-time state;
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ApproximateCount">ApproximateCount</a> is lock-free.
@@ -246,14 +246,14 @@ Supplying an <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryEx
 capacity policy, with the same lazy-purge model as the non-concurrent type: expired entries are invisible to lookups
 and enumeration before they are physically removed, capacity pressure purges a segment's expired entries ahead of a
 policy eviction, and <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a> reports the raw stored count <em>including</em> expired-but-unpurged
-entries — call <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired">RemoveExpired()</a> to reconcile. Without an expiration configuration the dictionary
+entries - call <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired">RemoveExpired()</a> to reconcile. Without an expiration configuration the dictionary
 performs no clock reads.
 </p>
 <p>
 Unlike <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>, this type exposes only the post-commit
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> event: under concurrency an eviction has already been committed by the time a handler
 could observe it, so a pre-removal event could not be honored. Handlers run after the segment lock has been released
-and their exceptions are suppressed (except <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.outofmemoryexception">OutOfMemoryException</a>) — see the event's documentation.
+and their exceptions are suppressed (except <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.outofmemoryexception">OutOfMemoryException</a>) - see the event's documentation.
 </p>
 </div>
 
@@ -267,7 +267,7 @@ and their exceptions are suppressed (except <a class="xref" href="https://learn.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor">
   ConcurrentEvictingDictionary()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -304,7 +304,7 @@ default capacity and eviction policy.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
   ConcurrentEvictingDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -351,7 +351,7 @@ copied from the specified sequence, using the default capacity and eviction poli
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy)">
   ConcurrentEvictingDictionary(IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -401,7 +401,7 @@ copied from the specified sequence, using the default capacity and the specified
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32)">
   ConcurrentEvictingDictionary(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -445,7 +445,7 @@ specified capacity and the default eviction policy.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   ConcurrentEvictingDictionary(int, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -492,7 +492,7 @@ specified capacity and time-based expiration, using the default eviction policy 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy)">
   ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -540,7 +540,7 @@ specified capacity and eviction policy.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -591,7 +591,7 @@ specified capacity, eviction policy, and time-based expiration, using the defaul
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0})">
   ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -642,7 +642,7 @@ specified capacity, eviction policy, and key comparer.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0},Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   ConcurrentEvictingDictionary(int, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -696,7 +696,7 @@ specified capacity, eviction policy, key comparer, and time-based expiration.</p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}})">
   ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -746,7 +746,7 @@ copied from the specified sequence, using the specified capacity and the default
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy)">
   ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -800,7 +800,7 @@ copied from the specified sequence, using the specified capacity and eviction po
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0})">
   ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -857,7 +857,7 @@ copied from the specified sequence, using the specified capacity, eviction polic
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair__0__1___Bodu_Collections_Generic_EvictingDictionaryPolicy_System_Collections_Generic_IEqualityComparer__0__Bodu_Collections_Generic_EvictingDictionaryExpiration_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{`0,`1}},Bodu.Collections.Generic.EvictingDictionaryPolicy,System.Collections.Generic.IEqualityComparer{`0},Bodu.Collections.Generic.EvictingDictionaryExpiration)">
   ConcurrentEvictingDictionary(int, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;, EvictingDictionaryPolicy, IEqualityComparer&lt;TKey&gt;?, EvictingDictionaryExpiration?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -922,7 +922,7 @@ more elements are provided than the capacity allows, entries are evicted accordi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
   ConcurrentEvictingDictionary(int, IEqualityComparer&lt;TKey&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -973,7 +973,7 @@ specified capacity, using the default eviction policy and the specified key comp
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ApproximateCount" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ApproximateCount">
   ApproximateCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1002,7 +1002,7 @@ coherent point-in-time state. Like <a class="xref" href="Bodu.Collections.Generi
 
 
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ApproximateCount_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Use this property when callers need a fast size estimate — for capacity hints, telemetry, or display — but can
+  <div class="markdown level1 remarks"><p>Use this property when callers need a fast size estimate - for capacity hints, telemetry, or display - but can
 tolerate values that lag active writers. Prefer <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a> when an exact snapshot is required.</p>
 </div>
 
@@ -1016,7 +1016,7 @@ tolerate values that lag active writers. Prefer <a class="xref" href="Bodu.Colle
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Capacity" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Capacity">
   Capacity
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1052,7 +1052,7 @@ tolerate values that lag active writers. Prefer <a class="xref" href="Bodu.Colle
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Comparer" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Comparer">
   Comparer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1089,7 +1089,7 @@ tolerate values that lag active writers. Prefer <a class="xref" href="Bodu.Colle
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1122,8 +1122,8 @@ returned value may already be stale by the time the caller inspects it; prefer <
 for a lock-free estimate.
 </p>
 <p>
-When time-based expiration is configured, this property deliberately reports the raw stored count — <em>including</em>
-expired-but-unpurged entries — matching <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>. Call
+When time-based expiration is configured, this property deliberately reports the raw stored count - <em>including</em>
+expired-but-unpurged entries - matching <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a>. Call
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired">RemoveExpired()</a> to purge expired entries and reconcile <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Count">Count</a> with the live set.
 </p>
 </div>
@@ -1138,7 +1138,7 @@ expired-but-unpurged entries — matching <a class="xref" href="Bodu.Collections
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_EvictionCount" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.EvictionCount">
   EvictionCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1176,7 +1176,7 @@ time-based expiry.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Expiration" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Expiration">
   Expiration
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1216,7 +1216,7 @@ behaves as a capacity-only cache.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsEmpty" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.IsEmpty">
   IsEmpty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1257,7 +1257,7 @@ behaves as a capacity-only cache.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_IsReadOnly" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.IsReadOnly">
   IsReadOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1294,7 +1294,7 @@ behaves as a capacity-only cache.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Item__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Item(`0)">
   this[TKey]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1352,7 +1352,7 @@ segment that owns <code class="paramref">key</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Keys" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Keys">
   Keys
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1395,7 +1395,7 @@ and later mutations are not reflected. Expired-but-unpurged entries are excluded
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Policy" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Policy">
   Policy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1431,7 +1431,7 @@ and later mutations are not reflected. Expired-but-unpurged entries are excluded
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TotalTouches" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TotalTouches">
   TotalTouches
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1468,7 +1468,7 @@ and later mutations are not reflected. Expired-but-unpurged entries are excluded
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Values" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Values">
   Values
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1515,7 +1515,7 @@ and later mutations are not reflected. Expired-but-unpurged entries are excluded
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Add(`0,`1)">
   Add(TKey, TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1581,7 +1581,7 @@ raises <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvict
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Add(`0,`1,System.TimeSpan)">
   Add(TKey, TValue, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1645,7 +1645,7 @@ deadline using this entry's own time-to-live. The operation is atomic and locks 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0_System_Func__0__1__System_Func__0__1__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.AddOrUpdate(`0,System.Func{`0,`1},System.Func{`0,`1,`1})">
   AddOrUpdate(TKey, Func&lt;TKey, TValue&gt;, Func&lt;TKey, TValue, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1690,7 +1690,7 @@ the add path, or the value produced by <code class="paramref">updateValueFactory
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0_System_Func__0__1__System_Func__0__1__1___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 Both factories are invoked <em>inside</em> the owning segment's lock, so exactly one runs per call and it runs
-at most once — the single-flight behavior shared with <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)</a>. A
+at most once - the single-flight behavior shared with <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)</a>. A
 factory blocks every other operation on the same segment while it runs, so keep it short and never call back
 into this dictionary from it. If a factory throws, nothing is added or updated and the exception propagates.
 </p>
@@ -1718,7 +1718,7 @@ is atomic and locks only the segment that owns <code class="paramref">key</code>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0__1_System_Func__0__1__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.AddOrUpdate(`0,`1,System.Func{`0,`1,`1})">
   AddOrUpdate(TKey, TValue, Func&lt;TKey, TValue, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1762,7 +1762,7 @@ produced by <code class="paramref">updateValueFactory</code> on the update path.
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_AddOrUpdate__0__1_System_Func__0__1__1___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 The update factory is invoked <em>inside</em> the owning segment's lock, so it runs at most once per call even
-under concurrent contention — the single-flight behavior shared with <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_">GetOrAdd(TKey, TValue)</a>. The
+under concurrent contention - the single-flight behavior shared with <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_">GetOrAdd(TKey, TValue)</a>. The
 factory blocks every other operation on the same segment while it runs, so keep it short and never call back
 into this dictionary from it. If the factory throws, nothing is added or updated and the exception propagates.
 </p>
@@ -1789,7 +1789,7 @@ is atomic and locks only the segment that owns <code class="paramref">key</code>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Clear" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1812,7 +1812,7 @@ is atomic and locks only the segment that owns <code class="paramref">key</code>
 
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Clear_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>This operation acquires every segment lock, so it is atomic with respect to all other operations. It is a bulk
-reset, not an eviction — <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> is not raised for the removed entries, matching
+reset, not an eviction - <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> is not raised for the removed entries, matching
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html#Bodu_Collections_Generic_Concurrent_ConcurrentCircularBuffer_1_Clear">Clear()</a>.</p>
 </div>
 
@@ -1826,7 +1826,7 @@ reset, not an eviction — <a class="xref" href="Bodu.Collections.Generic.Concur
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Contains_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Contains(System.Collections.Generic.KeyValuePair{`0,`1})">
   Contains(KeyValuePair&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1881,7 +1881,7 @@ counts as absent and is lazily removed as an eviction. The operation locks only 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ContainsKey(`0)">
   ContainsKey(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1914,7 +1914,7 @@ counts as absent and is lazily removed as an eviction. The operation locks only 
 
 
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This is a pure read with respect to both the capacity policy and time-based expiration — it does not update
+  <div class="markdown level1 remarks"><p>This is a pure read with respect to both the capacity policy and time-based expiration - it does not update
 recency or frequency metadata, does not increment <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TotalTouches">TotalTouches</a>, and does not refresh a sliding
 expiration deadline (symmetric with <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a>; use <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a> or the indexer getter
 to slide). When time-based expiration is configured, an expired entry counts as absent: it is lazily removed as
@@ -1938,7 +1938,7 @@ an eviction and <a href="https://learn.microsoft.com/dotnet/csharp/language-refe
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_CopyTo_System_Collections_Generic_KeyValuePair__0__1____System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.CopyTo(System.Collections.Generic.KeyValuePair{`0,`1}[],System.Int32)">
   CopyTo(KeyValuePair&lt;TKey, TValue&gt;[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1997,7 +1997,7 @@ of <code class="paramref">array</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetEnumerator" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2030,7 +2030,7 @@ Entries added, removed, or evicted afterward are not reflected in the enumerated
 </p>
 <p>
 Because the enumerator operates on a snapshot, it never throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>
-due to concurrent modification — unlike enumerators on non-concurrent collections. The order of enumerated
+due to concurrent modification - unlike enumerators on non-concurrent collections. The order of enumerated
 entries is unspecified.
 </p>
 </div>
@@ -2045,7 +2045,7 @@ entries is unspecified.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,System.Func{`0,`1})">
   GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2087,11 +2087,11 @@ and returns either the existing or the newly created value.</p>
 Unlike
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.concurrent.concurrentdictionary-2.getoradd#system-collections-concurrent-concurrentdictionary-2-getoradd(-0-system-func((-0-1)))">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)</a>,
 the factory is invoked <em>inside</em> the owning segment's lock, so it runs at most once per key even under
-concurrent misses — the single-flight behavior that prevents cache stampedes.
+concurrent misses - the single-flight behavior that prevents cache stampedes.
 </p>
 <p>
 The cost of that guarantee is that the factory blocks every other operation on the same segment while it runs:
-keep factories short, and never call back into this dictionary from a factory — doing so from the same thread
+keep factories short, and never call back into this dictionary from a factory - doing so from the same thread
 re-enters the segment monitor and can corrupt eviction bookkeeping mid-add. If the factory throws, nothing is
 added and the exception propagates.
 </p>
@@ -2113,7 +2113,7 @@ added and the exception propagates.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,System.Func{`0,`1},System.TimeSpan)">
   GetOrAdd(TKey, Func&lt;TKey, TValue&gt;, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2155,7 +2155,7 @@ already exist, and returns either the existing or the newly created value.</p>
 
 
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__System_TimeSpan__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The factory is invoked inside the owning segment's lock — at most once per key even under concurrent misses. See
+  <div class="markdown level1 remarks"><p>The factory is invoked inside the owning segment's lock - at most once per key even under concurrent misses. See
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)</a> for the factory caveats; the <code class="paramref">timeToLive</code> is
 applied only when the entry is added.</p>
 </div>
@@ -2182,7 +2182,7 @@ applied only when the entry is added.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,`1)">
   GetOrAdd(TKey, TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2240,7 +2240,7 @@ whole operation is atomic and locks only the segment that owns <code class="para
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.GetOrAdd(`0,`1,System.TimeSpan)">
   GetOrAdd(TKey, TValue, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2309,7 +2309,7 @@ when the entry is added. The whole operation is atomic and locks only the segmen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Remove(System.Collections.Generic.KeyValuePair{`0,`1})">
   Remove(KeyValuePair&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2344,8 +2344,8 @@ when the entry is added. The whole operation is atomic and locks only the segmen
 
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove_System_Collections_Generic_KeyValuePair__0__1___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>The value comparison and removal happen atomically under the owning segment's lock, so a concurrent update of
-the value cannot cause a mismatched entry to be removed. An explicit removal is not an eviction — it does not
-raise <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> — though a lazily removed expired entry encountered along the way is surfaced
+the value cannot cause a mismatched entry to be removed. An explicit removal is not an eviction - it does not
+raise <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> - though a lazily removed expired entry encountered along the way is surfaced
 as one.</p>
 </div>
 
@@ -2365,7 +2365,7 @@ as one.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Remove__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Remove(`0)">
   Remove(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2420,7 +2420,7 @@ only the segment that owns <code class="paramref">key</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_RemoveExpired" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.RemoveExpired">
   RemoveExpired()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2474,7 +2474,7 @@ entries. Call it periodically for caches that can sit idle for long periods.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ToArray" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ToArray">
   ToArray()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2523,7 +2523,7 @@ snapshot without being removed or having their deadlines refreshed, so the array
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.Touch(`0)">
   Touch(TKey)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2558,7 +2558,7 @@ tracking, this updates the internal usage metadata.</p>
 
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>When time-based expiration is configured, an expired entry counts as absent: it is lazily removed as an eviction
-and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> is returned. <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a> affects only the capacity-policy metadata — it
+and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> is returned. <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a> affects only the capacity-policy metadata - it
 does not refresh a sliding expiration deadline; use a value-returning read access ( <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a>
 or the indexer getter) to slide ( <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a>, like <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Touch__0_">Touch(TKey)</a>, is a pure read that
 does not slide). The operation locks only the segment that owns <code class="paramref">key</code>.</p>
@@ -2580,7 +2580,7 @@ does not slide). The operation locks only the segment that owns <code class="par
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryAdd(`0,`1)">
   TryAdd(TKey, TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2638,7 +2638,7 @@ This operation is atomic and locks only the segment that owns <code class="param
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryAdd__0__1_System_TimeSpan_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryAdd(`0,`1,System.TimeSpan)">
   TryAdd(TKey, TValue, TimeSpan)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Expiration.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2707,7 +2707,7 @@ the segment that owns <code class="paramref">key</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryGetValue__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryGetValue(`0,`1@)">
   TryGetValue(TKey, out TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2775,7 +2775,7 @@ and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builti
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryRemove(`0,`1@)">
   TryRemove(TKey, out TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2814,7 +2814,7 @@ for the type.</p>
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p><a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryRemove__0__1__">TryRemove(TKey, out TValue)</a> operates on physically stored entries: when time-based expiration is configured it also
 removes an expired-but-unpurged entry and returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>. An explicit removal is not an
-eviction — it does not raise <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> and does not increment <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_EvictionCount">EvictionCount</a>. The
+eviction - it does not raise <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted">ItemEvicted</a> and does not increment <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_EvictionCount">EvictionCount</a>. The
 operation is atomic and locks only the segment that owns <code class="paramref">key</code>.</p>
 </div>
 
@@ -2834,7 +2834,7 @@ operation is atomic and locks only the segment that owns <code class="paramref">
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryUpdate__0__1__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.TryUpdate(`0,`1,`1)">
   TryUpdate(TKey, TValue, TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2877,8 +2877,8 @@ its current value equals <code class="paramref">comparisonValue</code>.</p>
   <h4 class="section" id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_TryUpdate__0__1__1__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 The comparison uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>. A successful update counts as an access for
-the configured <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> — identical to the replace path of
-<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_">Add(TKey, TValue)</a> — repositioning the key for recency-tracked policies and, when time-based
+the configured <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryPolicy.html">EvictingDictionaryPolicy</a> - identical to the replace path of
+<a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_Add__0__1_">Add(TKey, TValue)</a> - repositioning the key for recency-tracked policies and, when time-based
 expiration is configured, starting a fresh lease. A missing or expired key yields <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>; an
 expired-but-unpurged entry is lazily removed as an eviction before the method returns.
 </p>
@@ -2907,7 +2907,7 @@ surfaces (an expired entry) raises <a class="xref" href="Bodu.Collections.Generi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_ItemEvicted" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.ItemEvicted">
   ItemEvicted
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.Atomic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2939,12 +2939,12 @@ been released, so a handler can safely call back into the dictionary without dea
 provided are no longer present in the dictionary by the time the handler observes them. One caveat: because the
 segment monitor is reentrant, a <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html#Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_GetOrAdd__0_System_Func__0__1__">GetOrAdd(TKey, Func&lt;TKey, TValue&gt;)</a> factory that violates its
 documented no-re-entry rule and mutates the dictionary can cause the nested operation's handlers to run while
-the outer call still holds the stripe lock — a handler that then blocks on another thread needing that stripe
+the outer call still holds the stripe lock - a handler that then blocks on another thread needing that stripe
 deadlocks. Keeping factories free of dictionary calls (as their contract requires) preserves the
 outside-the-lock guarantee.
 </p>
 <p>
-Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed — only
+Each subscriber is invoked independently, and ordinary handler exceptions are caught and suppressed - only
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.outofmemoryexception">OutOfMemoryException</a> propagates. This differs from the non-concurrent
 <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bodu_Collections_Generic_EvictingDictionary_2_ItemEvicted">ItemEvicted</a>, which propagates handler exceptions: under
 concurrency the eviction has already been committed and observed by other threads, so propagating a handler
@@ -2970,7 +2970,7 @@ not raise this event.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_ICollection_System_Collections_Generic_KeyValuePair_TKey_TValue___Add_System_Collections_Generic_KeyValuePair__0__1__" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#ICollection{System#Collections#Generic#KeyValuePair{TKey,TValue}}#Add(System.Collections.Generic.KeyValuePair{`0,`1})">
   ICollection&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;.Add(KeyValuePair&lt;TKey, TValue&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3018,7 +3018,7 @@ not raise this event.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_IDictionary_TKey_TValue__Add__0__1_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Add(`0,`1)">
   IDictionary&lt;TKey, TValue&gt;.Add(TKey, TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3073,7 +3073,7 @@ operation is atomic and locks only the segment that owns <code class="paramref">
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_IDictionary_TKey_TValue__Keys" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Keys">
   IDictionary&lt;TKey, TValue&gt;.Keys
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3115,7 +3115,7 @@ mutating the returned collection is not supported. This is the same snapshot pro
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_IDictionary_TKey_TValue__Values" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#IDictionary{TKey,TValue}#Values">
   IDictionary&lt;TKey, TValue&gt;.Values
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3157,7 +3157,7 @@ mutating the returned collection is not supported. This is the same snapshot pro
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair_TKey_TValue___GetEnumerator" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{TKey,TValue}}#GetEnumerator">
   IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3190,7 +3190,7 @@ Entries added, removed, or evicted afterward are not reflected in the enumerated
 </p>
 <p>
 Because the enumerator operates on a snapshot, it never throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>
-due to concurrent modification — unlike enumerators on non-concurrent collections. The order of enumerated
+due to concurrent modification - unlike enumerators on non-concurrent collections. The order of enumerated
 entries is unspecified.
 </p>
 </div>
@@ -3205,7 +3205,7 @@ entries is unspecified.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_IReadOnlyDictionary_TKey_TValue__Keys" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Keys">
   IReadOnlyDictionary&lt;TKey, TValue&gt;.Keys
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3242,7 +3242,7 @@ entries is unspecified.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_Generic_IReadOnlyDictionary_TKey_TValue__Values" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#Generic#IReadOnlyDictionary{TKey,TValue}#Values">
   IReadOnlyDictionary&lt;TKey, TValue&gt;.Values
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IReadOnlyDictionary.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3279,7 +3279,7 @@ entries is unspecified.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_ICollection_CopyTo_System_Array_System_Int32_" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
   ICollection.CopyTo(Array, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3340,7 +3340,7 @@ the available space from <code class="paramref">index</code> to the end of <code
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_ICollection_IsSynchronized" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#ICollection#IsSynchronized">
   ICollection.IsSynchronized
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3383,11 +3383,11 @@ externally via <a class="xref" href="https://learn.microsoft.com/dotnet/api/syst
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_ICollection_SyncRoot" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#ICollection#SyncRoot">
   ICollection.SyncRoot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.ICollection.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets an object that can be used to synchronize access to the collection. Not supported on this type —
+  <div class="markdown level1 summary"><p>Gets an object that can be used to synchronize access to the collection. Not supported on this type -
 <a class="xref" href="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> manages its own internal synchronization.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -3432,7 +3432,7 @@ collections.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Generic_Concurrent_ConcurrentEvictingDictionary_2_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2.System#Collections#IEnumerable#GetEnumerator">
   IEnumerable.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections.Concurrent/src/Collections.Generic.Concurrent/ConcurrentEvictingDictionary%7BT%2CT%7D.IEnumerable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -3465,7 +3465,7 @@ Entries added, removed, or evicted afterward are not reflected in the enumerated
 </p>
 <p>
 Because the enumerator operates on a snapshot, it never throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>
-due to concurrent modification — unlike enumerators on non-concurrent collections. The order of enumerated
+due to concurrent modification - unlike enumerators on non-concurrent collections. The order of enumerated
 entries is unspecified.
 </p>
 </div>
@@ -3502,7 +3502,7 @@ entries is unspecified.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

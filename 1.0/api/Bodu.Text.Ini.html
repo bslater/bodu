@@ -102,18 +102,18 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-ini.svg" alt="Bodu.Text.Ini"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.Text.Ini</strong> parses and emits <strong>INI</strong> documents — global keys plus <code>[section]</code> blocks of <code>key=value</code> entries — as a standalone <code>System.Text.Json</code>-shaped library: a typed serializer, a two-reader token surface, a <strong>comment-preserving</strong> mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the <code>Bodu.Text.Formats</code> umbrella); see also <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a> and <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>. For EditorConfig-style layered configuration, use <code>Bodu.Text.Configuration</code> instead — it carries its own INI model.</p>
+<p><strong>Bodu.Text.Ini</strong> parses and emits <strong>INI</strong> documents - global keys plus <code>[section]</code> blocks of <code>key=value</code> entries - as a standalone <code>System.Text.Json</code>-shaped library: a typed serializer, a two-reader token surface, a <strong>comment-preserving</strong> mutable node DOM, and a read-only document DOM. It ships as its own package (also available through the <code>Bodu.Text.Formats</code> umbrella); see also <a class="xref" href="Bodu.Text.Delimited.html">Bodu.Text.Delimited</a> and <a class="xref" href="Bodu.Text.DotEnv.html">Bodu.Text.DotEnv</a>. For EditorConfig-style layered configuration, use <code>Bodu.Text.Configuration</code> instead - it carries its own INI model.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a> — static serializer: section POCOs / nested dictionaries ↔ INI text, with the <code>GlobalSectionName</code> mapping and the depth-2 gate.</li>
-<li><a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a> / <a class="xref" href="Bodu.Text.Ini.IniSerializerDefaults.html">IniSerializerDefaults</a> — naming policy, duplicate policies, and presets (<code>Strict</code> = configparser strict mode).</li>
-<li><a class="xref" href="Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a> with <a class="xref" href="Bodu.Text.Ini.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a> / <a class="xref" href="Bodu.Text.Ini.IniDuplicateKeyBehavior.html">IniDuplicateKeyBehavior</a> — how repeated sections and keys resolve when the document materializes.</li>
-<li><a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> — forward-only <code>ref struct</code> reader over the file as authored (source order, comments included).</li>
-<li><a class="xref" href="Bodu.Text.Ini.Reader.IniDocumentReader.html">IniDocumentReader</a> — normalized cursor over the logical object-of-objects shape (globals hoisted, duplicate sections merged).</li>
-<li><a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html">Utf8IniWriter</a> — forward-only <code>ref struct</code> writer (section headers, entries, comment lines).</li>
-<li><a class="xref" href="Bodu.Text.Ini.Document.IniDocument.html">IniDocument</a> / <a class="xref" href="Bodu.Text.Ini.Document.IniElement.html">IniElement</a> — read-only, trivia-free, disposable document model.</li>
-<li><a class="xref" href="Bodu.Text.Ini.Nodes.IniNode.html">IniNode</a> / <a class="xref" href="Bodu.Text.Ini.Nodes.IniObject.html">IniObject</a> / <a class="xref" href="Bodu.Text.Ini.Nodes.IniValue.html">IniValue</a> — mutable, comment-preserving DOM for faithful rewrites of human-owned files.</li>
-<li><a class="xref" href="Bodu.Text.Ini.IniFormatException.html">IniFormatException</a> / <a class="xref" href="Bodu.Text.Ini.IniSerializationException.html">IniSerializationException</a> — malformed input / policy violations vs. binding failures.</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniSerializer.html">IniSerializer</a> - static serializer: section POCOs / nested dictionaries ↔ INI text, with the <code>GlobalSectionName</code> mapping and the depth-2 gate.</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniSerializerOptions.html">IniSerializerOptions</a> / <a class="xref" href="Bodu.Text.Ini.IniSerializerDefaults.html">IniSerializerDefaults</a> - naming policy, duplicate policies, and presets (<code>Strict</code> = configparser strict mode).</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniDocumentOptions.html">IniDocumentOptions</a> with <a class="xref" href="Bodu.Text.Ini.IniDuplicateSectionBehavior.html">IniDuplicateSectionBehavior</a> / <a class="xref" href="Bodu.Text.Ini.IniDuplicateKeyBehavior.html">IniDuplicateKeyBehavior</a> - how repeated sections and keys resolve when the document materializes.</li>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> - forward-only <code>ref struct</code> reader over the file as authored (source order, comments included).</li>
+<li><a class="xref" href="Bodu.Text.Ini.Reader.IniDocumentReader.html">IniDocumentReader</a> - normalized cursor over the logical object-of-objects shape (globals hoisted, duplicate sections merged).</li>
+<li><a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html">Utf8IniWriter</a> - forward-only <code>ref struct</code> writer (section headers, entries, comment lines).</li>
+<li><a class="xref" href="Bodu.Text.Ini.Document.IniDocument.html">IniDocument</a> / <a class="xref" href="Bodu.Text.Ini.Document.IniElement.html">IniElement</a> - read-only, trivia-free, disposable document model.</li>
+<li><a class="xref" href="Bodu.Text.Ini.Nodes.IniNode.html">IniNode</a> / <a class="xref" href="Bodu.Text.Ini.Nodes.IniObject.html">IniObject</a> / <a class="xref" href="Bodu.Text.Ini.Nodes.IniValue.html">IniValue</a> - mutable, comment-preserving DOM for faithful rewrites of human-owned files.</li>
+<li><a class="xref" href="Bodu.Text.Ini.IniFormatException.html">IniFormatException</a> / <a class="xref" href="Bodu.Text.Ini.IniSerializationException.html">IniSerializationException</a> - malformed input / policy violations vs. binding failures.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Ini.Nodes;
@@ -250,7 +250,7 @@ document in source order.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

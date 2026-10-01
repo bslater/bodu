@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Collections_Probabilistic_HyperLogLog_1" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 HyperLogLog&lt;T&gt; Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ HyperLogLog&lt;T&gt; Class
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs">HyperLogLog{T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs">HyperLogLog{T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a space-efficient probabilistic sketch that estimates the number of distinct elements added to it. The
@@ -207,10 +207,10 @@ by a factor of <code>√2</code>: <code>b = 4</code> uses 16 registers at ~26% e
 Elements are hashed via the supplied <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1">IEqualityComparer&lt;T&gt;</a> (or
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.equalitycomparer-1.default">Default</a>): the comparer's 32-bit
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iequalitycomparer-1.gethashcode">GetHashCode(T)</a> is expanded through a deterministic SplitMix64-style avalanche
-into the shared double-hash pair, of which only the first 64-bit value is consumed — HyperLogLog needs a single
+into the shared double-hash pair, of which only the first 64-bit value is consumed - HyperLogLog needs a single
 well-avalanched hash, not a probe sequence, so the second value is deliberately unused. The top <code>b</code> bits select
 a register and the remaining <code>64 − b</code> bits contribute their leading-zero rank. All entropy therefore derives
-from the 32-bit comparer hash — standard practice for comparer-based sketches — which caps the number of
+from the 32-bit comparer hash - standard practice for comparer-based sketches - which caps the number of
 distinguishable elements at 2³² and bounds accuracy well below the theoretical HyperLogLog error on very large
 cardinalities: two elements with equal comparer hashes are indistinguishable and count once.
 </p>
@@ -222,17 +222,17 @@ meaningful when re-imported within the same process, or when a custom comparer w
 <p>
 <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality">EstimateCardinality()</a> applies the standard HyperLogLog small-range correction (linear counting) while
 any register is still zero and the raw estimate is at most <code>2.5·m</code>. The classic large-range correction from the
-original paper — which compensates for hash collisions as the true cardinality approaches the size of the hash space
-— is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit comparer hash
-expanded through a bijective mixer, so the effective hash space remains <code>2³²</code>: estimates progressively
-underestimate the true cardinality from roughly <code>10⁸</code> distinct elements onward, and approach a hard asymptote
-near <code>2³²</code> (about 4.3 billion) — beyond that point additional distinct elements produce no increase in the
-estimate.
+original paper - which compensates for hash collisions as the true cardinality approaches the size of the hash
+space - is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit
+comparer hash expanded through a bijective mixer, so the effective hash space remains <code>2³²</code>: estimates
+progressively underestimate the true cardinality from roughly <code>10⁸</code> distinct elements onward, and approach a
+hard asymptote near <code>2³²</code> (about 4.3 billion) - beyond that point additional distinct elements produce no
+increase in the estimate.
 </p>
 <p>
 <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__">MergeWith(HyperLogLog&lt;T&gt;)</a> combines two compatible sketches by register-wise maximum, after which this sketch
-estimates the number of distinct elements in the union of both source streams. Merging is lossless — merging
-sketches of two streams yields exactly the sketch that observing the concatenated stream would have produced — and
+estimates the number of distinct elements in the union of both source streams. Merging is lossless - merging
+sketches of two streams yields exactly the sketch that observing the concatenated stream would have produced - and
 elements present in both streams are not double-counted.
 </p>
 <p>
@@ -255,7 +255,7 @@ corresponding version-byte bump.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor(System.Int32)">
   HyperLogLog(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -304,7 +304,7 @@ improves the error by <code>√2</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1__ctor_System_Int32_System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
   HyperLogLog(int, IEqualityComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -361,7 +361,7 @@ improves the error by <code>√2</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Comparer" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Comparer">
   Comparer
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -398,7 +398,7 @@ improves the error by <code>√2</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Precision" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Precision">
   Precision
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -435,7 +435,7 @@ improves the error by <code>√2</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.RegisterCount">
   RegisterCount
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -472,7 +472,7 @@ improves the error by <code>√2</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.StandardError">
   StandardError
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -491,7 +491,7 @@ improves the error by <code>√2</code>.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
-    <dd><p><code>1.04/√m</code> where <code>m</code> is <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a> — approximately 0.26 at precision 4 and 0.0081 at
+    <dd><p><code>1.04/√m</code> where <code>m</code> is <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_RegisterCount">RegisterCount</a> - approximately 0.26 at precision 4 and 0.0081 at
 precision 14.</p>
 </dd>
   </dl>
@@ -518,7 +518,7 @@ within one standard error of the true cardinality and roughly 99% within three.<
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Add__0_" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Add(`0)">
   Add(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -562,7 +562,7 @@ sketch unchanged.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Clear" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -594,7 +594,7 @@ returns 0.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.EstimateCardinality">
   EstimateCardinality()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -625,8 +625,8 @@ counting estimate <code>m·ln(m/V)</code> (<code>V</code> = number of zero regis
   <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1_EstimateCardinality_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 The estimate is unbiased with a relative standard error of approximately <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_StandardError">StandardError</a>. It is not
-monotonic in the true cardinality at fine granularity — adding one element can move the estimate by more or less
-than one — but it converges on the true count as the stream grows.
+monotonic in the true cardinality at fine granularity - adding one element can move the estimate by more or less
+than one - but it converges on the true count as the stream grows.
 </p>
 <p>
 The original algorithm's large-range correction is not applied. Because the 64-bit ranking pipeline draws all of
@@ -646,7 +646,7 @@ elements onward and saturates near <code>2³²</code>. See the class remarks for
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Export_System_Span_System_Byte__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Export(System.Span{System.Byte})">
   Export(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -690,7 +690,7 @@ elements onward and saturates near <code>2³²</code>. See the class remarks for
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_GetExportByteCount" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.GetExportByteCount">
   GetExportByteCount()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -728,7 +728,7 @@ elements onward and saturates near <code>2³²</code>. See the class remarks for
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_Import_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IEqualityComparer__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.Import(System.ReadOnlySpan{System.Byte},System.Collections.Generic.IEqualityComparer{`0})">
   Import(ReadOnlySpan&lt;byte&gt;, IEqualityComparer&lt;T&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -789,7 +789,7 @@ sketch.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.MergeWith(Bodu.Collections.Probabilistic.HyperLogLog{`0})">
   MergeWith(HyperLogLog&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -818,7 +818,7 @@ subsequently estimates the number of distinct elements in the union of both sour
 
   <h4 class="section" id="Bodu_Collections_Probabilistic_HyperLogLog_1_MergeWith_Bodu_Collections_Probabilistic_HyperLogLog__0___remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-Compatibility requires an identical <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Precision">Precision</a> and the same or an equal comparer instance — in
+Compatibility requires an identical <a class="xref" href="Bodu.Collections.Probabilistic.HyperLogLog-1.html#Bodu_Collections_Probabilistic_HyperLogLog_1_Precision">Precision</a> and the same or an equal comparer instance - in
 practice, sketches constructed with the same parameters. The other sketch is not modified. The merge is lossless
 and idempotent: elements observed by both sketches are not double-counted, and merging a sketch with itself
 leaves it unchanged.
@@ -850,7 +850,7 @@ that will be merged, or override <code>Equals</code> (and <code>GetHashCode</cod
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Collections_Probabilistic_HyperLogLog_1_TryExport_System_Span_System_Byte__System_Int32__" data-uid="Bodu.Collections.Probabilistic.HyperLogLog`1.TryExport(System.Span{System.Byte},System.Int32@)">
   TryExport(Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Collections/src/Collections.Probabilistic/HyperLogLog%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -920,7 +920,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -87,22 +87,22 @@
         <article data-uid="">
 <h1 id="navigable-dictionary">Navigable dictionary</h1>
 
-<p><code>NavigableDictionary&lt;TKey,TValue&gt;</code> is the key-value counterpart of <a href="navigable-set.html"><code>NavigableSet&lt;T&gt;</code></a> — a key-sorted <code>IDictionary&lt;TKey,TValue&gt;</code> backed by the same order-statistic red-black tree, with the navigation surface transposed to keys. Every positional query is O(log n): nearest-neighbour lookups (<code>TryGetFloorEntry</code> / <code>TryGetCeilingEntry</code> / <code>TryGetHigherEntry</code> / <code>TryGetLowerEntry</code>, plus the key-only <code>TryGetFloorKey</code> family), rank and select (<code>IndexOfKey</code> / <code>GetAt</code>), and range counting (<code>CountInRange</code>), plus cheap <code>Ascending()</code> / <code>Descending()</code> / <code>Range(low, high)</code> entry views.</p>
+<p><code>NavigableDictionary&lt;TKey,TValue&gt;</code> is the key-value counterpart of <a href="navigable-set.html"><code>NavigableSet&lt;T&gt;</code></a> - a key-sorted <code>IDictionary&lt;TKey,TValue&gt;</code> backed by the same order-statistic red-black tree, with the navigation surface transposed to keys. Every positional query is O(log n): nearest-neighbour lookups (<code>TryGetFloorEntry</code> / <code>TryGetCeilingEntry</code> / <code>TryGetHigherEntry</code> / <code>TryGetLowerEntry</code>, plus the key-only <code>TryGetFloorKey</code> family), rank and select (<code>IndexOfKey</code> / <code>GetAt</code>), and range counting (<code>CountInRange</code>), plus cheap <code>Ascending()</code> / <code>Descending()</code> / <code>Range(low, high)</code> entry views.</p>
 <p>It fits problems where a sorted map's <em>position</em> matters as much as its lookups: time-series stores (the sample at or before a timestamp), tiered pricing and tax brackets (the bracket whose threshold floors the amount), versioned configuration (the newest entry at or below a version), and windowed aggregation (how many readings between two keys) without iterating the window.</p>
-<p>The BCL's <code>SortedDictionary&lt;TKey,TValue&gt;</code> sorts by key but answers none of this — no floor/ceiling/higher/lower, no rank/select, no O(log n) range count; <code>SortedList&lt;TKey,TValue&gt;</code> gives positional access but pays O(n) per insert and remove.</p>
+<p>The BCL's <code>SortedDictionary&lt;TKey,TValue&gt;</code> sorts by key but answers none of this - no floor/ceiling/higher/lower, no rank/select, no O(log n) range count; <code>SortedList&lt;TKey,TValue&gt;</code> gives positional access but pays O(n) per insert and remove.</p>
 <p>Contract points worth keeping in mind:</p>
 <ul>
 <li><strong>Dictionary semantics.</strong> <code>Add</code> throws <code>ArgumentException</code> on a comparer-equal duplicate key (the strict <code>Dictionary&lt;TKey,TValue&gt;.Add</code> contract); <code>TryAdd</code> returns <code>false</code> instead; the indexer upserts. The bulk-load constructor also rejects duplicate keys in the source, matching the <code>Dictionary</code> collection-constructor contract.</li>
-<li><strong>Null keys are rejected</strong> with <code>ArgumentNullException</code>, consistent with the rest of the Bodu collection family. <strong>Null values are allowed</strong> — values are unconstrained, and <code>ContainsValue(null)</code> finds a stored <code>null</code>.</li>
-<li><code>ContainsValue</code> is an honest <strong>O(n)</strong> walk — values are not indexed; <code>ContainsKey</code> is the O(log n) lookup.</li>
+<li><strong>Null keys are rejected</strong> with <code>ArgumentNullException</code>, consistent with the rest of the Bodu collection family. <strong>Null values are allowed</strong> - values are unconstrained, and <code>ContainsValue(null)</code> finds a stored <code>null</code>.</li>
+<li><code>ContainsValue</code> is an honest <strong>O(n)</strong> walk - values are not indexed; <code>ContainsKey</code> is the O(log n) lookup.</li>
 <li><strong>Views are live and fail-fast.</strong> <code>Ascending()</code>, <code>Descending()</code>, and <code>Range(low, high)</code> re-resolve against the current tree each time they are iterated; mutating the dictionary <em>during</em> an iteration throws <code>InvalidOperationException</code> on the next advance. <code>Keys</code> and <code>Values</code> are live, read-only, key-sorted views with the same fail-fast behaviour.</li>
 <li><strong>Overwriting a value is not a structural mutation.</strong> Assigning an existing key through the indexer does not invalidate in-flight enumerators; adds and removes do.</li>
 <li><code>Range</code> bounds are <strong>inclusive on both ends</strong>, need not be present, and the walk costs O(log n + k).</li>
 <li><code>MinEntry</code> / <code>MaxEntry</code> throw <code>InvalidOperationException</code> on an empty dictionary; <code>TryGetMinEntry</code> / <code>TryGetMaxEntry</code> are the non-throwing forms.</li>
 <li>Not thread-safe.</li>
 </ul>
-<p>The backing structure is the key-value adaptation of the set's node machinery; the decision record — including the anticipated dictionary follow-on — lives in the design note at <code>Bodu.Collections/docs/navigable-collections-design.md</code>.</p>
-<h2 id="pattern-1--nearest-entry-at-or-before-a-key">Pattern 1 — nearest entry at or before a key</h2>
+<p>The backing structure is the key-value adaptation of the set's node machinery; the decision record - including the anticipated dictionary follow-on - lives in the design note at <code>Bodu.Collections/docs/navigable-collections-design.md</code>.</p>
+<h2 id="pattern-1---nearest-entry-at-or-before-a-key">Pattern 1 - nearest entry at or before a key</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -111,14 +111,14 @@ samples.Add(new DateTime(2026, 7, 5, 9, 0, 0), 21.4);
 samples.Add(new DateTime(2026, 7, 5, 9, 5, 0), 21.9);
 samples.Add(new DateTime(2026, 7, 5, 9, 10, 0), 22.3);
 
-// The reading in effect at 09:07 — greatest key &lt;= the probe.
+// The reading in effect at 09:07 - greatest key &lt;= the probe.
 if (samples.TryGetFloorEntry(new DateTime(2026, 7, 5, 9, 7, 0), out var reading))
     Console.WriteLine($&quot;{reading.Key:HH:mm} -&gt; {reading.Value}&quot;);   // 09:05 -&gt; 21.9
 
 // Key-only variants skip materializing the pair.
 samples.TryGetHigherKey(reading.Key, out DateTime nextSample);      // 09:10
 </code></pre>
-<h2 id="pattern-2--rank-select-and-range-counting-over-keys">Pattern 2 — rank, select, and range counting over keys</h2>
+<h2 id="pattern-2---rank-select-and-range-counting-over-keys">Pattern 2 - rank, select, and range counting over keys</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -128,11 +128,11 @@ var scores = new NavigableDictionary&lt;int, string&gt;(new[]
     KeyValuePair.Create(2475, &quot;sam&quot;),  KeyValuePair.Create(1990, &quot;kim&quot;),
 });
 
-int rank = scores.IndexOfKey(2210);                 // 2 — two lower scores
+int rank = scores.IndexOfKey(2210);                 // 2 - two lower scores
 var median = scores.GetAt(scores.Count / 2);        // entry with the k-th smallest key
-int inBand = scores.CountInRange(1900, 2300);       // 2 — O(log n), no iteration
+int inBand = scores.CountInRange(1900, 2300);       // 2 - O(log n), no iteration
 </code></pre>
-<h2 id="pattern-3--directional-and-range-entry-views">Pattern 3 — directional and range entry views</h2>
+<h2 id="pattern-3---directional-and-range-entry-views">Pattern 3 - directional and range entry views</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -176,7 +176,7 @@ brackets.TryGetFloorEntry(52_000m, out var applicable);   // (45000, 0.30)
 </tr>
 <tr>
 <td>Sorted key-value with positional access, rare writes</td>
-<td><code>SortedList&lt;TKey,TValue&gt;</code> (BCL) — accepts O(n) inserts</td>
+<td><code>SortedList&lt;TKey,TValue&gt;</code> (BCL) - accepts O(n) inserts</td>
 </tr>
 <tr>
 <td>Range-keyed lookup (a key maps a whole interval)</td>
@@ -186,9 +186,9 @@ brackets.TryGetFloorEntry(52_000m, out var applicable);   // (45000, 0.30)
 </table>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="navigable-set.html">Navigable set</a> — the element-only counterpart over the same tree machinery.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
+<li><a href="navigable-set.html">Navigable set</a> - the element-only counterpart over the same tree machinery.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
 </ul>
 
 </article>
@@ -208,7 +208,7 @@ brackets.TryGetFloorEntry(52_000m, out var applicable);   // (45000, 0.30)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

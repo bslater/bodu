@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Biff_BiffReaderState" data-uid="Bodu.IO.Biff.BiffReaderState" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BiffReaderState Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BiffReaderState Struct
   <dl><dt>Assembly</dt><dd>Bodu.IO.Biff.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Biff">Bodu.IO.Biff</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs">BiffReaderState.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs">BiffReaderState.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Carries the state a <a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> needs to continue a stream across buffers: the established BIFF
@@ -197,8 +197,8 @@ version and the active code page.</p>
 
   <h2 id="Bodu_IO_Biff_BiffReaderState_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p><a class="xref" href="Bodu.IO.Biff.BiffReader.html">BiffReader</a> is a <code>ref struct</code> and cannot be stored in a field. A consumer that reads
-incrementally — a class that walks a substream one record per call, or a loop feeding chunks of a
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> — captures <a class="xref" href="Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_CurrentState">CurrentState</a> after each pass, slices its buffer at
+incrementally - a class that walks a substream one record per call, or a loop feeding chunks of a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> - captures <a class="xref" href="Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_CurrentState">CurrentState</a> after each pass, slices its buffer at
 <a class="xref" href="Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_BytesConsumed">BytesConsumed</a>, and constructs the next reader from the remaining bytes and the captured
 state. The record position itself is not part of the state: it is expressed by where the caller slices the buffer.</p>
 </div>
@@ -213,7 +213,7 @@ state. The record position itself is not part of the state: it is expressed by w
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReaderState__ctor_Bodu_IO_Biff_BiffReaderOptions_" data-uid="Bodu.IO.Biff.BiffReaderState.#ctor(Bodu.IO.Biff.BiffReaderOptions)">
   BiffReaderState(BiffReaderOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -254,7 +254,7 @@ state. The record position itself is not part of the state: it is expressed by w
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReaderState_CodePage" data-uid="Bodu.IO.Biff.BiffReaderState.CodePage">
   CodePage
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -292,7 +292,7 @@ state. The record position itself is not part of the state: it is expressed by w
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReaderState_Options" data-uid="Bodu.IO.Biff.BiffReaderState.Options">
   Options
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -329,7 +329,7 @@ state. The record position itself is not part of the state: it is expressed by w
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Biff_BiffReaderState_Version" data-uid="Bodu.IO.Biff.BiffReaderState.Version">
   Version
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Biff/src/IO.Biff/BiffReaderState.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -388,7 +388,7 @@ state. The record position itself is not part of the state: it is expressed by w
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

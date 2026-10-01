@@ -87,8 +87,8 @@
         <article data-uid="">
 <h1 id="mapping-attributes">Mapping attributes</h1>
 
-<p><strong>Bodu.Text.Yaml</strong> shapes how a type maps to the wire with the same shared attribute family as its <a href="../toml/index.html">TOML</a> and <a href="../bencode/index.html">Bencode</a> siblings: every attribute lives in the <code>Bodu.Text.Serialization</code> namespace and derives <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>. The patterns below show the most common members; the wider family — <code>[Converter]</code>, <code>[PropertyOrder]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[Constructor]</code>, <code>[ObjectCreationHandling]</code>, <code>[NamingPolicy]</code>, and <code>[StringEnumMemberName]</code> — works exactly as it does in the siblings.</p>
-<h2 id="pattern-1--rename-a-member">Pattern 1 — Rename a member</h2>
+<p><strong>Bodu.Text.Yaml</strong> shapes how a type maps to the wire with the same shared attribute family as its <a href="../toml/index.html">TOML</a> and <a href="../bencode/index.html">Bencode</a> siblings: every attribute lives in the <code>Bodu.Text.Serialization</code> namespace and derives <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>. The patterns below show the most common members; the wider family - <code>[Converter]</code>, <code>[PropertyOrder]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[Constructor]</code>, <code>[ObjectCreationHandling]</code>, <code>[NamingPolicy]</code>, and <code>[StringEnumMemberName]</code> - works exactly as it does in the siblings.</p>
+<h2 id="pattern-1---rename-a-member">Pattern 1 - Rename a member</h2>
 <p><a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> pins the serialized key for one member, beating any naming policy:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Serialization;
@@ -102,8 +102,8 @@ public sealed class Profile
 <pre><code class="lang-yaml">display-name: Ada
 </code></pre>
 <p>The explicit name always wins over the options-level naming policy.</p>
-<h2 id="pattern-2--apply-a-naming-policy">Pattern 2 — Apply a naming policy</h2>
-<p>The options-level <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a> renames every member that does not carry an explicit <code>[PropertyName]</code>. The shared <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> set applies — <code>CamelCase</code>, <code>SnakeCaseLower</code>/<code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code>/<code>KebabCaseUpper</code> — a type can pin its own policy with <code>[NamingPolicy(KnownNamingPolicy…)]</code>, and the <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a> scenario presets configure it for you (<code>Web</code> selects camel-case naming with case-insensitive matching):</p>
+<h2 id="pattern-2---apply-a-naming-policy">Pattern 2 - Apply a naming policy</h2>
+<p>The options-level <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a> renames every member that does not carry an explicit <code>[PropertyName]</code>. The shared <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> set applies - <code>CamelCase</code>, <code>SnakeCaseLower</code>/<code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code>/<code>KebabCaseUpper</code> - a type can pin its own policy with <code>[NamingPolicy(KnownNamingPolicy…)]</code>, and the <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerDefaults.html">YamlSerializerDefaults</a> scenario presets configure it for you (<code>Web</code> selects camel-case naming with case-insensitive matching):</p>
 <pre><code class="lang-csharp">var options = new YamlSerializerOptions
 {
     PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
@@ -121,9 +121,9 @@ string yaml = YamlSerializer.Serialize(new RetryPolicy(), options);
 <p>On the read path, <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_PropertyNameCaseInsensitive">PropertyNameCaseInsensitive</a> lets mapping keys match members regardless of case.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>If two members resolve to the same wire key under the active policy and attributes — for example a <code>[PropertyName(&quot;name&quot;)]</code> that collides with another member's policy-derived <code>name</code> — serialization throws <code>InvalidOperationException</code> rather than silently emitting a duplicate key. Choose keys that stay unique after the policy is applied.</p>
+<p>If two members resolve to the same wire key under the active policy and attributes - for example a <code>[PropertyName(&quot;name&quot;)]</code> that collides with another member's policy-derived <code>name</code> - serialization throws <code>InvalidOperationException</code> rather than silently emitting a duplicate key. Choose keys that stay unique after the policy is applied.</p>
 </div>
-<h2 id="pattern-3--exclude-a-member">Pattern 3 — Exclude a member</h2>
+<h2 id="pattern-3---exclude-a-member">Pattern 3 - Exclude a member</h2>
 <p><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a> drops a member unconditionally, or under a per-member condition:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Serialization;
@@ -142,7 +142,7 @@ public sealed class Account
 <pre><code class="lang-yaml">Name: svc
 </code></pre>
 <p>To omit members whose value happens to be <code>null</code> (or the type default) across the whole document, set the serializer-wide <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html#Bodu_Text_Yaml_YamlSerializerOptions_DefaultIgnoreCondition">DefaultIgnoreCondition</a> instead (Pattern 4); a member-level <code>[Ignore(Condition = …)]</code> overrides it.</p>
-<h2 id="pattern-4--options-flags">Pattern 4 — Options flags</h2>
+<h2 id="pattern-4---options-flags">Pattern 4 - Options flags</h2>
 <p>The remaining shaping is on <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializerOptions.html">YamlSerializerOptions</a>:</p>
 <table>
 <thead>
@@ -154,7 +154,7 @@ public sealed class Account
 <tbody>
 <tr>
 <td><code>DefaultIgnoreCondition</code></td>
-<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> — <code>Never</code> (default) writes every member; <code>WhenWritingNull</code> omits null members; <code>WhenWritingDefault</code> also omits type-default values.</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreCondition.html">IgnoreCondition</a> - <code>Never</code> (default) writes every member; <code>WhenWritingNull</code> omits null members; <code>WhenWritingDefault</code> also omits type-default values.</td>
 </tr>
 <tr>
 <td><code>WriteEnumsAsStrings</code></td>
@@ -170,7 +170,7 @@ public sealed class Account
 </tr>
 <tr>
 <td><code>UnmappedMemberHandling</code></td>
-<td><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> — <code>Skip</code> (default) ignores keys that map to no member; <code>Disallow</code> raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
+<td><a class="xref" href="../../../api/Bodu.Text.Serialization.UnmappedMemberHandling.html">UnmappedMemberHandling</a> - <code>Skip</code> (default) ignores keys that map to no member; <code>Disallow</code> raises <a class="xref" href="../../../api/Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -184,7 +184,7 @@ public sealed class Account
     UnmappedMemberHandling = UnmappedMemberHandling.Disallow,
 };
 </code></pre>
-<p>With <code>IncludeFields</code> set, a public field maps exactly like a property — it honours the naming policy and <code>[PropertyName]</code> / <code>[Ignore]</code>:</p>
+<p>With <code>IncludeFields</code> set, a public field maps exactly like a property - it honours the naming policy and <code>[PropertyName]</code> / <code>[Ignore]</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">public sealed class Counter
 {
@@ -192,7 +192,7 @@ public sealed class Account
     public int Retries;   // included when IncludeFields is true
 }
 </code></pre>
-<p>A property is <strong>written</strong> whenever it has a public getter, but it is only <strong>read back</strong> when it also has a public setter — a get-only property serialises out and is silently skipped on deserialisation. Members are emitted properties-first (in reflection order) and then fields, so a field never interleaves with the properties even when <code>IncludeFields</code> is set.</p>
+<p>A property is <strong>written</strong> whenever it has a public getter, but it is only <strong>read back</strong> when it also has a public setter - a get-only property serialises out and is silently skipped on deserialisation. Members are emitted properties-first (in reflection order) and then fields, so a field never interleaves with the properties even when <code>IncludeFields</code> is set.</p>
 <h2 id="the-wider-attribute-family">The wider attribute family</h2>
 <p>The remaining shared attributes work in YAML exactly as in the siblings:</p>
 <table>
@@ -205,7 +205,7 @@ public sealed class Account
 <tbody>
 <tr>
 <td><code>[Converter(typeof(…))]</code></td>
-<td>Binds a converter or converter factory to a member, property, or type — for example <code>[Converter(typeof(YamlStringEnumConverter&lt;Status&gt;))]</code>.</td>
+<td>Binds a converter or converter factory to a member, property, or type - for example <code>[Converter(typeof(YamlStringEnumConverter&lt;Status&gt;))]</code>.</td>
 </tr>
 <tr>
 <td><code>[PropertyOrder(n)]</code></td>
@@ -241,7 +241,7 @@ public sealed class Account
 </tr>
 </tbody>
 </table>
-<p>For a custom wire form the attributes cannot express — a value type rendered as a single scalar, or a type the defaults reject — write a <a href="converters.html">custom converter</a> and register it on <code>options.Converters</code>.</p>
+<p>For a custom wire form the attributes cannot express - a value type rendered as a single scalar, or a type the defaults reject - write a <a href="converters.html">custom converter</a> and register it on <code>options.Converters</code>.</p>
 <h2 id="precedence-at-a-glance">Precedence at a glance</h2>
 <p>When several settings could govern the same member, the closest one wins:</p>
 <ol>
@@ -251,12 +251,12 @@ public sealed class Account
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="converters.html">Writing converters</a> — the route for everything beyond renaming and ignoring.</li>
-<li><a href="builtin-converters.html">Built-in converter catalog</a> — which types map without any attribute at all.</li>
-<li><a href="using.html">Using YAML</a> — the end-to-end walk-through.</li>
-<li><a href="../../../docs/serialization/yaml/concepts.html">Bodu.Text.Yaml core concepts</a> — where attributes fit in the converter-resolution picture.</li>
+<li><a href="converters.html">Writing converters</a> - the route for everything beyond renaming and ignoring.</li>
+<li><a href="builtin-converters.html">Built-in converter catalog</a> - which types map without any attribute at all.</li>
+<li><a href="using.html">Using YAML</a> - the end-to-end walk-through.</li>
+<li><a href="../../../docs/serialization/yaml/concepts.html">Bodu.Text.Yaml core concepts</a> - where attributes fit in the converter-resolution picture.</li>
 <li><a href="../index.html">Bodu serializer guides</a> and the <a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a>, <a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a>.</li>
 </ul>
 
 </article>
@@ -276,7 +276,7 @@ public sealed class Account
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

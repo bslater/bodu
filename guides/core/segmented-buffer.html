@@ -88,8 +88,8 @@
 <h1 id="segmented-buffer">Segmented buffer</h1>
 
 <p><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html">SegmentedBuffer&lt;T&gt;</a> is an append-only collection whose backing store grows in fixed-size <strong>segments</strong> instead of one contiguous array. When a <code>List&lt;T&gt;</code> fills up it allocates a new array of double the size and copies every existing element across; <code>SegmentedBuffer&lt;T&gt;</code> instead allocates one more segment and leaves the existing elements where they are. That avoids the array-doubling copy and the large-object-heap pressure that comes with very large contiguous buffers, while still offering O(1) indexed access.</p>
-<p>Reach for it when you are accumulating a stream of unknown length — caching enumerator results, buffering streamed data, or logging events without knowing the upper bound — and the per-doubling copy of <code>List&lt;T&gt;</code> would be costly.</p>
-<h2 id="pattern-1--append-a-stream-of-unknown-length">Pattern 1 — append a stream of unknown length</h2>
+<p>Reach for it when you are accumulating a stream of unknown length - caching enumerator results, buffering streamed data, or logging events without knowing the upper bound - and the per-doubling copy of <code>List&lt;T&gt;</code> would be costly.</p>
+<h2 id="pattern-1---append-a-stream-of-unknown-length">Pattern 1 - append a stream of unknown length</h2>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var buffer = new SegmentedBuffer&lt;int&gt;();   // default segment size (512 elements)
@@ -99,14 +99,14 @@ foreach (int value in ReadFromNetwork())
 
 Console.WriteLine(buffer.Count);   // total elements appended
 </code></pre>
-<h2 id="pattern-2--choose-a-segment-size">Pattern 2 — choose a segment size</h2>
+<h2 id="pattern-2---choose-a-segment-size">Pattern 2 - choose a segment size</h2>
 <p>The segment size is the number of elements per chunk. Pick a larger size for fewer, bigger allocations or a smaller size to bound the per-segment footprint:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">// 512 elements per segment.
 var buffer = new SegmentedBuffer&lt;byte&gt;(segmentSize: 512);
 </code></pre>
 <p>The constructor throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> when <code>segmentSize</code> is less than 1.</p>
-<h2 id="pattern-3--o1-indexed-access">Pattern 3 — O(1) indexed access</h2>
+<h2 id="pattern-3---o1-indexed-access">Pattern 3 - O(1) indexed access</h2>
 <p>Even though storage is segmented, element access is O(1): the buffer maps a flat index onto <code>(segment, offset)</code> arithmetically. The indexer supports both read and write of any already-populated position:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var buffer = new SegmentedBuffer&lt;string&gt;(segmentSize: 4);
@@ -116,17 +116,17 @@ buffer.Add(&quot;b&quot;);
 string first = buffer[0];   // → &quot;a&quot;
 buffer[1] = &quot;B&quot;;            // overwrite in place
 </code></pre>
-<p>Indexing outside <code>[0, Count)</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> — the indexer never extends the buffer; use <code>Add</code> to append.</p>
-<h2 id="pattern-4--enumerate-in-order">Pattern 4 — enumerate in order</h2>
+<p>Indexing outside <code>[0, Count)</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a> - the indexer never extends the buffer; use <code>Add</code> to append.</p>
+<h2 id="pattern-4---enumerate-in-order">Pattern 4 - enumerate in order</h2>
 <pre><code class="lang-csharp">var buffer = new SegmentedBuffer&lt;int&gt;();
 for (int i = 0; i &lt; 1000; i++) buffer.Add(i);
 
 foreach (int value in buffer)
     Process(value);   // yields elements in insertion order
 </code></pre>
-<p>The enumerator is fail-fast: modifying the buffer after enumeration begins — by <code>Add</code> or by assignment through the indexer — throws <code>InvalidOperationException</code> on the next iteration step.</p>
-<h2 id="worked-example--buffer-a-stream-once-read-it-many-times">Worked example — buffer a stream once, read it many times</h2>
-<p>A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass — without re-reading the source. Buffering into a <code>SegmentedBuffer&lt;T&gt;</code> pays no resize-copy as the total grows:</p>
+<p>The enumerator is fail-fast: modifying the buffer after enumeration begins - by <code>Add</code> or by assignment through the indexer - throws <code>InvalidOperationException</code> on the next iteration step.</p>
+<h2 id="worked-example---buffer-a-stream-once-read-it-many-times">Worked example - buffer a stream once, read it many times</h2>
+<p>A common shape: data arrives in chunks of unpredictable size, and the consumer needs both random access and a second full pass - without re-reading the source. Buffering into a <code>SegmentedBuffer&lt;T&gt;</code> pays no resize-copy as the total grows:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -149,7 +149,7 @@ Console.WriteLine(samples.Count);    // → 10
 
 // Random access without a copy.
 Console.WriteLine(samples[0]);       // → 3
-Console.WriteLine(samples[4]);       // → 5  — first element of the second segment
+Console.WriteLine(samples[4]);       // → 5  - first element of the second segment
 Console.WriteLine(samples[9]);       // → 3
 
 // Second full pass over the buffered data.
@@ -191,15 +191,15 @@ Console.WriteLine(sum);              // → 39
 </tbody>
 </table>
 <h2 id="how-it-compares">How it compares</h2>
-<p><strong>Versus <code>List&lt;T&gt;</code>.</strong> A <code>List&lt;T&gt;</code> keeps one contiguous array, so growth past capacity costs an O(n) copy, and element arrays beyond ~85 KB land on the large object heap. <code>SegmentedBuffer&lt;T&gt;</code> allocates fixed-size segments and copies nothing on growth. <code>List&lt;T&gt;</code> remains the better choice when the final length is known up front (a pre-sized list never re-copies either), or when you need search, removal, insertion, sorting, or a contiguous <code>Span&lt;T&gt;</code> view — <code>SegmentedBuffer&lt;T&gt;</code> deliberately offers none of those.</p>
-<p><strong>Versus <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</strong> The <a href="pooled-buffer-builder.html">pooled buffer builder</a> rents its storage from <code>ArrayPool&lt;T&gt;.Shared</code>, implements <code>IBufferWriter&lt;T&gt;</code>, and ends with a single contiguous result (<code>WrittenSpan</code>, <code>ToArrayAndDispose()</code>) — the right tool when a downstream API needs a <code>ReadOnlySpan&lt;T&gt;</code> or a <code>byte[]</code>, at the cost of mandatory disposal. <code>SegmentedBuffer&lt;T&gt;</code> never materializes a contiguous view and needs no disposal; prefer it when consumers only index into and enumerate the buffered data.</p>
-<p><strong>Versus <code>MemoryStream</code>.</strong> For bytes that downstream code consumes as a <code>Stream</code>, <code>MemoryStream</code> is the natural fit. It is, however, a single doubling array underneath, with the same copy and large-object-heap characteristics as <code>List&lt;byte&gt;</code> — buffering large byte streams that are only indexed or enumerated is cheaper in a <code>SegmentedBuffer&lt;byte&gt;</code>.</p>
+<p><strong>Versus <code>List&lt;T&gt;</code>.</strong> A <code>List&lt;T&gt;</code> keeps one contiguous array, so growth past capacity costs an O(n) copy, and element arrays beyond ~85 KB land on the large object heap. <code>SegmentedBuffer&lt;T&gt;</code> allocates fixed-size segments and copies nothing on growth. <code>List&lt;T&gt;</code> remains the better choice when the final length is known up front (a pre-sized list never re-copies either), or when you need search, removal, insertion, sorting, or a contiguous <code>Span&lt;T&gt;</code> view - <code>SegmentedBuffer&lt;T&gt;</code> deliberately offers none of those.</p>
+<p><strong>Versus <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</strong> The <a href="pooled-buffer-builder.html">pooled buffer builder</a> rents its storage from <code>ArrayPool&lt;T&gt;.Shared</code>, implements <code>IBufferWriter&lt;T&gt;</code>, and ends with a single contiguous result (<code>WrittenSpan</code>, <code>ToArrayAndDispose()</code>) - the right tool when a downstream API needs a <code>ReadOnlySpan&lt;T&gt;</code> or a <code>byte[]</code>, at the cost of mandatory disposal. <code>SegmentedBuffer&lt;T&gt;</code> never materializes a contiguous view and needs no disposal; prefer it when consumers only index into and enumerate the buffered data.</p>
+<p><strong>Versus <code>MemoryStream</code>.</strong> For bytes that downstream code consumes as a <code>Stream</code>, <code>MemoryStream</code> is the natural fit. It is, however, a single doubling array underneath, with the same copy and large-object-heap characteristics as <code>List&lt;byte&gt;</code> - buffering large byte streams that are only indexed or enumerated is cheaper in a <code>SegmentedBuffer&lt;byte&gt;</code>.</p>
 <h2 id="when-not-to-use-it">When <em>not</em> to use it</h2>
 <ul>
 <li>If you know the final length up front, a pre-sized <code>List&lt;T&gt;</code> or array is simpler and equally fast.</li>
-<li>If you need removal, insertion at arbitrary positions, search, or set semantics, choose a different type — <code>SegmentedBuffer&lt;T&gt;</code> only appends and overwrites by index.</li>
+<li>If you need removal, insertion at arbitrary positions, search, or set semantics, choose a different type - <code>SegmentedBuffer&lt;T&gt;</code> only appends and overwrites by index.</li>
 <li>For <code>ArrayPool&lt;T&gt;</code>-backed building of a single contiguous result (for example, to hand a <code>byte[]</code> to an API), prefer <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>.</li>
-<li>For concurrent producers, add external synchronization — the type is not thread-safe, and the fail-fast enumerator throws if elements are added while it is iterating.</li>
+<li>For concurrent producers, add external synchronization - the type is not thread-safe, and the fail-fast enumerator throws if elements are added while it is iterating.</li>
 </ul>
 <h2 id="api-summary">API summary</h2>
 <table>
@@ -238,11 +238,11 @@ Console.WriteLine(sum);              // → 39
 </table>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="pooled-buffer-builder.html">Pooled buffer builder</a> — <code>ArrayPool&lt;T&gt;</code>-backed building of a single contiguous result.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
-<li><a href="../topics/core-foundations.html">Core Foundations guides</a> — every guide in this topic.</li>
-<li><a href="../../docs/topics/core-foundations.html">Core Foundations topic overview</a> — package map and install command.</li>
-<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> — namespaces, headline types, scenarios.</li>
+<li><a href="pooled-buffer-builder.html">Pooled buffer builder</a> - <code>ArrayPool&lt;T&gt;</code>-backed building of a single contiguous result.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a href="../topics/core-foundations.html">Core Foundations guides</a> - every guide in this topic.</li>
+<li><a href="../../docs/topics/core-foundations.html">Core Foundations topic overview</a> - package map and install command.</li>
+<li><a href="../../docs/collections/index.html">Bodu.Collections introduction</a> - namespaces, headline types, scenarios.</li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.SegmentedBuffer-1.html"><code>SegmentedBuffer&lt;T&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html"><code>PooledBufferBuilder&lt;T&gt;</code> API reference</a></li>
 <li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> namespace landing</a></li>
@@ -265,7 +265,7 @@ Console.WriteLine(sum);              // → 39
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

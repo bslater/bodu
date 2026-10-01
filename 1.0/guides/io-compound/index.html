@@ -87,15 +87,15 @@
         <article data-uid="">
 <h1 id="boduiocompound-guides">Bodu.IO.Compound guides</h1>
 
-<p>Recipe-style walk-throughs for <strong>Bodu.IO.Compound</strong>, the reader and writer for the OLE2 / Compound File Binary (CFB) container format — the structured-storage envelope used by legacy Microsoft Office files (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) and other technologies.</p>
+<p>Recipe-style walk-throughs for <strong>Bodu.IO.Compound</strong>, the reader and writer for the OLE2 / Compound File Binary (CFB) container format - the structured-storage envelope used by legacy Microsoft Office files (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>) and other technologies.</p>
 <p>The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 <code>.xls</code> reader in <a href="../excel/index.html">Bodu.Formats.Excel.Binary</a> is built directly on top of it.</p>
 <p>If you are new to the library, start with the <a href="../../docs/io-compound/index.html">introduction</a>, the <a href="../../docs/io-compound/concepts.html">Core concepts</a> glossary, and the <a href="../../docs/io-compound/getting-started.html">getting-started page</a>. The guides below assume you know the vocabulary (compound file, storage, stream, sector chain, property set).</p>
 <h2 id="how-the-library-works">How the library works</h2>
-<p>A compound file is effectively a small file system embedded in a single file. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> is the managed counterpart of the COM <code>StgOpenStorage</code> entry point: navigation begins at <code>RootStorage</code> and descends through nested <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> containers (the COM <code>IStorage</code>) to <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> leaves (the COM <code>IStream</code>). A <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is itself a seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor over the bytes — read-only when opened from a read-only file, read-write on a writable one.</p>
+<p>A compound file is effectively a small file system embedded in a single file. <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a> is the managed counterpart of the COM <code>StgOpenStorage</code> entry point: navigation begins at <code>RootStorage</code> and descends through nested <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a> containers (the COM <code>IStorage</code>) to <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> leaves (the COM <code>IStream</code>). A <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStream.html">CompoundStream</a> is itself a seekable <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.stream">Stream</a> cursor over the bytes - read-only when opened from a read-only file, read-write on a writable one.</p>
 <p><img src="../../images/diagrams/io-compound-structure.svg" alt="A compound file is a structured-storage envelope: a header, allocation tables, and a directory of sectors on the left, resolving via CompoundFile.Open into the logical RootStorage to CompoundStorage to CompoundStream hierarchy on the right."></p>
 <p>By default the whole source is buffered into memory at open time, so the file is read-only and safe to share across threads. Opening with <code>buffered: false</code> reads sectors on demand from a seekable stream instead, bounding memory for large files.</p>
 <blockquote>
-<p>Most of these guides cover the read path. For writing — building a container from scratch, editing one, or embedding property sets — see <a href="authoring-compound-files.html">Authoring compound files</a>.</p>
+<p>Most of these guides cover the read path. For writing - building a container from scratch, editing one, or embedding property sets - see <a href="authoring-compound-files.html">Authoring compound files</a>.</p>
 </blockquote>
 <h2 id="namespace-map">Namespace map</h2>
 <table>
@@ -114,12 +114,12 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a></td>
-<td>The detached authoring object model — <code>CompoundStorageBuilder</code>, <code>CompoundStreamBuilder</code>, and the <code>CompoundBuildOptions</code> serialization options.</td>
+<td>The detached authoring object model - <code>CompoundStorageBuilder</code>, <code>CompoundStreamBuilder</code>, and the <code>CompoundBuildOptions</code> serialization options.</td>
 <td><a href="authoring-compound-files.html">Authoring compound files</a></td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Compound.PropertySets.html">Bodu.IO.Compound.PropertySets</a></td>
-<td>The OLE property-set readers and writers — <code>SummaryInformation</code>, <code>DocumentSummaryInformation</code>, their <code>…Builder</code> authors, and the underlying <code>OlePropertySet</code> / <code>OlePropertySection</code> / <code>OlePropertyValue</code> model.</td>
+<td>The OLE property-set readers and writers - <code>SummaryInformation</code>, <code>DocumentSummaryInformation</code>, their <code>…Builder</code> authors, and the underlying <code>OlePropertySet</code> / <code>OlePropertySection</code> / <code>OlePropertyValue</code> model.</td>
 <td><a href="property-sets.html">Reading property sets</a> · <a href="custom-property-sets.html">Authoring custom property sets</a> · <a href="authoring-compound-files.html">Authoring compound files</a></td>
 </tr>
 </tbody>
@@ -128,7 +128,7 @@
 <div class="bodu-cards">
 <div class="bodu-card">
   <h3><a href="reading-compound-files.html">Reading compound files</a></h3>
-  <p>Open a file, probe the signature, walk the storage hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes — the end-to-end navigation recipe.</p>
+  <p>Open a file, probe the signature, walk the storage hierarchy with the enumerate and <code>TryOpen</code> surfaces, and read a named stream's bytes - the end-to-end navigation recipe.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="authoring-compound-files.html">Authoring compound files</a></h3>
@@ -136,7 +136,7 @@
 </div>
 <div class="bodu-card">
   <h3><a href="editing-in-place.html">Editing an existing container in place</a></h3>
-  <p>Open a <code>.doc</code>, <code>.xls</code>, or <code>.msg</code> for update, add, replace, rename, and delete streams through writable <code>Stream</code> cursors, then <code>Commit</code> or <code>Revert</code> — with the staging model and its guarantees spelled out.</p>
+  <p>Open a <code>.doc</code>, <code>.xls</code>, or <code>.msg</code> for update, add, replace, rename, and delete streams through writable <code>Stream</code> cursors, then <code>Commit</code> or <code>Revert</code> - with the staging model and its guarantees spelled out.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="streaming-and-buffering.html">Buffered vs streaming access</a></h3>
@@ -144,7 +144,7 @@
 </div>
 <div class="bodu-card">
   <h3><a href="property-sets.html">Reading property sets</a></h3>
-  <p>The <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> metadata streams — typed accessors, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods on <code>CompoundFile</code>.</p>
+  <p>The <code>\x05SummaryInformation</code> and <code>\x05DocumentSummaryInformation</code> metadata streams - typed accessors, the raw <code>OlePropertySet</code>, and the <code>TryGet*</code> convenience methods on <code>CompoundFile</code>.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="custom-property-sets.html">Authoring custom property sets</a></h3>
@@ -157,18 +157,18 @@
 </div>
 <h2 id="suggested-reading-path">Suggested reading path</h2>
 <ol>
-<li><strong><a href="reading-compound-files.html">Reading compound files</a></strong> — the core open → navigate → read recipe that every other use builds on.</li>
-<li><strong><a href="streaming-and-buffering.html">Buffered vs streaming access</a></strong> — once the file is too large to hold whole, or you need to control the source's lifetime.</li>
-<li><strong><a href="property-sets.html">Reading property sets</a></strong> — when you want the authored document metadata (title, author, timestamps) rather than the format payload.</li>
-<li><strong><a href="authoring-compound-files.html">Authoring compound files</a></strong> — when you need to <em>write</em> a container rather than read one.</li>
-<li><strong><a href="editing-in-place.html">Editing an existing container in place</a></strong> and <strong><a href="custom-property-sets.html">Authoring custom property sets</a></strong> — when the container already exists and you need to change it, or stamp it with metadata of your own.</li>
+<li><strong><a href="reading-compound-files.html">Reading compound files</a></strong> - the core open → navigate → read recipe that every other use builds on.</li>
+<li><strong><a href="streaming-and-buffering.html">Buffered vs streaming access</a></strong> - once the file is too large to hold whole, or you need to control the source's lifetime.</li>
+<li><strong><a href="property-sets.html">Reading property sets</a></strong> - when you want the authored document metadata (title, author, timestamps) rather than the format payload.</li>
+<li><strong><a href="authoring-compound-files.html">Authoring compound files</a></strong> - when you need to <em>write</em> a container rather than read one.</li>
+<li><strong><a href="editing-in-place.html">Editing an existing container in place</a></strong> and <strong><a href="custom-property-sets.html">Authoring custom property sets</a></strong> - when the container already exists and you need to change it, or stamp it with metadata of your own.</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../../samples/io-compound.html">Runnable samples</a> — the offline CompoundBasics sample under <code>samples/IO.Compound/</code>: builder authoring + read-back, property sets, detection and the v3/v4 knob, a real <code>.doc</code>'s tree.</li>
-<li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a> — every type and member, including the <a class="xref" href="../../api/Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a> authoring types.</li>
-<li><a href="../excel/index.html">Bodu.Formats.Excel.Binary</a> — the BIFF8 <code>.xls</code> reader built on this package.</li>
-<li><a href="../../docs/package-matrix.html">Package matrix</a> — where Bodu.IO.Compound sits in the suite and its dependency stack.</li>
+<li><a href="../../samples/io-compound.html">Runnable samples</a> - the offline CompoundBasics sample under <code>samples/IO.Compound/</code>: builder authoring + read-back, property sets, detection and the v3/v4 knob, a real <code>.doc</code>'s tree.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Compound.html">Bodu.IO.Compound API reference</a> - every type and member, including the <a class="xref" href="../../api/Bodu.IO.Compound.Builders.html">Bodu.IO.Compound.Builders</a> authoring types.</li>
+<li><a href="../excel/index.html">Bodu.Formats.Excel.Binary</a> - the BIFF8 <code>.xls</code> reader built on this package.</li>
+<li><a href="../../docs/package-matrix.html">Package matrix</a> - where Bodu.IO.Compound sits in the suite and its dependency stack.</li>
 </ul>
 
 </article>
@@ -188,7 +188,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

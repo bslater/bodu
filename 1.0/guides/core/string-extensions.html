@@ -87,14 +87,14 @@
         <article data-uid="">
 <h1 id="string-extensions">String extensions</h1>
 
-<p><a class="xref" href="../../api/Bodu.Extensions.StringExtensions.html">StringExtensions</a> is a static class of 77 extension methods on <code>string</code> that cover the small, recurring text chores the BCL leaves to every project: pulling a substring out by marker, wrapping and unwrapping, normalizing whitespace and line endings, ordinal predicates, null/empty coalescing, affix management, character filtering, identifier casing, slugs, safe file names, and truncation. Every method is pure — it returns a new string and never mutates its receiver.</p>
+<p><a class="xref" href="../../api/Bodu.Extensions.StringExtensions.html">StringExtensions</a> is a static class of 77 extension methods on <code>string</code> that cover the small, recurring text chores the BCL leaves to every project: pulling a substring out by marker, wrapping and unwrapping, normalizing whitespace and line endings, ordinal predicates, null/empty coalescing, affix management, character filtering, identifier casing, slugs, safe file names, and truncation. Every method is pure - it returns a new string and never mutates its receiver.</p>
 <p>The surface is organized below by task. Each table gives the one-line contract and the behaviour on <code>null</code> or empty input; every example in this guide has been run against the library, and the values in the comments are the real outputs.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p><strong>Null and empty conventions.</strong> Methods whose receiver is declared <code>string</code> (not <code>string?</code>) throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> when called on <code>null</code>; only the eight coalescing helpers in <a href="#pattern-5--null-empty-and-whitespace-coalescing">Pattern 5</a> accept a <code>null</code> receiver. An empty receiver is always valid and yields the natural empty result (an empty string, an empty sequence, <code>false</code>, or — for the substring family — <code>null</code> because the marker cannot be found). Every string comparison defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinal">Ordinal</a>; the methods that take a <code>StringComparison</code> parameter accept any member.</p>
+<p><strong>Null and empty conventions.</strong> Methods whose receiver is declared <code>string</code> (not <code>string?</code>) throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a> when called on <code>null</code>; only the eight coalescing helpers in <a href="#pattern-5---null-empty-and-whitespace-coalescing">Pattern 5</a> accept a <code>null</code> receiver. An empty receiver is always valid and yields the natural empty result (an empty string, an empty sequence, <code>false</code>, or - for the substring family - <code>null</code> because the marker cannot be found). Every string comparison defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.stringcomparison#system-stringcomparison-ordinal">Ordinal</a>; the methods that take a <code>StringComparison</code> parameter accept any member.</p>
 </div>
-<h2 id="pattern-1--substring-by-marker">Pattern 1 — substring by marker</h2>
-<p><code>After</code> / <code>AfterLast</code> / <code>Before</code> / <code>BeforeLast</code> / <code>Between</code> return the text on one side of a marker, or <code>null</code> when the marker is absent — which makes them safe to chain with <code>??</code>.</p>
+<h2 id="pattern-1---substring-by-marker">Pattern 1 - substring by marker</h2>
+<p><code>After</code> / <code>AfterLast</code> / <code>Before</code> / <code>BeforeLast</code> / <code>Between</code> return the text on one side of a marker, or <code>null</code> when the marker is absent - which makes them safe to chain with <code>??</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
@@ -105,7 +105,7 @@ string? path   = url.After(&quot;example.com&quot;);       // &quot;/docs/guide.
 string? file   = url.Between(&quot;/docs/&quot;, &quot;?&quot;);     // &quot;guide.md&quot;
 string? ext    = url.AfterLast(&quot;.&quot;);             // &quot;md?lang=en#intro&quot;
 string? stem   = url.BeforeLast(&quot;?&quot;);            // &quot;https://example.com/docs/guide.md&quot;
-string? none   = url.After(&quot;ftp://&quot;);            // null — marker absent
+string? none   = url.After(&quot;ftp://&quot;);            // null - marker absent
 </code></pre>
 <table>
 <thead>
@@ -144,7 +144,7 @@ string? none   = url.After(&quot;ftp://&quot;);            // null — marker ab
 </tbody>
 </table>
 <p>The markers must not be <code>null</code> (<code>ArgumentNullException</code>). An empty marker matches at position 0, so <code>After(&quot;&quot;)</code> returns the whole string and <code>Before(&quot;&quot;)</code> returns an empty string.</p>
-<h2 id="pattern-2--wrapping-and-unwrapping">Pattern 2 — wrapping and unwrapping</h2>
+<h2 id="pattern-2---wrapping-and-unwrapping">Pattern 2 - wrapping and unwrapping</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
@@ -158,7 +158,7 @@ string braces   = name.Brace();              // {alpha}
 string custom   = name.Wrap(&quot;&lt;&lt;&quot;, &quot;&gt;&gt;&quot;);     // &lt;&lt;alpha&gt;&gt;
 
 string inner    = &quot;[alpha]&quot;.Unwrap(&quot;[&quot;, &quot;]&quot;);   // alpha
-string partial  = &quot;[alpha&quot;.Unwrap(&quot;[&quot;, &quot;]&quot;);    // [alpha — both ends must be present
+string partial  = &quot;[alpha&quot;.Unwrap(&quot;[&quot;, &quot;]&quot;);    // [alpha - both ends must be present
 </code></pre>
 <table>
 <thead>
@@ -186,7 +186,7 @@ string partial  = &quot;[alpha&quot;.Unwrap(&quot;[&quot;, &quot;]&quot;);    //
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-3--whitespace-line-endings-and-lines">Pattern 3 — whitespace, line endings, and lines</h2>
+<h2 id="pattern-3---whitespace-line-endings-and-lines">Pattern 3 - whitespace, line endings, and lines</h2>
 <p>The whitespace family works on the whole string; the line family treats the string as a sequence of lines delimited by CRLF, CR, or LF.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -194,7 +194,7 @@ string partial  = &quot;[alpha&quot;.Unwrap(&quot;[&quot;, &quot;]&quot;);    //
 string raw = &quot;  line one\r\n\r\n   line   two\rline three\n&quot;;
 
 string normalized = raw.NormalizeLineEndings();   // every CRLF / CR / LF becomes &quot;\n&quot;
-string collapsed  = raw.CollapseWhitespace();     // &quot; line one line two line three &quot; — runs become one space
+string collapsed  = raw.CollapseWhitespace();     // &quot; line one line two line three &quot; - runs become one space
 string compact    = raw.RemoveWhitespace();       // &quot;lineonelinetwolinethree&quot;
 
 foreach (string line in raw.SplitLines(removeEmptyLines: true))
@@ -210,9 +210,9 @@ string quoted    = block.PrefixLines(&quot;&gt; &quot;);       // &quot;&gt; sel
 string back      = quoted.UnprefixLines(&quot;&gt; &quot;);    // == block
 string outdented = indented.Outdent(2);           // strips up to two leading spaces per line
 
-int a = &quot;a\n&quot;.EnsureTrailingNewLine().Length;     // 2 — already terminated, unchanged
-int b = &quot;a&quot;.EnsureTrailingNewLine().Length;       // 2 — &quot;\n&quot; appended
-int c = &quot;a\r\n&quot;.RemoveTrailingNewLine().Length;   // 1 — one terminator removed
+int a = &quot;a\n&quot;.EnsureTrailingNewLine().Length;     // 2 - already terminated, unchanged
+int b = &quot;a&quot;.EnsureTrailingNewLine().Length;       // 2 - &quot;\n&quot; appended
+int c = &quot;a\r\n&quot;.RemoveTrailingNewLine().Length;   // 1 - one terminator removed
 string joined = &quot;a\r\nb\nc&quot;.RemoveLineEndings();  // &quot;abc&quot;
 </code></pre>
 <table>
@@ -261,7 +261,7 @@ string joined = &quot;a\r\nb\nc&quot;.RemoveLineEndings();  // &quot;abc&quot;
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-4--ordinal-predicates-and-replacement">Pattern 4 — ordinal predicates and replacement</h2>
+<h2 id="pattern-4---ordinal-predicates-and-replacement">Pattern 4 - ordinal predicates and replacement</h2>
 <p>These are the <code>StringComparison.Ordinal</code> / <code>OrdinalIgnoreCase</code> forms of the BCL predicates, spelled out so a code review can see the comparison rule at the call site.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -272,7 +272,7 @@ bool starts = header.StartsWithOrdinalIgnoreCase(&quot;content-type&quot;);   //
 bool ends   = header.EndsWithOrdinal(&quot;json&quot;);                      // true
 bool has    = header.ContainsOrdinalIgnoreCase(&quot;APPLICATION&quot;);     // true
 bool same   = &quot;JSON&quot;.EqualsOrdinalIgnoreCase(&quot;json&quot;);              // true
-bool oneOf  = &quot;GET&quot;.IsOneOf(&quot;GET&quot;, &quot;HEAD&quot;, &quot;OPTIONS&quot;);             // true — ordinal
+bool oneOf  = &quot;GET&quot;.IsOneOf(&quot;GET&quot;, &quot;HEAD&quot;, &quot;OPTIONS&quot;);             // true - ordinal
 bool oneOfI = &quot;get&quot;.IsOneOf(StringComparer.OrdinalIgnoreCase, &quot;GET&quot;, &quot;HEAD&quot;);   // true
 
 string swapped = header.ReplaceOrdinalIgnoreCase(&quot;APPLICATION&quot;, &quot;text&quot;);   // &quot;Content-Type: text/json&quot;
@@ -313,7 +313,7 @@ string swapped = header.ReplaceOrdinalIgnoreCase(&quot;APPLICATION&quot;, &quot;
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-5--null-empty-and-whitespace-coalescing">Pattern 5 — null, empty, and whitespace coalescing</h2>
+<h2 id="pattern-5---null-empty-and-whitespace-coalescing">Pattern 5 - null, empty, and whitespace coalescing</h2>
 <p>These eight are the only members declared on <code>string?</code>. They turn the <code>string.IsNullOrWhiteSpace</code> dance into one call.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -401,16 +401,16 @@ bool   i = blank.HasText();                               // false
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-6--affixes-and-removal">Pattern 6 — affixes and removal</h2>
+<h2 id="pattern-6---affixes-and-removal">Pattern 6 - affixes and removal</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
 string withSlash = &quot;logs&quot;.EnsureEndsWith(&quot;/&quot;);             // &quot;logs/&quot;
-string unchanged = &quot;logs/&quot;.EnsureEndsWith(&quot;/&quot;);            // &quot;logs/&quot; — not doubled
+string unchanged = &quot;logs/&quot;.EnsureEndsWith(&quot;/&quot;);            // &quot;logs/&quot; - not doubled
 string rooted    = &quot;logs&quot;.EnsureStartsWith(&quot;/&quot;);           // &quot;/logs&quot;
 string bare      = &quot;v1.2.3&quot;.RemovePrefix(&quot;v&quot;);             // &quot;1.2.3&quot;
 string noExt     = &quot;report.PDF&quot;.RemoveSuffix(&quot;.pdf&quot;, StringComparison.OrdinalIgnoreCase);   // &quot;report&quot;
-string stripped  = &quot;a-b-a&quot;.Remove(&quot;a&quot;);                    // &quot;-b-&quot; — every occurrence
+string stripped  = &quot;a-b-a&quot;.Remove(&quot;a&quot;);                    // &quot;-b-&quot; - every occurrence
 string many      = &quot;x=1; y=2&quot;.RemoveMany(&quot;=&quot;, &quot;;&quot;);        // &quot;x1 y2&quot;
 string replaced  = &quot;Hello {name}, {greeting}&quot;.ReplaceMany(new Dictionary&lt;string, string&gt;
 {
@@ -444,11 +444,11 @@ string replaced  = &quot;Hello {name}, {greeting}&quot;.ReplaceMany(new Dictiona
 </tr>
 <tr>
 <td><code>ReplaceMany(replacements)</code></td>
-<td>Applies each key → value replacement sequentially in the dictionary's enumeration order (ordinal). Because the passes are sequential, a later key can match text produced by an earlier replacement — order the dictionary deliberately.</td>
+<td>Applies each key → value replacement sequentially in the dictionary's enumeration order (ordinal). Because the passes are sequential, a later key can match text produced by an earlier replacement - order the dictionary deliberately.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-7--character-filtering">Pattern 7 — character filtering</h2>
+<h2 id="pattern-7---character-filtering">Pattern 7 - character filtering</h2>
 <p>The <code>Keep*</code> family retains only the named Unicode category; the <code>Remove*</code> family drops it. <code>KeepWhere</code> / <code>RemoveWhere</code> take an arbitrary <code>Func&lt;char, bool&gt;</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -487,7 +487,7 @@ string noNums   = &quot;a1b2&quot;.RemoveWhere(char.IsDigit); // &quot;ab&quot;
 </tr>
 <tr>
 <td><code>RemovePunctuation()</code></td>
-<td>Unicode punctuation (<code>char.IsPunctuation</code>) — note that <code>#</code> and <code>!</code> are punctuation, so they go.</td>
+<td>Unicode punctuation (<code>char.IsPunctuation</code>) - note that <code>#</code> and <code>!</code> are punctuation, so they go.</td>
 </tr>
 <tr>
 <td><code>RemoveControlCharacters()</code></td>
@@ -503,7 +503,7 @@ string noNums   = &quot;a1b2&quot;.RemoveWhere(char.IsDigit); // &quot;ab&quot;
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-8--identifier-casing">Pattern 8 — identifier casing</h2>
+<h2 id="pattern-8---identifier-casing">Pattern 8 - identifier casing</h2>
 <p>Nine casing conversions share one acronym-aware tokenizer: the input is split at separators (spaces, punctuation, underscores, hyphens), at lower-to-upper boundaries, at digit-to-letter boundaries, and at acronym-to-word boundaries (<code>XMLHttpRequest</code> → <code>XML</code>, <code>Http</code>, <code>Request</code>), then each word is re-cased and re-joined.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -521,7 +521,7 @@ string titled   = title.ToTitleCase();      // &quot;Parse Http Request From Xml
 string sentence = &quot;the API of the iPhone. a second sentence&quot;.ToSentenceCase();
                                             // &quot;The api of the iPhone. A second sentence&quot;
 </code></pre>
-<p>The parameterless overloads use <a class="xref" href="../../api/Bodu.Extensions.WordCasingOptions.html#Bodu_Extensions_WordCasingOptions_Default">Default</a> — invariant culture, the built-in acronym list recognised for <em>splitting</em>, mixed-case brand words (<code>iPhone</code>, <code>eBay</code>) preserved, and every word re-cased (which is why <code>HTTP</code> becomes <code>Http</code> above). Pass a <a class="xref" href="../../api/Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a> to change that:</p>
+<p>The parameterless overloads use <a class="xref" href="../../api/Bodu.Extensions.WordCasingOptions.html#Bodu_Extensions_WordCasingOptions_Default">Default</a> - invariant culture, the built-in acronym list recognised for <em>splitting</em>, mixed-case brand words (<code>iPhone</code>, <code>eBay</code>) preserved, and every word re-cased (which is why <code>HTTP</code> becomes <code>Http</code> above). Pass a <a class="xref" href="../../api/Bodu.Extensions.WordCasingOptions.html">WordCasingOptions</a> to change that:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Globalization;
 using Bodu.Extensions;
@@ -538,7 +538,7 @@ string a = &quot;the state of the API&quot;.ToTitleCase(options);   // &quot;The
 string b = &quot;the state of the API&quot;.ToTitleCase();          // &quot;The State Of The Api&quot;
 string c = &quot;SQL server. XML files.&quot;.ToSentenceCase(SentenceCaseOptions.PreserveAcronyms);   // &quot;SQL server. XML files.&quot;
 string d = &quot;SQL server. XML files.&quot;.ToSentenceCase();     // &quot;Sql server. Xml files.&quot;
-string e = &quot;XMLHttpRequest&quot;.ToSnakeCase();                // &quot;xml_http_request&quot; — splitting is acronym-aware regardless
+string e = &quot;XMLHttpRequest&quot;.ToSnakeCase();                // &quot;xml_http_request&quot; - splitting is acronym-aware regardless
 </code></pre>
 <table>
 <thead>
@@ -582,24 +582,24 @@ string e = &quot;XMLHttpRequest&quot;.ToSnakeCase();                // &quot;xml
 </tbody>
 </table>
 <p><code>ToTitleCase</code> and <code>ToSentenceCase</code> also accept the lighter flag enums <a class="xref" href="../../api/Bodu.Extensions.TitleCaseOptions.html">TitleCaseOptions</a> (<code>None</code>, <code>LowerCaseSmallWords</code>, <code>PreserveAcronyms</code>) and <a class="xref" href="../../api/Bodu.Extensions.SentenceCaseOptions.html">SentenceCaseOptions</a> (<code>None</code>, <code>PreserveAcronyms</code>) when you do not need a custom word list or culture.</p>
-<h2 id="pattern-9--slugs-identifiers-and-safe-names">Pattern 9 — slugs, identifiers, and safe names</h2>
+<h2 id="pattern-9---slugs-identifiers-and-safe-names">Pattern 9 - slugs, identifiers, and safe names</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
-string slug = &quot;Crème Brûlée &amp; Co. — 2024 Edition!&quot;.ToSlug();   // &quot;creme-brulee-co-2024-edition&quot;
+string slug = &quot;Crème Brûlée &amp; Co. - 2024 Edition!&quot;.ToSlug();   // &quot;creme-brulee-co-2024-edition&quot;
 
-string shortSlug = &quot;Crème Brûlée &amp; Co. — 2024 Edition!&quot;.ToSlug(new SlugOptions
+string shortSlug = &quot;Crème Brûlée &amp; Co. - 2024 Edition!&quot;.ToSlug(new SlugOptions
 {
     Separator = '_',
     Lowercase = false,
     MaxLength = 16,          // truncated at a separator boundary, never ends with '_'
 });                                                              // &quot;Creme_Brulee_Co&quot;
 
-string id       = &quot;first name (legacy)&quot;.ToIdentifier();                        // &quot;firstnamelegacy&quot; — casing preserved
+string id       = &quot;first name (legacy)&quot;.ToIdentifier();                        // &quot;firstnamelegacy&quot; - casing preserved
 string pascalId = &quot;first name (legacy)&quot;.ToIdentifier(IdentifierCase.Pascal);   // &quot;FirstNameLegacy&quot;
 string camelId  = &quot;first name (legacy)&quot;.ToIdentifier(IdentifierCase.Camel);    // &quot;firstNameLegacy&quot;
 string snakeId  = &quot;first name (legacy)&quot;.ToIdentifier(IdentifierCase.Snake);    // &quot;first_name_legacy&quot;
-string leading  = &quot;2fast&quot;.ToIdentifier();                                      // &quot;_2fast&quot; — cannot start with a digit
+string leading  = &quot;2fast&quot;.ToIdentifier();                                      // &quot;_2fast&quot; - cannot start with a digit
 
 bool ok  = &quot;_ok1&quot;.IsValidIdentifier();   // true
 bool bad = &quot;1abc&quot;.IsValidIdentifier();   // false
@@ -628,7 +628,7 @@ string file = &quot;report: q1/q2 &lt;final&gt;.pdf&quot;.ToSafeFileName();   //
 </tr>
 <tr>
 <td><code>IsValidIdentifier()</code></td>
-<td>A letter or <code>_</code> followed by letters, digits, <code>_</code>, or connector punctuation. It is a syntactic check — it does not reject C# keywords.</td>
+<td>A letter or <code>_</code> followed by letters, digits, <code>_</code>, or connector punctuation. It is a syntactic check - it does not reject C# keywords.</td>
 </tr>
 <tr>
 <td><code>ToSafeFileName()</code></td>
@@ -640,23 +640,23 @@ string file = &quot;report: q1/q2 &lt;final&gt;.pdf&quot;.ToSafeFileName();   //
 </tr>
 </tbody>
 </table>
-<h2 id="pattern-10--truncation-slicing-base64-and-parsing">Pattern 10 — truncation, slicing, Base64, and parsing</h2>
+<h2 id="pattern-10---truncation-slicing-base64-and-parsing">Pattern 10 - truncation, slicing, Base64, and parsing</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
 
 string text = &quot;The quick brown fox jumps over the lazy dog&quot;;
 
 string t1 = text.Truncate(9);                // &quot;The quick&quot;
-string t2 = text.Truncate(12, &quot;...&quot;);        // &quot;The quick...&quot; — the ellipsis counts toward maxLength
-string t3 = text.TruncateMiddle(15);         // &quot;The qui…azy dog&quot; — keeps both ends, 15 chars total
+string t2 = text.Truncate(12, &quot;...&quot;);        // &quot;The quick...&quot; - the ellipsis counts toward maxLength
+string t3 = text.TruncateMiddle(15);         // &quot;The qui…azy dog&quot; - keeps both ends, 15 chars total
 string s1 = text.SliceSafe(40);              // &quot;dog&quot;
-string s2 = text.SliceSafe(40, 100);         // &quot;dog&quot; — length clamped to what remains
-string s3 = text.SliceSafe(99);              // &quot;&quot; — start past the end clamps to empty
+string s2 = text.SliceSafe(40, 100);         // &quot;dog&quot; - length clamped to what remains
+string s3 = text.SliceSafe(99);              // &quot;&quot; - start past the end clamps to empty
 
 string b64  = &quot;The quick&quot;.ToBase64();                 // &quot;VGhlIHF1aWNr&quot; (UTF-8 by default)
 string back = &quot;VGhlIHF1aWNr&quot;.FromBase64ToString();    // &quot;The quick&quot;
 
-int    n  = &quot;42&quot;.Parse&lt;int&gt;() + 1;                    // 43 — any IParsable&lt;T&gt;, invariant culture
+int    n  = &quot;42&quot;.Parse&lt;int&gt;() + 1;                    // 43 - any IParsable&lt;T&gt;, invariant culture
 bool   ok = &quot;nope&quot;.TryParse&lt;int&gt;(out int value);      // false
 </code></pre>
 <table>
@@ -695,12 +695,12 @@ bool   ok = &quot;nope&quot;.TryParse&lt;int&gt;(out int value);      // false
 </table>
 <h2 id="choosing-between-similar-members">Choosing between similar members</h2>
 <ul>
-<li><strong><code>After</code> vs <code>Substring</code></strong> — <code>After</code> returns <code>null</code> when the marker is absent instead of throwing on a computed index; prefer it whenever the marker is data-dependent.</li>
-<li><strong><code>CollapseWhitespace</code> vs <code>Trim</code></strong> — collapsing keeps one space at each end when the input had leading or trailing whitespace; call <code>Trim()</code> afterwards if you want none.</li>
-<li><strong><code>ToTitleCase(options)</code> vs <code>TextInfo.ToTitleCase</code></strong> — the BCL method only upper-cases each first letter and knows nothing about acronyms or minor words.</li>
-<li><strong><code>ToSlug</code> vs <code>ToKebabCase</code></strong> — both hyphenate, but only <code>ToSlug</code> strips diacritics and punctuation and enforces <code>MaxLength</code>; use kebab case for identifiers, slug for URLs.</li>
-<li><strong><code>ToSafeFileName</code> vs <code>ToSafePathSegment</code></strong> — the second additionally neutralizes <code>/</code> and <code>\</code> on every platform.</li>
-<li><strong>Sorting and comparing</strong> — none of these methods compare strings <em>for ordering</em>. For human-friendly ordering of <code>file2</code> before <code>file10</code>, use <a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> — see <a href="natural-string-comparer.html">Natural string comparer</a>.</li>
+<li><strong><code>After</code> vs <code>Substring</code></strong> - <code>After</code> returns <code>null</code> when the marker is absent instead of throwing on a computed index; prefer it whenever the marker is data-dependent.</li>
+<li><strong><code>CollapseWhitespace</code> vs <code>Trim</code></strong> - collapsing keeps one space at each end when the input had leading or trailing whitespace; call <code>Trim()</code> afterwards if you want none.</li>
+<li><strong><code>ToTitleCase(options)</code> vs <code>TextInfo.ToTitleCase</code></strong> - the BCL method only upper-cases each first letter and knows nothing about acronyms or minor words.</li>
+<li><strong><code>ToSlug</code> vs <code>ToKebabCase</code></strong> - both hyphenate, but only <code>ToSlug</code> strips diacritics and punctuation and enforces <code>MaxLength</code>; use kebab case for identifiers, slug for URLs.</li>
+<li><strong><code>ToSafeFileName</code> vs <code>ToSafePathSegment</code></strong> - the second additionally neutralizes <code>/</code> and <code>\</code> on every platform.</li>
+<li><strong>Sorting and comparing</strong> - none of these methods compare strings <em>for ordering</em>. For human-friendly ordering of <code>file2</code> before <code>file10</code>, use <a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a> - see <a href="natural-string-comparer.html">Natural string comparer</a>.</li>
 </ul>
 <h2 id="api-summary">API summary</h2>
 <table>
@@ -755,12 +755,12 @@ bool   ok = &quot;nope&quot;.TryParse&lt;int&gt;(out int value);      // false
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="natural-string-comparer.html">Natural string comparer</a> — ordering strings with embedded numbers the way a person would.</li>
-<li><a href="date-extensions.html">Date and time extensions</a> — the sibling <code>DateTime</code> / <code>DateOnly</code> surface in the same namespace.</li>
-<li><a href="numeric-enum-stream-extensions.html">Numeric, enum, array, span, and stream extensions</a> — the rest of <code>Bodu.Extensions</code>.</li>
-<li><a href="../../docs/core/index.html">Bodu.Core introduction</a> — the package's namespaces and headline types.</li>
-<li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> — every member with full signatures.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="natural-string-comparer.html">Natural string comparer</a> - ordering strings with embedded numbers the way a person would.</li>
+<li><a href="date-extensions.html">Date and time extensions</a> - the sibling <code>DateTime</code> / <code>DateOnly</code> surface in the same namespace.</li>
+<li><a href="numeric-enum-stream-extensions.html">Numeric, enum, array, span, and stream extensions</a> - the rest of <code>Bodu.Extensions</code>.</li>
+<li><a href="../../docs/core/index.html">Bodu.Core introduction</a> - the package's namespaces and headline types.</li>
+<li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> - every member with full signatures.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -780,7 +780,7 @@ bool   ok = &quot;nope&quot;.TryParse&lt;int&gt;(out int value);      // false
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

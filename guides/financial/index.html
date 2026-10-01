@@ -89,7 +89,7 @@
 
 <p><code>Bodu.Financial</code> is the financial-primitives library that pairs with
 <code>Bodu.Numerics</code>. It ships the money, currency, and foreign-exchange
-types that an enterprise / accounting workload needs — kept separate
+types that an enterprise / accounting workload needs - kept separate
 from the generic numeric primitives so consumers of <code>Fraction&lt;T&gt;</code>
 don't pull in the 184-currency catalogue and the FX provider stack
 they don't need.</p>
@@ -98,17 +98,17 @@ hand off to <code>Fraction&lt;BigInteger&gt;</code> for exact-arithmetic chains 
 <code>ToFraction()</code> / <code>FromFraction(…)</code> / <code>MultiplyExact(…)</code>.</p>
 <h2 id="whats-included">What's included</h2>
 <ul>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;</code></a></strong> — an
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;</code></a></strong> - an
 immutable monetary amount whose currency is encoded at the type
 level via an <code>ICurrency</code> tag, so cross-currency arithmetic fails
 the build rather than running with the wrong unit at runtime.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code></a></strong> — the
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Money.html"><code>Money</code></a></strong> - the
 runtime-tagged sister type for &quot;currency unknown until
 deserialisation&quot; scenarios.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag</code></a></strong> — immutable
+<li><strong><a class="xref" href="../../api/Bodu.Financial.MoneyBag.html"><code>MoneyBag</code></a></strong> - immutable
 mixed-currency portfolio with aggregate-then-round and
 round-each-then-sum policies.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a></strong> —
+<li><strong><a class="xref" href="../../api/Bodu.Financial.Currencies.CurrencyRegistry.html"><code>CurrencyRegistry</code></a></strong> -
 runtime ISO-to-metadata lookup, populated from the source-generated
 catalogue.</li>
 <li><strong>FX provider stack:</strong>
@@ -125,7 +125,7 @@ for dated lookups with full audit metadata
 as the mutable companion to <code>RateSeries</code>, plus
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateTableBuilder.html"><code>RateTableBuilder</code></a> for
 multi-pair / multi-provider import workflows that produce
-immutable snapshots. Live providers export those snapshots back out —
+immutable snapshots. Live providers export those snapshots back out -
 see <a href="exchange-rate-providers.html#snapshotting-and-exporting-rates">Snapshotting and exporting rates</a>.</li>
 </ul>
 <h2 id="guides">Guides</h2>
@@ -136,14 +136,14 @@ see <a href="exchange-rate-providers.html#snapshotting-and-exporting-rates">Snap
 </div>
 <div class="bodu-card">
   <h3><a href="monetary-precision.html">Monetary precision &amp; unit pricing</a></h3>
-  <p>Sub-minor-unit prices — a 6-dp share price in 2-dp USD — via explicit-scale <code>Money</code> and unrounded <code>CalculatedMoney</code>, with the scale preserved through arithmetic and every JSON wire shape.</p>
+  <p>Sub-minor-unit prices - a 6-dp share price in 2-dp USD - via explicit-scale <code>Money</code> and unrounded <code>CalculatedMoney</code>, with the scale preserved through arithmetic and every JSON wire shape.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="exchange-rates.html">Working with exchange rates</a></h3>
-  <p>The FX provider stack — timeless vs. dated contracts, the audit-grade <code>RateLookupResult</code>, provider grouping via the aggregator, and the <code>RateSeriesBuilder</code> + <code>RateTableBuilder</code> editing surface.</p>
+  <p>The FX provider stack - timeless vs. dated contracts, the audit-grade <code>RateLookupResult</code>, provider grouping via the aggregator, and the <code>RateSeriesBuilder</code> + <code>RateTableBuilder</code> editing surface.</p>
 </div>
 <div class="bodu-card">
-  <h3><a href="exchange-types.html">Exchange-rate types — a usage-scenario catalogue</a></h3>
+  <h3><a href="exchange-types.html">Exchange-rate types - a usage-scenario catalogue</a></h3>
   <p>Every FX type mapped to the scenario it was defined for, with a one-line "reach for this when…" map and a decision walk-through.</p>
 </div>
 <div class="bodu-card">
@@ -152,15 +152,15 @@ see <a href="exchange-rate-providers.html#snapshotting-and-exporting-rates">Snap
 </div>
 <div class="bodu-card">
   <h3><a href="exchange-rate-providers.html">Built-in exchange-rate providers</a></h3>
-  <p>The eleven live-feed packages — BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF — with construction, warming, the shared lookup surface, dependency injection, and snapshot export.</p>
+  <p>The eleven live-feed packages - BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF - with construction, warming, the shared lookup surface, dependency injection, and snapshot export.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="exchange-rate-caching.html">Caching and aggregating exchange rates</a></h3>
-  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingRateProvider</code> — priority fallback, averaging, and per-FX-pair routing.</p>
+  <p>Read-through caching one provider per cache (<code>CachingRateProvider</code>, TOML or in-memory, per-provider expiry), and grouping many providers with <code>AggregatingRateProvider</code> - priority fallback, averaging, and per-FX-pair routing.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="dependency-injection.html">Dependency injection</a></h3>
-  <p>Register the financial stack with <code>AddFinancialService(...)</code> — currency lookups, named monetary contexts, FX providers, and options binding — plus the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
+  <p>Register the financial stack with <code>AddFinancialService(...)</code> - currency lookups, named monetary contexts, FX providers, and options binding - plus the keyed JSON options via <code>AddFinancialJson(...)</code> from the JSON companion.</p>
 </div>
 <div class="bodu-card">
   <h3><a href="testing-providers.html">Testing your own provider</a></h3>
@@ -169,26 +169,26 @@ see <a href="exchange-rate-providers.html#snapshotting-and-exporting-rates">Snap
 </div>
 <h2 id="reading-path">Reading path</h2>
 <ol>
-<li><strong><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> — the monetary core; everything else builds on it.</li>
-<li><strong><a href="monetary-precision.html">Monetary precision &amp; unit pricing</a></strong> — when a price is finer than the currency settles at: explicit scale, deferred rounding, and precision-preserving JSON.</li>
-<li><strong><a href="exchange-rates.html">Working with exchange rates</a></strong> — the provider contracts and editing surface for crossing currencies.</li>
-<li><strong><a href="exchange-types.html">Exchange-rate types</a></strong> and <strong><a href="exchange-rate-lookups.html">lookups on a known dataset</a></strong> — reference material; dip in when choosing a type or tuning a lookup policy.</li>
-<li><strong><a href="exchange-rate-caching.html">Caching exchange rates</a></strong> — add a TOML disk cache in front of any provider, with per-provider expiry.</li>
-<li><strong><a href="json-serialization.html">JSON serialization</a></strong> — the <code>Bodu.Financial.Serialization.Json</code> companion: the converters, the three wire shapes, and the <code>AddFinancialJsonConverters()</code> / <code>AddFinancialJson()</code> registrations.</li>
-<li><strong><a href="provider-configuration.html">Configuring providers from <code>appsettings</code></a></strong> and <strong><a href="caching-configuration.html">configuring rate caching</a></strong> — the options each provider and cache backend binds, with worked configuration files.</li>
-<li><strong><a href="custom-web-provider.html">Writing your own web provider</a></strong> — subclass <code>WebRateProvider</code> or <code>PairWebRateProvider&lt;TSeries&gt;</code> when no built-in feed fits.</li>
-<li><strong><a href="dependency-injection.html">Dependency injection</a></strong> — last, once you know which services your application composes.</li>
-<li><strong><a href="testing-providers.html">Testing your own provider</a></strong> and <strong><a href="../../samples/financial.html">runnable samples</a></strong> — the contract-test bases for consumer-written providers, and the offline sample projects under <code>samples/Financial/</code> that compose everything above end to end.</li>
+<li><strong><a href="money.html">Working with <code>Money&lt;TCurrency&gt;</code></a></strong> - the monetary core; everything else builds on it.</li>
+<li><strong><a href="monetary-precision.html">Monetary precision &amp; unit pricing</a></strong> - when a price is finer than the currency settles at: explicit scale, deferred rounding, and precision-preserving JSON.</li>
+<li><strong><a href="exchange-rates.html">Working with exchange rates</a></strong> - the provider contracts and editing surface for crossing currencies.</li>
+<li><strong><a href="exchange-types.html">Exchange-rate types</a></strong> and <strong><a href="exchange-rate-lookups.html">lookups on a known dataset</a></strong> - reference material; dip in when choosing a type or tuning a lookup policy.</li>
+<li><strong><a href="exchange-rate-caching.html">Caching exchange rates</a></strong> - add a TOML disk cache in front of any provider, with per-provider expiry.</li>
+<li><strong><a href="json-serialization.html">JSON serialization</a></strong> - the <code>Bodu.Financial.Serialization.Json</code> companion: the converters, the three wire shapes, and the <code>AddFinancialJsonConverters()</code> / <code>AddFinancialJson()</code> registrations.</li>
+<li><strong><a href="provider-configuration.html">Configuring providers from <code>appsettings</code></a></strong> and <strong><a href="caching-configuration.html">configuring rate caching</a></strong> - the options each provider and cache backend binds, with worked configuration files.</li>
+<li><strong><a href="custom-web-provider.html">Writing your own web provider</a></strong> - subclass <code>WebRateProvider</code> or <code>PairWebRateProvider&lt;TSeries&gt;</code> when no built-in feed fits.</li>
+<li><strong><a href="dependency-injection.html">Dependency injection</a></strong> - last, once you know which services your application composes.</li>
+<li><strong><a href="testing-providers.html">Testing your own provider</a></strong> and <strong><a href="../../samples/financial.html">runnable samples</a></strong> - the contract-test bases for consumer-written providers, and the offline sample projects under <code>samples/Financial/</code> that compose everything above end to end.</li>
 </ol>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><p><a href="../../docs/financial/index.html">Bodu.Financial introduction</a> — namespaces, headline types, scenarios.</p>
+<li><p><a href="../../docs/financial/index.html">Bodu.Financial introduction</a> - namespaces, headline types, scenarios.</p>
 </li>
-<li><p><a href="../../docs/financial/getting-started.html">Bodu.Financial getting started</a> — install + minimal samples.</p>
+<li><p><a href="../../docs/financial/getting-started.html">Bodu.Financial getting started</a> - install + minimal samples.</p>
 </li>
-<li><p><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic guides</a> — the topic map; the complete financial guide list is this page, and the numerics one is <a href="../numerics/index.html">its index</a>.</p>
+<li><p><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial topic guides</a> - the topic map; the complete financial guide list is this page, and the numerics one is <a href="../numerics/index.html">its index</a>.</p>
 </li>
-<li><p><a href="../../docs/topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a> — package boundaries and the decision table.</p>
+<li><p><a href="../../docs/topics/numerics-and-financial.html">Numerics &amp; Financial topic overview</a> - package boundaries and the decision table.</p>
 </li>
 <li><p><a class="xref" href="../../api/Bodu.Financial.Money-1.html"><code>Money&lt;TCurrency&gt;</code> API reference</a></p>
 </li>
@@ -206,7 +206,7 @@ see <a href="exchange-rate-providers.html#snapshotting-and-exporting-rates">Snap
 </li>
 <li><p><a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html"><code>ICurrency</code> interface</a></p>
 </li>
-<li><p><a href="../numerics/index.html"><code>Bodu.Numerics</code> overview</a> — for the
+<li><p><a href="../numerics/index.html"><code>Bodu.Numerics</code> overview</a> - for the
 underlying <code>Fraction&lt;T&gt;</code> escape hatch.</p>
 </li>
 </ul>
@@ -228,7 +228,7 @@ underlying <code>Fraction&lt;T&gt;</code> escape hatch.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

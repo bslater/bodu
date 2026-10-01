@@ -120,32 +120,32 @@
 <tr>
 <td>Read</td>
 <td><code>AsSpan()</code>, <code>ToArray()</code> (a fresh copy each call), <code>Length</code>, <code>IsEmpty</code></td>
-<td><code>AsSpan()</code>, <code>ToArray()</code>, <code>Length</code> — throw <code>ObjectDisposedException</code> after <code>Dispose</code></td>
+<td><code>AsSpan()</code>, <code>ToArray()</code>, <code>Length</code> - throw <code>ObjectDisposedException</code> after <code>Dispose</code></td>
 </tr>
 <tr>
 <td>Equality</td>
-<td><code>Equals</code>, <code>==</code>, <code>!=</code> — <strong>constant-time</strong> via <code>CryptographicOperations.FixedTimeEquals</code>; <code>GetHashCode</code> over the bytes</td>
+<td><code>Equals</code>, <code>==</code>, <code>!=</code> - <strong>constant-time</strong> via <code>CryptographicOperations.FixedTimeEquals</code>; <code>GetHashCode</code> over the bytes</td>
 <td>no <code>Equals</code> override; <code>FixedTimeEquals(SecretBytes)</code> / <code>FixedTimeEquals(ReadOnlySpan&lt;byte&gt;)</code></td>
 </tr>
 <tr>
 <td>Explicit <code>FixedTimeEquals</code></td>
-<td><code>HashValue</code>, <code>AuthenticationTag</code> (also a span overload), <code>SignatureValue</code> — not on <code>Nonce</code> / <code>Salt</code>, whose <code>Equals</code> is already constant-time</td>
+<td><code>HashValue</code>, <code>AuthenticationTag</code> (also a span overload), <code>SignatureValue</code> - not on <code>Nonce</code> / <code>Salt</code>, whose <code>Equals</code> is already constant-time</td>
 <td>yes</td>
 </tr>
 <tr>
 <td><code>ToString()</code></td>
 <td>lowercase hex of the bytes (<code>HashValue</code> / <code>SignatureValue</code> also <code>ToHexString()</code>, <code>ToBase64String()</code>)</td>
-<td><code>&quot;SecretBytes (Length = n)&quot;</code> — never the bytes</td>
+<td><code>&quot;SecretBytes (Length = n)&quot;</code> - never the bytes</td>
 </tr>
 <tr>
 <td>Zeroization</td>
-<td>none — these are public values by design</td>
+<td>none - these are public values by design</td>
 <td><code>Clear()</code> zeroes in place; <code>Dispose()</code> zeroes once and latches</td>
 </tr>
 </tbody>
 </table>
 <p>None of the structs enforce semantics (uniqueness, length); they carry bytes and intent. <code>Nonce.Random</code> and <code>Salt.Random</code> draw from the library's cryptographic generator and reject lengths ≤ 0 with <code>ArgumentOutOfRangeException</code>.</p>
-<h2 id="pattern-1--a-nonce-into-aes-gcm">Pattern 1 — a <code>Nonce</code> into AES-GCM</h2>
+<h2 id="pattern-1---a-nonce-into-aes-gcm">Pattern 1 - a <code>Nonce</code> into AES-GCM</h2>
 <p><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> is the one transform with a <code>Nonce</code>-typed constructor beside its <code>byte[]</code> and span constructors; it still requires exactly 12 bytes and throws <code>ArgumentException</code> otherwise. Reconstruct the nonce from the wire on the receiving side with <code>FromBytes</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -169,7 +169,7 @@ using (var aes = new AesBlockCipher(key))
 bool same = nonce == received;                     // true, compared in constant time
 </code></pre>
 <p>The stream AEADs and <code>AsconAead128</code> take <code>byte[]</code> / span nonces; pass <code>nonce.AsSpan()</code>.</p>
-<h2 id="pattern-2--secretbytes-and-salt-into-scrypt">Pattern 2 — <code>SecretBytes</code> and <code>Salt</code> into scrypt</h2>
+<h2 id="pattern-2---secretbytes-and-salt-into-scrypt">Pattern 2 - <code>SecretBytes</code> and <code>Salt</code> into scrypt</h2>
 <p><a class="xref" href="../../api/Bodu.Security.Cryptography.Scrypt.html">Scrypt</a> has the one overload in the library typed on these values: <code>DeriveKey(SecretBytes password, Salt salt, int costN, int blockSizeR, int parallelization, int length)</code>. The password buffer is pinned for its lifetime and zeroed on <code>Dispose</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -180,11 +180,11 @@ using SecretBytes password = SecretBytes.CopyFrom(&quot;correct horse battery st
 byte[] key = Scrypt.DeriveKey(password, salt, costN: 1 &lt;&lt; 14, blockSizeR: 8, parallelization: 1, length: 32);
 
 bool matches = password.FixedTimeEquals(&quot;correct horse battery staple&quot;u8);    // true
-Console.WriteLine(password);                                                   // &quot;SecretBytes (Length = 28)&quot; — never the bytes
+Console.WriteLine(password);                                                   // &quot;SecretBytes (Length = 28)&quot; - never the bytes
 </code></pre>
-<p>After <code>Dispose</code> — or the end of the <code>using</code> — <code>AsSpan</code>, <code>ToArray</code>, <code>FixedTimeEquals</code>, and <code>Clear</code> throw <code>ObjectDisposedException</code>. With the fixed salt <code>000102…0f</code> the derived key is <code>D7590ACA2C9801CF06EEBA772A69DC31CE3862591D96522AC4E6BBA6AD1F31A5</code>.</p>
-<h2 id="pattern-3--hashvalue-for-stored-digests">Pattern 3 — <code>HashValue</code> for stored digests</h2>
-<p><code>HashValue</code> is the type for a digest you keep and compare: parse it from configuration with <code>ParseHex</code> (throws <code>FormatException</code>) or <code>TryParseHex</code>, emit it with <code>ToHexString</code> / <code>ToBase64String</code>, and compare with <code>==</code> or <code>FixedTimeEquals</code> — both constant-time.</p>
+<p>After <code>Dispose</code> - or the end of the <code>using</code> - <code>AsSpan</code>, <code>ToArray</code>, <code>FixedTimeEquals</code>, and <code>Clear</code> throw <code>ObjectDisposedException</code>. With the fixed salt <code>000102…0f</code> the derived key is <code>D7590ACA2C9801CF06EEBA772A69DC31CE3862591D96522AC4E6BBA6AD1F31A5</code>.</p>
+<h2 id="pattern-3---hashvalue-for-stored-digests">Pattern 3 - <code>HashValue</code> for stored digests</h2>
+<p><code>HashValue</code> is the type for a digest you keep and compare: parse it from configuration with <code>ParseHex</code> (throws <code>FormatException</code>) or <code>TryParseHex</code>, emit it with <code>ToHexString</code> / <code>ToBase64String</code>, and compare with <code>==</code> or <code>FixedTimeEquals</code> - both constant-time.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
 
@@ -198,7 +198,7 @@ string hex = computed.ToHexString();                   // bddd813c…d52319
 string b64 = computed.ToBase64String();                // vd2BPGNCOXIxce8/7phXm5SWTjuxyz5CcmLIwGjVIxk=
 bool parsed = HashValue.TryParseHex(&quot;not hex&quot;, out _); // false
 </code></pre>
-<h2 id="pattern-4--authenticationtag-and-detached-aead">Pattern 4 — <code>AuthenticationTag</code> and detached AEAD</h2>
+<h2 id="pattern-4---authenticationtag-and-detached-aead">Pattern 4 - <code>AuthenticationTag</code> and detached AEAD</h2>
 <p><code>EncryptDetached</code> / <code>DecryptDetached</code> on <a class="xref" href="../../api/Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.html">AeadBlockCipherModeTransformExtensions</a> split the tag out of the <code>ciphertext ‖ tag</code> layout for protocols that carry it out of band. They are defined for <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> (GCM, GCM-SIV, CCM, OCB, EAX, SIV, and <code>AsconAead128</code>); a tag of the wrong length throws <code>ArgumentException</code>, a wrong tag <code>CryptographicException</code>.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -221,8 +221,8 @@ using (var aes = new AesBlockCipher(key))
 
 bool same = result.tag.FixedTimeEquals(fromWire.AsSpan());   // true
 </code></pre>
-<p>The stream AEADs have no detached overloads; slice the tag off the combined output and rebuild it with <code>AuthenticationTag.FromBytes</code> — see <a href="stream-aead.html#pattern-5--detached-tags">Authenticated stream ciphers</a>.</p>
-<h2 id="pattern-5--signaturevalue-and-signatureformat">Pattern 5 — <code>SignatureValue</code> and <code>SignatureFormat</code></h2>
+<p>The stream AEADs have no detached overloads; slice the tag off the combined output and rebuild it with <code>AuthenticationTag.FromBytes</code> - see <a href="stream-aead.html#pattern-5---detached-tags">Authenticated stream ciphers</a>.</p>
+<h2 id="pattern-5---signaturevalue-and-signatureformat">Pattern 5 - <code>SignatureValue</code> and <code>SignatureFormat</code></h2>
 <p><code>SignatureValue</code> records not only the bytes but the encoding they use: <code>SignatureFormat.Raw</code> (the fixed-width <code>r ‖ s</code> form Ed25519 and ML-DSA produce), <code>Der</code> (ASN.1 <code>SEQUENCE</code>), or <code>P1363</code> (the IEEE fixed-width form BCL <code>ECDsa</code> emits by default); <code>Unknown</code> is the zero value. <code>FromBytes</code> rejects an undefined format with <code>ArgumentOutOfRangeException</code>. <code>Equals</code> / <code>==</code> compare <strong>format and bytes</strong>; <code>FixedTimeEquals</code> compares bytes only.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -236,17 +236,17 @@ SignatureValue again     = SignatureValue.FromBytes(signer.SignData(message), Si
 SignatureValue asDer     = SignatureValue.FromBytes(signature.AsSpan(), SignatureFormat.Der);         // same bytes, other label
 
 bool a = signature == again;                        // true
-bool b = signature == asDer;                        // false — the format is part of equality
-bool c = signature.FixedTimeEquals(asDer);          // true — bytes only
+bool b = signature == asDer;                        // false - the format is part of equality
+bool c = signature.FixedTimeEquals(asDer);          // true - bytes only
 bool verifies = signer.VerifyData(message, signature.AsSpan());
 </code></pre>
 <p>No library member consumes <code>SignatureValue</code>; the signers and verifiers take spans. It is the type to store, log (<code>ToHexString</code> / <code>ToBase64String</code>), and compare signatures with, and to record the wire format a peer expects.</p>
 <h2 id="equality-semantics-at-a-glance">Equality semantics at a glance</h2>
 <ul>
-<li>All five structs implement <code>IEquatable&lt;T&gt;</code> with constant-time content comparison, so they work as <code>HashSet&lt;T&gt;</code> / dictionary keys (<code>GetHashCode</code> hashes the bytes with <code>HashCode.AddBytes</code> — it is <strong>not</strong> constant-time, and it is not meant to be).</li>
+<li>All five structs implement <code>IEquatable&lt;T&gt;</code> with constant-time content comparison, so they work as <code>HashSet&lt;T&gt;</code> / dictionary keys (<code>GetHashCode</code> hashes the bytes with <code>HashCode.AddBytes</code> - it is <strong>not</strong> constant-time, and it is not meant to be).</li>
 <li><code>default(T)</code> equals <code>FromBytes(ReadOnlySpan&lt;byte&gt;.Empty)</code>; both report <code>IsEmpty</code> and print as an empty string.</li>
 <li><code>ToArray()</code> returns a fresh copy every time; mutate it freely.</li>
-<li><code>SecretBytes</code> deliberately has no value equality or hash code — a secret should never be a dictionary key.</li>
+<li><code>SecretBytes</code> deliberately has no value equality or hash code - a secret should never be a dictionary key.</li>
 </ul>
 <h2 id="api-summary">API summary</h2>
 <table>
@@ -286,7 +286,7 @@ bool verifies = signer.VerifyData(message, signature.AsSpan());
 <td><code>FromBytes</code>, <code>ParseHex</code>, <code>TryParseHex</code></td>
 <td><code>==</code>, <code>FixedTimeEquals</code></td>
 <td><code>ToHexString</code>, <code>ToBase64String</code>, <code>ToString</code></td>
-<td>— (storage and comparison)</td>
+<td>- (storage and comparison)</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AuthenticationTag.html">AuthenticationTag</a></td>
@@ -300,17 +300,17 @@ bool verifies = signer.VerifyData(message, signature.AsSpan());
 <td><code>FromBytes(bytes, SignatureFormat)</code></td>
 <td><code>==</code> (format + bytes), <code>FixedTimeEquals</code> (bytes)</td>
 <td><code>Format</code>, <code>ToHexString</code>, <code>ToBase64String</code></td>
-<td>— (storage and comparison)</td>
+<td>- (storage and comparison)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="stream-aead.html">Authenticated stream ciphers</a> — detaching a tag from the stream AEADs.</li>
-<li><a href="scrypt.html">Using scrypt</a> and <a href="argon2.html">Using Argon2</a> — the password KDFs that salts feed.</li>
-<li><a href="security-posture.html">Security guarantees and limitations</a> — zeroization and constant-time claims across the library.</li>
-<li><a href="bcl-interop.html#pattern-9--constant-time-comparison">Interoperating with System.Security.Cryptography</a> — <code>CryptographicOperations.FixedTimeEquals</code> beside the value types.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="stream-aead.html">Authenticated stream ciphers</a> - detaching a tag from the stream AEADs.</li>
+<li><a href="scrypt.html">Using scrypt</a> and <a href="argon2.html">Using Argon2</a> - the password KDFs that salts feed.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> - zeroization and constant-time claims across the library.</li>
+<li><a href="bcl-interop.html#pattern-9---constant-time-comparison">Interoperating with System.Security.Cryptography</a> - <code>CryptographicOperations.FixedTimeEquals</code> beside the value types.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -330,7 +330,7 @@ bool verifies = signer.VerifyData(message, signature.AsSpan());
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

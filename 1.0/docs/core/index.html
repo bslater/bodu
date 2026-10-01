@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Core — Introduction | BODU </title>
+      <title>Bodu.Core - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Core — Introduction | BODU ">
+      <meta name="title" content="Bodu.Core - Introduction | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -88,13 +88,13 @@
 <h1 id="boducore">Bodu.Core</h1>
 
 <p><img src="../../images/hero-core.svg" alt="Bodu.Core"></p>
-<p><strong>Bodu.Core</strong> is the foundation package of the Bodu suite and of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic — a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: <code>Bodu.Collections</code>, <code>Bodu.IO.Hashing</code>, <code>Bodu.Security.Cryptography</code>, <code>Bodu.Globalization.Calendar</code>, <code>Bodu.Numerics</code>, and <code>Bodu.Financial</code> all reference <code>Bodu.Core</code> for shared types like <code>ThrowHelper</code>, <code>WeekPattern</code>, the calendar-shape enums, and pooled buffers. See the <a href="../package-matrix.html">package matrix</a> for the full dependency map.</p>
+<p><strong>Bodu.Core</strong> is the foundation package of the Bodu suite and of the <strong><a href="../topics/core-foundations.html">Core Foundations</a></strong> topic - a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: <code>Bodu.Collections</code>, <code>Bodu.IO.Hashing</code>, <code>Bodu.Security.Cryptography</code>, <code>Bodu.Globalization.Calendar</code>, <code>Bodu.Numerics</code>, and <code>Bodu.Financial</code> all reference <code>Bodu.Core</code> for shared types like <code>ThrowHelper</code>, <code>WeekPattern</code>, the calendar-shape enums, and pooled buffers. See the <a href="../package-matrix.html">package matrix</a> for the full dependency map.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>The specialized generic-collection catalogue — <code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>, the navigable and range-keyed types, graphs, tries, and the probabilistic sketches — ships in the companion <strong><a href="../collections/index.html">Bodu.Collections</a></strong> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe variants ship in <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> (which depends on <code>Bodu.Collections</code>). This page covers what remains in <code>Bodu.Core</code> itself.</p>
+<p>The specialized generic-collection catalogue - <code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>, the navigable and range-keyed types, graphs, tries, and the probabilistic sketches - ships in the companion <strong><a href="../collections/index.html">Bodu.Collections</a></strong> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe variants ship in <strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong> (which depends on <code>Bodu.Collections</code>). This page covers what remains in <code>Bodu.Core</code> itself.</p>
 </div>
 <p>The library is organized around a family of focused namespaces, each with a clear responsibility.</p>
-<p><img src="../../images/diagrams/core-namespace-map.svg" alt="Bodu.Core namespace map — the foundation namespaces and their headline types, with the collection catalogue shipping in Bodu.Collections"></p>
+<p><img src="../../images/diagrams/core-namespace-map.svg" alt="Bodu.Core namespace map - the foundation namespaces and their headline types, with the collection catalogue shipping in Bodu.Collections"></p>
 <h2 id="namespaces-and-headline-types">Namespaces and headline types</h2>
 <h3 id="bodu"><code>Bodu</code></h3>
 <p>Top-level primitives that don't fit into a sub-namespace.</p>
@@ -112,7 +112,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a></td>
-<td>Abstraction over random number generators — used by helpers (and the <code>Bodu.Collections</code> catalogue) that need pluggable randomness.</td>
+<td>Abstraction over random number generators - used by helpers (and the <code>Bodu.Collections</code> catalogue) that need pluggable randomness.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a></td>
@@ -141,7 +141,7 @@
 </tbody>
 </table>
 <h3 id="boduthreading"><code>Bodu.Threading</code></h3>
-<p>Async coordination primitives — the async-friendly peers of the BCL synchronization types. See the <a href="../../guides/core/async-primitives.html">Async coordination primitives</a> guide and the <a class="xref" href="../../api/Bodu.Threading.html">Bodu.Threading</a> overview.</p>
+<p>Async coordination primitives - the async-friendly peers of the BCL synchronization types. See the <a href="../../guides/core/async-primitives.html">Async coordination primitives</a> guide and the <a class="xref" href="../../api/Bodu.Threading.html">Bodu.Threading</a> overview.</p>
 <table>
 <thead>
 <tr>
@@ -180,7 +180,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Functional.Option-1.html">Option&lt;T&gt;</a></td>
-<td>An optional value — <code>Some(value)</code> or <code>None</code> — with <code>Map</code> / <code>Bind</code> / <code>Filter</code> / <code>Match</code> combinators; <code>default</code> equals <code>None</code>.</td>
+<td>An optional value - <code>Some(value)</code> or <code>None</code> - with <code>Map</code> / <code>Bind</code> / <code>Filter</code> / <code>Match</code> combinators; <code>default</code> equals <code>None</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Functional.Result.html">Result</a>, <a class="xref" href="../../api/Bodu.Functional.Result-1.html">Result&lt;T&gt;</a></td>
@@ -188,7 +188,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Functional.ResultError.html">ResultError</a></td>
-<td>The failure descriptor — optional code, never-null message, optional captured exception.</td>
+<td>The failure descriptor - optional code, never-null message, optional captured exception.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Functional.Either-2.html">Either&lt;TLeft, TRight&gt;</a></td>
@@ -212,7 +212,7 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Sequences.SequenceGenerator.html">SequenceGenerator</a></td>
-<td>Lazy generators — <code>Range</code>, <code>NextWhile</code>, <code>Factory</code> — and named mathematical series: <code>Fibonacci</code>, <code>Farey</code>, <code>Leibniz</code>, <code>LookAndSay</code>, <code>ThueMorse</code>.</td>
+<td>Lazy generators - <code>Range</code>, <code>NextWhile</code>, <code>Factory</code> - and named mathematical series: <code>Fibonacci</code>, <code>Farey</code>, <code>Leibniz</code>, <code>LookAndSay</code>, <code>ThueMorse</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -236,7 +236,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Collections.Generic.ShuffleHelpers.html">ShuffleHelpers</a>, <code>IEnumerableExtensions.Randomize</code>, <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.SystemRandomAdapter.html">SystemRandomAdapter</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Extensions.RandomizationMode.html">RandomizationMode</a></td>
-<td>Pluggable randomness-driven shuffles backed by <code>IRandomGenerator</code> — in-place <code>Shuffle</code> over arrays / spans, lazy <code>ShuffleAndYield</code>, and <code>Randomize</code> over any sequence. <code>ShuffleHelpers</code> lives in <code>Bodu.Collections.Generic</code> but ships in <code>Bodu.Core</code>.</td>
+<td>Pluggable randomness-driven shuffles backed by <code>IRandomGenerator</code> - in-place <code>Shuffle</code> over arrays / spans, lazy <code>ShuffleAndYield</code>, and <code>Randomize</code> over any sequence. <code>ShuffleHelpers</code> lives in <code>Bodu.Collections.Generic</code> but ships in <code>Bodu.Core</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -280,7 +280,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.NaturalStringComparer.html">NaturalStringComparer</a></td>
-<td>Numeric-aware (&quot;natural&quot;) string comparer — <code>file2</code> sorts before <code>file10</code> — with ordinal, case-insensitive, and culture-aware modes. See the <a href="../../guides/core/natural-string-comparer.html">Natural string comparer</a> guide.</td>
+<td>Numeric-aware (&quot;natural&quot;) string comparer - <code>file2</code> sorts before <code>file10</code> - with ordinal, case-insensitive, and culture-aware modes. See the <a href="../../guides/core/natural-string-comparer.html">Natural string comparer</a> guide.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a>, <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>, <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a>, <a class="xref" href="../../api/Bodu.Extensions.FiscalWeekPattern.html">FiscalWeekPattern</a>, <a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></td>
@@ -300,7 +300,7 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions.html">DateTimeFormatInfoExtensions</a></td>
-<td>A single helper, <code>LastDayOfWeek()</code> — the day that closes a culture's week, derived from the BCL <code>DateTimeFormatInfo.FirstDayOfWeek</code>.</td>
+<td>A single helper, <code>LastDayOfWeek()</code> - the day that closes a culture's week, derived from the BCL <code>DateTimeFormatInfo.FirstDayOfWeek</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -316,7 +316,7 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a></td>
-<td>BOM sniffing — <code>TryDetectByPreamble(ReadOnlySpan&lt;byte&gt;, out Encoding?)</code>.</td>
+<td>BOM sniffing - <code>TryDetectByPreamble(ReadOnlySpan&lt;byte&gt;, out Encoding?)</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a></td>
@@ -324,7 +324,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a></td>
-<td><code>string</code> fast paths — <code>ToUtf8Bytes</code>, <code>ToBytes(encoding)</code>, <code>ToBytesWithPreamble</code>, <code>GetUtf8ByteCount</code>, <code>EncodeUtf8To</code>, <code>WriteUtf8To(IBufferWriter&lt;byte&gt;)</code>, and the pooled <code>GetUtf8BytesPooled</code> / <code>GetBytesPooled</code>.</td>
+<td><code>string</code> fast paths - <code>ToUtf8Bytes</code>, <code>ToBytes(encoding)</code>, <code>ToBytesWithPreamble</code>, <code>GetUtf8ByteCount</code>, <code>EncodeUtf8To</code>, <code>WriteUtf8To(IBufferWriter&lt;byte&gt;)</code>, and the pooled <code>GetUtf8BytesPooled</code> / <code>GetBytesPooled</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Xml.Linq.XmlNamespaceResolver.html">XmlNamespaceResolver</a></td>
@@ -332,7 +332,7 @@
 </tr>
 </tbody>
 </table>
-<p>The binary-to-text radix codecs (<code>Base16</code> … <code>Base85</code>) are <strong>not</strong> in this package — they ship in the companion <a href="../text-encoding/index.html">Bodu.Text.Encoding</a> package.</p>
+<p>The binary-to-text radix codecs (<code>Base16</code> … <code>Base85</code>) are <strong>not</strong> in this package - they ship in the companion <a href="../text-encoding/index.html">Bodu.Text.Encoding</a> package.</p>
 <h2 id="scenarios-this-library-covers">Scenarios this library covers</h2>
 <table>
 <thead>
@@ -363,7 +363,7 @@
 <td><a class="xref" href="../../api/Bodu.Functional.Memoizer.html">Memoizer</a></td>
 </tr>
 <tr>
-<td>Date arithmetic — first Monday, ISO week-of-year, age</td>
+<td>Date arithmetic - first Monday, ISO week-of-year, age</td>
 <td><a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a>, <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a></td>
 </tr>
 <tr>
@@ -408,20 +408,20 @@
 <p>A handful of conventions run through the whole package; knowing them up front explains why the types look the way they do.</p>
 <ul>
 <li><strong>Validation flows through one helper.</strong> Every public entry point validates its arguments through <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a>, so exception type, message, and parameter-name capture stay uniform across the suite. <code>ThrowHelper</code> is also the primary dependency the other Bodu packages take on <code>Bodu.Core</code>.</li>
-<li><strong>Honest default values.</strong> The railway primitives define what <code>default</code> means rather than leaving it undefined: <code>default(Option&lt;T&gt;)</code> is <code>None</code>, <code>default(Result&lt;T&gt;)</code> is a failure carrying an empty error, and <code>default(Either&lt;L,R&gt;)</code> is an explicit uninitialized state — a struct field that was never assigned is well-formed, never a landmine.</li>
+<li><strong>Honest default values.</strong> The railway primitives define what <code>default</code> means rather than leaving it undefined: <code>default(Option&lt;T&gt;)</code> is <code>None</code>, <code>default(Result&lt;T&gt;)</code> is a failure carrying an empty error, and <code>default(Either&lt;L,R&gt;)</code> is an explicit uninitialized state - a struct field that was never assigned is well-formed, never a landmine.</li>
 <li><strong>Async primitives are awaitable peers, not wrappers.</strong> The <code>Bodu.Threading</code> types re-express the BCL synchronization vocabulary (<code>lock</code>, <code>SemaphoreSlim</code>, <code>ManualResetEvent</code>) as first-class awaitables, so coordination composes with <code>async</code>/<code>await</code> without thread blocking.</li>
 <li><strong>Pluggable randomness, never a global.</strong> Helpers that need randomness accept an <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a> rather than reaching for a static <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.random">Random</a>, so tests can inject a deterministic source. Neither shipped implementation is cryptographically secure.</li>
 <li><strong>Span-first surfaces.</strong> The buffer builder, the <code>Bodu.Text</code> encoding helpers, and the extension surfaces prefer <code>Span&lt;T&gt;</code> / <code>ReadOnlySpan&lt;T&gt;</code> overloads with UTF-8 fast paths, so the common cases avoid intermediate allocations.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — glossary the rest of the documentation assumes.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install the package and run a minimal sample for each scenario above.</li>
-<li><strong><a href="../../guides/core/index.html">Core Foundations guides</a></strong> — recipe-style walk-throughs for the headline types.</li>
-<li><strong><a href="../collections/index.html">Bodu.Collections introduction</a></strong> — the specialized collection catalogue that builds on this package.</li>
-<li><strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> — the thread-safe collection companion.</li>
-<li><strong><a href="../introduction.html">Project introduction</a></strong> — how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its <code>ThrowHelper</code> underpins them all).</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> — Bodu.Core alongside its sibling members, the collection packages and the <code>Bodu.Text</code> namespace utilities.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - glossary the rest of the documentation assumes.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install the package and run a minimal sample for each scenario above.</li>
+<li><strong><a href="../../guides/core/index.html">Core Foundations guides</a></strong> - recipe-style walk-throughs for the headline types.</li>
+<li><strong><a href="../collections/index.html">Bodu.Collections introduction</a></strong> - the specialized collection catalogue that builds on this package.</li>
+<li><strong><a href="../collections-concurrent/index.html">Bodu.Collections.Concurrent introduction</a></strong> - the thread-safe collection companion.</li>
+<li><strong><a href="../introduction.html">Project introduction</a></strong> - how Bodu.Core relates to the hashing, cryptography, calendar, and text libraries (its <code>ThrowHelper</code> underpins them all).</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations topic</a></strong> - Bodu.Core alongside its sibling members, the collection packages and the <code>Bodu.Text</code> namespace utilities.</li>
 </ul>
 
 </article>
@@ -441,7 +441,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

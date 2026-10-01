@@ -94,7 +94,7 @@
       <text class="mut" x="20"  y="64" style="text-anchor: start">→ rules at AU and at AU-NSW</text>
       <text class="err" x="200" y="64" style="text-anchor: start" font-weight="700">(no AU-VIC, AU-QLD, AU-WA, or AU-NT rules)</text>
 
-      <text class="mut" x="0" y="84" style="text-anchor: start">Rules with no territory code apply globally — included in every query regardless of country or subdivision.</text>
+      <text class="mut" x="0" y="84" style="text-anchor: start">Rules with no territory code apply globally - included in every query regardless of country or subdivision.</text>
     </g>
   </g>
 </svg>

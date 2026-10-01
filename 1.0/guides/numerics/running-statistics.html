@@ -88,7 +88,7 @@
 <h1 id="running-and-moving-statistics">Running and moving statistics</h1>
 
 <p>The statistics aggregates summarize a sample stream in a single
-forward pass and constant space — the samples themselves are never
+forward pass and constant space - the samples themselves are never
 stored. Four types cover the two common shapes:</p>
 <table>
 <thead>
@@ -122,21 +122,21 @@ stored. Four types cover the two common shapes:</p>
 </tbody>
 </table>
 <p>All four are generic over <code>INumber&lt;T&gt;</code>, so they accept any numeric
-sample type — but the contract deliberately splits by result:</p>
+sample type - but the contract deliberately splits by result:</p>
 <ul>
 <li><strong>Exact, in <code>T</code>:</strong> extrema (<code>Minimum</code> / <code>Maximum</code>) and the rolling
 window <code>Sum</code>.</li>
 <li><strong>Approximate, as finite <code>double</code>:</strong> every derived statistical
-moment — mean, variance, standard deviation, and the quantile
+moment - mean, variance, standard deviation, and the quantile
 estimate. Each sample is widened with <code>double.CreateChecked</code>, so
 <code>decimal</code> samples take on binary floating-point precision in these
-results, and a value that cannot survive the widening — an unbounded
-<code>BigInteger</code> beyond <code>double</code>'s range — throws <code>OverflowException</code>
+results, and a value that cannot survive the widening - an unbounded
+<code>BigInteger</code> beyond <code>double</code>'s range - throws <code>OverflowException</code>
 (at <code>Add</code> for the running accumulators, at <code>Mean</code> for a
 <code>MovingSum&lt;T&gt;</code> whose exact sum has outgrown <code>double</code>).</li>
 </ul>
 <p>For exact decimal or arbitrary-precision statistical moments, compute
-them from your own retained samples — these types never store the
+them from your own retained samples - these types never store the
 stream.</p>
 <h2 id="samples-must-be-finite">Samples must be finite</h2>
 <p><code>Add</code> rejects NaN and infinite samples with <code>ArgumentException</code> on
@@ -147,14 +147,14 @@ types are always finite, so the guard costs nothing there.</p>
 <h2 id="the-accumulators-are-mutable-value-types">The accumulators are mutable value types</h2>
 <p><code>RunningStatistics&lt;T&gt;</code> and <code>RunningQuantile&lt;T&gt;</code> are <strong>mutable
 structs</strong> (the same design as <code>System.HashCode</code>). Value semantics are
-deliberate — copying an accumulator snapshots it — but they carry the
+deliberate - copying an accumulator snapshots it - but they carry the
 usual mutable-struct rules:</p>
 <ul>
 <li>Store the accumulator in a mutable field or local, never a
 <code>readonly</code> field you intend to keep adding to.</li>
 <li>Pass it by <code>ref</code> when a callee should observe the additions.</li>
 <li>Do not capture it in a lambda or iterator and expect reference
-semantics — the capture is an independent copy from that point.</li>
+semantics - the capture is an independent copy from that point.</li>
 <li>To checkpoint, assign to another variable: the copy freezes at that
 point while the original keeps accumulating.</li>
 </ul>
@@ -191,7 +191,7 @@ integer stream would otherwise need.</p>
 </code></pre>
 <p><code>Combine</code> uses the Chan et al. parallel-variance merge, so a stream
 can be partitioned across workers, accumulated independently, and
-recombined — the result equals accumulating the concatenated stream
+recombined - the result equals accumulating the concatenated stream
 (up to ordinary floating-point rounding). Floating-point addition is
 not associative, so different partitionings or merge orders can
 differ in the last bits; when bitwise-reproducible results matter,
@@ -217,7 +217,7 @@ the fifth sample the P² markers take over.</li>
 <li>The estimate is an approximation that improves with stream length.
 For exact quantiles over small data, sort and index instead.</li>
 <li><code>Reset()</code> clears the samples but preserves the probability.</li>
-<li>P² estimators <strong>cannot be merged</strong> — the marker states of two
+<li>P² estimators <strong>cannot be merged</strong> - the marker states of two
 partitions do not compose. Keep the mergeable moments in
 <code>RunningStatistics&lt;T&gt;</code> for partition-and-combine workloads.</li>
 </ul>
@@ -241,7 +241,7 @@ foreach (var price in prices)
 <li>Until the window fills (<code>IsFull</code>), the aggregates describe the
 samples received so far; <code>Count</code> reports how many the window
 currently covers.</li>
-<li><code>MovingSum&lt;T&gt;.Sum</code> is maintained in <code>T</code> — exact for integer,
+<li><code>MovingSum&lt;T&gt;.Sum</code> is maintained in <code>T</code> - exact for integer,
 <code>decimal</code>, and <code>BigInteger</code> samples. The empty window sums to
 <code>T.Zero</code> (<code>Mean</code> throws instead, like the other empty reads).</li>
 <li>The rolling-sum arithmetic is <strong>checked</strong>: a fixed-width integer
@@ -263,9 +263,9 @@ internals would freeze the internal representation into a wire
 contract. Persist the <em>results</em> (mean, variance, quantile) instead.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="generic-math-constraints.html">Generic math constraints</a> — how the
+<li><a href="generic-math-constraints.html">Generic math constraints</a> - how the
 <code>INumber&lt;T&gt;</code> constraint drives the API shapes in this package.</li>
-<li><a href="bigdecimal.html">Working with BigDecimal</a> — exact decimal samples
+<li><a href="bigdecimal.html">Working with BigDecimal</a> - exact decimal samples
 compose with the aggregates like any other <code>INumber&lt;T&gt;</code>.</li>
 </ul>
 
@@ -286,7 +286,7 @@ compose with the aggregates like any other <code>INumber&lt;T&gt;</code>.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

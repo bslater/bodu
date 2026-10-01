@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm" data-uid="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CheckDigitAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ CheckDigitAlgorithm Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs">CheckDigitAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs">CheckDigitAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents the abstract base class from which all decimal check-digit algorithms in this library derive.</p>
@@ -225,7 +225,7 @@ algo.Append("7893729977");</code></pre>
   <h2 id="Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 A check-digit algorithm consumes a sequence of decimal digits (<code>'0'</code> to <code>'9'</code>) and yields a single
-trailing digit that, when appended to the body, allows the concatenated sequence to be validated — matching the
+trailing digit that, when appended to the body, allows the concatenated sequence to be validated - matching the
 domain of card numbers, national identifiers, and serial codes on which these algorithms are typically applied.
 </p>
 <p>
@@ -237,8 +237,8 @@ input, whereas a check digit performs error detection over a constrained ASCII t
 character to an encoding artifact, so the families are kept distinct by design.
 </p>
 <p>
-The streaming surface — <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a>,
-<a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a>, and <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm_GetCurrentCheckDigit">GetCurrentCheckDigit()</a> — will nonetheless feel familiar
+The streaming surface - <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a>,
+<a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a>, and <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm_GetCurrentCheckDigit">GetCurrentCheckDigit()</a> - will nonetheless feel familiar
 to anyone who has used a hash algorithm: <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Append_System_ReadOnlySpan_System_Char__">Append(ReadOnlySpan&lt;char&gt;)</a> accumulates
 input, <a class="xref" href="Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html#Bodu_IO_Hashing_CheckDigits_CheckValueAlgorithm_Reset">Reset()</a> restarts the computation, and reading the current check digit is
 non-destructive and idempotent. That resemblance is incidental convenience for the reader's intuition, not a shared
@@ -263,7 +263,7 @@ applications.</p></div>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm__ctor" data-uid="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.#ctor">
   CheckDigitAlgorithm()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -298,7 +298,7 @@ applications.</p></div>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm_GetCurrentCheckDigit" data-uid="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.GetCurrentCheckDigit">
   GetCurrentCheckDigit()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -341,7 +341,7 @@ with identical results between appends.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_CheckDigits_CheckDigitAlgorithm_GetCurrentCheckValue" data-uid="Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.GetCurrentCheckValue">
   GetCurrentCheckValue()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing.CheckDigits/CheckDigitAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -412,7 +412,7 @@ with identical results between appends. The single-character branches also expos
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

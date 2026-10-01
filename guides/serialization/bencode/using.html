@@ -88,14 +88,14 @@
 <h1 id="using-bencode">Using Bencode</h1>
 
 <p><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> maps your types to and from <a href="https://www.bittorrent.org/beps/bep_0003.html">Bencode (BEP 3)</a>, the binary encoding used by BitTorrent. Behavior is configured through <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a>; when you do not want a POCO, the same payloads are served by the mutable <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> DOM and the read-only <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> DOM.</p>
-<h2 id="pattern-1--round-trip-an-object">Pattern 1 — Round-trip an object</h2>
+<h2 id="pattern-1---round-trip-an-object">Pattern 1 - Round-trip an object</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode;
 
 byte[] payload = BencodeSerializer.Serialize(new FileEntry { Name = &quot;ubuntu.iso&quot;, Length = 1024 });
 FileEntry entry = BencodeSerializer.Deserialize&lt;FileEntry&gt;(payload);
 </code></pre>
-<p><code>Serialize</code> also writes to an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code> (with <code>SerializeAsync</code>); <code>Deserialize</code> reads a <code>ReadOnlySpan&lt;byte&gt;</code>, a <code>byte[]</code>, or a <code>Stream</code> (with <code>DeserializeAsync</code>). See <a href="#pattern-8--streams-and-async">Pattern 8</a> for the stream surface. To project a model into a DOM without re-encoding to bytes, <code>SerializeToNode</code> / <code>SerializeToDocument</code> go straight to the mutable and read-only trees, and <code>Deserialize&lt;T&gt;(BencodeNode, …)</code> binds a node tree back to a type — see <a href="#pattern-7--use-a-document-model-instead-of-a-type">Pattern 7</a>.</p>
-<h2 id="pattern-2--know-the-type-mapping">Pattern 2 — Know the type mapping</h2>
+<p><code>Serialize</code> also writes to an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code> (with <code>SerializeAsync</code>); <code>Deserialize</code> reads a <code>ReadOnlySpan&lt;byte&gt;</code>, a <code>byte[]</code>, or a <code>Stream</code> (with <code>DeserializeAsync</code>). See <a href="#pattern-8---streams-and-async">Pattern 8</a> for the stream surface. To project a model into a DOM without re-encoding to bytes, <code>SerializeToNode</code> / <code>SerializeToDocument</code> go straight to the mutable and read-only trees, and <code>Deserialize&lt;T&gt;(BencodeNode, …)</code> binds a node tree back to a type - see <a href="#pattern-7---use-a-document-model-instead-of-a-type">Pattern 7</a>.</p>
+<h2 id="pattern-2---know-the-type-mapping">Pattern 2 - Know the type mapping</h2>
 <table>
 <thead>
 <tr>
@@ -138,9 +138,9 @@ FileEntry entry = BencodeSerializer.Deserialize&lt;FileEntry&gt;(payload);
 </tr>
 </tbody>
 </table>
-<p>Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a <code>null</code> member is omitted on write. Dictionary keys may be strings, any integer type, an <code>enum</code>, a <code>Guid</code>, a <code>bool</code>, or a <code>char</code> — non-string keys are written as their invariant text and parsed back on read. A <code>Stack&lt;T&gt;</code> round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
-<h2 id="pattern-3--worked-example-torrent-style-metadata">Pattern 3 — Worked example: torrent-style metadata</h2>
-<p>Bencode's natural habitat is torrent metadata: text fields, integers, a nested <code>info</code> dictionary, and the raw SHA-1 <code>pieces</code> blob side by side. <code>byte[]</code> members map straight to byte strings — no Base64 detour — and <code>[PropertyName]</code> pins the lowercase, space-separated keys the format uses on the wire:</p>
+<p>Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a <code>null</code> member is omitted on write. Dictionary keys may be strings, any integer type, an <code>enum</code>, a <code>Guid</code>, a <code>bool</code>, or a <code>char</code> - non-string keys are written as their invariant text and parsed back on read. A <code>Stack&lt;T&gt;</code> round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
+<h2 id="pattern-3---worked-example-torrent-style-metadata">Pattern 3 - Worked example: torrent-style metadata</h2>
+<p>Bencode's natural habitat is torrent metadata: text fields, integers, a nested <code>info</code> dictionary, and the raw SHA-1 <code>pieces</code> blob side by side. <code>byte[]</code> members map straight to byte strings - no Base64 detour - and <code>[PropertyName]</code> pins the lowercase, space-separated keys the format uses on the wire:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode;
 using Bodu.Text.Bencode.Serialization;
 
@@ -168,7 +168,7 @@ public sealed class TorrentInfo
     public byte[]? Pieces { get; set; }   // concatenated 20-byte SHA-1 hashes
 }
 </code></pre>
-<p>Serializing produces canonical BEP 3 bytes — every key in ascending bytewise order, the <code>pieces</code> hashes carried verbatim:</p>
+<p>Serializing produces canonical BEP 3 bytes - every key in ascending bytewise order, the <code>pieces</code> hashes carried verbatim:</p>
 <pre><code class="lang-csharp">var torrent = new Torrent
 {
     Announce = &quot;http://tracker.example.com/announce&quot;,
@@ -196,8 +196,8 @@ string name   = info.GetProperty(&quot;name&quot;).GetString();        // → &q
 long   length = info.GetProperty(&quot;piece length&quot;).GetInt64(); // → 262144
 byte[] pieces = info.GetProperty(&quot;pieces&quot;).GetBytes();       // → the raw hash bytes
 </code></pre>
-<p>Because the writer is canonical and the reader accepts only canonical input, a successful round trip is byte-identical — which is exactly what an info-hash computed over the encoded <code>info</code> dictionary requires.</p>
-<h2 id="pattern-4--rely-on-canonical-ordering">Pattern 4 — Rely on canonical ordering</h2>
+<p>Because the writer is canonical and the reader accepts only canonical input, a successful round trip is byte-identical - which is exactly what an info-hash computed over the encoded <code>info</code> dictionary requires.</p>
+<h2 id="pattern-4---rely-on-canonical-ordering">Pattern 4 - Rely on canonical ordering</h2>
 <p>Member declaration order never leaks into the output. Declaring members out of order still emits sorted keys:</p>
 <pre><code class="lang-csharp">public sealed class OutOfOrder
 {
@@ -206,10 +206,10 @@ byte[] pieces = info.GetProperty(&quot;pieces&quot;).GetBytes();       // → th
 }
 
 byte[] bytes = BencodeSerializer.Serialize(new OutOfOrder());
-// → d5:Alphai2e4:Zetai1ee   — &quot;Alpha&quot; precedes &quot;Zeta&quot; bytewise
+// → d5:Alphai2e4:Zetai1ee   - &quot;Alpha&quot; precedes &quot;Zeta&quot; bytewise
 </code></pre>
 <p>This makes the encoded form deterministic for the same data, so it is safe to hash, sign, or compare payloads byte for byte. (<code>[PropertyOrder]</code> affects only the order members are presented to the writer; the dictionary is re-sorted when it closes.)</p>
-<h2 id="pattern-5--rename-members">Pattern 5 — Rename members</h2>
+<h2 id="pattern-5---rename-members">Pattern 5 - Rename members</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">var options = new BencodeSerializerOptions
 {
@@ -218,8 +218,8 @@ byte[] bytes = BencodeSerializer.Serialize(new OutOfOrder());
 </code></pre>
 <p>Naming policies cover <code>CamelCase</code>, <code>SnakeCaseLower</code> / <code>SnakeCaseUpper</code>, and <code>KebabCaseLower</code> / <code>KebabCaseUpper</code>. Pin a single member's name with <code>[PropertyName(&quot;…&quot;)]</code>, which always wins over the policy.</p>
 <p>Properties are mapped by default; public fields join in when <code>IncludeFields</code> is set on the options, or individually with <code>[Include]</code> on the field. Fields follow the same naming-policy, ignore, required, and converter rules as properties. The full attribute family is catalogued in <a href="attributes.html">Mapping attributes</a>.</p>
-<h2 id="pattern-6--handle-the-kinds-bencode-cannot-represent">Pattern 6 — Handle the kinds Bencode cannot represent</h2>
-<p>Bencode has exactly two scalar kinds — integers and byte strings — so several everyday .NET types have no native form. The library never invents a lossy representation implicitly; serializing such a member fails unless a <a href="converters.html">converter</a> maps it to an integer or byte string:</p>
+<h2 id="pattern-6---handle-the-kinds-bencode-cannot-represent">Pattern 6 - Handle the kinds Bencode cannot represent</h2>
+<p>Bencode has exactly two scalar kinds - integers and byte strings - so several everyday .NET types have no native form. The library never invents a lossy representation implicitly; serializing such a member fails unless a <a href="converters.html">converter</a> maps it to an integer or byte string:</p>
 <table>
 <thead>
 <tr>
@@ -286,27 +286,27 @@ byte[] bytes = BencodeSerializer.Serialize(
 // → d9:CreatedAti1700000000ee
 </code></pre>
 <p>Register a converter on a member or type with <code>[Converter(typeof(…))]</code> as above, or for every occurrence via <code>options.Converters.Add(new UnixSecondsConverter())</code>. The full recipe, including converter factories for type families, is in <a href="converters.html">Writing converters</a>.</p>
-<h2 id="pattern-7--use-a-document-model-instead-of-a-type">Pattern 7 — Use a document model instead of a type</h2>
+<h2 id="pattern-7---use-a-document-model-instead-of-a-type">Pattern 7 - Use a document model instead of a type</h2>
 <p>When you do not want a POCO, parse to one of the two DOMs.</p>
-<p>Mutable DOM — parse, edit, and write back:</p>
+<p>Mutable DOM - parse, edit, and write back:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Nodes;
 
 BencodeNode node = BencodeNode.Parse(payload)!;
 byte[] back = node.ToByteArray();
 </code></pre>
-<p>Read-only DOM — a low-allocation view walked through <code>RootElement</code>:</p>
+<p>Read-only DOM - a low-allocation view walked through <code>RootElement</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
 
 using BencodeDocument doc = BencodeDocument.Parse(payload);
 BencodeElement name = doc.RootElement.GetProperty(&quot;info&quot;).GetProperty(&quot;name&quot;);
 </code></pre>
-<p>A deserialized <code>BencodeDocument</code> is caller-owned — dispose it (the <code>using</code> above) to return its pooled buffer. Elements obtained through the serializer's <code>object</code> mapping need no disposal.</p>
-<p>The serializer also bridges a model to either DOM directly, skipping the <code>byte[]</code> round trip — and binds a node tree back to a model:</p>
+<p>A deserialized <code>BencodeDocument</code> is caller-owned - dispose it (the <code>using</code> above) to return its pooled buffer. Elements obtained through the serializer's <code>object</code> mapping need no disposal.</p>
+<p>The serializer also bridges a model to either DOM directly, skipping the <code>byte[]</code> round trip - and binds a node tree back to a model:</p>
 <pre><code class="lang-csharp">BencodeNode? node = BencodeSerializer.SerializeToNode(torrent);     // model → mutable tree
 using BencodeDocument doc = BencodeSerializer.SerializeToDocument(torrent); // model → read-only DOM
 Torrent back = BencodeSerializer.Deserialize&lt;Torrent&gt;(node!);       // node tree → model
 </code></pre>
-<h2 id="pattern-8--streams-and-async">Pattern 8 — Streams and async</h2>
+<h2 id="pattern-8---streams-and-async">Pattern 8 - Streams and async</h2>
 <p>Both directions work over a <code>Stream</code>, synchronously and asynchronously, so a payload never has to materialize as a <code>byte[]</code> first:</p>
 <pre><code class="lang-csharp">await using FileStream output = File.Create(&quot;ubuntu.torrent&quot;);
 await BencodeSerializer.SerializeAsync(output, torrent, cancellationToken: ct);
@@ -315,7 +315,7 @@ await BencodeSerializer.SerializeAsync(output, torrent, cancellationToken: ct);
 Torrent torrent = await BencodeSerializer.DeserializeAsync&lt;Torrent&gt;(input, cancellationToken: ct);
 </code></pre>
 <p>The synchronous <code>Serialize(Stream, …)</code> / <code>Deserialize&lt;T&gt;(Stream, …)</code> overloads have the same shape without the token. Both async members accept an optional <code>BencodeSerializerOptions</code> before the <code>CancellationToken</code>.</p>
-<h2 id="pattern-9--process-tokens-by-hand">Pattern 9 — Process tokens by hand</h2>
+<h2 id="pattern-9---process-tokens-by-hand">Pattern 9 - Process tokens by hand</h2>
 <p>For full control with no allocations, drive the <a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> / <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> ref-struct pair directly. This is the same surface a <a href="converters.html">converter</a> receives.</p>
 <p>The reader is a forward-only cursor over a <code>ReadOnlySpan&lt;byte&gt;</code>: <code>Read()</code> advances to the next token and returns <code>false</code> at the end, <code>TokenType</code> (a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeTokenType.html">BencodeTokenType</a>) classifies it, and a typed getter reads the current token without moving. A dictionary appears as alternating <code>PropertyName</code> and value tokens between <code>StartDictionary</code> and <code>EndDictionary</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Reader;
@@ -355,8 +355,8 @@ writer.WriteEndDictionary();
 <h2 id="error-handling">Error handling</h2>
 <p>Two exception types separate &quot;the bytes are not Bencode&quot; from &quot;the Bencode does not fit your type&quot;:</p>
 <ul>
-<li><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> — malformed input: truncated data, non-canonical integers, out-of-order or duplicate dictionary keys, trailing bytes. Carries the byte <code>Offset</code> where parsing failed.</li>
-<li><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> — the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value out of range for the target type. Carries the byte <code>BytesOffset</code> of the failing value where one is known.</li>
+<li><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> - malformed input: truncated data, non-canonical integers, out-of-order or duplicate dictionary keys, trailing bytes. Carries the byte <code>Offset</code> where parsing failed.</li>
+<li><a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> - the document parsed, but a value cannot bind: a kind mismatch, a missing required member, or a value out of range for the target type. Carries the byte <code>BytesOffset</code> of the failing value where one is known.</li>
 </ul>
 <div class="TIP">
 <h5>Tip</h5>
@@ -381,11 +381,11 @@ catch (BencodeSerializationException ex)
 <p><code>TryParse</code>-style members do not exist on the serializer; wrap <code>Deserialize</code> as above when reading untrusted input.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="attributes.html">Mapping attributes</a>, <a href="converters.html">Writing converters</a>, <a href="callbacks.html">Serialization callbacks</a>, <a href="builtin-converters.html">Built-in converter catalog</a> — the customization guides.</li>
-<li><a href="../../../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> — what is specific to the Bencode format, including the canonical-output guarantees.</li>
-<li><a href="../../../docs/serialization/index.html">Bodu serializers introduction</a> and <a href="../../../docs/serialization/bencode/concepts.html">core concepts</a> — the family shape and the Bencode vocabulary.</li>
+<li><a href="attributes.html">Mapping attributes</a>, <a href="converters.html">Writing converters</a>, <a href="callbacks.html">Serialization callbacks</a>, <a href="builtin-converters.html">Built-in converter catalog</a> - the customization guides.</li>
+<li><a href="../../../docs/serialization/bencode/index.html">Bodu.Text.Bencode introduction</a> - what is specific to the Bencode format, including the canonical-output guarantees.</li>
+<li><a href="../../../docs/serialization/index.html">Bodu serializers introduction</a> and <a href="../../../docs/serialization/bencode/concepts.html">core concepts</a> - the family shape and the Bencode vocabulary.</li>
 <li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializerOptions.html">BencodeSerializerOptions</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a>, <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a>.</li>
 </ul>
 
 </article>
@@ -405,7 +405,7 @@ catch (BencodeSerializationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

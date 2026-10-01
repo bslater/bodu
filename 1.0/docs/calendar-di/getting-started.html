@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Globalization.Calendar.DependencyInjection — Getting started | BODU </title>
+      <title>Bodu.Globalization.Calendar.DependencyInjection - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Globalization.Calendar.DependencyInjection — Getting started | BODU ">
+      <meta name="title" content="Bodu.Globalization.Calendar.DependencyInjection - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="boduglobalizationcalendardependencyinjection--getting-started">Bodu.Globalization.Calendar.DependencyInjection — Getting started</h1>
+<h1 id="boduglobalizationcalendardependencyinjection---getting-started">Bodu.Globalization.Calendar.DependencyInjection - Getting started</h1>
 
 <p>Unfamiliar with terms like <em>resource</em>, <em>territory</em>, or <em>collaborators</em>? Read the runtime's
 <a href="../calendar/concepts.html">core concepts</a> first; the <a href="index.html">introduction</a> explains the registration surface
@@ -102,7 +102,7 @@ dotnet add package Bodu.Globalization.Calendar.Caching
 </code></pre>
 <p>Targets <code>net8.0</code>. Depends on <code>Bodu.Globalization.Calendar</code> (the runtime) and, at the .NET 8.0 LTS line,
 <code>Microsoft.Extensions.DependencyInjection.Abstractions</code>, <code>Microsoft.Extensions.Logging.Abstractions</code>, and
-<code>Microsoft.Extensions.Options</code> (for the options-monitor overload). It brings no container of its own — any
+<code>Microsoft.Extensions.Options</code> (for the options-monitor overload). It brings no container of its own - any
 <code>IServiceCollection</code> host works, and the samples use the ASP.NET Core <code>WebApplication</code> builder.</p>
 <p>Every extension method is in the <code>Bodu.Globalization.Calendar</code> namespace; there is no
 <code>Bodu.Globalization.Calendar.DependencyInjection</code> namespace to import.</p>
@@ -134,7 +134,7 @@ public sealed class HolidayService
         _calendar.Resolve(date, &quot;AU-NSW&quot;, NotableDateFilter.IsNonWorkingDay()).Count &gt; 0;
 }
 </code></pre>
-<p>Use the factory overload when the resource depends on other registered services — for example, the territory comes
+<p>Use the factory overload when the resource depends on other registered services - for example, the territory comes
 from configuration:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 using Microsoft.Extensions.Configuration;
@@ -160,7 +160,7 @@ using Microsoft.Extensions.DependencyInjection;
 builder.Services.AddNotableDateService(&quot;US&quot;, AmericasCalendarData.LoadResource(&quot;US&quot;));
 builder.Services.AddNotableDateService(&quot;AU&quot;, AsiaPacificCalendarData.LoadResource(&quot;AU&quot;));
 </code></pre>
-<p>Resolve by key through the standard .NET 8 keyed-service surface — a <code>[FromKeyedServices]</code> constructor parameter or
+<p>Resolve by key through the standard .NET 8 keyed-service surface - a <code>[FromKeyedServices]</code> constructor parameter or
 <code>GetRequiredKeyedService</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 using Microsoft.Extensions.DependencyInjection;
@@ -179,7 +179,7 @@ public sealed class PayrollCalendar
 // Or, from a resolver:
 INotableDateService us = app.Services.GetRequiredKeyedService&lt;INotableDateService&gt;(&quot;US&quot;);
 </code></pre>
-<p>Keyed registrations are independent of the unkeyed one — register both when most consumers want a default calendar
+<p>Keyed registrations are independent of the unkeyed one - register both when most consumers want a default calendar
 and a few want a specific jurisdiction. The keyed overloads accept a <code>NotableDateServiceOptions</code> (or an options
 factory) for collaborators, exactly like the unkeyed forms.</p>
 <h3 id="swap-the-rule-set-at-run-time-reloadable">Swap the rule set at run time (reloadable)</h3>
@@ -208,8 +208,8 @@ needs to <em>read</em> the current resource can inject the
 <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateResourceProvider.html">INotableDateResourceProvider</a> interface instead of the concrete provider.</p>
 <h4 id="rebuild-from-configuration-automatically">Rebuild from configuration automatically</h4>
 <p>When the rule set is a function of configuration, bind an options class and use the <code>IOptionsMonitor&lt;TOptions&gt;</code>
-overload. Every change the options infrastructure observes — an edited <code>appsettings.json</code> with <code>reloadOnChange</code>,
-for example — reruns the factory and swaps the result into the live service:</p>
+overload. Every change the options infrastructure observes - an edited <code>appsettings.json</code> with <code>reloadOnChange</code>,
+for example - reruns the factory and swaps the result into the live service:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -229,11 +229,11 @@ builder.Services.AddReloadableNotableDateService&lt;CalendarOptions&gt;((sp, opt
 }
 </code></pre>
 <p>A factory that throws during a change is logged and leaves the previously loaded resource in effect, so a broken
-configuration edit never takes the calendar offline. (The <code>Calendar</code> section can hold other children — such as the
-caching package's <code>NotableDateCache</code> — without affecting the binding; the binder maps only the properties
+configuration edit never takes the calendar offline. (The <code>Calendar</code> section can hold other children - such as the
+caching package's <code>NotableDateCache</code> - without affecting the binding; the binder maps only the properties
 <code>CalendarOptions</code> declares.)</p>
 <h3 id="compose-with-custom-collaborators">Compose with custom collaborators</h3>
-<p>Pass a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> to any overload that accepts one — here a custom
+<p>Pass a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceOptions.html">NotableDateServiceOptions</a> to any overload that accepts one - here a custom
 algorithm registry shared by the loader and the service, both produced from the container:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
@@ -256,7 +256,7 @@ implementation; see <a href="../../guides/calendar/building-the-service.html">Bu
 <p>The <a href="../calendar-caching/index.html"><code>Bodu.Globalization.Calendar.Caching</code></a> package layers a read-through cache over
 whichever registration you chose. <code>AddCachedNotableDateService</code> removes the registered <code>INotableDateService</code>
 descriptor, keeps it as the inner service, and registers the
-<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> decorator in its place — so it must come
+<a class="xref" href="../../api/Bodu.Globalization.Calendar.Caching.CachingNotableDateService.html">CachingNotableDateService</a> decorator in its place - so it must come
 <strong>after</strong> the registration it wraps, and consumers keep injecting <code>INotableDateService</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
@@ -293,12 +293,12 @@ builder.Services.AddKeyedSingleton&lt;INotableDateService&gt;(&quot;AU&quot;, (s
 backends and the startup warm-up.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Introduction</a></strong> — the full overload table, lifetimes, and idempotency.</li>
-<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> — the complete walkthrough with collaborators and the reloadable workflow.</li>
-<li><strong><a href="../calendar-caching/index.html">Bodu.Globalization.Calendar.Caching</a></strong> — the caching decorator, its backends, and its registrations.</li>
-<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs</a></strong> — the <code>&lt;Region&gt;CalendarData</code> factories the samples load resources from.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">API reference</a></strong> — the registration surface, member by member.</li>
-<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> — offline calendar sample projects you can <code>dotnet run</code>.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - the full overload table, lifetimes, and idempotency.</li>
+<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection guide</a></strong> - the complete walkthrough with collaborators and the reloadable workflow.</li>
+<li><strong><a href="../calendar-caching/index.html">Bodu.Globalization.Calendar.Caching</a></strong> - the caching decorator, its backends, and its registrations.</li>
+<li><strong><a href="../../guides/calendar/data-packs.html">Calendar data packs</a></strong> - the <code>&lt;Region&gt;CalendarData</code> factories the samples load resources from.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateServiceCollectionExtensions.html">API reference</a></strong> - the registration surface, member by member.</li>
+<li><strong><a href="../../samples/calendar.html">Runnable samples</a></strong> - offline calendar sample projects you can <code>dotnet run</code>.</li>
 </ul>
 
 </article>
@@ -318,7 +318,7 @@ backends and the startup warm-up.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

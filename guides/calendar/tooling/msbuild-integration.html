@@ -88,7 +88,7 @@
 <h1 id="compiling-packs-in-msbuild">Compiling packs in MSBuild</h1>
 
 <p><code>Bodu.Globalization.Calendar.Build</code> compiles notable-date documents to sealed <code>.bcal</code> packs as part of <code>dotnet build</code>, incrementally, using the bundled <code>bodu-calendar</code> compiler. It is a <strong>development dependency</strong>: the package contributes a <code>.targets</code> file, an MSBuild task assembly, and the tool binaries, and adds no runtime reference to the consuming project. Validation failures surface as build errors carrying the same stable <code>BODU-CAL-*</code> lines the <a href="bodu-calendar-cli.html">command-line tool</a> prints.</p>
-<h2 id="pattern-1--reference-the-package-and-declare-packs">Pattern 1 — reference the package and declare packs</h2>
+<h2 id="pattern-1---reference-the-package-and-declare-packs">Pattern 1 - reference the package and declare packs</h2>
 <pre><code class="lang-xml">&lt;ItemGroup&gt;
   &lt;PackageReference Include=&quot;Bodu.Globalization.Calendar.Build&quot; Version=&quot;…&quot; PrivateAssets=&quot;all&quot; /&gt;
 &lt;/ItemGroup&gt;
@@ -109,7 +109,7 @@
 <tbody>
 <tr>
 <td><code>ResolverDir</code></td>
-<td>Optional directory whose <code>&lt;name&gt;.xml</code> / <code>&lt;name&gt;.json</code> files satisfy the document's imports, consulted before the bundled catalogues — the same semantics as the tool's <code>--resolver-dir</code>.</td>
+<td>Optional directory whose <code>&lt;name&gt;.xml</code> / <code>&lt;name&gt;.json</code> files satisfy the document's imports, consulted before the bundled catalogues - the same semantics as the tool's <code>--resolver-dir</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -128,7 +128,7 @@
 <tr>
 <td><code>Input</code></td>
 <td>yes</td>
-<td><code>%(NotableDatePack.Identity)</code> — the document path.</td>
+<td><code>%(NotableDatePack.Identity)</code> - the document path.</td>
 </tr>
 <tr>
 <td><code>Output</code></td>
@@ -138,7 +138,7 @@
 <tr>
 <td><code>ToolDll</code></td>
 <td>yes</td>
-<td><code>$(BoduCalendarToolDll)</code> — the <code>bodu-calendar</code> assembly executed through the <code>dotnet</code> host.</td>
+<td><code>$(BoduCalendarToolDll)</code> - the <code>bodu-calendar</code> assembly executed through the <code>dotnet</code> host.</td>
 </tr>
 <tr>
 <td><code>ResolverDir</code></td>
@@ -186,14 +186,14 @@
 &lt;/PropertyGroup&gt;
 </code></pre>
 <h2 id="incremental-build-behaviour">Incremental build behaviour</h2>
-<p>The <code>CompileNotableDatePacks</code> target declares <code>Inputs=&quot;@(NotableDatePack)&quot;</code> and <code>Outputs=&quot;@(NotableDatePack-&gt;'$(NotableDatePackOutputPath)%(Filename).bcal')&quot;</code>, so MSBuild skips each <code>(document, pack)</code> pair whose output is newer than its input — a rebuild with an unchanged document does not invoke the tool at all. Because the compiler's output is byte-stable for a given document (the pack embeds a SHA-256 of its payload and no timestamps), downstream up-to-date checks stay sound after a recompile.</p>
+<p>The <code>CompileNotableDatePacks</code> target declares <code>Inputs=&quot;@(NotableDatePack)&quot;</code> and <code>Outputs=&quot;@(NotableDatePack-&gt;'$(NotableDatePackOutputPath)%(Filename).bcal')&quot;</code>, so MSBuild skips each <code>(document, pack)</code> pair whose output is newer than its input - a rebuild with an unchanged document does not invoke the tool at all. Because the compiler's output is byte-stable for a given document (the pack embeds a SHA-256 of its payload and no timestamps), downstream up-to-date checks stay sound after a recompile.</p>
 <p>Two consequences to know:</p>
 <ul>
 <li><strong>Changing an import is not tracked.</strong> Only the document itself is an input. If a file under <code>ResolverDir</code> changes, touch the document or delete the <code>.bcal</code> to force a recompile.</li>
 <li><strong>Renaming a document orphans its pack.</strong> The old <code>.bcal</code> stays in the output path until a clean; the copy-to-output step only copies packs that correspond to current items.</li>
 </ul>
 <p>The target runs <code>BeforeTargets=&quot;AssignTargetPaths&quot;</code> so the compiled packs can join the normal content copy in the same build. The repository's <code>CompileNotableDatePackIntegrationTests</code> drives a fixture project through this pipeline and asserts both the incremental skip and that an invalid document fails the build with its diagnostic code.</p>
-<h2 id="pattern-2--consume-the-compiled-pack-at-run-time">Pattern 2 — consume the compiled pack at run time</h2>
+<h2 id="pattern-2---consume-the-compiled-pack-at-run-time">Pattern 2 - consume the compiled pack at run time</h2>
 <p>With <code>NotableDatePackCopyToOutput</code> left at <code>true</code>, the pack sits beside the executable under its document's file name:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
@@ -206,19 +206,19 @@ using (FileStream stream = File.OpenRead(packPath))
 var service = new NotableDateService(resource);
 IReadOnlyList&lt;NotableDate&gt; thisYear = service.Resolve(2026, &quot;US&quot;);
 </code></pre>
-<p>Loading a pack performs no parsing and no validation — the build already did both — which is the trim- and AOT-friendly path described in <a href="../binary-rule-packs.html">Binary rule packs</a>. To embed the pack instead of copying it, add the compiled file as an <code>EmbeddedResource</code> from <code>$(NotableDatePackOutputPath)</code> in a target that runs <code>AfterTargets=&quot;CompileNotableDatePacks&quot;</code>, and load it from a manifest resource stream.</p>
+<p>Loading a pack performs no parsing and no validation - the build already did both - which is the trim- and AOT-friendly path described in <a href="../binary-rule-packs.html">Binary rule packs</a>. To embed the pack instead of copying it, add the compiled file as an <code>EmbeddedResource</code> from <code>$(NotableDatePackOutputPath)</code> in a target that runs <code>AfterTargets=&quot;CompileNotableDatePacks&quot;</code>, and load it from a manifest resource stream.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
-<p><strong><code>error MSB4062: The task &quot;Bodu.Globalization.Calendar.Build.CompileNotableDatePack&quot; could not be loaded</code>.</strong> <code>BoduCalendarTaskAssembly</code> does not point at the task DLL — usually a stale override left in a <code>Directory.Build.props</code>.</p>
+<p><strong><code>error MSB4062: The task &quot;Bodu.Globalization.Calendar.Build.CompileNotableDatePack&quot; could not be loaded</code>.</strong> <code>BoduCalendarTaskAssembly</code> does not point at the task DLL - usually a stale override left in a <code>Directory.Build.props</code>.</p>
 <p><strong>The build fails with a <code>BODU-CAL-*</code> line.</strong> The document is invalid; run <code>bodu-calendar lint &lt;document&gt;</code> for the same diagnostics interactively, then rebuild.</p>
-<p><strong>A pack is not recompiled after editing a shared catalogue.</strong> See the incremental caveat above — imports are not inputs.</p>
+<p><strong>A pack is not recompiled after editing a shared catalogue.</strong> See the incremental caveat above - imports are not inputs.</p>
 <p><strong><code>dotnet</code> not found.</strong> The task launches the <code>dotnet</code> host from the <code>PATH</code>; on a build agent that installs the SDK to a private location, add it to <code>PATH</code> for the build step.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="bodu-calendar-cli.html">The bodu-calendar CLI</a></strong> — the compiler the task invokes, its exit codes, and the diagnostic line format.</li>
-<li><strong><a href="../binary-rule-packs.html">Binary rule packs</a></strong> — what the format guarantees.</li>
-<li><strong><a href="../validation-diagnostics.html">Calendar validation diagnostics</a></strong> — the <code>BODU-CAL-*</code> catalogue.</li>
+<li><strong><a href="bodu-calendar-cli.html">The bodu-calendar CLI</a></strong> - the compiler the task invokes, its exit codes, and the diagnostic line format.</li>
+<li><strong><a href="../binary-rule-packs.html">Binary rule packs</a></strong> - what the format guarantees.</li>
+<li><strong><a href="../validation-diagnostics.html">Calendar validation diagnostics</a></strong> - the <code>BODU-CAL-*</code> catalogue.</li>
 <li><strong><a href="../../../docs/calendar-tooling/index.html">Bodu.Globalization.Calendar tooling introduction</a></strong></li>
-<li><strong><a href="../../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><strong><a href="../../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -238,7 +238,7 @@ IReadOnlyList&lt;NotableDate&gt; thisYear = service.Resolve(2026, &quot;US&quot;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

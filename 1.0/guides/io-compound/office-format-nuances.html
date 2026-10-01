@@ -90,7 +90,7 @@
 <p>The OLE2 / Compound File Binary (CFB) container that
 <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html"><code>CompoundFile</code></a> reads is the
 structured-storage envelope behind the <em>legacy</em> binary Microsoft Office
-formats — Excel <code>.xls</code>, Word <code>.doc</code>, PowerPoint <code>.ppt</code>, and Outlook
+formats - Excel <code>.xls</code>, Word <code>.doc</code>, PowerPoint <code>.ppt</code>, and Outlook
 <code>.msg</code>. Each of these is a compound file whose root storage holds one or
 more well-known named streams and storages. The file extension tells you
 nothing the container does not; the <em>names of the entries</em> are what
@@ -98,7 +98,7 @@ identify the format.</p>
 <p>This guide maps the well-known stream and storage names to the formats
 that use them, and shows how to identify a format by walking the root
 storage. One boundary up front:
-<a href="reading-compound-files.html"><code>Bodu.IO.Compound</code> exposes the envelope only</a> —
+<a href="reading-compound-files.html"><code>Bodu.IO.Compound</code> exposes the envelope only</a> -
 it gives you the named streams as raw bytes and does not interpret any
 application format. Parsing the BIFF / Word / PowerPoint / MAPI payloads
 inside those streams is a separate concern; for <code>.xls</code> specifically, point
@@ -121,7 +121,7 @@ set of entries directly under the root storage:</p>
 <td>Excel workbook</td>
 <td><code>.xls</code></td>
 <td><code>Workbook</code> (older files: <code>Book</code>)</td>
-<td>Stream — BIFF8 record sequence</td>
+<td>Stream - BIFF8 record sequence</td>
 </tr>
 <tr>
 <td>Word document</td>
@@ -145,7 +145,7 @@ set of entries directly under the root storage:</p>
 </table>
 <p>Notes that matter when probing:</p>
 <ul>
-<li><strong>Excel</strong> keeps its entire workbook in a single <code>Workbook</code> stream — a
+<li><strong>Excel</strong> keeps its entire workbook in a single <code>Workbook</code> stream - a
 flat BIFF8 record sequence. Very old files name it <code>Book</code>. Both are
 direct children of the root storage.</li>
 <li><strong>Word</strong> stores the main text in <code>WordDocument</code> and its formatting
@@ -166,7 +166,7 @@ fixed-size property block in <code>__properties_version1.0</code>.</li>
 <p>Because the format is defined by entry names, identification is just a walk
 of the root storage's direct children. <code>EnumerateEntries</code> yields a
 <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html"><code>CompoundEntryInfo</code></a> snapshot
-(carrying <code>Name</code>, <code>EntryType</code>, and <code>Length</code>) for every child — storage
+(carrying <code>Name</code>, <code>EntryType</code>, and <code>Length</code>) for every child - storage
 <em>and</em> stream:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Compound;
 
@@ -201,7 +201,7 @@ first so you do not pay an open on a non-compound file:</p>
 
 using FileStream source = File.OpenRead(path);
 if (!CompoundFile.IsCompoundFile(source))
-    return;   // not an OLE2 file at all — e.g. a .xlsx (ZIP) or plain text
+    return;   // not an OLE2 file at all - e.g. a .xlsx (ZIP) or plain text
 
 using CompoundFile file = CompoundFile.Open(source, leaveOpen: true);
 Console.WriteLine(IdentifyOfficeFormat(file));
@@ -209,7 +209,7 @@ Console.WriteLine(IdentifyOfficeFormat(file));
 <p><code>IsCompoundFile</code> inspects only the eight-byte OLE2 signature and restores
 the stream position, so it is cheap to call ahead of a full open. A
 modern <code>.xlsx</code> / <code>.docx</code> / <code>.pptx</code> is a ZIP archive, <strong>not</strong> a compound
-file, and returns <code>false</code> here — these formats are out of scope for
+file, and returns <code>false</code> here - these formats are out of scope for
 <code>Bodu.IO.Compound</code>.</p>
 <h2 id="walking-a-msg-storage-tree">Walking a <code>.msg</code> storage tree</h2>
 <p>Outlook messages are the one format whose interesting data is nested below
@@ -242,11 +242,11 @@ foreach (CompoundStorage attach in msg.RootStorage.EnumerateStorages())
 <p>The <code>__substg1.0_</code> suffix encodes the MAPI property tag: the first four hex
 digits are the property id and the last four the property type (<code>001F</code> =
 Unicode string, <code>0102</code> = binary, and so on). <code>Bodu.IO.Compound</code> hands you
-those streams as bytes — decoding the MAPI property model from them is the
+those streams as bytes - decoding the MAPI property model from them is the
 caller's job.</p>
 <h2 id="reading-an-xls-workbook">Reading an <code>.xls</code> workbook</h2>
 <p>For <code>.xls</code> you <em>can</em> open the <code>Workbook</code> stream directly and read its BIFF8
-records yourself, but you do not have to — that is exactly what
+records yourself, but you do not have to - that is exactly what
 <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html"><code>Bodu.Formats.Excel.Binary</code></a>
 exists for. It builds on <code>Bodu.IO.Compound</code>, locates the <code>Workbook</code>
 stream, and exposes worksheet cell values without you touching the record
@@ -264,10 +264,10 @@ extraction, the Excel package is the right entry point. See
 stream access pattern.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="reading-compound-files.html">Reading compound files</a> — opening a container, walking the hierarchy, and reading a stream's bytes.</li>
-<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> — the <code>CompoundStream</code> cursor for large payloads.</li>
-<li><a href="property-sets.html">Reading property sets</a> — the <code>\x05SummaryInformation</code> streams these formats carry.</li>
-<li>API reference — <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a>, and <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> for <code>.xls</code>.</li>
+<li><a href="reading-compound-files.html">Reading compound files</a> - opening a container, walking the hierarchy, and reading a stream's bytes.</li>
+<li><a href="streaming-and-buffering.html">Buffered vs streaming access</a> - the <code>CompoundStream</code> cursor for large payloads.</li>
+<li><a href="property-sets.html">Reading property sets</a> - the <code>\x05SummaryInformation</code> streams these formats carry.</li>
+<li>API reference - <a class="xref" href="../../api/Bodu.IO.Compound.CompoundFile.html">CompoundFile</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundStorage.html">CompoundStorage</a>, <a class="xref" href="../../api/Bodu.IO.Compound.CompoundEntryInfo.html">CompoundEntryInfo</a>, and <a class="xref" href="../../api/Bodu.Formats.Excel.ExcelBinaryWorkbook.html">ExcelBinaryWorkbook</a> for <code>.xls</code>.</li>
 </ul>
 
 </article>
@@ -287,7 +287,7 @@ stream access pattern.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

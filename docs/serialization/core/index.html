@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Serialization — Introduction | BODU </title>
+      <title>Bodu.Text.Serialization - Introduction | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Serialization — Introduction | BODU ">
+      <meta name="title" content="Bodu.Text.Serialization - Introduction | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -89,14 +89,14 @@
 
 <p><img src="../../../images/hero-text-serialization.svg" alt="Bodu.Text.Serialization"></p>
 <h1 id="bodutextserialization">Bodu.Text.Serialization</h1>
-<p><strong>Bodu.Text.Serialization</strong> is the shared, format-agnostic core that every Bodu text serializer builds on. It contains no parser and no writer — only the <em>vocabulary</em> a model declares once and every serializer honors: the attribute family, the naming policies, the ignore / object-creation / unmapped-member enums, and the four serialization-callback interfaces. Six packages reference it — the three <code>System.Text.Json</code>-shaped serializers, <a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../toml/index.html">Bodu.Text.Toml</a>, and <a href="../yaml/index.html">Bodu.Text.Yaml</a>, and the three <a href="../../formats/index.html">line formats</a>, <a href="../../formats/delimited/index.html">Bodu.Text.Delimited</a>, <a href="../../formats/dotenv/index.html">Bodu.Text.DotEnv</a>, and <a href="../../formats/ini/index.html">Bodu.Text.Ini</a>.</p>
+<p><strong>Bodu.Text.Serialization</strong> is the shared, format-agnostic core that every Bodu text serializer builds on. It contains no parser and no writer - only the <em>vocabulary</em> a model declares once and every serializer honors: the attribute family, the naming policies, the ignore / object-creation / unmapped-member enums, and the four serialization-callback interfaces. Six packages reference it - the three <code>System.Text.Json</code>-shaped serializers, <a href="../bencode/index.html">Bodu.Text.Bencode</a>, <a href="../toml/index.html">Bodu.Text.Toml</a>, and <a href="../yaml/index.html">Bodu.Text.Yaml</a>, and the three <a href="../../formats/index.html">line formats</a>, <a href="../../formats/delimited/index.html">Bodu.Text.Delimited</a>, <a href="../../formats/dotenv/index.html">Bodu.Text.DotEnv</a>, and <a href="../../formats/ini/index.html">Bodu.Text.Ini</a>.</p>
 <p>Part of the <strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
 <h2 id="why-a-separate-package">Why a separate package</h2>
 <p>A model annotated with <code>[PropertyName]</code>, <code>[Ignore]</code>, or <code>[Required]</code> is making a statement about its <em>wire shape</em>, not about any one format. Keeping those declarations in a package that depends only on <code>Bodu.Core</code> means:</p>
 <ul>
 <li><strong>Annotate once, serialize anywhere.</strong> The same DTO round-trips through <code>TomlSerializer</code>, <code>YamlSerializer</code>, <code>BencodeSerializer</code>, <code>IniSerializer</code>, <code>DotEnvSerializer</code>, or <code>DelimitedSerializer</code> with no per-format attributes.</li>
 <li><strong>Model libraries stay format-free.</strong> A project that only <em>declares</em> DTOs references <code>Bodu.Text.Serialization</code> alone; the application that chooses TOML today and YAML tomorrow references the format package. The model assembly never takes a dependency on a reader or writer it does not use.</li>
-<li><strong>One precedence story.</strong> Member attribute beats type attribute beats options — the same rule in every serializer, documented once in <a href="concepts.html">Core concepts</a>.</li>
+<li><strong>One precedence story.</strong> Member attribute beats type attribute beats options - the same rule in every serializer, documented once in <a href="concepts.html">Core concepts</a>.</li>
 </ul>
 <h2 id="the-attribute-family">The attribute family</h2>
 <p>Every attribute derives from the abstract <a class="xref" href="../../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>, so the family can be discovered as a unit. All live in the <code>Bodu.Text.Serialization</code> namespace; add <code>using Bodu.Text.Serialization;</code> to the model file.</p>
@@ -117,7 +117,7 @@
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Serialization.IgnoreAttribute.html">IgnoreAttribute</a></td>
 <td>property, field</td>
-<td>Excludes the member — unconditionally (<code>Condition</code> defaults to <code>Always</code>) or only when writing <code>null</code> / the default value.</td>
+<td>Excludes the member - unconditionally (<code>Condition</code> defaults to <code>Always</code>) or only when writing <code>null</code> / the default value.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Serialization.IncludeAttribute.html">IncludeAttribute</a></td>
@@ -132,7 +132,7 @@
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a></td>
 <td>property, field</td>
-<td>Fails deserialization when the key is absent — the same effect as the C# <code>required</code> keyword.</td>
+<td>Fails deserialization when the key is absent - the same effect as the C# <code>required</code> keyword.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a></td>
@@ -172,7 +172,7 @@
 </tbody>
 </table>
 <h2 id="naming-policies">Naming policies</h2>
-<p><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> is the abstract base with a single <code>ConvertName(string)</code> method and five ready-made singletons: <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, and <code>KebabCaseUpper</code>. Assign one to a serializer's <code>PropertyNamingPolicy</code> option, or select it declaratively on a type through <code>[NamingPolicy(KnownNamingPolicy.…)]</code> — the <a class="xref" href="../../../api/Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> enum names each singleton (plus <code>Unspecified</code>). Subclass <code>NamingPolicy</code> for a convention of your own.</p>
+<p><a class="xref" href="../../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> is the abstract base with a single <code>ConvertName(string)</code> method and five ready-made singletons: <code>CamelCase</code>, <code>SnakeCaseLower</code>, <code>SnakeCaseUpper</code>, <code>KebabCaseLower</code>, and <code>KebabCaseUpper</code>. Assign one to a serializer's <code>PropertyNamingPolicy</code> option, or select it declaratively on a type through <code>[NamingPolicy(KnownNamingPolicy.…)]</code> - the <a class="xref" href="../../../api/Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> enum names each singleton (plus <code>Unspecified</code>). Subclass <code>NamingPolicy</code> for a convention of your own.</p>
 <pre><code class="lang-csharp">NamingPolicy.SnakeCaseUpper.ConvertName(&quot;MaxRetryCount&quot;);   // &quot;MAX_RETRY_COUNT&quot;
 NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;http-server-port&quot;
 </code></pre>
@@ -206,7 +206,7 @@ NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;
 </table>
 <p>There is deliberately <strong>no number-handling enum</strong> in this package: how a numeric scalar is written is a per-format decision (YAML, for example, has its own <code>YamlNumberHandling</code> option), and the line formats carry every value as text.</p>
 <h2 id="serialization-callbacks">Serialization callbacks</h2>
-<p>Four interfaces give a type a hook at each edge of the mapping pipeline: <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> (before members are written), <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> (after), <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> (after construction, before members are assigned), and <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> (after every member is assigned — the natural place for cross-member validation). Each has one parameterless <code>void</code> method; implement them explicitly to keep the hooks off the type's public surface. The exact position of each hook is tabulated in <a href="concepts.html#callback-order">Core concepts</a>.</p>
+<p>Four interfaces give a type a hook at each edge of the mapping pipeline: <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> (before members are written), <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> (after), <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> (after construction, before members are assigned), and <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> (after every member is assigned - the natural place for cross-member validation). Each has one parameterless <code>void</code> method; implement them explicitly to keep the hooks off the type's public surface. The exact position of each hook is tabulated in <a href="concepts.html#callback-order">Core concepts</a>.</p>
 <h2 id="who-uses-what">Who uses what</h2>
 <p>The package is consumed in two distinct ways, and knowing which one your serializer takes explains which attributes it honors.</p>
 <table>
@@ -246,7 +246,7 @@ NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;
 <tr>
 <td><code>[Converter]</code>, custom converters, <code>[StringEnumMemberName]</code></td>
 <td>yes</td>
-<td>no — scalars are strings converted with the invariant culture</td>
+<td>no - scalars are strings converted with the invariant culture</td>
 </tr>
 <tr>
 <td>The four callback interfaces</td>
@@ -255,7 +255,7 @@ NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;
 </tr>
 </tbody>
 </table>
-<p>The <strong>structured serializers</strong> (Bencode, TOML, YAML) compile the recursive converter engine — the metadata resolver, the object / collection / dictionary / nullable / enum converter factories, and the options-resolution partial — from this package's <code>shared/**</code> source tree under a per-format symbol. That engine is what reads the full attribute family, selects constructors, captures extension data, and resolves converters. The <strong>line formats</strong> reference only the compiled assembly: their wire is string-only, so each ships a small serializer-local binder that reads the attributes and naming policy and converts scalars with <code>InvariantCulture</code> — there is no converter pipeline to plug into.</p>
+<p>The <strong>structured serializers</strong> (Bencode, TOML, YAML) compile the recursive converter engine - the metadata resolver, the object / collection / dictionary / nullable / enum converter factories, and the options-resolution partial - from this package's <code>shared/**</code> source tree under a per-format symbol. That engine is what reads the full attribute family, selects constructors, captures extension data, and resolves converters. The <strong>line formats</strong> reference only the compiled assembly: their wire is string-only, so each ships a small serializer-local binder that reads the attributes and naming policy and converts scalars with <code>InvariantCulture</code> - there is no converter pipeline to plug into.</p>
 <h2 id="headline-types">Headline types</h2>
 <table>
 <thead>
@@ -293,12 +293,12 @@ NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — precedence, naming-policy order, required members and constructor binding, extension data, callbacks, options freezing, converter resolution.</li>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install, one DTO serialized by two serializers, a callback, a naming policy.</li>
-<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> — the three structured serializers that compile the shared engine.</li>
-<li><strong><a href="../../formats/index.html">Line formats introduction</a></strong> — the three string-wire formats that reference this package.</li>
-<li><strong>Per-format attribute guides</strong> — <a href="../../../guides/serialization/toml/attributes.html">TOML</a>, <a href="../../../guides/serialization/bencode/attributes.html">Bencode</a>, <a href="../../../guides/serialization/yaml/attributes.html">YAML</a>.</li>
-<li><strong>API reference</strong> — <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - precedence, naming-policy order, required members and constructor binding, extension data, callbacks, options freezing, converter resolution.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install, one DTO serialized by two serializers, a callback, a naming policy.</li>
+<li><strong><a href="../index.html">Bodu serializers introduction</a></strong> - the three structured serializers that compile the shared engine.</li>
+<li><strong><a href="../../formats/index.html">Line formats introduction</a></strong> - the three string-wire formats that reference this package.</li>
+<li><strong>Per-format attribute guides</strong> - <a href="../../../guides/serialization/toml/attributes.html">TOML</a>, <a href="../../../guides/serialization/bencode/attributes.html">Bencode</a>, <a href="../../../guides/serialization/yaml/attributes.html">YAML</a>.</li>
+<li><strong>API reference</strong> - <a class="xref" href="../../../api/Bodu.Text.Serialization.html">Bodu.Text.Serialization</a>.</li>
 </ul>
 
 </article>
@@ -318,7 +318,7 @@ NamingPolicy.KebabCaseLower.ConvertName(&quot;HTTPServerPort&quot;);   // &quot;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

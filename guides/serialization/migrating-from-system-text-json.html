@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="migrating-from-systemtextjson">Migrating from System.Text.Json</h1>
 
-<p>The Bodu serializers are shaped after <code>System.Text.Json</code>: a static <code>&lt;Format&gt;Serializer</code> facade, a <code>&lt;Format&gt;SerializerOptions</code> instance that freezes on first use, <code>&lt;Format&gt;Converter&lt;T&gt;</code> and <code>&lt;Format&gt;ConverterFactory</code> base classes, a mutable <code>&lt;Format&gt;Node</code> DOM, and a read-only <code>&lt;Format&gt;Document</code> DOM. Most of a migration is therefore mechanical — drop the <code>Json</code> prefix from the attributes, swap the options and converter base types, and pick a format. This guide is the lookup table for that rename, followed by the places where the formats genuinely behave differently from JSON.</p>
-<p>The tables cover the six serializers. <strong>Bencode</strong>, <strong>TOML</strong>, and <strong>YAML</strong> are the <em>structured</em> serializers: they compile the full converter engine, so every row applies. <strong>Delimited</strong>, <strong>DotEnv</strong>, and <strong>INI</strong> are the <em>line formats</em>: their wire is string-only and they use a small binder instead of a converter pipeline, so several rows are marked as not applicable — the authoritative list is the <a href="../../docs/serialization/core/index.html#who-uses-what">who-uses-what table</a> in the shared package's introduction.</p>
-<h2 id="pattern-1--swap-the-using-directives">Pattern 1 — Swap the <code>using</code> directives</h2>
+<p>The Bodu serializers are shaped after <code>System.Text.Json</code>: a static <code>&lt;Format&gt;Serializer</code> facade, a <code>&lt;Format&gt;SerializerOptions</code> instance that freezes on first use, <code>&lt;Format&gt;Converter&lt;T&gt;</code> and <code>&lt;Format&gt;ConverterFactory</code> base classes, a mutable <code>&lt;Format&gt;Node</code> DOM, and a read-only <code>&lt;Format&gt;Document</code> DOM. Most of a migration is therefore mechanical - drop the <code>Json</code> prefix from the attributes, swap the options and converter base types, and pick a format. This guide is the lookup table for that rename, followed by the places where the formats genuinely behave differently from JSON.</p>
+<p>The tables cover the six serializers. <strong>Bencode</strong>, <strong>TOML</strong>, and <strong>YAML</strong> are the <em>structured</em> serializers: they compile the full converter engine, so every row applies. <strong>Delimited</strong>, <strong>DotEnv</strong>, and <strong>INI</strong> are the <em>line formats</em>: their wire is string-only and they use a small binder instead of a converter pipeline, so several rows are marked as not applicable - the authoritative list is the <a href="../../docs/serialization/core/index.html#who-uses-what">who-uses-what table</a> in the shared package's introduction.</p>
+<h2 id="pattern-1---swap-the-using-directives">Pattern 1 - Swap the <code>using</code> directives</h2>
 <table>
 <thead>
 <tr>
@@ -107,7 +107,7 @@
 <tr>
 <td><code>System.Text.Json.Serialization</code> (attributes, callbacks)</td>
 <td><code>Bodu.Text.Serialization</code></td>
-<td>The attribute family, <code>NamingPolicy</code>, the behavior enums, and the four callback interfaces — one shared package for all six formats.</td>
+<td>The attribute family, <code>NamingPolicy</code>, the behavior enums, and the four callback interfaces - one shared package for all six formats.</td>
 </tr>
 <tr>
 <td><code>System.Text.Json.Serialization</code> (converter bases)</td>
@@ -131,8 +131,8 @@
 </tr>
 </tbody>
 </table>
-<p>A model file that previously needed only <code>using System.Text.Json.Serialization;</code> now needs only <code>using Bodu.Text.Serialization;</code> — the same annotated type serializes to every Bodu format without further changes.</p>
-<h2 id="pattern-2--rename-the-attributes">Pattern 2 — Rename the attributes</h2>
+<p>A model file that previously needed only <code>using System.Text.Json.Serialization;</code> now needs only <code>using Bodu.Text.Serialization;</code> - the same annotated type serializes to every Bodu format without further changes.</p>
+<h2 id="pattern-2---rename-the-attributes">Pattern 2 - Rename the attributes</h2>
 <p>Every Bodu attribute lives in <code>Bodu.Text.Serialization</code> and derives from <a class="xref" href="../../api/Bodu.Text.Serialization.SerializationAttribute.html">SerializationAttribute</a>.</p>
 <table>
 <thead>
@@ -181,7 +181,7 @@
 <tr>
 <td><code>[JsonExtensionData]</code></td>
 <td><a class="xref" href="../../api/Bodu.Text.Serialization.ExtensionDataAttribute.html">ExtensionDataAttribute</a> <code>[ExtensionData]</code></td>
-<td>The member's <em>type</em> differs per format — see <a href="#pattern-8--extension-data">Pattern 8</a>. Structured serializers only.</td>
+<td>The member's <em>type</em> differs per format - see <a href="#pattern-8---extension-data">Pattern 8</a>. Structured serializers only.</td>
 </tr>
 <tr>
 <td><code>[JsonConstructor]</code></td>
@@ -205,16 +205,16 @@
 </tr>
 <tr>
 <td><code>[JsonNumberHandling(…)]</code></td>
-<td>—</td>
+<td>-</td>
 <td>No member-level equivalent. YAML has an options-level <code>NumberHandling</code> (<code>Strict</code> / <code>AllowFloatToInteger</code>); the other formats have none.</td>
 </tr>
 <tr>
 <td><code>[JsonPolymorphic]</code> / <code>[JsonDerivedType]</code></td>
-<td>—</td>
-<td>No attribute-driven polymorphism; write a converter factory with a discriminator — <a href="toml/polymorphic-converters.html">TOML</a>, <a href="yaml/polymorphic-converters.html">YAML</a>, <a href="bencode/polymorphic-converters.html">Bencode</a>.</td>
+<td>-</td>
+<td>No attribute-driven polymorphism; write a converter factory with a discriminator - <a href="toml/polymorphic-converters.html">TOML</a>, <a href="yaml/polymorphic-converters.html">YAML</a>, <a href="bencode/polymorphic-converters.html">Bencode</a>.</td>
 </tr>
 <tr>
-<td>—</td>
+<td>-</td>
 <td><a class="xref" href="../../api/Bodu.Text.Serialization.NamingPolicyAttribute.html">NamingPolicyAttribute</a> <code>[NamingPolicy(KnownNamingPolicy.…)]</code></td>
 <td>No STJ analogue: a type-level policy that overrides the options-level one. Structured serializers only.</td>
 </tr>
@@ -246,7 +246,7 @@ public sealed class ServerConfig : IJsonOnDeserialized
     }
 }
 </code></pre>
-<p>The same model for the Bodu family — the attributes lose their <code>Json</code> prefix, the callback interface loses its <code>Json</code> infix, and the validation throws the format's serialization exception:</p>
+<p>The same model for the Bodu family - the attributes lose their <code>Json</code> prefix, the callback interface loses its <code>Json</code> infix, and the validation throws the format's serialization exception:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Serialization;
 using Bodu.Text.Yaml;
 
@@ -285,14 +285,14 @@ Host = &quot;0.0.0.0&quot;
 listen_port: 8443
 Host: 0.0.0.0
 </code></pre>
-<p><code>[Required]</code> behaves as <code>[JsonRequired]</code> does — an absent key fails the read, with the format's serialization exception in place of <code>JsonException</code>:</p>
+<p><code>[Required]</code> behaves as <code>[JsonRequired]</code> does - an absent key fails the read, with the format's serialization exception in place of <code>JsonException</code>:</p>
 <pre><code class="lang-csharp">TomlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Name = \&quot;edge\&quot;\nlisten_port = 8443&quot;);
 // → throws TomlSerializationException: Required member 'Host' was not present in the input for type 'ServerConfig'.
 
 YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Name: edge\nlisten_port: 8443&quot;);
 // → throws YamlSerializationException: The required member 'Host' of type 'ServerConfig' was not present in the input.
 </code></pre>
-<h2 id="pattern-3--port-the-options">Pattern 3 — Port the options</h2>
+<h2 id="pattern-3---port-the-options">Pattern 3 - Port the options</h2>
 <table>
 <thead>
 <tr>
@@ -310,12 +310,12 @@ YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Name: edge\nlisten_port: 84
 <tr>
 <td><code>new JsonSerializerOptions(JsonSerializerDefaults.Web)</code></td>
 <td><code>new &lt;Format&gt;SerializerOptions(&lt;Format&gt;SerializerDefaults.Web)</code></td>
-<td>The <code>Web</code> preset means different things per format, and INI offers <code>Strict</code> instead — see <a href="options-and-lifetime.html#pattern-6--start-from-a-defaults-preset">Serializer options: freezing, caching, and thread safety</a>.</td>
+<td>The <code>Web</code> preset means different things per format, and INI offers <code>Strict</code> instead - see <a href="options-and-lifetime.html#pattern-6---start-from-a-defaults-preset">Serializer options: freezing, caching, and thread safety</a>.</td>
 </tr>
 <tr>
 <td><code>PropertyNamingPolicy</code></td>
 <td><code>PropertyNamingPolicy</code></td>
-<td>Takes a <a class="xref" href="../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> (<a href="#pattern-5--naming-policies">Pattern 5</a>).</td>
+<td>Takes a <a class="xref" href="../../api/Bodu.Text.Serialization.NamingPolicy.html">NamingPolicy</a> (<a href="#pattern-5---naming-policies">Pattern 5</a>).</td>
 </tr>
 <tr>
 <td><code>PropertyNameCaseInsensitive</code></td>
@@ -335,12 +335,12 @@ YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Name: edge\nlisten_port: 84
 <tr>
 <td><code>Converters</code></td>
 <td><code>Converters</code></td>
-<td><code>IList&lt;&lt;Format&gt;Converter&gt;</code>; registration order matters (<a href="options-and-lifetime.html#pattern-3--understand-converter-resolution-order">resolution order</a>). Structured serializers only.</td>
+<td><code>IList&lt;&lt;Format&gt;Converter&gt;</code>; registration order matters (<a href="options-and-lifetime.html#pattern-3---understand-converter-resolution-order">resolution order</a>). Structured serializers only.</td>
 </tr>
 <tr>
 <td><code>MakeReadOnly()</code> / <code>IsReadOnly</code></td>
 <td><code>MakeReadOnly()</code> / <code>IsReadOnly</code></td>
-<td>Structured serializers expose both. The line formats expose <code>IsReadOnly</code> and a pre-frozen static <code>Default</code>, but freeze only on first use — there is no public <code>MakeReadOnly()</code>.</td>
+<td>Structured serializers expose both. The line formats expose <code>IsReadOnly</code> and a pre-frozen static <code>Default</code>, but freeze only on first use - there is no public <code>MakeReadOnly()</code>.</td>
 </tr>
 <tr>
 <td><code>MaxDepth</code></td>
@@ -364,22 +364,22 @@ YamlSerializer.Deserialize&lt;ServerConfig&gt;(&quot;Name: edge\nlisten_port: 84
 </tr>
 <tr>
 <td><code>WriteIndented</code></td>
-<td>—</td>
+<td>-</td>
 <td>The formats are line-oriented and always readable; YAML indentation width is a writer option (<code>YamlWriterOptions.IndentSize</code>), not a serializer option.</td>
 </tr>
 <tr>
 <td><code>System.Text.Json.Serialization.ReferenceHandler</code></td>
-<td>—</td>
+<td>-</td>
 <td>Object cycles are detected and fail the write (see the YAML callbacks guide's <a href="yaml/callbacks.html#invocation-order">invocation order</a>); there is no reference-preserving mode.</td>
 </tr>
 <tr>
 <td><code>AllowTrailingCommas</code>, <code>ReadCommentHandling</code></td>
-<td>—</td>
+<td>-</td>
 <td>Comments are part of the TOML, YAML, DotEnv, and INI grammars and are always accepted.</td>
 </tr>
 <tr>
 <td><code>System.Text.Json.JsonSerializerOptions.TypeInfoResolver</code> / source generation</td>
-<td>—</td>
+<td>-</td>
 <td>The structured serializers are reflection-based (their <code>Serialize</code> / <code>Deserialize</code> carry <code>RequiresUnreferencedCode</code>). Reflection-free binding exists only for Delimited and INI through the <a href="../formats/source-generator.html">source generator</a>.</td>
 </tr>
 </tbody>
@@ -405,8 +405,8 @@ yamlOptions.MakeReadOnly();
 <h5>Note</h5>
 <p>The Bodu <code>MakeReadOnly()</code> takes no argument: there is no resolver to populate. The STJ overload without the <code>populateMissingResolver</code> flag throws on .NET 8 when no <code>System.Text.Json.JsonSerializerOptions.TypeInfoResolver</code> has been set; the Bodu call never does.</p>
 </div>
-<h2 id="pattern-4--port-a-converter">Pattern 4 — Port a converter</h2>
-<p>A converter keeps the STJ shape — <code>CanConvert</code>, <code>Read</code>, <code>Write</code> — but reads through the format's reader and writes through its writer. The signatures differ per format:</p>
+<h2 id="pattern-4---port-a-converter">Pattern 4 - Port a converter</h2>
+<p>A converter keeps the STJ shape - <code>CanConvert</code>, <code>Read</code>, <code>Write</code> - but reads through the format's reader and writes through its writer. The signatures differ per format:</p>
 <table>
 <thead>
 <tr>
@@ -443,7 +443,7 @@ yamlOptions.MakeReadOnly();
 </tr>
 </tbody>
 </table>
-<p>Note the TOML row: a converter reads through <a class="xref" href="../../api/Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> — the <em>normalized</em> reader that projects header-defined and inline tables onto one <code>StartTable</code> / <code>PropertyName</code> / value / <code>EndTable</code> sequence — not the raw <code>Utf8TomlReader</code>. The factory bases follow suit: <code>JsonConverterFactory</code> becomes <a class="xref" href="../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>, <a class="xref" href="../../api/Bodu.Text.Toml.Serialization.TomlConverterFactory.html">TomlConverterFactory</a>, or <a class="xref" href="../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>, each with the same <code>CanConvert(Type)</code> / <code>CreateConverter(Type, options)</code> pair.</p>
+<p>Note the TOML row: a converter reads through <a class="xref" href="../../api/Bodu.Text.Toml.Reader.TomlDocumentReader.html">TomlDocumentReader</a> - the <em>normalized</em> reader that projects header-defined and inline tables onto one <code>StartTable</code> / <code>PropertyName</code> / value / <code>EndTable</code> sequence - not the raw <code>Utf8TomlReader</code>. The factory bases follow suit: <code>JsonConverterFactory</code> becomes <a class="xref" href="../../api/Bodu.Text.Yaml.Serialization.YamlConverterFactory.html">YamlConverterFactory</a>, <a class="xref" href="../../api/Bodu.Text.Toml.Serialization.TomlConverterFactory.html">TomlConverterFactory</a>, or <a class="xref" href="../../api/Bodu.Text.Bencode.Serialization.BencodeConverterFactory.html">BencodeConverterFactory</a>, each with the same <code>CanConvert(Type)</code> / <code>CreateConverter(Type, options)</code> pair.</p>
 <p>A scalar converter, before:</p>
 <pre><code class="lang-csharp">public sealed class PointConverter : JsonConverter&lt;Point&gt;
 {
@@ -457,7 +457,7 @@ yamlOptions.MakeReadOnly();
         writer.WriteStringValue($&quot;{value.X},{value.Y}&quot;);
 }
 </code></pre>
-<p>And after, for YAML — the reader's <code>GetString()</code> returns a non-nullable string, and the writer's string method is <code>WriteString</code>:</p>
+<p>And after, for YAML - the reader's <code>GetString()</code> returns a non-nullable string, and the writer's string method is <code>WriteString</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
@@ -493,8 +493,8 @@ public sealed class PointTomlConverter : TomlConverter&lt;Point&gt;
         writer.WriteString($&quot;{value.X},{value.Y}&quot;);
 }
 </code></pre>
-<p>Registered on the options above, a <code>Shape { Point Origin; string? Label }</code> writes as <code>origin: 1,2</code> in YAML and <code>origin = &quot;1,2&quot;</code> in TOML. Three STJ habits carry over unchanged: <code>CanConvert</code> defaults to an exact type match, so a converter for a base type does not apply to subclasses; the reader is positioned on the first token of the value on entry; and a converter must throw the format's <em>serialization</em> exception for a well-formed value that does not fit, never the format exception. The per-format converter guides — <a href="toml/converters.html">TOML</a>, <a href="yaml/converters.html">YAML</a>, <a href="bencode/converters.html">Bencode</a> — cover the reader and writer surfaces in full.</p>
-<h2 id="pattern-5--naming-policies">Pattern 5 — Naming policies</h2>
+<p>Registered on the options above, a <code>Shape { Point Origin; string? Label }</code> writes as <code>origin: 1,2</code> in YAML and <code>origin = &quot;1,2&quot;</code> in TOML. Three STJ habits carry over unchanged: <code>CanConvert</code> defaults to an exact type match, so a converter for a base type does not apply to subclasses; the reader is positioned on the first token of the value on entry; and a converter must throw the format's <em>serialization</em> exception for a well-formed value that does not fit, never the format exception. The per-format converter guides - <a href="toml/converters.html">TOML</a>, <a href="yaml/converters.html">YAML</a>, <a href="bencode/converters.html">Bencode</a> - cover the reader and writer surfaces in full.</p>
+<h2 id="pattern-5---naming-policies">Pattern 5 - Naming policies</h2>
 <table>
 <thead>
 <tr>
@@ -535,8 +535,8 @@ NamingPolicy.SnakeCaseLower.ConvertName(&quot;MaxRetryCount&quot;);       // max
 NamingPolicy.CamelCase.ConvertName(&quot;MaxRetryCount&quot;);            // maxRetryCount
 NamingPolicy.KebabCaseUpper.ConvertName(&quot;MaxRetryCount&quot;);       // MAX-RETRY-COUNT
 </code></pre>
-<p>Two additions have no STJ analogue: the type-level <code>[NamingPolicy(KnownNamingPolicy.…)]</code> attribute, which overrides the options-level policy for one type, and the <a class="xref" href="../../api/Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> enum that names the singletons for it. Enum member names are governed by the string-enum converters (<code>WriteEnumsAsStrings</code> in YAML; <code>&lt;Format&gt;StringEnumConverter</code> elsewhere), not by <code>PropertyNamingPolicy</code> — the same split STJ makes.</p>
-<h2 id="pattern-6--callbacks">Pattern 6 — Callbacks</h2>
+<p>Two additions have no STJ analogue: the type-level <code>[NamingPolicy(KnownNamingPolicy.…)]</code> attribute, which overrides the options-level policy for one type, and the <a class="xref" href="../../api/Bodu.Text.Serialization.KnownNamingPolicy.html">KnownNamingPolicy</a> enum that names the singletons for it. Enum member names are governed by the string-enum converters (<code>WriteEnumsAsStrings</code> in YAML; <code>&lt;Format&gt;StringEnumConverter</code> elsewhere), not by <code>PropertyNamingPolicy</code> - the same split STJ makes.</p>
+<h2 id="pattern-6---callbacks">Pattern 6 - Callbacks</h2>
 <table>
 <thead>
 <tr>
@@ -563,8 +563,8 @@ NamingPolicy.KebabCaseUpper.ConvertName(&quot;MaxRetryCount&quot;);       // MAX
 </tr>
 </tbody>
 </table>
-<p>Each interface has the same single parameterless <code>void</code> method, is detected by the object-mapping converter without registration, and does not fire for a type claimed by a custom converter — exactly the STJ rules. All six serializers honor the four hooks, the line formats included. The pipeline position of each is tabulated in the <a href="../../docs/serialization/core/concepts.html#callback-order">core concepts</a> and illustrated in the <a href="toml/callbacks.html">TOML</a>, <a href="yaml/callbacks.html">YAML</a>, and <a href="bencode/callbacks.html">Bencode</a> callback guides.</p>
-<h2 id="pattern-7--the-doms">Pattern 7 — The DOMs</h2>
+<p>Each interface has the same single parameterless <code>void</code> method, is detected by the object-mapping converter without registration, and does not fire for a type claimed by a custom converter - exactly the STJ rules. All six serializers honor the four hooks, the line formats included. The pipeline position of each is tabulated in the <a href="../../docs/serialization/core/concepts.html#callback-order">core concepts</a> and illustrated in the <a href="toml/callbacks.html">TOML</a>, <a href="yaml/callbacks.html">YAML</a>, and <a href="bencode/callbacks.html">Bencode</a> callback guides.</p>
+<h2 id="pattern-7---the-doms">Pattern 7 - The DOMs</h2>
 <table>
 <thead>
 <tr>
@@ -587,17 +587,17 @@ NamingPolicy.KebabCaseUpper.ConvertName(&quot;MaxRetryCount&quot;);       // MAX
 <tr>
 <td><code>JsonDocument</code> / <code>JsonElement</code> / <code>JsonProperty</code></td>
 <td><code>&lt;Format&gt;Document</code> / <code>&lt;Format&gt;Element</code> / <code>&lt;Format&gt;Property</code> in <code>Bodu.Text.&lt;Format&gt;.Document</code></td>
-<td>Same names — <code>DelimitedDocument</code>, <code>DotEnvDocument</code>, <code>IniDocument</code> — each disposable with a <code>RootElement</code>.</td>
+<td>Same names - <code>DelimitedDocument</code>, <code>DotEnvDocument</code>, <code>IniDocument</code> - each disposable with a <code>RootElement</code>.</td>
 </tr>
 <tr>
 <td><code>JsonSerializer.SerializeToNode</code> / <code>SerializeToDocument</code></td>
 <td>Bencode only (<code>BencodeSerializer.SerializeToNode</code> / <code>SerializeToDocument</code>); for TOML and YAML, serialize to text and parse it.</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>A member typed <code>JsonElement</code> / <code>JsonNode</code></td>
 <td>Supported: a member typed <code>&lt;Format&gt;Element</code>, <code>&lt;Format&gt;Document</code>, or <code>&lt;Format&gt;Node</code> binds through the DOM bridge converters.</td>
-<td>Not supported — the line formats have no DOM bridge; a member must be a scalar (or, for INI, a section object).</td>
+<td>Not supported - the line formats have no DOM bridge; a member must be a scalar (or, for INI, a section object).</td>
 </tr>
 </tbody>
 </table>
@@ -618,7 +618,7 @@ long yamlDocPort = yd.RootElement.GetProperty(&quot;port&quot;).GetInt64();   //
 using TomlDocument td = TomlDocument.Parse(&quot;port = 8080&quot;);
 long tomlDocPort = td.RootElement.GetProperty(&quot;port&quot;).GetInt64();   // 8080
 </code></pre>
-<p>Editing and re-emitting a node works as with <code>JsonNode</code> — <code>ToYamlString()</code> for YAML, <code>ToUtf8Bytes()</code> for TOML and INI, <code>ToByteArray()</code> for Bencode:</p>
+<p>Editing and re-emitting a node works as with <code>JsonNode</code> - <code>ToYamlString()</code> for YAML, <code>ToUtf8Bytes()</code> for TOML and INI, <code>ToByteArray()</code> for Bencode:</p>
 <pre><code class="lang-csharp">yn.AsObject()[&quot;port&quot;] = YamlValue.Create(9090L);
 string editedYaml = yn.ToYamlString();
 // port: 9090
@@ -631,7 +631,7 @@ string editedToml = Encoding.UTF8.GetString(tn.ToUtf8Bytes());
 // port = 9090
 // tags = [&quot;a&quot;, &quot;b&quot;]
 </code></pre>
-<h2 id="pattern-8--extension-data">Pattern 8 — Extension data</h2>
+<h2 id="pattern-8---extension-data">Pattern 8 - Extension data</h2>
 <p><code>[JsonExtensionData]</code> accepts <code>Dictionary&lt;string, object&gt;</code> or <code>Dictionary&lt;string, JsonElement&gt;</code>. The Bodu formats are stricter, and differ from one another, about the member's type:</p>
 <table>
 <thead>
@@ -645,7 +645,7 @@ string editedToml = Encoding.UTF8.GetString(tn.ToUtf8Bytes());
 <tr>
 <td>YAML</td>
 <td>Any type assignable from <code>IDictionary&lt;string, object?&gt;</code> (<code>Dictionary&lt;string, object?&gt;</code> is the usual choice).</td>
-<td>Loosely-typed scalars per YAML's implicit typing — <code>string</code>, <code>long</code>, <code>double</code>, <code>bool</code> — and nested <code>Dictionary</code> / <code>List</code> values.</td>
+<td>Loosely-typed scalars per YAML's implicit typing - <code>string</code>, <code>long</code>, <code>double</code>, <code>bool</code> - and nested <code>Dictionary</code> / <code>List</code> values.</td>
 </tr>
 <tr>
 <td>TOML</td>
@@ -660,7 +660,7 @@ string editedToml = Encoding.UTF8.GetString(tn.ToUtf8Bytes());
 <tr>
 <td>Delimited · DotEnv · INI</td>
 <td>Not supported.</td>
-<td>—</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
@@ -697,7 +697,7 @@ TomlSerializer.Serialize(roundT);
 <h2 id="behavioral-differences">Behavioral differences</h2>
 <p>The rename is the easy half. These are the points where a format's value model, not the API, changes what your program observes.</p>
 <h3 id="null-handling-is-per-format">Null handling is per format</h3>
-<p>STJ writes <code>null</code> for a null member unless told otherwise. The Bodu formats each do what their grammar allows — for the same <code>{ Port = 8080, Name = null }</code> instance with default options:</p>
+<p>STJ writes <code>null</code> for a null member unless told otherwise. The Bodu formats each do what their grammar allows - for the same <code>{ Port = 8080, Name = null }</code> instance with default options:</p>
 <table>
 <thead>
 <tr>
@@ -729,7 +729,7 @@ TomlSerializer.Serialize(roundT);
 </tr>
 <tr>
 <td>Delimited</td>
-<td><code>8080,</code> — an empty field</td>
+<td><code>8080,</code> - an empty field</td>
 <td>Every record has every column; an empty field reads back as <code>null</code> for a nullable member.</td>
 </tr>
 </tbody>
@@ -738,7 +738,7 @@ TomlSerializer.Serialize(roundT);
 <h3 id="the-line-formats-carry-strings-only">The line formats carry strings only</h3>
 <p>Delimited, DotEnv, and INI have no typed tokens: every value is text, converted to and from the member type with the invariant culture by the serializer-local binder. Consequently <code>[Converter]</code>, custom converters, <code>[Include]</code>, <code>[Constructor]</code>, <code>[ExtensionData]</code>, and the enum converters do not apply to them, and there is no <code>Utf8JsonReader</code>-style typed getter beyond <code>GetString()</code>. A member of type <code>int</code> binds from the text <code>3</code> in all three; a value that does not parse fails with the format's serialization exception and the <code>FormatException</code> as its inner exception (see <a href="../formats/error-handling.html">Errors across the line formats</a>).</p>
 <h3 id="toml-is-token-strict-yaml-coerces">TOML is token-strict; YAML coerces</h3>
-<p><code>Utf8JsonReader</code> rejects a string where a number is expected, and so does TOML: binding <code>Count = &quot;3&quot;</code> to an <code>int</code> member throws <em>TomlSerializationException: Expected an integer but found 'String'.</em> YAML's scalars are implicitly typed, so its converters coerce across scalar kinds — <code>Count: '3'</code> binds <code>3</code> to an <code>int</code> — and writing a string that <em>looks</em> like a number quotes it so it reads back as a string:</p>
+<p><code>Utf8JsonReader</code> rejects a string where a number is expected, and so does TOML: binding <code>Count = &quot;3&quot;</code> to an <code>int</code> member throws <em>TomlSerializationException: Expected an integer but found 'String'.</em> YAML's scalars are implicitly typed, so its converters coerce across scalar kinds - <code>Count: '3'</code> binds <code>3</code> to an <code>int</code> - and writing a string that <em>looks</em> like a number quotes it so it reads back as a string:</p>
 <pre><code class="lang-csharp">YamlSerializer.Serialize(new Named { Name = &quot;3&quot; });
 // Name: &quot;3&quot;
 </code></pre>
@@ -750,20 +750,20 @@ TomlSerializer.Serialize(roundT);
 // legacy → String  yes      (1.2 core schema: only true/false are booleans)
 // name   → String  3        (quoted, so never a number)
 </code></pre>
-<p>Opting into <code>YamlSpecVersion.V1_1</code> on the options restores the 1.1 typing, under which <code>legacy: yes</code> resolves to a boolean — see the <a href="../../docs/serialization/yaml/index.html">YAML introduction</a>.</p>
+<p>Opting into <code>YamlSpecVersion.V1_1</code> on the options restores the 1.1 typing, under which <code>legacy: yes</code> resolves to a boolean - see the <a href="../../docs/serialization/yaml/index.html">YAML introduction</a>.</p>
 <h3 id="two-exception-types-instead-of-one">Two exception types instead of one</h3>
-<p><code>JsonException</code> covers both malformed text and failed binding. Every Bodu format splits the two: a <code>&lt;Format&gt;FormatException</code> for syntactically invalid input (a <code>FormatException</code> subclass carrying the position), and a <code>&lt;Format&gt;SerializationException</code> for a well-formed document that does not fit the target type — a missing <code>[Required]</code> member, an unmapped key under <code>Disallow</code>, a converter rejection, a depth overrun. Catch both when a caller cannot distinguish them; catch only the serialization exception around validation logic such as the <code>OnDeserialized</code> check above.</p>
+<p><code>JsonException</code> covers both malformed text and failed binding. Every Bodu format splits the two: a <code>&lt;Format&gt;FormatException</code> for syntactically invalid input (a <code>FormatException</code> subclass carrying the position), and a <code>&lt;Format&gt;SerializationException</code> for a well-formed document that does not fit the target type - a missing <code>[Required]</code> member, an unmapped key under <code>Disallow</code>, a converter rejection, a depth overrun. Catch both when a caller cannot distinguish them; catch only the serialization exception around validation logic such as the <code>OnDeserialized</code> check above.</p>
 <h3 id="an-empty-yaml-stream-is-null">An empty YAML stream is <code>null</code></h3>
-<p><code>JsonSerializer.Deserialize&lt;T&gt;(&quot;&quot;)</code> throws. <code>TomlSerializer.Deserialize&lt;T&gt;(&quot;&quot;)</code> returns an instance with every member at its initializer (an empty TOML document is an empty root table), while <code>YamlSerializer.Deserialize&lt;T&gt;(&quot;&quot;)</code> returns <code>null</code> — an empty YAML stream has no document. Use <code>{}</code> for an &quot;empty mapping&quot; in YAML, and note that the YAML <code>Deserialize&lt;T&gt;</code> signature is nullable (<code>T?</code>) for this reason.</p>
+<p><code>JsonSerializer.Deserialize&lt;T&gt;(&quot;&quot;)</code> throws. <code>TomlSerializer.Deserialize&lt;T&gt;(&quot;&quot;)</code> returns an instance with every member at its initializer (an empty TOML document is an empty root table), while <code>YamlSerializer.Deserialize&lt;T&gt;(&quot;&quot;)</code> returns <code>null</code> - an empty YAML stream has no document. Use <code>{}</code> for an &quot;empty mapping&quot; in YAML, and note that the YAML <code>Deserialize&lt;T&gt;</code> signature is nullable (<code>T?</code>) for this reason.</p>
 <h3 id="polymorphism-is-a-converter-not-an-attribute">Polymorphism is a converter, not an attribute</h3>
 <p>There is no <code>[JsonPolymorphic]</code> / <code>[JsonDerivedType]</code>. On write, the structured serializers already dispatch on the <em>runtime</em> type of a value held in a base-typed or <code>object</code>-typed member; on read, a member typed as an abstract class or interface fails unless a converter factory supplies the concrete type from a discriminator. The recipe is in the per-format polymorphic-converter guides.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="../../docs/serialization/core/index.html">Bodu.Text.Serialization</a> — the shared package: every attribute, enum, policy, and callback, and the who-uses-what table for the line formats.</li>
-<li><a href="../../docs/serialization/core/concepts.html">Core concepts</a> — precedence, required members and constructor binding, callback order, converter resolution.</li>
-<li><a href="options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> — the options lifecycle STJ users expect, across all six serializers.</li>
-<li>Per-format mapping-attribute guides — <a href="toml/attributes.html">TOML</a>, <a href="yaml/attributes.html">YAML</a>, <a href="bencode/attributes.html">Bencode</a> — and the line-format guides — <a href="../formats/delimited.html">Delimited</a>, <a href="../formats/dotenv.html">DotEnv</a>, <a href="../formats/ini.html">INI</a>.</li>
-<li>Runnable samples — <a href="../../samples/toml.html">TOML</a>, <a href="../../samples/yaml.html">YAML</a>, <a href="../../samples/bencode.html">Bencode</a>, <a href="../../samples/formats.html">line formats</a>.</li>
+<li><a href="../../docs/serialization/core/index.html">Bodu.Text.Serialization</a> - the shared package: every attribute, enum, policy, and callback, and the who-uses-what table for the line formats.</li>
+<li><a href="../../docs/serialization/core/concepts.html">Core concepts</a> - precedence, required members and constructor binding, callback order, converter resolution.</li>
+<li><a href="options-and-lifetime.html">Serializer options: freezing, caching, and thread safety</a> - the options lifecycle STJ users expect, across all six serializers.</li>
+<li>Per-format mapping-attribute guides - <a href="toml/attributes.html">TOML</a>, <a href="yaml/attributes.html">YAML</a>, <a href="bencode/attributes.html">Bencode</a> - and the line-format guides - <a href="../formats/delimited.html">Delimited</a>, <a href="../formats/dotenv.html">DotEnv</a>, <a href="../formats/ini.html">INI</a>.</li>
+<li>Runnable samples - <a href="../../samples/toml.html">TOML</a>, <a href="../../samples/yaml.html">YAML</a>, <a href="../../samples/bencode.html">Bencode</a>, <a href="../../samples/formats.html">line formats</a>.</li>
 <li><a href="index.html">Bodu serializer guides</a> and the <a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a>.</li>
 </ul>
 
@@ -784,7 +784,7 @@ TomlSerializer.Serialize(roundT);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

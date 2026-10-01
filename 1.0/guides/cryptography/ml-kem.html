@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="ml-kem-post-quantum-key-encapsulation">ML-KEM post-quantum key encapsulation</h1>
 
-<p>ML-KEM is the module-lattice key-encapsulation mechanism standardized by NIST <strong>FIPS 203</strong> — the post-quantum replacement for Diffie-Hellman-style key agreement. Its security rests on the Module-LWE problem, believed hard even for a large-scale quantum computer. This guide is for developers bootstrapping a symmetric session that must stay confidential against future quantum attack.</p>
+<p>ML-KEM is the module-lattice key-encapsulation mechanism standardized by NIST <strong>FIPS 203</strong> - the post-quantum replacement for Diffie-Hellman-style key agreement. Its security rests on the Module-LWE problem, believed hard even for a large-scale quantum computer. This guide is for developers bootstrapping a symmetric session that must stay confidential against future quantum attack.</p>
 <p>A KEM works differently from ECDH: instead of both parties contributing a public key, the receiver publishes an <strong>encapsulation key</strong>, and any sender calls <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html#Bodu_Security_Cryptography_MLKem_Encapsulate">Encapsulate()</a> to produce a <strong>ciphertext</strong> plus a fresh 32-byte shared secret. The receiver recovers the same secret from the ciphertext with <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html#Bodu_Security_Cryptography_MLKem_Decapsulate_System_ReadOnlySpan_System_Byte__">Decapsulate(ReadOnlySpan&lt;byte&gt;)</a>.</p>
 <p><strong>Bodu.Security.Cryptography</strong> ships the three FIPS 203 parameter sets as sealed types over the shared <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a> base: <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a>.</p>
 <h2 id="parameter-sets-and-sizes">Parameter sets and sizes</h2>
@@ -163,7 +163,7 @@ byte[] receiverSecret = receiver.Decapsulate(ciphertext);
 // senderSecret and receiverSecret are identical (32 bytes each).
 </code></pre>
 <p>As with ECDH, run the 32-byte shared secret through a KDF (<a href="hkdf.html">HKDF</a>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> in keyed mode) before using it as a symmetric key, binding it to an application-specific context.</p>
-<p>Both <code>Encapsulate</code> and <code>Decapsulate</code> have span overloads — <code>Encapsulate(ciphertext, sharedSecret)</code> and <code>Decapsulate(ciphertext, sharedSecret)</code> — that write into caller-supplied buffers (the ciphertext span must be exactly <code>CiphertextSizeInBytes</code>, the secret span exactly 32 bytes). Query <code>HasEncapsulationKey</code> / <code>HasDecapsulationKey</code> to see which halves an instance holds: a sender that imported only the public key has <code>HasEncapsulationKey</code> true and <code>HasDecapsulationKey</code> false, and so can encapsulate but not decapsulate.</p>
+<p>Both <code>Encapsulate</code> and <code>Decapsulate</code> have span overloads - <code>Encapsulate(ciphertext, sharedSecret)</code> and <code>Decapsulate(ciphertext, sharedSecret)</code> - that write into caller-supplied buffers (the ciphertext span must be exactly <code>CiphertextSizeInBytes</code>, the secret span exactly 32 bytes). Query <code>HasEncapsulationKey</code> / <code>HasDecapsulationKey</code> to see which halves an instance holds: a sender that imported only the public key has <code>HasEncapsulationKey</code> true and <code>HasDecapsulationKey</code> false, and so can encapsulate but not decapsulate.</p>
 <h2 id="persisting-and-restoring-keys">Persisting and restoring keys</h2>
 <p>Export the decapsulation (private) key, or the compact 64-byte seed, to persist a receiver across runs. Importing the seed regenerates the full key pair; importing an encapsulation key onto an instance discards any decapsulation key it held, leaving an encapsulate-only instance.</p>
 <!-- compile -->
@@ -179,12 +179,12 @@ using var restored = MLKem768.Create();
 restored.ImportDecapsulationKey(decapsulationKey);
 </code></pre>
 <p><code>ImportDecapsulationKey</code> and <code>ImportEncapsulationKey</code> apply the FIPS 203 §7.3 hash-consistency and §7.2 modulus checks respectively, throwing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> on a malformed or wrong-length key.</p>
-<p>An instance keeps what FIPS 203 derives from its key on every operation — the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) — from the moment the key is generated or imported, so reuse one instance for many encapsulations or decapsulations rather than importing the key for each. Beside the encoded keys these take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024, or 6, 12 and 20 KiB for an encapsulation key alone; the secret vector is zeroed with the decapsulation key when the instance is disposed.</p>
-<h2 id="implicit-rejection--decapsulation-does-not-throw-on-tampering">Implicit rejection — decapsulation does not throw on tampering</h2>
+<p>An instance keeps what FIPS 203 derives from its key on every operation - the matrix Â, the decoded vectors t̂ and ŝ, and H(ek) - from the moment the key is generated or imported, so reuse one instance for many encapsulations or decapsulations rather than importing the key for each. Beside the encoded keys these take about 8, 15 and 24 KiB for ML-KEM-512, 768 and 1024, or 6, 12 and 20 KiB for an encapsulation key alone; the secret vector is zeroed with the decapsulation key when the instance is disposed.</p>
+<h2 id="implicit-rejection---decapsulation-does-not-throw-on-tampering">Implicit rejection - decapsulation does not throw on tampering</h2>
 <p>A tampered ciphertext of the <strong>correct length</strong> does not throw. Per FIPS 203, <code>Decapsulate</code> silently returns an unrelated key (the implicit-rejection value), so an attacker cannot use decapsulation failures as an oracle. Both parties simply end up with different secrets, and the mismatch surfaces later when the symmetric session fails to authenticate. Only a <em>wrong-length</em> ciphertext throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
-<p>This means you must <strong>not</strong> treat a successful <code>Decapsulate</code> as proof the ciphertext was genuine — confirm the secret matches by using it in an authenticated channel (an AEAD or a MAC).</p>
+<p>This means you must <strong>not</strong> treat a successful <code>Decapsulate</code> as proof the ciphertext was genuine - confirm the secret matches by using it in an authenticated channel (an AEAD or a MAC).</p>
 <h2 id="hybrid-with-x25519">Hybrid with X25519</h2>
-<p>A KEM resists quantum attack but is newer and less battle-tested than the curve algorithms. The standard mitigation is a <strong>hybrid</strong>: run both <a href="key-agreement-x25519.html">X25519</a> and ML-KEM, then derive the session key from <strong>both</strong> secrets concatenated. The result is secure as long as <em>either</em> primitive holds — quantum-safe from ML-KEM, classically conservative from X25519.</p>
+<p>A KEM resists quantum attack but is newer and less battle-tested than the curve algorithms. The standard mitigation is a <strong>hybrid</strong>: run both <a href="key-agreement-x25519.html">X25519</a> and ML-KEM, then derive the session key from <strong>both</strong> secrets concatenated. The result is secure as long as <em>either</em> primitive holds - quantum-safe from ML-KEM, classically conservative from X25519.</p>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
@@ -215,14 +215,14 @@ CryptographicOperations.ZeroMemory(pqSecret);
 CryptographicOperations.ZeroMemory(combined);
 </code></pre>
 <p>The sender transmits both the X25519 public key and the ML-KEM ciphertext; the receiver performs the matching X25519 derivation and ML-KEM decapsulation and runs the identical KDF.</p>
-<p>Fix the concatenation order (here classic, then post-quantum) and keep it identical on both sides — the KDF is order-sensitive, so a swapped order yields a different, mismatched key. The same <code>info</code> label must also match. This is the pattern standardized as X25519MLKEM768 for TLS hybrid key exchange; the principle is the same here.</p>
+<p>Fix the concatenation order (here classic, then post-quantum) and keep it identical on both sides - the KDF is order-sensitive, so a swapped order yields a different, mismatched key. The same <code>info</code> label must also match. This is the pattern standardized as X25519MLKEM768 for TLS hybrid key exchange; the principle is the same here.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> — where ML-KEM sits in the family.</li>
-<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> — the classic counterpart and the hybrid partner.</li>
-<li><a href="ml-dsa.html">ML-DSA post-quantum signatures</a> — the post-quantum signature companion.</li>
-<li><a href="hkdf.html">Using HKDF</a> — the KDF that binds the shared secret to a context before use.</li>
-<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> — API reference.</li>
+<li><a href="asymmetric-overview.html">Asymmetric algorithms overview</a> - where ML-KEM sits in the family.</li>
+<li><a href="key-agreement-x25519.html">Key agreement with X25519</a> - the classic counterpart and the hybrid partner.</li>
+<li><a href="ml-dsa.html">ML-DSA post-quantum signatures</a> - the post-quantum signature companion.</li>
+<li><a href="hkdf.html">Using HKDF</a> - the KDF that binds the shared secret to a context before use.</li>
+<li><a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem.html">MLKem</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem512.html">MLKem512</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem768.html">MLKem768</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.MLKem1024.html">MLKem1024</a> - API reference.</li>
 </ul>
 
 </article>
@@ -242,7 +242,7 @@ CryptographicOperations.ZeroMemory(combined);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

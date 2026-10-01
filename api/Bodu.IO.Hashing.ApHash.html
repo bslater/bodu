@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_ApHash" data-uid="Bodu.IO.Hashing.ApHash" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ApHash Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ApHash Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.0.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs">ApHash.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs">ApHash.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Computes a 32-bit non-cryptographic hash using Arash Partow's APHash algorithm, which alternates XOR mixing patterns
@@ -312,7 +312,7 @@ mixes depending on whether the byte's position is even or odd. It is intended fo
 non-cryptographic use cases.
 </p>
 <p>
-<strong>When to choose APHash.</strong> APHash is one of the simplest position-aware mixes in the lib — pick it when
+<strong>When to choose APHash.</strong> APHash is one of the simplest position-aware mixes in the lib - pick it when
 a small, dependency-free 32-bit hash is enough and the performance budget per byte is tight. For better avalanche on
 hash-table keys prefer <a class="xref" href="Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a> or <a class="xref" href="Bodu.IO.Hashing.MurmurHash3_32.html">MurmurHash3_32</a>; for content fingerprinting prefer
 <a class="xref" href="Bodu.IO.Hashing.CityHash.html">CityHash</a>. APHash, <a class="xref" href="Bodu.IO.Hashing.JSHash.html">JSHash</a>, <a class="xref" href="Bodu.IO.Hashing.SDBM.html">SDBM</a>, and <a class="xref" href="Bodu.IO.Hashing.Pjw32.html">Pjw32</a> are siblings
@@ -345,7 +345,7 @@ byte[] digest = ap.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dictionary-ke
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_ApHash__ctor" data-uid="Bodu.IO.Hashing.ApHash.#ctor">
   ApHash()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -380,7 +380,7 @@ byte[] digest = ap.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dictionary-ke
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_ApHash_Append_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.IO.Hashing.ApHash.Append(System.ReadOnlySpan{System.Byte})">
   Append(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -417,7 +417,7 @@ byte[] digest = ap.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dictionary-ke
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_ApHash_GetCurrentHashCore_System_Span_System_Byte__" data-uid="Bodu.IO.Hashing.ApHash.GetCurrentHashCore(System.Span{System.Byte})">
   GetCurrentHashCore(Span&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -454,7 +454,7 @@ byte[] digest = ap.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dictionary-ke
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_ApHash_Reset" data-uid="Bodu.IO.Hashing.ApHash.Reset">
   Reset()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.IO.Hashing/src/IO.Hashing/ApHash.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -507,7 +507,7 @@ byte[] digest = ap.ComputeHash(System.Text.Encoding.UTF8.GetBytes("dictionary-ke
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

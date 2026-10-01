@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="extending-ringbackedcollectiont">Extending <code>RingBackedCollection&lt;T&gt;</code></h1>
 
-<p><a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> is the abstract base that <a href="circular-buffer.html"><code>CircularBuffer&lt;T&gt;</code></a> and <a href="deque.html"><code>Deque&lt;T&gt;</code></a> share. It owns the mechanics every ring-buffer-backed collection needs — a contiguous backing array, head and tail indices that wrap modulo <code>Capacity</code>, a live <code>Count</code>, a structural-version counter, and a fail-fast <code>struct</code> enumerator — and leaves the <em>policy</em> (what happens when the ring is full or empty, which end is written) to the derived type. If you need a bounded ring with semantics neither built-in type offers — a sliding-window sampler, a fixed-size undo stack with peek-from-either-end, a most-recent-N log — derive from it rather than re-implementing the wrap arithmetic.</p>
+<p><a class="xref" href="../../api/Bodu.Collections.Generic.RingBackedCollection-1.html">RingBackedCollection&lt;T&gt;</a> is the abstract base that <a href="circular-buffer.html"><code>CircularBuffer&lt;T&gt;</code></a> and <a href="deque.html"><code>Deque&lt;T&gt;</code></a> share. It owns the mechanics every ring-buffer-backed collection needs - a contiguous backing array, head and tail indices that wrap modulo <code>Capacity</code>, a live <code>Count</code>, a structural-version counter, and a fail-fast <code>struct</code> enumerator - and leaves the <em>policy</em> (what happens when the ring is full or empty, which end is written) to the derived type. If you need a bounded ring with semantics neither built-in type offers - a sliding-window sampler, a fixed-size undo stack with peek-from-either-end, a most-recent-N log - derive from it rather than re-implementing the wrap arithmetic.</p>
 <h2 id="what-the-base-owns">What the base owns</h2>
 <p><strong>Public, read-only surface (inherited as-is):</strong> <code>Capacity</code>, <code>Count</code>, <code>IsEmpty</code>, <code>IsFull</code>, the head-relative indexer <code>this[int]</code>, <code>Contains(T)</code>, <code>CopyTo(T[], int)</code>, <code>ToArray()</code>, <code>Clear()</code>, <code>TrimExcess()</code>, and <code>GetEnumerator()</code> returning the shared <code>Enumerator</code> struct. The base also implements <code>IEnumerable&lt;T&gt;</code>, <code>IReadOnlyCollection&lt;T&gt;</code>, and the non-generic <code>ICollection</code> (<code>IsSynchronized</code> is always <code>false</code>; <code>SyncRoot</code> is provided for callers that lock externally).</p>
 <p><strong>Protected primitives (for the derived type):</strong></p>
@@ -138,19 +138,19 @@
 <tr>
 <td><code>RingBackedCollection(int capacity)</code> / <code>RingBackedCollection(IEnumerable&lt;T&gt;, int capacity)</code></td>
 <td>Constructors; <code>capacity &lt; 1</code> throws <code>ArgumentOutOfRangeException</code>.</td>
-<td>—</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
 <div class="IMPORTANT">
 <h5>Important</h5>
-<p>The protected mutators perform <strong>no</strong> capacity or emptiness validation — that is what keeps the built-in types' hot paths branch-free. The derived type owns the contract: test <code>IsFull</code> / <code>IsEmpty</code> (or <code>Count</code>) before calling, and throw or evict according to its own policy. Calling a primitive outside its precondition corrupts the ring.</p>
+<p>The protected mutators perform <strong>no</strong> capacity or emptiness validation - that is what keeps the built-in types' hot paths branch-free. The derived type owns the contract: test <code>IsFull</code> / <code>IsEmpty</code> (or <code>Count</code>) before calling, and throw or evict according to its own policy. Calling a primitive outside its precondition corrupts the ring.</p>
 </div>
 <h2 id="the-version-counter-and-the-fail-fast-contract">The version counter and the fail-fast contract</h2>
-<p>Every primitive that changes the structure — <code>AddTail</code>, <code>AddHead</code>, <code>RemoveHead</code>, <code>RemoveTail</code>, <code>OverwriteTail</code>, <code>Resize</code>, and the public <code>Clear()</code> / <code>TrimExcess()</code> — bumps a private version counter. The base <code>Enumerator</code> captures the version when it is created and compares it on every <code>MoveNext</code>; a mismatch throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. Because the counter lives in the base and is bumped <em>inside</em> the primitives, a derived type gets fail-fast enumeration for free — there is nothing to call and nothing to forget. <code>PeekHead</code> / <code>PeekTail</code> and the read-only public members do not bump it.</p>
+<p>Every primitive that changes the structure - <code>AddTail</code>, <code>AddHead</code>, <code>RemoveHead</code>, <code>RemoveTail</code>, <code>OverwriteTail</code>, <code>Resize</code>, and the public <code>Clear()</code> / <code>TrimExcess()</code> - bumps a private version counter. The base <code>Enumerator</code> captures the version when it is created and compares it on every <code>MoveNext</code>; a mismatch throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>. Because the counter lives in the base and is bumped <em>inside</em> the primitives, a derived type gets fail-fast enumeration for free - there is nothing to call and nothing to forget. <code>PeekHead</code> / <code>PeekTail</code> and the read-only public members do not bump it.</p>
 <p>The base additionally latches an <em>evicting</em> flag around eviction-event dispatch in <code>CircularBuffer&lt;T&gt;</code> and <code>Deque&lt;T&gt;</code>, so a handler that tries to mutate the collection mid-eviction gets a deterministic <code>InvalidOperationException</code> instead of a corrupted ring; that machinery is internal to those two types and is not part of the protected surface.</p>
-<h2 id="worked-example--a-fixed-capacity-sliding-window-sampler">Worked example — a fixed-capacity sliding-window sampler</h2>
-<p>The type below keeps the most recent <code>size</code> samples: a push into a full window overwrites the oldest sample, and the statistics run over whatever is held. Everything policy-related — what &quot;full&quot; means, which end evicts — is in the derived type; everything mechanical is inherited.</p>
+<h2 id="worked-example---a-fixed-capacity-sliding-window-sampler">Worked example - a fixed-capacity sliding-window sampler</h2>
+<p>The type below keeps the most recent <code>size</code> samples: a push into a full window overwrites the oldest sample, and the statistics run over whatever is held. Everything policy-related - what &quot;full&quot; means, which end evicts - is in the derived type; everything mechanical is inherited.</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 /// &lt;summary&gt;
@@ -221,10 +221,10 @@ window.Push(20);
 window.Push(30);
 window.Push(40);                                       // full: overwrites 10
 
-double[] held = window.ToArray();                      // 20, 30, 40 — head-to-tail logical order
+double[] held = window.ToArray();                      // 20, 30, 40 - head-to-tail logical order
 double mean   = window.Average();                      // 30
 double oldest = window.Oldest, latest = window.Latest; // 20, 40
-double first  = window[0], last = window[2];           // 20, 40 — the indexer is head-relative
+double first  = window[0], last = window[2];           // 20, 40 - the indexer is head-relative
 bool full     = window.IsFull;                         // true (3/3)
 bool has30    = window.Contains(30);                   // true
 
@@ -248,12 +248,12 @@ window.TrimExcess();                                   // Capacity shrinks to Co
 window.Clear();                                        // IsEmpty == true; Average() == NaN
 
 System.Collections.ICollection asCollection = window;
-bool synchronized = asCollection.IsSynchronized;       // false — never thread-safe
+bool synchronized = asCollection.IsSynchronized;       // false - never thread-safe
 </code></pre>
 <p>Points worth noticing in the example:</p>
 <ul>
 <li><code>Push</code> is the <em>only</em> place that decides between <code>AddTail</code> and <code>OverwriteTail</code>; the base never evicts on its own.</li>
-<li><code>Average()</code> enumerates through <code>this</code> — the inherited struct enumerator — and therefore participates in the fail-fast contract automatically.</li>
+<li><code>Average()</code> enumerates through <code>this</code> - the inherited struct enumerator - and therefore participates in the fail-fast contract automatically.</li>
 <li><code>Grow</code> guards <code>Resize</code>'s precondition (<code>newCapacity &gt;= Count</code>) itself, because <code>Resize</code> will not.</li>
 <li><code>TrimExcess()</code> and <code>Clear()</code> come from the base and already bump the version.</li>
 </ul>
@@ -262,17 +262,17 @@ bool synchronized = asCollection.IsSynchronized;       // false — never thread
 <li><strong>Validate at the policy boundary, not in the primitives.</strong> Put the <code>IsFull</code> / <code>IsEmpty</code> test in your public method and let the primitive assume it; that mirrors how <code>CircularBuffer&lt;T&gt;.Enqueue</code> and <code>Deque&lt;T&gt;.AddLast</code> are written.</li>
 <li><strong>Expose <code>Try*</code> alongside throwing members</strong> when a full or empty ring is an expected state rather than a bug (the non-throwing drop-oldest method in the example above).</li>
 <li><strong>Do not cache <code>Capacity</code></strong> across a <code>Resize</code> or <code>TrimExcess</code>; read the property.</li>
-<li><strong>Thread safety is yours to add.</strong> The base is single-threaded by design (<code>IsSynchronized == false</code>). For a lock-free multi-producer ring use <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> instead of deriving — see <a href="concurrent-collections.html">Concurrent collections</a>.</li>
+<li><strong>Thread safety is yours to add.</strong> The base is single-threaded by design (<code>IsSynchronized == false</code>). For a lock-free multi-producer ring use <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a> instead of deriving - see <a href="concurrent-collections.html">Concurrent collections</a>.</li>
 <li><strong>Prefer the built-in types when they fit.</strong> <code>CircularBuffer&lt;T&gt;</code> with <code>AllowOverwrite = true</code> already <em>is</em> a sliding window over the most recent N items, and <code>Deque&lt;T&gt;</code> with <code>DequeOverflowPolicy.EvictOpposite</code> covers eviction from either end; derive only when the surface or the policy genuinely differs.</li>
 </ul>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="circular-buffer.html">Circular buffer</a> — the single-ended FIFO built on this base.</li>
-<li><a href="deque.html">Deque</a> — the double-ended queue built on this base.</li>
-<li><a href="concurrent-collections.html">Concurrent collections</a> — the lock-free ring that does <em>not</em> share this base.</li>
-<li><a href="thread-safety.html">Thread-safety contracts across Core Foundations</a> — the one-table view of what is and is not safe.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> API reference</a> — full namespace overview.</li>
-<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> — every guide in this topic.</li>
+<li><a href="circular-buffer.html">Circular buffer</a> - the single-ended FIFO built on this base.</li>
+<li><a href="deque.html">Deque</a> - the double-ended queue built on this base.</li>
+<li><a href="concurrent-collections.html">Concurrent collections</a> - the lock-free ring that does <em>not</em> share this base.</li>
+<li><a href="thread-safety.html">Thread-safety contracts across Core Foundations</a> - the one-table view of what is and is not safe.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html"><code>Bodu.Collections.Generic</code> API reference</a> - full namespace overview.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
 </ul>
 
 </article>
@@ -292,7 +292,7 @@ bool synchronized = asCollection.IsSynchronized;       // false — never thread
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

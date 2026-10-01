@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="ndf-t ndf-d">
-  <title id="ndf-t">Notable date flow — from authored rule to consumer query</title>
+  <title id="ndf-t">Notable date flow - from authored rule to consumer query</title>
   <desc id="ndf-d">The six-stage NotableDateService pipeline. A rule document supplies a NotableDateRule, the resolver dispatches it to a strategy (Fixed, DayOfWeekInMonth, OffsetFromRule, or Algorithm) that yields a nominal date, the adjustment pipeline applies AdjustmentPolicy shifts to produce the observed date, the result becomes a resolved NotableDate, and consumers query it through Resolve, IsWorkingDay, and AddWorkingDays.</desc>
 
   <defs>
@@ -30,7 +30,7 @@
     <rect class="pan" width="800" height="260" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">Notable date flow — from authored rule to consumer query</text>
+    <text class="ttl" x="16" y="20">Notable date flow - from authored rule to consumer query</text>
 
     <!-- ============ Stage 1: Rule source ============ -->
     <g transform="translate(20 60)">

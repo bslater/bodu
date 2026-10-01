@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 AeadBlockCipherModeTransformExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,9 +102,9 @@ AeadBlockCipherModeTransformExtensions Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a>.<a class="xref" href="Bodu.Security.Cryptography.Extensions.html">Extensions</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs">AeadBlockCipherModeTransformExtensions.Detached.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs">AeadBlockCipherModeTransformExtensions.Detached.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Extends <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> with one-shot encrypt/decrypt overloads that handle the
@@ -164,7 +164,7 @@ a single freshly allocated array.</p>
 
   <h2 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-AEAD ("authenticated encryption with associated data") modes — GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon — encrypt
+AEAD ("authenticated encryption with associated data") modes - GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon - encrypt
 confidential plaintext while simultaneously authenticating the ciphertext together with a separate stream of
 associated data that travels in the clear (packet headers, message metadata, …). The
 <a class="xref" href="Bodu.Security.Cryptography.IAeadBlockCipherModeTransform.html">IAeadBlockCipherModeTransform</a> contract gives callers maximum control: invoke
@@ -179,7 +179,7 @@ sized array, matching the shape of <code>AesGcm.Encrypt</code> / <code>AesGcm.De
 The API surface is symmetric and intentionally small:
 </p>
 <ul><li><span class="term"><code>Encrypt(transform, plaintext)</code></span>
-One-shot encrypt with no associated data — equivalent to passing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.empty">Empty</a>.
+One-shot encrypt with no associated data - equivalent to passing <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1.empty">Empty</a>.
 </li><li><span class="term"><code>Encrypt(transform, plaintext, associatedData)</code></span>
 One-shot encrypt with associated data; returns ciphertext concatenated with the
 <a class="xref" href="Bodu.Security.Cryptography.IAeadTransform.html#Bodu_Security_Cryptography_IAeadTransform_TagSize">TagSize</a> / 8 byte authentication tag.
@@ -190,7 +190,7 @@ a failed tag check.
 <p>
 AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
 message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
-between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
+between the encrypt and decrypt calls - even a single-bit difference will cause the tag check to fail. Tag
 verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
 are always sized exactly: <code>plaintext.Length + (TagSize / 8)</code> on encrypt,
 <code>ciphertextWithTag.Length - (TagSize / 8)</code> on decrypt.
@@ -213,7 +213,7 @@ byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
 using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
 byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
 
-// 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
+// 3. Same shape with a different mode - Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
 using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
 byte[] sealedAscon = enc2.Encrypt(plaintext);</code></pre>
 </example>
@@ -229,7 +229,7 @@ byte[] sealedAscon = enc2.Encrypt(plaintext);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte})">
   Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -276,7 +276,7 @@ the recovered plaintext.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
-AEAD transforms are single-use per message — construct a fresh instance.</p>
+AEAD transforms are single-use per message - construct a fresh instance.</p>
 </dd>
   </dl>
 
@@ -289,7 +289,7 @@ AEAD transforms are single-use per message — construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Decrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Decrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   Decrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -344,7 +344,7 @@ recovered plaintext.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
-AEAD transforms are single-use per message — construct a fresh instance.</p>
+AEAD transforms are single-use per message - construct a fresh instance.</p>
 </dd>
   </dl>
 
@@ -357,7 +357,7 @@ AEAD transforms are single-use per message — construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_DecryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__Bodu_Security_Cryptography_AuthenticationTag_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.DecryptDetached(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},Bodu.Security.Cryptography.AuthenticationTag,System.ReadOnlySpan{System.Byte})">
   DecryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, AuthenticationTag, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -413,7 +413,7 @@ AEAD transforms are single-use per message — construct a fresh instance.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
     <dd><p>The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
-AEAD transforms are single-use per message — construct a fresh instance.</p>
+AEAD transforms are single-use per message - construct a fresh instance.</p>
 </dd>
   </dl>
 
@@ -426,7 +426,7 @@ AEAD transforms are single-use per message — construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte})">
   Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -469,7 +469,7 @@ containing the ciphertext concatenated with the authentication tag.</p>
     <dd><p><code class="paramref">transform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    <dd><p>The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message -
 construct a fresh instance.</p>
 </dd>
   </dl>
@@ -483,7 +483,7 @@ construct a fresh instance.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_Encrypt_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.Encrypt(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   Encrypt(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -543,7 +543,7 @@ ciphertext followed by the <a class="xref" href="Bodu.Security.Cryptography.IAea
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Extensions_AeadBlockCipherModeTransformExtensions_EncryptDetached_Bodu_Security_Cryptography_IAeadBlockCipherModeTransform_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions.EncryptDetached(Bodu.Security.Cryptography.IAeadBlockCipherModeTransform,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   EncryptDetached(IAeadBlockCipherModeTransform, ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography.Extensions/AeadBlockCipherModeTransformExtensions.Detached.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -590,7 +590,7 @@ ciphertext followed by the <a class="xref" href="Bodu.Security.Cryptography.IAea
     <dd><p><code class="paramref">transform</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    <dd><p>The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message -
 construct a fresh instance.</p>
 </dd>
   </dl>
@@ -630,7 +630,7 @@ construct a fresh instance.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

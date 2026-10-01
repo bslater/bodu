@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Collections.Concurrent — Getting started | BODU </title>
+      <title>Bodu.Collections.Concurrent - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Collections.Concurrent — Getting started | BODU ">
+      <meta name="title" content="Bodu.Collections.Concurrent - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,30 +85,30 @@
         </div>
 
         <article data-uid="">
-<h1 id="boducollectionsconcurrent--getting-started">Bodu.Collections.Concurrent — Getting started</h1>
+<h1 id="boducollectionsconcurrent---getting-started">Bodu.Collections.Concurrent - Getting started</h1>
 
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.Collections.Concurrent
 </code></pre>
-<p>Targets <code>net8.0</code>. No external runtime dependencies — the package references <code>Bodu.Collections</code> (which in turn references <code>Bodu.Core</code>), so both are pulled in automatically. The types live in the <code>Bodu.Collections.Generic.Concurrent</code> namespace.</p>
+<p>Targets <code>net8.0</code>. No external runtime dependencies - the package references <code>Bodu.Collections</code> (which in turn references <code>Bodu.Core</code>), so both are pulled in automatically. The types live in the <code>Bodu.Collections.Generic.Concurrent</code> namespace.</p>
 <h2 id="minimal-samples">Minimal samples</h2>
 <h3 id="concurrent-circular-buffer-concurrentcircularbuffert">Concurrent circular buffer (<code>ConcurrentCircularBuffer&lt;T&gt;</code>)</h3>
-<p>A lock-free multi-producer / multi-consumer FIFO ring — no external lock needed:</p>
+<p>A lock-free multi-producer / multi-consumer FIFO ring - no external lock needed:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
 
 var ring = new ConcurrentCircularBuffer&lt;Message&gt;(capacity: 1024, allowOverwrite: true);
 
-// Producers — may run on many threads concurrently.
+// Producers - may run on many threads concurrently.
 ring.Enqueue(message);            // overwrites the oldest entry when full
 ring.ItemEvicted += dropped =&gt; log.Warn(&quot;Dropped {Id}&quot;, dropped.Id);
 
-// Consumers — also concurrent.
+// Consumers - also concurrent.
 while (ring.TryDequeue(out Message? item))
     Process(item);
 </code></pre>
-<p>With <code>allowOverwrite: false</code>, <code>Enqueue</code> throws when full and <code>TryEnqueue</code> returns <code>false</code>. The buffer implements <code>IProducerConsumerCollection&lt;T&gt;</code> (<code>TryAdd</code> / <code>TryTake</code>), so wrap it in a <code>BlockingCollection&lt;T&gt;</code> when consumers should block for work. <code>T</code> must be a reference type, and the minimum capacity is 2 — see <a href="concepts.html">concepts</a> for why.</p>
+<p>With <code>allowOverwrite: false</code>, <code>Enqueue</code> throws when full and <code>TryEnqueue</code> returns <code>false</code>. The buffer implements <code>IProducerConsumerCollection&lt;T&gt;</code> (<code>TryAdd</code> / <code>TryTake</code>), so wrap it in a <code>BlockingCollection&lt;T&gt;</code> when consumers should block for work. <code>T</code> must be a reference type, and the minimum capacity is 2 - see <a href="concepts.html">concepts</a> for why.</p>
 <h3 id="concurrent-hash-set-concurrenthashsett">Concurrent hash set (<code>ConcurrentHashSet&lt;T&gt;</code>)</h3>
-<p>A lock-free split-ordered set of unique elements — every operation is lock-free, so writers never block each other or readers:</p>
+<p>A lock-free split-ordered set of unique elements - every operation is lock-free, so writers never block each other or readers:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
 
 var seen = new ConcurrentHashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
@@ -120,12 +120,12 @@ Parallel.ForEach(events, e =&gt;
         ProcessFirstOccurrence(e);
 });
 
-bool active = seen.Contains(&quot;req-42&quot;);   // lock-free — never blocks a writer
-int count   = seen.Count;                // lock-free counter — exact at quiescence
+bool active = seen.Contains(&quot;req-42&quot;);   // lock-free - never blocks a writer
+int count   = seen.Count;                // lock-free counter - exact at quiescence
 </code></pre>
 <p>Enumeration and <code>ToArray()</code> are weakly consistent lock-free traversals and never throw on concurrent modification.</p>
 <h3 id="concurrent-evicting-dictionary-concurrentevictingdictionarytkeytvalue">Concurrent evicting dictionary (<code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code>)</h3>
-<p>A lock-striped bounded cache — the thread-safe variant of <code>EvictingDictionary&lt;TKey,TValue&gt;</code>, with the same six eviction policies and optional TTL expiry:</p>
+<p>A lock-striped bounded cache - the thread-safe variant of <code>EvictingDictionary&lt;TKey,TValue&gt;</code>, with the same six eviction policies and optional TTL expiry:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
 
 var cache = new ConcurrentEvictingDictionary&lt;string, Report&gt;(
@@ -143,11 +143,11 @@ cache.ItemEvicted += (key, _) =&gt; log.Debug(&quot;Evicted {Key}&quot;, key);
 
 bool hit  = cache.TryGetValue(&quot;q-42&quot;, out Report? cached); // counts as an LRU access
 int hot   = cache.ApproximateCount;                        // lock-free estimate
-int exact = cache.Count;                                   // coherent — acquires every segment lock
+int exact = cache.Count;                                   // coherent - acquires every segment lock
 </code></pre>
-<p>The capacity bound is strict — the cache never stores more than <code>capacity</code> entries — while eviction order is exact within each internal segment and approximate globally. Pass an <code>EvictingDictionaryExpiration</code> to add absolute or sliding TTL on top of the capacity policy.</p>
+<p>The capacity bound is strict - the cache never stores more than <code>capacity</code> entries - while eviction order is exact within each internal segment and approximate globally. Pass an <code>EvictingDictionaryExpiration</code> to add absolute or sliding TTL on top of the capacity policy.</p>
 <h3 id="concurrent-lru-cache-concurrentlrucachetkeytvalue">Concurrent LRU cache (<code>ConcurrentLruCache&lt;TKey,TValue&gt;</code>)</h3>
-<p>The read-optimized bounded cache — lookups take no lock at all:</p>
+<p>The read-optimized bounded cache - lookups take no lock at all:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic.Concurrent;
 
 var cache = new ConcurrentLruCache&lt;string, Report&gt;(capacity: 1024);
@@ -168,11 +168,11 @@ Console.WriteLine($&quot;Hit ratio: {cache.HitRatio:P1}&quot;);      // striped 
 <p>Use this when reads dominate and approximate recency is acceptable. Use <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> instead when you need a policy other than LRU, a strict capacity bound, TTL expiry, or a genuine cache-stampede guard.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Collections.Concurrent introduction</a></strong> — headline types, scenarios, and design notes.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.</li>
-<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> — the full walk-through, including the consistency table and when <em>not</em> to use these types.</li>
-<li><strong><a href="../collections/getting-started.html">Bodu.Collections getting started</a></strong> — the single-threaded catalogue.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="index.html">Bodu.Collections.Concurrent introduction</a></strong> - headline types, scenarios, and design notes.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency.</li>
+<li><strong><a href="../../guides/core/concurrent-collections.html">Concurrent collections guide</a></strong> - the full walk-through, including the consistency table and when <em>not</em> to use these types.</li>
+<li><strong><a href="../collections/getting-started.html">Bodu.Collections getting started</a></strong> - the single-threaded catalogue.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.html">Bodu.Collections.Generic.Concurrent API reference</a></strong> - full type-by-type docs.</li>
 </ul>
 
 </article>
@@ -192,7 +192,7 @@ Console.WriteLine($&quot;Hit ratio: {cache.HitRatio:P1}&quot;);      // striped 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

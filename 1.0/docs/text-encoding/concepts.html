@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Encoding — Core concepts | BODU </title>
+      <title>Bodu.Text.Encoding - Core concepts | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Encoding — Core concepts | BODU ">
+      <meta name="title" content="Bodu.Text.Encoding - Core concepts | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,7 +85,7 @@
         </div>
 
         <article data-uid="">
-<h1 id="bodutextencoding--core-concepts">Bodu.Text.Encoding — Core concepts</h1>
+<h1 id="bodutextencoding---core-concepts">Bodu.Text.Encoding - Core concepts</h1>
 
 <p>This page is the vocabulary the rest of the documentation assumes. Read it once before the
 <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/text-encoding/index.html">guides</a>, and refer back
@@ -93,10 +93,10 @@ whenever a term feels imprecise.</p>
 <p>Part of the <strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization</a></strong> topic.</p>
 <p>For the high-level shape of the library and the type map, start with the <a href="index.html">introduction</a>.</p>
 <h2 id="encoding-and-variant">Encoding and variant</h2>
-<p>An <strong>encoding</strong> is the family-level concept: the five core radices — Base16, Base32, Base64, Base58, Base85 — plus
+<p>An <strong>encoding</strong> is the family-level concept: the five core radices - Base16, Base32, Base64, Base58, Base85 - plus
 the special-purpose Base45, Base62, and Bech32. Each family has a radix (16, 32, 64, 58, 85, 45, 62, 32) which
 determines how many bits each output symbol represents.</p>
-<p>A <strong>variant</strong> is a specific choice within an encoding family — typically a different <em>alphabet</em> but sometimes
+<p>A <strong>variant</strong> is a specific choice within an encoding family - typically a different <em>alphabet</em> but sometimes
 different padding, line-wrap, or shortcut rules:</p>
 <table>
 <thead>
@@ -108,7 +108,7 @@ different padding, line-wrap, or shortcut rules:</p>
 <tbody>
 <tr>
 <td>Base16</td>
-<td><code>Lower</code> (default), <code>Upper</code> — via the <code>Base16Variant</code> enum, or equivalently <code>BaseFormattingOptions.UpperCase</code></td>
+<td><code>Lower</code> (default), <code>Upper</code> - via the <code>Base16Variant</code> enum, or equivalently <code>BaseFormattingOptions.UpperCase</code></td>
 </tr>
 <tr>
 <td>Base32</td>
@@ -136,7 +136,7 @@ different padding, line-wrap, or shortcut rules:</p>
 </tr>
 <tr>
 <td>Bech32</td>
-<td><code>Bech32</code> (BIP 173, default), <code>Bech32m</code> (BIP 350) — selected by <code>Bech32Encoding</code></td>
+<td><code>Bech32</code> (BIP 173, default), <code>Bech32m</code> (BIP 350) - selected by <code>Bech32Encoding</code></td>
 </tr>
 </tbody>
 </table>
@@ -161,13 +161,13 @@ Bech32:                &quot;qpzry9x8gf2tvdw0s3jn54khce6mua7l&quot;   (5-bit val
 <p>For power-of-two radices (Base16, Base32, Base64), encoding is a <strong>bit-stream operation</strong>: input bytes are
 concatenated into a bit stream, then chunked into N-bit groups (where N is <code>log2(radix)</code>). Each N-bit group becomes
 one output symbol.</p>
-<p><img src="../../images/diagrams/encoding-bit-packing.svg" alt="Bit-stream packing — Base16, Base32, Base64"></p>
+<p><img src="../../images/diagrams/encoding-bit-packing.svg" alt="Bit-stream packing - Base16, Base32, Base64"></p>
 <p>Base58 is <strong>not</strong> a power of two: it uses big-integer divmod by 58. Base62 works the same way with divmod by 62.
 Base85 uses <strong>4-byte blocks</strong> packed into a 32-bit unsigned integer, then divided by 85 four times to emit five
 characters. Base45 packs each <strong>2-byte group</strong> into a base-45 triple (a trailing single byte becomes 2 characters).
 Bech32 is a 5-bit (base-32) bit-stream like Base32, but wrapped with a human-readable part, a <code>1</code> separator, and a
 six-symbol checksum computed over the whole data part.</p>
-<p>The <strong>quantum</strong> is the smallest whole number of input bytes that maps to a whole number of output characters — the
+<p>The <strong>quantum</strong> is the smallest whole number of input bytes that maps to a whole number of output characters - the
 unit the encoder and decoder repeat across the stream. For the power-of-two radices it is the least common multiple
 of the byte (8 bits) and the symbol width:</p>
 <table>
@@ -186,7 +186,7 @@ of the byte (8 bits) and the symbol width:</p>
 <td>1 byte</td>
 <td>8</td>
 <td>2</td>
-<td>8 ÷ 4 = 2, no remainder — every byte is self-contained</td>
+<td>8 ÷ 4 = 2, no remainder - every byte is self-contained</td>
 </tr>
 <tr>
 <td>Base32</td>
@@ -218,12 +218,12 @@ of the byte (8 bits) and the symbol width:</p>
 </tr>
 </tbody>
 </table>
-<p>Base58 and Base62 have <strong>no quantum</strong> — big-integer divmod runs over the whole input at once, so there is no
+<p>Base58 and Base62 have <strong>no quantum</strong> - big-integer divmod runs over the whole input at once, so there is no
 repeating block and no exact per-block ratio (only the data-dependent <code>GetMaxEncodedLength</code> bound applies).</p>
 <h2 id="terminal-quantum">Terminal quantum</h2>
 <p>The <strong>terminal quantum</strong> is the last group at the end of the input. When the input does not divide evenly into
 the group size, the spec defines which character counts are legal and how padding aligns the output.</p>
-<p><img src="../../images/diagrams/encoding-terminal-quantum.svg" alt="Terminal quantum and padding — RFC 4648"></p>
+<p><img src="../../images/diagrams/encoding-terminal-quantum.svg" alt="Terminal quantum and padding - RFC 4648"></p>
 <p>RFC 4648 quantum rules:</p>
 <table>
 <thead>
@@ -242,12 +242,12 @@ the group size, the spec defines which character counts are legal and how paddin
 <tr>
 <td>Base32 (Standard / HexExtended)</td>
 <td>5 bytes → 8 chars</td>
-<td><strong>{0, 2, 4, 5, 7, 8}</strong> — counts 1, 3, 6 are invalid</td>
+<td><strong>{0, 2, 4, 5, 7, 8}</strong> - counts 1, 3, 6 are invalid</td>
 </tr>
 <tr>
 <td>Base64 (Standard / UrlSafe / Mime)</td>
 <td>3 bytes → 4 chars</td>
-<td><strong>{0, 2, 3, 4}</strong> — count 1 is invalid</td>
+<td><strong>{0, 2, 3, 4}</strong> - count 1 is invalid</td>
 </tr>
 </tbody>
 </table>
@@ -287,7 +287,7 @@ length aligns to the group size. For a <em>3-byte</em> Base64 input, no padding 
 </tr>
 <tr>
 <td>Base85</td>
-<td>No padding character — alignment is via partial-group truncation (Ascii85) or fixed 4-byte alignment (Z85)</td>
+<td>No padding character - alignment is via partial-group truncation (Ascii85) or fixed 4-byte alignment (Z85)</td>
 </tr>
 </tbody>
 </table>
@@ -311,7 +311,7 @@ with <code>BaseFormatStyles.AllowMissingPadding</code>.</p>
 </tr>
 </tbody>
 </table>
-<p>Z85 has no shortcut — even all-zero input emits five <code>0</code> characters.</p>
+<p>Z85 has no shortcut - even all-zero input emits five <code>0</code> characters.</p>
 <h2 id="decoration">Decoration</h2>
 <p>A <strong>decoration</strong> is an optional, non-data character or marker added at encode time for human readability or
 container framing, and tolerated at decode time when explicitly allowed:</p>
@@ -352,9 +352,9 @@ container framing, and tolerated at decode time when explicitly allowed:</p>
 </tbody>
 </table>
 <h2 id="encoder-vs-decoder-strictness">Encoder vs. decoder strictness</h2>
-<p>Encoders are <strong>deterministic</strong> — given a byte sequence and an options set they always produce the same canonical
-output. Decoders are typically <strong>strict</strong> by default — only the canonical alphabet, padding, and quantum length
-are accepted — and <strong>lenient</strong> when <code>BaseFormatStyles</code> flags are set:</p>
+<p>Encoders are <strong>deterministic</strong> - given a byte sequence and an options set they always produce the same canonical
+output. Decoders are typically <strong>strict</strong> by default - only the canonical alphabet, padding, and quantum length
+are accepted - and <strong>lenient</strong> when <code>BaseFormatStyles</code> flags are set:</p>
 <pre><code>strict mode (BaseFormatStyles.None)
   • only alphabet characters
   • exact padding alignment for padded variants
@@ -374,20 +374,20 @@ stricter mode (a flag that tightens, not relaxes)
 (when no leniency flags are passed).</p>
 <h3 id="canonical-form-enforcement">Canonical-form enforcement</h3>
 <p><code>BaseFormatStyles.AllowPrefix</code>, <code>IgnoreWhitespace</code>, and <code>AllowMissingPadding</code> all <em>relax</em> the decoder.
-<a class="xref" href="../../api/Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a> carries one flag that goes the other way —
+<a class="xref" href="../../api/Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a> carries one flag that goes the other way -
 <code>RequireCanonicalEncoding</code> <em>tightens</em> it. For a partial terminal quantum the spec only fills some of the bits a
 symbol can carry; RFC 4648 §3.5 leaves the unused trailing bits unconstrained, so several distinct encoded strings
 can decode to the same bytes. The Base64 pair <code>QQ==</code> and <code>QR==</code> both yield the single byte <code>0x41</code>; only <code>QQ==</code> is
 canonical (its 4 unused trailing bits are zero). Passing <code>RequireCanonicalEncoding</code> rejects every form whose unused
 bits are non-zero, so each byte sequence has exactly one accepted encoding:</p>
-<pre><code class="lang-csharp">Base64.Decode(&quot;QR==&quot;, Base64Variant.Standard);                                          // ok — non-canonical tolerated, → 0x41
+<pre><code class="lang-csharp">Base64.Decode(&quot;QR==&quot;, Base64Variant.Standard);                                          // ok - non-canonical tolerated, → 0x41
 Base64.Decode(&quot;QR==&quot;, Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding); // FormatException
 </code></pre>
-<p>The flag applies to <a class="xref" href="../../api/Bodu.Text.Encoding.Base32.html">Base32</a> and <a class="xref" href="../../api/Bodu.Text.Encoding.Base64.html">Base64</a> — the bit-stream
+<p>The flag applies to <a class="xref" href="../../api/Bodu.Text.Encoding.Base32.html">Base32</a> and <a class="xref" href="../../api/Bodu.Text.Encoding.Base64.html">Base64</a> - the bit-stream
 families with unused terminal bits. It is a no-op for <a class="xref" href="../../api/Bodu.Text.Encoding.Base16.html">Base16</a> (no unused bits per
 character), <a class="xref" href="../../api/Bodu.Text.Encoding.Base58.html">Base58</a> (canonicity is leading-zero preservation, enforced unconditionally),
 and <a class="xref" href="../../api/Bodu.Text.Encoding.Base85.html">Base85</a> (block-based, with its own tail convention). Reach for it on a decode path
-where a single canonical representation is a security or comparison requirement — content-addressed identifiers,
+where a single canonical representation is a security or comparison requirement - content-addressed identifiers,
 deduplication keys, signature inputs.</p>
 <h2 id="utf-8-path">UTF-8 path</h2>
 <p>Every encoding family exposes a UTF-8 byte path alongside the character path:</p>
@@ -412,7 +412,7 @@ bool ok    = Base58.TryDecodeGuid(id, out Guid parsed); // non-throwing form
 <p>The members are <code>Encode(Guid, …)</code>, <code>DecodeGuid(ReadOnlySpan&lt;char&gt;, …)</code>, and
 <code>TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, …)</code>, each carrying the same <code>variant</code> / <code>options</code> / <code>styles</code>
 arguments as the byte overloads (Base16 takes no variant; Base58 has no encode-side <code>options</code>). The bytes are the
-GUID's native mixed-endian layout — identical to <code>Guid.TryWriteBytes</code> — so <code>DecodeGuid(Encode(g))</code> reconstructs <code>g</code>
+GUID's native mixed-endian layout - identical to <code>Guid.TryWriteBytes</code> - so <code>DecodeGuid(Encode(g))</code> reconstructs <code>g</code>
 exactly, and <code>DecodeGuid</code> raises <code>FormatException</code> if the input does not decode to precisely 16 bytes.</p>
 <h2 id="operationstatus-and-streaming">OperationStatus and streaming</h2>
 <p>The <code>OperationStatus</code> return convention (from <code>System.Buffers</code>) is the same one <code>System.Buffers.Text.Base64</code> uses:</p>
@@ -438,25 +438,25 @@ exactly, and <code>DecodeGuid</code> raises <code>FormatException</code> if the 
 </tr>
 <tr>
 <td><code>NeedMoreData</code></td>
-<td>(Streaming only — <code>isFinalBlock: false</code>) The input ends mid-quantum and may resolve with more bytes</td>
+<td>(Streaming only - <code>isFinalBlock: false</code>) The input ends mid-quantum and may resolve with more bytes</td>
 </tr>
 </tbody>
 </table>
 <p>Use <code>isFinalBlock: true</code> when the input you are passing is the entire data (default). Use <code>isFinalBlock: false</code> to
-stream data through chunk by chunk — the decoder will report <code>NeedMoreData</code> instead of <code>InvalidData</code> for inputs
+stream data through chunk by chunk - the decoder will report <code>NeedMoreData</code> instead of <code>InvalidData</code> for inputs
 that could complete with another chunk.</p>
 <blockquote>
 <p>Base58 and Base85 are not streamable: each requires the entire input to be available before decode (Base58 because
 of big-integer arithmetic, Base85 because of fixed-size block packing). The <code>isFinalBlock</code> parameter on those
 variants is accepted for API consistency but has no behavioural effect.</p>
-<p>The special-purpose encodings — Base45, Base62, and Bech32 — are likewise single-shot and expose no
+<p>The special-purpose encodings - Base45, Base62, and Bech32 - are likewise single-shot and expose no
 <code>OperationStatus</code> path at all (Base45 packs in fixed groups, Base62 uses big-integer arithmetic, and Bech32 must
 read the whole string to verify its checksum). They throw <code>FormatException</code> on invalid input and offer <code>Try*</code>
 methods that report failure as <code>false</code>.</p>
 </blockquote>
 <h2 id="ibinaryencoding-interface">IBinaryEncoding interface</h2>
-<p>The static classes are the primary entry point. For code that must select an encoding at <strong>runtime</strong> — a
-configuration-driven serializer, a plugin pipeline, a generic utility — use the <a class="xref" href="../../api/Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a>
+<p>The static classes are the primary entry point. For code that must select an encoding at <strong>runtime</strong> - a
+configuration-driven serializer, a plugin pipeline, a generic utility - use the <a class="xref" href="../../api/Bodu.Text.Encoding.IBinaryEncoding.html">IBinaryEncoding</a>
 interface and one of the pre-configured instances in <a class="xref" href="../../api/Bodu.Text.Encoding.BinaryEncodings.html">BinaryEncodings</a>:</p>
 <pre><code class="lang-csharp">IBinaryEncoding encoding = BinaryEncodings.Get(&quot;base64-urlsafe&quot;);
 string token = encoding.Encode(secretKey);
@@ -465,11 +465,11 @@ string token = encoding.Encode(secretKey);
 needs those should keep using the static classes directly.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="getting-started.html">Getting started</a></strong> — install + minimal sample per encoding type.</li>
-<li><strong><a href="../../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a></strong> — using each encoding, choosing variants, streaming, the <code>IBinaryEncoding</code> interface.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Text.Encoding.html">Bodu.Text.Encoding API reference</a></strong> — full type-by-type docs.</li>
-<li><strong><a href="index.html">Introduction</a></strong> — type map, scenarios, where each encoding fits.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization topic</a></strong> — this package alongside Bodu.Text.Formats and the Bencode / TOML serializers; the <a href="../topics/text-and-serialization-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install + minimal sample per encoding type.</li>
+<li><strong><a href="../../guides/text-encoding/index.html">Bodu.Text.Encoding guides</a></strong> - using each encoding, choosing variants, streaming, the <code>IBinaryEncoding</code> interface.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Text.Encoding.html">Bodu.Text.Encoding API reference</a></strong> - full type-by-type docs.</li>
+<li><strong><a href="index.html">Introduction</a></strong> - type map, scenarios, where each encoding fits.</li>
+<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization topic</a></strong> - this package alongside Bodu.Text.Formats and the Bencode / TOML serializers; the <a href="../topics/text-and-serialization-concepts.html">topic concepts</a> page collects the shared vocabulary.</li>
 </ul>
 
 </article>
@@ -489,7 +489,7 @@ needs those should keep using the static classes directly.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

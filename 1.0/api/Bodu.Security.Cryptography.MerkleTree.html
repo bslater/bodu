@@ -8,7 +8,7 @@
       <meta name="title" content="MerkleTree Class
  | BODU ">
       
-      <meta name="description" content="The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the offset and length of each one.">
+      <meta name="description" content="The block arithmetic every consumer of block mode shares - the number of blocks a byte length divides into, and the offset and length of each one.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_MerkleTree" data-uid="Bodu.Security.Cryptography.MerkleTree" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 MerkleTree Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -102,12 +102,12 @@ MerkleTree Class
   <div class="facts text-secondary">
     <dl><dt>Namespace</dt><dd><a class="xref" href="Bodu.html">Bodu</a>.<span class="xref">Security</span>.<a class="xref" href="Bodu.Security.Cryptography.html">Cryptography</a></dd></dl>
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
-  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.1.0</span>
+  <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.2.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs">MerkleTree.BlockArithmetic.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs">MerkleTree.BlockArithmetic.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>The block arithmetic every consumer of block mode shares — the number of blocks a byte length divides into, and the
+  <div class="markdown summary"><p>The block arithmetic every consumer of block mode shares - the number of blocks a byte length divides into, and the
 offset and length of each one.</p>
 </div>
 
@@ -197,16 +197,16 @@ byte[] sameRoot = parallel.ComputeRootOfBlocks(stream, blockSize: 1 &lt;&lt; 20)
   <div class="markdown level0 remarks"><p>
 A byte stream becomes an ordered sequence of tree entries by cutting it into fixed-size blocks. Every block but the
 last is <code>blockSize</code> bytes; the last is short whenever the length is not a whole multiple, and is hashed at its
-<em>actual</em> length rather than padded — padding would make a short final block indistinguishable from a full
+<em>actual</em> length rather than padded - padding would make a short final block indistinguishable from a full
 block of the same bytes followed by zeros.
 </p>
 <p>
-A zero-length input has <strong>zero</strong> blocks, not one empty block. Its root is therefore the empty tree's —
-the hash of zero bytes — rather than the hash of one empty leaf.
+A zero-length input has <strong>zero</strong> blocks, not one empty block. Its root is therefore the empty tree's -
+the hash of zero bytes - rather than the hash of one empty leaf.
 </p>
 <p>
 These three functions are trivial and are nonetheless published, because a consumer that computes the final block's
-length incorrectly does not fail loudly — it produces a different, wrong root. A
+length incorrectly does not fail loudly - it produces a different, wrong root. A
 <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockComputation.html">MerkleBlockComputation</a> answers the same questions for its own input and additionally rejects a block
 that does not exist.
 </p>
@@ -222,7 +222,7 @@ that does not exist.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree__ctor_System_Func_System_Security_Cryptography_HashAlgorithm__System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.MerkleTree.#ctor(System.Func{System.Security.Cryptography.HashAlgorithm},System.Int32,System.Int32)">
   MerkleTree(Func&lt;HashAlgorithm&gt;, int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -290,7 +290,7 @@ algorithm fails at construction rather than at the first computation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_FanOut" data-uid="Bodu.Security.Cryptography.MerkleTree.FanOut">
   FanOut
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -327,7 +327,7 @@ algorithm fails at construction rather than at the first computation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_HashLength" data-uid="Bodu.Security.Cryptography.MerkleTree.HashLength">
   HashLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -346,7 +346,7 @@ algorithm fails at construction rather than at the first computation.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The configured algorithm's digest length in bytes — 32 for SHA-256, 64 for SHA-512.</p>
+    <dd><p>The configured algorithm's digest length in bytes - 32 for SHA-256, 64 for SHA-512.</p>
 </dd>
   </dl>
 
@@ -364,7 +364,7 @@ algorithm fails at construction rather than at the first computation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_IsBinary" data-uid="Bodu.Security.Cryptography.MerkleTree.IsBinary">
   IsBinary
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -401,7 +401,7 @@ available.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_MaxDegreeOfParallelism" data-uid="Bodu.Security.Cryptography.MerkleTree.MaxDegreeOfParallelism">
   MaxDegreeOfParallelism
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -442,11 +442,11 @@ available.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_AuthenticationPath_System_Collections_Generic_IReadOnlyList_System_Byte____System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleTree.AuthenticationPath(System.Collections.Generic.IReadOnlyList{System.Byte[]},System.Int64)">
   AuthenticationPath(IReadOnlyList&lt;byte[]&gt;, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Produces the authentication path for one leaf from hashes already computed — what a party that streamed a large
+  <div class="markdown level1 summary"><p>Produces the authentication path for one leaf from hashes already computed - what a party that streamed a large
 input past itself can answer without re-reading it.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -507,7 +507,7 @@ input past itself can answer without re-reading it.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_AuthenticationPath_System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleTree.AuthenticationPath(System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}},System.Int64)">
   AuthenticationPath(IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -565,7 +565,7 @@ input past itself can answer without re-reading it.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_BindRoot_System_ReadOnlySpan_System_Byte__System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleTree.BindRoot(System.ReadOnlySpan{System.Byte},System.Int64)">
   BindRoot(ReadOnlySpan&lt;byte&gt;, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -584,7 +584,7 @@ tree and no other.</p>
     <dd><p>The tree head to bind, <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_HashLength">HashLength</a> bytes long.</p>
 </dd>
     <dt><code>boundValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
-    <dd><p>The value to bind — the entry count in entry mode, or the input's byte length in block mode.</p>
+    <dd><p>The value to bind - the entry count in entry mode, or the input's byte length in block mode.</p>
 </dd>
   </dl>
 
@@ -635,7 +635,7 @@ stronger, because it also pins the final block's length.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_BlockCount_System_Int64_System_Int32_" data-uid="Bodu.Security.Cryptography.MerkleTree.BlockCount(System.Int64,System.Int32)">
   BlockCount(long, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -688,7 +688,7 @@ stronger, because it also pins the final block's length.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_BlockLength_System_Int64_System_Int64_System_Int32_" data-uid="Bodu.Security.Cryptography.MerkleTree.BlockLength(System.Int64,System.Int64,System.Int32)">
   BlockLength(long, long, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -745,7 +745,7 @@ is less than or equal to zero.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_BlockOffset_System_Int64_System_Int32_" data-uid="Bodu.Security.Cryptography.MerkleTree.BlockOffset(System.Int64,System.Int32)">
   BlockOffset(long, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -801,7 +801,7 @@ returned correctly rather than wrapping.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_Byte___System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeBlocked(System.Byte[],System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeBlocked(byte[], int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -865,7 +865,7 @@ returned correctly rather than wrapping.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeBlocked(System.IO.Stream,System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeBlocked(Stream, int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -884,7 +884,7 @@ one pass serves both publishing a root and answering authentication paths.</p>
     <dd><p>The stream to read to its end. Must be readable.</p>
 </dd>
     <dt><code>blockSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The size, in bytes, of each block — the chunk one leaf covers.</p>
+    <dd><p>The size, in bytes, of each block - the chunk one leaf covers.</p>
 </dd>
     <dt><code>diagnostics</code> <a class="xref" href="Bodu.Security.Cryptography.MerkleTreeDiagnostics.html">MerkleTreeDiagnostics</a></dt>
     <dd><p>The recorder that receives the tree's nodes as they are produced, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to record nothing.</p>
@@ -910,7 +910,7 @@ one pass serves both publishing a root and answering authentication paths.</p>
   <h4 class="section" id="Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 The stream is read once, forward only, and never buffered in full. Retaining the leaf hashes costs
-<code>leafCount × <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_HashLength">HashLength</a></code> bytes — 16 KiB for a 512 MiB input at one-mebibyte blocks. When
+<code>leafCount × <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_HashLength">HashLength</a></code> bytes - 16 KiB for a 512 MiB input at one-mebibyte blocks. When
 only the root is wanted, prefer
 <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_">ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics?, CancellationToken)</a>, which holds a
 logarithmic number of hashes instead.
@@ -943,7 +943,7 @@ hashed at its actual length and never padded.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_ReadOnlyMemory_System_Byte__System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeBlocked(System.ReadOnlyMemory{System.Byte},System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeBlocked(ReadOnlyMemory&lt;byte&gt;, int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1008,7 +1008,7 @@ hashed inside its own worker, so nothing is copied and the whole per-block cost 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_ReadOnlySpan_System_Byte__System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeBlocked(System.ReadOnlySpan{System.Byte},System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics)">
   ComputeBlocked(ReadOnlySpan&lt;byte&gt;, int, MerkleTreeDiagnostics?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1068,7 +1068,7 @@ hand.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeBlockedAsync_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeBlockedAsync(System.IO.Stream,System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeBlockedAsync(Stream, int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1138,7 +1138,7 @@ continuation thread, or on parallel workers when the instance is configured for 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRoot_System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRoot(System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}},Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeRoot(IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1201,7 +1201,7 @@ large; for a log of short entries the thread coordination outweighs the leaf has
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_Byte___System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRootOfBlocks(System.Byte[],System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeRootOfBlocks(byte[], int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1265,7 +1265,7 @@ large; for a log of short entries the thread coordination outweighs the leaf has
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRootOfBlocks(System.IO.Stream,System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1311,13 +1311,13 @@ large; for a log of short entries the thread coordination outweighs the leaf has
 Peak memory is <code>O(blockSize + log n × <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_HashLength">HashLength</a>)</code> on a sequential instance: the read
 buffer, plus at most <code>fanOut − 1</code> pending nodes per level. A parallel instance adds the batch of block
 buffers. The root is identical to
-<a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_">ComputeBlocked(Stream, int, MerkleTreeDiagnostics?, CancellationToken)</a>'s — this overload simply
+<a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_ComputeBlocked_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_">ComputeBlocked(Stream, int, MerkleTreeDiagnostics?, CancellationToken)</a>'s - this overload simply
 cannot produce an authentication path afterwards, because it does not keep the leaf hashes.
 </p>
 <p>
 Leaves are folded as they arrive, level by level: a level holds at most <code>fanOut − 1</code> pending nodes, and the
 moment it fills the group is hashed and the parent carried up. At the end a lone node is promoted unchanged,
-never re-hashed — which is what reproduces RFC 6962's shape at a fan-out of two without ever having held the
+never re-hashed - which is what reproduces RFC 6962's shape at a fan-out of two without ever having held the
 whole tree. Recording into <code class="paramref">diagnostics</code> retains one entry per node, so the memory bound does
 not hold while a recorder is supplied.
 </p>
@@ -1345,7 +1345,7 @@ not hold while a recorder is supplied.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_ReadOnlyMemory_System_Byte__System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRootOfBlocks(System.ReadOnlyMemory{System.Byte},System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeRootOfBlocks(ReadOnlyMemory&lt;byte&gt;, int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1406,7 +1406,7 @@ not hold while a recorder is supplied.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_ReadOnlySpan_System_Byte__System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRootOfBlocks(System.ReadOnlySpan{System.Byte},System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics)">
   ComputeRootOfBlocks(ReadOnlySpan&lt;byte&gt;, int, MerkleTreeDiagnostics?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1466,7 +1466,7 @@ number of hashes; on a parallel instance the span is copied into a pooled buffer
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocksAsync_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRootOfBlocksAsync(System.IO.Stream,System.Int32,Bodu.Security.Cryptography.MerkleTreeDiagnostics,System.Threading.CancellationToken)">
   ComputeRootOfBlocksAsync(Stream, int, MerkleTreeDiagnostics?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.BlockArithmetic.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1537,7 +1537,7 @@ folding.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ComputeRootOfLeafHashes_System_Collections_Generic_IReadOnlyList_System_Byte____Bodu_Security_Cryptography_MerkleTreeDiagnostics_" data-uid="Bodu.Security.Cryptography.MerkleTree.ComputeRootOfLeafHashes(System.Collections.Generic.IReadOnlyList{System.Byte[]},Bodu.Security.Cryptography.MerkleTreeDiagnostics)">
   ComputeRootOfLeafHashes(IReadOnlyList&lt;byte[]&gt;, MerkleTreeDiagnostics?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1597,7 +1597,7 @@ worth spreading.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ConsistencyProof_System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleTree.ConsistencyProof(System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}},System.Int64)">
   ConsistencyProof(IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Consistency.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Consistency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1623,7 +1623,7 @@ worth spreading.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[][]</dt>
-    <dd><p>The proof, or an empty proof when the two sizes are equal or the earlier tree is empty — in both cases the
+    <dd><p>The proof, or an empty proof when the two sizes are equal or the earlier tree is empty - in both cases the
 consistency is established by the sizes and roots alone.</p>
 </dd>
   </dl>
@@ -1657,7 +1657,7 @@ consistency is established by the sizes and roots alone.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_ConsistencyProofOfLeafHashes_System_Collections_Generic_IReadOnlyList_System_Byte____System_Int64_" data-uid="Bodu.Security.Cryptography.MerkleTree.ConsistencyProofOfLeafHashes(System.Collections.Generic.IReadOnlyList{System.Byte[]},System.Int64)">
   ConsistencyProofOfLeafHashes(IReadOnlyList&lt;byte[]&gt;, long)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Consistency.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Consistency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1718,7 +1718,7 @@ consistency is established by the sizes and roots alone.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_CreateBlockAccumulator_System_Int32_System_Boolean_Bodu_Security_Cryptography_MerkleTreeDiagnostics_" data-uid="Bodu.Security.Cryptography.MerkleTree.CreateBlockAccumulator(System.Int32,System.Boolean,Bodu.Security.Cryptography.MerkleTreeDiagnostics)">
   CreateBlockAccumulator(int, bool, MerkleTreeDiagnostics?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Blocks.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1734,7 +1734,7 @@ writer can feed the tree from the same calls that feed its flat digest.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>blockSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The size, in bytes, of each block — the chunk one leaf covers.</p>
+    <dd><p>The size, in bytes, of each block - the chunk one leaf covers.</p>
 </dd>
     <dt><code>retainLeafHashes</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to keep every leaf hash so the accumulator can return a
@@ -1763,7 +1763,7 @@ logarithmic number of hashes.</p>
   <div class="markdown level1 remarks"><p>The accumulator's root is identical to
 <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_ComputeRootOfBlocks_System_IO_Stream_System_Int32_Bodu_Security_Cryptography_MerkleTreeDiagnostics_System_Threading_CancellationToken_">ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics?, CancellationToken)</a>'s over the same bytes
 at this instance's fan-out, and its <a class="xref" href="Bodu.Security.Cryptography.MerkleBlockAccumulator.html#Bodu_Security_Cryptography_MerkleBlockAccumulator_FinishBound">FinishBound()</a> is <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_BindRoot_System_ReadOnlySpan_System_Byte__System_Int64_">BindRoot(ReadOnlySpan&lt;byte&gt;, long)</a>
-of that root and the byte length — the published shape for a possession check. It is sequential by nature: one
+of that root and the byte length - the published shape for a possession check. It is sequential by nature: one
 writer appends, and each leaf is hashed as its block completes, whatever <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_MaxDegreeOfParallelism">MaxDegreeOfParallelism</a>
 is.</p>
 </div>
@@ -1787,7 +1787,7 @@ is.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_HashLeaf_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MerkleTree.HashLeaf(System.ReadOnlySpan{System.Byte})">
   HashLeaf(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1834,7 +1834,7 @@ is.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_HashNode_System_ReadOnlySpan_System_Byte__System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Security.Cryptography.MerkleTree.HashNode(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
   HashNode(ReadOnlySpan&lt;byte&gt;, ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Roots.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1889,7 +1889,7 @@ is.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_VerifyBlockInclusion_System_ReadOnlySpan_System_Byte__System_Int64_System_Int32_System_Int64_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___" data-uid="Bodu.Security.Cryptography.MerkleTree.VerifyBlockInclusion(System.ReadOnlySpan{System.Byte},System.Int64,System.Int32,System.Int64,System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}})">
   VerifyBlockInclusion(ReadOnlySpan&lt;byte&gt;, long, int, long, ReadOnlySpan&lt;byte&gt;, IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1941,7 +1941,7 @@ length, and that the block is exactly the length that position requires.</p>
   <div class="markdown level1 remarks"><p>
 This is the possession-check shape: the tree size is <em>derived</em> from the bound length and block size
 rather than supplied, so there is no size for a holder to misstate. It additionally requires
-<code class="paramref">block</code> to be exactly <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_BlockLength_System_Int64_System_Int64_System_Int32_">BlockLength(long, long, int)</a> bytes — a check the
+<code class="paramref">block</code> to be exactly <a class="xref" href="Bodu.Security.Cryptography.MerkleTree.html#Bodu_Security_Cryptography_MerkleTree_BlockLength_System_Int64_System_Int64_System_Int32_">BlockLength(long, long, int)</a> bytes - a check the
 entry-mode overloads cannot make, because a variable-length entry has no expected length.
 </p>
 <p>
@@ -1970,7 +1970,7 @@ have cached on receipt.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_VerifyConsistency_System_ReadOnlySpan_System_Byte__System_Int64_System_ReadOnlySpan_System_Byte__System_Int64_System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___" data-uid="Bodu.Security.Cryptography.MerkleTree.VerifyConsistency(System.ReadOnlySpan{System.Byte},System.Int64,System.ReadOnlySpan{System.Byte},System.Int64,System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}})">
   VerifyConsistency(ReadOnlySpan&lt;byte&gt;, long, ReadOnlySpan&lt;byte&gt;, long, IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Consistency.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Consistency.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2018,13 +2018,13 @@ prefix of a tree of <code class="paramref">secondSize</code> entries with root <
   <h4 class="section" id="Bodu_Security_Cryptography_MerkleTree_VerifyConsistency_System_ReadOnlySpan_System_Byte__System_Int64_System_ReadOnlySpan_System_Byte__System_Int64_System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte____remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 This is <a href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1.2">RFC 6962 §2.1.2</a>. Unlike inclusion
-verification, both sizes and both roots are inputs, and the proof must reconstruct <em>both</em> — so there is
+verification, both sizes and both roots are inputs, and the proof must reconstruct <em>both</em> - so there is
 no analogue here of the tree-size ambiguity that the bound root exists to close.
 </p>
 <p>
 Three degenerate cases are decided before the walk. A <code class="paramref">secondSize</code> below
 <code class="paramref">firstSize</code> is rejected outright: a log cannot shrink. Equal sizes require an <em>empty</em>
-proof and identical roots — a non-empty proof between equal sizes is rejected rather than walked, because the
+proof and identical roots - a non-empty proof between equal sizes is rejected rather than walked, because the
 only evidence that could be offered is evidence of something else. A <code class="paramref">firstSize</code> of zero
 likewise requires an empty proof, since every tree extends the empty tree.
 </p>
@@ -2053,7 +2053,7 @@ throwing, and only a null proof throws.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_VerifyInclusion_System_ReadOnlySpan_System_Byte__System_Int64_System_Int64_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___" data-uid="Bodu.Security.Cryptography.MerkleTree.VerifyInclusion(System.ReadOnlySpan{System.Byte},System.Int64,System.Int64,System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}})">
   VerifyInclusion(ReadOnlySpan&lt;byte&gt;, long, long, ReadOnlySpan&lt;byte&gt;, IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2114,8 +2114,8 @@ verify against a length-bound root with
 instead, which fails closed on a size the publisher did not commit to.
 </p>
 <p>
-Every malformed input returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> rather than throwing — a wrong index, a path that is too
-long or too short, an element of the wrong width, a zero tree size — because a verifier sits directly behind
+Every malformed input returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> rather than throwing - a wrong index, a path that is too
+long or too short, an element of the wrong width, a zero tree size - because a verifier sits directly behind
 untrusted input and an exception where a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> belongs is a denial of service.
 </p>
 </div>
@@ -2139,7 +2139,7 @@ untrusted input and an exception where a <a href="https://learn.microsoft.com/do
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_VerifyInclusionBound_System_ReadOnlySpan_System_Byte__System_Int64_System_Int64_System_Int64_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___" data-uid="Bodu.Security.Cryptography.MerkleTree.VerifyInclusionBound(System.ReadOnlySpan{System.Byte},System.Int64,System.Int64,System.Int64,System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}})">
   VerifyInclusionBound(ReadOnlySpan&lt;byte&gt;, long, long, long, ReadOnlySpan&lt;byte&gt;, IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2158,7 +2158,7 @@ rejected even when the unbound walk would accept it.</p>
     <dd><p>The published bound root.</p>
 </dd>
     <dt><code>boundValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
-    <dd><p>The value the publisher bound — the entry count, or the input's byte length.</p>
+    <dd><p>The value the publisher bound - the entry count, or the input's byte length.</p>
 </dd>
     <dt><code>treeSize</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
     <dd><p>The number of entries the tree is claimed to hold.</p>
@@ -2213,7 +2213,7 @@ the check fails closed.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_MerkleTree_VerifyInclusionOfLeafHash_System_ReadOnlySpan_System_Byte__System_Int64_System_Int64_System_ReadOnlySpan_System_Byte__System_Collections_Generic_IReadOnlyList_System_ReadOnlyMemory_System_Byte___" data-uid="Bodu.Security.Cryptography.MerkleTree.VerifyInclusionOfLeafHash(System.ReadOnlySpan{System.Byte},System.Int64,System.Int64,System.ReadOnlySpan{System.Byte},System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}})">
   VerifyInclusionOfLeafHash(ReadOnlySpan&lt;byte&gt;, long, long, ReadOnlySpan&lt;byte&gt;, IReadOnlyList&lt;ReadOnlyMemory&lt;byte&gt;&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/5f5a692e4da7427e2a12bcd740615664ae637f21/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/08be75b7bc8bf50677e3f1685d72f604b77ba53e/Bodu.Security.Cryptography/src/Security.Cryptography/MerkleTree.Inclusion.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2318,7 +2318,7 @@ entry overload.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

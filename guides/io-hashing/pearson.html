@@ -95,7 +95,7 @@
 <li>A choice of four built-in permutation tables, plus a <strong>user-defined</strong> table.</li>
 </ul>
 <p>The type derives from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>.</p>
-<h2 id="pattern-1--the-canonical-8-bit-pearson">Pattern 1 — the canonical 8-bit Pearson</h2>
+<h2 id="pattern-1---the-canonical-8-bit-pearson">Pattern 1 - the canonical 8-bit Pearson</h2>
 <p>The parameterless constructor gives you the classic single-byte Pearson hash with Pearson's original permutation table.</p>
 <pre><code class="lang-csharp">using System.Text;
 using Bodu.IO.Hashing;
@@ -106,8 +106,8 @@ var pearson = new Pearson();        // 8-bit output, Pearson's canonical table
 pearson.Append(data);
 byte[] digest = pearson.GetCurrentHash();  // 1 byte
 </code></pre>
-<p>An 8-bit hash is only useful as a coarse bucket index — 256 distinct buckets before guaranteed collisions. For anything more interesting, pick a wider width.</p>
-<h2 id="pattern-2--a-wider-output">Pattern 2 — a wider output</h2>
+<p>An 8-bit hash is only useful as a coarse bucket index - 256 distinct buckets before guaranteed collisions. For anything more interesting, pick a wider width.</p>
+<h2 id="pattern-2---a-wider-output">Pattern 2 - a wider output</h2>
 <p>Any width from 8 to 2048 bits in 8-bit steps is supported. The implementation runs one parallel accumulator per output byte, each seeded with a different offset into the table; their concatenation is the final digest.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -117,7 +117,7 @@ pearson.Append(data);
 byte[] digest = pearson.GetCurrentHash();  // 16 bytes
 </code></pre>
 <p><code>hashSizeBits</code> must be a multiple of 8 between <code>Pearson.MinHashSizeBits</code> (8) and <code>Pearson.MaxHashSizeBits</code> (2048).</p>
-<h2 id="pattern-3--pick-a-permutation-table">Pattern 3 — pick a permutation table</h2>
+<h2 id="pattern-3---pick-a-permutation-table">Pattern 3 - pick a permutation table</h2>
 <p>The table defines the hash. The nested <code>Pearson.PearsonTableType</code> enum names four built-in tables plus the user-defined marker:</p>
 <table>
 <thead>
@@ -129,7 +129,7 @@ byte[] digest = pearson.GetCurrentHash();  // 16 bytes
 <tbody>
 <tr>
 <td><code>Pearson</code></td>
-<td>Pearson's original 1990 table — the historically canonical choice.</td>
+<td>Pearson's original 1990 table - the historically canonical choice.</td>
 </tr>
 <tr>
 <td><code>AESSBox</code></td>
@@ -153,8 +153,8 @@ byte[] digest = pearson.GetCurrentHash();  // 16 bytes
 
 var pearson = new Pearson(hashSizeBits: 64, tableType: Pearson.PearsonTableType.AESSBox);
 </code></pre>
-<p>All four built-in tables are <strong>permutations</strong> — every byte 0–255 appears exactly once. This is the property Pearson relies on; it is checked at construction time, so a table with duplicates or missing values is rejected.</p>
-<h2 id="pattern-4--a-user-supplied-table">Pattern 4 — a user-supplied table</h2>
+<p>All four built-in tables are <strong>permutations</strong> - every byte 0-255 appears exactly once. This is the property Pearson relies on; it is checked at construction time, so a table with duplicates or missing values is rejected.</p>
+<h2 id="pattern-4---a-user-supplied-table">Pattern 4 - a user-supplied table</h2>
 <p>Pass a 256-byte permutation directly to the constructor:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -164,14 +164,14 @@ var pearson = new Pearson(hashSizeBits: 256, permutationTable: permutation);
 </code></pre>
 <p>Constructing <code>Pearson</code> with <code>permutationTable</code>:</p>
 <ul>
-<li>Validates that the array is exactly 256 bytes long and is a valid permutation (every value 0–255 appears exactly once).</li>
+<li>Validates that the array is exactly 256 bytes long and is a valid permutation (every value 0-255 appears exactly once).</li>
 <li>Clones the array, so later mutation of your buffer does not affect the hash.</li>
 <li>Reports <code>TableType == Pearson.PearsonTableType.UserDefined</code>.</li>
 </ul>
-<p>You can read the table back (as a clone) through the <code>Table</code> property — handy for round-tripping the configuration or for diagnostics:</p>
+<p>You can read the table back (as a clone) through the <code>Table</code> property - handy for round-tripping the configuration or for diagnostics:</p>
 <pre><code class="lang-csharp">byte[] tableCopy = pearson.Table;
 </code></pre>
-<h2 id="pattern-5--append--getcurrenthash--reset">Pattern 5 — <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
+<h2 id="pattern-5---append--getcurrenthash--reset">Pattern 5 - <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code></h2>
 <p>Pearson follows the standard <code>NonCryptographicHashAlgorithm</code> lifecycle:</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
@@ -188,18 +188,18 @@ pearson.Reset();                             // back to the initial offsets
 <p><code>GetCurrentHash</code> finalizes on a copy, so mid-stream snapshots are cheap and do not disturb in-progress hashing.</p>
 <h2 id="pearson-vs-the-other-non-cryptographic-hashes">Pearson vs the other non-cryptographic hashes</h2>
 <ul>
-<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a></strong> — FNV-1a has better distribution on short inputs and no table memory footprint. Pearson wins when you need a specific output width (e.g. 96 or 160 bits) without stretching a native-width hash.</li>
-<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.CityHash64.html">CityHash64</a></strong> — CityHash is much faster on long inputs and distributes better. Reach for Pearson when you want the table to be a tunable parameter — e.g. in academic work on hash-function quality.</li>
-<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></strong> — CRC is specified for wire formats and has provable burst-error detection. Pearson is a general-purpose fingerprint, not a checksum with error-detection guarantees.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a></strong> - FNV-1a has better distribution on short inputs and no table memory footprint. Pearson wins when you need a specific output width (e.g. 96 or 160 bits) without stretching a native-width hash.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.CityHash64.html">CityHash64</a></strong> - CityHash is much faster on long inputs and distributes better. Reach for Pearson when you want the table to be a tunable parameter - e.g. in academic work on hash-function quality.</li>
+<li><strong>vs <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></strong> - CRC is specified for wire formats and has provable burst-error detection. Pearson is a general-purpose fingerprint, not a checksum with error-detection guarantees.</li>
 </ul>
-<p>Pearson is <strong>not cryptographic</strong>. Choosing a different table does not make it adversary-resistant — an attacker who knows the table can construct collisions immediately. For adversarial settings, use <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</p>
+<p>Pearson is <strong>not cryptographic</strong>. Choosing a different table does not make it adversary-resistant - an attacker who knows the table can construct collisions immediately. For adversarial settings, use <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="fnv.html">Using FNV</a>, <a href="cityhash.html">Using CityHash</a> — faster, table-free alternatives.</li>
-<li><a href="string-hashes.html">Classic string hashes</a> — Bernstein, BKDR, SDBM, Elf64, and siblings with a similar &quot;one-liner&quot; feel.</li>
-<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> — when Pearson is not enough.</li>
-<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> — key types and design notes.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="fnv.html">Using FNV</a>, <a href="cityhash.html">Using CityHash</a> - faster, table-free alternatives.</li>
+<li><a href="string-hashes.html">Classic string hashes</a> - Bernstein, BKDR, SDBM, Elf64, and siblings with a similar &quot;one-liner&quot; feel.</li>
+<li><a href="../cryptography/hashing.html">Cryptography hashing guide</a> - when Pearson is not enough.</li>
+<li><a class="xref" href="../../api/Bodu.IO.Hashing.html">Bodu.IO.Hashing namespace page</a> - key types and design notes.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -219,7 +219,7 @@ pearson.Reset();                             // back to the initial offsets
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

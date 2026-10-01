@@ -102,14 +102,14 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-io.svg" alt="Bodu.IO.Hashing"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.IO.Hashing.Checksums</strong> ships the cyclic redundancy check (CRC) catalogue from the <a href="https://reveng.sourceforge.io/crc-catalogue/">RevEng project</a> — every variant from CRC-1 through CRC-64, addressable by name. The catalogue is auto-generated; the consumer-facing surface is the immutable <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> parameter set, used as a parameter to <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>. The namespace also hosts the twin-accumulator checksums (Fletcher, Adler) and the CRC lookup-table machinery.</p>
+<p><strong>Bodu.IO.Hashing.Checksums</strong> ships the cyclic redundancy check (CRC) catalogue from the <a href="https://reveng.sourceforge.io/crc-catalogue/">RevEng project</a> - every variant from CRC-1 through CRC-64, addressable by name. The catalogue is auto-generated; the consumer-facing surface is the immutable <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> parameter set, used as a parameter to <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>. The namespace also hosts the twin-accumulator checksums (Fletcher, Adler) and the CRC lookup-table machinery.</p>
 <h2 id="key-types">Key types</h2>
 <ul>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> — the CRC engine, configured with a <code>CrcStandard</code>.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> — a sealed, immutable CRC parameter set: <code>Name</code>, <code>Size</code>, <code>Polynomial</code>, <code>InitialValue</code>, <code>ReflectIn</code>, <code>ReflectOut</code>, <code>XOrOut</code>. Common standards are exposed as static properties (<code>CRC32_ISOHDLC</code>, <code>CRC16_MODBUS</code>, …); every catalogue entry is reachable through <code>Get(CrcStandards)</code> and <code>FromName</code> / <code>TryFromName</code>; custom variants come from the public constructor.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> — the enum naming every canonical catalogue entry.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> — lookup-table construction and the process-wide cache shared by every <code>Crc</code> with the same (width, polynomial, reflect-in) triple.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a> and <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> — the twin-accumulator checksums.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> - the CRC engine, configured with a <code>CrcStandard</code>.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> - a sealed, immutable CRC parameter set: <code>Name</code>, <code>Size</code>, <code>Polynomial</code>, <code>InitialValue</code>, <code>ReflectIn</code>, <code>ReflectOut</code>, <code>XOrOut</code>. Common standards are exposed as static properties (<code>CRC32_ISOHDLC</code>, <code>CRC16_MODBUS</code>, …); every catalogue entry is reachable through <code>Get(CrcStandards)</code> and <code>FromName</code> / <code>TryFromName</code>; custom variants come from the public constructor.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> - the enum naming every canonical catalogue entry.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> - lookup-table construction and the process-wide cache shared by every <code>Crc</code> with the same (width, polynomial, reflect-in) triple.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a> and <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> - the twin-accumulator checksums.</li>
 </ul>
 <h2 id="example">Example</h2>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
@@ -120,12 +120,12 @@ var crc32 = new Crc(CrcStandard.CRC32_ISOHDLC);
 ReadOnlySpan&lt;byte&gt; data = &quot;123456789&quot;u8;
 crc32.Append(data);
 byte[] digest = crc32.GetCurrentHash();
-// 0xCBF43926 — the canonical CRC-32 check value
+// 0xCBF43926 - the canonical CRC-32 check value
 </code></pre>
 <h2 id="notes">Notes</h2>
 <ul>
 <li><strong>Auto-generated catalogue.</strong> The standards are produced from the RevEng database; consumers reference them by name (<code>CrcStandard.CRC32_ISOHDLC</code>, <code>CrcStandard.CRC16_MODBUS</code>, …) rather than constructing the configuration manually.</li>
-<li><strong>Resumable.</strong> <code>Crc</code>, the Fletcher family, and the Adler family implement <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> — <code>ComputeHashFrom</code> reverse-finalizes a previously stored digest, appends more bytes, and finalizes again, without re-reading the original input. (Plain multi-<code>Append</code> streaming needs no special contract; every algorithm supports it.)</li>
+<li><strong>Resumable.</strong> <code>Crc</code>, the Fletcher family, and the Adler family implement <a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> - <code>ComputeHashFrom</code> reverse-finalizes a previously stored digest, appends more bytes, and finalizes again, without re-reading the original input. (Plain multi-<code>Append</code> streaming needs no special contract; every algorithm supports it.)</li>
 <li><strong>See also:</strong> the <a href="../guides/io-hashing/crc.html">CRC guide</a>, the <a href="../guides/io-hashing/crc-catalogue.html">CRC catalogue guide</a>, and the parent <a class="xref" href="Bodu.IO.Hashing.html">Bodu.IO.Hashing</a> landing page.</li>
 </ul>
 </div>
@@ -169,7 +169,7 @@ accumulators.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></dt>
-      <dd><p>General-purpose CRC (Cyclic Redundancy Check) engine driven by a <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc_CrcStandard">CrcStandard</a> parameter set — supports
+      <dd><p>General-purpose CRC (Cyclic Redundancy Check) engine driven by a <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc_CrcStandard">CrcStandard</a> parameter set - supports
 any catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with
 additional input.</p>
 </dd>
@@ -182,15 +182,15 @@ width, polynomial, and input-reflection mode of a <a class="xref" href="Bodu.IO.
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a></dt>
-      <dd><p>Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes the
+      <dd><p>Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection - amortizes the
 per-tuple build cost of <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html#Bodu_IO_Hashing_Checksums_CrcLookupTableBuilder_BuildLookupTable_System_Int32_System_UInt64_System_Boolean_">BuildLookupTable(int, ulong, bool)</a> across every
 <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> instance that uses the same <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a></dt>
-      <dd><p>Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit
-reflection, and final XOR — and serves as the lookup key into the RevEng catalogue used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</p>
+      <dd><p>Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit
+reflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -246,7 +246,7 @@ Pass to <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html#Bodu_IO
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

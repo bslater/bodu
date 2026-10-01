@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Collections — Getting started | BODU </title>
+      <title>Bodu.Collections - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Collections — Getting started | BODU ">
+      <meta name="title" content="Bodu.Collections - Getting started | BODU ">
       
       
       <link rel="icon" href="../../images/favicon.svg">
@@ -85,12 +85,12 @@
         </div>
 
         <article data-uid="">
-<h1 id="boducollections--getting-started">Bodu.Collections — Getting started</h1>
+<h1 id="boducollections---getting-started">Bodu.Collections - Getting started</h1>
 
 <h2 id="install">Install</h2>
 <pre><code class="lang-bash">dotnet add package Bodu.Collections
 </code></pre>
-<p>Targets <code>net8.0</code>. No external runtime dependencies — <code>Bodu.Collections</code> references only <code>Bodu.Core</code> (pulled in automatically) for shared argument validation and the random-generator abstraction. The thread-safe variants (<code>ConcurrentCircularBuffer&lt;T&gt;</code>, <code>ConcurrentHashSet&lt;T&gt;</code>) ship in the companion <a href="../collections-concurrent/getting-started.html"><code>Bodu.Collections.Concurrent</code></a> package.</p>
+<p>Targets <code>net8.0</code>. No external runtime dependencies - <code>Bodu.Collections</code> references only <code>Bodu.Core</code> (pulled in automatically) for shared argument validation and the random-generator abstraction. The thread-safe variants (<code>ConcurrentCircularBuffer&lt;T&gt;</code>, <code>ConcurrentHashSet&lt;T&gt;</code>) ship in the companion <a href="../collections-concurrent/getting-started.html"><code>Bodu.Collections.Concurrent</code></a> package.</p>
 <h2 id="minimal-samples">Minimal samples</h2>
 <h3 id="circular-buffer-circularbuffert">Circular buffer (<code>CircularBuffer&lt;T&gt;</code>)</h3>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
@@ -118,7 +118,7 @@ _ = cache.TryGetValue(&quot;alpha&quot;, out byte[]? value); // touches LRU orde
 </code></pre>
 <p>Policies: <code>FirstInFirstOut</code>, <code>LeastRecentlyUsed</code>, <code>LeastFrequentlyUsed</code>, <code>MostRecentlyUsed</code>, <code>RandomReplacement</code>, <code>SecondChance</code>.</p>
 <h3 id="time-based-expiry-evictingdictionaryexpiration">Time-based expiry (<code>EvictingDictionaryExpiration</code>)</h3>
-<p>Layer a time-to-live on top of the capacity policy — sliding renewal on read, a testable <code>TimeProvider</code>, and lazy reclamation via <code>RemoveExpired()</code>:</p>
+<p>Layer a time-to-live on top of the capacity policy - sliding renewal on read, a testable <code>TimeProvider</code>, and lazy reclamation via <code>RemoveExpired()</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var sessions = new EvictingDictionary&lt;string, Session&gt;(
@@ -130,7 +130,7 @@ var sessions = new EvictingDictionary&lt;string, Session&gt;(
 sessions[&quot;user-42&quot;] = session;                    // 20-minute sliding lifetime
 sessions.Add(&quot;one-shot&quot;, token, TimeSpan.FromSeconds(30)); // per-entry override
 
-int reclaimed = sessions.RemoveExpired();          // no background timer — reconcile on demand
+int reclaimed = sessions.RemoveExpired();          // no background timer - reconcile on demand
 </code></pre>
 <h3 id="deque-dequet">Deque (<code>Deque&lt;T&gt;</code>)</h3>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
@@ -145,7 +145,7 @@ string first = deque.RemoveFirst(); // &quot;a&quot;
 string last  = deque.RemoveLast();  // &quot;c&quot;
 </code></pre>
 <h3 id="sequenced-dictionary-sequenceddictionarytkey-tvalue">Sequenced dictionary (<code>SequencedDictionary&lt;TKey, TValue&gt;</code>)</h3>
-<p>An insertion- (or access-) ordered map with O(1) access to and removal of either end — the .NET analogue of Java's <code>LinkedHashMap</code>:</p>
+<p>An insertion- (or access-) ordered map with O(1) access to and removal of either end - the .NET analogue of Java's <code>LinkedHashMap</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var lru = new SequencedDictionary&lt;string, byte[]&gt;(accessOrder: true);
@@ -158,7 +158,7 @@ if (lru.Count &gt; 100)
     lru.TryRemoveFirst(out _);
 </code></pre>
 <h3 id="indexed-priority-queue-indexedpriorityqueuetelement-tpriority">Indexed priority queue (<code>IndexedPriorityQueue&lt;TElement, TPriority&gt;</code>)</h3>
-<p>A min-heap that supports O(log n) priority updates by element identity — the shape Dijkstra and A* need:</p>
+<p>A min-heap that supports O(log n) priority updates by element identity - the shape Dijkstra and A* need:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
 var pq = new IndexedPriorityQueue&lt;string, double&gt;();
@@ -166,7 +166,7 @@ pq.Enqueue(&quot;source&quot;, 0);
 pq.EnqueueOrUpdate(&quot;a&quot;, 7);    // add, or update if already queued
 pq.EnqueueOrUpdate(&quot;a&quot;, 3);    // O(log n) decrease-key, no duplicate
 
-var (element, priority) = pq.Dequeue();   // (&quot;source&quot;, 0) — smallest priority first
+var (element, priority) = pq.Dequeue();   // (&quot;source&quot;, 0) - smallest priority first
 </code></pre>
 <h3 id="navigable-set-navigablesett">Navigable set (<code>NavigableSet&lt;T&gt;</code>)</h3>
 <p>Nearest-neighbour, rank, and range queries over sorted data in O(log n):</p>
@@ -174,16 +174,16 @@ var (element, priority) = pq.Dequeue();   // (&quot;source&quot;, 0) — smalles
 
 var prices = new NavigableSet&lt;decimal&gt; { 9.99m, 24.50m, 49.00m, 99.00m };
 
-_ = prices.TryGetFloor(30.00m, out decimal floor);     // 24.50 — greatest ≤ probe
-_ = prices.TryGetCeiling(30.00m, out decimal ceiling); // 49.00 — least ≥ probe
+_ = prices.TryGetFloor(30.00m, out decimal floor);     // 24.50 - greatest ≤ probe
+_ = prices.TryGetCeiling(30.00m, out decimal ceiling); // 49.00 - least ≥ probe
 
-int rank = prices.IndexOf(49.00m);                     // 2 — elements before it in sort order
-decimal cheapest = prices.GetAt(0);                    // 9.99 — select by rank
-int midRange = prices.CountInRange(10.00m, 50.00m);    // 2 — counted without enumerating
+int rank = prices.IndexOf(49.00m);                     // 2 - elements before it in sort order
+decimal cheapest = prices.GetAt(0);                    // 9.99 - select by rank
+int midRange = prices.CountInRange(10.00m, 50.00m);    // 2 - counted without enumerating
 </code></pre>
 <p><code>NavigableDictionary&lt;TKey, TValue&gt;</code> offers the same query families over key-sorted entries.</p>
 <h3 id="bloom-filter-bloomfiltert">Bloom filter (<code>BloomFilter&lt;T&gt;</code>)</h3>
-<p>Approximate membership in fixed memory — no false negatives, tunable false-positive rate:</p>
+<p>Approximate membership in fixed memory - no false negatives, tunable false-positive rate:</p>
 <pre><code class="lang-csharp">using Bodu.Collections.Probabilistic;
 
 var seen = new BloomFilter&lt;string&gt;(expectedItems: 1_000_000, falsePositiveRate: 0.01);
@@ -192,18 +192,18 @@ seen.Add(&quot;user:42&quot;);
 
 if (!seen.MightContain(candidate))
 {
-    // Definitively new — a Bloom filter never reports false negatives.
+    // Definitively new - a Bloom filter never reports false negatives.
     Process(candidate);
 }
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Collections introduction</a></strong> — namespaces, headline types, scenarios.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the collection vocabulary (overflow policies, eviction, navigation, sketches).</li>
-<li><strong><a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a></strong> — the decision guide across the catalogue.</li>
-<li><strong><a href="../../guides/core/index.html">Collections guides</a></strong> — recipe-style walk-throughs for every headline type.</li>
-<li><strong><a href="../collections-concurrent/getting-started.html">Bodu.Collections.Concurrent getting started</a></strong> — the thread-safe companion package.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></strong> — full type-by-type docs.</li>
+<li><strong><a href="index.html">Bodu.Collections introduction</a></strong> - namespaces, headline types, scenarios.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the collection vocabulary (overflow policies, eviction, navigation, sketches).</li>
+<li><strong><a href="../../guides/core/choosing-a-collection.html">Choosing a collection</a></strong> - the decision guide across the catalogue.</li>
+<li><strong><a href="../../guides/core/index.html">Collections guides</a></strong> - recipe-style walk-throughs for every headline type.</li>
+<li><strong><a href="../collections-concurrent/getting-started.html">Bodu.Collections.Concurrent getting started</a></strong> - the thread-safe companion package.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a></strong> - full type-by-type docs.</li>
 </ul>
 
 </article>
@@ -223,7 +223,7 @@ if (!seen.MightContain(candidate))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

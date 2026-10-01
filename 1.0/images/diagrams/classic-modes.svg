@@ -40,7 +40,7 @@
     <rect class="panel" width="800" height="175" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
-    <text class="title" x="16" y="20">1. ECB — Electronic Codebook</text>
+    <text class="title" x="16" y="20">1. ECB - Electronic Codebook</text>
     <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = E(Pᵢ)</text>
 
     <!-- 3 independent cells; no feedback -->
@@ -78,7 +78,7 @@
         <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <text class="sub" x="20" y="34">Blocks encrypt independently — identical Pᵢ ⇒ identical Cᵢ (structural leak).</text>
+      <text class="sub" x="20" y="34">Blocks encrypt independently - identical Pᵢ ⇒ identical Cᵢ (structural leak).</text>
     </g>
   </g>
 
@@ -89,7 +89,7 @@
     <rect class="panel" width="800" height="175" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
-    <text class="title" x="16" y="20">2. CBC — Cipher Block Chaining</text>
+    <text class="title" x="16" y="20">2. CBC - Cipher Block Chaining</text>
     <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = E(Pᵢ ⊕ Cᵢ₋₁),    C₀ = IV</text>
 
     <g transform="translate(0 46)">
@@ -153,7 +153,7 @@
     <rect class="panel" width="800" height="175" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
-    <text class="title" x="16" y="20">3. CFB — Cipher Feedback</text>
+    <text class="title" x="16" y="20">3. CFB - Cipher Feedback</text>
     <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = Pᵢ ⊕ E(IVᵢ),    IVᵢ₊₁ = Cᵢ</text>
 
     <g transform="translate(0 46)">
@@ -216,7 +216,7 @@
     <rect class="panel" width="800" height="175" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
-    <text class="title" x="16" y="20">4. OFB — Output Feedback</text>
+    <text class="title" x="16" y="20">4. OFB - Output Feedback</text>
     <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Oᵢ = E(Oᵢ₋₁),   Cᵢ = Pᵢ ⊕ Oᵢ,   O₀ = IV</text>
 
     <g transform="translate(0 46)">
@@ -267,7 +267,7 @@
       <!-- Feedback: E₁ output → E₂ input, E₂ output → E₃ input, routed above cells -->
       <path class="wire-feedback" d="M 250 27 L 266 27 L 266 -8 L 368 -8 L 368 27 L 370 27" marker-end="url(#arrv)"/>
       <path class="wire-feedback" d="M 430 27 L 446 27 L 446 -8 L 548 -8 L 548 27 L 550 27" marker-end="url(#arrv)"/>
-      <text class="sub" x="14" y="100">Keystream feeds forward (independent of plaintext) — encrypt = decrypt.</text>
+      <text class="sub" x="14" y="100">Keystream feeds forward (independent of plaintext) - encrypt = decrypt.</text>
     </g>
   </g>
 
@@ -278,7 +278,7 @@
     <rect class="panel" width="800" height="175" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
-    <text class="title" x="16" y="20">5. CTR — Counter</text>
+    <text class="title" x="16" y="20">5. CTR - Counter</text>
     <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cᵢ = Pᵢ ⊕ E(nonce ‖ i)</text>
 
     <g transform="translate(0 46)">
@@ -330,7 +330,7 @@
         <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <text class="sub" x="20" y="22">Counters are independent — trivially parallelisable and random-access seekable.</text>
+      <text class="sub" x="20" y="22">Counters are independent - trivially parallelisable and random-access seekable.</text>
     </g>
   </g>
 

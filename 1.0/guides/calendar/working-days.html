@@ -87,11 +87,11 @@
         <article data-uid="">
 <h1 id="working-day-arithmetic">Working-day arithmetic</h1>
 
-<p><code>Bodu.Globalization.Calendar</code> ships parallel extension surfaces — <code>NotableDateOnlyExtensions</code> (over <code>DateOnly</code>), <code>NotableDateTimeExtensions</code> (over <code>DateTime</code>), and <code>NotableDateTimeOffsetExtensions</code> (over <code>DateTimeOffset</code>) — under the <code>Bodu.Extensions</code> namespace. Each method hangs off an <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> and produces working-day-aware results that respect the working-week definition and the non-working notable dates for the queried territory.</p>
+<p><code>Bodu.Globalization.Calendar</code> ships parallel extension surfaces - <code>NotableDateOnlyExtensions</code> (over <code>DateOnly</code>), <code>NotableDateTimeExtensions</code> (over <code>DateTime</code>), and <code>NotableDateTimeOffsetExtensions</code> (over <code>DateTimeOffset</code>) - under the <code>Bodu.Extensions</code> namespace. Each method hangs off an <a class="xref" href="../../api/Bodu.Globalization.Calendar.INotableDateService.html">INotableDateService</a> and produces working-day-aware results that respect the working-week definition and the non-working notable dates for the queried territory.</p>
 <p>These extensions are <strong>not</strong> auto-imported. Add the using directive explicitly:</p>
 <pre><code class="lang-csharp">using Bodu.Extensions;
 </code></pre>
-<p>Every method takes an <code>INotableDateService service</code> and a territory <code>string</code>. Working-day operations accept an optional trailing <code>WeekPattern? workingWeek = null</code>; notable-date operations accept an optional trailing <code>NotableDateFilter? filter = null</code>. The service is always passed explicitly — there is no ambient context.</p>
+<p>Every method takes an <code>INotableDateService service</code> and a territory <code>string</code>. Working-day operations accept an optional trailing <code>WeekPattern? workingWeek = null</code>; notable-date operations accept an optional trailing <code>NotableDateFilter? filter = null</code>. The service is always passed explicitly - there is no ambient context.</p>
 <p><code>DateOnly</code> is the authoritative surface and carries the full method set. The <code>DateTime</code> and <code>DateTimeOffset</code> surfaces are a subset (see <a href="#surface-differences">Surface differences</a>).</p>
 <p>The signatures below show the <code>DateOnly</code> overloads.</p>
 <h2 id="lookup">Lookup</h2>
@@ -126,7 +126,7 @@ using Bodu.Globalization.Calendar;
 
 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
-bool isWeekend  = today.IsWeekend();                       // weekend per the default Mon–Fri week
+bool isWeekend  = today.IsWeekend();                       // weekend per the default Mon-Fri week
 bool isHoliday  = today.IsNotableDate(service, &quot;AU-NSW&quot;);
 bool isWorking  = today.IsWorkingDay(service, &quot;AU-NSW&quot;);
 bool isClosed   = today.IsNonWorkingDay(service, &quot;AU-NSW&quot;);
@@ -225,7 +225,7 @@ DateOnly fiveAgo = today.AddWorkingDays(-5, service, &quot;AU-NSW&quot;);
 int span         = today.WorkingDaysBetween(inFive, service, &quot;AU-NSW&quot;);
 </code></pre>
 <h2 id="enumeration">Enumeration</h2>
-<p>The day enumerations return a lazily-evaluated <code>IEnumerable&lt;DateOnly&gt;</code> over the inclusive range from the receiver to <code>end</code>, so they compose naturally with LINQ and stop early when you do. <code>EnumerateNotableDates</code> returns an already-materialized <code>IReadOnlyList&lt;NotableDate&gt;</code> — a notable-date enumeration resolves the whole range up front rather than streaming.</p>
+<p>The day enumerations return a lazily-evaluated <code>IEnumerable&lt;DateOnly&gt;</code> over the inclusive range from the receiver to <code>end</code>, so they compose naturally with LINQ and stop early when you do. <code>EnumerateNotableDates</code> returns an already-materialized <code>IReadOnlyList&lt;NotableDate&gt;</code> - a notable-date enumeration resolves the whole range up front rather than streaming.</p>
 <table>
 <thead>
 <tr>
@@ -236,15 +236,15 @@ int span         = today.WorkingDaysBetween(inFive, service, &quot;AU-NSW&quot;)
 <tbody>
 <tr>
 <td><code>EnumerateWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)</code></td>
-<td><code>IEnumerable&lt;DateOnly&gt;</code> — every working day in the inclusive range (lazy).</td>
+<td><code>IEnumerable&lt;DateOnly&gt;</code> - every working day in the inclusive range (lazy).</td>
 </tr>
 <tr>
 <td><code>EnumerateNonWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)</code></td>
-<td><code>IEnumerable&lt;DateOnly&gt;</code> — every non-working day in the inclusive range (lazy).</td>
+<td><code>IEnumerable&lt;DateOnly&gt;</code> - every non-working day in the inclusive range (lazy).</td>
 </tr>
 <tr>
 <td><code>EnumerateNotableDates(DateOnly end, service, territory, NotableDateFilter? filter = null)</code></td>
-<td><code>IReadOnlyList&lt;NotableDate&gt;</code> — every notable date in the inclusive range (eager).</td>
+<td><code>IReadOnlyList&lt;NotableDate&gt;</code> - every notable date in the inclusive range (eager).</td>
 </tr>
 </tbody>
 </table>
@@ -287,7 +287,7 @@ IReadOnlyList&lt;NotableDate&gt; thisYear  = today.GetNotableDatesInYear(service
 </code></pre>
 <p>To resolve a whole year independently of a receiver date, prefer the by-year service extension <code>service.Resolve(2026, &quot;AU-NSW&quot;)</code>. See <a href="notable-dates.html">Using NotableDateService</a>.</p>
 <h2 id="the-working-week">The working week</h2>
-<p>The optional trailing <code>WeekPattern? workingWeek</code> argument overrides the default Monday–Friday working week for a single call. <code>WeekPattern</code> is the <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> value type from <code>Bodu.Core</code>; any day outside the pattern is treated as a weekend. Use the named presets for common shapes, or compose a custom pattern for non-standard schedules:</p>
+<p>The optional trailing <code>WeekPattern? workingWeek</code> argument overrides the default Monday-Friday working week for a single call. <code>WeekPattern</code> is the <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> value type from <code>Bodu.Core</code>; any day outside the pattern is treated as a weekend. Use the named presets for common shapes, or compose a custom pattern for non-standard schedules:</p>
 <table>
 <thead>
 <tr>
@@ -299,59 +299,59 @@ IReadOnlyList&lt;NotableDate&gt; thisYear  = today.GetNotableDatesInYear(service
 <tbody>
 <tr>
 <td><code>WeekPattern.MondayToFriday</code> <em>(default)</em></td>
-<td>Mon–Fri</td>
+<td>Mon-Fri</td>
 <td>Saturday + Sunday (most western territories).</td>
 </tr>
 <tr>
 <td><code>WeekPattern.SundayToThursday</code></td>
-<td>Sun–Thu</td>
+<td>Sun-Thu</td>
 <td>Friday + Saturday (much of the Middle East).</td>
 </tr>
 <tr>
 <td><code>WeekPattern.SundayToFriday</code></td>
-<td>Sun–Fri</td>
+<td>Sun-Fri</td>
 <td>Saturday only.</td>
 </tr>
 <tr>
 <td><code>WeekPattern.SaturdayToThursday</code></td>
-<td>Sat–Thu</td>
+<td>Sat-Thu</td>
 <td>Friday only.</td>
 </tr>
 <tr>
 <td><code>WeekPattern.SaturdayToWednesday</code></td>
-<td>Sat–Wed</td>
+<td>Sat-Wed</td>
 <td>Thursday + Friday.</td>
 </tr>
 <tr>
 <td><code>WeekPattern.MondayToSaturday</code></td>
-<td>Mon–Sat</td>
+<td>Mon-Sat</td>
 <td>Sunday only.</td>
 </tr>
 <tr>
 <td><code>WeekPattern.MondayToThursdayAndSaturday</code></td>
-<td>Mon–Thu + Sat</td>
+<td>Mon-Thu + Sat</td>
 <td>Friday + Sunday.</td>
 </tr>
 <tr>
 <td><code>WeekPattern.AllDays</code></td>
 <td>Every day</td>
-<td>No weekend — every day is working unless a non-working notable date applies.</td>
+<td>No weekend - every day is working unless a non-working notable date applies.</td>
 </tr>
 </tbody>
 </table>
-<p><code>WeekPattern</code> is composable beyond these presets — see <a href="../core/week-pattern.html">WeekPattern</a> for building a custom selection from arbitrary days.</p>
+<p><code>WeekPattern</code> is composable beyond these presets - see <a href="../core/week-pattern.html">WeekPattern</a> for building a custom selection from arbitrary days.</p>
 <pre><code class="lang-csharp">using Bodu;                 // WeekPattern
 using Bodu.Extensions;
 
 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
-// Sunday–Thursday working week (Friday/Saturday weekend, e.g. parts of the Middle East):
+// Sunday-Thursday working week (Friday/Saturday weekend, e.g. parts of the Middle East):
 DateOnly nextOpen = today.NextWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday);
 bool     isOpen   = today.IsWorkingDay(service, &quot;AE&quot;, WeekPattern.SundayToThursday);
 </code></pre>
-<p>When omitted, the working-day extensions fall back to Monday–Friday. To bake a non-default working week into resolution itself (so adjustment triggers such as <code>IfWeekend</code> agree), set it on the resource's <code>&lt;ResolutionPolicy workingDays=&quot;…&quot;&gt;</code> (a 7-character Sunday-first binary string). See <a href="identity-and-resolution.html">Identity and resolution</a>.</p>
+<p>When omitted, the working-day extensions fall back to Monday-Friday. To bake a non-default working week into resolution itself (so adjustment triggers such as <code>IfWeekend</code> agree), set it on the resource's <code>&lt;ResolutionPolicy workingDays=&quot;…&quot;&gt;</code> (a 7-character Sunday-first binary string). See <a href="identity-and-resolution.html">Identity and resolution</a>.</p>
 <h2 id="fiscal-year-helpers">Fiscal-year helpers</h2>
-<p><code>NotableDateFiscalExtensions</code> (over <code>DateOnly</code>) computes working-day boundaries of a fiscal year or quarter. Each method takes the month the fiscal year starts in (<code>1</code>–<code>12</code>), the service, the territory, and an optional working week:</p>
+<p><code>NotableDateFiscalExtensions</code> (over <code>DateOnly</code>) computes working-day boundaries of a fiscal year or quarter. Each method takes the month the fiscal year starts in (<code>1</code>-<code>12</code>), the service, the territory, and an optional working week:</p>
 <table>
 <thead>
 <tr>
@@ -439,41 +439,41 @@ DateOnly qOpen   = today.FirstWorkingDayOfFiscalQuarter(7, service, &quot;AU-NSW
 <td><code>NextNonWorkingDay</code>, <code>PreviousNonWorkingDay</code>, <code>EnumerateNonWorkingDays</code></td>
 <td>✓</td>
 <td>✓</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td><code>NextNotableDate</code>, <code>PreviousNotableDate</code></td>
 <td>✓</td>
 <td>✓</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td><code>GetNotableDatesInMonth</code>, <code>GetNotableDatesInYear</code></td>
 <td>✓</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 <tr>
 <td>Fiscal helpers (<code>NotableDateFiscalExtensions</code>)</td>
 <td>✓</td>
-<td>—</td>
-<td>—</td>
+<td>-</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
 <p>When you need the month/year notable-date lookups or the fiscal helpers, work in <code>DateOnly</code>. The same operations over <code>DateTime</code> / <code>DateTimeOffset</code> are otherwise identical in shape.</p>
 <h2 id="public-holidays-vs-observances">Public holidays vs. observances</h2>
-<p>Working-day arithmetic respects a resolved date's <code>IsNonWorkingDay</code> flag — not its category. A <code>NotableDateCategory.PublicHoliday</code> occurrence with <code>IsNonWorkingDay = false</code> does <strong>not</strong> cause working-day arithmetic to skip the date. Conversely, a <code>BankHoliday</code>, <code>Civic</code>, or <code>Cultural</code> occurrence flagged non-working <em>does</em> skip.</p>
+<p>Working-day arithmetic respects a resolved date's <code>IsNonWorkingDay</code> flag - not its category. A <code>NotableDateCategory.PublicHoliday</code> occurrence with <code>IsNonWorkingDay = false</code> does <strong>not</strong> cause working-day arithmetic to skip the date. Conversely, a <code>BankHoliday</code>, <code>Civic</code>, or <code>Cultural</code> occurrence flagged non-working <em>does</em> skip.</p>
 <p>Authors choose this when defining the rule (via <code>defaultNonWorkingDay</code> / <code>nonWorking</code>). The data packs follow the convention that nationally legislated closures (public holidays, bank closures) are non-working, while purely commemorative observances are not.</p>
 <h2 id="territory-specific-calculation">Territory-specific calculation</h2>
 <p>Every method takes a territory <code>string</code>. Because territories are hierarchical, a call with <code>&quot;AU-NSW&quot;</code> honours both national <code>AU</code> rules and NSW-specific <code>AU-NSW</code> rules. See <a href="territories.html">Territories and regional composition</a> for the containment semantics.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> — building the service, filters, and range queries.</li>
-<li><strong><a href="territories.html">Territories and regional composition</a></strong> — how the territory argument composes national and regional rules.</li>
-<li><strong><a href="adjustment-rules.html">Observance adjustment rules</a></strong> — how a rule's nominal date becomes the observed non-working day that working-day arithmetic ultimately skips.</li>
-<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> — <code>NotableDateOnlyExtensions</code>, <code>NotableDateTimeExtensions</code>, <code>NotableDateTimeOffsetExtensions</code>, <code>NotableDateFiscalExtensions</code>.</li>
-<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> — every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
+<li><strong><a href="notable-dates.html">Using NotableDateService</a></strong> - building the service, filters, and range queries.</li>
+<li><strong><a href="territories.html">Territories and regional composition</a></strong> - how the territory argument composes national and regional rules.</li>
+<li><strong><a href="adjustment-rules.html">Observance adjustment rules</a></strong> - how a rule's nominal date becomes the observed non-working day that working-day arithmetic ultimately skips.</li>
+<li><strong><a class="xref" href="../../api/Bodu.Globalization.Calendar.html">Bodu.Globalization.Calendar API reference</a></strong> - <code>NotableDateOnlyExtensions</code>, <code>NotableDateTimeExtensions</code>, <code>NotableDateTimeOffsetExtensions</code>, <code>NotableDateFiscalExtensions</code>.</li>
+<li><strong><a href="../topics/globalization-and-calendars.html">Globalization &amp; Calendars guides</a></strong> - every guide in this topic: the runtime, companions, data packs, and the notable-date catalogue.</li>
 </ul>
 
 </article>
@@ -493,7 +493,7 @@ DateOnly qOpen   = today.FirstWorkingDayOfFiscalQuarter(7, service, &quot;AU-NSW
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

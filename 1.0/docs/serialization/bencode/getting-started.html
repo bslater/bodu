@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Bodu.Text.Bencode — Getting started | BODU </title>
+      <title>Bodu.Text.Bencode - Getting started | BODU </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Bodu.Text.Bencode — Getting started | BODU ">
+      <meta name="title" content="Bodu.Text.Bencode - Getting started | BODU ">
       
       
       <link rel="icon" href="../../../images/favicon.svg">
@@ -88,7 +88,7 @@
 <h1 id="getting-started">Getting started</h1>
 
 <h2 id="install">Install</h2>
-<p>Add the package. Its one library dependency, the shared <strong>Bodu.Text.Serialization</strong> package (the attribute family, naming policies, and callback interfaces), is restored transitively — there is nothing else to add.</p>
+<p>Add the package. Its one library dependency, the shared <strong>Bodu.Text.Serialization</strong> package (the attribute family, naming policies, and callback interfaces), is restored transitively - there is nothing else to add.</p>
 <pre><code class="lang-shell">dotnet add package Bodu.Text.Bencode
 </code></pre>
 <p>It targets <code>net8.0</code>.</p>
@@ -128,7 +128,7 @@ node[&quot;Length&quot;] = 2048;
 byte[] back = node.ToByteArray();
 </code></pre>
 <h2 id="read-a-document-without-a-model">Read a document without a model</h2>
-<p>For inspection only, the <strong>read-only DOM</strong> is the lighter choice — a low-allocation view over the parsed buffer, walked through <code>RootElement</code>:</p>
+<p>For inspection only, the <strong>read-only DOM</strong> is the lighter choice - a low-allocation view over the parsed buffer, walked through <code>RootElement</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
 
 using BencodeDocument doc = BencodeDocument.Parse(payload);
@@ -137,9 +137,9 @@ BencodeElement info = doc.RootElement.GetProperty(&quot;info&quot;);
 string name   = info.GetProperty(&quot;name&quot;).GetString();        // &quot;ubuntu.iso&quot;
 long   length = info.GetProperty(&quot;piece length&quot;).GetInt64(); // 262144
 </code></pre>
-<p><code>BencodeDocument</code> is disposable — wrap it in <code>using</code> and copy out any values that must outlive it, since disposal returns its pooled buffer.</p>
+<p><code>BencodeDocument</code> is disposable - wrap it in <code>using</code> and copy out any values that must outlive it, since disposal returns its pooled buffer.</p>
 <h2 id="bridge-a-model-to-a-dom-without-re-encoding">Bridge a model to a DOM without re-encoding</h2>
-<p>When you have a model but want to inspect or edit its shape before writing bytes, the serializer projects it straight into either DOM — no intermediate <code>byte[]</code> round trip — and binds back from a node tree:</p>
+<p>When you have a model but want to inspect or edit its shape before writing bytes, the serializer projects it straight into either DOM - no intermediate <code>byte[]</code> round trip - and binds back from a node tree:</p>
 <pre><code class="lang-csharp">using Bodu.Text.Bencode;
 using Bodu.Text.Bencode.Nodes;
 
@@ -166,8 +166,8 @@ await using (FileStream stream = File.OpenRead(&quot;ubuntu.torrent&quot;))
 <h2 id="when-something-goes-wrong">When something goes wrong</h2>
 <p>Failures split into two exception types, so you can tell <em>bad input</em> apart from <em>wrong type</em>:</p>
 <ul>
-<li>A <strong>malformed document</strong> — bytes the grammar rejects — raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>, which carries the byte <code>Offset</code> where parsing failed.</li>
-<li>A document that <strong>parses but cannot bind</strong> to your type — a type mismatch, a missing required member, a value the format cannot represent — raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>.</li>
+<li>A <strong>malformed document</strong> - bytes the grammar rejects - raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>, which carries the byte <code>Offset</code> where parsing failed.</li>
+<li>A document that <strong>parses but cannot bind</strong> to your type - a type mismatch, a missing required member, a value the format cannot represent - raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>.</li>
 </ul>
 <pre><code class="lang-csharp">try
 {
@@ -184,11 +184,11 @@ catch (BencodeSerializationException ex)
 </code></pre>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><strong><a href="index.html">Bodu.Text.Bencode introduction</a></strong> — what is specific to Bencode: byte strings, canonical output, the kinds it cannot represent.</li>
-<li><strong><a href="concepts.html">Core concepts</a></strong> — the serializer, converter model, both DOMs, and the reader/writer seam.</li>
-<li><strong><a href="../../../guides/serialization/bencode/using.html">Using Bencode</a></strong> — byte strings, canonical ordering, the DOMs, and unsupported kinds.</li>
-<li><strong><a href="../../../guides/serialization/bencode/converters.html">Writing converters</a></strong> — custom shapes with <code>BencodeConverter&lt;T&gt;</code>.</li>
-<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> — where the serializers sit among the codecs and document formats.</li>
+<li><strong><a href="index.html">Bodu.Text.Bencode introduction</a></strong> - what is specific to Bencode: byte strings, canonical output, the kinds it cannot represent.</li>
+<li><strong><a href="concepts.html">Core concepts</a></strong> - the serializer, converter model, both DOMs, and the reader/writer seam.</li>
+<li><strong><a href="../../../guides/serialization/bencode/using.html">Using Bencode</a></strong> - byte strings, canonical ordering, the DOMs, and unsupported kinds.</li>
+<li><strong><a href="../../../guides/serialization/bencode/converters.html">Writing converters</a></strong> - custom shapes with <code>BencodeConverter&lt;T&gt;</code>.</li>
+<li><strong><a href="../../topics/text-and-serialization.html">Text &amp; Serialization topic overview</a></strong> - where the serializers sit among the codecs and document formats.</li>
 </ul>
 
 </article>
@@ -208,7 +208,7 @@ catch (BencodeSerializationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

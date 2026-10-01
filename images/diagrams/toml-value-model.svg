@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 360" role="img" aria-labelledby="tvm-t tvm-d">
-  <title id="tvm-t">TOML value model — ten kinds mapped to .NET types</title>
+  <title id="tvm-t">TOML value model - ten kinds mapped to .NET types</title>
   <desc id="tvm-d">Every value in a TOML document derives from TomlValue and reports a TomlValueKind discriminator. The ten kinds fall into three groups. The four scalars are TomlString (backed by string), TomlInteger (long), TomlFloat (double), and TomlBoolean (bool). The four RFC 3339 date-time kinds are TomlOffsetDateTime (DateTimeOffset), TomlLocalDateTime (DateTime with Unspecified kind), TomlLocalDate (DateOnly), and TomlLocalTime (TimeOnly). The two containers are TomlArray (an ordered list of TomlValue) and TomlTable (a key to TomlValue map). Scalar values are immutable; arrays and tables are mutable so a document can be authored programmatically.</desc>
 
   <defs>
@@ -26,9 +26,9 @@
     <rect class="pan" width="800" height="340" rx="8"/>
     <rect class="hdr" width="800" height="30" rx="8"/>
     <rect class="hdr" y="22" width="800" height="8"/>
-    <text class="ttl" x="16" y="20">TOML value model — ten kinds mapped to .NET types</text>
+    <text class="ttl" x="16" y="20">TOML value model - ten kinds mapped to .NET types</text>
 
-    <!-- ============ Row 1 — SCALARS ============ -->
+    <!-- ============ Row 1 - SCALARS ============ -->
     <text class="sect" fill="#2DD4BF" x="28" y="50">SCALARS</text>
 
     <g transform="translate(28 56)">
@@ -59,7 +59,7 @@
       <text class="mut" x="86" y="78">bool</text>
     </g>
 
-    <!-- ============ Row 2 — DATE & TIME (RFC 3339) ============ -->
+    <!-- ============ Row 2 - DATE & TIME (RFC 3339) ============ -->
     <text class="sect" fill="#60A5FA" x="28" y="144">DATE &amp; TIME  ·  RFC 3339</text>
 
     <g transform="translate(28 150)">
@@ -90,7 +90,7 @@
       <text class="mut" x="86" y="78">TimeOnly</text>
     </g>
 
-    <!-- ============ Row 3 — CONTAINERS ============ -->
+    <!-- ============ Row 3 - CONTAINERS ============ -->
     <text class="sect" fill="#A78BFA" x="28" y="238">CONTAINERS  ·  mutable</text>
 
     <g transform="translate(28 244)">
@@ -115,6 +115,6 @@
       <text class="mut" x="16" y="64" style="text-anchor:start">Scalars and date-times are immutable; containers are mutable.</text>
     </g>
 
-    <text class="mut" x="400" y="330" style="font-size:9.5px">A [table] header, an inline { } table, dotted keys, and an array-of-tables element all materialize as TomlTable / TomlArray — the model records meaning, not syntax.</text>
+    <text class="mut" x="400" y="330" style="font-size:9.5px">A [table] header, an inline { } table, dotted keys, and an array-of-tables element all materialize as TomlTable / TomlArray - the model records meaning, not syntax.</text>
   </g>
 </svg>

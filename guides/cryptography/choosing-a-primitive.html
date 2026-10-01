@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="choosing-a-primitive">Choosing a primitive</h1>
 
-<p><code>Bodu.Security.Cryptography</code> ships several algorithms in every family the BCL already covers — hashes, MACs, AEAD, KDFs, signatures — plus families the BCL does not (tweakable and wide-block ciphers, post-quantum KEM/DSA, HPKE, extended-nonce AEAD). This page is the decision table: for each family it lists every Bodu type beside its BCL counterpart, with the sizes and defaults read from the source, and says when each one is the right call.</p>
+<p><code>Bodu.Security.Cryptography</code> ships several algorithms in every family the BCL already covers - hashes, MACs, AEAD, KDFs, signatures - plus families the BCL does not (tweakable and wide-block ciphers, post-quantum KEM/DSA, HPKE, extended-nonce AEAD). This page is the decision table: for each family it lists every Bodu type beside its BCL counterpart, with the sizes and defaults read from the source, and says when each one is the right call.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p><code>Bodu.Security.Cryptography</code> is not independently audited and offers best-effort, not guaranteed, side-channel resistance. Where the BCL implements the same algorithm (SHA-2, SHA-3, HMAC, AES-GCM, ChaCha20-Poly1305, HKDF, PBKDF2, ECDSA/ECDH/RSA), prefer the BCL: it is FIPS-validated on supporting platforms and backed by OS or hardware implementations. Reach for Bodu when you need an algorithm the BCL lacks, a construction the BCL cannot express (a tweak, a 24-byte nonce, a wide block), or a pure-managed implementation that behaves identically on every platform. See <a href="security-posture.html">Security guarantees and limitations</a>.</p>
@@ -109,8 +109,8 @@
 <tr>
 <td>BLAKE2b</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a></td>
-<td>128 / 160 / 192 / 224 / 256 / 384 / 512 — default <strong>512</strong></td>
-<td>Yes — <code>Key</code> of 1–64 bytes (RFC 7693 §2.8 MAC mode)</td>
+<td>128 / 160 / 192 / 224 / 256 / 384 / 512 - default <strong>512</strong></td>
+<td>Yes - <code>Key</code> of 1-64 bytes (RFC 7693 §2.8 MAC mode)</td>
 <td>AVX-512 (VL), AVX2, SSSE3, AdvSimd</td>
 <td>RFC 7693</td>
 <td>The general-purpose fast digest on 64-bit hosts; keyed hashing without HMAC.</td>
@@ -118,8 +118,8 @@
 <tr>
 <td>BLAKE2s</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2s.html">Blake2s</a></td>
-<td>128 / 160 / 192 / 224 / 256 — default <strong>256</strong></td>
-<td>Yes — <code>Key</code> of 1–32 bytes</td>
+<td>128 / 160 / 192 / 224 / 256 - default <strong>256</strong></td>
+<td>Yes - <code>Key</code> of 1-32 bytes</td>
 <td>AVX-512 (VL), SSSE3, AdvSimd</td>
 <td>RFC 7693</td>
 <td>Same as BLAKE2b on 32-bit or constrained hosts.</td>
@@ -128,7 +128,7 @@
 <td>BLAKE3</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake3.html">Blake3</a></td>
 <td><strong>256</strong> (fixed)</td>
-<td>No — keyed and KDF modes are not exposed</td>
+<td>No - keyed and KDF modes are not exposed</td>
 <td>AVX-512, AVX2, SSSE3, AdvSimd, many chunks at once; threads by opt-in</td>
 <td>BLAKE3 specification (no RFC)</td>
 <td>Tree-parallel digest of large inputs; the fixed-output subset only.</td>
@@ -136,8 +136,8 @@
 <tr>
 <td>Skein-256 / 512 / 1024</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Skein256.html">Skein256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein512.html">Skein512</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Skein1024.html">Skein1024</a></td>
-<td>256: 128 / 160 / 224 / 256 · 512: 128 / 160 / 224 / 256 / 384 / 512 · 1024: 384 / 512 / 1024 — default = state width</td>
-<td>Yes — <code>Key</code> up to 8192 bits</td>
+<td>256: 128 / 160 / 224 / 256 · 512: 128 / 160 / 224 / 256 / 384 / 512 · 1024: 384 / 512 / 1024 - default = state width</td>
+<td>Yes - <code>Key</code> up to 8192 bits</td>
 <td>Through the Threefish kernels (AVX-512)</td>
 <td>SHA-3 finalist</td>
 <td>Skein's native keyed mode (a MAC without HMAC) and the Skein/Threefish family.</td>
@@ -147,23 +147,23 @@
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Whirlpool.html">Whirlpool</a></td>
 <td><strong>512</strong></td>
 <td>No</td>
-<td>—</td>
+<td>-</td>
 <td>ISO/IEC 10118-3</td>
 <td>Interoperability with formats that mandate it; three historical <code>Version</code> variants.</td>
 </tr>
 <tr>
 <td>Tiger</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Tiger.html">Tiger</a></td>
-<td>128 / 160 / 192 — default <strong>192</strong>; Tiger and Tiger2 <code>Variant</code></td>
+<td>128 / 160 / 192 - default <strong>192</strong>; Tiger and Tiger2 <code>Variant</code></td>
 <td>No</td>
-<td>—</td>
+<td>-</td>
 <td>Legacy (TTH, Direct Connect)</td>
 <td>Interoperability only, including Tiger-Tree hashes through <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> at <code>blockSize: 1024</code>.</td>
 </tr>
 <tr>
 <td>CubeHash</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.CubeHash.html">CubeHash</a></td>
-<td>224–512 — default <strong>512</strong>; tunable rounds and block size</td>
+<td>224-512 - default <strong>512</strong>; tunable rounds and block size</td>
 <td>No</td>
 <td>AVX-512 (F)</td>
 <td>SHA-3 round 2</td>
@@ -174,7 +174,7 @@
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru128.html">Snefru128</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.Snefru256.html">Snefru256</a></td>
 <td>128 / 256</td>
 <td>No</td>
-<td>—</td>
+<td>-</td>
 <td>Legacy</td>
 <td>Interoperability only.</td>
 </tr>
@@ -183,7 +183,7 @@
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
 <td><strong>256</strong></td>
 <td>No</td>
-<td>—</td>
+<td>-</td>
 <td>NIST SP 800-232</td>
 <td>Lightweight hashing that shares a permutation with Ascon-AEAD128.</td>
 </tr>
@@ -192,16 +192,16 @@
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconXof128.html">AsconXof128</a> / <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconCxof128.html">AsconCxof128</a></td>
 <td>Any (<code>Absorb</code> / <code>Squeeze</code> / <code>GetHash(n)</code>)</td>
 <td>No (CXOF takes a customization string)</td>
-<td>—</td>
+<td>-</td>
 <td>NIST SP 800-232</td>
 <td>Variable-length output from the Ascon family.</td>
 </tr>
 <tr>
 <td>SHAKE</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Shake.html">Shake</a></td>
-<td>Any — default <code>Shake()</code> is 256 output bits at security level 128</td>
+<td>Any - default <code>Shake()</code> is 256 output bits at security level 128</td>
 <td>No</td>
-<td>—</td>
+<td>-</td>
 <td>FIPS 202</td>
 <td>A managed SHAKE where the BCL's <code>Shake128</code> / <code>Shake256</code> are unavailable.</td>
 </tr>
@@ -225,7 +225,7 @@
 </tr>
 </tbody>
 </table>
-<p>Every Bodu hash derives from <code>System.Security.Cryptography.HashAlgorithm</code> (through <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> or one of its siblings), so <code>ComputeHash</code>, <code>TransformBlock</code> / <code>TransformFinalBlock</code>, <code>ComputeHashAsync(Stream)</code>, and <code>CryptoStream</code> all apply — see <a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a>. The fast-path column comes from <a href="hardware-acceleration.html">Hardware acceleration and the SIMD opt-out</a>; every accelerated primitive produces bit-identical output on the scalar path.</p>
+<p>Every Bodu hash derives from <code>System.Security.Cryptography.HashAlgorithm</code> (through <a class="xref" href="../../api/Bodu.Security.Cryptography.BlockHashAlgorithm.html">BlockHashAlgorithm</a> or one of its siblings), so <code>ComputeHash</code>, <code>TransformBlock</code> / <code>TransformFinalBlock</code>, <code>ComputeHashAsync(Stream)</code>, and <code>CryptoStream</code> all apply - see <a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a>. The fast-path column comes from <a href="hardware-acceleration.html">Hardware acceleration and the SIMD opt-out</a>; every accelerated primitive produces bit-identical output on the scalar path.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -270,7 +270,7 @@ Console.WriteLine(Convert.ToHexString(sha256.ComputeHash(message)));   // BA7816
 <td>128 bits</td>
 <td>128 bits</td>
 <td>Same as above with a full-width tag.</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>Poly1305</td>
@@ -278,13 +278,13 @@ Console.WriteLine(Convert.ToHexString(sha256.ComputeHash(message)));   // BA7816
 <td>256 bits, <strong>one-time</strong></td>
 <td>128 bits</td>
 <td>The authenticator inside an AEAD construction, with a per-message key derived from the cipher keystream.</td>
-<td>A reusable MAC — a second message under the same key throws <code>CryptographicException</code>; use the AEAD types below instead.</td>
+<td>A reusable MAC - a second message under the same key throws <code>CryptographicException</code>; use the AEAD types below instead.</td>
 </tr>
 <tr>
 <td>BLAKE2b / BLAKE2s keyed</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blake2b.html">Blake2b</a> <code>Key</code></td>
-<td>1–64 / 1–32 bytes</td>
-<td>8–64 / 8–32 bytes</td>
+<td>1-64 / 1-32 bytes</td>
+<td>8-64 / 8-32 bytes</td>
 <td>A MAC without the HMAC double-hash, when both peers speak BLAKE2.</td>
 <td>Peers that only implement HMAC.</td>
 </tr>
@@ -301,8 +301,8 @@ Console.WriteLine(Convert.ToHexString(sha256.ComputeHash(message)));   // BA7816
 <td><code>System.Security.Cryptography.HMACSHA256</code> …</td>
 <td>any</td>
 <td>256 / 384 / 512 bits</td>
-<td><strong>The default MAC</strong> — FIPS 198, universally implemented.</td>
-<td>—</td>
+<td><strong>The default MAC</strong> - FIPS 198, universally implemented.</td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
@@ -323,7 +323,7 @@ Console.WriteLine(Convert.ToHexString(b2.ComputeHash(message)));     // D63A32D3
 Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729…4E1E47
 </code></pre>
 <h2 id="authenticated-encryption-aead">Authenticated encryption (AEAD)</h2>
-<p>Every Bodu AEAD implements <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>, emits <code>ciphertext ‖ tag</code>, and is <strong>single-use per message</strong>: construct one instance per encryption or decryption. None of them streams — each is a single <code>Encrypt</code> / <code>Decrypt</code> call over the whole message, so chunk large payloads yourself with a distinct nonce per chunk.</p>
+<p>Every Bodu AEAD implements <a class="xref" href="../../api/Bodu.Security.Cryptography.IAeadTransform.html">IAeadTransform</a>, emits <code>ciphertext ‖ tag</code>, and is <strong>single-use per message</strong>: construct one instance per encryption or decryption. None of them streams - each is a single <code>Encrypt</code> / <code>Decrypt</code> call over the whole message, so chunk large payloads yourself with a distinct nonce per chunk.</p>
 <table>
 <thead>
 <tr>
@@ -343,10 +343,10 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> over <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a></td>
 <td>128 / 192 / 256</td>
 <td><strong>exactly 12 bytes</strong></td>
-<td>No — reuse is catastrophic</td>
+<td>No - reuse is catastrophic</td>
 <td>128 bits</td>
 <td>Yes</td>
-<td><code>System.Security.Cryptography.AesGcm</code> (same bytes; see <a href="bcl-interop.html#pattern-5--aes-gcm-is-wire-compatible-with-aesgcm">BCL interop</a>)</td>
+<td><code>System.Security.Cryptography.AesGcm</code> (same bytes; see <a href="bcl-interop.html#pattern-5---aes-gcm-is-wire-compatible-with-aesgcm">BCL interop</a>)</td>
 </tr>
 <tr>
 <td>AES-GCM-SIV</td>
@@ -392,7 +392,7 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td>AES-SIV</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a></td>
 <td>two independent AES keys</td>
-<td>none — the IV argument is ignored; deterministic</td>
+<td>none - the IV argument is ignored; deterministic</td>
 <td><strong>Yes</strong></td>
 <td>128 bits</td>
 <td>Yes</td>
@@ -412,7 +412,7 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td>XChaCha20-Poly1305</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.XChaCha20Poly1305.html">XChaCha20Poly1305</a></td>
 <td>256</td>
-<td><strong>24 bytes</strong> — safe to draw at random</td>
+<td><strong>24 bytes</strong> - safe to draw at random</td>
 <td>No, but random nonces are collision-safe</td>
 <td>128 bits</td>
 <td>Yes</td>
@@ -426,7 +426,7 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td>No</td>
 <td>128 bits</td>
 <td><strong>No</strong> (throws)</td>
-<td>NaCl <code>crypto_secretbox</code> (tag order differs — converters provided)</td>
+<td>NaCl <code>crypto_secretbox</code> (tag order differs - converters provided)</td>
 </tr>
 <tr>
 <td>XSalsa20-Poly1305-AEAD</td>
@@ -436,7 +436,7 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td>No</td>
 <td>128 bits</td>
 <td>Yes</td>
-<td>Nothing — Bodu-defined</td>
+<td>Nothing - Bodu-defined</td>
 </tr>
 <tr>
 <td>AES-GCM (BCL)</td>
@@ -444,7 +444,7 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td>128 / 192 / 256</td>
 <td>12 bytes</td>
 <td>No</td>
-<td>96–128 bits</td>
+<td>96-128 bits</td>
 <td>Yes</td>
 <td>Bodu <code>GcmModeTransform</code></td>
 </tr>
@@ -456,14 +456,14 @@ Console.WriteLine(Convert.ToHexString(hmac.ComputeHash(message)));   // F0133729
 <td>No</td>
 <td>128 bits</td>
 <td>Yes</td>
-<td>RFC 8439 — <strong>not</strong> XChaCha20-Poly1305</td>
+<td>RFC 8439 - <strong>not</strong> XChaCha20-Poly1305</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Which one?</strong> Use the BCL <code>AesGcm</code> when both peers can; use Bodu's <code>GcmModeTransform</code> when you need the same wire format on a platform where <code>AesGcm.IsSupported</code> is false or you want the <code>IBlockCipher</code> composition. If you cannot guarantee unique nonces, choose <strong>GCM-SIV</strong> (random-nonce tolerant with GCM-class performance) or <strong>SIV</strong> (fully deterministic; key wrapping). If you want to draw nonces at random from a counter-free source, choose <strong>XChaCha20-Poly1305</strong> — its 192-bit nonce is the reason the type exists. Choose Ascon for constrained peers speaking SP 800-232. Choose OCB, EAX, or CCM only when a protocol mandates them.</p>
+<p><strong>Which one?</strong> Use the BCL <code>AesGcm</code> when both peers can; use Bodu's <code>GcmModeTransform</code> when you need the same wire format on a platform where <code>AesGcm.IsSupported</code> is false or you want the <code>IBlockCipher</code> composition. If you cannot guarantee unique nonces, choose <strong>GCM-SIV</strong> (random-nonce tolerant with GCM-class performance) or <strong>SIV</strong> (fully deterministic; key wrapping). If you want to draw nonces at random from a counter-free source, choose <strong>XChaCha20-Poly1305</strong> - its 192-bit nonce is the reason the type exists. Choose Ascon for constrained peers speaking SP 800-232. Choose OCB, EAX, or CCM only when a protocol mandates them.</p>
 <div class="WARNING">
 <h5>Warning</h5>
-<p>Every AEAD in the table exposes a public span-based <code>Encrypt(plaintext, output)</code> instance method <em>and</em> an array-returning <code>Encrypt(plaintext, associatedData)</code> extension method. With two positional <code>byte[]</code> arguments C# binds the <strong>instance</strong> method — <code>aad</code> becomes the output buffer and the call returns an <code>int</code>. Always name the argument: <code>aead.Encrypt(plaintext, associatedData: aad)</code>. The single-argument form <code>aead.Encrypt(plaintext)</code> is unambiguous. The same applies to <code>Decrypt</code>.</p>
+<p>Every AEAD in the table exposes a public span-based <code>Encrypt(plaintext, output)</code> instance method <em>and</em> an array-returning <code>Encrypt(plaintext, associatedData)</code> extension method. With two positional <code>byte[]</code> arguments C# binds the <strong>instance</strong> method - <code>aad</code> becomes the output buffer and the call returns an <code>int</code>. Always name the argument: <code>aead.Encrypt(plaintext, associatedData: aad)</code>. The single-argument form <code>aead.Encrypt(plaintext)</code> is unambiguous. The same applies to <code>Decrypt</code>.</p>
 </div>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Security.Cryptography;
@@ -540,7 +540,7 @@ using (var aead = new AsconAead128(key.AsSpan(0, 16), nonce12.AsSpan(0, 16)))
 <td><code>System.Security.Cryptography.Rfc2898DeriveBytes.Pbkdf2</code></td>
 <td>Low</td>
 <td>RFC 8018 / NIST SP 800-132</td>
-<td>When FIPS compliance mandates PBKDF2. Not memory-hard — prefer Argon2id otherwise.</td>
+<td>When FIPS compliance mandates PBKDF2. Not memory-hard - prefer Argon2id otherwise.</td>
 </tr>
 </tbody>
 </table>
@@ -575,7 +575,7 @@ byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, H
 <td>private 32 · public 32 · signature 64</td>
 <td>RFC 8032</td>
 <td>raw, PKCS#8, SPKI, PEM</td>
-<td>none — <code>ECDsa</code> on NIST curves is a different scheme</td>
+<td>none - <code>ECDsa</code> on NIST curves is a different scheme</td>
 </tr>
 <tr>
 <td>X25519</td>
@@ -583,7 +583,7 @@ byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, H
 <td>keys 32 · shared secret 32</td>
 <td>RFC 7748</td>
 <td>raw, PKCS#8, SPKI, PEM</td>
-<td>none — <code>System.Security.Cryptography.ECDiffieHellman</code> on NIST curves</td>
+<td>none - <code>System.Security.Cryptography.ECDiffieHellman</code> on NIST curves</td>
 </tr>
 <tr>
 <td>ML-KEM-512 / 768 / 1024</td>
@@ -591,7 +591,7 @@ byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, H
 <td>ek 800 / 1184 / 1568 · dk 1632 / 2400 / 3168 · ct 768 / 1088 / 1568 · ss 32</td>
 <td>FIPS 203</td>
 <td>raw only (PKCS#8 / SPKI throw <code>NotSupportedException</code>)</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>ML-DSA-44 / 65 / 87</td>
@@ -599,7 +599,7 @@ byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, H
 <td>pk 1312 / 1952 / 2592 · sk 2560 / 4032 / 4896 · sig 2420 / 3309 / 4627</td>
 <td>FIPS 204</td>
 <td>raw only; <code>DeterministicSigning</code> switch</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>HPKE</td>
@@ -607,7 +607,7 @@ byte[] pbkdf2 = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations: 600_000, H
 <td>suites: X25519 + HKDF-SHA256 + AES-128-GCM / AES-256-GCM / ChaCha20-Poly1305</td>
 <td>RFC 9180</td>
 <td>via the X25519 key</td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>ECDSA / ECDH / RSA</td>
@@ -632,7 +632,7 @@ kem.GenerateKey();
 (byte[] ciphertext, byte[] sharedSecret) = kem.Encapsulate();      // 1088-byte ciphertext, 32-byte secret
 bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret);   // true
 </code></pre>
-<h2 id="block-ciphers--when-to-use-one-at-all">Block ciphers — when to use one at all</h2>
+<h2 id="block-ciphers---when-to-use-one-at-all">Block ciphers - when to use one at all</h2>
 <p>A raw block cipher gives confidentiality only. For new designs, start from the AEAD table above; drop to a block cipher and a mode when a format, a protocol, or a tweak requirement forces it. All of the following compose with the same modes and padding through <a href="cipher-composition-reference.html">Modes, transforms, and factories</a>.</p>
 <table>
 <thead>
@@ -652,7 +652,7 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> (over the BCL <code>Aes</code>)</td>
 <td>128</td>
 <td>128 / 192 / 256</td>
-<td>—</td>
+<td>-</td>
 <td>FIPS 197; hardware accelerated</td>
 <td>Always the first choice for a 128-bit block; the only primitive the AEAD modes accept.</td>
 </tr>
@@ -661,7 +661,7 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Camellia.html">Camellia</a> / <code>CamelliaBlockCipher</code></td>
 <td>128</td>
 <td>128 / 192 / 256</td>
-<td>—</td>
+<td>-</td>
 <td>ISO/IEC 18033-3, RFC 3713</td>
 <td>A regulatory or interop requirement names Camellia.</td>
 </tr>
@@ -670,7 +670,7 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Twofish.html">Twofish</a> / <code>TwofishBlockCipher</code></td>
 <td>128</td>
 <td>128 / 192 / 256</td>
-<td>—</td>
+<td>-</td>
 <td>AES finalist</td>
 <td>Legacy volume formats and files that used Twofish.</td>
 </tr>
@@ -679,9 +679,9 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128.html">Serpent128</a> / <code>Serpent128Cipher</code></td>
 <td>128</td>
 <td>128 / 192 / 256</td>
-<td>—</td>
+<td>-</td>
 <td>AES finalist</td>
-<td>Same — see <a href="serpent.html">Using Serpent</a>.</td>
+<td>Same - see <a href="serpent.html">Using Serpent</a>.</td>
 </tr>
 <tr>
 <td>Threefish-256 / 512 / 1024</td>
@@ -699,14 +699,14 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 <td>= block</td>
 <td>128 bits</td>
 <td><strong>Bodu-only, experimental</strong></td>
-<td>Experiments only — no reference implementation to interoperate with.</td>
+<td>Experiments only - no reference implementation to interoperate with.</td>
 </tr>
 <tr>
 <td>Blowfish</td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Blowfish.html">Blowfish</a></td>
 <td>64</td>
-<td>32–448 (8-bit steps)</td>
-<td>—</td>
+<td>32-448 (8-bit steps)</td>
+<td>-</td>
 <td>Legacy</td>
 <td>Reading data produced by Blowfish-era tools. The 64-bit block caps a key at a few gigabytes of data.</td>
 </tr>
@@ -715,7 +715,7 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.Skipjack.html">Skipjack</a></td>
 <td>64</td>
 <td>80</td>
-<td>—</td>
+<td>-</td>
 <td>Withdrawn (NIST)</td>
 <td>Interoperability with legacy government-format data only.</td>
 </tr>
@@ -769,11 +769,11 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> — the BCL surfaces every Bodu type plugs into, and the wire-compatibility proofs.</li>
-<li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> — the <code>CipherModeKind</code> support matrix.</li>
-<li><a href="security-posture.html">Security guarantees and limitations</a> — audit status, constant-time claims, and the exception contract.</li>
-<li><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> — the shape of the library.</li>
-<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> — every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
+<li><a href="bcl-interop.html">Interoperating with System.Security.Cryptography</a> - the BCL surfaces every Bodu type plugs into, and the wire-compatibility proofs.</li>
+<li><a href="cipher-composition-reference.html">Modes, transforms, and factories</a> - the <code>CipherModeKind</code> support matrix.</li>
+<li><a href="security-posture.html">Security guarantees and limitations</a> - audit status, constant-time claims, and the exception contract.</li>
+<li><a href="../../docs/cryptography/index.html">Bodu.Security.Cryptography introduction</a> - the shape of the library.</li>
+<li><strong><a href="../topics/hashing-and-cryptography.html">Hashing &amp; Cryptography guides</a></strong> - every guide in this topic, across Bodu.IO.Hashing and Bodu.Security.Cryptography.</li>
 </ul>
 
 </article>
@@ -793,7 +793,7 @@ bool agreed = kem.Decapsulate(ciphertext).AsSpan().SequenceEqual(sharedSecret); 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

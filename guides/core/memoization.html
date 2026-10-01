@@ -88,14 +88,14 @@
 <h1 id="memoization">Memoization</h1>
 
 <p><em>Memoization</em> caches the result of a pure function so each distinct argument is computed once and subsequent calls return the stored value. <a class="xref" href="../../api/Bodu.Functional.Memoizer.html">Memoizer</a> applies that pattern to a <code>Func&lt;…&gt;</code> delegate: it returns a new delegate of the same shape, backed by a thread-safe cache.</p>
-<p>It fits functions that are <strong>pure</strong> (the result depends only on the arguments) and <strong>expensive</strong> relative to a dictionary lookup. The cache is <strong>unbounded</strong> — every distinct argument is retained for the lifetime of the returned delegate — so use it over a small or bounded argument domain. When you need eviction, reach for <a href="evicting-dictionary.html"><code>EvictingDictionary</code></a> instead.</p>
+<p>It fits functions that are <strong>pure</strong> (the result depends only on the arguments) and <strong>expensive</strong> relative to a dictionary lookup. The cache is <strong>unbounded</strong> - every distinct argument is retained for the lifetime of the returned delegate - so use it over a small or bounded argument domain. When you need eviction, reach for <a href="evicting-dictionary.html"><code>EvictingDictionary</code></a> instead.</p>
 <p>A few contract points worth keeping in mind:</p>
 <ul>
 <li>Only <strong>successful</strong> results are cached; if the function throws, nothing is stored and the next call retries.</li>
 <li>A <code>null</code> result is a valid cached value.</li>
 <li>Argument types are constrained to <code>notnull</code> because they are used as cache keys.</li>
 </ul>
-<h2 id="pattern-1--wrap-a-pure-function">Pattern 1 — Wrap a pure function</h2>
+<h2 id="pattern-1---wrap-a-pure-function">Pattern 1 - Wrap a pure function</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Functional;
 
@@ -104,10 +104,10 @@ static int ExpensiveSquare(int n) { /* slow */ return n * n; }
 var square = Memoizer.Memoize&lt;int, int&gt;(n =&gt; ExpensiveSquare(n));
 
 int a = square(8);   // runs ExpensiveSquare
-int b = square(8);   // cache hit — ExpensiveSquare is not called again
+int b = square(8);   // cache hit - ExpensiveSquare is not called again
 </code></pre>
 <p>The returned <code>square</code> is a <code>Func&lt;int, int&gt;</code>; pass it around like any other delegate. The cache lives as long as that delegate reference does.</p>
-<h2 id="pattern-2--control-argument-matching-with-a-comparer">Pattern 2 — Control argument matching with a comparer</h2>
+<h2 id="pattern-2---control-argument-matching-with-a-comparer">Pattern 2 - Control argument matching with a comparer</h2>
 <p>The single-argument overload accepts an <code>IEqualityComparer&lt;TArg&gt;</code> so you can decide when two arguments are &quot;the same&quot; key. A case-insensitive comparer folds <code>&quot;Hello&quot;</code> and <code>&quot;HELLO&quot;</code> onto one cache entry:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Functional;
@@ -120,7 +120,7 @@ int x = lengthOf(&quot;Hello&quot;);   // computed
 int y = lengthOf(&quot;HELLO&quot;);   // cache hit
 </code></pre>
 <p>Pass <code>null</code> for the comparer (or use the single-argument overload) to match on the default equality comparer for the argument type.</p>
-<h2 id="pattern-3--multi-argument-functions">Pattern 3 — Multi-argument functions</h2>
+<h2 id="pattern-3---multi-argument-functions">Pattern 3 - Multi-argument functions</h2>
 <p>The two-argument overload keys the cache on the <code>(T1, T2)</code> pair, so the result is reused only when both arguments match:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Functional;
@@ -131,7 +131,7 @@ var add = Memoizer.Memoize&lt;int, int, int&gt;((x, y) =&gt; SlowAdd(x, y));
 
 int s1 = add(3, 4);   // computed
 int s2 = add(3, 4);   // cache hit
-int s3 = add(4, 3);   // computed — different key
+int s3 = add(4, 3);   // computed - different key
 </code></pre>
 <div class="NOTE">
 <h5>Note</h5>
@@ -139,11 +139,11 @@ int s3 = add(4, 3);   // computed — different key
 </div>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a class="xref" href="../../api/Bodu.Functional.html">Bodu.Functional</a> — the full API surface for <code>Memoizer</code>.</li>
-<li><a href="evicting-dictionary.html">Evicting dictionary</a> — a bounded-capacity cache when memoization's unbounded retention is the wrong trade-off.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — picking the right backing store for cached data.</li>
-<li><a href="../topics/core-foundations.html">Core foundations</a> — the wider <code>Bodu.Core</code> toolbox.</li>
-<li><a href="../../docs/core/index.html">Core documentation</a> — concepts and getting started for <code>Bodu.Core</code>.</li>
+<li><a class="xref" href="../../api/Bodu.Functional.html">Bodu.Functional</a> - the full API surface for <code>Memoizer</code>.</li>
+<li><a href="evicting-dictionary.html">Evicting dictionary</a> - a bounded-capacity cache when memoization's unbounded retention is the wrong trade-off.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - picking the right backing store for cached data.</li>
+<li><a href="../topics/core-foundations.html">Core foundations</a> - the wider <code>Bodu.Core</code> toolbox.</li>
+<li><a href="../../docs/core/index.html">Core documentation</a> - concepts and getting started for <code>Bodu.Core</code>.</li>
 </ul>
 
 </article>
@@ -163,7 +163,7 @@ int s3 = add(4, 3);   // computed — different key
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

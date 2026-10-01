@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="navigable-set">Navigable set</h1>
 
-<p><code>NavigableSet&lt;T&gt;</code> is a sorted set augmented with order statistics — a comparer-ordered <code>ISet&lt;T&gt;</code> backed by a red-black tree whose nodes carry subtree sizes. That one augmentation turns the whole positional query family into O(log n) operations: nearest-neighbour lookups (<code>TryGetFloor</code> / <code>TryGetCeiling</code> / <code>TryGetHigher</code> / <code>TryGetLower</code>), rank and select (<code>IndexOf</code> / <code>GetAt</code>), and range counting (<code>CountInRange</code>), plus cheap <code>Ascending()</code> / <code>Descending()</code> / <code>Range(low, high)</code> views.</p>
+<p><code>NavigableSet&lt;T&gt;</code> is a sorted set augmented with order statistics - a comparer-ordered <code>ISet&lt;T&gt;</code> backed by a red-black tree whose nodes carry subtree sizes. That one augmentation turns the whole positional query family into O(log n) operations: nearest-neighbour lookups (<code>TryGetFloor</code> / <code>TryGetCeiling</code> / <code>TryGetHigher</code> / <code>TryGetLower</code>), rank and select (<code>IndexOf</code> / <code>GetAt</code>), and range counting (<code>CountInRange</code>), plus cheap <code>Ascending()</code> / <code>Descending()</code> / <code>Range(low, high)</code> views.</p>
 <p>It fits problems where &quot;sorted&quot; is not enough and the <em>position</em> of an element matters: order books and price ladders (nearest quote at or below a limit), percentile and median tracking over a mutating population (k-th smallest in O(log n)), scheduling (next free slot after <em>t</em>), leaderboards (rank of a player, player at rank), and windowed counting (how many events between two timestamps) without iterating the window.</p>
 <p>The BCL's sorted collections each miss part of this contract:</p>
 <ul>
@@ -97,15 +97,15 @@
 </ul>
 <p>Contract points worth keeping in mind:</p>
 <ul>
-<li><strong>Set semantics.</strong> Comparer-equal duplicates are rejected — <code>Add</code> returns <code>false</code> and keeps the stored element, exactly like <code>SortedSet&lt;T&gt;</code>.</li>
+<li><strong>Set semantics.</strong> Comparer-equal duplicates are rejected - <code>Add</code> returns <code>false</code> and keeps the stored element, exactly like <code>SortedSet&lt;T&gt;</code>.</li>
 <li><strong>Null elements are rejected</strong> with <code>ArgumentNullException</code>, consistent with the rest of the Bodu collection family. This deliberately diverges from <code>SortedSet&lt;T&gt;</code>, which permits <code>null</code> for reference types; a null-permitting sorted set would make the Try-pattern navigation results ambiguous.</li>
 <li><strong>Views are live and fail-fast.</strong> <code>Ascending()</code>, <code>Descending()</code>, and <code>Range(low, high)</code> re-resolve against the current tree each time they are iterated; mutating the set <em>during</em> an iteration throws <code>InvalidOperationException</code> on the next advance, matching the family convention.</li>
-<li><code>Range</code> bounds are <strong>inclusive on both ends</strong>, need not be present in the set, and the walk costs O(log n + k) — it descends straight to the first in-range element.</li>
+<li><code>Range</code> bounds are <strong>inclusive on both ends</strong>, need not be present in the set, and the walk costs O(log n + k) - it descends straight to the first in-range element.</li>
 <li><code>Min</code> / <code>Max</code> throw <code>InvalidOperationException</code> on an empty set; <code>TryGetMin</code> / <code>TryGetMax</code> are the non-throwing forms.</li>
 <li>Not thread-safe.</li>
 </ul>
 <p>The backing-structure decision (order-statistic red-black tree with parent pointers, versus a skip list) is recorded in the design note at <code>Bodu.Collections/docs/navigable-collections-design.md</code>. <a href="navigable-dictionary.html"><code>NavigableDictionary&lt;TKey,TValue&gt;</code></a> is the key-value counterpart over the same node machinery.</p>
-<h2 id="pattern-1--nearest-neighbour-queries">Pattern 1 — nearest-neighbour queries</h2>
+<h2 id="pattern-1---nearest-neighbour-queries">Pattern 1 - nearest-neighbour queries</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -119,10 +119,10 @@ if (ladder.TryGetFloor(100.10m, out decimal bid))
 if (ladder.TryGetHigher(100.25m, out decimal ask))
     Console.WriteLine(ask);              // 101.00
 
-ladder.TryGetCeiling(100.10m, out decimal atOrAbove);  // 100.25 — least &gt;= value
-ladder.TryGetLower(99.50m, out _);                     // false — nothing strictly below the minimum
+ladder.TryGetCeiling(100.10m, out decimal atOrAbove);  // 100.25 - least &gt;= value
+ladder.TryGetLower(99.50m, out _);                     // false - nothing strictly below the minimum
 </code></pre>
-<h2 id="pattern-2--rank-select-and-range-counting">Pattern 2 — rank, select, and range counting</h2>
+<h2 id="pattern-2---rank-select-and-range-counting">Pattern 2 - rank, select, and range counting</h2>
 <p><code>IndexOf</code> is the zero-based rank (elements smaller than the value); <code>GetAt</code> is the inverse (the k-th smallest); <code>CountInRange</code> subtracts two rank walks, so none of the three iterates the set:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
@@ -131,13 +131,13 @@ var latencies = new NavigableSet&lt;int&gt;();
 foreach (int sample in new[] { 12, 5, 210, 47, 8, 33, 90, 61 })
     latencies.Add(sample);
 
-int median = latencies.GetAt(latencies.Count / 2);   // k-th smallest — 47
+int median = latencies.GetAt(latencies.Count / 2);   // k-th smallest - 47
 int p90 = latencies.GetAt((int)(latencies.Count * 0.9) - 1);
 
-int rank = latencies.IndexOf(33);                    // 3 — three samples are smaller
-int fastPath = latencies.CountInRange(0, 50);        // 5 — O(log n), no iteration
+int rank = latencies.IndexOf(33);                    // 3 - three samples are smaller
+int fastPath = latencies.CountInRange(0, 50);        // 5 - O(log n), no iteration
 </code></pre>
-<h2 id="pattern-3--directional-and-range-views">Pattern 3 — directional and range views</h2>
+<h2 id="pattern-3---directional-and-range-views">Pattern 3 - directional and range views</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Collections.Generic;
 
@@ -157,7 +157,7 @@ foreach (TimeOnly slot in schedule.Range(new TimeOnly(10, 0), new TimeOnly(14, 0
 // Views are live: a view captured before a mutation reflects it on the next fresh iteration.
 IEnumerable&lt;TimeOnly&gt; morning = schedule.Range(new TimeOnly(0, 0), new TimeOnly(12, 0));
 schedule.Add(new TimeOnly(11, 15));
-Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
+Console.WriteLine(morning.Count());      // 3 - 09:00, 10:30, 11:15
 </code></pre>
 <h2 id="choosing-against-the-alternatives">Choosing against the alternatives</h2>
 <table>
@@ -178,7 +178,7 @@ Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
 </tr>
 <tr>
 <td>Sorted key-value with positional access, rare writes</td>
-<td><code>SortedList&lt;TKey,TValue&gt;</code> (BCL) — accepts O(n) inserts</td>
+<td><code>SortedList&lt;TKey,TValue&gt;</code> (BCL) - accepts O(n) inserts</td>
 </tr>
 <tr>
 <td>Membership over dense integer universe</td>
@@ -192,10 +192,10 @@ Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
 </table>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="navigable-dictionary.html">Navigable dictionary</a> — the key-value counterpart with the same query family.</li>
-<li><a href="choosing-a-collection.html">Choosing a collection</a> — the full decision guide.</li>
-<li><a href="ordered-sets.html">Indexed and ordered sets</a> — insertion-ordered (not comparer-ordered) unique collections.</li>
-<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> — full namespace overview.</li>
+<li><a href="navigable-dictionary.html">Navigable dictionary</a> - the key-value counterpart with the same query family.</li>
+<li><a href="choosing-a-collection.html">Choosing a collection</a> - the full decision guide.</li>
+<li><a href="ordered-sets.html">Indexed and ordered sets</a> - insertion-ordered (not comparer-ordered) unique collections.</li>
+<li><a class="xref" href="../../api/Bodu.Collections.Generic.html">Bodu.Collections.Generic API reference</a> - full namespace overview.</li>
 </ul>
 
 </article>
@@ -215,7 +215,7 @@ Console.WriteLine(morning.Count());      // 3 — 09:00, 10:30, 11:15
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>

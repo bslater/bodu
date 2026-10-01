@@ -87,9 +87,9 @@
         <article data-uid="">
 <h1 id="built-in-converter-catalog">Built-in converter catalog</h1>
 
-<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong> — internally an ordinary <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>. This page catalogs that set — which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in <a href="converters.html">Writing converters</a>.</p>
+<p>Every type that <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializer.html">BencodeSerializer</a> handles without a user converter is served by a <strong>built-in converter</strong> - internally an ordinary <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>. This page catalogs that set - which .NET types are provisioned, how each is represented on the wire, and what the read path accepts. Resolution order and the rules for overriding a built-in with your own converter are covered in <a href="converters.html">Writing converters</a>.</p>
 <p>The library follows the design shared across the <a href="../index.html">Bodu serializers</a>: exact-type scalar converters first, factories for open type families (nullables, enums, dictionaries, collections, plain objects) last, with the document object model bridges ahead of everything so a DOM value is never claimed by a structural factory.</p>
-<p>Bencode (BEP 3) has exactly two scalar forms — integers and byte strings — and the built-in set deliberately covers only types with a native mapping. Boolean, floating-point, <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, and the date-time types are <strong>not</strong> provisioned: serializing one without a registered converter surfaces a missing-converter error rather than silently inventing a lossy representation. See <a href="converters.html#pattern-5--map-a-type-the-format-cannot-represent">Pattern 5 in Writing converters</a> for the bridging recipe.</p>
+<p>Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and the built-in set deliberately covers only types with a native mapping. Boolean, floating-point, <code>char</code>, <code>Guid</code>, <code>Uri</code>, <code>Version</code>, <code>TimeSpan</code>, and the date-time types are <strong>not</strong> provisioned: serializing one without a registered converter surfaces a missing-converter error rather than silently inventing a lossy representation. See <a href="converters.html#pattern-5---map-a-type-the-format-cannot-represent">Pattern 5 in Writing converters</a> for the bridging recipe.</p>
 <h2 id="scalars-and-binary-data">Scalars and binary data</h2>
 <table>
 <thead>
@@ -129,7 +129,7 @@
 <td><code>ulong</code></td>
 <td>integer</td>
 <td>integer</td>
-<td>Dedicated converter on the unsigned surface — the full <code>[0, ulong.MaxValue]</code> range round-trips.</td>
+<td>Dedicated converter on the unsigned surface - the full <code>[0, ulong.MaxValue]</code> range round-trips.</td>
 </tr>
 <tr>
 <td><code>Int128</code></td>
@@ -147,7 +147,7 @@
 <td><code>enum</code> (any)</td>
 <td>byte string, the member name</td>
 <td>byte string (case-insensitive) or integer</td>
-<td>The default enum handling — no converter needed; per-member names via <code>[StringEnumMemberName]</code>. The explicit string and number enum converters below override it.</td>
+<td>The default enum handling - no converter needed; per-member names via <code>[StringEnumMemberName]</code>. The explicit string and number enum converters below override it.</td>
 </tr>
 </tbody>
 </table>
@@ -194,7 +194,7 @@
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a></td>
 <td>the element's own kind</td>
-<td>Read produces an element backed by a non-pooled internal document — the <code>BencodeElement.Clone</code> lifetime, no disposal needed. The subtree is re-parsed under the serializer's dictionary-key leniency.</td>
+<td>Read produces an element backed by a non-pooled internal document - the <code>BencodeElement.Clone</code> lifetime, no disposal needed. The subtree is re-parsed under the serializer's dictionary-key leniency.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a></td>
@@ -206,8 +206,8 @@
 <h2 id="public-enum-converters">Public enum converters</h2>
 <p>Registered on the options or referenced from a <code>[Converter(...)]</code> attribute:</p>
 <ul>
-<li><a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a> / <code>BencodeStringEnumConverter&lt;TEnum&gt;</code> — member-name byte strings with an optional naming policy and integer-on-read flag.</li>
-<li><code>BencodeNumberEnumConverter&lt;TEnum&gt;</code> — the underlying numeric value as a Bencode integer.</li>
+<li><a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter.html">BencodeStringEnumConverter</a> / <code>BencodeStringEnumConverter&lt;TEnum&gt;</code> - member-name byte strings with an optional naming policy and integer-on-read flag.</li>
+<li><code>BencodeNumberEnumConverter&lt;TEnum&gt;</code> - the underlying numeric value as a Bencode integer.</li>
 </ul>
 <h2 id="types-that-need-a-user-converter">Types that need a user converter</h2>
 <table>
@@ -224,7 +224,7 @@
 </tr>
 <tr>
 <td>Types needing a representation decision</td>
-<td>none — byte strings are native binary</td>
+<td>none - byte strings are native binary</td>
 </tr>
 <tr>
 <td>Types served only by a user converter</td>
@@ -240,15 +240,15 @@
 </tr>
 </tbody>
 </table>
-<p>Each of the converter-only types maps cleanly onto an integer or a byte string — see <a href="converters.html#pattern-5--map-a-type-the-format-cannot-represent">Pattern 5 in Writing converters</a> and <a href="using.html#pattern-6--handle-the-kinds-bencode-cannot-represent">Pattern 6 in Using Bencode</a> for worked bridges.</p>
+<p>Each of the converter-only types maps cleanly onto an integer or a byte string - see <a href="converters.html#pattern-5---map-a-type-the-format-cannot-represent">Pattern 5 in Writing converters</a> and <a href="using.html#pattern-6---handle-the-kinds-bencode-cannot-represent">Pattern 6 in Using Bencode</a> for worked bridges.</p>
 <h2 id="see-also">See also</h2>
 <ul>
-<li><a href="converters.html">Writing converters</a> — overriding a built-in, factories, and resolution order.</li>
-<li><a href="using.html">Using Bencode</a> — the format walk-through the tables above back up.</li>
-<li><a href="attributes.html">Mapping attributes</a> — the declarative layer over the converters.</li>
-<li><a href="../../../docs/serialization/bencode/concepts.html">Core concepts</a> — the value-mapping summary in the Bencode vocabulary.</li>
+<li><a href="converters.html">Writing converters</a> - overriding a built-in, factories, and resolution order.</li>
+<li><a href="using.html">Using Bencode</a> - the format walk-through the tables above back up.</li>
+<li><a href="attributes.html">Mapping attributes</a> - the declarative layer over the converters.</li>
+<li><a href="../../../docs/serialization/bencode/concepts.html">Core concepts</a> - the value-mapping summary in the Bencode vocabulary.</li>
 <li><a href="../../topics/text-and-serialization.html">Text &amp; Serialization guides</a> and the <a href="../../../docs/topics/text-and-serialization.html">topic overview</a>.</li>
-<li>API reference — <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>.</li>
+<li>API reference - <a class="xref" href="../../../api/Bodu.Text.Bencode.Serialization.BencodeConverter-1.html">BencodeConverter&lt;T&gt;</a>.</li>
 </ul>
 
 </article>
@@ -268,7 +268,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 5f5a692 · Built: 2026-09-30 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.0.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 08be75b · Built: 2026-10-01 (UTC)</span>
         </div>
       </div>
     </footer>
