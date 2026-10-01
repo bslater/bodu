@@ -27,8 +27,8 @@ public sealed class StrategyResolutionContext
     /// <summary>The memoized non-working-day sets, keyed by territory and Gregorian year.</summary>
     private readonly Dictionary<(string Territory, int Year), HashSet<DateOnly>> _nonWorkingCache = new();
 
-    /// <summary>The non-working-day computations currently in progress, used to break re-entrant working-day lookups.</summary>
-    private readonly HashSet<(string Territory, int Year)> _nonWorkingInProgress = new();
+    /// <summary>Whether a non-working-day set is being built, during which working-day lookups consult rest days only.</summary>
+    private bool _buildingNonWorkingDates;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StrategyResolutionContext" /> class.
@@ -192,9 +192,15 @@ public sealed class StrategyResolutionContext
     /// <param name="territory">The territory whose non-working days apply.</param>
     /// <returns><see langword="true" /> when the date is a working day; otherwise <see langword="false" />.</returns>
     /// <remarks>
+    /// <para>
     /// The result is deterministic and independent of resource-declaration order: a non-working day is a rest day
     /// outside the working week, or a day claimed by a non-working rule's base occurrence (and its fixed-duration
     /// span).
+    /// </para>
+    /// <para>
+    /// A business-day strategy consulted while those non-working days are being built sees rest days only, so a
+    /// non-working rule that counts working days resolves against the working week alone.
+    /// </para>
     /// </remarks>
     public bool IsWorkingDay(DateOnly date, string territory)
     {
@@ -202,6 +208,12 @@ public sealed class StrategyResolutionContext
 
         if (!_resource.ResolutionPolicy.WorkingWeek.Contains(date.DayOfWeek))
             return false;
+
+        // Consulting any year's non-working days from inside a build, the previous year's included, would build that
+        // year in turn, and its business-day rules would consult the year before it, recursing once per year back to
+        // year 1.
+        if (_buildingNonWorkingDates)
+            return true;
 
         // A fixed-duration span anchored in the previous year can spill into this one, so consult both years.
         if (GetNonWorkingDates(territory, date.Year).Contains(date))
@@ -258,9 +270,9 @@ public sealed class StrategyResolutionContext
         if (_nonWorkingCache.TryGetValue(key, out HashSet<DateOnly>? cached))
             return cached;
 
-        // Break re-entrancy: a working-day strategy consulted while building this set falls back to rest-day-only.
-        if (!_nonWorkingInProgress.Add(key))
-            return [];
+        // A working-day strategy consulted while building this set falls back to rest days only (see IsWorkingDay), so
+        // the build never re-enters this method.
+        _buildingNonWorkingDates = true;
 
         try
         {
@@ -299,7 +311,7 @@ public sealed class StrategyResolutionContext
         }
         finally
         {
-            _nonWorkingInProgress.Remove(key);
+            _buildingNonWorkingDates = false;
         }
     }
 
