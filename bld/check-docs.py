@@ -10,8 +10,10 @@ Four checks, each independently runnable, all run by ``all``:
   identifiers  every backticked PascalCase identifier in the conceptual pages
                exists somewhere in the source tree (catches renamed or
                imagined members in prose)
-  status       every Stable / Preview / Experimental claim about a package
-               agrees with docs/docs/package-matrix.md, the source of truth
+  status       every package-matrix.md row agrees with the API-stability tier
+               its package's README.md declares, and every other Stable /
+               Preview / Experimental claim about a package agrees with
+               docs/docs/package-matrix.md
 
 Allow-lists live in bld/docs-checks/*.txt (one entry per line, ``#`` comments).
 The namespace allow-list is *debt*: entries are namespaces that still lack an
@@ -294,7 +296,7 @@ def check_status() -> list[str]:
     if not matrix:
         return ["package-matrix.md: no package/status rows found; the parser needs updating"]
 
-    problems = []
+    problems = matrix_tier_problems(matrix)
     for page in docs_pages() + [os.path.join(DOCS, "index.md")]:
         if os.path.abspath(page) == os.path.abspath(matrix_path):
             continue
@@ -315,6 +317,36 @@ def check_status() -> list[str]:
             for pkg in pkgs:
                 if pkg in matrix and matrix[pkg] not in claims:
                     problems.append(f"{rel}:{line_no}: `{pkg}` marked {'/'.join(sorted(claims))}, but package-matrix.md says {matrix[pkg]}")
+    return problems
+
+
+# The tier banner a package README opens with, in the grammar bld/check-release-manifest.sh reads
+# (and holds to the version stream the package ships on), so the matrix and the release agree on
+# one answer.
+README_TIER = re.compile(r"API stability\s*-+\s*\*{0,2}(Stable|Preview|Experimental)")
+
+
+def matrix_tier_problems(matrix: dict[str, str]) -> list[str]:
+    """Holds each package-matrix.md row to the tier its package's README.md declares.
+
+    The README is what nuget.org shows and what the release checks reconcile with the version a
+    package ships at, so the matrix follows it. A row for a package that is not packable, or whose
+    README has no banner, is skipped: the release-manifest check owns "every package has a tier".
+    """
+    packages = packable_package_ids()
+    problems = []
+    for pkg, status in sorted(matrix.items()):
+        project = packages.get(pkg)
+        if project is None:
+            continue
+        readme = os.path.join(os.path.dirname(os.path.dirname(project)), "README.md")
+        if not os.path.exists(readme):
+            continue
+        match = README_TIER.search(read(readme)[:2000])
+        if match and match.group(1) != status:
+            problems.append(
+                f"package-matrix.md: `{pkg}` marked {status}, but "
+                f"{os.path.relpath(readme, ROOT).replace(os.sep, '/')} says {match.group(1)}")
     return problems
 
 
