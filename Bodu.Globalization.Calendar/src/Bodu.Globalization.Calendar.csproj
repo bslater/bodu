@@ -5,15 +5,14 @@
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
     <!--
-      Out of band: ships 1.0.1 ahead of the lock-step BoduBaseVersion (bld/RELEASING.md, "Out-of-band
-      single-package release"), and validates against its own last release, 1.0.0, rather than the
-      shared baseline. 1.0.1 adds no public API: it fixes the stack overflow that a non-working rule
-      counting working days caused in StrategyResolutionContext.IsWorkingDay. Once nuget.org lists
-      1.0.1, move the pinned baseline up to it. When BoduBaseVersion reaches 1.0.1, remove both
-      properties; the release-manifest check fails until they are gone.
+      Out of band: shipped 1.0.1 ahead of the lock-step BoduBaseVersion (bld/RELEASING.md, "Out-of-band
+      single-package release"), and validates against its own last release, 1.0.1, rather than the
+      shared baseline. 1.0.1 added no public API: it fixed the stack overflow that a non-working rule
+      counting working days caused in StrategyResolutionContext.IsWorkingDay. When BoduBaseVersion
+      reaches 1.0.1, remove both properties; the release-manifest check fails until they are gone.
     -->
     <BoduPackageVersionOverride>1.0.1</BoduPackageVersionOverride>
-    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.0.0</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.0.1</PackageValidationBaselineVersion>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <Title>Bodu - Calendar</Title>
