@@ -306,6 +306,10 @@ internal static class CryptoHarness
             foreach ((string name, int kernel) in driver.Kernels)
                 Measure("kernel", $"{driver.Hash} {name} 1 MiB", BulkLength, () => driver.CompressAll(kernel, bulk));
         }
+
+        // TEMPORARY (issue #755): BLAKE2b's 256-bit kernel over each set of rotations. Remove before merging.
+        foreach ((string name, Action run) in Blake2bRotationExperiment.Cases(bulk))
+            Measure("kernel", name, BulkLength, run);
     }
 
     /// <summary>
