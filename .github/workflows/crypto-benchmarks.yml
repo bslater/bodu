@@ -46,20 +46,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # TEMPORARY (issues #755, #756, #758): eight x64 jobs, each a fresh draw from the hosted pool, on the BLAKE
-          # suite, so that one run has eight chances at an AMD Zen 4 with AVX-512, and the two ARM64 runners, whose
-          # BLAKE dispatch selects the scalar kernels. Each times this checkout beside the base build that a later step
-          # checks out. Restore the three entries before merging.
-          - { os: ubuntu-24.04, suites: blake, copy: 1 }
-          - { os: ubuntu-24.04, suites: blake, copy: 2 }
-          - { os: ubuntu-24.04, suites: blake, copy: 3 }
-          - { os: ubuntu-24.04, suites: blake, copy: 4 }
-          - { os: ubuntu-24.04, suites: blake, copy: 5 }
-          - { os: ubuntu-24.04, suites: blake, copy: 6 }
-          - { os: ubuntu-24.04, suites: blake, copy: 7 }
-          - { os: ubuntu-24.04, suites: blake, copy: 8 }
-          - { os: ubuntu-24.04-arm, suites: blake-arm, copy: 1 }
-          - { os: macos-15, suites: blake-arm, copy: 1 }
+          - os: ubuntu-24.04-arm
+            suites: crypto,argon2,sweep
+          - os: macos-15
+            suites: crypto,argon2,sweep
+          - os: ubuntu-24.04
+            suites: argon2,sweep,x64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
 
@@ -81,17 +73,6 @@ jobs:
           dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
             --configuration Release \
             --output "${{ github.workspace }}/local-packages"
-
-      - name: 'Check out the base build (TEMPORARY, issues #755, #756, #758)'
-        run: |
-          git fetch --no-tags --depth=1 origin 78c96c1ec896c1aacda413c9bc70d228157cb0d5
-          git worktree add "$RUNNER_TEMP/base" FETCH_HEAD
-          # The base times master's library through this checkout's harness, so that both builds run the same cases.
-          cp Bodu.Security.Cryptography/bench/Security.Cryptography.Benchmarks/*.cs \
-            "$RUNNER_TEMP/base/Bodu.Security.Cryptography/bench/Security.Cryptography.Benchmarks/"
-          ln -s "${{ github.workspace }}/local-packages" "$RUNNER_TEMP/base/local-packages"
-          project="$RUNNER_TEMP/base/Bodu.Security.Cryptography/bench/Bodu.Security.Cryptography.Benchmarks.csproj"
-          echo "BODU_BASE_PROJECT=$project" >> "$GITHUB_ENV"
 
       - name: Report processor
         run: |
@@ -121,7 +102,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: crypto-benchmarks-${{ matrix.os }}-${{ matrix.copy }}
+          name: crypto-benchmarks-${{ matrix.os }}
           path: |
             bench-results/**/*.txt
             !bench-results/bin/**

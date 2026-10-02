@@ -38,9 +38,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT = os.path.join(HERE, 'Bodu.Security.Cryptography.Benchmarks.csproj')
 ASSEMBLY = 'Bodu.Security.Cryptography.Benchmarks.dll'
-# TEMPORARY (issues #755, #756, #758): the base-* configurations run a second build of this project, from the checkout
-# that BODU_BASE_PROJECT names, beside each configuration of this one.
-CONFIGURATIONS = ['vector', 'base', 'avx2', 'base-avx2', 'ssse3', 'scalar', '1.0.0']
+CONFIGURATIONS = ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']
 
 # Each configuration: the build it runs, the harness arguments it adds, and the environment it sets.
 CONFIGURATION_SETTINGS = {
@@ -49,8 +47,6 @@ CONFIGURATION_SETTINGS = {
     'ssse3': ('current', [], {'DOTNET_EnableAVX2': '0'}),
     'scalar': ('current', ['--disable-simd'], {}),
     '1.0.0': ('1.0.0', [], {}),
-    'base': ('base', [], {}),
-    'base-avx2': ('base', [], {'DOTNET_EnableAVX512F': '0', 'DOTNET_EnableAVX512': '0'}),
 }
 
 # The crypto-harness cases whose code has an ARM64 path of its own: the AdvSimd kernels (BLAKE2b, BLAKE2s, BLAKE3,
@@ -72,14 +68,8 @@ CRYPTO_FILTERS = [
 # the configuration allows on its own.
 X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kernel/BLAKE', 'kdf/Bodu']
 
-# TEMPORARY (issues #755, #756, #758): the BLAKE hash cases and every BLAKE kernel named, on x64 with AVX-512 on and off,
-# and on ARM64, each beside the base build.
-BLAKE_FILTERS = ['hash/Bodu BLAKE', 'kernel/BLAKE']
-
 # Each suite: its harness arguments, and the configurations it runs in.
 SUITES = {
-    'blake': (['--crypto-harness', *BLAKE_FILTERS], ['vector', 'base', 'avx2', 'base-avx2']),
-    'blake-arm': (['--crypto-harness', *BLAKE_FILTERS], ['vector', 'base']),
     'crypto': (['--crypto-harness', *CRYPTO_FILTERS], ['vector', 'scalar', '1.0.0']),
     'x64': (['--crypto-harness', *X64_FILTERS], ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']),
     'argon2': (['--argon2-harness'], ['vector', 'scalar', '1.0.0']),
@@ -93,14 +83,10 @@ ARGON2_CONCURRENT_LINE = re.compile(r'^(.+?)\s+\d+ in\s+\d+ ms\s+([\d.]+) ms eac
 
 def build(out, frameworks):
     """Builds the benchmarks from this checkout and against 1.0.0, for each framework."""
-    builds = [('current', PROJECT, []), ('1.0.0', PROJECT, ['-p:BoduCryptoBaseline=1.0.0'])]
-    if os.environ.get('BODU_BASE_PROJECT'):
-        builds.append(('base', os.environ['BODU_BASE_PROJECT'], []))
-
-    for configuration, project, properties in builds:
+    for configuration, properties in (('current', []), ('1.0.0', ['-p:BoduCryptoBaseline=1.0.0'])):
         for framework in frameworks:
             output = os.path.join(out, 'bin', configuration, framework)
-            command = ['dotnet', 'build', project, '-c', 'Release', '-f', framework, '-o', output, *properties]
+            command = ['dotnet', 'build', PROJECT, '-c', 'Release', '-f', framework, '-o', output, *properties]
             print(f'::group::build {configuration} {framework}', flush=True)
             subprocess.run(command, check=True)
             print('::endgroup::', flush=True)
@@ -217,12 +203,7 @@ def summarize(out):
 
             print()
             present = [c for c in CONFIGURATIONS if c in headers]
-            pairs = (('vector', 'scalar'), ('avx2', 'scalar'), ('ssse3', 'scalar'), ('vector', '1.0.0'))
-            if 'base' in present:
-                # TEMPORARY (issues #755, #756, #758): each configuration against the base build's.
-                pairs = (('vector', 'base'), ('avx2', 'base-avx2'))
-
-            comparisons = [(a, b) for a, b in pairs if a in present and b in present]
+            comparisons = [(a, b) for a, b in (('vector', 'scalar'), ('avx2', 'scalar'), ('ssse3', 'scalar'), ('vector', '1.0.0')) if a in present and b in present]
             print('| Case | Unit | ' + ' | '.join(present) + ' | ' + ' | '.join(f'{a} vs {b}' for a, b in comparisons) + ' |')
             print('|---|---|' + '---|' * (len(present) + len(comparisons)))
             for case, by_configuration in measured.items():
