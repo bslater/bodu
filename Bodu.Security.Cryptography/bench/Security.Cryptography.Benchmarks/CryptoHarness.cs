@@ -95,6 +95,9 @@ internal static class CryptoHarness
         Console.WriteLine(Describe());
 
         RunHashes();
+#if !BODU_CRYPTO_BASELINE
+        RunBlakeKernels();
+#endif
         RunStreamCiphers();
         RunAeadsAndModes();
 #if !BODU_CRYPTO_BASELINE
@@ -133,6 +136,10 @@ internal static class CryptoHarness
             Measure("hash", $"Bodu {name} 1 MiB", BulkLength, () => algorithm.TryComputeHash(bulk, digest, out _));
             Measure("hash", $"Bodu {name} 64 B", SmallLength, () => algorithm.TryComputeHash(small, digest, out _));
         }
+
+        // One chunk: sixteen compressions of a single block, the case of BLAKE3's single-block kernel.
+        using (var blake3 = new Blake3())
+            Measure("hash", "Bodu BLAKE3 1 KiB", 1024, () => blake3.TryComputeHash(bulk.AsSpan(0, 1024), digest, out _));
 
         // BLAKE3's tree lets one large input use every core; the bound is opt-in, so both sides are measured.
         byte[] large = Random(16 * BulkLength, 11);
@@ -279,6 +286,28 @@ internal static class CryptoHarness
     }
 
 #if !BODU_CRYPTO_BASELINE
+    /// <summary>
+    /// Measures the BLAKE2s, BLAKE2b and BLAKE3 compression functions through each kernel the processor supports, named
+    /// explicitly, over the bulk input.
+    /// </summary>
+    /// <remarks>
+    /// On ARM64 these cases time the AdvSimd kernels that dispatch holds back. The library's switch does not reach a
+    /// kernel named explicitly, so with <c>--disable-simd</c> they would repeat the default configuration's, and they are
+    /// left out.
+    /// </remarks>
+    private static void RunBlakeKernels()
+    {
+        if (Program.IsSimdDisabled)
+            return;
+
+        byte[] bulk = Random(BulkLength, 23);
+        foreach (BlakeKernelDriver driver in BlakeKernelDriver.CreateAll())
+        {
+            foreach ((string name, int kernel) in driver.Kernels)
+                Measure("kernel", $"{driver.Hash} {name} 1 MiB", BulkLength, () => driver.CompressAll(kernel, bulk));
+        }
+    }
+
     /// <summary>
     /// Measures Poly1305 through each kernel the processor supports, named explicitly, at lengths either side of the
     /// dispatch thresholds, to show where each kernel overtakes the one below it.
