@@ -158,6 +158,11 @@ internal static partial class Argon2Core
     /// kernel.
     /// </para>
     /// <para>
+    /// With AVX-512VL the 256-bit kernel rotates by 63 bits in one <c>VPRORQ</c> rather than an addition, a shift and
+    /// an XOR, sixteen fewer instructions in its rounds. That made an Argon2id derivation of 19 MiB 1.03 to 1.07 times
+    /// as fast on an Intel Xeon 6973P-C and on AMD's Zen 4 and Zen 5, under .NET 8 and .NET 10 alike.
+    /// </para>
+    /// <para>
     /// On ARM64 the hybrid kernel ran 1.24 to 1.28 times as fast as the scalar kernel on a Neoverse N2 and 1.3 to 1.6
     /// times as fast as the AdvSimd kernel on an Apple M1, under .NET 8 and .NET 10 alike. The AdvSimd kernel, which
     /// holds one row in eight vector registers, ran slower than the scalar kernel on the N2 and runs only where a
