@@ -399,6 +399,9 @@ jobs:
                 stripped="$(printf '%s' "$line" | sed 's/^#[[:space:]]*//; s/[[:space:]]*$//')"
                 if printf '%s' "$stripped" | grep -qE '^Bodu\.[A-Za-z0-9.]+$'; then
                   collecting="$stripped"; withheld_ids+=("$stripped"); withheld_reasons+=("")
+                elif printf '%s' "$stripped" | grep -qE '^-+$'; then
+                  # The rule that closes the withheld block ends the last entry's reason.
+                  collecting=""
                 elif [ -n "$collecting" ] && [ -n "$stripped" ]; then
                   # Join the reason's wrapped comment lines; taking only the first truncates it mid-sentence.
                   last=$(( ${#withheld_reasons[@]} - 1 ))
