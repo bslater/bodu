@@ -134,14 +134,19 @@ internal static partial class Blake3Core
     /// <param name="d">The fourth working word.</param>
     /// <param name="x">The first message word.</param>
     /// <param name="y">The second message word.</param>
+    /// <remarks>
+    /// Each message word is added to <paramref name="a" /> before <paramref name="b" /> is. The word
+    /// <paramref name="b" /> is the last that the step before computes, so adding it last leaves one addition, not two,
+    /// waiting on it.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void G(ref uint a, ref uint b, ref uint c, ref uint d, uint x, uint y)
     {
-        a += b + x;
+        a = a + x + b;
         d = (d ^ a).RotateBitsRightUnchecked(16);
         c += d;
         b = (b ^ c).RotateBitsRightUnchecked(12);
-        a += b + y;
+        a = a + y + b;
         d = (d ^ a).RotateBitsRightUnchecked(8);
         c += d;
         b = (b ^ c).RotateBitsRightUnchecked(7);
@@ -153,8 +158,13 @@ internal static partial class Blake3Core
     /// <param name="block">The first byte of the block.</param>
     /// <param name="index">The word's index, from 0 to 15.</param>
     /// <returns>The message word.</returns>
+    /// <remarks>
+    /// The index is native-sized so that a vector kernel's gather, which reads it from the message schedule, scales it
+    /// within the address rather than in a register of its own, and the load can fold into the instruction that inserts
+    /// the word.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint M(ref byte block, int index)
+    private static uint M(ref byte block, nuint index)
     {
         uint word = Unsafe.ReadUnaligned<uint>(ref Unsafe.Add(ref block, index * sizeof(uint)));
         return BitConverter.IsLittleEndian ? word : BinaryPrimitives.ReverseEndianness(word);

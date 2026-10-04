@@ -7,6 +7,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace Bodu.Security.Cryptography;
 
@@ -23,10 +24,13 @@ internal static partial class Blake3Core
     /// <remarks>
     /// <para>
     /// <see cref="Compress" /> compresses one block: the working vector is held as four rows of four words, so lane
-    /// <c>i</c> of the rows is column <c>i</c> and one vector <c>G</c> mixes all four columns. Rotating the second,
-    /// third and fourth rows by one, two and three lanes turns the diagonals into columns for the second half of a
-    /// round, and rotating them back restores the rows. Each round's message words are gathered straight from the block
-    /// as the schedule names them.
+    /// <c>i</c> of the rows is column <c>i</c> and one vector <c>G</c> mixes all four columns. Rotating the first row
+    /// by three lanes and the third and fourth by one and two turns the diagonals into columns for the second half of a
+    /// round, lane <c>i</c> holding the diagonal through word <c>i</c> of the second row, and rotating them back
+    /// restores the rows. The second row stays in place: it is the row that each half of a round computes last and that
+    /// the next half reads first, so no rotation stands between the two. Each round's message words are gathered
+    /// straight from the block as the schedule names them, the diagonal half's in the order its lanes hold the
+    /// diagonals.
     /// </para>
     /// <para>
     /// <see cref="HashMany" /> compresses up to four inputs at once, one to a lane, as the eight-way kernel does eight:
@@ -68,8 +72,8 @@ internal static partial class Blake3Core
                     ref d,
                     Load(ref block, ref s, 0, 2, 4, 6),
                     Load(ref block, ref s, 1, 3, 5, 7),
-                    Load(ref block, ref s, 8, 10, 12, 14),
-                    Load(ref block, ref s, 9, 11, 13, 15));
+                    Load(ref block, ref s, 14, 8, 10, 12),
+                    Load(ref block, ref s, 15, 9, 11, 13));
             }
 
             (a ^ c).StoreUnsafe(ref cv);
@@ -227,15 +231,15 @@ internal static partial class Blake3Core
         {
             G(ref a, ref b, ref c, ref d, columnX, columnY);
 
-            b = TIsa.RotateLanes1(b);
-            c = TIsa.RotateLanes2(c);
-            d = TIsa.RotateLanes3(d);
+            a = TIsa.RotateLanes3(a);
+            c = TIsa.RotateLanes1(c);
+            d = TIsa.RotateLanes2(d);
 
             G(ref a, ref b, ref c, ref d, diagonalX, diagonalY);
 
-            b = TIsa.RotateLanes3(b);
-            c = TIsa.RotateLanes2(c);
-            d = TIsa.RotateLanes1(d);
+            a = TIsa.RotateLanes1(a);
+            c = TIsa.RotateLanes3(c);
+            d = TIsa.RotateLanes2(d);
         }
 
         /// <summary>
@@ -247,14 +251,19 @@ internal static partial class Blake3Core
         /// <param name="d">The fourth row.</param>
         /// <param name="x">The first message word of each <c>G</c>.</param>
         /// <param name="y">The second message word of each <c>G</c>.</param>
+        /// <remarks>
+        /// Each message word is added to <paramref name="a" /> before <paramref name="b" /> is. The row
+        /// <paramref name="b" /> is the last that the step before computes, so adding it last leaves one addition, not
+        /// two, waiting on it.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void G(ref Vector128<uint> a, ref Vector128<uint> b, ref Vector128<uint> c, ref Vector128<uint> d, Vector128<uint> x, Vector128<uint> y)
         {
-            a += b + x;
+            a = a + x + b;
             d = TIsa.RotateRight16(d ^ a);
             c += d;
             b = TIsa.RotateRight12(b ^ c);
-            a += b + y;
+            a = a + y + b;
             d = TIsa.RotateRight8(d ^ a);
             c += d;
             b = TIsa.RotateRight7(b ^ c);
@@ -270,13 +279,29 @@ internal static partial class Blake3Core
         /// <param name="k2">The schedule entry naming the word for lane 2.</param>
         /// <param name="k3">The schedule entry naming the word for lane 3.</param>
         /// <returns>The four words.</returns>
+        /// <remarks>
+        /// Where SSE4.1 is available the vector is built a word at a time, so that each word's load folds into the
+        /// <c>vmovd</c> or <c>vpinsrd</c> that places it. Built from four arguments at once, the JIT loads the first
+        /// three words into general registers, each with its own index arithmetic, and then moves them across to the
+        /// vector registers.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Vector128<uint> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3) =>
-            Vector128.Create(
+        private static Vector128<uint> Load(ref byte block, ref byte schedule, int k0, int k1, int k2, int k3)
+        {
+            if (Sse41.IsSupported)
+            {
+                return Vector128.CreateScalarUnsafe(M(ref block, Unsafe.Add(ref schedule, k0)))
+                    .WithElement(1, M(ref block, Unsafe.Add(ref schedule, k1)))
+                    .WithElement(2, M(ref block, Unsafe.Add(ref schedule, k2)))
+                    .WithElement(3, M(ref block, Unsafe.Add(ref schedule, k3)));
+            }
+
+            return Vector128.Create(
                 M(ref block, Unsafe.Add(ref schedule, k0)),
                 M(ref block, Unsafe.Add(ref schedule, k1)),
                 M(ref block, Unsafe.Add(ref schedule, k2)),
                 M(ref block, Unsafe.Add(ref schedule, k3)));
+        }
 
         /// <summary>
         /// Loads one block of each of four inputs and transposes it into sixteen vectors, one per message word.

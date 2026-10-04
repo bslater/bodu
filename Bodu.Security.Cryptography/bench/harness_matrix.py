@@ -53,9 +53,9 @@ CONFIGURATION_SETTINGS = {
 # CubeHash, ChaCha20 and Salsa20, Poly1305, Serpent-128, scrypt, Argon2), the PMULL GHASH and POLYVAL kernels (GCM,
 # GCM-SIV), and the umulh products of Poly1305's scalar loop and of Curve25519, which the library's switch leaves in
 # place. Poly1305 and its AEADs run at lengths either side of the AdvSimd kernel's thresholds, and the kernel cases time
-# each Poly1305 kernel and each Argon2 kernel on its own.
+# each BLAKE, Poly1305 and Argon2 kernel on its own, the BLAKE kernels that dispatch holds back on ARM64 included.
 CRYPTO_FILTERS = [
-    'hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'hash/Bodu CubeHash',
+    'hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kernel/BLAKE', 'hash/Bodu CubeHash',
     'stream/Bodu ChaCha20', 'stream/Bodu XChaCha20', 'stream/Bodu Salsa20', 'stream/Bodu XSalsa20',
     'Poly1305 64 B', 'Poly1305 128 B', 'Poly1305 192 B', 'Poly1305 256 B', 'Poly1305 512 B', 'Poly1305 1 KiB',
     'Poly1305 1 MiB', 'kernel/Poly1305', 'kernel/Argon2', 'GCM',
@@ -64,8 +64,9 @@ CRYPTO_FILTERS = [
 
 # The crypto-harness cases whose x64 kernels spread one state across a vector's lanes, the layout F7 found losing on
 # ARM64: BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2. The ``avx2`` configuration runs their AVX2 kernels
-# whether or not the machine has AVX-512, and ``ssse3`` their 128-bit ones.
-X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kdf/Bodu']
+# whether or not the machine has AVX-512, and ``ssse3`` their 128-bit ones, and the kernel cases time each BLAKE kernel
+# the configuration allows on its own.
+X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kernel/BLAKE', 'kdf/Bodu']
 
 # Each suite: its harness arguments, and the configurations it runs in.
 SUITES = {

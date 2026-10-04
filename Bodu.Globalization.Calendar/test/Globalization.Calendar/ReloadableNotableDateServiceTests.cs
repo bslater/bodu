@@ -84,6 +84,11 @@ public sealed partial class ReloadableNotableDateServiceTests
     private static readonly DateRange Year2025 = new(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31));
 
     /// <summary>
+    /// Gets or sets the test context, whose cancellation token a test's timeout cancels.
+    /// </summary>
+    public TestContext TestContext { get; set; } = null!;
+
+    /// <summary>
     /// Verifies that the service resolves against the provider's initial resource before any reload.
     /// </summary>
     [TestMethod]
