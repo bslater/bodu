@@ -183,7 +183,7 @@ unable to confirm that anything is new.
 3. **Set the package-validation baseline**: in `bld/Versioning.props`, set
    `BoduPackageValidationBaseline` to the just-published version (e.g.
    `1.0.0`). From then on every pack of a manifest-listed package runs the
-   strict ApiCompat comparison against the published baseline, catching
+   ApiCompat comparison against the published baseline, catching
    accidental breaking changes at pack time. Verify once nuget.org lists the
    packages (the baseline package is restored during validation):
 
@@ -268,7 +268,7 @@ worth releasing on their own, whether a fix or a feature release.
 
 1. In the package's csproj, set `<BoduPackageVersionOverride>` to the literal
    version, above `BoduBaseVersion`. Pin `PackageValidationBaselineVersion`
-   to the package's own last release, so the strict ApiCompat comparison runs
+   to the package's own last release, so the ApiCompat comparison runs
    against what its consumers have now rather than the shared baseline.
 2. `check-release-manifest.sh` accepts the override while it is ahead of
    `BoduBaseVersion` and prints it as a notice; the build log reports it too.
@@ -282,7 +282,7 @@ worth releasing on their own, whether a fix or a feature release.
    only `Bodu.Core` 1.0.1 carries, and its package depends on that version.
 4. Once nuget.org lists the package, move the pinned
    `PackageValidationBaselineVersion` up to the version just published. Until
-   then the strict comparison runs against the release before it, so removing
+   then the comparison runs against the release before it, so removing
    an API the out-of-band release added would still pass it.
 5. For release notes, once nuget.org lists the packages, tag the released
    commit `<PackageId>-<version>` (e.g. `Bodu.Security.Cryptography-1.1.0`),

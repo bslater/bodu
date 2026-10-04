@@ -1880,7 +1880,7 @@ removes runtime reflection:
 
 ### Package validation rollout
 
-**Done.** `EnablePackageValidation` (+ `ApiCompatStrictMode`) is now on by
+**Done.** `EnablePackageValidation` is now on by
 default for every shipping, non-test, non-benchmark package. The default
 is set in `Directory.Build.props` (`BoduEnablePackageValidation`, opt-out
 per project or per build) and the gate is applied in
