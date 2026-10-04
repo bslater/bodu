@@ -1,9 +1,10 @@
 # Implementation plan: the shared recurrence and scheduling requirements
 
-**Status:** Implemented through Phase 6: every capability in §4's Phases 0-6 is in the codebase,
-and the package is in the release manifest (first shipped in the 0.6.0 wave). Phase 7, the
-optional steady-state speed-up, is not done: `RecurrenceRule`'s point queries still enumerate
-from the series start · **Source:** FallbackPlan requirements document
+**Status:** Implemented: every capability in §4's Phases 0-7 is in the codebase, and the
+package is in the release manifest (first shipped in the 0.6.0 wave). Phase 7, the steady-state
+speed-up, landed for 1.3.0: the point queries and windows of `RecurrenceRule` and `RecurrenceSet`
+begin at the frequency period that holds the query instead of at the series start (outcome in
+§4, Phase 7) · **Source:** FallbackPlan requirements document
 (`REC-F-*` / `REC-N-*`, dated 2026-08-05) · **Target:** `Bodu.Globalization.Recurrence`
 
 This plan maps the FallbackPlan requirements statement onto the Bodu
@@ -259,7 +260,7 @@ the surface deliberately.
   API, no breaks ⇒ a minor bump (0.2.0) satisfies the requirements'
   pre-1.0 posture; FallbackPlan reads the baseline diff and pins.
 
-### Phase 7 - steady-state performance (REC-N-009) *(optional, recommended)*
+### Phase 7 - steady-state performance (REC-N-009) *(done, for 1.3.0)*
 
 - `RecurrenceRule` point queries currently enumerate from `start`; for
   an old `DTSTART` that is O(periods since start). Add a period
@@ -269,6 +270,84 @@ the surface deliberately.
   oracle; add regression rows with decade-old anchors.
 - This phase is separable and must not block FallbackPlan adoption -
   correctness lands in Phases 1-6.
+
+**Outcome.**
+
+- **`RecurrenceRule`.** Period p's anchor is a function of p alone: the
+  start plus p·k days, weeks, months or years. `FirstPeriodReaching` and
+  `FirstPeriodBeyond` bound, from the dates alone, the periods that can
+  hold an occurrence on or after a date and those that hold only
+  occurrences after it, each widened by a period for the days an
+  expansion places outside its own period (a week's days either side of
+  its anchor, `BYWEEKNO` days across the turn of a year).
+  `GetNextOccurrence` and the windowed `GetOccurrences` enumerate from
+  the first period that can reach the bound. `GetPreviousOccurrence`
+  enumerates the period below `FirstPeriodBeyond`, then the two below
+  those, then four, and stops at the first run that holds an answer, so
+  it scans at most twice the periods between the answer and the bound; a
+  bound past `UNTIL` searches back from `UNTIL`. The `DateTimeOffset`
+  overloads convert the query into the start's wall clock, clamped to
+  the calendar, before choosing the period. A rule with `COUNT` is still
+  enumerated from the start, because the occurrences before a period
+  decide how many it may still produce.
+- **`RecurrenceSet`.** The next and windowed queries merge each rule
+  from the bound, through the internal `RecurrenceRule.EnumerateFrom`,
+  and the explicit dates from the first at or after it; the merge and
+  its de-duplication are unchanged. `GetPreviousOccurrence` no longer
+  merges: the set is the union of its sources less its exception dates,
+  so the answer is the latest of each rule's own previous occurrence and
+  the latest explicit date, each skipping the exception dates. An
+  internal `RecurrenceRule.GetPreviousOccurrence` overload takes the
+  exclusion, so a run of excluded occurrences is passed over as empty
+  periods are.
+- **Tests.** `RecurrenceRuleTests.StreamAgreement` (37 rules: every
+  frequency, intervals, `BYSETPOS`, `BYWEEKNO` weeks straddling a year,
+  sparse and never-matching rules, `UNTIL` and `COUNT`, a start that is
+  not an occurrence, every `DateTimeKind`, the end of the calendar, and
+  `DateTimeOffset` starts and queries in other offsets) and
+  `RecurrenceSetTests.StreamAgreement` (15 sets: overlapping rules,
+  `COUNT` and `UNTIL` rules beside unbounded ones, explicit dates before
+  the start, duplicated and equal to rule occurrences, exception runs up
+  to a whole year, explicit dates alone, UTC, the end of the calendar)
+  hold every query, at probes across decades, to the stream enumerated
+  from the start (Regression). BVT rows in the member files pin
+  decade-old anchors. Mutations of the period bounds, the backward runs,
+  the `UNTIL` clamp, the set's bounds and exclusions, and the date
+  search each fail tests; the one that survives, `UNTIL` clamped a day
+  early, is absorbed by the period of margin by design.
+
+Median microseconds per call, timed in one process per runtime on a
+4-vCPU Intel Xeon at 2.10 GHz, before (master at `867d5c1fe`) and
+after. The answers are the same.
+
+| Query | .NET 8 before | .NET 8 after | .NET 10 before | .NET 10 after |
+|---|---:|---:|---:|---:|
+| Rule `FREQ=DAILY` since 1990, next | 1,064.74 | 0.42 | 924.10 | 0.49 |
+| Same, previous | 967.84 | 0.58 | 950.39 | 0.40 |
+| Same, a month's window | 996.04 | 2.58 | 948.77 | 2.18 |
+| Rule `FREQ=DAILY` since January 2026, next | 20.32 | 0.41 | 19.11 | 0.27 |
+| Rule weekly `MO,WE,FR` since 1993, next | 316.20 | 0.88 | 288.27 | 0.65 |
+| Same, previous | 313.80 | 0.98 | 296.99 | 0.82 |
+| Rule monthly last weekday since 1975, next | 933.06 | 3.12 | 938.23 | 2.74 |
+| Same, previous | 958.48 | 4.85 | 901.75 | 4.34 |
+| Rule yearly Thanksgiving since 1950, next | 18.18 | 0.86 | 15.59 | 0.74 |
+| Same, previous | 17.28 | 1.80 | 16.17 | 1.63 |
+| Rule `FREQ=DAILY;COUNT=20000` since 1990, next (from the start) | 1,087.83 | 1,094.51 | 980.04 | 988.76 |
+| Set: daily since 1990 with 17 exception dates, next | 1,269.08 | 2.09 | 1,136.72 | 1.57 |
+| Same, previous | 1,373.46 | 4.06 | 1,217.66 | 3.06 |
+| Same, a month's window | 1,400.69 | 4.30 | 1,201.48 | 3.53 |
+| Set: two weekly rules since 1993, next | 566.74 | 2.14 | 497.95 | 1.66 |
+| Same, previous | 614.08 | 1.90 | 498.76 | 1.51 |
+| Set: monthly since 1975 and three explicit dates, next | 984.92 | 4.60 | 800.46 | 3.99 |
+| Same, previous | 958.06 | 4.60 | 802.82 | 4.49 |
+| Set: `COUNT=500` daily and a yearly rule, previous | 52.80 | 41.69 | 46.25 | 38.86 |
+| Set: `COUNT=20000` daily and a date, previous | 1,403.94 | 1,080.17 | 1,057.19 | 999.54 |
+
+The `COUNT=20000` rule's row is the median of eight interleaved runs of
+each build, since one run apiece on this machine varies by about 10%;
+its path is unchanged, and the two builds agree to within 1%. The sets
+with `COUNT` rules gain a little because the previous occurrence no
+longer passes through the merge's priority queue.
 
 ## 5. Traceability
 
@@ -292,7 +371,7 @@ the surface deliberately.
 | REC-N-006 | Already produced at 0.1.1; Phase 6 re-packs the new version |
 | REC-N-007 | Already in place; Phase 6 regenerates the baseline deliberately |
 | REC-N-008 | Already satisfied; Phases 1/2 extend the conformance suites |
-| REC-N-009 | Phase 7 (fast-forward), new form is O(1) by construction |
+| REC-N-009 | Phase 7 (fast-forward, done for 1.3.0); new form is O(1) by construction |
 | REC-N-010 | Phase 5 |
 
 ## 6. Out of scope (unchanged from the requirements' §6)

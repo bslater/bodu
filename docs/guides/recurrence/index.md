@@ -77,6 +77,7 @@ Any predicate works; the calendar package is just the in-repo source of holiday 
 Occurrence enumeration over a window is lazy and terminates for every input, including rules that can never match:
 
 - A `RecurrenceRule` such as `FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=30` (30 February) enumerates empty and answers `null` from both point queries; the search bound is the end of the representable calendar (year 9999).
+- A `RecurrenceRule` point query or window begins at the frequency period that holds the instant it is given, not at the series start, so its cost does not grow with the age of the series; a `RecurrenceSet` does the same for each of its rules. Only a rule with `COUNT` is enumerated from its start, because the occurrences before a period decide how many it may still produce.
 - A `CronExpression` search scans a twelve-year horizon in each direction - enough to cover the largest gap of any satisfiable expression (a 29 February schedule crossing a non-leap century year) - and answers `null` past it.
 - An `AnchoredInterval` needs no scanning at all: its queries are O(1) arithmetic, and the sequence ends at the last representable occurrence.
 

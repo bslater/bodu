@@ -149,7 +149,7 @@ To preserve a UTC start, anchor the set on a `DateTimeKind.Utc` value: `DTSTART:
 
 ## Next and previous over the set
 
-`GetNextOccurrence(after, inclusive)` / `GetPreviousOccurrence(before, inclusive)` answer over the composed stream, so an exception date is never returned and an `RDATE` can be. The `DateTimeOffset` overloads interpret `Start`, `Dates`, and `ExceptionDates` - which are wall-clock values - in the offset of the argument and return an answer carrying that offset; no other conversion is performed:
+`GetNextOccurrence(after, inclusive)` / `GetPreviousOccurrence(before, inclusive)` answer over the composed stream, so an exception date is never returned and an `RDATE` can be. Both, and the windowed `GetOccurrences(from, to)`, begin each rule at the frequency period that holds the query instant and find the explicit dates by binary search, so their cost does not grow with the age of `Start`; a rule with `COUNT` is still enumerated from `Start`. The `DateTimeOffset` overloads interpret `Start`, `Dates`, and `ExceptionDates` - which are wall-clock values - in the offset of the argument and return an answer carrying that offset; no other conversion is performed:
 
 <!-- compile -->
 ```csharp
