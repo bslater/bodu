@@ -74,6 +74,8 @@ SUITES = {
     'x64': (['--crypto-harness', *X64_FILTERS], ['vector', 'avx2', 'ssse3', 'scalar', '1.0.0']),
     'argon2': (['--argon2-harness'], ['vector', 'scalar', '1.0.0']),
     'sweep': (['--argon2-harness', '--sweep'], ['vector', 'scalar', '1.0.0']),
+    # TEMPORARY (#760): Argon2's kernels alone, side by side in one process. Reverted after the measurement run.
+    'argon2-kernels': (['--crypto-harness', 'kernel/Argon2'], ['vector']),
 }
 
 CRYPTO_LINE = re.compile(r'^(\w+)\s+(.+?)\s{2,}([\d.,]+) (us|ms)\s+([\d.,]+) (MiB/s|op/s)\s+[\d,]+ B/op')
