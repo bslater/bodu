@@ -16,12 +16,17 @@
   Invisible until the package multi-targeted, because a single-TFM package has no second leg to
   differ from.
 
-  The six ArrayExtensions.Reverse baseline suppressions that covered that rename against 0.7.0 are
-  gone: Core's baseline is pinned to its own last release, 1.0.1, which, like 1.0.0, never had the
-  old names, and ApiCompat fails a pack on a suppression it no longer needs. Should the baseline
-  return to the shared 0.7.0 (bld/Versioning.props), for instance when the out-of-band override and
-  its pinned baseline are removed, CP0002 errors for those six overloads are that rename, and their
-  suppressions come back.
+  ArrayExtensions.Reverse (six overloads) - removed against the shared 0.7.0 baseline
+  (bld/Versioning.props). Intentional break, taken in the 1.0.0 major: .NET 10 added
+  System.Linq.Enumerable.Reverse<TSource>(TSource[]), which made our same-shaped extension
+  ambiguous (CS0121) for any consumer importing both namespaces, and [OverloadResolutionPriority]
+  does not help, as it is not consulted across declaring types. The family was renamed ToReversed,
+  matching SpanExtensions.ToReversed and the BCL's To* convention, and stating that the source is
+  not mutated. These suppressions cover only the removal of the old names; the new ones are
+  validated normally, as is the rest of the surface. They were absent while Core shipped 1.0.1 out
+  of band against its own last release, which never had the old names, because ApiCompat fails a
+  pack on a suppression it no longer needs. For the same reason, delete them when the baseline
+  moves past 1.0.0.
 -->
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
@@ -29,5 +34,47 @@
     <Target>M:Bodu.Collections.Generic.Extensions.IEnumerableExtensions.Index``1(System.Collections.Generic.IEnumerable{``0})</Target>
     <Left>lib/net8.0/Bodu.Core.dll</Left>
     <Right>lib/net10.0/Bodu.Core.dll</Right>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse(System.Array,System.Int32,System.Int32)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse(System.Array,System.Range)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse(System.Array)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse``1(``0[],System.Int32,System.Int32)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse``1(``0[],System.Range)</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Extensions.ArrayExtensions.Reverse``1(``0[])</Target>
+    <Left>lib/net8.0/Bodu.Core.dll</Left>
+    <Right>lib/net8.0/Bodu.Core.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
 </Suppressions>

@@ -251,10 +251,11 @@ written down first and would have produced a window of failing runs.
 ## Next waves
 
 1. Append the wave's package ids to `bld/release-manifest.txt`.
-2. Bump `BoduBaseVersion` past every out-of-band version.
-   `Bodu.Security.Cryptography` ships `1.2.0` and `Bodu.Core` `1.0.1` out of
-   band, so the lock-step stream has to move past `1.2.0`: the coordinated
-   Calendar wave, slated `1.2.0`, needs `1.3.0` at least.
+2. Bump `BoduBaseVersion` past every version a Stable package has already
+   shipped at, out-of-band releases included, because nuget.org holds those
+   versions. 1.3.0 moved past `Bodu.Security.Cryptography` 1.2.0, the highest,
+   and retired the out-of-band overrides (step 7 of
+   [Out-of-band single-package release](#out-of-band-single-package-release)).
 3. Tag `v<new-version>` and push. Existing packages re-publish at the new
    lock-step version; the new wave publishes for the first time.
 4. After publish, bump `BoduPackageValidationBaseline` to the new version.
@@ -330,4 +331,7 @@ worth releasing on their own, whether a fix or a feature release.
 7. The next lock-step release must move past the out-of-band version, because
    that version is already on nuget.org for this package. When
    `BoduBaseVersion` reaches it, the manifest check fails until the override
-   and the pinned baseline are removed.
+   and the pinned baseline are removed. Without the pin the package validates
+   against the shared baseline again, so any suppression that baseline needs
+   comes back: for 1.3.0, `Bodu.Core` regained the six `ArrayExtensions.Reverse`
+   suppressions that its pin to its own releases had made unnecessary.
