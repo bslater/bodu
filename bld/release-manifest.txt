@@ -6,11 +6,12 @@
 # BoduBaseVersion in bld/Versioning.props - it is a permanent record, written once when the package
 # joins a wave and never edited again.
 #
-# It exists because the package-validation baseline (BoduPackageValidationBaseline) compares a pack
-# against that package's own published predecessor. A package joining this release has no such
-# predecessor, and pointing ApiCompat at one fails the pack with NU1102 before it compares anything,
-# so Directory.Build.targets applies the baseline only when the baseline version is at or after the
-# package's first-shipped version.
+# It exists because the package-validation baselines (BoduPackageValidationBaseline for the Stable
+# stream, BoduPreviewPackageValidationBaseline for the preview one) compare a pack against that
+# package's own published predecessor. A package joining this release has no such predecessor, and
+# pointing ApiCompat at one fails the pack with NU1102 before it compares anything, so
+# Directory.Build.targets applies a baseline only when it is at or after the package's first-shipped
+# version.
 #
 # Extending a release wave = append its package ids with the version they will first ship at, and
 # bump BoduBaseVersion in bld/Versioning.props. See bld/RELEASING.md.
