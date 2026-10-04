@@ -344,4 +344,6 @@ worth releasing on their own, whether a fix or a feature release.
    and the pinned baseline are removed. Without the pin the package validates
    against the Stable baseline again, so any suppression that baseline needs
    comes back: for 1.3.0, `Bodu.Core` regained the six `ArrayExtensions.Reverse`
-   suppressions that its pin to its own releases had made unnecessary.
+   suppressions that its pin to its own releases had made unnecessary. They
+   went again when the Stable baseline moved from 0.7.0 to 1.0.0, which never
+   had those names.

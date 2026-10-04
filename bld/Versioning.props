@@ -38,8 +38,8 @@
     <BoduPreviewVersion>0.7.1</BoduPreviewVersion>
 
     <!--
-      Package-validation baselines, one per version stream. Each is the last version its stream
-      published, so a pack runs the ApiCompat comparison against the release that stream's consumers
+      Package-validation baselines, one per version stream. Each is its stream's last lock-step
+      release, so a pack runs the ApiCompat comparison against the release that stream's consumers
       have now. The streams publish different versions, and a pack compared with a version its
       package never shipped at fails with NU1102 before comparing any API, so neither value can
       serve both: BoduPackageValidationBaseline applies to the Stable packages, and
@@ -57,7 +57,7 @@
       strong-named and a comparison against them needs the same assembly identity. Both are applied
       in the repository-root Directory.Build.targets.
     -->
-    <BoduPackageValidationBaseline>0.7.0</BoduPackageValidationBaseline>
+    <BoduPackageValidationBaseline>1.0.0</BoduPackageValidationBaseline>
     <BoduPreviewPackageValidationBaseline>0.7.1</BoduPreviewPackageValidationBaseline>
   </PropertyGroup>
 
