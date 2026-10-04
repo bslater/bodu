@@ -25,7 +25,10 @@
 
       The split exists so the 1.0 compatibility promise is made only by packages that can keep it.
       A preview package stays below 1.0 until its API settles, at which point promoting it is two
-      edits: retier its README banner and delete its override.
+      edits: retier its README banner and delete its override. Until its first Stable release is on
+      nuget.org it also pins PackageValidationBaselineVersion, in its csproj, to its last preview
+      release: it has never shipped at the Stable baseline below, so a pack compared with that
+      baseline would fail with NU1102.
 
       A preview package references this property rather than pinning a literal, so moving the
       preview stream stays a one-line edit here. bld/check-release-manifest.sh enforces both that and
@@ -35,18 +38,27 @@
     <BoduPreviewVersion>0.7.1</BoduPreviewVersion>
 
     <!--
-      Package-validation baseline. Set this to the last version every package shipped at, so
-      subsequent packs run the ApiCompat comparison against the published packages. One value
-      serves both streams: it is the last release in which Stable and preview packages shared a
-      version, and every published package therefore has a 0.7.0 predecessor to compare against.
-      Empty = validation stays inert (no published baseline exists yet). The baseline is applied
-      only to packages listed in bld/release-manifest.txt - packages that have never shipped have
-      nothing to compare against - and only to a build with BoduSignAssembly=true (the default),
-      because the published packages are strong-named and a comparison against them needs the same
-      assembly identity. Applied in the repository-root Directory.Build.targets; see bld/RELEASING.md for the
-      release procedure.
+      Package-validation baselines, one per version stream. Each is the last version its stream
+      published, so a pack runs the ApiCompat comparison against the release that stream's consumers
+      have now. The streams publish different versions, and a pack compared with a version its
+      package never shipped at fails with NU1102 before comparing any API, so neither value can
+      serve both: BoduPackageValidationBaseline applies to the Stable packages, and
+      BoduPreviewPackageValidationBaseline to the packages that ship at BoduPreviewVersion.
+
+      After a release, move the baseline of each stream it published (bld/RELEASING.md,
+      Post-publish): the Stable one after every lock-step release, the preview one only after a
+      release that moved BoduPreviewVersion. bld/check-release-manifest.sh fails a baseline ahead of
+      its stream's version, and a preview stream without a baseline of its own.
+
+      Empty = validation stays inert for that stream (no published baseline exists yet). A baseline
+      is applied only to packages listed in bld/release-manifest.txt, once it has reached the version
+      each first shipped at - packages that have never shipped have nothing to compare against - and
+      only to a build with BoduSignAssembly=true (the default), because the published packages are
+      strong-named and a comparison against them needs the same assembly identity. Both are applied
+      in the repository-root Directory.Build.targets.
     -->
     <BoduPackageValidationBaseline>0.7.0</BoduPackageValidationBaseline>
+    <BoduPreviewPackageValidationBaseline>0.7.1</BoduPreviewPackageValidationBaseline>
   </PropertyGroup>
 
 </Project>

@@ -133,7 +133,7 @@ check_tier_and_stream() {
     case "$tier" in
         Stable)
             if [ "$override" = '$(BoduPreviewVersion)' ]; then
-                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride>, so it would ship on the preview stream ($preview_version) instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable."
+                fail "$id: tiered Stable but its csproj sets <BoduPackageVersionOverride>\$(BoduPreviewVersion)</BoduPackageVersionOverride>, so it would ship on the preview stream ($preview_version) instead of BoduBaseVersion $base_version. Remove the override when promoting a package to Stable, and until its first Stable release is on nuget.org pin its PackageValidationBaselineVersion to its last preview release (bld/Versioning.props)."
             elif [ -n "$override" ]; then
                 # An out-of-band release: a Stable package may ship ahead of the lock-step version, and
                 # only ahead of it. Once BoduBaseVersion reaches the override the package must rejoin

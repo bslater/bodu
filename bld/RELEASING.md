@@ -180,15 +180,23 @@ unable to confirm that anything is new.
    and its README, icon, and license render.
 2. Smoke-restore from a clean cache:
    `dotnet add package Bodu.Core` in a scratch project.
-3. **Set the package-validation baseline**: in `bld/Versioning.props`, set
-   `BoduPackageValidationBaseline` to the just-published version (e.g.
-   `1.0.0`). From then on every pack of a manifest-listed package runs the
-   ApiCompat comparison against the published baseline, catching
-   accidental breaking changes at pack time. Verify once nuget.org lists the
-   packages (the baseline package is restored during validation):
+3. **Move the package-validation baselines**: in `bld/Versioning.props`, set
+   `BoduPackageValidationBaseline` to the Stable version just published (e.g.
+   `1.3.0`). If the release also moved `BoduPreviewVersion`, set
+   `BoduPreviewPackageValidationBaseline` to it too; otherwise leave it, since
+   the preview packages published nothing new. Each stream keeps its own
+   baseline because the streams publish different versions, and a package
+   compared with a version it never shipped at fails its pack with `NU1102`
+   before any API is compared. From then on every pack of a manifest-listed
+   package runs the ApiCompat comparison against its stream's last release,
+   catching accidental breaking changes at pack time. Delete any entry in a
+   `CompatibilitySuppressions.xml` that only the old baseline needed, since
+   ApiCompat fails a pack on a suppression it no longer needs. Verify once
+   nuget.org lists the packages (each baseline package is restored during
+   validation), with the release's own pack, which validates both streams:
 
    ```bash
-   dotnet pack Bodu.Core/src/Bodu.Core.csproj -c Release
+   dotnet pack bodu.slnx -c Release -p:BoduShipping=true -p:TreatWarningsAsErrors=true
    ```
 
    No extra properties: signing is on by default (`bld/Signing.props`), so an
@@ -258,7 +266,9 @@ written down first and would have produced a window of failing runs.
    [Out-of-band single-package release](#out-of-band-single-package-release)).
 3. Tag `v<new-version>` and push. Existing packages re-publish at the new
    lock-step version; the new wave publishes for the first time.
-4. After publish, bump `BoduPackageValidationBaseline` to the new version.
+4. After publish, move the validation baselines (Post-publish step 3): the
+   Stable one to the new version, and the preview one too if the release
+   moved `BoduPreviewVersion`.
 
 ## Out-of-band single-package release
 
@@ -269,7 +279,7 @@ worth releasing on their own, whether a fix or a feature release.
 1. In the package's csproj, set `<BoduPackageVersionOverride>` to the literal
    version, above `BoduBaseVersion`. Pin `PackageValidationBaselineVersion`
    to the package's own last release, so the ApiCompat comparison runs
-   against what its consumers have now rather than the shared baseline.
+   against what its consumers have now rather than the Stable baseline.
 2. `check-release-manifest.sh` accepts the override while it is ahead of
    `BoduBaseVersion` and prints it as a notice; the build log reports it too.
 3. Release the package on its own from master: Actions → **Release** → *Run
@@ -332,6 +342,6 @@ worth releasing on their own, whether a fix or a feature release.
    that version is already on nuget.org for this package. When
    `BoduBaseVersion` reaches it, the manifest check fails until the override
    and the pinned baseline are removed. Without the pin the package validates
-   against the shared baseline again, so any suppression that baseline needs
+   against the Stable baseline again, so any suppression that baseline needs
    comes back: for 1.3.0, `Bodu.Core` regained the six `ArrayExtensions.Reverse`
    suppressions that its pin to its own releases had made unnecessary.
