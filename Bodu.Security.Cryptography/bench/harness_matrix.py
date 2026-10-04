@@ -64,9 +64,9 @@ CRYPTO_FILTERS = [
 
 # The crypto-harness cases whose x64 kernels spread one state across a vector's lanes, the layout F7 found losing on
 # ARM64: BLAKE2b, BLAKE2s, BLAKE3's single block, scrypt and Argon2. The ``avx2`` configuration runs their AVX2 kernels
-# whether or not the machine has AVX-512, and ``ssse3`` their 128-bit ones, and the kernel cases time each BLAKE kernel
-# the configuration allows on its own.
-X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kernel/BLAKE', 'kdf/Bodu']
+# whether or not the machine has AVX-512, and ``ssse3`` their 128-bit ones, and the kernel cases time each BLAKE and
+# Argon2 kernel the configuration allows on its own, so one process compares Argon2's AVX-512 and AVX2 kernels.
+X64_FILTERS = ['hash/Bodu BLAKE2', 'hash/Bodu BLAKE3', 'kernel/BLAKE', 'kernel/Argon2', 'kdf/Bodu']
 
 # Each suite: its harness arguments, and the configurations it runs in.
 SUITES = {

@@ -21,13 +21,25 @@ public sealed partial class Argon2CoreTests
     }
 
     /// <summary>
-    /// Verifies that dispatch prefers the AVX2 kernel wherever its gate is open.
+    /// Verifies that dispatch prefers the 256-bit kernel with AVX-512VL's rotation wherever that gate is open.
     /// </summary>
     [TestMethod]
-    public void SelectKernel_WhenAvx2IsAvailable_ShouldReturnAvx2()
+    public void SelectKernel_WhenAvx512VLIsAvailable_ShouldReturnAvx512()
     {
-        if (!SimdCapabilities.Avx2)
-            Assert.Inconclusive("AVX2 is not available on this processor.");
+        if (!SimdCapabilities.Avx512FVL)
+            Assert.Inconclusive("AVX-512VL is not available on this processor.");
+
+        Assert.AreEqual(Argon2Core.KernelKind.Avx512, Argon2Core.SelectKernel());
+    }
+
+    /// <summary>
+    /// Verifies that dispatch selects the AVX2 kernel on an x64 processor with AVX2 and without AVX-512VL.
+    /// </summary>
+    [TestMethod]
+    public void SelectKernel_WhenAvx2IsTheWidestGateOpen_ShouldReturnAvx2()
+    {
+        if (!SimdCapabilities.Avx2 || SimdCapabilities.Avx512FVL)
+            Assert.Inconclusive("The processor is not an x64 processor with AVX2 and without AVX-512VL.");
 
         Assert.AreEqual(Argon2Core.KernelKind.Avx2, Argon2Core.SelectKernel());
     }
@@ -87,6 +99,9 @@ public sealed partial class Argon2CoreTests
     public void IsSupported_WhenKernelIsVectorized_ShouldFollowTheProcessor()
     {
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Avx2.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.Avx2));
+        Assert.AreEqual(
+            System.Runtime.Intrinsics.X86.Avx2.IsSupported && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported,
+            Argon2Core.IsSupported(Argon2Core.KernelKind.Avx512));
         Assert.AreEqual(System.Runtime.Intrinsics.X86.Ssse3.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.Ssse3));
         Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.AdvSimd));
         Assert.AreEqual(System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported, Argon2Core.IsSupported(Argon2Core.KernelKind.AdvSimdHybrid));
@@ -102,6 +117,7 @@ public sealed partial class Argon2CoreTests
     [DataRow("Ssse3")]
     [DataRow("AdvSimd")]
     [DataRow("Avx2")]
+    [DataRow("Avx512")]
     public void ResolveKernel_WhenKernelIsNamed_ShouldReturnIt(string kernel)
     {
         Argon2Core.KernelKind named = Enum.Parse<Argon2Core.KernelKind>(kernel);

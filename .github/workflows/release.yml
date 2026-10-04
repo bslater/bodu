@@ -387,9 +387,10 @@ jobs:
             [ -n "$mid" ] && manifest_ids+=("$mid")
           done < bld/release-manifest.txt
 
-          # Packages the manifest's comment block names as deliberately withheld, with the first line
-          # of each reason. Requesting one of these is a different mistake from a typo - the decision
-          # not to ship it was made on purpose and is recorded - so the error says which it is.
+          # Packages the manifest's comment block names as deliberately withheld, with each one's reason,
+          # its wrapped comment lines joined. Requesting one of these is a different mistake from a typo -
+          # the decision not to ship it was made on purpose and is recorded - so the error says which it
+          # is, and the report of what was not published quotes the reason too.
           withheld_ids=(); withheld_reasons=()
           collecting=""
           while IFS= read -r line; do
@@ -398,6 +399,9 @@ jobs:
                 stripped="$(printf '%s' "$line" | sed 's/^#[[:space:]]*//; s/[[:space:]]*$//')"
                 if printf '%s' "$stripped" | grep -qE '^Bodu\.[A-Za-z0-9.]+$'; then
                   collecting="$stripped"; withheld_ids+=("$stripped"); withheld_reasons+=("")
+                elif printf '%s' "$stripped" | grep -qE '^-+$'; then
+                  # The rule that closes the withheld block ends the last entry's reason.
+                  collecting=""
                 elif [ -n "$collecting" ] && [ -n "$stripped" ]; then
                   # Join the reason's wrapped comment lines; taking only the first truncates it mid-sentence.
                   last=$(( ${#withheld_reasons[@]} - 1 ))
@@ -522,10 +526,46 @@ jobs:
           fi
           echo "Staged $staged package(s) for publish:"
           ls -1 "$PUBLISH_DIR"/*.nupkg
-          echo "Packed but NOT published (not in the shipping manifest):"
+
+          # Every packed package that was not staged, grouped by why: a subset run leaves manifest
+          # packages unselected, the manifest withholds some on purpose, and anything else is not in the
+          # manifest at all. A file is matched to an id as the staging loop matches it, so that
+          # 'Bodu.Numerics' does not claim 'Bodu.Numerics.Serialization.Json'.
+          not_selected=(); withheld=(); unlisted=()
           for f in "$ARTIFACTS_DIR"/*.nupkg; do
-            [ -f "$PUBLISH_DIR/$(basename "$f")" ] || echo "  $(basename "$f")"
+            name="$(basename "$f")"
+            [ -f "$PUBLISH_DIR/$name" ] && continue
+            group=unlisted
+            for mid in "${manifest_ids[@]}"; do
+              case "$name" in "$mid".[0-9]*.nupkg) group=not_selected; break ;; esac
+            done
+            if [ "$group" = unlisted ]; then
+              for i in "${!withheld_ids[@]}"; do
+                case "$name" in "${withheld_ids[$i]}".[0-9]*.nupkg) group=withheld; wi=$i; break ;; esac
+              done
+            fi
+            case "$group" in
+              not_selected) not_selected+=("$name") ;;
+              withheld) withheld+=("$wi $name") ;;
+              *) unlisted+=("$name") ;;
+            esac
           done
+          if [ "${#not_selected[@]}" -gt 0 ]; then
+            echo "Packed but NOT published (${#not_selected[@]} in the shipping manifest but not selected by the 'packages' input):"
+            printf '  %s\n' "${not_selected[@]}"
+          fi
+          if [ "${#withheld[@]}" -gt 0 ]; then
+            echo "Packed but NOT published (${#withheld[@]} withheld from nuget.org by bld/release-manifest.txt):"
+            # In the manifest's order, with its reason, since a reason may refer to the entry before it.
+            while read -r wi name; do
+              echo "  $name"
+              if [ -n "${withheld_reasons[$wi]}" ]; then echo "      ${withheld_reasons[$wi]}"; fi
+            done < <(printf '%s\n' "${withheld[@]}" | sort -s -n -k1,1)
+          fi
+          if [ "${#unlisted[@]}" -gt 0 ]; then
+            echo "Packed but NOT published (${#unlisted[@]} not in the shipping manifest):"
+            printf '  %s\n' "${unlisted[@]}"
+          fi
           echo "PUBLISH_DIR=$PUBLISH_DIR" >> "$GITHUB_ENV"
 
       - name: Upload package artifacts

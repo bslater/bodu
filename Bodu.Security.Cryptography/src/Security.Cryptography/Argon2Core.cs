@@ -148,14 +148,19 @@ internal static partial class Argon2Core
 
     /// <summary>
     /// Selects the compression kernel dispatch runs: on x64 the widest the processor supports and the process allows,
-    /// AVX2, then SSSE3; on ARM64 the hybrid kernel, which works rows and columns in pairs over AdvSimd and the general
-    /// registers at once; and the scalar kernel everywhere else.
+    /// the 256-bit kernel with AVX-512VL's rotation, then AVX2, then SSSE3; on ARM64 the hybrid kernel, which works
+    /// rows and columns in pairs over AdvSimd and the general registers at once; and the scalar kernel everywhere else.
     /// </summary>
     /// <returns>The kernel dispatch runs; never <see cref="KernelKind.Auto" />.</returns>
     /// <remarks>
     /// <para>
     /// Every gate honors the <see cref="SimdCapabilities.DisableSimdSwitchName" /> switch, which pins the scalar
     /// kernel.
+    /// </para>
+    /// <para>
+    /// With AVX-512VL the 256-bit kernel rotates by 63 bits in one <c>VPRORQ</c> rather than an addition, a shift and
+    /// an XOR, sixteen fewer instructions in its rounds. That made an Argon2id derivation of 19 MiB 1.03 to 1.07 times
+    /// as fast on an Intel Xeon 6973P-C and on AMD's Zen 4 and Zen 5, under .NET 8 and .NET 10 alike.
     /// </para>
     /// <para>
     /// On ARM64 the hybrid kernel ran 1.24 to 1.28 times as fast as the scalar kernel on a Neoverse N2 and 1.3 to 1.6
@@ -166,6 +171,9 @@ internal static partial class Argon2Core
     /// </remarks>
     internal static KernelKind SelectKernel()
     {
+        if (SimdCapabilities.Avx512FVL)
+            return KernelKind.Avx512;
+
         if (SimdCapabilities.Avx2)
             return KernelKind.Avx2;
 
@@ -190,6 +198,7 @@ internal static partial class Argon2Core
         KernelKind.Ssse3 => System.Runtime.Intrinsics.X86.Ssse3.IsSupported,
         KernelKind.AdvSimd or KernelKind.AdvSimdHybrid => System.Runtime.Intrinsics.Arm.AdvSimd.Arm64.IsSupported,
         KernelKind.Avx2 => System.Runtime.Intrinsics.X86.Avx2.IsSupported,
+        KernelKind.Avx512 => System.Runtime.Intrinsics.X86.Avx2.IsSupported && System.Runtime.Intrinsics.X86.Avx512F.VL.IsSupported,
         _ => false,
     };
 
@@ -208,8 +217,12 @@ internal static partial class Argon2Core
     {
         switch (kernel)
         {
+            case KernelKind.Avx512:
+                FillMemory<Vector256Kernel<Avx512Isa>>(matrix, geometry, workers);
+                break;
+
             case KernelKind.Avx2:
-                FillMemory<Avx2Kernel>(matrix, geometry, workers);
+                FillMemory<Vector256Kernel<Avx2Isa>>(matrix, geometry, workers);
                 break;
 
             case KernelKind.AdvSimd:

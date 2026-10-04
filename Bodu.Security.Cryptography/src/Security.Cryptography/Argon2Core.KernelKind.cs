@@ -46,5 +46,10 @@ internal static partial class Argon2Core
         /// the other in general registers, interleaved so that the vector and integer pipes work at once.
         /// </summary>
         AdvSimdHybrid,
+
+        /// <summary>
+        /// The 256-bit kernel on x64, over AVX2 with AVX-512VL's single-instruction rotation by 63 bits.
+        /// </summary>
+        Avx512,
     }
 }

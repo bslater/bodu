@@ -4,15 +4,6 @@
   <PropertyGroup>
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <!--
-      Out of band: shipped 1.2.0 ahead of the lock-step BoduBaseVersion (bld/RELEASING.md, "Out-of-band
-      single-package release"), and validates against its own last release, 1.2.0, rather than the
-      shared baseline. 1.2.0 needs Bodu.Core 1.0.1, whose internal vector rotations its kernels call,
-      so the two shipped together. When BoduBaseVersion reaches 1.2.0, remove both properties; the
-      release-manifest check fails until they are gone.
-    -->
-    <BoduPackageVersionOverride>1.2.0</BoduPackageVersionOverride>
-    <PackageValidationBaselineVersion Condition="'$(BoduSignAssembly)' == 'true'">1.2.0</PackageValidationBaselineVersion>
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
