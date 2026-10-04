@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Argon2Core.Avx2.cs" company="Bodu Pty. Ltd.">
+// <copyright file="Argon2Core.Avx512.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -13,20 +13,19 @@ namespace Bodu.Security.Cryptography;
 internal static partial class Argon2Core
 {
     /// <summary>
-    /// Supplies the 256-bit kernel's rotation by 63 bits with AVX2, which has no rotation: an addition, a shift and an
-    /// XOR.
+    /// Supplies the 256-bit kernel's rotation by 63 bits with AVX-512VL: a single <c>VPRORQ</c> in place of
+    /// <see cref="Avx2Isa" />'s addition, shift and XOR.
     /// </summary>
-    internal readonly struct Avx2Isa
+    internal readonly struct Avx512Isa
         : IVector256Isa
     {
         /// <summary>
-        /// Rotates each word right by 63 bits: left by one, as the sum of the word with itself, with the top bit
-        /// brought round.
+        /// Rotates each word right by 63 bits, with <c>VPRORQ</c>.
         /// </summary>
         /// <param name="x">The words to rotate.</param>
         /// <returns>The rotated words.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector256<ulong> RotateRight63(Vector256<ulong> x) =>
-            Avx2.ShiftRightLogical(x, 63) ^ (x + x);
+            Avx512F.VL.RotateRight(x, 63);
     }
 }
