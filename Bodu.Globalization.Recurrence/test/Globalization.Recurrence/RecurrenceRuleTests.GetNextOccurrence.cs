@@ -179,4 +179,42 @@ public partial class RecurrenceRuleTests
             Assert.AreEqual(new DateTimeOffset(2026, 1, 12, 9, 0, 0, offset), next, $"offset {offset}");
         }
     }
+
+    /// <summary>
+    /// Verifies that a series anchored decades before the query instant answers its next occurrence, including a
+    /// <c>BYWEEKNO</c> week that begins in the calendar year before the one it is numbered in.
+    /// </summary>
+    /// <param name="rule">The recurrence-rule text.</param>
+    /// <param name="start">The series start, in sortable format.</param>
+    /// <param name="after">The query instant, in sortable format.</param>
+    /// <param name="expected">The expected next occurrence, in sortable format.</param>
+    [TestMethod]
+    [DataRow("FREQ=DAILY", "1990-03-15T09:30:00", "2026-10-04T12:00:00", "2026-10-05T09:30:00", DisplayName = "daily since 1990")]
+    [DataRow("FREQ=WEEKLY;BYDAY=MO", "1993-02-08T09:00:00", "2026-10-04T12:00:00", "2026-10-05T09:00:00", DisplayName = "Mondays since 1993")]
+    [DataRow("FREQ=MONTHLY;BYMONTHDAY=-1", "1975-01-31T08:00:00", "2026-10-04T00:00:00", "2026-10-31T08:00:00", DisplayName = "month ends since 1975")]
+    [DataRow("FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=29", "1960-02-29T00:00:00", "2026-10-04T00:00:00", "2028-02-29T00:00:00", DisplayName = "leap days since 1960")]
+    [DataRow("FREQ=YEARLY;BYWEEKNO=1;BYDAY=MO", "1990-01-01T10:00:00", "2025-12-20T00:00:00", "2025-12-29T10:00:00", DisplayName = "week one beginning in December")]
+    public void GetNextOccurrence_WhenStartIsDecadesEarlier_ShouldReturnTheNextOccurrence(string rule, string start, string after, string expected)
+    {
+        DateTime? next = RecurrenceRule.Parse(rule).GetNextOccurrence(Instant(start), Instant(after));
+
+        Assert.AreEqual(Instant(expected), next);
+    }
+
+    /// <summary>
+    /// Verifies that the offset-preserving next occurrence of a series anchored decades earlier is found from a query
+    /// expressed in another offset, and carries the offset of the series start.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenStartIsDecadesEarlier_ForDateTimeOffset_ShouldReturnTheNextOccurrence()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=DAILY");
+        var start = new DateTimeOffset(1990, 3, 15, 9, 30, 0, TimeSpan.FromHours(10));
+
+        // 23:00 UTC on 4 October is 09:00 on 5 October at +10:00, half an hour before that day's occurrence.
+        DateTimeOffset? next = rule.GetNextOccurrence(start, new DateTimeOffset(2026, 10, 4, 23, 0, 0, TimeSpan.Zero));
+
+        Assert.AreEqual(new DateTimeOffset(2026, 10, 5, 9, 30, 0, TimeSpan.FromHours(10)), next);
+        Assert.AreEqual(TimeSpan.FromHours(10), next?.Offset);
+    }
 }

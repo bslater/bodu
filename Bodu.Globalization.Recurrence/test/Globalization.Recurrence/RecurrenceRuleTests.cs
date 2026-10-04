@@ -21,6 +21,14 @@ public partial class RecurrenceRuleTests
     /// <returns>The materialized occurrences.</returns>
     private static DateTime[] Occurrences(string rule, DateTime start, int take) =>
         RecurrenceRule.Parse(rule).GetOccurrences(start).Take(take).ToArray();
+
+    /// <summary>
+    /// Parses an instant written in the sortable <c>yyyy-MM-ddTHH:mm:ss</c> format.
+    /// </summary>
+    /// <param name="value">The instant text.</param>
+    /// <returns>The instant, with an unspecified kind.</returns>
+    private static DateTime Instant(string value) =>
+        DateTime.ParseExact(value, "s", System.Globalization.CultureInfo.InvariantCulture);
 }
 
 /// <summary>
