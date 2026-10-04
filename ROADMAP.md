@@ -1603,12 +1603,14 @@ filter were added to *Non-goals* instead.
   calendar overflow while scanning never-matching weekly rules, and
   `BYWEEKNO` week numbering (now the ISO rule generalized to `WKST`,
   keeping year-straddling weeks and expanding the whole week when
-  `BYDAY` is absent). Deferred
+  `BYDAY` is absent). A fourth pass (REC-N-009, for 1.3.0) made the
+  point queries and windows of `RecurrenceRule` and `RecurrenceSet`
+  begin at the frequency period that holds the query instead of at
+  `DTSTART`, so a distant anchor no longer costs time per elapsed period
+  (a rule with `COUNT` still enumerates from its start). Deferred
   follow-ons: sub-daily RRULE frequencies (`HOURLY`/`MINUTELY`/`SECONDLY`
   parse and round-trip but do not yet enumerate), Quartz cron extensions
-  (`L`/`W`/`#`/`?`), a read-only `.ics` (iCalendar) reader, and a
-  period fast-forward for `RecurrenceRule` point queries with distant
-  anchors (they currently enumerate from `DTSTART`).
+  (`L`/`W`/`#`/`?`), and a read-only `.ics` (iCalendar) reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in
