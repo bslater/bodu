@@ -37,6 +37,12 @@
 #                   package may also ship out of band, at a literal override ahead of BoduBaseVersion
 #                   (bld/RELEASING.md); the check fails once BoduBaseVersion catches up with it, so the
 #                   override cannot outlive the release it was made for.
+#   9. Baseline   - each version stream has a package-validation baseline of its own, no later than the
+#                   version that stream ships at: BoduPackageValidationBaseline for the Stable packages,
+#                   BoduPreviewPackageValidationBaseline for the preview ones. The streams publish
+#                   different versions, so a package validated against the other stream's baseline
+#                   asks ApiCompat to restore a version it never published, and its pack fails with
+#                   NU1102 before comparing any API.
 #
 # Withheld packages (named in the manifest's comment block) are deliberately absent and are not
 # checked - they do not ship, so they owe consumers nothing.
@@ -52,10 +58,11 @@ versioning="$repo_root/bld/Versioning.props"
 
 violations=0
 
-# Emits a GitHub Actions error annotation plus a human-readable line.
+# Emits a GitHub Actions error annotation plus a human-readable line. The annotation points at
+# bld/release-manifest.txt unless a second argument names another file.
 fail() {
-    local message="$1"
-    printf '::error file=bld/release-manifest.txt::%s\n' "$message"
+    local message="$1" file="${2:-bld/release-manifest.txt}"
+    printf '::error file=%s::%s\n' "$file" "$message"
     printf '  VIOLATION: %s\n' "$message"
     violations=$((violations + 1))
 }
@@ -85,10 +92,13 @@ if [ -z "$preview_version" ]; then
     exit 1
 fi
 
+stable_baseline="$(sed -n 's:.*<BoduPackageValidationBaseline>\(.*\)</BoduPackageValidationBaseline>.*:\1:p' "$versioning" | head -1)"
+preview_baseline="$(sed -n 's:.*<BoduPreviewPackageValidationBaseline>\(.*\)</BoduPreviewPackageValidationBaseline>.*:\1:p' "$versioning" | head -1)"
+
 printf 'Release manifest check\n'
 printf '======================\n'
-printf 'BoduBaseVersion:    %s  (Stable tier)\n' "$base_version"
-printf 'BoduPreviewVersion: %s  (Preview / Experimental tier)\n' "$preview_version"
+printf 'BoduBaseVersion:    %s  (Stable tier, validated against %s)\n' "$base_version" "${stable_baseline:-no baseline}"
+printf 'BoduPreviewVersion: %s  (Preview / Experimental tier, validated against %s)\n' "$preview_version" "${preview_baseline:-no baseline of its own}"
 
 # Compares two MAJOR.MINOR.PATCH versions; prints 1 when $1 > $2, else 0.
 version_gt() {
@@ -150,6 +160,7 @@ check_tier_and_stream() {
 }
 
 entries=0
+preview_entries=0
 seen_ids=" "
 
 while IFS= read -r raw; do
@@ -187,6 +198,11 @@ while IFS= read -r raw; do
         continue
     fi
     project_root="$(dirname "$(dirname "$project")")"
+
+    # Counted for check 9, which needs to know whether the preview stream ships anything.
+    if [ "$(sed -n 's:.*<BoduPackageVersionOverride>\(.*\)</BoduPackageVersionOverride>.*:\1:p' "$project" | head -1)" = '$(BoduPreviewVersion)' ]; then
+        preview_entries=$((preview_entries + 1))
+    fi
 
     # 4. NotAhead.
     if [ "$(version_gt "$version" "$base_version")" = "1" ]; then
@@ -236,6 +252,36 @@ while IFS= read -r raw; do
 
     check_tier_and_stream "$id" "$(dirname "$(dirname "$project")")" "$project"
 done < "$manifest"
+
+# 9. Baseline.
+#
+# A pack compares a manifest package with the baseline version of its own stream (selected in
+# Directory.Build.targets), and ApiCompat first restores that version from nuget.org. A baseline
+# ahead of its stream's version names a release that cannot have happened yet, and a preview package
+# compared with the Stable baseline names a version it never shipped at: either way the pack fails
+# with NU1102. Whether a baseline at or below its stream's version is actually on nuget.org takes a
+# network lookup, which this offline check leaves to the pack itself.
+check_baseline() {
+    local property="$1" value="$2" stream_property="$3" stream_version="$4"
+
+    if ! printf '%s' "$value" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+        fail "$property '$value' is not MAJOR.MINOR.PATCH" bld/Versioning.props
+    elif [ "$(version_gt "$value" "$stream_version")" = 1 ]; then
+        fail "$property $value is ahead of $stream_property $stream_version, so it names a release this stream cannot have published yet, and every pack it applies to fails with NU1102. Set it to the last $stream_property already on nuget.org (bld/RELEASING.md, Post-publish)." bld/Versioning.props
+    fi
+}
+
+if [ -n "$stable_baseline" ]; then
+    check_baseline BoduPackageValidationBaseline "$stable_baseline" BoduBaseVersion "$base_version"
+fi
+
+if [ "$preview_entries" -gt 0 ]; then
+    if [ -z "$preview_baseline" ]; then
+        fail "$preview_entries manifest package(s) ship on the preview stream, but bld/Versioning.props sets no BoduPreviewPackageValidationBaseline, so they are compared with BoduPackageValidationBaseline (${stable_baseline:-unset}), the Stable stream's baseline. Once that moves to a Stable release, which no preview package shipped at, every preview pack fails with NU1102. Give the preview stream its own baseline: the last BoduPreviewVersion on nuget.org." bld/Versioning.props
+    else
+        check_baseline BoduPreviewPackageValidationBaseline "$preview_baseline" BoduPreviewVersion "$preview_version"
+    fi
+fi
 
 printf -- '----------------------\n'
 printf 'Manifest entries checked: %d\n' "$entries"
