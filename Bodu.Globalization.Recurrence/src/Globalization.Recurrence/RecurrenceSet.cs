@@ -158,7 +158,27 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// <see cref="Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> to bound it.
     /// </returns>
     /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
-    public IEnumerable<DateTime> GetOccurrences()
+    public IEnumerable<DateTime> GetOccurrences() =>
+        Merge(null);
+
+    /// <summary>
+    /// Merges the rule expansions and the explicit dates into the ascending, duplicate-free occurrence stream, less the
+    /// exception dates.
+    /// </summary>
+    /// <param name="bound">
+    /// The instant the caller filters the stream against, from which each source may begin; or <see langword="null" />
+    /// to merge every source from its beginning.
+    /// </param>
+    /// <returns>
+    /// The ascending occurrences. With a <paramref name="bound" />, those on or after it are exactly the set's; any
+    /// before it are incomplete and left for the caller to skip.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Removing a duplicate compares an occurrence only with the one before it, and an equal value is never on the
+    /// other side of the bound, so beginning each source at the bound changes nothing at or after it.
+    /// </remarks>
+    private IEnumerable<DateTime> Merge(DateTime? bound)
     {
         var exceptions = new HashSet<DateTime>(_exceptionDates);
         var queue = new PriorityQueue<IEnumerator<DateTime>, DateTime>();
@@ -167,10 +187,15 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
         {
             foreach (RecurrenceRule rule in _rules)
             {
-                Seed(queue, rule.GetOccurrences(Start).GetEnumerator());
+                IEnumerable<DateTime> occurrences = bound is DateTime from
+                    ? rule.EnumerateFrom(Start, from)
+                    : rule.GetOccurrences(Start);
+                Seed(queue, occurrences.GetEnumerator());
             }
 
-            Seed(queue, ((IEnumerable<DateTime>)_dates).GetEnumerator());
+            int firstDate = bound is DateTime lower ? FirstDateAtOrAfter(lower) : 0;
+            IEnumerable<DateTime> dates = new ArraySegment<DateTime>(_dates, firstDate, _dates.Length - firstDate);
+            Seed(queue, dates.GetEnumerator());
 
             DateTime? last = null;
             while (queue.Count > 0)
@@ -215,9 +240,13 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// <param name="to">The inclusive upper bound of the window.</param>
     /// <returns>The occurrences within <c>[from, to]</c> in ascending chronological order.</returns>
     /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Each rule without <see cref="RecurrenceRule.Count" /> begins at the frequency period that holds
+    /// <paramref name="from" />, so the cost does not grow with the time elapsed since <see cref="Start" />.
+    /// </remarks>
     public IEnumerable<DateTime> GetOccurrences(DateTime from, DateTime to)
     {
-        foreach (DateTime occurrence in GetOccurrences())
+        foreach (DateTime occurrence in Merge(from))
         {
             if (occurrence > to)
             {
@@ -241,9 +270,13 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </param>
     /// <returns>The next occurrence, or <see langword="null" /> when the set produces none.</returns>
     /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Each rule without <see cref="RecurrenceRule.Count" /> begins at the frequency period that holds
+    /// <paramref name="after" />, so the cost does not grow with the time elapsed since <see cref="Start" />.
+    /// </remarks>
     public DateTime? GetNextOccurrence(DateTime after, bool inclusive = false)
     {
-        foreach (DateTime occurrence in GetOccurrences())
+        foreach (DateTime occurrence in Merge(after))
         {
             if (occurrence > after || (inclusive && occurrence == after))
             {
@@ -267,21 +300,28 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </returns>
     /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
+    /// <para>
     /// Due-ness evaluation is a previous-occurrence comparison - typically
     /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> - so missed occurrences coalesce
     /// structurally: the answer is a single instant, never a backlog.
+    /// </para>
+    /// <para>
+    /// The set's occurrences are the union of its rules and explicit dates less its exception dates, so the answer is
+    /// the latest of each source's own previous occurrence that no exception date removes. Each rule without
+    /// <see cref="RecurrenceRule.Count" /> searches back from the frequency period that holds
+    /// <paramref name="before" />, so the cost does not grow with the time elapsed since <see cref="Start" />.
+    /// </para>
     /// </remarks>
     public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
     {
-        DateTime? previous = null;
-        foreach (DateTime occurrence in GetOccurrences())
+        DateTime? previous = PreviousDate(before, inclusive);
+        foreach (RecurrenceRule rule in _rules)
         {
-            if (occurrence > before || (!inclusive && occurrence == before))
+            DateTime? candidate = rule.GetPreviousOccurrence(Start, before, inclusive, IsException);
+            if (candidate is DateTime value && (previous is null || value > previous.Value))
             {
-                break;
+                previous = value;
             }
-
-            previous = occurrence;
         }
 
         return previous;
@@ -331,6 +371,68 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     {
         DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
         return previous is null ? null : new DateTimeOffset(previous.Value, before.Offset);
+    }
+
+    /// <summary>
+    /// Returns the last explicit date that falls before the specified instant and that no exception date removes.
+    /// </summary>
+    /// <param name="before">The instant the returned date must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow a date exactly equal to <paramref name="before" />; otherwise the date must be
+    /// strictly earlier.
+    /// </param>
+    /// <returns>
+    /// The previous explicit date, or <see langword="null" /> when none precedes <paramref name="before" />.
+    /// </returns>
+    private DateTime? PreviousDate(DateTime before, bool inclusive)
+    {
+        int index = FirstDateAtOrAfter(before);
+        while (inclusive && index < _dates.Length && _dates[index] == before)
+        {
+            index++;
+        }
+
+        for (int i = index - 1; i >= 0; i--)
+        {
+            if (!IsException(_dates[i]))
+            {
+                return _dates[i];
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Determines whether an instant matches an exception date.
+    /// </summary>
+    /// <param name="instant">The instant to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="instant" /> equals an exception date; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private bool IsException(DateTime instant) =>
+        Array.BinarySearch(_exceptionDates, instant) >= 0;
+
+    /// <summary>
+    /// Returns the index of the first explicit date at or after an instant.
+    /// </summary>
+    /// <param name="bound">The instant.</param>
+    /// <returns>The index, or the number of explicit dates when every one precedes <paramref name="bound" />.</returns>
+    private int FirstDateAtOrAfter(DateTime bound)
+    {
+        int index = Array.BinarySearch(_dates, bound);
+        if (index < 0)
+        {
+            return ~index;
+        }
+
+        while (index > 0 && _dates[index - 1] == bound)
+        {
+            index--;
+        }
+
+        return index;
     }
 
     /// <summary>

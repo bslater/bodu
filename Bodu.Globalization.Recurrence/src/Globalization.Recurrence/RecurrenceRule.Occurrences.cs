@@ -122,7 +122,8 @@ public sealed partial class RecurrenceRule
         FindPreviousOccurrence(
             start,
             DateOnly.FromDateTime(before),
-            occurrence => occurrence > before || (!inclusive && occurrence == before));
+            occurrence => occurrence > before || (!inclusive && occurrence == before),
+            isExcluded: null);
 
     /// <summary>
     /// Enumerates the occurrences of the rule anchored at the specified start, preserving its UTC offset.
@@ -233,10 +234,42 @@ public sealed partial class RecurrenceRule
             {
                 var instant = new DateTimeOffset(occurrence, offset);
                 return instant > before || (!inclusive && instant == before);
-            });
+            },
+            isExcluded: null);
 
         return previous is DateTime value ? new DateTimeOffset(value, offset) : null;
     }
+
+    /// <summary>
+    /// Returns the last occurrence of the rule that falls before the specified instant and that an exclusion does not
+    /// remove.
+    /// </summary>
+    /// <param name="start">The series start the rule is anchored to.</param>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <param name="isExcluded">Determines whether an occurrence is removed from the stream.</param>
+    /// <returns>
+    /// The previous occurrence that <paramref name="isExcluded" /> keeps, or <see langword="null" /> when none precedes
+    /// <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The search is that of <see cref="GetPreviousOccurrence(DateTime, DateTime, bool)" />, with the excluded
+    /// occurrences skipped, so it continues back past them as it does past periods without an occurrence.
+    /// </remarks>
+    internal DateTime? GetPreviousOccurrence(
+        DateTime start,
+        DateTime before,
+        bool inclusive,
+        Func<DateTime, bool> isExcluded) =>
+        FindPreviousOccurrence(
+            start,
+            DateOnly.FromDateTime(before),
+            occurrence => occurrence > before || (!inclusive && occurrence == before),
+            isExcluded);
 
     /// <summary>
     /// Enumerates the occurrence stream from the first frequency period that can hold an occurrence on or after a
@@ -285,22 +318,29 @@ public sealed partial class RecurrenceRule
     /// <param name="start">The series start the rule is anchored to.</param>
     /// <param name="boundDate">The date of the bound, from which the search works back.</param>
     /// <param name="isBeyond">Determines whether an occurrence lies beyond the bound.</param>
+    /// <param name="isExcluded">
+    /// Determines whether an occurrence is skipped, or <see langword="null" /> to skip none.
+    /// </param>
     /// <returns>The previous occurrence, or <see langword="null" /> when none precedes the bound.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
     /// <remarks>
-    /// The stream ascends, so the answer is the latest occurrence within the bound, and no period from
-    /// <see cref="FirstPeriodBeyond" /> on can hold it. The search enumerates the one period below that index, then the
-    /// two below those, then four, and so on, and stops at the first run that holds an occurrence within the bound, so
-    /// it scans at most twice the periods between the answer and the bound. A rule with <see cref="Count" /> is
-    /// enumerated from its start instead, because the occurrences before a period decide how many it may still produce.
+    /// The stream ascends, so the answer is the latest occurrence within the bound that is not skipped, and no period
+    /// from <see cref="FirstPeriodBeyond" /> on can hold it. The search enumerates the one period below that index,
+    /// then the two below those, then four, and so on, and stops at the first run that holds such an occurrence, so it
+    /// scans at most twice the periods between the answer and the bound. A rule with <see cref="Count" /> is enumerated
+    /// from its start instead, because the occurrences before a period decide how many it may still produce.
     /// </remarks>
-    private DateTime? FindPreviousOccurrence(DateTime start, DateOnly boundDate, Func<DateTime, bool> isBeyond)
+    private DateTime? FindPreviousOccurrence(
+        DateTime start,
+        DateOnly boundDate,
+        Func<DateTime, bool> isBeyond,
+        Func<DateTime, bool>? isExcluded)
     {
         ThrowIfSubDaily();
 
         if (Count is not null)
         {
-            return LastBefore(EnumerateCore(start, 0, int.MaxValue), isBeyond);
+            return LastBefore(EnumerateCore(start, 0, int.MaxValue), isBeyond, isExcluded);
         }
 
         // Nothing past UNTIL is ever produced, so a bound beyond it searches back from UNTIL rather than through the
@@ -315,7 +355,7 @@ public sealed partial class RecurrenceRule
         while (true)
         {
             int low = Math.Max(0, high - width);
-            DateTime? previous = LastBefore(EnumerateCore(start, low, high), isBeyond);
+            DateTime? previous = LastBefore(EnumerateCore(start, low, high), isBeyond, isExcluded);
             if (previous is not null || low == 0)
             {
                 return previous;
@@ -331,8 +371,16 @@ public sealed partial class RecurrenceRule
     /// </summary>
     /// <param name="occurrences">The ascending occurrences to scan.</param>
     /// <param name="isBeyond">Determines whether an occurrence lies beyond the bound.</param>
-    /// <returns>The last occurrence within the bound, or <see langword="null" /> when the run has none.</returns>
-    private static DateTime? LastBefore(IEnumerable<DateTime> occurrences, Func<DateTime, bool> isBeyond)
+    /// <param name="isExcluded">
+    /// Determines whether an occurrence is skipped, or <see langword="null" /> to skip none.
+    /// </param>
+    /// <returns>
+    /// The last occurrence within the bound that is not skipped, or <see langword="null" /> when the run has none.
+    /// </returns>
+    private static DateTime? LastBefore(
+        IEnumerable<DateTime> occurrences,
+        Func<DateTime, bool> isBeyond,
+        Func<DateTime, bool>? isExcluded)
     {
         DateTime? previous = null;
         foreach (DateTime occurrence in occurrences)
@@ -342,7 +390,10 @@ public sealed partial class RecurrenceRule
                 break;
             }
 
-            previous = occurrence;
+            if (isExcluded is null || !isExcluded(occurrence))
+            {
+                previous = occurrence;
+            }
         }
 
         return previous;
