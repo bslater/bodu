@@ -27,4 +27,18 @@ public sealed partial class NotableDateOnlyExtensionsTests
     {
         Assert.AreEqual(new DateOnly(2024, 12, 31), new DateOnly(2025, 1, 6).AddWorkingDays(-3, Service, "XX"));
     }
+
+    /// <summary>
+    /// Verifies that a count of <see cref="int.MinValue" /> walks back like any other count too large to satisfy, and
+    /// throws <see cref="ArgumentOutOfRangeException" /> when the walk runs past <see cref="DateOnly.MinValue" />, rather
+    /// than overflowing before it takes a step.
+    /// </summary>
+    [TestMethod]
+    public void AddWorkingDays_WhenCountIsMinimumInteger_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new DateOnly(1, 1, 10).AddWorkingDays(int.MinValue, Service, "XX");
+        });
+    }
 }

@@ -38,4 +38,32 @@ public sealed partial class NotableDateTraversalExtensionTests
         Assert.AreEqual(new DateTimeOffset(2026, 5, 18, 9, 30, 0, TimeSpan.FromHours(-8)), monday);
         Assert.AreEqual(TimeSpan.FromHours(-8), monday.Offset);
     }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateTime" /> count of <see cref="int.MinValue" /> walks back like any other count too
+    /// large to satisfy, throwing <see cref="ArgumentOutOfRangeException" /> past the first representable date rather than
+    /// overflowing before it takes a step.
+    /// </summary>
+    [TestMethod]
+    public void AddWorkingDays_OnDateTime_WhenCountIsMinimumInteger_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new DateTime(1, 1, 10).AddWorkingDays(int.MinValue, HolidayService, "XX");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateTimeOffset" /> count of <see cref="int.MinValue" /> walks back like any other count
+    /// too large to satisfy, throwing <see cref="ArgumentOutOfRangeException" /> past the first representable date
+    /// rather than overflowing before it takes a step.
+    /// </summary>
+    [TestMethod]
+    public void AddWorkingDays_OnDateTimeOffset_WhenCountIsMinimumInteger_ShouldThrowArgumentOutOfRangeException()
+    {
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new DateTimeOffset(1, 1, 10, 0, 0, 0, TimeSpan.Zero).AddWorkingDays(int.MinValue, HolidayService, "XX");
+        });
+    }
 }
