@@ -73,7 +73,8 @@ public sealed class WorkingDayInMonthStrategy
         DateOnly first = new(year, Month, 1);
         DateOnly last = DateOnlyExtensions.GetLastDateOfMonth(year, Month);
 
-        int needed = Math.Abs(Ordinal);
+        // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+        long needed = Math.Abs((long)Ordinal);
         int count = 0;
 
         if (Ordinal > 0)

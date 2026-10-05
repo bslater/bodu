@@ -23,11 +23,12 @@ Every sample below needs only `Bodu.Core`. For collection samples (`CircularBuff
 
 ### Week pattern (`WeekPattern`)
 
+<!-- run -->
 ```csharp
 using Bodu;
 
 WeekPattern weekdays = WeekPattern.Parse("_MTWTF_");
-WeekPattern weekend  = WeekPattern.Parse("SaSu");
+WeekPattern weekend  = WeekPattern.Parse("S_____S");
 WeekPattern allDays  = weekdays | weekend;
 
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true

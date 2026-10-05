@@ -241,7 +241,9 @@ public sealed class StrategyResolutionContext
             return origin;
 
         int step = workingDays > 0 ? 1 : -1;
-        int remaining = Math.Abs(workingDays);
+
+        // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+        long remaining = Math.Abs((long)workingDays);
         DateOnly cursor = origin;
 
         while (remaining > 0)

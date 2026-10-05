@@ -4,9 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
@@ -16,10 +19,17 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// prose review misses.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A fenced <c>csharp</c> block is compiled only when the line immediately preceding its opening fence is the sentinel
-/// <c>&lt;!-- compile --&gt;</c>. Each opted-in block is compiled as the body of a method against the same assemblies
-/// this test references, so an opted-in block must be method-body statements that resolve against those references.
-/// Illustrative fragments stay unmarked and are not compiled.
+/// <c>&lt;!-- compile --&gt;</c> or <c>&lt;!-- run --&gt;</c>. Each opted-in block is compiled as the body of a method
+/// against the same assemblies this test references, so an opted-in block must be method-body statements that resolve
+/// against those references. Illustrative fragments stay unmarked and are not compiled.
+/// </para>
+/// <para>
+/// A block marked <c>&lt;!-- run --&gt;</c> is also run, so an example that compiles but throws - a call the API
+/// rejects at run time, such as text a parser does not accept - fails the guard too. Mark only examples that are
+/// self-contained and free of side effects.
+/// </para>
 /// </remarks>
 [TestClass]
 public sealed class DocumentationSnippetCompileTests
@@ -30,12 +40,18 @@ public sealed class DocumentationSnippetCompileTests
     private const string CompileSentinel = "<!-- compile -->";
 
     /// <summary>
+    /// The sentinel that opts a fenced <c>csharp</c> block into compilation and a run.
+    /// </summary>
+    private const string RunSentinel = "<!-- run -->";
+
+    /// <summary>
     /// The guide paths this test covers, relative to the repository root. A directory contributes every markdown file
     /// directly beneath it.
     /// </summary>
     private static readonly string[] GuidePaths =
     [
         "docs/guides/core",
+        "docs/docs/core/getting-started.md",
     ];
 
     /// <summary>
@@ -68,7 +84,7 @@ public sealed class DocumentationSnippetCompileTests
 
         foreach (string file in EnumerateGuideFiles(root))
         {
-            foreach (string snippet in ExtractMarkedSnippets(File.ReadAllLines(file)))
+            foreach (string snippet in ExtractMarkedSnippets(File.ReadAllLines(file), CompileSentinel, RunSentinel))
             {
                 marked++;
                 List<Diagnostic> errors = Compile(snippet, references);
@@ -83,6 +99,40 @@ public sealed class DocumentationSnippetCompileTests
 
         Assert.IsGreaterThan(0, marked, $"No '{CompileSentinel}' snippets were found under the covered guide paths; the compile guard is not wired to any example.");
         Assert.AreEqual(0, failures.Length, $"Documentation snippets failed to compile:{Environment.NewLine}{failures}");
+    }
+
+    /// <summary>
+    /// Verifies that every Core Foundations guide snippet marked to run compiles and runs without throwing, with at least
+    /// one snippet marked so the run guard is demonstrably wired.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void CoreFoundationsGuideSnippets_WhenMarkedForRun_ShouldRunWithoutThrowing()
+    {
+        string? root = FindRepositoryRoot();
+        if (root is null)
+        {
+            Assert.Inconclusive("The repository root was not found from the test base directory.");
+            return;
+        }
+
+        List<MetadataReference> references = LoadTrustedPlatformReferences();
+        var failures = new StringBuilder();
+        int marked = 0;
+
+        foreach (string file in EnumerateGuideFiles(root))
+        {
+            foreach (string snippet in ExtractMarkedSnippets(File.ReadAllLines(file), RunSentinel))
+            {
+                marked++;
+                string? failure = Run(snippet, references);
+                if (failure is not null)
+                    failures.AppendLine($"{Path.GetFileName(file)} - snippet starting \"{FirstCodeLine(snippet)}\": {failure}");
+            }
+        }
+
+        Assert.IsGreaterThan(0, marked, $"No '{RunSentinel}' snippets were found under the covered guide paths; the run guard is not wired to any example.");
+        Assert.AreEqual(0, failures.Length, $"Documentation snippets failed to run:{Environment.NewLine}{failures}");
     }
 
     /// <summary>
@@ -138,19 +188,19 @@ public sealed class DocumentationSnippetCompileTests
     }
 
     /// <summary>
-    /// Yields each fenced <c>csharp</c> block whose opening fence is immediately preceded by the
-    /// <see cref="CompileSentinel" />.
+    /// Yields each fenced <c>csharp</c> block whose opening fence is immediately preceded by one of the given sentinels.
     /// </summary>
     /// <param name="lines">The markdown file's lines.</param>
+    /// <param name="sentinels">The sentinels that opt a block in.</param>
     /// <returns>The opted-in snippet bodies.</returns>
-    private static IEnumerable<string> ExtractMarkedSnippets(string[] lines)
+    private static IEnumerable<string> ExtractMarkedSnippets(string[] lines, params string[] sentinels)
     {
         for (int i = 0; i < lines.Length; i++)
         {
             if (lines[i].Trim() != "```csharp")
                 continue;
 
-            bool marked = i > 0 && lines[i - 1].Trim() == CompileSentinel;
+            bool marked = i > 0 && sentinels.Contains(lines[i - 1].Trim());
             int start = i + 1;
             int end = start;
             while (end < lines.Length && lines[end].Trim() != "```")
@@ -185,6 +235,73 @@ public sealed class DocumentationSnippetCompileTests
     /// <returns>The error-severity diagnostics, empty when the snippet compiles.</returns>
     private static List<Diagnostic> Compile(string snippet, List<MetadataReference> references)
     {
+        (string imports, string body) = Prepare(snippet);
+
+        // Most snippets are statements; some are a type the guide is introducing (a POCO, a converter). Try the
+        // statement reading first and fall back to the declaration reading, reporting whichever fits better.
+        List<Diagnostic> asStatements = CompileSource(StatementSource(imports, body), references);
+
+        if (asStatements.Count == 0)
+            return asStatements;
+
+        List<Diagnostic> asDeclarations = CompileSource(
+            imports + "namespace Bodu.DocSnippets {" + Environment.NewLine + body + Environment.NewLine + "}",
+            references);
+
+        return asDeclarations.Count < asStatements.Count ? asDeclarations : asStatements;
+    }
+
+    /// <summary>
+    /// Compiles a snippet as the body of a method, loads it into a collectible load context, and runs it.
+    /// </summary>
+    /// <param name="snippet">The snippet body (method-body statements, optionally preceded by using directives).</param>
+    /// <param name="references">The metadata references to compile against.</param>
+    /// <returns>
+    /// A description of the failure, or <see langword="null" /> when the snippet compiled and ran without throwing.
+    /// </returns>
+    private static string? Run(string snippet, List<MetadataReference> references)
+    {
+        (string imports, string body) = Prepare(snippet);
+        using var image = new MemoryStream();
+        EmitResult emitted = CreateCompilation(StatementSource(imports, body), references).Emit(image);
+        if (!emitted.Success)
+        {
+            IEnumerable<string> errors = emitted.Diagnostics
+                .Where(static d => d.Severity == DiagnosticSeverity.Error)
+                .Select(static d => $"{d.Id}: {d.GetMessage()}");
+            return "it does not compile as statements: " + string.Join("; ", errors);
+        }
+
+        image.Position = 0;
+        var context = new AssemblyLoadContext("Bodu.DocSnippets", isCollectible: true);
+        try
+        {
+            Assembly assembly = context.LoadFromStream(image);
+            MethodInfo entry = assembly.GetType("Bodu.DocSnippets.Snippet")!
+                .GetMethod("RunAsync", BindingFlags.Static | BindingFlags.NonPublic)!;
+            ((Task)entry.Invoke(null, null)!).GetAwaiter().GetResult();
+            return null;
+        }
+        catch (Exception ex)
+        {
+            // The snippet is untrusted text from a guide, so anything it throws is the finding being reported.
+            Exception thrown = ex is TargetInvocationException { InnerException: { } inner } ? inner : ex;
+            return $"it threw {thrown.GetType().Name}: {thrown.Message}";
+        }
+        finally
+        {
+            context.Unload();
+        }
+    }
+
+    /// <summary>
+    /// Splits a snippet into the <c>using</c> directives it compiles with - its own, lifted out of the body, followed by
+    /// the namespaces every guide snippet may assume - and the rest of its text.
+    /// </summary>
+    /// <param name="snippet">The snippet body (method-body statements, optionally preceded by using directives).</param>
+    /// <returns>The using directives and the snippet's remaining text.</returns>
+    private static (string Imports, string Body) Prepare(string snippet)
+    {
         var hoisted = new List<string>();
         var body = new List<string>();
         foreach (string line in snippet.Split('\n'))
@@ -195,7 +312,6 @@ public sealed class DocumentationSnippetCompileTests
                 body.Add(line);
         }
 
-        snippet = string.Join(Environment.NewLine, body);
         string imports =
             string.Concat(hoisted) +
             "using System;" +
@@ -221,22 +337,18 @@ public sealed class DocumentationSnippetCompileTests
             "using Bodu.Threading;" +
             string.Empty;
 
-        // Most snippets are statements; some are a type the guide is introducing (a POCO, a converter). Try the
-        // statement reading first and fall back to the declaration reading, reporting whichever fits better.
-        List<Diagnostic> asStatements = CompileSource(
-            imports + "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {"
-            + Environment.NewLine + snippet + Environment.NewLine + "} } }",
-            references);
-
-        if (asStatements.Count == 0)
-            return asStatements;
-
-        List<Diagnostic> asDeclarations = CompileSource(
-            imports + "namespace Bodu.DocSnippets {" + Environment.NewLine + snippet + Environment.NewLine + "}",
-            references);
-
-        return asDeclarations.Count < asStatements.Count ? asDeclarations : asStatements;
+        return (imports, string.Join(Environment.NewLine, body));
     }
+
+    /// <summary>
+    /// Wraps a snippet's statements as the body of the <c>Bodu.DocSnippets.Snippet.RunAsync</c> method.
+    /// </summary>
+    /// <param name="imports">The using directives the snippet compiles with.</param>
+    /// <param name="body">The snippet's statements.</param>
+    /// <returns>The complete compilation unit.</returns>
+    private static string StatementSource(string imports, string body) =>
+        imports + "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {"
+        + Environment.NewLine + body + Environment.NewLine + "} } }";
 
     /// <summary>
     /// Compiles one candidate source text and returns its error diagnostics.
@@ -244,19 +356,23 @@ public sealed class DocumentationSnippetCompileTests
     /// <param name="source">The complete compilation unit.</param>
     /// <param name="references">The metadata references to compile against.</param>
     /// <returns>The error-severity diagnostics, empty when the source compiles.</returns>
-    private static List<Diagnostic> CompileSource(string source, List<MetadataReference> references)
-    {
-        SyntaxTree tree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
-        var compilation = CSharpCompilation.Create(
-            "Bodu.DocSnippets",
-            new[] { tree },
-            references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        return compilation.GetDiagnostics()
+    private static List<Diagnostic> CompileSource(string source, List<MetadataReference> references) =>
+        CreateCompilation(source, references).GetDiagnostics()
             .Where(static d => d.Severity == DiagnosticSeverity.Error)
             .ToList();
-    }
+
+    /// <summary>
+    /// Creates the compilation of one candidate source text as a library.
+    /// </summary>
+    /// <param name="source">The complete compilation unit.</param>
+    /// <param name="references">The metadata references to compile against.</param>
+    /// <returns>The compilation.</returns>
+    private static CSharpCompilation CreateCompilation(string source, List<MetadataReference> references) =>
+        CSharpCompilation.Create(
+            "Bodu.DocSnippets",
+            new[] { CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest)) },
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
     /// <summary>
     /// Determines whether a line is a <c>using</c> <i>directive</i> - a plain, static, or alias import - as opposed to

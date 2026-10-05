@@ -47,6 +47,22 @@ public partial class WeekPatternTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the <see cref="ArgumentOutOfRangeException" /> the indexer getter throws for an invalid
+    /// <see cref="DayOfWeek" /> value names the <c>day</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void IndexerGet_WhenInvalidDayIndex_ShouldNameDayParameter()
+    {
+        var pattern = new WeekPattern();
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = pattern[(DayOfWeek)7];
+        });
+
+        Assert.AreEqual("day", ex.ParamName);
+    }
+
     private static IEnumerable<object[]> GetValidDays()
     {
         foreach (DayOfWeek day in Enum.GetValues<DayOfWeek>())

@@ -86,4 +86,20 @@ public partial class WeekPatternTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the <see cref="ArgumentOutOfRangeException" /> <see cref="WeekPattern.Contains" /> throws for an
+    /// invalid <see cref="DayOfWeek" /> value names the <c>day</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenInvalidDay_ShouldNameDayParameter()
+    {
+        WeekPattern pattern = WeekPattern.Empty;
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = pattern.Contains((DayOfWeek)7);
+        });
+
+        Assert.AreEqual("day", ex.ParamName);
+    }
+
 }

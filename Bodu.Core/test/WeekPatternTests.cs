@@ -73,6 +73,10 @@ public partial class WeekPatternTests
         yield return new object[] { "SMTWTF", null };
         yield return new object[] { "SMTWTFSS", null };
 
+        // Abbreviated day lists: a pattern is always seven characters, one per day, so these are not patterns
+        yield return new object[] { "MF", null };
+        yield return new object[] { "SaSu", null };
+
         // Incorrect order
         yield return new object[] { "ssmtwtf", null };
         yield return new object[] { "s mtwtf", null };

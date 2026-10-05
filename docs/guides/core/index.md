@@ -239,7 +239,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="week-pattern.md">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for sets of days of the week; supports composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
+  <p>Immutable bitmask value type for sets of days of the week, with bitwise operators, enumeration, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
 </div>
 
 </div>

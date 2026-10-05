@@ -88,6 +88,21 @@ public partial class WeekPatternTests
             _ = WeekPattern.Weekdays.Without((DayOfWeek)invalidDay);
         });
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="ArgumentOutOfRangeException" /> <see cref="WeekPattern.Without" /> throws for an
+    /// invalid <see cref="DayOfWeek" /> value names the <c>day</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void Without_WhenInvalidDay_ShouldNameDayParameter()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = WeekPattern.Weekdays.Without((DayOfWeek)7);
+        });
+
+        Assert.AreEqual("day", ex.ParamName);
+    }
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Without" /> returns a new instance that no longer contains
     /// the removed day.

@@ -22,7 +22,7 @@ Top-level primitives that don't fit into a sub-namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.WeekPattern> | Immutable bitmask value type for sets of days of the week. Supports composition (`MTuW`), bitwise operators, parsing, and enumeration. |
+| <xref:Bodu.WeekPattern> | Immutable bitmask value type for sets of days of the week, with bitwise operators, enumeration, and parsing and formatting as a seven-character mask (`_MTWTF_`). |
 | <xref:Bodu.IRandomGenerator> | Abstraction over random number generators - used by helpers (and the `Bodu.Collections` catalogue) that need pluggable randomness. |
 | <xref:Bodu.XorShiftRandom> | Fast non-cryptographic xor-shift PRNG implementing `IRandomGenerator`. |
 | <xref:Bodu.ThrowHelper> | Centralized parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |

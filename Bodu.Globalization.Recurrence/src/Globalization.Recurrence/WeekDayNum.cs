@@ -18,9 +18,10 @@ namespace Bodu.Globalization.Recurrence;
 /// <param name="Day">The day of the week the entry selects.</param>
 /// <remarks>
 /// <para>
-/// An ordinal is only meaningful when the enclosing rule is monthly or yearly; for a weekly rule the ordinal is always
-/// zero. The textual form places the ordinal before the two-letter weekday token, so <c>-1FR</c> parses to an entry
-/// with an ordinal of <c>-1</c> and a day of <see cref="DayOfWeek.Friday" />.
+/// An ordinal is only meaningful when the enclosing rule is monthly or yearly. A rule of any other frequency keeps an
+/// ordinal as written, in <see cref="RecurrenceRule.ByDay" /> and in its text, but ignores it, so the entry selects
+/// every occurrence of its day. The textual form places the ordinal before the two-letter weekday token, so <c>-1FR</c>
+/// parses to an entry with an ordinal of <c>-1</c> and a day of <see cref="DayOfWeek.Friday" />.
 /// </para>
 /// </remarks>
 public readonly record struct WeekDayNum(int Ordinal, DayOfWeek Day)

@@ -49,6 +49,22 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
+    /// Verifies that a weekly rule keeps a <c>BYDAY</c> ordinal as written, in its entries and its text, and ignores it
+    /// when it enumerates, so <c>1MO</c> selects every Monday: an ordinal counts only within a month or a year.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenWeeklyByDayHasOrdinal_ShouldKeepItAndSelectEveryOccurrence()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=1MO");
+
+        Assert.AreEqual(new WeekDayNum(1, DayOfWeek.Monday), rule.ByDay[0]);
+        Assert.AreEqual("FREQ=WEEKLY;BYDAY=1MO", rule.ToString());
+        CollectionAssert.AreEqual(
+            new[] { new DateTime(2026, 1, 5), new DateTime(2026, 1, 12), new DateTime(2026, 1, 19), new DateTime(2026, 1, 26) },
+            rule.GetOccurrences(new DateTime(2026, 1, 5)).Take(4).ToArray());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="RecurrenceRule.Parse(string)" /> throws
     /// <see cref="ArgumentNullException" /> for a null input.
     /// </summary>
@@ -74,6 +90,25 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
+    /// Verifies that a signed part or weekday ordinal at the minimum integer throws <see cref="FormatException" /> like
+    /// any other out-of-range value, rather than overflowing the range check.
+    /// </summary>
+    /// <param name="text">The rule text with the minimum integer in one signed part.</param>
+    [TestMethod]
+    [DataRow("FREQ=MONTHLY;BYMONTHDAY=-2147483648", DisplayName = "month day")]
+    [DataRow("FREQ=YEARLY;BYYEARDAY=-2147483648", DisplayName = "year day")]
+    [DataRow("FREQ=YEARLY;BYWEEKNO=-2147483648", DisplayName = "week number")]
+    [DataRow("FREQ=MONTHLY;BYDAY=MO;BYSETPOS=-2147483648", DisplayName = "set position")]
+    [DataRow("FREQ=MONTHLY;BYDAY=-2147483648MO", DisplayName = "weekday ordinal")]
+    public void Parse_WhenSignedValueIsMinimumInteger_ShouldThrowFormatException(string text)
+    {
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = RecurrenceRule.Parse(text);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="RecurrenceRule.TryParse(string, out RecurrenceRule)" /> reports failure without
     /// throwing for malformed input.
     /// </summary>
@@ -89,6 +124,11 @@ public partial class RecurrenceRuleTests
     [DataRow("FREQ=YEARLY;BYMONTH=13", DisplayName = "month out of range")]
     [DataRow("FREQ=DAILY;FOO=1", DisplayName = "unknown part")]
     [DataRow("FREQ=DAILY;FREQ=WEEKLY", DisplayName = "duplicate FREQ")]
+    [DataRow("FREQ=MONTHLY;BYMONTHDAY=-2147483648", DisplayName = "month day at the minimum integer")]
+    [DataRow("FREQ=YEARLY;BYYEARDAY=-2147483648", DisplayName = "year day at the minimum integer")]
+    [DataRow("FREQ=YEARLY;BYWEEKNO=-2147483648", DisplayName = "week number at the minimum integer")]
+    [DataRow("FREQ=MONTHLY;BYDAY=MO;BYSETPOS=-2147483648", DisplayName = "set position at the minimum integer")]
+    [DataRow("FREQ=MONTHLY;BYDAY=-2147483648MO", DisplayName = "weekday ordinal at the minimum integer")]
     public void TryParse_WhenMalformed_ShouldReturnFalse(string text)
     {
         bool parsed = RecurrenceRule.TryParse(text, out RecurrenceRule? result);

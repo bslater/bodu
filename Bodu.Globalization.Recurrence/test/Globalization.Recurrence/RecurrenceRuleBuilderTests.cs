@@ -23,7 +23,7 @@ namespace Bodu.Globalization.Recurrence;
 /// </para>
 /// </remarks>
 [TestClass]
-public class RecurrenceRuleBuilderTests
+public partial class RecurrenceRuleBuilderTests
 {
     /// <summary>
     /// Verifies that a rule built with only a frequency formats to that frequency alone.
@@ -145,6 +145,26 @@ public class RecurrenceRuleBuilderTests
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             _ = Apply(new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly), part, -(magnitude + 1)));
+    }
+
+    /// <summary>
+    /// Verifies that a signed part rejects the minimum integer with <see cref="ArgumentOutOfRangeException" />, like any
+    /// other out-of-range value, rather than overflowing the range check.
+    /// </summary>
+    /// <param name="part">The part under test.</param>
+    [TestMethod]
+    [DataRow("ByMonthDay")]
+    [DataRow("ByYearDay")]
+    [DataRow("ByWeekNo")]
+    [DataRow("BySetPos")]
+    public void SignedByParts_WhenValueIsMinimumInteger_ShouldThrowArgumentOutOfRangeException(string part)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Apply(new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly), part, int.MinValue);
+        });
+
+        Assert.AreEqual(part, ex.ParamName);
     }
 
     /// <summary>

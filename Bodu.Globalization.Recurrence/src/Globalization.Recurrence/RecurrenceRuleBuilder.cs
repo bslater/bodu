@@ -123,8 +123,13 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="weekStart">The week-start day.</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="weekStart" /> is not a defined <see cref="DayOfWeek" /> value.
+    /// </exception>
     public RecurrenceRuleBuilder WithWeekStart(DayOfWeek weekStart)
     {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(weekStart);
+
         _weekStart = weekStart;
         return this;
     }
@@ -170,9 +175,19 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="days">The weekday entries to select.</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="days" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when an entry's day is not a defined <see cref="DayOfWeek" /> value, or its ordinal is neither zero nor
+    /// within ±1 to ±53.
+    /// </exception>
     public RecurrenceRuleBuilder ByDay(params WeekDayNum[] days)
     {
         ThrowHelper.ThrowIfNull(days);
+        foreach (WeekDayNum entry in days)
+            ValidateWeekDay(entry.Day, entry.Ordinal, nameof(RecurrenceRule.ByDay));
+
         _byDay = (WeekDayNum[])days.Clone();
         return this;
     }
@@ -182,9 +197,18 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="days">The weekdays to select on every occurrence of that day within the period.</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="days" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when a day is not a defined <see cref="DayOfWeek" /> value.
+    /// </exception>
     public RecurrenceRuleBuilder ByDay(params DayOfWeek[] days)
     {
         ThrowHelper.ThrowIfNull(days);
+        foreach (DayOfWeek day in days)
+            ValidateWeekDay(day, 0, nameof(RecurrenceRule.ByDay));
+
         _byDay = Array.ConvertAll(days, day => new WeekDayNum(0, day));
         return this;
     }
@@ -300,6 +324,37 @@ public sealed class RecurrenceRuleBuilder
     }
 
     /// <summary>
+    /// Validates one <c>BYDAY</c> entry: a defined weekday with an ordinal of zero, which selects every occurrence of
+    /// the day, or of ±1 to ±53.
+    /// </summary>
+    /// <param name="day">The entry's weekday.</param>
+    /// <param name="ordinal">The entry's ordinal.</param>
+    /// <param name="part">The rule-part name reported on failure.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="day" /> is not a defined <see cref="DayOfWeek" /> value or
+    /// <paramref name="ordinal" /> is outside -53 to 53.
+    /// </exception>
+    private static void ValidateWeekDay(DayOfWeek day, int ordinal, string part)
+    {
+        if (day is < DayOfWeek.Sunday or > DayOfWeek.Saturday)
+        {
+            throw new ArgumentOutOfRangeException(
+                part,
+                day,
+                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Arg_OutOfRange_RecurrenceRulePart, part));
+        }
+
+        // The bounds are compared directly rather than through the magnitude, since Math.Abs throws for int.MinValue.
+        if (ordinal is < -53 or > 53)
+        {
+            throw new ArgumentOutOfRangeException(
+                part,
+                ordinal,
+                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Arg_OutOfRange_RecurrenceRulePart, part));
+        }
+    }
+
+    /// <summary>
     /// Validates that every value is non-zero with a magnitude in an inclusive range and returns a defensive copy.
     /// </summary>
     /// <param name="values">The values to validate.</param>
@@ -318,7 +373,8 @@ public sealed class RecurrenceRuleBuilder
         ThrowHelper.ThrowIfNull(values, part);
         foreach (int value in values)
         {
-            int magnitude = Math.Abs(value);
+            // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+            long magnitude = Math.Abs((long)value);
             if (value == 0 || magnitude < magLo || magnitude > magHi)
             {
                 throw new ArgumentOutOfRangeException(

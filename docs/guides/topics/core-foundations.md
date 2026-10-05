@@ -39,7 +39,7 @@ If you have not yet installed the packages, start with the [topic overview](../.
 
 <div class="bodu-card">
   <h3><a href="../core/week-pattern.md">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets - composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
+  <p>Immutable bitmask value type for day-of-week sets - bitwise operators, enumeration, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
 </div>
 
 </div>

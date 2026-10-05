@@ -23,6 +23,7 @@ public partial class RecurrenceSetTests
                 new("invalid DTSTART value", "DTSTART:2026-01-01\nRRULE:FREQ=DAILY", typeof(FormatException), MessageContains: "2026-01-01"),
                 new("no rules or dates", "DTSTART:20260101T090000", typeof(FormatException), MessageContains: "at least one rule"),
                 new("invalid nested rule", "DTSTART:20260101T090000\nRRULE:FREQ=DAILY;BYHOUR=24", typeof(FormatException), MessageContains: "BYHOUR=24"),
+                new("nested rule with the minimum integer", "DTSTART:20260101T090000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=-2147483648", typeof(FormatException), MessageContains: "BYMONTHDAY=-2147483648"),
                 new("invalid RDATE value", "DTSTART:20260101T090000\nRRULE:FREQ=DAILY\nRDATE:notadate", typeof(FormatException), MessageContains: "notadate"),
                 new("invalid EXDATE value", "DTSTART:20260101T090000\nRRULE:FREQ=DAILY\nEXDATE:20261303T000000", typeof(FormatException), MessageContains: "20261303T000000"),
             };
