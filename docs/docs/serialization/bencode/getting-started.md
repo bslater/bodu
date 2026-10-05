@@ -12,7 +12,7 @@ Add the package. Its one library dependency, the shared **Bodu.Text.Serializatio
 dotnet add package Bodu.Text.Bencode
 ```
 
-It targets `net8.0`.
+It targets `net8.0` and `net10.0`.
 
 ## A first Bencode round trip
 

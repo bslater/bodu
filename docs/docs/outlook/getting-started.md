@@ -18,7 +18,7 @@ dotnet add package Bodu.Formats.Outlook.Msg
 dotnet add package Bodu.Formats.Outlook.Pst
 ```
 
-Both target `net8.0` and share the single `Bodu.Formats.Outlook` namespace. Dependencies, from the project files:
+Both target `net8.0` and `net10.0` and share the single `Bodu.Formats.Outlook` namespace. Dependencies, from the project files:
 
 - `Bodu.Formats.Outlook.Msg` - `Bodu.Formats.Outlook`, `Bodu.IO.Compound` (the OLE2 container), `Bodu.Core`, and `System.Text.Encoding.CodePages` (Windows code pages for `String8` properties).
 - `Bodu.Formats.Outlook.Pst` - `Bodu.Formats.Outlook`, `Bodu.IO.Pst` (the node-database container, which itself references `Bodu.Collections`), `Bodu.Core`, and `System.Text.Encoding.CodePages`.

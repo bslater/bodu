@@ -109,7 +109,7 @@ dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 ```
 
-Both target `net8.0` and depend only on `Bodu.Core` (and, for `Bodu.IO.Hashing`, the BCL's `System.IO.Hashing` contract). Install only the one you need - they are independent packages.
+Both target `net8.0` and `net10.0` and depend only on `Bodu.Core` (and, for `Bodu.IO.Hashing`, the BCL's `System.IO.Hashing` contract). Install only the one you need - they are independent packages.
 
 ## Where to go next
 
