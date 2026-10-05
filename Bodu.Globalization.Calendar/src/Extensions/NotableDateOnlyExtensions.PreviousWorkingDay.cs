@@ -29,6 +29,6 @@ public static partial class NotableDateOnlyExtensions
     ///]]>
     /// </code>
     /// </example>
-    public static DateOnly PreviousWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static DateOnly PreviousWorkingDay(this DateOnly date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         Step(date, -1, service, territory, workingWeek);
 }

@@ -78,7 +78,7 @@ public sealed partial class WorkingDayExtensionMatrixTests
     [DataRow(2026, 5, 14, true)]   // Thursday is working
     public void IsWorkingDay_WhenSundayToThursdayWeek_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
-        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWorkingDay(Service, "XX", WeekPattern.SundayToThursday));
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWorkingDay(Service, "XX", DayOfWeekSet.SundayToThursday));
     }
 
     /// <summary>

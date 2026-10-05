@@ -22,12 +22,12 @@ public static partial class NotableDateOnlyExtensions
     /// bool saturday = new DateOnly(2026, 1, 3).IsWeekend();   // true under the default Mon-Fri week
     ///
     /// // A Sunday-Thursday working week makes Friday the weekend instead.
-    /// var sundayToThursday = new WeekPattern(
+    /// var sundayToThursday = new DayOfWeekSet(
     ///     DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday);
     /// bool friday = new DateOnly(2026, 1, 2).IsWeekend(sundayToThursday);   // true
     ///]]>
     /// </code>
     /// </example>
-    public static bool IsWeekend(this DateOnly date, WeekPattern? workingWeek = null) =>
-        !(workingWeek ?? WeekPattern.MondayToFriday).Contains(date.DayOfWeek);
+    public static bool IsWeekend(this DateOnly date, DayOfWeekSet? workingWeek = null) =>
+        !(workingWeek ?? DayOfWeekSet.MondayToFriday).Contains(date.DayOfWeek);
 }

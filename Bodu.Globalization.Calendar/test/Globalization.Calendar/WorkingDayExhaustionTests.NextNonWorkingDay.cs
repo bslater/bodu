@@ -14,7 +14,7 @@ public partial class WorkingDayExhaustionTests
     [TestMethod]
     public void NextNonWorkingDay_WhenEveryDayIsWorking_ShouldThrowInvalidOperationException()
     {
-        var allWorking = new WeekPattern(
+        var allWorking = new DayOfWeekSet(
             DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
             DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday);
 

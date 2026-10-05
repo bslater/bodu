@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed partial class WorkingDayExtensionMatrixTests
 {
     /// <summary>
-    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, WeekPattern?)" /> reports Saturday and Sunday
+    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, DayOfWeekSet?)" /> reports Saturday and Sunday
     /// as weekend days, and a weekday as non-weekend, under the default Monday-to-Friday working week.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
@@ -26,7 +26,7 @@ public sealed partial class WorkingDayExtensionMatrixTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, WeekPattern?)" /> treats Saturday as a working
+    /// Verifies that <see cref="NotableDateOnlyExtensions.IsWeekend(DateOnly, DayOfWeekSet?)" /> treats Saturday as a working
     /// day and Sunday as the sole weekend under a Monday-to-Saturday working week.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
@@ -38,6 +38,6 @@ public sealed partial class WorkingDayExtensionMatrixTests
     [DataRow(2026, 1, 11, true)]   // Sunday remains a weekend
     public void IsWeekend_WhenMondayToSaturdayWeek_ShouldReturnExpectedClassification(int year, int month, int day, bool expected)
     {
-        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWeekend(WeekPattern.MondayToSaturday));
+        Assert.AreEqual(expected, new DateOnly(year, month, day).IsWeekend(DayOfWeekSet.MondayToSaturday));
     }
 }

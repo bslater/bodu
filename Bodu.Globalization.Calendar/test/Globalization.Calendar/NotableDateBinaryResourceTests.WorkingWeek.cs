@@ -25,7 +25,7 @@ public sealed partial class NotableDateBinaryResourceTests
     [DataRow(WorkingDaysOfWeek.AllDays, (byte)0b111_1111)]
     public void Write_WhenWorkingWeekIsSet_ShouldStoreSundayAtBitSix(WorkingDaysOfWeek workingWeek, byte expected)
     {
-        byte[] pack = WritePack(ResourceWithWorkingWeek(workingWeek.ToWeekPattern()));
+        byte[] pack = WritePack(ResourceWithWorkingWeek(workingWeek.ToDayOfWeekSet()));
 
         Assert.AreEqual(expected, pack[WorkingWeekOffset()]);
     }
@@ -44,13 +44,13 @@ public sealed partial class NotableDateBinaryResourceTests
     [DataRow(WorkingDaysOfWeek.AllDays, (byte)0b111_1111)]
     public void Read_WhenWorkingWeekByteIsSet_ShouldReadSundayFromBitSix(WorkingDaysOfWeek workingWeek, byte stored)
     {
-        byte[] pack = WritePack(ResourceWithWorkingWeek(WeekPattern.Empty));
+        byte[] pack = WritePack(ResourceWithWorkingWeek(DayOfWeekSet.Empty));
         pack[WorkingWeekOffset()] = stored;
         RehashPayload(pack);
 
         NotableDateResource resource = ReadPack(pack);
 
-        Assert.AreEqual(workingWeek.ToWeekPattern(), resource.ResolutionPolicy.WorkingWeek);
+        Assert.AreEqual(workingWeek.ToDayOfWeekSet(), resource.ResolutionPolicy.WorkingWeek);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed partial class NotableDateBinaryResourceTests
     /// </summary>
     /// <param name="workingWeek">The working week.</param>
     /// <returns>The resource.</returns>
-    private static NotableDateResource ResourceWithWorkingWeek(WeekPattern workingWeek) =>
+    private static NotableDateResource ResourceWithWorkingWeek(DayOfWeekSet workingWeek) =>
         new("test.binary.working-week", "1.0", new ResolutionPolicy(workingWeek: workingWeek), [], []);
 
     /// <summary>
@@ -68,8 +68,8 @@ public sealed partial class NotableDateBinaryResourceTests
     /// <returns>The byte's offset from the start of the pack.</returns>
     private static int WorkingWeekOffset()
     {
-        byte[] none = WritePack(ResourceWithWorkingWeek(WeekPattern.Empty));
-        byte[] all = WritePack(ResourceWithWorkingWeek(WeekPattern.AllDays));
+        byte[] none = WritePack(ResourceWithWorkingWeek(DayOfWeekSet.Empty));
+        byte[] all = WritePack(ResourceWithWorkingWeek(DayOfWeekSet.All));
         Assert.AreEqual(none.Length, all.Length, "Packs that differ only in working week should be the same length.");
 
         int[] differing = Enumerable.Range(NotableDateBinaryFormat.HeaderLength, none.Length - NotableDateBinaryFormat.HeaderLength)

@@ -31,6 +31,6 @@ public sealed partial class NotableDateOnlyExtensionsTests
     [TestMethod]
     public void IsWorkingDay_WithSixDayWeek_TreatsSaturdayAsWorking()
     {
-        Assert.IsTrue(new DateOnly(2025, 1, 4).IsWorkingDay(Service, "XX", WeekPattern.MondayToSaturday));
+        Assert.IsTrue(new DateOnly(2025, 1, 4).IsWorkingDay(Service, "XX", DayOfWeekSet.MondayToSaturday));
     }
 }

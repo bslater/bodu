@@ -33,7 +33,7 @@ public static partial class NotableDateOnlyExtensions
     ///]]>
     /// </code>
     /// </example>
-    public static DateOnly SnapToNearestWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null)
+    public static DateOnly SnapToNearestWorkingDay(this DateOnly date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)
     {
         if (date.IsWorkingDay(service, territory, workingWeek))
             return date;

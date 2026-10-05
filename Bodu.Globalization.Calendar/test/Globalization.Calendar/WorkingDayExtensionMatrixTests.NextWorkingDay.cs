@@ -34,6 +34,6 @@ public sealed partial class WorkingDayExtensionMatrixTests
     [TestMethod]
     public void NextWorkingDay_WhenSundayToThursdayWeek_ShouldSkipFridayAndSaturday()
     {
-        Assert.AreEqual(new DateOnly(2026, 5, 17), new DateOnly(2026, 5, 14).NextWorkingDay(Service, "XX", WeekPattern.SundayToThursday));
+        Assert.AreEqual(new DateOnly(2026, 5, 17), new DateOnly(2026, 5, 14).NextWorkingDay(Service, "XX", DayOfWeekSet.SundayToThursday));
     }
 }

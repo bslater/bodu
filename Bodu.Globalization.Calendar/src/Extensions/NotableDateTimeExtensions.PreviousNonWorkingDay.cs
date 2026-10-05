@@ -20,6 +20,6 @@ public static partial class NotableDateTimeExtensions
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
-    public static DateTime PreviousNonWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static DateTime PreviousNonWorkingDay(this DateTime date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         WithTimeOf(date, DateOnly.FromDateTime(date).PreviousNonWorkingDay(service, territory, workingWeek));
 }

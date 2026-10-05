@@ -95,4 +95,39 @@ internal static class NotableDateBinaryFormat
 
     /// <summary>Recurrence discriminator: <see cref="Algorithms.MonthlyWeekdayRecurrenceStrategy" />.</summary>
     public const byte RecurrenceMonthlyWeekday = 4;
+
+    /// <summary>
+    /// Encodes a working week as a pack stores it: one byte, Sunday at bit 6 and Saturday at bit 0.
+    /// </summary>
+    /// <param name="workingWeek">The working week.</param>
+    /// <returns>The stored byte.</returns>
+    /// <remarks>
+    /// The layout is the reverse of <see cref="DayOfWeekSet.ToUInt64" />'s order. It is fixed by format version 1, so
+    /// every pack already written keeps reading.
+    /// </remarks>
+    public static byte EncodeWorkingWeek(DayOfWeekSet workingWeek)
+    {
+        int encoded = 0;
+        foreach (DayOfWeek day in workingWeek)
+            encoded |= 1 << (6 - (int)day);
+
+        return (byte)encoded;
+    }
+
+    /// <summary>
+    /// Decodes a working week from its stored byte, Sunday at bit 6 and Saturday at bit 0.
+    /// </summary>
+    /// <param name="encoded">The stored byte, with nothing set above bit 6.</param>
+    /// <returns>The working week.</returns>
+    public static DayOfWeekSet DecodeWorkingWeek(byte encoded)
+    {
+        DayOfWeekSet workingWeek = DayOfWeekSet.Empty;
+        for (int day = 0; day < 7; day++)
+        {
+            if ((encoded & (1 << (6 - day))) != 0)
+                workingWeek = workingWeek.With((DayOfWeek)day);
+        }
+
+        return workingWeek;
+    }
 }

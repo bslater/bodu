@@ -34,6 +34,6 @@ public sealed partial class NotableDateOnlyExtensionsTests
     [TestMethod]
     public void NextNonWorkingDay_WithSixDayWeek_ShouldSkipSaturday()
     {
-        Assert.AreEqual(new DateOnly(2025, 1, 5), new DateOnly(2025, 1, 2).NextNonWorkingDay(Service, "XX", WeekPattern.MondayToSaturday));
+        Assert.AreEqual(new DateOnly(2025, 1, 5), new DateOnly(2025, 1, 2).NextNonWorkingDay(Service, "XX", DayOfWeekSet.MondayToSaturday));
     }
 }

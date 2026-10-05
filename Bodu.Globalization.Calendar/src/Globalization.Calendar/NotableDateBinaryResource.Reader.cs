@@ -132,22 +132,13 @@ public static partial class NotableDateBinaryResource
         if (workingWeek > 0b0111_1111)
             throw PayloadReader.InvalidValue($"working-week pattern 0x{workingWeek:X2}");
 
-        // Rebuild the pattern from its day bits (bit 6 - day, matching WeekPattern.ToByte's layout); the raw-value
-        // constructor is private, so the public day-list constructor is the reconstruction path.
-        List<DayOfWeek> workingDays = new(7);
-        for (var day = 0; day < 7; day++)
-        {
-            if ((workingWeek & (1 << (6 - day))) != 0)
-                workingDays.Add((DayOfWeek)day);
-        }
-
         return new RangeResolution.ResolutionPolicy(
             duplicatePolicy,
             sameDay,
             span,
             priorityDirection,
             observed,
-            new WeekPattern([.. workingDays]),
+            NotableDateBinaryFormat.DecodeWorkingWeek(workingWeek),
             precedence);
     }
 

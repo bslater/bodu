@@ -30,6 +30,6 @@ public static partial class NotableDateOnlyExtensions
     ///]]>
     /// </code>
     /// </example>
-    public static DateOnly PreviousNonWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static DateOnly PreviousNonWorkingDay(this DateOnly date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         StepNonWorking(date, -1, service, territory, workingWeek);
 }

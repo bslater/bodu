@@ -76,7 +76,7 @@ public sealed partial class NotableDateBinaryResourceTests
             CollisionPolicy.CategoryPriority,
             PriorityDirection.LowerWins,
             ObservedDateRangePolicy.ActualOccurrenceControlsInclusion,
-            new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday),
+            new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday),
             [NotableDateCategory.Observance, NotableDateCategory.PublicHoliday]);
 
         AdjustmentPolicy fullPolicy = new(

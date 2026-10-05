@@ -68,9 +68,9 @@ public sealed partial class NotableDateDocumentBuilder
         if (policyJson is null)
             return;
 
-        WeekPattern? workingWeek = null;
+        DayOfWeekSet? workingWeek = null;
         string? workingDays = (string?)policyJson["workingDays"];
-        if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
+        if (!string.IsNullOrEmpty(workingDays) && DayOfWeekSet.TryParse(workingDays, out DayOfWeekSet parsed))
             workingWeek = parsed;
 
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = policyJson["categoryPrecedence"] is not JsonArray array

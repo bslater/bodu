@@ -20,6 +20,6 @@ public static partial class NotableDateTimeOffsetExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    public static int WorkingDaysBetween(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static int WorkingDaysBetween(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         DateOnly.FromDateTime(start.DateTime).WorkingDaysBetween(DateOnly.FromDateTime(end.DateTime), service, territory, workingWeek);
 }

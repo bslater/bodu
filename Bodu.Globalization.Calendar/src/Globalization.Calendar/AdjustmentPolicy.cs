@@ -294,7 +294,7 @@ public sealed class AdjustmentPolicy
     /// also depend on whether another non-working occurrence claims the date, which this method cannot determine alone;
     /// they are evaluated by the resolving service and never fire here.
     /// </remarks>
-    public bool IsTriggered(DateOnly date, WeekPattern workingWeek) =>
+    public bool IsTriggered(DateOnly date, DayOfWeekSet workingWeek) =>
         Trigger switch
         {
             AdjustmentTrigger.Always => true,
@@ -352,7 +352,7 @@ public sealed class AdjustmentPolicy
     /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns>The transformed (observed) date; the input date when the action makes no change.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="isOccupied" /> is <see langword="null" />.</exception>
-    public DateOnly ApplyAction(DateOnly date, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
+    public DateOnly ApplyAction(DateOnly date, Func<DateOnly, bool> isOccupied, DayOfWeekSet workingWeek)
     {
         ThrowHelper.ThrowIfNull(isOccupied);
 
@@ -376,7 +376,7 @@ public sealed class AdjustmentPolicy
     /// <param name="isOccupied">A predicate reporting whether a candidate day is already claimed.</param>
     /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns>The first working day found, or the last scanned day when the bound is reached.</returns>
-    private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek)
+    private DateOnly SeekWorkingDay(DateOnly date, int step, Func<DateOnly, bool> isOccupied, DayOfWeekSet workingWeek)
     {
         int bound = MaxSearchDays ?? DefaultMaxSearchDays;
 
@@ -394,7 +394,7 @@ public sealed class AdjustmentPolicy
     /// <param name="isOccupied">A predicate reporting whether the day is already claimed.</param>
     /// <param name="workingWeek">The working week that defines which weekdays are working days.</param>
     /// <returns><see langword="true" /> if the day is blocked; otherwise <see langword="false" />.</returns>
-    private bool IsBlocked(DateOnly date, Func<DateOnly, bool> isOccupied, WeekPattern workingWeek) =>
+    private bool IsBlocked(DateOnly date, Func<DateOnly, bool> isOccupied, DayOfWeekSet workingWeek) =>
         (SkipWeekends && !workingWeek.Contains(date.DayOfWeek))
         || (SkipNonWorkingDates && isOccupied(date));
 }

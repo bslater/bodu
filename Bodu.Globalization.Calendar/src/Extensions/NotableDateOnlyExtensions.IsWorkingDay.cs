@@ -29,6 +29,6 @@ public static partial class NotableDateOnlyExtensions
     ///]]>
     /// </code>
     /// </example>
-    public static bool IsWorkingDay(this DateOnly date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static bool IsWorkingDay(this DateOnly date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         !date.IsNonWorkingDay(service, territory, workingWeek);
 }

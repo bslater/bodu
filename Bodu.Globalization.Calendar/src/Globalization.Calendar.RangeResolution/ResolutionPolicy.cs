@@ -80,7 +80,7 @@ public sealed class ResolutionPolicy
         CollisionPolicy spanCollisionPolicy = CollisionPolicy.KeepAll,
         PriorityDirection priorityDirection = PriorityDirection.HigherWins,
         ObservedDateRangePolicy observedDateRangePolicy = ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion,
-        WeekPattern? workingWeek = null,
+        DayOfWeekSet? workingWeek = null,
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = null)
     {
         DuplicatePolicy = duplicatePolicy;
@@ -88,7 +88,7 @@ public sealed class ResolutionPolicy
         SpanCollisionPolicy = spanCollisionPolicy;
         PriorityDirection = priorityDirection;
         ObservedDateRangePolicy = observedDateRangePolicy;
-        WorkingWeek = workingWeek ?? WeekPattern.MondayToFriday;
+        WorkingWeek = workingWeek ?? DayOfWeekSet.MondayToFriday;
         CategoryPrecedence = CompleteCategoryPrecedence(categoryPrecedence);
     }
 
@@ -127,10 +127,10 @@ public sealed class ResolutionPolicy
     /// (non-working) days for weekend-sensitive triggers and working-day searches.
     /// </summary>
     /// <value>
-    /// The configured working-week pattern; <see cref="WeekPattern.MondayToFriday" /> when the resource leaves it
+    /// The configured working-week pattern; <see cref="DayOfWeekSet.MondayToFriday" /> when the resource leaves it
     /// unspecified.
     /// </value>
-    public WeekPattern WorkingWeek { get; }
+    public DayOfWeekSet WorkingWeek { get; }
 
     /// <summary>
     /// Gets the category precedence applied by <see cref="CollisionPolicy.CategoryPriority" />, highest-winning first.
