@@ -133,7 +133,6 @@ below was established by running the rows rather than assumed:
 
 | Divergence | Cronos | Bodu (Vixie) |
 |---|---|---|
-| `L`, `W`, `#`, `?` tokens | Accepted | Rejected - a planned follow-on, not silently ignored |
 | Reversed ranges (`55-5`, `FRI-TUE`) | Wrap around the field | Rejected |
 | Both day fields restricted | Intersection | **Union**, per `entry.c`'s `DOM_STAR`/`DOW_STAR` flags |
 | Step wider than its range (`*/60`) | Rejected | Accepted, selecting the range start - cronie only *warns* |
@@ -160,6 +159,16 @@ of %i` and then runs `for (i = low; i <= high; i += step)`, which sets exactly o
 that, pinned by `CronExpressionTests.Parse_WhenStepExceedsItsRange_ShouldSelectOnlyTheRangeStart`
 rather than left to the corpus to imply.
 
+The Quartz day tokens are not a divergence. Bodu accepts `L`, `L-n`, `LW`, `L-nW` and `nW` in the
+day-of-month field, `dL` and `d#k` in the day-of-week field, and `?` in either, in exactly the
+shapes Cronos accepts, and rejects the shapes Cronos rejects (a token in a list, range or step,
+outside the day fields, or with an offset or ordinal out of range), so the rows that use them are
+reconciled like any other. They keep their `quartz-ext` flag, which now marks rather than excludes
+them: until Bodu 1.3.0 the parser refused the tokens, and the flag still finds the rows that
+exercise them. A token row is excluded only for one of the other flags, most often
+`dom-dow-intersect`, since Bodu counts a token as a restriction and takes the union where Cronos
+intersects. Weekday numbers stay Vixie's, Sunday as 0 or 7, which is also Cronos's numbering.
+
 Regenerate with:
 
 ```shell
@@ -178,7 +187,6 @@ deliberate scope boundaries of the library, not gaps in the corpus:
 | `time-expansion` | `BYHOUR`/`BYMINUTE`/`BYSECOND` expansion within the day; the corpus records dates only |
 | `elided` | The RFC abbreviates the occurrence list with `...`, so it is not fully enumerable |
 | `exrule` | `EXRULE` is not modelled; `RecurrenceSet` composes `RDATE`/`EXDATE` only |
-| `quartz-ext` | The Quartz `L` / `W` / `#` / `?` cron tokens (a planned follow-on) |
 | `hash` | The Jenkins `H` jitter token, which is not a cron dialect this library models |
 | `cronos-macro` | `@every_second` / `@every_minute`, macros Cronos adds beyond `crontab(5)` |
 | `wrap-range` | A reversed cron range; Cronos wraps, Bodu rejects |
@@ -187,8 +195,9 @@ deliberate scope boundaries of the library, not gaps in the corpus:
 | `seconds-elision` | Cronos drops a zero seconds field from `ToString`; Bodu renders every field |
 | `dst` | The Cronos row sits within a day of a US Eastern DST transition, where a zone-free reading of its fixture is not offset-invariant |
 
-`sub-daily`, `tzid` and `utc-until` are **not** exclusions. The `sub-daily` rows run like any
-other: libical's four counts are reconciled, and the RFC's three sub-daily examples, whose
+`quartz-ext`, `sub-daily`, `tzid` and `utc-until` are **not** exclusions. `quartz-ext` marks the
+Cronos rows that use the Quartz day tokens, which Bodu accepts as Cronos does. The `sub-daily` rows
+run like any other: libical's four counts are reconciled, and the RFC's three sub-daily examples, whose
 occurrence lists the date-only table leaves empty, are pinned in `RecurrenceRuleTests.SubDaily`.
 As for `tzid` and `utc-until`, the library is offset-based and resolves no timezone identifiers,
 but the RFC and libical examples state their occurrences in the `DTSTART` zone's own wall clock,
@@ -215,7 +224,7 @@ three the RFC lists, pinned in `RecurrenceRuleTests.SubDaily`.
 | RFC 5545 §3.8.5.3 | 39 | 23 | 23 exact date-list matches, 0 differences; the three sub-daily examples are pinned separately |
 | libical `recur.txt` | 57 | 56 | 56 count matches, 0 differences (the `EXDATE` row runs through `RecurrenceSet`) |
 | python-dateutil, generated sub-daily rules | 200 | 200 | 200 occurrence-list matches, and the next and previous occurrence at every recorded instant, 0 differences |
-| Cronos `CronExpressionFacts` | 1,354 | 755 | 755 matches, 0 differences |
+| Cronos `CronExpressionFacts` | 1,354 | 1,074 | 1,074 matches, 0 differences, the 319 rows that use the Quartz day tokens included |
 
 `AnchoredInterval` durations are still not covered by a corpus: RFC 5545 §3.3.6 states its duration
 grammar as ABNF and publishes no vector table, so that form stays pinned by tests transcribed into

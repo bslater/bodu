@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Recurrence;
 public sealed partial class CronExpression : IFormattable
 {
     /// <summary>
-    /// Returns the canonical cron text of the expression, with each field rendered as <c>*</c> or a comma-separated
-    /// list of numeric values.
+    /// Returns the canonical cron text of the expression, with each field rendered as <c>*</c>, a comma-separated list
+    /// of numeric values, or the Quartz day token it holds.
     /// </summary>
     /// <returns>The canonical cron text, which round-trips through <see cref="Parse(string)" />.</returns>
     /// <remarks>
@@ -21,7 +21,9 @@ public sealed partial class CronExpression : IFormattable
     /// and when both fields are restricted they combine by union rather than intersection. The canonical text therefore
     /// keeps a leading <c>*</c> on an unrestricted field that does not select every value (<c>*/2</c>), and keeps a
     /// restricted field explicit when it does (<c>1-31</c>), but only in the cases where the plain rendering would flip
-    /// that combination - so the text always re-parses to an equal expression.
+    /// that combination - so the text always re-parses to an equal expression. A Quartz day token is written in upper
+    /// case with a numeric weekday and no zero offset (<c>SUNL</c> as <c>0L</c>, <c>l-0w</c> as <c>LW</c>), and
+    /// <c>?</c> as <c>*</c>.
     /// </remarks>
     public override string ToString() =>
         FormatCore();
@@ -111,20 +113,23 @@ public sealed partial class CronExpression : IFormattable
     /// </remarks>
     private (string DayOfMonth, string DayOfWeek) FormatDayFields()
     {
-        bool domSelectsEveryValue = SelectsEveryValue(_daysOfMonth, 1, 31);
-        bool dowSelectsEveryValue = SelectsEveryValue(_daysOfWeek, 0, 6);
+        // A token is written as itself and always re-parses as a restriction, so it never selects every value.
+        bool domSelectsEveryValue = _dayOfMonthToken.IsNone && SelectsEveryValue(_daysOfMonth, 1, 31);
+        bool dowSelectsEveryValue = _dayOfWeekToken.IsNone && SelectsEveryValue(_daysOfWeek, 0, 6);
 
         // Re-parsing the plain rendering marks a field restricted exactly when it does not select every value.
         bool plainCombinesByUnion = !domSelectsEveryValue && !dowSelectsEveryValue;
 
         if (plainCombinesByUnion == DaysCombineByUnion)
         {
-            return (FormatField(_daysOfMonth, 1, 31), FormatField(_daysOfWeek, 0, 6));
+            return (
+                _dayOfMonthToken.IsNone ? FormatField(_daysOfMonth, 1, 31) : _dayOfMonthToken.Format(),
+                _dayOfWeekToken.IsNone ? FormatField(_daysOfWeek, 0, 6) : _dayOfWeekToken.Format());
         }
 
         return (
-            FormatDayField(_daysOfMonth, 1, 31, _domRestricted),
-            FormatDayField(_daysOfWeek, 0, 6, _dowRestricted));
+            _dayOfMonthToken.IsNone ? FormatDayField(_daysOfMonth, 1, 31, _domRestricted) : _dayOfMonthToken.Format(),
+            _dayOfWeekToken.IsNone ? FormatDayField(_daysOfWeek, 0, 6, _dowRestricted) : _dayOfWeekToken.Format());
     }
 
     /// <summary>

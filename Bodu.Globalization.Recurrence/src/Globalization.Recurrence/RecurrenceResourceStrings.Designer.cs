@@ -347,14 +347,5 @@ namespace Bodu.Globalization.Recurrence {
                 return ResourceManager.GetString("Arg_Invalid_AnchoredIntervalSubSecond", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The cron token &apos;{0}&apos; is not supported; the Quartz L, W, and # extensions are a planned follow-on..
-        /// </summary>
-        internal static string Op_NotSupported_CronExtensionToken {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_CronExtensionToken", resourceCulture);
-            }
-        }
     }
 }

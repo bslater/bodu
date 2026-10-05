@@ -34,14 +34,25 @@ public sealed record CronosVectorKat(
     string Flags)
     : IKat
 {
+    /// <summary>The flag that marks a row using the Quartz day tokens, which identifies the row without excluding it.</summary>
+    private const string QuartzTokenFlag = "quartz-ext";
+
+    /// <summary>
+    /// Gets the recorded flags that place the vector out of scope.
+    /// </summary>
+    /// <value>Every recorded flag but <c>quartz-ext</c>.</value>
+    /// <remarks>
+    /// Every flag but <c>quartz-ext</c> is an exclusion, set only where Cronos and Bodu genuinely disagree.
+    /// <c>quartz-ext</c> marks the rows that use the Quartz day tokens, which Bodu accepts as Cronos does; it excluded
+    /// them until Bodu 1.3.0 and now only identifies them.
+    /// </remarks>
+    public IEnumerable<string> ExclusionFlags =>
+        Flags.Split(' ', StringSplitOptions.RemoveEmptyEntries).Where(flag => flag != QuartzTokenFlag);
+
     /// <summary>
     /// Gets a value indicating whether the vector falls inside the surface this library models.
     /// </summary>
     /// <value><see langword="true" /> when the corpus recorded no excluding flag.</value>
-    /// <remarks>
-    /// Every flag this corpus carries is an exclusion; the extractor sets one only where Cronos and Bodu genuinely
-    /// disagree, so any flag at all places the row out of scope.
-    /// </remarks>
     public bool IsInScope =>
-        Flags.Length == 0;
+        !ExclusionFlags.Any();
 }

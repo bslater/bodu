@@ -19,9 +19,18 @@ namespace Bodu.Globalization.Recurrence;
 /// <c>@hourly</c> are also recognized.
 /// </para>
 /// <para>
+/// The day fields also accept the Quartz tokens, each standing for the whole field. In the day-of-month field <c>L</c>
+/// is the last day of the month and <c>L-n</c> the day n days before it, up to thirty; <c>LW</c> and <c>L-nW</c> are
+/// the weekday nearest either; and <c>nW</c> is the weekday nearest the n-th, without leaving the month. In the
+/// day-of-week field <c>dL</c> is the month's last weekday d and <c>d#k</c> its k-th, from one to five, with d a number
+/// or a name as elsewhere in the field. Either day field accepts <c>?</c> for <c>*</c>. A token that names no day of a
+/// month, such as <c>30W</c> in February or a fifth Tuesday a month lacks, selects nothing that month.
+/// </para>
+/// <para>
 /// When both the day-of-month and day-of-week fields are restricted, an instant matches if it satisfies either field,
-/// following the traditional Vixie cron rule. The Quartz extensions <c>L</c>, <c>W</c>, <c>#</c>, and <c>?</c> are not
-/// yet supported.
+/// following the traditional Vixie cron rule; a token counts as a restriction and <c>?</c>, like <c>*</c>, does not.
+/// Quartz itself would require the instant to satisfy both. Weekdays keep the Vixie numbering, in which both zero and
+/// seven are Sunday, rather than the Quartz numbering from one.
 /// </para>
 /// <para>
 /// Every occurrence answer is a pure function of the arguments: no API reads the wall clock or consults the machine
@@ -65,6 +74,15 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <summary>Indicates whether the day-of-week field is restricted (not <c>*</c>).</summary>
     private readonly bool _dowRestricted;
 
+    /// <summary>The Quartz token the day-of-month field holds in place of values, if any.</summary>
+    private readonly DayToken _dayOfMonthToken;
+
+    /// <summary>The Quartz token the day-of-week field holds in place of values, if any.</summary>
+    private readonly DayToken _dayOfWeekToken;
+
+    /// <summary>Indicates whether either day field holds a Quartz token, which the searches must then consult.</summary>
+    private readonly bool _hasDayToken;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CronExpression" /> class from parsed field sets.
     /// </summary>
@@ -77,6 +95,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="daysOfWeek">The matching day-of-week set.</param>
     /// <param name="domRestricted">Whether the day-of-month field is restricted.</param>
     /// <param name="dowRestricted">Whether the day-of-week field is restricted.</param>
+    /// <param name="dayOfMonthToken">The Quartz token the day-of-month field holds, if any.</param>
+    /// <param name="dayOfWeekToken">The Quartz token the day-of-week field holds, if any.</param>
     private CronExpression(
         CronFormat format,
         bool[] seconds,
@@ -86,7 +106,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         bool[] months,
         bool[] daysOfWeek,
         bool domRestricted,
-        bool dowRestricted)
+        bool dowRestricted,
+        DayToken dayOfMonthToken,
+        DayToken dayOfWeekToken)
     {
         Format = format;
         _seconds = seconds;
@@ -97,6 +119,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _daysOfWeek = daysOfWeek;
         _domRestricted = domRestricted;
         _dowRestricted = dowRestricted;
+        _dayOfMonthToken = dayOfMonthToken;
+        _dayOfWeekToken = dayOfWeekToken;
+        _hasDayToken = !dayOfMonthToken.IsNone || !dayOfWeekToken.IsNone;
     }
 
     /// <summary>
@@ -119,6 +144,11 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </returns>
     public DateTime? GetNextOccurrence(DateTime after, bool inclusive = false)
     {
+        if (_hasDayToken)
+        {
+            return FindNextWithTokens(after, inclusive);
+        }
+
         DateTime candidate = Floor(after);
         bool satisfies = inclusive ? candidate >= after : candidate > after;
         if (!satisfies)
@@ -179,6 +209,11 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </returns>
     public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
     {
+        if (_hasDayToken)
+        {
+            return FindPreviousWithTokens(before, inclusive);
+        }
+
         DateTime candidate = Floor(before);
         if (!inclusive && candidate == before)
         {
@@ -264,7 +299,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="other">The expression to compare with this instance.</param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="other" /> is non-null and every field set, together with the
-    /// day-field combination mode, is equal; otherwise <see langword="false" />.
+    /// day-field combination mode and any Quartz day token, is equal; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -282,6 +317,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         other is not null
         && Format == other.Format
         && DaysCombineByUnion == other.DaysCombineByUnion
+        && _dayOfMonthToken == other._dayOfMonthToken
+        && _dayOfWeekToken == other._dayOfWeekToken
         && _seconds.AsSpan().SequenceEqual(other._seconds)
         && _minutes.AsSpan().SequenceEqual(other._minutes)
         && _hours.AsSpan().SequenceEqual(other._hours)
@@ -315,6 +352,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         var hash = default(HashCode);
         hash.Add(Format);
         hash.Add(DaysCombineByUnion);
+        hash.Add(_dayOfMonthToken);
+        hash.Add(_dayOfWeekToken);
         AddMask(ref hash, _seconds);
         AddMask(ref hash, _minutes);
         AddMask(ref hash, _hours);
@@ -371,7 +410,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
     /// <summary>
     /// Determines whether the day component of <paramref name="candidate" /> matches the day-of-month and day-of-week
-    /// fields under the Vixie combination rule.
+    /// field masks under the Vixie combination rule.
     /// </summary>
     /// <param name="candidate">The instant to test.</param>
     /// <returns><see langword="true" /> when the day matches; otherwise <see langword="false" />.</returns>
@@ -386,6 +425,148 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         return DaysCombineByUnion
             ? domMatch || dowMatch
             : domMatch && dowMatch;
+    }
+
+    /// <summary>
+    /// Determines whether the day component of <paramref name="candidate" /> matches day fields at least one of which
+    /// holds a Quartz token, under the Vixie combination rule.
+    /// </summary>
+    /// <param name="candidate">The instant to test.</param>
+    /// <returns><see langword="true" /> when the day matches; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// A field that holds a token decides the day through it; the other field, if it holds values, through its mask.
+    /// </remarks>
+    private bool TokenDayMatches(DateTime candidate)
+    {
+        bool domMatch = _dayOfMonthToken.IsNone ? _daysOfMonth[candidate.Day] : _dayOfMonthToken.Matches(candidate);
+        bool dowMatch = _dayOfWeekToken.IsNone ? _daysOfWeek[(int)candidate.DayOfWeek] : _dayOfWeekToken.Matches(candidate);
+
+        return DaysCombineByUnion
+            ? domMatch || dowMatch
+            : domMatch && dowMatch;
+    }
+
+    /// <summary>
+    /// Returns the first instant matching an expression that holds a Quartz day token and falls after the specified
+    /// instant.
+    /// </summary>
+    /// <param name="after">The instant the returned occurrence must follow.</param>
+    /// <param name="inclusive">Whether an occurrence equal to <paramref name="after" /> counts.</param>
+    /// <returns>
+    /// The next matching instant, or <see langword="null" /> when none occurs within the search horizon.
+    /// </returns>
+    /// <remarks>
+    /// This is the search in <see cref="GetNextOccurrence(DateTime, bool)" /> with days tested by
+    /// <see cref="TokenDayMatches" />. It is kept out of that method's loop, which tests the day on every step, minutes
+    /// included: a call left in the loop, even one never made, cost an expression without a token a fifth of its query
+    /// time.
+    /// </remarks>
+    private DateTime? FindNextWithTokens(DateTime after, bool inclusive)
+    {
+        DateTime candidate = Floor(after);
+        bool satisfies = inclusive ? candidate >= after : candidate > after;
+        if (!satisfies)
+        {
+            candidate = candidate.Add(Unit);
+        }
+
+        int guardYear = after.Year + SearchHorizonYears;
+        while (candidate.Year <= guardYear)
+        {
+            if (!_months[candidate.Month])
+            {
+                candidate = StartOfMonth(candidate).AddMonths(1);
+                continue;
+            }
+
+            if (!TokenDayMatches(candidate))
+            {
+                candidate = StartOfDay(candidate).AddDays(1);
+                continue;
+            }
+
+            if (!_hours[candidate.Hour])
+            {
+                candidate = StartOfHour(candidate).AddHours(1);
+                continue;
+            }
+
+            if (!_minutes[candidate.Minute])
+            {
+                candidate = StartOfMinute(candidate).AddMinutes(1);
+                continue;
+            }
+
+            if (Format == CronFormat.WithSeconds && !_seconds[candidate.Second])
+            {
+                candidate = candidate.AddSeconds(1);
+                continue;
+            }
+
+            return candidate;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Returns the last instant matching an expression that holds a Quartz day token and falls before the specified
+    /// instant.
+    /// </summary>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">Whether an occurrence equal to <paramref name="before" /> counts.</param>
+    /// <returns>
+    /// The previous matching instant, or <see langword="null" /> when none occurs within the search horizon.
+    /// </returns>
+    /// <remarks>
+    /// This is the search in <see cref="GetPreviousOccurrence(DateTime, bool)" /> with days tested by
+    /// <see cref="TokenDayMatches" />, kept apart for the reason <see cref="FindNextWithTokens" /> gives.
+    /// </remarks>
+    private DateTime? FindPreviousWithTokens(DateTime before, bool inclusive)
+    {
+        DateTime candidate = Floor(before);
+        if (!inclusive && candidate == before)
+        {
+            candidate = candidate.Subtract(Unit);
+        }
+
+        int guardYear = before.Year - SearchHorizonYears;
+        while (candidate.Year >= guardYear)
+        {
+            if (!_months[candidate.Month])
+            {
+                candidate = StartOfMonth(candidate).Subtract(Unit);
+                continue;
+            }
+
+            if (!TokenDayMatches(candidate))
+            {
+                candidate = StartOfDay(candidate).Subtract(Unit);
+                continue;
+            }
+
+            if (!_hours[candidate.Hour])
+            {
+                candidate = StartOfHour(candidate).Subtract(Unit);
+                continue;
+            }
+
+            if (!_minutes[candidate.Minute])
+            {
+                candidate = StartOfMinute(candidate).Subtract(Unit);
+                continue;
+            }
+
+            if (Format == CronFormat.WithSeconds && !_seconds[candidate.Second])
+            {
+                candidate = candidate.AddSeconds(-1);
+                continue;
+            }
+
+            return candidate;
+        }
+
+        return null;
     }
 
     /// <summary>

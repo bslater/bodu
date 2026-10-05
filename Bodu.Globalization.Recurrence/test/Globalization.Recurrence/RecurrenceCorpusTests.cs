@@ -185,7 +185,7 @@ public sealed partial class RecurrenceCorpusTests
         Assert.AreEqual(200, dateutil.Length, "dateutil corpus row count changed.");
         Assert.AreEqual(23, rfc.Count(r => r.IsInScope), "RFC 5545 in-scope row count changed.");
         Assert.AreEqual(56, libical.Count(r => r.IsInScope), "libical in-scope row count changed.");
-        Assert.AreEqual(755, cronos.Count(r => r.IsInScope), "Cronos in-scope row count changed.");
+        Assert.AreEqual(1074, cronos.Count(r => r.IsInScope), "Cronos in-scope row count changed.");
 
         var report = new StringBuilder();
         report.AppendLine(CultureInfo.InvariantCulture, $"RFC 5545: {rfc.Count(r => r.IsInScope)}/{rfc.Length} in scope");
@@ -206,7 +206,7 @@ public sealed partial class RecurrenceCorpusTests
         report.AppendLine(CultureInfo.InvariantCulture, $"Cronos: {cronos.Count(r => r.IsInScope)}/{cronos.Length} in scope");
         foreach (IGrouping<string, CronosVectorKat> group in cronos
             .Where(r => !r.IsInScope)
-            .SelectMany(r => r.Flags.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(f => (Flag: f, Row: r)))
+            .SelectMany(r => r.ExclusionFlags.Select(f => (Flag: f, Row: r)))
             .GroupBy(p => p.Flag, p => p.Row)
             .OrderBy(g => g.Key, StringComparer.Ordinal))
         {

@@ -22,6 +22,10 @@ public partial class CronExpressionTests
     [DataRow("0 0 * * 0", "0 0 * * 7", DisplayName = "Sunday is both 0 and 7")]
     [DataRow("* * * * *", "* * 1-31 * *", DisplayName = "one restricted day field alone does not change the combination")]
     [DataRow("* * * * *", "* * * * 0-6", DisplayName = "a restricted weekday alone does not change the combination")]
+    [DataRow("0 0 * * 0L", "0 0 * * 7L", DisplayName = "Sunday is both 0 and 7 in a last-weekday token")]
+    [DataRow("0 0 * * FRI#2", "0 0 * * 5#2", DisplayName = "a token's weekday name equals its number")]
+    [DataRow("0 0 L-0 * *", "0 0 L * *", DisplayName = "a zero offset is the last day itself")]
+    [DataRow("0 0 ? * MON", "0 0 * * MON", DisplayName = "a question mark equals a star")]
     public void Equals_WhenSchedulesMatch_ShouldReturnTrueAndHashAlike(string left, string right)
     {
         CronExpression first = CronExpression.Parse(left);
@@ -42,6 +46,12 @@ public partial class CronExpressionTests
     [DataRow("1 1 1 1 1", "1 1 2 1 1", DisplayName = "day-of-month differs")]
     [DataRow("1 1 1 1 1", "1 1 1 2 1", DisplayName = "month differs")]
     [DataRow("1 1 1 1 1", "1 1 1 1 2", DisplayName = "day-of-week differs")]
+    [DataRow("0 0 L * *", "0 0 L-1 * *", DisplayName = "last-day offset differs")]
+    [DataRow("0 0 L * *", "0 0 LW * *", DisplayName = "the last day versus the weekday nearest it")]
+    [DataRow("0 0 15 * *", "0 0 15W * *", DisplayName = "a day versus the weekday nearest it")]
+    [DataRow("0 0 * * 1#1", "0 0 * * 1#2", DisplayName = "nth-weekday ordinal differs")]
+    [DataRow("0 0 * * 5L", "0 0 * * 4L", DisplayName = "last-weekday weekday differs")]
+    [DataRow("0 0 * * 5L", "0 0 * * 5#1", DisplayName = "the last weekday versus the first")]
     public void Equals_WhenOneFieldDiffers_ShouldReturnFalse(string left, string right)
     {
         CronExpression first = CronExpression.Parse(left);

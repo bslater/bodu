@@ -356,7 +356,7 @@ public partial class CronExpressionTests
 
     /// <summary>
     /// Verifies that month and weekday names containing the letters <c>L</c> or <c>W</c> (for example <c>JUL</c> and
-    /// <c>WED</c>) are not mistaken for Quartz extension tokens.
+    /// <c>WED</c>) are read as names rather than as Quartz tokens.
     /// </summary>
     [TestMethod]
     public void Parse_WhenNameContainsQuartzLetter_ShouldNotBeRejected()

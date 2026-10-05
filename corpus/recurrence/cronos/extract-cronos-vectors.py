@@ -16,8 +16,8 @@ The emitted table is a CSV with the columns:
 
 ``kind`` is one of ``next`` (next occurrence, inclusive), ``unreachable`` (no occurrence exists),
 ``invalid`` (must be rejected), ``equal`` / ``notEqual`` (expression equivalence), or ``toString``
-(canonical text). ``flags`` records why a row is out of scope for Bodu; an empty ``flags`` means the
-row is reconciled.
+(canonical text). ``flags`` records why a row is out of scope for Bodu, except ``quartz-ext``, which
+only marks a row that uses the Quartz day tokens; a row with no other flag is reconciled.
 """
 
 from __future__ import annotations
@@ -27,6 +27,10 @@ import datetime as dt
 import hashlib
 import re
 import sys
+
+# Flags that mark a row without excluding it. quartz-ext excluded its rows until Bodu accepted the
+# Quartz day tokens in 1.3.0; it is kept so those rows can still be found.
+MARKING_FLAGS = frozenset({'quartz-ext'})
 
 HEADER = """\
 # Cron vectors derived from Cronos's CronExpressionFacts test suite
@@ -38,7 +42,7 @@ HEADER = """\
 #          with attribution is permitted; the upstream file itself is not committed.
 # note: Cronos implements Quartz-flavoured cron. Where it deliberately differs from Vixie, the row is
 #       flagged and excluded rather than reconciled -- see corpus/recurrence/README.md.
-# flags: quartz-ext        = uses the Quartz L / W / # / ? tokens (Bodu rejects them; planned follow-on)
+# flags: quartz-ext        = uses the Quartz L / W / # / ? tokens (marks the row; Bodu accepts them)
 #        hash              = uses the H jitter token (a Jenkins extension Bodu does not model)
 #        cronos-macro      = @every_second / @every_minute, macros Cronos adds beyond crontab(5)
 #        wrap-range        = a reversed range such as 55-5 (Cronos wraps; Bodu rejects)
@@ -218,10 +222,11 @@ def classify(expression: str, *, kind: str, instants: list[str] = ()) -> str:
     """Returns the space-separated scope flags for one row.
 
     A flag is applied only where it can change the row's outcome. Syntax the library rejects
-    (``quartz-ext``, ``hash``, ``wrap-range``) matters wherever the row asserts that an expression
-    *parses*, but not on a rejection row -- Bodu rejects a superset of what Cronos rejects, so
-    "must throw" still holds there. The day-field semantics (``dom-dow-intersect``) change which
-    instants match, so they matter only on the occurrence kinds.
+    (``hash``, ``wrap-range``) matters wherever the row asserts that an expression *parses*, but not
+    on a rejection row -- Bodu rejects a superset of what Cronos rejects, so "must throw" still holds
+    there. ``quartz-ext`` is set on the same rows, though it now only marks them: Bodu accepts the
+    Quartz day tokens in the shapes Cronos accepts. The day-field semantics (``dom-dow-intersect``)
+    change which instants match, so they matter only on the occurrence kinds.
     """
     flags = []
     # Strip the three-letter month and weekday names first: they are the only alphabetic tokens Vixie
@@ -315,8 +320,8 @@ def main(argv: list[str]) -> int:
             add('unreachable', expression, resolved_from, '',
                 classify(expression, kind='unreachable', instants=[resolved_from]))
 
-    # Malformed expressions. Bodu rejects a strict superset of what Cronos rejects (it has no Quartz
-    # extensions to accept), so these rows carry no acceptance-dependent flags.
+    # Malformed expressions. Bodu rejects a superset of what Cronos rejects (it accepts the Quartz
+    # day tokens only in the shapes Cronos accepts), so these rows carry no acceptance-dependent flags.
     for expression, _, invalid_field in block('Parse_ThrowsCronFormatException_WhenCronExpressionIsInvalid'):
         expression = ' '.join(expression.split())
         add('invalid', expression, '', invalid_field, classify(expression, kind='invalid'))
@@ -356,21 +361,25 @@ def main(argv: list[str]) -> int:
         writer.writeheader()
         writer.writerows(records)
 
+    def excluding(flags: str) -> list[str]:
+        return [flag for flag in flags.split() if flag not in MARKING_FLAGS]
+
     total = len(records)
-    in_scope = sum(1 for r in records if not r['flags'])
+    in_scope = sum(1 for r in records if not excluding(r['flags']))
     print(f'wrote {total} rows to {destination} ({in_scope} in scope)')
     by_kind: dict[str, list[int]] = {}
     for record in records:
         bucket = by_kind.setdefault(record['kind'], [0, 0])
         bucket[0] += 1
-        if not record['flags']:
+        if not excluding(record['flags']):
             bucket[1] += 1
     for kind, (rows, scoped) in sorted(by_kind.items()):
         print(f'  {kind:12} {rows:4} rows, {scoped:4} in scope')
     excluded: dict[str, int] = {}
     for record in records:
-        for flag in record['flags'].split():
-            excluded[flag] = excluded.get(flag, 0) + 1
+        if excluding(record['flags']):
+            for flag in excluding(record['flags']):
+                excluded[flag] = excluded.get(flag, 0) + 1
     for flag, count in sorted(excluded.items()):
         print(f'  excluded by {flag}: {count}')
     return 0

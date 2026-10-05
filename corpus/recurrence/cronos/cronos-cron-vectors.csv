@@ -7,7 +7,7 @@
 #          with attribution is permitted; the upstream file itself is not committed.
 # note: Cronos implements Quartz-flavoured cron. Where it deliberately differs from Vixie, the row is
 #       flagged and excluded rather than reconciled -- see corpus/recurrence/README.md.
-# flags: quartz-ext        = uses the Quartz L / W / # / ? tokens (Bodu rejects them; planned follow-on)
+# flags: quartz-ext        = uses the Quartz L / W / # / ? tokens (marks the row; Bodu accepts them)
 #        hash              = uses the H jitter token (a Jenkins extension Bodu does not model)
 #        cronos-macro      = @every_second / @every_minute, macros Cronos adds beyond crontab(5)
 #        wrap-range        = a reversed range such as 55-5 (Cronos wraps; Bodu rejects)
