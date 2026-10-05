@@ -97,29 +97,29 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="core/index.html">Bodu.Core</a></strong></td>
 <td>The foundation package - a day-of-week <code>WeekPattern</code> value type, pooled buffers, async coordination primitives, railway outcomes (<code>Option&lt;T&gt;</code> / <code>Result&lt;T&gt;</code> / <code>Either&lt;TLeft,TRight&gt;</code>), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized <code>ThrowHelper</code>.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="collections/index.html">Bodu.Collections</a></strong></td>
 <td>The specialized collection catalogue (depends on <code>Bodu.Core</code>; namespaces unchanged) - fixed-capacity rings (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>), policy-driven caches (<code>EvictingDictionary&lt;TKey,TValue&gt;</code> with TTL expiry), navigable sets/dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and the probabilistic sketches.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="collections-concurrent/index.html">Bodu.Collections.Concurrent</a></strong></td>
 <td>The thread-safe collection companion (depends on <code>Bodu.Collections</code>) - the lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC, <code>IProducerConsumerCollection&lt;T&gt;</code>), the lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>).</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="text/index.html">Bodu.Text</a></strong> <em>(namespace in Bodu.Core)</em></td>
 <td>Encoding-detection and text / byte conversion helpers over <code>System.Text.Encoding</code> - BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -130,19 +130,19 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="io-hashing/index.html">Bodu.IO.Hashing</a></strong></td>
 <td>Non-cryptographic hashing on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract - fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="cryptography/index.html">Bodu.Security.Cryptography</a></strong></td>
 <td>Cryptographic primitives on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> contracts - managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, and the full ASCON family.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -153,19 +153,19 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="calendar/index.html">Bodu.Globalization.Calendar</a></strong></td>
 <td>Rule-driven notable-date resolution - public holidays, observances, religious festivals - for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. Companion packages add fluent authoring (<code>…Builder</code>), <code>IServiceCollection</code> registration (<code>…DependencyInjection</code>), plugin loading (<code>…Plugins</code>), and five regional data packs.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="recurrence/index.html">Bodu.Globalization.Recurrence</a></strong></td>
 <td>Recurrence-rule evaluation with no dependency on the calendar engine - <code>RecurrenceRule</code> for RFC 5545 <code>RRULE</code> (parse, format, and occurrence enumeration across every frequency and <code>BY*</code> part), <code>RecurrenceSet</code> for rules composed with <code>RDATE</code> / <code>EXDATE</code>, <code>CronExpression</code> for Vixie five-field and six-field cron, and <code>AnchoredInterval</code> for instant-anchored repetition. Every form answers both <code>GetNextOccurrence</code> and <code>GetPreviousOccurrence</code>, and is pure in its arguments - no wall clock, no machine time zone.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -176,29 +176,29 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="text-encoding/index.html">Bodu.Text.Encoding</a></strong></td>
 <td>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="text-filtering/index.html">Bodu.Text.Filtering</a></strong></td>
 <td>A high-performance include/exclude filtering engine for lists of text values. Glob (wildcard, character-class, <code>{a,b}</code> alternation) and regex patterns compile once into an immutable <code>TextFilter</code> that runs the cheapest matching strategies first; choose Ant / MSBuild-style <code>AnyMatch</code> sets or gitignore-style <code>LastMatchWins</code> ordered rules, parse raw lines with the gitignore conventions, and observe decisions through built-in statistics and a per-decision observer.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="formats/index.html">Bodu.Text.Formats</a></strong></td>
 <td>Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. An umbrella over three sibling packages - <strong>Delimited</strong> (CSV / TSV), <strong>DotEnv</strong>, and <strong>Ini</strong> - each shipping a <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair, a <code>…Serializer</code> POCO mapper, and mutable and read-only DOMs, with strict invariant enforcement.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="serialization/bencode/index.html">Bodu.Text.Bencode</a></strong> · <strong><a href="serialization/toml/index.html">Bodu.Text.Toml</a></strong> · <strong><a href="serialization/yaml/index.html">Bodu.Text.Yaml</a></strong></td>
 <td>Three serializers that map your own types to and from a format - a shared architecture over the <code>Bodu.Text.Serialization</code> engine and a <code>System.Text.Json</code>-aligned shape, each shipping a <code>…Serializer</code>, a mutable <code>…Node</code> and a read-only <code>…Document</code> DOM, and a low-level <code>Utf8…Reader</code> / <code>Utf8…Writer</code> pair. <strong>Bencode</strong> covers BitTorrent BEP 3; <strong>TOML</strong> covers v1.0.0 / v1.1.0; <strong>YAML</strong> the 1.2 core schema with block / flow collections, anchors, and multi-document streams. See the <a href="serialization/index.html">shared family introduction</a>.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -209,19 +209,19 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="text-configuration/index.html">Bodu.Text.Configuration</a></strong></td>
 <td>EditorConfig-style configuration layering over an INI document model. Layers a preamble plus glob-anchored sections in source order for a target file path, then projects the result into a flat, colon-delimited <code>ConfigurationView</code> with typed accessors (<code>GetInt32</code>, <code>GetEnum&lt;T&gt;</code>, <code>GetValue&lt;T&gt;</code>). Profile presets, optional diagnostic collection, and byte-faithful round-trip save.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a></strong></td>
 <td>Bridges <code>Bodu.Text.Configuration</code> to <code>Microsoft.Extensions.Configuration</code>. Adds <code>AddTextConfiguration*</code> entry points on <code>IConfigurationBuilder</code> - mirroring <code>AddJsonFile</code> / <code>AddJsonStream</code> - so a Bodu configuration file layers alongside JSON, INI, XML, and environment-variable sources, with <code>IOptions&lt;T&gt;</code> binding and reload-on-change support.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -232,19 +232,19 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="numerics/index.html">Bodu.Numerics</a></strong></td>
 <td>Generic-math value primitives - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic over any <code>IBinaryInteger&lt;T&gt;</code> with canonical-form auto-reduction and <code>BigInteger</code>-promoted intermediates, and <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded intervals with intersection, union, and adjacency.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="financial/index.html">Bodu.Financial</a></strong></td>
 <td>Type-safe monetary primitives - <code>Money&lt;TCurrency&gt;</code> (currency as type parameter, so cross-currency arithmetic fails the build), <code>Money</code> for runtime-tagged scenarios, <code>MoneyBag</code> for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -255,34 +255,34 @@
 <tr>
 <th>Package</th>
 <th>What it provides</th>
-<th>Target framework</th>
+<th>Target frameworks</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong><a href="io-compound/index.html">Bodu.IO.Compound</a></strong></td>
 <td>A reader, editor, and writer for the OLE2 / Compound File Binary (CFB) container - the structured-storage &quot;file system in a file&quot; behind legacy Office documents (<code>.xls</code>, <code>.doc</code>, <code>.ppt</code>, <code>.msg</code>). Navigates the <code>RootStorage</code> hierarchy, reads each named stream through a seekable <code>CompoundStream</code> cursor (buffered or on-demand), edits and authors containers with a transactional <code>Commit</code> / <code>CommitAsync</code>, and reads and writes the OLE summary-information property sets.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="io-biff/index.html">Bodu.IO.Biff</a></strong></td>
 <td>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks - the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only <code>BiffReader</code> frames records and exposes typed accessors; <code>BiffSstReader</code> walks the shared string table; <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="excel/index.html">Bodu.Formats.Excel.Binary</a></strong></td>
 <td>A narrow, read-only BIFF5 and BIFF8 (<code>.xls</code>) reader built on <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code> that surfaces raw worksheet cell values - strings, numbers, booleans, and errors - without formula evaluation, styling, or higher-level interpretation.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="io-pst/index.html">Bodu.IO.Pst</a></strong></td>
 <td>A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI) - the node database (header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees) and the LTP layer over it, exposing each <code>PstNode</code>'s property-context and table-context views with wire-typed values. The substrate beneath the <code>.pst</code> mail-store reader; no MAPI semantics, no writing.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 <tr>
 <td><strong><a href="outlook/index.html">Bodu.Formats.Outlook</a></strong></td>
 <td>The Outlook format readers over the shared MAPI value model - property tags and types, the tag-addressed <code>MapiPropertyCollection</code>, and named-property identities in <code>Bodu.Formats.Outlook</code>; <code>Bodu.Formats.Outlook.Msg</code> opens a <code>.msg</code> message over <code>Bodu.IO.Compound</code>, and <code>Bodu.Formats.Outlook.Pst</code> opens a <code>.pst</code> mail store over <code>Bodu.IO.Pst</code> - folders, messages, recipients, attachments, embedded messages, and the text / HTML / compressed-RTF bodies. Read-only; no MAPI session emulation.</td>
-<td><code>net8.0</code></td>
+<td><code>net8.0</code>, <code>net10.0</code></td>
 </tr>
 </tbody>
 </table>
@@ -552,7 +552,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3d31b99 · Built: 2026-10-05 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: eac5d3e · Built: 2026-10-05 (UTC)</span>
         </div>
       </div>
     </footer>
