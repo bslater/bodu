@@ -188,11 +188,11 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom has no canonical WeekPattern; pass a WeekPattern directly..
+        ///   Looks up a localized string similar to Custom has no canonical DayOfWeekSet; pass a DayOfWeekSet directly..
         /// </summary>
-        internal static string Arg_Invalid_CustomHasNoCanonicalWeekPattern {
+        internal static string Arg_Invalid_CustomHasNoCanonicalDayOfWeekSet {
             get {
-                return ResourceManager.GetString("Arg_Invalid_CustomHasNoCanonicalWeekPattern", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_CustomHasNoCanonicalDayOfWeekSet", resourceCulture);
             }
         }
         
@@ -259,15 +259,6 @@ namespace Bodu {
         internal static string Arg_Invalid_EmptyDictionaryKey {
             get {
                 return ResourceManager.GetString("Arg_Invalid_EmptyDictionaryKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The format string is invalid..
-        /// </summary>
-        internal static string Arg_Invalid_FormatString {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_FormatString", resourceCulture);
             }
         }
         
@@ -1073,24 +1064,6 @@ namespace Bodu {
         internal static string Format_Invalid_StringLength {
             get {
                 return ResourceManager.GetString("Format_Invalid_StringLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The unselected day character must be consistent. Found &apos;{0}&apos; but expected &apos;{1}&apos;..
-        /// </summary>
-        internal static string Format_Invalid_UnselectedCharacter {
-            get {
-                return ResourceManager.GetString("Format_Invalid_UnselectedCharacter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unrecognized week days format..
-        /// </summary>
-        internal static string Format_Invalid_WeekDays {
-            get {
-                return ResourceManager.GetString("Format_Invalid_WeekDays", resourceCulture);
             }
         }
         

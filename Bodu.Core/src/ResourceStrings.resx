@@ -159,8 +159,8 @@
   <data name="Arg_Invalid_Conversion" xml:space="preserve">
     <value>The value cannot be converted to type {0}.</value>
   </data>
-  <data name="Arg_Invalid_CustomHasNoCanonicalWeekPattern" xml:space="preserve">
-    <value>Custom has no canonical WeekPattern; pass a WeekPattern directly.</value>
+  <data name="Arg_Invalid_CustomHasNoCanonicalDayOfWeekSet" xml:space="preserve">
+    <value>Custom has no canonical DayOfWeekSet; pass a DayOfWeekSet directly.</value>
   </data>
   <data name="Arg_Invalid_DestinationNotExactSizeForDecoded" xml:space="preserve">
     <value>Destination must be exactly the size required for the decoded characters.</value>
@@ -182,9 +182,6 @@
   </data>
   <data name="Arg_Invalid_EmptyDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain empty keys.</value>
-  </data>
-  <data name="Arg_Invalid_FormatString" xml:space="preserve">
-    <value>The format string is invalid.</value>
   </data>
   <data name="Arg_Invalid_GreaterThanOrEqualOtherParameter" xml:space="preserve">
     <value>The value must not be greater than or equal to the value of {0}.</value>
@@ -452,12 +449,6 @@
   </data>
   <data name="Format_Invalid_StringLength" xml:space="preserve">
     <value>Input string was not in the correct format. The value must be {0} characters in length.</value>
-  </data>
-  <data name="Format_Invalid_UnselectedCharacter" xml:space="preserve">
-    <value>The unselected day character must be consistent. Found '{0}' but expected '{1}'.</value>
-  </data>
-  <data name="Format_Invalid_WeekDays" xml:space="preserve">
-    <value>Unrecognized week days format.</value>
   </data>
   <data name="IO_DirNotFound_Path" xml:space="preserve">
     <value>Could not find directory '{0}'.</value>

@@ -10,7 +10,7 @@ public static partial class DateTimeExtensions
 {
     /// <summary>
     /// Determines whether the specified <see cref="DateTime" /> falls on a day that is selected in the supplied
-    /// <see cref="WeekPattern" /> working week.
+    /// <see cref="DayOfWeekSet" /> working week.
     /// </summary>
     /// <param name="dateTime">The date and time to evaluate.</param>
     /// <param name="workingWeek">The working-week pattern.</param>
@@ -22,7 +22,7 @@ public static partial class DateTimeExtensions
     /// This predicate considers only the day-of-week dimension. It does not consult any holiday catalogue. Combine it
     /// with a notable-date service when both working-week and holiday awareness are required.
     /// </remarks>
-    public static bool IsInWorkingWeek(this DateTime dateTime, WeekPattern workingWeek) =>
+    public static bool IsInWorkingWeek(this DateTime dateTime, DayOfWeekSet workingWeek) =>
         workingWeek.Contains(dateTime.DayOfWeek);
 
     /// <summary>
@@ -44,5 +44,5 @@ public static partial class DateTimeExtensions
     /// pattern.
     /// </exception>
     public static bool IsInWorkingWeek(this DateTime dateTime, WorkingDaysOfWeek workingWeek) =>
-        IsInWorkingWeek(dateTime, workingWeek.ToWeekPattern());
+        IsInWorkingWeek(dateTime, workingWeek.ToDayOfWeekSet());
 }

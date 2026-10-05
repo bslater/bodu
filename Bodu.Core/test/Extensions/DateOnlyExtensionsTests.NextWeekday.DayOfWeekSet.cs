@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DateOnlyExtensionsTests.NextWeekday.WeekPattern.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DateOnlyExtensionsTests.NextWeekday.DayOfWeekSet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,13 +10,13 @@ public partial class DateOnlyExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, WeekPattern)" /> returns the next selected
+    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, DayOfWeekSet)" /> returns the next selected
     /// day with a non-standard working pattern (e.g. only Wednesday selected).
     /// </summary>
     [TestMethod]
     public void NextWeekday_WhenWorkingWeekIsCustom_ShouldAdvanceToNextSelectedDay()
     {
-        WeekPattern pattern = new(DayOfWeek.Wednesday);
+        DayOfWeekSet pattern = new(DayOfWeek.Wednesday);
 
         // Mon 15 Apr 2024 → next Wednesday = Wed 17 Apr.
         Assert.AreEqual(new DateOnly(2024, 4, 17), new DateOnly(2024, 4, 15).NextWeekday(pattern));
@@ -25,7 +25,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, WeekPattern)" /> throws
+    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, DayOfWeekSet)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when supplied an empty working-week pattern.
     /// </summary>
     [TestMethod]
@@ -35,22 +35,22 @@ public partial class DateOnlyExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = input.NextWeekday(WeekPattern.Empty);
+            _ = input.NextWeekday(DayOfWeekSet.Empty);
         });
     }
     // =========================================================================
-    // NextWeekday(this DateOnly, WeekPattern)
+    // NextWeekday(this DateOnly, DayOfWeekSet)
     // =========================================================================
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, WeekPattern)" /> returns the next day
-    /// whose <see cref="DayOfWeek" /> is selected by the supplied <see cref="WeekPattern" /> pattern, when the
+    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, DayOfWeekSet)" /> returns the next day
+    /// whose <see cref="DayOfWeek" /> is selected by the supplied <see cref="DayOfWeekSet" /> pattern, when the
     /// pattern matches the standard Monday-through-Friday working week.
     /// </summary>
     [TestMethod]
     public void NextWeekday_WhenWorkingWeekIsMondayThroughFriday_ShouldSkipSaturdayAndSunday()
     {
-        WeekPattern pattern = WeekPattern.MondayToFriday;
+        DayOfWeekSet pattern = DayOfWeekSet.MondayToFriday;
 
         // Fri 19 Apr 2024 → next selected day skips Sat/Sun → Mon 22 Apr.
         Assert.AreEqual(new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 19).NextWeekday(pattern));

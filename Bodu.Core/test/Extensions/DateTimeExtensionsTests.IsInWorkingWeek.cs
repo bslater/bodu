@@ -10,7 +10,7 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, WeekPattern)" /> returns
+    /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, DayOfWeekSet)" /> returns
     /// <see langword="true" /> when the date's day-of-week is selected in the supplied pattern.
     /// </summary>
     [TestMethod]
@@ -18,11 +18,11 @@ public partial class DateTimeExtensionsTests
     {
         var monday = new DateTime(2026, 5, 11);
 
-        Assert.IsTrue(monday.IsInWorkingWeek(WeekPattern.Weekdays));
+        Assert.IsTrue(monday.IsInWorkingWeek(DayOfWeekSet.Weekdays));
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, WeekPattern)" /> returns
+    /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, DayOfWeekSet)" /> returns
     /// <see langword="false" /> when the date's day-of-week is not selected in the supplied pattern.
     /// </summary>
     [TestMethod]
@@ -30,15 +30,15 @@ public partial class DateTimeExtensionsTests
     {
         var saturday = new DateTime(2026, 5, 16);
 
-        Assert.IsFalse(saturday.IsInWorkingWeek(WeekPattern.Weekdays));
+        Assert.IsFalse(saturday.IsInWorkingWeek(DayOfWeekSet.Weekdays));
     }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, WorkingDaysOfWeek)" /> agrees with the
-    /// <see cref="WeekPattern" /> overload for a named preset.
+    /// <see cref="DayOfWeekSet" /> overload for a named preset.
     /// </summary>
     [TestMethod]
-    public void IsInWorkingWeek_WhenUsingWorkingDaysOfWeekSugar_ShouldMatchWeekPatternOverload()
+    public void IsInWorkingWeek_WhenUsingWorkingDaysOfWeekSugar_ShouldMatchDayOfWeekSetOverload()
     {
         var friday = new DateTime(2026, 5, 15);
 

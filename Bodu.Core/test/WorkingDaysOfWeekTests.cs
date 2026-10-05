@@ -29,27 +29,27 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern" /> throws
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet" /> throws
     /// <see cref="ArgumentException" /> when called with <see cref="WorkingDaysOfWeek.Custom" />.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenCustom_ShouldThrowExactly()
+    public void ToDayOfWeekSet_WhenCustom_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = WorkingDaysOfWeek.Custom.ToWeekPattern();
+            _ = WorkingDaysOfWeek.Custom.ToDayOfWeekSet();
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern" /> maps each named preset to a
-    /// <see cref="WeekPattern" /> that selects exactly the expected days.
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet" /> maps each named preset to a
+    /// <see cref="DayOfWeekSet" /> that selects exactly the expected days.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetNamedPresetTestData))]
-    public void ToWeekPattern_WhenNamedPreset_ShouldSelectExpectedDays(WorkingDaysOfWeek value, DayOfWeek[] expectedDays)
+    public void ToDayOfWeekSet_WhenNamedPreset_ShouldSelectExpectedDays(WorkingDaysOfWeek value, DayOfWeek[] expectedDays)
     {
-        var pattern = value.ToWeekPattern();
+        var pattern = value.ToDayOfWeekSet();
 
         Assert.AreEqual(expectedDays.Length, pattern.Count);
         foreach (DayOfWeek day in expectedDays)
@@ -57,26 +57,26 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern" /> throws
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the enum value is not defined.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenUndefinedEnumValue_ShouldThrowExactly()
+    public void ToDayOfWeekSet_WhenUndefinedEnumValue_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = ((WorkingDaysOfWeek)99).ToWeekPattern();
+            _ = ((WorkingDaysOfWeek)99).ToDayOfWeekSet();
         });
     }
 
     /// <summary>
     /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek" /> returns
-    /// <see cref="WorkingDaysOfWeek.Custom" /> for a <see cref="WeekPattern" /> that does not match any named preset.
+    /// <see cref="WorkingDaysOfWeek.Custom" /> for a <see cref="DayOfWeekSet" /> that does not match any named preset.
     /// </summary>
     [TestMethod]
     public void ToWorkingDaysOfWeek_WhenNotANamedPreset_ShouldReturnCustom()
     {
-        var oddPattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        var oddPattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
         var value = oddPattern.ToWorkingDaysOfWeek();
 
@@ -91,7 +91,7 @@ public class WorkingDaysOfWeekTests
     [DynamicData(nameof(GetNamedPresetTestData))]
     public void ToWorkingDaysOfWeek_WhenRoundTripFromNamedPreset_ShouldReturnOriginal(WorkingDaysOfWeek value, DayOfWeek[] _)
     {
-        var pattern = value.ToWeekPattern();
+        var pattern = value.ToDayOfWeekSet();
 
         var roundTripped = pattern.ToWorkingDaysOfWeek();
 
@@ -106,7 +106,7 @@ public class WorkingDaysOfWeekTests
     [DynamicData(nameof(GetNamedPresetTestData))]
     public void TryGetWorkingDaysOfWeek_WhenNamedPreset_ShouldReturnTrueAndExpectedValue(WorkingDaysOfWeek value, DayOfWeek[] _)
     {
-        var pattern = value.ToWeekPattern();
+        var pattern = value.ToDayOfWeekSet();
 
         bool success = pattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek actual);
 
@@ -121,7 +121,7 @@ public class WorkingDaysOfWeekTests
     [TestMethod]
     public void TryGetWorkingDaysOfWeek_WhenNotANamedPreset_ShouldReturnFalseAndCustom()
     {
-        var oddPattern = new WeekPattern(DayOfWeek.Tuesday, DayOfWeek.Thursday);
+        var oddPattern = new DayOfWeekSet(DayOfWeek.Tuesday, DayOfWeek.Thursday);
 
         bool success = oddPattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek value);
 
@@ -130,13 +130,13 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek)" /> maps
-    /// <see cref="WorkingDaysOfWeek.AllDays" /> to a <see cref="WeekPattern" /> selecting all seven days.
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet(WorkingDaysOfWeek)" /> maps
+    /// <see cref="WorkingDaysOfWeek.AllDays" /> to a <see cref="DayOfWeekSet" /> selecting all seven days.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenAllDays_ShouldSelectAllSevenDays()
+    public void ToDayOfWeekSet_WhenAllDays_ShouldSelectAllSevenDays()
     {
-        var pattern = WorkingDaysOfWeek.AllDays.ToWeekPattern();
+        var pattern = WorkingDaysOfWeek.AllDays.ToDayOfWeekSet();
 
         Assert.AreEqual(7, pattern.Count);
         for (int i = 0; i < 7; i++)
@@ -144,15 +144,15 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet(WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
     /// routes <see cref="WorkingDaysOfWeek.Custom" /> through the supplied provider.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenCustomWithProvider_ShouldReturnProviderImpliedPattern()
+    public void ToDayOfWeekSet_WhenCustomWithProvider_ShouldReturnProviderImpliedPattern()
     {
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
-        var pattern = WorkingDaysOfWeek.Custom.ToWeekPattern(provider);
+        var pattern = WorkingDaysOfWeek.Custom.ToDayOfWeekSet(provider);
 
         Assert.AreEqual(6, pattern.Count);
         Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
@@ -161,35 +161,35 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet(WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
     /// throws <see cref="ArgumentNullException" /> when called with <see cref="WorkingDaysOfWeek.Custom" /> and a <see langword="null" /> provider.
     /// </summary>
     [TestMethod]
-    public void ToWeekPattern_WhenCustomAndProviderIsNull_ShouldThrowExactly()
+    public void ToDayOfWeekSet_WhenCustomAndProviderIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = WorkingDaysOfWeek.Custom.ToWeekPattern(null);
+            _ = WorkingDaysOfWeek.Custom.ToDayOfWeekSet(null);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToWeekPattern" /> projects the provider's weekend
-    /// definition onto the complement <see cref="WeekPattern" />.
+    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToDayOfWeekSet" /> projects the provider's weekend
+    /// definition onto the complement <see cref="DayOfWeekSet" />.
     /// </summary>
     [TestMethod]
     public void IWeekendDefinitionProviderToWeekPattern_WhenProviderReturnsFridayOnly_ShouldSelectAllOtherDays()
     {
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
-        var pattern = provider.ToWeekPattern();
+        var pattern = provider.ToDayOfWeekSet();
 
         Assert.AreEqual(6, pattern.Count);
         Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
     }
 
     /// <summary>
-    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToWeekPattern" /> throws
+    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToDayOfWeekSet" /> throws
     /// <see cref="ArgumentNullException" /> when the provider argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -197,7 +197,7 @@ public class WorkingDaysOfWeekTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((IWeekendDefinitionProvider)null!).ToWeekPattern();
+            _ = ((IWeekendDefinitionProvider)null!).ToDayOfWeekSet();
         });
     }
 

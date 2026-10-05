@@ -12,13 +12,13 @@ namespace Bodu;
 /// <remarks>
 /// <para>
 /// <see cref="WorkingDaysOfWeek" /> enumerates the commonly observed working-week patterns across global regions. Each
-/// named value maps to a canonical <see cref="WeekPattern" /> preset and is interchangeable with the bitmask
+/// named value maps to a canonical <see cref="DayOfWeekSet" /> preset and is interchangeable with the bitmask
 /// representation through the conversion extension methods on
 /// <see cref="Bodu.Extensions.WorkingDaysOfWeekExtensions" />.
 /// </para>
 /// <para>
 /// Use a named value when the working week is one of the listed patterns; use <see cref="Custom" /> together with a
-/// caller-supplied <see cref="WeekPattern" /> when the working week is non-standard (for example a four-day week or an
+/// caller-supplied <see cref="DayOfWeekSet" /> when the working week is non-standard (for example a four-day week or an
 /// unevenly distributed schedule).
 /// </para>
 /// </remarks>
@@ -60,7 +60,7 @@ public enum WorkingDaysOfWeek
     SundayToThursday = 6,
 
     /// <summary>
-    /// Indicates a non-standard working week whose pattern is supplied externally via a <see cref="WeekPattern" />.
+    /// Indicates a non-standard working week whose pattern is supplied externally via a <see cref="DayOfWeekSet" />.
     /// </summary>
     Custom = 7,
 

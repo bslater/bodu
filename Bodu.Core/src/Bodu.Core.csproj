@@ -8,8 +8,8 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu - Core</Title>
-    <Description>Foundational building blocks for .NET 8: ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, spans, and enumerables, async threading primitives, text-encoding utilities, the WeekPattern value type, and the ThrowHelper argument-validation catalogue the rest of the solution validates against. The specialized generic collection catalogue (circular buffer, deque, evicting dictionary, graphs, tries, and more) ships separately as Bodu.Collections.</Description>
-    <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;week-pattern</PackageTags>
+    <Description>Foundational building blocks for .NET 8: ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, spans, and enumerables, async threading primitives, text-encoding utilities, the calendar value sets (days of the week, months, days of the month, hours, minutes and seconds), and the ThrowHelper argument-validation catalogue the rest of the solution validates against. The specialized generic collection catalogue (circular buffer, deque, evicting dictionary, graphs, tries, and more) ships separately as Bodu.Collections.</Description>
+    <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;day-of-week-set;calendar-sets</PackageTags>
   </PropertyGroup>
 
   <!--

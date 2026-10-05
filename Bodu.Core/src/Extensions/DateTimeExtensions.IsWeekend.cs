@@ -78,7 +78,7 @@ public static partial class DateTimeExtensions
     /// <para>
     /// This overload supports custom weekend evaluation logic via <paramref name="provider" /> when
     /// <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />. For all other values the result is
-    /// derived from the canonical <see cref="WeekPattern" /> implied by <paramref name="workingWeek" />.
+    /// derived from the canonical <see cref="DayOfWeekSet" /> implied by <paramref name="workingWeek" />.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -97,7 +97,7 @@ public static partial class DateTimeExtensions
                     nameof(workingWeek),
                     string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, nameof(WorkingDaysOfWeek), workingWeek))
                 : provider.IsWeekend(dayOfWeek)
-            : !workingWeek.ToWeekPattern().Contains(dayOfWeek);
+            : !workingWeek.ToDayOfWeekSet().Contains(dayOfWeek);
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public static partial class DateTimeExtensions
     /// <see cref="WorkingDaysOfWeek.Custom" />.
     /// </param>
     /// <returns>
-    /// The canonical <see cref="WeekPattern" /> for a named working week; <see langword="null" /> when the caller must
+    /// The canonical <see cref="DayOfWeekSet" /> for a named working week; <see langword="null" /> when the caller must
     /// evaluate <paramref name="provider" /> per day.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -124,10 +124,10 @@ public static partial class DateTimeExtensions
     /// every stepped day of a <c>NextWeekday</c> / <c>PreviousWeekday</c> walk, preserving that method's exception
     /// contract for the Custom-without-provider case.
     /// </remarks>
-    internal static WeekPattern? ResolveWorkingWeekPattern(WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)
+    internal static DayOfWeekSet? ResolveWorkingWeek(WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)
     {
         if (workingWeek != WorkingDaysOfWeek.Custom)
-            return workingWeek.ToWeekPattern();
+            return workingWeek.ToDayOfWeekSet();
 
         if (provider is null)
         {

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="DateOnlyExtensionsTests.PreviousWeekday.WeekPattern.cs" company="Bodu Pty. Ltd.">
+// <copyright file="DateOnlyExtensionsTests.PreviousWeekday.DayOfWeekSet.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,13 +10,13 @@ public partial class DateOnlyExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, WeekPattern)" /> returns the previous
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, DayOfWeekSet)" /> returns the previous
     /// selected day with a non-standard working pattern (e.g. only Wednesday selected).
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWorkingWeekIsCustom_ShouldAdvanceToPreviousSelectedDay()
     {
-        WeekPattern pattern = new(DayOfWeek.Wednesday);
+        DayOfWeekSet pattern = new(DayOfWeek.Wednesday);
 
         // Fri 19 Apr 2024 → previous Wednesday = Wed 17 Apr.
         Assert.AreEqual(new DateOnly(2024, 4, 17), new DateOnly(2024, 4, 19).PreviousWeekday(pattern));
@@ -25,7 +25,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, WeekPattern)" /> throws
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, DayOfWeekSet)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when supplied an empty working-week pattern.
     /// </summary>
     [TestMethod]
@@ -35,22 +35,22 @@ public partial class DateOnlyExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = input.PreviousWeekday(WeekPattern.Empty);
+            _ = input.PreviousWeekday(DayOfWeekSet.Empty);
         });
     }
     // =========================================================================
-    // PreviousWeekday(this DateOnly, WeekPattern)
+    // PreviousWeekday(this DateOnly, DayOfWeekSet)
     // =========================================================================
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, WeekPattern)" /> returns the previous
-    /// day whose <see cref="DayOfWeek" /> is selected by the supplied <see cref="WeekPattern" /> pattern, when
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, DayOfWeekSet)" /> returns the previous
+    /// day whose <see cref="DayOfWeek" /> is selected by the supplied <see cref="DayOfWeekSet" /> pattern, when
     /// the pattern matches the standard Monday-through-Friday working week.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWorkingWeekIsMondayThroughFriday_ShouldSkipSaturdayAndSunday()
     {
-        WeekPattern pattern = WeekPattern.MondayToFriday;
+        DayOfWeekSet pattern = DayOfWeekSet.MondayToFriday;
 
         // Mon 22 Apr 2024 → previous selected day skips Sun/Sat → Fri 19 Apr.
         Assert.AreEqual(new DateOnly(2024, 4, 19), new DateOnly(2024, 4, 22).PreviousWeekday(pattern));
