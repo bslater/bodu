@@ -8,8 +8,7 @@ title: RFC 5545 recurrence rules
 
 This page is the per-form reference. For the "which form" decision and the due-ness recipe every form shares, start at the [recurrence overview](index.md); for the vocabulary (*occurrence*, *inclusive boundary*, *frequency period*) see [Core concepts](../../docs/recurrence/concepts.md).
 
-> [!NOTE]
-> Occurrence enumeration supports `DAILY`, `WEEKLY`, `MONTHLY`, and `YEARLY`. A rule with a sub-daily frequency (`SECONDLY`, `MINUTELY`, `HOURLY`) still parses and round-trips, but every occurrence query on it throws <xref:System.NotSupportedException> - the message reads "The recurrence frequency 'Hourly' is not supported; sub-daily frequencies are a planned follow-on." Time-of-day within a daily-or-coarser rule is fully supported through `BYHOUR` / `BYMINUTE` / `BYSECOND`.
+Every frequency enumerates, from `SECONDLY` to `YEARLY`. At `DAILY` and coarser, `BYHOUR` / `BYMINUTE` / `BYSECOND` place occurrences within each day; the sub-daily frequencies are covered in [Sub-daily frequencies](#sub-daily-frequencies).
 
 ## Pattern 1 - parse, inspect, and format
 
@@ -264,6 +263,37 @@ bool isDue = lastRun < nightly.GetPreviousOccurrence(seriesStart, resumedAt, inc
 
 The [Hosting schedules](scheduling-host.md) guide turns this into a reproducible loop over a `TimeProvider`.
 
+## Sub-daily frequencies
+
+At `HOURLY`, `MINUTELY`, and `SECONDLY` each frequency period is a single hour, minute, or second, and the *n*th period begins *n* × `INTERVAL` of them after the one that holds the start. `BYMINUTE` and `BYSECOND` expand an hourly period, and `BYSECOND` a minutely one, each defaulting to the start's own minute and second. `BYHOUR`, and the finer parts the frequency does not expand, limit which periods produce occurrences, as do `BYMONTH`, `BYMONTHDAY`, `BYYEARDAY`, and the `BYDAY` weekdays. `BYSETPOS` selects within each period.
+
+<!-- compile -->
+```csharp
+using Bodu.Globalization.Recurrence;
+
+var start = new DateTime(1997, 9, 2, 9, 0, 0);
+
+// RFC 5545: "Every 15 minutes for 6 occurrences".
+DateTime[] quarterHours = RecurrenceRule.Parse("FREQ=MINUTELY;INTERVAL=15;COUNT=6")
+    .GetOccurrences(start).ToArray();
+// 09:00, 09:15, 09:30, 09:45, 10:00, 10:15
+
+// RFC 5545: "Every 20 minutes from 9:00 AM to 4:40 PM every day". BYHOUR limits the minutely
+// periods; FREQ=DAILY;BYHOUR=9,10,11,12,13,14,15,16;BYMINUTE=0,20,40 gives the same occurrences.
+DateTime[] workingDay = RecurrenceRule.Parse("FREQ=MINUTELY;INTERVAL=20;BYHOUR=9,10,11,12,13,14,15,16")
+    .GetOccurrences(start).Take(25).ToArray();
+// 2 September 09:00, 09:20, ... 16:40, then 3 September 09:00
+
+// Every fifth hour reaches midnight or noon once every 60 hours.
+DateTime[] midnightOrNoon = RecurrenceRule.Parse("FREQ=HOURLY;INTERVAL=5;BYHOUR=0,12")
+    .GetOccurrences(new DateTime(2026, 1, 1)).Take(4).ToArray();
+// 2026-01-01 00:00, 2026-01-03 12:00, 2026-01-06 00:00, 2026-01-08 12:00
+```
+
+A limit holds for a whole period, so enumeration passes from a rejected period straight to the next one that can pass: the next day or month for a date limit, and for a time limit the next period whose time of day the rule allows, found arithmetically rather than by stepping through the periods between. A rule whose interval never reaches an allowed time of day, such as `FREQ=MINUTELY;INTERVAL=15;BYMINUTE=10` from 09:00, has no occurrences, and its queries answer `null` at once. Where RFC 5545 leaves room, a `BYDAY` ordinal has no meaning below `MONTHLY` and is ignored (`BYDAY=1SA` is every Saturday), `BYWEEKNO`, which the RFC allows only with `YEARLY`, is ignored, and a `BYSECOND` value of 60, the leap second, stands for second 59.
+
+The periods count from the series start in its wall clock. For a cadence measured from an instant that moves, such as "every 4 hours after the last completed run", use an [anchored interval](anchored-intervals.md), whose anchor is passed to each query and is not itself an occurrence.
+
 ## Where implementations disagree
 
 Recurrence libraries diverge on a handful of `BY*` interactions. Each statement below is what *this* library does, with the output the sample produced.
@@ -347,7 +377,7 @@ The builder's `WithWeekStart` sets the same part.
 
 ## Query cost
 
-`GetNextOccurrence`, `GetPreviousOccurrence`, and the windowed `GetOccurrences(start, from, to)` begin at the frequency period that holds the instant they are given rather than at the series start, so a rule anchored decades ago answers as quickly as one anchored yesterday, with the answer that enumerating from the start gives. A rule with `COUNT` is the exception: the occurrences before a period decide how many it may still produce, so its queries enumerate from the start and cost in proportion to the occurrences before the query. Where the end of a long series is known as an instant, `UNTIL` keeps its queries local.
+`GetNextOccurrence`, `GetPreviousOccurrence`, and the windowed `GetOccurrences(start, from, to)` begin at the frequency period that holds the instant they are given rather than at the series start, so a rule anchored decades ago answers as quickly as one anchored yesterday, with the answer that enumerating from the start gives. A rule with `COUNT` is the exception: the occurrences before a period decide how many it may still produce, so its queries enumerate from the start and cost in proportion to the occurrences before the query. Where the end of a long series is known as an instant, `UNTIL` keeps its queries local. At the sub-daily frequencies the search also passes over the days and times of day the rule rejects without visiting the periods between them, so a query's cost depends on how far apart the occurrences are rather than on the age of the series: a quarter-hourly rule anchored in 1990 answers in a fraction of a microsecond, and `FREQ=SECONDLY;BYHOUR=9;BYMINUTE=30;BYSECOND=0`, one second a day, which searches a whole day's seconds between occurrences, in about ten microseconds.
 
 ## Value equality
 
