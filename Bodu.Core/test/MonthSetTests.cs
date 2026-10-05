@@ -1,0 +1,81 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="MonthSetTests.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Contracts;
+using Bodu.Test.Kat;
+
+namespace Bodu;
+
+/// <summary>
+/// Runs the calendar value set contract against <see cref="MonthSet" />, whose domain is 1 to 12.
+/// </summary>
+[TestClass]
+public sealed class MonthSetTests
+    : CalendarValueSetContractTests<MonthSet>
+{
+    /// <inheritdoc />
+    protected override int Minimum => 1;
+
+    /// <inheritdoc />
+    protected override int Maximum => 12;
+
+    /// <inheritdoc />
+    protected override MonthSet Empty => MonthSet.Empty;
+
+    /// <inheritdoc />
+    protected override MonthSet All => MonthSet.All;
+
+    /// <inheritdoc />
+    protected override string ConstructorParameterName => "months";
+
+    /// <inheritdoc />
+    protected override string ElementParameterName => "month";
+
+    /// <inheritdoc />
+    protected override IReadOnlyList<ValidKat<string, MonthSet>> CanonicalTextCases { get; } =
+    [
+        new("first month of each quarter", "1,4,7,10", new MonthSet(1, 4, 7, 10)),
+        new("first quarter and December", "1-3,12", new MonthSet(1, 2, 3, 12)),
+        new("northern summer", "6-8", new MonthSet(6, 7, 8)),
+        new("odd months", "1,3,5,7,9,11", new MonthSet(1, 3, 5, 7, 9, 11)),
+    ];
+
+    /// <inheritdoc />
+    protected override MonthSet Create(params int[]? values) =>
+        new(values);
+
+    /// <inheritdoc />
+    protected override MonthSet FromUInt64(ulong bits) =>
+        MonthSet.FromUInt64(bits);
+
+    /// <inheritdoc />
+    protected override ulong ToUInt64(MonthSet set) =>
+        set.ToUInt64();
+
+    /// <inheritdoc />
+    protected override int Count(MonthSet set) =>
+        set.Count;
+
+    /// <inheritdoc />
+    protected override bool Contains(MonthSet set, int value) =>
+        set.Contains(value);
+
+    /// <inheritdoc />
+    protected override MonthSet With(MonthSet set, int value) =>
+        set.With(value);
+
+    /// <inheritdoc />
+    protected override MonthSet Without(MonthSet set, int value) =>
+        set.Without(value);
+
+    /// <inheritdoc />
+    protected override MonthSet Parse(string s) =>
+        MonthSet.Parse(s);
+
+    /// <inheritdoc />
+    protected override bool TryParse(string? s, out MonthSet result) =>
+        MonthSet.TryParse(s, out result);
+}

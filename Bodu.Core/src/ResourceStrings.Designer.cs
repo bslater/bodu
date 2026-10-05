@@ -1023,6 +1023,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a comma-separated list of values and ranges from {1} to {2}..
+        /// </summary>
+        internal static string Format_Invalid_CalendarValueList {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CalendarValueList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input string contains an invalid character &apos;{0}&apos; at position {1}..
         /// </summary>
         internal static string Format_Invalid_Character {

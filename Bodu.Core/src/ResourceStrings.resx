@@ -435,6 +435,9 @@
   <data name="Format_Invalid_7BitInt32" xml:space="preserve">
     <value>Too many bytes in what should have been a 7 bit encoded Int32.</value>
   </data>
+  <data name="Format_Invalid_CalendarValueList" xml:space="preserve">
+    <value>'{0}' is not a comma-separated list of values and ranges from {1} to {2}.</value>
+  </data>
   <data name="Format_Invalid_Character" xml:space="preserve">
     <value>Input string contains an invalid character '{0}' at position {1}.</value>
   </data>
