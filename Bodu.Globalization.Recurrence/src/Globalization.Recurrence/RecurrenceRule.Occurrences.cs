@@ -37,9 +37,13 @@ public sealed partial class RecurrenceRule
     /// <param name="to">The inclusive upper bound of the window.</param>
     /// <returns>The occurrences within <c>[from, to]</c> in ascending chronological order.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Unless the rule declares <see cref="Count" />, the enumeration begins at the frequency period that holds
+    /// <paramref name="from" />, so its cost does not grow with the time elapsed since <paramref name="start" />.
+    /// </remarks>
     public IEnumerable<DateTime> GetOccurrences(DateTime start, DateTime from, DateTime to)
     {
-        foreach (DateTime occurrence in Enumerate(start))
+        foreach (DateTime occurrence in EnumerateFrom(start, from))
         {
             if (occurrence > to)
             {
@@ -65,12 +69,20 @@ public sealed partial class RecurrenceRule
     /// <returns>The next occurrence, or <see langword="null" /> when the rule produces none.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
     /// <remarks>
+    /// <para>
     /// The search is bounded by the end of the representable calendar (year 9999): a rule that can never match, such as
     /// 30 February yearly, answers <see langword="null" /> rather than scanning unboundedly.
+    /// </para>
+    /// <para>
+    /// Unless the rule declares <see cref="Count" />, the search begins at the frequency period that holds
+    /// <paramref name="after" />, so its cost does not grow with the time elapsed since <paramref name="start" />. A
+    /// rule with <see cref="Count" /> is enumerated from <paramref name="start" />, because only the occurrences
+    /// already produced show whether any remain.
+    /// </para>
     /// </remarks>
     public DateTime? GetNextOccurrence(DateTime start, DateTime after, bool inclusive = false)
     {
-        foreach (DateTime occurrence in Enumerate(start))
+        foreach (DateTime occurrence in EnumerateFrom(start, after))
         {
             if (occurrence > after || (inclusive && occurrence == after))
             {
@@ -95,25 +107,23 @@ public sealed partial class RecurrenceRule
     /// </returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
     /// <remarks>
+    /// <para>
     /// Due-ness evaluation is a previous-occurrence comparison - typically
     /// <c>lastCompleted &lt; GetPreviousOccurrence(now, inclusive: true)</c> - so missed occurrences coalesce
     /// structurally: the answer is a single instant, never a backlog.
+    /// </para>
+    /// <para>
+    /// Unless the rule declares <see cref="Count" />, the search works back from the frequency period that holds
+    /// <paramref name="before" />, so its cost grows with the distance back to the previous occurrence rather than with
+    /// the time elapsed since <paramref name="start" />.
+    /// </para>
     /// </remarks>
-    public DateTime? GetPreviousOccurrence(DateTime start, DateTime before, bool inclusive = false)
-    {
-        DateTime? previous = null;
-        foreach (DateTime occurrence in Enumerate(start))
-        {
-            if (occurrence > before || (!inclusive && occurrence == before))
-            {
-                break;
-            }
-
-            previous = occurrence;
-        }
-
-        return previous;
-    }
+    public DateTime? GetPreviousOccurrence(DateTime start, DateTime before, bool inclusive = false) =>
+        FindPreviousOccurrence(
+            start,
+            DateOnly.FromDateTime(before),
+            occurrence => occurrence > before || (!inclusive && occurrence == before),
+            isExcluded: null);
 
     /// <summary>
     /// Enumerates the occurrences of the rule anchored at the specified start, preserving its UTC offset.
@@ -130,7 +140,7 @@ public sealed partial class RecurrenceRule
     public IEnumerable<DateTimeOffset> GetOccurrences(DateTimeOffset start)
     {
         TimeSpan offset = start.Offset;
-        foreach (DateTime occurrence in Enumerate(DateTime.SpecifyKind(start.DateTime, DateTimeKind.Unspecified)))
+        foreach (DateTime occurrence in Enumerate(ToWallClock(start)))
         {
             yield return new DateTimeOffset(occurrence, offset);
         }
@@ -144,18 +154,24 @@ public sealed partial class RecurrenceRule
     /// <param name="to">The inclusive upper bound of the window.</param>
     /// <returns>The occurrences within <c>[from, to]</c> in ascending chronological order.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Unless the rule declares <see cref="Count" />, the enumeration begins at the frequency period that holds
+    /// <paramref name="from" />, so its cost does not grow with the time elapsed since <paramref name="start" />.
+    /// </remarks>
     public IEnumerable<DateTimeOffset> GetOccurrences(DateTimeOffset start, DateTimeOffset from, DateTimeOffset to)
     {
-        foreach (DateTimeOffset occurrence in GetOccurrences(start))
+        TimeSpan offset = start.Offset;
+        foreach (DateTime occurrence in EnumerateFrom(ToWallClock(start), ToWallClock(from, offset)))
         {
-            if (occurrence > to)
+            var instant = new DateTimeOffset(occurrence, offset);
+            if (instant > to)
             {
                 yield break;
             }
 
-            if (occurrence >= from)
+            if (instant >= from)
             {
-                yield return occurrence;
+                yield return instant;
             }
         }
     }
@@ -171,13 +187,19 @@ public sealed partial class RecurrenceRule
     /// </param>
     /// <returns>The next occurrence, or <see langword="null" /> when the rule produces none.</returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Unless the rule declares <see cref="Count" />, the search begins at the frequency period that holds
+    /// <paramref name="after" />, so its cost does not grow with the time elapsed since <paramref name="start" />.
+    /// </remarks>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset start, DateTimeOffset after, bool inclusive = false)
     {
-        foreach (DateTimeOffset occurrence in GetOccurrences(start))
+        TimeSpan offset = start.Offset;
+        foreach (DateTime occurrence in EnumerateFrom(ToWallClock(start), ToWallClock(after, offset)))
         {
-            if (occurrence > after || (inclusive && occurrence == after))
+            var instant = new DateTimeOffset(occurrence, offset);
+            if (instant > after || (inclusive && instant == after))
             {
-                return occurrence;
+                return instant;
             }
         }
 
@@ -197,20 +219,83 @@ public sealed partial class RecurrenceRule
     /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
     /// </returns>
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// Unless the rule declares <see cref="Count" />, the search works back from the frequency period that holds
+    /// <paramref name="before" />, so its cost grows with the distance back to the previous occurrence rather than with
+    /// the time elapsed since <paramref name="start" />.
+    /// </remarks>
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset start, DateTimeOffset before, bool inclusive = false)
     {
-        DateTimeOffset? previous = null;
-        foreach (DateTimeOffset occurrence in GetOccurrences(start))
-        {
-            if (occurrence > before || (!inclusive && occurrence == before))
+        TimeSpan offset = start.Offset;
+        DateTime? previous = FindPreviousOccurrence(
+            ToWallClock(start),
+            DateOnly.FromDateTime(ToWallClock(before, offset)),
+            occurrence =>
             {
-                break;
-            }
+                var instant = new DateTimeOffset(occurrence, offset);
+                return instant > before || (!inclusive && instant == before);
+            },
+            isExcluded: null);
 
-            previous = occurrence;
-        }
+        return previous is DateTime value ? new DateTimeOffset(value, offset) : null;
+    }
 
-        return previous;
+    /// <summary>
+    /// Returns the last occurrence of the rule that falls before the specified instant and that an exclusion does not
+    /// remove.
+    /// </summary>
+    /// <param name="start">The series start the rule is anchored to.</param>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">
+    /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="before" />; otherwise the
+    /// occurrence must be strictly earlier.
+    /// </param>
+    /// <param name="isExcluded">Determines whether an occurrence is removed from the stream.</param>
+    /// <returns>
+    /// The previous occurrence that <paramref name="isExcluded" /> keeps, or <see langword="null" /> when none precedes
+    /// <paramref name="before" />.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The search is that of <see cref="GetPreviousOccurrence(DateTime, DateTime, bool)" />, with the excluded
+    /// occurrences skipped, so it continues back past them as it does past periods without an occurrence.
+    /// </remarks>
+    internal DateTime? GetPreviousOccurrence(
+        DateTime start,
+        DateTime before,
+        bool inclusive,
+        Func<DateTime, bool> isExcluded) =>
+        FindPreviousOccurrence(
+            start,
+            DateOnly.FromDateTime(before),
+            occurrence => occurrence > before || (!inclusive && occurrence == before),
+            isExcluded);
+
+    /// <summary>
+    /// Enumerates the occurrence stream from the first frequency period that can hold an occurrence on or after a
+    /// bound.
+    /// </summary>
+    /// <param name="start">The series start the rule is anchored to.</param>
+    /// <param name="bound">The instant the caller filters the occurrences against.</param>
+    /// <returns>
+    /// The ascending occurrences, beginning no later than the first on or after <paramref name="bound" />; any before
+    /// it are left for the caller to skip.
+    /// </returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The periods skipped hold only occurrences before <paramref name="bound" />, so the occurrences on or after it
+    /// are exactly those of <see cref="GetOccurrences(DateTime)" />. A rule with <see cref="Count" /> skips none,
+    /// because the occurrences before a period decide how many it may still produce.
+    /// </remarks>
+    internal IEnumerable<DateTime> EnumerateFrom(DateTime start, DateTime bound)
+    {
+        ThrowIfSubDaily();
+
+        int firstPeriod = Count is null && bound > start
+            ? FirstPeriodReaching(DateOnly.FromDateTime(start), DateOnly.FromDateTime(bound))
+            : 0;
+
+        return EnumerateCore(start, firstPeriod, int.MaxValue);
     }
 
     /// <summary>
@@ -222,29 +307,116 @@ public sealed partial class RecurrenceRule
     /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
     private IEnumerable<DateTime> Enumerate(DateTime start)
     {
-        if (IsSubDaily)
+        ThrowIfSubDaily();
+
+        return EnumerateCore(start, 0, int.MaxValue);
+    }
+
+    /// <summary>
+    /// Returns the last occurrence of the rule, in stream order, that precedes the first occurrence beyond a bound.
+    /// </summary>
+    /// <param name="start">The series start the rule is anchored to.</param>
+    /// <param name="boundDate">The date of the bound, from which the search works back.</param>
+    /// <param name="isBeyond">Determines whether an occurrence lies beyond the bound.</param>
+    /// <param name="isExcluded">
+    /// Determines whether an occurrence is skipped, or <see langword="null" /> to skip none.
+    /// </param>
+    /// <returns>The previous occurrence, or <see langword="null" /> when none precedes the bound.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    /// <remarks>
+    /// The stream ascends, so the answer is the latest occurrence within the bound that is not skipped, and no period
+    /// from <see cref="FirstPeriodBeyond" /> on can hold it. The search enumerates the one period below that index,
+    /// then the two below those, then four, and so on, and stops at the first run that holds such an occurrence, so it
+    /// scans at most twice the periods between the answer and the bound. A rule with <see cref="Count" /> is enumerated
+    /// from its start instead, because the occurrences before a period decide how many it may still produce.
+    /// </remarks>
+    private DateTime? FindPreviousOccurrence(
+        DateTime start,
+        DateOnly boundDate,
+        Func<DateTime, bool> isBeyond,
+        Func<DateTime, bool>? isExcluded)
+    {
+        ThrowIfSubDaily();
+
+        if (Count is not null)
         {
-            throw new NotSupportedException(
-                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Op_NotSupported_SubDailyFrequency, Frequency));
+            return LastBefore(EnumerateCore(start, 0, int.MaxValue), isBeyond, isExcluded);
         }
 
-        return EnumerateCore(start);
+        // Nothing past UNTIL is ever produced, so a bound beyond it searches back from UNTIL rather than through the
+        // empty periods between the two.
+        if (Until is DateTime until && DateOnly.FromDateTime(until) < boundDate)
+        {
+            boundDate = DateOnly.FromDateTime(until);
+        }
+
+        int high = FirstPeriodBeyond(DateOnly.FromDateTime(start), boundDate);
+        int width = 1;
+        while (true)
+        {
+            int low = Math.Max(0, high - width);
+            DateTime? previous = LastBefore(EnumerateCore(start, low, high), isBeyond, isExcluded);
+            if (previous is not null || low == 0)
+            {
+                return previous;
+            }
+
+            high = low;
+            width = width > int.MaxValue / 2 ? int.MaxValue : width * 2;
+        }
+    }
+
+    /// <summary>
+    /// Returns the last element of an ascending run of occurrences that precedes the first one beyond a bound.
+    /// </summary>
+    /// <param name="occurrences">The ascending occurrences to scan.</param>
+    /// <param name="isBeyond">Determines whether an occurrence lies beyond the bound.</param>
+    /// <param name="isExcluded">
+    /// Determines whether an occurrence is skipped, or <see langword="null" /> to skip none.
+    /// </param>
+    /// <returns>
+    /// The last occurrence within the bound that is not skipped, or <see langword="null" /> when the run has none.
+    /// </returns>
+    private static DateTime? LastBefore(
+        IEnumerable<DateTime> occurrences,
+        Func<DateTime, bool> isBeyond,
+        Func<DateTime, bool>? isExcluded)
+    {
+        DateTime? previous = null;
+        foreach (DateTime occurrence in occurrences)
+        {
+            if (isBeyond(occurrence))
+            {
+                break;
+            }
+
+            if (isExcluded is null || !isExcluded(occurrence))
+            {
+                previous = occurrence;
+            }
+        }
+
+        return previous;
     }
 
     /// <summary>
     /// Implements the period-by-period occurrence generation for the supported daily-and-coarser frequencies.
     /// </summary>
     /// <param name="start">The series start the rule is anchored to.</param>
-    /// <returns>The ordered occurrences.</returns>
-    private IEnumerable<DateTime> EnumerateCore(DateTime start)
+    /// <param name="firstPeriod">
+    /// The zero-based index of the first period to generate. It is zero for a rule with <see cref="Count" />, which
+    /// counts its occurrences from the first period.
+    /// </param>
+    /// <param name="endPeriod">The exclusive index of the period at which generation stops.</param>
+    /// <returns>The ordered occurrences of the periods generated.</returns>
+    private IEnumerable<DateTime> EnumerateCore(DateTime start, int firstPeriod, int endPeriod)
     {
         DateTimeKind kind = start.Kind;
         TimeSpan[] times = BuildTimeSet(start);
         DateOnly startDate = DateOnly.FromDateTime(start);
         int emitted = 0;
-        int period = 0;
 
-        while (true)
+        for (int period = firstPeriod; period < endPeriod; period++)
         {
             if (!TryBuildPeriodStart(startDate, period, out DateOnly anchor))
             {
@@ -292,8 +464,118 @@ public sealed partial class RecurrenceRule
                     yield break;
                 }
             }
+        }
+    }
 
-            period++;
+    /// <summary>
+    /// Returns a frequency-period index such that no earlier period holds an occurrence on or after a date.
+    /// </summary>
+    /// <param name="startDate">The date component of the series start.</param>
+    /// <param name="date">The date the skipped periods must all end before.</param>
+    /// <returns>A non-negative period index.</returns>
+    /// <remarks>
+    /// Each bound follows from where a period's days can fall: a daily period is its one day, a weekly period the week
+    /// holding its anchor, so within six days of it, and a monthly period its month. A yearly period is its year
+    /// widened at both ends, because the weeks <c>BYWEEKNO</c> names straddle the turn of the year. The result is one
+    /// period below the bound these give, so an error can only enumerate a period more.
+    /// </remarks>
+    private int FirstPeriodReaching(DateOnly startDate, DateOnly date)
+    {
+        long period = Frequency switch
+        {
+            RecurrenceFrequency.Daily => CeilingDivide((long)date.DayNumber - startDate.DayNumber, Interval),
+            RecurrenceFrequency.Weekly => FloorDivide((long)date.DayNumber - startDate.DayNumber - 6, 7L * Interval),
+            RecurrenceFrequency.Monthly => CeilingDivide(MonthNumber(date) - MonthNumber(startDate), Interval),
+            _ => CeilingDivide((long)date.Year - 1 - startDate.Year, Interval),
+        };
+
+        return (int)Math.Clamp(period - 1, 0, int.MaxValue);
+    }
+
+    /// <summary>
+    /// Returns a frequency-period index from which every period holds only occurrences after a date.
+    /// </summary>
+    /// <param name="startDate">The date component of the series start.</param>
+    /// <param name="date">The date every occurrence of the periods from the result on falls after.</param>
+    /// <returns>A non-negative period index.</returns>
+    /// <remarks>
+    /// The bound mirrors <see cref="FirstPeriodReaching" />: a weekly period's days begin at most six days before its
+    /// anchor, and a yearly period's at most a week before its year. The result is one period above the bound these
+    /// give, so an error can only enumerate a period more.
+    /// </remarks>
+    private int FirstPeriodBeyond(DateOnly startDate, DateOnly date)
+    {
+        long period = Frequency switch
+        {
+            RecurrenceFrequency.Daily => FloorDivide((long)date.DayNumber - startDate.DayNumber, Interval) + 1,
+            RecurrenceFrequency.Weekly => FloorDivide((long)date.DayNumber - startDate.DayNumber + 6, 7L * Interval) + 1,
+            RecurrenceFrequency.Monthly => FloorDivide(MonthNumber(date) - MonthNumber(startDate), Interval) + 1,
+            _ => FloorDivide((long)date.Year + 1 - startDate.Year, Interval) + 1,
+        };
+
+        return (int)Math.Clamp(period + 1, 0, int.MaxValue);
+    }
+
+    /// <summary>
+    /// Returns the number of whole months from the start of the calendar to the month holding a date.
+    /// </summary>
+    /// <param name="date">The date whose month is numbered.</param>
+    /// <returns>The month number.</returns>
+    private static long MonthNumber(DateOnly date) =>
+        ((long)date.Year * 12) + date.Month - 1;
+
+    /// <summary>
+    /// Divides two integers, rounding the quotient toward negative infinity.
+    /// </summary>
+    /// <param name="dividend">The dividend.</param>
+    /// <param name="divisor">The divisor, which is positive.</param>
+    /// <returns>The floor of the quotient.</returns>
+    private static long FloorDivide(long dividend, long divisor)
+    {
+        long quotient = dividend / divisor;
+        return (dividend % divisor) < 0 ? quotient - 1 : quotient;
+    }
+
+    /// <summary>
+    /// Divides two integers, rounding the quotient toward positive infinity.
+    /// </summary>
+    /// <param name="dividend">The dividend.</param>
+    /// <param name="divisor">The divisor, which is positive.</param>
+    /// <returns>The ceiling of the quotient.</returns>
+    private static long CeilingDivide(long dividend, long divisor) =>
+        -FloorDivide(-dividend, divisor);
+
+    /// <summary>
+    /// Returns the wall-clock time of a start instant, on which the rule is expanded.
+    /// </summary>
+    /// <param name="start">The series start.</param>
+    /// <returns>The wall-clock time of <paramref name="start" /> with an unspecified kind.</returns>
+    private static DateTime ToWallClock(DateTimeOffset start) =>
+        DateTime.SpecifyKind(start.DateTime, DateTimeKind.Unspecified);
+
+    /// <summary>
+    /// Returns the wall-clock time an instant has at a UTC offset, clamped to the representable range.
+    /// </summary>
+    /// <param name="value">The instant.</param>
+    /// <param name="offset">The UTC offset of the frame the wall-clock time is taken in.</param>
+    /// <returns>The wall-clock time of <paramref name="value" /> at <paramref name="offset" />.</returns>
+    /// <remarks>
+    /// The value only chooses where a search begins, so clamping is safe: an instant before every representable
+    /// wall-clock time precedes every occurrence, and one after them all follows every occurrence.
+    /// </remarks>
+    private static DateTime ToWallClock(DateTimeOffset value, TimeSpan offset) =>
+        new(Math.Clamp(value.UtcTicks + offset.Ticks, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks), DateTimeKind.Unspecified);
+
+    /// <summary>
+    /// Throws when the rule uses a sub-daily frequency, which the occurrence generator does not support.
+    /// </summary>
+    /// <exception cref="NotSupportedException">Thrown when the rule uses a sub-daily frequency.</exception>
+    private void ThrowIfSubDaily()
+    {
+        if (IsSubDaily)
+        {
+            throw new NotSupportedException(
+                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Op_NotSupported_SubDailyFrequency, Frequency));
         }
     }
 

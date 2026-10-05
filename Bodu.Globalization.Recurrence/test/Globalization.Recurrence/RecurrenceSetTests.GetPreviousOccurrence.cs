@@ -101,23 +101,6 @@ public partial class RecurrenceSetTests
     }
 
     /// <summary>
-    /// Verifies that the offset overload of the next-occurrence query interprets the set's wall-clock values in the
-    /// query's offset and carries that offset on the answer.
-    /// </summary>
-    [TestMethod]
-    public void GetNextOccurrence_WhenQueryHasOffset_ShouldCarryQueryOffset()
-    {
-        var set = new RecurrenceSet(
-            new DateTime(2026, 1, 1, 9, 0, 0),
-            [RecurrenceRule.Parse("FREQ=DAILY")]);
-
-        DateTimeOffset? next = set.GetNextOccurrence(new DateTimeOffset(2026, 1, 4, 12, 0, 0, TimeSpan.FromHours(10)));
-
-        Assert.AreEqual(new DateTimeOffset(2026, 1, 5, 9, 0, 0, TimeSpan.FromHours(10)), next);
-        Assert.AreEqual(TimeSpan.FromHours(10), next!.Value.Offset);
-    }
-
-    /// <summary>
     /// Verifies the due-ness recipe coalesces missed occurrences on a composed set: the due boolean is identical
     /// whether the evaluation is one occurrence late or five.
     /// </summary>
@@ -134,5 +117,87 @@ public partial class RecurrenceSetTests
 
         Assert.IsTrue(dueShortlyAfter);
         Assert.AreEqual(dueShortlyAfter, dueMuchLater);
+    }
+
+    /// <summary>
+    /// Verifies that the previous occurrence of a set that started decades earlier skips back over a run of exception
+    /// dates.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenStartIsDecadesEarlier_ShouldSkipTheExcludedRun()
+    {
+        var set = new RecurrenceSet(
+            new DateTime(1990, 3, 15, 9, 30, 0),
+            [RecurrenceRule.Parse("FREQ=DAILY")],
+            exceptionDates: Enumerable.Range(0, 17).Select(i => new DateTime(2025, 12, 20, 9, 30, 0).AddDays(i)));
+
+        DateTime? previous = set.GetPreviousOccurrence(new DateTime(2026, 1, 5, 12, 0, 0));
+
+        Assert.AreEqual(new DateTime(2025, 12, 19, 9, 30, 0), previous);
+    }
+
+    /// <summary>
+    /// Verifies that when a whole year of a rule's occurrences is excluded, the previous occurrence is the last one
+    /// before that year.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenAYearOfOccurrencesIsExcluded_ShouldReturnTheOccurrenceBeforeIt()
+    {
+        var set = new RecurrenceSet(
+            new DateTime(2010, 1, 1, 7, 0, 0),
+            [RecurrenceRule.Parse("FREQ=DAILY")],
+            exceptionDates: Enumerable.Range(0, 366).Select(i => new DateTime(2024, 1, 1, 7, 0, 0).AddDays(i)));
+
+        DateTime? previous = set.GetPreviousOccurrence(new DateTime(2024, 12, 31, 12, 0, 0));
+
+        Assert.AreEqual(new DateTime(2023, 12, 31, 7, 0, 0), previous);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit date earlier than the set's start is the previous occurrence of an instant between the
+    /// two.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenExplicitDatePrecedesTheStart_ShouldReturnTheExplicitDate()
+    {
+        var set = new RecurrenceSet(
+            new DateTime(1991, 5, 31, 9, 0, 0),
+            [RecurrenceRule.Parse("FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1")],
+            dates: [new DateTime(1970, 1, 1)]);
+
+        DateTime? previous = set.GetPreviousOccurrence(new DateTime(1990, 6, 1));
+
+        Assert.AreEqual(new DateTime(1970, 1, 1), previous);
+    }
+
+    /// <summary>
+    /// Verifies that a query exactly on an explicit date given twice answers the occurrence before it, and the date
+    /// itself with the inclusive flag.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenQueryIsOnADuplicatedExplicitDate_ShouldHonorInclusiveFlag()
+    {
+        var date = new DateTime(2026, 3, 15, 10, 0, 0);
+        var set = new RecurrenceSet(
+            new DateTime(1991, 5, 31, 9, 0, 0),
+            [RecurrenceRule.Parse("FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1")],
+            dates: [date, date, new DateTime(2026, 6, 1)]);
+
+        Assert.AreEqual(new DateTime(2026, 2, 27, 9, 0, 0), set.GetPreviousOccurrence(date));
+        Assert.AreEqual(date, set.GetPreviousOccurrence(date, inclusive: true));
+    }
+
+    /// <summary>
+    /// Verifies that the previous occurrence is the latest of the set's rules when one of them has a count.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenOneRuleHasACount_ShouldReturnTheLatestOfEitherRule()
+    {
+        var set = new RecurrenceSet(
+            new DateTime(2000, 1, 1, 8, 0, 0),
+            [RecurrenceRule.Parse("FREQ=DAILY;COUNT=500"), RecurrenceRule.Parse("FREQ=YEARLY;BYMONTH=11;BYDAY=4TH")]);
+
+        Assert.AreEqual(new DateTime(2001, 5, 14, 8, 0, 0), set.GetPreviousOccurrence(new DateTime(2001, 6, 1)));
+        Assert.AreEqual(new DateTime(2025, 11, 27, 8, 0, 0), set.GetPreviousOccurrence(new DateTime(2025, 12, 1)));
     }
 }

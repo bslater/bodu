@@ -345,6 +345,10 @@ DateTime[] sundayWeeks = RecurrenceRule.Parse("FREQ=WEEKLY;INTERVAL=2;BYDAY=TU,S
 
 The builder's `WithWeekStart` sets the same part.
 
+## Query cost
+
+`GetNextOccurrence`, `GetPreviousOccurrence`, and the windowed `GetOccurrences(start, from, to)` begin at the frequency period that holds the instant they are given rather than at the series start, so a rule anchored decades ago answers as quickly as one anchored yesterday, with the answer that enumerating from the start gives. A rule with `COUNT` is the exception: the occurrences before a period decide how many it may still produce, so its queries enumerate from the start and cost in proportion to the occurrences before the query. Where the end of a long series is known as an instant, `UNTIL` keeps its queries local.
+
 ## Value equality
 
 `RecurrenceRule` implements <xref:System.IEquatable`1>: two rules are equal when every component - frequency, interval, count, until, week start, and every `BY*` list *in source order* - is equal. `Parse(rule.ToString())` is always equal to `rule`, so persisting the canonical text and comparing on reload is a reliable change detector. Note that `BYDAY=MO,FR` and `BYDAY=FR,MO` produce identical occurrences but are **not** equal values; canonicalise the text with `ToString()` before comparing if source order should not matter. `GetHashCode` is consistent with `Equals`.
