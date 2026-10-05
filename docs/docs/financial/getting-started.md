@@ -10,7 +10,7 @@ title: Bodu.Financial - Getting started
 dotnet add package Bodu.Financial
 ```
 
-Targets `net8.0`. References `Bodu.Numerics` (for the `Fraction<BigInteger>` precision escape hatch) and `Bodu.Core` (for shared argument validation).
+Targets `net8.0` and `net10.0`. References `Bodu.Numerics` (for the `Fraction<BigInteger>` precision escape hatch) and `Bodu.Core` (for shared argument validation).
 
 ## Minimal samples
 

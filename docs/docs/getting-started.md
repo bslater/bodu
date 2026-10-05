@@ -10,7 +10,7 @@ If you only need a single library, jump straight to its section below - each one
 
 ## Prerequisites
 
-- The **.NET 8 SDK** - every runtime package in the solution targets `net8.0`. (The one exception is the build-time `Bodu.Globalization.Calendar.Build` MSBuild task package, which targets `netstandard2.0` so it loads inside any MSBuild host.)
+- The **.NET 8 SDK** or later - every runtime package in the solution targets `net8.0` and `net10.0`. (The one exception is the build-time `Bodu.Globalization.Calendar.Build` MSBuild task package, which targets `netstandard2.0` so it loads inside any MSBuild host.)
 
 ```bash
 dotnet --version

@@ -13,13 +13,13 @@ binding*? Read [Core concepts](concepts.md) first.
 dotnet add package Bodu.Extensions.Configuration.Text
 ```
 
-Targets `net8.0`. Depends on:
+Targets `net8.0` and `net10.0`. Depends on:
 
 - `Bodu.Core` and `Bodu.Text.Configuration` (the parser, resolver, and view).
 - `Microsoft.Extensions.Configuration`, `Microsoft.Extensions.Configuration.FileExtensions`,
   `Microsoft.Extensions.Configuration.Binder`, `Microsoft.Extensions.FileProviders.Physical`,
   `Microsoft.Extensions.Options.ConfigurationExtensions`, and the associated abstractions packages - all at the .NET
-  8.0 LTS line.
+  8 line for `net8.0` and the .NET 10 line for `net10.0`.
 
 ## Minimal samples
 

@@ -10,7 +10,7 @@ title: Bodu.Collections.Concurrent - Getting started
 dotnet add package Bodu.Collections.Concurrent
 ```
 
-Targets `net8.0`. No external runtime dependencies - the package references `Bodu.Collections` (which in turn references `Bodu.Core`), so both are pulled in automatically. The types live in the `Bodu.Collections.Generic.Concurrent` namespace.
+Targets `net8.0` and `net10.0`. No external runtime dependencies - the package references `Bodu.Collections` (which in turn references `Bodu.Core`), so both are pulled in automatically. The types live in the `Bodu.Collections.Generic.Concurrent` namespace.
 
 ## Minimal samples
 

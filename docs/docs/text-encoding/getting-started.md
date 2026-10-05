@@ -13,7 +13,7 @@ first.
 dotnet add package Bodu.Text.Encoding
 ```
 
-Targets `net8.0`. The package has a single dependency on `Bodu.Core` for shared throw-helpers; no external NuGet
+Targets `net8.0` and `net10.0`. The package has a single dependency on `Bodu.Core` for shared throw-helpers; no external NuGet
 references.
 
 ## Minimal samples

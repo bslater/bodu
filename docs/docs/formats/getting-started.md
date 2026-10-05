@@ -15,7 +15,7 @@ dotnet add package Bodu.Text.DotEnv
 dotnet add package Bodu.Text.Ini
 ```
 
-All packages target `net8.0`.
+All packages target `net8.0` and `net10.0`.
 
 ## Read and write delimited (CSV / TSV)
 

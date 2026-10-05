@@ -28,7 +28,7 @@ dotnet add package Bodu.Globalization.Calendar.Builder
 
 See the [package matrix](../package-matrix.md) for the full taxonomy and the [Calendar package family diagram](index.md#calendar-package-family) for how the runtime and companions compose.
 
-Targets `net8.0`. The base package contains the resolution engine, the built-in algorithms, and a set of bundled common catalogues; the data packs contain region-specific rule sets.
+Targets `net8.0` and `net10.0`. The base package contains the resolution engine, the built-in algorithms, and a set of bundled common catalogues; the data packs contain region-specific rule sets.
 
 ## Minimal samples
 

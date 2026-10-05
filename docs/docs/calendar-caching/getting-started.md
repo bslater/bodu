@@ -17,12 +17,13 @@ dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
 dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
 ```
 
-Targets `net8.0`. Depends on:
+Targets `net8.0` and `net10.0`. Depends on:
 
 - **`Bodu.Globalization.Calendar.Caching`** - `Bodu.Core`, `Bodu.Globalization.Calendar` (the service contract it
   decorates), `Bodu.Text.Toml` (the TOML file cache), and `Microsoft.Extensions.Configuration.Abstractions` /
   `.Configuration.Binder` / `.DependencyInjection.Abstractions` / `.Hosting.Abstractions` /
-  `.Logging.Abstractions` / `.Options` / `.Options.ConfigurationExtensions`, all at the .NET 8.0 LTS line.
+  `.Logging.Abstractions` / `.Options` / `.Options.ConfigurationExtensions`, all at the .NET 8 line for `net8.0`
+  and the .NET 10 line for `net10.0`.
 - **`Bodu.Globalization.Calendar.Caching.Sqlite`** - the core caching package plus `Microsoft.Data.Sqlite`.
 - **`Bodu.Globalization.Calendar.Caching.Distributed`** - the core caching package plus
   `Microsoft.Extensions.Caching.Abstractions` and `Microsoft.Extensions.Caching.StackExchangeRedis`.

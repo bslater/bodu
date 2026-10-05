@@ -18,7 +18,7 @@ Part of the **[Text & Serialization](../../topics/text-and-serialization.md)** t
 dotnet add package Bodu.Text.DotEnv
 ```
 
-Targets `net8.0`. Depends on `Bodu.Text.Serialization` and `Bodu.Core`. Also available through the `Bodu.Text.Formats` umbrella package.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Text.Serialization` and `Bodu.Core`. Also available through the `Bodu.Text.Formats` umbrella package.
 
 ## Headline types
 

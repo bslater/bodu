@@ -56,7 +56,7 @@ dotnet add package Bodu.Globalization.Calendar.MiddleEast
 dotnet add package Bodu.Globalization.Calendar.Africa
 ```
 
-All five target `net8.0`, **depend on** `Bodu.Globalization.Calendar` only, and are **Stable** (see the [package matrix](../package-matrix.md)).
+All five target `net8.0` and `net10.0`, **depend on** `Bodu.Globalization.Calendar` only, and are **Stable** (see the [package matrix](../package-matrix.md)).
 
 ## Minimal sample
 

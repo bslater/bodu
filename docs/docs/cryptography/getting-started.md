@@ -10,7 +10,7 @@ title: Bodu.Security.Cryptography - Getting started
 dotnet add package Bodu.Security.Cryptography
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` and the BCL `System.Security.Cryptography`.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Core` and the BCL `System.Security.Cryptography`.
 
 ## Minimal samples - one per subfamily
 
