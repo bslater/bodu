@@ -69,6 +69,21 @@ public partial class WeekPatternTests
             _ = new WeekPattern((DayOfWeek)invalidDay);
         });
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="ArgumentOutOfRangeException" /> the constructor throws for a
+    /// <see cref="DayOfWeek" /> value outside the valid range names the <c>daysOfWeek</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenInvalidDayOfWeekProvided_ShouldNameDaysOfWeekParameter()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new WeekPattern(DayOfWeek.Monday, (DayOfWeek)7);
+        });
+
+        Assert.AreEqual("daysOfWeek", ex.ParamName);
+    }
     /// <summary>
     /// Verifies that the default parameterless constructor produces an empty pattern with no days selected.
     /// </summary>
