@@ -130,14 +130,15 @@ public sealed partial class CronExpressionTests
     }
 
     /// <summary>
-    /// Verifies that a Quartz extension token throws <see cref="NotSupportedException" />.
+    /// Verifies that a Quartz token outside the two day fields throws <see cref="FormatException" />, since every token
+    /// stands for a day of the month or of the week.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenQuartzToken_ShouldThrowNotSupportedException()
+    public void Parse_WhenQuartzTokenOutsideTheDayFields_ShouldThrowFormatException()
     {
-        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        _ = Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = CronExpression.Parse("0 0 L * *");
+            _ = CronExpression.Parse("0 L * * *");
         });
     }
 

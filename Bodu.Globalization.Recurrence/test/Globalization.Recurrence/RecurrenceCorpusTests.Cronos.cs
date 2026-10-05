@@ -100,9 +100,10 @@ public sealed partial class RecurrenceCorpusTests
     /// </summary>
     /// <param name="kat">The corpus row under test.</param>
     /// <remarks>
-    /// Bodu rejects a superset of what Cronos rejects, having no Quartz extensions to accept, so these rows are
-    /// reconciled whatever syntax they use. The one place the superset does not hold - a step wider than its range,
-    /// which cronie warns about and accepts - is flagged <c>oversized-step</c> and excluded.
+    /// Bodu rejects a superset of what Cronos rejects, so these rows are reconciled whatever syntax they use: the Quartz
+    /// day tokens are accepted only in the shapes Cronos accepts, and a token out of place, in a list or range, or with
+    /// an offset or ordinal out of bounds fails in both. The one place the superset does not hold - a step wider than
+    /// its range, which cronie warns about and accepts - is flagged <c>oversized-step</c> and excluded.
     /// </remarks>
     [TestMethod]
     [TestCategory("Regression")]

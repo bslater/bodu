@@ -48,6 +48,7 @@ public static class UnreachableAndDefects
             "* * 31 6 *",     // 31 June
             "* * 31 9 *",     // 31 September
             "* * 31 11 *",    // 31 November
+            "* * 30W 2 *",    // the weekday nearest 30 February
         ];
 
         foreach (string expression in unreachable)
@@ -77,9 +78,10 @@ public static class UnreachableAndDefects
             "* * * * 8",             // weekday out of range
             "5-1 * * * *",           // reversed range
             "1/0 * * * *",           // zero step
-            "* * * * MON#1",         // Quartz '#' -- a planned follow-on, not silently ignored
-            "* * L * *",             // Quartz 'L'
-            "* * * * ?",             // Quartz '?'
+            "* * L-31 * *",          // a Quartz token counting back past the 1st
+            "* * 1,15W * *",         // a Quartz token in a list
+            "* * * * MON#6",         // no month has a sixth Monday
+            "* * * * L",             // 'L' alone, which Quartz reads as Saturday
             "@every_minute",         // not a crontab(5) macro
         ];
 

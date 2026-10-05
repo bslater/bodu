@@ -90,7 +90,8 @@ unknown kind - through the adapter, collecting accepted and rejected separately.
 schedules that all parse and probes each for a first occurrence.
 
 **What to expect.** Every rejection names the offending token, so an operator can fix the file
-without reading a specification. The Quartz `L` is refused explicitly rather than silently ignored.
+without reading a specification. A Quartz day token is held to the same rules as any other value:
+`L-31` counts back past the 1st of every month, and is refused rather than quietly clamped.
 And the second tier catches what syntax checking cannot - an unreachable date and an expired `UNTIL`
 both parse, then never fire:
 
@@ -110,8 +111,8 @@ rejected : 8
          The cron field '25' is not valid.
   [FAIL] bad.cronName       cron      '0 8 * * MONDAY'
          The cron field 'MONDAY' is not valid.
-  [FAIL] bad.quartz         cron      '0 0 L * *'
-         The cron token 'L' is not supported; the Quartz L, W, and # extensions are a planned follow-on.
+  [FAIL] bad.quartz         cron      '0 0 L-31 * *'
+         The cron field 'L-31' is not valid.
   [FAIL] bad.duration       interval  'PT5'
          The duration component '5' is not valid; each component is an unsigned integer followed by a unit, and the unit must be W, D, H, M, or S.
   [FAIL] bad.negative       interval  '-P1D'

@@ -23,7 +23,11 @@ public partial class CronExpressionTests
                 new("invalid field value", "0 25 * * *", typeof(FormatException), MessageContains: "'25'"),
                 new("invalid name token", "0 9 * XXX *", typeof(FormatException), MessageContains: "'XXX'"),
                 new("unknown macro", "@fortnightly", typeof(FormatException), MessageContains: "@fortnightly"),
-                new("quartz extension token", "0 9 L * *", typeof(FormatException), MessageContains: "'L'"),
+                new("quartz token in the hour field", "0 L * * *", typeof(FormatException), MessageContains: "'L'"),
+                new("last day offset past thirty", "0 9 L-31 * *", typeof(FormatException), MessageContains: "'L-31'"),
+                new("nearest weekday in a list", "0 9 1,2W * *", typeof(FormatException), MessageContains: "'1,2W'"),
+                new("sixth weekday of the month", "0 9 * * 5#6", typeof(FormatException), MessageContains: "'5#6'"),
+                new("last token alone in the weekday field", "0 9 * * L", typeof(FormatException), MessageContains: "'L'"),
             };
 
             foreach (InvalidKat<string> row in rows)

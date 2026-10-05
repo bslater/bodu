@@ -18,7 +18,7 @@ its samples double as CI smoke tests.
 | Sample | Demonstrates | Packages |
 |---|---|---|
 | `Bodu.Globalization.Recurrence.Samples.RecurrenceRules` | The RFC 5545 `RRULE` form: parsing and canonical text, the `BY*` semantics implementations disagree on (invalid dates skipped not clamped, the occurrence set as a genuine set, `BYSETPOS` over the whole period, a `BY` filter never re-anchoring), `WKST` week numbering and year-straddling `BYWEEKNO`, the fluent `RecurrenceRuleBuilder`, and the four ways a stream gets bounded | `Bodu.Globalization.Recurrence` |
-| `Bodu.Globalization.Recurrence.Samples.CronExpressions` | The Vixie cron form: the five-field layout and `@` macros, the optional-seconds six-field layout with format inference versus enforcement, canonical text and schedule equality, the day-field union rule and oversized-step handling that separate Vixie from Quartz, and both failure surfaces (unreachable schedules, defect-named rejections) | `Bodu.Globalization.Recurrence` |
+| `Bodu.Globalization.Recurrence.Samples.CronExpressions` | The Vixie cron form: the five-field layout and `@` macros, the optional-seconds six-field layout with format inference versus enforcement, canonical text and schedule equality, the day-field union rule and oversized-step handling that separate Vixie from Quartz, the Quartz day tokens (`L`, `W`, `#`, `?`) with the weekday numbering they keep, and both failure surfaces (unreachable schedules, defect-named rejections) | `Bodu.Globalization.Recurrence` |
 | `Bodu.Globalization.Recurrence.Samples.AnchoredIntervals` | The calendar-free form: the RFC 5545 §3.3.6 duration grammar and its canonical normalization, the anchor-per-query design that lets one instance serve many series, arithmetic positioning for distant queries, and the grammar's exact boundary with a defect message per rejection | `Bodu.Globalization.Recurrence` |
 | `Bodu.Globalization.Recurrence.Samples.RecurrenceSets` | The composition layer: rules unioned with `RDATE` additions minus `EXDATE` removals, collision handling across rules, the iCalendar property-block round trip as a storage format, and windowed and point queries across the whole composition | `Bodu.Globalization.Recurrence` |
 | `Bodu.Globalization.Recurrence.Samples.SchedulingHost` | The integrating view: all four forms behind one host-written adapter, mixed-form configuration validated with actionable defect messages plus a reachability probe, the offset-bearing query surface every form carries, and a reproducible missed-run catch-up loop that shows what the purity contract buys | `Bodu.Globalization.Recurrence` |
@@ -34,9 +34,9 @@ the four form-specific samples first if you already know which form you need.
 ## Conformance
 
 The semantics these samples demonstrate are not asserted by the samples alone. They are reconciled
-row by row against three committed corpora - the RFC's own worked examples, libical's occurrence
-counts, and a cron vector table derived from Cronos's test suite - currently 830 in-scope rows with
-zero differences. `corpus/recurrence/README.md` records each table's provenance and every deliberate
+row by row against four committed corpora - the RFC's own worked examples, libical's occurrence
+counts, the occurrences python-dateutil produces for 200 generated sub-daily rules, and a cron vector
+table derived from Cronos's test suite - currently 1,353 in-scope rows with zero differences. `corpus/recurrence/README.md` records each table's provenance and every deliberate
 divergence, including the ones these samples call out (the Vixie day-field union rule and
 oversized-step handling).
 

@@ -1,9 +1,10 @@
 # Bodu.Globalization.Recurrence.Samples.CronExpressions
 
-`CronExpression` - the Vixie cron form. Four scenarios cover the five-field layout and the `@`
+`CronExpression` - the Vixie cron form. Five scenarios cover the five-field layout and the `@`
 macros, the optional-seconds six-field layout and canonical text, the two Vixie semantics that
-separate this dialect from the Quartz-flavoured cron most .NET libraries implement, and the two
-failure surfaces: schedules that can never fire, and text that will not parse.
+separate this dialect from the Quartz-flavoured cron most .NET libraries implement, the Quartz day
+tokens it accepts all the same, and the two failure surfaces: schedules that can never fire, and
+text that will not parse.
 
 Everything runs offline with fixed inputs, formatted with the invariant culture - deterministic
 output every run.
@@ -207,20 +208,69 @@ implements.
 **APIs demonstrated.** `CronExpression.Parse`, `.GetNextOccurrence(DateTime, bool)`, `.Equals`,
 `.ToString()`.
 
-## Scenario 4 - UnreachableAndDefects
+## Scenario 4 - QuartzTokens
+
+**Intent.** Show the day tokens Quartz added to cron, which name the days a list of values cannot -
+the last day of the month, the weekday nearest a day, the month's last or k-th weekday - and the two
+Vixie rules they keep, so a reader carrying a schedule over from Quartz knows what still differs.
+
+**What it does.** Walks eight schedules that between them use every token, four months each from 1 January 2026, and
+`1W` across August 2026, whose 1st is a Saturday; shows `?` equal to `*` and the canonical text of
+four spellings; then contrasts `5#1` and `FRI#1` with Quartz's own `6#1`, and shows a token beside
+values in the other day field taking the union.
+
+**What to expect.** Each walk lands on the day its token names in every month, the short ones
+included. A nearest weekday never leaves its month, so the 1st of August moves forward to the 3rd.
+`MON#5` passes over the months with four Mondays. Weekday numbers stay Vixie's, so Quartz's `6#1`
+is the first *Saturday* here, and naming the weekday avoids the difference:
+
+```text
+--- Quartz day tokens - month ends, nearest weekdays, and n-th weekdays ---
+
+
+walks from 2026-01-01:
+  0 23 L * *      the last day of the month             01-31 Sat, 02-28 Sat, 03-31 Tue, 04-30 Thu
+  0 9 L-2 * *     two days before the last              01-29 Thu, 02-26 Thu, 03-29 Sun, 04-28 Tue
+  0 18 LW * *     the last weekday of the month         01-30 Fri, 02-27 Fri, 03-31 Tue, 04-30 Thu
+  0 9 15W * *     the weekday nearest the 15th          01-15 Thu, 02-16 Mon, 03-16 Mon, 04-15 Wed
+  0 9 1W * *      the weekday nearest the 1st           01-01 Thu, 02-02 Mon, 03-02 Mon, 04-01 Wed
+  0 17 * * FRIL   the last Friday                       01-30 Fri, 02-27 Fri, 03-27 Fri, 04-24 Fri
+  0 9 * * MON#1   the first Monday                      01-05 Mon, 02-02 Mon, 03-02 Mon, 04-06 Mon
+  0 9 * * MON#5   the fifth Monday, where there is one  03-30 Mon, 06-29 Mon, 08-31 Mon, 11-30 Mon
+  0 9 1W * *      from 2026-07-15, past a Saturday 1st  08-03 Mon, 09-01 Tue
+
+--- '?' and canonical text ---
+  '0 0 ? * MON#1' == '0 0 * * MON#1' : True
+  0 17 * * FRIL   -> 0 17 * * 5L
+  0 9 l-0w * *    -> 0 9 LW * *
+  0 0 ? * sun#2   -> 0 0 * * 0#2
+  0 0 * * 7L      -> 0 0 * * 0L
+
+--- The Vixie rules the tokens keep ---
+  '0 9 * * 5#1' == '0 9 * * FRI#1' : True
+  0 9 * * FRI#1 -> 01-02 Fri, 02-06 Fri, 03-06 Fri
+  0 9 * * 6#1   -> 01-03 Sat, 02-07 Sat, 03-07 Sat  (Quartz's first Friday, read as Vixie's first Saturday)
+  0 0 L * MON   -> 01-05 Mon, 01-12 Mon, 01-19 Mon, 01-26 Mon, 01-31 Sat  (the last day OR any Monday)
+```
+
+**APIs demonstrated.** `CronExpression.Parse(string)`, `.GetNextOccurrence(DateTime, bool)`,
+`.Equals`, `.ToString()`.
+
+## Scenario 5 - UnreachableAndDefects
 
 **Intent.** Show the two failure surfaces separately, because they need different handling: an
 expression that parses cleanly and can never fire, versus text that will not parse at all.
 
-**What it does.** Parses six expressions selecting a date that exists in no year and asks each for a
-next occurrence; contrasts 29 February, which is reachable but rare; runs fourteen malformed inputs
+**What it does.** Parses seven expressions selecting a date that exists in no year and asks each for
+a next occurrence; contrasts 29 February, which is reachable but rare; runs fifteen malformed inputs
 through the defect-reporting `TryParse`; and closes with the shape a host actually uses - validating
 a small configuration block and reporting each rejection against its key.
 
 **What to expect.** An unreachable schedule reports *no occurrence* rather than searching forever or
-throwing. Every rejection names the offending token, and the Quartz extensions are refused
-explicitly rather than silently ignored - which matters, because silently dropping an `L` would
-change the schedule rather than reject it:
+throwing, a Quartz token included: the weekday nearest 30 February does not exist either. Every
+rejection names the offending field, including a Quartz token written where Quartz itself would not
+accept it - in a list, with an offset or ordinal out of range, or `L` alone in the weekday field,
+which Quartz reads as Saturday and this parser refuses rather than guesses at:
 
 ```text
 --- Unreachable schedules and defect-naming parse failures ---
@@ -231,6 +281,7 @@ change the schedule rather than reject it:
   * * 31 6 *     next: (never)
   * * 31 9 *     next: (never)
   * * 31 11 *    next: (never)
+  * * 30W 2 *    next: (never)
   0 0 29 2 *     next: 2028-02-29 00:00:00 (reachable, but only in leap years)
 
 --- Malformed text: TryParse names the defect ---
@@ -244,9 +295,10 @@ change the schedule rather than reject it:
   '* * * * 8'        parsed=False  The cron field '8' is not valid.
   '5-1 * * * *'      parsed=False  The cron field '5-1' is not valid.
   '1/0 * * * *'      parsed=False  The cron field '1/0' is not valid.
-  '* * * * MON#1'    parsed=False  The cron token 'MON#1' is not supported; the Quartz L, W, and # extensions are a planned follow-on.
-  '* * L * *'        parsed=False  The cron token 'L' is not supported; the Quartz L, W, and # extensions are a planned follow-on.
-  '* * * * ?'        parsed=False  The cron token '?' is not supported; the Quartz L, W, and # extensions are a planned follow-on.
+  '* * L-31 * *'     parsed=False  The cron field 'L-31' is not valid.
+  '* * 1,15W * *'    parsed=False  The cron field '1,15W' is not valid.
+  '* * * * MON#6'    parsed=False  The cron field 'MON#6' is not valid.
+  '* * * * L'        parsed=False  The cron field 'L' is not valid.
   '@every_minute'    parsed=False  The cron macro '@every_minute' is not recognized, or a macro was supplied where the six-field layout was required.
 
 --- Validating a configuration block ---
@@ -269,6 +321,7 @@ Bodu.Globalization.Recurrence.Samples.CronExpressions/
   Scenarios/CronBasics.cs
   Scenarios/SecondsAndFormats.cs
   Scenarios/VixieSemantics.cs
+  Scenarios/QuartzTokens.cs
   Scenarios/UnreachableAndDefects.cs
 ```
 

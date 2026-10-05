@@ -20,7 +20,6 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid cron expression.</exception>
-    /// <exception cref="NotSupportedException">Thrown when the expression uses a Quartz extension token.</exception>
     public static CronExpression Parse(string s) =>
         Parse(s, null);
 
@@ -34,21 +33,16 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid cron expression.</exception>
-    /// <exception cref="NotSupportedException">Thrown when the expression uses a Quartz extension token.</exception>
     public static CronExpression Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        if (TryParseCore(s, null, out CronExpression? result, out bool unsupported, out _))
+        if (TryParseCore(s, null, out CronExpression? result, out _))
         {
             return result;
         }
 
-        throw unsupported
-            ? new NotSupportedException(
-                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Op_NotSupported_CronExtensionToken, s))
-            : new FormatException(
-                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
     }
 
     /// <summary>
@@ -61,21 +55,16 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="FormatException">Thrown when <paramref name="s" /> does not match the layout.</exception>
-    /// <exception cref="NotSupportedException">Thrown when the expression uses a Quartz extension token.</exception>
     public static CronExpression Parse(string s, CronFormat format)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        if (TryParseCore(s, format, out CronExpression? result, out bool unsupported, out _))
+        if (TryParseCore(s, format, out CronExpression? result, out _))
         {
             return result;
         }
 
-        throw unsupported
-            ? new NotSupportedException(
-                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Op_NotSupported_CronExtensionToken, s))
-            : new FormatException(
-                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
     }
 
     /// <summary>
@@ -102,7 +91,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        return TryParseCore(s, null, out result, out _, out _);
+        return TryParseCore(s, null, out result, out _);
     }
 
     /// <summary>
@@ -127,7 +116,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        bool parsed = TryParseCore(s, null, out result, out _, out failureMessage);
+        bool parsed = TryParseCore(s, null, out result, out failureMessage);
         if (!parsed)
         {
             failureMessage ??= string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s);
@@ -160,7 +149,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        bool parsed = TryParseCore(s, format, out result, out _, out failureMessage);
+        bool parsed = TryParseCore(s, format, out result, out failureMessage);
         if (!parsed)
         {
             failureMessage ??= string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s);
@@ -184,7 +173,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        return TryParseCore(s, format, out result, out _, out _);
+        return TryParseCore(s, format, out result, out _);
     }
 
     /// <summary>
@@ -193,7 +182,6 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="text">The cron expression text.</param>
     /// <param name="requestedFormat">The required layout, or <see langword="null" /> to infer it.</param>
     /// <param name="result">The parsed expression, or <see langword="null" /> on failure.</param>
-    /// <param name="unsupported">Set to <see langword="true" /> when a Quartz extension token is present.</param>
     /// <param name="failureMessage">
     /// <see langword="null" /> on success; otherwise a message naming the specific defect.
     /// </param>
@@ -202,11 +190,9 @@ public sealed partial class CronExpression : IParsable<CronExpression>
         string text,
         CronFormat? requestedFormat,
         [MaybeNullWhen(false)] out CronExpression result,
-        out bool unsupported,
         out string? failureMessage)
     {
         result = null;
-        unsupported = false;
         failureMessage = null;
 
         string trimmed = text.Trim();
@@ -255,7 +241,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
 
         int index = 0;
         bool[] seconds = FullMask(60);
-        if (format == CronFormat.WithSeconds && !TryParseField(fields[index++], 0, 59, null, false, seconds = new bool[60], out _, ref unsupported, ref failureMessage))
+        if (format == CronFormat.WithSeconds && !TryParseField(fields[index++], 0, 59, null, false, seconds = new bool[60], out _, ref failureMessage))
         {
             return false;
         }
@@ -266,16 +252,17 @@ public sealed partial class CronExpression : IParsable<CronExpression>
         var months = new bool[13];
         var daysOfWeek = new bool[7];
 
-        if (!TryParseField(fields[index++], 0, 59, null, false, minutes, out _, ref unsupported, ref failureMessage)
-            || !TryParseField(fields[index++], 0, 23, null, false, hours, out _, ref unsupported, ref failureMessage)
-            || !TryParseField(fields[index++], 1, 31, null, false, daysOfMonth, out bool domRestricted, ref unsupported, ref failureMessage)
-            || !TryParseField(fields[index++], 1, 12, ResolveMonth, false, months, out _, ref unsupported, ref failureMessage)
-            || !TryParseField(fields[index], 0, 7, ResolveWeekday, true, daysOfWeek, out bool dowRestricted, ref unsupported, ref failureMessage))
+        if (!TryParseField(fields[index++], 0, 59, null, false, minutes, out _, ref failureMessage)
+            || !TryParseField(fields[index++], 0, 23, null, false, hours, out _, ref failureMessage)
+            || !TryParseDayOfMonthField(fields[index++], daysOfMonth, out bool domRestricted, out DayToken dayOfMonthToken, ref failureMessage)
+            || !TryParseField(fields[index++], 1, 12, ResolveMonth, false, months, out _, ref failureMessage)
+            || !TryParseDayOfWeekField(fields[index], daysOfWeek, out bool dowRestricted, out DayToken dayOfWeekToken, ref failureMessage))
         {
             return false;
         }
 
-        result = new CronExpression(format, seconds, minutes, hours, daysOfMonth, months, daysOfWeek, domRestricted, dowRestricted);
+        result = new CronExpression(
+            format, seconds, minutes, hours, daysOfMonth, months, daysOfWeek, domRestricted, dowRestricted, dayOfMonthToken, dayOfWeekToken);
         return true;
     }
 
@@ -320,7 +307,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             return false;
         }
 
-        return TryParseCore(expanded, CronFormat.Standard, out result, out _, out failureMessage);
+        return TryParseCore(expanded, CronFormat.Standard, out result, out failureMessage);
     }
 
     /// <summary>
@@ -333,23 +320,19 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="weekday">Whether the field is the weekday field, where <c>7</c> maps to Sunday.</param>
     /// <param name="mask">The mask to populate.</param>
     /// <param name="restricted">Set to <see langword="true" /> when the field is not <c>*</c>.</param>
-    /// <param name="unsupported">Set to <see langword="true" /> when a Quartz extension token is present.</param>
     /// <param name="failureMessage">Set to a message naming the failing field when the field does not parse.</param>
     /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
-    private static bool TryParseField(string field, int min, int max, Func<string, int?>? names, bool weekday, bool[] mask, out bool restricted, ref bool unsupported, ref string? failureMessage)
+    /// <remarks>
+    /// The Quartz day tokens are read before this method sees a day field, so a token here, in any field, fails as the
+    /// malformed value it is.
+    /// </remarks>
+    private static bool TryParseField(string field, int min, int max, Func<string, int?>? names, bool weekday, bool[] mask, out bool restricted, ref string? failureMessage)
     {
         // Vixie decides whether a day field is restricted from its leading character alone - cronie sets DOM_STAR /
         // DOW_STAR when the field begins with '*', before the field's values are parsed. A stepped star such as
         // "*/2" is therefore unrestricted while the equivalent explicit range "1-31/2" is restricted, even though
         // both denote the same days; the difference selects the union or intersection branch in DayMatches.
         restricted = field.Length > 0 && field[0] != '*';
-
-        if (ContainsQuartzToken(field))
-        {
-            unsupported = true;
-            failureMessage = string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Op_NotSupported_CronExtensionToken, field);
-            return false;
-        }
 
         foreach (string part in field.Split(','))
         {
@@ -364,34 +347,125 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     }
 
     /// <summary>
-    /// Determines whether a field contains a Quartz extension token (<c>?</c>, <c>#</c>, <c>L</c>, or <c>W</c>).
+    /// Parses the day-of-month field, which holds values, <c>?</c>, or one of the Quartz tokens <c>L</c>, <c>L-n</c>,
+    /// <c>LW</c>, <c>L-nW</c> and <c>nW</c>.
     /// </summary>
     /// <param name="field">The field text.</param>
-    /// <returns><see langword="true" /> when a Quartz token is present; otherwise <see langword="false" />.</returns>
-    /// <remarks>
-    /// The letters <c>L</c> and <c>W</c> also occur inside valid month and weekday names (for example <c>JUL</c> and
-    /// <c>WED</c>), so they count as Quartz tokens only when they stand alone or are adjacent to a digit rather than
-    /// embedded in a name; <c>?</c> and <c>#</c> never appear in a name and are always Quartz.
-    /// </remarks>
-    private static bool ContainsQuartzToken(string field)
+    /// <param name="mask">The mask to populate when the field holds values.</param>
+    /// <param name="restricted">Set to <see langword="true" /> when the field restricts the days.</param>
+    /// <param name="token">Set to the token the field holds, or the default when it holds values.</param>
+    /// <param name="failureMessage">Set to a message naming the field when it does not parse.</param>
+    /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
+    private static bool TryParseDayOfMonthField(string field, bool[] mask, out bool restricted, out DayToken token, ref string? failureMessage)
     {
-        for (int i = 0; i < field.Length; i++)
+        if (TryParseDayOfMonthToken(field, out token))
         {
-            char c = char.ToUpperInvariant(field[i]);
-            if (c is '?' or '#')
+            restricted = true;
+            return true;
+        }
+
+        return TryParseField(field == "?" ? "*" : field, 1, 31, null, false, mask, out restricted, ref failureMessage);
+    }
+
+    /// <summary>
+    /// Parses the day-of-week field, which holds values, <c>?</c>, or one of the Quartz tokens <c>dL</c> and <c>d#k</c>.
+    /// </summary>
+    /// <param name="field">The field text.</param>
+    /// <param name="mask">The mask to populate when the field holds values.</param>
+    /// <param name="restricted">Set to <see langword="true" /> when the field restricts the days.</param>
+    /// <param name="token">Set to the token the field holds, or the default when it holds values.</param>
+    /// <param name="failureMessage">Set to a message naming the field when it does not parse.</param>
+    /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
+    private static bool TryParseDayOfWeekField(string field, bool[] mask, out bool restricted, out DayToken token, ref string? failureMessage)
+    {
+        if (TryParseDayOfWeekToken(field, out token))
+        {
+            restricted = true;
+            return true;
+        }
+
+        return TryParseField(field == "?" ? "*" : field, 0, 7, ResolveWeekday, true, mask, out restricted, ref failureMessage);
+    }
+
+    /// <summary>
+    /// Attempts to read a day-of-month field that is wholly one Quartz token.
+    /// </summary>
+    /// <param name="field">The field text, in either case.</param>
+    /// <param name="token">The token on success; otherwise the default.</param>
+    /// <returns><see langword="true" /> when the field is a token; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// <c>L</c> stands for the last day, <c>L-n</c> for n days before it with n up to 30, a trailing <c>W</c> for the
+    /// weekday nearest either, and <c>nW</c> for the weekday nearest day n, from 1 to 31. A token stands for the whole
+    /// field, so <c>1,2W</c>, <c>1-2W</c> and <c>1/2W</c> are not tokens, and fail as values do.
+    /// </remarks>
+    private static bool TryParseDayOfMonthToken(string field, out DayToken token)
+    {
+        token = default;
+        if (field.Length == 0)
+        {
+            return false;
+        }
+
+        bool nearestWeekday = field[^1] is 'W' or 'w';
+        ReadOnlySpan<char> body = nearestWeekday ? field.AsSpan(0, field.Length - 1) : field.AsSpan();
+        if (body.Length > 0 && body[0] is 'L' or 'l')
+        {
+            int offset = 0;
+            if (body.Length > 1
+                && (body[1] != '-' || !int.TryParse(body[2..], NumberStyles.None, CultureInfo.InvariantCulture, out offset) || offset > 30))
             {
-                return true;
+                return false;
             }
 
-            if (c is 'L' or 'W')
+            token = new DayToken(nearestWeekday ? DayTokenKind.WeekdayNearestLastDay : DayTokenKind.LastDayOfMonth, offset, 0);
+            return true;
+        }
+
+        if (nearestWeekday
+            && int.TryParse(body, NumberStyles.None, CultureInfo.InvariantCulture, out int day)
+            && day is >= 1 and <= 31)
+        {
+            token = new DayToken(DayTokenKind.WeekdayNearestDay, day, 0);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to read a day-of-week field that is wholly one Quartz token.
+    /// </summary>
+    /// <param name="field">The field text, in either case.</param>
+    /// <param name="token">The token on success; otherwise the default.</param>
+    /// <returns><see langword="true" /> when the field is a token; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// <c>dL</c> stands for the month's last weekday d and <c>d#k</c> for its k-th, a single digit from 1 to 5, with d
+    /// a number from 0 to 7 or a three-letter name. <c>L</c> alone, which Quartz reads as Saturday, is not a token
+    /// here.
+    /// </remarks>
+    private static bool TryParseDayOfWeekToken(string field, out DayToken token)
+    {
+        token = default;
+        int hash = field.IndexOf('#', StringComparison.Ordinal);
+        if (hash > 0)
+        {
+            if (field.Length != hash + 2
+                || field[hash + 1] is < '1' or > '5'
+                || !TryResolveValue(field[..hash], 0, 7, ResolveWeekday, out int weekday))
             {
-                bool leftLetter = i > 0 && char.IsAsciiLetter(field[i - 1]);
-                bool rightLetter = i + 1 < field.Length && char.IsAsciiLetter(field[i + 1]);
-                if (!leftLetter && !rightLetter)
-                {
-                    return true;
-                }
+                return false;
             }
+
+            token = new DayToken(DayTokenKind.NthWeekdayOfMonth, weekday % 7, field[hash + 1] - '0');
+            return true;
+        }
+
+        if (field.Length > 1
+            && field[^1] is 'L' or 'l'
+            && TryResolveValue(field[..^1], 0, 7, ResolveWeekday, out int last))
+        {
+            token = new DayToken(DayTokenKind.LastWeekdayOfMonth, last % 7, 0);
+            return true;
         }
 
         return false;

@@ -40,7 +40,8 @@ field grammar, and the `crontab(5)` `@` macros; the optional-seconds six-field l
 against those that enforce it; canonical text and equality by schedule rather than spelling; the two
 Vixie semantics that separate this dialect from Quartz - the day-of-month / day-of-week union rule
 decided by a field's leading character, and a step wider than its range collapsing to the range
-start; and the two failure surfaces, unreachable schedules and defect-named rejections.
+start; the Quartz day tokens (`L`, `W`, `#`, `?`) and the Vixie weekday numbering they keep; and the
+two failure surfaces, unreachable schedules and defect-named rejections.
 *Package: `Bodu.Globalization.Recurrence`.*
 
 ### Bodu.Globalization.Recurrence.Samples.AnchoredIntervals
@@ -72,9 +73,10 @@ zone-correct firing at the host boundary. *Package: `Bodu.Globalization.Recurren
 
 ## Conformance
 
-The semantics these samples demonstrate are reconciled row by row against three committed corpora -
-RFC 5545's worked examples, libical's occurrence counts, and a cron vector table derived from
-Cronos's test suite - currently 830 in-scope rows with zero differences. See the
+The semantics these samples demonstrate are reconciled row by row against four committed corpora -
+RFC 5545's worked examples, libical's occurrence counts, the occurrences python-dateutil produces for
+200 generated sub-daily rules, and a cron vector table derived from Cronos's test suite - currently
+1,353 in-scope rows with zero differences. See the
 [recurrence guide](../guides/recurrence/index.md) for the contract, and
 `corpus/recurrence/README.md` for each table's provenance and every recorded divergence.
 

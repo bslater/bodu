@@ -201,7 +201,7 @@ if (!RecurrenceSet.TryParse("RRULE:FREQ=DAILY", out RecurrenceSet? _, out failur
     Console.WriteLine(failure);   // A recurrence set requires a DTSTART property line.
 ```
 
-`Parse` throws `FormatException` with the same message. One case is deliberately *not* a format error: a cron expression using a Quartz extension token (`L`, `W`, `#`, `?`) parses to `NotSupportedException`.
+`Parse` throws `FormatException` with the same message.
 
 ## Where to go next
 
