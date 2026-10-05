@@ -17,6 +17,7 @@ classes accordingly:
 |---|---|---|
 | `rfc5545/` | `official-published` | The standard's own §3.8.5.3 examples, transcribed from the normative text |
 | `libical/` | `third-party-comparison` | The reference C implementation's test corpus - evidence, not authority |
+| `dateutil/` | `third-party-comparison` | python-dateutil's output for generated sub-daily rules - evidence, not authority |
 | `cronos/` | `third-party-comparison` | A widely used .NET cron implementation's test suite - evidence, not authority |
 
 Cron is worse off than recurrence rules here. There is no cron RFC at all: the closest thing to a
@@ -74,6 +75,43 @@ redistribution rights are confirmed, this directory holds a **derived** table pl
 SHA-256, the same link-and-hash pattern used for the IMD and SGPC material. If the maintainer
 decides the MPL file may be vendored, the derived table can be replaced by the original.
 
+## `dateutil/` - the sub-daily comparison table
+
+`dateutil-subdaily-vectors.csv` - 200 rules at the `HOURLY`, `MINUTELY` and `SECONDLY` frequencies,
+each with a `DTSTART` and up to the first 30 occurrences python-dateutil 2.9.0.post0 enumerates for
+it. Neither RFC 5545 nor libical says much below a day: the RFC has three sub-daily examples and
+libical asserts four counts. So this table is generated rather than transcribed: a seeded script
+composes the rules - intervals that do and do not divide a day, every limit and expansion,
+`BYSETPOS`, ordinal `BYDAY` values, `COUNT` and `UNTIL` - and records what dateutil produces.
+
+- `generate-dateutil-subdaily-vectors.py` - the generator, committed so the table is reproducible.
+  Seed 5545; a rule dateutil does not finish within two seconds is discarded and counted in the
+  header (one was).
+- `truncated` marks a rule that continues past the 30 recorded occurrences; any other row records
+  its whole stream.
+- `empty-set` marks a rule dateutil rejects because its interval never reaches a `BY` value at its
+  own level (`FREQ=MINUTELY;INTERVAL=15;BYMINUTE=35` from minute 33, say). Its expected stream is
+  empty, and Bodu, which treats such a rule as one with no occurrences, is held to that.
+
+The rows are dateutil's output for rules the generator composed; dateutil itself (Apache-2.0 /
+BSD-3-Clause) is not redistributed. Being one implementation's output, the table is evidence from
+the dateutil line only, and the generator stays inside the part of the grammar where Bodu and
+dateutil read RFC 5545 alike: it emits no `BYWEEKNO`, which RFC 5545 allows only with `YEARLY` and
+which dateutil applies at every frequency while Bodu ignores it below `YEARLY`, and no `BYSECOND=60`.
+
+Regenerate with:
+
+```shell
+python3 corpus/recurrence/dateutil/generate-dateutil-subdaily-vectors.py
+```
+
+`RecurrenceCorpusTests.Dateutil` holds the open-ended stream to every row, and holds the next and
+previous occurrence, queried on, between, and a tick either side of the recorded instants, to the
+table. Two further oracles stand beside it in the test project: `SubDailyReference`, a literal
+reading of the RFC that visits every period, against which `RecurrenceRuleTests.SubDaily` checks 120
+seeded rules; and the RFC's own sub-daily examples, which list times of day the date-only RFC table
+does not transcribe, pinned there as well.
+
 ## `cronos/` - the cron vector table
 
 `cronos-cron-vectors.csv` - 1,354 rows derived from Cronos's `CronExpressionFacts`, the densest
@@ -130,13 +168,12 @@ python3 corpus/recurrence/cronos/extract-cronos-vectors.py <CronExpressionFacts.
 ## Scope exclusions (recorded, never silently skipped)
 
 Every table carries a `flags` column, and the reconciliation tests **report every excluded row**
-rather than quietly passing over it - by name for the two recurrence corpora, and as a per-flag
-tally for the much larger Cronos table. The exclusions are deliberate scope boundaries of the
-library, not gaps in the corpus:
+rather than quietly passing over it - by name for the RFC and libical tables, and as a per-flag
+tally for the much larger Cronos table; the dateutil table excludes nothing. The exclusions are
+deliberate scope boundaries of the library, not gaps in the corpus:
 
 | Flag | Why it is excluded |
 |---|---|
-| `sub-daily` | `FREQ=HOURLY/MINUTELY/SECONDLY` parses and round-trips but does not yet enumerate |
 | `time-expansion` | `BYHOUR`/`BYMINUTE`/`BYSECOND` expansion within the day; the corpus records dates only |
 | `elided` | The RFC abbreviates the occurrence list with `...`, so it is not fully enumerable |
 | `exrule` | `EXRULE` is not modelled; `RecurrenceSet` composes `RDATE`/`EXDATE` only |
@@ -149,7 +186,10 @@ library, not gaps in the corpus:
 | `seconds-elision` | Cronos drops a zero seconds field from `ToString`; Bodu renders every field |
 | `dst` | The Cronos row sits within a day of a US Eastern DST transition, where a zone-free reading of its fixture is not offset-invariant |
 
-`tzid` and `utc-until` are **not** exclusions. The library is offset-based and resolves no timezone identifiers,
+`sub-daily`, `tzid` and `utc-until` are **not** exclusions. The `sub-daily` rows run like any
+other: libical's four counts are reconciled, and the RFC's three sub-daily examples, whose
+occurrence lists the date-only table leaves empty, are pinned in `RecurrenceRuleTests.SubDaily`.
+As for `tzid` and `utc-until`, the library is offset-based and resolves no timezone identifiers,
 but the RFC and libical examples state their occurrences in the `DTSTART` zone's own wall clock,
 and both the date lists and the counts are invariant under a fixed offset. The rules therefore run
 against the wall-clock reading of `DTSTART`, which is what a zone-free engine should reproduce.
@@ -162,12 +202,18 @@ property of these particular vectors, not a theorem - a future row where an occu
 in the window would surface as a difference, which is the signal we want rather than a silent
 exclusion.
 
-## Reconciliation status (2026-08-05)
+RFC 5545's own "every 3 hours from 9:00 AM to 5:00 PM" example is the first row where an occurrence
+does land in the window. Its `UNTIL=19970902T170000Z` is 13:00 in New York, which would end the
+series after 12:00, yet the RFC lists 09:00, 12:00 and 15:00: the wall-clock reading. Bodu gives the
+three the RFC lists, pinned in `RecurrenceRuleTests.SubDaily`.
+
+## Reconciliation status (2026-10-05)
 
 | Corpus | Rows | Run | Result |
 |---|---:|---:|---|
-| RFC 5545 §3.8.5.3 | 39 | 23 | 23 exact date-list matches, 0 differences |
-| libical `recur.txt` | 57 | 52 | 52 count matches, 0 differences (the `EXDATE` row runs through `RecurrenceSet`) |
+| RFC 5545 §3.8.5.3 | 39 | 23 | 23 exact date-list matches, 0 differences; the three sub-daily examples are pinned separately |
+| libical `recur.txt` | 57 | 56 | 56 count matches, 0 differences (the `EXDATE` row runs through `RecurrenceSet`) |
+| python-dateutil, generated sub-daily rules | 200 | 200 | 200 occurrence-list matches, and the next and previous occurrence at every recorded instant, 0 differences |
 | Cronos `CronExpressionFacts` | 1,354 | 755 | 755 matches, 0 differences |
 
 `AnchoredInterval` durations are still not covered by a corpus: RFC 5545 §3.3.6 states its duration
