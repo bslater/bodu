@@ -72,12 +72,12 @@ The `BY*` rule parts refine the set of instants a frequency period produces. Eac
 | `BYYEARDAY` | ±1-366 | Days of the year, negative counting from the end. |
 | `BYMONTHDAY` | ±1-31 | Days of the month; `-1` is the last day. |
 | `BYDAY` | `MO` … `SU`, optionally with an ordinal (`1MO`, `-1FR`) | Weekdays. The ordinal selects the *n*th (or *n*th-from-last) occurrence within the month or year; `0` - the plain `MO` form - selects every occurrence. Represented by <xref:Bodu.Globalization.Recurrence.WeekDayNum>`(Ordinal, Day)`. |
-| `BYHOUR` / `BYMINUTE` / `BYSECOND` | 0-23 / 0-59 / 0-60 | Time-of-day expansion over each occurrence day; absent parts inherit the start's time components. |
+| `BYHOUR` / `BYMINUTE` / `BYSECOND` | 0-23 / 0-59 / 0-60 | Times of day. At `DAILY` and coarser they expand each occurrence day; at the sub-daily frequencies the parts finer than the frequency expand each period and the others limit it. An absent part that would expand inherits the start's time component. |
 | `BYSETPOS` | ±1-366 | Applied **last**: after all other parts have produced the period's candidate instants in ascending order, keep only the listed positions. `-1` keeps the last, `1` the first. |
 
 `BYSETPOS` is what turns a weekday list into "the last working day of the month": `FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1` generates every weekday of the month and keeps the final one. Whether a part *limits* (filters the period's default instants) or *expands* (multiplies them) follows the RFC 5545 §3.3.10 table for the rule's frequency.
 
-Occurrence enumeration is implemented for the `DAILY`, `WEEKLY`, `MONTHLY`, and `YEARLY` frequencies. Rules with a sub-daily `FREQ` (`SECONDLY`, `MINUTELY`, `HOURLY`) parse and round-trip so that stored text is never rejected, but enumerating them throws `NotSupportedException` until that follow-on lands.
+Every frequency enumerates. At the sub-daily frequencies (`SECONDLY`, `MINUTELY`, `HOURLY`) each period is a single second, minute, or hour, and the date parts and `BYHOUR` limit which periods produce occurrences; the [rule guide](../../guides/recurrence/rrule.md#sub-daily-frequencies) works through examples.
 
 ## Cron field semantics
 

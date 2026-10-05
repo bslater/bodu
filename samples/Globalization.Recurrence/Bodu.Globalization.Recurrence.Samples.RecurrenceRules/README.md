@@ -176,8 +176,8 @@ text form; builds "third Thursday" and "last Friday" rules with ordinal and nega
 `WeekDayNum` values; shows the `IsEveryOccurrence` flag and deconstruction; builds two realistic
 bounded rules - US Thanksgiving via `UNTIL`, and quarter-end via `BySetPos(-1)`; contrasts two
 week starts through `WithWeekStart`; covers the remaining date-selecting parts (`ByMonthDay`,
-`ByYearDay`, `ByWeekNo`); and closes with the time-of-day parts, which build and round-trip but do
-not enumerate.
+`ByYearDay`, `ByWeekNo`); and closes with the time-of-day parts, which place occurrences within the
+day at a daily frequency and an hourly one.
 
 **What to expect.** The builder is a spelling of the same grammar, so the built rule equals the
 parsed one - the property that makes it safe in configuration code. Ordinals render as `3TH` and
@@ -215,10 +215,13 @@ occurrences: 2026-03-31, 2026-06-30, 2026-09-30, 2026-12-31
   ByYearDay(100, -100): FREQ=YEARLY;COUNT=4;BYYEARDAY=100,-100
   ByWeekNo(20)+Monday : FREQ=YEARLY;COUNT=3;BYDAY=MO;BYWEEKNO=20
 
---- Time-of-day parts build, but do not enumerate ---
+--- Time-of-day parts place occurrences within the day ---
   built   : FREQ=DAILY;COUNT=4;BYSECOND=0;BYMINUTE=30;BYHOUR=9,17
   parts   : ByHour=[9, 17], ByMinute=[30], BySecond=[0]
   re-parses equal : True
+  occurs  : 2026-01-01 09:30, 2026-01-01 17:30, 2026-01-02 09:30, 2026-01-02 17:30
+  built   : FREQ=HOURLY;INTERVAL=3;COUNT=6;BYMINUTE=0,30;BYHOUR=9,12,15
+  occurs  : 2026-01-01 09:00, 2026-01-01 09:30, 2026-01-01 12:00, 2026-01-01 12:30, 2026-01-01 15:00, 2026-01-01 15:30
 ```
 
 `WithWeekStart` is the one worth pausing on. Monday is the default, and a default is omitted from
@@ -226,9 +229,9 @@ canonical text - so the two fortnightly rules print almost identically while sel
 dates, and only the second carries a visible `WKST`. That is exactly the failure mode a builder
 makes easy: the call is in the chain, but invisible in the result.
 
-`ByHour`/`ByMinute`/`BySecond` build and round-trip, but this library enumerates **dates** - so a
-rule relying on them to place several occurrences inside one day is outside what `GetOccurrences`
-models, as is any sub-daily `FREQ`.
+`ByHour`/`ByMinute`/`BySecond` place occurrences within the day: a daily rule expands them into
+several times a day, and at the sub-daily frequencies the parts finer than the frequency expand each
+hour or minute while `ByHour` limits which hours produce occurrences.
 
 > The canonical token for a `WeekDayNum` is read from the rule that carries it, because
 > `WeekDayNum.ToString()` currently emits the compiler-generated record form rather than its
