@@ -8,7 +8,7 @@
 # licence: libical is dual MPL-2.0 / LGPL-2.1. The upstream file is NOT committed verbatim; this is a
 #          derived table (rule text plus its asserted count) recorded link-and-hash, per the corpus
 #          policy of not committing third-party sources until redistribution rights are confirmed.
-# flags: sub-daily        = FREQ is HOURLY/MINUTELY/SECONDLY (not enumerated by this library)
+# flags: sub-daily        = FREQ is HOURLY/MINUTELY/SECONDLY (enumerated like any other rule)
 #        exrule           = the block uses EXRULE (not modelled; RecurrenceSet supports EXDATE only)
 #        exdate           = the block uses EXDATE (evaluated through RecurrenceSet)
 #        tzid             = DTSTART carries a TZID; counts are offset-invariant so the rule still runs
