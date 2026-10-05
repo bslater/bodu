@@ -38,7 +38,7 @@ timeline with `WithActualOccurrences()` on
 
 The `Bodu.Extensions` business-day surface over a service: predicates, T+2 settlement with
 `AddWorkingDays`, next/snap navigation, `WorkingDaysBetween` counting and lazy enumeration,
-fiscal-period boundaries, and `WeekPattern` overrides for non-Mon-Fri working weeks. *Packages:
+fiscal-period boundaries, and `DayOfWeekSet` overrides for non-Mon-Fri working weeks. *Packages:
 `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.AsiaPacific`.*
 
 ### Bodu.Globalization.Calendar.Samples.CustomCalendar

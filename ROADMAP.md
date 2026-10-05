@@ -190,7 +190,7 @@ own decision rather than a slot in a library wave.
 
 | Package | Notes |
 | --- | --- |
-| `Bodu.Core` | The dependency root - buffers, extension surfaces, threading primitives, sequences, `WeekPattern`, `ThrowHelper`, text-encoding utilities. |
+| `Bodu.Core` | The dependency root - buffers, extension surfaces, threading primitives, sequences, the calendar value sets (`DayOfWeekSet`, which replaced `WeekPattern` in 1.3.0, and its siblings), `ThrowHelper`, text-encoding utilities. |
 | `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
 | `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic - no `System.Text.Json` dependency. |
 | `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`AddNumericsJsonConverters`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
@@ -451,7 +451,7 @@ Current state: mature and broad. The collections pillar now ships as
 the separate **`Bodu.Collections`** package (split executed - see the
 first forward-looking item), leaving `Bodu.Core` as the primitive
 layer (buffers, extensions, threading, sequences, functional seam,
-text utilities, `ThrowHelper`, `WeekPattern`). Across the pair the
+text utilities, `ThrowHelper`, the calendar value sets). Across the pair the
 surface carries:
 
 - **`Collections.Generic.Graphs`** - `Graph<T>` (directed/undirected
@@ -521,6 +521,20 @@ Forward-looking:
   (moving the type after `Bodu.Core/v1.0.0` tags would be breaking);
   revisit only if an external consumer emerges that cannot reference
   Core at all.
+- **`WeekPattern` became `DayOfWeekSet`, one of six calendar value
+  sets.** ✅ In 1.3.0 `DayOfWeekSet` replaced `WeekPattern` in place, a
+  deliberate break inside the Stable line that package-validation
+  suppressions carry until the baseline moves past 1.3.0, and
+  `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet`
+  joined it in the root `Bodu` namespace: immutable bit sets with one
+  shape, a canonical text form, and an allocation-free enumerator. Bit
+  n of a `DayOfWeekSet` is `(DayOfWeek)n`, so Sunday moved from bit 6
+  to bit 0; the calendar documents' `workingDays` text and the `.bcal`
+  packs' working-week byte are unchanged. The extraction decision above
+  carries over: the sets stay in Core. `Bodu.Globalization.Recurrence`
+  adopts them next, for its cron fields, its cron day tokens, the
+  day and month sets an RRULE tests, and one builder overload per rule
+  part.
 - **The `Functional` seam has grown - railway primitives shipped.** ✅
   `Option<T>` (plus the non-generic `Option` companion), `Result` /
   `Result<T>` / `ResultError`, and `Either<TLeft,TRight>` landed as

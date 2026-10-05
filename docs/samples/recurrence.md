@@ -84,4 +84,4 @@ RFC 5545's worked examples, libical's occurrence counts, the occurrences python-
 
 - [Globalization.Calendar samples](calendar.md) - the notable-date engine and working-day arithmetic,
   a natural sibling of the recurrence package.
-- [Core samples](core.md) - `WeekPattern` and the date extensions the calendar package builds on.
+- [Core samples](core.md) - the calendar value sets and the date extensions the calendar package builds on.

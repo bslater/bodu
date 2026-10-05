@@ -13,7 +13,7 @@ dotnet run --project samples/Globalization.Calendar/Bodu.Globalization.Calendar.
 ### WorkingDayChecks (`Scenarios/WorkingDayChecks.cs`)
 
 **Intent.** Establish the model: a *working day* is a day that is neither a weekend day (per the
-working-week pattern) nor a non-working notable date (per the service's rules). Two sources, one
+working week) nor a non-working notable date (per the service's rules). Two sources, one
 predicate.
 
 **What it does.** Classifies every day of the 2024 Anzac Day week with `IsWorkingDay` (both
@@ -32,11 +32,11 @@ sources) and `IsWeekend` (week shape only).
   (Thursday is a weekday by the calendar and still not a working day - the case a week-shape-only check gets wrong)
 ```
 
-Thursday is excluded by the holiday rules, the weekend by the week pattern - the classification
+Thursday is excluded by the holiday rules, the weekend by the working week - the classification
 shows which source did the excluding.
 
 **APIs demonstrated.** `DateOnly.IsWorkingDay(service, territory)`,
-`DateOnly.IsWeekend(WeekPattern)`.
+`DateOnly.IsWeekend(DayOfWeekSet)`.
 
 ### PaymentScheduling (`Scenarios/PaymentScheduling.cs`)
 
@@ -84,10 +84,10 @@ April 2024 has 30 days − 8 weekend days − 2 weekday holidays (Easter Monday 
 
 **APIs demonstrated.** `WorkingDaysBetween`, `EnumerateWorkingDays`.
 
-### FiscalAndWeekPatterns (`Scenarios/FiscalAndWeekPatterns.cs`)
+### FiscalAndWorkingWeeks (`Scenarios/FiscalAndWorkingWeeks.cs`)
 
 **Intent.** Two orthogonal knobs: fiscal-period boundaries (the first/last *working* day of the
-fiscal year or quarter containing a date) and the `WeekPattern` override that re-bases every
+fiscal year or quarter containing a date) and the `DayOfWeekSet` override that re-bases every
 working-day answer for jurisdictions or rosters whose week is not Monday-Friday.
 
 **What it does.** Finds AU fiscal-year boundaries (July start) around 2024-08-15, then contrasts
@@ -103,17 +103,17 @@ days` calculation.
     first working day of Q  : 2024-07-01 (Monday)  (August sits in the first fiscal quarter, so this coincides with the year start)
   Default week   : Friday working: True, Sunday working: False
   Sun-Thu week   : Friday working: False, Sunday working: True  (both answers flip against the row above - same service, same holiday rules, different week shape)
-  Thu 08-15 + 3 working days: default 2024-08-20 (Tuesday), Sun-Thu 2024-08-20 (Tuesday)  (the same answer here by coincidence - both patterns skip exactly two days in this window - but the arithmetic follows the pattern, not the calendar)
+  Thu 08-15 + 3 working days: default 2024-08-20 (Tuesday), Sun-Thu 2024-08-20 (Tuesday)  (the same answer here by coincidence - both weeks skip exactly two days in this window - but the arithmetic follows the working week, not the calendar)
 ```
 
-The week-pattern lines flip Friday and Sunday exactly as a Gulf-region roster would. The final
+The working-week lines flip Friday and Sunday exactly as a Gulf-region roster would. The final
 line is a genuine coincidence worth understanding: both weeks count three working days from
 Thursday to the same Tuesday - via Fri→Mon→Tue in the default week and Sun→Mon→Tue in the
 Sun-Thu week - different paths, same landing day.
 
 **APIs demonstrated.** `FirstWorkingDayOfFiscalYear` / `LastWorkingDayOfFiscalYear` /
-`FirstWorkingDayOfFiscalQuarter` (with `fiscalYearStartMonth`), the `WeekPattern` parameter on
-`IsWorkingDay` / `AddWorkingDays`, `WeekPattern` construction from `DayOfWeek` values.
+`FirstWorkingDayOfFiscalQuarter` (with `fiscalYearStartMonth`), the `DayOfWeekSet` parameter on
+`IsWorkingDay` / `AddWorkingDays`, `DayOfWeekSet` construction from `DayOfWeek` values.
 
 ## Layout
 
@@ -124,7 +124,7 @@ Bodu.Globalization.Calendar.Samples.WorkingDays/
   Scenarios/WorkingDayChecks.cs
   Scenarios/PaymentScheduling.cs
   Scenarios/RangeCounting.cs
-  Scenarios/FiscalAndWeekPatterns.cs
+  Scenarios/FiscalAndWorkingWeeks.cs
 ```
 
 ## NuGet equivalent
