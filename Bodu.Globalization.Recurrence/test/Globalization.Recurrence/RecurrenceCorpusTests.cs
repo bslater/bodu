@@ -20,7 +20,7 @@ namespace Bodu.Globalization.Recurrence;
 /// <para>
 /// Provenance, licensing, and the reasoning behind each scope exclusion are recorded in
 /// <c>corpus/recurrence/README.md</c>; the tables here are copies of that tree, embedded so the tests are
-/// reproducible from committed artifacts alone.
+/// reproducible from committed artifacts alone, and held byte-identical to it.
 /// </para>
 /// <para>
 /// Rows a table cannot check - intra-day time expansion in a table that records dates only, occurrence lists the
@@ -41,6 +41,15 @@ public sealed partial class RecurrenceCorpusTests
     /// </remarks>
     private static readonly string[] s_excludedFlags =
         ["time-expansion", "elided", "exrule"];
+
+    /// <summary>The embedded corpus tables, each with the directory under <c>corpus/recurrence</c> it copies.</summary>
+    private static readonly (string Directory, string FileName)[] s_corpusSources =
+    [
+        ("rfc5545", "rfc5545-recurrence-examples.csv"),
+        ("libical", "libical-recur-expectations.csv"),
+        ("dateutil", "dateutil-subdaily-vectors.csv"),
+        ("cronos", "cronos-cron-vectors.csv"),
+    ];
 
     /// <summary>
     /// Gets the RFC 5545 §3.8.5.3 examples whose occurrence lists are fully enumerable and in scope.
@@ -205,6 +214,52 @@ public sealed partial class RecurrenceCorpusTests
         }
 
         Console.WriteLine(report.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that each embedded corpus table is a byte-for-byte copy of its source under <c>corpus/recurrence</c>, so
+    /// the tables these tests read cannot drift from the ones the corpus README documents.
+    /// </summary>
+    [TestMethod]
+    public void Corpora_ShouldMatchTheirSourcesInTheCorpusTree()
+    {
+        string? root = FindRepositoryRoot();
+        if (root is null)
+        {
+            Assert.Inconclusive("The repository root was not found from the test base directory.");
+            return;
+        }
+
+        Assembly assembly = typeof(RecurrenceCorpusTests).Assembly;
+        foreach ((string directory, string fileName) in s_corpusSources)
+        {
+            byte[] source = File.ReadAllBytes(Path.Combine(root, "corpus", "recurrence", directory, fileName));
+            string name = assembly.GetManifestResourceNames().Single(n => n.EndsWith(fileName, StringComparison.Ordinal));
+            using Stream stream = assembly.GetManifestResourceStream(name)!;
+            using var copy = new MemoryStream();
+            stream.CopyTo(copy);
+
+            Assert.IsTrue(
+                source.AsSpan().SequenceEqual(copy.ToArray()),
+                $"Fixtures/Vectors/{fileName} differs from corpus/recurrence/{directory}/{fileName}.");
+        }
+    }
+
+    /// <summary>
+    /// Finds the repository root by walking up from the test's base directory to the solution file.
+    /// </summary>
+    /// <returns>The repository root, or <see langword="null" /> when the tests run outside a checkout.</returns>
+    private static string? FindRepositoryRoot()
+    {
+        for (DirectoryInfo? directory = new(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "bodu.slnx")))
+            {
+                return directory.FullName;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
