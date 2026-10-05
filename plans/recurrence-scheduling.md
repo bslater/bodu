@@ -1,10 +1,11 @@
 # Implementation plan: the shared recurrence and scheduling requirements
 
-**Status:** Implemented: every capability in §4's Phases 0-7 is in the codebase, and the
-package is in the release manifest (first shipped in the 0.6.0 wave). Phase 7, the steady-state
-speed-up, landed for 1.3.0: the point queries and windows of `RecurrenceRule` and `RecurrenceSet`
-begin at the frequency period that holds the query instead of at the series start (outcome in
-§4, Phase 7) · **Source:** FallbackPlan requirements document
+**Status:** Implemented: every capability in §4's Phases 0-8 is in the codebase, and the
+package is in the release manifest (first shipped in the 0.6.0 wave). Two phases landed for
+1.3.0: Phase 7, the steady-state speed-up, begins the point queries and windows of
+`RecurrenceRule` and `RecurrenceSet` at the frequency period that holds the query instead of at
+the series start, and Phase 8, beyond the requirements, enumerates the sub-daily frequencies
+(outcomes in §4) · **Source:** FallbackPlan requirements document
 (`REC-F-*` / `REC-N-*`, dated 2026-08-05) · **Target:** `Bodu.Globalization.Recurrence`
 
 This plan maps the FallbackPlan requirements statement onto the Bodu
@@ -349,6 +350,132 @@ its path is unchanged, and the two builds agree to within 1%. The sets
 with `COUNT` rules gain a little because the previous occurrence no
 longer passes through the merge's priority queue.
 
+### Phase 8 - sub-daily enumeration *(done, for 1.3.0; beyond the requirements)*
+
+§6 left sub-daily `RRULE` enumeration out of scope: `HOURLY`, `MINUTELY`
+and `SECONDLY` rules parsed and round-tripped, and every occurrence
+query on them threw `NotSupportedException`. REC-F-001 does not need
+them, but the ROADMAP listed them as the first deferred follow-on, and
+they complete the RFC 5545 frequency scale.
+
+**Outcome.**
+
+- **The period model.** A sub-daily period is one hour, minute or
+  second, and period n begins n × `INTERVAL` units after the unit that
+  holds the start, so each period lies within one day and every period
+  that passes the limits produces the same offsets. `BYMINUTE` and
+  `BYSECOND` expand an hourly period and `BYSECOND` a minutely one,
+  defaulting to the start's own minute and second; `BYHOUR`, the finer
+  parts the frequency does not expand, `BYMONTH`, `BYMONTHDAY`,
+  `BYYEARDAY` and the `BYDAY` weekdays limit; `BYSETPOS` selects within
+  the period. Where RFC 5545 leaves room the engine follows the daily
+  rule's choices: a `BYDAY` ordinal is ignored below `MONTHLY`,
+  `BYWEEKNO` is ignored below `YEARLY`, and `BYSECOND=60` stands for
+  second 59.
+- **The walk** (`RecurrenceRule.SubDaily.cs`). A limit holds for a whole
+  period, so the forward walk moves from a period a date limit rejects
+  to the first period of the next day, or of the next month when
+  `BYMONTH` rejects it, and from a period whose time of day the rule
+  does not allow straight to the next one it does. Moving j periods
+  changes the time of day by j·`INTERVAL` modulo a day, so reaching an
+  allowed time d units away is the congruence j·`INTERVAL` ≡ d, solved
+  with the greatest common divisor and a modular inverse over a per-rule
+  bitmap of the allowed times of day, built once and cached on the
+  rule. A rule whose interval never reaches an allowed time of day ends
+  at once. The backward walk mirrors the forward one from the period
+  past the bound, so `GetPreviousOccurrence` costs the distance back to
+  the answer; `GetNextOccurrence` and the windows start a period below
+  the one that holds the bound. As for the coarser frequencies, a rule
+  with `COUNT` is enumerated from its start.
+- **Tests.** `RecurrenceRuleTests.SubDaily`: the RFC's three sub-daily
+  examples and its 20-minute example against the equivalent daily rule,
+  each expansion and limit against python-dateutil's answers, the
+  never-reachable and empty-`BYSETPOS` rules, the end of the calendar,
+  intervals that span millennia, the leap second, kinds and offsets, and
+  rules allowing a single time of day queried from every half hour of
+  the day (BVT); and, in the Regression tier, 120 seeded random rules held,
+  through the open stream and the next and previous occurrence at
+  probes on, around and between occurrences, to `SubDailyReference`, a
+  literal period-by-period reading of the RFC kept in the tests.
+  `RecurrenceCorpusTests.Dateutil` holds 200 generated rules, their
+  streams and the next and previous occurrence at every recorded
+  instant, to python-dateutil 2.9.0.post0 (`corpus/recurrence/dateutil/`);
+  libical's four sub-daily counts join its reconciliation; and the
+  stream-agreement suites gain thirteen sub-daily rules, anchored as far
+  back as 1970 or at the end of the calendar, and two sets.
+- **Mutation checks.** Each mutation was applied alone to
+  `RecurrenceRule.SubDaily.cs` and the rule, set and corpus tests run on
+  net10.0; the counts are the tests that failed.
+
+| Mutation | Failing tests |
+|---|---:|
+| Next and windows start a period later | 225 |
+| The backward walk starts a period early | 216 |
+| A rejected day resumes a day late | 157 |
+| A rejected month resumes a month late | 62 |
+| Back over a rejected day, a day too far | 42 |
+| Back over a rejected month, a month too far | 17 |
+| The forward time-of-day jump one period long | run did not finish |
+| The backward time-of-day jump one period long | 101 |
+| Jump to the first reachable time rather than the nearest | 142 |
+| The bitmap scan skips past the end of the day | 12 |
+| The backward bitmap scan skips a word's last time | 7 |
+| The bitmap ignores `BYHOUR` | 312 |
+| The bitmap reads `BYSECOND=60` as a second 60 | 4 |
+| `BYSETPOS` ignored | 72 |
+| Occurrences before the start kept | 50 |
+| The backward walk ignores `COUNT` | 54 |
+| The hourly expansion ignores `BYMINUTE` | 105 |
+| The forward date limit honours `BYDAY` ordinals | 25 |
+| The backward date limit ignores `BYYEARDAY` | 14 |
+| The backward walk ignores a set's exception dates | 3 |
+| The backward walk without the `UNTIL` clamp | run did not finish |
+| The minutely limit ignores `BYMINUTE` | 116 |
+
+  The two runs that did not finish were stopped after several minutes:
+  an overshooting jump never lands on an allowed time again and walks on
+  toward year 9999, and so does a query far past `UNTIL` once nothing
+  moves its start back to `UNTIL`, which is therefore needed for
+  correctness in practice, not only for speed. One mutation survives by
+  design: starting the backward walk at the period that holds the bound
+  rather than one past it, since the extra period is a margin. The
+  backward bitmap scan and the set's exclusion were first caught by only
+  two tests each; the one-time-of-day queries in the member partials and
+  a set with an excluded run of quarter hours were added for them.
+
+Median microseconds per call, timed in one process per runtime on a
+4-vCPU Intel Xeon at 2.10 GHz; the queries are at 12:00:07 on 4 October
+2026 unless stated. There is no "before": these rules threw.
+
+| Query | .NET 8 | .NET 10 |
+|---|---:|---:|
+| `FREQ=MINUTELY;INTERVAL=15` since 1990, next | 0.26 | 0.18 |
+| Same, previous | 0.21 | 0.14 |
+| Same, a day's window (96 occurrences) | 1.81 | 2.38 |
+| `FREQ=HOURLY;INTERVAL=5;BYHOUR=0,12` since 1985, next | 0.32 | 0.23 |
+| Same, previous | 0.34 | 0.22 |
+| Every 20 minutes, 09:00-16:40 on weekdays since 2000, next from Saturday noon | 0.49 | 0.36 |
+| Same, previous from Monday 08:00 | 0.65 | 0.58 |
+| `FREQ=HOURLY;BYMONTHDAY=1` since 1990, next | 1.22 | 1.01 |
+| Same, previous | 0.34 | 0.24 |
+| `FREQ=SECONDLY;INTERVAL=7;BYSECOND=0` since 2000, next | 0.73 | 0.66 |
+| Same, previous | 0.86 | 0.80 |
+| `FREQ=SECONDLY;BYHOUR=9;BYMINUTE=30;BYSECOND=0` (one second a day) since 2000, next | 9.84 | 9.98 |
+| Same, previous | 8.97 | 9.35 |
+| `FREQ=SECONDLY;INTERVAL=7` from 2000 until mid-2010, previous | 0.12 | 0.07 |
+| `FREQ=SECONDLY`, the first 10,000 occurrences | 119.27 | 119.13 |
+| One second a day, the first 1,000 occurrences | 9,017.66 | 9,752.62 |
+| `FREQ=MINUTELY;COUNT=20000` from 25 September 2026, next (from the start) | 181.49 | 174.79 |
+| Set: quarter hours since 1990 with two exception dates, next | 0.49 | 0.35 |
+| Same, previous | 0.28 | 0.18 |
+
+**Left for later.** A sparse `SECONDLY` rule spends its query scanning
+the empty words of the day's time-of-day bitmap: about 10 µs for one
+second a day, against well under one where the allowed times lie close
+together. A summary level over the bitmap, one bit per word, would find
+the next allowed time in a few word operations; it was left out of 1.3.0
+so the engine ships as tested.
+
 ## 5. Traceability
 
 | Requirement | Disposition |
@@ -377,10 +504,10 @@ longer passes through the merge's priority queue.
 ## 6. Out of scope (unchanged from the requirements' §6)
 
 Timers/pollers/job runners, timezone resolution, schedule-text
-localisation, calendar data, sub-daily RRULE enumeration (parse-only
-today; not required by REC-F-001), and Quartz cron extensions
-(`L`/`W`/`#`/`?`) - the latter two remain on the ROADMAP's deferred
-list.
+localisation, calendar data, and Quartz cron extensions (`L`/`W`/`#`/`?`),
+which remain on the ROADMAP's deferred list. Sub-daily RRULE enumeration,
+listed here originally as parse-only and not required by REC-F-001,
+landed for 1.3.0 as Phase 8.
 
 ## 7. Decisions taken in this plan (previously open)
 

@@ -35,7 +35,7 @@ Targets `net8.0` and `net10.0`. Depends only on
 
 | Type | Grammar | For |
 |---|---|---|
-| `RecurrenceRule` | RFC 5545 `RRULE` | Calendar-style recurrence: `FREQ`/`INTERVAL`/`COUNT`/`UNTIL`/`WKST` and the full `BY*` model incl. `BYSETPOS` |
+| `RecurrenceRule` | RFC 5545 `RRULE` | Calendar-style recurrence at every frequency from `SECONDLY` to `YEARLY`: `FREQ`/`INTERVAL`/`COUNT`/`UNTIL`/`WKST` and the full `BY*` model incl. `BYSETPOS` |
 | `RecurrenceSet` | iCalendar property block | One or more rules composed with explicit `RDATE` additions and `EXDATE` exclusions |
 | `CronExpression` | Vixie cron | Five-field, optional-seconds six-field, and the `@yearly`…`@hourly` macros |
 | `AnchoredInterval` | RFC 5545 §3.3.6 duration | `anchor + k·interval` for `k ≥ 1`, with the anchor passed per query |
@@ -63,10 +63,6 @@ limits alongside `BYMONTHDAY`, and `BYWEEKNO` numbering generalized from the ISO
 
 ## Known limits
 
-- **Sub-daily `RRULE` frequencies are not enumerated.** `HOURLY`, `MINUTELY` and `SECONDLY` parse and
-  round-trip, but `GetNextOccurrence` / `GetPreviousOccurrence` throw `NotSupportedException` naming
-  the frequency. For sub-daily schedules use `AnchoredInterval` (or `CronExpression`, whose
-  seconds-field layout covers the common cases).
 - **Quartz cron extensions** (`L`, `W`, `#`, `?`) are rejected with `NotSupportedException`; the
   parser is Vixie-compatible.
 - `CronExpression` searches a documented 12-year horizon before reporting no occurrence.

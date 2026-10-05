@@ -24,8 +24,8 @@ public static class BuildingRules
             "RecurrenceRuleBuilder - building rules without writing RRULE text",
             what: "Builds a rule fluently and checks it equals the hand-written text, covers WeekDayNum ordinals "
                 + "including the negative and zero forms, builds a bounded yearly rule and a quarter-end rule "
-                + "with BYSETPOS, reaches WKST through the builder, and shows which parts build but do not "
-                + "affect enumeration.",
+                + "with BYSETPOS, reaches WKST through the builder, and shows the time-of-day parts placing "
+                + "occurrences within the day, at a daily frequency and an hourly one.",
             why: "RRULE text is compact and unforgiving - a typo produces either a parse error or, worse, a valid "
                 + "rule selecting the wrong dates. The builder makes the grammar discoverable and the mistakes "
                 + "compile-time, which matters most in configuration code where the rule is assembled from user "
@@ -163,12 +163,11 @@ public static class BuildingRules
         Console.WriteLine($"                       {Join(weekTwenty.GetOccurrences(new DateTime(2026, 1, 1)))}");
 
         Console.WriteLine();
-        Console.WriteLine("--- Time-of-day parts build, but do not enumerate ---");
+        Console.WriteLine("--- Time-of-day parts place occurrences within the day ---");
 
-        // ByHour, ByMinute and BySecond are part of the RFC 5545 grammar, so the builder accepts them
-        // and the rule round-trips through text. Intra-day expansion is not modelled, though: this
-        // library enumerates dates, so a rule whose frequency is sub-daily -- or which relies on
-        // BYHOUR to place several occurrences inside one day -- is out of scope for enumeration.
+        // ByHour, ByMinute and BySecond expand a daily rule into several times a day. At the sub-daily
+        // frequencies each period is a single hour, minute or second: the parts finer than the frequency
+        // expand it, and ByHour limits which hours produce occurrences.
         RecurrenceRule intraDay = new RecurrenceRuleBuilder(RecurrenceFrequency.Daily)
             .ByHour(9, 17)
             .ByMinute(30)
@@ -179,6 +178,17 @@ public static class BuildingRules
         Console.WriteLine($"  built   : {intraDay}");
         Console.WriteLine($"  parts   : ByHour=[{string.Join(", ", intraDay.ByHour)}], ByMinute=[{string.Join(", ", intraDay.ByMinute)}], BySecond=[{string.Join(", ", intraDay.BySecond)}]");
         Console.WriteLine($"  re-parses equal : {intraDay.Equals(RecurrenceRule.Parse(intraDay.ToString()))}");
+        Console.WriteLine($"  occurs  : {JoinTimes(intraDay.GetOccurrences(new DateTime(2026, 1, 1)))}");
+
+        RecurrenceRule everyThirdHour = new RecurrenceRuleBuilder(RecurrenceFrequency.Hourly)
+            .WithInterval(3)
+            .ByHour(9, 12, 15)
+            .ByMinute(0, 30)
+            .WithCount(6)
+            .Build();
+
+        Console.WriteLine($"  built   : {everyThirdHour}");
+        Console.WriteLine($"  occurs  : {JoinTimes(everyThirdHour.GetOccurrences(new DateTime(2026, 1, 1, 9, 0, 0)))}");
 
         Console.WriteLine();
     }
@@ -190,4 +200,12 @@ public static class BuildingRules
     /// <returns>The formatted list.</returns>
     private static string Join(IEnumerable<DateTime> occurrences) =>
         string.Join(", ", occurrences.Select(d => d.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+
+    /// <summary>
+    /// Formats a sequence of occurrences as a comma-separated invariant-culture date and time list.
+    /// </summary>
+    /// <param name="occurrences">The occurrences to format.</param>
+    /// <returns>The formatted list.</returns>
+    private static string JoinTimes(IEnumerable<DateTime> occurrences) =>
+        string.Join(", ", occurrences.Select(d => d.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)));
 }

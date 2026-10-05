@@ -24,6 +24,23 @@ public partial class RecurrenceSetTests
     }
 
     /// <summary>
+    /// Verifies that a run of exception dates over a sub-daily rule's occurrences is skipped, answering the occurrence
+    /// before the run.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenSubDailyOccurrencesAreExcluded_ShouldSkipToTheOneBeforeThem()
+    {
+        var set = new RecurrenceSet(
+            new DateTime(1990, 1, 1, 0, 0, 0),
+            [RecurrenceRule.Parse("FREQ=MINUTELY;INTERVAL=15")],
+            exceptionDates: [new DateTime(2026, 10, 4, 11, 30, 0), new DateTime(2026, 10, 4, 11, 45, 0), new DateTime(2026, 10, 4, 12, 0, 0)]);
+
+        DateTime? previous = set.GetPreviousOccurrence(new DateTime(2026, 10, 4, 12, 0, 0), inclusive: true);
+
+        Assert.AreEqual(new DateTime(2026, 10, 4, 11, 15, 0), previous);
+    }
+
+    /// <summary>
     /// Verifies that an exception date is skipped, answering the occurrence before it.
     /// </summary>
     [TestMethod]

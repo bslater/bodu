@@ -20,7 +20,7 @@ public partial class RecurrenceSetTests
     /// One row per set, covering overlapping rules, <c>COUNT</c> and <c>UNTIL</c> rules beside unbounded ones, explicit
     /// dates before the start, after the rules end, duplicated, and equal to rule occurrences, exception dates that
     /// remove the start, a run of occurrences, a whole year of them, or nothing at all, a set of explicit dates alone,
-    /// a UTC set, and the end of the calendar.
+    /// a UTC set, the end of the calendar, and sub-daily rules alone and beside a daily one.
     /// </value>
     public static IEnumerable<object[]> AnchoredSets
     {
@@ -105,6 +105,16 @@ public partial class RecurrenceSetTests
                     "daily at the end of the calendar",
                     "DTSTART:99991220T233000\nRRULE:FREQ=DAILY\nRDATE:99991231T235959\nEXDATE:99991225T233000",
                     calendarEnd),
+                new(
+                    "January Monday mornings every 20 minutes, one Monday replaced",
+                    "DTSTART:19850107T090000\nRRULE:FREQ=MINUTELY;INTERVAL=20;BYHOUR=9,10;BYDAY=MO;BYMONTH=1\nRDATE:20260105T091000\n" +
+                    $"EXDATE:{Instants(new DateTime(2026, 1, 5, 9, 0, 0), 6, TimeSpan.FromMinutes(20))}",
+                    horizon),
+                new(
+                    "six-hourly in July beside a daily noon",
+                    "DTSTART:20000101T000000\nRRULE:FREQ=HOURLY;INTERVAL=6;BYMONTH=7\nRRULE:FREQ=DAILY;BYHOUR=12\n" +
+                    "EXDATE:20260704T120000,20260704T180000",
+                    horizon),
             ];
 
             foreach (RecurrenceSetAnchorKat row in rows)

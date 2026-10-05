@@ -19,10 +19,11 @@ namespace Bodu.Globalization.Recurrence;
 /// date; the same rule can be applied to different starts.
 /// </para>
 /// <para>
-/// Occurrence enumeration currently supports the <see cref="RecurrenceFrequency.Daily" />,
-/// <see cref="RecurrenceFrequency.Weekly" />, <see cref="RecurrenceFrequency.Monthly" />, and
-/// <see cref="RecurrenceFrequency.Yearly" /> frequencies. A rule with a sub-daily frequency still parses and
-/// round-trips, but enumerating it throws <see cref="NotSupportedException" /> until that follow-on lands.
+/// Every frequency from <see cref="RecurrenceFrequency.Secondly" /> to <see cref="RecurrenceFrequency.Yearly" />
+/// enumerates. At the sub-daily frequencies each period is a single second, minute, or hour: <c>BYMINUTE</c> and
+/// <c>BYSECOND</c> expand an hourly period and <c>BYSECOND</c> a minutely one, defaulting to the start's own minute and
+/// second, while the time parts a frequency does not expand, <c>BYMONTH</c>, <c>BYMONTHDAY</c>, <c>BYYEARDAY</c>, and
+/// the <c>BYDAY</c> weekdays limit which periods produce occurrences.
 /// </para>
 /// <para>
 /// Every occurrence answer is a pure function of the arguments: no API reads the wall clock or consults the machine
@@ -214,8 +215,8 @@ public sealed partial class RecurrenceRule : IEquatable<RecurrenceRule>
     public IReadOnlyList<int> BySetPos => _bySetPos;
 
     /// <summary>
-    /// Gets a value indicating whether the rule uses a sub-daily frequency whose occurrence enumeration is not yet
-    /// supported.
+    /// Gets a value indicating whether the rule uses a sub-daily frequency, whose periods are a single second, minute,
+    /// or hour.
     /// </summary>
     /// <value>
     /// <see langword="true" /> when <see cref="Frequency" /> is below <see cref="RecurrenceFrequency.Daily" />;

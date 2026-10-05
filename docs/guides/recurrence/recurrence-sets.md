@@ -61,7 +61,7 @@ DateTime[] deduplicated = overlapping.GetOccurrences().ToArray();
 // 2026-01-05, 2026-01-07, 2026-01-12 - Monday 5 January is produced by both rules but emitted once
 ```
 
-`GetOccurrences()` is unbounded when any rule is unbounded; use the windowed `GetOccurrences(from, to)` or `Take`. A set whose rule uses a sub-daily frequency throws <xref:System.NotSupportedException> on enumeration, as the rule itself would.
+`GetOccurrences()` is unbounded when any rule is unbounded; use the windowed `GetOccurrences(from, to)` or `Take`.
 
 ## The property-block text format
 

@@ -17,25 +17,26 @@ namespace Bodu.Globalization.Recurrence;
 /// Monday of every second week.
 /// </para>
 /// <para>
-/// The sub-daily frequencies <see cref="Secondly" />, <see cref="Minutely" />, and <see cref="Hourly" /> are recognized
-/// by the parser so that a rule round-trips through <see cref="RecurrenceRule.ToString()" />, but occurrence
-/// enumeration for them is a planned follow-on and currently throws <see cref="NotSupportedException" />.
+/// At the sub-daily frequencies <see cref="Secondly" />, <see cref="Minutely" />, and <see cref="Hourly" />, each
+/// period is a single second, minute, or hour. <c>BYMINUTE</c> and <c>BYSECOND</c> expand an hourly period, and
+/// <c>BYSECOND</c> a minutely one; the time parts a frequency does not expand, and the date parts, limit which periods
+/// produce occurrences.
 /// </para>
 /// </remarks>
 public enum RecurrenceFrequency
 {
     /// <summary>
-    /// The rule repeats every second (<c>FREQ=SECONDLY</c>). Enumeration is not yet supported.
+    /// The rule repeats every second (<c>FREQ=SECONDLY</c>).
     /// </summary>
     Secondly,
 
     /// <summary>
-    /// The rule repeats every minute (<c>FREQ=MINUTELY</c>). Enumeration is not yet supported.
+    /// The rule repeats every minute (<c>FREQ=MINUTELY</c>).
     /// </summary>
     Minutely,
 
     /// <summary>
-    /// The rule repeats every hour (<c>FREQ=HOURLY</c>). Enumeration is not yet supported.
+    /// The rule repeats every hour (<c>FREQ=HOURLY</c>).
     /// </summary>
     Hourly,
 

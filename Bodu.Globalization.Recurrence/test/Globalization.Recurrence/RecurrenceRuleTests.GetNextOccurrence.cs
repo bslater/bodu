@@ -182,7 +182,8 @@ public partial class RecurrenceRuleTests
 
     /// <summary>
     /// Verifies that a series anchored decades before the query instant answers its next occurrence, including a
-    /// <c>BYWEEKNO</c> week that begins in the calendar year before the one it is numbered in.
+    /// <c>BYWEEKNO</c> week that begins in the calendar year before the one it is numbered in and sub-daily series
+    /// whose limits allow only some times of day.
     /// </summary>
     /// <param name="rule">The recurrence-rule text.</param>
     /// <param name="start">The series start, in sortable format.</param>
@@ -194,11 +195,45 @@ public partial class RecurrenceRuleTests
     [DataRow("FREQ=MONTHLY;BYMONTHDAY=-1", "1975-01-31T08:00:00", "2026-10-04T00:00:00", "2026-10-31T08:00:00", DisplayName = "month ends since 1975")]
     [DataRow("FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=29", "1960-02-29T00:00:00", "2026-10-04T00:00:00", "2028-02-29T00:00:00", DisplayName = "leap days since 1960")]
     [DataRow("FREQ=YEARLY;BYWEEKNO=1;BYDAY=MO", "1990-01-01T10:00:00", "2025-12-20T00:00:00", "2025-12-29T10:00:00", DisplayName = "week one beginning in December")]
+    [DataRow("FREQ=MINUTELY;INTERVAL=15", "1990-03-15T09:00:00", "2026-10-04T23:07:00", "2026-10-04T23:15:00", DisplayName = "quarter hours since 1990")]
+    [DataRow("FREQ=HOURLY;INTERVAL=5;BYHOUR=0,12", "1985-01-01T00:00:00", "2026-10-04T00:00:00", "2026-10-05T12:00:00", DisplayName = "every fifth hour at midnight or noon since 1985")]
+    [DataRow("FREQ=SECONDLY;BYHOUR=9;BYMINUTE=30;BYSECOND=0", "2000-01-01T00:00:00", "2026-10-04T10:00:00", "2026-10-05T09:30:00", DisplayName = "one second a day since 2000")]
     public void GetNextOccurrence_WhenStartIsDecadesEarlier_ShouldReturnTheNextOccurrence(string rule, string start, string after, string expected)
     {
         DateTime? next = RecurrenceRule.Parse(rule).GetNextOccurrence(Instant(start), Instant(after));
 
         Assert.AreEqual(Instant(expected), next);
+    }
+
+    /// <summary>
+    /// Verifies that a sub-daily rule allowing a single time of day reaches it from every half hour of the day, whether
+    /// that time is the first or the last of the day or falls anywhere between.
+    /// </summary>
+    /// <param name="rule">The recurrence-rule text.</param>
+    /// <param name="timeOfDay">The one time of day the rule allows, formatted <c>HH:mm:ss</c>.</param>
+    [TestMethod]
+    [DataRow("FREQ=MINUTELY;BYHOUR=0;BYMINUTE=0", "00:00:00", DisplayName = "the first minute of the day")]
+    [DataRow("FREQ=MINUTELY;BYHOUR=1;BYMINUTE=3", "01:03:00", DisplayName = "minute 63 of the day")]
+    [DataRow("FREQ=MINUTELY;BYHOUR=1;BYMINUTE=4", "01:04:00", DisplayName = "minute 64 of the day")]
+    [DataRow("FREQ=MINUTELY;BYHOUR=2;BYMINUTE=7", "02:07:00", DisplayName = "minute 127 of the day")]
+    [DataRow("FREQ=MINUTELY;BYHOUR=23;BYMINUTE=59", "23:59:00", DisplayName = "the last minute of the day")]
+    [DataRow("FREQ=SECONDLY;BYHOUR=0;BYMINUTE=1;BYSECOND=3", "00:01:03", DisplayName = "second 63 of the day")]
+    [DataRow("FREQ=SECONDLY;BYHOUR=12;BYMINUTE=0;BYSECOND=0", "12:00:00", DisplayName = "noon, second 43,200 of the day")]
+    [DataRow("FREQ=SECONDLY;BYHOUR=23;BYMINUTE=59;BYSECOND=59", "23:59:59", DisplayName = "the last second of the day")]
+    public void GetNextOccurrence_WhenSubDailyRuleAllowsOneTimeOfDay_ShouldReachItFromAnywhereInTheDay(string rule, string timeOfDay)
+    {
+        var start = new DateTime(2020, 1, 1);
+        TimeSpan time = TimeSpan.Parse(timeOfDay, System.Globalization.CultureInfo.InvariantCulture);
+        RecurrenceRule parsed = RecurrenceRule.Parse(rule);
+
+        for (int halfHour = 0; halfHour < 48; halfHour++)
+        {
+            DateTime after = new DateTime(2020, 1, 2).AddMinutes(30 * halfHour).AddSeconds(17);
+            DateTime sameDay = after.Date.Add(time);
+            DateTime expected = sameDay > after ? sameDay : sameDay.AddDays(1);
+
+            Assert.AreEqual(expected, parsed.GetNextOccurrence(start, after), $"{rule} after {after:s}");
+        }
     }
 
     /// <summary>

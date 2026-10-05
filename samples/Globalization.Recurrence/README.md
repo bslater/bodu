@@ -42,12 +42,9 @@ oversized-step handling).
 
 ## API coverage
 
-The samples exercise every public type and, with two deliberate exceptions, every member that has
+The samples exercise every public type and, with one deliberate exception, every member that has
 observable behaviour worth showing. Not demonstrated, on purpose:
 
-- **`RecurrenceFrequency.Hourly` / `.Minutely` / `.Secondly`** - these parse and round-trip but do
-  not enumerate, because this library expands dates rather than intra-day times. The
-  `RecurrenceRules` sample states that scope limit rather than exercising the values.
 - **The `IParsable<T>` / `ISpanParsable<T>` / `IFormattable` overloads** - `Parse`/`TryParse` taking
   an `IFormatProvider` or a `ReadOnlySpan<char>`, `ToString(format[, provider])`, and
   `Equals(object)`. They exist to satisfy the BCL interface contracts; cron and `RRULE` text is

@@ -236,7 +236,7 @@ The data-pack requirement is simply the shape they ship in.
 | `Bodu.Financial.DependencyInjection` | `AddFinancialService`, currency-resolution registration. |
 | `Bodu.Financial.Serialization.Json` | `System.Text.Json` integration for `Bodu.Financial` (`AddFinancialJsonConverters`, `AddFinancialJson`). Keeps the core serialization-agnostic. |
 | `Bodu.Extensions.Configuration.Text` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. Core-only besides the text packages it builds on, all of which shipped at 0.5.0. |
-| `Bodu.Globalization.Recurrence` | RFC 5545 `RRULE`, `RecurrenceSet`, Vixie cron, and `AnchoredInterval`. Preview: sub-daily frequencies parse and round-trip but throw `NotSupportedException` on enumeration. |
+| `Bodu.Globalization.Recurrence` | RFC 5545 `RRULE`, `RecurrenceSet`, Vixie cron, and `AnchoredInterval`. Preview: sub-daily frequencies parsed and round-tripped but threw `NotSupportedException` on enumeration until 1.3.0. |
 | `Bodu.Globalization.Calendar` | Multi-assembly rule resolution. The parameterless `NotableDateService()` does not load every region's rules; consumers reference a data pack. |
 | `Bodu.Globalization.Calendar.{Americas,AsiaPacific,Europe,MiddleEast,Africa}` | The five regional data packs (authoritative country set below). |
 | `Bodu.Globalization.Calendar.{Builder,DependencyInjection,Plugins}` | Authoring API, DI registration, trust-gated plugin loader. |
@@ -1607,10 +1607,14 @@ filter were added to *Non-goals* instead.
   point queries and windows of `RecurrenceRule` and `RecurrenceSet`
   begin at the frequency period that holds the query instead of at
   `DTSTART`, so a distant anchor no longer costs time per elapsed period
-  (a rule with `COUNT` still enumerates from its start). Deferred
-  follow-ons: sub-daily RRULE frequencies (`HOURLY`/`MINUTELY`/`SECONDLY`
-  parse and round-trip but do not yet enumerate), Quartz cron extensions
-  (`L`/`W`/`#`/`?`), and a read-only `.ics` (iCalendar) reader.
+  (a rule with `COUNT` still enumerates from its start). A fifth pass,
+  also for 1.3.0, enumerates the sub-daily frequencies (`HOURLY`,
+  `MINUTELY`, `SECONDLY`), which had parsed and round-tripped but thrown
+  `NotSupportedException`, held to RFC 5545's examples, libical's
+  counts, python-dateutil's output for 200 generated rules, and a
+  reference model that visits every period. Deferred follow-ons: Quartz
+  cron extensions (`L`/`W`/`#`/`?`) and a read-only `.ics` (iCalendar)
+  reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in

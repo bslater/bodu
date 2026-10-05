@@ -62,7 +62,7 @@ Every answer is a pure function of its arguments. No member reads the wall clock
 | <xref:Bodu.Globalization.Recurrence.CronExpression> | Parsed Vixie cron with next / previous queries; `Format` reports the layout it was parsed as. |
 | <xref:Bodu.Globalization.Recurrence.CronFormat> | `Standard` (five fields) or `WithSeconds` (six fields). |
 | <xref:Bodu.Globalization.Recurrence.AnchoredInterval> | A positive whole-second `Interval` whose occurrences are `anchor + k·interval`; canonical text is the RFC 5545 duration grammar. |
-| <xref:Bodu.Globalization.Recurrence.RecurrenceFrequency> | `Secondly` … `Yearly` - the `FREQ` scale. Sub-daily frequencies parse and round-trip, but enumerating them is not yet supported. |
+| <xref:Bodu.Globalization.Recurrence.RecurrenceFrequency> | `Secondly` … `Yearly` - the `FREQ` scale. |
 | <xref:Bodu.Globalization.Recurrence.WeekDayNum> | One `BYDAY` entry: an `Ordinal` (`0` for every occurrence, `1` for the first, `-1` for the last) and a `Day`. |
 
 ## Where to go next
