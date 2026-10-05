@@ -8,11 +8,8 @@ namespace Bodu.Globalization.Recurrence;
 
 public sealed partial class RecurrenceRule
 {
-    /// <summary>The bitmap that marks every time of day as one a sub-daily rule's periods may occupy.</summary>
-    private static readonly ulong[] s_everyTimeOfDay = [];
-
     /// <summary>The times of day a sub-daily rule's periods may occupy, built on first use.</summary>
-    private ulong[]? _subDailyTimesOfDay;
+    private TimeOfDayBitmap? _subDailyTimesOfDay;
 
     /// <summary>
     /// Gets the length, in ticks, of one period of a sub-daily rule.
@@ -30,9 +27,10 @@ public sealed partial class RecurrenceRule
     /// Gets the times of day a sub-daily rule's periods may occupy.
     /// </summary>
     /// <value>
-    /// A bitmap with one bit per period of a day, or <see cref="s_everyTimeOfDay" /> when every time of day is allowed.
+    /// A bitmap with one bit per period of a day, or <see cref="TimeOfDayBitmap.Every" /> when every time of day is
+    /// allowed.
     /// </value>
-    private ulong[] SubDailyTimesOfDay =>
+    private TimeOfDayBitmap SubDailyTimesOfDay =>
         Volatile.Read(ref _subDailyTimesOfDay) ?? PublishSubDailyTimesOfDay();
 
     /// <summary>
@@ -71,7 +69,7 @@ public sealed partial class RecurrenceRule
         long baseTicks = start.Ticks - (start.Ticks % unitTicks);
         long stepTicks = SubDailyStepTicks(unitTicks);
         long[] offsets = BuildSubDailyOffsets(start);
-        ulong[] timesOfDay = SubDailyTimesOfDay;
+        TimeOfDayBitmap timesOfDay = SubDailyTimesOfDay;
         long untilTicks = Until is DateTime until ? until.Ticks : long.MaxValue;
         int emitted = 0;
 
@@ -102,7 +100,7 @@ public sealed partial class RecurrenceRule
             }
 
             int timeOfDay = (int)((periodTicks % TimeSpan.TicksPerDay) / unitTicks);
-            if (!IsTimeOfDayAllowed(timesOfDay, timeOfDay))
+            if (!timesOfDay.Contains(timeOfDay))
             {
                 long jump = PeriodsToAllowedTimeOfDay(timesOfDay, timeOfDay, unitsPerDay, forward: true);
                 if (jump == 0)
@@ -174,7 +172,7 @@ public sealed partial class RecurrenceRule
         long baseTicks = start.Ticks - (start.Ticks % unitTicks);
         long stepTicks = SubDailyStepTicks(unitTicks);
         long[] offsets = BuildSubDailyOffsets(start);
-        ulong[] timesOfDay = SubDailyTimesOfDay;
+        TimeOfDayBitmap timesOfDay = SubDailyTimesOfDay;
         long untilTicks = Until is DateTime until ? until.Ticks : long.MaxValue;
 
         // Nothing past UNTIL is ever produced, so a bound beyond it searches back from UNTIL.
@@ -198,7 +196,7 @@ public sealed partial class RecurrenceRule
             }
 
             int timeOfDay = (int)((periodTicks % TimeSpan.TicksPerDay) / unitTicks);
-            if (!IsTimeOfDayAllowed(timesOfDay, timeOfDay))
+            if (!timesOfDay.Contains(timeOfDay))
             {
                 long jump = PeriodsToAllowedTimeOfDay(timesOfDay, timeOfDay, unitsPerDay, forward: false);
                 if (jump == 0)
@@ -446,15 +444,6 @@ public sealed partial class RecurrenceRule
     }
 
     /// <summary>
-    /// Determines whether a sub-daily rule's periods may occupy a time of day.
-    /// </summary>
-    /// <param name="timesOfDay">The rule's time-of-day bitmap.</param>
-    /// <param name="timeOfDay">The time of day, in periods since midnight.</param>
-    /// <returns><see langword="true" /> when the time of day is allowed; otherwise <see langword="false" />.</returns>
-    private static bool IsTimeOfDayAllowed(ulong[] timesOfDay, int timeOfDay) =>
-        timesOfDay.Length == 0 || (timesOfDay[timeOfDay >> 6] & (1UL << (timeOfDay & 63))) != 0;
-
-    /// <summary>
     /// Returns how many periods a sub-daily walk must move to reach a time of day the rule allows.
     /// </summary>
     /// <param name="timesOfDay">
@@ -468,10 +457,11 @@ public sealed partial class RecurrenceRule
     /// Moving j periods changes the time of day by j times <see cref="Interval" /> modulo a day, so reaching an allowed
     /// time a whose distance from the current one is d needs j·Interval ≡ d (mod a day), which has a solution when the
     /// greatest common divisor g of the interval and the day divides d, and then exactly one j below the day over g.
-    /// Every solution moves the walk at least d periods' worth of time, so the allowed times are visited in order of
-    /// distance and the search stops once d reaches the best move found.
+    /// Every solution moves the walk at least d periods' worth of time, so the allowed times whose distance g divides
+    /// are visited in order of distance, passing over the others a multiple of g at a time, and the search stops once d
+    /// reaches the best move found.
     /// </remarks>
-    private long PeriodsToAllowedTimeOfDay(ulong[] timesOfDay, int timeOfDay, int unitsPerDay, bool forward)
+    private long PeriodsToAllowedTimeOfDay(TimeOfDayBitmap timesOfDay, int timeOfDay, int unitsPerDay, bool forward)
     {
         int stepWithinDay = (int)(Interval % unitsPerDay);
         int divisor = GreatestCommonDivisor(stepWithinDay, unitsPerDay);
@@ -480,12 +470,15 @@ public sealed partial class RecurrenceRule
 
         long bestPeriods = 0;
         long bestElapsed = long.MaxValue;
-        for (int distance = NextAllowedDistance(timesOfDay, timeOfDay, unitsPerDay, 1, forward);
-            distance > 0 && distance < bestElapsed;
-            distance = NextAllowedDistance(timesOfDay, timeOfDay, unitsPerDay, distance + 1, forward))
+        int distance = timesOfDay.NextAllowedDistance(timeOfDay, divisor, forward);
+        while (distance > 0 && distance < bestElapsed)
         {
-            if (distance % divisor != 0)
+            // Only a distance the divisor divides can be reached, so the search resumes at the next multiple of it
+            // rather than at the next allowed time.
+            int remainder = distance % divisor;
+            if (remainder != 0)
             {
+                distance = timesOfDay.NextAllowedDistance(timeOfDay, distance - remainder + divisor, forward);
                 continue;
             }
 
@@ -496,53 +489,11 @@ public sealed partial class RecurrenceRule
                 bestElapsed = elapsed;
                 bestPeriods = periods;
             }
+
+            distance = timesOfDay.NextAllowedDistance(timeOfDay, distance + divisor, forward);
         }
 
         return bestPeriods;
-    }
-
-    /// <summary>
-    /// Returns the distance from a time of day to the nearest allowed time of day at least a given distance away.
-    /// </summary>
-    /// <param name="timesOfDay">The rule's time-of-day bitmap.</param>
-    /// <param name="timeOfDay">The time of day the distance is measured from.</param>
-    /// <param name="unitsPerDay">The number of periods in a day.</param>
-    /// <param name="minimum">The smallest distance considered, at least one.</param>
-    /// <param name="forward">
-    /// <see langword="true" /> to measure forward through the day; <see langword="false" /> to measure back.
-    /// </param>
-    /// <returns>The distance, below <paramref name="unitsPerDay" />, or zero when no allowed time remains.</returns>
-    private static int NextAllowedDistance(
-        ulong[] timesOfDay,
-        int timeOfDay,
-        int unitsPerDay,
-        int minimum,
-        bool forward)
-    {
-        for (int distance = minimum; distance < unitsPerDay; distance++)
-        {
-            int candidate = forward
-                ? (timeOfDay + distance) % unitsPerDay
-                : (timeOfDay - distance + unitsPerDay) % unitsPerDay;
-
-            // An empty word is passed over to its last bit in the direction of travel, or to the end of the day when
-            // that comes first, since the times beyond it wrap round to the other end of the bitmap.
-            ulong word = timesOfDay[candidate >> 6];
-            if (word == 0)
-            {
-                distance += forward
-                    ? Math.Min(63 - (candidate & 63), unitsPerDay - 1 - candidate)
-                    : candidate & 63;
-                continue;
-            }
-
-            if ((word & (1UL << (candidate & 63))) != 0)
-            {
-                return distance;
-            }
-        }
-
-        return 0;
     }
 
     /// <summary>
@@ -589,9 +540,9 @@ public sealed partial class RecurrenceRule
     /// Builds the rule's time-of-day bitmap and publishes it, keeping the first one published.
     /// </summary>
     /// <returns>The published bitmap.</returns>
-    private ulong[] PublishSubDailyTimesOfDay()
+    private TimeOfDayBitmap PublishSubDailyTimesOfDay()
     {
-        ulong[] built = BuildSubDailyTimesOfDay();
+        TimeOfDayBitmap built = BuildSubDailyTimesOfDay();
         return Interlocked.CompareExchange(ref _subDailyTimesOfDay, built, null) ?? built;
     }
 
@@ -599,23 +550,23 @@ public sealed partial class RecurrenceRule
     /// Builds the bitmap of the times of day a sub-daily rule's periods may occupy.
     /// </summary>
     /// <returns>
-    /// A bitmap with one bit per period of a day, or <see cref="s_everyTimeOfDay" /> when the rule limits none.
+    /// A bitmap with one bit per period of a day, or <see cref="TimeOfDayBitmap.Every" /> when the rule limits none.
     /// </returns>
     /// <remarks>
     /// <c>BYHOUR</c> limits every sub-daily frequency, <c>BYMINUTE</c> limits the minutely and secondly ones, and
     /// <c>BYSECOND</c> the secondly one; a part the frequency expands instead does not appear here.
     /// </remarks>
-    private ulong[] BuildSubDailyTimesOfDay()
+    private TimeOfDayBitmap BuildSubDailyTimesOfDay()
     {
         bool limitsMinute = Frequency != RecurrenceFrequency.Hourly && _byMinute.Length > 0;
         bool limitsSecond = Frequency == RecurrenceFrequency.Secondly && _bySecond.Length > 0;
         if (_byHour.Length == 0 && !limitsMinute && !limitsSecond)
         {
-            return s_everyTimeOfDay;
+            return TimeOfDayBitmap.Every;
         }
 
         int unitsPerDay = (int)(TimeSpan.TicksPerDay / SubDailyUnitTicks);
-        var bitmap = new ulong[(unitsPerDay + 63) / 64];
+        var bitmap = new TimeOfDayBitmap(unitsPerDay);
         int[] hours = _byHour.Length > 0 ? _byHour : EveryValue(24);
         int[] minutes = Frequency == RecurrenceFrequency.Hourly ? [0] : limitsMinute ? _byMinute : EveryValue(60);
         int[] seconds = Frequency != RecurrenceFrequency.Secondly ? [0] : limitsSecond ? _bySecond : EveryValue(60);
@@ -633,7 +584,7 @@ public sealed partial class RecurrenceRule
                         _ => (hour * 3600) + (minute * 60) + Math.Min(second, 59),
                     };
 
-                    bitmap[timeOfDay >> 6] |= 1UL << (timeOfDay & 63);
+                    bitmap.Add(timeOfDay);
                 }
             }
         }

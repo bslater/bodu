@@ -469,12 +469,69 @@ Median microseconds per call, timed in one process per runtime on a
 | Set: quarter hours since 1990 with two exception dates, next | 0.49 | 0.35 |
 | Same, previous | 0.28 | 0.18 |
 
-**Left for later.** A sparse `SECONDLY` rule spends its query scanning
-the empty words of the day's time-of-day bitmap: about 10 µs for one
-second a day, against well under one where the allowed times lie close
-together. A summary level over the bitmap, one bit per word, would find
-the next allowed time in a few word operations; it was left out of 1.3.0
-so the engine ships as tested.
+**The bitmap summary.** As first landed, a sparse `SECONDLY` rule spent
+its query scanning the empty words of the day's time-of-day bitmap:
+about 10 µs for one second a day, against well under one where the
+allowed times lie close together. The bitmap is now `TimeOfDayBitmap`,
+which keeps a summary, one bit per word, set when the word allows any
+time, so a search passes over sixty-four empty words at a time and,
+within a word, goes straight to the nearest allowed time by counting
+zero bits. The time-of-day jump visits the allowed times in order of
+distance and passes over those the interval cannot reach a multiple of
+the greatest common divisor at a time, rather than one allowed time at a
+time. `TimeOfDayBitmapTests` hold the search, forward and back, from
+every start at every minimum distance over hourly and minutely days, and
+over seeded days of every sub-daily length from one allowed time in
+fifty thousand to all but one in a thousand, to a linear scan.
+
+Median microseconds per call before and after, the two builds run
+interleaved in one process per runtime on the same machine, the
+queries as in the table above unless stated:
+
+| Query | .NET 8 before | .NET 8 after | .NET 10 before | .NET 10 after |
+|---|---:|---:|---:|---:|
+| One second a day since 2000, next | 11.34 | 0.21 | 10.95 | 0.15 |
+| Same, previous | 10.84 | 0.20 | 10.34 | 0.14 |
+| Same, the first 1,000 occurrences | 10,957.22 | 74.62 | 11,017.80 | 72.00 |
+| `FREQ=SECONDLY;INTERVAL=7;BYHOUR=9` since 2000, next | 9.63 | 0.32 | 9.59 | 0.27 |
+| Same, previous | 1.13 | 0.27 | 1.09 | 0.21 |
+| `FREQ=SECONDLY;INTERVAL=7;BYSECOND=0` since 2000, next | 0.85 | 0.28 | 0.69 | 0.23 |
+| Same, previous | 1.06 | 0.28 | 0.97 | 0.23 |
+| Same from 2026, the first 1,000 occurrences | 1,227.90 | 236.96 | 1,139.82 | 234.69 |
+| `FREQ=MINUTELY;INTERVAL=13;BYMINUTE=0` since 2000, next | 1.68 | 0.49 | 1.46 | 0.41 |
+| Every 20 minutes, 09:00-16:40 on weekdays, next from Saturday noon | 0.45 | 0.34 | 0.35 | 0.24 |
+| Same, previous from Monday 08:00 | 0.70 | 0.46 | 0.61 | 0.33 |
+| `FREQ=SECONDLY`, the first 10,000 occurrences | 145.60 | 149.69 | 131.42 | 144.49 |
+| `FREQ=MINUTELY;INTERVAL=15` since 1990, a day's window | 2.17 | 2.09 | 1.73 | 1.86 |
+
+The last two rows allow every time of day, so the summary plays no part
+in them; four further interleaved runs of each on .NET 10 put both
+builds between 131 and 154 µs and between 2.04 and 2.96 µs, the spread
+of the machine rather than a difference. The first version of the
+summary searched for the nearest allowed time and then for the next one
+after it, one allowed time at a time, and lost ground on the dense
+weekday row (0.73 to 1.14 µs on .NET 8); passing over the unreachable
+times a multiple of the divisor at a time recovered it.
+
+Each mutation was applied alone, to `TimeOfDayBitmap.cs` with the bitmap,
+sub-daily and dateutil tests run, and to the jump's search loop in
+`RecurrenceRule.SubDaily.cs` with the sub-daily, dateutil and
+stream-agreement tests run, on net10.0:
+
+| Mutation | Failing tests |
+|---|---:|
+| The summary search skips a word | 141 |
+| The forward search never wraps past midnight | 176 |
+| The backward search never wraps past midnight | 62 |
+| `Add` marks the wrong summary bit | 199 |
+| The backward word mask one time short | run did not finish |
+| The search resumes a multiple of the divisor too far | 54 |
+| The next solution is sought a multiple of the divisor too far | 56 |
+| The search starts past the first multiple of the divisor | 138 |
+
+  Two mutations survive because they are equivalent: letting either
+  stretch's search include the time it is measured from finds a distance
+  of zero, which already reads as no allowed time.
 
 ## 5. Traceability
 
