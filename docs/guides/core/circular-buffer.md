@@ -184,7 +184,7 @@ var defaulted = new CircularBuffer<int>();   // capacity 16, overwrite on
 
 - [Deque](deque.md) - double-ended queue with the same fixed-vs-growable choice on both ends.
 - [Evicting dictionary](evicting-dictionary.md) - a fixed-capacity key-value cache with LRU / LFU / FIFO eviction.
-- [WeekPattern](week-pattern.md) - immutable bitmask value type for sets of days of the week.
+- [DayOfWeekSet](day-of-week-set.md) - immutable set of days of the week, one of the calendar value sets.
 - [Bodu.Collections guide index](index.md) - all key types at a glance.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) - full namespace overview.
 - **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

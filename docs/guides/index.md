@@ -16,7 +16,7 @@ General-purpose building blocks every other package depends on - see the **[Core
 
 ### Bodu.Core
 
-Day-of-week patterns, pooled buffers, async coordination and railway primitives, memoization, natural string ordering, and date / numeric / span extensions - the `Bodu`, `Bodu.Buffers`, `Bodu.Extensions`, `Bodu.Functional`, and `Bodu.Threading` namespaces.
+Day-of-week and other calendar value sets, pooled buffers, async coordination and railway primitives, memoization, natural string ordering, and date / numeric / span extensions - the `Bodu`, `Bodu.Buffers`, `Bodu.Extensions`, `Bodu.Functional`, and `Bodu.Threading` namespaces.
 
 <div class="bodu-cards">
 
@@ -26,8 +26,13 @@ Day-of-week patterns, pooled buffers, async coordination and railway primitives,
 </div>
 
 <div class="bodu-card">
-  <h3><a href="core/week-pattern.md">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets - composition, parsing, bitwise operators.</p>
+  <h3><a href="core/day-of-week-set.md">DayOfWeekSet</a></h3>
+  <p>Immutable set of days of the week - composition, parsing, set operators, working-week presets.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="core/calendar-value-sets.md">Calendar value sets</a></h3>
+  <p>Immutable sets of months, days of the month, hours, minutes, and seconds, with a list form (<code>1-3,12</code>).</p>
 </div>
 
 <div class="bodu-card">

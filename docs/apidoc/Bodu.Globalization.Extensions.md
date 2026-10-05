@@ -25,5 +25,5 @@ DayOfWeek last  = enGb.LastDayOfWeek();   // Sunday - Bodu extension
 
 ## Notes
 
-- **Companion namespace.** The broader date / time / culture surface - first and last date of the week, ISO week numbering, working-week tests - lives in <xref:Bodu.Extensions.DateTimeExtensions> and <xref:Bodu.Extensions.DateOnlyExtensions>; day-of-week *sets* are modelled by <xref:Bodu.WeekPattern> and <xref:Bodu.WorkingDaysOfWeek>.
+- **Companion namespace.** The broader date / time / culture surface - first and last date of the week, ISO week numbering, working-week tests - lives in <xref:Bodu.Extensions.DateTimeExtensions> and <xref:Bodu.Extensions.DateOnlyExtensions>; day-of-week *sets* are modelled by <xref:Bodu.DayOfWeekSet> and <xref:Bodu.WorkingDaysOfWeek>.
 - **See also:** the [Bodu.Core introduction](~/docs/core/index.md), <xref:Bodu.Extensions>.

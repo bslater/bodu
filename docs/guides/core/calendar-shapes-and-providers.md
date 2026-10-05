@@ -4,7 +4,7 @@ title: Fiscal quarters, working weeks, and weekend providers
 
 # Fiscal quarters, working weeks, and weekend providers
 
-The [date extensions](date-extensions.md) default to a January-to-December year, a Monday-to-Friday working week, and a Saturday-Sunday weekend. This guide covers the four types that change those defaults - <xref:Bodu.Extensions.CalendarQuarterDefinition> for the common month-anchored quarter systems, <xref:Bodu.Extensions.IQuarterDefinitionProvider> for any other quarter shape (with the built-in <xref:Bodu.Extensions.FiscalWeekQuarterProvider> for 52/53-week retail calendars), <xref:Bodu.Extensions.IWeekendDefinitionProvider> for a weekend that no <xref:Bodu.WorkingDaysOfWeek> preset names - and the bridge between `WorkingDaysOfWeek` and <xref:Bodu.WeekPattern> in <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>.
+The [date extensions](date-extensions.md) default to a January-to-December year, a Monday-to-Friday working week, and a Saturday-Sunday weekend. This guide covers the four types that change those defaults - <xref:Bodu.Extensions.CalendarQuarterDefinition> for the common month-anchored quarter systems, <xref:Bodu.Extensions.IQuarterDefinitionProvider> for any other quarter shape (with the built-in <xref:Bodu.Extensions.FiscalWeekQuarterProvider> for 52/53-week retail calendars), <xref:Bodu.Extensions.IWeekendDefinitionProvider> for a weekend that no <xref:Bodu.WorkingDaysOfWeek> preset names - and the bridge between `WorkingDaysOfWeek` and <xref:Bodu.DayOfWeekSet> in <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>.
 
 All of the examples below were run against the library; the comments show the actual results.
 
@@ -238,7 +238,7 @@ WeekOrdinal b = new DateTime(2024, 5, 31).WeekOrdinalOfMonth;   // Fifth
 
 ## Pattern 5 - a Friday-Saturday weekend with `IWeekendDefinitionProvider`
 
-<xref:Bodu.Extensions.IWeekendDefinitionProvider> has a single member, `bool IsWeekend(DayOfWeek)`. It is consulted by `IsWeekday`, `IsWeekend`, `NextWeekday`, `PreviousWeekday`, and `WorkingDaysOfWeek.ToWeekPattern(provider)` **only when the working week is `WorkingDaysOfWeek.Custom`**; a named preset carries its own weekend and ignores the provider.
+<xref:Bodu.Extensions.IWeekendDefinitionProvider> has a single member, `bool IsWeekend(DayOfWeek)`. It is consulted by `IsWeekday`, `IsWeekend`, `NextWeekday`, `PreviousWeekday`, and `WorkingDaysOfWeek.ToDayOfWeekSet(provider)` **only when the working week is `WorkingDaysOfWeek.Custom`**; a named preset carries its own weekend and ignores the provider.
 
 ```csharp
 using Bodu;
@@ -265,56 +265,56 @@ bool gulfWeekday    = friday.IsWeekday(WorkingDaysOfWeek.Custom, gulf);      // 
 DateTime next       = friday.NextWeekday(WorkingDaysOfWeek.Custom, gulf);    // 2024-05-19 (Sunday)
 DateTime previous   = friday.PreviousWeekday(WorkingDaysOfWeek.Custom, gulf);// 2024-05-16 (Thursday)
 
-WeekPattern working = gulf.ToWeekPattern();                                  // the complement of the weekend
-string symbols      = working.ToString();                                    // "SMTWT__" (Sunday-first; '_' = unselected)
-bool isPreset       = working == WeekPattern.SundayToThursday;               // true
+DayOfWeekSet working = gulf.ToDayOfWeekSet();                                // the complement of the weekend
+string symbols       = working.ToString();                                   // "SMTWT__" (Sunday-first; '_' = unselected)
+bool isPreset        = working == DayOfWeekSet.SundayToThursday;             // true
 WorkingDaysOfWeek named = working.ToWorkingDaysOfWeek();                     // SundayToThursday
-WeekPattern viaEnum = WorkingDaysOfWeek.Custom.ToWeekPattern(gulf);          // same pattern
+DayOfWeekSet viaEnum = WorkingDaysOfWeek.Custom.ToDayOfWeekSet(gulf);        // the same set
 
 bool presetIgnoresProvider = friday.IsWeekend(WorkingDaysOfWeek.MondayToFriday, gulf);   // false
 ```
 
 Two failure modes are worth knowing:
 
-- `WorkingDaysOfWeek.Custom` **without** a provider throws `ArgumentOutOfRangeException` (parameter `workingWeek`) from `IsWeekend` / `IsWeekday`, and `ArgumentNullException` from `ToWeekPattern(provider)`.
+- `WorkingDaysOfWeek.Custom` **without** a provider throws `ArgumentOutOfRangeException` (parameter `workingWeek`) from `IsWeekend` / `IsWeekday`, and `ArgumentNullException` from `ToDayOfWeekSet(provider)`.
 - The provider is called once per day tested, so keep `IsWeekend` cheap and pure. A provider whose weekend is the whole week makes `NextWeekday` loop until it runs out of `DateTime` range.
 
-<xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWeekPattern*> is the bridge from a provider to a <xref:Bodu.WeekPattern>: it asks the provider about each of the seven days and returns the working days. Once you have the pattern, the `WeekPattern` overloads of `IsInWorkingWeek`, `IsRestDay`, `NextWeekday`, and `PreviousWeekday` no longer need the provider at all.
+<xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet*> is the bridge from a provider to a <xref:Bodu.DayOfWeekSet>: it asks the provider about each of the seven days and returns the working days. Once you have the set, the `DayOfWeekSet` overloads of `IsInWorkingWeek`, `IsRestDay`, `NextWeekday`, and `PreviousWeekday` no longer need the provider at all.
 
-## Pattern 6 - bridging `WorkingDaysOfWeek` and `WeekPattern`
+## Pattern 6 - bridging `WorkingDaysOfWeek` and `DayOfWeekSet`
 
-<xref:Bodu.WorkingDaysOfWeek> is a closed list of named working weeks (`MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday`, `AllDays`, plus the `Custom` marker); <xref:Bodu.WeekPattern> is an open seven-day bitmask. <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> converts in both directions:
+<xref:Bodu.WorkingDaysOfWeek> is a closed list of named working weeks (`MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday`, `AllDays`, plus the `Custom` marker); <xref:Bodu.DayOfWeekSet> is an open set of days. <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions> converts in both directions:
 
 <!-- compile -->
 ```csharp
 using Bodu;
 using Bodu.Extensions;
 
-WeekPattern gulfWeek = WorkingDaysOfWeek.SundayToThursday.ToWeekPattern();
-string symbols       = gulfWeek.ToString();                                  // "SMTWT__"
+DayOfWeekSet gulfWeek = WorkingDaysOfWeek.SundayToThursday.ToDayOfWeekSet();
+string symbols        = gulfWeek.ToString();                                 // "SMTWT__"
 
-WeekPattern fourDay  = WeekPattern.Parse("_MTWT__");                         // Monday-Thursday
+DayOfWeekSet fourDay  = DayOfWeekSet.Parse("_MTWT__");                       // Monday-Thursday
 WorkingDaysOfWeek back = fourDay.ToWorkingDaysOfWeek();                      // Custom - no preset matches
-bool matched         = fourDay.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek named);   // false
-bool isWeekdays      = WeekPattern.Weekdays.TryGetWorkingDaysOfWeek(out named);        // true, named == MondayToFriday
-bool allDays         = WorkingDaysOfWeek.AllDays.ToWeekPattern() == WeekPattern.AllDays;   // true
+bool matched          = fourDay.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek named);   // false
+bool isWeekdays       = DayOfWeekSet.Weekdays.TryGetWorkingDaysOfWeek(out named);       // true, named == MondayToFriday
+bool allDays          = WorkingDaysOfWeek.AllDays.ToDayOfWeekSet() == DayOfWeekSet.All; // true
 ```
 
 | Member | Direction | Notes |
 |---|---|---|
-| `WorkingDaysOfWeek.ToWeekPattern()` | preset → pattern | `Custom` throws `ArgumentException`; use the provider overload. |
-| `WorkingDaysOfWeek.ToWeekPattern(IWeekendDefinitionProvider?)` | preset → pattern | The provider is consulted only for `Custom` (and must then be non-`null`). |
-| `WeekPattern.ToWorkingDaysOfWeek()` | pattern → preset | Returns `Custom` when the pattern matches no named preset. |
-| `WeekPattern.TryGetWorkingDaysOfWeek(out value)` | pattern → preset | `false` (and `value == Custom`) when no preset matches. |
-| `IWeekendDefinitionProvider.ToWeekPattern()` | provider → pattern | Complement of the provider's weekend. |
+| `WorkingDaysOfWeek.ToDayOfWeekSet()` | preset → set | `Custom` throws `ArgumentException`; use the provider overload. |
+| `WorkingDaysOfWeek.ToDayOfWeekSet(IWeekendDefinitionProvider?)` | preset → set | The provider is consulted only for `Custom` (and must then be non-`null`). |
+| `DayOfWeekSet.ToWorkingDaysOfWeek()` | set → preset | Returns `Custom` when the set matches no named preset. |
+| `DayOfWeekSet.TryGetWorkingDaysOfWeek(out value)` | set → preset | `false` (and `value == Custom`) when no preset matches. |
+| `IWeekendDefinitionProvider.ToDayOfWeekSet()` | provider → set | Complement of the provider's weekend. |
 
 > [!TIP]
-> When a working week is a fixed, application-wide policy, resolve it to a `WeekPattern` once and pass the pattern to the extension methods; the pattern overloads are a single bit test per day and never consult a provider.
+> When a working week is a fixed, application-wide policy, resolve it to a `DayOfWeekSet` once and pass the set to the extension methods; the set overloads are a single bit test per day and never consult a provider.
 
 ## Where to go next
 
 - [Date and time extensions](date-extensions.md) - every overload that accepts the types on this page.
-- [WeekPattern](week-pattern.md) - parsing, formatting, and composing the seven-day bitmask.
+- [DayOfWeekSet](day-of-week-set.md) - parsing, formatting, and composing the set of days.
 - [Working-day and notable-date calculations](../calendar/index.md) - `Bodu.Globalization.Calendar` adds public holidays and observed-date rules on top of these working-week primitives.
 - [`Bodu.Extensions` API reference](xref:Bodu.Extensions) - full signatures for the provider interfaces and the fiscal-week provider.
 - **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

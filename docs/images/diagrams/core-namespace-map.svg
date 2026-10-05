@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 448" role="img" aria-labelledby="cnm-t cnm-d">
   <title id="cnm-t">Bodu.Core - namespace map</title>
-  <desc id="cnm-d">Bodu.Core is organised into eight focused namespaces. Bodu holds top-level primitives including WeekPattern, ThrowHelper, and the random-generator abstraction. Bodu.Buffers provides pooled buffer infrastructure. Bodu.Threading provides async coordination primitives. Bodu.Functional provides memoization and the railway primitives Option, Result, and Either. The Collections extension namespaces add sequence-shaping helpers. Bodu.Extensions covers date, numeric, span, and array helpers. Bodu.Text and Bodu.Xml.Linq provide text and XML helpers. The specialized collection catalogue ships separately in the Bodu.Collections package, with thread-safe variants in Bodu.Collections.Concurrent.</desc>
+  <desc id="cnm-d">Bodu.Core is organised into eight focused namespaces. Bodu holds top-level primitives including the calendar value sets (DayOfWeekSet, MonthSet, DayOfMonthSet, HourSet, MinuteSet, and SecondSet), ThrowHelper, and the random-generator abstraction. Bodu.Buffers provides pooled buffer infrastructure. Bodu.Threading provides async coordination primitives. Bodu.Functional provides memoization and the railway primitives Option, Result, and Either. The Collections extension namespaces add sequence-shaping helpers. Bodu.Extensions covers date, numeric, span, and array helpers. Bodu.Text and Bodu.Xml.Linq provide text and XML helpers. The specialized collection catalogue ships separately in the Bodu.Collections package, with thread-safe variants in Bodu.Collections.Concurrent.</desc>
 
   <defs>
     <style>
@@ -33,10 +33,11 @@
       <rect class="cnm-card" width="189" height="148" rx="7"/>
       <text class="cnm-ns" x="12" y="22">Bodu</text>
       <text class="cnm-role" x="12" y="42">Top-level primitives</text>
-      <text class="cnm-type" x="12" y="62">WeekPattern</text>
-      <text class="cnm-type" x="12" y="80">ThrowHelper</text>
-      <text class="cnm-type" x="12" y="98">IRandomGenerator</text>
-      <text class="cnm-type" x="12" y="116">XorShiftRandom</text>
+      <text class="cnm-type" x="12" y="62">DayOfWeekSet · MonthSet</text>
+      <text class="cnm-type" x="12" y="80">DayOfMonthSet · HourSet</text>
+      <text class="cnm-type" x="12" y="98">MinuteSet · SecondSet</text>
+      <text class="cnm-type" x="12" y="116">ThrowHelper</text>
+      <text class="cnm-type" x="12" y="134">IRandomGenerator · XorShiftRandom</text>
     </g>
     <g transform="translate(215 60)">
       <rect class="cnm-card" width="189" height="148" rx="7"/>

@@ -6,7 +6,7 @@ title: Bodu.Core - Introduction
 
 ![Bodu.Core](../../images/hero-core.svg)
 
-**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic - a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `WeekPattern`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
+**Bodu.Core** is the foundation package of the Bodu suite and of the **[Core Foundations](../topics/core-foundations.md)** topic - a collection of high-performance, framework-style building blocks for .NET applications. Every other Bodu package shares its primitives: `Bodu.Collections`, `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, `Bodu.Globalization.Calendar`, `Bodu.Numerics`, and `Bodu.Financial` all reference `Bodu.Core` for shared types like `ThrowHelper`, `DayOfWeekSet`, the calendar-shape enums, and pooled buffers. See the [package matrix](../package-matrix.md) for the full dependency map.
 
 > [!NOTE]
 > The specialized generic-collection catalogue - `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, the navigable and range-keyed types, graphs, tries, and the probabilistic sketches - ships in the companion **[Bodu.Collections](../collections/index.md)** package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe variants ship in **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** (which depends on `Bodu.Collections`). This page covers what remains in `Bodu.Core` itself.
@@ -22,7 +22,8 @@ Top-level primitives that don't fit into a sub-namespace.
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.WeekPattern> | Immutable bitmask value type for sets of days of the week, with bitwise operators, enumeration, and parsing and formatting as a seven-character mask (`_MTWTF_`). |
+| <xref:Bodu.DayOfWeekSet> | Immutable set of days of the week, with set operators, enumeration, the regional working-week presets, and parsing and formatting as a seven-character mask (`_MTWTF_`). |
+| <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> | Immutable sets of months, days of the month, hours, minutes, and seconds, with set operators, enumeration, and parsing and formatting as a list of values and ranges (`1-3,12`). |
 | <xref:Bodu.IRandomGenerator> | Abstraction over random number generators - used by helpers (and the `Bodu.Collections` catalogue) that need pluggable randomness. |
 | <xref:Bodu.XorShiftRandom> | Fast non-cryptographic xor-shift PRNG implementing `IRandomGenerator`. |
 | <xref:Bodu.ThrowHelper> | Centralized parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |
@@ -109,7 +110,8 @@ The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this pack
 
 | Scenario | Reach for |
 |---|---|
-| Day-of-week set you can union / intersect / parse | <xref:Bodu.WeekPattern> |
+| Day-of-week set you can union / intersect / parse | <xref:Bodu.DayOfWeekSet> |
+| Set of months, days of the month, hours, minutes, or seconds | <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> |
 | Pooled byte / char buffer for zero-allocation building | <xref:Bodu.Buffers.PooledBufferBuilder`1> |
 | Async mutual exclusion, signalling, debouncing, rate limiting | <xref:Bodu.Threading.AsyncLock>, <xref:Bodu.Threading.AsyncSemaphore>, <xref:Bodu.Threading.AsyncDebouncer>, <xref:Bodu.Threading.RateGate> |
 | Optional values and success-or-failure outcomes without exceptions | <xref:Bodu.Functional.Option`1>, <xref:Bodu.Functional.Result`1>, <xref:Bodu.Functional.Either`2> |

@@ -35,7 +35,7 @@ The root element declares the schema namespace, version, and id, and contains it
 | `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles overlapping multi-day spans (same value set). |
 | `priorityDirection` | <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> | `HigherWins` | Whether a larger or smaller `Priority` wins a tie: `HigherWins`, `LowerWins`. |
 | `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | Which occurrence date governs range-query inclusion: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`. |
-| `workingDays` | week pattern | Mon-Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon-Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `WeekPattern`). |
+| `workingDays` | week pattern | Mon-Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon-Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `DayOfWeekSet`). |
 
 An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.CategoryPriority`. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) for the settlement semantics.
 

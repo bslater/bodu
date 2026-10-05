@@ -16,7 +16,7 @@ The foundation every other package builds on - collections, buffers, extensions,
 
 | Package | What it provides | Target frameworks |
 |---|---|---|
-| **[Bodu.Core](core/index.md)** | The foundation package - a day-of-week `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0`, `net10.0` |
+| **[Bodu.Core](core/index.md)** | The foundation package - the calendar value sets (`DayOfWeekSet` and its siblings), pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0`, `net10.0` |
 | **[Bodu.Collections](collections/index.md)** | The specialized collection catalogue (depends on `Bodu.Core`; namespaces unchanged) - fixed-capacity rings (`CircularBuffer<T>`, `Deque<T>`), policy-driven caches (`EvictingDictionary<TKey,TValue>` with TTL expiry), navigable sets/dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and the probabilistic sketches. | `net8.0`, `net10.0` |
 | **[Bodu.Collections.Concurrent](collections-concurrent/index.md)** | The thread-safe collection companion (depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>` (Vyukov MPMC, `IProducerConsumerCollection<T>`), the lock-free split-ordered `ConcurrentHashSet<T>` with snapshot enumeration, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`). | `net8.0`, `net10.0` |
 | **[Bodu.Text](text/index.md)** *(namespace in Bodu.Core)* | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` - BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0`, `net10.0` |
@@ -92,7 +92,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="core/index.md">Bodu.Core</a></h3>
-  <p>Day-of-week patterns, pooled buffers, async coordination and railway primitives, and date / numeric / span extensions. Useful in almost any application; depended on internally by every other Bodu package.</p>
+  <p>Calendar value sets, pooled buffers, async coordination and railway primitives, and date / numeric / span extensions. Useful in almost any application; depended on internally by every other Bodu package.</p>
   <div class="bodu-card-links">
     <a href="core/index.md">Introduction</a>
     <a href="core/getting-started.md">Getting started</a>

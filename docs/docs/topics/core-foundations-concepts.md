@@ -59,7 +59,7 @@ The distinction worth internalizing: `Bodu.Text` handles **character encodings**
 
 | Member | Concepts coverage |
 |---|---|
-| Bodu.Core | [Bodu.Core - Core concepts](../core/concepts.md) - `WeekPattern`, pooled buffers, railway-oriented outcomes, natural ordering, async coordination, `ThrowHelper`, the random-generator abstraction, and the calendar-shape extensions. |
+| Bodu.Core | [Bodu.Core - Core concepts](../core/concepts.md) - the calendar value sets (`DayOfWeekSet` and its numeric siblings), pooled buffers, railway-oriented outcomes, natural ordering, async coordination, `ThrowHelper`, the random-generator abstraction, and the calendar-shape extensions. |
 | Bodu.Collections | [Bodu.Collections - Core concepts](../collections/concepts.md) - fixed-capacity and ring-backed collections, overflow policies, eviction policies and time-based expiry, navigation and rank/select, overlap-storing intervals, approximate sketches, multi-value / multiset semantics, range-keyed lookups, and index-aware collections. |
 | Bodu.Collections.Concurrent | [Bodu.Collections.Concurrent - Core concepts](../collections-concurrent/concepts.md) - lock-free MPMC rings, split-ordered hashing, snapshot enumeration, counting under concurrency, and eviction events under contention. |
 | Bodu.Text | No separate concepts page - the [Bodu.Text introduction](../text/index.md) covers the encoding-detection and transcoding vocabulary alongside its type map. |

@@ -12,7 +12,7 @@ These extensions are **not** auto-imported. Add the using directive explicitly:
 using Bodu.Extensions;
 ```
 
-Every method takes an `INotableDateService service` and a territory `string`. Working-day operations accept an optional trailing `WeekPattern? workingWeek = null`; notable-date operations accept an optional trailing `NotableDateFilter? filter = null`. The service is always passed explicitly - there is no ambient context.
+Every method takes an `INotableDateService service` and a territory `string`. Working-day operations accept an optional trailing `DayOfWeekSet? workingWeek = null`; notable-date operations accept an optional trailing `NotableDateFilter? filter = null`. The service is always passed explicitly - there is no ambient context.
 
 `DateOnly` is the authoritative surface and carries the full method set. The `DateTime` and `DateTimeOffset` surfaces are a subset (see [Surface differences](#surface-differences)).
 
@@ -22,9 +22,9 @@ The signatures below show the `DateOnly` overloads.
 
 | Method | Returns |
 |---|---|
-| `IsWeekend(WeekPattern? workingWeek = null)` | `true` when the date falls outside the working week (no service needed). |
-| `IsWorkingDay(service, territory, WeekPattern? workingWeek = null)` | `true` when the date is neither a weekend nor a non-working notable date for the territory. |
-| `IsNonWorkingDay(service, territory, WeekPattern? workingWeek = null)` | `true` when the date *is* a weekend or a non-working notable date. |
+| `IsWeekend(DayOfWeekSet? workingWeek = null)` | `true` when the date falls outside the working week (no service needed). |
+| `IsWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | `true` when the date is neither a weekend nor a non-working notable date for the territory. |
+| `IsNonWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | `true` when the date *is* a weekend or a non-working notable date. |
 | `IsNotableDate(service, territory, NotableDateFilter? filter = null)` | `true` when any notable date (matching the optional filter) applies for the territory. |
 
 ```csharp
@@ -43,10 +43,10 @@ bool isClosed   = today.IsNonWorkingDay(service, "AU-NSW");
 
 | Method | Effect |
 |---|---|
-| `NextWorkingDay(service, territory, WeekPattern? workingWeek = null)` | Advance to the next working day. |
-| `PreviousWorkingDay(service, territory, WeekPattern? workingWeek = null)` | Retreat to the previous working day. |
-| `NextNonWorkingDay(service, territory, WeekPattern? workingWeek = null)` | Advance to the next non-working day. Throws `InvalidOperationException` if none is found. |
-| `PreviousNonWorkingDay(service, territory, WeekPattern? workingWeek = null)` | Retreat to the previous non-working day. Throws `InvalidOperationException` if none is found. |
+| `NextWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | Advance to the next working day. |
+| `PreviousWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | Retreat to the previous working day. |
+| `NextNonWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | Advance to the next non-working day. Throws `InvalidOperationException` if none is found. |
+| `PreviousNonWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | Retreat to the previous non-working day. Throws `InvalidOperationException` if none is found. |
 | `NextNotableDate(service, territory, NotableDateFilter? filter = null)` | The next `NotableDate?` matching the optional filter, or `null` when none is found. |
 | `PreviousNotableDate(service, territory, NotableDateFilter? filter = null)` | The previous `NotableDate?` matching the optional filter, or `null`. |
 
@@ -66,9 +66,9 @@ The `Snap*` operations are no-ops when the input is already a working day; other
 
 | Method | Effect |
 |---|---|
-| `SnapToWorkingDay(service, territory, WeekPattern? workingWeek = null)` | If the date is non-working, advance forward to the first working day. |
-| `SnapToWorkingDayBackward(service, territory, WeekPattern? workingWeek = null)` | If the date is non-working, retreat to the previous working day. |
-| `SnapToNearestWorkingDay(service, territory, WeekPattern? workingWeek = null)` | If the date is non-working, choose the closer of forward / backward snaps. |
+| `SnapToWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | If the date is non-working, advance forward to the first working day. |
+| `SnapToWorkingDayBackward(service, territory, DayOfWeekSet? workingWeek = null)` | If the date is non-working, retreat to the previous working day. |
+| `SnapToNearestWorkingDay(service, territory, DayOfWeekSet? workingWeek = null)` | If the date is non-working, choose the closer of forward / backward snaps. |
 
 ```csharp
 DateOnly saturday = new DateOnly(2026, 1, 3);                    // Saturday
@@ -79,8 +79,8 @@ DateOnly snapped  = saturday.SnapToWorkingDay(service, "AU-NSW"); // Monday 5 Ja
 
 | Method | Effect |
 |---|---|
-| `AddWorkingDays(int count, service, territory, WeekPattern? workingWeek = null)` | Add (or subtract, when `count` is negative) the signed number of working days, skipping non-working dates. |
-| `WorkingDaysBetween(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | Count the working days between the receiver and `end`. |
+| `AddWorkingDays(int count, service, territory, DayOfWeekSet? workingWeek = null)` | Add (or subtract, when `count` is negative) the signed number of working days, skipping non-working dates. |
+| `WorkingDaysBetween(DateOnly end, service, territory, DayOfWeekSet? workingWeek = null)` | Count the working days between the receiver and `end`. |
 
 ```csharp
 DateOnly inFive  = today.AddWorkingDays(5, service, "AU-NSW");
@@ -94,8 +94,8 @@ The day enumerations return a lazily-evaluated `IEnumerable<DateOnly>` over the 
 
 | Method | Yields |
 |---|---|
-| `EnumerateWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | `IEnumerable<DateOnly>` - every working day in the inclusive range (lazy). |
-| `EnumerateNonWorkingDays(DateOnly end, service, territory, WeekPattern? workingWeek = null)` | `IEnumerable<DateOnly>` - every non-working day in the inclusive range (lazy). |
+| `EnumerateWorkingDays(DateOnly end, service, territory, DayOfWeekSet? workingWeek = null)` | `IEnumerable<DateOnly>` - every working day in the inclusive range (lazy). |
+| `EnumerateNonWorkingDays(DateOnly end, service, territory, DayOfWeekSet? workingWeek = null)` | `IEnumerable<DateOnly>` - every non-working day in the inclusive range (lazy). |
 | `EnumerateNotableDates(DateOnly end, service, territory, NotableDateFilter? filter = null)` | `IReadOnlyList<NotableDate>` - every notable date in the inclusive range (eager). |
 
 <!-- compile -->
@@ -128,30 +128,30 @@ To resolve a whole year independently of a receiver date, prefer the by-year ser
 
 ## The working week
 
-The optional trailing `WeekPattern? workingWeek` argument overrides the default Monday-Friday working week for a single call. `WeekPattern` is the <xref:Bodu.WeekPattern> value type from `Bodu.Core`; any day outside the pattern is treated as a weekend. Use the named presets for common shapes, or compose a custom pattern for non-standard schedules:
+The optional trailing `DayOfWeekSet? workingWeek` argument overrides the default Monday-Friday working week for a single call. `DayOfWeekSet` is the <xref:Bodu.DayOfWeekSet> value type from `Bodu.Core`; any day outside the set is treated as a weekend. Use the named presets for common shapes, or compose a custom set for non-standard schedules:
 
 | Preset | Working days | Weekend days |
 |---|---|---|
-| `WeekPattern.MondayToFriday` *(default)* | Mon-Fri | Saturday + Sunday (most western territories). |
-| `WeekPattern.SundayToThursday` | Sun-Thu | Friday + Saturday (much of the Middle East). |
-| `WeekPattern.SundayToFriday` | Sun-Fri | Saturday only. |
-| `WeekPattern.SaturdayToThursday` | Sat-Thu | Friday only. |
-| `WeekPattern.SaturdayToWednesday` | Sat-Wed | Thursday + Friday. |
-| `WeekPattern.MondayToSaturday` | Mon-Sat | Sunday only. |
-| `WeekPattern.MondayToThursdayAndSaturday` | Mon-Thu + Sat | Friday + Sunday. |
-| `WeekPattern.AllDays` | Every day | No weekend - every day is working unless a non-working notable date applies. |
+| `DayOfWeekSet.MondayToFriday` *(default)* | Mon-Fri | Saturday + Sunday (most western territories). |
+| `DayOfWeekSet.SundayToThursday` | Sun-Thu | Friday + Saturday (much of the Middle East). |
+| `DayOfWeekSet.SundayToFriday` | Sun-Fri | Saturday only. |
+| `DayOfWeekSet.SaturdayToThursday` | Sat-Thu | Friday only. |
+| `DayOfWeekSet.SaturdayToWednesday` | Sat-Wed | Thursday + Friday. |
+| `DayOfWeekSet.MondayToSaturday` | Mon-Sat | Sunday only. |
+| `DayOfWeekSet.MondayToThursdayAndSaturday` | Mon-Thu + Sat | Friday + Sunday. |
+| `DayOfWeekSet.All` | Every day | No weekend - every day is working unless a non-working notable date applies. |
 
-`WeekPattern` is composable beyond these presets - see [WeekPattern](../core/week-pattern.md) for building a custom selection from arbitrary days.
+`DayOfWeekSet` is composable beyond these presets - see [DayOfWeekSet](../core/day-of-week-set.md) for building a custom selection from arbitrary days.
 
 ```csharp
-using Bodu;                 // WeekPattern
+using Bodu;                 // DayOfWeekSet
 using Bodu.Extensions;
 
 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
 // Sunday-Thursday working week (Friday/Saturday weekend, e.g. parts of the Middle East):
-DateOnly nextOpen = today.NextWorkingDay(service, "AE", WeekPattern.SundayToThursday);
-bool     isOpen   = today.IsWorkingDay(service, "AE", WeekPattern.SundayToThursday);
+DateOnly nextOpen = today.NextWorkingDay(service, "AE", DayOfWeekSet.SundayToThursday);
+bool     isOpen   = today.IsWorkingDay(service, "AE", DayOfWeekSet.SundayToThursday);
 ```
 
 When omitted, the working-day extensions fall back to Monday-Friday. To bake a non-default working week into resolution itself (so adjustment triggers such as `IfWeekend` agree), set it on the resource's `<ResolutionPolicy workingDays="…">` (a 7-character Sunday-first binary string). See [Identity and resolution](identity-and-resolution.md).
@@ -162,10 +162,10 @@ When omitted, the working-day extensions fall back to Monday-Friday. To bake a n
 
 | Method | Returns |
 |---|---|
-| `FirstWorkingDayOfFiscalYear(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)` | The first working day of the fiscal year containing the receiver. |
-| `LastWorkingDayOfFiscalYear(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)` | The last working day of that fiscal year. |
-| `FirstWorkingDayOfFiscalQuarter(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)` | The first working day of the fiscal quarter containing the receiver. |
-| `LastWorkingDayOfFiscalQuarter(int fiscalYearStartMonth, service, territory, WeekPattern? workingWeek = null)` | The last working day of that fiscal quarter. |
+| `FirstWorkingDayOfFiscalYear(int fiscalYearStartMonth, service, territory, DayOfWeekSet? workingWeek = null)` | The first working day of the fiscal year containing the receiver. |
+| `LastWorkingDayOfFiscalYear(int fiscalYearStartMonth, service, territory, DayOfWeekSet? workingWeek = null)` | The last working day of that fiscal year. |
+| `FirstWorkingDayOfFiscalQuarter(int fiscalYearStartMonth, service, territory, DayOfWeekSet? workingWeek = null)` | The first working day of the fiscal quarter containing the receiver. |
+| `LastWorkingDayOfFiscalQuarter(int fiscalYearStartMonth, service, territory, DayOfWeekSet? workingWeek = null)` | The last working day of that fiscal quarter. |
 
 ```csharp
 using Bodu.Extensions;

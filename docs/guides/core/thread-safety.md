@@ -25,7 +25,7 @@ The columns use these terms:
 
 | Type | Contract | Enumeration | Notes |
 |---|---|---|---|
-| <xref:Bodu.WeekPattern> | Immutable | Snapshot (value type) | Every operator returns a new value. [Guide](week-pattern.md) |
+| <xref:Bodu.DayOfWeekSet>, <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> | Immutable | Snapshot (value type) | Every operator returns a new value. [Guide](day-of-week-set.md), [guide](calendar-value-sets.md) |
 | <xref:Bodu.WorkingDaysOfWeek>, <xref:Bodu.Extensions.CalendarQuarterDefinition>, <xref:Bodu.Extensions.WeekOrdinal>, <xref:Bodu.Extensions.DateTimeResolution>, <xref:Bodu.Extensions.FiscalWeekPattern>, <xref:Bodu.Extensions.IdentifierCase>, <xref:Bodu.Extensions.TitleCaseOptions>, <xref:Bodu.Extensions.SentenceCaseOptions>, <xref:Bodu.Collections.Generic.Extensions.RandomizationMode>, <xref:Bodu.Collections.Extensions.RecursiveSelectControl>, <xref:Bodu.Threading.AsyncDebouncerExecutionPolicy> | Immutable | - | Enums. |
 | <xref:Bodu.Functional.Option`1>, <xref:Bodu.Functional.Result>, <xref:Bodu.Functional.Result`1>, <xref:Bodu.Functional.ResultError>, <xref:Bodu.Functional.Either`2> | Immutable | - | `readonly struct` railway values. [Guide](functional-results.md) |
 | <xref:Bodu.Functional.Memoizer> | Safe | - | The cache is thread-safe; under concurrent *first* calls for the same argument the wrapped function may run more than once, but only one result is published. [Guide](memoization.md) |
@@ -96,7 +96,7 @@ Every mutable collection in this package is **single-threaded by design**: none 
 1. **Confine or lock every `Bodu.Collections` type.** Wrap it in your own lock, or hand it to one thread. A `ReaderWriterLockSlim` is only valid for the rows marked *read-only safe* - never for `EvictingDictionary`, access-ordered `SequencedDictionary`, `DefaultingDictionary`, or `DisjointSet`, whose reads write.
 2. **Do not rely on fail-fast to detect races.** The version check runs on the enumerating thread and can miss interleavings; it exists to turn a same-thread bug into an exception.
 3. **Prefer the `Bodu.Collections.Concurrent` type when one exists** - it will beat a locked single-threaded collection under contention and its enumerators are snapshots rather than exceptions.
-4. **Share immutable values, not builders.** `WeekPattern`, the option classes, the providers, and the `readonly struct` results are free to share; `PooledBufferBuilder<T>` and `XorShiftRandom` are not.
+4. **Share immutable values, not builders.** The calendar value sets (`DayOfWeekSet` and its siblings), the option classes, the providers, and the `readonly struct` results are free to share; `PooledBufferBuilder<T>` and `XorShiftRandom` are not.
 5. **Stateless helpers are safe; their arguments may not be.** Every extension class is pure, so thread safety collapses to the thread safety of the object you pass in.
 
 ## Where to go next

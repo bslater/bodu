@@ -122,7 +122,7 @@ A **rule document** is authored on the notable-date schema and loaded into an im
 
 <div class="bodu-card">
   <h3><a href="working-days.md">Working-day arithmetic</a></h3>
-  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> - <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, <code>NextWorkingDay</code>, snap operations, fiscal-period helpers, and the <code>WeekPattern</code> working week.</p>
+  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> - <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, <code>NextWorkingDay</code>, snap operations, fiscal-period helpers, and the <code>DayOfWeekSet</code> working week.</p>
 </div>
 
 <div class="bodu-card">

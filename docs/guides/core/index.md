@@ -25,7 +25,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 | `Bodu.Collections.Generic.Trees` | The trie family and an n-ary tree - `Trie` / `Trie<TValue>`, the path-compressed `RadixTrie` / `RadixTrie<TValue>`, the multi-pattern `AhoCorasickAutomaton` / `AhoCorasickAutomaton<TValue>`, and `Tree<T>`. | [Tries and text search](trie.md) · [N-ary tree](tree.md) |
 | `Bodu.Threading` | Async coordination primitives - `AsyncLock`, `AsyncSemaphore`, `AsyncReaderWriterLock`, `AsyncAutoResetEvent` / `AsyncManualResetEvent` / `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate`. | [Async coordination primitives](async-primitives.md) |
 | `Bodu.Functional` | Functional helpers - `Memoizer`, and the railway primitives `Option<T>`, `Result` / `Result<T>` / `ResultError`, `Either<TLeft,TRight>` with Task-based async combinators. | [Memoization](memoization.md) · [Options, results, and eithers](functional-results.md) |
-| `Bodu` | Root namespace primitives - `WeekPattern`, `WorkingDaysOfWeek`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [WeekPattern](week-pattern.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) |
+| `Bodu` | Root namespace primitives - `DayOfWeekSet` and the other calendar value sets (`MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet`, `SecondSet`), `WorkingDaysOfWeek`, `IRandomGenerator`, `XorShiftRandom`, `ThrowHelper`. | [DayOfWeekSet](day-of-week-set.md) · [Calendar value sets](calendar-value-sets.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) |
 | `Bodu.Buffers` | Pooled buffer infrastructure - `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
 | `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods - `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` - the calendar-shape types (`CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`), and the `NaturalStringComparer`. | [String extensions](string-extensions.md) · [Date and time extensions](date-extensions.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) · [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) · [Natural string comparer](natural-string-comparer.md) |
 | `Bodu.Collections.Generic.Extensions`, `Bodu.Collections.Extensions`, `Bodu.Sequences` | The LINQ-style operator catalogue (`IEnumerableExtensions`, `IListExtensions`, `IDictionaryExtensions`, `RandomizationMode`, `RecursiveSelectControl`), `ShuffleHelpers`, and `SequenceGenerator`. | [Sequence operators and generators](sequence-operators.md) |
@@ -238,8 +238,13 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="week-pattern.md">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for sets of days of the week, with bitwise operators, enumeration, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
+  <h3><a href="day-of-week-set.md">DayOfWeekSet</a></h3>
+  <p>Immutable set of days of the week in one byte, with set operators, enumeration, the regional working-week presets, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="calendar-value-sets.md">Calendar value sets</a></h3>
+  <p><code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code>, and <code>SecondSet</code> - immutable bit sets of the values a schedule selects, with set operators and a list form (<code>1-3,12</code>).</p>
 </div>
 
 </div>
@@ -260,7 +265,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="calendar-shapes-and-providers.md">Fiscal quarters, working weeks, and weekend providers</a></h3>
-  <p><code>CalendarQuarterDefinition</code>, implementing <code>IQuarterDefinitionProvider</code>, the 52/53-week <code>FiscalWeekQuarterProvider</code> and <code>FiscalWeekPattern</code>, <code>WeekOrdinal</code>, a Friday-Saturday <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>WeekPattern</code> bridge.</p>
+  <p><code>CalendarQuarterDefinition</code>, implementing <code>IQuarterDefinitionProvider</code>, the 52/53-week <code>FiscalWeekQuarterProvider</code> and <code>FiscalWeekPattern</code>, <code>WeekOrdinal</code>, a Friday-Saturday <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>DayOfWeekSet</code> bridge.</p>
 </div>
 
 <div class="bodu-card">

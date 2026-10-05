@@ -289,7 +289,7 @@ DateTime? second = NextWorkingRun(first!.Value);                        // 2026-
 // along with the weekend; the observed date comes from the data pack's adjustment rules.
 ```
 
-The same predicate works over a windowed `GetOccurrences` with LINQ's `Where`, as the [overview](index.md#calendar-aware-filtering-is-composition-not-a-feature) shows. Pass a `WeekPattern` as the optional trailing argument to change the working week, or use `IsNotableDate` to test the notable dates alone - see [Working-day arithmetic](../calendar/working-days.md).
+The same predicate works over a windowed `GetOccurrences` with LINQ's `Where`, as the [overview](index.md#calendar-aware-filtering-is-composition-not-a-feature) shows. Pass a `DayOfWeekSet` as the optional trailing argument to change the working week, or use `IsNotableDate` to test the notable dates alone - see [Working-day arithmetic](../calendar/working-days.md).
 
 ## Where to go next
 

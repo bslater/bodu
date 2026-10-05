@@ -4,7 +4,7 @@ title: Core Foundations - Guides
 
 # Core Foundations - Guides
 
-Recipe-style walk-throughs for the **Core Foundations** topic - the `Bodu.Core`, `Bodu.Collections`, and `Bodu.Collections.Concurrent` packages, plus the `Bodu.Text` namespace that ships inside `Bodu.Core`. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week patterns, argument guards, and character-encoding helpers.
+Recipe-style walk-throughs for the **Core Foundations** topic - the `Bodu.Core`, `Bodu.Collections`, and `Bodu.Collections.Concurrent` packages, plus the `Bodu.Text` namespace that ships inside `Bodu.Core`. These are the building blocks the rest of the suite stands on: bounded collections, eviction-aware caches, pooled buffers, day-of-week and other calendar value sets, argument guards, and character-encoding helpers.
 
 If you have not yet installed the packages, start with the [topic overview](../../docs/topics/core-foundations.md) for the package map and install commands, and the [topic concepts page](../../docs/topics/core-foundations-concepts.md) for the shared vocabulary.
 
@@ -38,8 +38,13 @@ If you have not yet installed the packages, start with the [topic overview](../.
 </div>
 
 <div class="bodu-card">
-  <h3><a href="../core/week-pattern.md">WeekPattern</a></h3>
-  <p>Immutable bitmask value type for day-of-week sets - bitwise operators, enumeration, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
+  <h3><a href="../core/day-of-week-set.md">DayOfWeekSet</a></h3>
+  <p>Immutable set of days of the week - set operators, enumeration, working-week presets, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../core/calendar-value-sets.md">Calendar value sets</a></h3>
+  <p>Immutable sets of months, days of the month, hours, minutes, and seconds - set operators, enumeration, and a list form (<code>1-3,12</code>).</p>
 </div>
 
 </div>
@@ -53,7 +58,7 @@ The `Bodu.Text` character-encoding helpers (BOM detection, span- and UTF-8-frien
 1. **[Topic overview](../../docs/topics/core-foundations.md)** - what ships in each package, the dependency map, and the "which do I need?" table.
 2. **[Topic concepts](../../docs/topics/core-foundations-concepts.md)** - the guard convention, bounded vs. growable capacity, eviction policies, pooled buffers, and the encoding vocabulary.
 3. **[Choosing a collection](../core/choosing-a-collection.md)** - pick the right type before writing code against the wrong one.
-4. **The walk-through for your type** - [circular buffer](../core/circular-buffer.md), [evicting dictionary](../core/evicting-dictionary.md), [pooled buffer builder](../core/pooled-buffer-builder.md), or [WeekPattern](../core/week-pattern.md); the [guide overview](../core/index.md) lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).
+4. **The walk-through for your type** - [circular buffer](../core/circular-buffer.md), [evicting dictionary](../core/evicting-dictionary.md), [pooled buffer builder](../core/pooled-buffer-builder.md), or [DayOfWeekSet](../core/day-of-week-set.md); the [guide overview](../core/index.md) lists the rest (deque, indexed priority queue, ordered sets, multiset, multi-value dictionary, range-keyed lookups, segmented buffer, concurrent collections).
 
 ## Where to go next
 

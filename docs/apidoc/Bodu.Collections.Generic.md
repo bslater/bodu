@@ -6,7 +6,7 @@ uid: Bodu.Collections.Generic
 
 ## Purpose
 
-**Bodu.Collections.Generic** is the headline namespace of the **`Bodu.Collections`** package (which depends on `Bodu.Core`): bounded, ordered, navigable, and range-keyed collections that behave predictably under memory pressure, with companions for pooled buffers, day-of-week patterns, encoding helpers, and argument validation in the adjacent `Bodu.Core` namespaces.
+**Bodu.Collections.Generic** is the headline namespace of the **`Bodu.Collections`** package (which depends on `Bodu.Core`): bounded, ordered, navigable, and range-keyed collections that behave predictably under memory pressure, with companions for pooled buffers, calendar value sets, encoding helpers, and argument validation in the adjacent `Bodu.Core` namespaces.
 
 Reach for this library when you need a fixed-capacity FIFO queue, a deque with O(1) ends, a size-limited key/value cache with a real eviction policy (not just an ad-hoc `Dictionary` plus a bolted-on timer), a range-keyed lookup, or helpers that keep ceremony out of hot paths.
 
@@ -14,7 +14,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 - **[Bodu.Collections introduction](~/docs/collections/index.md)** - namespaces, headline types, scenarios.
 - **[Bodu.Collections getting started](~/docs/collections/getting-started.md)** - install and minimal samples for the headline types.
-- **[Core Foundations guides](~/guides/core/index.md)** - recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [sequenced dictionary](~/guides/core/sequenced-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [bidirectional dictionary](~/guides/core/bi-dictionary.md), [layered and defaulting dictionaries](~/guides/core/layered-and-defaulting-dictionaries.md), [table](~/guides/core/table.md), [navigable set](~/guides/core/navigable-set.md), [navigable dictionary](~/guides/core/navigable-dictionary.md), [bit set](~/guides/core/bit-set.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [interval tree](~/guides/core/interval-tree.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`WeekPattern`](~/guides/core/week-pattern.md).
+- **[Core Foundations guides](~/guides/core/index.md)** - recipe-style walk-throughs: [choosing a collection](~/guides/core/choosing-a-collection.md), [circular buffer](~/guides/core/circular-buffer.md), [deque](~/guides/core/deque.md), [evicting dictionary](~/guides/core/evicting-dictionary.md), [sequenced dictionary](~/guides/core/sequenced-dictionary.md), [indexed priority queue](~/guides/core/indexed-priority-queue.md), [indexed and ordered sets](~/guides/core/ordered-sets.md), [multiset](~/guides/core/multiset.md), [multi-value dictionary](~/guides/core/multi-value-dictionary.md), [bidirectional dictionary](~/guides/core/bi-dictionary.md), [layered and defaulting dictionaries](~/guides/core/layered-and-defaulting-dictionaries.md), [table](~/guides/core/table.md), [navigable set](~/guides/core/navigable-set.md), [navigable dictionary](~/guides/core/navigable-dictionary.md), [bit set](~/guides/core/bit-set.md), [range-keyed lookups](~/guides/core/range-dictionary.md), [interval tree](~/guides/core/interval-tree.md), [segmented buffer](~/guides/core/segmented-buffer.md), [concurrent collections](~/guides/core/concurrent-collections.md), [`DayOfWeekSet`](~/guides/core/day-of-week-set.md), [calendar value sets](~/guides/core/calendar-value-sets.md).
 
 ## Key types
 
@@ -57,7 +57,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 **Related namespaces** (these ship in the `Bodu.Core` package, which `Bodu.Collections` depends on)
 
-- <xref:Bodu> - `WeekPattern` (day-of-week bitmask), `IRandomGenerator` / `XorShiftRandom`, and `ThrowHelper` centralized argument validation.
+- <xref:Bodu> - `DayOfWeekSet` and the other calendar value sets, `IRandomGenerator` / `XorShiftRandom`, and `ThrowHelper` centralized argument validation.
 - <xref:Bodu.Buffers> - `PooledBufferBuilder<T>` for `ArrayPool<T>`-backed zero-allocation building.
 - <xref:Bodu.Extensions> - date / numeric / span / array extensions and the calendar-shape enums.
 - <xref:Bodu.Collections.Extensions>, <xref:Bodu.Collections.Generic.Extensions> - sequence-shaping helpers (recursive selection, sliding windows, batched enumeration, pluggable random shuffles).

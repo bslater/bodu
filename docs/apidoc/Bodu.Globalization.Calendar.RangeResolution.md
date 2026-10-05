@@ -19,7 +19,7 @@ These policies are carried by the document's `<ResolutionPolicy>` element and su
 
 ## Key types
 
-- <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> - the policy bundle: `DuplicatePolicy`, `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `ObservedDateRangePolicy`, and the working week (a `Bodu.Core` `WeekPattern`, default Monday-Friday). `ResolutionPolicy.Default` is the all-defaults instance.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> - the policy bundle: `DuplicatePolicy`, `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `ObservedDateRangePolicy`, and the working week (a `Bodu.Core` `DayOfWeekSet`, default Monday-Friday). `ResolutionPolicy.Default` is the all-defaults instance.
 - <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> - how identical occurrences are reconciled: `Error`, `KeepFirst`, `KeepLast`, `Merge`.
 - <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> - how distinct rules landing on the same day (or with overlapping spans) are settled: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`.
 - <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> - whether a higher or lower `Priority` wins: `HigherWins`, `LowerWins`.

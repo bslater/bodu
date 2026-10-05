@@ -135,9 +135,9 @@ A <xref:Bodu.Globalization.Calendar.NotableDate> is the immutable output of one 
 
 ## Working day vs. non-working day
 
-A **working day** is any day that is neither outside the configured working week (a `Bodu.Core` `WeekPattern`, default Monday-Friday) nor a resolved notable date with `IsNonWorkingDay = true` for the queried territory.
+A **working day** is any day that is neither outside the configured working week (a `Bodu.Core` `DayOfWeekSet`, default Monday-Friday) nor a resolved notable date with `IsNonWorkingDay = true` for the queried territory.
 
-Not every notable date is non-working: Mother's Day and most cultural observances are notable but not closures. Working-day arithmetic relies on the occurrence's `IsNonWorkingDay` flag - authors decide which dates count as closures, and each extension method accepts an optional `WeekPattern` to override the default working week.
+Not every notable date is non-working: Mother's Day and most cultural observances are notable but not closures. Working-day arithmetic relies on the occurrence's `IsNonWorkingDay` flag - authors decide which dates count as closures, and each extension method accepts an optional `DayOfWeekSet` to override the default working week.
 
 See [Working-day arithmetic](../../guides/calendar/working-days.md) for the operations (`IsWorkingDay`, `AddWorkingDays`, `NextWorkingDay`, `WorkingDaysBetween`, `SnapToWorkingDay`, …).
 
