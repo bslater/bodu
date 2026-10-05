@@ -49,6 +49,22 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
+    /// Verifies that a weekly rule keeps a <c>BYDAY</c> ordinal as written, in its entries and its text, and ignores it
+    /// when it enumerates, so <c>1MO</c> selects every Monday: an ordinal counts only within a month or a year.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenWeeklyByDayHasOrdinal_ShouldKeepItAndSelectEveryOccurrence()
+    {
+        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=1MO");
+
+        Assert.AreEqual(new WeekDayNum(1, DayOfWeek.Monday), rule.ByDay[0]);
+        Assert.AreEqual("FREQ=WEEKLY;BYDAY=1MO", rule.ToString());
+        CollectionAssert.AreEqual(
+            new[] { new DateTime(2026, 1, 5), new DateTime(2026, 1, 12), new DateTime(2026, 1, 19), new DateTime(2026, 1, 26) },
+            rule.GetOccurrences(new DateTime(2026, 1, 5)).Take(4).ToArray());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="RecurrenceRule.Parse(string)" /> throws
     /// <see cref="ArgumentNullException" /> for a null input.
     /// </summary>
