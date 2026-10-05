@@ -100,7 +100,7 @@ public readonly partial struct WeekPattern
         _selectedDays = 0;
         foreach (DayOfWeek day in daysOfWeek ?? [])
         {
-            ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6);
+            ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6, paramName: nameof(daysOfWeek));
             _selectedDays |= (byte)(ShiftValue << (6 - (int)day));
         }
     }
@@ -157,7 +157,7 @@ public readonly partial struct WeekPattern
     {
         get
         {
-            ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6);
+            ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6, paramName: nameof(day));
             return (_selectedDays & (ShiftValue << (6 - (int)day))) != 0;
         }
     }
@@ -227,7 +227,7 @@ public readonly partial struct WeekPattern
     /// </exception>
     public readonly WeekPattern With(DayOfWeek day)
     {
-        ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6);
+        ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6, paramName: nameof(day));
         return new WeekPattern(_selectedDays | (byte)(ShiftValue << (6 - (int)day)));
     }
 
@@ -245,7 +245,7 @@ public readonly partial struct WeekPattern
     /// </exception>
     public readonly WeekPattern Without(DayOfWeek day)
     {
-        ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6);
+        ThrowHelper.ThrowIfOutOfRange((int)day, 0, 6, paramName: nameof(day));
         return new WeekPattern(_selectedDays & (byte)~(ShiftValue << (6 - (int)day)));
     }
 }
