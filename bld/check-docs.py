@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Documentation guard rails for the DocFX site under docs/.
 
-Four checks, each independently runnable, all run by ``all``:
+Seven checks, each independently runnable, all run by ``all``:
 
   orphans      every hand-authored page under docs/ is reachable from a TOC
   namespaces   every public namespace in the generated API metadata has an
@@ -14,6 +14,16 @@ Four checks, each independently runnable, all run by ``all``:
                its package's README.md declares, and every other Stable /
                Preview / Experimental claim about a package agrees with
                docs/docs/package-matrix.md
+  packages     every shipping package has a row in
+               bld/docs-checks/package-docs-map.txt, and every page a row names
+               exists
+  publication  every packable package is either published or withheld in
+               bld/release-manifest.txt, every published one has an install
+               command, and no withheld one claims to be installable
+  targets      every sentence or "Target frameworks" table column, in a
+               package README or a page under docs/, that names the .NET
+               frameworks a package targets names exactly $(BoduNetTargets)
+               from bld/TargetFrameworks.props
 
 Allow-lists live in bld/docs-checks/*.txt (one entry per line, ``#`` comments).
 The namespace allow-list is *debt*: entries are namespaces that still lack an
@@ -21,7 +31,7 @@ overview and should be removed as overviews are written, never added to.
 
 Usage:
   python3 bld/check-docs.py all            # after `bash bld/docs/build-api-docs.sh all`
-  python3 bld/check-docs.py orphans identifiers status   # no build needed
+  python3 bld/check-docs.py orphans identifiers status targets   # no build needed
 """
 
 from __future__ import annotations
@@ -350,6 +360,84 @@ def matrix_tier_problems(matrix: dict[str, str]) -> list[str]:
     return problems
 
 
+# --------------------------------------------------------------------- targets
+
+
+# A target framework moniker written as inline code (`net10.0`, `netstandard2.0`), and a list of them.
+_TFM_CODE = r"`net(?:standard)?\d+(?:\.\d+)?`"
+_TFM_LIST = _TFM_CODE + r"(?:\s*(?:,\s*and|,|and)\s*" + _TFM_CODE + r")*"
+
+# A claim about the frameworks a package targets - "Targets `net8.0` and `net10.0`.", "all packages target ...",
+# "**Target frameworks.** ..." - and the list of monikers it names, which may wrap onto the next line.
+FRAMEWORK_CLAIM = re.compile(r"\b[Tt]arget(?:s|\s+frameworks?)?\b[.:*\s]*(" + _TFM_LIST + ")")
+
+# The header cell of a table column that lists each row's target frameworks.
+FRAMEWORK_COLUMN = re.compile(r"^target frameworks?$", re.IGNORECASE)
+
+# A modern .NET moniker. A claim naming only netstandard (a build-time task package) says nothing about
+# $(BoduNetTargets), and a netstandard moniker beside the modern ones is a downlevel addition rather than one of them.
+_MODERN_TFM = re.compile(r"`(net\d+\.\d+)`")
+
+
+def net_targets() -> list[str]:
+    """Returns ``$(BoduNetTargets)`` from ``bld/TargetFrameworks.props`` in declaration order, or an empty list."""
+    match = re.search(r"<BoduNetTargets>([^<]+)</BoduNetTargets>", read(os.path.join(ROOT, "bld", "TargetFrameworks.props")))
+    return [tfm.strip() for tfm in match.group(1).split(";") if tfm.strip()] if match else []
+
+
+def framework_claim_problems(rel: str, text: str, expected: list[str]) -> list[str]:
+    """Reports every claim in ``text`` whose .NET target frameworks are not exactly ``expected``.
+
+    A claim is a sentence that names the frameworks after "target", "targets" or "Target frameworks", or a cell
+    of a table column headed "Target frameworks". Code blocks are skipped, so a project file shown in a sample
+    is not read as a claim about the package.
+    """
+    text = strip_code(text)
+    claims: list[tuple[int, list[str]]] = []
+    for match in FRAMEWORK_CLAIM.finditer(text):
+        claims.append((text.count("\n", 0, match.start(1)) + 1, _MODERN_TFM.findall(match.group(1))))
+
+    column: int | None = None
+    for line_no, line in enumerate(text.splitlines(), 1):
+        if not line.startswith("|"):
+            column = None
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        header = next((i for i, cell in enumerate(cells) if FRAMEWORK_COLUMN.match(cell)), None)
+        if header is not None:
+            column = header
+        elif column is not None and column < len(cells):
+            claims.append((line_no, _MODERN_TFM.findall(cells[column])))
+
+    problems = []
+    for line_no, named in claims:
+        if named and sorted(named) != sorted(expected):
+            problems.append(
+                f"{rel}:{line_no}: names {', '.join(named)} as the target frameworks, but $(BoduNetTargets) in "
+                f"bld/TargetFrameworks.props is {', '.join(expected)}")
+    return problems
+
+
+def check_targets() -> list[str]:
+    """Holds every statement of the frameworks a package targets to ``$(BoduNetTargets)``.
+
+    Every project sets ``<TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>``, so a package README (the page
+    nuget.org shows), the repository README and the documentation site name those frameworks wherever they name
+    any. Without this check the sentences go stale silently when the list changes, as they did when ``net10.0``
+    joined ``net8.0``.
+    """
+    expected = net_targets()
+    if not expected:
+        return ["bld/TargetFrameworks.props: no <BoduNetTargets> found; the parser needs updating"]
+
+    readmes = {os.path.join(os.path.dirname(os.path.dirname(project)), "README.md") for project in packable_package_ids().values()}
+    readmes.add(os.path.join(ROOT, "README.md"))
+    problems = []
+    for page in sorted(path for path in readmes if os.path.exists(path)) + docs_pages(include_apidoc=True):
+        problems += framework_claim_problems(os.path.relpath(page, ROOT).replace(os.sep, "/"), read(page), expected)
+    return problems
+
+
 # ------------------------------------------------------- packages (definition of done)
 
 
@@ -560,7 +648,7 @@ def check_publication() -> list[str]:
 def main(argv: list[str]) -> int:
     wanted = [a for a in argv if not a.startswith("-")] or ["all"]
     if "all" in wanted:
-        wanted = ["orphans", "namespaces", "identifiers", "status", "packages", "publication"]
+        wanted = ["orphans", "namespaces", "identifiers", "status", "packages", "publication", "targets"]
     runners = {
         "orphans": check_orphans,
         "namespaces": check_namespaces,
@@ -568,6 +656,7 @@ def main(argv: list[str]) -> int:
         "status": check_status,
         "packages": check_packages,
         "publication": check_publication,
+        "targets": check_targets,
     }
     failed = 0
     for name in wanted:
