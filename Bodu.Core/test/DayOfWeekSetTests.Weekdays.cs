@@ -16,16 +16,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void Weekdays_WhenAccessed_ShouldContainWeekdays()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.Weekdays;
+        DayOfWeekSet days = DayOfWeekSet.Weekdays;
 
-        Assert.AreEqual(5, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Sunday));
+        Assert.AreEqual(5, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Thursday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Friday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Saturday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Sunday));
     }
 
     /// <summary>

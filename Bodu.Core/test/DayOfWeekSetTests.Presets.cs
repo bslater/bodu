@@ -21,16 +21,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void MondayToSaturday_WhenAccessed_ShouldContainMondayThroughSaturday()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.MondayToSaturday;
+        DayOfWeekSet days = DayOfWeekSet.MondayToSaturday;
 
-        Assert.AreEqual(6, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Sunday));
+        Assert.AreEqual(6, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Thursday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Friday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Saturday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Sunday));
     }
 
     /// <summary>
@@ -40,16 +40,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void MondayToThursdayAndSaturday_WhenAccessed_ShouldContainExpectedDays()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.MondayToThursdayAndSaturday;
+        DayOfWeekSet days = DayOfWeekSet.MondayToThursdayAndSaturday;
 
-        Assert.AreEqual(5, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Sunday));
+        Assert.AreEqual(5, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Thursday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Saturday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Friday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Sunday));
     }
 
     /// <summary>
@@ -58,16 +58,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void SaturdayToThursday_WhenAccessed_ShouldContainExpectedDays()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.SaturdayToThursday;
+        DayOfWeekSet days = DayOfWeekSet.SaturdayToThursday;
 
-        Assert.AreEqual(6, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+        Assert.AreEqual(6, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Saturday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Sunday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Thursday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Friday));
     }
 
     /// <summary>
@@ -77,16 +77,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void SaturdayToWednesday_WhenAccessed_ShouldContainExpectedDays()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.SaturdayToWednesday;
+        DayOfWeekSet days = DayOfWeekSet.SaturdayToWednesday;
 
-        Assert.AreEqual(5, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+        Assert.AreEqual(5, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Saturday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Sunday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Thursday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Friday));
     }
 
     /// <summary>
@@ -95,16 +95,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void SundayToFriday_WhenAccessed_ShouldContainExpectedDays()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.SundayToFriday;
+        DayOfWeekSet days = DayOfWeekSet.SundayToFriday;
 
-        Assert.AreEqual(6, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
+        Assert.AreEqual(6, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Sunday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Thursday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Friday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Saturday));
     }
 
     /// <summary>
@@ -114,16 +114,16 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void SundayToThursday_WhenAccessed_ShouldContainExpectedDays()
     {
-        DayOfWeekSet pattern = DayOfWeekSet.SundayToThursday;
+        DayOfWeekSet days = DayOfWeekSet.SundayToThursday;
 
-        Assert.AreEqual(5, pattern.Count);
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
+        Assert.AreEqual(5, days.Count);
+        Assert.IsTrue(days.Contains(DayOfWeek.Sunday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Thursday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Friday));
+        Assert.IsFalse(days.Contains(DayOfWeek.Saturday));
     }
 
 }

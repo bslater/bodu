@@ -16,12 +16,12 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenAllBinarySpecifiersUsedOnSameInstance_ShouldProduceIdenticalOutput()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        string s0 = pattern.ToString("0");
-        string s1 = pattern.ToString("1");
-        string sB = pattern.ToString("B");
-        string s01 = pattern.ToString("01");
+        string s0 = days.ToString("0");
+        string s1 = days.ToString("1");
+        string sB = days.ToString("B");
+        string s01 = days.ToString("01");
 
         Assert.AreEqual(s0, s1, "Formats '0' and '1' should produce identical output.");
         Assert.AreEqual(s0, sB, "Formats '0' and 'B' should produce identical output.");
@@ -52,10 +52,10 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenCalledViaIFormattableInterface_ShouldMatchConcreteOverload()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        IFormattable formattable = pattern;
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        IFormattable formattable = days;
 
-        Assert.AreEqual(pattern.ToString("M", null), formattable.ToString("M", null));
+        Assert.AreEqual(days.ToString("M", null), formattable.ToString("M", null));
     }
 
     /// <summary>
@@ -65,8 +65,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenCalledWithNoArguments_ShouldReturnSundayFirstWithUnderscores()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("_M_W_F_", pattern.ToString());
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("_M_W_F_", days.ToString());
     }
     /// <summary>
     /// Verifies that the default <see cref="DayOfWeekSet.ToString()" /> overload returns a Sunday-first
@@ -75,8 +75,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenCalledWithoutParameters_ShouldUseDefaultFormat()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday);
-        Assert.AreEqual("SM_____", pattern.ToString());
+        var days = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday);
+        Assert.AreEqual("SM_____", days.ToString());
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenCastToIFormattable_ShouldSucceed()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday);
-        var formattable = pattern as IFormattable;
+        var days = new DayOfWeekSet(DayOfWeek.Monday);
+        var formattable = days as IFormattable;
 
         Assert.IsNotNull(formattable,
             "DayOfWeekSet must implement IFormattable for composite formatting to work.");
@@ -102,8 +102,8 @@ public partial class DayOfWeekSetTests
     [DataRow("B", "1100001")]
     public void ToString_WhenFormatAndProviderProvided_ShouldFormatCorrectly(string format, string expected)
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
-        Assert.AreEqual(expected, pattern.ToString(format, null));
+        var days = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
+        Assert.AreEqual(expected, days.ToString(format, null));
     }
 
     /// <summary>
@@ -113,8 +113,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIs0_ShouldReturnBinaryString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("0"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("0101010", days.ToString("0"));
     }
 
     /// <summary>
@@ -124,8 +124,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIs01_ShouldReturnBinaryString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("01"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("0101010", days.ToString("01"));
     }
 
     /// <summary>
@@ -142,8 +142,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIs1_ShouldReturnBinaryString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("1"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("0101010", days.ToString("1"));
     }
 
     /// <summary>
@@ -153,8 +153,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIsB_ShouldReturnBinaryString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("B"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("0101010", days.ToString("B"));
     }
 
     /// <summary>
@@ -164,8 +164,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIsMondayFirst_ShouldReturnCorrectMondayFirstString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("M_W_F__", pattern.ToString("M"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("M_W_F__", days.ToString("M"));
     }
 
     /// <summary>
@@ -175,8 +175,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIsMondayFirstWithDash_ShouldReturnCorrectString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("M-W-F--", pattern.ToString("MD"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("M-W-F--", days.ToString("MD"));
     }
 
     /// <summary>
@@ -186,8 +186,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIsNull_ShouldDefaultToSundayFirstFormat()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday);
-        Assert.AreEqual(pattern.ToString("S"), pattern.ToString((string?)null, null));
+        var days = new DayOfWeekSet(DayOfWeek.Monday);
+        Assert.AreEqual(days.ToString("S"), days.ToString((string?)null, null));
     }
 
     /// <summary>
@@ -197,8 +197,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIsSundayFirst_ShouldReturnCorrectSundayFirstString()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("_M_W_F_", pattern.ToString("S"));
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("_M_W_F_", days.ToString("S"));
     }
 
     /// <summary>
@@ -222,8 +222,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatProviderProvided_ShouldIgnoreProvider()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
-        Assert.AreEqual("M____SS", pattern.ToString("M", System.Globalization.CultureInfo.InvariantCulture));
+        var days = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
+        Assert.AreEqual("M____SS", days.ToString("M", System.Globalization.CultureInfo.InvariantCulture));
     }
 
     /// <summary>
@@ -233,9 +233,9 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormattedViaStringFormat_ShouldApplyFormatSpecifier()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        var days = new DayOfWeekSet(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        string result = string.Format("{0:M}", pattern);
+        string result = string.Format("{0:M}", days);
 
         Assert.AreEqual("M_W_F__", result,
             "string.Format should apply the format specifier via IFormattable.");
@@ -248,11 +248,11 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenInvalidFormat_ShouldThrowExactly()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday);
+        var days = new DayOfWeekSet(DayOfWeek.Monday);
 
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = pattern.ToString("X");
+            _ = days.ToString("X");
         });
 
         StringAssert.Contains(ex.Message, "'X'");
@@ -265,8 +265,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenFormatIsEmpty_ShouldUseDefaultFormat()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday);
-        Assert.AreEqual("SM_____", pattern.ToString(string.Empty));
+        var days = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday);
+        Assert.AreEqual("SM_____", days.ToString(string.Empty));
     }
 
     /// <summary>
@@ -276,11 +276,11 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void ToString_WhenTwoCharFormatHasInvalidStartDay_ShouldThrowExactly()
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Monday);
+        var days = new DayOfWeekSet(DayOfWeek.Monday);
 
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = pattern.ToString("XU");
+            _ = days.ToString("XU");
         });
     }
 
@@ -297,8 +297,8 @@ public partial class DayOfWeekSetTests
     [DataRow("b", "1100001")]
     public void ToString_WhenValidFormat_ShouldFormatCorrectly(string format, string expected)
     {
-        var pattern = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
-        Assert.AreEqual(expected, pattern.ToString(format));
+        var days = new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
+        Assert.AreEqual(expected, days.ToString(format));
     }
 
 }

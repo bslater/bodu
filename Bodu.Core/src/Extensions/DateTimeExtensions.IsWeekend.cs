@@ -101,7 +101,7 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Resolves the effective week pattern for a working-week day-stepping walk, or <see langword="null" /> when
+    /// Resolves the effective working week for a day-stepping walk, or <see langword="null" /> when
     /// <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" /> and <paramref name="provider" /> must
     /// be consulted per day instead.
     /// </summary>
@@ -119,7 +119,7 @@ public static partial class DateTimeExtensions
     /// <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Hoists the working-week validation and pattern conversion that
+    /// Hoists the working-week validation and conversion that
     /// <see cref="IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" /> would otherwise repeat on
     /// every stepped day of a <c>NextWeekday</c> / <c>PreviousWeekday</c> walk, preserving that method's exception
     /// contract for the Custom-without-provider case.

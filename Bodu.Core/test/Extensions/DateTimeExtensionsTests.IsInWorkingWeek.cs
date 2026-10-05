@@ -11,10 +11,10 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, DayOfWeekSet)" /> returns
-    /// <see langword="true" /> when the date's day-of-week is selected in the supplied pattern.
+    /// <see langword="true" /> when the date's day-of-week is selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void IsInWorkingWeek_WhenDayInPattern_ShouldReturnTrue()
+    public void IsInWorkingWeek_WhenDayInSet_ShouldReturnTrue()
     {
         var monday = new DateTime(2026, 5, 11);
 
@@ -23,10 +23,10 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, DayOfWeekSet)" /> returns
-    /// <see langword="false" /> when the date's day-of-week is not selected in the supplied pattern.
+    /// <see langword="false" /> when the date's day-of-week is not selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void IsInWorkingWeek_WhenDayNotInPattern_ShouldReturnFalse()
+    public void IsInWorkingWeek_WhenDayNotInSet_ShouldReturnFalse()
     {
         var saturday = new DateTime(2026, 5, 16);
 

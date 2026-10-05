@@ -11,10 +11,10 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, DayOfWeekSet)" /> returns
-    /// <see langword="false" /> when the date's day-of-week is selected in the supplied pattern.
+    /// <see langword="false" /> when the date's day-of-week is selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void IsRestDay_WhenDayInPattern_ShouldReturnFalse()
+    public void IsRestDay_WhenDayInSet_ShouldReturnFalse()
     {
         var monday = new DateTime(2026, 5, 11);
 
@@ -22,10 +22,10 @@ public partial class DateTimeExtensionsTests
     }
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, DayOfWeekSet)" /> returns
-    /// <see langword="true" /> when the date's day-of-week is not selected in the supplied pattern.
+    /// <see langword="true" /> when the date's day-of-week is not selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void IsRestDay_WhenDayNotInPattern_ShouldReturnTrue()
+    public void IsRestDay_WhenDayNotInSet_ShouldReturnTrue()
     {
         var saturday = new DateTime(2026, 5, 16);
 

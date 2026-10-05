@@ -151,7 +151,7 @@ public sealed partial class DayOfWeekSetTests
         yield return new object[] { "SMTWTF", null };
         yield return new object[] { "SMTWTFSS", null };
 
-        // Abbreviated day lists: a pattern is always seven characters, one per day, so these are not patterns
+        // Abbreviated day lists: a mask is always seven characters, one per day, so these are not masks
         yield return new object[] { "MF", null };
         yield return new object[] { "SaSu", null };
 

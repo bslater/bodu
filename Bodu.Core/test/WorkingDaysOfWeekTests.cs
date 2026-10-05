@@ -56,11 +56,11 @@ public class WorkingDaysOfWeekTests
     [DynamicData(nameof(GetNamedPresetTestData))]
     public void ToDayOfWeekSet_WhenNamedPreset_ShouldSelectExpectedDays(WorkingDaysOfWeek value, DayOfWeek[] expectedDays)
     {
-        var pattern = value.ToDayOfWeekSet();
+        var days = value.ToDayOfWeekSet();
 
-        Assert.AreEqual(expectedDays.Length, pattern.Count);
+        Assert.AreEqual(expectedDays.Length, days.Count);
         foreach (DayOfWeek day in expectedDays)
-            Assert.IsTrue(pattern.Contains(day), $"Expected pattern for {value} to include {day}.");
+            Assert.IsTrue(days.Contains(day), $"Expected the set for {value} to include {day}.");
     }
 
     /// <summary>
@@ -98,9 +98,9 @@ public class WorkingDaysOfWeekTests
     [DynamicData(nameof(GetNamedPresetTestData))]
     public void ToWorkingDaysOfWeek_WhenRoundTripFromNamedPreset_ShouldReturnOriginal(WorkingDaysOfWeek value, DayOfWeek[] _)
     {
-        var pattern = value.ToDayOfWeekSet();
+        var days = value.ToDayOfWeekSet();
 
-        var roundTripped = pattern.ToWorkingDaysOfWeek();
+        var roundTripped = days.ToWorkingDaysOfWeek();
 
         Assert.AreEqual(value, roundTripped);
     }
@@ -113,9 +113,9 @@ public class WorkingDaysOfWeekTests
     [DynamicData(nameof(GetNamedPresetTestData))]
     public void TryGetWorkingDaysOfWeek_WhenNamedPreset_ShouldReturnTrueAndExpectedValue(WorkingDaysOfWeek value, DayOfWeek[] _)
     {
-        var pattern = value.ToDayOfWeekSet();
+        var days = value.ToDayOfWeekSet();
 
-        bool success = pattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek actual);
+        bool success = days.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek actual);
 
         Assert.IsTrue(success);
         Assert.AreEqual(value, actual);
@@ -143,11 +143,11 @@ public class WorkingDaysOfWeekTests
     [TestMethod]
     public void ToDayOfWeekSet_WhenAllDays_ShouldSelectAllSevenDays()
     {
-        var pattern = WorkingDaysOfWeek.AllDays.ToDayOfWeekSet();
+        var days = WorkingDaysOfWeek.AllDays.ToDayOfWeekSet();
 
-        Assert.AreEqual(7, pattern.Count);
+        Assert.AreEqual(7, days.Count);
         for (int i = 0; i < 7; i++)
-            Assert.IsTrue(pattern.Contains((DayOfWeek)i), $"Expected AllDays to include {(DayOfWeek)i}.");
+            Assert.IsTrue(days.Contains((DayOfWeek)i), $"Expected AllDays to include {(DayOfWeek)i}.");
     }
 
     /// <summary>
@@ -155,16 +155,16 @@ public class WorkingDaysOfWeekTests
     /// routes <see cref="WorkingDaysOfWeek.Custom" /> through the supplied provider.
     /// </summary>
     [TestMethod]
-    public void ToDayOfWeekSet_WhenCustomWithProvider_ShouldReturnProviderImpliedPattern()
+    public void ToDayOfWeekSet_WhenCustomWithProvider_ShouldReturnProviderImpliedSet()
     {
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
-        var pattern = WorkingDaysOfWeek.Custom.ToDayOfWeekSet(provider);
+        var days = WorkingDaysOfWeek.Custom.ToDayOfWeekSet(provider);
 
-        Assert.AreEqual(6, pattern.Count);
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
-        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
+        Assert.AreEqual(6, days.Count);
+        Assert.IsFalse(days.Contains(DayOfWeek.Friday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Saturday));
+        Assert.IsTrue(days.Contains(DayOfWeek.Sunday));
     }
 
     /// <summary>
@@ -185,14 +185,14 @@ public class WorkingDaysOfWeekTests
     /// definition onto the complement <see cref="DayOfWeekSet" />.
     /// </summary>
     [TestMethod]
-    public void IWeekendDefinitionProviderToWeekPattern_WhenProviderReturnsFridayOnly_ShouldSelectAllOtherDays()
+    public void IWeekendDefinitionProviderToDayOfWeekSet_WhenProviderReturnsFridayOnly_ShouldSelectAllOtherDays()
     {
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
-        var pattern = provider.ToDayOfWeekSet();
+        var days = provider.ToDayOfWeekSet();
 
-        Assert.AreEqual(6, pattern.Count);
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+        Assert.AreEqual(6, days.Count);
+        Assert.IsFalse(days.Contains(DayOfWeek.Friday));
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ public class WorkingDaysOfWeekTests
     /// <see cref="ArgumentNullException" /> when the provider argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IWeekendDefinitionProviderToWeekPattern_WhenProviderIsNull_ShouldThrowExactly()
+    public void IWeekendDefinitionProviderToDayOfWeekSet_WhenProviderIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

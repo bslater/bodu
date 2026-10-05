@@ -11,7 +11,7 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, DayOfWeekSet)" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the supplied pattern is empty.
+    /// <see cref="ArgumentOutOfRangeException" /> when the supplied set is empty.
     /// </summary>
     [TestMethod]
     public void NextWeekday_WhenWorkingWeekIsEmpty_ShouldThrowExactly()
@@ -25,7 +25,7 @@ public partial class DateTimeExtensionsTests
     }
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, DayOfWeekSet)" /> returns the first day after
-    /// the input whose day-of-week is selected in the supplied pattern.
+    /// the input whose day-of-week is selected in the supplied set.
     /// </summary>
     [TestMethod]
     public void NextWeekday_WhenWorkingWeekIsMondayToFriday_ShouldSkipWeekend()
@@ -40,10 +40,10 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, DayOfWeekSet)" /> with a Sunday-to-Thursday
-    /// pattern lands on Sunday when starting on Thursday (Friday and Saturday are non-working).
+    /// working week lands on Sunday when starting on Thursday (Friday and Saturday are non-working).
     /// </summary>
     [TestMethod]
-    public void NextWeekday_WhenWeekPatternIsSundayToThursday_ShouldSkipFridayAndSaturday()
+    public void NextWeekday_WhenWorkingWeekIsSundayToThursday_ShouldSkipFridayAndSaturday()
     {
         // 2024-04-18 is a Thursday.
         var thursday = new DateTime(2024, 4, 18);
@@ -55,7 +55,7 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, DayOfWeekSet)" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the supplied pattern is empty.
+    /// <see cref="ArgumentOutOfRangeException" /> when the supplied set is empty.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWorkingWeekIsEmpty_ShouldThrowExactly()
@@ -70,10 +70,10 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, DayOfWeekSet)" /> returns the first day
-    /// before the input whose day-of-week is selected in the supplied pattern.
+    /// before the input whose day-of-week is selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void PreviousWeekday_WhenWeekPatternIsMondayToFriday_ShouldSkipWeekend()
+    public void PreviousWeekday_WhenWorkingWeekIsMondayToFriday_ShouldSkipWeekend()
     {
         // 2024-04-22 is a Monday.
         var monday = new DateTime(2024, 4, 22);
