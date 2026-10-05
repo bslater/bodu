@@ -441,6 +441,9 @@
   <data name="Format_Invalid_Character" xml:space="preserve">
     <value>Input string contains an invalid character '{0}' at position {1}.</value>
   </data>
+  <data name="Format_Invalid_DayOfWeekSetFormat" xml:space="preserve">
+    <value>'{0}' is not a day-of-week set format.</value>
+  </data>
   <data name="Format_Invalid_FileSize" xml:space="preserve">
     <value>Unrecognized file size format.</value>
   </data>

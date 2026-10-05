@@ -1041,6 +1041,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a day-of-week set format..
+        /// </summary>
+        internal static string Format_Invalid_DayOfWeekSetFormat {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DayOfWeekSetFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unrecognized file size format..
         /// </summary>
         internal static string Format_Invalid_FileSize {
