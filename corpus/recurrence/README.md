@@ -2,9 +2,10 @@
 
 External evidence used to validate `Bodu.Globalization.Recurrence`, kept in the repository so
 every reconciliation is reproducible from committed artifacts. The reconciliation tests that
-consume these tables live with the recurrence tests
-(`Bodu.Globalization.Recurrence/test/Fixtures/Vectors/`, copied from here at build time); this
-tree holds the *sources they are reconciled against* and the tooling that derives them.
+consume these tables live with the recurrence tests, which read committed copies of them
+(`Bodu.Globalization.Recurrence/test/Fixtures/Vectors/`) and fail when a copy and its source here
+differ; this tree holds the *sources they are reconciled against* and the tooling that derives
+them.
 
 ## There is no single official recurrence corpus
 
