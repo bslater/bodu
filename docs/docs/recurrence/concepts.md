@@ -89,9 +89,11 @@ A <xref:Bodu.Globalization.Recurrence.CronExpression> matches an instant when ea
 
 **Macros.** `@yearly` / `@annually` (`0 0 1 1 *`), `@monthly` (`0 0 1 * *`), `@weekly` (`0 0 * * 0`), `@daily` / `@midnight` (`0 0 * * *`), and `@hourly` (`0 * * * *`) expand to the five-field layout; requesting `CronFormat.WithSeconds` for a macro is a parse failure. `@reboot` and `@every` are not cron schedules and are not recognized.
 
-**Layout.** `Parse(string)` infers `Standard` or `WithSeconds` from the field count; `Parse(string, CronFormat)` insists on one. The Quartz extensions `L`, `W`, `#`, and `?` are not yet supported and throw `NotSupportedException` rather than parsing to something else.
+**Quartz day tokens.** The day-of-month field also accepts `L` (the last day of the month), `L-n` (n days before it), `nW` (the weekday nearest day n, without leaving the month), and `LW` / `L-nW`; the day-of-week field accepts `dL` (the month's last weekday d) and `d#k` (its k-th, `MON#1` being the first Monday); and either accepts `?` for `*`. A token stands for the whole field and counts as a restriction for the union rule, and weekday numbers stay Vixie's (0 or 7 for Sunday) rather than Quartz's (1 for Sunday), so `FRI#3` is the safest spelling of the third Friday.
 
-**Canonical text.** `ToString()` renders each field as `*` or an ascending comma-separated numeric list - `0 2 * * MON-FRI` becomes `0 2 * * 1,2,3,4,5` and `@daily` becomes `0 0 * * *` - and two expressions that select the same field sets are equal regardless of how they were spelled.
+**Layout.** `Parse(string)` infers `Standard` or `WithSeconds` from the field count; `Parse(string, CronFormat)` insists on one. A seven-field Quartz expression with a trailing year fails on its field count.
+
+**Canonical text.** `ToString()` renders each field as `*` or an ascending comma-separated numeric list - `0 2 * * MON-FRI` becomes `0 2 * * 1,2,3,4,5` and `@daily` becomes `0 0 * * *` - or as the canonical form of its Quartz token (`FRIL` becomes `5L`), and two expressions that select the same field sets are equal regardless of how they were spelled.
 
 ## The twelve-year search horizon
 

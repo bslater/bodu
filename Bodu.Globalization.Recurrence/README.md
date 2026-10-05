@@ -37,7 +37,7 @@ Targets `net8.0` and `net10.0`. Depends only on
 |---|---|---|
 | `RecurrenceRule` | RFC 5545 `RRULE` | Calendar-style recurrence at every frequency from `SECONDLY` to `YEARLY`: `FREQ`/`INTERVAL`/`COUNT`/`UNTIL`/`WKST` and the full `BY*` model incl. `BYSETPOS` |
 | `RecurrenceSet` | iCalendar property block | One or more rules composed with explicit `RDATE` additions and `EXDATE` exclusions |
-| `CronExpression` | Vixie cron | Five-field, optional-seconds six-field, and the `@yearly`…`@hourly` macros |
+| `CronExpression` | Vixie cron | Five-field, optional-seconds six-field, the `@yearly`…`@hourly` macros, and the Quartz day tokens `L`, `W`, `#` and `?` |
 | `AnchoredInterval` | RFC 5545 §3.3.6 duration | `anchor + k·interval` for `k ≥ 1`, with the anchor passed per query |
 
 `RecurrenceRule` implements `IParsable`/`ISpanParsable`/`IFormattable` and round-trips its canonical
@@ -63,8 +63,8 @@ limits alongside `BYMONTHDAY`, and `BYWEEKNO` numbering generalized from the ISO
 
 ## Known limits
 
-- **Quartz cron extensions** (`L`, `W`, `#`, `?`) are rejected with `NotSupportedException`; the
-  parser is Vixie-compatible.
+- The Quartz day tokens keep Vixie's weekday numbering (0 or 7 for Sunday) and union rule, so a
+  Quartz expression that names weekdays by number, or restricts both day fields, reads differently.
 - `CronExpression` searches a documented 12-year horizon before reporting no occurrence.
 - No `.ics` reader - this package evaluates rules, it does not parse calendar files.
 

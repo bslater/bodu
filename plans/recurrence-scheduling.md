@@ -1,11 +1,11 @@
 # Implementation plan: the shared recurrence and scheduling requirements
 
-**Status:** Implemented: every capability in §4's Phases 0-8 is in the codebase, and the
-package is in the release manifest (first shipped in the 0.6.0 wave). Two phases landed for
+**Status:** Implemented: every capability in §4's Phases 0-9 is in the codebase, and the
+package is in the release manifest (first shipped in the 0.6.0 wave). Three phases landed for
 1.3.0: Phase 7, the steady-state speed-up, begins the point queries and windows of
 `RecurrenceRule` and `RecurrenceSet` at the frequency period that holds the query instead of at
-the series start, and Phase 8, beyond the requirements, enumerates the sub-daily frequencies
-(outcomes in §4) · **Source:** FallbackPlan requirements document
+the series start; Phase 8, beyond the requirements, enumerates the sub-daily frequencies; and
+Phase 9, also beyond them, accepts the Quartz day tokens in cron (outcomes in §4) · **Source:** FallbackPlan requirements document
 (`REC-F-*` / `REC-N-*`, dated 2026-08-05) · **Target:** `Bodu.Globalization.Recurrence`
 
 This plan maps the FallbackPlan requirements statement onto the Bodu
@@ -533,6 +533,140 @@ stream-agreement tests run, on net10.0:
   stretch's search include the time it is measured from finds a distance
   of zero, which already reads as no allowed time.
 
+### Phase 9 - Quartz day tokens in cron *(done, for 1.3.0; beyond the requirements)*
+
+§6 left the Quartz cron extensions out of scope, and the parser rejected
+`L`, `W`, `#` and `?` with `NotSupportedException`. The ROADMAP kept them
+as a deferred follow-on, and Cronos's vector table already held 319 rows
+that use them, so they could be added against an independent oracle.
+
+**Outcome.**
+
+- **The grammar** is Cronos's, the most widely used .NET implementation
+  of the tokens. The day-of-month field takes `L`, `L-n` (n from 0 to
+  30), `LW`, `L-nW` and `nW` (n from 1 to 31); the day-of-week field
+  takes `dL` and `d#k` (k a single digit from 1 to 5, d a number from 0
+  to 7 or a name); either takes `?` for `*`. A token stands for the
+  whole field, in either case. In a list, range or step, outside the day
+  fields, or with an offset or ordinal out of range it fails with the
+  `FormatException` any malformed field raises, naming the field, and
+  `L` alone in the day-of-week field, which Quartz reads as Saturday, is
+  rejected as Cronos rejects it.
+- **The semantics.** `L-n` counts back from each month's own length;
+  `nW` and `L-nW` take the weekday nearest the day without leaving the
+  month (a Saturday the 1st moves on to Monday the 3rd, a Sunday that
+  ends the month back to the Friday); `dL` is the weekday d in the
+  month's last seven days and `d#k` the one in its k-th seven; a token
+  that names no day of a month selects nothing in it. Each token is a
+  private `DayToken` record that decides a day on its own.
+- **The searches.** An expression without a token searches exactly as
+  before. One with a token searches through copies of the two loops,
+  `FindNextWithTokens` and `FindPreviousWithTokens`, that test the day
+  with `TokenDayMatches`. The first version tested the tokens in the
+  loops every expression shares; those loops test the day on every step,
+  minutes included, and the call the test added, though an expression
+  without a token never made it, cost such an expression 10% to 30% of
+  its query time on both runtimes. Making the shared loops generic over
+  the day test brought .NET 8 back but left .NET 10 up to a quarter
+  slower under dynamic PGO, for near-identical machine code, so the
+  loops were copied instead.
+- **The Vixie rules kept.** A token is a restriction for the union rule,
+  so `0 0 L * MON` fires on the last day and on every Monday, where Quartz
+  requires `?` in one of the two fields and Cronos intersects them; `?`,
+  like `*`, is not a restriction. Weekday numbers stay Vixie's, 0 or 7 for
+  Sunday, which is Cronos's numbering too but not Quartz's (1 for Sunday).
+- **Canonical text and equality.** A token is written in upper case with
+  a numeric weekday and no zero offset (`FRIL` as `5L`, `L-0W` as `LW`),
+  and `?` as `*`. Equality compares the canonical token beside the field
+  sets, so `0L` equals `7L` while `* * 31 1 *` does not equal
+  `* * L 1 *`, as Cronos also holds.
+- **Tests.** `CronExpressionTests.QuartzTokens` pins each token's next and
+  previous occurrence across month ends, short months and the
+  nearest-weekday edge cases, the union with values in the other field in
+  both directions, and `?` equal to `*` (BVT); in the Regression tier, 240
+  seeded schedules mixing every token with value lists are held, through
+  the next and previous occurrence with and without `inclusive` at seeded
+  probes from 1996 to 2036 and on the answers themselves, and through
+  their canonical text, to `CronTokenReference`, which lists each month's
+  days as each token's definition reads and walks the calendar a day at a
+  time. `CronExpressionTests.Equality` and `.TryParse` gain token rows.
+  The Cronos corpus's `quartz-ext` flag now marks rather than excludes,
+  which brings 282 next-occurrence, 22 canonical-text, 7 equal, 4
+  not-equal and 4 unreachable rows into reconciliation: 1,074 of the
+  1,354 rows run, with no differences. The malformed token rows were
+  rejection rows before and still fail.
+- **Mutation checks.** Each mutation was applied alone to the token
+  sources and the cron tests and the Cronos corpus run on net10.0; the
+  counts are the tests that failed.
+
+| Mutation | Failing tests |
+|---|---:|
+| `L` selects the day before the last | 126 |
+| `L-nW` drops a day counted back to the 1st | 2 |
+| `nW` drops a day n equal to the month's length | 13 |
+| `dL` takes the last eight days | 4 |
+| `d#k` counts weeks from day zero | 3 |
+| A Saturday the 1st moves back out of the month | 10 |
+| A Sunday that ends the month moves on out of it | 15 |
+| A Saturday the 1st moves to the Sunday | 10 |
+| A Sunday that ends the month moves back to the Saturday | 21 |
+| `L-n` accepts an offset of 31 | 5 |
+| `d#k` accepts a sixth | 7 |
+| `?` is not read as `*` in the day-of-month field | 14 |
+| A day-of-month token is not a restriction | 3 |
+| A day-of-week token is not a restriction | 3 |
+| The weekday 7 is kept as 7 in `dL` | 8 |
+| `Equals` ignores the day-of-month token | 4 |
+| `Equals` ignores the day-of-week token | 3 |
+| `L-0` is written as `L-0` | 4 |
+| `L-0W` is written as `L-0W` | 4 |
+| The tokens are never consulted | 303 |
+| The token search forward skips a day | 105 |
+| The token search forward skips an hour | 36 |
+| The token search back skips a day | 6 |
+| The token search back steps a minute too far | 7 |
+| The day-of-week token is ignored when matching | 71 |
+
+  The first run left `Equals` ignoring the day-of-week token uncaught,
+  and caught five other mutations with one or two tests; the token rows
+  of the equality tests, a day-of-week token beside a day-of-month
+  value, and `L-30W` across a Sunday the 1st were added for them, and
+  the counts above are from the run after.
+
+Median microseconds per call, before and after, the two builds run
+interleaved, three rounds each, in one process per runtime on the
+4-vCPU Intel Xeon at 2.10 GHz, the queries at 12:00:07 on 4 October 2026.
+An expression without a token searches as fast as before:
+
+| Query | .NET 8 before | .NET 8 after | .NET 10 before | .NET 10 after |
+|---|---:|---:|---:|---:|
+| `*/15 9-17 * * MON-FRI`, next | 0.31 | 0.30 | 0.25 | 0.27 |
+| Same, previous | 0.59 | 0.55 | 0.49 | 0.52 |
+| `0 2 * * *`, next | 0.37 | 0.36 | 0.32 | 0.32 |
+| Same, previous | 1.43 | 1.48 | 1.39 | 1.42 |
+| `0 0 1 * *`, next | 0.65 | 0.64 | 0.54 | 0.54 |
+| Same, previous | 1.82 | 1.82 | 1.73 | 1.69 |
+| `0 0 29 2 *`, next | 1.84 | 1.83 | 1.75 | 1.72 |
+| Same, previous | 3.51 | 3.46 | 3.33 | 3.35 |
+
+The token expressions, which failed to parse before, next and previous:
+
+| Query | .NET 8 | .NET 10 |
+|---|---:|---:|
+| `0 23 L * *` | 1.58 / 2.07 | 1.49 / 1.99 |
+| `0 18 LW * *` | 2.04 / 3.09 | 1.90 / 2.97 |
+| `0 9 15W * *` | 0.92 / 4.03 | 0.87 / 3.84 |
+| `0 17 * * FRIL` | 1.64 / 2.98 | 1.59 / 2.75 |
+| `0 9 * * MON#1` | 0.52 / 4.03 | 0.45 / 3.81 |
+| `0 9 * * MON#5` | 2.31 / 4.31 | 2.24 / 4.00 |
+
+**Left for later.** Within an hour that matches, both searches step a
+minute at a time, so a backward query that ends on minute 0 visits the
+hour's other 59 minutes first, which is most of the cost of the
+`previous` rows above. A table of the nearest allowed value of each
+field would skip them; it is unrelated to the tokens and was left for a
+change of its own.
+
 ## 5. Traceability
 
 | Requirement | Disposition |
@@ -561,10 +695,10 @@ stream-agreement tests run, on net10.0:
 ## 6. Out of scope (unchanged from the requirements' §6)
 
 Timers/pollers/job runners, timezone resolution, schedule-text
-localisation, calendar data, and Quartz cron extensions (`L`/`W`/`#`/`?`),
-which remain on the ROADMAP's deferred list. Sub-daily RRULE enumeration,
-listed here originally as parse-only and not required by REC-F-001,
-landed for 1.3.0 as Phase 8.
+localisation, and calendar data. Two items listed here originally landed
+for 1.3.0 beyond the requirements: sub-daily RRULE enumeration, parse-only
+before and not required by REC-F-001, as Phase 8, and the Quartz cron day
+tokens (`L`/`W`/`#`/`?`), rejected before, as Phase 9.
 
 ## 7. Decisions taken in this plan (previously open)
 

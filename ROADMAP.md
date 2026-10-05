@@ -236,7 +236,7 @@ The data-pack requirement is simply the shape they ship in.
 | `Bodu.Financial.DependencyInjection` | `AddFinancialService`, currency-resolution registration. |
 | `Bodu.Financial.Serialization.Json` | `System.Text.Json` integration for `Bodu.Financial` (`AddFinancialJsonConverters`, `AddFinancialJson`). Keeps the core serialization-agnostic. |
 | `Bodu.Extensions.Configuration.Text` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. Core-only besides the text packages it builds on, all of which shipped at 0.5.0. |
-| `Bodu.Globalization.Recurrence` | RFC 5545 `RRULE`, `RecurrenceSet`, Vixie cron, and `AnchoredInterval`. Preview: sub-daily frequencies parsed and round-tripped but threw `NotSupportedException` on enumeration until 1.3.0. |
+| `Bodu.Globalization.Recurrence` | RFC 5545 `RRULE`, `RecurrenceSet`, Vixie cron, and `AnchoredInterval`. Preview: sub-daily frequencies parsed and round-tripped but threw `NotSupportedException` on enumeration, and cron rejected the Quartz day tokens, until 1.3.0. |
 | `Bodu.Globalization.Calendar` | Multi-assembly rule resolution. The parameterless `NotableDateService()` does not load every region's rules; consumers reference a data pack. |
 | `Bodu.Globalization.Calendar.{Americas,AsiaPacific,Europe,MiddleEast,Africa}` | The five regional data packs (authoritative country set below). |
 | `Bodu.Globalization.Calendar.{Builder,DependencyInjection,Plugins}` | Authoring API, DI registration, trust-gated plugin loader. |
@@ -1612,9 +1612,12 @@ filter were added to *Non-goals* instead.
   `MINUTELY`, `SECONDLY`), which had parsed and round-tripped but thrown
   `NotSupportedException`, held to RFC 5545's examples, libical's
   counts, python-dateutil's output for 200 generated rules, and a
-  reference model that visits every period. Deferred follow-ons: Quartz
-  cron extensions (`L`/`W`/`#`/`?`) and a read-only `.ics` (iCalendar)
-  reader.
+  reference model that visits every period. A sixth pass, also for
+  1.3.0, accepts the Quartz day tokens in cron (`L`, `L-n`, `nW`, `LW`,
+  `dL`, `d#k` and `?`) in the shapes Cronos accepts, keeping Vixie's
+  weekday numbering and union rule, which brings Cronos's 319 token
+  vectors into reconciliation. Deferred follow-on: a read-only `.ics`
+  (iCalendar) reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in

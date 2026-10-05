@@ -50,7 +50,7 @@ public static class ConfigurationValidation
             ("standup", "set", "DTSTART:20260105T090000\r\nRRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"),
             ("bad.cronRange", "cron", "0 25 * * *"),
             ("bad.cronName", "cron", "0 8 * * MONDAY"),
-            ("bad.quartz", "cron", "0 0 L * *"),
+            ("bad.quartz", "cron", "0 0 L-31 * *"),
             ("bad.duration", "interval", "PT5"),
             ("bad.negative", "interval", "-P1D"),
             ("bad.freq", "rrule", "FREQ=FORTNIGHTLY"),

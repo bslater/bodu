@@ -49,17 +49,17 @@ Five `TryParse` overloads cover the same choices without exceptions. The two tha
 ```csharp
 using Bodu.Globalization.Recurrence;
 
-string[] candidates = ["0 2 * *", "60 * * * *", "0 0 ? * *", "0 2 * * FOO"];
+string[] candidates = ["0 2 * *", "60 * * * *", "0 0 L-31 * *", "0 2 * * FOO"];
 
 foreach (string text in candidates)
 {
     if (!CronExpression.TryParse(text, out CronExpression? expression, out string? failureMessage))
         Console.WriteLine($"'{text}': {failureMessage}");
 }
-// '0 2 * *':     A cron expression must contain the number of fields required by the specified format.
-// '60 * * * *':  The cron field '60' is not valid.
-// '0 0 ? * *':   The cron token '?' is not supported; the Quartz L, W, and # extensions are a planned follow-on.
-// '0 2 * * FOO': The cron field 'FOO' is not valid.
+// '0 2 * *':      A cron expression must contain the number of fields required by the specified format.
+// '60 * * * *':   The cron field '60' is not valid.
+// '0 0 L-31 * *': The cron field 'L-31' is not valid.
+// '0 2 * * FOO':  The cron field 'FOO' is not valid.
 
 // Layout-pinned variant, and the boolean-only overloads:
 bool six = CronExpression.TryParse("0 */5 * * * *", CronFormat.WithSeconds, out CronExpression? withSeconds, out string? why);
@@ -67,20 +67,20 @@ bool ok  = CronExpression.TryParse("@daily", out CronExpression? daily);
 bool ok2 = CronExpression.TryParse("@daily", CronFormat.Standard, out CronExpression? daily2);
 ```
 
-`Parse` raises the same messages as <xref:System.FormatException>, or <xref:System.NotSupportedException> for a Quartz token (`?`, `L`, `W`, `#`). A seven-field Quartz string with a trailing year is rejected on field count.
+`Parse` raises the same messages as <xref:System.FormatException>. A seven-field Quartz string with a trailing year is rejected on field count.
 
 ## Field syntax
 
-Every field accepts `*`, a single value, a range `a-b`, a step `*/n` or `a-b/n`, and comma-separated lists of those. Months take `JAN`-`DEC` and weekdays `SUN`-`SAT`, case-insensitively; weekday `7` is an alias for Sunday (`0`).
+Every field accepts `*`, a single value, a range `a-b`, a step `*/n` or `a-b/n`, and comma-separated lists of those. Months take `JAN`-`DEC` and weekdays `SUN`-`SAT`, case-insensitively; weekday `7` is an alias for Sunday (`0`). The two day fields also accept `?` and the Quartz day tokens described [below](#the-quartz-day-tokens).
 
 | Field | Range | Notes |
 |---|---|---|
 | second *(six-field only)* | 0-59 | |
 | minute | 0-59 | |
 | hour | 0-23 | |
-| day-of-month | 1-31 | |
+| day-of-month | 1-31 | also `?`, `L`, `L-n`, `LW`, `L-nW`, and `nW` |
 | month | 1-12 or `JAN`-`DEC` | |
-| day-of-week | 0-7 or `SUN`-`SAT` | `0` and `7` are both Sunday |
+| day-of-week | 0-7 or `SUN`-`SAT` | `0` and `7` are both Sunday; also `?`, `dL`, and `d#k` |
 
 Two behaviours are worth stating because libraries disagree on them:
 
@@ -104,6 +104,43 @@ DateTime? rangeStep = CronExpression.Parse("0 0 1-31/2 * MON").GetNextOccurrence
 
 > [!NOTE]
 > Because the combination is chosen by the leading character rather than by the days a field selects, it is part of the expression's meaning. `ToString()` preserves it - `0 0 */2 * MON` renders as `0 0 */2 * 1`, keeping the star - so the canonical text always re-parses to the same schedule, and `Equals` treats the intersection and union readings as different values. Where the plain rendering cannot change the combination, it is used unchanged: `* * */10 * *` still renders as `* * 1,11,21,31 * *`, because the day-of-week `*` keeps that expression on the intersection branch either way.
+
+## The Quartz day tokens
+
+The day fields also accept the tokens Quartz added to cron for days that a list of values cannot name. Each token stands for the whole field:
+
+| Token | Field | Selects |
+|---|---|---|
+| `L` | day-of-month | The last day of the month. |
+| `L-n` | day-of-month | The day n days before the last, for n from 0 to 30: `L-1` is the second-to-last day. |
+| `nW` | day-of-month | The weekday (Monday to Friday) nearest day n, for n from 1 to 31, without leaving the month. |
+| `LW`, `L-nW` | day-of-month | The weekday nearest the last day, or nearest the day n days before it. |
+| `dL` | day-of-week | The month's last weekday d: `FRIL` and `5L` are the last Friday. |
+| `d#k` | day-of-week | The month's k-th weekday d, for k from 1 to 5: `MON#1` is the first Monday. |
+| `?` | either | No restriction, exactly as `*`. |
+
+The weekday nearest a Saturday is the Friday before it, and the weekday nearest a Sunday is the Monday after it, unless that would leave the month: a Saturday that begins the month moves on to Monday the 3rd, and a Sunday that ends it moves back to the Friday. A token that names no day of a month selects nothing in it, so `30W` passes over February and `MON#5` over every month with four Mondays.
+
+<!-- compile -->
+```csharp
+using Bodu.Globalization.Recurrence;
+
+var now = new DateTime(2026, 3, 10, 14, 32, 0);
+
+DateTime? monthEnd    = CronExpression.Parse("0 23 L * *").GetNextOccurrence(now);    // 2026-03-31 23:00
+DateTime? lastFriday  = CronExpression.Parse("0 17 * * FRIL").GetNextOccurrence(now); // 2026-03-27 17:00
+DateTime? firstMonday = CronExpression.Parse("0 9 * * MON#1").GetNextOccurrence(now); // 2026-04-06 09:00
+DateTime? nearFifteen = CronExpression.Parse("0 9 15W * *").GetNextOccurrence(now);   // 2026-03-16 09:00, as the 15th is a Sunday
+
+// The 1st of August 2026 is a Saturday; the nearest weekday that stays in August is Monday the 3rd.
+DateTime? firstWeekday = CronExpression.Parse("0 9 1W * *").GetNextOccurrence(new DateTime(2026, 7, 15));   // 2026-08-03 09:00
+```
+
+Three rules differ from Quartz itself, and matter when an expression is carried over from it:
+
+- **Weekday numbers keep the Vixie numbering**, 0 or 7 for Sunday through 6 for Saturday. Quartz numbers Sunday 1 through Saturday 7, so a Quartz `6#3`, the third Friday, reads here as the third Saturday. A weekday written by name (`FRI#3`) means the same in both.
+- **A token counts as a restriction for the union rule.** `0 0 L * MON` fires on the last day of every month and on every Monday. Quartz requires `?` in one of the two day fields, so it never has to combine them; Cronos, which accepts both, takes the intersection.
+- **A token stands for the whole field.** It cannot be listed, ranged, or stepped (`1,15W`, `L-3/2`, and `MON#1,FRI#1` are rejected), it is not accepted outside the two day fields, and `L` alone in the day-of-week field, which Quartz reads as Saturday, is rejected rather than guessed at.
 
 ## The `@` macros
 
@@ -138,25 +175,23 @@ string canonical = polling.ToString();
 
 To stop at 17:00 rather than 17:45, list the fields explicitly: `*/15 9-16 * * MON-FRI` plus `0 17 * * MON-FRI` as a second expression, or a `RecurrenceRule` with `BYHOUR`/`BYMINUTE`.
 
-## Pattern 4 - last day of the month via next-then-previous
+## Pattern 4 - month-end jobs
 
-Vixie cron has no "last day" token (`L` is a Quartz extension the parser rejects). Derive it from the first of next month:
+`L` selects the last day of each month, whatever its length, and `LW` the last weekday of it, which is the last day itself unless that falls on a weekend:
 
 <!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
-CronExpression firstOfMonth = CronExpression.Parse("0 0 1 * *");
-var now = new DateTime(2026, 3, 10, 14, 32, 0);
+CronExpression close   = CronExpression.Parse("0 23 L * *");
+CronExpression payroll = CronExpression.Parse("0 18 LW * *");
+var now = new DateTime(2026, 5, 10, 9, 0, 0);
 
-DateTime nextFirst = firstOfMonth.GetNextOccurrence(now)!.Value;      // 2026-04-01 00:00
-DateTime lastDay   = nextFirst.AddDays(-1);                           // 2026-03-31 00:00
-
-// For a job "at 23:00 on the last day of the month":
-DateTime lastDayAtEleven = lastDay.AddHours(23);
+DateTime? closing = close.GetNextOccurrence(now);    // 2026-05-31 23:00, a Sunday
+DateTime? paying  = payroll.GetNextOccurrence(now);  // 2026-05-29 18:00, the Friday before it
 ```
 
-Equivalently, `GetPreviousOccurrence` on `0 0 1 * *` from a point in the *next* month gives the same boundary. For a calendar-aligned "last Friday" or "last working day", use a `RecurrenceRule` with `BYSETPOS=-1` - see [RFC 5545 recurrence rules](rrule.md#pattern-6---last-working-day-of-the-month).
+`LW` knows weekends but not public holidays. To skip those too, filter the occurrences with `IsNonWorkingDay` from `Bodu.Globalization.Calendar` - see [Hosting schedules](scheduling-host.md#pattern-5---skip-non-working-days-with-the-calendar-package). The same last-weekday schedule written as a recurrence rule, `FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1`, is [pattern 6 of the rule guide](rrule.md#pattern-6---last-working-day-of-the-month).
 
 ## The search horizon
 
@@ -189,7 +224,7 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
 
 ## Canonical text and equality
 
-`ToString()` renders a field as `*` when every value is selected and otherwise as an ascending comma-separated numeric list - names, ranges, and steps are expanded, and `7` becomes `0`. The two day fields are the exception: where the plain rendering would flip the union / intersection combination, the field keeps a spelling that preserves it (`*/2` stays `*/2`, a restricted but complete field stays `1-31`), so the canonical text always re-parses to an equal expression. `Equals` compares the six field sets, the layout, and that combination, so `0 9-17 * * MON-FRI` equals `0 9,10,11,12,13,14,15,16,17 * * 1-5` while `0 0 */2 * MON` does **not** equal `0 0 1-31/2 * MON` - the two select instants two weeks apart. A single restricted day field is not observable on its own, so `* * * * *` and `* * 1-31 * *` remain equal. Only the `"G"` / `null` format specifier is defined on `ToString(string?, IFormatProvider?)`; anything else throws <xref:System.FormatException>.
+`ToString()` renders a field as `*` when every value is selected and otherwise as an ascending comma-separated numeric list - names, ranges, and steps are expanded, and `7` becomes `0`. The two day fields are the exception: where the plain rendering would flip the union / intersection combination, the field keeps a spelling that preserves it (`*/2` stays `*/2`, a restricted but complete field stays `1-31`), so the canonical text always re-parses to an equal expression. A Quartz day token is written in upper case with a numeric weekday and no zero offset (`FRIL` as `5L`, `L-0W` as `LW`, `MON#1` as `1#1`), and `?` as `*`. `Equals` compares the six field sets, the layout, and that combination, so `0 9-17 * * MON-FRI` equals `0 9,10,11,12,13,14,15,16,17 * * 1-5` while `0 0 */2 * MON` does **not** equal `0 0 1-31/2 * MON` - the two select instants two weeks apart. A single restricted day field is not observable on its own, so `* * * * *` and `* * 1-31 * *` remain equal. A token compares by its canonical form, so `0L` equals `7L` and `L-0` equals `L`, while `0 0 L 1 *` does not equal `0 0 31 1 *` although both fire only on 31 January, as Cronos also holds. Only the `"G"` / `null` format specifier is defined on `ToString(string?, IFormatProvider?)`; anything else throws <xref:System.FormatException>.
 
 ## API summary
 
@@ -202,7 +237,7 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
 | `Format` | The layout the expression was parsed as. |
 | `GetNextOccurrence(after, inclusive = false)` | Next matching instant within twelve years, or `null`; `DateTime` and `DateTimeOffset`. |
 | `GetPreviousOccurrence(before, inclusive = false)` | Previous matching instant within twelve years, or `null`. |
-| `ToString()` / `ToString(string?, IFormatProvider?)` | Canonical numeric-list text. |
+| `ToString()` / `ToString(string?, IFormatProvider?)` | Canonical text: numeric lists and the Quartz day tokens. |
 | `Equals` / `GetHashCode` | Field-set equality. |
 
 ## Where to go next
