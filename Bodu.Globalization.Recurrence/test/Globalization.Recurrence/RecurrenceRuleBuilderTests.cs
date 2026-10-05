@@ -23,7 +23,7 @@ namespace Bodu.Globalization.Recurrence;
 /// </para>
 /// </remarks>
 [TestClass]
-public class RecurrenceRuleBuilderTests
+public partial class RecurrenceRuleBuilderTests
 {
     /// <summary>
     /// Verifies that a rule built with only a frequency formats to that frequency alone.
