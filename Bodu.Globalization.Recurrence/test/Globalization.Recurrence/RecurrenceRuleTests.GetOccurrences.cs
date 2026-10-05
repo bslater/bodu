@@ -195,20 +195,6 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
-    /// Verifies that expanding a sub-daily rule throws <see cref="NotSupportedException" />.
-    /// </summary>
-    [TestMethod]
-    public void GetOccurrences_WhenSubDaily_ShouldThrowNotSupportedException()
-    {
-        RecurrenceRule rule = RecurrenceRule.Parse("FREQ=HOURLY;COUNT=3");
-
-        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
-        {
-            _ = rule.GetOccurrences(new DateTime(1997, 9, 2, 9, 0, 0)).ToArray();
-        });
-    }
-
-    /// <summary>
     /// Verifies that the <see cref="DateTimeOffset" /> overload produces the same wall-clock series as its
     /// <see cref="DateTime" /> counterpart, with the start's offset carried onto every occurrence.
     /// </summary>

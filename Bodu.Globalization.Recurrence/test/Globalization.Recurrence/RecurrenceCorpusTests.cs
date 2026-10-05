@@ -12,19 +12,20 @@ namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
 /// Reconciles the recurrence engine against the committed validation corpora: the normative RFC 5545 §3.8.5.3
-/// worked examples, the occurrence counts libical's reference implementation asserts in its own test data, and the
-/// cron vectors derived from Cronos's test suite.
+/// worked examples, the occurrence counts libical's reference implementation asserts in its own test data, the
+/// occurrences python-dateutil produces for generated sub-daily rules, and the cron vectors derived from Cronos's
+/// test suite.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Provenance, licensing, and the reasoning behind each scope exclusion are recorded in
 /// <c>corpus/recurrence/README.md</c>; the tables here are copies of that tree, embedded so the tests are
-/// reproducible from committed artifacts alone.
+/// reproducible from committed artifacts alone, and held byte-identical to it.
 /// </para>
 /// <para>
-/// Rows the library deliberately does not model - sub-daily frequencies, intra-day time expansion, <c>EXRULE</c>,
-/// and occurrence lists the RFC abbreviates - are excluded by flag and reported by name, never silently passed
-/// over.
+/// Rows a table cannot check - intra-day time expansion in a table that records dates only, occurrence lists the
+/// RFC abbreviates, and <c>EXRULE</c>, which the library does not model - are excluded by flag and reported by name,
+/// never silently passed over.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -39,7 +40,16 @@ public sealed partial class RecurrenceCorpusTests
     /// occurrence does fall inside the window would surface here as a difference, which is the intended signal.
     /// </remarks>
     private static readonly string[] s_excludedFlags =
-        ["sub-daily", "time-expansion", "elided", "exrule"];
+        ["time-expansion", "elided", "exrule"];
+
+    /// <summary>The embedded corpus tables, each with the directory under <c>corpus/recurrence</c> it copies.</summary>
+    private static readonly (string Directory, string FileName)[] s_corpusSources =
+    [
+        ("rfc5545", "rfc5545-recurrence-examples.csv"),
+        ("libical", "libical-recur-expectations.csv"),
+        ("dateutil", "dateutil-subdaily-vectors.csv"),
+        ("cronos", "cronos-cron-vectors.csv"),
+    ];
 
     /// <summary>
     /// Gets the RFC 5545 §3.8.5.3 examples whose occurrence lists are fully enumerable and in scope.
@@ -167,21 +177,29 @@ public sealed partial class RecurrenceCorpusTests
         Rfc5545ExampleKat[] rfc = LoadRfc5545().ToArray();
         LibicalRuleKat[] libical = LoadLibical().ToArray();
         CronosVectorKat[] cronos = LoadCronos().ToArray();
+        DateutilSubDailyKat[] dateutil = LoadDateutil().ToArray();
 
         Assert.AreEqual(39, rfc.Length, "RFC 5545 corpus row count changed.");
         Assert.AreEqual(57, libical.Length, "libical corpus row count changed.");
         Assert.AreEqual(1354, cronos.Length, "Cronos corpus row count changed.");
+        Assert.AreEqual(200, dateutil.Length, "dateutil corpus row count changed.");
         Assert.AreEqual(23, rfc.Count(r => r.IsInScope), "RFC 5545 in-scope row count changed.");
-        Assert.AreEqual(52, libical.Count(r => r.IsInScope), "libical in-scope row count changed.");
+        Assert.AreEqual(56, libical.Count(r => r.IsInScope), "libical in-scope row count changed.");
         Assert.AreEqual(755, cronos.Count(r => r.IsInScope), "Cronos in-scope row count changed.");
 
         var report = new StringBuilder();
         report.AppendLine(CultureInfo.InvariantCulture, $"RFC 5545: {rfc.Count(r => r.IsInScope)}/{rfc.Length} in scope");
         foreach (Rfc5545ExampleKat row in rfc.Where(r => !r.IsInScope))
-            report.AppendLine(CultureInfo.InvariantCulture, $"  excluded [{row.Flags}] {row.Name}");
+            report.AppendLine(CultureInfo.InvariantCulture, $"  excluded [{ExclusionReason(row.Flags, row.Expected.Length)}] {row.Name}");
         report.AppendLine(CultureInfo.InvariantCulture, $"libical: {libical.Count(r => r.IsInScope)}/{libical.Length} in scope");
         foreach (LibicalRuleKat row in libical.Where(r => !r.IsInScope))
-            report.AppendLine(CultureInfo.InvariantCulture, $"  excluded [{row.Flags}] {row.Name}");
+            report.AppendLine(CultureInfo.InvariantCulture, $"  excluded [{ExclusionReason(row.Flags, row.ExpectedCount)}] {row.Name}");
+
+        // Every dateutil row is in scope; the tally says how many record a whole stream, and how many of those are
+        // empty because dateutil rejects the rule.
+        report.AppendLine(
+            CultureInfo.InvariantCulture,
+            $"dateutil: {dateutil.Length}/{dateutil.Length} in scope, {dateutil.Count(r => r.IsTruncated)} truncated, {dateutil.Count(r => !r.IsTruncated && r.Expected.Length == 0)} with an empty stream");
 
         // The Cronos table is large enough that naming every excluded row would bury the summary, so its
         // exclusions are reported as a per-flag tally instead.
@@ -196,6 +214,52 @@ public sealed partial class RecurrenceCorpusTests
         }
 
         Console.WriteLine(report.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that each embedded corpus table is a byte-for-byte copy of its source under <c>corpus/recurrence</c>, so
+    /// the tables these tests read cannot drift from the ones the corpus README documents.
+    /// </summary>
+    [TestMethod]
+    public void Corpora_ShouldMatchTheirSourcesInTheCorpusTree()
+    {
+        string? root = FindRepositoryRoot();
+        if (root is null)
+        {
+            Assert.Inconclusive("The repository root was not found from the test base directory.");
+            return;
+        }
+
+        Assembly assembly = typeof(RecurrenceCorpusTests).Assembly;
+        foreach ((string directory, string fileName) in s_corpusSources)
+        {
+            byte[] source = File.ReadAllBytes(Path.Combine(root, "corpus", "recurrence", directory, fileName));
+            string name = assembly.GetManifestResourceNames().Single(n => n.EndsWith(fileName, StringComparison.Ordinal));
+            using Stream stream = assembly.GetManifestResourceStream(name)!;
+            using var copy = new MemoryStream();
+            stream.CopyTo(copy);
+
+            Assert.IsTrue(
+                source.AsSpan().SequenceEqual(copy.ToArray()),
+                $"Fixtures/Vectors/{fileName} differs from corpus/recurrence/{directory}/{fileName}.");
+        }
+    }
+
+    /// <summary>
+    /// Finds the repository root by walking up from the test's base directory to the solution file.
+    /// </summary>
+    /// <returns>The repository root, or <see langword="null" /> when the tests run outside a checkout.</returns>
+    private static string? FindRepositoryRoot()
+    {
+        for (DirectoryInfo? directory = new(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "bodu.slnx")))
+            {
+                return directory.FullName;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -331,5 +395,25 @@ public sealed partial class RecurrenceCorpusTests
     /// <param name="flags">The space-separated flag list.</param>
     /// <returns><see langword="true" /> when no excluding flag is present; otherwise <see langword="false" />.</returns>
     internal static bool InScope(string flags) =>
-        !flags.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(f => s_excludedFlags.Contains(f));
+        ExcludingFlags(flags).Length == 0;
+
+    /// <summary>
+    /// Returns the flags of a corpus row that place it outside the modelled surface.
+    /// </summary>
+    /// <param name="flags">The space-separated flag list.</param>
+    /// <returns>The excluding flags, space-separated, or an empty string when there are none.</returns>
+    private static string ExcludingFlags(string flags) =>
+        string.Join(' ', flags.Split(' ', StringSplitOptions.RemoveEmptyEntries).Where(f => s_excludedFlags.Contains(f)));
+
+    /// <summary>
+    /// Describes why a corpus row is out of scope, for the exclusion report.
+    /// </summary>
+    /// <param name="flags">The row's space-separated flag list.</param>
+    /// <param name="expectedCount">The number of occurrences the corpus records for the row.</param>
+    /// <returns>The excluding flags, or a note that the corpus records no occurrences for the row.</returns>
+    private static string ExclusionReason(string flags, int expectedCount)
+    {
+        string excluding = ExcludingFlags(flags);
+        return excluding.Length > 0 || expectedCount > 0 ? excluding : "no occurrences transcribed";
+    }
 }

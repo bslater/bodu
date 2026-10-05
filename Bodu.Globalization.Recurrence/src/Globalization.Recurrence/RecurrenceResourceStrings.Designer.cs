@@ -349,15 +349,6 @@ namespace Bodu.Globalization.Recurrence {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The recurrence frequency &apos;{0}&apos; is not supported; sub-daily frequencies are a planned follow-on..
-        /// </summary>
-        internal static string Op_NotSupported_SubDailyFrequency {
-            get {
-                return ResourceManager.GetString("Op_NotSupported_SubDailyFrequency", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The cron token &apos;{0}&apos; is not supported; the Quartz L, W, and # extensions are a planned follow-on..
         /// </summary>
         internal static string Op_NotSupported_CronExtensionToken {
