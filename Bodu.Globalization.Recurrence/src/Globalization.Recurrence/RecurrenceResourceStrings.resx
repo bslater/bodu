@@ -159,9 +159,6 @@
   <data name="Arg_Invalid_AnchoredIntervalSubSecond" xml:space="preserve">
     <value>The interval must be a whole number of seconds; iCalendar durations carry no sub-second precision.</value>
   </data>
-  <data name="Op_NotSupported_SubDailyFrequency" xml:space="preserve">
-    <value>The recurrence frequency '{0}' is not supported; sub-daily frequencies are a planned follow-on.</value>
-  </data>
   <data name="Op_NotSupported_CronExtensionToken" xml:space="preserve">
     <value>The cron token '{0}' is not supported; the Quartz L, W, and # extensions are a planned follow-on.</value>
   </data>
