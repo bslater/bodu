@@ -24,7 +24,8 @@ public partial class RecurrenceRuleTests
     /// <value>
     /// One row per rule, covering every frequency with intervals, limits, <c>BYSETPOS</c>, <c>BYWEEKNO</c> weeks that
     /// straddle the turn of a year, sparse and never-matching rules, <c>UNTIL</c> and <c>COUNT</c> bounds, a start that
-    /// is not itself an occurrence, every <see cref="DateTimeKind" />, and the end of the calendar.
+    /// is not itself an occurrence, every <see cref="DateTimeKind" />, and the end of the calendar. The sub-daily rows
+    /// are sparse enough that their streams up to the horizon stay small.
     /// </value>
     public static IEnumerable<object[]> AnchoredRules
     {
@@ -73,6 +74,19 @@ public partial class RecurrenceRuleTests
                 new("weekends at the end of the calendar", "FREQ=WEEKLY;BYDAY=SA,SU", At(9999, 11, 6), calendarEnd),
                 new("monthly at the end of the calendar", "FREQ=MONTHLY;BYMONTHDAY=-1", At(9990, 1, 31), calendarEnd),
                 new("week one at the end of the calendar", "FREQ=YEARLY;BYWEEKNO=1", At(9990, 1, 1), calendarEnd),
+                new("every fifth hour of leap days", "FREQ=HOURLY;INTERVAL=5;BYMONTH=2;BYMONTHDAY=29", At(1990, 1, 1, 3), horizon),
+                new("every 25 hours since 1975", "FREQ=HOURLY;INTERVAL=25", At(1975, 5, 5, 5), horizon),
+                new("every seventh hour at one or thirteen until 2010", "FREQ=HOURLY;INTERVAL=7;BYHOUR=1,13;UNTIL=20100101T000000", At(2000, 1, 1, 0), horizon),
+                new("last quarter hour of every third hour in March", "FREQ=HOURLY;INTERVAL=3;BYMINUTE=0,15,30,45;BYSETPOS=-1;BYMONTH=3", At(1980, 3, 1, 0), horizon),
+                new("every 17 minutes at nine on January Sundays", "FREQ=MINUTELY;INTERVAL=17;BYHOUR=9;BYDAY=SU;BYMONTH=1", At(1985, 1, 6), horizon),
+                new("every 97 minutes on the first and last day of the month", "FREQ=MINUTELY;INTERVAL=97;BYMONTHDAY=1,-1", At(2010, 1, 1, 0), horizon),
+                new("every 45 minutes on Mondays, count 300", "FREQ=MINUTELY;INTERVAL=45;BYDAY=MO;COUNT=300", At(2015, 3, 2, 0), horizon),
+                new("never: every tenth minute at minute five", "FREQ=MINUTELY;INTERVAL=10;BYMINUTE=5", At(1990, 1, 1), horizon),
+                new("one second a day", "FREQ=SECONDLY;BYHOUR=9;BYMINUTE=30;BYSECOND=0", At(1999, 1, 1, 0), horizon),
+                new("every 61 seconds at six on year day 100", "FREQ=SECONDLY;INTERVAL=61;BYYEARDAY=100;BYHOUR=6", At(1970, 1, 1, 0), horizon),
+                new("every 90 seconds around June noons in UTC", "FREQ=SECONDLY;INTERVAL=90;BYMONTH=6;BYHOUR=12;BYMINUTE=0,1,2", new DateTime(1995, 6, 1, 11, 0, 0, DateTimeKind.Utc), horizon),
+                new("half hours at the end of the calendar", "FREQ=HOURLY;BYMINUTE=0,30", At(9999, 12, 25, 0), calendarEnd),
+                new("every 13 seconds at the end of the calendar", "FREQ=SECONDLY;INTERVAL=13", At(9999, 12, 31, 23), calendarEnd),
             ];
 
             foreach (RecurrenceAnchorKat row in rows)

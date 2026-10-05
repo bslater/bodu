@@ -157,7 +157,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// contributing rule is unbounded; use <see cref="GetOccurrences(DateTime, DateTime)" /> or
     /// <see cref="Enumerable.Take{TSource}(IEnumerable{TSource}, int)" /> to bound it.
     /// </returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     public IEnumerable<DateTime> GetOccurrences() =>
         Merge(null);
 
@@ -173,7 +172,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// The ascending occurrences. With a <paramref name="bound" />, those on or after it are exactly the set's; any
     /// before it are incomplete and left for the caller to skip.
     /// </returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
     /// Removing a duplicate compares an occurrence only with the one before it, and an equal value is never on the
     /// other side of the bound, so beginning each source at the bound changes nothing at or after it.
@@ -239,7 +237,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// <param name="from">The inclusive lower bound of the window.</param>
     /// <param name="to">The inclusive upper bound of the window.</param>
     /// <returns>The occurrences within <c>[from, to]</c> in ascending chronological order.</returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
     /// Each rule without <see cref="RecurrenceRule.Count" /> begins at the frequency period that holds
     /// <paramref name="from" />, so the cost does not grow with the time elapsed since <see cref="Start" />.
@@ -269,7 +266,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// occurrence must be strictly later.
     /// </param>
     /// <returns>The next occurrence, or <see langword="null" /> when the set produces none.</returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
     /// Each rule without <see cref="RecurrenceRule.Count" /> begins at the frequency period that holds
     /// <paramref name="after" />, so the cost does not grow with the time elapsed since <see cref="Start" />.
@@ -298,7 +294,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// <returns>
     /// The previous occurrence, or <see langword="null" /> when none precedes <paramref name="before" />.
     /// </returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
     /// <para>
     /// Due-ness evaluation is a previous-occurrence comparison - typically
@@ -339,7 +334,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// The next occurrence carrying the offset of <paramref name="after" />, or <see langword="null" /> when the set
     /// produces none.
     /// </returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
     /// The set's start and dates are wall-clock values; the query interprets them in the offset of
     /// <paramref name="after" /> and performs no other offset conversion.
@@ -362,7 +356,6 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// The previous occurrence carrying the offset of <paramref name="before" />, or <see langword="null" /> when none
     /// precedes it.
     /// </returns>
-    /// <exception cref="NotSupportedException">Thrown when a contributing rule uses a sub-daily frequency.</exception>
     /// <remarks>
     /// The set's start and dates are wall-clock values; the query interprets them in the offset of
     /// <paramref name="before" /> and performs no other offset conversion.
