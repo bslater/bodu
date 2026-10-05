@@ -65,7 +65,7 @@ Pass an import resolver (`CommonNotableDateResources.Resolver`, or your own `Fun
 dotnet add package Bodu.Globalization.Calendar.Builder
 ```
 
-Targets `net8.0`. **Depends on** `Bodu.Globalization.Calendar` (and, through it, `Bodu.Core`). Status: **Stable** (see the [package matrix](../package-matrix.md)).
+Targets `net8.0` and `net10.0`. **Depends on** `Bodu.Globalization.Calendar` (and, through it, `Bodu.Core`). Status: **Stable** (see the [package matrix](../package-matrix.md)).
 
 ## Minimal sample
 

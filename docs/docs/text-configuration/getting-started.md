@@ -13,7 +13,7 @@ Read [Core concepts](concepts.md) first.
 dotnet add package Bodu.Text.Configuration
 ```
 
-Targets `net8.0`. Depends only on `Bodu.Core` (throw helpers); the INI document model is the library's own. No
+Targets `net8.0` and `net10.0`. Depends only on `Bodu.Core` (throw helpers); the INI document model is the library's own. No
 external NuGet references.
 
 For `Microsoft.Extensions.Configuration` integration - `AddTextConfiguration*`, options binding, file-provider

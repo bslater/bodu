@@ -12,7 +12,7 @@ Unfamiliar with terms like *compound file*, *storage*, *stream*, *sector chain*,
 dotnet add package Bodu.IO.Compound
 ```
 
-Targets `net8.0`. Depends only on `Bodu.Core` for shared throw-helpers; no other NuGet references.
+Targets `net8.0` and `net10.0`. Depends only on `Bodu.Core` for shared throw-helpers; no other NuGet references.
 
 ## Open a file and read a stream
 

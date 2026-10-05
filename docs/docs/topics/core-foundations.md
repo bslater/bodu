@@ -79,7 +79,7 @@ dotnet add package Bodu.Collections
 dotnet add package Bodu.Collections.Concurrent
 ```
 
-Targets `net8.0`. No external runtime dependencies. The `Bodu.Text` namespace is included in `Bodu.Core` - no separate install. Add `Bodu.Collections` for the specialized collection catalogue (it depends on `Bodu.Core`) and `Bodu.Collections.Concurrent` for the thread-safe variants (it depends on `Bodu.Collections`); `Bodu.Core` alone suffices for the guards, buffers, extensions, and encoding surfaces.
+Targets `net8.0` and `net10.0`. No external runtime dependencies. The `Bodu.Text` namespace is included in `Bodu.Core` - no separate install. Add `Bodu.Collections` for the specialized collection catalogue (it depends on `Bodu.Core`) and `Bodu.Collections.Concurrent` for the thread-safe variants (it depends on `Bodu.Collections`); `Bodu.Core` alone suffices for the guards, buffers, extensions, and encoding surfaces.
 
 A taste of the two surfaces together:
 

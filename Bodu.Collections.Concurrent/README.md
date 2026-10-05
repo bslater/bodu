@@ -10,7 +10,7 @@ The thread-safe collection variants of the Bodu collection catalogue: a lock-fre
 dotnet add package Bodu.Collections.Concurrent
 ```
 
-Targets `net8.0`. Depends on `Bodu.Collections`.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Collections`.
 
 ## Collections
 

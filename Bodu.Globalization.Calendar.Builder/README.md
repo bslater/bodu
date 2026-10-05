@@ -10,7 +10,7 @@ A fluent authoring API for `Bodu.Globalization.Calendar` notable-date documents.
 dotnet add package Bodu.Globalization.Calendar.Builder
 ```
 
-Targets `net8.0`. All types live in the `Bodu.Globalization.Calendar.Builder` namespace.
+Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calendar.Builder` namespace.
 
 ## Authoring
 

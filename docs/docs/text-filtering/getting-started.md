@@ -13,7 +13,7 @@ Unfamiliar with terms like *action*, *evaluation mode*, or *deciding pattern*? R
 dotnet add package Bodu.Text.Filtering
 ```
 
-Targets `net8.0`. The package has a single dependency on `Bodu.Core`.
+Targets `net8.0` and `net10.0`. The package has a single dependency on `Bodu.Core`.
 
 ## Minimal samples
 

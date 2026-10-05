@@ -10,7 +10,7 @@ Holiday and observance data for the Americas, packaged for the `Bodu.Globalizati
 dotnet add package Bodu.Globalization.Calendar.Americas
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Supported territories
 

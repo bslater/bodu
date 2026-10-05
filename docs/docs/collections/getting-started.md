@@ -10,7 +10,7 @@ title: Bodu.Collections - Getting started
 dotnet add package Bodu.Collections
 ```
 
-Targets `net8.0`. No external runtime dependencies - `Bodu.Collections` references only `Bodu.Core` (pulled in automatically) for shared argument validation and the random-generator abstraction. The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`) ship in the companion [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md) package.
+Targets `net8.0` and `net10.0`. No external runtime dependencies - `Bodu.Collections` references only `Bodu.Core` (pulled in automatically) for shared argument validation and the random-generator abstraction. The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`) ship in the companion [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md) package.
 
 ## Minimal samples
 

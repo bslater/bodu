@@ -12,7 +12,7 @@ Unfamiliar with terms like *policy*, *factory vs closed converter*, *raw JSON nu
 dotnet add package Bodu.Numerics.Serialization.Json
 ```
 
-Targets `net8.0`. Depends on `Bodu.Numerics` (and transitively `Bodu.Core`); `System.Text.Json` is part of the shared framework. The package is marked AOT-compatible.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Numerics` (and transitively `Bodu.Core`); `System.Text.Json` is part of the shared framework. The package is marked AOT-compatible.
 
 ## Minimal samples
 

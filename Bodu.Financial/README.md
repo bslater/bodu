@@ -12,7 +12,7 @@ References **[Bodu.Numerics](https://www.nuget.org/packages/Bodu.Numerics)** for
 dotnet add package Bodu.Financial
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## `Money` - runtime-tagged primary
 

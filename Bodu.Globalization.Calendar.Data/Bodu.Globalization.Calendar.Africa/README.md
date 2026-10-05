@@ -10,7 +10,7 @@ Holiday and observance data for Africa, packaged for the `Bodu.Globalization.Cal
 dotnet add package Bodu.Globalization.Calendar.Africa
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Supported territories
 

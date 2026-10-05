@@ -10,7 +10,7 @@ Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8. Has
 dotnet add package Bodu.IO.Hashing
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Quick start
 

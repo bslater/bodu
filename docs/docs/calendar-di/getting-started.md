@@ -21,10 +21,11 @@ dotnet add package Bodu.Globalization.Calendar.AsiaPacific
 dotnet add package Bodu.Globalization.Calendar.Caching
 ```
 
-Targets `net8.0`. Depends on `Bodu.Globalization.Calendar` (the runtime) and, at the .NET 8.0 LTS line,
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Globalization.Calendar` (the runtime) and
 `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Logging.Abstractions`, and
-`Microsoft.Extensions.Options` (for the options-monitor overload). It brings no container of its own - any
-`IServiceCollection` host works, and the samples use the ASP.NET Core `WebApplication` builder.
+`Microsoft.Extensions.Options` (for the options-monitor overload), at the .NET 8 line for `net8.0` and the .NET 10
+line for `net10.0`. It brings no container of its own - any `IServiceCollection` host works, and the samples use the
+ASP.NET Core `WebApplication` builder.
 
 Every extension method is in the `Bodu.Globalization.Calendar` namespace; there is no
 `Bodu.Globalization.Calendar.DependencyInjection` namespace to import.

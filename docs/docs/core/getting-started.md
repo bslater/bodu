@@ -10,7 +10,7 @@ title: Bodu.Core - Getting started
 dotnet add package Bodu.Core
 ```
 
-Targets `net8.0`. No external runtime dependencies. `Bodu.Core` covers the buffers, extensions, threading, and functional surfaces; the specialized collection catalogue ships in the companion [`Bodu.Collections`](../collections/getting-started.md) package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe collections in [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md):
+Targets `net8.0` and `net10.0`. No external runtime dependencies. `Bodu.Core` covers the buffers, extensions, threading, and functional surfaces; the specialized collection catalogue ships in the companion [`Bodu.Collections`](../collections/getting-started.md) package (namespaces unchanged; it depends on `Bodu.Core`), and the thread-safe collections in [`Bodu.Collections.Concurrent`](../collections-concurrent/getting-started.md):
 
 ```bash
 dotnet add package Bodu.Collections             # collection catalogue

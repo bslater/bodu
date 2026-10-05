@@ -15,7 +15,7 @@ dotnet add package Bodu.Financial.ExchangeRates
 dotnet add package Bodu.Financial.ExchangeRates.Ecb
 ```
 
-Targets `net8.0`. `Bodu.Financial.ExchangeRates` depends on `Bodu.Financial`, `Bodu.Core`, and `Microsoft.Extensions.Logging.Abstractions`. A feed package such as `Bodu.Financial.ExchangeRates.Ecb` additionally references `Bodu.Financial.DependencyInjection` and `Bodu.Financial.ExchangeRates.DependencyInjection` (for its `AddEcbExchangeRates` registration) plus the `Microsoft.Extensions` configuration, options, HTTP, and `Http.Resilience` packages at the .NET 8.0 LTS line.
+Targets `net8.0` and `net10.0`. `Bodu.Financial.ExchangeRates` depends on `Bodu.Financial`, `Bodu.Core`, and `Microsoft.Extensions.Logging.Abstractions`. A feed package such as `Bodu.Financial.ExchangeRates.Ecb` additionally references `Bodu.Financial.DependencyInjection` and `Bodu.Financial.ExchangeRates.DependencyInjection` (for its `AddEcbExchangeRates` registration) plus the `Microsoft.Extensions` configuration, options, HTTP, and `Http.Resilience` packages. The `Microsoft.Extensions` packages are at the .NET 8 line for `net8.0` and the .NET 10 line for `net10.0`.
 
 ## Minimal samples
 

@@ -10,7 +10,7 @@ A resource-driven notable-date (holiday / observance) engine for .NET 8. Calenda
 dotnet add package Bodu.Globalization.Calendar
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Core model
 

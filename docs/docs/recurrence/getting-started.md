@@ -12,7 +12,7 @@ Unfamiliar with terms like *occurrence*, *anchor*, *inclusive boundary*, or *`BY
 dotnet add package Bodu.Globalization.Recurrence
 ```
 
-Targets `net8.0`. **Depends on** `Bodu.Core` only - no calendar data, no time-zone database, and no dependency on `Bodu.Globalization.Calendar`.
+Targets `net8.0` and `net10.0`. **Depends on** `Bodu.Core` only - no calendar data, no time-zone database, and no dependency on `Bodu.Globalization.Calendar`.
 
 Status: **Stable** (see the [package matrix](../package-matrix.md)).
 

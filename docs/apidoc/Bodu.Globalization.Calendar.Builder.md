@@ -64,4 +64,4 @@ NotableDateDocumentBuilder.Create("contoso.holidays") /* … */ .Save("holidays.
 - **XML is full-fidelity; JSON is the documented subset.** `ToXml()` emits the entire schema; `ToJson()` emits the narrower JSON form and throws <xref:System.NotSupportedException> for features the JSON schema cannot model (imports, non-Gregorian calendars, XML-only trigger/action values, handler parameters, scope year-bounds).
 - **`Build()` defers to the canonical loader.** It serializes to XML and loads through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, so a built resource is identical to one loaded from the equivalent file - and the same validation applies (a malformed document throws <xref:Bodu.Globalization.Calendar.NotableDateValidationException>). Pass an import resolver (e.g. `CommonNotableDateResources.Resolver`) to `Build(resolver)` when the document imports catalogues.
 - **Single strategy per rule.** Each `<Rule>` commits to exactly one strategy; a second strategy call throws <xref:System.InvalidOperationException>.
-- **Target framework.** `net8.0`.
+- **Target frameworks.** `net8.0` and `net10.0`.

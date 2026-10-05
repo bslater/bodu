@@ -10,7 +10,7 @@ title: Bodu.IO.Hashing - Getting started
 dotnet add package Bodu.IO.Hashing
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` and the BCL `System.IO.Hashing` package.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Core` and the BCL `System.IO.Hashing` package.
 
 ## Minimal samples - one per subfamily
 

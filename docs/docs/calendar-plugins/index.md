@@ -50,7 +50,7 @@ The [plugin trust guide](../../guides/calendar/plugin-trust.md) states the secur
 dotnet add package Bodu.Globalization.Calendar.Plugins
 ```
 
-Targets `net8.0`. **Depends on** `Bodu.Globalization.Calendar` (and, through it, `Bodu.Core`) and `Microsoft.Extensions.Logging.Abstractions`. Status: **Stable** (see the [package matrix](../package-matrix.md)).
+Targets `net8.0` and `net10.0`. **Depends on** `Bodu.Globalization.Calendar` (and, through it, `Bodu.Core`) and `Microsoft.Extensions.Logging.Abstractions`. Status: **Stable** (see the [package matrix](../package-matrix.md)).
 
 ## Minimal sample
 

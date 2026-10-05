@@ -12,7 +12,7 @@ Unfamiliar with terms like *record*, *substream*, *CONTINUE*, *shared string tab
 dotnet add package Bodu.IO.Biff
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` (shared throw-helpers) and `System.Text.Encoding.CodePages` (BIFF5 byte strings). For the spreadsheet view - sheets, cells by position, number formats, dates - install `Bodu.Formats.Excel.Binary` instead (it references this package) and see [its introduction](../excel/index.md).
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Core` (shared throw-helpers) and `System.Text.Encoding.CodePages` (BIFF5 byte strings). For the spreadsheet view - sheets, cells by position, number formats, dates - install `Bodu.Formats.Excel.Binary` instead (it references this package) and see [its introduction](../excel/index.md).
 
 ## Walk a record stream
 

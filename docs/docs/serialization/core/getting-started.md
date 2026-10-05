@@ -14,7 +14,7 @@ You rarely add this package by hand: every format package (`Bodu.Text.Toml`, `Bo
 dotnet add package Bodu.Text.Serialization
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core` only.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Core` only.
 
 A typical split - the model library references the core package; the application references the formats it actually uses:
 

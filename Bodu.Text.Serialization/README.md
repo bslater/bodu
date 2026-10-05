@@ -10,7 +10,7 @@ The shared serialization core for the Bodu `System.Text.Json`-shaped text serial
 dotnet add package Bodu.Text.Serialization
 ```
 
-Targets `net8.0`. You rarely install this package directly - each per-format serializer package references it, so it arrives transitively with `Bodu.Text.Toml`, `Bodu.Text.Yaml`, and their siblings. Reference it directly only when a model assembly should carry the mapping attributes without depending on any specific format.
+Targets `net8.0` and `net10.0`. You rarely install this package directly - each per-format serializer package references it, so it arrives transitively with `Bodu.Text.Toml`, `Bodu.Text.Yaml`, and their siblings. Reference it directly only when a model assembly should carry the mapping attributes without depending on any specific format.
 
 ## API shape
 

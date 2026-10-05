@@ -10,7 +10,7 @@ title: Bodu.Numerics - Getting started
 dotnet add package Bodu.Numerics
 ```
 
-Targets `net8.0`. No external runtime dependencies - `Bodu.Numerics` references only `Bodu.Core` for shared argument validation.
+Targets `net8.0` and `net10.0`. No external runtime dependencies - `Bodu.Numerics` references only `Bodu.Core` for shared argument validation.
 
 ## Minimal samples
 

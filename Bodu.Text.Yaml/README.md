@@ -10,7 +10,7 @@ A YAML library for .NET 8. It maps plain CLR objects to and from YAML through a 
 dotnet add package Bodu.Text.Yaml
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Conformance profile
 

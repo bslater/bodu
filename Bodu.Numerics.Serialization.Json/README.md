@@ -15,7 +15,7 @@
 dotnet add package Bodu.Numerics.Serialization.Json
 ```
 
-Targets `net8.0`. Depends on `Bodu.Numerics`.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Numerics`.
 
 ## Usage
 
