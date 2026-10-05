@@ -108,9 +108,9 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// The walk is bounded by the seven distinct <see cref="DayOfWeek" /> values; when <paramref name="workingWeek" />
-    /// has no days selected (<see cref="WeekPattern.Empty" />) the method will overrun <see cref="DateTime.MaxValue" />
-    /// rather than loop indefinitely. Callers must ensure the supplied pattern selects at least one day.
+    /// The walk is bounded by the seven distinct <see cref="DayOfWeek" /> values, so it ends within a week. A pattern
+    /// with no days selected (<see cref="WeekPattern.Empty" />) has no working day to reach, and is rejected before the
+    /// walk starts.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
