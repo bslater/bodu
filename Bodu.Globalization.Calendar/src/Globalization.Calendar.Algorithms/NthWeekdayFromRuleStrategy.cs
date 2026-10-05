@@ -110,7 +110,8 @@ public sealed class NthWeekdayFromRuleStrategy
                 ? reference.NextDateOfWeek(DayOfWeek)
                 : reference.PreviousDateOfWeek(DayOfWeek);
 
-            long target = (long)firstMatch.DayNumber + ((long)(Math.Abs(Ordinal) - 1) * 7 * Math.Sign(Ordinal));
+            // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+            long target = (long)firstMatch.DayNumber + ((Math.Abs((long)Ordinal) - 1) * 7 * Math.Sign(Ordinal));
             if (target < DateOnly.MinValue.DayNumber || target > DateOnly.MaxValue.DayNumber)
                 return null;
 

@@ -42,7 +42,9 @@ public static partial class NotableDateOnlyExtensions
             return date;
 
         int direction = count > 0 ? 1 : -1;
-        int remaining = Math.Abs(count);
+
+        // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+        long remaining = Math.Abs((long)count);
         DateOnly current = date;
 
         while (remaining > 0)
