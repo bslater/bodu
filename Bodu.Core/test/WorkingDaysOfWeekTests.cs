@@ -29,6 +29,13 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
+    /// Verifies that the enum does not carry the <see cref="FlagsAttribute" />: each member names one whole working
+    /// week, so members are not combined.
+    /// </summary>
+    [TestMethod]
+    public void Type_ShouldNotDeclareFlagsAttribute() => Assert.IsFalse(typeof(WorkingDaysOfWeek).IsDefined(typeof(FlagsAttribute), inherit: false));
+
+    /// <summary>
     /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToDayOfWeekSet" /> throws
     /// <see cref="ArgumentException" /> when called with <see cref="WorkingDaysOfWeek.Custom" />.
     /// </summary>
