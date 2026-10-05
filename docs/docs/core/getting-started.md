@@ -23,6 +23,7 @@ Every sample below needs only `Bodu.Core`. For collection samples (`CircularBuff
 
 ### Week pattern (`WeekPattern`)
 
+<!-- run -->
 ```csharp
 using Bodu;
 
