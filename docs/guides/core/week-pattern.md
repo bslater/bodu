@@ -78,22 +78,26 @@ WeekPattern changed  = oldShift ^ newShift;   // Mon and Thu - the days that dif
 
 ## Pattern 4 - parse from a compact string
 
-`WeekPattern.Parse` accepts standard abbreviations (case-insensitive):
+`WeekPattern.Parse` reads a seven-character mask, one character per day. A day's letter, in either case, selects
+the day, and `_`, `-`, `*` or a space leaves it out; the letters show whether the mask starts on Sunday or on Monday.
+A mask of `0`s and `1`s is read as the binary form, Sunday first. Anything else, an abbreviated list such as `"MF"`
+included, is not a pattern: `Parse` throws `FormatException`, and `TryParse` returns `false` with an empty result.
 
-<!-- compile -->
+<!-- run -->
 ```csharp
 using Bodu;
 
 WeekPattern mwf  = WeekPattern.Parse("_M_W_F_");      // Mon, Wed, Fri (Sunday-first mask)
 WeekPattern tuth = WeekPattern.Parse("__T_T__");      // Tue, Thu
 WeekPattern all  = WeekPattern.Parse("SMTWTFS");      // every day
+WeekPattern bin  = WeekPattern.Parse("0111110");      // Mon-Fri, binary form
 
-bool ok = WeekPattern.TryParse("MF", out WeekPattern result);
+bool ok = WeekPattern.TryParse("MF", out WeekPattern result); // false: not a seven-character mask; result is empty
 ```
 
 ## Pattern 5 - enumerate selected days
 
-`WeekPattern` implements `IEnumerable<DayOfWeek>`, always yielding selected days in `DayOfWeek` order (Sunday = 0 first, unless the first day of the week is configured otherwise):
+`WeekPattern` implements `IEnumerable<DayOfWeek>`, always yielding the selected days in `DayOfWeek` order, Sunday (0) first:
 
 <!-- compile -->
 ```csharp
