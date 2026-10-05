@@ -148,6 +148,26 @@ public partial class RecurrenceRuleBuilderTests
     }
 
     /// <summary>
+    /// Verifies that a signed part rejects the minimum integer with <see cref="ArgumentOutOfRangeException" />, like any
+    /// other out-of-range value, rather than overflowing the range check.
+    /// </summary>
+    /// <param name="part">The part under test.</param>
+    [TestMethod]
+    [DataRow("ByMonthDay")]
+    [DataRow("ByYearDay")]
+    [DataRow("ByWeekNo")]
+    [DataRow("BySetPos")]
+    public void SignedByParts_WhenValueIsMinimumInteger_ShouldThrowArgumentOutOfRangeException(string part)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Apply(new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly), part, int.MinValue);
+        });
+
+        Assert.AreEqual(part, ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a weekday list is carried onto the rule, through both the plain-day and ordinal-day overloads.
     /// </summary>
     [TestMethod]

@@ -25,6 +25,8 @@ public partial class RecurrenceRuleTests
                 new("unknown part", "FREQ=DAILY;X-CUSTOM=1", typeof(FormatException), MessageContains: "not recognized"),
                 new("value out of range", "FREQ=DAILY;BYHOUR=24", typeof(FormatException), MessageContains: "BYHOUR=24"),
                 new("count and until together", "FREQ=DAILY;COUNT=2;UNTIL=20260101T000000", typeof(FormatException), MessageContains: "COUNT and UNTIL"),
+                new("signed value at the minimum integer", "FREQ=MONTHLY;BYMONTHDAY=-2147483648", typeof(FormatException), MessageContains: "BYMONTHDAY=-2147483648"),
+                new("weekday ordinal at the minimum integer", "FREQ=MONTHLY;BYDAY=-2147483648MO", typeof(FormatException), MessageContains: "BYDAY=-2147483648MO"),
             };
 
             foreach (InvalidKat<string> row in rows)
