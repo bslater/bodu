@@ -373,7 +373,8 @@ public sealed class RecurrenceRuleBuilder
         ThrowHelper.ThrowIfNull(values, part);
         foreach (int value in values)
         {
-            int magnitude = Math.Abs(value);
+            // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+            long magnitude = Math.Abs((long)value);
             if (value == 0 || magnitude < magLo || magnitude > magHi)
             {
                 throw new ArgumentOutOfRangeException(

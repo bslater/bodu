@@ -514,7 +514,8 @@ public sealed partial class RecurrenceRule :
                 return false;
             }
 
-            int magnitude = Math.Abs(n);
+            // The magnitude is taken in 64 bits, since Math.Abs throws for int.MinValue.
+            long magnitude = Math.Abs((long)n);
             if (magnitude < magLo || magnitude > magHi)
             {
                 return false;
@@ -556,7 +557,7 @@ public sealed partial class RecurrenceRule :
             if (!ordinalText.IsEmpty
                 && (!int.TryParse(ordinalText, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out ordinal)
                     || ordinal == 0
-                    || Math.Abs(ordinal) > 53))
+                    || Math.Abs((long)ordinal) > 53))
             {
                 return false;
             }
