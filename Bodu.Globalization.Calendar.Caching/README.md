@@ -18,7 +18,7 @@ computer that knows nothing of caching: `CachingNotableDateService` implements t
 dotnet add package Bodu.Globalization.Calendar.Caching
 ```
 
-Targets `net8.0`. All types live in the `Bodu.Globalization.Calendar.Caching` namespace.
+Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calendar.Caching` namespace.
 
 ```csharp
 services.AddCachedNotableDateService(/* … */);

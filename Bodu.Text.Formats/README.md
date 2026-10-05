@@ -18,7 +18,7 @@ The Bodu line-oriented text formats on .NET 8, each a self-contained library sha
 dotnet add package Bodu.Text.Formats
 ```
 
-Targets `net8.0`. To depend on a single format, reference its package directly instead - for example `dotnet add package Bodu.Text.Delimited`.
+Targets `net8.0` and `net10.0`. To depend on a single format, reference its package directly instead - for example `dotnet add package Bodu.Text.Delimited`.
 
 ## API shape
 

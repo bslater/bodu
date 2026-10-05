@@ -10,7 +10,7 @@ A DotEnv (`.env`) library for .NET 8, shaped after `System.Text.Json`: a typed s
 dotnet add package Bodu.Text.DotEnv
 ```
 
-Targets `net8.0`. Also available through the `Bodu.Text.Formats` umbrella package.
+Targets `net8.0` and `net10.0`. Also available through the `Bodu.Text.Formats` umbrella package.
 
 ## API shape
 

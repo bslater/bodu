@@ -10,7 +10,7 @@
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-Targets `net8.0`. The registration extension methods, the `IFinancialServiceBuilder` builder, and `FinancialOptions` live in the `Bodu.Financial` namespace.
+Targets `net8.0` and `net10.0`. The registration extension methods, the `IFinancialServiceBuilder` builder, and `FinancialOptions` live in the `Bodu.Financial` namespace.
 
 ## Registration
 

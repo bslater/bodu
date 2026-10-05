@@ -10,7 +10,7 @@ A TOML (v1.0.0 / v1.1.0) library for .NET 8. It maps plain CLR objects to and fr
 dotnet add package Bodu.Text.Toml
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## API shape
 

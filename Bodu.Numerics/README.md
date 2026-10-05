@@ -21,7 +21,7 @@ Numeric value primitives for .NET. The public model is exact rational numbers pl
 dotnet add package Bodu.Numerics
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## `Fraction<T>`
 

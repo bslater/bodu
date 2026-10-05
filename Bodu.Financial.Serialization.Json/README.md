@@ -17,7 +17,7 @@
 dotnet add package Bodu.Financial.Serialization.Json
 ```
 
-Targets `net8.0`. Depends on `Bodu.Financial`.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Financial`.
 
 ## Usage
 

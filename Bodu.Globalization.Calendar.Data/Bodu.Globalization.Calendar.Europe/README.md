@@ -10,7 +10,7 @@ Holiday and observance data for the EU / EEA territories, packaged for the `Bodu
 dotnet add package Bodu.Globalization.Calendar.Europe
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Supported territories
 

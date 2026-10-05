@@ -10,7 +10,7 @@ A Bencode (BEP 3) serializer for .NET 8. It maps plain CLR objects to and from B
 dotnet add package Bodu.Text.Bencode
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## API shape
 

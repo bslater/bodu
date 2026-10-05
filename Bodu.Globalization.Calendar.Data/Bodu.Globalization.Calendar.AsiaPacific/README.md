@@ -10,7 +10,7 @@ Holiday and observance data for the Asia-Pacific region, packaged for the `Bodu.
 dotnet add package Bodu.Globalization.Calendar.AsiaPacific
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Supported territories
 

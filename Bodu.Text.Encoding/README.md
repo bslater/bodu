@@ -10,7 +10,7 @@ Binary-to-text encodings for .NET 8 - Base16, Base32, Base45, Base58, Base62, Ba
 dotnet add package Bodu.Text.Encoding
 ```
 
-Targets `net8.0`. All types live in the `Bodu.Text.Encoding` namespace.
+Targets `net8.0` and `net10.0`. All types live in the `Bodu.Text.Encoding` namespace.
 
 ## Encodings and variants
 

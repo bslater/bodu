@@ -10,7 +10,7 @@ Trust-gated loading of external `Bodu.Globalization.Calendar` algorithm plugins.
 dotnet add package Bodu.Globalization.Calendar.Plugins
 ```
 
-Targets `net8.0`. All types live in the `Bodu.Globalization.Calendar.Plugins` namespace.
+Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calendar.Plugins` namespace.
 
 ## Trust model
 

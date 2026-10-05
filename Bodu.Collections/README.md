@@ -10,7 +10,7 @@ The specialized generic-collection catalogue for the Bodu solution and for gener
 dotnet add package Bodu.Collections
 ```
 
-Targets `net8.0`. Depends on `Bodu.Core`.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Core`.
 
 ## Collections
 

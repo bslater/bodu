@@ -10,7 +10,7 @@ Holiday and observance data for the Middle East, packaged for the `Bodu.Globaliz
 dotnet add package Bodu.Globalization.Calendar.MiddleEast
 ```
 
-Targets `net8.0`.
+Targets `net8.0` and `net10.0`.
 
 ## Supported territories
 

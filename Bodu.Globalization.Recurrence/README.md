@@ -27,7 +27,7 @@ var every4h = AnchoredInterval.Parse("PT4H", null);
 dotnet add package Bodu.Globalization.Recurrence
 ```
 
-Targets `net8.0`. Depends only on
+Targets `net8.0` and `net10.0`. Depends only on
 [`Bodu.Core`](https://www.nuget.org/packages/Bodu.Core) - **not** on
 `Bodu.Globalization.Calendar`, which it is a sibling of rather than a layer on.
 

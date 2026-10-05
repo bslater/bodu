@@ -10,7 +10,7 @@
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 ```
 
-Targets `net8.0`. Extension methods extend `IServiceCollection` in the `Bodu.Globalization.Calendar` namespace.
+Targets `net8.0` and `net10.0`. Extension methods extend `IServiceCollection` in the `Bodu.Globalization.Calendar` namespace.
 
 ## Registration
 
