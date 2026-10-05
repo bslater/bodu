@@ -8,7 +8,7 @@ This page installs **Bodu.Text.Yaml**, runs a first round trip, renames members,
 
 ## Install
 
-Bodu.Text.Yaml targets `net8.0`. Add the package:
+Bodu.Text.Yaml targets `net8.0` and `net10.0`. Add the package:
 
 ```bash
 dotnet add package Bodu.Text.Yaml

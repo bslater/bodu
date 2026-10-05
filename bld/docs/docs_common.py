@@ -90,13 +90,15 @@ def check_docs() -> ModuleType:
 
 
 def bodu_net_targets() -> list[str]:
-    """Returns ``$(BoduNetTargets)`` from ``bld/TargetFrameworks.props``, in declaration order."""
-    path = os.path.join(ROOT, "bld", "TargetFrameworks.props")
-    with open(path, encoding="utf-8") as stream:
-        match = re.search(r"<BoduNetTargets>([^<]+)</BoduNetTargets>", stream.read())
-    if not match:
-        raise PipelineError(f"{os.path.relpath(path, ROOT)} does not declare <BoduNetTargets>")
-    return [tfm.strip() for tfm in match.group(1).split(";") if tfm.strip()]
+    """Returns ``$(BoduNetTargets)`` from ``bld/TargetFrameworks.props``, in declaration order.
+
+    It is read through ``net_targets()`` in ``bld/check-docs.py``, whose ``targets`` check holds the READMEs
+    and the documentation site to the same list, so both tools share one grammar.
+    """
+    tfms: list[str] = check_docs().net_targets()
+    if not tfms:
+        raise PipelineError("bld/TargetFrameworks.props does not declare <BoduNetTargets>")
+    return tfms
 
 
 @dataclass(frozen=True, order=True)
