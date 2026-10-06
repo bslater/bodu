@@ -138,7 +138,7 @@ bool ok2 = CronExpression.TryParse(&quot;@daily&quot;, CronFormat.Standard, out 
 </code></pre>
 <p><code>Parse</code> raises the same messages as <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>. A seven-field Quartz string with a trailing year is rejected on field count.</p>
 <h2 id="field-syntax">Field syntax</h2>
-<p>Every field accepts <code>*</code>, a single value, a range <code>a-b</code>, a step <code>*/n</code> or <code>a-b/n</code>, and comma-separated lists of those. Months take <code>JAN</code>-<code>DEC</code> and weekdays <code>SUN</code>-<code>SAT</code>, case-insensitively; weekday <code>7</code> is an alias for Sunday (<code>0</code>). The two day fields also accept <code>?</code> and the Quartz day tokens described <a href="#the-quartz-day-tokens">below</a>.</p>
+<p>Every field accepts <code>*</code>, a single value, a range <code>a-b</code>, a step <code>*/n</code>, <code>a-b/n</code> or <code>a/n</code> (from <code>a</code> to the field's maximum), and comma-separated lists of those. Months take <code>JAN</code>-<code>DEC</code> and weekdays <code>SUN</code>-<code>SAT</code>, case-insensitively; weekday <code>7</code> is an alias for Sunday (<code>0</code>). The two day fields also accept <code>?</code> and the Quartz day tokens described <a href="#the-quartz-day-tokens">below</a>.</p>
 <table>
 <thead>
 <tr>
@@ -180,9 +180,11 @@ bool ok2 = CronExpression.TryParse(&quot;@daily&quot;, CronFormat.Standard, out 
 </tr>
 </tbody>
 </table>
-<p>Two behaviours are worth stating because libraries disagree on them:</p>
+<p>Several behaviours are worth stating because libraries disagree on them:</p>
 <ul>
 <li><strong>A step wider than its range selects the range start</strong> rather than being rejected: <code>*/60</code> and <code>*/90</code> in the minute field both mean minute <code>0</code> (cronie warns about this; some libraries throw). A step of <code>0</code> is rejected (&quot;The cron field '1-5/0' is not valid.&quot;).</li>
+<li><strong><code>a/n</code> runs to the field's maximum, and the day-of-week maximum is 7</strong>, which is Sunday again: <code>59/15</code> in the minute field is minute 59 alone, and <code>1/2</code> in the day-of-week field selects Monday, Wednesday, Friday and Sunday.</li>
+<li><strong>A range must ascend.</strong> A reversed range such as <code>55-5</code> or <code>FRI-TUE</code> is rejected rather than wrapped around the field, and so is <code>MON-SUN</code>, because <code>SUN</code> is 0: write <code>MON-7</code> or <code>1-7</code> for Monday to Sunday.</li>
 <li><strong>Day-of-month and day-of-week combine by union only when both are restricted.</strong> Following Vixie cron, an instant matches when it satisfies <em>either</em> field if both are restricted, and <em>both</em> fields otherwise - and &quot;restricted&quot; is decided by the field's leading character, so <code>*/2</code> (leading <code>*</code>) is unrestricted while <code>1-31/2</code> is restricted even though the two select the same days:</li>
 </ul>
 <!-- compile -->
@@ -336,16 +338,18 @@ DateTime? closing = close.GetNextOccurrence(now);    // 2026-05-31 23:00, a Sund
 DateTime? paying  = payroll.GetNextOccurrence(now);  // 2026-05-29 18:00, the Friday before it
 </code></pre>
 <p><code>LW</code> knows weekends but not public holidays. To skip those too, filter the occurrences with <code>IsNonWorkingDay</code> from <code>Bodu.Globalization.Calendar</code> - see <a href="scheduling-host.html#pattern-5---skip-non-working-days-with-the-calendar-package">Hosting schedules</a>. The same last-weekday schedule written as a recurrence rule, <code>FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1</code>, is <a href="rrule.html#pattern-6---last-working-day-of-the-month">pattern 6 of the rule guide</a>.</p>
-<h2 id="the-search-horizon">The search horizon</h2>
-<p>Every search scans <strong>twelve years</strong> in the requested direction and answers <code>null</code> past it. Twelve covers the largest gap between two consecutive occurrences of any satisfiable expression - a 29 February schedule crossing a non-leap century year (2096 → 2104, eight years) - with margin, while still bounding the search for an expression that can never match:</p>
+<h2 id="the-400-year-search">The 400-year search</h2>
+<p>Every search scans <strong>400 years</strong> in the requested direction: one whole cycle of the Gregorian calendar, which repeats exactly every 400 years (146,097 days, a whole number of weeks, with its leap days in the same places). An expression without a match in the cycle never matches, so a search answers <code>null</code> only when no occurrence follows (or precedes) the query at all. Occurrences can be decades apart: 29 February on a chosen weekday recurs at gaps of up to forty years, across the non-leap 2100 included.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Globalization.Recurrence;
 
-DateTime? leapDay = CronExpression.Parse(&quot;0 0 29 2 *&quot;).GetNextOccurrence(new DateTime(2096, 3, 1));   // 2104-02-29
-DateTime? never   = CronExpression.Parse(&quot;0 0 30 2 *&quot;).GetNextOccurrence(new DateTime(2026, 3, 10)); // null
+DateTime? leapDay   = CronExpression.Parse(&quot;0 0 29 2 *&quot;).GetNextOccurrence(new DateTime(2096, 3, 1));      // 2104-02-29
+DateTime? fifthMon  = CronExpression.Parse(&quot;0 0 * 2 MON#5&quot;).GetNextOccurrence(new DateTime(2016, 3, 1));   // 2044-02-29
+DateTime? never     = CronExpression.Parse(&quot;0 0 30 2 *&quot;).GetNextOccurrence(new DateTime(2026, 3, 10));     // null
 DateTime? neverBack = CronExpression.Parse(&quot;0 0 30 2 *&quot;).GetPreviousOccurrence(new DateTime(2026, 3, 10)); // null
 </code></pre>
-<p><code>null</code> therefore means &quot;no occurrence within twelve years&quot;, which for any real schedule means &quot;never&quot;.</p>
+<p>A search near either end of the calendar answers <code>null</code> rather than step past 0001-01-01 or 9999-12-31, and the <code>DateTimeOffset</code> overloads answer <code>null</code> for an occurrence whose UTC instant falls outside that range.</p>
+<p><code>null</code> therefore means &quot;never&quot;: no occurrence lies in that direction anywhere in the calendar.</p>
 <h2 id="datetimeoffset-handling"><code>DateTimeOffset</code> handling</h2>
 <p>The <code>DateTimeOffset</code> overloads interpret the argument's wall-clock time in its own offset and return an occurrence carrying that offset - no conversion, no time-zone lookup. <code>0 9 * * *</code> queried at <code>2026-03-10 14:32 +10:00</code> answers <code>2026-03-11 09:00 +10:00</code>; queried at <code>14:32 +00:00</code> it answers <code>09:00 +00:00</code>. A host that wants &quot;09:00 local&quot; across a daylight-saving change re-derives the offset on every evaluation; see <a href="scheduling-host.html#pattern-4---daylight-saving-and-time-zones-at-the-boundary">Hosting schedules</a>.</p>
 <!-- compile -->
@@ -389,11 +393,11 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
 </tr>
 <tr>
 <td><code>GetNextOccurrence(after, inclusive = false)</code></td>
-<td>Next matching instant within twelve years, or <code>null</code>; <code>DateTime</code> and <code>DateTimeOffset</code>.</td>
+<td>Next matching instant, or <code>null</code> when none follows; <code>DateTime</code> and <code>DateTimeOffset</code>.</td>
 </tr>
 <tr>
 <td><code>GetPreviousOccurrence(before, inclusive = false)</code></td>
-<td>Previous matching instant within twelve years, or <code>null</code>.</td>
+<td>Previous matching instant, or <code>null</code> when none precedes.</td>
 </tr>
 <tr>
 <td><code>ToString()</code> / <code>ToString(string?, IFormatProvider?)</code></td>
@@ -432,7 +436,7 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0723047 · Built: 2026-10-06 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: faec4d4 · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>
