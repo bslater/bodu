@@ -6,7 +6,7 @@ uid: Bodu.Text.Toml
 
 ## Purpose
 
-**Bodu.Text.Toml** is a [TOML](https://toml.io/) (v1.0.0 / v1.1.0) library for .NET 8. It maps plain CLR objects to and from TOML through a configurable converter model, over a low-level forward-only token reader and writer, with both a mutable and a read-only document object model.
+**Bodu.Text.Toml** is a [TOML](https://toml.io/) (v1.0.0 / v1.1.0) library for .NET 8 and .NET 10. It maps plain CLR objects to and from TOML through a configurable converter model, over a low-level forward-only token reader and writer, with both a mutable and a read-only document object model.
 
 The public surface layers four tiers: a static <xref:Bodu.Text.Toml.TomlSerializer> for object mapping, the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> `ref struct` pair for forward-only token processing, a mutable <xref:Bodu.Text.Toml.Nodes.TomlNode> DOM, and a read-only <xref:Bodu.Text.Toml.Document.TomlDocument> DOM. The twin library <xref:Bodu.Text.Bencode> applies the identical shape to Bencode.
 

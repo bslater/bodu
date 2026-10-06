@@ -23,7 +23,10 @@ Seven checks, each independently runnable, all run by ``all``:
   targets      every sentence or "Target frameworks" table column, in a
                package README or a page under docs/, that names the .NET
                frameworks a package targets names exactly $(BoduNetTargets)
-               from bld/TargetFrameworks.props
+               from bld/TargetFrameworks.props; and the opening paragraph of
+               a package README, the repository README or a namespace
+               overview names every one of those .NET versions, or the
+               oldest as a minimum, when it names any
 
 Allow-lists live in bld/docs-checks/*.txt (one entry per line, ``#`` comments).
 The namespace allow-list is *debt*: entries are namespaces that still lack an
@@ -418,13 +421,78 @@ def framework_claim_problems(rel: str, text: str, expected: list[str]) -> list[s
     return problems
 
 
+# A .NET version named in prose: ".NET 8", ".NET 10". ".NET Framework", ".NET Standard" and ".NET Core" are other
+# products, and do not match.
+_NET_VERSION = re.compile(r"\.NET (\d+)(?:\.\d+)?\b")
+
+# A .NET version stated as a minimum: ".NET 8 and later", ".NET 8 or later", ".NET 8+".
+_NET_MINIMUM = re.compile(r"\.NET (\d+)(?:\.\d+)?(?:\+| (?:and|or) (?:later|newer))")
+
+
+def opening_paragraph(text: str) -> tuple[int, list[str]] | None:
+    """Returns the first line number and the lines of a page's opening paragraph, or ``None`` when it has none.
+
+    The opening paragraph is the first block of prose. YAML front matter, headings, block quotes (the API-stability
+    banner), images and badges, HTML, tables and lists can come before it, and are passed over.
+    """
+    lines = strip_code(text).splitlines()
+    i = 0
+    if lines and lines[0].strip() == "---":
+        end = next((j for j in range(1, len(lines)) if lines[j].strip() == "---"), None)
+        if end is not None:
+            i = end + 1
+
+    while i < len(lines):
+        if not lines[i].strip():
+            i += 1
+            continue
+        start = i
+        while i < len(lines) and lines[i].strip():
+            i += 1
+        first = lines[start].lstrip()
+        if not (first.startswith(("#", ">", "!", "[!", "<", "|", "- ", "* ", "+ ")) or re.match(r"\d+\. ", first)):
+            return start + 1, lines[start:i]
+    return None
+
+
+def framework_opening_problems(rel: str, text: str, expected: list[str]) -> list[str]:
+    """Reports a page whose opening paragraph names .NET versions other than every one of ``expected``.
+
+    A package README's or a namespace overview's opening paragraph introduces the package, so the .NET versions it
+    names read as the ones the package supports. It must name every version ``expected`` holds (".NET 8 and
+    .NET 10"), or the oldest alone, as a minimum (".NET 8 and later"). ``framework_claim_problems`` reads the
+    monikers a page writes as code (`net8.0`); this reads the product names.
+    """
+    opening = opening_paragraph(text)
+    if opening is None:
+        return []
+
+    first_line, lines = opening
+    paragraph = " ".join(line.strip() for line in lines)
+    named = sorted({int(version) for version in _NET_VERSION.findall(paragraph)})
+    if not named:
+        return []
+
+    versions = sorted(int(tfm[3:].split(".")[0]) for tfm in expected if re.fullmatch(r"net\d+\.\d+", tfm))
+    minimums = {int(version) for version in _NET_MINIMUM.findall(paragraph)}
+    if named == versions or (named == versions[:1] and minimums == set(named)):
+        return []
+
+    line_no = first_line + next((index for index, line in enumerate(lines) if _NET_VERSION.search(line)), 0)
+    supported = " and ".join(f".NET {version}" for version in versions)
+    return [
+        f"{rel}:{line_no}: the opening paragraph names {', '.join(f'.NET {version}' for version in named)}, but "
+        f"$(BoduNetTargets) in bld/TargetFrameworks.props is {', '.join(expected)}: name {supported}, or "
+        f".NET {versions[0]} and later"]
+
+
 def check_targets() -> list[str]:
     """Holds every statement of the frameworks a package targets to ``$(BoduNetTargets)``.
 
     Every project sets ``<TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>``, so a package README (the page
     nuget.org shows), the repository README and the documentation site name those frameworks wherever they name
     any. Without this check the sentences go stale silently when the list changes, as they did when ``net10.0``
-    joined ``net8.0``.
+    joined ``net8.0``: first the monikers, then the product names that open a package's README and overview.
     """
     expected = net_targets()
     if not expected:
@@ -432,9 +500,13 @@ def check_targets() -> list[str]:
 
     readmes = {os.path.join(os.path.dirname(os.path.dirname(project)), "README.md") for project in packable_package_ids().values()}
     readmes.add(os.path.join(ROOT, "README.md"))
+    readmes = sorted(path for path in readmes if os.path.exists(path))
+    overviews = sorted(glob.glob(os.path.join(DOCS, "apidoc", "*.md")))
     problems = []
-    for page in sorted(path for path in readmes if os.path.exists(path)) + docs_pages(include_apidoc=True):
+    for page in readmes + docs_pages(include_apidoc=True):
         problems += framework_claim_problems(os.path.relpath(page, ROOT).replace(os.sep, "/"), read(page), expected)
+    for page in readmes + overviews:
+        problems += framework_opening_problems(os.path.relpath(page, ROOT).replace(os.sep, "/"), read(page), expected)
     return problems
 
 

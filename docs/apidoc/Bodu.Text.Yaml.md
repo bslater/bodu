@@ -6,7 +6,7 @@ uid: Bodu.Text.Yaml
 
 ## Purpose
 
-**Bodu.Text.Yaml** is a [YAML](https://yaml.org/) library for .NET 8. It maps plain CLR objects to and from YAML through a configurable converter model, over a buffered token reader and a forward-only writer, with both a mutable and a read-only document object model.
+**Bodu.Text.Yaml** is a [YAML](https://yaml.org/) library for .NET 8 and .NET 10. It maps plain CLR objects to and from YAML through a configurable converter model, over a buffered token reader and a forward-only writer, with both a mutable and a read-only document object model.
 
 The library is the third member of the [Bodu serializer family](~/docs/serialization/index.md), alongside <xref:Bodu.Text.Toml> and <xref:Bodu.Text.Bencode>. It shares the family's architecture - a static serializer façade, a low-level reader/writer pair, a mutable DOM, and a read-only DOM - but tunes the serializer surface to YAML and exposes YAML's richer presentation model. The types are organised into folders/namespaces by surface (`Reader`, `Writer`, `Document`, `Nodes`, `Serialization`).
 

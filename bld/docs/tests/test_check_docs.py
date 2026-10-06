@@ -19,6 +19,10 @@ def problems(text: str) -> list[str]:
     return check_docs.framework_claim_problems("page.md", text, EXPECTED)
 
 
+def opening_problems(text: str) -> list[str]:
+    return check_docs.framework_opening_problems("page.md", text, EXPECTED)
+
+
 class FrameworkClaimTests(unittest.TestCase):
     """The claims framework_claim_problems reads, and the ones it leaves alone."""
 
@@ -73,6 +77,52 @@ class FrameworkClaimTests(unittest.TestCase):
 
     def test_framework_claim_problems_when_claim_is_inside_a_code_block_should_report_nothing(self) -> None:
         self.assertEqual([], problems("```text\nTargets `net8.0`.\n```\n"))
+
+
+class FrameworkOpeningTests(unittest.TestCase):
+    """The .NET versions a page's opening paragraph names, and the parts of a page that come before it."""
+
+    def test_framework_opening_problems_when_paragraph_names_one_version_should_report_its_line(self) -> None:
+        found = opening_problems("# Widgets\n\nA widget library for .NET 8. It makes widgets.\n")
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("page.md:3: the opening paragraph names .NET 8,"), found[0])
+
+    def test_framework_opening_problems_when_paragraph_names_every_version_should_report_nothing(self) -> None:
+        self.assertEqual([], opening_problems("# Widgets\n\nA widget library for .NET 8 and .NET 10.\n"))
+        self.assertEqual([], opening_problems("# Widgets\n\nA widget library for .NET 10 and .NET 8.\n"))
+
+    def test_framework_opening_problems_when_oldest_version_is_named_as_a_minimum_should_report_nothing(self) -> None:
+        self.assertEqual([], opening_problems("# Widgets\n\nA widget library for .NET 8 and later.\n"))
+        self.assertEqual([], opening_problems("# Widgets\n\nA widget library for .NET 8 or later.\n"))
+        self.assertEqual([], opening_problems("# Widgets\n\nA widget library for .NET 8+.\n"))
+
+    def test_framework_opening_problems_when_newer_version_is_named_as_a_minimum_should_report_it(self) -> None:
+        self.assertEqual(1, len(opening_problems("# Widgets\n\nA widget library for .NET 10 and later.\n")))
+
+    def test_framework_opening_problems_when_version_wraps_onto_a_later_line_should_report_that_line(self) -> None:
+        found = opening_problems("# Widgets\n\nA widget library\nfor .NET 8.\n")
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("page.md:4:"), found[0])
+
+    def test_framework_opening_problems_when_version_follows_the_opening_paragraph_should_report_nothing(self) -> None:
+        self.assertEqual([], opening_problems("# Widgets\n\nA widget library.\n\nIts loop ran slower on .NET 8.\n"))
+
+    def test_framework_opening_problems_when_front_matter_banner_and_image_come_first_should_read_the_paragraph_after_them(self) -> None:
+        page = (
+            "---\nuid: Widgets\n---\n\n"
+            "![Widgets](~/images/hero-widgets.svg)\n\n"
+            "## Purpose\n\n"
+            "> **API stability - Stable.** Unchanged since .NET 8.\n\n"
+            "**Widgets** is a widget library\nfor .NET 8.\n")
+        found = opening_problems(page)
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("page.md:12:"), found[0])
+
+    def test_framework_opening_problems_when_another_dotnet_product_is_named_should_report_nothing(self) -> None:
+        self.assertEqual([], opening_problems("# Widgets\n\nPorted from .NET Framework 4.8 and .NET Standard 2.0.\n"))
+
+    def test_framework_opening_problems_when_page_has_no_prose_should_report_nothing(self) -> None:
+        self.assertEqual([], opening_problems("# Widgets\n\n> Moved to Gadgets on .NET 8.\n"))
 
 
 class NetTargetsTests(unittest.TestCase):
