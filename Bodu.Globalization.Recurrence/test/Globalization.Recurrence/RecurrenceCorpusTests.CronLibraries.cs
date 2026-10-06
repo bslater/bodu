@@ -23,6 +23,7 @@ public sealed partial class RecurrenceCorpusTests
     [
         ("ccronexpr", "ccronexpr"),
         ("cron-parser", "cron-parser"),
+        ("cron-utils", "cron-utils"),
         ("croner", "croner"),
         ("croniter", "croniter"),
         ("cronos", "cronos-reverse"),
@@ -418,6 +419,7 @@ public sealed partial class RecurrenceCorpusTests
         [
             ("ccronexpr", 88, 88),
             ("cron-parser", 285, 225),
+            ("cron-utils", 196, 161),
             ("croner", 367, 297),
             ("croniter", 389, 264),
             ("cronos-reverse", 29, 26),

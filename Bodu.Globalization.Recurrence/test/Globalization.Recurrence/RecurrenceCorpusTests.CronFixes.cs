@@ -23,8 +23,8 @@ public sealed partial class RecurrenceCorpusTests
     /// </remarks>
     private static readonly string[] s_cronFixLibraries =
     [
-        "ccronexpr", "cron-parser", "croner", "croniter", "cronos", "cronsim", "fugit", "gorhill", "gronx", "ncrontab",
-        "node-cron", "quartznet", "robfig", "saffron", "supertinycron", "zslayton",
+        "ccronexpr", "cron-parser", "cron-utils", "croner", "croniter", "cronos", "cronsim", "fugit", "gorhill",
+        "gronx", "ncrontab", "node-cron", "quartznet", "robfig", "saffron", "supertinycron", "zslayton",
     ];
 
     /// <summary>
@@ -42,6 +42,7 @@ public sealed partial class RecurrenceCorpusTests
         [
             ("ccronexpr", 9, 0, 15, 2),
             ("cron-parser", 81, 17, 101, 0),
+            ("cron-utils", 214, 44, 163, 1),
             ("croner", 62, 20, 118, 2),
             ("croniter", 85, 24, 117, 2),
             ("cronos", 66, 5, 58, 0),
