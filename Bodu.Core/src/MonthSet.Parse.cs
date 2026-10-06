@@ -20,26 +20,31 @@ public readonly partial struct MonthSet
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="FormatException">
-    /// Thrown when <paramref name="s" /> is neither the binary form nor a list of values and ranges from 1 to 12.
+    /// Thrown when <paramref name="s" /> is not the binary form, the letter mask, or a list of values and ranges from 1
+    /// to 12.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// A text of exactly 12 characters, each <c>0</c> or <c>1</c>, is the binary form, month 1 first. Any other text is
-    /// a comma-separated list of months and inclusive ranges: whitespace around the list and around each value is
-    /// ignored, an empty or blank string is the empty set, values are unsigned decimal integers, a range <c>a-b</c>
-    /// needs <c>a</c> no greater than <c>b</c>, and values may repeat or overlap.
+    /// A text of exactly 12 characters, each <c>0</c> or <c>1</c>, is the binary form, month 1 first. A text of 12
+    /// characters, each a month's initial in its place or a placeholder, is the letter mask, January first, such as
+    /// <c>"JFM________D"</c>: the initials are read in either case, and the placeholder may be <c>_</c>, <c>-</c>,
+    /// <c>*</c> or a space, the same one throughout. Any other text is a comma-separated list of months and inclusive
+    /// ranges: whitespace around the list and around each value is ignored, an empty or blank string is the empty set,
+    /// values are unsigned decimal integers, a range <c>a-b</c> needs <c>a</c> no greater than <c>b</c>, and values may
+    /// repeat or overlap.
     /// </para>
     /// <para>
-    /// The binary test comes first and reads the text as given, so text made only of <c>0</c> and <c>1</c> is a list
-    /// only when it is not 12 characters long. <see cref="ParseExact(string, string)" /> with the <c>"G"</c> format
-    /// reads any text as a list.
+    /// The forms are tested in that order, and the binary form and the letter mask read the text as given, so text made
+    /// only of <c>0</c> and <c>1</c> is a list only when it is not 12 characters long, and a mask with whitespace
+    /// around it is not a mask. <see cref="ParseExact(string, string)" /> with the <c>"G"</c> format reads any text as
+    /// a list.
     /// </para>
     /// </remarks>
     public static MonthSet Parse(string s)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        CalendarValueSet.ParseFailure failure = CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, out ulong bits);
+        CalendarValueSet.ParseFailure failure = CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, MonthLetters, out ulong bits);
         return failure == CalendarValueSet.ParseFailure.None
             ? new MonthSet(bits)
             : throw CalendarValueSet.CreateParseException(failure, s, position: 0, MinimumValue, MaximumValue);
@@ -63,15 +68,17 @@ public readonly partial struct MonthSet
     /// <remarks>
     /// <c>"G"</c> reads a list of values and ranges as <see cref="Parse(string)" /> reads one, <c>"L"</c> a list of
     /// values without ranges, and <c>"B"</c>, <c>"0"</c>, <c>"1"</c> or <c>"01"</c> the binary form alone, 12
-    /// characters with no whitespace. The format letters are read in either case.
+    /// characters with no whitespace. <c>"J"</c> reads the letter mask with any one placeholder throughout, and
+    /// <c>"E"</c>, <c>"U"</c>, <c>"D"</c> or <c>"A"</c>, alone or after <c>J</c>, reads it with that placeholder alone.
+    /// The format letters and the mask's initials are read in either case.
     /// </remarks>
     public static MonthSet ParseExact(string s, string format)
     {
         ThrowHelper.ThrowIfNull(s);
         ThrowHelper.ThrowIfNull(format);
-        if (!CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)) throw CalendarValueSet.CreateFormatStringException(format, nameof(MonthSet));
+        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format, nameof(MonthSet));
 
-        CalendarValueSet.ParseFailure failure = CalendarValueSet.TryParseExact(s, MinimumValue, MaximumValue, form, out ulong bits, out int position);
+        CalendarValueSet.ParseFailure failure = TryParseCore(s, textFormat, out ulong bits, out int position);
         return failure == CalendarValueSet.ParseFailure.None
             ? new MonthSet(bits)
             : throw CalendarValueSet.CreateParseException(failure, s, position, MinimumValue, MaximumValue);
@@ -86,15 +93,15 @@ public readonly partial struct MonthSet
     /// When this method returns <see langword="true" />, the set the text describes; otherwise <see cref="Empty" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when <paramref name="s" /> is the binary form or a list of values and ranges from 1 to
-    /// 12; otherwise <see langword="false" />.
+    /// <see langword="true" /> when <paramref name="s" /> is the binary form, the letter mask, or a list of values and
+    /// ranges from 1 to 12; otherwise <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// The text is read as <see cref="Parse(string)" /> reads it.
     /// </remarks>
     public static bool TryParse([NotNullWhen(true)] string? s, out MonthSet result)
     {
-        if (s is not null && CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, out ulong bits) == CalendarValueSet.ParseFailure.None)
+        if (s is not null && CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, MonthLetters, out ulong bits) == CalendarValueSet.ParseFailure.None)
         {
             result = new MonthSet(bits);
             return true;
@@ -125,8 +132,8 @@ public readonly partial struct MonthSet
     {
         if (s is not null
             && format is not null
-            && CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)
-            && CalendarValueSet.TryParseExact(s, MinimumValue, MaximumValue, form, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
+            && TryParseFormat(format, out TextFormat textFormat)
+            && TryParseCore(s, textFormat, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new MonthSet(bits);
             return true;
@@ -143,4 +150,24 @@ public readonly partial struct MonthSet
     /// <inheritdoc />
     static bool IParsable<MonthSet>.TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out MonthSet result) =>
         TryParse(s, out result);
+
+    /// <summary>
+    /// Attempts to read text in one form, without detecting it.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="format">The form of the text.</param>
+    /// <param name="bits">
+    /// When this method returns <see cref="CalendarValueSet.ParseFailure.None" />, the bits the text selects.
+    /// </param>
+    /// <param name="position">
+    /// When this method returns <see cref="CalendarValueSet.ParseFailure.Character" />, the index of the first
+    /// character that does not fit the form.
+    /// </param>
+    /// <returns>
+    /// Why the text is not in the form, or <see cref="CalendarValueSet.ParseFailure.None" /> when it is.
+    /// </returns>
+    private static CalendarValueSet.ParseFailure TryParseCore(ReadOnlySpan<char> text, TextFormat format, out ulong bits, out int position) =>
+        format.LetterMask
+            ? CalendarValueSet.TryParseLetters(text, MonthLetters, first: 0, format.Placeholder, out bits, out position)
+            : CalendarValueSet.TryParseExact(text, MinimumValue, MaximumValue, format.Form, out bits, out position);
 }

@@ -179,13 +179,63 @@ internal static partial class CalendarValueSet
     /// <see cref="ParseFailure.None" /> when the text is in either form; otherwise <see cref="ParseFailure.List" />,
     /// since a text that is not the binary form is read as a list.
     /// </returns>
-    internal static ParseFailure TryParseDetected(ReadOnlySpan<char> text, int minimum, int maximum, out ulong bits)
+    internal static ParseFailure TryParseDetected(ReadOnlySpan<char> text, int minimum, int maximum, out ulong bits) =>
+        TryParseDetected(text, minimum, maximum, letters: null, out bits);
+
+    /// <summary>
+    /// Attempts to read the text of a numeric set whose values may also have letters, detecting its form: the binary
+    /// form, then the letter mask, then a list of values and ranges.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="letters">
+    /// The upper-case letter of each value, in bit order, or <see langword="null" /> when the set has no letter mask.
+    /// </param>
+    /// <param name="bits">When this method returns <see cref="ParseFailure.None" />, the bits the text selects.</param>
+    /// <returns>
+    /// <see cref="ParseFailure.None" /> when the text is in any of the forms; otherwise
+    /// <see cref="ParseFailure.List" />, since a text that is neither the binary form nor a letter mask is read as a
+    /// list.
+    /// </returns>
+    /// <remarks>
+    /// The binary form and the letter mask are read as given, without trimming. The letter mask starts at the first
+    /// value and may use any one placeholder throughout.
+    /// </remarks>
+    internal static ParseFailure TryParseDetected(ReadOnlySpan<char> text, int minimum, int maximum, string? letters, out ulong bits)
     {
         int width = maximum - minimum + 1;
         if (IsBinary(text, width))
             return TryParseBinary(text, width, out bits, out _);
 
+        if (letters is not null && TryParseLetters(text, letters, first: 0, placeholder: null, out bits, out _) == ParseFailure.None)
+            return ParseFailure.None;
+
         return TryParse(text, minimum, maximum, out bits) ? ParseFailure.None : ParseFailure.List;
+    }
+
+    /// <summary>
+    /// Attempts to read the letter that names a letter mask's placeholder in a format string.
+    /// </summary>
+    /// <param name="letter">The upper-case letter: <c>E</c>, <c>U</c>, <c>D</c> or <c>A</c>.</param>
+    /// <param name="placeholder">
+    /// When this method returns <see langword="true" />, the placeholder: a space, <c>_</c>, <c>-</c> or <c>*</c>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="letter" /> names a placeholder; otherwise <see langword="false" />.
+    /// </returns>
+    internal static bool TryParsePlaceholder(char letter, out char placeholder)
+    {
+        placeholder = letter switch
+        {
+            'E' => ' ',
+            'U' => '_',
+            'D' => '-',
+            'A' => '*',
+            _ => '\0',
+        };
+
+        return placeholder != '\0';
     }
 
     /// <summary>

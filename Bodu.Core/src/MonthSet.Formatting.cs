@@ -8,6 +8,9 @@ namespace Bodu;
 
 public readonly partial struct MonthSet
 {
+    /// <summary>The letter of each month, January first.</summary>
+    private const string MonthLetters = "JFMAMJJASOND";
+
     /// <summary>
     /// Returns the canonical text form of the set: the selected months in ascending order, separated by commas, each
     /// run of two or more consecutive months written as an inclusive range.
@@ -61,6 +64,23 @@ public readonly partial struct MonthSet
     /// Binary, one character per month from 1 to 12, 1 first, with <c>1</c> for a selected month: <c>"111000000001"</c>.
     /// </description>
     /// </item>
+    /// <item>
+    /// <term><c>J</c></term>
+    /// <description>
+    /// A twelve-character letter mask, January first, with each selected month's initial and <c>_</c> for a month not
+    /// selected: <c>"JFM________D"</c>.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><c>E</c>, <c>U</c>, <c>D</c>, <c>A</c></term>
+    /// <description>
+    /// The letter mask with a space, <c>_</c>, <c>-</c> or <c>*</c> respectively for a month not selected.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><c>J</c> followed by <c>E</c>, <c>U</c>, <c>D</c> or <c>A</c></term>
+    /// <description>The letter mask with that placeholder: <c>"JD"</c> writes <c>"JFM--------D"</c>.</description>
+    /// </item>
     /// </list>
     /// </remarks>
     public string ToString(string? format, IFormatProvider? formatProvider)
@@ -68,8 +88,61 @@ public readonly partial struct MonthSet
         if (string.IsNullOrEmpty(format))
             return ToString();
 
-        return CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)
-            ? CalendarValueSet.Format(_bits, MinimumValue, MaximumValue, form)
+        return TryParseFormat(format, out TextFormat textFormat)
+            ? Format(textFormat)
             : throw CalendarValueSet.CreateFormatStringException(format, nameof(MonthSet));
     }
+
+    /// <summary>
+    /// Attempts to read a format string.
+    /// </summary>
+    /// <param name="format">The format string, in either case.</param>
+    /// <param name="result">When this method returns <see langword="true" />, the form it names.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="format" /> is a supported format; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool TryParseFormat(ReadOnlySpan<char> format, out TextFormat result)
+    {
+        if (CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form))
+        {
+            result = new TextFormat(form, LetterMask: false, Placeholder: null);
+            return true;
+        }
+
+        result = default;
+        if (format.Length is < 1 or > 2)
+            return false;
+
+        // The letter mask: J on its own, a placeholder letter on its own, or J followed by a placeholder letter.
+        char first = char.ToUpperInvariant(format[0]);
+        char? placeholder = null;
+        if (format.Length == 2)
+        {
+            if (first != 'J' || !CalendarValueSet.TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char named))
+                return false;
+
+            placeholder = named;
+        }
+        else if (first != 'J')
+        {
+            if (!CalendarValueSet.TryParsePlaceholder(first, out char named))
+                return false;
+
+            placeholder = named;
+        }
+
+        result = new TextFormat(CalendarValueSet.NumericForm.List, LetterMask: true, placeholder);
+        return true;
+    }
+
+    /// <summary>
+    /// Writes the set as text in a form.
+    /// </summary>
+    /// <param name="format">The form.</param>
+    /// <returns>The text.</returns>
+    private string Format(TextFormat format) =>
+        format.LetterMask
+            ? CalendarValueSet.FormatLetters(_bits, MonthLetters, first: 0, format.Placeholder ?? '_')
+            : CalendarValueSet.Format(_bits, MinimumValue, MaximumValue, format.Form);
 }

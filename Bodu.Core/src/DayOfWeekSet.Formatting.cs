@@ -120,42 +120,18 @@ public readonly partial struct DayOfWeekSet
             }
 
             // A placeholder letter on its own keeps the Sunday-first order.
-            if (!TryParsePlaceholder(first, out char sundayFirstPlaceholder))
+            if (!CalendarValueSet.TryParsePlaceholder(first, out char sundayFirstPlaceholder))
                 return false;
 
             result = new TextFormat(MondayFirst: false, sundayFirstPlaceholder, Binary: false);
             return true;
         }
 
-        if (first is not ('S' or 'M') || !TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char placeholder))
+        if (first is not ('S' or 'M') || !CalendarValueSet.TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char placeholder))
             return false;
 
         result = new TextFormat(first == 'M', placeholder, Binary: false);
         return true;
-    }
-
-    /// <summary>
-    /// Attempts to read the letter that names a placeholder.
-    /// </summary>
-    /// <param name="letter">The upper-case letter: <c>E</c>, <c>U</c>, <c>D</c> or <c>A</c>.</param>
-    /// <param name="placeholder">
-    /// When this method returns <see langword="true" />, the placeholder: a space, <c>_</c>, <c>-</c> or <c>*</c>.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> when <paramref name="letter" /> names a placeholder; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool TryParsePlaceholder(char letter, out char placeholder)
-    {
-        placeholder = letter switch
-        {
-            'E' => ' ',
-            'U' => '_',
-            'D' => '-',
-            'A' => '*',
-            _ => '\0',
-        };
-
-        return placeholder != '\0';
     }
 
     /// <summary>

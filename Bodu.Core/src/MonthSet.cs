@@ -25,8 +25,9 @@ namespace Bodu;
 /// written as an inclusive range, so <c>"1,4,7,10"</c> selects the first month of each quarter. The empty set is the
 /// empty string. <see cref="Parse(string)" /> reads any list of values and ranges in that form, in any order, and
 /// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every month without
-/// ranges, or a binary form with one character per month, and <see cref="Parse(string)" /> and
-/// <see cref="ParseExact(string, string)" /> read them back.
+/// ranges, a binary form with one character per month, or a letter mask of the months' initials, such as
+/// <c>"JFM________D"</c>, and <see cref="Parse(string)" /> and <see cref="ParseExact(string, string)" /> read them
+/// back.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects month
