@@ -57,4 +57,82 @@ public partial class CronExpressionTests
 
         Assert.AreEqual(fromUtc!.Value.DateTime, fromLocal!.Value.DateTime);
     }
+
+    /// <summary>
+    /// Verifies that the next-occurrence query returns <see langword="null" /> rather than throwing when the
+    /// occurrence's wall-clock time exists but its UTC instant would follow the last instant a
+    /// <see cref="DateTimeOffset" /> can hold.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenTheOccurrenceFollowsTheLastUtcInstant_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("0 20 * * *");
+        var after = new DateTimeOffset(9999, 12, 31, 10, 0, 0, TimeSpan.FromHours(-5));
+
+        Assert.IsNull(cron.GetNextOccurrence(after));
+    }
+
+    /// <summary>
+    /// Verifies that the next-occurrence query returns <see langword="null" /> for
+    /// <see cref="DateTimeOffset.MaxValue" />.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenAfterIsTheLastOffsetInstant_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("* * * * *");
+
+        Assert.IsNull(cron.GetNextOccurrence(DateTimeOffset.MaxValue));
+    }
+
+    /// <summary>
+    /// Verifies that the next-occurrence query still returns an occurrence late on the last day whose UTC instant a
+    /// <see cref="DateTimeOffset" /> can hold.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenTheOccurrenceIsJustInsideTheLastUtcDay_ShouldReturnIt()
+    {
+        CronExpression cron = CronExpression.Parse("0 18 * * *");
+        var after = new DateTimeOffset(9999, 12, 31, 10, 0, 0, TimeSpan.FromHours(-5));
+
+        Assert.AreEqual(new DateTimeOffset(9999, 12, 31, 18, 0, 0, TimeSpan.FromHours(-5)), cron.GetNextOccurrence(after));
+    }
+
+    /// <summary>
+    /// Verifies that the previous-occurrence query returns <see langword="null" /> rather than throwing when the
+    /// occurrence's wall-clock time exists but its UTC instant would precede the first instant a
+    /// <see cref="DateTimeOffset" /> can hold.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenTheOccurrencePrecedesTheFirstUtcInstant_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("0 3 * * *");
+        var before = new DateTimeOffset(1, 1, 1, 10, 0, 0, TimeSpan.FromHours(5));
+
+        Assert.IsNull(cron.GetPreviousOccurrence(before));
+    }
+
+    /// <summary>
+    /// Verifies that the previous-occurrence query returns <see langword="null" /> for
+    /// <see cref="DateTimeOffset.MinValue" />.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenBeforeIsTheFirstOffsetInstant_ShouldReturnNull()
+    {
+        CronExpression cron = CronExpression.Parse("* * * * *");
+
+        Assert.IsNull(cron.GetPreviousOccurrence(DateTimeOffset.MinValue));
+    }
+
+    /// <summary>
+    /// Verifies that the previous-occurrence query still returns an occurrence early on the first day whose UTC
+    /// instant a <see cref="DateTimeOffset" /> can hold.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_WhenTheOccurrenceIsJustInsideTheFirstUtcDay_ShouldReturnIt()
+    {
+        CronExpression cron = CronExpression.Parse("0 6 * * *");
+        var before = new DateTimeOffset(1, 1, 1, 10, 0, 0, TimeSpan.FromHours(5));
+
+        Assert.AreEqual(new DateTimeOffset(1, 1, 1, 6, 0, 0, TimeSpan.FromHours(5)), cron.GetPreviousOccurrence(before));
+    }
 }
