@@ -82,12 +82,12 @@ public static class BuildingRules
         var (ordinal, day) = everyTuesday;
         Console.WriteLine($"WeekDayNum(0, Tue) : Ordinal={ordinal}, Day={day}, IsEveryOccurrence={everyTuesday.IsEveryOccurrence}");
 
-        // The canonical iCalendar token for each entry comes from the rule that carries it, so
-        // round-tripping a built rule through ToString is how you see "TU" / "3TH" / "-1FR".
+        // Each entry's ToString writes its iCalendar token ("TU" / "3TH" / "-1FR"), the same text the
+        // rule that carries it writes in its BYDAY part.
         foreach (WeekDayNum entry in new[] { everyTuesday, new WeekDayNum(3, DayOfWeek.Thursday), new WeekDayNum(-1, DayOfWeek.Friday) })
         {
             RecurrenceRule single = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly).ByDay(entry).Build();
-            Console.WriteLine($"  ordinal {entry.Ordinal,2} {entry.Day,-9} -> {single}");
+            Console.WriteLine($"  {entry,-4} = ordinal {entry.Ordinal,2} {entry.Day,-9} -> {single}");
         }
 
         Console.WriteLine();
