@@ -73,10 +73,11 @@ zone-correct firing at the host boundary. *Package: `Bodu.Globalization.Recurren
 
 ## Conformance
 
-The semantics these samples demonstrate are reconciled row by row against four committed corpora -
+The semantics these samples demonstrate are reconciled row by row against committed corpora -
 RFC 5545's worked examples, libical's occurrence counts, the occurrences python-dateutil produces for
-200 generated sub-daily rules, and a cron vector table derived from Cronos's test suite - currently
-1,353 in-scope rows with zero differences. See the
+200 generated sub-daily rules, cron vector tables derived from the test suites of Cronos and twenty
+other cron libraries, and the scenarios of the fixes in those libraries' release notes - currently
+7,076 in-scope rows with zero differences. See the
 [recurrence guide](../guides/recurrence/index.md) for the contract, and
 `corpus/recurrence/README.md` for each table's provenance and every recorded divergence.
 

@@ -71,7 +71,7 @@ bool ok2 = CronExpression.TryParse("@daily", CronFormat.Standard, out CronExpres
 
 ## Field syntax
 
-Every field accepts `*`, a single value, a range `a-b`, a step `*/n` or `a-b/n`, and comma-separated lists of those. Months take `JAN`-`DEC` and weekdays `SUN`-`SAT`, case-insensitively; weekday `7` is an alias for Sunday (`0`). The two day fields also accept `?` and the Quartz day tokens described [below](#the-quartz-day-tokens).
+Every field accepts `*`, a single value, a range `a-b`, a step `*/n`, `a-b/n` or `a/n` (from `a` to the field's maximum), and comma-separated lists of those. Months take `JAN`-`DEC` and weekdays `SUN`-`SAT`, case-insensitively; weekday `7` is an alias for Sunday (`0`). The two day fields also accept `?` and the Quartz day tokens described [below](#the-quartz-day-tokens).
 
 | Field | Range | Notes |
 |---|---|---|
@@ -82,9 +82,11 @@ Every field accepts `*`, a single value, a range `a-b`, a step `*/n` or `a-b/n`,
 | month | 1-12 or `JAN`-`DEC` | |
 | day-of-week | 0-7 or `SUN`-`SAT` | `0` and `7` are both Sunday; also `?`, `dL`, and `d#k` |
 
-Two behaviours are worth stating because libraries disagree on them:
+Several behaviours are worth stating because libraries disagree on them:
 
 - **A step wider than its range selects the range start** rather than being rejected: `*/60` and `*/90` in the minute field both mean minute `0` (cronie warns about this; some libraries throw). A step of `0` is rejected ("The cron field '1-5/0' is not valid.").
+- **`a/n` runs to the field's maximum, and the day-of-week maximum is 7**, which is Sunday again: `59/15` in the minute field is minute 59 alone, and `1/2` in the day-of-week field selects Monday, Wednesday, Friday and Sunday.
+- **A range must ascend.** A reversed range such as `55-5` or `FRI-TUE` is rejected rather than wrapped around the field, and so is `MON-SUN`, because `SUN` is 0: write `MON-7` or `1-7` for Monday to Sunday.
 - **Day-of-month and day-of-week combine by union only when both are restricted.** Following Vixie cron, an instant matches when it satisfies *either* field if both are restricted, and *both* fields otherwise - and "restricted" is decided by the field's leading character, so `*/2` (leading `*`) is unrestricted while `1-31/2` is restricted even though the two select the same days:
 
 <!-- compile -->

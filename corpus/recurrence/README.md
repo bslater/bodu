@@ -20,6 +20,8 @@ classes accordingly:
 | `libical/` | `third-party-comparison` | The reference C implementation's test corpus - evidence, not authority |
 | `dateutil/` | `third-party-comparison` | python-dateutil's output for generated sub-daily rules - evidence, not authority |
 | `cronos/` | `third-party-comparison` | A widely used .NET cron implementation's test suite - evidence, not authority |
+| `ccronexpr/` to `zslayton/` | `third-party-comparison` | Twenty other cron libraries' test suites, restated in Bodu's dialect - evidence, not authority |
+| `cron-fixes/` | `third-party-comparison` | Every fix in those 21 libraries' release notes, with its scenario where one could be found |
 
 Cron is worse off than recurrence rules here. There is no cron RFC at all: the closest thing to a
 specification is the `crontab(5)` man page shipped with Vixie cron and its cronie descendant, and
@@ -175,12 +177,231 @@ Regenerate with:
 python3 corpus/recurrence/cronos/extract-cronos-vectors.py <CronExpressionFacts.cs>
 ```
 
+## The cron library tables
+
+The Cronos table holds the cron engine to one library's tests. Twenty more cron libraries' test suites, and the
+reverse-search tests Cronos added later, are restated here in Bodu's dialect, one directory per source:
+
+| Directory | Library | Licence | Read at | Made by | Rows | Run |
+|---|---|---|---|---|---:|---:|
+| `ccronexpr/` | staticlibs/ccronexpr (C) | Apache-2.0 | `5d7e772` | extractor | 88 | 88 |
+| `cron-parser/` | harrisiirak/cron-parser (JavaScript) | MIT | `5b08cdf` | transcription | 285 | 225 |
+| `cron-utils/` | jmrozanec/cron-utils (Java) | Apache-2.0 | `bac6e86` | transcription | 196 | 161 |
+| `croner/` | Hexagon/croner (JavaScript) | MIT | `713ee72` | transcription | 367 | 297 |
+| `croniter/` | pallets-eco/croniter (Python) | MIT | `4be99c3` | transcription | 389 | 264 |
+| `cronos/` (reverse) | HangfireIO/Cronos (.NET) | MIT | `1123418` | extractor | 29 | 26 |
+| `cronsim/` | cuu508/cronsim (Python) | BSD-3-Clause | `fd2e617` | extractor | 438 | 432 |
+| `dragonmantank/` | dragonmantank/cron-expression (PHP) | MIT | `d425a24` | extractor | 213 | 204 |
+| `fugit/` | floraison/fugit (Ruby) | MIT | `f571bc0` | extractor | 434 | 309 |
+| `gorhill/` | gorhill/cronexpr (Go) | Apache-2.0 (dual-licensed with GPL-3.0-only) | `88b0669` | extractor | 69 | 63 |
+| `gronx/` | adhocore/gronx (Go) | MIT | `9c2fea1` | extractor | 434 | 385 |
+| `jobrunr/` | jobrunr/jobrunr (Java) | LGPL-3.0-or-later (derived rows only) | `c804c97` | extractor | 441 | 439 |
+| `ncrontab/` | atifaziz/NCrontab (.NET) | Apache-2.0 | `d122d58` | extractor | 187 | 184 |
+| `node-cron/` | kelektiv/node-cron (JavaScript) | MIT | `37a257b` | transcription | 97 | 91 |
+| `quartz/` | quartz-scheduler/quartz (Java) | Apache-2.0 | `741ccc3` | transcription | 120 | 96 |
+| `quartznet/` | quartznet/quartznet (.NET) | Apache-2.0 | `605a8cd` | extractor | 385 | 269 |
+| `robfig/` | robfig/cron (Go) | MIT | `bc59245` | extractor | 108 | 104 |
+| `saffron/` | cloudflare/saffron (Rust) | BSD-3-Clause | `90c2af8` | transcription | 290 | 244 |
+| `spring/` | spring-projects/spring-framework (Java) | Apache-2.0 | `3a91d15`, `v5.3.39` | transcription | 156 | 153 |
+| `supertinycron/` | exander77/supertinycron (C) | Apache-2.0 | `cd1a408` | extractor | 536 | 478 |
+| `zslayton/` | zslayton/cron (Rust) | MIT (dual-licensed with Apache-2.0) | `cf2dc1d` | transcription | 91 | 73 |
+| **Total** | | | | | **5,353** | **4,585** |
+
+Each directory holds `<source>-cron-vectors.csv`; `cronos/` holds `cronos-reverse-cron-vectors.csv` beside the older
+table. An **extracted** table is written by the `extract-*.py` script beside it, which checks the upstream file against
+the SHA-256 in the table's header before parsing the test tables in it; assertions with no table shape are a list in
+the script, each with its upstream line. A **transcribed** table was written by hand from the tests its header names,
+and each row's `reference` cell gives the test and line it restates. Spring's table also reads
+`CronSequenceGeneratorTests`, which Spring removed in 6.0, at the tag `v5.3.39`.
+
+No upstream file is committed. Every header records the repository, the commit, each file's SHA-256 and the licence,
+and the rows restate assertions (an expression, instants, an answer) with attribution. That matters most for
+jobrunr, which is LGPL-3.0-or-later: following the libical precedent above, its directory holds derived rows only.
+gorhill/cronexpr, which is dual-licensed, is taken under Apache-2.0, and zslayton/cron, likewise, under MIT. Each
+header also states, in its `note` lines, how the library's dialect differs from Bodu's, and which tests were left out
+and why, counted: tests of the library's own API, tests that read the wall clock, and tests that depend on a named
+time zone's transitions.
+
+Two pairs share code, so their agreement is not independent: supertinycron is a fork of ccronexpr, and Quartz.NET a
+port of Quartz.
+
+### One schema
+
+Every table has the columns `name,kind,format,expression,from,expected,expectation,flags,reference`. `format` is
+`standard` (five fields) or `withSeconds` (six, seconds first), never inferred. An instant is `yyyy-MM-ddTHH:mm:ss`
+with up to seven fractional digits; one that carries an offset (`+10:00`) is queried through the `DateTimeOffset`
+overloads, and its answer must carry the same offset.
+
+| Kind | Asserts |
+|---|---|
+| `next`, `next-inclusive` | `GetNextOccurrence(from)`, exclusive or inclusive, returns `expected` |
+| `previous`, `previous-inclusive` | `GetPreviousOccurrence(from)`, exclusive or inclusive, returns `expected` |
+| `next-sequence`, `previous-sequence` | Each query, from `from` and then from the previous answer, returns the next instant of `expected` (instants separated by `\|`) |
+| `unreachable-next`, `unreachable-previous` | The query returns `null` |
+| `invalid`, `valid` | `TryParse` rejects, or accepts, `expression` |
+| `equal`, `not-equal` | `expression` and `expected` parse to equal expressions with equal hash codes, or to unequal ones |
+| `to-string` | `ToString()` returns `expected` |
+
+`expectation` says where each answer comes from:
+
+- **`upstream`** (4,995 rows): the library's own assertion, unchanged in meaning.
+- **`cronsim`** (85): the library's answer rests on a reading Bodu does not share (its day-field rule, say), so the
+  row holds cronsim's answer under Bodu's reading, below.
+- **`derived`** (273): worked out by hand, with the working in `reference`. Over half come from Quartz and
+  Quartz.NET, whose tests assert a gap between occurrences, or that an instant does not match, rather than naming an
+  instant, and whose `?` cronsim does not read.
+
+A row is restated (seconds moved first, a weekday renumbered, a year dropped, a long name shortened) only when the
+restated row means exactly what the original asserted, and its `reference` says what changed.
+
+### cronsim as the oracle
+
+[cronsim](https://github.com/cuu508/cronsim) 2.7 (BSD-3-Clause) is Debian-compatible: it takes the union of the two
+day fields only when neither starts with `*`, as Vixie cron and Bodu do. That makes it an oracle independent of both
+the upstream library and Bodu for any expression it reads. `check-cron-vectors-with-cronsim.py` recomputes every
+occurrence row it can, in every table and fix catalogue:
+
+```shell
+python3 -m venv venv && venv/bin/pip install cronsim==2.7
+venv/bin/python -I corpus/recurrence/check-cron-vectors-with-cronsim.py --quiet \
+    corpus/recurrence/*/*-cron-vectors.csv corpus/recurrence/cron-fixes/*-fixes.csv
+```
+
+On the committed tables it reports `checked 2625, agreed 2625, mismatched 0, horizon 0, unsupported 825`. The
+unsupported rows use syntax cronsim does not read (`?`, `W`, `L-n`, `LW`, the macros, a day its month never has) or
+would take cronsim past the end of Python's calendar; the older Cronos table, whose `next` rows are inclusive, is
+skipped.
+
+### Flags
+
+A flagged row is excluded, and the test run reports each table's exclusions by flag. These are the 768 excluded rows:
+
+| Flag | Rows | Excluded because |
+|---|---:|---|
+| `token-list` | 167 | A Quartz token (`L`, `W`, `#`) in a list, range or step, which Bodu rejects |
+| `syntax-extension` | 159 | Syntax only the library has: `?` outside the day fields, `%`, `&`, `~` and `+`, hour 24, `L` alone in day-of-week, a bare `W`, `d#-k`, leap seconds, and the like |
+| `year-field` | 145 | The row depends on a year field, which Bodu does not have |
+| `wrap-range` | 132 | A reversed range (`55-5`, `FRI-TUE`, `7-5`) that the library wraps or renumbers; Bodu rejects it |
+| `hash` | 37 | The Jenkins `H` token |
+| `oversized-step` | 37 | A step wider than its range, which the library rejects; Bodu, like cronie, takes the range start |
+| `dom-dow-intersect` | 20 | Both day fields restricted, which the library (or the test's option) intersects; Bodu takes the union |
+| `macro` | 19 | A macro outside `crontab(5)`'s seven, such as `@every`, `@minutely` or `@noon` |
+| `duplicate-value` | 13 | A value listed twice, which cron-parser rejects; Bodu reads a list as the set it names |
+| `strict-step` | 12 | croner 10 rejects a single value with a step (`5/5`); Bodu reads `n/m` as `n` to the field maximum |
+| `equal-range` | 9 | croniter reads an equal range (`5-5`) as the whole cycle; Bodu reads it as the one value |
+| `quartz-dow-numbering` | 7 | Quartz's 1 = Sunday weekday digits that cannot be renumbered without changing the row's meaning |
+| `impossible-date` | 7 | fugit rejects a day the month never has (`30 2`); Bodu accepts it, and its searches return `null` |
+| `question-mark` | 6 | The library requires `?` in exactly one day field, or rejects it in both; Bodu reads `?` as `*` |
+| `single-value-step` | 4 | dragonmantank rejects a step on a single value (`1/10`) |
+| `library-rejects` | 3 | cronsim rejects syntax Bodu documents as valid (`* * 30 2 *`, `MONL`) |
+| `long-name` | 3 | A name longer than three letters (`March`) |
+| `dom-pruning` | 2 | cron-parser drops days the named month cannot have before comparing; Bodu compares the sets as written |
+| `dow-seven` | 2 | croniter's day of week runs 0-6, so it reads `7/2` and `6/1` differently |
+| `zero-offset` | 2 | saffron rejects `L-0`; Bodu reads it as `L` |
+| `dom-dow-union` | 1 | croniter's default unions a star-led day field (`*/2`) with the other; Bodu intersects them |
+| `token-combination` | 1 | jobrunr rejects `L` in both day fields; Bodu takes their union |
+| `layout-equality` | 1 | node-cron equates a five-field expression with the six-field one at second 0; Bodu's equality includes the layout |
+| `cross-layout` | 1 | supertinycron equates a six-field expression with a five-field one, likewise |
+| `quartz-unsupported` | 1 | node-cron has no Quartz tokens and rejects `L`, which Bodu accepts |
+
+### Where the libraries read cron differently
+
+The libraries part most over the two day fields. Vixie cron, cronsim, gronx, jobrunr and Bodu take the union of the
+day of the month and the day of the week when neither field starts with `*`, and the intersection otherwise.
+NCrontab, Spring, ccronexpr, supertinycron and zslayton always intersect, and so do Cronos when both fields are
+restricted, croniter with `day_or=False` and croner with `domAndDow`. cron-parser, croner, croniter, cron-utils'
+UNIX definition, dragonmantank, gorhill and robfig (since its #70) take the union unless a field is exactly `*` (or
+`?`), so `*/2` counts as restricted; fugit and node-cron decide by whether the field selects every value. A row whose
+answer depends on the rule holds cronsim's answer under Bodu's, or is flagged `dom-dow-intersect` or `dom-dow-union`.
+
+The other differences are restated where the meaning survives and flagged where it does not:
+
+- **Weekday numbers.** Quartz, Quartz.NET, saffron and zslayton number Sunday 1; jobrunr, robfig and croniter run
+  0-6. Bodu runs 0-7, with 0 and 7 both Sunday.
+- **Seconds.** croniter puts them last; every other six-field form puts them first, as Bodu does.
+- **Years.** Quartz, Quartz.NET, croniter, croner, gorhill, gronx, supertinycron, zslayton and cron-utils' Quartz
+  definition have a year field. A row whose year is `*`, or whose instants all lie in its year, is restated without
+  it.
+- **Reversed ranges.** Cronos, Quartz.NET, cron-utils, croniter, fugit and saffron wrap them; Spring, gronx and
+  dragonmantank read a range from 7 as starting on Sunday, and croner reads `SUN` at the end of a range as 7. Bodu
+  rejects them all; `MON-SUN` is one, because `SUN` is 0.
+
+Regenerate an extracted table with its script and the upstream file it names:
+
+```shell
+python3 corpus/recurrence/<source>/extract-<table>-cron-vectors.py <upstream files...>
+```
+
+Each script's docstring gives its arguments, and the table's header gives the commit to fetch them at.
+
+## `cron-fixes/` - the release-note fix catalogue
+
+The release notes of the same 21 libraries were read in full, and every fix they list is catalogued (for the
+schedulers and frameworks, Quartz, Quartz.NET, Spring and jobrunr, every fix to their cron support): one file per
+library, `cron-fixes/<library>-fixes.csv`, one row per fix, or one per case where a fix needs several. Where the
+notes are missing or incomplete (ccronexpr, gorhill, robfig, saffron, supertinycron, and zslayton after 0.15.0), the
+commit history was read as well, and the file's header says so. Each row records the version, the reference (an
+issue, a pull request or a commit) and a summary, then a class:
+
+| Class | Rows | Meaning |
+|---|---:|---|
+| `applies` | 946 | The row carries the scenario of the fix, in Bodu's dialect, and runs: Bodu must do what the fix established |
+| `dialect` | 192 | The row runs, asserting Bodu's documented behaviour where it differs from the fix's; `reason` names it |
+| `n/a` | 876 | The fix concerns packaging, an API Bodu does not have, time zones, performance or the library's language; `reason` says which |
+| `unknown` | 18 | No scenario could be found; `reason` links the issue or commit |
+
+That is 1,383 fixes in 2,032 rows. A scenario is, first, the regression test the fix added, read from its pull
+request or commit, and otherwise the scenario its issue describes. The runnable rows use the vector tables' columns
+and kinds, and run through the same tests, each named after its library, version, reference and summary;
+`RecurrenceCorpusTests` also holds each catalogue's count in each class, and fails on a `dialect`, `n/a` or `unknown`
+row without a reason.
+
+| Library | Fixes | Rows | applies | dialect | n/a | unknown |
+|---|---:|---:|---:|---:|---:|---:|
+| ccronexpr | 19 | 26 | 9 | 0 | 15 | 2 |
+| cron-parser | 160 | 199 | 81 | 17 | 101 | 0 |
+| cron-utils | 285 | 422 | 214 | 44 | 163 | 1 |
+| croner | 155 | 202 | 62 | 20 | 118 | 2 |
+| croniter | 173 | 228 | 85 | 24 | 117 | 2 |
+| cronos | 78 | 129 | 66 | 5 | 58 | 0 |
+| cronsim | 19 | 26 | 13 | 0 | 13 | 0 |
+| dragonmantank | 100 | 150 | 74 | 7 | 67 | 2 |
+| fugit | 67 | 92 | 38 | 16 | 38 | 0 |
+| gorhill | 10 | 23 | 17 | 4 | 2 | 0 |
+| gronx | 33 | 63 | 40 | 6 | 16 | 1 |
+| jobrunr | 14 | 55 | 45 | 3 | 6 | 1 |
+| ncrontab | 7 | 10 | 6 | 0 | 4 | 0 |
+| node-cron | 34 | 44 | 14 | 4 | 26 | 0 |
+| quartz | 19 | 42 | 27 | 4 | 11 | 0 |
+| quartznet | 79 | 100 | 47 | 10 | 40 | 3 |
+| robfig | 30 | 33 | 7 | 2 | 24 | 0 |
+| saffron | 4 | 5 | 0 | 2 | 3 | 0 |
+| spring | 48 | 106 | 75 | 8 | 23 | 0 |
+| supertinycron | 34 | 51 | 20 | 4 | 23 | 4 |
+| zslayton | 15 | 26 | 6 | 12 | 8 | 0 |
+| **Total** | **1,383** | **2,032** | **946** | **192** | **876** | **18** |
+
+### What the tables found
+
+Two defects, both now fixed, red then green:
+
+- **A search near either end of the calendar threw** ([#798](https://github.com/bslater/bodu/issues/798)). A search
+  that would step past 9999-12-31 or before 0001-01-01 threw `ArgumentOutOfRangeException` instead of returning
+  `null`. Cronos 0.10.0 (PR #80), NCrontab 3.3.1 (#21) and saffron's calendar-end iterator tests assert `null` there.
+- **The search stopped after twelve years** ([#799](https://github.com/bslater/bodu/issues/799)). It returned `null`
+  for satisfiable expressions whose next occurrence was further away. jobrunr's table expects `0 0 0 29 2 */5` from
+  2019-01-01 to give 2032-02-29 (`args-405`), 13 years on. The search now covers 400 years, a whole cycle of the
+  Gregorian calendar.
+
+Every other difference is a dialect difference, restated or flagged as above.
+
 ## Scope exclusions (recorded, never silently skipped)
 
 Every table carries a `flags` column, and the reconciliation tests **report every excluded row**
 rather than quietly passing over it - by name for the RFC and libical tables, and as a per-flag
-tally for the much larger Cronos table; the dateutil table excludes nothing. The exclusions are
-deliberate scope boundaries of the library, not gaps in the corpus:
+tally for the much larger Cronos table and the cron library tables, whose flags are listed
+[above](#flags); the dateutil table excludes nothing. The exclusions are deliberate scope boundaries
+of the library, not gaps in the corpus. The flags of the recurrence and Cronos tables:
 
 | Flag | Why it is excluded |
 |---|---|
@@ -217,7 +438,7 @@ does land in the window. Its `UNTIL=19970902T170000Z` is 13:00 in New York, whic
 series after 12:00, yet the RFC lists 09:00, 12:00 and 15:00: the wall-clock reading. Bodu gives the
 three the RFC lists, pinned in `RecurrenceRuleTests.SubDaily`.
 
-## Reconciliation status (2026-10-05)
+## Reconciliation status (2026-10-06)
 
 | Corpus | Rows | Run | Result |
 |---|---:|---:|---|
@@ -225,6 +446,8 @@ three the RFC lists, pinned in `RecurrenceRuleTests.SubDaily`.
 | libical `recur.txt` | 57 | 56 | 56 count matches, 0 differences (the `EXDATE` row runs through `RecurrenceSet`) |
 | python-dateutil, generated sub-daily rules | 200 | 200 | 200 occurrence-list matches, and the next and previous occurrence at every recorded instant, 0 differences |
 | Cronos `CronExpressionFacts` | 1,354 | 1,074 | 1,074 matches, 0 differences, the 319 rows that use the Quartz day tokens included |
+| Cronos `CronExpressionReverseFacts` and twenty other cron libraries' test suites | 5,353 | 4,585 | 4,585 matches, 0 differences, once #798 and #799 were fixed |
+| The same 21 libraries' release-note fixes | 2,032 | 1,138 | 1,138 matches (946 `applies`, 192 `dialect`), 0 differences; 876 `n/a` and 18 `unknown` rows each give their reason |
 
 `AnchoredInterval` durations are still not covered by a corpus: RFC 5545 §3.3.6 states its duration
 grammar as ABNF and publishes no vector table, so that form stays pinned by tests transcribed into

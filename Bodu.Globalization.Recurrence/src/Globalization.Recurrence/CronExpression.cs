@@ -529,7 +529,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="inclusive">Whether an occurrence equal to <paramref name="after" /> counts.</param>
     /// <param name="guardYear">The last year the search scans.</param>
     /// <returns>
-    /// The next matching instant, or <see langword="null" /> when none occurs within the search horizon.
+    /// The next matching instant, or <see langword="null" /> when none occurs by the end of
+    /// <paramref name="guardYear" />.
     /// </returns>
     /// <remarks>
     /// This is the search in <see cref="GetNextOccurrence(DateTime, bool)" /> with days tested by
@@ -592,7 +593,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="inclusive">Whether an occurrence equal to <paramref name="before" /> counts.</param>
     /// <param name="guardYear">The first year the search scans.</param>
     /// <returns>
-    /// The previous matching instant, or <see langword="null" /> when none occurs within the search horizon.
+    /// The previous matching instant, or <see langword="null" /> when none occurs from the start of
+    /// <paramref name="guardYear" /> on.
     /// </returns>
     /// <remarks>
     /// This is the search in <see cref="GetPreviousOccurrence(DateTime, bool)" /> with days tested by
@@ -651,8 +653,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="after">The instant the returned occurrence must follow.</param>
     /// <param name="inclusive">Whether an occurrence equal to <paramref name="after" /> counts.</param>
     /// <returns>
-    /// The next matching instant, or <see langword="null" /> when none occurs within the search horizon or before the
-    /// end of the calendar.
+    /// The next matching instant, or <see langword="null" /> when none occurs before the end of the calendar.
     /// </returns>
     /// <remarks>
     /// The public search calls this for an instant in a year after <see cref="LastYearSearchedInPlace" />, from which a
@@ -678,8 +679,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="before">The instant the returned occurrence must precede.</param>
     /// <param name="inclusive">Whether an occurrence equal to <paramref name="before" /> counts.</param>
     /// <returns>
-    /// The previous matching instant, or <see langword="null" /> when none occurs within the search horizon or after
-    /// the start of the calendar.
+    /// The previous matching instant, or <see langword="null" /> when none occurs after the start of the calendar.
     /// </returns>
     /// <remarks>
     /// The public search calls this for an instant in a year before <see cref="FirstYearSearchedInPlace" />, from which

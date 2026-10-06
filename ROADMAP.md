@@ -1636,7 +1636,13 @@ filter were added to *Non-goals* instead.
   and its day tokens as two typed records, an RRULE tests its months,
   month days and weekdays against sets precomputed from its parts, and
   `RecurrenceRuleBuilder` gains an overload per part that takes the set
-  expressing it. Deferred follow-on: a read-only `.ics` (iCalendar)
+  expressing it. An eighth pass, also for 1.3.0, holds cron to the test
+  suites of 21 cron libraries, restated in Vixie's dialect, and to the
+  scenarios of every fix in their release notes, and fixes the two
+  defects they found: a search near either end of the calendar threw
+  rather than answering `null`, and the search gave up after twelve
+  years. It now scans 400 years, one whole Gregorian cycle, so `null`
+  means "never". Deferred follow-on: a read-only `.ics` (iCalendar)
   reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,

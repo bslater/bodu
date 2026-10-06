@@ -61,6 +61,11 @@ regression tests. Fixes it produced include Vixie's leading-character rule for c
 restriction, candidate-set deduplication before `BYSETPOS`/`COUNT`, the `BYDAY` ordinal when `BYDAY`
 limits alongside `BYMONTHDAY`, and `BYWEEKNO` numbering generalized from the ISO rule to `WKST`.
 
+The cron engine is also held to the test suites of 21 cron libraries, restated in its dialect, and to
+the scenarios of the fixes in their release notes: 5,723 runnable rows. They found two defects, both
+fixed: a search near either end of the calendar threw rather than answering `null`, and a search gave
+up after twelve years, though some expressions match only decades apart.
+
 ## Known limits
 
 - The Quartz day tokens keep Vixie's weekday numbering (0 or 7 for Sunday) and union rule, so a
