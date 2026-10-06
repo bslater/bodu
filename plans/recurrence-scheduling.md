@@ -1,11 +1,13 @@
 # Implementation plan: the shared recurrence and scheduling requirements
 
-**Status:** Implemented: every capability in §4's Phases 0-9 is in the codebase, and the
-package is in the release manifest (first shipped in the 0.6.0 wave). Three phases landed for
+**Status:** Implemented: every capability in §4's Phases 0-10 is in the codebase, and the
+package is in the release manifest (first shipped in the 0.6.0 wave). Four phases landed for
 1.3.0: Phase 7, the steady-state speed-up, begins the point queries and windows of
 `RecurrenceRule` and `RecurrenceSet` at the frequency period that holds the query instead of at
-the series start; Phase 8, beyond the requirements, enumerates the sub-daily frequencies; and
-Phase 9, also beyond them, accepts the Quartz day tokens in cron (outcomes in §4) · **Source:** FallbackPlan requirements document
+the series start; Phase 8, beyond the requirements, enumerates the sub-daily frequencies;
+Phase 9, also beyond them, accepts the Quartz day tokens in cron; and Phase 10 moves cron's
+fields, an RRULE's day and month limits, and the rule builder onto Bodu.Core's calendar value
+sets (outcomes in §4) · **Source:** FallbackPlan requirements document
 (`REC-F-*` / `REC-N-*`, dated 2026-08-05) · **Target:** `Bodu.Globalization.Recurrence`
 
 This plan maps the FallbackPlan requirements statement onto the Bodu
@@ -666,6 +668,180 @@ hour's other 59 minutes first, which is most of the cost of the
 `previous` rows above. A table of the nearest allowed value of each
 field would skip them; it is unrelated to the tokens and was left for a
 change of its own.
+
+### Phase 10 - the calendar value sets *(done, for 1.3.0; beyond the requirements)*
+
+Bodu.Core 1.3.0 replaced `WeekPattern` with `DayOfWeekSet` and added
+`MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet`:
+immutable bit sets over each calendar field's values. This package had
+kept its own forms of the same values: cron held six `bool[]` masks and
+its day tokens one record with a kind and an `int` weekday, and
+`RecurrenceRule` searched its `BYDAY` entries with `Array.IndexOf` on
+every candidate day. This phase moves all three onto the sets. Rule text,
+equality and every answer are unchanged.
+
+**Outcome.**
+
+- **Cron's fields** are a `SecondSet`, `MinuteSet`, `HourSet`,
+  `DayOfMonthSet`, `MonthSet` and `DayOfWeekSet`. The field parser still
+  builds a mask, folding the weekday 7 onto Sunday, and packs it into the
+  set's bits from the field's minimum. The searches test a field with a
+  single bit test on the set's bitmap, since a candidate's fields always
+  lie in the sets' domains (see Speed). Formatting enumerates the
+  set and still writes a plain comma list, or `*` for a full field,
+  since the Cronos corpus pins the canonical text. `Equals` and
+  `GetHashCode` compare the sets, and the restriction flags stay.
+- **Cron's day tokens** are two types, each held in a nullable field:
+  `DayOfMonthToken(int Day, bool FromEnd, bool NearestWeekday)`, with
+  `L` = (0, true, false), `L-n` = (n, true, false), `LW` = (0, true,
+  true), `L-nW` = (n, true, true) and `nW` = (n, false, true); and
+  `DayOfWeekToken(DayOfWeek Day, WeekOrdinal Ordinal)`, with `dL` as
+  `WeekOrdinal.Last` and `d#k` as ordinal k. The record equality is what
+  `Equals` compares, so each token is stored in its canonical form.
+- **An RRULE's day and month limits.** The constructor precomputes:
+  - a `MonthSet` of `BYMONTH`, or every month when the part is absent;
+  - two `DayOfMonthSet`s of `BYMONTHDAY`, one counted from the start of
+    the month and one from its end;
+  - a `DayOfWeekSet` of every `BYDAY` weekday, and one of the weekdays
+    that carry no ordinal.
+
+  `MonthAllowed` and `MonthDayAllowed` are a bit test each.
+  `WeekDayAllowed` rejects any weekday outside the first set, accepts
+  one in the second (or any when ordinals are not honoured), and walks
+  only the ordinal entries for the rest. A weekly rule takes its days
+  from the first set, or from its start's weekday, instead of building a
+  list per period. The public lists, text and equality are unchanged,
+  and `BYYEARDAY`, `BYWEEKNO` and `BYSETPOS` stay arrays: their domains
+  are signed and wider than a set's 64 bits.
+- **The builder** gains one overload per part that takes the set the
+  part expresses: `BySecond(SecondSet)`, `ByMinute(MinuteSet)`,
+  `ByHour(HourSet)`, `ByDay(DayOfWeekSet)`, `ByMonthDay(DayOfMonthSet)`
+  and `ByMonth(MonthSet)`. Values are written in ascending order, and
+  `BYDAY` Monday first as RFC 5545 lists the days, whatever order the set
+  was built in. An empty set throws `ArgumentException` naming the part:
+  a part that is present selects at least one value, and a part left
+  unset places no limit. The `int` overloads stay for what a set cannot
+  express: a negative month day, and second 60.
+- **Tests.** Each overload's partial holds its text, its equality with
+  the parsed rule and with the `int` overload, and the empty set; `ByDay`
+  adds the Monday-first order. `CronTokenReference`, the day-by-day
+  oracle for the tokens, reads its weekdays as `DayOfWeek` and a
+  `DayOfWeekSet`. Every existing suite passes unchanged: cron, RRULE,
+  the corpora, the stream agreements and `SubDailyReference`.
+- **Mutation checks.** Each mutation was applied alone to the sources,
+  and the recurrence tests run on net10.0; the counts are the tests that
+  failed.
+
+| Mutation | Failing tests |
+|---|---:|
+| Cron ignores the month set, in every loop | 64 |
+| Cron ignores the hour set, in every loop | 96 |
+| Cron ignores the minute set, in every loop | 103 |
+| Cron ignores the second set, in every loop | 20 |
+| Cron matches every day of the week | 33 |
+| Cron matches every day of the month | 75 |
+| A field's bits start at zero rather than at its minimum | 877 |
+| `*` is written for a field one value short of full | 108 |
+| `L` selects the day before the one it names | 152 |
+| `nW` ignores the nearest-weekday rule | 80 |
+| `dL` and `d#k` swap their rules | 71 |
+| `dL` is written as `d#5` | 6 |
+| A rule without `BYMONTH` allows no month | 596, then a hang |
+| A day counted from the month's end is off by one | 15 |
+| A day counted from the month's start is never tested | 113 |
+| The `BYDAY` weekday set never rejects a day | 193 |
+| An ordinal-free weekday in a monthly or yearly rule needs an ordinal | 6 |
+| A weekly rule without `BYDAY` takes no weekday from its start | 10 |
+| The builder accepts an empty set | 6 |
+| `ByDay(DayOfWeekSet)` writes Sunday first | 2 |
+
+  A rule that allows no month never produces an occurrence, so an
+  unbounded query runs on: that mutation failed 596 tests and then hung
+  in `GetNextOccurrence_WhenQueriedAnywhereInTheSeries_ShouldMatchTheOccurrenceStream`,
+  which the test platform's hang detection aborted after two minutes.
+
+- **Speed.** Every query of the earlier phases' benchmarks was timed against
+  the B1 head:
+  - the six cron expressions without a token and the six with one, each
+    queried in both directions;
+  - 23 sub-daily rule and set queries;
+  - seven date-valued rules, each queried next, previous and over a year's
+    window.
+
+  The method:
+  - **First, one process per build.** Each build ran in a process of its
+    own, the builds alternating. That could not resolve 5% on the
+    measurement machine: an identical copy of the B1 build, timed the same
+    way as a control, differed from it by up to 47%.
+  - **The gate: one process per runtime and tiering mode.** Each process
+    loads the B1 build (A), this phase's build, and A again (A2, the
+    control), each into an `AssemblyLoadContext` of its own. They take
+    turns in 10 ms rounds, and the order rotates every round, so a slow
+    patch of the machine falls on every build alike.
+  - **The measure.** A query's ratio is the median, over 41 rounds, of
+    this phase's time divided by A's in the same round. The gate ran three
+    times on .NET 8 and .NET 10, with tiered compilation off
+    (`DOTNET_TieredCompilation=0`, deterministic code) and on.
+
+  Two changes came out of the measurement:
+  - **`DayMatches` is marked `AggressiveInlining`.** With the set tests in
+    it, it had grown past the inliner's size limit. Left as a call on every
+    candidate day, it cost a cron expression without a token up to a tenth
+    of its query time.
+  - **The searches test the sets' bitmaps directly.** They go through
+    `ToUInt64` and a `Selects` helper, rather than through `Contains`. A
+    candidate's fields always lie in their sets' domains, so `Contains`'s
+    range check was dead weight. With it, and with `DayMatches` turning its
+    two tests into booleans, an expression without a token still searched
+    1-7% slower than over the boolean masks. A membership test without
+    branches, tried in Core, was slower still (5-13%). The backward
+    searches also read their step unit once; on .NET 10 the minute step's
+    `Unit` property had become a call.
+
+  The final gate ran on `8fecdbc48`. Each cell gives the lowest and highest
+  ratio among the group's queries, each query's ratio being the median of
+  its three runs:
+
+  | Queries | .NET 8, tiering off | .NET 10, tiering off | .NET 8, tiering on | .NET 10, tiering on |
+  |---|---|---|---|---|
+  | Cron without a token (12) | 0.97-0.99 | 0.97-1.00 | 0.94-1.00 | 0.95-1.06 |
+  | Cron with a token (12) | 0.80-1.01 | 0.80-1.00 | 0.84-1.01 | 0.84-1.03 |
+  | Sub-daily rules and sets (23) | 0.68-1.03 | 0.66-1.02 | 0.64-1.14 | 0.74-1.14 |
+  | Date-valued rules (21) | 0.79-1.03 | 0.80-1.01 | 0.84-1.03 | 0.79-1.04 |
+
+  **Tiering off.** The code is deterministic, and every query is within
+  1.03 of the B1 head. The control's medians stayed within 0.05 and 0.06 of
+  1 on .NET 8 and .NET 10.
+
+  **Tiering on.** Dynamic PGO makes the control noisier (within 0.10 and
+  0.11). Six of the 272 ratios read over 1.05:
+  - the first 10,000 occurrences of a secondly rule: 1.14 on both runtimes;
+  - a day's window of quarter hours: 1.06, on .NET 10;
+  - the previous occurrence of a bounded secondly rule: 1.05 and 1.06;
+  - `0 0 13 * FRI` next: 1.06, on .NET 10.
+
+  Each moves with the order in which the builds load, not with the code.
+  The four queries were rerun three times, each time with a different build
+  loaded first, and the build loaded first ran up to 11% faster than the
+  other two, A2 included. Averaged over the three orders, the six ratios
+  come to 0.96-1.04.
+
+  The gains hold in every runtime and mode:
+
+  | Query | .NET 8, off | .NET 10, off | .NET 8, on | .NET 10, on |
+  |---|---|---|---|---|
+  | Weekly `MO,WE,FR` since 1990, next | 0.84 | 0.83 | 0.88 | 0.86 |
+  | Weekly `MO,WE,FR` since 1990, a year's window | 0.79 | 0.80 | 0.84 | 0.86 |
+  | Fortnightly without `BYDAY`, a year's window | 0.80 | 0.82 | 0.84 | 0.87 |
+  | Daily quarter-end weekdays, next | 0.82 | 0.81 | 0.86 | 0.79 |
+  | Hourly on the 1st since 1990, next | 0.68 | 0.66 | 0.64 | 0.74 |
+  | Hourly on the 1st since 1990, previous | 0.78 | 0.81 | 0.79 | 0.80 |
+  | Cron `0 9 * * MON#1`, previous | 0.80 | 0.81 | 0.85 | 0.86 |
+  | Cron `0 9 * * MON#5`, previous | 0.80 | 0.80 | 0.85 | 0.84 |
+
+  The harness is scratch, not committed: a console program that loads each
+  build's two assemblies from a directory, with the gate's queries as
+  delegates bound by reflection.
 
 ## 5. Traceability
 

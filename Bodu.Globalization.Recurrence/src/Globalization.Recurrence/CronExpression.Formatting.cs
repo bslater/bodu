@@ -51,7 +51,7 @@ public sealed partial class CronExpression : IFormattable
     }
 
     /// <summary>
-    /// Builds the canonical cron text from the field masks.
+    /// Builds the canonical cron text from the field sets.
     /// </summary>
     /// <returns>The canonical cron text.</returns>
     private string FormatCore()
@@ -60,15 +60,15 @@ public sealed partial class CronExpression : IFormattable
 
         if (Format == CronFormat.WithSeconds)
         {
-            builder.Append(FormatField(_seconds, 0, 59)).Append(' ');
+            builder.Append(FormatField(_seconds, _seconds.Count, 60)).Append(' ');
         }
 
-        builder.Append(FormatField(_minutes, 0, 59)).Append(' ');
-        builder.Append(FormatField(_hours, 0, 23)).Append(' ');
+        builder.Append(FormatField(_minutes, _minutes.Count, 60)).Append(' ');
+        builder.Append(FormatField(_hours, _hours.Count, 24)).Append(' ');
         (string dayOfMonth, string dayOfWeek) = FormatDayFields();
 
         builder.Append(dayOfMonth).Append(' ');
-        builder.Append(FormatField(_months, 1, 12)).Append(' ');
+        builder.Append(FormatField(_months, _months.Count, 12)).Append(' ');
         builder.Append(dayOfWeek);
 
         return builder.ToString();
@@ -77,36 +77,34 @@ public sealed partial class CronExpression : IFormattable
     /// <summary>
     /// Renders a single field as <c>*</c> when it spans its whole range, or a comma-separated value list otherwise.
     /// </summary>
-    /// <param name="mask">The field mask.</param>
-    /// <param name="min">The inclusive minimum value.</param>
-    /// <param name="max">The inclusive maximum value.</param>
+    /// <param name="values">The field's selected values, in ascending order.</param>
+    /// <param name="count">The number of values selected.</param>
+    /// <param name="rangeSize">The number of values in the field's range.</param>
     /// <returns>The rendered field text.</returns>
-    private static string FormatField(bool[] mask, int min, int max)
-    {
-        var values = new List<int>();
-        for (int value = min; value <= max; value++)
-        {
-            if (mask[value])
-            {
-                values.Add(value);
-            }
-        }
+    /// <remarks>
+    /// The list is written value by value rather than in the sets' own range form (<c>1-3,12</c>), because the
+    /// canonical cron text the corpus pins lists each value.
+    /// </remarks>
+    private static string FormatField(IEnumerable<int> values, int count, int rangeSize) =>
+        count == rangeSize
+            ? "*"
+            : string.Join(',', values.Select(v => v.ToString(CultureInfo.InvariantCulture)));
 
-        if (values.Count == max - min + 1)
-        {
-            return "*";
-        }
-
-        return string.Join(',', values.Select(v => v.ToString(CultureInfo.InvariantCulture)));
-    }
+    /// <summary>
+    /// Returns the days a day-of-week set selects as their cron numbers, Sunday as zero, in ascending order.
+    /// </summary>
+    /// <param name="days">The days of the week.</param>
+    /// <returns>The day numbers.</returns>
+    private static IEnumerable<int> DayNumbers(DayOfWeekSet days) =>
+        days.Select(day => (int)day);
 
     /// <summary>
     /// Renders the two day fields together, so that the pair re-parses to the same combination mode.
     /// </summary>
     /// <returns>The rendered day-of-month and day-of-week field text.</returns>
     /// <remarks>
-    /// The plain rendering implies a restricted-ness of its own - <c>*</c> for a mask that selects every value, a value
-    /// list otherwise - and that is usually the right answer, so it is preferred whenever it reproduces
+    /// The plain rendering implies a restricted-ness of its own - <c>*</c> for a field that selects every value, a
+    /// value list otherwise - and that is usually the right answer, so it is preferred whenever it reproduces
     /// <see cref="DaysCombineByUnion" />. Only when it would flip the combination does either field switch to the
     /// restriction-preserving spelling, which keeps the canonical text as close to the plain form as correctness
     /// allows.
@@ -114,8 +112,8 @@ public sealed partial class CronExpression : IFormattable
     private (string DayOfMonth, string DayOfWeek) FormatDayFields()
     {
         // A token is written as itself and always re-parses as a restriction, so it never selects every value.
-        bool domSelectsEveryValue = _dayOfMonthToken.IsNone && SelectsEveryValue(_daysOfMonth, 1, 31);
-        bool dowSelectsEveryValue = _dayOfWeekToken.IsNone && SelectsEveryValue(_daysOfWeek, 0, 6);
+        bool domSelectsEveryValue = _dayOfMonthToken is null && _daysOfMonth == DayOfMonthSet.All;
+        bool dowSelectsEveryValue = _dayOfWeekToken is null && _daysOfWeek == DayOfWeekSet.All;
 
         // Re-parsing the plain rendering marks a field restricted exactly when it does not select every value.
         bool plainCombinesByUnion = !domSelectsEveryValue && !dowSelectsEveryValue;
@@ -123,40 +121,20 @@ public sealed partial class CronExpression : IFormattable
         if (plainCombinesByUnion == DaysCombineByUnion)
         {
             return (
-                _dayOfMonthToken.IsNone ? FormatField(_daysOfMonth, 1, 31) : _dayOfMonthToken.Format(),
-                _dayOfWeekToken.IsNone ? FormatField(_daysOfWeek, 0, 6) : _dayOfWeekToken.Format());
+                _dayOfMonthToken?.Format() ?? FormatField(_daysOfMonth, _daysOfMonth.Count, 31),
+                _dayOfWeekToken?.Format() ?? FormatField(DayNumbers(_daysOfWeek), _daysOfWeek.Count, 7));
         }
 
         return (
-            _dayOfMonthToken.IsNone ? FormatDayField(_daysOfMonth, 1, 31, _domRestricted) : _dayOfMonthToken.Format(),
-            _dayOfWeekToken.IsNone ? FormatDayField(_daysOfWeek, 0, 6, _dowRestricted) : _dayOfWeekToken.Format());
-    }
-
-    /// <summary>
-    /// Determines whether a mask selects every value in its range.
-    /// </summary>
-    /// <param name="mask">The field mask.</param>
-    /// <param name="min">The inclusive minimum value.</param>
-    /// <param name="max">The inclusive maximum value.</param>
-    /// <returns><see langword="true" /> when every value is selected; otherwise <see langword="false" />.</returns>
-    private static bool SelectsEveryValue(bool[] mask, int min, int max)
-    {
-        for (int value = min; value <= max; value++)
-        {
-            if (!mask[value])
-            {
-                return false;
-            }
-        }
-
-        return true;
+            _dayOfMonthToken?.Format() ?? FormatDayField(_daysOfMonth, 1, 31, _domRestricted),
+            _dayOfWeekToken?.Format() ?? FormatDayField(DayNumbers(_daysOfWeek), 0, 6, _dowRestricted));
     }
 
     /// <summary>
     /// Renders one of the two day fields, choosing a spelling whose leading character re-parses to the same
     /// restricted-ness as the field carries.
     /// </summary>
-    /// <param name="mask">The field mask.</param>
+    /// <param name="selected">The field's selected values, in ascending order.</param>
     /// <param name="min">The inclusive minimum value.</param>
     /// <param name="max">The inclusive maximum value.</param>
     /// <param name="restricted">Whether the field is restricted.</param>
@@ -168,21 +146,14 @@ public sealed partial class CronExpression : IFormattable
     /// </para>
     /// <para>
     /// An unrestricted field must begin with <c>*</c>. Every leading <c>*</c> element selects <paramref name="min" />,
-    /// so an unrestricted mask always contains it; when the mask is exactly the progression from
+    /// so an unrestricted field always selects it; when the field selects exactly the progression from
     /// <paramref name="min" /> at some step it is written as <c>*&#47;step</c>, and otherwise as the degenerate
     /// <c>*&#47;(max - min + 1)</c> - which selects <paramref name="min" /> alone - followed by the remaining values.
     /// </para>
     /// </remarks>
-    private static string FormatDayField(bool[] mask, int min, int max, bool restricted)
+    private static string FormatDayField(IEnumerable<int> selected, int min, int max, bool restricted)
     {
-        var values = new List<int>();
-        for (int value = min; value <= max; value++)
-        {
-            if (mask[value])
-            {
-                values.Add(value);
-            }
-        }
+        var values = selected.ToList();
 
         bool selectsEveryValue = values.Count == max - min + 1;
         if (restricted)
@@ -197,7 +168,7 @@ public sealed partial class CronExpression : IFormattable
             return "*";
         }
 
-        // The mask came from a field led by "*" or "*/step", so min is selected and a step spelling may exist.
+        // The field was led by "*" or "*/step", so min is selected and a step spelling may exist.
         int step = values.Count > 1 ? values[1] - values[0] : max - min + 1;
         bool isProgression = values.Count > 1
             && values.Select((v, i) => v == min + (i * step)).All(static matched => matched)
@@ -208,7 +179,7 @@ public sealed partial class CronExpression : IFormattable
             return string.Create(CultureInfo.InvariantCulture, $"*/{step}");
         }
 
-        // No single step describes the mask, so select min with a degenerate step and list the rest explicitly.
+        // No single step describes the values, so select min with a degenerate step and list the rest explicitly.
         IEnumerable<string> rest = values.Skip(1).Select(v => v.ToString(CultureInfo.InvariantCulture));
         return string.Join(',', new[] { string.Create(CultureInfo.InvariantCulture, $"*/{max - min + 1}") }.Concat(rest));
     }

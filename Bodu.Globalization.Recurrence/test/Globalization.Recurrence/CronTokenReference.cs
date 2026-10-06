@@ -42,8 +42,8 @@ internal sealed class CronTokenReference
         Minutes = minutes;
         Hours = hours;
         Months = [.. months];
-        DayOfMonth = dayOfMonth;
-        DayOfWeek = dayOfWeek;
+        DayOfMonthField = dayOfMonth;
+        DayOfWeekField = dayOfWeek;
     }
 
     /// <summary>Gets the matching seconds, ascending.</summary>
@@ -64,11 +64,11 @@ internal sealed class CronTokenReference
 
     /// <summary>Gets the day-of-month field text.</summary>
     /// <value>The field text.</value>
-    public string DayOfMonth { get; }
+    public string DayOfMonthField { get; }
 
     /// <summary>Gets the day-of-week field text.</summary>
     /// <value>The field text.</value>
-    public string DayOfWeek { get; }
+    public string DayOfWeekField { get; }
 
     /// <summary>
     /// Returns the days of a month a day-of-month token selects.
@@ -99,7 +99,7 @@ internal sealed class CronTokenReference
         }
 
         return [Enumerable.Range(1, length)
-            .Where(day => new DateTime(year, month, day).DayOfWeek is not (System.DayOfWeek.Saturday or System.DayOfWeek.Sunday))
+            .Where(day => new DateTime(year, month, day).DayOfWeek is not (DayOfWeek.Saturday or DayOfWeek.Sunday))
             .MinBy(day => Math.Abs(day - target))];
     }
 
@@ -115,10 +115,10 @@ internal sealed class CronTokenReference
         string upper = token.ToUpperInvariant();
         int hash = upper.IndexOf('#', StringComparison.Ordinal);
         string weekdayText = hash >= 0 ? upper[..hash] : upper[..^1];
-        int weekday = Weekday(weekdayText);
+        DayOfWeek weekday = Weekday(weekdayText);
 
         int[] matching = Enumerable.Range(1, DateTime.DaysInMonth(year, month))
-            .Where(day => (int)new DateTime(year, month, day).DayOfWeek == weekday)
+            .Where(day => new DateTime(year, month, day).DayOfWeek == weekday)
             .ToArray();
 
         if (hash < 0)
@@ -193,22 +193,30 @@ internal sealed class CronTokenReference
     }
 
     /// <summary>
-    /// Returns the number of a weekday given as a number from zero to seven or a three-letter name.
+    /// Returns the weekday given as a number from zero to seven, Sunday as zero and seven, or a three-letter name.
     /// </summary>
     /// <param name="text">The weekday text, in upper case.</param>
-    /// <returns>The weekday, Sunday as zero.</returns>
-    private static int Weekday(string text) =>
+    /// <returns>The weekday.</returns>
+    private static DayOfWeek Weekday(string text) =>
         text switch
         {
-            "SUN" => 0,
-            "MON" => 1,
-            "TUE" => 2,
-            "WED" => 3,
-            "THU" => 4,
-            "FRI" => 5,
-            "SAT" => 6,
-            _ => int.Parse(text, CultureInfo.InvariantCulture) % 7,
+            "SUN" => DayOfWeek.Sunday,
+            "MON" => DayOfWeek.Monday,
+            "TUE" => DayOfWeek.Tuesday,
+            "WED" => DayOfWeek.Wednesday,
+            "THU" => DayOfWeek.Thursday,
+            "FRI" => DayOfWeek.Friday,
+            "SAT" => DayOfWeek.Saturday,
+            _ => (DayOfWeek)(int.Parse(text, CultureInfo.InvariantCulture) % 7),
         };
+
+    /// <summary>
+    /// Returns the weekdays a comma-separated list of weekday numbers or names selects.
+    /// </summary>
+    /// <param name="text">The list text, in upper case.</param>
+    /// <returns>The weekdays.</returns>
+    private static DayOfWeekSet WeekdayList(string text) =>
+        new([.. text.Split(',').Select(Weekday)]);
 
     /// <summary>
     /// Determines whether a day field is restricted: anything other than <c>*</c> or <c>?</c>.
@@ -249,18 +257,18 @@ internal sealed class CronTokenReference
 
         int length = DateTime.DaysInMonth(year, month);
         var all = new HashSet<int>(Enumerable.Range(1, length));
-        HashSet<int> byMonthDay = !IsRestricted(DayOfMonth)
+        HashSet<int> byMonthDay = !IsRestricted(DayOfMonthField)
             ? all
-            : DayOfMonth.Any(char.IsAsciiLetter)
-                ? [.. DaysOfMonthToken(DayOfMonth, year, month)]
-                : [.. DayOfMonth.Split(',').Select(v => int.Parse(v, CultureInfo.InvariantCulture)).Where(d => d <= length)];
-        HashSet<int> byWeekday = !IsRestricted(DayOfWeek)
+            : DayOfMonthField.Any(char.IsAsciiLetter)
+                ? [.. DaysOfMonthToken(DayOfMonthField, year, month)]
+                : [.. DayOfMonthField.Split(',').Select(v => int.Parse(v, CultureInfo.InvariantCulture)).Where(d => d <= length)];
+        HashSet<int> byWeekday = !IsRestricted(DayOfWeekField)
             ? all
-            : DayOfWeek.Contains('#', StringComparison.Ordinal) || DayOfWeek.EndsWith('L')
-                ? [.. DaysOfWeekToken(DayOfWeek, year, month)]
-                : [.. all.Where(d => DayOfWeek.Split(',').Select(Weekday).Contains((int)new DateTime(year, month, d).DayOfWeek))];
+            : DayOfWeekField.Contains('#', StringComparison.Ordinal) || DayOfWeekField.EndsWith('L')
+                ? [.. DaysOfWeekToken(DayOfWeekField, year, month)]
+                : [.. all.Where(d => WeekdayList(DayOfWeekField).Contains(new DateTime(year, month, d).DayOfWeek))];
 
-        HashSet<int> result = IsRestricted(DayOfMonth) && IsRestricted(DayOfWeek)
+        HashSet<int> result = IsRestricted(DayOfMonthField) && IsRestricted(DayOfWeekField)
             ? [.. byMonthDay.Union(byWeekday)]
             : [.. byMonthDay.Intersect(byWeekday)];
         _days[(year, month)] = result;

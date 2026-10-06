@@ -147,6 +147,24 @@ public sealed class RecurrenceRuleBuilder
     }
 
     /// <summary>
+    /// Sets the <c>BYSECOND</c> rule part from a set of seconds, written in ascending order.
+    /// </summary>
+    /// <param name="seconds">The seconds to select.</param>
+    /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="seconds" /> is empty.</exception>
+    /// <remarks>
+    /// A <see cref="SecondSet" /> holds the seconds 0 to 59, so the leap second 60, which <c>BYSECOND</c> also allows,
+    /// is set through <see cref="BySecond(int[])" />.
+    /// </remarks>
+    public RecurrenceRuleBuilder BySecond(SecondSet seconds)
+    {
+        ThrowIfEmptySet(seconds.Count, nameof(RecurrenceRule.BySecond));
+
+        _bySecond = [.. seconds];
+        return this;
+    }
+
+    /// <summary>
     /// Sets the <c>BYMINUTE</c> rule part.
     /// </summary>
     /// <param name="minutes">The minutes to select (0-59).</param>
@@ -159,6 +177,20 @@ public sealed class RecurrenceRuleBuilder
     }
 
     /// <summary>
+    /// Sets the <c>BYMINUTE</c> rule part from a set of minutes, written in ascending order.
+    /// </summary>
+    /// <param name="minutes">The minutes to select.</param>
+    /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="minutes" /> is empty.</exception>
+    public RecurrenceRuleBuilder ByMinute(MinuteSet minutes)
+    {
+        ThrowIfEmptySet(minutes.Count, nameof(RecurrenceRule.ByMinute));
+
+        _byMinute = [.. minutes];
+        return this;
+    }
+
+    /// <summary>
     /// Sets the <c>BYHOUR</c> rule part.
     /// </summary>
     /// <param name="hours">The hours to select (0-23).</param>
@@ -167,6 +199,20 @@ public sealed class RecurrenceRuleBuilder
     public RecurrenceRuleBuilder ByHour(params int[] hours)
     {
         _byHour = ValidateUInt(hours, 0, 23, nameof(RecurrenceRule.ByHour));
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the <c>BYHOUR</c> rule part from a set of hours, written in ascending order.
+    /// </summary>
+    /// <param name="hours">The hours to select.</param>
+    /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="hours" /> is empty.</exception>
+    public RecurrenceRuleBuilder ByHour(HourSet hours)
+    {
+        ThrowIfEmptySet(hours.Count, nameof(RecurrenceRule.ByHour));
+
+        _byHour = [.. hours];
         return this;
     }
 
@@ -214,6 +260,35 @@ public sealed class RecurrenceRuleBuilder
     }
 
     /// <summary>
+    /// Sets the <c>BYDAY</c> rule part from a set of days of the week, each with no positional ordinal.
+    /// </summary>
+    /// <param name="days">The days of the week to select on every occurrence of the day within the period.</param>
+    /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="days" /> is empty.</exception>
+    /// <remarks>
+    /// The days are written Monday first, the order RFC 5545's default week start gives them, so
+    /// <see cref="DayOfWeekSet.Weekdays" /> builds <c>BYDAY=MO,TU,WE,TH,FR</c>.
+    /// </remarks>
+    public RecurrenceRuleBuilder ByDay(DayOfWeekSet days)
+    {
+        ThrowIfEmptySet(days.Count, nameof(RecurrenceRule.ByDay));
+
+        var entries = new WeekDayNum[days.Count];
+        int index = 0;
+        for (int offset = 1; offset <= 7; offset++)
+        {
+            var day = (DayOfWeek)(offset % 7);
+            if (days.Contains(day))
+            {
+                entries[index++] = new WeekDayNum(0, day);
+            }
+        }
+
+        _byDay = entries;
+        return this;
+    }
+
+    /// <summary>
     /// Sets the <c>BYMONTHDAY</c> rule part.
     /// </summary>
     /// <param name="monthDays">The month days to select (1-31 or -31 to -1).</param>
@@ -222,6 +297,24 @@ public sealed class RecurrenceRuleBuilder
     public RecurrenceRuleBuilder ByMonthDay(params int[] monthDays)
     {
         _byMonthDay = ValidateSigned(monthDays, 1, 31, nameof(RecurrenceRule.ByMonthDay));
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the <c>BYMONTHDAY</c> rule part from a set of days of the month, written in ascending order.
+    /// </summary>
+    /// <param name="monthDays">The days of the month to select, counted from the first.</param>
+    /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="monthDays" /> is empty.</exception>
+    /// <remarks>
+    /// A <see cref="DayOfMonthSet" /> holds the days 1 to 31, so days counted from the end of the month, such as -1 for
+    /// the last day, are set through <see cref="ByMonthDay(int[])" />.
+    /// </remarks>
+    public RecurrenceRuleBuilder ByMonthDay(DayOfMonthSet monthDays)
+    {
+        ThrowIfEmptySet(monthDays.Count, nameof(RecurrenceRule.ByMonthDay));
+
+        _byMonthDay = [.. monthDays];
         return this;
     }
 
@@ -262,6 +355,20 @@ public sealed class RecurrenceRuleBuilder
     }
 
     /// <summary>
+    /// Sets the <c>BYMONTH</c> rule part from a set of months, written in ascending order.
+    /// </summary>
+    /// <param name="months">The months to select.</param>
+    /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="months" /> is empty.</exception>
+    public RecurrenceRuleBuilder ByMonth(MonthSet months)
+    {
+        ThrowIfEmptySet(months.Count, nameof(RecurrenceRule.ByMonth));
+
+        _byMonth = [.. months];
+        return this;
+    }
+
+    /// <summary>
     /// Sets the <c>BYSETPOS</c> rule part.
     /// </summary>
     /// <param name="setPositions">The set positions to select (1-366 or -366 to -1).</param>
@@ -293,6 +400,17 @@ public sealed class RecurrenceRuleBuilder
             _byWeekNo,
             _byMonth,
             _bySetPos);
+
+    /// <summary>
+    /// Rejects an empty set for a rule part: a rule part that is present must select at least one value.
+    /// </summary>
+    /// <param name="count">The number of values the set selects.</param>
+    /// <param name="part">The rule-part name reported on failure.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="count" /> is zero.</exception>
+    private static void ThrowIfEmptySet(int count, string part)
+    {
+        if (count == 0) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Arg_Invalid_RecurrenceRulePartEmptySet, part), part);
+    }
 
     /// <summary>
     /// Validates that every value lies within an inclusive non-negative range and returns a defensive copy.

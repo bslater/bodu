@@ -66,6 +66,7 @@ Other messages you will see verbatim: a missing frequency ("A recurrence rule re
 
 <!-- compile -->
 ```csharp
+using Bodu;
 using Bodu.Globalization.Recurrence;
 
 RecurrenceRule lastFriday = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly)
@@ -82,6 +83,13 @@ RecurrenceRule weekdays = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly)
     .Build();
 // FREQ=WEEKLY;UNTIL=20261231T000000Z;BYDAY=MO,FR;WKST=SU
 
+RecurrenceRule quarterEnds = new RecurrenceRuleBuilder(RecurrenceFrequency.Daily)
+    .ByMonth(MonthSet.Parse("3,6,9,12"))               // the calendar value sets from Bodu.Core
+    .ByMonthDay(DayOfMonthSet.Parse("28-31"))
+    .ByDay(DayOfWeekSet.Weekdays)                      // written Monday first
+    .Build();
+// FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;BYMONTHDAY=28,29,30,31;BYMONTH=3,6,9,12
+
 bool same = lastFriday.Equals(RecurrenceRule.Parse("FREQ=MONTHLY;COUNT=12;BYDAY=-1FR"));   // true
 ```
 
@@ -92,17 +100,25 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse("FREQ=MONTHLY;COUNT=12;BYDAY=
 | `WithUntil(DateTime)` | `UNTIL` | any instant; clears any `COUNT` |
 | `WithWeekStart(DayOfWeek)` | `WKST` | any day; default Monday |
 | `BySecond(params int[])` | `BYSECOND` | 0-60 |
+| `BySecond(SecondSet)` | `BYSECOND` | a non-empty set; the leap second 60 needs the `int` overload |
 | `ByMinute(params int[])` | `BYMINUTE` | 0-59 |
+| `ByMinute(MinuteSet)` | `BYMINUTE` | a non-empty set |
 | `ByHour(params int[])` | `BYHOUR` | 0-23 |
+| `ByHour(HourSet)` | `BYHOUR` | a non-empty set |
 | `ByDay(params WeekDayNum[])` | `BYDAY` | ordinal `±1…±53` or `0` for every occurrence |
 | `ByDay(params DayOfWeek[])` | `BYDAY` | convenience for ordinal `0` |
+| `ByDay(DayOfWeekSet)` | `BYDAY` | a non-empty set; ordinal `0`, written Monday first |
 | `ByMonthDay(params int[])` | `BYMONTHDAY` | ±1…±31, never 0 |
+| `ByMonthDay(DayOfMonthSet)` | `BYMONTHDAY` | a non-empty set of 1-31; days counted from the end need the `int` overload |
 | `ByYearDay(params int[])` | `BYYEARDAY` | ±1…±366, never 0 |
 | `ByWeekNo(params int[])` | `BYWEEKNO` | ±1…±53, never 0 |
 | `ByMonth(params int[])` | `BYMONTH` | 1-12 |
+| `ByMonth(MonthSet)` | `BYMONTH` | a non-empty set |
 | `BySetPos(params int[])` | `BYSETPOS` | ±1…±366, never 0 |
 
 `WithCount` and `WithUntil` are mutually exclusive: supplying one clears the other, matching the RFC rule that `COUNT` and `UNTIL` cannot both appear. Out-of-range values throw <xref:System.ArgumentOutOfRangeException> at the call, not at `Build()`.
+
+The overloads that take a [calendar value set](../core/calendar-value-sets.md) write the set's values in ascending order, and `BYDAY` Monday first, whatever order the set was built in, so `DayOfWeekSet.Weekdays` builds `BYDAY=MO,TU,WE,TH,FR`. An empty set throws <xref:System.ArgumentException> naming the part: a part that is present selects at least one value, and a part left unset places no limit.
 
 <xref:Bodu.Globalization.Recurrence.WeekDayNum> is a `readonly record struct (int Ordinal, DayOfWeek Day)`. `Ordinal` `0` means every occurrence of the day (`IsEveryOccurrence` is `true`); a positive ordinal counts from the start of the frequency period and a negative one from its end, so `2TU` is the second Tuesday of the month in a `MONTHLY` rule and the second Tuesday of the *year* in a `YEARLY` rule. A `+` sign is accepted on input (`+1MO`) and dropped on output (`1MO`). An entry's `ToString()` returns that same token, so `new WeekDayNum(-1, DayOfWeek.Friday)` prints as `-1FR`.
 

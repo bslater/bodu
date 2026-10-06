@@ -24,8 +24,9 @@ public static class BuildingRules
             "RecurrenceRuleBuilder - building rules without writing RRULE text",
             what: "Builds a rule fluently and checks it equals the hand-written text, covers WeekDayNum ordinals "
                 + "including the negative and zero forms, builds a bounded yearly rule and a quarter-end rule "
-                + "with BYSETPOS, reaches WKST through the builder, and shows the time-of-day parts placing "
-                + "occurrences within the day, at a daily frequency and an hourly one.",
+                + "with BYSETPOS, reaches WKST through the builder, shows the time-of-day parts placing "
+                + "occurrences within the day, at a daily frequency and an hourly one, and builds the same parts "
+                + "from Bodu.Core's calendar value sets.",
             why: "RRULE text is compact and unforgiving - a typo produces either a parse error or, worse, a valid "
                 + "rule selecting the wrong dates. The builder makes the grammar discoverable and the mistakes "
                 + "compile-time, which matters most in configuration code where the rule is assembled from user "
@@ -189,6 +190,36 @@ public static class BuildingRules
 
         Console.WriteLine($"  built   : {everyThirdHour}");
         Console.WriteLine($"  occurs  : {JoinTimes(everyThirdHour.GetOccurrences(new DateTime(2026, 1, 1, 9, 0, 0)))}");
+
+        Console.WriteLine();
+        Console.WriteLine("--- Calendar value sets: the same parts from Bodu.Core's sets ---");
+
+        // Each part a calendar value set can express also takes that set. The values are written in ascending order,
+        // and BYDAY Monday first, whatever order the set was built in: here the weekdays from the 28th to the end of
+        // each quarter's last month, at 09:30 and 17:30.
+        RecurrenceRule quarterEnds = new RecurrenceRuleBuilder(RecurrenceFrequency.Daily)
+            .ByMonth(MonthSet.Parse("12,3,6,9"))
+            .ByMonthDay(DayOfMonthSet.Parse("28-31"))
+            .ByDay(DayOfWeekSet.Weekdays)
+            .ByHour(HourSet.Parse("17,9"))
+            .ByMinute(new MinuteSet(30))
+            .BySecond(new SecondSet(0))
+            .WithCount(4)
+            .Build();
+
+        Console.WriteLine($"  built   : {quarterEnds}");
+        Console.WriteLine($"  occurs  : {JoinTimes(quarterEnds.GetOccurrences(new DateTime(2026, 1, 1)))}");
+
+        // A part that is present selects at least one value, so an empty set is rejected at the call; leave the part
+        // unset to place no limit on it.
+        try
+        {
+            _ = new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly).ByMonth(MonthSet.Empty);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"  ByMonth(MonthSet.Empty) : {ex.GetType().Name} - {ex.Message}");
+        }
 
         Console.WriteLine();
     }

@@ -105,6 +105,9 @@
   <data name="Arg_OutOfRange_RecurrenceRulePart" xml:space="preserve">
     <value>A value supplied for the '{0}' recurrence rule part is outside its permitted range.</value>
   </data>
+  <data name="Arg_Invalid_RecurrenceRulePartEmptySet" xml:space="preserve">
+    <value>The set supplied for the '{0}' recurrence rule part is empty; leave the part unset to place no limit on it.</value>
+  </data>
   <data name="Format_Invalid_RecurrenceRuleEmpty" xml:space="preserve">
     <value>The recurrence-rule text is empty or contains only white space.</value>
   </data>
