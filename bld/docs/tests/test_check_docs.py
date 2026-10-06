@@ -1,4 +1,4 @@
-"""Tests for the target-framework check in bld/check-docs.py."""
+"""Tests for the target-framework and session-limit checks in bld/check-docs.py."""
 
 from __future__ import annotations
 
@@ -131,6 +131,60 @@ class NetTargetsTests(unittest.TestCase):
     def test_net_targets_when_props_are_read_should_match_the_pipeline_frameworks(self) -> None:
         self.assertEqual(check_docs.net_targets(), dc.bodu_net_targets())
         self.assertIn("net8.0", check_docs.net_targets())
+
+
+
+def session_problems(text: str) -> list[str]:
+    return check_docs.session_timeout_problems("x.runsettings", text)
+
+
+def runsettings(comment: str | None, timeout: str) -> str:
+    above = f"    <!-- {comment} -->\n" if comment is not None else ""
+    return (
+        "<RunSettings>\n  <RunConfiguration>\n    <!-- Use all available logical processors -->\n"
+        f"    <MaxCpuCount>0</MaxCpuCount>\n\n{above}    <TestSessionTimeout>{timeout}</TestSessionTimeout>\n"
+        "  </RunConfiguration>\n</RunSettings>\n")
+
+
+class SessionTimeoutTests(unittest.TestCase):
+    """The limit session_timeout_problems reads from a runsettings comment, and the value it holds to it."""
+
+    def test_session_timeout_problems_when_value_is_the_stated_limit_should_report_nothing(self) -> None:
+        text = runsettings("Kill the test session if it runs longer than 10 minutes per assembly", "600000")
+        self.assertEqual([], session_problems(text))
+
+    def test_session_timeout_problems_when_value_has_one_zero_too_many_should_report_its_line(self) -> None:
+        found = session_problems(runsettings("Kill the test session if it runs longer than 20 minutes per assembly", "12000000"))
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.runsettings:7: <TestSessionTimeout> is 12000000 ms (200 minutes)"), found[0])
+        self.assertIn("states 20 minutes per assembly (1200000 ms)", found[0])
+
+    def test_session_timeout_problems_when_comment_names_another_limit_in_passing_should_read_its_own(self) -> None:
+        comment = ("Stress loops run for tens of minutes, so the 10-minute per-session guard used by the other tiers does "
+                   "not apply. Allow up to 60 minutes per assembly.")
+        self.assertEqual([], session_problems(runsettings(comment, "3600000")))
+
+    def test_session_timeout_problems_when_comment_states_no_limit_should_report_it(self) -> None:
+        found = session_problems(runsettings("Kill the test session if it runs too long", "600000"))
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.runsettings:7: the comment above <TestSessionTimeout> must state"), found[0])
+
+    def test_session_timeout_problems_when_element_has_no_comment_should_report_it(self) -> None:
+        found = session_problems(runsettings(None, "600000"))
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.runsettings:6: the comment above <TestSessionTimeout> must state"), found[0])
+
+    def test_session_timeout_problems_when_limit_is_stated_in_an_earlier_comment_should_report_it(self) -> None:
+        text = runsettings("Kill the test session if it runs too long", "600000").replace(
+            "Use all available logical processors", "Run each of 10 minutes per assembly")
+        self.assertEqual(1, len(session_problems(text)))
+
+    def test_session_timeout_problems_when_comment_states_two_limits_should_report_it(self) -> None:
+        text = runsettings("Allow 10 minutes per assembly here, and 20 minutes per assembly in CI", "600000")
+        self.assertEqual(1, len(session_problems(text)))
+
+    def test_session_timeout_problems_when_file_sets_no_limit_should_report_nothing(self) -> None:
+        self.assertEqual([], session_problems("<RunSettings>\n  <RunConfiguration>\n  </RunConfiguration>\n</RunSettings>\n"))
 
 
 if __name__ == "__main__":
