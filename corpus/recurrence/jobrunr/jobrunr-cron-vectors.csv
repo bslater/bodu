@@ -1,0 +1,453 @@
+# Cron vectors derived from jobrunr's CronExpressionTest.java
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: jobrunr -- https://github.com/jobrunr/jobrunr -- core/src/test/java/org/jobrunr/scheduling/cron/CronExpressionTest.java
+# commit: c804c97402080d3226f37ac7866ec53cf591050c
+# file-sha256: core/src/test/java/org/jobrunr/scheduling/cron/CronExpressionTest.java e3a3a6ca0f410a7d2c07a9b7187275913451130483dc642407edcaa05c5ca158
+# licence: LGPL-3.0-or-later (Copyright (c) 2019-2021 Ronald Dehuysser; also offered under a commercial licence). The table holds derived data only - each row's expression, start instant and expected instant - attributed to the file and its SHA-256; no other upstream text is reproduced and the file is not committed.
+# method: extracted by extract-jobrunr-cron-vectors.py
+# note: jobrunr reads five or six fields (seconds first) in UTC, weekdays 0-6, the same leading-star rule for the two day fields as Bodu, L in the day-of-month field and dL in the day-of-week field (case-insensitive, not both at once), n/m steps and steps wider than their range, and loose whitespace; it rejects reversed ranges and has no ?, W, # or macros. Each table row is the next fire time strictly after the start.
+# note: left out (counted): 7 tests whose answers are computed from the wall clock (L76-159), 2 API tests with no cron meaning (L161-181), and 10 of the 13 daylight-saving rows (L796-812), whose start or answer lies in a skipped or repeated hour or carries a different offset; the 3 rows of that table with no change between start and answer are kept with their fixed offsets. One row, args-405, answers 13 years after its start, past the 12-year search Bodu had before issue #799 was fixed.
+# flags: long-name = a month name longer than three letters, which jobrunr accepts and Bodu rejects
+# flags: token-combination = L in both day fields, which jobrunr rejects and Bodu accepts as the union of the last day and the last weekday
+name,kind,format,expression,from,expected,expectation,flags,reference
+args-001,next,withSeconds,* * * * * *,2019-01-01T00:00:00,2019-01-01T00:00:01,upstream,,L197
+args-002,next,withSeconds,* * * * * *,2019-01-01T00:00:09,2019-01-01T00:00:10,upstream,,L198
+args-003,next,withSeconds,* * * * * *,2019-01-01T00:00:29,2019-01-01T00:00:30,upstream,,L199
+args-004,next,withSeconds,* * * * * *,2019-01-01T00:00:37,2019-01-01T00:00:38,upstream,,L200
+args-005,next,withSeconds,* * * * * *,2019-01-01T00:58:59,2019-01-01T00:59:00,upstream,,L202
+args-006,next,withSeconds,* * * * * *,2019-01-01T11:59:59,2019-01-01T12:00:00,upstream,,L203
+args-007,next,withSeconds,* * * * * *,2019-01-01T00:59:59,2019-01-01T01:00:00,upstream,,L205
+args-008,next,withSeconds,* * * * * *,2019-01-01T11:59:59,2019-01-01T12:00:00,upstream,,L206
+args-009,next,withSeconds,* * * * * *,2019-01-01T23:59:59,2019-01-02T00:00:00,upstream,,L208
+args-010,next,withSeconds,* * * * * *,2019-01-01T23:59:59,2019-01-02T00:00:00,upstream,,L210
+args-011,next,withSeconds,* * * * * *,2019-02-28T23:59:59,2019-03-01T00:00:00,upstream,,L211
+args-012,next,withSeconds,* * * * * *,2019-12-31T23:59:59,2020-01-01T00:00:00,upstream,,L213
+args-013,next,withSeconds,* * * * * *,2020-02-28T23:59:59,2020-02-29T00:00:00,upstream,,L215
+args-014,next,standard,* * * * *,2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L218
+args-015,next,standard,* * * * *,2019-01-01T00:09:00,2019-01-01T00:10:00,upstream,,L219
+args-016,next,standard,* * * * *,2019-01-01T00:29:00,2019-01-01T00:30:00,upstream,,L220
+args-017,next,standard,* * * * *,2019-01-01T00:37:00,2019-01-01T00:38:00,upstream,,L221
+args-018,next,standard,* * * * *,2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L223
+args-019,next,standard,* * * * *,2019-01-01T11:59:00,2019-01-01T12:00:00,upstream,,L224
+args-020,next,standard,* * * * *,2019-01-01T23:59:00,2019-01-02T00:00:00,upstream,,L226
+args-021,next,standard,* * * * *,2019-01-01T23:59:00,2019-01-02T00:00:00,upstream,,L228
+args-022,next,standard,* * * * *,2019-02-28T23:59:00,2019-03-01T00:00:00,upstream,,L229
+args-023,next,standard,* * * * *,2019-12-31T23:59:00,2020-01-01T00:00:00,upstream,,L231
+args-024,next,standard,* * * * *,2020-02-28T23:59:00,2020-02-29T00:00:00,upstream,,L233
+args-025,next,withSeconds,44 * * * * *,2019-01-01T00:00:00,2019-01-01T00:00:44,upstream,,L238
+args-026,next,withSeconds,44 * * * * *,2019-01-01T00:00:44,2019-01-01T00:01:44,upstream,,L239
+args-027,next,withSeconds,44 * * * * *,2019-01-01T00:00:45,2019-01-01T00:01:44,upstream,,L240
+args-028,next,withSeconds,0-20 * * * * *,2019-01-01T00:00:00,2019-01-01T00:00:01,upstream,,L243
+args-029,next,withSeconds,0-20 * * * * *,2019-01-01T00:00:19,2019-01-01T00:00:20,upstream,,L244
+args-030,next,withSeconds,0-20 * * * * *,2019-01-01T00:00:14,2019-01-01T00:00:15,upstream,,L245
+args-031,next,withSeconds,0-20 * * * * *,2019-01-01T00:00:20,2019-01-01T00:01:00,upstream,,L246
+args-032,next,withSeconds,0-20 * * * * *,2019-01-01T00:00:59,2019-01-01T00:01:00,upstream,,L247
+args-033,next,withSeconds,"1,5,20,59 * * * * *",2019-01-01T00:00:00,2019-01-01T00:00:01,upstream,,L250
+args-034,next,withSeconds,"1,5,20,59 * * * * *",2019-01-01T00:00:01,2019-01-01T00:00:05,upstream,,L251
+args-035,next,withSeconds,"1,5,20,59 * * * * *",2019-01-01T00:00:05,2019-01-01T00:00:20,upstream,,L252
+args-036,next,withSeconds,"1,5,20,59 * * * * *",2019-01-01T00:00:58,2019-01-01T00:00:59,upstream,,L253
+args-037,next,withSeconds,"1,5,20,59 * * * * *",2019-01-01T00:00:59,2019-01-01T00:01:01,upstream,,L254
+args-038,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:00,2019-01-01T00:00:03,upstream,,L257
+args-039,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:02,2019-01-01T00:00:03,upstream,,L258
+args-040,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:03,2019-01-01T00:00:06,upstream,,L259
+args-041,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:30,2019-01-01T00:00:33,upstream,,L260
+args-042,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:44,2019-01-01T00:00:45,upstream,,L261
+args-043,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:58,2019-01-01T00:01:00,upstream,,L262
+args-044,next,withSeconds,*/3 * * * * *,2019-01-01T00:00:59,2019-01-01T00:01:00,upstream,,L263
+args-045,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:00,2019-01-01T00:00:40,upstream,,L265
+args-046,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:40,2019-01-01T00:00:43,upstream,,L266
+args-047,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:47,2019-01-01T00:00:49,upstream,,L267
+args-048,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:49,2019-01-01T00:00:52,upstream,,L268
+args-049,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:52,2019-01-01T00:00:55,upstream,,L269
+args-050,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:58,2019-01-01T00:01:40,upstream,,L270
+args-051,next,withSeconds,40/3 * * * * *,2019-01-01T00:00:59,2019-01-01T00:01:40,upstream,,L271
+args-052,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:00,2019-01-01T00:00:40,upstream,,L273
+args-053,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:40,2019-01-01T00:00:43,upstream,,L274
+args-054,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:47,2019-01-01T00:00:49,upstream,,L275
+args-055,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:49,2019-01-01T00:00:52,upstream,,L276
+args-056,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:52,2019-01-01T00:00:55,upstream,,L277
+args-057,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:58,2019-01-01T00:01:40,upstream,,L278
+args-058,next,withSeconds,40-58/3 * * * * *,2019-01-01T00:00:59,2019-01-01T00:01:40,upstream,,L279
+args-059,next,withSeconds,"1,0-20,5,30,20,59 * * * * *",2019-01-01T00:00:00,2019-01-01T00:00:01,upstream,,L282
+args-060,next,withSeconds,"1,0-20,5,30,20,59 * * * * *",2019-01-01T00:00:01,2019-01-01T00:00:02,upstream,,L283
+args-061,next,withSeconds,"1,0-20,5,30,20,59 * * * * *",2019-01-01T00:00:05,2019-01-01T00:00:06,upstream,,L284
+args-062,next,withSeconds,"1,0-20,5,30,20,59 * * * * *",2019-01-01T00:00:25,2019-01-01T00:00:30,upstream,,L285
+args-063,next,withSeconds,"1,0-20,5,30,20,59 * * * * *",2019-01-01T00:00:58,2019-01-01T00:00:59,upstream,,L286
+args-064,next,withSeconds,"1,0-20,5,30,20,59 * * * * *",2019-01-01T00:00:59,2019-01-01T00:01:00,upstream,,L287
+args-065,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:00,2019-01-01T00:00:01,upstream,,L290
+args-066,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:01,2019-01-01T00:00:02,upstream,,L291
+args-067,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:05,2019-01-01T00:00:06,upstream,,L292
+args-068,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:14,2019-01-01T00:00:15,upstream,,L293
+args-069,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:25,2019-01-01T00:00:30,upstream,,L294
+args-070,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:58,2019-01-01T00:00:59,upstream,,L295
+args-071,next,withSeconds,"1,0-20,5,30,20,59,15-21/3 * * * * *",2019-01-01T00:00:59,2019-01-01T00:01:00,upstream,,L296
+args-072,next,standard,44 * * * *,2019-01-01T00:00:00,2019-01-01T00:44:00,upstream,,L301
+args-073,next,standard,0-20 * * * *,2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L304
+args-074,next,standard,0-20 * * * *,2019-01-01T00:19:00,2019-01-01T00:20:00,upstream,,L305
+args-075,next,standard,0-20 * * * *,2019-01-01T00:14:00,2019-01-01T00:15:00,upstream,,L306
+args-076,next,standard,0-20 * * * *,2019-01-01T00:20:00,2019-01-01T01:00:00,upstream,,L307
+args-077,next,standard,0-20 * * * *,2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L308
+args-078,next,standard,"1,5,20,59 * * * *",2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L311
+args-079,next,standard,"1,5,20,59 * * * *",2019-01-01T00:01:00,2019-01-01T00:05:00,upstream,,L312
+args-080,next,standard,"1,5,20,59 * * * *",2019-01-01T00:05:00,2019-01-01T00:20:00,upstream,,L313
+args-081,next,standard,"1,5,20,59 * * * *",2019-01-01T00:58:00,2019-01-01T00:59:00,upstream,,L314
+args-082,next,standard,"1,5,20,59 * * * *",2019-01-01T00:59:00,2019-01-01T01:01:00,upstream,,L315
+args-083,next,standard,*/3 * * * *,2019-01-01T00:00:00,2019-01-01T00:03:00,upstream,,L318
+args-084,next,standard,*/3 * * * *,2019-01-01T00:02:00,2019-01-01T00:03:00,upstream,,L319
+args-085,next,standard,*/3 * * * *,2019-01-01T00:03:00,2019-01-01T00:06:00,upstream,,L320
+args-086,next,standard,*/3 * * * *,2019-01-01T00:30:00,2019-01-01T00:33:00,upstream,,L321
+args-087,next,standard,*/3 * * * *,2019-01-01T00:44:00,2019-01-01T00:45:00,upstream,,L322
+args-088,next,standard,*/3 * * * *,2019-01-01T00:58:00,2019-01-01T01:00:00,upstream,,L323
+args-089,next,standard,*/3 * * * *,2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L324
+args-090,next,standard,40/3 * * * *,2019-01-01T00:00:00,2019-01-01T00:40:00,upstream,,L326
+args-091,next,standard,40/3 * * * *,2019-01-01T00:40:00,2019-01-01T00:43:00,upstream,,L327
+args-092,next,standard,40/3 * * * *,2019-01-01T00:47:00,2019-01-01T00:49:00,upstream,,L328
+args-093,next,standard,40/3 * * * *,2019-01-01T00:49:00,2019-01-01T00:52:00,upstream,,L329
+args-094,next,standard,40/3 * * * *,2019-01-01T00:52:00,2019-01-01T00:55:00,upstream,,L330
+args-095,next,standard,40/3 * * * *,2019-01-01T00:58:00,2019-01-01T01:40:00,upstream,,L331
+args-096,next,standard,40/3 * * * *,2019-01-01T00:59:00,2019-01-01T01:40:00,upstream,,L332
+args-097,next,standard,40-58/3 * * * *,2019-01-01T00:00:00,2019-01-01T00:40:00,upstream,,L334
+args-098,next,standard,40-58/3 * * * *,2019-01-01T00:40:00,2019-01-01T00:43:00,upstream,,L335
+args-099,next,standard,40-58/3 * * * *,2019-01-01T00:47:00,2019-01-01T00:49:00,upstream,,L336
+args-100,next,standard,40-58/3 * * * *,2019-01-01T00:49:00,2019-01-01T00:52:00,upstream,,L337
+args-101,next,standard,40-58/3 * * * *,2019-01-01T00:52:00,2019-01-01T00:55:00,upstream,,L338
+args-102,next,standard,40-58/3 * * * *,2019-01-01T00:58:00,2019-01-01T01:40:00,upstream,,L339
+args-103,next,standard,40-58/3 * * * *,2019-01-01T00:59:00,2019-01-01T01:40:00,upstream,,L340
+args-104,next,standard,"1,0-20,5,30,20,59 * * * *",2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L343
+args-105,next,standard,"1,0-20,5,30,20,59 * * * *",2019-01-01T00:01:00,2019-01-01T00:02:00,upstream,,L344
+args-106,next,standard,"1,0-20,5,30,20,59 * * * *",2019-01-01T00:05:00,2019-01-01T00:06:00,upstream,,L345
+args-107,next,standard,"1,0-20,5,30,20,59 * * * *",2019-01-01T00:25:00,2019-01-01T00:30:00,upstream,,L346
+args-108,next,standard,"1,0-20,5,30,20,59 * * * *",2019-01-01T00:58:00,2019-01-01T00:59:00,upstream,,L347
+args-109,next,standard,"1,0-20,5,30,20,59 * * * *",2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L348
+args-110,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L351
+args-111,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:01:00,2019-01-01T00:02:00,upstream,,L352
+args-112,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:05:00,2019-01-01T00:06:00,upstream,,L353
+args-113,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:14:00,2019-01-01T00:15:00,upstream,,L354
+args-114,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:25:00,2019-01-01T00:30:00,upstream,,L355
+args-115,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:58:00,2019-01-01T00:59:00,upstream,,L356
+args-116,next,standard,"1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L357
+args-117,next,withSeconds,0 44 * * * *,2019-01-01T00:00:00,2019-01-01T00:44:00,upstream,,L362
+args-118,next,withSeconds,20 44 * * * *,2019-01-01T00:44:05,2019-01-01T00:44:20,upstream,,L363
+args-119,next,withSeconds,20 44 * * * *,2019-01-01T00:44:21,2019-01-01T01:44:20,upstream,,L364
+args-120,next,withSeconds,20 44 * * * *,2019-01-01T00:45:05,2019-01-01T01:44:20,upstream,,L365
+args-121,next,withSeconds,0 0-20 * * * *,2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L368
+args-122,next,withSeconds,0 0-20 * * * *,2019-01-01T00:19:00,2019-01-01T00:20:00,upstream,,L369
+args-123,next,withSeconds,0 0-20 * * * *,2019-01-01T00:14:00,2019-01-01T00:15:00,upstream,,L370
+args-124,next,withSeconds,0 0-20 * * * *,2019-01-01T00:20:00,2019-01-01T01:00:00,upstream,,L371
+args-125,next,withSeconds,0 0-20 * * * *,2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L372
+args-126,next,withSeconds,"0 1,5,20,59 * * * *",2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L375
+args-127,next,withSeconds,"0 1,5,20,59 * * * *",2019-01-01T00:01:02,2019-01-01T00:05:00,upstream,,L376
+args-128,next,withSeconds,"0 1,5,20,59 * * * *",2019-01-01T00:05:05,2019-01-01T00:20:00,upstream,,L377
+args-129,next,withSeconds,"0 1,5,20,59 * * * *",2019-01-01T00:58:00,2019-01-01T00:59:00,upstream,,L378
+args-130,next,withSeconds,"0 1,5,20,59 * * * *",2019-01-01T00:59:00,2019-01-01T01:01:00,upstream,,L379
+args-131,next,withSeconds,0 */3 * * * *,2019-01-01T00:00:00,2019-01-01T00:03:00,upstream,,L382
+args-132,next,withSeconds,0 */3 * * * *,2019-01-01T00:02:00,2019-01-01T00:03:00,upstream,,L383
+args-133,next,withSeconds,0 */3 * * * *,2019-01-01T00:03:00,2019-01-01T00:06:00,upstream,,L384
+args-134,next,withSeconds,0 */3 * * * *,2019-01-01T00:30:02,2019-01-01T00:33:00,upstream,,L385
+args-135,next,withSeconds,0 */3 * * * *,2019-01-01T00:44:00,2019-01-01T00:45:00,upstream,,L386
+args-136,next,withSeconds,0 */3 * * * *,2019-01-01T00:58:00,2019-01-01T01:00:00,upstream,,L387
+args-137,next,withSeconds,0 */3 * * * *,2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L388
+args-138,next,withSeconds,0 40/3 * * * *,2019-01-01T00:00:00,2019-01-01T00:40:00,upstream,,L390
+args-139,next,withSeconds,0 40/3 * * * *,2019-01-01T00:40:00,2019-01-01T00:43:00,upstream,,L391
+args-140,next,withSeconds,0 40/3 * * * *,2019-01-01T00:47:00,2019-01-01T00:49:00,upstream,,L392
+args-141,next,withSeconds,0 40/3 * * * *,2019-01-01T00:49:00,2019-01-01T00:52:00,upstream,,L393
+args-142,next,withSeconds,0 40/3 * * * *,2019-01-01T00:52:00,2019-01-01T00:55:00,upstream,,L394
+args-143,next,withSeconds,0 40/3 * * * *,2019-01-01T00:58:00,2019-01-01T01:40:00,upstream,,L395
+args-144,next,withSeconds,0 40/3 * * * *,2019-01-01T00:59:00,2019-01-01T01:40:00,upstream,,L396
+args-145,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:00:00,2019-01-01T00:40:00,upstream,,L398
+args-146,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:40:00,2019-01-01T00:43:00,upstream,,L399
+args-147,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:47:00,2019-01-01T00:49:00,upstream,,L400
+args-148,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:49:00,2019-01-01T00:52:00,upstream,,L401
+args-149,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:52:00,2019-01-01T00:55:00,upstream,,L402
+args-150,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:58:00,2019-01-01T01:40:00,upstream,,L403
+args-151,next,withSeconds,0 40-58/3 * * * *,2019-01-01T00:59:00,2019-01-01T01:40:00,upstream,,L404
+args-152,next,withSeconds,"0 1,0-20,5,30,20,59 * * * *",2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L407
+args-153,next,withSeconds,"0 1,0-20,5,30,20,59 * * * *",2019-01-01T00:01:00,2019-01-01T00:02:00,upstream,,L408
+args-154,next,withSeconds,"0 1,0-20,5,30,20,59 * * * *",2019-01-01T00:05:00,2019-01-01T00:06:00,upstream,,L409
+args-155,next,withSeconds,"0 1,0-20,5,30,20,59 * * * *",2019-01-01T00:25:00,2019-01-01T00:30:00,upstream,,L410
+args-156,next,withSeconds,"0 1,0-20,5,30,20,59 * * * *",2019-01-01T00:58:00,2019-01-01T00:59:00,upstream,,L411
+args-157,next,withSeconds,"0 1,0-20,5,30,20,59 * * * *",2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L412
+args-158,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:00:00,2019-01-01T00:01:00,upstream,,L415
+args-159,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:01:00,2019-01-01T00:02:00,upstream,,L416
+args-160,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:05:00,2019-01-01T00:06:00,upstream,,L417
+args-161,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:14:00,2019-01-01T00:15:00,upstream,,L418
+args-162,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:25:00,2019-01-01T00:30:00,upstream,,L419
+args-163,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:58:00,2019-01-01T00:59:00,upstream,,L420
+args-164,next,withSeconds,"0 1,0-20,5,30,20,59,15-21/3 * * * *",2019-01-01T00:59:00,2019-01-01T01:00:00,upstream,,L421
+args-165,next,withSeconds,* * 14 * * *,2019-01-01T00:00:00,2019-01-01T14:00:00,upstream,,L426
+args-166,next,withSeconds,* * 13 * * *,2019-01-01T00:09:00,2019-01-01T13:00:00,upstream,,L427
+args-167,next,withSeconds,2 39 5 * * *,2019-01-04T02:38:00,2019-01-04T05:39:02,upstream,,L428
+args-168,next,withSeconds,2 39 5 * * *,2019-01-04T05:38:00,2019-01-04T05:39:02,upstream,,L429
+args-169,next,withSeconds,2 39 5 * * *,2019-01-04T06:38:00,2019-01-05T05:39:02,upstream,,L430
+args-170,next,withSeconds,2 39 5 * * *,2019-01-04T02:40:00,2019-01-04T05:39:02,upstream,,L431
+args-171,next,withSeconds,2 39 5 * * *,2019-01-04T05:40:00,2019-01-05T05:39:02,upstream,,L432
+args-172,next,withSeconds,2 39 5 * * *,2019-01-04T06:40:00,2019-01-05T05:39:02,upstream,,L433
+args-173,next,withSeconds,0 0 0-20 * * *,2019-01-01T00:02:05,2019-01-01T01:00:00,upstream,,L436
+args-174,next,withSeconds,0 0 0-20 * * *,2019-01-01T19:08:06,2019-01-01T20:00:00,upstream,,L437
+args-175,next,withSeconds,0 0 0-20 * * *,2019-01-01T14:15:15,2019-01-01T15:00:00,upstream,,L438
+args-176,next,withSeconds,0 0 0-20 * * *,2019-01-01T20:22:04,2019-01-02T00:00:00,upstream,,L439
+args-177,next,withSeconds,0 0 0-20 * * *,2019-01-01T23:05:11,2019-01-02T00:00:00,upstream,,L440
+args-178,next,withSeconds,"0 0 1,5,20 * * *",2019-01-01T00:03:00,2019-01-01T01:00:00,upstream,,L443
+args-179,next,withSeconds,"0 0 1,5,20 * * *",2019-01-01T01:00:04,2019-01-01T05:00:00,upstream,,L444
+args-180,next,withSeconds,"0 0 1,5,20 * * *",2019-01-01T05:08:40,2019-01-01T20:00:00,upstream,,L445
+args-181,next,withSeconds,"0 0 1,5,20 * * *",2019-01-01T22:00:09,2019-01-02T01:00:00,upstream,,L446
+args-182,next,withSeconds,"0 0 1,5,20 * * *",2019-01-02T23:09:00,2019-01-03T01:00:00,upstream,,L447
+args-183,next,withSeconds,0 0 */3 * * *,2019-01-01T00:03:01,2019-01-01T03:00:00,upstream,,L450
+args-184,next,withSeconds,0 0 */3 * * *,2019-01-01T02:00:00,2019-01-01T03:00:00,upstream,,L451
+args-185,next,withSeconds,0 0 */3 * * *,2019-01-01T03:01:00,2019-01-01T06:00:00,upstream,,L452
+args-186,next,withSeconds,0 0 */3 * * *,2019-01-01T14:00:00,2019-01-01T15:00:00,upstream,,L453
+args-187,next,withSeconds,0 0 */3 * * *,2019-01-01T21:00:00,2019-01-02T00:00:00,upstream,,L454
+args-188,next,withSeconds,0 0 */3 * * *,2019-01-01T23:00:00,2019-01-02T00:00:00,upstream,,L455
+args-189,next,withSeconds,0 0 12/3 * * *,2019-01-01T00:00:00,2019-01-01T12:00:00,upstream,,L457
+args-190,next,withSeconds,0 0 12/3 * * *,2019-01-01T12:00:00,2019-01-01T15:00:00,upstream,,L458
+args-191,next,withSeconds,0 0 12/3 * * *,2019-01-01T19:00:00,2019-01-01T21:00:00,upstream,,L459
+args-192,next,withSeconds,0 0 12/3 * * *,2019-01-01T22:00:00,2019-01-02T12:00:00,upstream,,L460
+args-193,next,withSeconds,0 0 12/3 * * *,2019-01-01T23:00:00,2019-01-02T12:00:00,upstream,,L461
+args-194,next,withSeconds,0 0 12-23/3 * * *,2019-01-01T00:00:00,2019-01-01T12:00:00,upstream,,L463
+args-195,next,withSeconds,0 0 12-23/3 * * *,2019-01-01T12:00:00,2019-01-01T15:00:00,upstream,,L464
+args-196,next,withSeconds,0 0 12-23/3 * * *,2019-01-01T19:00:00,2019-01-01T21:00:00,upstream,,L465
+args-197,next,withSeconds,0 0 12-23/3 * * *,2019-01-01T22:00:00,2019-01-02T12:00:00,upstream,,L466
+args-198,next,withSeconds,0 0 12-23/3 * * *,2019-01-01T23:00:00,2019-01-02T12:00:00,upstream,,L467
+args-199,next,withSeconds,0 0 8/1 * * *,2019-01-01T06:00:00,2019-01-01T08:00:00,upstream,,L469
+args-200,next,withSeconds,0 0 8/1 * * *,2019-01-01T08:00:00,2019-01-01T09:00:00,upstream,,L470
+args-201,next,withSeconds,0 0 8-23/1 * * *,2019-01-01T06:00:00,2019-01-01T08:00:00,upstream,,L471
+args-202,next,withSeconds,0 0 8-23/1 * * *,2019-01-01T08:00:00,2019-01-01T09:00:00,upstream,,L472
+args-203,next,withSeconds,"0 0 1,0-9,5,23 * * *",2019-01-01T00:00:00,2019-01-01T01:00:00,upstream,,L475
+args-204,next,withSeconds,"0 0 1,0-9,5,23 * * *",2019-01-01T01:00:00,2019-01-01T02:00:00,upstream,,L476
+args-205,next,withSeconds,"0 0 1,0-9,5,23 * * *",2019-01-01T05:00:00,2019-01-01T06:00:00,upstream,,L477
+args-206,next,withSeconds,"0 0 1,0-9,5,23 * * *",2019-01-01T09:00:00,2019-01-01T23:00:00,upstream,,L478
+args-207,next,withSeconds,"0 0 1,0-9,5,23 * * *",2019-01-01T23:00:00,2019-01-02T00:00:00,upstream,,L479
+args-208,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T00:00:00,2019-01-01T01:00:00,upstream,,L482
+args-209,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T01:00:00,2019-01-01T02:00:00,upstream,,L483
+args-210,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T05:00:00,2019-01-01T06:00:00,upstream,,L484
+args-211,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T14:00:00,2019-01-01T15:00:00,upstream,,L485
+args-212,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T19:00:00,2019-01-01T21:00:00,upstream,,L486
+args-213,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T22:00:00,2019-01-01T23:00:00,upstream,,L487
+args-214,next,withSeconds,"0 0 1,0-9,5,23,15-21/3 * * *",2019-01-01T23:00:00,2019-01-02T00:00:00,upstream,,L488
+args-215,next,withSeconds,* * 8 14 * *,2019-01-01T00:00:00,2019-01-14T08:00:00,upstream,,L493
+args-216,next,withSeconds,* * 8 13 * *,2019-01-01T00:09:00,2019-01-13T08:00:00,upstream,,L494
+args-217,next,withSeconds,2 39 8 5 * *,2019-01-03T02:38:00,2019-01-05T08:39:02,upstream,,L495
+args-218,next,withSeconds,2 39 8 5 * *,2019-01-04T05:38:00,2019-01-05T08:39:02,upstream,,L496
+args-219,next,withSeconds,2 39 8 5 * *,2019-01-05T06:38:00,2019-01-05T08:39:02,upstream,,L497
+args-220,next,withSeconds,2 39 8 5 * *,2019-01-06T02:40:00,2019-02-05T08:39:02,upstream,,L498
+args-221,next,withSeconds,2 39 8 5 * *,2019-01-12T05:40:00,2019-02-05T08:39:02,upstream,,L499
+args-222,next,withSeconds,2 39 8 5 * *,2019-01-11T06:40:00,2019-02-05T08:39:02,upstream,,L500
+args-223,next,withSeconds,0 0 0 1-20 * *,2019-01-01T00:02:05,2019-01-02T00:00:00,upstream,,L503
+args-224,next,withSeconds,0 0 0 1-20 * *,2019-01-07T19:08:06,2019-01-08T00:00:00,upstream,,L504
+args-225,next,withSeconds,0 0 0 1-20 * *,2019-01-19T14:15:15,2019-01-20T00:00:00,upstream,,L505
+args-226,next,withSeconds,0 0 0 1-20 * *,2019-01-20T20:22:04,2019-02-01T00:00:00,upstream,,L506
+args-227,next,withSeconds,0 0 0 1-20 * *,2019-01-22T23:05:11,2019-02-01T00:00:00,upstream,,L507
+args-228,next,withSeconds,"0 0 0 1,5,20 * *",2019-01-01T00:03:00,2019-01-05T00:00:00,upstream,,L510
+args-229,next,withSeconds,"0 0 0 1,5,20 * *",2019-01-05T01:00:04,2019-01-20T00:00:00,upstream,,L511
+args-230,next,withSeconds,"0 0 0 1,5,20 * *",2019-01-07T05:08:40,2019-01-20T00:00:00,upstream,,L512
+args-231,next,withSeconds,"0 0 0 1,5,20 * *",2019-01-19T22:00:09,2019-01-20T00:00:00,upstream,,L513
+args-232,next,withSeconds,"0 0 0 1,5,20 * *",2019-01-20T23:09:00,2019-02-01T00:00:00,upstream,,L514
+args-233,next,withSeconds,"0 0 0 1,5,20 * *",2019-01-21T23:09:00,2019-02-01T00:00:00,upstream,,L515
+args-234,next,withSeconds,0 0 0 1/1 * *,2019-01-27T00:03:01,2019-01-28T00:00:00,upstream,,L518
+args-235,next,withSeconds,0 0 0 1/1 * *,2019-01-28T00:03:01,2019-01-29T00:00:00,upstream,,L519
+args-236,next,withSeconds,0 0 0 1/1 * *,2019-01-29T00:03:01,2019-01-30T00:00:00,upstream,,L520
+args-237,next,withSeconds,0 0 0 1/1 * *,2019-01-30T00:03:01,2019-01-31T00:00:00,upstream,,L521
+args-238,next,withSeconds,0 0 0 1/1 * *,2019-01-31T00:03:01,2019-02-01T00:00:00,upstream,,L522
+args-239,next,withSeconds,0 0 0 */3 * *,2019-01-01T00:03:01,2019-01-04T00:00:00,upstream,,L524
+args-240,next,withSeconds,0 0 0 */3 * *,2019-01-03T02:00:00,2019-01-04T00:00:00,upstream,,L525
+args-241,next,withSeconds,0 0 0 */3 * *,2019-01-05T03:01:00,2019-01-07T00:00:00,upstream,,L526
+args-242,next,withSeconds,0 0 0 */3 * *,2019-01-10T14:00:00,2019-01-13T00:00:00,upstream,,L527
+args-243,next,withSeconds,0 0 0 */3 * *,2019-01-30T21:00:00,2019-01-31T00:00:00,upstream,,L528
+args-244,next,withSeconds,0 0 0 */3 * *,2019-01-31T23:00:00,2019-02-01T00:00:00,upstream,,L529
+args-245,next,withSeconds,0 0 0 12/3 * *,2019-01-01T00:00:00,2019-01-12T00:00:00,upstream,,L531
+args-246,next,withSeconds,0 0 0 12/3 * *,2019-01-04T12:00:00,2019-01-12T00:00:00,upstream,,L532
+args-247,next,withSeconds,0 0 0 12/3 * *,2019-01-12T19:00:00,2019-01-15T00:00:00,upstream,,L533
+args-248,next,withSeconds,0 0 0 12/3 * *,2019-01-15T22:00:00,2019-01-18T00:00:00,upstream,,L534
+args-249,next,withSeconds,0 0 0 12/3 * *,2019-01-30T23:00:00,2019-02-12T00:00:00,upstream,,L535
+args-250,next,withSeconds,0 0 0 12-23/3 * *,2019-01-01T00:00:00,2019-01-12T00:00:00,upstream,,L537
+args-251,next,withSeconds,0 0 0 12-23/3 * *,2019-01-04T12:00:00,2019-01-12T00:00:00,upstream,,L538
+args-252,next,withSeconds,0 0 0 12-23/3 * *,2019-01-12T19:00:00,2019-01-15T00:00:00,upstream,,L539
+args-253,next,withSeconds,0 0 0 12-23/3 * *,2019-01-15T22:00:00,2019-01-18T00:00:00,upstream,,L540
+args-254,next,withSeconds,0 0 0 12-23/3 * *,2019-01-23T22:00:00,2019-02-12T00:00:00,upstream,,L541
+args-255,next,withSeconds,0 0 0 12-23/3 * *,2019-01-30T23:00:00,2019-02-12T00:00:00,upstream,,L542
+args-256,next,withSeconds,"0 0 0 1,1-9,5,23 * *",2019-01-01T00:00:00,2019-01-02T00:00:00,upstream,,L545
+args-257,next,withSeconds,"0 0 0 1,1-9,5,23 * *",2019-01-04T01:00:00,2019-01-05T00:00:00,upstream,,L546
+args-258,next,withSeconds,"0 0 0 1,1-9,5,23 * *",2019-01-22T05:00:00,2019-01-23T00:00:00,upstream,,L547
+args-259,next,withSeconds,"0 0 0 1,1-9,5,23 * *",2019-01-23T09:00:00,2019-02-01T00:00:00,upstream,,L548
+args-260,next,withSeconds,"0 0 0 1,1-9,5,23 * *",2019-01-31T23:00:00,2019-02-01T00:00:00,upstream,,L549
+args-261,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-01T00:00:00,2019-01-02T00:00:00,upstream,,L552
+args-262,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-05T01:00:00,2019-01-06T00:00:00,upstream,,L553
+args-263,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-09T05:00:00,2019-01-15T00:00:00,upstream,,L554
+args-264,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-13T14:00:00,2019-01-15T00:00:00,upstream,,L555
+args-265,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-15T19:00:00,2019-01-18T00:00:00,upstream,,L556
+args-266,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-21T22:00:00,2019-01-23T00:00:00,upstream,,L557
+args-267,next,withSeconds,"0 0 0 1,1-9,5,23,15-21/3 * *",2019-01-28T23:00:00,2019-02-01T00:00:00,upstream,,L558
+args-268,next,standard,30  *  1 * *,2019-01-07T00:00:00,2019-02-01T00:30:00,upstream,,L561
+args-269,next,standard,30  *  1 * *,2019-02-01T00:30:00,2019-02-01T01:30:00,upstream,,L562
+args-270,next,standard,10  * 22    * *,2019-01-01T00:00:00,2019-01-22T00:10:00,upstream,,L564
+args-271,next,standard,30 23 19    * *,2019-01-01T00:00:00,2019-01-19T23:30:00,upstream,,L565
+args-272,next,standard,30 23 21    * *,2019-01-01T00:00:00,2019-01-21T23:30:00,upstream,,L566
+args-273,next,standard," *  * 21    * *",2019-01-01T00:01:00,2019-01-21T00:00:00,upstream,,L567
+args-274,next,standard," *  * 30,31 * *",2019-07-10T00:00:00,2019-07-30T00:00:00,upstream,,L568
+args-275,next,withSeconds,* * * * Apr *,2019-01-01T00:00:00,2019-04-01T00:00:00,upstream,,L573
+args-276,next,withSeconds,* * * * 4 *,2019-01-01T00:00:00,2019-04-01T00:00:00,upstream,,L574
+args-277,next,withSeconds,* * * * 2 *,2019-01-01T00:09:00,2019-02-01T00:00:00,upstream,,L575
+args-278,next,withSeconds,0 39 5 3 7 *,2019-01-04T02:40:00,2019-07-03T05:39:00,upstream,,L576
+args-279,next,withSeconds,* * * * 1 *,2019-12-01T00:00:00,2020-01-01T00:00:00,upstream,,L577
+args-280,next,standard,0 0 30 1 *,2019-12-01T00:00:00,2020-01-30T00:00:00,upstream,,L578
+args-281,next,standard,0 0 28 2 *,2019-12-01T00:00:00,2020-02-28T00:00:00,upstream,,L579
+args-282,next,standard,* * 31 12 *,2019-12-01T00:00:00,2019-12-31T00:00:00,upstream,,L580
+args-283,next,withSeconds,* 0 0 30 1 *,2019-12-01T00:00:00,2020-01-30T00:00:00,upstream,,L581
+args-284,next,standard,0 0 31 12 *,2019-12-01T00:00:00,2019-12-31T00:00:00,upstream,,L582
+args-285,next,standard,0 0 30 12 *,2019-12-01T00:00:00,2019-12-30T00:00:00,upstream,,L583
+args-286,next,standard,0 0 1 1-8 *,2019-01-01T00:02:05,2019-02-01T00:00:00,upstream,,L586
+args-287,next,standard,0 0 1 1-8 *,2019-06-01T19:08:06,2019-07-01T00:00:00,upstream,,L587
+args-288,next,standard,0 0 1 1-8 *,2019-07-01T14:15:15,2019-08-01T00:00:00,upstream,,L588
+args-289,next,standard,0 0 1 1-8 *,2019-08-01T20:22:04,2020-01-01T00:00:00,upstream,,L589
+args-290,next,standard,0 0 1 1-8 *,2019-10-01T23:05:11,2020-01-01T00:00:00,upstream,,L590
+args-291,next,standard,"0 0 1 Jan,May,August *",2019-01-01T00:03:00,2019-05-01T00:00:00,upstream,long-name,L593; Bodu takes three-letter month names only
+args-292,next,standard,"0 0 1 1,5,8 *",2019-02-01T01:00:04,2019-05-01T00:00:00,upstream,,L594
+args-293,next,standard,"0 0 1 1,5,8 *",2019-05-01T05:08:40,2019-08-01T00:00:00,upstream,,L595
+args-294,next,standard,"0 0 1 1,5,8 *",2019-08-01T22:00:09,2020-01-01T00:00:00,upstream,,L596
+args-295,next,standard,"0 0 1 1,5,8 *",2019-10-02T23:09:00,2020-01-01T00:00:00,upstream,,L597
+args-296,next,standard,0 0 1 1/1 *,2019-08-01T00:03:01,2019-09-01T00:00:00,upstream,,L600
+args-297,next,standard,0 0 1 1/1 *,2019-09-01T00:03:01,2019-10-01T00:00:00,upstream,,L601
+args-298,next,standard,0 0 1 1/1 *,2019-10-01T00:03:01,2019-11-01T00:00:00,upstream,,L602
+args-299,next,standard,0 0 1 1/1 *,2019-11-01T00:03:01,2019-12-01T00:00:00,upstream,,L603
+args-300,next,standard,0 0 1 1/1 *,2019-12-01T00:03:01,2020-01-01T00:00:00,upstream,,L604
+args-301,next,standard,0 0 1 */3 *,2019-01-01T00:03:01,2019-04-01T00:00:00,upstream,,L606
+args-302,next,standard,0 0 1 */3 *,2019-02-01T02:00:00,2019-04-01T00:00:00,upstream,,L607
+args-303,next,standard,0 0 1 */3 *,2019-04-01T03:01:00,2019-07-01T00:00:00,upstream,,L608
+args-304,next,standard,0 0 1 */3 *,2019-06-01T14:00:00,2019-07-01T00:00:00,upstream,,L609
+args-305,next,standard,0 0 1 */3 *,2019-07-01T14:00:00,2019-10-01T00:00:00,upstream,,L610
+args-306,next,standard,0 0 1 */3 *,2019-09-01T21:00:00,2019-10-01T00:00:00,upstream,,L611
+args-307,next,standard,0 0 1 */3 *,2019-12-01T23:00:00,2020-01-01T00:00:00,upstream,,L612
+args-308,next,standard,0 0 1 5/3 *,2019-01-01T00:00:00,2019-05-01T00:00:00,upstream,,L614
+args-309,next,standard,0 0 1 5/3 *,2019-04-01T12:00:00,2019-05-01T00:00:00,upstream,,L615
+args-310,next,standard,0 0 1 5/3 *,2019-05-01T19:00:00,2019-08-01T00:00:00,upstream,,L616
+args-311,next,standard,0 0 1 5/3 *,2019-07-01T22:00:00,2019-08-01T00:00:00,upstream,,L617
+args-312,next,standard,0 0 1 5/3 *,2019-09-01T23:00:00,2019-11-01T00:00:00,upstream,,L618
+args-313,next,standard,0 0 1 5/3 *,2019-12-01T23:00:00,2020-05-01T00:00:00,upstream,,L619
+args-314,next,standard,0 0 1 8/2 *,2019-01-01T00:00:00,2019-08-01T00:00:00,upstream,,L621
+args-315,next,standard,0 0 1 8/2 *,2019-07-01T12:00:00,2019-08-01T00:00:00,upstream,,L622
+args-316,next,standard,0 0 1 8/2 *,2019-08-01T19:00:00,2019-10-01T00:00:00,upstream,,L623
+args-317,next,standard,0 0 1 8/2 *,2019-09-01T22:00:00,2019-10-01T00:00:00,upstream,,L624
+args-318,next,standard,0 0 1 8/2 *,2019-11-01T23:00:00,2019-12-01T00:00:00,upstream,,L625
+args-319,next,standard,0 0 1 8/2 *,2019-12-01T23:00:00,2020-08-01T00:00:00,upstream,,L626
+args-320,next,standard,0 0 1 5-12/3 *,2019-01-01T00:00:00,2019-05-01T00:00:00,upstream,,L628
+args-321,next,standard,0 0 1 5-12/3 *,2019-04-01T12:00:00,2019-05-01T00:00:00,upstream,,L629
+args-322,next,standard,0 0 1 5-12/3 *,2019-05-01T19:00:00,2019-08-01T00:00:00,upstream,,L630
+args-323,next,standard,0 0 1 5-12/3 *,2019-07-01T22:00:00,2019-08-01T00:00:00,upstream,,L631
+args-324,next,standard,0 0 1 5-12/3 *,2019-09-01T23:00:00,2019-11-01T00:00:00,upstream,,L632
+args-325,next,standard,0 0 1 5-12/3 *,2019-12-01T23:00:00,2020-05-01T00:00:00,upstream,,L633
+args-326,next,standard,"0 0 1 1,1-9,5,12 *",2019-01-01T00:00:00,2019-02-01T00:00:00,upstream,,L636
+args-327,next,standard,"0 0 1 1,1-9,5,12 *",2019-03-01T01:00:00,2019-04-01T00:00:00,upstream,,L637
+args-328,next,standard,"0 0 1 1,1-9,5,12 *",2019-04-01T01:00:00,2019-05-01T00:00:00,upstream,,L638
+args-329,next,standard,"0 0 1 1,1-9,5,12 *",2019-05-01T05:00:00,2019-06-01T00:00:00,upstream,,L639
+args-330,next,standard,"0 0 1 1,1-9,5,12 *",2019-09-01T09:00:00,2019-12-01T00:00:00,upstream,,L640
+args-331,next,standard,"0 0 1 1,1-9,5,12 *",2019-12-01T23:00:00,2020-01-01T00:00:00,upstream,,L641
+args-332,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-01-01T00:00:00,2019-02-01T00:00:00,upstream,,L644
+args-333,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-02-01T01:00:00,2019-03-01T00:00:00,upstream,,L645
+args-334,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-05-01T05:00:00,2019-08-01T00:00:00,upstream,,L646
+args-335,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-08-01T14:00:00,2019-11-01T00:00:00,upstream,,L647
+args-336,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-09-01T19:00:00,2019-11-01T00:00:00,upstream,,L648
+args-337,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-11-01T22:00:00,2019-12-01T00:00:00,upstream,,L649
+args-338,next,standard,"0 0 1 1,1-3,5,12,8-12/3 *",2019-12-01T23:00:00,2020-01-01T00:00:00,upstream,,L650
+args-339,next,standard,"0 0 10,30,31 * *",2016-01-01T00:00:00,2016-01-10T00:00:00,upstream,,L653
+args-340,next,standard,"0 0 10,30,31 * *",2016-01-10T00:00:00,2016-01-30T00:00:00,upstream,,L654
+args-341,next,standard,"0 0 10,30,31 * *",2016-01-30T00:00:00,2016-01-31T00:00:00,upstream,,L655
+args-342,next,standard,"0 0 10,30,31 * *",2016-01-31T00:00:00,2016-02-10T00:00:00,upstream,,L656
+args-343,next,standard,"0 0 10,30,31 * *",2016-02-10T00:00:00,2016-03-10T00:00:00,upstream,,L659
+args-344,next,standard,"0 0 10,29,30,31 * *",2016-02-10T00:00:00,2016-02-29T00:00:00,upstream,,L660
+args-345,next,standard,"0 0 10,29,30,31 * *",2019-02-10T00:00:00,2019-03-10T00:00:00,upstream,,L661
+args-346,next,standard,* * * 3 *,2019-02-28T23:59:59,2019-03-01T00:00:00,upstream,,L662
+args-347,next,standard,* * * 3 *,2020-02-29T23:59:59,2020-03-01T00:00:00,upstream,,L663
+args-348,next,standard,"0 0 10,30,31 * *",2016-03-10T00:00:00,2016-03-30T00:00:00,upstream,,L666
+args-349,next,standard,"0 0 10,30,31 * *",2016-03-30T00:00:00,2016-03-31T00:00:00,upstream,,L667
+args-350,next,standard,"0 0 10,30,31 * *",2016-03-31T00:00:00,2016-04-10T00:00:00,upstream,,L668
+args-351,next,standard,* * * 4 *,2019-03-31T23:59:59,2019-04-01T00:00:00,upstream,,L669
+args-352,next,standard,"0 0 10,30,31 * *",2016-04-10T00:00:00,2016-04-30T00:00:00,upstream,,L672
+args-353,next,standard,"0 0 10,30,31 * *",2016-04-30T00:00:00,2016-05-10T00:00:00,upstream,,L673
+args-354,next,standard,* * * 5 *,2019-04-30T23:59:59,2019-05-01T00:00:00,upstream,,L674
+args-355,next,standard,"0 0 10,30,31 * *",2016-05-10T00:00:00,2016-05-30T00:00:00,upstream,,L677
+args-356,next,standard,"0 0 10,30,31 * *",2016-05-30T00:00:00,2016-05-31T00:00:00,upstream,,L678
+args-357,next,standard,"0 0 10,30,31 * *",2016-05-31T00:00:00,2016-06-10T00:00:00,upstream,,L679
+args-358,next,standard,"0 0 10,30,31 * *",2016-06-10T00:00:00,2016-06-30T00:00:00,upstream,,L682
+args-359,next,standard,"0 0 10,30,31 * *",2016-06-30T00:00:00,2016-07-10T00:00:00,upstream,,L683
+args-360,next,standard,"0 0 10,30,31 * *",2016-07-10T00:00:00,2016-07-30T00:00:00,upstream,,L686
+args-361,next,standard,"0 0 10,30,31 * *",2016-07-30T00:00:00,2016-07-31T00:00:00,upstream,,L687
+args-362,next,standard,"0 0 10,30,31 * *",2016-07-31T00:00:00,2016-08-10T00:00:00,upstream,,L688
+args-363,next,standard,"0 0 10,30,31 * *",2016-08-10T00:00:00,2016-08-30T00:00:00,upstream,,L691
+args-364,next,standard,"0 0 10,30,31 * *",2016-08-30T00:00:00,2016-08-31T00:00:00,upstream,,L692
+args-365,next,standard,"0 0 10,30,31 * *",2016-08-31T00:00:00,2016-09-10T00:00:00,upstream,,L693
+args-366,next,standard,"0 0 10,30,31 * *",2016-09-10T00:00:00,2016-09-30T00:00:00,upstream,,L696
+args-367,next,standard,"0 0 10,30,31 * *",2016-09-30T00:00:00,2016-10-10T00:00:00,upstream,,L697
+args-368,next,standard,"0 0 10,30,31 * *",2016-10-10T00:00:00,2016-10-30T00:00:00,upstream,,L700
+args-369,next,standard,"0 0 10,30,31 * *",2016-10-30T00:00:00,2016-10-31T00:00:00,upstream,,L701
+args-370,next,standard,"0 0 10,30,31 * *",2016-10-31T00:00:00,2016-11-10T00:00:00,upstream,,L702
+args-371,next,standard,"0 0 10,30,31 * *",2016-11-10T00:00:00,2016-11-30T00:00:00,upstream,,L705
+args-372,next,standard,"0 0 10,30,31 * *",2016-11-30T00:00:00,2016-12-10T00:00:00,upstream,,L706
+args-373,next,standard,"0 0 10,30,31 * *",2016-12-10T00:00:00,2016-12-30T00:00:00,upstream,,L709
+args-374,next,standard,"0 0 10,30,31 * *",2016-12-30T00:00:00,2016-12-31T00:00:00,upstream,,L710
+args-375,next,standard,"0 0 10,30,31 * *",2016-12-31T00:00:00,2017-01-10T00:00:00,upstream,,L711
+args-376,next,withSeconds,0 0 0 29 2 *,2016-02-29T00:00:00,2020-02-29T00:00:00,upstream,,L714
+args-377,next,withSeconds,0 0 0 28 2 *,2016-02-29T00:00:00,2017-02-28T00:00:00,upstream,,L715
+args-378,next,withSeconds,0 0 0 29 2 *,2000-01-01T00:00:00,2000-02-29T00:00:00,upstream,,L717
+args-379,next,withSeconds,0 0 0 29 2 *,2000-02-29T00:00:00,2004-02-29T00:00:00,upstream,,L718
+args-380,next,withSeconds,0 0 0 28 2 *,2016-01-01T00:00:00,2016-02-28T00:00:00,upstream,,L721
+args-381,next,withSeconds,0 0 0 28 2 *,2016-02-28T00:00:00,2017-02-28T00:00:00,upstream,,L722
+args-382,next,withSeconds,0 0 0 28 2 *,2018-02-28T00:00:00,2019-02-28T00:00:00,upstream,,L723
+args-383,next,withSeconds,0 0 0 28 2 *,2019-02-28T00:00:00,2020-02-28T00:00:00,upstream,,L724
+args-384,next,withSeconds,0 0 0 28 2 *,2017-02-28T00:00:00,2018-02-28T00:00:00,upstream,,L725
+args-385,next,withSeconds,0 0 6 * * Sun,2019-01-12T00:00:00,2019-01-13T06:00:00,upstream,,L728
+args-386,next,withSeconds,0 0 6 * * 1,2019-01-12T00:00:00,2019-01-14T06:00:00,upstream,,L729
+args-387,next,withSeconds,0 0 6 * * 2,2019-01-12T00:00:00,2019-01-15T06:00:00,upstream,,L730
+args-388,next,withSeconds,0 0 12 * * 3,2019-01-12T00:00:00,2019-01-16T12:00:00,upstream,,L731
+args-389,next,withSeconds,0 0 12 * * 4,2019-01-24T00:00:00,2019-01-24T12:00:00,upstream,,L732
+args-390,next,withSeconds,0 2 9 * * 3,2019-01-01T09:45:00,2019-01-02T09:02:00,upstream,,L734
+args-391,next,withSeconds,0 2 9 * * 3,2019-01-02T09:10:00,2019-01-09T09:02:00,upstream,,L735
+args-392,next,withSeconds,0 2 9 * * 3,2019-01-17T05:11:00,2019-01-23T09:02:00,upstream,,L736
+args-393,next,withSeconds,0 2 9 * * 3,2019-01-11T12:07:00,2019-01-16T09:02:00,upstream,,L737
+args-394,next,withSeconds,0 2 9 * * 3,2019-01-19T13:12:00,2019-01-23T09:02:00,upstream,,L738
+args-395,next,withSeconds,0 2 9 * * 3,2019-01-25T22:11:00,2019-01-30T09:02:00,upstream,,L739
+args-396,next,withSeconds,0 * * * * 3,2019-01-13T00:08:00,2019-01-16T00:00:00,upstream,,L741
+args-397,next,withSeconds,0 9 23 2 * 3,2019-01-14T08:00:00,2019-01-16T23:09:00,upstream,,L742
+args-398,next,withSeconds,0 9 23 3 * 3,2019-01-16T11:39:00,2019-01-16T23:09:00,upstream,,L743
+args-399,next,withSeconds,0 0 0 * * 3,2019-01-01T00:00:00,2019-01-02T00:00:00,upstream,,L746
+args-400,next,withSeconds,0 0 0 * * 6,2019-01-01T00:00:00,2019-01-05T00:00:00,upstream,,L747
+args-401,next,withSeconds,0 0 0 */5 * 2,2019-01-01T00:00:00,2019-02-26T00:00:00,upstream,,L748
+args-402,next,withSeconds,0 0 0 */5 * */5,2019-01-01T00:00:00,2019-01-06T00:00:00,upstream,,L749
+args-403,next,withSeconds,0 0 0 */5 2 */5,2019-01-01T00:00:00,2019-02-01T00:00:00,upstream,,L750
+args-404,next,withSeconds,0 0 0 29 2 */4,2019-01-01T00:00:00,2024-02-29T00:00:00,upstream,,L751
+args-405,next,withSeconds,0 0 0 29 2 */5,2019-01-01T00:00:00,2032-02-29T00:00:00,upstream,,"L752; D2 (issue #799): the answer is 13 years after the start, past the 12-year search Bodu had"
+args-406,next,withSeconds,0 0 0 4 * 3,2019-01-01T00:00:00,2019-01-02T00:00:00,upstream,,L755
+args-407,next,withSeconds,0 0 0 23 * 6,2019-01-01T00:00:00,2019-01-05T00:00:00,upstream,,L756
+args-408,next,withSeconds,0 0 0 12 * 2,2019-01-01T00:00:00,2019-01-08T00:00:00,upstream,,L757
+args-409,next,withSeconds,0 0 0 5 * 5,2019-01-01T00:00:00,2019-01-04T00:00:00,upstream,,L758
+args-410,next,withSeconds,0 0 0 5 2 5,2019-01-01T00:00:00,2019-02-01T00:00:00,upstream,,L759
+args-411,next,withSeconds,0 0 0 29 2 4,2019-01-01T00:00:00,2019-02-07T00:00:00,upstream,,L760
+args-412,next,withSeconds,0 0 0 29 2 5,2019-01-01T00:00:00,2019-02-01T00:00:00,upstream,,L761
+args-413,next,standard,36 9 * * *,2020-09-08T09:40:00,2020-09-09T09:36:00,upstream,,L764
+args-414,next,withSeconds,0 0 0 * * 4l,2019-01-01T00:00:00,2019-01-31T00:00:00,upstream,,L767
+args-415,next,withSeconds,0 0 0 * * 5l,2019-01-01T00:00:00,2019-01-25T00:00:00,upstream,,L768
+args-416,next,withSeconds,0 0 0 * * 5L,2019-01-01T00:00:00,2019-01-25T00:00:00,upstream,,L769
+args-417,next,withSeconds,0 0 0 * * 6l,2019-01-01T00:00:00,2019-01-26T00:00:00,upstream,,L770
+args-418,next,withSeconds,0 0 0 * * 0L,2019-01-01T00:00:00,2019-01-27T00:00:00,upstream,,L771
+args-419,next,withSeconds,0 0 0 * 2 5L,2019-01-01T00:00:00,2019-02-22T00:00:00,upstream,,L772
+args-420,next,withSeconds,0 0 0 * 9 0l,2019-01-01T00:00:00,2019-09-29T00:00:00,upstream,,L773
+args-421,next,withSeconds,0 0 0 * 5 2L,2019-01-01T00:00:00,2019-05-28T00:00:00,upstream,,L774
+args-422,next,withSeconds,0 0 0 * 2 6L,2019-01-01T00:00:00,2019-02-23T00:00:00,upstream,,L775
+args-423,next,withSeconds,0 0 0 * 4 3L,2019-01-01T00:00:00,2019-04-24T00:00:00,upstream,,L776
+args-424,next,withSeconds,0 0 0 * 4 2L,2019-01-01T00:00:00,2019-04-30T00:00:00,upstream,,L777
+args-425,next,withSeconds,0 0 0 l *  *,2019-01-01T00:00:00,2019-01-31T00:00:00,upstream,,L779
+args-426,next,withSeconds,0 0 0 L *  *,2019-02-20T00:00:00,2019-02-28T00:00:00,upstream,,L780
+args-427,next,withSeconds,0 0 0 l *  *,2019-03-01T00:00:00,2019-03-31T00:00:00,upstream,,L781
+args-428,next,withSeconds,0 0 0 L *  *,2019-04-01T00:00:00,2019-04-30T00:00:00,upstream,,L782
+args-429,next,withSeconds,0 0 0 l *  *,2019-05-01T00:00:00,2019-05-31T00:00:00,upstream,,L783
+args-430,next,withSeconds,0 0 0 L *  *,2019-06-01T00:00:00,2019-06-30T00:00:00,upstream,,L784
+args-431,next,withSeconds,0 0 0 l *  *,2019-07-01T00:00:00,2019-07-31T00:00:00,upstream,,L785
+args-432,next,withSeconds,0 0 0 L *  *,2019-08-01T00:00:00,2019-08-31T00:00:00,upstream,,L786
+args-433,next,withSeconds,0 0 0 l *  *,2019-09-01T00:00:00,2019-09-30T00:00:00,upstream,,L787
+args-434,next,withSeconds,0 0 0 L *  *,2019-10-01T00:00:00,2019-10-31T00:00:00,upstream,,L788
+args-435,next,withSeconds,0 0 0 l *  *,2019-11-01T00:00:00,2019-11-30T00:00:00,upstream,,L789
+args-436,next,withSeconds,0 0 0 L *  *,2019-12-01T00:00:00,2019-12-31T00:00:00,upstream,,L790
+fixed-offset-L801,next,withSeconds,0 5 2 * * *,2025-03-29T01:30:00+01:00,2025-03-29T02:05:00+01:00,upstream,,"L801; the zone is at +01:00 at both instants, with no change between them"
+fixed-offset-L814,next,withSeconds,0 30 2 * * *,2025-10-27T02:00:00+09:00,2025-10-27T02:30:00+09:00,upstream,,"L814; the zone is at +09:00 at both instants, with no change between them"
+fixed-offset-L815,next,withSeconds,0 30 2 * * *,2025-10-26T02:00:00+00:00,2025-10-26T02:30:00+00:00,upstream,,"L815; the zone is at +00:00 at both instants, with no change between them"
+invalid-01,invalid,standard,invalid,,,upstream,,L185; a single word is rejected
+invalid-02,invalid,withSeconds,0 0 0 l * 5L,,,upstream,token-combination,L190; jobrunr rejects L in both day fields
