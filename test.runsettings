@@ -8,7 +8,7 @@
     <DisableAppDomain>true</DisableAppDomain>
 
     <!-- Kill the test session if it runs longer than 20 minutes per assembly -->
-    <TestSessionTimeout>12000000</TestSessionTimeout>
+    <TestSessionTimeout>1200000</TestSessionTimeout>
 
     <!-- Optional: Set results directory -->
     <!-- <ResultsDirectory>.\TestResults</ResultsDirectory> -->
