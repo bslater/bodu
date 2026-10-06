@@ -21,11 +21,18 @@ public sealed partial class RecurrenceCorpusTests
     /// </remarks>
     private static readonly (string Directory, string Table)[] s_cronLibraryTables =
     [
+        ("ccronexpr", "ccronexpr"),
         ("croniter", "croniter"),
         ("cronos", "cronos-reverse"),
         ("cronsim", "cronsim"),
+        ("gorhill", "gorhill"),
+        ("gronx", "gronx"),
         ("ncrontab", "ncrontab"),
         ("quartznet", "quartznet"),
+        ("robfig", "robfig"),
+        ("saffron", "saffron"),
+        ("supertinycron", "supertinycron"),
+        ("zslayton", "zslayton"),
     ];
 
     /// <summary>The assertion kinds the cron library tables and fix catalogues may record.</summary>
@@ -405,11 +412,18 @@ public sealed partial class RecurrenceCorpusTests
     {
         (string Table, int Rows, int InScope)[] recorded =
         [
+            ("ccronexpr", 88, 88),
             ("croniter", 389, 264),
             ("cronos-reverse", 29, 26),
             ("cronsim", 438, 432),
+            ("gorhill", 69, 63),
+            ("gronx", 434, 385),
             ("ncrontab", 187, 184),
             ("quartznet", 385, 269),
+            ("robfig", 108, 104),
+            ("saffron", 290, 244),
+            ("supertinycron", 536, 478),
+            ("zslayton", 91, 73),
         ];
 
         CollectionAssert.AreEqual(

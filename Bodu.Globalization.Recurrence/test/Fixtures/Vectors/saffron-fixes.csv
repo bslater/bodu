@@ -1,0 +1,9 @@
+# library: saffron -- https://github.com/cloudflare/saffron
+# releases: no GitHub releases, tags or CHANGELOG (git ls-remote finds no tags); read the whole commit history of main (github.com/cloudflare/saffron/commits/main, 26 commits, read 2026-10-06). Each fix carries its commit date.
+# note: a fix is a commit that corrects behaviour, a test, a benchmark or lint (fix, fixup); 3ace5e6 removes syntax rather than fixing a defect but is listed because it changes what parses. Commits that add features (describe, C and web bindings, future time limit #15, no-std), refactor (77a567b, 07187da), rename, update dependencies or edit documentation and comments (0436f43) are not listed.
+library,version,reference,summary,class,case,kind,format,expression,from,expected,expectation,reason
+saffron,2021-08-30,520d8e1,Fix benchmark crons,n/a,,,,,,,,benchmark inputs only: 1 12 3 6 ? and 12-35 1-23 2-5 1-11 ? were rewritten with * after 3ace5e6 removed ?
+saffron,2021-08-30,76a1aad,Fixup lints,n/a,,,,,,,,lint
+saffron,2021-01-27,d7f30ee,Add describe example and fixup future-times to be shorter,n/a,,,,,,,,example program output
+saffron,2020-11-27,3ace5e6,Remove support for ? characters and CronError,dialect,1,equal,standard,1 12 3 6 ?,,1 12 3 6 *,derived,"Bodu accepts ? in the day fields and reads it as * (cron.md, Field syntax); saffron removed it, so the benchmark's ? inputs were rewritten with * (520d8e1)"
+saffron,2020-11-27,3ace5e6,Remove support for ? characters and CronError,dialect,2,equal,standard,12-35 1-23 2-5 1-11 ?,,12-35 1-23 2-5 1-11 *,derived,the benchmark's other ? input

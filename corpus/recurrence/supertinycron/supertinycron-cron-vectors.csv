@@ -1,0 +1,550 @@
+# Cron vectors derived from exander77/supertinycron's ccronexpr_test.c
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: supertinycron -- https://github.com/exander77/supertinycron -- ccronexpr_test.c
+# commit: cd1a408cfbcd539a7696d2985ee1cc9b81b5207e
+# file-sha256: ccronexpr_test.c 62dae4f66438e2ae557d77fd94cb53cf3b14b06ee9ab91a2725c38041c1ecb97
+# licence: Apache-2.0 (Copyright 2015, alex at staticlibs.net; fork maintained by exander77). The rows restate the file's assertions as expressions and instants, with attribution; the upstream file itself is not committed.
+# method: extracted by extract-supertinycron-cron-vectors.py
+# note: supertinycron reads five fields (minute first), six (seconds first) or seven (six plus a year 1970-2199), weekdays 0-7, and always intersects the two day fields (no row restricts both). It adds a bare W (weekdays), a bare L in day-of-week (Sunday), d#-k, leap seconds (L60), @minutely and @secondly, all flagged. A seven-field row with year * is restated without the year.
+# note: left out (counted): 25 rows in the CRON_USE_LOCAL_TIME block (L356-410, named time zones), 3 rows in the right/UTC leap-second block (L440-444), test_bits (bit-set helper API); assertions commented out in the file (L436, L450, L453, L892-894, L964) are not assertions. The cron_generate_expr round trip that check_fn adds is the library's own API and is not transcribed.
+# flags: year-field = the row depends on supertinycron's year field (a seven-field expression with a restricted year, or the equality of the six- and seven-field forms)
+# flags: syntax-extension = supertinycron-only syntax: a bare W in day-of-month, a bare L in day-of-week, d#-k, or an L-prefixed leap second
+# flags: macro = @minutely or @secondly, macros outside crontab(5)'s seven
+# flags: cross-layout = equates a six-field expression with a five-field one; Bodu's Equals includes the layout by design (cron.md, Canonical text and equality)
+name,kind,format,expression,from,expected,expectation,flags,reference
+test_expr-001,equal,standard,* * * * *,,"*	*	*	*	*",upstream,,test_expr L413 check_same
+test_expr-002,equal,withSeconds,* * * * * *,,"*	*	*	*	*	*",upstream,,test_expr L414 check_same
+test_expr-003,equal,withSeconds,* * * * * * *,,"*	*	*	*	*	*	*",upstream,year-field,test_expr L416 check_same
+test_expr-004,next,withSeconds,"4,36 * 10 * * *",2012-07-01T00:00:05,2012-07-01T10:00:04,upstream,,test_expr L420 cron_next
+test_expr-005,previous,withSeconds,"4,36 * 10 * * *",2012-07-01T00:00:05,2012-06-30T10:59:36,upstream,,test_expr L421 cron_prev
+test_expr-006,next,withSeconds,"4,36 * 10 2 * *",2012-07-01T10:00:05,2012-07-02T10:00:04,upstream,,test_expr L422 cron_next
+test_expr-007,previous,withSeconds,"4,36 * 10 2 * *",2012-07-01T10:00:05,2012-06-02T10:59:36,upstream,,test_expr L423 cron_prev
+test_expr-008,next,withSeconds,"0 36,58 10 * * *",2012-07-01T00:50:05,2012-07-01T10:36:00,upstream,,test_expr L426 cron_next
+test_expr-009,previous,withSeconds,"0 36,58 10 * * *",2012-07-01T00:50:05,2012-06-30T10:58:00,upstream,,test_expr L427 cron_prev
+test_expr-010,next,withSeconds,"4,36 58 10 2 * *",2012-07-01T00:00:05,2012-07-02T10:58:04,upstream,,test_expr L428 cron_next
+test_expr-011,previous,withSeconds,"4,36 58 10 2 * *",2012-07-01T00:00:05,2012-06-02T10:58:36,upstream,,test_expr L429 cron_prev
+test_expr-012,next,standard,*/2 * * * *,2012-07-01T09:00:30,2012-07-01T09:02:00,upstream,,test_expr L432 cron_next
+test_expr-013,previous,standard,*/2 * * * *,2012-07-01T09:00:00,2012-07-01T08:58:00,upstream,,test_expr L433 cron_prev
+test_expr-014,next,withSeconds,* * * * * *,2100-01-01T15:12:42,2100-01-01T15:12:43,upstream,,test_expr L437 cron_next
+test_expr-015,next,withSeconds,* * * * * *,2198-01-01T15:12:42,2198-01-01T15:12:43,upstream,,test_expr L438 cron_next
+test_expr-016,next,withSeconds,* * * * * *,2199-01-01T15:12:42,2199-01-01T15:12:43,upstream,,test_expr L439 cron_next
+test_expr-017,next,withSeconds,* * * 1 1 *,1970-01-01T15:12:42,1970-01-01T15:12:43,upstream,,test_expr L446 cron_next; year * dropped
+test_expr-018,next,withSeconds,"* * * 1 1 * 1970,2100,2193,2199",1970-01-01T15:12:42,1970-01-01T15:12:43,upstream,year-field,test_expr L449 cron_next
+test_expr-019,next,withSeconds,"* * * 1 1 * 1970,2100,2193,2199",1971-01-01T15:12:42,2100-01-01T00:00:00,upstream,year-field,test_expr L451 cron_next
+test_expr-020,next,withSeconds,"* * * 1 1 * 1970,2100,2193,2199",2195-01-01T15:12:42,2199-01-01T00:00:00,upstream,year-field,test_expr L452 cron_next
+test_expr-021,next,withSeconds,* * * 1 1 * 2020,2011-01-01T15:12:42,2020-01-01T00:00:00,upstream,year-field,test_expr L454 cron_next
+test_expr-022,next,withSeconds,* * * 1W * *,2011-01-01T15:12:42,2011-01-03T00:00:00,upstream,,test_expr L457 cron_next
+test_expr-023,next,withSeconds,* * * 31W * *,2010-01-01T15:12:42,2010-01-29T00:00:00,upstream,,test_expr L458 cron_next
+test_expr-024,next,withSeconds,* * * LW * *,2010-01-01T15:12:42,2010-01-29T00:00:00,upstream,,test_expr L460 cron_next
+test_expr-025,next,withSeconds,* * * LW * *,2010-02-03T15:12:42,2010-02-26T00:00:00,upstream,,test_expr L461 cron_next
+test_expr-026,next,withSeconds,* * * LW * *,2010-03-06T15:12:42,2010-03-31T00:00:00,upstream,,test_expr L462 cron_next
+test_expr-027,next,withSeconds,* * * LW * *,2010-04-09T15:12:42,2010-04-30T00:00:00,upstream,,test_expr L463 cron_next
+test_expr-028,next,withSeconds,* * * LW * *,2010-05-12T15:12:42,2010-05-31T00:00:00,upstream,,test_expr L464 cron_next
+test_expr-029,next,withSeconds,* * * LW * *,2010-06-15T15:12:42,2010-06-30T00:00:00,upstream,,test_expr L465 cron_next
+test_expr-030,next,withSeconds,* * * LW * *,2010-07-18T15:12:42,2010-07-30T00:00:00,upstream,,test_expr L466 cron_next
+test_expr-031,next,withSeconds,* * * LW * *,2010-08-21T15:12:42,2010-08-31T00:00:00,upstream,,test_expr L467 cron_next
+test_expr-032,next,withSeconds,* * * LW * *,2010-09-24T15:12:42,2010-09-30T00:00:00,upstream,,test_expr L468 cron_next
+test_expr-033,next,withSeconds,* * * LW * *,2010-10-27T15:12:42,2010-10-29T00:00:00,upstream,,test_expr L469 cron_next
+test_expr-034,next,withSeconds,* * * LW * *,2010-11-30T15:12:42,2010-11-30T15:12:43,upstream,,test_expr L470 cron_next
+test_expr-035,next,withSeconds,* * * LW * *,2010-12-31T15:12:42,2010-12-31T15:12:43,upstream,,test_expr L471 cron_next
+test_expr-036,next,withSeconds,* * * 15W * *,2010-01-01T15:12:42,2010-01-15T00:00:00,upstream,,test_expr L473 cron_next
+test_expr-037,next,withSeconds,* * * 15W * *,2010-02-03T15:12:42,2010-02-15T00:00:00,upstream,,test_expr L474 cron_next
+test_expr-038,next,withSeconds,* * * 15W * *,2010-03-06T15:12:42,2010-03-15T00:00:00,upstream,,test_expr L475 cron_next
+test_expr-039,next,withSeconds,* * * 15W * *,2010-04-09T15:12:42,2010-04-15T00:00:00,upstream,,test_expr L476 cron_next
+test_expr-040,next,withSeconds,* * * 15W * *,2010-05-12T15:12:42,2010-05-14T00:00:00,upstream,,test_expr L477 cron_next
+test_expr-041,next,withSeconds,* * * 15W * *,2010-06-15T15:12:42,2010-06-15T15:12:43,upstream,,test_expr L478 cron_next
+test_expr-042,next,withSeconds,* * * 15W * *,2010-07-18T15:12:42,2010-08-16T00:00:00,upstream,,test_expr L479 cron_next
+test_expr-043,next,withSeconds,* * * 15W * *,2010-08-21T15:12:42,2010-09-15T00:00:00,upstream,,test_expr L480 cron_next
+test_expr-044,next,withSeconds,* * * 15W * *,2010-09-24T15:12:42,2010-10-15T00:00:00,upstream,,test_expr L481 cron_next
+test_expr-045,next,withSeconds,* * * 15W * *,2010-10-27T15:12:42,2010-11-15T00:00:00,upstream,,test_expr L482 cron_next
+test_expr-046,next,withSeconds,* * * 15W * *,2010-11-30T15:12:42,2010-12-15T00:00:00,upstream,,test_expr L483 cron_next
+test_expr-047,next,withSeconds,* * * 15W * *,2010-12-31T15:12:42,2011-01-14T00:00:00,upstream,,test_expr L484 cron_next
+test_expr-048,next,withSeconds,* * * L-1 * *,2010-01-01T15:12:42,2010-01-30T00:00:00,upstream,,test_expr L486 cron_next
+test_expr-049,next,withSeconds,* * * L-1 * *,2010-02-03T15:12:42,2010-02-27T00:00:00,upstream,,test_expr L487 cron_next
+test_expr-050,next,withSeconds,* * * L-1 * *,2010-03-06T15:12:42,2010-03-30T00:00:00,upstream,,test_expr L488 cron_next
+test_expr-051,next,withSeconds,* * * L-1 * *,2010-04-09T15:12:42,2010-04-29T00:00:00,upstream,,test_expr L489 cron_next
+test_expr-052,next,withSeconds,* * * L-1 * *,2010-05-12T15:12:42,2010-05-30T00:00:00,upstream,,test_expr L490 cron_next
+test_expr-053,next,withSeconds,* * * L-1 * *,2010-06-15T15:12:42,2010-06-29T00:00:00,upstream,,test_expr L491 cron_next
+test_expr-054,next,withSeconds,* * * L-1 * *,2010-07-18T15:12:42,2010-07-30T00:00:00,upstream,,test_expr L492 cron_next
+test_expr-055,next,withSeconds,* * * L-1 * *,2010-08-21T15:12:42,2010-08-30T00:00:00,upstream,,test_expr L493 cron_next
+test_expr-056,next,withSeconds,* * * L-1 * *,2010-09-24T15:12:42,2010-09-29T00:00:00,upstream,,test_expr L494 cron_next
+test_expr-057,next,withSeconds,* * * L-1 * *,2010-10-27T15:12:42,2010-10-30T00:00:00,upstream,,test_expr L495 cron_next
+test_expr-058,next,withSeconds,* * * L-1 * *,2010-11-30T15:12:42,2010-12-30T00:00:00,upstream,,test_expr L496 cron_next
+test_expr-059,next,withSeconds,* * * L-1 * *,2010-12-31T15:12:42,2011-01-30T00:00:00,upstream,,test_expr L497 cron_next
+test_expr-060,next,withSeconds,* * * L * *,2010-01-01T15:12:42,2010-01-31T00:00:00,upstream,,test_expr L499 cron_next
+test_expr-061,next,withSeconds,* * * L * *,2010-02-03T15:12:42,2010-02-28T00:00:00,upstream,,test_expr L500 cron_next
+test_expr-062,next,withSeconds,* * * L * *,2010-03-06T15:12:42,2010-03-31T00:00:00,upstream,,test_expr L501 cron_next
+test_expr-063,next,withSeconds,* * * L * *,2010-04-09T15:12:42,2010-04-30T00:00:00,upstream,,test_expr L502 cron_next
+test_expr-064,next,withSeconds,* * * L * *,2010-05-12T15:12:42,2010-05-31T00:00:00,upstream,,test_expr L503 cron_next
+test_expr-065,next,withSeconds,* * * L * *,2010-06-15T15:12:42,2010-06-30T00:00:00,upstream,,test_expr L504 cron_next
+test_expr-066,next,withSeconds,* * * L * *,2010-07-18T15:12:42,2010-07-31T00:00:00,upstream,,test_expr L505 cron_next
+test_expr-067,next,withSeconds,* * * L * *,2010-08-21T15:12:42,2010-08-31T00:00:00,upstream,,test_expr L506 cron_next
+test_expr-068,next,withSeconds,* * * L * *,2010-09-24T15:12:42,2010-09-30T00:00:00,upstream,,test_expr L507 cron_next
+test_expr-069,next,withSeconds,* * * L * *,2010-10-27T15:12:42,2010-10-31T00:00:00,upstream,,test_expr L508 cron_next
+test_expr-070,next,withSeconds,* * * L * *,2010-11-30T15:12:42,2010-11-30T15:12:43,upstream,,test_expr L509 cron_next
+test_expr-071,next,withSeconds,* * * L * *,2010-12-31T15:12:42,2010-12-31T15:12:43,upstream,,test_expr L510 cron_next
+test_expr-072,next,withSeconds,* * * * * 1#-5,2010-09-03T15:12:42,2010-11-01T00:00:00,upstream,syntax-extension,test_expr L512 cron_next
+test_expr-073,next,withSeconds,* * * * * 1#-4,2010-09-03T15:12:42,2010-09-06T00:00:00,upstream,syntax-extension,test_expr L513 cron_next
+test_expr-074,next,withSeconds,* * * * * 1#-3,2010-09-03T15:12:42,2010-09-13T00:00:00,upstream,syntax-extension,test_expr L514 cron_next
+test_expr-075,next,withSeconds,* * * * * 1#-2,2010-09-03T15:12:42,2010-09-20T00:00:00,upstream,syntax-extension,test_expr L515 cron_next
+test_expr-076,next,withSeconds,* * * * * 1#1,2010-09-03T15:12:42,2010-09-06T00:00:00,upstream,,test_expr L516 cron_next
+test_expr-077,next,withSeconds,* * * * * 1#2,2010-09-03T15:12:42,2010-09-13T00:00:00,upstream,,test_expr L517 cron_next
+test_expr-078,next,withSeconds,* * * * * 1#3,2010-09-03T15:12:42,2010-09-20T00:00:00,upstream,,test_expr L518 cron_next
+test_expr-079,next,withSeconds,* * * * * 1#4,2010-09-03T15:12:42,2010-09-27T00:00:00,upstream,,test_expr L519 cron_next
+test_expr-080,next,withSeconds,* * * * * 1#5,2010-09-03T15:12:42,2010-11-29T00:00:00,upstream,,test_expr L520 cron_next
+test_expr-081,next,withSeconds,* * * * * 2#-5,2010-09-03T15:12:42,2010-11-02T00:00:00,upstream,syntax-extension,test_expr L522 cron_next
+test_expr-082,next,withSeconds,* * * * * 2#-4,2010-09-03T15:12:42,2010-09-07T00:00:00,upstream,syntax-extension,test_expr L523 cron_next
+test_expr-083,next,withSeconds,* * * * * 2#-3,2010-09-03T15:12:42,2010-09-14T00:00:00,upstream,syntax-extension,test_expr L524 cron_next
+test_expr-084,next,withSeconds,* * * * * 2#-2,2010-09-03T15:12:42,2010-09-21T00:00:00,upstream,syntax-extension,test_expr L525 cron_next
+test_expr-085,next,withSeconds,* * * * * 2#1,2010-09-03T15:12:42,2010-09-07T00:00:00,upstream,,test_expr L526 cron_next
+test_expr-086,next,withSeconds,* * * * * 2#2,2010-09-03T15:12:42,2010-09-14T00:00:00,upstream,,test_expr L527 cron_next
+test_expr-087,next,withSeconds,* * * * * 2#3,2010-09-03T15:12:42,2010-09-21T00:00:00,upstream,,test_expr L528 cron_next
+test_expr-088,next,withSeconds,* * * * * 2#4,2010-09-03T15:12:42,2010-09-28T00:00:00,upstream,,test_expr L529 cron_next
+test_expr-089,next,withSeconds,* * * * * 2#5,2010-09-03T15:12:42,2010-11-30T00:00:00,upstream,,test_expr L530 cron_next
+test_expr-090,next,withSeconds,* * * * * 3#-5,2010-09-03T15:12:42,2010-12-01T00:00:00,upstream,syntax-extension,test_expr L532 cron_next
+test_expr-091,next,withSeconds,* * * * * 3#-4,2010-09-03T15:12:42,2010-09-08T00:00:00,upstream,syntax-extension,test_expr L533 cron_next
+test_expr-092,next,withSeconds,* * * * * 3#-3,2010-09-03T15:12:42,2010-09-15T00:00:00,upstream,syntax-extension,test_expr L534 cron_next
+test_expr-093,next,withSeconds,* * * * * 3#-2,2010-09-03T15:12:42,2010-09-22T00:00:00,upstream,syntax-extension,test_expr L535 cron_next
+test_expr-094,next,withSeconds,* * * * * 3#1,2010-09-03T15:12:42,2010-10-06T00:00:00,upstream,,test_expr L536 cron_next
+test_expr-095,next,withSeconds,* * * * * 3#2,2010-09-03T15:12:42,2010-09-08T00:00:00,upstream,,test_expr L537 cron_next
+test_expr-096,next,withSeconds,* * * * * 3#3,2010-09-03T15:12:42,2010-09-15T00:00:00,upstream,,test_expr L538 cron_next
+test_expr-097,next,withSeconds,* * * * * 3#4,2010-09-03T15:12:42,2010-09-22T00:00:00,upstream,,test_expr L539 cron_next
+test_expr-098,next,withSeconds,* * * * * 3#5,2010-09-03T15:12:42,2010-09-29T00:00:00,upstream,,test_expr L540 cron_next
+test_expr-099,next,withSeconds,* * * * * 4#-5,2010-09-03T15:12:42,2010-12-02T00:00:00,upstream,syntax-extension,test_expr L542 cron_next
+test_expr-100,next,withSeconds,* * * * * 4#-4,2010-09-03T15:12:42,2010-09-09T00:00:00,upstream,syntax-extension,test_expr L543 cron_next
+test_expr-101,next,withSeconds,* * * * * 4#-3,2010-09-03T15:12:42,2010-09-16T00:00:00,upstream,syntax-extension,test_expr L544 cron_next
+test_expr-102,next,withSeconds,* * * * * 4#-2,2010-09-03T15:12:42,2010-09-23T00:00:00,upstream,syntax-extension,test_expr L545 cron_next
+test_expr-103,next,withSeconds,* * * * * 4#1,2010-09-03T15:12:42,2010-10-07T00:00:00,upstream,,test_expr L546 cron_next
+test_expr-104,next,withSeconds,* * * * * 4#2,2010-09-03T15:12:42,2010-09-09T00:00:00,upstream,,test_expr L547 cron_next
+test_expr-105,next,withSeconds,* * * * * 4#3,2010-09-03T15:12:42,2010-09-16T00:00:00,upstream,,test_expr L548 cron_next
+test_expr-106,next,withSeconds,* * * * * 4#4,2010-09-03T15:12:42,2010-09-23T00:00:00,upstream,,test_expr L549 cron_next
+test_expr-107,next,withSeconds,* * * * * 4#5,2010-09-03T15:12:42,2010-09-30T00:00:00,upstream,,test_expr L550 cron_next
+test_expr-108,next,withSeconds,* * * * * 5#-5,2010-09-03T15:12:42,2010-10-01T00:00:00,upstream,syntax-extension,test_expr L552 cron_next
+test_expr-109,next,withSeconds,* * * * * 5#-4,2010-09-03T15:12:42,2010-09-03T15:12:43,upstream,syntax-extension,test_expr L553 cron_next
+test_expr-110,next,withSeconds,* * * * * 5#-3,2010-09-03T15:12:42,2010-09-10T00:00:00,upstream,syntax-extension,test_expr L554 cron_next
+test_expr-111,next,withSeconds,* * * * * 5#-2,2010-09-03T15:12:42,2010-09-17T00:00:00,upstream,syntax-extension,test_expr L555 cron_next
+test_expr-112,next,withSeconds,* * * * * 5#1,2010-09-03T15:12:42,2010-09-03T15:12:43,upstream,,test_expr L556 cron_next
+test_expr-113,next,withSeconds,* * * * * 5#2,2010-09-03T15:12:42,2010-09-10T00:00:00,upstream,,test_expr L557 cron_next
+test_expr-114,next,withSeconds,* * * * * 5#3,2010-09-03T15:12:42,2010-09-17T00:00:00,upstream,,test_expr L558 cron_next
+test_expr-115,next,withSeconds,* * * * * 5#4,2010-09-03T15:12:42,2010-09-24T00:00:00,upstream,,test_expr L559 cron_next
+test_expr-116,next,withSeconds,* * * * * 5#5,2010-09-03T15:12:42,2010-10-29T00:00:00,upstream,,test_expr L560 cron_next
+test_expr-117,next,withSeconds,* * * * * 6#-5,2010-09-03T15:12:42,2010-10-02T00:00:00,upstream,syntax-extension,test_expr L562 cron_next
+test_expr-118,next,withSeconds,* * * * * 6#-4,2010-09-03T15:12:42,2010-09-04T00:00:00,upstream,syntax-extension,test_expr L563 cron_next
+test_expr-119,next,withSeconds,* * * * * 6#-3,2010-09-03T15:12:42,2010-09-11T00:00:00,upstream,syntax-extension,test_expr L564 cron_next
+test_expr-120,next,withSeconds,* * * * * 6#-2,2010-09-03T15:12:42,2010-09-18T00:00:00,upstream,syntax-extension,test_expr L565 cron_next
+test_expr-121,next,withSeconds,* * * * * 6#1,2010-09-03T15:12:42,2010-09-04T00:00:00,upstream,,test_expr L566 cron_next
+test_expr-122,next,withSeconds,* * * * * 6#2,2010-09-03T15:12:42,2010-09-11T00:00:00,upstream,,test_expr L567 cron_next
+test_expr-123,next,withSeconds,* * * * * 6#3,2010-09-03T15:12:42,2010-09-18T00:00:00,upstream,,test_expr L568 cron_next
+test_expr-124,next,withSeconds,* * * * * 6#4,2010-09-03T15:12:42,2010-09-25T00:00:00,upstream,,test_expr L569 cron_next
+test_expr-125,next,withSeconds,* * * * * 6#5,2010-09-03T15:12:42,2010-10-30T00:00:00,upstream,,test_expr L570 cron_next
+test_expr-126,next,withSeconds,* * * * * 7#-5,2010-09-03T15:12:42,2010-10-03T00:00:00,upstream,syntax-extension,test_expr L572 cron_next
+test_expr-127,next,withSeconds,* * * * * 7#-4,2010-09-03T15:12:42,2010-09-05T00:00:00,upstream,syntax-extension,test_expr L573 cron_next
+test_expr-128,next,withSeconds,* * * * * 7#-3,2010-09-03T15:12:42,2010-09-12T00:00:00,upstream,syntax-extension,test_expr L574 cron_next
+test_expr-129,next,withSeconds,* * * * * 7#-2,2010-09-03T15:12:42,2010-09-19T00:00:00,upstream,syntax-extension,test_expr L575 cron_next
+test_expr-130,next,withSeconds,* * * * * 7#1,2010-09-03T15:12:42,2010-09-05T00:00:00,upstream,,test_expr L576 cron_next
+test_expr-131,next,withSeconds,* * * * * 7#2,2010-09-03T15:12:42,2010-09-12T00:00:00,upstream,,test_expr L577 cron_next
+test_expr-132,next,withSeconds,* * * * * 7#3,2010-09-03T15:12:42,2010-09-19T00:00:00,upstream,,test_expr L578 cron_next
+test_expr-133,next,withSeconds,* * * * * 7#4,2010-09-03T15:12:42,2010-09-26T00:00:00,upstream,,test_expr L579 cron_next
+test_expr-134,next,withSeconds,* * * * * 7#5,2010-09-03T15:12:42,2010-10-31T00:00:00,upstream,,test_expr L580 cron_next
+test_expr-135,next,withSeconds,* * * * * 1L,2010-09-30T15:12:42,2010-10-25T00:00:00,upstream,,test_expr L582 cron_next
+test_expr-136,next,withSeconds,* * * * * 2L,2010-09-30T15:12:42,2010-10-26T00:00:00,upstream,,test_expr L583 cron_next
+test_expr-137,next,withSeconds,* * * * * 3L,2010-09-30T15:12:42,2010-10-27T00:00:00,upstream,,test_expr L584 cron_next
+test_expr-138,next,withSeconds,* * * * * 4L,2010-09-30T15:12:42,2010-09-30T15:12:43,upstream,,test_expr L585 cron_next
+test_expr-139,next,withSeconds,* * * * * 5L,2010-09-30T15:12:42,2010-10-29T00:00:00,upstream,,test_expr L586 cron_next
+test_expr-140,next,withSeconds,* * * * * 6L,2010-09-30T15:12:42,2010-10-30T00:00:00,upstream,,test_expr L587 cron_next
+test_expr-141,next,withSeconds,* * * * * 7L,2010-09-30T15:12:42,2010-10-31T00:00:00,upstream,,test_expr L588 cron_next
+test_expr-142,next,withSeconds,* * * * * 1L,2010-10-27T15:12:42,2010-11-29T00:00:00,upstream,,test_expr L589 cron_next
+test_expr-143,next,withSeconds,* * * * * 2L,2010-10-27T15:12:42,2010-11-30T00:00:00,upstream,,test_expr L590 cron_next
+test_expr-144,next,withSeconds,* * * * * 3L,2010-10-27T15:12:42,2010-10-27T15:12:43,upstream,,test_expr L591 cron_next
+test_expr-145,next,withSeconds,* * * * * 4L,2010-10-27T15:12:42,2010-10-28T00:00:00,upstream,,test_expr L592 cron_next
+test_expr-146,next,withSeconds,* * * * * 5L,2010-10-27T15:12:42,2010-10-29T00:00:00,upstream,,test_expr L593 cron_next
+test_expr-147,next,withSeconds,* * * * * 6L,2010-10-27T15:12:42,2010-10-30T00:00:00,upstream,,test_expr L594 cron_next
+test_expr-148,next,withSeconds,* * * * * 7L,2010-10-27T15:12:42,2010-10-31T00:00:00,upstream,,test_expr L595 cron_next
+test_expr-149,next,withSeconds,* * * * * 1L,2010-10-30T15:12:42,2010-11-29T00:00:00,upstream,,test_expr L597 cron_next
+test_expr-150,next,withSeconds,* * * * * 2L,2010-10-30T15:12:42,2010-11-30T00:00:00,upstream,,test_expr L598 cron_next
+test_expr-151,next,withSeconds,* * * * * 3L,2010-10-30T15:12:42,2010-11-24T00:00:00,upstream,,test_expr L599 cron_next
+test_expr-152,next,withSeconds,* * * * * 4L,2010-10-30T15:12:42,2010-11-25T00:00:00,upstream,,test_expr L600 cron_next
+test_expr-153,next,withSeconds,* * * * * 5L,2010-10-30T15:12:42,2010-11-26T00:00:00,upstream,,test_expr L601 cron_next
+test_expr-154,next,withSeconds,* * * * * 6L,2010-10-30T15:12:42,2010-10-30T15:12:43,upstream,,test_expr L602 cron_next
+test_expr-155,next,withSeconds,* * * * * 7L,2010-10-30T15:12:42,2010-10-31T00:00:00,upstream,,test_expr L603 cron_next
+test_expr-156,next,withSeconds,* * * * * 1L,2010-11-27T15:12:42,2010-11-29T00:00:00,upstream,,test_expr L604 cron_next
+test_expr-157,next,withSeconds,* * * * * 2L,2010-11-27T15:12:42,2010-11-30T00:00:00,upstream,,test_expr L605 cron_next
+test_expr-158,next,withSeconds,* * * * * 3L,2010-11-27T15:12:42,2010-12-29T00:00:00,upstream,,test_expr L606 cron_next
+test_expr-159,next,withSeconds,* * * * * 4L,2010-11-27T15:12:42,2010-12-30T00:00:00,upstream,,test_expr L607 cron_next
+test_expr-160,next,withSeconds,* * * * * 5L,2010-11-27T15:12:42,2010-12-31T00:00:00,upstream,,test_expr L608 cron_next
+test_expr-161,next,withSeconds,* * * * * 6L,2010-11-27T15:12:42,2010-11-27T15:12:43,upstream,,test_expr L609 cron_next
+test_expr-162,next,withSeconds,* * * * * 7L,2010-11-27T15:12:42,2010-11-28T00:00:00,upstream,,test_expr L610 cron_next
+test_expr-163,next,withSeconds,0 0 7 W * *,2009-09-26T00:42:55,2009-09-28T07:00:00,upstream,syntax-extension,test_expr L612 cron_next
+test_expr-164,next,withSeconds,0 0 7 W * *,2009-09-28T07:00:00,2009-09-29T07:00:00,upstream,syntax-extension,test_expr L613 cron_next
+test_expr-165,next,withSeconds,* * * * * L,2010-10-25T15:12:42,2010-10-31T00:00:00,upstream,syntax-extension,test_expr L614 cron_next
+test_expr-166,next,withSeconds,* * * * * L,2010-10-20T15:12:42,2010-10-24T00:00:00,upstream,syntax-extension,test_expr L615 cron_next
+test_expr-167,next,withSeconds,* * * * * L,2010-10-27T15:12:42,2010-10-31T00:00:00,upstream,syntax-extension,test_expr L616 cron_next
+test_expr-168,next,withSeconds,* 15 11 * * *,2019-03-09T11:43:00,2019-03-10T11:15:00,upstream,,test_expr L618 cron_next
+test_expr-169,next,withSeconds,*/15 * 1-4 * * *,2012-07-01T09:53:50,2012-07-02T01:00:00,upstream,,test_expr L619 cron_next
+test_expr-170,next,withSeconds,*/15 * 1-4 * * *,2012-07-01T09:53:00,2012-07-02T01:00:00,upstream,,test_expr L620 cron_next
+test_expr-171,next,withSeconds,"0,15,30,45 * 1,2,3,4 * * *",2012-07-01T09:53:00,2012-07-02T01:00:00,upstream,,test_expr L621 cron_next
+test_expr-172,next,withSeconds,0 */2 1-4 * * *,2012-07-01T09:00:00,2012-07-02T01:00:00,upstream,,test_expr L622 cron_next
+test_expr-173,next,withSeconds,0 */2 * * * *,2012-07-01T09:00:00,2012-07-01T09:02:00,upstream,,test_expr L623 cron_next
+test_expr-174,next,withSeconds,0 */2 * * * *,2013-07-01T09:00:00,2013-07-01T09:02:00,upstream,,test_expr L624 cron_next
+test_expr-175,next,withSeconds,0 */2 * * * *,2018-09-14T14:24:00,2018-09-14T14:26:00,upstream,,test_expr L625 cron_next
+test_expr-176,next,withSeconds,0 */2 * * * *,2018-09-14T14:25:00,2018-09-14T14:26:00,upstream,,test_expr L626 cron_next
+test_expr-177,next,withSeconds,0 */20 * * * *,2018-09-14T14:24:00,2018-09-14T14:40:00,upstream,,test_expr L627 cron_next
+test_expr-178,next,withSeconds,* * * * * *,2012-07-01T09:00:00,2012-07-01T09:00:01,upstream,,test_expr L628 cron_next
+test_expr-179,next,withSeconds,* * * * * *,2012-12-01T09:00:58,2012-12-01T09:00:59,upstream,,test_expr L629 cron_next
+test_expr-180,next,withSeconds,10 * * * * *,2012-12-01T09:42:09,2012-12-01T09:42:10,upstream,,test_expr L630 cron_next
+test_expr-181,next,withSeconds,11 * * * * *,2012-12-01T09:42:10,2012-12-01T09:42:11,upstream,,test_expr L631 cron_next
+test_expr-182,next,withSeconds,10 * * * * *,2012-12-01T09:42:10,2012-12-01T09:43:10,upstream,,test_expr L632 cron_next
+test_expr-183,next,withSeconds,10-15 * * * * *,2012-12-01T09:42:09,2012-12-01T09:42:10,upstream,,test_expr L633 cron_next
+test_expr-184,next,withSeconds,10-15 * * * * *,2012-12-01T21:42:14,2012-12-01T21:42:15,upstream,,test_expr L634 cron_next
+test_expr-185,next,withSeconds,0 * * * * *,2012-12-01T21:10:42,2012-12-01T21:11:00,upstream,,test_expr L635 cron_next
+test_expr-186,next,withSeconds,0 * * * * *,2012-12-01T21:11:00,2012-12-01T21:12:00,upstream,,test_expr L636 cron_next
+test_expr-187,next,withSeconds,0 11 * * * *,2012-12-01T21:10:42,2012-12-01T21:11:00,upstream,,test_expr L637 cron_next
+test_expr-188,next,withSeconds,0 10 * * * *,2012-12-01T21:11:00,2012-12-01T22:10:00,upstream,,test_expr L638 cron_next
+test_expr-189,next,withSeconds,0 0 * * * *,2012-09-30T11:01:00,2012-09-30T12:00:00,upstream,,test_expr L639 cron_next
+test_expr-190,next,withSeconds,0 0 * * * *,2012-09-30T12:00:00,2012-09-30T13:00:00,upstream,,test_expr L640 cron_next
+test_expr-191,next,withSeconds,0 0 * * * *,2012-09-10T23:01:00,2012-09-11T00:00:00,upstream,,test_expr L641 cron_next
+test_expr-192,next,withSeconds,0 0 * * * *,2012-09-11T00:00:00,2012-09-11T01:00:00,upstream,,test_expr L642 cron_next
+test_expr-193,next,withSeconds,0 0 0 * * *,2012-09-01T14:42:43,2012-09-02T00:00:00,upstream,,test_expr L643 cron_next
+test_expr-194,next,withSeconds,0 0 0 * * *,2012-09-02T00:00:00,2012-09-03T00:00:00,upstream,,test_expr L644 cron_next
+test_expr-195,next,withSeconds,* * * 10 * *,2012-10-09T15:12:42,2012-10-10T00:00:00,upstream,,test_expr L645 cron_next
+test_expr-196,next,withSeconds,* * * 10 * *,2012-10-11T15:12:42,2012-11-10T00:00:00,upstream,,test_expr L646 cron_next
+test_expr-197,next,withSeconds,0 0 0 * * *,2012-09-30T15:12:42,2012-10-01T00:00:00,upstream,,test_expr L647 cron_next
+test_expr-198,next,withSeconds,0 0 0 * * *,2012-10-01T00:00:00,2012-10-02T00:00:00,upstream,,test_expr L648 cron_next
+test_expr-199,next,withSeconds,0 0 0 * * *,2012-08-30T15:12:42,2012-08-31T00:00:00,upstream,,test_expr L649 cron_next
+test_expr-200,next,withSeconds,0 0 0 * * *,2012-08-31T00:00:00,2012-09-01T00:00:00,upstream,,test_expr L650 cron_next
+test_expr-201,next,withSeconds,0 0 0 * * *,2012-10-30T15:12:42,2012-10-31T00:00:00,upstream,,test_expr L651 cron_next
+test_expr-202,next,withSeconds,0 0 0 * * *,2012-10-31T00:00:00,2012-11-01T00:00:00,upstream,,test_expr L652 cron_next
+test_expr-203,next,withSeconds,0 0 0 1 * *,2012-10-30T15:12:42,2012-11-01T00:00:00,upstream,,test_expr L653 cron_next
+test_expr-204,next,withSeconds,0 0 0 1 * *,2012-11-01T00:00:00,2012-12-01T00:00:00,upstream,,test_expr L654 cron_next
+test_expr-205,next,withSeconds,0 0 0 1 * *,2010-12-31T15:12:42,2011-01-01T00:00:00,upstream,,test_expr L655 cron_next
+test_expr-206,next,withSeconds,0 0 0 1 * *,2011-01-01T00:00:00,2011-02-01T00:00:00,upstream,,test_expr L656 cron_next
+test_expr-207,next,withSeconds,0 0 0 31 * *,2011-10-30T15:12:42,2011-10-31T00:00:00,upstream,,test_expr L657 cron_next
+test_expr-208,next,withSeconds,0 0 0 1 * *,2011-10-30T15:12:42,2011-11-01T00:00:00,upstream,,test_expr L658 cron_next
+test_expr-209,next,withSeconds,* * * * * 2,2010-10-25T15:12:42,2010-10-26T00:00:00,upstream,,test_expr L659 cron_next
+test_expr-210,next,withSeconds,* * * * * 2,2010-10-20T15:12:42,2010-10-26T00:00:00,upstream,,test_expr L660 cron_next
+test_expr-211,next,withSeconds,* * * * * 2,2010-10-27T15:12:42,2010-11-02T00:00:00,upstream,,test_expr L661 cron_next
+test_expr-212,next,withSeconds,55 5 * * * *,2010-10-27T15:04:54,2010-10-27T15:05:55,upstream,,test_expr L662 cron_next
+test_expr-213,next,withSeconds,55 5 * * * *,2010-10-27T15:05:55,2010-10-27T16:05:55,upstream,,test_expr L663 cron_next
+test_expr-214,next,withSeconds,55 * 10 * * *,2010-10-27T09:04:54,2010-10-27T10:00:55,upstream,,test_expr L664 cron_next
+test_expr-215,next,withSeconds,55 * 10 * * *,2010-10-27T10:00:55,2010-10-27T10:01:55,upstream,,test_expr L665 cron_next
+test_expr-216,next,withSeconds,* 5 10 * * *,2010-10-27T09:04:55,2010-10-27T10:05:00,upstream,,test_expr L666 cron_next
+test_expr-217,next,withSeconds,* 5 10 * * *,2010-10-27T10:05:00,2010-10-27T10:05:01,upstream,,test_expr L667 cron_next
+test_expr-218,next,withSeconds,55 * * 3 * *,2010-10-02T10:05:54,2010-10-03T00:00:55,upstream,,test_expr L668 cron_next
+test_expr-219,next,withSeconds,55 * * 3 * *,2010-10-03T00:00:55,2010-10-03T00:01:55,upstream,,test_expr L669 cron_next
+test_expr-220,next,withSeconds,* * * 3 11 *,2010-10-02T14:42:55,2010-11-03T00:00:00,upstream,,test_expr L670 cron_next
+test_expr-221,next,withSeconds,* * * 3 11 *,2010-11-03T00:00:00,2010-11-03T00:00:01,upstream,,test_expr L671 cron_next
+test_expr-222,next,withSeconds,0 0 0 29 2 *,2007-02-10T14:42:55,2008-02-29T00:00:00,upstream,,test_expr L672 cron_next
+test_expr-223,next,withSeconds,0 0 0 29 2 *,2008-02-29T00:00:00,2012-02-29T00:00:00,upstream,,test_expr L673 cron_next
+test_expr-224,next,withSeconds,0 0 7 ? * MON-FRI,2009-09-26T00:42:55,2009-09-28T07:00:00,upstream,,test_expr L674 cron_next
+test_expr-225,next,withSeconds,0 0 7 ? * MON-FRI,2009-09-28T07:00:00,2009-09-29T07:00:00,upstream,,test_expr L675 cron_next
+test_expr-226,next,withSeconds,0 30 23 30 1/3 ?,2010-12-30T00:00:00,2011-01-30T23:30:00,upstream,,test_expr L676 cron_next
+test_expr-227,next,withSeconds,0 30 23 30 1/3 ?,2011-01-30T23:30:00,2011-04-30T23:30:00,upstream,,test_expr L677 cron_next
+test_expr-228,next,withSeconds,0 30 23 30 1/3 ?,2011-04-30T23:30:00,2011-07-30T23:30:00,upstream,,test_expr L678 cron_next
+test_expr-229,next,withSeconds,* * * * * *,2020-12-31T23:59:59,2021-01-01T00:00:00,upstream,,test_expr L679 cron_next
+test_expr-230,next,withSeconds,0 0 * * * *,2020-02-28T23:00:00,2020-02-29T00:00:00,upstream,,test_expr L680 cron_next
+test_expr-231,next,withSeconds,0 0 0 * * *,2020-02-29T01:02:03,2020-03-01T00:00:00,upstream,,test_expr L681 cron_next
+test_expr-232,previous,withSeconds,* 15 11 * * *,2019-03-09T11:43:00,2019-03-09T11:15:59,upstream,,test_expr L683 cron_prev
+test_expr-233,previous,withSeconds,*/15 * 1-4 * * *,2012-07-01T09:53:50,2012-07-01T04:59:45,upstream,,test_expr L684 cron_prev
+test_expr-234,previous,withSeconds,*/15 * 1-4 * * *,2012-07-01T01:00:14,2012-07-01T01:00:00,upstream,,test_expr L685 cron_prev
+test_expr-235,previous,withSeconds,*/15 * 1-4 * * *,2012-07-01T01:00:00,2012-06-30T04:59:45,upstream,,test_expr L686 cron_prev
+test_expr-236,previous,withSeconds,* * * * * *,2012-07-01T09:00:00,2012-07-01T08:59:59,upstream,,test_expr L687 cron_prev
+test_expr-237,previous,withSeconds,* * * * * *,2021-01-01T00:00:00,2020-12-31T23:59:59,upstream,,test_expr L688 cron_prev
+test_expr-238,previous,withSeconds,0 0 * * * *,2020-02-29T00:00:00,2020-02-28T23:00:00,upstream,,test_expr L689 cron_prev
+test_expr-239,previous,withSeconds,0 0 0 * * *,2020-03-01T00:00:00,2020-02-29T00:00:00,upstream,,test_expr L690 cron_prev
+test_expr-240,previous,withSeconds,0 0 * * * *,2020-03-01T00:00:00,2020-02-29T23:00:00,upstream,,test_expr L691 cron_prev
+test_expr-241,next,withSeconds,0 0 0 ? 11-12 *,2022-05-31T00:00:00,2022-11-01T00:00:00,upstream,,test_expr L693 cron_next
+test_expr-242,next,withSeconds,0 0 0 ? 11-12 *,2022-07-31T00:00:00,2022-11-01T00:00:00,upstream,,test_expr L694 cron_next
+test_expr-243,next,withSeconds,0 0 0 ? 11-12 *,2022-08-31T00:00:00,2022-11-01T00:00:00,upstream,,test_expr L695 cron_next
+test_expr-244,next,withSeconds,0 0 0 ? 11-12 *,2022-10-31T00:00:00,2022-11-01T00:00:00,upstream,,test_expr L696 cron_next
+test_expr-245,next,withSeconds,0 0 0 ? 6-7 *,2022-05-31T00:00:00,2022-06-01T00:00:00,upstream,,test_expr L697 cron_next
+test_expr-246,next,withSeconds,0 0 0 ? 8-9 *,2022-07-31T00:00:00,2022-08-01T00:00:00,upstream,,test_expr L698 cron_next
+test_expr-247,next,withSeconds,0 0 0 ? 9-10 *,2022-08-31T00:00:00,2022-09-01T00:00:00,upstream,,test_expr L699 cron_next
+test_expr-248,next,withSeconds,0 0 0 ? 2-3 *,2022-01-31T00:00:00,2022-02-01T00:00:00,upstream,,test_expr L700 cron_next
+test_expr-249,next,withSeconds,0 0 0 ? 4-5 *,2022-03-31T00:00:00,2022-04-01T00:00:00,upstream,,test_expr L701 cron_next
+test_expr-250,next,withSeconds,* * * 29 2 *,2021-12-07T12:00:00,2024-02-29T00:00:00,upstream,,test_expr L703 cron_next
+test_expr-251,previous,withSeconds,* * * 29 2 *,2021-12-07T12:00:00,2020-02-29T23:59:59,upstream,,test_expr L704 cron_prev
+test_expr-252,previous,withSeconds,* * * 1 2 *,2023-11-01T00:00:00,2023-02-01T23:59:59,upstream,,test_expr L706 cron_prev
+test_expr-253,previous,withSeconds,* * * 2 2 *,2023-11-01T00:00:00,2023-02-02T23:59:59,upstream,,test_expr L707 cron_prev
+test_expr-254,previous,withSeconds,* * * 3 2 *,2023-11-01T00:00:00,2023-02-03T23:59:59,upstream,,test_expr L708 cron_prev
+test_expr-255,previous,withSeconds,* * * 4 2 *,2023-11-01T00:00:00,2023-02-04T23:59:59,upstream,,test_expr L709 cron_prev
+test_expr-256,previous,withSeconds,* * * 1 4 *,2023-10-01T00:00:00,2023-04-01T23:59:59,upstream,,test_expr L711 cron_prev
+test_expr-257,previous,withSeconds,* * * 2 4 *,2023-10-01T00:00:00,2023-04-02T23:59:59,upstream,,test_expr L712 cron_prev
+test_expr-258,previous,withSeconds,* * * 3 4 *,2023-10-01T00:00:00,2023-04-03T23:59:59,upstream,,test_expr L713 cron_prev
+test_expr-259,previous,withSeconds,* * * 4 4 *,2023-10-01T00:00:00,2023-04-04T23:59:59,upstream,,test_expr L714 cron_prev
+test_expr-260,previous,withSeconds,0 0 20 1 2 *,2022-12-30T08:10:23,2022-02-01T20:00:00,upstream,,test_expr L716 cron_prev
+test_expr-261,previous,withSeconds,0 0 20 2 2 *,2022-12-30T08:10:23,2022-02-02T20:00:00,upstream,,test_expr L717 cron_prev
+test_expr-262,previous,withSeconds,0 0 20 3 2 *,2022-12-30T08:10:23,2022-02-03T20:00:00,upstream,,test_expr L718 cron_prev
+test_expr-263,previous,withSeconds,0 0 20 1 2 *,2022-12-31T08:10:23,2022-02-01T20:00:00,upstream,,test_expr L719 cron_prev
+test_expr-264,previous,withSeconds,0 0 20 2 2 *,2022-12-31T08:10:23,2022-02-02T20:00:00,upstream,,test_expr L720 cron_prev
+test_expr-265,previous,withSeconds,0 0 20 3 2 *,2022-12-31T08:10:23,2022-02-03T20:00:00,upstream,,test_expr L721 cron_prev
+test_expr-266,previous,withSeconds,0 0 20 1 2 *,2023-01-01T08:10:23,2022-02-01T20:00:00,upstream,,test_expr L722 cron_prev
+test_expr-267,previous,withSeconds,0 0 20 2 2 *,2023-01-01T08:10:23,2022-02-02T20:00:00,upstream,,test_expr L723 cron_prev
+test_expr-268,previous,withSeconds,0 0 20 3 2 *,2023-01-01T08:10:23,2022-02-03T20:00:00,upstream,,test_expr L724 cron_prev
+test_expr-269,previous,withSeconds,0 0 17 * 2 2-4,2023-08-31T18:00:00,2023-02-28T17:00:00,upstream,,test_expr L726 cron_prev
+test_expr-270,previous,withSeconds,0 0 17 * 2 2-4,2023-09-01T18:00:00,2023-02-28T17:00:00,upstream,,test_expr L727 cron_prev
+test_expr-271,previous,withSeconds,0 0 17 * 2 2-4,2023-09-02T18:00:00,2023-02-28T17:00:00,upstream,,test_expr L728 cron_prev
+test_expr-272,previous,withSeconds,0 0 17 * 2 2-4,2023-09-03T18:00:00,2023-02-28T17:00:00,upstream,,test_expr L729 cron_prev
+test_expr-273,previous,withSeconds,0 0 17 * 2 2-4,2023-09-04T18:00:00,2023-02-28T17:00:00,upstream,,test_expr L730 cron_prev
+test_expr-274,previous,withSeconds,0 0 17 * 2 2-4,2023-09-05T18:00:00,2023-02-28T17:00:00,upstream,,test_expr L731 cron_prev
+test_expr-275,previous,withSeconds,0 0 17 * 3 1-5,2023-03-02T17:00:00,2023-03-01T17:00:00,upstream,,test_expr L733 cron_prev
+test_expr-276,previous,withSeconds,0 0 17 * 3 1-5,2023-03-02T17:00:01,2023-03-02T17:00:00,upstream,,test_expr L734 cron_prev
+test_expr-277,previous,withSeconds,0 0 17 * 3 1-5,2023-03-02T18:00:00,2023-03-02T17:00:00,upstream,,test_expr L735 cron_prev
+test_expr-278,previous,withSeconds,0 0 17 * 3 1-5,2023-03-03T18:00:00,2023-03-03T17:00:00,upstream,,test_expr L736 cron_prev
+test_expr-279,previous,withSeconds,0 0 17 * 3 1-5,2023-03-04T18:00:00,2023-03-03T17:00:00,upstream,,test_expr L737 cron_prev
+test_expr-280,previous,withSeconds,0 0 17 * 3 1-5,2023-03-05T18:00:00,2023-03-03T17:00:00,upstream,,test_expr L738 cron_prev
+test_expr-281,previous,withSeconds,0 0 17 * 3 1-5,2023-03-06T18:00:00,2023-03-06T17:00:00,upstream,,test_expr L739 cron_prev
+test_expr-282,previous,withSeconds,0 30 9 * 4 6,2024-04-05T18:00:00,2023-04-29T09:30:00,upstream,,test_expr L741 cron_prev
+test_expr-283,previous,withSeconds,0 30 9 * 4 6,2024-04-06T09:29:59,2023-04-29T09:30:00,upstream,,test_expr L742 cron_prev
+test_expr-284,previous,withSeconds,0 30 9 * 4 6,2024-04-06T09:30:00,2023-04-29T09:30:00,upstream,,test_expr L743 cron_prev
+test_expr-285,previous,withSeconds,0 30 9 * 4 6,2024-04-06T09:30:01,2024-04-06T09:30:00,upstream,,test_expr L744 cron_prev
+test_expr-286,previous,withSeconds,0 30 9 * 4 6,2024-04-06T18:00:00,2024-04-06T09:30:00,upstream,,test_expr L745 cron_prev
+test_expr-287,previous,withSeconds,0 30 9 * 4 6,2024-04-07T18:00:00,2024-04-06T09:30:00,upstream,,test_expr L746 cron_prev
+test_expr-288,previous,withSeconds,0 30 9 * 4 6,2024-04-26T18:00:00,2024-04-20T09:30:00,upstream,,test_expr L747 cron_prev
+test_expr-289,previous,withSeconds,0 30 9 * 4 6,2024-04-27T18:00:00,2024-04-27T09:30:00,upstream,,test_expr L748 cron_prev
+test_expr-290,previous,withSeconds,0 30 9 * 4 6,2024-04-28T18:00:00,2024-04-27T09:30:00,upstream,,test_expr L749 cron_prev
+test_expr-291,previous,withSeconds,0 30 9 * 4 6,2024-05-01T18:00:00,2024-04-27T09:30:00,upstream,,test_expr L750 cron_prev
+test_expr-292,previous,withSeconds,0 30 11 * * 6,2020-02-27T10:00:00,2020-02-22T11:30:00,upstream,,test_expr L752 cron_prev
+test_expr-293,previous,withSeconds,0 30 11 * * 6,2020-02-28T10:00:00,2020-02-22T11:30:00,upstream,,test_expr L753 cron_prev
+test_expr-294,previous,withSeconds,0 30 11 * * 6,2020-02-29T10:00:00,2020-02-22T11:30:00,upstream,,test_expr L754 cron_prev
+test_expr-295,previous,withSeconds,0 30 11 * * 6,2020-02-29T11:31:00,2020-02-29T11:30:00,upstream,,test_expr L755 cron_prev
+test_expr-296,previous,withSeconds,0 30 11 * * 6,2020-03-01T10:00:00,2020-02-29T11:30:00,upstream,,test_expr L756 cron_prev
+test_expr-297,previous,withSeconds,0 30 11 * * 6,2020-03-01T12:00:00,2020-02-29T11:30:00,upstream,,test_expr L757 cron_prev
+test_expr-298,previous,withSeconds,0 0 10 * * *,2020-02-29T09:59:59,2020-02-28T10:00:00,upstream,,test_expr L759 cron_prev
+test_expr-299,previous,withSeconds,0 0 10 * * *,2020-02-29T10:00:00,2020-02-28T10:00:00,upstream,,test_expr L760 cron_prev
+test_expr-300,previous,withSeconds,0 0 10 * * *,2020-02-29T10:00:01,2020-02-29T10:00:00,upstream,,test_expr L761 cron_prev
+test_expr-301,previous,withSeconds,0 0 10 * * *,2022-02-28T09:59:59,2022-02-27T10:00:00,upstream,,test_expr L762 cron_prev
+test_expr-302,previous,withSeconds,0 0 10 * * *,2022-02-28T10:00:00,2022-02-27T10:00:00,upstream,,test_expr L763 cron_prev
+test_expr-303,previous,withSeconds,0 0 10 * * *,2022-02-28T10:00:01,2022-02-28T10:00:00,upstream,,test_expr L764 cron_prev
+test_expr-304,previous,withSeconds,0 0 10 * * *,2022-12-31T09:59:59,2022-12-30T10:00:00,upstream,,test_expr L765 cron_prev
+test_expr-305,previous,withSeconds,0 0 10 * * *,2022-12-31T10:00:00,2022-12-30T10:00:00,upstream,,test_expr L766 cron_prev
+test_expr-306,previous,withSeconds,0 0 10 * * *,2022-12-31T10:00:01,2022-12-31T10:00:00,upstream,,test_expr L767 cron_prev
+test_expr-307,previous,withSeconds,0 0 10 * * *,2022-12-31T23:59:59,2022-12-31T10:00:00,upstream,,test_expr L768 cron_prev
+test_expr-308,previous,withSeconds,0 0 10 * * *,2023-01-01T00:00:00,2022-12-31T10:00:00,upstream,,test_expr L769 cron_prev
+test_expr-309,previous,withSeconds,0 0 10 * * *,2023-01-01T00:00:01,2022-12-31T10:00:00,upstream,,test_expr L770 cron_prev
+test_expr-310,previous,withSeconds,0 0 10 * * *,2023-01-01T09:59:59,2022-12-31T10:00:00,upstream,,test_expr L771 cron_prev
+test_expr-311,previous,withSeconds,0 0 10 * * *,2023-01-01T10:00:00,2022-12-31T10:00:00,upstream,,test_expr L772 cron_prev
+test_expr-312,previous,withSeconds,0 0 10 * * *,2023-01-01T10:00:01,2023-01-01T10:00:00,upstream,,test_expr L773 cron_prev
+test_expr-313,previous,withSeconds,"30 50 23 20,21,22 * *",2023-07-01T12:34:56,2023-06-22T23:50:30,upstream,,test_expr L775 cron_prev
+test_expr-314,previous,withSeconds,"30 50 23 20,21,22 * *",2023-07-19T12:34:56,2023-06-22T23:50:30,upstream,,test_expr L776 cron_prev
+test_expr-315,previous,withSeconds,"30 50 23 20,21,22 * *",2023-07-20T12:34:56,2023-06-22T23:50:30,upstream,,test_expr L777 cron_prev
+test_expr-316,previous,withSeconds,"30 50 23 20,21,22 * *",2023-07-21T12:34:56,2023-07-20T23:50:30,upstream,,test_expr L778 cron_prev
+test_expr-317,previous,withSeconds,"30 50 23 20,21,22 * *",2023-07-22T12:34:56,2023-07-21T23:50:30,upstream,,test_expr L779 cron_prev
+test_expr-318,previous,withSeconds,"30 50 23 20,21,22 * *",2023-07-23T12:34:56,2023-07-22T23:50:30,upstream,,test_expr L780 cron_prev
+test_expr-319,previous,withSeconds,"30 50 23 20,21,22 * * 2023",2024-07-23T12:34:56,2023-12-22T23:50:30,upstream,year-field,test_expr L783 cron_prev
+test_expr-320,next,withSeconds,"30 50 23 20,21,22 * * 2023",2022-07-23T12:34:56,2023-01-20T23:50:30,upstream,year-field,test_expr L784 cron_next
+test_expr-321,unreachable-previous,withSeconds,"30 50 23 20,21,22 * * 2023",2022-07-23T12:34:56,,upstream,year-field,test_expr L786 check_invalid_instant(cron_prev) expects CRON_INVALID_INSTANT
+test_expr-322,unreachable-next,withSeconds,"30 50 23 20,21,22 * * 2023",2024-07-23T12:34:56,,upstream,year-field,test_expr L787 check_invalid_instant(cron_next) expects CRON_INVALID_INSTANT
+test_parse-001,equal,withSeconds,* * * W * *,,* * * * * 1-5,upstream,syntax-extension,test_parse L792 check_same
+test_parse-002,equal,withSeconds,* * * * * L,,* * * * * 0,upstream,syntax-extension,test_parse L793 check_same
+test_parse-003,equal,withSeconds,* * * * * 6#-1,,* * * * * 6L,upstream,syntax-extension,test_parse L794 check_same
+test_parse-004,equal,withSeconds,0 0 0 * * *,,0 0 * * *,upstream,cross-layout,test_parse L795 check_same
+test_parse-005,equal,withSeconds,0 0 0 * * *,,0 0 0 * * * *,upstream,year-field,test_parse L796 check_same
+test_parse-006,equal,withSeconds,* * * * * *,,* * * * * * *,upstream,year-field,test_parse L797 check_same
+test_parse-007,equal,standard,@annually,,0 0 1 1 *,upstream,,"test_parse L799 check_same; seven-field ""0 0 0 1 1 * *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-008,equal,standard,@yearly,,0 0 1 1 *,upstream,,"test_parse L800 check_same; seven-field ""0 0 0 1 1 * *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-009,equal,standard,@monthly,,0 0 1 * *,upstream,,"test_parse L801 check_same; seven-field ""0 0 0 1 * * *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-010,equal,standard,@weekly,,0 0 * * 0,upstream,,"test_parse L802 check_same; seven-field ""0 0 0 * * 0 *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-011,equal,standard,@daily,,0 0 * * *,upstream,,"test_parse L803 check_same; seven-field ""0 0 0 * * * *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-012,equal,standard,@midnight,,0 0 * * *,upstream,,"test_parse L804 check_same; seven-field ""0 0 0 * * * *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-013,equal,standard,@hourly,,0 * * * *,upstream,,"test_parse L805 check_same; seven-field ""0 0 * * * * *"" restated in the five-field layout of Bodu's macros (seconds 0, year *)"
+test_parse-014,equal,withSeconds,@minutely,,0 * * * * * *,upstream,macro,test_parse L806 check_same
+test_parse-015,equal,withSeconds,@secondly,,* * * * * * *,upstream,macro,test_parse L807 check_same
+test_parse-016,equal,withSeconds,* * * 2 * *,,* * * 2 * ?,upstream,,test_parse L809 check_same
+test_parse-017,equal,withSeconds,* * * 2 * *,,* * * 2 * ?,upstream,,test_parse L810 check_same
+test_parse-018,equal,withSeconds,"57,59 * * * * *",,57/2 * * * * *,upstream,,test_parse L811 check_same
+test_parse-019,equal,withSeconds,"L57,59,61 * * * * *",,L57/2 * * * * *,upstream,syntax-extension,test_parse L812 check_same
+test_parse-020,equal,withSeconds,"1,3,5 * * * * *",,1-6/2 * * * * *,upstream,,test_parse L813 check_same
+test_parse-021,equal,withSeconds,"* * 4,8,12,16,20 * * *",,* * 4/4 * * *,upstream,,test_parse L814 check_same
+test_parse-022,equal,withSeconds,* * * * * 0-6,,"* * * * * TUE,WED,THU,FRI,SAT,SUN,MON",upstream,,test_parse L815 check_same
+test_parse-023,equal,withSeconds,* * * * * 0,,* * * * * SUN,upstream,,test_parse L816 check_same
+test_parse-024,equal,withSeconds,* * * * * 0,,* * * * * 7,upstream,,test_parse L817 check_same
+test_parse-025,equal,withSeconds,* * * * 1-12 *,,"* * * * FEB,JAN,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC *",upstream,,test_parse L818 check_same
+test_parse-026,equal,withSeconds,* * * * 2 *,,* * * * Feb *,upstream,,test_parse L819 check_same
+test_parse-027,equal,withSeconds,*  *  * *  1 *,,* * * * 1 *,upstream,,test_parse L820 check_same
+test_parse-028,invalid,withSeconds,Z * * * * *,,,upstream,,test_parse L822 check_expr_invalid
+test_parse-029,invalid,withSeconds,* * * * * 1#-6,,,upstream,,test_parse L823 check_expr_invalid
+test_parse-030,invalid,withSeconds,* * * * * 1#6,,,upstream,,test_parse L824 check_expr_invalid
+test_parse-031,invalid,withSeconds,77 * * * * *,,,upstream,,test_parse L826 check_expr_invalid
+test_parse-032,invalid,withSeconds,44-77 * * * * *,,,upstream,,test_parse L827 check_expr_invalid
+test_parse-033,invalid,withSeconds,* 77 * * * *,,,upstream,,test_parse L828 check_expr_invalid
+test_parse-034,invalid,withSeconds,* 44-77 * * * *,,,upstream,,test_parse L829 check_expr_invalid
+test_parse-035,invalid,withSeconds,* * 27 * * *,,,upstream,,test_parse L830 check_expr_invalid
+test_parse-036,invalid,withSeconds,* * 23-28 * * *,,,upstream,,test_parse L831 check_expr_invalid
+test_parse-037,invalid,withSeconds,* * * 45 * *,,,upstream,,test_parse L832 check_expr_invalid
+test_parse-038,invalid,withSeconds,* * * 28-45 * *,,,upstream,,test_parse L833 check_expr_invalid
+test_parse-039,invalid,withSeconds,0 0 0 25 13 ?,,,upstream,,test_parse L834 check_expr_invalid
+test_parse-040,invalid,withSeconds,0 0 0 25 0 ?,,,upstream,,test_parse L835 check_expr_invalid
+test_parse-041,invalid,withSeconds,0 0 0 32 12 ?,,,upstream,,test_parse L836 check_expr_invalid
+test_parse-042,invalid,withSeconds,* * * * 11-13 *,,,upstream,,test_parse L837 check_expr_invalid
+test_parse-043,invalid,withSeconds,-5 * * * * *,,,upstream,,test_parse L838 check_expr_invalid
+test_parse-044,invalid,withSeconds,3-2 */5 * * * *,,,upstream,,test_parse L839 check_expr_invalid
+test_parse-045,invalid,withSeconds,/5 * * * * *,,,upstream,,test_parse L840 check_expr_invalid
+test_parse-046,invalid,withSeconds,*/0 * * * * *,,,upstream,,test_parse L841 check_expr_invalid
+test_parse-047,invalid,withSeconds,*/-0 * * * * *,,,upstream,,test_parse L842 check_expr_invalid
+test_parse-048,invalid,withSeconds,* 1 1 0 * *,,,upstream,,test_parse L843 check_expr_invalid
+test_parse-049,valid,withSeconds,* * * ? * *,,,upstream,,test_parse L847 check_expr_valid
+test_parse-050,valid,withSeconds,0 * * ? * *,,,upstream,,test_parse L848 check_expr_valid
+test_parse-051,valid,withSeconds,0 */2 * ? * *,,,upstream,,test_parse L849 check_expr_valid
+test_parse-052,valid,withSeconds,0 1/2 * ? * *,,,upstream,,test_parse L850 check_expr_valid
+test_parse-053,valid,withSeconds,0 */2 * ? * *,,,upstream,,test_parse L851 check_expr_valid
+test_parse-054,valid,withSeconds,0 */3 * ? * *,,,upstream,,test_parse L852 check_expr_valid
+test_parse-055,valid,withSeconds,0 */4 * ? * *,,,upstream,,test_parse L853 check_expr_valid
+test_parse-056,valid,withSeconds,0 */5 * ? * *,,,upstream,,test_parse L854 check_expr_valid
+test_parse-057,valid,withSeconds,0 */10 * ? * *,,,upstream,,test_parse L855 check_expr_valid
+test_parse-058,valid,withSeconds,0 */15 * ? * *,,,upstream,,test_parse L856 check_expr_valid
+test_parse-059,valid,withSeconds,0 */30 * ? * *,,,upstream,,test_parse L857 check_expr_valid
+test_parse-060,valid,withSeconds,"0 15,30,45 * ? * *",,,upstream,,test_parse L858 check_expr_valid
+test_parse-061,valid,withSeconds,0 0 * ? * *,,,upstream,,test_parse L859 check_expr_valid
+test_parse-062,valid,withSeconds,0 0 */2 ? * *,,,upstream,,test_parse L860 check_expr_valid
+test_parse-063,valid,withSeconds,0 0 0/2 ? * *,,,upstream,,test_parse L861 check_expr_valid
+test_parse-064,valid,withSeconds,0 0 1/2 ? * *,,,upstream,,test_parse L862 check_expr_valid
+test_parse-065,valid,withSeconds,0 0 */3 ? * *,,,upstream,,test_parse L863 check_expr_valid
+test_parse-066,valid,withSeconds,0 0 */4 ? * *,,,upstream,,test_parse L864 check_expr_valid
+test_parse-067,valid,withSeconds,0 0 */6 ? * *,,,upstream,,test_parse L865 check_expr_valid
+test_parse-068,valid,withSeconds,0 0 */8 ? * *,,,upstream,,test_parse L866 check_expr_valid
+test_parse-069,valid,withSeconds,0 0 */12 ? * *,,,upstream,,test_parse L867 check_expr_valid
+test_parse-070,valid,withSeconds,0 0 0 * * ?,,,upstream,,test_parse L868 check_expr_valid
+test_parse-071,valid,withSeconds,0 0 1 * * ?,,,upstream,,test_parse L869 check_expr_valid
+test_parse-072,valid,withSeconds,0 0 6 * * ?,,,upstream,,test_parse L870 check_expr_valid
+test_parse-073,valid,withSeconds,0 0 12 * * ?,,,upstream,,test_parse L871 check_expr_valid
+test_parse-074,valid,withSeconds,0 0 12 * * ?,,,upstream,,test_parse L872 check_expr_valid
+test_parse-075,valid,withSeconds,0 0 12 ? * SUN,,,upstream,,test_parse L873 check_expr_valid
+test_parse-076,valid,withSeconds,0 0 12 ? * MON,,,upstream,,test_parse L874 check_expr_valid
+test_parse-077,valid,withSeconds,0 0 12 ? * TUE,,,upstream,,test_parse L875 check_expr_valid
+test_parse-078,valid,withSeconds,0 0 12 ? * WED,,,upstream,,test_parse L876 check_expr_valid
+test_parse-079,valid,withSeconds,0 0 12 ? * THU,,,upstream,,test_parse L877 check_expr_valid
+test_parse-080,valid,withSeconds,0 0 12 ? * FRI,,,upstream,,test_parse L878 check_expr_valid
+test_parse-081,valid,withSeconds,0 0 12 ? * SAT,,,upstream,,test_parse L879 check_expr_valid
+test_parse-082,valid,withSeconds,0 0 12 ? * MON-FRI,,,upstream,,test_parse L880 check_expr_valid
+test_parse-083,valid,withSeconds,"0 0 12 ? * SUN,SAT",,,upstream,,test_parse L881 check_expr_valid
+test_parse-084,valid,withSeconds,0 0 12 */7 * ?,,,upstream,,test_parse L882 check_expr_valid
+test_parse-085,valid,withSeconds,0 0 12 1 * ?,,,upstream,,test_parse L883 check_expr_valid
+test_parse-086,valid,withSeconds,0 0 12 2 * ?,,,upstream,,test_parse L884 check_expr_valid
+test_parse-087,valid,withSeconds,0 0 12 15 * ?,,,upstream,,test_parse L885 check_expr_valid
+test_parse-088,valid,withSeconds,0 0 12 1/2 * ?,,,upstream,,test_parse L886 check_expr_valid
+test_parse-089,valid,withSeconds,0 0 12 1/4 * ?,,,upstream,,test_parse L887 check_expr_valid
+test_parse-090,valid,withSeconds,0 0 12 L * ?,,,upstream,,test_parse L888 check_expr_valid
+test_parse-091,valid,withSeconds,0 0 12 L-2 * ?,,,upstream,,test_parse L889 check_expr_valid
+test_parse-092,valid,withSeconds,0 0 12 LW * ?,,,upstream,,test_parse L890 check_expr_valid
+test_parse-093,valid,withSeconds,0 0 12 ? * 1L,,,upstream,,test_parse L896 check_expr_valid
+test_parse-094,valid,withSeconds,0 0 12 ? * 2L,,,upstream,,test_parse L897 check_expr_valid
+test_parse-095,valid,withSeconds,0 0 12 ? * 6L,,,upstream,,test_parse L898 check_expr_valid
+test_parse-096,valid,withSeconds,0 0 12 1W * ?,,,upstream,,test_parse L900 check_expr_valid
+test_parse-097,valid,withSeconds,0 0 12 15W * ?,,,upstream,,test_parse L901 check_expr_valid
+test_parse-098,valid,withSeconds,0 0 12 ? * 2#1,,,upstream,,test_parse L902 check_expr_valid
+test_parse-099,valid,withSeconds,0 0 12 ? * 6#1,,,upstream,,test_parse L903 check_expr_valid
+test_parse-100,valid,withSeconds,0 0 12 ? * 2#2,,,upstream,,test_parse L904 check_expr_valid
+test_parse-101,valid,withSeconds,0 0 12 ? * 5#3,,,upstream,,test_parse L905 check_expr_valid
+test_parse-102,valid,withSeconds,0 0 12 ? JAN *,,,upstream,,test_parse L906 check_expr_valid
+test_parse-103,valid,withSeconds,0 0 12 ? JUN *,,,upstream,,test_parse L907 check_expr_valid
+test_parse-104,valid,withSeconds,"0 0 12 ? JAN,JUN *",,,upstream,,test_parse L908 check_expr_valid
+test_parse-105,valid,withSeconds,0 0 12 ? DEC *,,,upstream,,test_parse L909 check_expr_valid
+test_parse-106,valid,withSeconds,"0 0 12 ? JAN,FEB,MAR,APR *",,,upstream,,test_parse L910 check_expr_valid
+test_parse-107,valid,withSeconds,0 0 12 ? 9-12 *,,,upstream,,test_parse L911 check_expr_valid
+test_parse-108,valid,withSeconds,0 0 12 * * ?,,,upstream,,test_parse L915 check_expr_valid
+test_parse-109,valid,withSeconds,0 15 10 ? * *,,,upstream,,test_parse L916 check_expr_valid
+test_parse-110,valid,withSeconds,0 15 10 * * ?,,,upstream,,test_parse L917 check_expr_valid
+test_parse-111,valid,withSeconds,0 15 10 * * ?,,,upstream,,test_parse L918 check_expr_valid; year * dropped
+test_parse-112,valid,withSeconds,0 15 10 * * ? 2023,,,upstream,year-field,test_parse L919 check_expr_valid
+test_parse-113,valid,withSeconds,0 * 14 * * ?,,,upstream,,test_parse L920 check_expr_valid
+test_parse-114,valid,withSeconds,0 0/5 14 * * ?,,,upstream,,test_parse L921 check_expr_valid
+test_parse-115,valid,withSeconds,"0 0/5 14,18 * * ?",,,upstream,,test_parse L922 check_expr_valid
+test_parse-116,valid,withSeconds,0 0-5 14 * * ?,,,upstream,,test_parse L923 check_expr_valid
+test_parse-117,valid,withSeconds,"0 10,44 14 ? 3 WED",,,upstream,,test_parse L924 check_expr_valid
+test_parse-118,valid,withSeconds,0 15 10 ? * MON-FRI,,,upstream,,test_parse L925 check_expr_valid
+test_parse-119,valid,withSeconds,0 15 10 15 * ?,,,upstream,,test_parse L926 check_expr_valid
+test_parse-120,valid,withSeconds,0 15 10 L * ?,,,upstream,,test_parse L927 check_expr_valid
+test_parse-121,valid,withSeconds,0 15 10 ? * 6L,,,upstream,,test_parse L928 check_expr_valid
+test_parse-122,valid,withSeconds,0 15 10 ? * 6L 2022-2025,,,upstream,year-field,test_parse L929 check_expr_valid
+test_parse-123,valid,withSeconds,0 15 10 ? * 6#3,,,upstream,,test_parse L930 check_expr_valid
+test_parse-124,valid,withSeconds,0 15 10 ? * 2-6,,,upstream,,test_parse L931 check_expr_valid
+test_parse-125,valid,withSeconds,0 0/5 14-18 * * ?,,,upstream,,test_parse L932 check_expr_valid
+test_parse-126,valid,withSeconds,0 0 12 1/5 * ?,,,upstream,,test_parse L933 check_expr_valid
+test_parse-127,valid,withSeconds,0 11 11 11 11 ?,,,upstream,,test_parse L934 check_expr_valid
+test_parse-128,valid,withSeconds,0 0 12 ? * SUN,,,upstream,,test_parse L935 check_expr_valid
+test_parse-129,valid,withSeconds,0 0 12 ? * MON,,,upstream,,test_parse L936 check_expr_valid
+test_parse-130,valid,withSeconds,0 0 12 ? * TUE,,,upstream,,test_parse L937 check_expr_valid
+test_parse-131,valid,withSeconds,0 0 12 ? * WED,,,upstream,,test_parse L938 check_expr_valid
+test_parse-132,valid,withSeconds,0 0 12 ? * THU,,,upstream,,test_parse L939 check_expr_valid
+test_parse-133,valid,withSeconds,0 0 12 ? * FRI,,,upstream,,test_parse L940 check_expr_valid
+test_parse-134,valid,withSeconds,0 0 12 ? * SAT,,,upstream,,test_parse L941 check_expr_valid
+test_parse-135,valid,withSeconds,0 0/30 8-9 1 * ?,,,upstream,,test_parse L942 check_expr_valid
+test_parse-136,valid,withSeconds,0 0 0 1 1 ?,,,upstream,,test_parse L943 check_expr_valid
+test_parse-137,valid,withSeconds,0 0 0 25 12 ?,,,upstream,,test_parse L944 check_expr_valid
+test_parse-138,valid,withSeconds,"0 0 6,18 * * ?",,,upstream,,test_parse L945 check_expr_valid
+test_parse-139,valid,withSeconds,0 0 8-10 ? * 2-6,,,upstream,,test_parse L946 check_expr_valid
+test_parse-140,valid,withSeconds,0 0/15 * ? * *,,,upstream,,test_parse L947 check_expr_valid
+test_parse-141,valid,withSeconds,0 0 12 LW * ?,,,upstream,,test_parse L948 check_expr_valid
+test_parse-142,valid,withSeconds,0 0 12 1W * ?,,,upstream,,test_parse L949 check_expr_valid
+test_parse-143,valid,withSeconds,0 0 12 W * ?,,,upstream,syntax-extension,test_parse L950 check_expr_valid
+test_parse-144,valid,withSeconds,"0 0 12 ? JAN,DEC *",,,upstream,,test_parse L951 check_expr_valid
+test_parse-145,valid,withSeconds,0 0 12 ? * 1#2,,,upstream,,test_parse L952 check_expr_valid
+test_parse-146,valid,withSeconds,0 0 12 ? * 2#2,,,upstream,,test_parse L953 check_expr_valid
+test_parse-147,valid,withSeconds,0 0 12 ? * 6#1,,,upstream,,test_parse L954 check_expr_valid
+test_parse-148,valid,withSeconds,"0 0 8,20 ? * *",,,upstream,,test_parse L955 check_expr_valid
+test_parse-149,valid,withSeconds,"0 30 10-13 ? * WED,FRI",,,upstream,,test_parse L956 check_expr_valid
+test_parse-150,valid,withSeconds,0 0/10 * * * ?,,,upstream,,test_parse L957 check_expr_valid
+test_parse-151,valid,withSeconds,0 0 12 L-2 * ?,,,upstream,,test_parse L958 check_expr_valid
+test_parse-152,valid,withSeconds,0 0 12 15W * ?,,,upstream,,test_parse L959 check_expr_valid
+test_parse-153,valid,withSeconds,0 0 0 * * ?,,,upstream,,test_parse L960 check_expr_valid
+test_parse-154,valid,withSeconds,0 0 23 * * ?,,,upstream,,test_parse L961 check_expr_valid
+test_parse-155,valid,withSeconds,0 30 10 ? * 2-6,,,upstream,,test_parse L962 check_expr_valid
+test_parse-156,valid,withSeconds,0 0/10 8-17 ? * MON-FRI,,,upstream,,test_parse L963 check_expr_valid
+test_parse-157,valid,withSeconds,"0 0 12 ? * SUN,MON",,,upstream,,test_parse L965 check_expr_valid
+test_parse-158,valid,withSeconds,0 0/5 9-16 * * ?,,,upstream,,test_parse L966 check_expr_valid
+test_parse-159,valid,withSeconds,0 0 12 10-15 * ?,,,upstream,,test_parse L967 check_expr_valid
+test_parse-160,valid,withSeconds,0 0 0 1 JAN-JUN ?,,,upstream,,test_parse L968 check_expr_valid
+test_parse-161,valid,withSeconds,0 0 0 ? * 2L,,,upstream,,test_parse L969 check_expr_valid
+test_parse-162,valid,withSeconds,0 0 0 ? * 6#4,,,upstream,,test_parse L970 check_expr_valid
+test_parse-163,valid,withSeconds,0 0 12 1/2 * ?,,,upstream,,test_parse L971 check_expr_valid
+test_parse-164,valid,withSeconds,0 0 12 ? * 2/2,,,upstream,,test_parse L972 check_expr_valid
+test_parse-165,valid,withSeconds,0 0 0 29 FEB ?,,,upstream,,test_parse L973 check_expr_valid
+test_parse-166,valid,withSeconds,"0 0 12 1,15 * ?",,,upstream,,test_parse L974 check_expr_valid
+test_parse-167,valid,withSeconds,0 0 0 1 * ? 2024,,,upstream,year-field,test_parse L975 check_expr_valid
+test_parse-168,valid,withSeconds,0 30 6 ? * 1-5,,,upstream,,test_parse L976 check_expr_valid
+test_parse-169,valid,withSeconds,0 0 0/2 * * ?,,,upstream,,test_parse L977 check_expr_valid
+test_parse-170,valid,withSeconds,0 0 12/3 ? * *,,,upstream,,test_parse L978 check_expr_valid
+test_parse-171,valid,withSeconds,"0 15,45 * ? * *",,,upstream,,test_parse L979 check_expr_valid
+test_parse-172,valid,withSeconds,"0 0 0 ? * SAT,SUN",,,upstream,,test_parse L980 check_expr_valid
+test_parse-173,valid,withSeconds,"0 0 8-10,14-16 * * ?",,,upstream,,test_parse L981 check_expr_valid
+test_parse-174,valid,withSeconds,"0 0 12 ? 1-6,9-12 *",,,upstream,,test_parse L982 check_expr_valid
+test_parse-175,valid,withSeconds,0 0 12/4 * * ?,,,upstream,,test_parse L983 check_expr_valid
+test_parse-176,valid,withSeconds,0 0 9-17 * * ?,,,upstream,,test_parse L984 check_expr_valid
+test_parse-177,valid,withSeconds,0 0/20 9-16 * * ?,,,upstream,,test_parse L985 check_expr_valid
+test_parse-178,valid,withSeconds,0 0 12 ? * 2-6,,,upstream,,test_parse L986 check_expr_valid
+test_parse-179,valid,withSeconds,"0 0 8-11,13-16 * * ?",,,upstream,,test_parse L987 check_expr_valid
+test_parse-180,valid,withSeconds,0 0/30 6-18 * * ?,,,upstream,,test_parse L988 check_expr_valid
+test_parse-181,valid,withSeconds,"0 0 12 ? JAN,MAR,MAY,JUL,SEP,NOV *",,,upstream,,test_parse L989 check_expr_valid
+test_parse-182,valid,withSeconds,"0 15 9 ? * MON,TUE,WED,THU,FRI",,,upstream,,test_parse L990 check_expr_valid
+test_parse-183,valid,withSeconds,0 0/40 * ? * *,,,upstream,,test_parse L991 check_expr_valid
+test_parse-184,valid,withSeconds,0 30 10-14 ? * ?,,,upstream,,test_parse L992 check_expr_valid
+test_parse-185,valid,withSeconds,0 0 12 * JAN-DEC ?,,,upstream,,test_parse L993 check_expr_valid
+test_parse-186,valid,withSeconds,0 0 0 25 12 ?,,,upstream,,test_parse L994 check_expr_valid; year * dropped
+test_parse-187,valid,withSeconds,0 0 0/3 * * ?,,,upstream,,test_parse L995 check_expr_valid
+test_parse-188,valid,withSeconds,0 0 12 * * ? 2025,,,upstream,year-field,test_parse L996 check_expr_valid
+test_parse-189,valid,withSeconds,0 0 6 ? * 2-6,,,upstream,,test_parse L997 check_expr_valid
+test_parse-190,valid,withSeconds,0 0 18 ? * 1-5,,,upstream,,test_parse L998 check_expr_valid
+test_parse-191,valid,withSeconds,0 0 0 ? * * 2026,,,upstream,year-field,test_parse L999 check_expr_valid
+test_parse-192,valid,withSeconds,0 0/45 10-14 * * ?,,,upstream,,test_parse L1000 check_expr_valid
+test_parse-193,valid,withSeconds,0 0 12 1/3 * ?,,,upstream,,test_parse L1001 check_expr_valid
+test_parse-194,valid,withSeconds,"0 0 0 1 JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC ?",,,upstream,,test_parse L1002 check_expr_valid
+test_parse-195,valid,withSeconds,"0 0 12 10,20,30 * ?",,,upstream,,test_parse L1003 check_expr_valid
+test_parse-196,valid,withSeconds,0 0/50 8-16 * * ?,,,upstream,,test_parse L1004 check_expr_valid
+test_parse-197,invalid,withSeconds,"0 0 12 ? * 1#1,3#3,5#5",,,upstream,,test_parse L1005 check_expr_invalid
+test_parse-198,valid,withSeconds,0 0 0/4 * * ?,,,upstream,,test_parse L1006 check_expr_valid
+test_parse-199,valid,withSeconds,"0 15,30,45 * * * ?",,,upstream,,test_parse L1007 check_expr_valid
+test_parse-200,valid,withSeconds,0 0 12 ? * 2L,,,upstream,,test_parse L1008 check_expr_valid
+test_parse-201,valid,withSeconds,0 0 12 ? * 5L,,,upstream,,test_parse L1009 check_expr_valid
+test_parse-202,valid,withSeconds,0 0 0/6 * * ?,,,upstream,,test_parse L1010 check_expr_valid
+test_parse-203,valid,withSeconds,0 0 12/2 ? * *,,,upstream,,test_parse L1011 check_expr_valid
+test_parse-204,valid,withSeconds,"0 0 12 ? 1,3,5,7,9,11 *",,,upstream,,test_parse L1012 check_expr_valid
+test_parse-205,valid,withSeconds,"0 0 0 ? 2,4,6,8,10,12 *",,,upstream,,test_parse L1013 check_expr_valid
+test_parse-206,valid,withSeconds,0 0 12 * * ? 2027,,,upstream,year-field,test_parse L1014 check_expr_valid
+test_parse-207,valid,withSeconds,"0 6,9,12 0 * 4,6,8 *",,,upstream,,test_parse L1016 check_expr_valid
+test_parse-208,valid,withSeconds,"0 6,9,12,16,20,24 0 * 2,4,6,8,9,10 *",,,upstream,,test_parse L1017 check_expr_valid
+check_calc_invalid-01,unreachable-next,withSeconds,0 0 0 31 6 *,2012-07-01T09:53:50,,upstream,,check_calc_invalid L290-297; cron_next returns CRON_INVALID_INSTANT
+check_calc_invalid-02,unreachable-previous,withSeconds,0 0 0 31 6 *,2012-07-01T09:53:50,,upstream,,check_calc_invalid L290-297; cron_prev returns CRON_INVALID_INSTANT
+check_calc_invalid-03,unreachable-next,withSeconds,0 0 0 31 6 *,2009-06-20T00:59:59,,upstream,,check_calc_invalid L300-305; cron_next returns CRON_INVALID_INSTANT
+check_calc_invalid-04,unreachable-previous,withSeconds,0 0 0 31 6 *,2009-06-20T00:59:59,,upstream,,check_calc_invalid L300-305; cron_prev returns CRON_INVALID_INSTANT
+check_calc_invalid-05,unreachable-next,withSeconds,0 0 0 30 2 *,2012-07-01T09:53:50,,upstream,,check_calc_invalid L307-313; cron_next returns CRON_INVALID_INSTANT
+check_calc_invalid-06,unreachable-previous,withSeconds,0 0 0 30 2 *,2012-07-01T09:53:50,,upstream,,check_calc_invalid L307-313; cron_prev returns CRON_INVALID_INSTANT

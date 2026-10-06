@@ -23,7 +23,8 @@ public sealed partial class RecurrenceCorpusTests
     /// </remarks>
     private static readonly string[] s_cronFixLibraries =
     [
-        "croniter", "cronos", "cronsim", "ncrontab", "quartznet",
+        "ccronexpr", "croniter", "cronos", "cronsim", "gorhill", "gronx", "ncrontab", "quartznet", "robfig", "saffron",
+        "supertinycron", "zslayton",
     ];
 
     /// <summary>
@@ -39,11 +40,18 @@ public sealed partial class RecurrenceCorpusTests
     {
         (string Library, int Applies, int Dialect, int NotApplicable, int Unknown)[] recorded =
         [
+            ("ccronexpr", 9, 0, 15, 2),
             ("croniter", 85, 24, 117, 2),
             ("cronos", 66, 5, 58, 0),
             ("cronsim", 13, 0, 13, 0),
+            ("gorhill", 17, 4, 2, 0),
+            ("gronx", 40, 6, 16, 1),
             ("ncrontab", 6, 0, 4, 0),
             ("quartznet", 47, 10, 40, 3),
+            ("robfig", 7, 2, 24, 0),
+            ("saffron", 0, 2, 3, 0),
+            ("supertinycron", 20, 4, 23, 4),
+            ("zslayton", 6, 12, 8, 0),
         ];
 
         CollectionAssert.AreEqual(

@@ -1,0 +1,99 @@
+# Cron vectors derived from staticlibs/ccronexpr's ccronexpr_test.c
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: ccronexpr -- https://github.com/staticlibs/ccronexpr -- ccronexpr_test.c
+# commit: 5d7e772df34aadc938f1246ebe2551b9c1c19012
+# file-sha256: ccronexpr_test.c 59d7c406580b2bed0f3b87ba950b164f35cc882adffc84df837a7c0c7d97204b
+# licence: Apache-2.0 (Copyright 2015, alex at staticlibs.net). The rows restate the file's assertions as expressions and instants, with attribution; the upstream file itself is not committed.
+# method: extracted by extract-ccronexpr-cron-vectors.py
+# note: ccronexpr reads exactly six fields, seconds first, weekdays 0-7, and intersects the two day fields; no row restricts both day fields, so every row runs unchanged. cron_next returning -1 (no occurrence) is read as unreachable-next.
+# note: left out (counted): 1 check_next row compiled only under CRON_USE_LOCAL_TIME (L250, needs the machine's time zone), test_bits (the bit-set helper API) and test_memory (allocation counting).
+# flags: none
+name,kind,format,expression,from,expected,expectation,flags,reference
+test_expr-01,next,withSeconds,*/15 * 1-4 * * *,2012-07-01T09:53:50,2012-07-02T01:00:00,upstream,,test_expr L252
+test_expr-02,next,withSeconds,*/15 * 1-4 * * *,2012-07-01T09:53:00,2012-07-02T01:00:00,upstream,,test_expr L253
+test_expr-03,next,withSeconds,0 */2 1-4 * * *,2012-07-01T09:00:00,2012-07-02T01:00:00,upstream,,test_expr L254
+test_expr-04,next,withSeconds,0 */2 * * * *,2012-07-01T09:00:00,2012-07-01T09:02:00,upstream,,test_expr L255
+test_expr-05,next,withSeconds,0 */2 * * * *,2013-07-01T09:00:00,2013-07-01T09:02:00,upstream,,test_expr L256
+test_expr-06,next,withSeconds,0 */2 * * * *,2018-09-14T14:24:00,2018-09-14T14:26:00,upstream,,test_expr L257
+test_expr-07,next,withSeconds,0 */2 * * * *,2018-09-14T14:25:00,2018-09-14T14:26:00,upstream,,test_expr L258
+test_expr-08,next,withSeconds,0 */20 * * * *,2018-09-14T14:24:00,2018-09-14T14:40:00,upstream,,test_expr L259
+test_expr-09,next,withSeconds,* * * * * *,2012-07-01T09:00:00,2012-07-01T09:00:01,upstream,,test_expr L260
+test_expr-10,next,withSeconds,* * * * * *,2012-12-01T09:00:58,2012-12-01T09:00:59,upstream,,test_expr L261
+test_expr-11,next,withSeconds,10 * * * * *,2012-12-01T09:42:09,2012-12-01T09:42:10,upstream,,test_expr L262
+test_expr-12,next,withSeconds,11 * * * * *,2012-12-01T09:42:10,2012-12-01T09:42:11,upstream,,test_expr L263
+test_expr-13,next,withSeconds,10 * * * * *,2012-12-01T09:42:10,2012-12-01T09:43:10,upstream,,test_expr L264
+test_expr-14,next,withSeconds,10-15 * * * * *,2012-12-01T09:42:09,2012-12-01T09:42:10,upstream,,test_expr L265
+test_expr-15,next,withSeconds,10-15 * * * * *,2012-12-01T21:42:14,2012-12-01T21:42:15,upstream,,test_expr L266
+test_expr-16,next,withSeconds,0 * * * * *,2012-12-01T21:10:42,2012-12-01T21:11:00,upstream,,test_expr L267
+test_expr-17,next,withSeconds,0 * * * * *,2012-12-01T21:11:00,2012-12-01T21:12:00,upstream,,test_expr L268
+test_expr-18,next,withSeconds,0 11 * * * *,2012-12-01T21:10:42,2012-12-01T21:11:00,upstream,,test_expr L269
+test_expr-19,next,withSeconds,0 10 * * * *,2012-12-01T21:11:00,2012-12-01T22:10:00,upstream,,test_expr L270
+test_expr-20,next,withSeconds,0 0 * * * *,2012-09-30T11:01:00,2012-09-30T12:00:00,upstream,,test_expr L271
+test_expr-21,next,withSeconds,0 0 * * * *,2012-09-30T12:00:00,2012-09-30T13:00:00,upstream,,test_expr L272
+test_expr-22,next,withSeconds,0 0 * * * *,2012-09-10T23:01:00,2012-09-11T00:00:00,upstream,,test_expr L273
+test_expr-23,next,withSeconds,0 0 * * * *,2012-09-11T00:00:00,2012-09-11T01:00:00,upstream,,test_expr L274
+test_expr-24,next,withSeconds,0 0 0 * * *,2012-09-01T14:42:43,2012-09-02T00:00:00,upstream,,test_expr L275
+test_expr-25,next,withSeconds,0 0 0 * * *,2012-09-02T00:00:00,2012-09-03T00:00:00,upstream,,test_expr L276
+test_expr-26,next,withSeconds,* * * 10 * *,2012-10-09T15:12:42,2012-10-10T00:00:00,upstream,,test_expr L277
+test_expr-27,next,withSeconds,* * * 10 * *,2012-10-11T15:12:42,2012-11-10T00:00:00,upstream,,test_expr L278
+test_expr-28,next,withSeconds,0 0 0 * * *,2012-09-30T15:12:42,2012-10-01T00:00:00,upstream,,test_expr L279
+test_expr-29,next,withSeconds,0 0 0 * * *,2012-10-01T00:00:00,2012-10-02T00:00:00,upstream,,test_expr L280
+test_expr-30,next,withSeconds,0 0 0 * * *,2012-08-30T15:12:42,2012-08-31T00:00:00,upstream,,test_expr L281
+test_expr-31,next,withSeconds,0 0 0 * * *,2012-08-31T00:00:00,2012-09-01T00:00:00,upstream,,test_expr L282
+test_expr-32,next,withSeconds,0 0 0 * * *,2012-10-30T15:12:42,2012-10-31T00:00:00,upstream,,test_expr L283
+test_expr-33,next,withSeconds,0 0 0 * * *,2012-10-31T00:00:00,2012-11-01T00:00:00,upstream,,test_expr L284
+test_expr-34,next,withSeconds,0 0 0 1 * *,2012-10-30T15:12:42,2012-11-01T00:00:00,upstream,,test_expr L285
+test_expr-35,next,withSeconds,0 0 0 1 * *,2012-11-01T00:00:00,2012-12-01T00:00:00,upstream,,test_expr L286
+test_expr-36,next,withSeconds,0 0 0 1 * *,2010-12-31T15:12:42,2011-01-01T00:00:00,upstream,,test_expr L287
+test_expr-37,next,withSeconds,0 0 0 1 * *,2011-01-01T00:00:00,2011-02-01T00:00:00,upstream,,test_expr L288
+test_expr-38,next,withSeconds,0 0 0 31 * *,2011-10-30T15:12:42,2011-10-31T00:00:00,upstream,,test_expr L289
+test_expr-39,next,withSeconds,0 0 0 1 * *,2011-10-30T15:12:42,2011-11-01T00:00:00,upstream,,test_expr L290
+test_expr-40,next,withSeconds,* * * * * 2,2010-10-25T15:12:42,2010-10-26T00:00:00,upstream,,test_expr L291
+test_expr-41,next,withSeconds,* * * * * 2,2010-10-20T15:12:42,2010-10-26T00:00:00,upstream,,test_expr L292
+test_expr-42,next,withSeconds,* * * * * 2,2010-10-27T15:12:42,2010-11-02T00:00:00,upstream,,test_expr L293
+test_expr-43,next,withSeconds,55 5 * * * *,2010-10-27T15:04:54,2010-10-27T15:05:55,upstream,,test_expr L294
+test_expr-44,next,withSeconds,55 5 * * * *,2010-10-27T15:05:55,2010-10-27T16:05:55,upstream,,test_expr L295
+test_expr-45,next,withSeconds,55 * 10 * * *,2010-10-27T09:04:54,2010-10-27T10:00:55,upstream,,test_expr L296
+test_expr-46,next,withSeconds,55 * 10 * * *,2010-10-27T10:00:55,2010-10-27T10:01:55,upstream,,test_expr L297
+test_expr-47,next,withSeconds,* 5 10 * * *,2010-10-27T09:04:55,2010-10-27T10:05:00,upstream,,test_expr L298
+test_expr-48,next,withSeconds,* 5 10 * * *,2010-10-27T10:05:00,2010-10-27T10:05:01,upstream,,test_expr L299
+test_expr-49,next,withSeconds,55 * * 3 * *,2010-10-02T10:05:54,2010-10-03T00:00:55,upstream,,test_expr L300
+test_expr-50,next,withSeconds,55 * * 3 * *,2010-10-03T00:00:55,2010-10-03T00:01:55,upstream,,test_expr L301
+test_expr-51,next,withSeconds,* * * 3 11 *,2010-10-02T14:42:55,2010-11-03T00:00:00,upstream,,test_expr L302
+test_expr-52,next,withSeconds,* * * 3 11 *,2010-11-03T00:00:00,2010-11-03T00:00:01,upstream,,test_expr L303
+test_expr-53,next,withSeconds,0 0 0 29 2 *,2007-02-10T14:42:55,2008-02-29T00:00:00,upstream,,test_expr L304
+test_expr-54,next,withSeconds,0 0 0 29 2 *,2008-02-29T00:00:00,2012-02-29T00:00:00,upstream,,test_expr L305
+test_expr-55,next,withSeconds,0 0 7 ? * MON-FRI,2009-09-26T00:42:55,2009-09-28T07:00:00,upstream,,test_expr L306
+test_expr-56,next,withSeconds,0 0 7 ? * MON-FRI,2009-09-28T07:00:00,2009-09-29T07:00:00,upstream,,test_expr L307
+test_expr-57,next,withSeconds,0 30 23 30 1/3 ?,2010-12-30T00:00:00,2011-01-30T23:30:00,upstream,,test_expr L308
+test_expr-58,next,withSeconds,0 30 23 30 1/3 ?,2011-01-30T23:30:00,2011-04-30T23:30:00,upstream,,test_expr L309
+test_expr-59,next,withSeconds,0 30 23 30 1/3 ?,2011-04-30T23:30:00,2011-07-30T23:30:00,upstream,,test_expr L310
+test_parse-01,equal,withSeconds,* * * 2 * *,,* * * 2 * ?,upstream,,test_parse L316 check_same
+test_parse-02,equal,withSeconds,"57,59 * * * * *",,57/2 * * * * *,upstream,,test_parse L317 check_same
+test_parse-03,equal,withSeconds,"1,3,5 * * * * *",,1-6/2 * * * * *,upstream,,test_parse L318 check_same
+test_parse-04,equal,withSeconds,"* * 4,8,12,16,20 * * *",,* * 4/4 * * *,upstream,,test_parse L319 check_same
+test_parse-05,equal,withSeconds,* * * * * 0-6,,"* * * * * TUE,WED,THU,FRI,SAT,SUN,MON",upstream,,test_parse L320 check_same
+test_parse-06,equal,withSeconds,* * * * * 0,,* * * * * SUN,upstream,,test_parse L321 check_same
+test_parse-07,equal,withSeconds,* * * * * 0,,* * * * * 7,upstream,,test_parse L322 check_same
+test_parse-08,equal,withSeconds,* * * * 1-12 *,,"* * * * FEB,JAN,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC *",upstream,,test_parse L323 check_same
+test_parse-09,equal,withSeconds,* * * * 2 *,,* * * * Feb *,upstream,,test_parse L324 check_same
+test_parse-10,equal,withSeconds,*  *  * *  1 *,,* * * * 1 *,upstream,,test_parse L325 check_same
+test_parse-11,invalid,withSeconds,77 * * * * *,,,upstream,,test_parse L327 check_expr_invalid
+test_parse-12,invalid,withSeconds,44-77 * * * * *,,,upstream,,test_parse L328 check_expr_invalid
+test_parse-13,invalid,withSeconds,* 77 * * * *,,,upstream,,test_parse L329 check_expr_invalid
+test_parse-14,invalid,withSeconds,* 44-77 * * * *,,,upstream,,test_parse L330 check_expr_invalid
+test_parse-15,invalid,withSeconds,* * 27 * * *,,,upstream,,test_parse L331 check_expr_invalid
+test_parse-16,invalid,withSeconds,* * 23-28 * * *,,,upstream,,test_parse L332 check_expr_invalid
+test_parse-17,invalid,withSeconds,* * * 45 * *,,,upstream,,test_parse L333 check_expr_invalid
+test_parse-18,invalid,withSeconds,* * * 28-45 * *,,,upstream,,test_parse L334 check_expr_invalid
+test_parse-19,invalid,withSeconds,0 0 0 25 13 ?,,,upstream,,test_parse L335 check_expr_invalid
+test_parse-20,invalid,withSeconds,0 0 0 25 0 ?,,,upstream,,test_parse L336 check_expr_invalid
+test_parse-21,invalid,withSeconds,0 0 0 32 12 ?,,,upstream,,test_parse L337 check_expr_invalid
+test_parse-22,invalid,withSeconds,* * * * 11-13 *,,,upstream,,test_parse L338 check_expr_invalid
+test_parse-23,invalid,withSeconds,-5 * * * * *,,,upstream,,test_parse L339 check_expr_invalid
+test_parse-24,invalid,withSeconds,3-2 */5 * * * *,,,upstream,,test_parse L340 check_expr_invalid
+test_parse-25,invalid,withSeconds,/5 * * * * *,,,upstream,,test_parse L341 check_expr_invalid
+test_parse-26,invalid,withSeconds,*/0 * * * * *,,,upstream,,test_parse L342 check_expr_invalid
+test_parse-27,invalid,withSeconds,*/-0 * * * * *,,,upstream,,test_parse L343 check_expr_invalid
+test_parse-28,invalid,withSeconds,* 1 1 0 * *,,,upstream,,test_parse L344 check_expr_invalid
+check_calc_invalid-01,unreachable-next,withSeconds,0 0 0 31 6 *,2012-07-01T09:53:50,,upstream,,check_calc_invalid L233-237; cron_next returns INVALID_INSTANT (-1)

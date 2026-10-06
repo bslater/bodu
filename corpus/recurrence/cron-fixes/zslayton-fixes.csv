@@ -1,0 +1,30 @@
+# library: zslayton -- https://github.com/zslayton/cron
+# releases: GitHub releases https://github.com/zslayton/cron/releases (pages 1-2, v0.7.0 to v0.15.0, read 2026-10-06). There is no CHANGELOG, and versions 0.16.0 and 0.17 are Cargo bumps without tags or notes (git ls-remote), so the commits from v0.15.0 to cf2dc1d519246de9ad230d33de2b7cd65e30305e (compare page) are read instead.
+# note: every release-note entry that reports a fix is listed; entries that add features, refactor, optimise (#76, #148), update dependencies (#90, #100, #137) or edit documentation are not. Six fields have seconds first (zslayton's year is a seventh); a day-of-week digit would need renumbering (1 = Sunday), but no row here has one that changes the meaning.
+library,version,reference,summary,class,case,kind,format,expression,from,expected,expectation,reason
+zslayton,unreleased (after the 0.17 bump),PR #145,Fix folded time,n/a,,,,,,,,time zones: an ambiguous (folded) local time in a named zone
+zslayton,0.16.0 (untagged),PR #142,Use phf ordinal maps and fix clippy,n/a,,,,,,,,lint
+zslayton,v0.14.0,PR #132,Fix backwards iteration when initial time has nanoseconds,applies,,previous,withSeconds,"0 5,13,40-42 17 1 Jan *",2024-01-01T17:13:00.0000001,2024-01-01T17:13:00,derived,"src/schedule.rs test_next_and_prev_from asserts prev_from(next2 + 100 ns) == next2, with next2 the second occurrence after Utc::now(); taken here as 2024-01-01 17:13:00, the second after any instant late in 2023. 100 ns is one tick"
+zslayton,v0.13.0,PR #123,Run cargo fmt and fix all clippy reports,n/a,,,,,,,,lint
+zslayton,v0.13.0,PR #112,Fix backwards iteration when inital time has milliseconds,applies,,previous,withSeconds,"0 5,13,40-42 17 1 Jan *",2024-01-01T17:13:00.1,2024-01-01T17:13:00,derived,"the test as PR #112 added it, prev_from(next2 + 100 ms) == next2 (#132 later made it 100 ns); next2 taken as 2024-01-01 17:13:00 as for #132"
+zslayton,v0.13.0,PR #116,Patterns with future years should not limit the day and month range,dialect,1,invalid,withSeconds,0 5 17 1 6 ? 2022,,,derived,"Bodu has no year field (cron.md, Field syntax), and seven fields are not a Bodu layout; the fix's test is test_next_after_past_date_next_year (issue #97)"
+zslayton,v0.13.0,PR #116,Patterns with future years should not limit the day and month range,dialect,2,next,withSeconds,0 5 17 1 6 ?,2021-10-27T00:00:00,2022-06-01T17:05:00,derived,"the test's query without the year: 1 June 17:05:00, the date its comment names (the test asserts only that an answer exists)"
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,1,equal,withSeconds,1-5/61 * * * * *,,1 * * * * *,derived,"zslayton now rejects a step above the field maximum (src/parsing.rs test_reject_invalid_interval, issue #59); Bodu reads a step wider than its range as the range start (cron.md, Field syntax)"
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,2,equal,withSeconds,*/61 2 3 4 5 6,,0 2 3 4 5 6,derived,"the same test; both sides read in Bodu, so the weekday digit needs no renumbering"
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,3,equal,withSeconds,* */61 * * * *,,* 0 * * * *,derived,the same test
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,4,equal,withSeconds,* * */25 * * *,,* * 0 * * *,derived,the same test
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,5,equal,withSeconds,* * * */32 * *,,* * * 1 * *,derived,the same test
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,6,equal,withSeconds,* * * * */13 *,,* * * * 1 *,derived,the same test
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,7,equal,withSeconds,"1,2,3/60 * * * * *",,"1,2,3 * * * * *",derived,"the same test: 3/60 runs from 3 to 59 in steps of 60, so it is {3}"
+zslayton,v0.13.0,PR #122,fix: Don't accept invalid step for Period,dialect,8,invalid,withSeconds,0 0 0 1 1 ? 2020-2040/2200,,,derived,"the same test: Bodu has no year field, and seven fields are not a Bodu layout"
+zslayton,v0.13.0,PR #115,Iterate over rather than skipping ambiguous times,n/a,,,,,,,,time zones: ambiguous local times in a named zone
+zslayton,v0.12.1,PR #121,Fix time after panicking on leap day,dialect,1,invalid,withSeconds,0 0 0 * * * 2100,,,derived,"Bodu has no year field (cron.md, Field syntax), and seven fields are not a Bodu layout; the fix's test is test_no_panic_on_leap_day_time_after"
+zslayton,v0.12.1,PR #121,Fix time after panicking on leap day,dialect,2,next,withSeconds,0 0 0 * * *,2024-02-29T10:00:00+08:00,2024-03-01T00:00:00+08:00,derived,"the test's query from 29 February 2024 without the year: the next midnight, at the query's offset"
+zslayton,v0.12.0,PR #110,handle zero range step,applies,1,invalid,standard,0/0 * * * *,,,upstream,"tests/lib.rs test_invalid_step, verbatim (five fields, which zslayton rejects in any case)"
+zslayton,v0.12.0,PR #110,handle zero range step,applies,2,invalid,withSeconds,0/0 * * * * *,,,derived,"the same zero step in zslayton's six-field layout, which the fix rejects with ""range step cannot be zero"""
+zslayton,v0.10.1,PR #101,Dep updates and Clippy fixes,n/a,,,,,,,,lint and dependencies
+zslayton,v0.10.0,PR #92,Fix clippy warnings,n/a,,,,,,,,lint
+zslayton,v0.10.0,PR #93,Fix edition 2018 idioms,n/a,,,,,,,,lint
+zslayton,v0.10.0,PR #91,Reject superfluous trailing characters after keywords,applies,1,invalid,standard,@dailyBla,,,upstream,src/parsing.rs shorthand_must_match_whole_input (issue #86)
+zslayton,v0.10.0,PR #91,Reject superfluous trailing characters after keywords,applies,2,invalid,standard," @dailyBla ",,,upstream,"the same test, with spaces around it"
+zslayton,v0.7.0,,Invalid times (e.g. those inside of a daylight saving hour) are now skipped instead of causing a panic,n/a,,,,,,,,time zones: local times skipped by a DST transition

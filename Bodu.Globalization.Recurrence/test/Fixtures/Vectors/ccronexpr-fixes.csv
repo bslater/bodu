@@ -1,0 +1,30 @@
+# library: ccronexpr -- https://github.com/staticlibs/ccronexpr (archived 2023-09-10)
+# releases: the Changelog section of README.md at 5d7e772df34aadc938f1246ebe2551b9c1c19012 (2015-02-28 to 2019-03-27) and the whole commit history of master (github.com/staticlibs/ccronexpr/commits/master, 3 pages, read 2026-10-06) for the fixes it does not name. A changelog entry carries its date; any other fix its commit date. Four dates also have tags (git ls-remote): v20180302 (57c874c), v20180523 (182ce09), v20190327 (4a365c5) and v20190415 (85bbf61).
+# note: a fix is a changelog entry or commit that corrects behaviour, a test, the build or portability; features (platform support, reverse search), cleanups and documentation are not listed. exander77/supertinycron forks this history: these entries are catalogued here only.
+library,version,reference,summary,class,case,kind,format,expression,from,expected,expectation,reason
+ccronexpr,2020-05-11,cbbce0b (PR #30),fix read uint records (08 and 09 were read as octal),applies,1,equal,withSeconds,0 08 09 * * *,,0 8 9 * * *,derived,"PR #30: strtol with base 0 read a leading-zero number as octal, so 08 and 09 failed; base 10 reads them as decimal, as Bodu does"
+ccronexpr,2020-05-11,cbbce0b (PR #30),fix read uint records (08 and 09 were read as octal),applies,2,equal,withSeconds,0 010 * * * *,,0 10 * * * *,derived,"the same change: in base 0, 010 was octal 8"
+ccronexpr,2019-04-15,6e4c054 (PR #23),Initialize passed cron_expr to zero,n/a,,,,,,,,API: cron_parse_expr kept bits left in a reused cron_expr; Bodu's expressions are immutable values
+ccronexpr,2019-03-27,PR #20,CRON_USE_LOCAL_TIME usage fixes,n/a,,,,,,,,"time zones: DST offsets under CRON_USE_LOCAL_TIME (12a3a4a, PR #20) and the tests' local-time handling (PR #21 397cada, America/Toronto; PR #22 4109761 zeroes the time structure)"
+ccronexpr,2019-02-04,6a40351 (PR #19),Fix issue #5,unknown,,,,,,,,"https://github.com/staticlibs/ccronexpr/pull/19: issue #5 asks that * * * 30 2 * and * * * 31 4 * be rejected, but the maintainer noted they still parse after the PR; the diff reworks the month and day-of-week error reporting and names no other input"
+ccronexpr,2018-09-17,PR #17,"strptime: use strptime for non-MSVC, ifndef for win32 and win64, four_dec_num for tm_year",n/a,,,,,,,,test harness portability: the date parser of the tests
+ccronexpr,2018-07-23,6c86932 (PR #14),free the string when snprintf failed,n/a,,,,,,,,memory: a leak on an error path
+ccronexpr,2018-06-29,9778683 (PR #12),Changes to conform to POSIX calls defined in ctype.h,n/a,,,,,,,,portability: ctype.h calls
+ccronexpr,2018-05-23,PR #8,merged #8: find_prev method and a find_prev bug fix,unknown,,,,,,,,"https://github.com/staticlibs/ccronexpr/pull/8 adds reverse search and ""fix some bug"" without saying which; the fix, 2fc48d6, passes max - 1 to prev_set_bit in find_prev, and neither names an input nor adds a test"
+ccronexpr,2018-05-23,PR #9,merged #9: single-line comments changed to block comments,n/a,,,,,,,,language: C89 comment syntax
+ccronexpr,2018-05-23,bbce97b,minor cleanups: internal header fix,n/a,,,,,,,,"build: the internal header was folded into the source and dropped (bbce97b, 182ce09)"
+ccronexpr,2018-02-28,57c874c (#7),fix #7: remove a warning,n/a,,,,,,,,build warning: localtime_r is declared only under CRON_USE_LOCAL_TIME
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,1,invalid,withSeconds,-5 * * * * *,,,upstream,"test_parse L339, added by the PR: get_range: fix segfault if range start/end omitted. The PR also stops split_str freeing garbage and fixes the CRON_USE_LOCAL_TIME build, which have no expression"
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,2,invalid,withSeconds,3-2 */5 * * * *,,,upstream,test_parse L340: get_range: fix overflow if range start exceeds end
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,3,invalid,withSeconds,/5 * * * * *,,,upstream,test_parse L341: set_number_hits: fix segfault in increments
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,4,invalid,withSeconds,*/0 * * * * *,,,upstream,test_parse L342: set_number_hits: fix hang if incrementer is 0
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,5,invalid,withSeconds,*/-0 * * * * *,,,upstream,"test_parse L343, added by the PR"
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,6,invalid,withSeconds,* * * * 11-13 *,,,upstream,"test_parse L338, added by the PR"
+ccronexpr,2018-01-27,PR #6,merged #6: crash and hang fixes found with AFL,applies,7,invalid,withSeconds,* 1 1 0 * *,,,upstream,test_parse L344: set_days_of_month: fix hang if day is 0
+ccronexpr,2017-12-22,51fe873,warning fix,n/a,,,,,,,,compiler warning
+ccronexpr,2017-09-24,PR #4,"merged #4: MINGW32 gmtime inconsistencies, bit fields",n/a,,,,,,,,platform and memory layout: gmtime under MINGW32 (5628398) and bit fields (67ec82f)
+ccronexpr,2017-09-24,dfe0ec8,"minor renaming, gmtime_s fix",n/a,,,,,,,,platform: gmtime_s on Windows
+ccronexpr,2017-09-24,e88a3cc,warnings fix,n/a,,,,,,,,compiler warnings
+ccronexpr,2016-06-17,65ade0f,use thread-safe versions of gmtime and localtime,n/a,,,,,,,,thread safety
+ccronexpr,2016-06-17,450fa84,windows fix,n/a,,,,,,,,platform: the Windows build
+ccronexpr,2016-06-17,9a3a899,"expose time-conversion functions, fix c++ linking",n/a,,,,,,,,language: C++ linkage
