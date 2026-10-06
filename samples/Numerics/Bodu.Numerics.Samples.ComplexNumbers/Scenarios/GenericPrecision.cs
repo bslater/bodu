@@ -62,7 +62,9 @@ public static class GenericPrecision
         // Two different notions of "same", and the difference is deliberate: Equals is reflexive so a NaN can be
         // used as a dictionary key and found again, while == follows IEEE 754, where NaN equals nothing.
         var nan = Complex<double>.NaN;
+#pragma warning disable CS1718 // Comparison made to same variable: comparing NaN with itself is the point here.
         Console.WriteLine($"  Complex<double>.NaN     : IsNaN={Complex<double>.IsNaN(nan)}, Equals(itself)={nan.Equals(nan)}, ==(itself)={nan == nan}   (Equals is reflexive so NaN works as a key; == follows IEEE 754, where NaN equals nothing - the same split double itself has)");
+#pragma warning restore CS1718
         Console.WriteLine($"  Complex<double>.Infinity: IsInfinity={Complex<double>.IsInfinity(Complex<double>.Infinity)}, IsFinite={Complex<double>.IsFinite(Complex<double>.Infinity)}");
         Console.WriteLine($"  Zero / One / i          : {Complex<double>.Zero.Real}+{Complex<double>.Zero.Imaginary}i / {Complex<double>.One.Real}+{Complex<double>.One.Imaginary}i / {Complex<double>.ImaginaryOne.Real}+{Complex<double>.ImaginaryOne.Imaginary}i");
         Console.WriteLine();
