@@ -653,9 +653,7 @@ public sealed partial class RecurrenceRule
     {
         DateOnly weekStart = StartOfWeek(anchor);
         var result = new List<DateOnly>();
-        DayOfWeek[] weekdays = _byDay.Length > 0
-            ? Array.ConvertAll(_byDay, entry => entry.Day)
-            : [startDate.DayOfWeek];
+        DayOfWeekSet weekdays = _byDay.Length > 0 ? _byDayWeekdays : DayOfWeekSet.Empty.With(startDate.DayOfWeek);
 
         // The final week of the representable calendar is truncated, so the offset loop must stop at the last
         // representable day rather than stepping past it.
@@ -663,7 +661,7 @@ public sealed partial class RecurrenceRule
         for (int offset = 0; offset <= lastOffset; offset++)
         {
             DateOnly day = weekStart.AddDays(offset);
-            if (Array.IndexOf(weekdays, day.DayOfWeek) >= 0 && MonthAllowed(day.Month))
+            if (weekdays.Contains(day.DayOfWeek) && MonthAllowed(day.Month))
             {
                 result.Add(day);
             }
@@ -863,7 +861,7 @@ public sealed partial class RecurrenceRule
     /// <param name="month">The month to test.</param>
     /// <returns><see langword="true" /> when the month is allowed; otherwise <see langword="false" />.</returns>
     private bool MonthAllowed(int month) =>
-        _byMonth.Length == 0 || Array.IndexOf(_byMonth, month) >= 0;
+        _allowedMonths.Contains(month);
 
     /// <summary>
     /// Determines whether the date satisfies the <c>BYMONTHDAY</c> limit.
@@ -872,13 +870,14 @@ public sealed partial class RecurrenceRule
     /// <returns><see langword="true" /> when the day is allowed; otherwise <see langword="false" />.</returns>
     private bool MonthDayAllowed(DateOnly date)
     {
-        if (_byMonthDay.Length == 0)
+        if (_byMonthDay.Length == 0 || _monthDaysFromStart.Contains(date.Day))
         {
             return true;
         }
 
-        int fromEnd = date.Day - (DateTime.DaysInMonth(date.Year, date.Month) + 1);
-        return Array.IndexOf(_byMonthDay, date.Day) >= 0 || Array.IndexOf(_byMonthDay, fromEnd) >= 0;
+        // Day n counted from the end of the month is the day the value -n names, so the last day is 1.
+        return _monthDaysFromEnd != DayOfMonthSet.Empty
+            && _monthDaysFromEnd.Contains(DateTime.DaysInMonth(date.Year, date.Month) + 1 - date.Day);
     }
 
     /// <summary>
@@ -921,14 +920,21 @@ public sealed partial class RecurrenceRule
             return true;
         }
 
+        DayOfWeek day = date.DayOfWeek;
+        if (!_byDayWeekdays.Contains(day))
+        {
+            return false;
+        }
+
+        if (!honorOrdinal || _byDayEveryOccurrence.Contains(day))
+        {
+            return true;
+        }
+
+        // Only entries with an ordinal remain to decide the day.
         foreach (WeekDayNum entry in _byDay)
         {
-            if (entry.Day != date.DayOfWeek)
-            {
-                continue;
-            }
-
-            if (!honorOrdinal || entry.IsEveryOccurrence || OrdinalMatches(date, entry.Ordinal))
+            if (entry.Day == day && !entry.IsEveryOccurrence && OrdinalMatches(date, entry.Ordinal))
             {
                 return true;
             }

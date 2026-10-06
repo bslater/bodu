@@ -65,6 +65,21 @@ public sealed partial class RecurrenceRule : IEquatable<RecurrenceRule>
     /// <summary>The set positions selected by the <c>BYSETPOS</c> rule part.</summary>
     private readonly int[] _bySetPos;
 
+    /// <summary>The months the <c>BYMONTH</c> rule part allows: every month when it is absent.</summary>
+    private readonly MonthSet _allowedMonths;
+
+    /// <summary>The days the <c>BYMONTHDAY</c> rule part names counted from the start of the month.</summary>
+    private readonly DayOfMonthSet _monthDaysFromStart;
+
+    /// <summary>The days the <c>BYMONTHDAY</c> rule part names counted from the end of the month: day n stands for the value -n, so 1 is the last day.</summary>
+    private readonly DayOfMonthSet _monthDaysFromEnd;
+
+    /// <summary>The days of the week the <c>BYDAY</c> rule part names, with or without an ordinal.</summary>
+    private readonly DayOfWeekSet _byDayWeekdays;
+
+    /// <summary>The days of the week the <c>BYDAY</c> rule part names without an ordinal, so every occurrence of the day satisfies it.</summary>
+    private readonly DayOfWeekSet _byDayEveryOccurrence;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RecurrenceRule" /> class from validated component values.
     /// </summary>
@@ -126,6 +141,30 @@ public sealed partial class RecurrenceRule : IEquatable<RecurrenceRule>
         _byWeekNo = byWeekNo.IsEmpty ? s_empty : byWeekNo.ToArray();
         _byMonth = byMonth.IsEmpty ? s_empty : byMonth.ToArray();
         _bySetPos = bySetPos.IsEmpty ? s_empty : bySetPos.ToArray();
+
+        // The occurrence searches test months, month days and weekdays on every candidate day, so the rule parts that
+        // limit them are also held as sets, each test a bit test rather than a search of the array.
+        _allowedMonths = _byMonth.Length == 0 ? MonthSet.All : new MonthSet(_byMonth);
+        foreach (int monthDay in _byMonthDay)
+        {
+            if (monthDay > 0)
+            {
+                _monthDaysFromStart = _monthDaysFromStart.With(monthDay);
+            }
+            else
+            {
+                _monthDaysFromEnd = _monthDaysFromEnd.With(-monthDay);
+            }
+        }
+
+        foreach (WeekDayNum entry in _byDay)
+        {
+            _byDayWeekdays = _byDayWeekdays.With(entry.Day);
+            if (entry.IsEveryOccurrence)
+            {
+                _byDayEveryOccurrence = _byDayEveryOccurrence.With(entry.Day);
+            }
+        }
     }
 
     /// <summary>
