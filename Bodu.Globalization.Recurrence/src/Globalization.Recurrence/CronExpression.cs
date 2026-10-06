@@ -161,7 +161,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
-            if (!_months.Contains(candidate.Month))
+            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -173,19 +173,19 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
                 continue;
             }
 
-            if (!_hours.Contains(candidate.Hour))
+            if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
                 candidate = StartOfHour(candidate).AddHours(1);
                 continue;
             }
 
-            if (!_minutes.Contains(candidate.Minute))
+            if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
                 candidate = StartOfMinute(candidate).AddMinutes(1);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
+            if (Format == CronFormat.WithSeconds && !Selects(_seconds.ToUInt64(), candidate.Second))
             {
                 candidate = candidate.AddSeconds(1);
                 continue;
@@ -217,39 +217,40 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         }
 
         DateTime candidate = Floor(before);
+        TimeSpan unit = Unit;
         if (!inclusive && candidate == before)
         {
-            candidate = candidate.Subtract(Unit);
+            candidate = candidate.Subtract(unit);
         }
 
         int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
-            if (!_months.Contains(candidate.Month))
+            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
             {
-                candidate = StartOfMonth(candidate).Subtract(Unit);
+                candidate = StartOfMonth(candidate).Subtract(unit);
                 continue;
             }
 
             if (!DayMatches(candidate))
             {
-                candidate = StartOfDay(candidate).Subtract(Unit);
+                candidate = StartOfDay(candidate).Subtract(unit);
                 continue;
             }
 
-            if (!_hours.Contains(candidate.Hour))
+            if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
-                candidate = StartOfHour(candidate).Subtract(Unit);
+                candidate = StartOfHour(candidate).Subtract(unit);
                 continue;
             }
 
-            if (!_minutes.Contains(candidate.Minute))
+            if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
-                candidate = StartOfMinute(candidate).Subtract(Unit);
+                candidate = StartOfMinute(candidate).Subtract(unit);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
+            if (Format == CronFormat.WithSeconds && !Selects(_seconds.ToUInt64(), candidate.Second))
             {
                 candidate = candidate.AddSeconds(-1);
                 continue;
@@ -388,27 +389,47 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _domRestricted && _dowRestricted;
 
     /// <summary>
+    /// Determines whether a calendar value set's bitmap selects the value at an offset in the set's domain.
+    /// </summary>
+    /// <param name="bitmap">
+    /// The set's bitmap, from its <c>ToUInt64</c> method: bit n stands for the domain's least value plus n.
+    /// </param>
+    /// <param name="offset">The value's offset from the least value of the set's domain.</param>
+    /// <returns>
+    /// <see langword="true" /> when the bitmap selects the value; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The searches test the fields of every candidate instant, and a candidate's month, day, weekday, hour, minute and
+    /// second always lie in their sets' domains. Testing the bitmaps directly drops the range check that a set's
+    /// <c>Contains</c> makes for an arbitrary value; with it, the searches for an expression without a token ran up to
+    /// 6% slower than they had over the boolean masks the sets replaced.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool Selects(ulong bitmap, int offset) =>
+        ((bitmap >> offset) & 1) != 0;
+
+    /// <summary>
     /// Determines whether the day component of <paramref name="candidate" /> matches the day-of-month and day-of-week
     /// field sets under the Vixie combination rule.
     /// </summary>
     /// <param name="candidate">The instant to test.</param>
     /// <returns><see langword="true" /> when the day matches; otherwise <see langword="false" />.</returns>
     /// <remarks>
-    /// Both search loops test the day on every step. The two set tests make this method too large for the JIT to inline
-    /// on its own, and left as a call it cost an expression without a token up to a tenth of its query time.
+    /// Both search loops test the day on every step, so the method is kept inlined into them: left as a call, it cost
+    /// an expression without a token up to a tenth of its query time. It reads the two bitmaps for the reason
+    /// <see cref="Selects" /> gives, and combines their bits without branching on either.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool DayMatches(DateTime candidate)
     {
-        bool domMatch = _daysOfMonth.Contains(candidate.Day);
-        bool dowMatch = _daysOfWeek.Contains(candidate.DayOfWeek);
+        // Bit n of each bitmap stands for its domain's least value plus n, so bit 0 is the 1st of the month or Sunday.
+        ulong domMatch = _daysOfMonth.ToUInt64() >> (candidate.Day - 1);
+        ulong dowMatch = _daysOfWeek.ToUInt64() >> (int)candidate.DayOfWeek;
 
         // Both field sets always apply; the restriction flags select only how they combine. Vixie takes the union
         // when neither day field begins with '*', and the intersection otherwise - so a stepped star such as "*/2"
         // still narrows the days it matches even though it does not make the field "restricted".
-        return DaysCombineByUnion
-            ? domMatch || dowMatch
-            : domMatch && dowMatch;
+        return ((DaysCombineByUnion ? domMatch | dowMatch : domMatch & dowMatch) & 1) != 0;
     }
 
     /// <summary>
@@ -424,10 +445,10 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     {
         bool domMatch = _dayOfMonthToken is { } dayOfMonthToken
             ? dayOfMonthToken.Matches(candidate)
-            : _daysOfMonth.Contains(candidate.Day);
+            : Selects(_daysOfMonth.ToUInt64(), candidate.Day - 1);
         bool dowMatch = _dayOfWeekToken is { } dayOfWeekToken
             ? dayOfWeekToken.Matches(candidate)
-            : _daysOfWeek.Contains(candidate.DayOfWeek);
+            : Selects(_daysOfWeek.ToUInt64(), (int)candidate.DayOfWeek);
 
         return DaysCombineByUnion
             ? domMatch || dowMatch
@@ -461,7 +482,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
-            if (!_months.Contains(candidate.Month))
+            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -473,19 +494,19 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
                 continue;
             }
 
-            if (!_hours.Contains(candidate.Hour))
+            if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
                 candidate = StartOfHour(candidate).AddHours(1);
                 continue;
             }
 
-            if (!_minutes.Contains(candidate.Minute))
+            if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
                 candidate = StartOfMinute(candidate).AddMinutes(1);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
+            if (Format == CronFormat.WithSeconds && !Selects(_seconds.ToUInt64(), candidate.Second))
             {
                 candidate = candidate.AddSeconds(1);
                 continue;
@@ -513,39 +534,40 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     private DateTime? FindPreviousWithTokens(DateTime before, bool inclusive)
     {
         DateTime candidate = Floor(before);
+        TimeSpan unit = Unit;
         if (!inclusive && candidate == before)
         {
-            candidate = candidate.Subtract(Unit);
+            candidate = candidate.Subtract(unit);
         }
 
         int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
-            if (!_months.Contains(candidate.Month))
+            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
             {
-                candidate = StartOfMonth(candidate).Subtract(Unit);
+                candidate = StartOfMonth(candidate).Subtract(unit);
                 continue;
             }
 
             if (!TokenDayMatches(candidate))
             {
-                candidate = StartOfDay(candidate).Subtract(Unit);
+                candidate = StartOfDay(candidate).Subtract(unit);
                 continue;
             }
 
-            if (!_hours.Contains(candidate.Hour))
+            if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
-                candidate = StartOfHour(candidate).Subtract(Unit);
+                candidate = StartOfHour(candidate).Subtract(unit);
                 continue;
             }
 
-            if (!_minutes.Contains(candidate.Minute))
+            if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
-                candidate = StartOfMinute(candidate).Subtract(Unit);
+                candidate = StartOfMinute(candidate).Subtract(unit);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
+            if (Format == CronFormat.WithSeconds && !Selects(_seconds.ToUInt64(), candidate.Second))
             {
                 candidate = candidate.AddSeconds(-1);
                 continue;
