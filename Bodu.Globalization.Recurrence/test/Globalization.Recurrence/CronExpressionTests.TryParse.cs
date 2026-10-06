@@ -86,4 +86,16 @@ public partial class CronExpressionTests
         Assert.IsNotNull(result);
         Assert.IsNull(failureMessage);
     }
+
+    /// <summary>
+    /// Verifies that an expression with the wrong field count fails to parse.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenWrongFieldCount_ShouldReturnFalse()
+    {
+        bool parsed = CronExpression.TryParse("0 0 * *", out CronExpression? result);
+
+        Assert.IsFalse(parsed);
+        Assert.IsNull(result);
+    }
 }

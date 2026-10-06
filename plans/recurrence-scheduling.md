@@ -1,13 +1,14 @@
 # Implementation plan: the shared recurrence and scheduling requirements
 
-**Status:** Implemented: every capability in §4's Phases 0-10 is in the codebase, and the
-package is in the release manifest (first shipped in the 0.6.0 wave). Four phases landed for
+**Status:** Implemented: every capability in §4's Phases 0-11 is in the codebase, and the
+package is in the release manifest (first shipped in the 0.6.0 wave). Five phases landed for
 1.3.0: Phase 7, the steady-state speed-up, begins the point queries and windows of
 `RecurrenceRule` and `RecurrenceSet` at the frequency period that holds the query instead of at
 the series start; Phase 8, beyond the requirements, enumerates the sub-daily frequencies;
-Phase 9, also beyond them, accepts the Quartz day tokens in cron; and Phase 10 moves cron's
+Phase 9, also beyond them, accepts the Quartz day tokens in cron; Phase 10 moves cron's
 fields, an RRULE's day and month limits, and the rule builder onto Bodu.Core's calendar value
-sets (outcomes in §4) · **Source:** FallbackPlan requirements document
+sets; and Phase 11 holds cron to 21 other cron libraries' tests and fix histories, and fixes
+the two defects they found (outcomes in §4) · **Source:** FallbackPlan requirements document
 (`REC-F-*` / `REC-N-*`, dated 2026-08-05) · **Target:** `Bodu.Globalization.Recurrence`
 
 This plan maps the FallbackPlan requirements statement onto the Bodu
@@ -842,6 +843,121 @@ equality and every answer are unchanged.
   The harness is scratch, not committed: a console program that loads each
   build's two assemblies from a directory, with the gate's queries as
   delegates bound by reflection.
+
+### Phase 11 - cron held to other libraries' tests and fix histories *(done, for 1.3.0; beyond the requirements)*
+
+Cron was reconciled against one library's tests: the 1,074 in-scope rows
+derived from Cronos's `CronExpressionFacts`, and croniter's day-field
+sequences asserted verbatim. This phase restates the test suites of twenty
+more cron libraries, and the reverse-search tests Cronos added later, in
+Bodu's dialect, and catalogues every fix in the release notes of all 21
+with its scenario where one could be found.
+
+**Outcome.**
+
+- **The tables.** 21 tables in `corpus/recurrence/<source>/`, 5,353 rows,
+  4,585 of them run: ccronexpr, cron-parser, cron-utils, croner, croniter,
+  Cronos (reverse), cronsim, dragonmantank/cron-expression, fugit,
+  gorhill/cronexpr, gronx, jobrunr, NCrontab, node-cron, Quartz,
+  Quartz.NET, robfig/cron, saffron, Spring, supertinycron and
+  zslayton/cron. Twelve are written by a committed extractor, which checks
+  the upstream file's SHA-256 before parsing it; nine were transcribed by
+  hand, each row naming the test and line it restates. No upstream file is
+  committed; jobrunr, which is LGPL-3.0-or-later, contributes derived rows
+  only, as libical does.
+- **One schema.** `name,kind,format,expression,from,expected,expectation,
+  flags,reference`, with thirteen kinds: next and previous (exclusive or
+  inclusive, through `DateTime` or, for an instant with an offset,
+  `DateTimeOffset`), runs of each, unreachable in each direction, invalid,
+  valid, equal, not equal and canonical text. A row is restated (seconds
+  moved first, a weekday renumbered, a year dropped) only when the restated
+  row means what the original asserted; otherwise it is flagged, and the
+  test run reports it by flag. 768 rows are flagged, under 25 flags.
+- **Expected values.** 4,995 rows keep the library's own answer, 85 hold
+  cronsim's where the library's reading differs from Bodu's (over the two
+  day fields, say), and 273 were worked out by hand. cronsim 2.7
+  is Debian-compatible, with Bodu's day-field rule, so it is an oracle
+  independent of both: the committed checker recomputes the 2,625 rows it
+  can read, and all 2,625 agree. The other 825 use syntax it does not read
+  (`?`, `W`, `L-n`, the macros) or would leave its calendar.
+- **The fix catalogue.** `corpus/recurrence/cron-fixes/<library>-fixes.csv`
+  records 1,383 fixes in 2,032 rows: 946 `applies` rows, which carry the
+  fix's scenario and run; 192 `dialect` rows, which run asserting Bodu's
+  documented behaviour where the fix chose otherwise; 876 `n/a` rows
+  (packaging, API, time zones, performance, language) and 18 `unknown`
+  rows, each with its reason. A scenario is the regression test the fix
+  added, read from its pull request or commit, where there is one.
+- **The tests.** `RecurrenceCorpusTests.CronLibraries` runs one
+  `[DynamicData]` method per kind over every table and catalogue, each row
+  its own named case, in the Regression tier, and holds each table's row
+  and in-scope counts; `RecurrenceCorpusTests.CronFixes` holds each
+  catalogue's count in each class and fails on a `dialect`, `n/a` or
+  `unknown` row without a reason. Each copy under `test/Fixtures/Vectors/`
+  is held byte-identical to its source.
+- **Two defects**, each filed, reproduced by a failing commit and then
+  fixed:
+  - **#798, the ends of the calendar.** A search that would step past
+    9999-12-31 or before 0001-01-01 threw `ArgumentOutOfRangeException`
+    from `DateTime` arithmetic, though the documentation promised `null`.
+    Cronos 0.10.0 and NCrontab 3.3.1 had each fixed the same thing, and
+    saffron's tests assert it. The Gregorian calendar repeats every 400 years (146,097
+    days, a whole number of weeks), so a search from a year after
+    `LastYearSearchedInPlace` (or before `FirstYearSearchedInPlace`) runs
+    from the instant moved by whole cycles (`EndOfCalendarShiftYears`,
+    800 years) and moves its answer back, answering `null` when that would
+    leave the calendar. The helpers are `NoInlining`, so the searches in
+    place do not carry them. The `DateTimeOffset` overloads answer `null`
+    for an occurrence whose UTC instant falls outside `DateTime`'s range.
+  - **#799, the twelve-year search.** The search gave up after twelve
+    years, which answered `null` for satisfiable expressions: the 29th of
+    February on a chosen weekday recurs at gaps of up to forty years
+    (jobrunr expects `0 0 0 29 2 */5` from 2019 to give 2032-02-29, and
+    cronsim `0 0 * 2 MON#5` from 2020 to give 2044-02-29). The search now
+    covers 400 years, one whole cycle, so an expression without a match in
+    it never matches and `null` means "never". So that a never-matching
+    expression does not pay for 400 years of days, a search passes over a
+    month too short for every selected day of the month when the day fields
+    intersect and hold no token (`_searchedMonths`).
+- **No other defect.** Every other difference is a dialect difference,
+  restated or flagged, and the README's tables record them: the day-field
+  rule (always intersecting, or a field restricted unless it is exactly
+  `*`), weekday numbering (Sunday as 1, or 0-6), years and seconds,
+  reversed ranges (wrapped, or renumbered from 7), Quartz tokens in lists,
+  and library-only syntax.
+- **Docs.** The cron guide states `a/n` (to the field's maximum, which is
+  7, Sunday, for the day of the week) and the rejection of reversed ranges,
+  `MON-SUN` included, both pinned by catalogue rows; the 400-year search
+  replaces "The search horizon".
+
+- **Speed.** The paired harness timed master (B2 merged) against this
+  phase's head, with master again as an identical-binary control, three
+  passes on .NET 8 and .NET 10, with tiered compilation off and on. Each
+  cell gives the lowest and highest ratio among the group's queries, each
+  query's ratio the median of its three passes:
+
+  | Queries | .NET 8, tiering off | .NET 10, tiering off | .NET 8, tiering on | .NET 10, tiering on |
+  |---|---|---|---|---|
+  | Cron without a token (12) | 0.93-1.02 | 0.98-1.01 | 0.98-1.01 | 0.96-1.01 |
+  | Cron with a token (12) | 0.94-1.01 | 0.99-1.01 | 0.99-1.01 | 0.99-1.01 |
+  | Sub-daily rules and sets (23) | 0.94-1.01 | 0.94-1.01 | 0.99-1.09 | 0.99-1.09 |
+  | Date-valued rules (21) | 0.96-0.99 | 0.98-1.02 | 0.96-1.07 | 0.97-1.03 |
+
+  The controls stayed within 0.06 and 0.075 of 1 with tiering off, and
+  within 0.10 with it on. The rows over 1.05 are all with tiering on, in
+  RRULE and sub-daily code this phase does not change, and their controls
+  moved as much; with tiering off every one is within 1.02.
+
+  A search for an expression that never matches now scans the whole
+  cycle. Master answered it after twelve years, in 10 to 52 µs; the
+  month skip keeps the 400 years under a millisecond:
+
+  | Expression | Next | Previous |
+  |---|---|---|
+  | `0 0 30 2 *` | 183-224 µs | 96-120 µs |
+  | `0 0 31 4,6,9,11 *` | 183-222 µs | 96-118 µs |
+  | `0 0 30W 2 *` (a token, which the skip does not cover) | 506-618 µs | 429-526 µs |
+
+  Without the skip, the first two had cost 0.5 to 1.8 ms.
 
 ## 5. Traceability
 

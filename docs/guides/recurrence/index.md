@@ -78,7 +78,7 @@ Occurrence enumeration over a window is lazy and terminates for every input, inc
 
 - A `RecurrenceRule` such as `FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=30` (30 February) enumerates empty and answers `null` from both point queries; the search bound is the end of the representable calendar (year 9999).
 - A `RecurrenceRule` point query or window begins at the frequency period that holds the instant it is given, not at the series start, so its cost does not grow with the age of the series; a `RecurrenceSet` does the same for each of its rules. Only a rule with `COUNT` is enumerated from its start, because the occurrences before a period decide how many it may still produce.
-- A `CronExpression` search scans a twelve-year horizon in each direction - enough to cover the largest gap of any satisfiable expression (a 29 February schedule crossing a non-leap century year) - and answers `null` past it.
+- A `CronExpression` search scans 400 years in each direction, one whole cycle of the Gregorian calendar, so an expression without a match in it never matches; `null` means "never".
 - An `AnchoredInterval` needs no scanning at all: its queries are O(1) arithmetic, and the sequence ends at the last representable occurrence.
 
 ## Conformance
@@ -93,7 +93,7 @@ Occurrence semantics are pinned against the defining documents - RFC 5545 §3.3.
 - **The day-of-month and day-of-week cron fields combine by union only when both are restricted**, and Vixie decides "restricted" from the field's leading character - so `*/2` and `1-31/2` denote the same days but select different branches.
 - **A cron step wider than its range selects the range start**, rather than being rejected: `*/60` in the minute field means minute 0. cronie only warns about it, and some libraries throw.
 
-Those semantics are reconciled row by row against four committed corpora - the RFC's own worked examples, libical's occurrence counts, the occurrences python-dateutil produces for 200 generated sub-daily rules, and a cron vector table derived from Cronos's test suite - currently 1,353 in-scope rows with zero differences. Where a corpus row exercises a dialect this library does not model (`EXRULE`, or a Cronos departure from Vixie such as intersecting the two restricted cron day fields), the row is flagged and reported by the test run rather than silently skipped. `corpus/recurrence/README.md` records the provenance of each table and every deliberate divergence.
+Those semantics are reconciled row by row against committed corpora - the RFC's own worked examples, libical's occurrence counts, the occurrences python-dateutil produces for 200 generated sub-daily rules, cron vector tables derived from the test suites of Cronos and twenty other cron libraries, and the scenarios of the fixes in those libraries' release notes - currently 7,076 in-scope rows with zero differences. Where a corpus row exercises a dialect this library does not model (`EXRULE`, or a Cronos departure from Vixie such as intersecting the two restricted cron day fields), the row is flagged and reported by the test run rather than silently skipped. `corpus/recurrence/README.md` records the provenance of each table and every deliberate divergence.
 
 ## Parse defects are named
 
@@ -119,7 +119,7 @@ The message names the offending token - "The duration component '4X' is not vali
 
 <div class="bodu-card">
   <h3><a href="cron.md">Cron expressions</a></h3>
-  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the twelve-year search horizon, and <code>DateTimeOffset</code> handling.</p>
+  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the 400-year search, and <code>DateTimeOffset</code> handling.</p>
 </div>
 
 <div class="bodu-card">

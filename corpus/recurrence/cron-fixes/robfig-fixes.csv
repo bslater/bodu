@@ -1,0 +1,37 @@
+# library: robfig -- https://github.com/robfig/cron
+# releases: no GitHub releases and no CHANGELOG. Read the README's "Upgrading to v3" Fixed bugs list at bc59245fe10efaed9d51b56900192527ed733435 and the whole commit history of master (github.com/robfig/cron/commits/master, 5 pages, read 2026-10-06). Each fix carries the first tag whose history holds it (git ls-remote: v1.0.0 b024fc5, v1.1.0 = v1.2.0 b41be1d, v3.0.0-rc1 0f01e6b, v3.0.0 45fbe14, v3.0.1 ccba498; v1.2.0's history read from its commits pages); fixes after v3.0.1 are unreleased.
+# note: a fix is one of the README list's five entries or a commit that corrects behaviour, a test or the build. Commits that only add features, refactor, or edit documentation, comments or examples (for example 6a8421b, 208b4f7, e7da914, 64a083c, fa682d1, b024fc5, d4118d6) are not fixes and are not listed. Commits from the old v2 branch reached master with v3 (1e507e2); a35e5c4 there repeats 0f9f052.
+library,version,reference,summary,class,case,kind,format,expression,from,expected,expectation,reason
+robfig,unreleased,bc59245,Gracefully quit jobWrapper SkipIfStillRunning,n/a,,,,,,,,scheduler: the SkipIfStillRunning job wrapper (chain.go); no schedule is involved
+robfig,v3.0.1,ccba498,chain/SkipIfStillRunning: fix bug handling different jobs,n/a,,,,,,,,scheduler: job wrapper state shared between jobs; no schedule is involved
+robfig,v3.0.0,9aa5b7e,Fix data races accessing the running state variable,n/a,,,,,,,,scheduler concurrency
+robfig,v3.0.0,0275a3e,Fix bug in tests leading to flakiness,n/a,,,,,,,,test code of the scheduler
+robfig,v3.0.0,1cba5e6 (#206),Removing a job causes the next scheduled job to run too late,n/a,,,,,,,,scheduler: the run loop timer after Remove (README Fixed bugs)
+robfig,v3.0.0,70971dc (#97),cron.Entries(): update request for snapshot to include a reply channel,n/a,,,,,,,,scheduler API: the Entries() snapshot (README Fixed bugs)
+robfig,v3.0.0,f63d6e8,Fix data races in the test code,n/a,,,,,,,,test code
+robfig,v3.0.0-rc1,0f01e6b (#70),parser: fix combining of Dow and Dom (a restricted star such as */10 now combines by union),dialect,1,next,standard,* * */10 * Sun,2012-07-14T23:59:59,2012-10-21T00:00:00,cronsim,"Bodu reads a day field that starts with * as unrestricted (cron.md, Field syntax), so */10 and Sun intersect. Since #70 robfig unions them and asserts that Sun 2012-07-15 matches (TestActivation L50, verifies #70); Bodu's next is the first Sunday on day 1, 11, 21 or 31"
+robfig,v3.0.0-rc1,0f01e6b (#70),parser: fix combining of Dow and Dom (a restricted star such as */10 now combines by union),dialect,2,next,withSeconds,"0 0 0 */5 Apr,Aug,Oct Mon",2012-07-09T23:35:00,2012-08-06T00:00:00,cronsim,"the same rule: the fix changed this TestNext row (L100) from Mon Aug 6 to Tue Aug 1; Bodu keeps the intersection, Monday 2012-08-06 (day 6)"
+robfig,v3.0.0-rc1,605d513,spec_test.go: fix tests when run in UTC as local time zone,n/a,,,,,,,,test code: depends on the machine's local time zone
+robfig,v3.0.0-rc1,dbf3220 (#157),Adjust times when rolling the clock forward to handle non-existent midnight,n/a,,,,,,,,time zones: a midnight skipped by a DST transition in a named zone (America/Sao_Paulo); Bodu resolves no zones
+robfig,v3.0.0-rc1,eeecf15 (#144),Ensure an error is returned on 0 increment,applies,,invalid,standard,15/0 * * * *,,,upstream,"TestSlash0NoHang: TZ=America/New_York 15/0 * * * * hung; the TZ= prefix, which Bodu does not have, dropped"
+robfig,v3.0.0-rc1,46e5be3,parser: reject descriptors if not configured to accept them,n/a,,,,,,,,API: ParseOption flags decide whether a parser accepts descriptors; Bodu has no such option (it accepts its seven macros in the standard format only)
+robfig,v1.1.0,316e2a2 (PR #103),Did not reset timer on snapshot requests,n/a,,,,,,,,scheduler: run loop timer
+robfig,v1.1.0,f9402aa (PR #103),Modified condition to select jobs to run in current loop,n/a,,,,,,,,scheduler: run loop
+robfig,v1.1.0,092df97 (PR #88),Add check for empty spec,applies,1,invalid,withSeconds,,,,upstream,"TestParseScheduleErrors L127 (secondParser): the empty spec fails with ""empty spec string"""
+robfig,v1.1.0,092df97 (PR #88),Add check for empty spec,applies,2,invalid,standard,,,,derived,the same empty spec in the five-field layout
+robfig,v1.1.0,64eb71a,Fix: Cron.run() was resetting the timezone,n/a,,,,,,,,scheduler: the run loop's location
+robfig,v1.1.0,fcc395c (#33),Refactor parsing to return error instead of using panic/recover,n/a,,,,,,,,API: errors instead of panics; Bodu reports a parse failure through TryParse or FormatException
+robfig,v1.1.0,17583de,Fixed remaining time.Now().Local(),n/a,,,,,,,,scheduler: the local time zone of the run loop
+robfig,v1.1.0,afe0337,Step of range should be a positive number,applies,,invalid,standard,*/0 * * * *,,,upstream,"TestRange L43: */0 fails with ""should be a positive number"" (placed in the minute field)"
+robfig,v1.1.0,2d574b7,Fix larger amount of entries after host sleep,n/a,,,,,,,,scheduler: entries run after the host sleeps
+robfig,v1.1.0,6f30f62 (PR #54),"Check if it is running when calling start(), avoid multiple run() goroutine",n/a,,,,,,,,scheduler
+robfig,v1.1.0,2e45103 (#34),New tasks should be scheduled based on the current time,n/a,,,,,,,,scheduler: entries added while it runs (test 1e80ac5)
+robfig,v1.1.0,a0d328c,Fix problems with times in timezone offsets which are not multiples of an hour,applies,1,next,withSeconds,0 14 14 * * *,2016-01-03T13:09:03+05:30,2016-01-03T14:14:00+05:30,upstream,"TestNextWithTz, added by the fix (Truncate(time.Hour) rounded to the half hour in a +05:30 offset); a fixed offset, read through the DateTimeOffset overload"
+robfig,v1.1.0,a0d328c,Fix problems with times in timezone offsets which are not multiples of an hour,applies,2,next,withSeconds,0 14 14 * * ?,2016-01-03T04:09:03+05:30,2016-01-03T14:14:00+05:30,upstream,"the same test, the ? form"
+robfig,v1.1.0,9ae1873 (#35),Return on Stop if cron is not running,n/a,,,,,,,,scheduler
+robfig,v1.1.0,0f9f052,SpecSchedule.Next: use time.Truncate instead of time.Date,n/a,,,,,,,,time zones: an infinite loop when the clock falls back for DST; its tests use New York instants either side of the 2012 transitions (-05:00 and -04:00). Its v2-branch copy a35e5c4 reached master with v3
+robfig,v1.0.0,f2c3314,Return an error rather than panicking on invalid cron specs,n/a,,,,,,,,API: errors instead of panics; Bodu reports a parse failure through TryParse or FormatException
+robfig,v1.0.0,eab026b (PR #3),Fixed bug when calling Entries(),n/a,,,,,,,,scheduler API
+robfig,v1.0.0,96833bd (PR #2),Fix daylight savings time test for non-EST/EDT zones,n/a,,,,,,,,test code: depends on the machine's time zone
+robfig,v1.0.0,f6244e2,"Operate in Local timezone, sort zero times to the end (and ignore them)",n/a,,,,,,,,scheduler: the run loop time zone and entry ordering
+robfig,v1.0.0,5d2c261,Truncate schedule times to the second,applies,,next,withSeconds,* * * * * *,2012-07-20T10:00:00.5,2012-07-20T10:00:01,derived,"the commit adds no test: Next now adds one second less the nanoseconds, so every answer is a whole second; from 10:00:00.5 that is 10:00:01 (the commit's date)"

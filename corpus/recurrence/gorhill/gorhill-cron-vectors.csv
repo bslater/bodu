@@ -1,0 +1,81 @@
+# Cron vectors derived from gorhill/cronexpr's cronexpr_test.go
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: gorhill/cronexpr -- https://github.com/gorhill/cronexpr -- cronexpr_test.go
+# commit: 88b0669f7d75f171bd612b874e52b95c190218df
+# file-sha256: cronexpr_test.go a46814c746cb731eff8c1e7a1b6c7c5bd2ad9dadb00125f9c3ae5eff853772d4
+# licence: GPL-3.0-only OR Apache-2.0, taken under Apache-2.0 (Copyright 2013 Raymond Hill). The rows restate the file's assertions as expressions and instants, with attribution; the upstream file itself is not committed.
+# method: extracted by extract-gorhill-cron-vectors.py
+# note: gorhill reads five fields (minute first), six (the five plus a year) or seven (seconds, the five, a year); rows whose year is * are mapped to Bodu's five- and six-field layouts, others are flagged. It reads any day field other than a bare * or ? as restricted (so */2 unions), rejects a step above the field maximum, and accepts full names (friday, written FRI here).
+# note: left out (counted): 1 TestZero assertion that Next of Go's zero time returns the zero time (the library's sentinel API, L231-234); benchmarkExpressions are benchmark inputs, not assertions.
+# flags: year-field = the row depends on gorhill's year field (its six-field form is five fields plus a year)
+# flags: oversized-step = a step wider than its range, which gorhill rejects (issue #16) and Bodu reads as the range start
+name,kind,format,expression,from,expected,expectation,flags,reference
+TestExpressions-01,next,withSeconds,* * * * * *,2013-01-01T00:00:00,2013-01-01T00:00:01,upstream,,"crontests L41; seven fields with year *, year dropped"
+TestExpressions-02,next,withSeconds,* * * * * *,2013-01-01T00:00:59,2013-01-01T00:01:00,upstream,,"crontests L42; seven fields with year *, year dropped"
+TestExpressions-03,next,withSeconds,* * * * * *,2013-01-01T00:59:59,2013-01-01T01:00:00,upstream,,"crontests L43; seven fields with year *, year dropped"
+TestExpressions-04,next,withSeconds,* * * * * *,2013-01-01T23:59:59,2013-01-02T00:00:00,upstream,,"crontests L44; seven fields with year *, year dropped"
+TestExpressions-05,next,withSeconds,* * * * * *,2013-02-28T23:59:59,2013-03-01T00:00:00,upstream,,"crontests L45; seven fields with year *, year dropped"
+TestExpressions-06,next,withSeconds,* * * * * *,2016-02-28T23:59:59,2016-02-29T00:00:00,upstream,,"crontests L46; seven fields with year *, year dropped"
+TestExpressions-07,next,withSeconds,* * * * * *,2012-12-31T23:59:59,2013-01-01T00:00:00,upstream,,"crontests L47; seven fields with year *, year dropped"
+TestExpressions-08,next,withSeconds,*/5 * * * * *,2013-01-01T00:00:00,2013-01-01T00:00:05,upstream,,"crontests L56; seven fields with year *, year dropped"
+TestExpressions-09,next,withSeconds,*/5 * * * * *,2013-01-01T00:00:59,2013-01-01T00:01:00,upstream,,"crontests L57; seven fields with year *, year dropped"
+TestExpressions-10,next,withSeconds,*/5 * * * * *,2013-01-01T00:59:59,2013-01-01T01:00:00,upstream,,"crontests L58; seven fields with year *, year dropped"
+TestExpressions-11,next,withSeconds,*/5 * * * * *,2013-01-01T23:59:59,2013-01-02T00:00:00,upstream,,"crontests L59; seven fields with year *, year dropped"
+TestExpressions-12,next,withSeconds,*/5 * * * * *,2013-02-28T23:59:59,2013-03-01T00:00:00,upstream,,"crontests L60; seven fields with year *, year dropped"
+TestExpressions-13,next,withSeconds,*/5 * * * * *,2016-02-28T23:59:59,2016-02-29T00:00:00,upstream,,"crontests L61; seven fields with year *, year dropped"
+TestExpressions-14,next,withSeconds,*/5 * * * * *,2012-12-31T23:59:59,2013-01-01T00:00:00,upstream,,"crontests L62; seven fields with year *, year dropped"
+TestExpressions-15,next,standard,* * * * *,2013-01-01T00:00:00,2013-01-01T00:01:00,upstream,,crontests L71
+TestExpressions-16,next,standard,* * * * *,2013-01-01T00:00:59,2013-01-01T00:01:00,upstream,,crontests L72
+TestExpressions-17,next,standard,* * * * *,2013-01-01T00:59:00,2013-01-01T01:00:00,upstream,,crontests L73
+TestExpressions-18,next,standard,* * * * *,2013-01-01T23:59:00,2013-01-02T00:00:00,upstream,,crontests L74
+TestExpressions-19,next,standard,* * * * *,2013-02-28T23:59:00,2013-03-01T00:00:00,upstream,,crontests L75
+TestExpressions-20,next,standard,* * * * *,2016-02-28T23:59:00,2016-02-29T00:00:00,upstream,,crontests L76
+TestExpressions-21,next,standard,* * * * *,2012-12-31T23:59:00,2013-01-01T00:00:00,upstream,,crontests L77
+TestExpressions-22,next,standard,17-43/5 * * * *,2013-01-01T00:00:00,2013-01-01T00:17:00,upstream,,crontests L86
+TestExpressions-23,next,standard,17-43/5 * * * *,2013-01-01T00:16:59,2013-01-01T00:17:00,upstream,,crontests L87
+TestExpressions-24,next,standard,17-43/5 * * * *,2013-01-01T00:30:00,2013-01-01T00:32:00,upstream,,crontests L88
+TestExpressions-25,next,standard,17-43/5 * * * *,2013-01-01T00:50:00,2013-01-01T01:17:00,upstream,,crontests L89
+TestExpressions-26,next,standard,17-43/5 * * * *,2013-01-01T23:50:00,2013-01-02T00:17:00,upstream,,crontests L90
+TestExpressions-27,next,standard,17-43/5 * * * *,2013-02-28T23:50:00,2013-03-01T00:17:00,upstream,,crontests L91
+TestExpressions-28,next,standard,17-43/5 * * * *,2016-02-28T23:50:00,2016-02-29T00:17:00,upstream,,crontests L92
+TestExpressions-29,next,standard,17-43/5 * * * *,2012-12-31T23:50:00,2013-01-01T00:17:00,upstream,,crontests L93
+TestExpressions-30,next,standard,"15-30/4,55 * * * *",2013-01-01T00:00:00,2013-01-01T00:15:00,upstream,,crontests L102
+TestExpressions-31,next,standard,"15-30/4,55 * * * *",2013-01-01T00:16:00,2013-01-01T00:19:00,upstream,,crontests L103
+TestExpressions-32,next,standard,"15-30/4,55 * * * *",2013-01-01T00:30:00,2013-01-01T00:55:00,upstream,,crontests L104
+TestExpressions-33,next,standard,"15-30/4,55 * * * *",2013-01-01T00:55:00,2013-01-01T01:15:00,upstream,,crontests L105
+TestExpressions-34,next,standard,"15-30/4,55 * * * *",2013-01-01T23:55:00,2013-01-02T00:15:00,upstream,,crontests L106
+TestExpressions-35,next,standard,"15-30/4,55 * * * *",2013-02-28T23:55:00,2013-03-01T00:15:00,upstream,,crontests L107
+TestExpressions-36,next,standard,"15-30/4,55 * * * *",2016-02-28T23:55:00,2016-02-29T00:15:00,upstream,,crontests L108
+TestExpressions-37,next,standard,"15-30/4,55 * * * *",2012-12-31T23:54:00,2012-12-31T23:55:00,upstream,,crontests L109
+TestExpressions-38,next,standard,"15-30/4,55 * * * *",2012-12-31T23:55:00,2013-01-01T00:15:00,upstream,,crontests L110
+TestExpressions-39,next,standard,0 0 * * MON,2013-01-01T00:00:00,2013-01-07T00:00:00,upstream,,crontests L119
+TestExpressions-40,next,standard,0 0 * * MON,2013-01-28T00:00:00,2013-02-04T00:00:00,upstream,,crontests L120
+TestExpressions-41,next,standard,0 0 * * MON,2013-12-30T00:30:00,2014-01-06T00:00:00,upstream,,crontests L121
+TestExpressions-42,next,standard,0 0 * * FRI,2013-01-01T00:00:00,2013-01-04T00:00:00,upstream,,crontests L128; full name friday written FRI
+TestExpressions-43,next,standard,0 0 * * FRI,2013-01-28T00:00:00,2013-02-01T00:00:00,upstream,,crontests L129; full name friday written FRI
+TestExpressions-44,next,standard,0 0 * * FRI,2013-12-30T00:30:00,2014-01-03T00:00:00,upstream,,crontests L130; full name friday written FRI
+TestExpressions-45,next,standard,"0 0 * * 6,7",2013-01-01T00:00:00,2013-01-05T00:00:00,upstream,,crontests L137
+TestExpressions-46,next,standard,"0 0 * * 6,7",2013-01-28T00:00:00,2013-02-02T00:00:00,upstream,,crontests L138
+TestExpressions-47,next,standard,"0 0 * * 6,7",2013-12-30T00:30:00,2014-01-04T00:00:00,upstream,,crontests L139
+TestExpressions-48,next,standard,0 0 * * 6#5,2013-09-02T00:00:00,2013-11-30T00:00:00,upstream,,crontests L148
+TestExpressions-49,next,standard,0 0 14W * *,2013-03-31T00:00:00,2013-04-15T00:00:00,upstream,,crontests L157
+TestExpressions-50,next,standard,0 0 14W * *,2013-08-31T00:00:00,2013-09-13T00:00:00,upstream,,crontests L158
+TestExpressions-51,next,standard,0 0 30W * *,2013-03-02T00:00:00,2013-03-29T00:00:00,upstream,,crontests L167
+TestExpressions-52,next,standard,0 0 30W * *,2013-06-02T00:00:00,2013-06-28T00:00:00,upstream,,crontests L168
+TestExpressions-53,next,standard,0 0 30W * *,2013-09-02T00:00:00,2013-09-30T00:00:00,upstream,,crontests L169
+TestExpressions-54,next,standard,0 0 30W * *,2013-11-02T00:00:00,2013-11-29T00:00:00,upstream,,crontests L170
+TestExpressions-55,next,standard,0 0 L * *,2013-09-02T00:00:00,2013-09-30T00:00:00,upstream,,crontests L179
+TestExpressions-56,next,standard,0 0 L * *,2014-01-01T00:00:00,2014-01-31T00:00:00,upstream,,crontests L180
+TestExpressions-57,next,standard,0 0 L * *,2014-02-01T00:00:00,2014-02-28T00:00:00,upstream,,crontests L181
+TestExpressions-58,next,standard,0 0 L * *,2016-02-15T00:00:00,2016-02-29T00:00:00,upstream,,crontests L182
+TestExpressions-59,next,standard,0 0 LW * *,2013-09-02T00:00:00,2013-09-30T00:00:00,upstream,,crontests L191
+TestExpressions-60,next,standard,0 0 LW * *,2013-11-02T00:00:00,2013-11-29T00:00:00,upstream,,crontests L192
+TestExpressions-61,next,standard,0 0 LW * *,2014-08-15T00:00:00,2014-08-29T00:00:00,upstream,,crontests L193
+TestZero-01,unreachable-next,standard,* * * * * 1980,2013-08-31T00:00:00,,upstream,year-field,"TestZero L220-224; six fields are five plus the year 1980, already past"
+TestZero-02,next,standard,* * * * * 2050,2013-08-31T00:00:00,2050-01-01T00:00:00,derived,year-field,TestZero L226-229 asserts only a non-zero answer; gorhill's first minute of the year 2050
+TestNextN-01,next-sequence,standard,0 0 * * 6#5,2013-09-02T08:44:30,2013-11-30T00:00:00|2014-03-29T00:00:00|2014-05-31T00:00:00|2014-08-30T00:00:00|2014-11-29T00:00:00,upstream,,"TestNextN L239-258; NextN(from, 5)"
+TestNextN_every5min-01,next-sequence,standard,*/5 * * * *,2013-09-02T08:44:32,2013-09-02T08:45:00|2013-09-02T08:50:00|2013-09-02T08:55:00|2013-09-02T09:00:00|2013-09-02T09:05:00,upstream,,"TestNextN_every5min L262-281; NextN(from, 5)"
+TestInterval_Interval60Issue-01,invalid,standard,*/60 * * * *,,,upstream,oversized-step,"TestInterval_Interval60Issue L287; six-field ""*/60 * * * * *"" is five fields plus year *, year dropped"
+TestInterval_Interval60Issue-02,invalid,standard,*/61 * * * *,,,upstream,oversized-step,"TestInterval_Interval60Issue L292; six-field ""*/61 * * * * *"", year * dropped"
+TestInterval_Interval60Issue-03,invalid,standard,2/60 * * * *,,,upstream,oversized-step,"TestInterval_Interval60Issue L297; six-field ""2/60 * * * * *"", year * dropped"
+TestInterval_Interval60Issue-04,invalid,standard,2-20/61 * * * *,,,upstream,oversized-step,"TestInterval_Interval60Issue L302; six-field ""2-20/61 * * * * *"", year * dropped"

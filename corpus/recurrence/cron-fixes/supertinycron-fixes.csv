@@ -1,0 +1,55 @@
+# library: supertinycron -- https://github.com/exander77/supertinycron
+# releases: the Changelog section of README.md at cd1a408cfbcd539a7696d2985ee1cc9b81b5207e (its 2022 and 2023 entries; the earlier ones are staticlibs/ccronexpr's and are in ccronexpr-fixes.csv) and the commit history of master from the fork onwards (github.com/exander77/supertinycron/commits/master, pages 1-6, read 2026-10-06). The GitHub releases v2.0.0 (30b9e37, 2023-12-29) and v2.1.0 (61b73a5, 2025-10-09) say only "Republishing" and "Closing version for now"; as the brief asks, each fix carries its commit date (the changelog's year for its entries).
+# note: a fix is a changelog entry or commit that reports one (fix, fixes, minor fixes, fixing) or corrects behaviour; features, cleanups and the commits that only correct documentation, comments or typos (d2cd8d9, 6d51a9e, 61edf56, 916c7b7, 0dca156) are not listed. supertinycron.c is the daemon; ccronexpr.c is the library.
+library,version,reference,summary,class,case,kind,format,expression,from,expected,expectation,reason
+supertinycron,2026-03-04,cd1a408,"fix: off by one error, overflow possibility, simplify stdout/stdin passing",n/a,,,,,,,,daemon (supertinycron.c): the command-line buffer length and sleeps longer than UINT_MAX seconds; the library is unchanged
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,1,next,withSeconds,"4,36 * 10 * * *",2012-07-01T00:00:05,2012-07-01T10:00:04,upstream,"test_expr L420 cron_next, added by the fix (the RF macro now always records the reset); its three DST rows need a named zone and are left out"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,2,previous,withSeconds,"4,36 * 10 * * *",2012-07-01T00:00:05,2012-06-30T10:59:36,upstream,"test_expr L421 cron_prev, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,3,next,withSeconds,"4,36 * 10 2 * *",2012-07-01T10:00:05,2012-07-02T10:00:04,upstream,"test_expr L422 cron_next, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,4,previous,withSeconds,"4,36 * 10 2 * *",2012-07-01T10:00:05,2012-06-02T10:59:36,upstream,"test_expr L423 cron_prev, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,5,next,withSeconds,"0 36,58 10 * * *",2012-07-01T00:50:05,2012-07-01T10:36:00,upstream,"test_expr L426 cron_next, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,6,previous,withSeconds,"0 36,58 10 * * *",2012-07-01T00:50:05,2012-06-30T10:58:00,upstream,"test_expr L427 cron_prev, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,7,next,withSeconds,"4,36 58 10 2 * *",2012-07-01T00:00:05,2012-07-02T10:58:04,upstream,"test_expr L428 cron_next, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,8,previous,withSeconds,"4,36 58 10 2 * *",2012-07-01T00:00:05,2012-06-02T10:58:36,upstream,"test_expr L429 cron_prev, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,9,next,standard,*/2 * * * *,2012-07-01T09:00:30,2012-07-01T09:02:00,upstream,"test_expr L432 cron_next, added by the fix"
+supertinycron,2026-03-01,d6a3e54 (PR #25),fix: multiple options in the seconds field (PR #25),applies,10,previous,standard,*/2 * * * *,2012-07-01T09:00:00,2012-07-01T08:58:00,upstream,"test_expr L433 cron_prev, added by the fix"
+supertinycron,2025-01-11,b27eacd,Fixing year calculations,dialect,,invalid,withSeconds,"30 50 23 20,21,22 * * 2023",,,derived,"Bodu has no year field (cron.md, Field syntax), and seven fields are not a Bodu layout; the fix's tests hold this expression to no occurrence outside 2023"
+supertinycron,2024-11-11,4273bd2,fix: minor,n/a,,,,,,,,test code: frees the buffer in check_expr_valid_line
+supertinycron,2024-11-10,5bf46d7,change: fix generate field,unknown,,,,,,,,"https://github.com/exander77/supertinycron/commit/5bf46d7: cron_generate_expr now renders the day of week over 0-7 with Sunday wrapping (after c01aa57's */n and m/n output), but the commit names no input and adds no test"
+supertinycron,2024-11-07,562a3d2 (#17),Fix: clang-tidy warns #17,n/a,,,,,,,,lint
+supertinycron,2024-08-26,d808e3d (#15),fix: #15 (build with CMake fails),n/a,,,,,,,,build: -Werror=conversion on an int8_t assignment
+supertinycron,2024-03-25,1adaf35,fix: minor,unknown,,,,,,,,https://github.com/exander77/supertinycron/commit/1adaf35: find_nextprev returns 0 instead of a negative value; the commit names no input and adds no test
+supertinycron,2024-03-25,6dc9678,fix: minor,unknown,,,,,,,,https://github.com/exander77/supertinycron/commit/6dc9678: set_field is no longer given a negative value; the commit names no input and adds no test
+supertinycron,2024-03-23,c289752 (#7),fix: #7,n/a,,,,,,,,"time zones: the commit reorders the resets and error checks of find_next, find_prev and find_day, and its one test is 2 * * * * * across the 2024-03-31 DST gap of the local zone"
+supertinycron,2023-12-28,d72ad89 (#7),fix: #7 (assignment discards const qualifier),n/a,,,,,,,,compiler warning
+supertinycron,2023-11-01,d453d2e (#3),fix bug when requesting first days of February,applies,1,previous,withSeconds,* * * 1 2 *,2023-11-01T00:00:00,2023-02-01T23:59:59,upstream,"test_expr L706 (added by 8782476 for issue #3): cron_prev looped forever on 1 November, because the day carried from a 30- or 31-day month rolled February over into March"
+supertinycron,2023-11-01,d453d2e (#3),fix bug when requesting first days of February,applies,2,previous,withSeconds,* * * 2 2 *,2023-11-01T00:00:00,2023-02-02T23:59:59,upstream,test_expr L707
+supertinycron,2023-11-01,d453d2e (#3),fix bug when requesting first days of February,applies,3,previous,withSeconds,* * * 3 2 *,2023-11-01T00:00:00,2023-02-03T23:59:59,upstream,test_expr L708
+supertinycron,2023-11-01,d453d2e (#3),fix bug when requesting first days of February,applies,4,previous,withSeconds,* * * 4 2 *,2023-11-01T00:00:00,2023-02-04T23:59:59,upstream,"test_expr L709, which did not loop before the fix"
+supertinycron,2023-10-10,c8b832a,fix bug in cron_generate_expr,n/a,,,,,,,,API: cron_generate_expr counted the characters of an L-n offset twice in the length it returns and checks against the buffer; the text it writes is unchanged
+supertinycron,2023-10-10,e6cbd9f,fix: CRON_DISABLE_YEARS for cron_generate_expr,n/a,,,,,,,,build option: the year field of the text generator when years are compiled out
+supertinycron,2023-10-10,0c97dce,handle buffer overflow in cron_generate_expr,n/a,,,,,,,,memory safety and API: the generator now takes the buffer length
+supertinycron,2023-09-07,534ad99,fix: staticlibs/ccronexpr#32 (cron_prev 29 February infinite loop),applies,,previous,withSeconds,* * * 29 2 *,2021-12-07T12:00:00,2020-02-29T23:59:59,upstream,"test_expr L704, uncommented and corrected by the fix: from a year that is not a leap year cron_prev looped forever"
+supertinycron,2023-09-07,3afb6b0,fix: build unused parameters,n/a,,,,,,,,build
+supertinycron,2023-09-07,50d8de0,fix: build second attempt,n/a,,,,,,,,build
+supertinycron,2023-09-06,e3f95ce,fix: build,n/a,,,,,,,,build
+supertinycron,2023-09-06,f9d7c28,fix: minor build issues,n/a,,,,,,,,build
+supertinycron,2023-09-06,b5242e6,fix: minor build issues,n/a,,,,,,,,build
+supertinycron,2023-09-06,da7855a,fix: minor build issues,n/a,,,,,,,,build
+supertinycron,2023-09-05,63fbcb0,minor fixes,n/a,,,,,,,,daemon (supertinycron.c): line parsing and the argument count check
+supertinycron,2023-09-05,1af5721,fix: formatting and Saturday consistancy,dialect,,invalid,withSeconds,* * * * * L,,,derived,"Bodu rejects L alone in the day-of-week field (cron.md, The Quartz day tokens); the commit makes supertinycron's test equate it with 0 (check_same, now test_parse L793) and edits the README"
+supertinycron,2023-09-05,1482d36,fix & extend: predefined values prefixed @,applies,1,invalid,standard,@reboot,,,derived,"the fix makes @reboot an error (not implemented); Bodu rejects it too, as a macro outside its seven (cron.md, The @ macros). The daemon change (commands after an @ macro) has no expression"
+supertinycron,2023-09-05,1482d36,fix & extend: predefined values prefixed @,dialect,2,invalid,standard,@minutely,,,derived,"the commit adds @minutely and @secondly; Bodu has only crontab(5) macros (cron.md, The @ macros)"
+supertinycron,2023-09-05,1482d36,fix & extend: predefined values prefixed @,dialect,3,invalid,standard,@secondly,,,derived,the same
+supertinycron,2023-09-05,93d5020,fix: name,n/a,,,,,,,,daemon output text (tinycron renamed supertinycron)
+supertinycron,2023-09-05,b43d61b,fix: parse integer error handling,unknown,,,,,,,,"https://github.com/exander77/supertinycron/commit/b43d61b: three parse_int and parse_uint results are now checked (""Unsigned integer parse error"" 5, 6 and 7), but the commit names no input and adds no test"
+supertinycron,2023-09-01,62b8cf8,fix: staticlibs/ccronexpr#35 (invalid match),applies,1,next,withSeconds,0 0 0 ? 11-12 *,2022-10-31T00:00:00,2022-11-01T00:00:00,upstream,"test_expr L696, the issue's case (the rows from the issue came with c9e7f2d and 2fe27d5): from 31 October the answer was 1 December; the fix resets the lower fields before setting the month"
+supertinycron,2023-09-01,62b8cf8,fix: staticlibs/ccronexpr#35 (invalid match),applies,2,next,withSeconds,0 0 0 ? 11-12 *,2022-05-31T00:00:00,2022-11-01T00:00:00,upstream,"test_expr L693, from the same issue"
+supertinycron,2023-09-01,62b8cf8,fix: staticlibs/ccronexpr#35 (invalid match),applies,3,next,withSeconds,0 0 0 ? 11-12 *,2022-07-31T00:00:00,2022-11-01T00:00:00,upstream,test_expr L694
+supertinycron,2023-09-01,62b8cf8,fix: staticlibs/ccronexpr#35 (invalid match),applies,4,next,withSeconds,0 0 0 ? 11-12 *,2022-08-31T00:00:00,2022-11-01T00:00:00,upstream,test_expr L695
+supertinycron,2023-08-31,9476e8f,fixes,n/a,,,,,,,,daemon: the main loop's error handling
+supertinycron,2023-08-31,c35c8a1,fixes,n/a,,,,,,,,daemon: quoting of the command's arguments
+supertinycron,2023-08-31,f8a2189,fix: minor,n/a,,,,,,,,daemon: message helpers renamed
+supertinycron,2022,,fixed type casts to support -Wconvert,n/a,,,,,,,,"compiler warnings (README changelog, 2022)"
+supertinycron,2022,644ee9d,fixed tests to work with CRON_USE_LOCAL_TIME,n/a,,,,,,,,"test code under CRON_USE_LOCAL_TIME, the machine's time zone (README changelog, 2022)"
+supertinycron,2021-07-09,3b781db,imported some changes from ESPEasy: range checks in split_str,n/a,,,,,,,,memory safety

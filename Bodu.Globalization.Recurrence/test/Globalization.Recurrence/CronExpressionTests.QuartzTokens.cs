@@ -286,12 +286,4 @@ public partial class CronExpressionTests
     /// <returns>The values.</returns>
     private static int[] Pick(Random random, int min, int max, int count) =>
         Enumerable.Range(min, max - min + 1).OrderBy(_ => random.Next()).Take(count).Order().ToArray();
-
-    /// <summary>
-    /// Reads an instant written as <c>yyyy-MM-ddTHH:mm:ss</c>.
-    /// </summary>
-    /// <param name="text">The instant text.</param>
-    /// <returns>The instant.</returns>
-    private static DateTime Instant(string text) =>
-        DateTime.ParseExact(text, "s", CultureInfo.InvariantCulture);
 }

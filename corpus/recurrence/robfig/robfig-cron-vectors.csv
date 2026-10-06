@@ -1,0 +1,120 @@
+# Cron vectors derived from robfig/cron's spec_test.go and parser_test.go
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: robfig/cron -- https://github.com/robfig/cron -- spec_test.go, parser_test.go
+# commit: bc59245fe10efaed9d51b56900192527ed733435
+# file-sha256: spec_test.go daca39ba173c7612030c8d9b372312acbf3d5149e1db7d60a862e82ab23497e1
+# file-sha256: parser_test.go 3a3f0801d58fed2eb64b5c4809eb6bff48c24fa85bfc28003118f9f84bfa9864
+# licence: MIT (Copyright (C) 2012 Rob Figueiredo). The rows restate the files' assertions as expressions and instants, with attribution; the upstream files themselves are not committed.
+# method: extracted by extract-robfig-cron-vectors.py
+# note: robfig reads five fields (ParseStandard) or six with seconds first (TestNext's secondParser); weekdays 0-6, ? in any field, N/step to the field maximum (its MON/2 is 1-6/2, where Bodu's runs to 7 and adds Sunday). Since #70 a stepped star (*/5) in a day field counts as restricted and unions; Bodu intersects, so those rows are restated with cronsim's answer. It also has @every and TZ=/CRON_TZ= prefixes.
+# note: left out (counted): 37 TestNext rows that name a time zone, 5 TestParseSchedule rows with a CRON_TZ=/TZ= prefix, 4 TestRange rows whose result depends on bounds no cron field has, TestNormalizeFields (7) and TestNormalizeFields_Errors (4) (parser-option API); cron_test.go (scheduler) is not a source.
+# flags: macro = @every, a macro outside crontab(5)'s seven
+name,kind,format,expression,from,expected,expectation,flags,reference
+TestActivation-01,next,standard,0/15 * * * *,2012-07-09T14:59:59,2012-07-09T15:00:00,upstream,,TestActivation L15; Next(t - 1s) == t is true
+TestActivation-02,next,standard,0/15 * * * *,2012-07-09T15:44:59,2012-07-09T15:45:00,upstream,,TestActivation L16; Next(t - 1s) == t is true
+TestActivation-03,next,standard,0/15 * * * *,2012-07-09T15:39:59,2012-07-09T15:45:00,cronsim,,"TestActivation L17; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: minutes 0,15,30,45: the next after 15:39:59 is 15:45"
+TestActivation-04,next,standard,5/15 * * * *,2012-07-09T15:04:59,2012-07-09T15:05:00,upstream,,TestActivation L20; Next(t - 1s) == t is true
+TestActivation-05,next,standard,5/15 * * * *,2012-07-09T15:19:59,2012-07-09T15:20:00,upstream,,TestActivation L21; Next(t - 1s) == t is true
+TestActivation-06,next,standard,5/15 * * * *,2012-07-09T15:49:59,2012-07-09T15:50:00,upstream,,TestActivation L22; Next(t - 1s) == t is true
+TestActivation-07,next,standard,0/15 * * Jul *,2012-07-15T14:59:59,2012-07-15T15:00:00,upstream,,TestActivation L25; Next(t - 1s) == t is true
+TestActivation-08,next,standard,0/15 * * Jun *,2012-07-15T14:59:59,2013-06-01T00:00:00,cronsim,,"TestActivation L26; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: June only: the next June minute after 2012-07-15 is 2013-06-01 00:00"
+TestActivation-09,next,standard,30 08 ? Jul Sun,2012-07-15T08:29:59,2012-07-15T08:30:00,upstream,,TestActivation L29; Next(t - 1s) == t is true
+TestActivation-10,next,standard,30 08 15 Jul ?,2012-07-15T08:29:59,2012-07-15T08:30:00,upstream,,TestActivation L30; Next(t - 1s) == t is true
+TestActivation-11,next,standard,30 08 ? Jul Sun,2012-07-16T08:29:59,2012-07-22T08:30:00,derived,,"TestActivation L31; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: ? reads as *: the next July Sunday at 08:30 after Mon 2012-07-16 is 2012-07-22"
+TestActivation-12,next,standard,30 08 15 Jul ?,2012-07-16T08:29:59,2013-07-15T08:30:00,derived,,"TestActivation L32; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: ? reads as *: the next 15 July at 08:30 after 2012-07-16 is in 2013"
+TestActivation-13,next,standard,@hourly,2012-07-09T14:59:59,2012-07-09T15:00:00,upstream,,TestActivation L35; Next(t - 1s) == t is true
+TestActivation-14,next,standard,@hourly,2012-07-09T15:03:59,2012-07-09T16:00:00,derived,,"TestActivation L36; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: @hourly is 0 * * * *: the next after 15:03:59 is 16:00"
+TestActivation-15,next,standard,@daily,2012-07-09T14:59:59,2012-07-10T00:00:00,derived,,"TestActivation L37; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: @daily is 0 0 * * *: the next after 14:59:59 is midnight"
+TestActivation-16,next,standard,@daily,2012-07-08T23:59:59,2012-07-09T00:00:00,upstream,,TestActivation L38; Next(t - 1s) == t is true
+TestActivation-17,next,standard,@weekly,2012-07-08T23:59:59,2012-07-15T00:00:00,derived,,"TestActivation L39; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: @weekly is 0 0 * * 0: the next Sunday midnight after Sun 2012-07-08 23:59:59"
+TestActivation-18,next,standard,@weekly,2012-07-07T23:59:59,2012-07-08T00:00:00,upstream,,TestActivation L40; Next(t - 1s) == t is true
+TestActivation-19,next,standard,@weekly,2012-07-08T00:59:59,2012-07-15T00:00:00,derived,,"TestActivation L41; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: @weekly is 0 0 * * 0: Sunday 00:00 already passed at 00:59:59, so the next Sunday"
+TestActivation-20,next,standard,@monthly,2012-07-07T23:59:59,2012-08-01T00:00:00,derived,,"TestActivation L42; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: @monthly is 0 0 1 * *: the next first of the month after 2012-07-07"
+TestActivation-21,next,standard,@monthly,2012-06-30T23:59:59,2012-07-01T00:00:00,upstream,,TestActivation L43; Next(t - 1s) == t is true
+TestActivation-22,next,standard,"* * 1,15 * Sun",2012-07-14T23:59:59,2012-07-15T00:00:00,upstream,,TestActivation L47; Next(t - 1s) == t is true
+TestActivation-23,next,standard,"* * 1,15 * Sun",2012-06-14T23:59:59,2012-06-15T00:00:00,upstream,,TestActivation L48; Next(t - 1s) == t is true
+TestActivation-24,next,standard,"* * 1,15 * Sun",2012-07-31T23:59:59,2012-08-01T00:00:00,upstream,,TestActivation L49; Next(t - 1s) == t is true
+TestActivation-25,next,standard,* * */10 * Sun,2012-07-14T23:59:59,2012-10-21T00:00:00,cronsim,,"TestActivation L50; Next(t - 1s) == t is true; restated: robfig unions */10 with Sun since #70 and asserts Sun 2012-07-15 matches; Bodu intersects a star-led day field, so the next is the first Sunday on day 1/11/21/31, 2012-10-21"
+TestActivation-26,next,standard,* * * * Mon,2012-07-14T23:59:59,2012-07-16T00:00:00,cronsim,,"TestActivation L53; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: Mondays only: the next after Sat 2012-07-14 23:59:59 is Mon 2012-07-16"
+TestActivation-27,next,standard,"* * 1,15 * *",2012-07-08T23:59:59,2012-07-15T00:00:00,cronsim,,"TestActivation L54; Next(t - 1s) == t is false; robfig asserts only that the answer is not t, so the expected value is the next occurrence: days 1 and 15: the next after 2012-07-08 23:59:59 is 2012-07-15"
+TestActivation-28,next,standard,"* * 1,15 * *",2012-07-14T23:59:59,2012-07-15T00:00:00,upstream,,TestActivation L55; Next(t - 1s) == t is true
+TestActivation-29,next,standard,* * */2 * Sun,2012-07-14T23:59:59,2012-07-15T00:00:00,upstream,,"TestActivation L56; Next(t - 1s) == t is true; robfig unions */2 with Sun, Bodu intersects; Sun 2012-07-15 is an odd day, so it matches either way"
+TestNext-01,next,withSeconds,0 0/15 * * * *,2012-07-09T14:45:00,2012-07-09T15:00:00,upstream,,TestNext L80; secondParser (seconds first)
+TestNext-02,next,withSeconds,0 0/15 * * * *,2012-07-09T14:59:00,2012-07-09T15:00:00,upstream,,TestNext L81; secondParser (seconds first)
+TestNext-03,next,withSeconds,0 0/15 * * * *,2012-07-09T14:59:59,2012-07-09T15:00:00,upstream,,TestNext L82; secondParser (seconds first)
+TestNext-04,next,withSeconds,0 20-35/15 * * * *,2012-07-09T15:45:00,2012-07-09T16:20:00,upstream,,TestNext L85; secondParser (seconds first)
+TestNext-05,next,withSeconds,0 */15 * * * *,2012-07-09T23:46:00,2012-07-10T00:00:00,upstream,,TestNext L88; secondParser (seconds first)
+TestNext-06,next,withSeconds,0 20-35/15 * * * *,2012-07-09T23:45:00,2012-07-10T00:20:00,upstream,,TestNext L89; secondParser (seconds first)
+TestNext-07,next,withSeconds,15/35 20-35/15 * * * *,2012-07-09T23:35:51,2012-07-10T00:20:15,upstream,,TestNext L90; secondParser (seconds first)
+TestNext-08,next,withSeconds,15/35 20-35/15 1/2 * * *,2012-07-09T23:35:51,2012-07-10T01:20:15,upstream,,TestNext L91; secondParser (seconds first)
+TestNext-09,next,withSeconds,15/35 20-35/15 10-12 * * *,2012-07-09T23:35:51,2012-07-10T10:20:15,upstream,,TestNext L92; secondParser (seconds first)
+TestNext-10,next,withSeconds,15/35 20-35/15 1/2 */2 * *,2012-07-09T23:35:51,2012-07-11T01:20:15,upstream,,TestNext L94; secondParser (seconds first)
+TestNext-11,next,withSeconds,15/35 20-35/15 * 9-20 * *,2012-07-09T23:35:51,2012-07-10T00:20:15,upstream,,TestNext L95; secondParser (seconds first)
+TestNext-12,next,withSeconds,15/35 20-35/15 * 9-20 Jul *,2012-07-09T23:35:51,2012-07-10T00:20:15,upstream,,TestNext L96; secondParser (seconds first)
+TestNext-13,next,withSeconds,0 0 0 9 Apr-Oct ?,2012-07-09T23:35:00,2012-08-09T00:00:00,upstream,,TestNext L99; secondParser (seconds first)
+TestNext-14,next,withSeconds,"0 0 0 */5 Apr,Aug,Oct Mon",2012-07-09T23:35:00,2012-08-06T00:00:00,cronsim,,TestNext L100; secondParser (seconds first); restated: robfig unions */5 with Mon since #70 and answers Wed 2012-08-01; Bodu intersects a star-led day field: Mon 2012-08-06 (day 6)
+TestNext-15,next,withSeconds,0 0 0 */5 Oct Mon,2012-07-09T23:35:00,2012-10-01T00:00:00,upstream,,"TestNext L101; secondParser (seconds first); robfig unions */5 with Mon, Bodu intersects; Mon 2012-10-01 is day 1, so the answer is the same"
+TestNext-16,next,withSeconds,0 0 0 * Feb Mon,2012-07-09T23:35:00,2013-02-04T00:00:00,upstream,,TestNext L104; secondParser (seconds first)
+TestNext-17,next,withSeconds,0 0 0 * Feb Mon/2,2012-07-09T23:35:00,2013-02-01T00:00:00,upstream,,"TestNext L105; secondParser (seconds first); robfig reads Mon/2 as Mon,Wed,Fri and Bodu as Mon,Wed,Fri,Sun; Fri 2013-02-01 is the answer either way"
+TestNext-18,next,withSeconds,0 * * * * *,2012-12-31T23:59:45,2013-01-01T00:00:00,upstream,,TestNext L108; secondParser (seconds first)
+TestNext-19,next,withSeconds,0 0 0 29 Feb ?,2012-07-09T23:35:00,2016-02-29T00:00:00,upstream,,TestNext L111; secondParser (seconds first)
+TestNext-20,unreachable-next,withSeconds,0 0 0 30 Feb ?,2012-07-09T23:35:00,,upstream,,TestNext L176; secondParser (seconds first); robfig returns the zero time.Time (no occurrence within its 5-year search)
+TestNext-21,unreachable-next,withSeconds,0 0 0 31 Apr ?,2012-07-09T23:35:00,,upstream,,TestNext L177; secondParser (seconds first); robfig returns the zero time.Time (no occurrence within its 5-year search)
+TestErrors-01,invalid,standard,xyz,,,upstream,,TestErrors L204; ParseStandard
+TestErrors-02,invalid,standard,60 0 * * *,,,upstream,,TestErrors L205; ParseStandard
+TestErrors-03,invalid,standard,0 60 * * *,,,upstream,,TestErrors L206; ParseStandard
+TestErrors-04,invalid,standard,0 0 * * XYZ,,,upstream,,TestErrors L207; ParseStandard
+TestNextWithTz-01,next,standard,14 14 * * *,2016-01-03T13:09:03+05:30,2016-01-03T14:14:00+05:30,upstream,,"TestNextWithTz L254; a fixed +05:30 offset, read through the DateTimeOffset overload"
+TestNextWithTz-02,next,standard,14 14 * * ?,2016-01-03T04:09:03+05:30,2016-01-03T14:14:00+05:30,upstream,,"TestNextWithTz L255; a fixed +05:30 offset, read through the DateTimeOffset overload"
+TestNextWithTz-03,next,standard,14 14 * * *,2016-01-03T14:09:03+05:30,2016-01-03T14:14:00+05:30,upstream,,"TestNextWithTz L258; a fixed +05:30 offset, read through the DateTimeOffset overload"
+TestNextWithTz-04,next,standard,14 14 * * ?,2016-01-03T14:00:00+05:30,2016-01-03T14:14:00+05:30,upstream,,"TestNextWithTz L259; a fixed +05:30 offset, read through the DateTimeOffset overload"
+TestSlash0NoHang-01,invalid,standard,15/0 * * * *,,,upstream,,"TestSlash0NoHang L295-298; ""TZ=America/New_York 15/0 * * * *"" with the TZ= prefix dropped"
+TestRange-01,to-string,standard,5 * * * *,,5 * * * *,upstream,,"TestRange L20; getRange with bounds 0-7, placed in the minute field"
+TestRange-02,to-string,standard,0 * * * *,,0 * * * *,upstream,,"TestRange L21; getRange with bounds 0-7, placed in the minute field"
+TestRange-03,to-string,standard,7 * * * *,,7 * * * *,upstream,,"TestRange L22; getRange with bounds 0-7, placed in the minute field"
+TestRange-04,equal,standard,5-5 * * * *,,5 * * * *,upstream,,"TestRange L24; getRange with bounds 0-7, placed in the minute field"
+TestRange-05,equal,standard,5-6 * * * *,,"5,6 * * * *",upstream,,"TestRange L25; getRange with bounds 0-7, placed in the minute field"
+TestRange-06,equal,standard,5-7 * * * *,,"5,6,7 * * * *",upstream,,"TestRange L26; getRange with bounds 0-7, placed in the minute field"
+TestRange-07,equal,standard,5-6/2 * * * *,,5 * * * *,upstream,,"TestRange L28; getRange with bounds 0-7, placed in the minute field"
+TestRange-08,equal,standard,5-7/2 * * * *,,"5,7 * * * *",upstream,,"TestRange L29; getRange with bounds 0-7, placed in the minute field"
+TestRange-09,equal,standard,5-7/1 * * * *,,"5,6,7 * * * *",upstream,,"TestRange L30; getRange with bounds 0-7, placed in the minute field"
+TestRange-10,invalid,standard,5--5 * * * *,,,upstream,,"TestRange L35; getRange with bounds 0-0, placed in the minute field; ""too many hyphens"""
+TestRange-11,invalid,standard,* * * jan-x *,,,upstream,,"TestRange L36; ""failed to parse int from""; placed in the month field, where jan is a name"
+TestRange-12,invalid,standard,2-x * * * *,,,upstream,,"TestRange L37; getRange with bounds 1-5, placed in the minute field; ""failed to parse int from"""
+TestRange-13,invalid,standard,*/-12 * * * *,,,upstream,,"TestRange L38; getRange with bounds 0-0, placed in the minute field; ""negative number"""
+TestRange-14,invalid,standard,*//2 * * * *,,,upstream,,"TestRange L39; getRange with bounds 0-0, placed in the minute field; ""too many slashes"""
+TestRange-15,invalid,standard,5-3 * * * *,,,upstream,,"TestRange L42; getRange with bounds 3-5, placed in the minute field; ""beyond end of range"""
+TestRange-16,invalid,standard,*/0 * * * *,,,upstream,,"TestRange L43; getRange with bounds 0-0, placed in the minute field; ""should be a positive number"""
+TestField-01,to-string,standard,5 * * * *,,5 * * * *,upstream,,"TestField L66; getField with bounds 1-7, placed in the minute field"
+TestField-02,to-string,standard,"5,6 * * * *",,"5,6 * * * *",upstream,,"TestField L67; getField with bounds 1-7, placed in the minute field"
+TestField-03,to-string,standard,"5,6,7 * * * *",,"5,6,7 * * * *",upstream,,"TestField L68; getField with bounds 1-7, placed in the minute field"
+TestField-04,equal,standard,"1,5-7/2,3 * * * *",,"1,3,5,7 * * * *",upstream,,"TestField L69; getField with bounds 1-7, placed in the minute field"
+TestAll-01,equal,standard,* * * * *,,0-59 * * * *,upstream,,TestAll L85; all(minutes) sets every value 0-59
+TestAll-02,equal,standard,* * * * *,,* 0-23 * * *,upstream,,TestAll L86; all(hours) sets every value 0-23
+TestAll-03,equal,standard,* * * * *,,* * 1-31 * *,upstream,,TestAll L87; all(dom) sets every value 1-31
+TestAll-04,equal,standard,* * * * *,,* * * 1-12 *,upstream,,TestAll L88; all(months) sets every value 1-12
+TestAll-05,equal,standard,* * * * *,,* * * * 0-6,upstream,,TestAll L89; all(dow) sets every value 0-6
+TestBits-01,equal,standard,0-0/1 * * * *,,0 * * * *,upstream,,"TestBits L106; getBits(0, 0, 1) as the minute range"
+TestBits-02,equal,standard,1-1/1 * * * *,,1 * * * *,upstream,,"TestBits L107; getBits(1, 1, 1) as the minute range"
+TestBits-03,equal,standard,1-5/2 * * * *,,"1,3,5 * * * *",upstream,,"TestBits L108; getBits(1, 5, 2) as the minute range"
+TestBits-04,equal,standard,1-4/2 * * * *,,"1,3 * * * *",upstream,,"TestBits L109; getBits(1, 4, 2) as the minute range"
+TestParseScheduleErrors-01,invalid,withSeconds,* 5 j * * *,,,upstream,,"TestParseScheduleErrors L123; secondParser; ""failed to parse int from"""
+TestParseScheduleErrors-02,invalid,standard,@every Xm,,,upstream,macro,"TestParseScheduleErrors L124; secondParser; ""failed to parse duration"""
+TestParseScheduleErrors-03,invalid,standard,@unrecognized,,,upstream,,"TestParseScheduleErrors L125; secondParser; ""unrecognized descriptor"""
+TestParseScheduleErrors-04,invalid,withSeconds,* * * *,,,upstream,,"TestParseScheduleErrors L126; secondParser; ""expected 5 to 6 fields"""
+TestParseScheduleErrors-05,invalid,withSeconds,,,,upstream,,"TestParseScheduleErrors L127; secondParser; ""empty spec string"""
+TestParseSchedule-01,to-string,withSeconds,0 5 * * * *,,0 5 * * * *,upstream,,"TestParseSchedule L147; secondParser; every5min: second 0, minute 5"
+TestParseSchedule-02,to-string,standard,5 * * * *,,5 * * * *,upstream,,TestParseSchedule L148; standardParser; every5min
+TestParseSchedule-03,valid,standard,@every 5m,,,upstream,macro,TestParseSchedule L152; ConstantDelaySchedule{5m}
+TestParseSchedule-04,equal,standard,@midnight,,0 0 * * *,upstream,,"TestParseSchedule L153; secondParser midnight: second 0, minute 0, hour 0; Bodu macros are five-field"
+TestParseSchedule-05,equal,standard,@yearly,,0 0 1 1 *,upstream,,"TestParseSchedule L156; annual: minute 0, hour 0, day 1, month 1"
+TestParseSchedule-06,equal,standard,@annually,,0 0 1 1 *,upstream,,TestParseSchedule L157; annual
+TestParseSchedule-07,to-string,withSeconds,* 5 * * * *,,* 5 * * * *,upstream,,"TestParseSchedule L158-170; SpecSchedule{all seconds, minute 5, all others}"
+TestOptionalSecondSchedule-01,to-string,withSeconds,0 5 * * * *,,0 5 * * * *,upstream,,TestOptionalSecondSchedule L190; SecondOptional parser; every5min
+TestOptionalSecondSchedule-02,to-string,withSeconds,5 5 * * * *,,5 5 * * * *,upstream,,"TestOptionalSecondSchedule L191; every5min5s: second 5, minute 5"
+TestOptionalSecondSchedule-03,to-string,standard,5 * * * *,,5 * * * *,upstream,,TestOptionalSecondSchedule L192; seconds omitted: every5min
+TestStandardSpecSchedule-01,to-string,standard,5 * * * *,,5 * * * *,upstream,,"TestStandardSpecSchedule L321-324; ParseStandard; second 0, minute 5"
+TestStandardSpecSchedule-02,valid,standard,@every 5m,,,upstream,macro,TestStandardSpecSchedule L325-328; ConstantDelaySchedule{5m}
+TestStandardSpecSchedule-03,invalid,standard,5 j * * *,,,upstream,,"TestStandardSpecSchedule L329-332; ""failed to parse int from"""
+TestStandardSpecSchedule-04,invalid,standard,* * * *,,,upstream,,"TestStandardSpecSchedule L333-336; ""expected exactly 5 fields"""
+TestNoDescriptorParser-01,invalid,standard,@every 1m,,,upstream,macro,TestNoDescriptorParser L353-359; a parser without the Descriptor option rejects @every

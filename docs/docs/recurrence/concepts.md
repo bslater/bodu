@@ -95,9 +95,9 @@ A <xref:Bodu.Globalization.Recurrence.CronExpression> matches an instant when ea
 
 **Canonical text.** `ToString()` renders each field as `*` or an ascending comma-separated numeric list - `0 2 * * MON-FRI` becomes `0 2 * * 1,2,3,4,5` and `@daily` becomes `0 0 * * *` - or as the canonical form of its Quartz token (`FRIL` becomes `5L`), and two expressions that select the same field sets are equal regardless of how they were spelled.
 
-## The twelve-year search horizon
+## The 400-year search
 
-A cron search walks forward (or backward) field by field and stops at a horizon of **twelve years** from the query instant. The largest gap between consecutive occurrences of any *satisfiable* expression is eight years - a February 29th schedule crossing a non-leap century year such as 2100 - so twelve years covers every real schedule with margin, while an expression that can never match (`0 0 30 2 *`, February 30th) answers `null` at the horizon instead of scanning unboundedly.
+A cron search walks forward (or backward) field by field and stops after **400 years**, one whole cycle of the Gregorian calendar, which repeats exactly every 400 years. An expression without a match in the cycle (`0 0 30 2 *`, February 30th) never matches, so `null` means "never" rather than "not soon": occurrences of a *satisfiable* expression can be decades apart, as 29 February on a chosen weekday recurs at gaps of up to forty years. A search near either end of the calendar answers `null` rather than step past 0001-01-01 or 9999-12-31.
 
 A rule search is bounded differently: an unbounded `RecurrenceRule` enumerates to the end of the representable calendar, so `GetNextOccurrence` on a rule that can never match (30 February yearly) also answers `null` rather than looping, just later.
 

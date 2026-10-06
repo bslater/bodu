@@ -9,6 +9,19 @@ namespace Bodu.Globalization.Recurrence;
 public partial class CronExpressionTests
 {
     /// <summary>
+    /// Verifies that the canonical text round-trips through <see cref="CronExpression.Parse(string)" />.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenReparsed_ShouldRoundTrip()
+    {
+        CronExpression cron = CronExpression.Parse("0 9 * * 1-5");
+
+        CronExpression reparsed = CronExpression.Parse(cron.ToString());
+
+        Assert.AreEqual(cron, reparsed);
+    }
+
+    /// <summary>
     /// Verifies that the canonical text of an expression re-parses to the same schedule, including the day-field
     /// expressions whose restricted-ness decides between the union and intersection branches.
     /// </summary>

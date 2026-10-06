@@ -13,8 +13,8 @@ namespace Bodu.Globalization.Recurrence;
 /// <summary>
 /// Reconciles the recurrence engine against the committed validation corpora: the normative RFC 5545 §3.8.5.3
 /// worked examples, the occurrence counts libical's reference implementation asserts in its own test data, the
-/// occurrences python-dateutil produces for generated sub-daily rules, and the cron vectors derived from Cronos's
-/// test suite.
+/// occurrences python-dateutil produces for generated sub-daily rules, the cron vectors derived from the test suites
+/// of Cronos and twenty other cron libraries, and the scenarios of the fixes in those libraries' release notes.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -42,7 +42,10 @@ public sealed partial class RecurrenceCorpusTests
     private static readonly string[] s_excludedFlags =
         ["time-expansion", "elided", "exrule"];
 
-    /// <summary>The embedded corpus tables, each with the directory under <c>corpus/recurrence</c> it copies.</summary>
+    /// <summary>
+    /// The embedded corpus tables other than the cron library tables and fix catalogues, each with the directory under
+    /// <c>corpus/recurrence</c> it copies.
+    /// </summary>
     private static readonly (string Directory, string FileName)[] s_corpusSources =
     [
         ("rfc5545", "rfc5545-recurrence-examples.csv"),
@@ -231,7 +234,7 @@ public sealed partial class RecurrenceCorpusTests
         }
 
         Assembly assembly = typeof(RecurrenceCorpusTests).Assembly;
-        foreach ((string directory, string fileName) in s_corpusSources)
+        foreach ((string directory, string fileName) in CorpusSources())
         {
             byte[] source = File.ReadAllBytes(Path.Combine(root, "corpus", "recurrence", directory, fileName));
             string name = assembly.GetManifestResourceNames().Single(n => n.EndsWith(fileName, StringComparison.Ordinal));
@@ -244,6 +247,19 @@ public sealed partial class RecurrenceCorpusTests
                 $"Fixtures/Vectors/{fileName} differs from corpus/recurrence/{directory}/{fileName}.");
         }
     }
+
+    /// <summary>
+    /// Returns every embedded corpus table, each with the directory under <c>corpus/recurrence</c> it copies.
+    /// </summary>
+    /// <returns>The recurrence and Cronos tables, then the cron library tables, then the fix catalogues.</returns>
+    /// <remarks>
+    /// The lists live in three partial files, and C# leaves the order in which static fields declared in different
+    /// partial files are initialized unspecified, so they are combined here rather than in a field initializer.
+    /// </remarks>
+    private static IEnumerable<(string Directory, string FileName)> CorpusSources() =>
+        s_corpusSources
+            .Concat(s_cronLibraryTables.Select(t => (t.Directory, $"{t.Table}-cron-vectors.csv")))
+            .Concat(s_cronFixLibraries.Select(library => ("cron-fixes", $"{library}-fixes.csv")));
 
     /// <summary>
     /// Finds the repository root by walking up from the test's base directory to the solution file.

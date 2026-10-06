@@ -71,7 +71,7 @@ bool ok2 = CronExpression.TryParse("@daily", CronFormat.Standard, out CronExpres
 
 ## Field syntax
 
-Every field accepts `*`, a single value, a range `a-b`, a step `*/n` or `a-b/n`, and comma-separated lists of those. Months take `JAN`-`DEC` and weekdays `SUN`-`SAT`, case-insensitively; weekday `7` is an alias for Sunday (`0`). The two day fields also accept `?` and the Quartz day tokens described [below](#the-quartz-day-tokens).
+Every field accepts `*`, a single value, a range `a-b`, a step `*/n`, `a-b/n` or `a/n` (from `a` to the field's maximum), and comma-separated lists of those. Months take `JAN`-`DEC` and weekdays `SUN`-`SAT`, case-insensitively; weekday `7` is an alias for Sunday (`0`). The two day fields also accept `?` and the Quartz day tokens described [below](#the-quartz-day-tokens).
 
 | Field | Range | Notes |
 |---|---|---|
@@ -82,9 +82,11 @@ Every field accepts `*`, a single value, a range `a-b`, a step `*/n` or `a-b/n`,
 | month | 1-12 or `JAN`-`DEC` | |
 | day-of-week | 0-7 or `SUN`-`SAT` | `0` and `7` are both Sunday; also `?`, `dL`, and `d#k` |
 
-Two behaviours are worth stating because libraries disagree on them:
+Several behaviours are worth stating because libraries disagree on them:
 
 - **A step wider than its range selects the range start** rather than being rejected: `*/60` and `*/90` in the minute field both mean minute `0` (cronie warns about this; some libraries throw). A step of `0` is rejected ("The cron field '1-5/0' is not valid.").
+- **`a/n` runs to the field's maximum, and the day-of-week maximum is 7**, which is Sunday again: `59/15` in the minute field is minute 59 alone, and `1/2` in the day-of-week field selects Monday, Wednesday, Friday and Sunday.
+- **A range must ascend.** A reversed range such as `55-5` or `FRI-TUE` is rejected rather than wrapped around the field, and so is `MON-SUN`, because `SUN` is 0: write `MON-7` or `1-7` for Monday to Sunday.
 - **Day-of-month and day-of-week combine by union only when both are restricted.** Following Vixie cron, an instant matches when it satisfies *either* field if both are restricted, and *both* fields otherwise - and "restricted" is decided by the field's leading character, so `*/2` (leading `*`) is unrestricted while `1-31/2` is restricted even though the two select the same days:
 
 <!-- compile -->
@@ -193,20 +195,23 @@ DateTime? paying  = payroll.GetNextOccurrence(now);  // 2026-05-29 18:00, the Fr
 
 `LW` knows weekends but not public holidays. To skip those too, filter the occurrences with `IsNonWorkingDay` from `Bodu.Globalization.Calendar` - see [Hosting schedules](scheduling-host.md#pattern-5---skip-non-working-days-with-the-calendar-package). The same last-weekday schedule written as a recurrence rule, `FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1`, is [pattern 6 of the rule guide](rrule.md#pattern-6---last-working-day-of-the-month).
 
-## The search horizon
+## The 400-year search
 
-Every search scans **twelve years** in the requested direction and answers `null` past it. Twelve covers the largest gap between two consecutive occurrences of any satisfiable expression - a 29 February schedule crossing a non-leap century year (2096 → 2104, eight years) - with margin, while still bounding the search for an expression that can never match:
+Every search scans **400 years** in the requested direction: one whole cycle of the Gregorian calendar, which repeats exactly every 400 years (146,097 days, a whole number of weeks, with its leap days in the same places). An expression without a match in the cycle never matches, so a search answers `null` only when no occurrence follows (or precedes) the query at all. Occurrences can be decades apart: 29 February on a chosen weekday recurs at gaps of up to forty years, across the non-leap 2100 included.
 
 <!-- compile -->
 ```csharp
 using Bodu.Globalization.Recurrence;
 
-DateTime? leapDay = CronExpression.Parse("0 0 29 2 *").GetNextOccurrence(new DateTime(2096, 3, 1));   // 2104-02-29
-DateTime? never   = CronExpression.Parse("0 0 30 2 *").GetNextOccurrence(new DateTime(2026, 3, 10)); // null
+DateTime? leapDay   = CronExpression.Parse("0 0 29 2 *").GetNextOccurrence(new DateTime(2096, 3, 1));      // 2104-02-29
+DateTime? fifthMon  = CronExpression.Parse("0 0 * 2 MON#5").GetNextOccurrence(new DateTime(2016, 3, 1));   // 2044-02-29
+DateTime? never     = CronExpression.Parse("0 0 30 2 *").GetNextOccurrence(new DateTime(2026, 3, 10));     // null
 DateTime? neverBack = CronExpression.Parse("0 0 30 2 *").GetPreviousOccurrence(new DateTime(2026, 3, 10)); // null
 ```
 
-`null` therefore means "no occurrence within twelve years", which for any real schedule means "never".
+A search near either end of the calendar answers `null` rather than step past 0001-01-01 or 9999-12-31, and the `DateTimeOffset` overloads answer `null` for an occurrence whose UTC instant falls outside that range.
+
+`null` therefore means "never": no occurrence lies in that direction anywhere in the calendar.
 
 ## `DateTimeOffset` handling
 
@@ -235,8 +240,8 @@ DateTimeOffset? next = nine.GetNextOccurrence(sydney);   // 2026-03-11 09:00 +10
 | `TryParse(string?, out result)` / `TryParse(string?, IFormatProvider?, out result)` / `TryParse(string?, CronFormat, out result)` | Boolean parse. |
 | `TryParse(string?, out result, out failureMessage)` / `TryParse(string?, CronFormat, out result, out failureMessage)` | Boolean parse that names the defect. |
 | `Format` | The layout the expression was parsed as. |
-| `GetNextOccurrence(after, inclusive = false)` | Next matching instant within twelve years, or `null`; `DateTime` and `DateTimeOffset`. |
-| `GetPreviousOccurrence(before, inclusive = false)` | Previous matching instant within twelve years, or `null`. |
+| `GetNextOccurrence(after, inclusive = false)` | Next matching instant, or `null` when none follows; `DateTime` and `DateTimeOffset`. |
+| `GetPreviousOccurrence(before, inclusive = false)` | Previous matching instant, or `null` when none precedes. |
 | `ToString()` / `ToString(string?, IFormatProvider?)` | Canonical text: numeric lists and the Quartz day tokens. |
 | `Equals` / `GetHashCode` | Field-set equality. |
 

@@ -41,16 +41,28 @@ namespace Bodu.Globalization.Recurrence;
 /// wants a local-time schedule across a transition re-derives the offset on each evaluation.
 /// </para>
 /// <para>
-/// Occurrence searches are bounded by a twelve-year horizon in each direction, which covers the largest possible gap
-/// between occurrences of any satisfiable expression (a February 29th schedule crossing a non-leap century year); an
-/// expression that can never match, such as February 30th, answers <see langword="null" /> at the horizon rather than
-/// scanning unboundedly.
+/// Occurrence searches scan 400 years in each direction: one whole cycle of the Gregorian calendar, which repeats
+/// exactly every 400 years, so an expression without a match in the cycle never matches, and a search answers
+/// <see langword="null" /> only when no occurrence follows (or precedes) the instant at all. Occurrences of a
+/// satisfiable expression can be decades apart: the 29th of February on a chosen weekday recurs at gaps of up to forty
+/// years. A search also answers <see langword="null" /> rather than pass either end of the calendar, 0001-01-01 or
+/// 9999-12-31, and the <see cref="DateTimeOffset" /> overloads do so for an occurrence whose UTC instant falls outside
+/// that range.
 /// </para>
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
-    /// <summary>The number of years the occurrence search scans before giving up. The largest gap between two consecutive occurrences of any satisfiable expression is eight years - a February 29th expression crossing a non-leap century year such as 2100 (2096 → 2104) - so twelve years covers every real schedule with margin while still bounding the search for an expression that can never match (for example February 30th).</summary>
-    private const int SearchHorizonYears = 12;
+    /// <summary>The number of years the occurrence search scans before giving up: one whole cycle of the Gregorian calendar, which repeats exactly every 400 years (146,097 days, a whole number of weeks), so an expression without a match in the cycle never matches. A shorter horizon would answer null for satisfiable expressions: the 29th of February on a chosen weekday recurs at gaps of up to forty years, across a non-leap century year such as 2100.</summary>
+    private const int SearchHorizonYears = 400;
+
+    /// <summary>The last year a forward search can start in and still search in place: its horizon then ends in or before 9998, so no step it takes can pass 9999-12-31.</summary>
+    private const int LastYearSearchedInPlace = 9998 - SearchHorizonYears;
+
+    /// <summary>The first year a backward search can start in and still search in place: its horizon then ends in or after year 2, so no step it takes can pass 0001-01-01.</summary>
+    private const int FirstYearSearchedInPlace = 2 + SearchHorizonYears;
+
+    /// <summary>The number of years a search near either end of the calendar moves its instant by: the fewest whole 400-year Gregorian cycles longer than the search horizon, so that the moved search runs in place.</summary>
+    private const int EndOfCalendarShiftYears = ((SearchHorizonYears / 400) + 1) * 400;
 
     /// <summary>The matching seconds (every second for the five-field layout).</summary>
     private readonly SecondSet _seconds;
@@ -66,6 +78,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
     /// <summary>The matching months.</summary>
     private readonly MonthSet _months;
+
+    /// <summary>The months the searches visit: the matching months, less any in which no day can match because the day fields combine by intersection and none of the selected days of the month falls in it.</summary>
+    private readonly MonthSet _searchedMonths;
 
     /// <summary>The matching days of the week; empty when the field holds a Quartz token.</summary>
     private readonly DayOfWeekSet _daysOfWeek;
@@ -124,6 +139,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _dayOfMonthToken = dayOfMonthToken;
         _dayOfWeekToken = dayOfWeekToken;
         _hasDayToken = dayOfMonthToken is not null || dayOfWeekToken is not null;
+        _searchedMonths = _hasDayToken || DaysCombineByUnion ? months : MonthsHoldingASelectedDay(months, daysOfMonth);
     }
 
     /// <summary>
@@ -142,13 +158,20 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The next matching instant preserving the <see cref="DateTime.Kind" /> of <paramref name="after" />, or
-    /// <see langword="null" /> when none occurs within the search horizon.
+    /// <see langword="null" /> when no later instant in the calendar matches.
     /// </returns>
     public DateTime? GetNextOccurrence(DateTime after, bool inclusive = false)
     {
+        int year = after.Year;
+        if (year > LastYearSearchedInPlace)
+        {
+            return FindNextNearTheEnd(after, inclusive);
+        }
+
+        int guardYear = year + SearchHorizonYears;
         if (_hasDayToken)
         {
-            return FindNextWithTokens(after, inclusive);
+            return FindNextWithTokens(after, inclusive, guardYear);
         }
 
         DateTime candidate = Floor(after);
@@ -158,10 +181,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
             candidate = candidate.Add(Unit);
         }
 
-        int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -207,13 +229,20 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The previous matching instant preserving the <see cref="DateTime.Kind" /> of <paramref name="before" />, or
-    /// <see langword="null" /> when none occurs within the search horizon.
+    /// <see langword="null" /> when no earlier instant in the calendar matches.
     /// </returns>
     public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
     {
+        int year = before.Year;
+        if (year < FirstYearSearchedInPlace)
+        {
+            return FindPreviousNearTheStart(before, inclusive);
+        }
+
+        int guardYear = year - SearchHorizonYears;
         if (_hasDayToken)
         {
-            return FindPreviousWithTokens(before, inclusive);
+            return FindPreviousWithTokens(before, inclusive, guardYear);
         }
 
         DateTime candidate = Floor(before);
@@ -223,10 +252,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
             candidate = candidate.Subtract(unit);
         }
 
-        int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).Subtract(unit);
                 continue;
@@ -271,12 +299,15 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// occurrence must be strictly later.
     /// </param>
     /// <returns>
-    /// The next matching instant carrying the offset of <paramref name="after" />, or <see langword="null" />.
+    /// The next matching instant carrying the offset of <paramref name="after" />, or <see langword="null" /> when no
+    /// later instant that a <see cref="DateTimeOffset" /> can hold matches.
     /// </returns>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
     {
         DateTime? next = GetNextOccurrence(DateTime.SpecifyKind(after.DateTime, DateTimeKind.Unspecified), inclusive);
-        return next is null ? null : new DateTimeOffset(next.Value, after.Offset);
+        return next is { } wallClock && HasUtcInstant(wallClock, after.Offset)
+            ? new DateTimeOffset(wallClock, after.Offset)
+            : null;
     }
 
     /// <summary>
@@ -288,12 +319,15 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// occurrence must be strictly earlier.
     /// </param>
     /// <returns>
-    /// The previous matching instant carrying the offset of <paramref name="before" />, or <see langword="null" />.
+    /// The previous matching instant carrying the offset of <paramref name="before" />, or <see langword="null" /> when
+    /// no earlier instant that a <see cref="DateTimeOffset" /> can hold matches.
     /// </returns>
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
     {
         DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
-        return previous is null ? null : new DateTimeOffset(previous.Value, before.Offset);
+        return previous is { } wallClock && HasUtcInstant(wallClock, before.Offset)
+            ? new DateTimeOffset(wallClock, before.Offset)
+            : null;
     }
 
     /// <summary>
@@ -389,6 +423,38 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _domRestricted && _dowRestricted;
 
     /// <summary>
+    /// Returns the months, of those given, that hold at least one of the given days of the month in some year.
+    /// </summary>
+    /// <param name="months">The matching months.</param>
+    /// <param name="daysOfMonth">The matching days of the month.</param>
+    /// <returns>
+    /// The months of <paramref name="months" /> long enough to hold a day of <paramref name="daysOfMonth" />.
+    /// </returns>
+    /// <remarks>
+    /// When the day fields combine by intersection, a day matches only if the day-of-month set selects it, so a month
+    /// too short for every selected day, such as February for <c>30</c> or April for <c>31</c>, never matches. The
+    /// searches leave such months out: they would otherwise test every day of the month in every year of the cycle,
+    /// which cost an expression that never matches, such as <c>0 0 31 4,6,9,11 *</c>, up to 1.8 ms. February counts its
+    /// 29th, which a leap year holds.
+    /// </remarks>
+    private static MonthSet MonthsHoldingASelectedDay(MonthSet months, DayOfMonthSet daysOfMonth)
+    {
+        ulong days = daysOfMonth.ToUInt64();
+        MonthSet searched = months;
+        foreach (int month in months)
+        {
+            // Bit n of the day bitmap stands for the (n + 1)-th; 2000 is a leap year, so February is 29 days long.
+            ulong daysInMonth = (1UL << DateTime.DaysInMonth(2000, month)) - 1;
+            if ((days & daysInMonth) == 0)
+            {
+                searched = searched.Without(month);
+            }
+        }
+
+        return searched;
+    }
+
+    /// <summary>
     /// Determines whether a calendar value set's bitmap selects the value at an offset in the set's domain.
     /// </summary>
     /// <param name="bitmap">
@@ -461,8 +527,10 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </summary>
     /// <param name="after">The instant the returned occurrence must follow.</param>
     /// <param name="inclusive">Whether an occurrence equal to <paramref name="after" /> counts.</param>
+    /// <param name="guardYear">The last year the search scans.</param>
     /// <returns>
-    /// The next matching instant, or <see langword="null" /> when none occurs within the search horizon.
+    /// The next matching instant, or <see langword="null" /> when none occurs by the end of
+    /// <paramref name="guardYear" />.
     /// </returns>
     /// <remarks>
     /// This is the search in <see cref="GetNextOccurrence(DateTime, bool)" /> with days tested by
@@ -470,7 +538,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// included: a call left in the loop, even one never made, cost an expression without a token a fifth of its query
     /// time.
     /// </remarks>
-    private DateTime? FindNextWithTokens(DateTime after, bool inclusive)
+    private DateTime? FindNextWithTokens(DateTime after, bool inclusive, int guardYear)
     {
         DateTime candidate = Floor(after);
         bool satisfies = inclusive ? candidate >= after : candidate > after;
@@ -479,10 +547,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
             candidate = candidate.Add(Unit);
         }
 
-        int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -524,14 +591,16 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </summary>
     /// <param name="before">The instant the returned occurrence must precede.</param>
     /// <param name="inclusive">Whether an occurrence equal to <paramref name="before" /> counts.</param>
+    /// <param name="guardYear">The first year the search scans.</param>
     /// <returns>
-    /// The previous matching instant, or <see langword="null" /> when none occurs within the search horizon.
+    /// The previous matching instant, or <see langword="null" /> when none occurs from the start of
+    /// <paramref name="guardYear" /> on.
     /// </returns>
     /// <remarks>
     /// This is the search in <see cref="GetPreviousOccurrence(DateTime, bool)" /> with days tested by
     /// <see cref="TokenDayMatches" />, kept apart for the reason <see cref="FindNextWithTokens" /> gives.
     /// </remarks>
-    private DateTime? FindPreviousWithTokens(DateTime before, bool inclusive)
+    private DateTime? FindPreviousWithTokens(DateTime before, bool inclusive, int guardYear)
     {
         DateTime candidate = Floor(before);
         TimeSpan unit = Unit;
@@ -540,10 +609,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
             candidate = candidate.Subtract(unit);
         }
 
-        int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).Subtract(unit);
                 continue;
@@ -577,6 +645,71 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Returns the first instant matching the expression that falls after an instant late in the calendar.
+    /// </summary>
+    /// <param name="after">The instant the returned occurrence must follow.</param>
+    /// <param name="inclusive">Whether an occurrence equal to <paramref name="after" /> counts.</param>
+    /// <returns>
+    /// The next matching instant, or <see langword="null" /> when none occurs before the end of the calendar.
+    /// </returns>
+    /// <remarks>
+    /// The public search calls this for an instant in a year after <see cref="LastYearSearchedInPlace" />, from which a
+    /// search in place could step past 9999-12-31. The Gregorian calendar repeats exactly every 400 years - 146,097
+    /// days, a whole number of weeks, with the same leap days - and an expression names no year, so its occurrences
+    /// repeat with the calendar: the search from the instant moved back by <see cref="EndOfCalendarShiftYears" /> runs
+    /// in place and finds the occurrence moved back by as much. The method is kept out of line so that the searches in
+    /// place do not carry it.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private DateTime? FindNextNearTheEnd(DateTime after, bool inclusive)
+    {
+        DateTime? moved = GetNextOccurrence(after.AddYears(-EndOfCalendarShiftYears), inclusive);
+
+        return moved is { } occurrence && occurrence.Year <= DateTime.MaxValue.Year - EndOfCalendarShiftYears
+            ? occurrence.AddYears(EndOfCalendarShiftYears)
+            : null;
+    }
+
+    /// <summary>
+    /// Returns the last instant matching the expression that falls before an instant early in the calendar.
+    /// </summary>
+    /// <param name="before">The instant the returned occurrence must precede.</param>
+    /// <param name="inclusive">Whether an occurrence equal to <paramref name="before" /> counts.</param>
+    /// <returns>
+    /// The previous matching instant, or <see langword="null" /> when none occurs after the start of the calendar.
+    /// </returns>
+    /// <remarks>
+    /// The public search calls this for an instant in a year before <see cref="FirstYearSearchedInPlace" />, from which
+    /// a search in place could step before 0001-01-01. It is <see cref="FindNextNearTheEnd" /> mirrored: the search
+    /// from the instant moved forward by <see cref="EndOfCalendarShiftYears" /> runs in place.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private DateTime? FindPreviousNearTheStart(DateTime before, bool inclusive)
+    {
+        DateTime? moved = GetPreviousOccurrence(before.AddYears(EndOfCalendarShiftYears), inclusive);
+
+        return moved is { } occurrence && occurrence.Year > EndOfCalendarShiftYears
+            ? occurrence.AddYears(-EndOfCalendarShiftYears)
+            : null;
+    }
+
+    /// <summary>
+    /// Determines whether a wall-clock time in an offset falls at a UTC instant a <see cref="DateTimeOffset" /> can
+    /// hold.
+    /// </summary>
+    /// <param name="wallClock">The wall-clock time.</param>
+    /// <param name="offset">The offset from UTC the wall-clock time is in.</param>
+    /// <returns>
+    /// <see langword="true" /> when the UTC instant lies between <see cref="DateTime.MinValue" /> and
+    /// <see cref="DateTime.MaxValue" />; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool HasUtcInstant(DateTime wallClock, TimeSpan offset)
+    {
+        long utcTicks = wallClock.Ticks - offset.Ticks;
+        return utcTicks >= DateTime.MinValue.Ticks && utcTicks <= DateTime.MaxValue.Ticks;
     }
 
     /// <summary>

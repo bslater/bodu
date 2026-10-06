@@ -61,11 +61,17 @@ regression tests. Fixes it produced include Vixie's leading-character rule for c
 restriction, candidate-set deduplication before `BYSETPOS`/`COUNT`, the `BYDAY` ordinal when `BYDAY`
 limits alongside `BYMONTHDAY`, and `BYWEEKNO` numbering generalized from the ISO rule to `WKST`.
 
+The cron engine is also held to the test suites of 21 cron libraries, restated in its dialect, and to
+the scenarios of the fixes in their release notes: 5,723 runnable rows. They found two defects, both
+fixed: a search near either end of the calendar threw rather than answering `null`, and a search gave
+up after twelve years, though some expressions match only decades apart.
+
 ## Known limits
 
 - The Quartz day tokens keep Vixie's weekday numbering (0 or 7 for Sunday) and union rule, so a
   Quartz expression that names weekdays by number, or restricts both day fields, reads differently.
-- `CronExpression` searches a documented 12-year horizon before reporting no occurrence.
+- A `CronExpression` search for an expression that never matches scans a whole 400-year calendar cycle before
+  answering `null`.
 - No `.ics` reader - this package evaluates rules, it does not parse calendar files.
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.

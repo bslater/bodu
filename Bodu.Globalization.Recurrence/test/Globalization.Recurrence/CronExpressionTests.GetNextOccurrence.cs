@@ -1,0 +1,230 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CronExpressionTests.GetNextOccurrence.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Globalization.Recurrence;
+
+public partial class CronExpressionTests
+{
+    /// <summary>
+    /// Verifies that a weekday-morning expression returns the next matching nine-o'clock instant.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenWeekdayMorning_ShouldReturnNextNineAm()
+    {
+        CronExpression cron = CronExpression.Parse("0 9 * * 1-5");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 0, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 1, 9, 0, 0), next);
+    }
+
+    /// <summary>
+    /// Verifies that a daily expression returns the next matching instant.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void GetNextOccurrence_WhenDailyNineAm_ShouldReturnNextNineAm()
+    {
+        CronExpression cron = CronExpression.Parse("0 9 * * *");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 10, 0, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 2, 9, 0, 0), next);
+    }
+
+    /// <summary>
+    /// Verifies that a step expression advances to the next aligned minute.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenEveryFifteenMinutes_ShouldReturnNextQuarter()
+    {
+        CronExpression cron = CronExpression.Parse("*/15 * * * *");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 7, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 1, 0, 15, 0), next);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>@hourly</c> macro expands to the top of the next hour.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenHourlyMacro_ShouldReturnTopOfHour()
+    {
+        CronExpression cron = CronExpression.Parse("@hourly");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 30, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 1, 1, 0, 0), next);
+    }
+
+    /// <summary>
+    /// Verifies that a six-field expression matches on the seconds field.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenWithSeconds_ShouldMatchSecondsField()
+    {
+        CronExpression cron = CronExpression.Parse("15 30 9 * * *", CronFormat.WithSeconds);
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 0, 0));
+
+        Assert.AreEqual(new DateTime(2026, 1, 1, 9, 30, 15), next);
+    }
+
+    /// <summary>
+    /// Verifies that a February 29th expression skips forward to the next leap year.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenLeapDay_ShouldSkipToNextLeapYear()
+    {
+        CronExpression cron = CronExpression.Parse("0 0 29 2 *");
+
+        DateTime? next = cron.GetNextOccurrence(new DateTime(2026, 1, 1, 0, 0, 0));
+
+        Assert.AreEqual(new DateTime(2028, 2, 29, 0, 0, 0), next);
+    }
+
+    /// <summary>
+    /// Verifies that a search from the last instant of the calendar returns <see langword="null" /> rather than
+    /// throwing, in either layout, inclusively or not, and with a Quartz day token.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="format">The field layout.</param>
+    /// <param name="inclusive">Whether an occurrence equal to the instant counts.</param>
+    [TestMethod]
+    [DataRow("* * * * *", CronFormat.Standard, false)]
+    [DataRow("* * * * *", CronFormat.Standard, true)]
+    [DataRow("* * * * * *", CronFormat.WithSeconds, false)]
+    [DataRow("* * * * * *", CronFormat.WithSeconds, true)]
+    [DataRow("0 0 L * *", CronFormat.Standard, false)]
+    public void GetNextOccurrence_WhenAfterIsTheLastInstant_ShouldReturnNull(string expression, CronFormat format, bool inclusive)
+    {
+        CronExpression cron = CronExpression.Parse(expression, format);
+
+        Assert.IsNull(cron.GetNextOccurrence(DateTime.MaxValue, inclusive));
+    }
+
+    /// <summary>
+    /// Verifies that a search whose next occurrence would fall after the last instant of the calendar returns
+    /// <see langword="null" /> rather than throwing, whichever field's step would leave the calendar.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="format">The field layout.</param>
+    /// <param name="after">The instant the search starts from.</param>
+    [TestMethod]
+    [DataRow("0 0 29 2 *", CronFormat.Standard, "9996-03-01T00:00:00")]
+    [DataRow("0 0 1 1 *", CronFormat.Standard, "9999-02-01T00:00:00")]
+    [DataRow("0 0 1 * *", CronFormat.Standard, "9999-12-15T00:00:00")]
+    [DataRow("0 0 31 12 *", CronFormat.Standard, "9999-12-31T00:00:01")]
+    [DataRow("0 * * * *", CronFormat.Standard, "9999-12-31T23:00:30")]
+    [DataRow("0 * * * * *", CronFormat.WithSeconds, "9999-12-31T23:59:00")]
+    [DataRow("0 0 L 2 *", CronFormat.Standard, "9999-03-01T00:00:00")]
+    [DataRow("0 0 15W * *", CronFormat.Standard, "9999-12-16T00:00:00")]
+    public void GetNextOccurrence_WhenTheOccurrenceWouldFollowTheCalendar_ShouldReturnNull(string expression, CronFormat format, string after)
+    {
+        CronExpression cron = CronExpression.Parse(expression, format);
+
+        Assert.IsNull(cron.GetNextOccurrence(Instant(after)));
+    }
+
+    /// <summary>
+    /// Verifies that a search for an expression that never matches returns <see langword="null" /> rather than
+    /// throwing when it starts close enough to the end of the calendar for its horizon to reach past it.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="format">The field layout.</param>
+    /// <param name="after">The instant the search starts from.</param>
+    [TestMethod]
+    [DataRow("0 0 30 2 *", CronFormat.Standard, "9987-01-01T00:00:00")]
+    [DataRow("0 0 0 30 2 *", CronFormat.WithSeconds, "9987-01-01T00:00:00")]
+    [DataRow("0 0 30W 2 *", CronFormat.Standard, "9987-01-01T00:00:00")]
+    [DataRow("0 0 30 2 *", CronFormat.Standard, "9993-06-15T00:00:00")]
+    [DataRow("0 0 30 2 *", CronFormat.Standard, "9599-01-01T00:00:00")]
+    [DataRow("0 0 30W 2 *", CronFormat.Standard, "9599-01-01T00:00:00")]
+    [DataRow("0 0 30 2 *", CronFormat.Standard, "9700-01-01T00:00:00")]
+    public void GetNextOccurrence_WhenTheSearchForANeverMatchingExpressionReachesTheEnd_ShouldReturnNull(string expression, CronFormat format, string after)
+    {
+        CronExpression cron = CronExpression.Parse(expression, format);
+
+        Assert.IsNull(cron.GetNextOccurrence(Instant(after)));
+    }
+
+    /// <summary>
+    /// Verifies that an occurrence on the last day of the calendar is still found, up to its last minute or second.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="format">The field layout.</param>
+    /// <param name="after">The instant the search starts from.</param>
+    /// <param name="expected">The expected next occurrence.</param>
+    [TestMethod]
+    [DataRow("59 23 31 12 *", CronFormat.Standard, "9999-12-31T00:00:00", "9999-12-31T23:59:00")]
+    [DataRow("59 59 23 31 12 *", CronFormat.WithSeconds, "9999-12-31T00:00:00", "9999-12-31T23:59:59")]
+    [DataRow("0 23 L 12 *", CronFormat.Standard, "9999-12-01T00:00:00", "9999-12-31T23:00:00")]
+    [DataRow("0 0 29 2 *", CronFormat.Standard, "9996-01-01T00:00:00", "9996-02-29T00:00:00")]
+    public void GetNextOccurrence_WhenTheOccurrenceIsLateInTheCalendar_ShouldReturnIt(string expression, CronFormat format, string after, string expected)
+    {
+        CronExpression cron = CronExpression.Parse(expression, format);
+
+        Assert.AreEqual(Instant(expected), cron.GetNextOccurrence(Instant(after)));
+    }
+
+    /// <summary>
+    /// Verifies that the search finds an occurrence decades away: the 29th of February on given weekdays recurs at gaps
+    /// of up to forty years, the non-leap 2100 included.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="format">The field layout.</param>
+    /// <param name="after">The instant the search starts from.</param>
+    /// <param name="expected">The expected next occurrence.</param>
+    [TestMethod]
+    [DataRow("0 0 29 2 */5", CronFormat.Standard, "2019-01-01T00:00:00", "2032-02-29T00:00:00")]
+    [DataRow("0 0 0 29 2 */5", CronFormat.WithSeconds, "2019-01-01T00:00:00", "2032-02-29T00:00:00")]
+    [DataRow("0 0 * 2 MON#5", CronFormat.Standard, "2020-01-01T00:00:00", "2044-02-29T00:00:00")]
+    [DataRow("0 0 * 2 MON#5", CronFormat.Standard, "2072-03-01T00:00:00", "2112-02-29T00:00:00")]
+    public void GetNextOccurrence_WhenTheOccurrenceIsDecadesAway_ShouldReturnIt(string expression, CronFormat format, string after, string expected)
+    {
+        CronExpression cron = CronExpression.Parse(expression, format);
+
+        Assert.AreEqual(Instant(expected), cron.GetNextOccurrence(Instant(after)));
+    }
+
+    /// <summary>
+    /// Verifies that an expression that never matches returns <see langword="null" /> once the search has covered a
+    /// whole 400-year cycle of the calendar.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    [TestMethod]
+    [DataRow("0 0 30 2 *")]
+    [DataRow("0 0 31 4,6,9,11 *")]
+    [DataRow("0 0 30W 2 *")]
+    public void GetNextOccurrence_WhenTheExpressionNeverMatches_ShouldReturnNull(string expression)
+    {
+        CronExpression cron = CronExpression.Parse(expression);
+
+        Assert.IsNull(cron.GetNextOccurrence(Instant("2026-03-10T00:00:00")));
+    }
+
+    /// <summary>
+    /// Verifies that the search passes over only the months that can hold no selected day: under the union of the day
+    /// fields a weekday still matches in a month too short for the day of the month, a Quartz day token decides its own
+    /// months, a month long enough for one of several days still matches, and February holds its 29th.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="after">The instant the search starts from.</param>
+    /// <param name="expected">The expected next occurrence.</param>
+    [TestMethod]
+    [DataRow("0 0 31 4 MON", "2026-04-01T00:00:00", "2026-04-06T00:00:00")]
+    [DataRow("0 0 L 4 *", "2026-04-01T00:00:00", "2026-04-30T00:00:00")]
+    [DataRow("0 0 30,31 2,4 *", "2026-01-01T00:00:00", "2026-04-30T00:00:00")]
+    [DataRow("0 0 31 * *", "2026-04-01T00:00:00", "2026-05-31T00:00:00")]
+    [DataRow("0 0 29 2 *", "2026-03-01T00:00:00", "2028-02-29T00:00:00")]
+    public void GetNextOccurrence_WhenAMonthHoldsNoSelectedDay_ShouldPassOverOnlyThatMonth(string expression, string after, string expected)
+    {
+        CronExpression cron = CronExpression.Parse(expression);
+
+        Assert.AreEqual(Instant(expected), cron.GetNextOccurrence(Instant(after)));
+    }
+}
