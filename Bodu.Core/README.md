@@ -13,8 +13,6 @@ minutes, and seconds); and a Result<T> type for explicit error handling.
 moved to the **separate `Bodu.Collections` package**. The namespace structure is unchanged; 
 consumers update the package reference only. `Bodu.Collections` depends on `Bodu.Core`.
 
-(Remove the 12-item table entirely)
-
 ## Key Types
 
 - `ThrowHelper` - argument validation helpers (null, range, enum, argument-expression capture)
@@ -51,7 +49,7 @@ dotnet test Bodu.Core/test/Bodu.Core.Test.csproj --settings bvt.runsettings
 dotnet test Bodu.Core/test/Bodu.Core.Test.csproj --settings regression.runsettings
 ```
 
-Collection behaviour is validated through shared contract bases (`CollectionContractTests<>`, `ReadOnlyCollectionContractTests<>`, `SetContractTests<>`, `EnumeratorContractTests<>`, `DebugViewContractTests<>`, `NonGenericCollectionContractTests<>`) so every collection is held to the same interface contract.
+Types that share a contract share its tests. The calendar value sets derive from `CalendarSetContractTests<TSet, TElement>`, which covers construction, membership, the operators, equality and enumeration; the five numeric sets derive from `CalendarValueSetContractTests<TSet>`, which adds their list text; and `DayOfWeekSet`'s text forms run the shared `ParseFormatContractTests<T>`. The collection contract suites (`CollectionContractTests<>` and its siblings) test the collections in the `Bodu.Collections` and `Bodu.Collections.Concurrent` packages.
 
 ## License
 
