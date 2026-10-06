@@ -50,12 +50,3 @@ observable behaviour worth showing. Not demonstrated, on purpose:
   `Equals(object)`. They exist to satisfy the BCL interface contracts; cron and `RRULE` text is
   culture-invariant by definition, which is precisely why the provider is ignored, so a sample
   passing `CultureInfo.InvariantCulture` would demonstrate nothing.
-
-## Known wrinkle
-
-`WeekDayNum.ToString()` currently emits the compiler-generated record form
-(`WeekDayNum { Ordinal = 1, Day = Friday, … }`) rather than its iCalendar token (`1FR`), which is
-inconsistent with `RecurrenceRule`, `RecurrenceSet`, `CronExpression`, and `AnchoredInterval` - all
-of which render canonical text. The samples therefore read the ordinal and day as properties, and
-show the canonical token via the rule that carries it. This is recorded rather than worked around
-silently.

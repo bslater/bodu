@@ -104,7 +104,7 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse("FREQ=MONTHLY;COUNT=12;BYDAY=
 
 `WithCount` and `WithUntil` are mutually exclusive: supplying one clears the other, matching the RFC rule that `COUNT` and `UNTIL` cannot both appear. Out-of-range values throw <xref:System.ArgumentOutOfRangeException> at the call, not at `Build()`.
 
-<xref:Bodu.Globalization.Recurrence.WeekDayNum> is a `readonly record struct (int Ordinal, DayOfWeek Day)`. `Ordinal` `0` means every occurrence of the day (`IsEveryOccurrence` is `true`); a positive ordinal counts from the start of the frequency period and a negative one from its end, so `2TU` is the second Tuesday of the month in a `MONTHLY` rule and the second Tuesday of the *year* in a `YEARLY` rule. A `+` sign is accepted on input (`+1MO`) and dropped on output (`1MO`).
+<xref:Bodu.Globalization.Recurrence.WeekDayNum> is a `readonly record struct (int Ordinal, DayOfWeek Day)`. `Ordinal` `0` means every occurrence of the day (`IsEveryOccurrence` is `true`); a positive ordinal counts from the start of the frequency period and a negative one from its end, so `2TU` is the second Tuesday of the month in a `MONTHLY` rule and the second Tuesday of the *year* in a `YEARLY` rule. A `+` sign is accepted on input (`+1MO`) and dropped on output (`1MO`). An entry's `ToString()` returns that same token, so `new WeekDayNum(-1, DayOfWeek.Friday)` prints as `-1FR`.
 
 ## Pattern 4 - enumerate occurrences
 

@@ -40,7 +40,7 @@ Interval   : 1
 Count      : 5
 Until      : (none)
 WeekStart  : Monday
-ByDay[0]   : Ordinal=1, Day=Friday, IsEveryOccurrence=False
+ByDay[0]   : 1FR (Ordinal=1, Day=Friday, IsEveryOccurrence=False)
 start      : 2026-01-01 09:30
 occurrences: 2026-01-02, 2026-02-06, 2026-03-06, 2026-04-03, 2026-05-01
 first      : 2026-01-02 09:30
@@ -77,7 +77,7 @@ guard.
 **APIs demonstrated.** `RecurrenceRule.Parse`, `.Frequency` / `.Interval` / `.Count` / `.Until` /
 `.WeekStart`, all nine `By*` properties (`.ByMonth` / `.ByWeekNo` / `.ByYearDay` / `.ByMonthDay` /
 `.ByDay` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos`), `WeekDayNum.Ordinal` / `.Day` /
-`.IsEveryOccurrence` and its `==` / `!=` operators, `RecurrenceRule.GetOccurrences(DateTime)`,
+`.IsEveryOccurrence` / `.ToString()` and its `==` / `!=` operators, `RecurrenceRule.GetOccurrences(DateTime)`,
 `.ToString()`, `.Equals`.
 
 ## Scenario 2 - ByPartSemantics
@@ -196,9 +196,9 @@ occurrences       : 2026-01-15, 2026-02-19, 2026-03-19, 2026-04-16
 last Friday       : FREQ=MONTHLY;COUNT=4;BYDAY=-1FR
 occurrences       : 2026-01-30, 2026-02-27, 2026-03-27, 2026-04-24
 WeekDayNum(0, Tue) : Ordinal=0, Day=Tuesday, IsEveryOccurrence=True
-  ordinal  0 Tuesday   -> FREQ=MONTHLY;BYDAY=TU
-  ordinal  3 Thursday  -> FREQ=MONTHLY;BYDAY=3TH
-  ordinal -1 Friday    -> FREQ=MONTHLY;BYDAY=-1FR
+  TU   = ordinal  0 Tuesday   -> FREQ=MONTHLY;BYDAY=TU
+  3TH  = ordinal  3 Thursday  -> FREQ=MONTHLY;BYDAY=3TH
+  -1FR = ordinal -1 Friday    -> FREQ=MONTHLY;BYDAY=-1FR
 
 --- Builder: a bounded yearly rule ---
 rule       : FREQ=YEARLY;UNTIL=20301231T000000;BYDAY=4TH;BYMONTH=11
@@ -233,14 +233,10 @@ makes easy: the call is in the chain, but invisible in the result.
 several times a day, and at the sub-daily frequencies the parts finer than the frequency expand each
 hour or minute while `ByHour` limits which hours produce occurrences.
 
-> The canonical token for a `WeekDayNum` is read from the rule that carries it, because
-> `WeekDayNum.ToString()` currently emits the compiler-generated record form rather than its
-> iCalendar token - see the *Known wrinkle* note in the domain README.
-
 **APIs demonstrated.** `RecurrenceRuleBuilder` - every member: `.WithInterval` / `.WithCount` /
 `.WithUntil` / `.WithWeekStart` / `.ByDay` (both overloads) / `.ByMonth` / `.ByMonthDay` /
 `.ByYearDay` / `.ByWeekNo` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos` / `.Build` -
-plus `WeekDayNum` construction and `Deconstruct`, and `RecurrenceFrequency`.
+plus `WeekDayNum` construction, `Deconstruct` and `ToString`, and `RecurrenceFrequency`.
 
 ## Scenario 5 - BoundedEnumeration
 
