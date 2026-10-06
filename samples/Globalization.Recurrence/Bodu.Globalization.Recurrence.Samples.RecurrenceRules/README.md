@@ -176,8 +176,9 @@ text form; builds "third Thursday" and "last Friday" rules with ordinal and nega
 `WeekDayNum` values; shows the `IsEveryOccurrence` flag and deconstruction; builds two realistic
 bounded rules - US Thanksgiving via `UNTIL`, and quarter-end via `BySetPos(-1)`; contrasts two
 week starts through `WithWeekStart`; covers the remaining date-selecting parts (`ByMonthDay`,
-`ByYearDay`, `ByWeekNo`); and closes with the time-of-day parts, which place occurrences within the
-day at a daily frequency and an hourly one.
+`ByYearDay`, `ByWeekNo`); shows the time-of-day parts, which place occurrences within the day at a
+daily frequency and an hourly one; and closes by building six parts from Bodu.Core's calendar value
+sets, then passing an empty set, which the builder rejects.
 
 **What to expect.** The builder is a spelling of the same grammar, so the built rule equals the
 parsed one - the property that makes it safe in configuration code. Ordinals render as `3TH` and
@@ -222,6 +223,11 @@ occurrences: 2026-03-31, 2026-06-30, 2026-09-30, 2026-12-31
   occurs  : 2026-01-01 09:30, 2026-01-01 17:30, 2026-01-02 09:30, 2026-01-02 17:30
   built   : FREQ=HOURLY;INTERVAL=3;COUNT=6;BYMINUTE=0,30;BYHOUR=9,12,15
   occurs  : 2026-01-01 09:00, 2026-01-01 09:30, 2026-01-01 12:00, 2026-01-01 12:30, 2026-01-01 15:00, 2026-01-01 15:30
+
+--- Calendar value sets: the same parts from Bodu.Core's sets ---
+  built   : FREQ=DAILY;COUNT=4;BYSECOND=0;BYMINUTE=30;BYHOUR=9,17;BYDAY=MO,TU,WE,TH,FR;BYMONTHDAY=28,29,30,31;BYMONTH=3,6,9,12
+  occurs  : 2026-03-30 09:30, 2026-03-30 17:30, 2026-03-31 09:30, 2026-03-31 17:30
+  ByMonth(MonthSet.Empty) : ArgumentException - The set supplied for the 'ByMonth' recurrence rule part is empty; leave the part unset to place no limit on it. (Parameter 'ByMonth')
 ```
 
 `WithWeekStart` is the one worth pausing on. Monday is the default, and a default is omitted from
@@ -233,10 +239,20 @@ makes easy: the call is in the chain, but invisible in the result.
 several times a day, and at the sub-daily frequencies the parts finer than the frequency expand each
 hour or minute while `ByHour` limits which hours produce occurrences.
 
+The calendar value sets give six of the parts a typed argument in place of a list of numbers. The
+builder writes a set's values in ascending order, and `BYDAY` Monday first, whatever order the set
+was built in, so `MonthSet.Parse("12,3,6,9")` becomes `BYMONTH=3,6,9,12`. An empty set throws at the
+call, because a part that is present selects at least one value; to place no limit, leave the part
+unset. The `int` overloads remain for what a set cannot express: a month day counted from the end,
+such as `-1`, and second 60.
+
 **APIs demonstrated.** `RecurrenceRuleBuilder` - every member: `.WithInterval` / `.WithCount` /
-`.WithUntil` / `.WithWeekStart` / `.ByDay` (both overloads) / `.ByMonth` / `.ByMonthDay` /
-`.ByYearDay` / `.ByWeekNo` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos` / `.Build` -
-plus `WeekDayNum` construction, `Deconstruct` and `ToString`, and `RecurrenceFrequency`.
+`.WithUntil` / `.WithWeekStart` / `.ByDay` (all three overloads) / `.ByMonth` / `.ByMonthDay` /
+`.ByYearDay` / `.ByWeekNo` / `.ByHour` / `.ByMinute` / `.BySecond` / `.BySetPos` / `.Build`, with
+`ByDay`, `ByMonth`, `ByMonthDay`, `ByHour`, `ByMinute` and `BySecond` each also called with its
+calendar value set (`DayOfWeekSet`, `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet`,
+`SecondSet`) - plus `WeekDayNum` construction, `Deconstruct` and `ToString`, and
+`RecurrenceFrequency`.
 
 ## Scenario 5 - BoundedEnumeration
 

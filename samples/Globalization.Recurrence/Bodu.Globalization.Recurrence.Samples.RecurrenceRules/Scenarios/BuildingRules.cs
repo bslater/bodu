@@ -24,8 +24,9 @@ public static class BuildingRules
             "RecurrenceRuleBuilder - building rules without writing RRULE text",
             what: "Builds a rule fluently and checks it equals the hand-written text, covers WeekDayNum ordinals "
                 + "including the negative and zero forms, builds a bounded yearly rule and a quarter-end rule "
-                + "with BYSETPOS, reaches WKST through the builder, and shows the time-of-day parts placing "
-                + "occurrences within the day, at a daily frequency and an hourly one.",
+                + "with BYSETPOS, reaches WKST through the builder, shows the time-of-day parts placing "
+                + "occurrences within the day, at a daily frequency and an hourly one, and builds the same parts "
+                + "from Bodu.Core's calendar value sets.",
             why: "RRULE text is compact and unforgiving - a typo produces either a parse error or, worse, a valid "
                 + "rule selecting the wrong dates. The builder makes the grammar discoverable and the mistakes "
                 + "compile-time, which matters most in configuration code where the rule is assembled from user "
