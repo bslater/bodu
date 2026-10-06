@@ -79,6 +79,9 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <summary>The matching months.</summary>
     private readonly MonthSet _months;
 
+    /// <summary>The months the searches visit: the matching months, less any in which no day can match because the day fields combine by intersection and none of the selected days of the month falls in it.</summary>
+    private readonly MonthSet _searchedMonths;
+
     /// <summary>The matching days of the week; empty when the field holds a Quartz token.</summary>
     private readonly DayOfWeekSet _daysOfWeek;
 
@@ -136,6 +139,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _dayOfMonthToken = dayOfMonthToken;
         _dayOfWeekToken = dayOfWeekToken;
         _hasDayToken = dayOfMonthToken is not null || dayOfWeekToken is not null;
+        _searchedMonths = _hasDayToken || DaysCombineByUnion ? months : MonthsHoldingASelectedDay(months, daysOfMonth);
     }
 
     /// <summary>
@@ -179,7 +183,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
         while (candidate.Year <= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -250,7 +254,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
         while (candidate.Year >= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).Subtract(unit);
                 continue;
@@ -419,6 +423,38 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _domRestricted && _dowRestricted;
 
     /// <summary>
+    /// Returns the months, of those given, that hold at least one of the given days of the month in some year.
+    /// </summary>
+    /// <param name="months">The matching months.</param>
+    /// <param name="daysOfMonth">The matching days of the month.</param>
+    /// <returns>
+    /// The months of <paramref name="months" /> long enough to hold a day of <paramref name="daysOfMonth" />.
+    /// </returns>
+    /// <remarks>
+    /// When the day fields combine by intersection, a day matches only if the day-of-month set selects it, so a month
+    /// too short for every selected day, such as February for <c>30</c> or April for <c>31</c>, never matches. The
+    /// searches leave such months out: they would otherwise test every day of the month in every year of the cycle,
+    /// which cost an expression that never matches, such as <c>0 0 31 4,6,9,11 *</c>, up to 1.8 ms. February counts its
+    /// 29th, which a leap year holds.
+    /// </remarks>
+    private static MonthSet MonthsHoldingASelectedDay(MonthSet months, DayOfMonthSet daysOfMonth)
+    {
+        ulong days = daysOfMonth.ToUInt64();
+        MonthSet searched = months;
+        foreach (int month in months)
+        {
+            // Bit n of the day bitmap stands for the (n + 1)-th; 2000 is a leap year, so February is 29 days long.
+            ulong daysInMonth = (1UL << DateTime.DaysInMonth(2000, month)) - 1;
+            if ((days & daysInMonth) == 0)
+            {
+                searched = searched.Without(month);
+            }
+        }
+
+        return searched;
+    }
+
+    /// <summary>
     /// Determines whether a calendar value set's bitmap selects the value at an offset in the set's domain.
     /// </summary>
     /// <param name="bitmap">
@@ -512,7 +548,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
         while (candidate.Year <= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -573,7 +609,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
         while (candidate.Year >= guardYear)
         {
-            if (!Selects(_months.ToUInt64(), candidate.Month - 1))
+            if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
                 candidate = StartOfMonth(candidate).Subtract(unit);
                 continue;

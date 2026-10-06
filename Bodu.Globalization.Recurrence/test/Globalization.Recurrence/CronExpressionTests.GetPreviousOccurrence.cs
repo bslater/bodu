@@ -150,4 +150,25 @@ public partial class CronExpressionTests
 
         Assert.IsNull(cron.GetPreviousOccurrence(Instant("2026-03-10T00:00:00")));
     }
+
+    /// <summary>
+    /// Verifies that the search passes over only the months that can hold no selected day: under the union of the day
+    /// fields a weekday still matches in a month too short for the day of the month, a Quartz day token decides its own
+    /// months, a month long enough for one of several days still matches, and February holds its 29th.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="before">The instant the search starts from.</param>
+    /// <param name="expected">The expected previous occurrence.</param>
+    [TestMethod]
+    [DataRow("0 0 31 4 MON", "2026-05-01T00:00:00", "2026-04-27T00:00:00")]
+    [DataRow("0 0 L 4 *", "2026-05-15T00:00:00", "2026-04-30T00:00:00")]
+    [DataRow("0 0 30,31 2,4 *", "2026-12-31T00:00:00", "2026-04-30T00:00:00")]
+    [DataRow("0 0 31 * *", "2026-05-01T00:00:00", "2026-03-31T00:00:00")]
+    [DataRow("0 0 29 2 *", "2026-03-01T00:00:00", "2024-02-29T00:00:00")]
+    public void GetPreviousOccurrence_WhenAMonthHoldsNoSelectedDay_ShouldPassOverOnlyThatMonth(string expression, string before, string expected)
+    {
+        CronExpression cron = CronExpression.Parse(expression);
+
+        Assert.AreEqual(Instant(expected), cron.GetPreviousOccurrence(Instant(before)));
+    }
 }
