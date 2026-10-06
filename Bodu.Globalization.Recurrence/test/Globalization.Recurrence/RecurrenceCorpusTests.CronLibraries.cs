@@ -21,7 +21,9 @@ public sealed partial class RecurrenceCorpusTests
     /// </remarks>
     private static readonly (string Directory, string Table)[] s_cronLibraryTables =
     [
+        ("croniter", "croniter"),
         ("cronos", "cronos-reverse"),
+        ("cronsim", "cronsim"),
         ("ncrontab", "ncrontab"),
         ("quartznet", "quartznet"),
     ];
@@ -403,7 +405,9 @@ public sealed partial class RecurrenceCorpusTests
     {
         (string Table, int Rows, int InScope)[] recorded =
         [
+            ("croniter", 389, 264),
             ("cronos-reverse", 29, 26),
+            ("cronsim", 438, 432),
             ("ncrontab", 187, 184),
             ("quartznet", 385, 269),
         ];

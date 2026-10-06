@@ -23,7 +23,7 @@ public sealed partial class RecurrenceCorpusTests
     /// </remarks>
     private static readonly string[] s_cronFixLibraries =
     [
-        "cronos", "ncrontab", "quartznet",
+        "croniter", "cronos", "cronsim", "ncrontab", "quartznet",
     ];
 
     /// <summary>
@@ -39,7 +39,9 @@ public sealed partial class RecurrenceCorpusTests
     {
         (string Library, int Applies, int Dialect, int NotApplicable, int Unknown)[] recorded =
         [
+            ("croniter", 85, 24, 117, 2),
             ("cronos", 66, 5, 58, 0),
+            ("cronsim", 13, 0, 13, 0),
             ("ncrontab", 6, 0, 4, 0),
             ("quartznet", 47, 10, 40, 3),
         ];
