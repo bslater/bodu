@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Runtime.CompilerServices;
+
 namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
@@ -391,6 +393,11 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </summary>
     /// <param name="candidate">The instant to test.</param>
     /// <returns><see langword="true" /> when the day matches; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// Both search loops test the day on every step. The two set tests make this method too large for the JIT to inline
+    /// on its own, and left as a call it cost an expression without a token up to a tenth of its query time.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool DayMatches(DateTime candidate)
     {
         bool domMatch = _daysOfMonth.Contains(candidate.Day);
