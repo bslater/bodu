@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Documentation guard rails for the DocFX site under docs/.
 
-Seven checks, each independently runnable, all run by ``all``:
+Eight checks, each independently runnable, all run by ``all``:
 
   orphans      every hand-authored page under docs/ is reachable from a TOC
   namespaces   every public namespace in the generated API metadata has an
@@ -27,6 +27,9 @@ Seven checks, each independently runnable, all run by ``all``:
                a package README, the repository README or a namespace
                overview names every one of those .NET versions, or the
                oldest as a minimum, when it names any
+  sessions     every *.runsettings file at the repository root states its
+               session limit in the comment above <TestSessionTimeout>, as
+               "N minutes per assembly", and the value is that many minutes
 
 Allow-lists live in bld/docs-checks/*.txt (one entry per line, ``#`` comments).
 The namespace allow-list is *debt*: entries are namespaces that still lack an
@@ -34,7 +37,7 @@ overview and should be removed as overviews are written, never added to.
 
 Usage:
   python3 bld/check-docs.py all            # after `bash bld/docs/build-api-docs.sh all`
-  python3 bld/check-docs.py orphans identifiers status targets   # no build needed
+  python3 bld/check-docs.py orphans identifiers status targets sessions   # no build needed
 """
 
 from __future__ import annotations
@@ -714,13 +717,64 @@ def check_publication() -> list[str]:
     return problems
 
 
+# ------------------------------------------------------- sessions (runsettings guards)
+
+
+# The limit a runsettings file states for its own sessions: "10 minutes per assembly". A limit named in passing,
+# such as stress.runsettings' "the 10-minute per-session guard used by the other tiers", is not written this way.
+_SESSION_LIMIT = re.compile(r"(\d+) minutes per assembly")
+
+# The comment immediately above the element, and the element's value in milliseconds.
+_SESSION_TIMEOUT = re.compile(
+    r"(?:<!--((?:(?!<!--|-->).)*)-->\s*)?<TestSessionTimeout>\s*(\d+)\s*</TestSessionTimeout>", re.DOTALL)
+
+
+def session_timeout_problems(rel: str, text: str) -> list[str]:
+    """Reports a runsettings file whose ``TestSessionTimeout`` is not the limit stated in the comment above it.
+
+    The comment states the limit in minutes per assembly, and the documentation repeats it, while the value is
+    written in milliseconds, where one zero too many goes unseen. A file that sets no limit is not read.
+    """
+    match = _SESSION_TIMEOUT.search(text)
+    if match is None:
+        return []
+
+    line_no = text.count("\n", 0, match.start(2)) + 1
+    value = int(match.group(2))
+    limits = _SESSION_LIMIT.findall(match.group(1) or "")
+    if len(limits) != 1:
+        return [
+            f"{rel}:{line_no}: the comment above <TestSessionTimeout> must state its limit once, as "
+            f"\"N minutes per assembly\""]
+
+    minutes = int(limits[0])
+    if value != minutes * 60_000:
+        return [
+            f"{rel}:{line_no}: <TestSessionTimeout> is {value} ms ({value / 60_000:g} minutes), but the comment "
+            f"above it states {minutes} minutes per assembly ({minutes * 60_000} ms)"]
+    return []
+
+
+def check_sessions() -> list[str]:
+    """Holds each runsettings file's session limit to the limit its comment states.
+
+    CI's Test step, the coverage workflow and the documented test tiers each run under one of the runsettings files
+    at the repository root. A limit far longer than intended lets a hung test run until the job's own timeout,
+    which names no test.
+    """
+    problems = []
+    for name in sorted(n for n in os.listdir(ROOT) if n.endswith(".runsettings")):
+        problems += session_timeout_problems(name, read(os.path.join(ROOT, name)))
+    return problems
+
+
 # ------------------------------------------------------------------- main
 
 
 def main(argv: list[str]) -> int:
     wanted = [a for a in argv if not a.startswith("-")] or ["all"]
     if "all" in wanted:
-        wanted = ["orphans", "namespaces", "identifiers", "status", "packages", "publication", "targets"]
+        wanted = ["orphans", "namespaces", "identifiers", "status", "packages", "publication", "targets", "sessions"]
     runners = {
         "orphans": check_orphans,
         "namespaces": check_namespaces,
@@ -729,6 +783,7 @@ def main(argv: list[str]) -> int:
         "packages": check_packages,
         "publication": check_publication,
         "targets": check_targets,
+        "sessions": check_sessions,
     }
     failed = 0
     for name in wanted:

@@ -110,8 +110,8 @@ change's scope belongs in its own issue and its own pull request.
 
 Every pull request runs:
 
-- **Build and Test** - every test project on Linux x64, and the cryptography tests on Linux ARM64, with
-  warnings as errors.
+- **Build and Test** - every test project, every sample and the docs project, built with warnings as
+  errors on Linux x64, where the tests and samples then run; and the cryptography tests on Linux ARM64.
 - **Policy Gate** - the deterministic checks in `bld/check-policy.sh` and the folder and namespace
   alignment check.
 - **Claude Policy Review** - an automated review against the judgment-based conventions in `CLAUDE.md`.

@@ -49,11 +49,10 @@ public static class RuleBasics
         Console.WriteLine($"WeekStart  : {rule.WeekStart}");  // defaults to Monday per RFC 5545
 
         // BYDAY entries are WeekDayNum values: an optional ordinal plus a weekday. "1FR" is the
-        // first Friday; an entry with no ordinal reports IsEveryOccurrence. The canonical "1FR"
-        // token is emitted by the rule's own ToString, shown above -- read the parts individually
-        // here rather than calling WeekDayNum.ToString().
+        // first Friday; an entry with no ordinal reports IsEveryOccurrence. An entry's ToString
+        // writes the same token the rule's text carries for it.
         WeekDayNum byDay = rule.ByDay[0];
-        Console.WriteLine($"ByDay[0]   : Ordinal={byDay.Ordinal}, Day={byDay.Day}, IsEveryOccurrence={byDay.IsEveryOccurrence}");
+        Console.WriteLine($"ByDay[0]   : {byDay} (Ordinal={byDay.Ordinal}, Day={byDay.Day}, IsEveryOccurrence={byDay.IsEveryOccurrence})");
 
         // The start instant is passed to the enumeration, not stored on the rule. COUNT=5 bounds
         // the stream, so this terminates without a Take.

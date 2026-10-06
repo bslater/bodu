@@ -170,10 +170,11 @@ and the first two have bitten:
 - **Some code runs only on ARM64.** `build-test.yml`'s `build-test-arm64` job runs the two
   cryptography test projects on GitHub's hosted ARM64 runner, the only place the Argon2 AdvSimd shim
   executes; on x64 its tests report inconclusive. A green x64 run says nothing about that path.
-- **CI treats warnings as errors.** `build-test.yml` builds every test project with
-  `-p:TreatWarningsAsErrors=true`, so any compiler or analyzer warning - StyleCop, Roslynator, the .NET
-  analyzers, the BODU XML-doc rules - fails the pull request, and `release.yml`'s test gate builds the
-  same way, so the same warning stops a release. The release's pack step goes further and also fails on
+- **CI treats warnings as errors.** `build-test.yml` builds every test project, and then every sample
+  and the docs project (`docs/doc.csproj`), with `-p:TreatWarningsAsErrors=true`, so any compiler or
+  analyzer warning - StyleCop, Roslynator, the .NET analyzers, the BODU XML-doc rules - fails the pull
+  request, and `release.yml`'s test gate builds the test projects the same way, so the same warning
+  stops a release. The release's pack step goes further and also fails on
   NuGet restore and pack warnings, so a newly published advisory for a dependency stops a release until
   the dependency is updated or that advisory is suppressed with a `NuGetAuditSuppress` item giving the
   reason. A local build still reports all of these as warnings. To match CI:
@@ -395,13 +396,13 @@ The suite is partitioned into tiers via `[TestCategory(...)]` so the build can r
 | **Regression** | `[TestCategory("Regression")]` | Exhaustive vector tables, full algorithm catalogues, large parameter sweeps, multi-decade calendar tables. Excluded from BVT. |
 | **Stress** | `[TestCategory("Stress")]` | Long-running, high-iteration loops that exceed the standard 10-minute session guard. Excluded from BVT **and** Regression; run on demand via `stress.runsettings`. |
 
-Run-settings files at the repository root drive each tier. Every file except `stress.runsettings` caps the session at 10 minutes per assembly (`TestSessionTimeout`); `stress.runsettings` relaxes this to 60 minutes because the stress loops (e.g. the RFC 7748 §5.2 one-million-iteration ladder) run for tens of minutes:
+Run-settings files at the repository root drive each tier. Each caps a test session per assembly with `TestSessionTimeout`, and states the limit in the comment above it; `bld/check-docs.py sessions` holds the value to that comment. The root `.runsettings` (which a bare `dotnet test` uses), `smoke`, `bvt` and `regression.runsettings` allow 10 minutes. `test.runsettings`, which CI runs, allows 20. `coverage.runsettings` allows 30, since instrumentation roughly doubles the vector-table assemblies' time. `stress.runsettings` allows 60, because the stress loops (e.g. the RFC 7748 §5.2 one-million-iteration ladder) run for tens of minutes:
 
 ```bash
 dotnet test bodu.slnx --settings smoke.runsettings        # Smoke only
 dotnet test bodu.slnx --settings bvt.runsettings          # BVT (default build run)
 dotnet test bodu.slnx --settings regression.runsettings   # Smoke + BVT + Regression (excludes Stress)
-dotnet test bodu.slnx --settings test.runsettings         # legacy alias for regression.runsettings
+dotnet test bodu.slnx --settings test.runsettings         # what CI runs: the regression filter, 20-minute guard
 dotnet test bodu.slnx --settings stress.runsettings       # Stress only (60-minute session guard)
 ```
 

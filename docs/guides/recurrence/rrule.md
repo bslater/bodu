@@ -120,7 +120,7 @@ bool same = lastFriday.Equals(RecurrenceRule.Parse("FREQ=MONTHLY;COUNT=12;BYDAY=
 
 The overloads that take a [calendar value set](../core/calendar-value-sets.md) write the set's values in ascending order, and `BYDAY` Monday first, whatever order the set was built in, so `DayOfWeekSet.Weekdays` builds `BYDAY=MO,TU,WE,TH,FR`. An empty set throws <xref:System.ArgumentException> naming the part: a part that is present selects at least one value, and a part left unset places no limit.
 
-<xref:Bodu.Globalization.Recurrence.WeekDayNum> is a `readonly record struct (int Ordinal, DayOfWeek Day)`. `Ordinal` `0` means every occurrence of the day (`IsEveryOccurrence` is `true`); a positive ordinal counts from the start of the frequency period and a negative one from its end, so `2TU` is the second Tuesday of the month in a `MONTHLY` rule and the second Tuesday of the *year* in a `YEARLY` rule. A `+` sign is accepted on input (`+1MO`) and dropped on output (`1MO`).
+<xref:Bodu.Globalization.Recurrence.WeekDayNum> is a `readonly record struct (int Ordinal, DayOfWeek Day)`. `Ordinal` `0` means every occurrence of the day (`IsEveryOccurrence` is `true`); a positive ordinal counts from the start of the frequency period and a negative one from its end, so `2TU` is the second Tuesday of the month in a `MONTHLY` rule and the second Tuesday of the *year* in a `YEARLY` rule. A `+` sign is accepted on input (`+1MO`) and dropped on output (`1MO`). An entry's `ToString()` returns that same token, so `new WeekDayNum(-1, DayOfWeek.Friday)` prints as `-1FR`.
 
 ## Pattern 4 - enumerate occurrences
 
