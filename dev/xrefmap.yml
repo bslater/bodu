@@ -81689,6 +81689,12 @@ references:
   commentId: Overload:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.Build
   fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.Build
   nameWithType: RecurrenceRuleBuilder.Build
+- uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay(Bodu.DayOfWeekSet)
+  name: ByDay(DayOfWeekSet)
+  href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByDay_Bodu_DayOfWeekSet_
+  commentId: M:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay(Bodu.DayOfWeekSet)
+  fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay(Bodu.DayOfWeekSet)
+  nameWithType: RecurrenceRuleBuilder.ByDay(DayOfWeekSet)
 - uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay(Bodu.Globalization.Recurrence.WeekDayNum[])
   name: ByDay(params WeekDayNum[])
   href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByDay_Bodu_Globalization_Recurrence_WeekDayNum___
@@ -81713,6 +81719,12 @@ references:
   commentId: Overload:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay
   fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByDay
   nameWithType: RecurrenceRuleBuilder.ByDay
+- uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour(Bodu.HourSet)
+  name: ByHour(HourSet)
+  href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByHour_Bodu_HourSet_
+  commentId: M:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour(Bodu.HourSet)
+  fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour(Bodu.HourSet)
+  nameWithType: RecurrenceRuleBuilder.ByHour(HourSet)
 - uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour(System.Int32[])
   name: ByHour(params int[])
   href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByHour_System_Int32___
@@ -81728,6 +81740,12 @@ references:
   commentId: Overload:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour
   fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByHour
   nameWithType: RecurrenceRuleBuilder.ByHour
+- uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute(Bodu.MinuteSet)
+  name: ByMinute(MinuteSet)
+  href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMinute_Bodu_MinuteSet_
+  commentId: M:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute(Bodu.MinuteSet)
+  fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute(Bodu.MinuteSet)
+  nameWithType: RecurrenceRuleBuilder.ByMinute(MinuteSet)
 - uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute(System.Int32[])
   name: ByMinute(params int[])
   href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMinute_System_Int32___
@@ -81743,6 +81761,12 @@ references:
   commentId: Overload:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute
   fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMinute
   nameWithType: RecurrenceRuleBuilder.ByMinute
+- uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth(Bodu.MonthSet)
+  name: ByMonth(MonthSet)
+  href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonth_Bodu_MonthSet_
+  commentId: M:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth(Bodu.MonthSet)
+  fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth(Bodu.MonthSet)
+  nameWithType: RecurrenceRuleBuilder.ByMonth(MonthSet)
 - uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth(System.Int32[])
   name: ByMonth(params int[])
   href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonth_System_Int32___
@@ -81758,6 +81782,12 @@ references:
   commentId: Overload:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth
   fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonth
   nameWithType: RecurrenceRuleBuilder.ByMonth
+- uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay(Bodu.DayOfMonthSet)
+  name: ByMonthDay(DayOfMonthSet)
+  href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonthDay_Bodu_DayOfMonthSet_
+  commentId: M:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay(Bodu.DayOfMonthSet)
+  fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay(Bodu.DayOfMonthSet)
+  nameWithType: RecurrenceRuleBuilder.ByMonthDay(DayOfMonthSet)
 - uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay(System.Int32[])
   name: ByMonthDay(params int[])
   href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_ByMonthDay_System_Int32___
@@ -81773,6 +81803,12 @@ references:
   commentId: Overload:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay
   fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.ByMonthDay
   nameWithType: RecurrenceRuleBuilder.ByMonthDay
+- uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySecond(Bodu.SecondSet)
+  name: BySecond(SecondSet)
+  href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_BySecond_Bodu_SecondSet_
+  commentId: M:Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySecond(Bodu.SecondSet)
+  fullName: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySecond(Bodu.SecondSet)
+  nameWithType: RecurrenceRuleBuilder.BySecond(SecondSet)
 - uid: Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.BySecond(System.Int32[])
   name: BySecond(params int[])
   href: api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html#Bodu_Globalization_Recurrence_RecurrenceRuleBuilder_BySecond_System_Int32___
