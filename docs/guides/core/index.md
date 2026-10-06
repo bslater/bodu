@@ -239,7 +239,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="day-of-week-set.md">DayOfWeekSet</a></h3>
-  <p>Immutable set of days of the week in one byte, with set operators, enumeration, the regional working-week presets, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
+  <p>Immutable set of days of the week, with set operators, enumeration, the regional working-week presets, and parsing and formatting as a seven-character mask (<code>_MTWTF_</code>).</p>
 </div>
 
 <div class="bodu-card">

@@ -23,12 +23,6 @@ public sealed class SecondSetTests
     protected override int Maximum => 59;
 
     /// <inheritdoc />
-    protected override SecondSet Empty => SecondSet.Empty;
-
-    /// <inheritdoc />
-    protected override SecondSet All => SecondSet.All;
-
-    /// <inheritdoc />
     protected override string ConstructorParameterName => "seconds";
 
     /// <inheritdoc />
@@ -46,30 +40,6 @@ public sealed class SecondSetTests
     /// <inheritdoc />
     protected override SecondSet Create(params int[]? values) =>
         new(values);
-
-    /// <inheritdoc />
-    protected override SecondSet FromUInt64(ulong bits) =>
-        SecondSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(SecondSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(SecondSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(SecondSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override SecondSet With(SecondSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override SecondSet Without(SecondSet set, int value) =>
-        set.Without(value);
 
     /// <inheritdoc />
     protected override SecondSet Parse(string s) =>

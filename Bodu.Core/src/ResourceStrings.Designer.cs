@@ -680,6 +680,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value sets bits 0x{0:X} outside the allowed mask 0x{1:X}..
+        /// </summary>
+        internal static string Arg_OutOfRange_BitsOutsideMask {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BitsOutsideMask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The count must be non-negative and must not exceed the number of available items ({0})..
         /// </summary>
         internal static string Arg_OutOfRange_CountExceedsAvailable {
@@ -1023,20 +1032,20 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a {1} format..
+        /// </summary>
+        internal static string Format_Invalid_CalendarValueSetFormat {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CalendarValueSetFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input string contains an invalid character &apos;{0}&apos; at position {1}..
         /// </summary>
         internal static string Format_Invalid_Character {
             get {
                 return ResourceManager.GetString("Format_Invalid_Character", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not a day-of-week set format..
-        /// </summary>
-        internal static string Format_Invalid_DayOfWeekSetFormat {
-            get {
-                return ResourceManager.GetString("Format_Invalid_DayOfWeekSetFormat", resourceCulture);
             }
         }
         

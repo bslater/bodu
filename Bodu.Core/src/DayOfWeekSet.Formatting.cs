@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
-
 namespace Bodu;
 
 public readonly partial struct DayOfWeekSet
@@ -13,11 +11,8 @@ public readonly partial struct DayOfWeekSet
     /// <summary>The number of characters in a mask, one per day.</summary>
     private const int MaskLength = 7;
 
-    /// <summary>
-    /// Gets the letter of each day, in <see cref="DayOfWeek" /> order.
-    /// </summary>
-    private static ReadOnlySpan<char> Letters =>
-        "SMTWTFS";
+    /// <summary>The letter of each day, in <see cref="DayOfWeek" /> order.</summary>
+    private const string DayLetters = "SMTWTFS";
 
     /// <summary>
     /// Returns the set as a seven-character mask, Sunday first, with each day's letter when it is selected and <c>_</c>
@@ -56,7 +51,7 @@ public readonly partial struct DayOfWeekSet
     /// <description>Mask</description>
     /// </listheader>
     /// <item>
-    /// <term><c>S</c>, the default</term>
+    /// <term><c>S</c> or <c>G</c>, the default</term>
     /// <description>Sunday first, with <c>_</c> for a day not selected: <c>"_MTWTF_"</c>.</description>
     /// </item>
     /// <item>
@@ -86,7 +81,7 @@ public readonly partial struct DayOfWeekSet
 
         return TryParseFormat(format, out TextFormat textFormat)
             ? Format(textFormat)
-            : throw new FormatException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_DayOfWeekSetFormat, format));
+            : throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfWeekSet));
     }
 
     /// <summary>
@@ -119,48 +114,24 @@ public readonly partial struct DayOfWeekSet
                     result = TextFormat.BinaryForm;
                     return true;
 
-                case 'S' or 'M':
+                case 'S' or 'M' or 'G':
                     result = new TextFormat(first == 'M', Placeholder: null, Binary: false);
                     return true;
             }
 
             // A placeholder letter on its own keeps the Sunday-first order.
-            if (!TryParsePlaceholder(first, out char sundayFirstPlaceholder))
+            if (!CalendarValueSet.TryParsePlaceholder(first, out char sundayFirstPlaceholder))
                 return false;
 
             result = new TextFormat(MondayFirst: false, sundayFirstPlaceholder, Binary: false);
             return true;
         }
 
-        if (first is not ('S' or 'M') || !TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char placeholder))
+        if (first is not ('S' or 'M') || !CalendarValueSet.TryParsePlaceholder(char.ToUpperInvariant(format[1]), out char placeholder))
             return false;
 
         result = new TextFormat(first == 'M', placeholder, Binary: false);
         return true;
-    }
-
-    /// <summary>
-    /// Attempts to read the letter that names a placeholder.
-    /// </summary>
-    /// <param name="letter">The upper-case letter: <c>E</c>, <c>U</c>, <c>D</c> or <c>A</c>.</param>
-    /// <param name="placeholder">
-    /// When this method returns <see langword="true" />, the placeholder: a space, <c>_</c>, <c>-</c> or <c>*</c>.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> when <paramref name="letter" /> names a placeholder; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool TryParsePlaceholder(char letter, out char placeholder)
-    {
-        placeholder = letter switch
-        {
-            'E' => ' ',
-            'U' => '_',
-            'D' => '-',
-            'A' => '*',
-            _ => '\0',
-        };
-
-        return placeholder != '\0';
     }
 
     /// <summary>
@@ -169,17 +140,7 @@ public readonly partial struct DayOfWeekSet
     /// <param name="format">The format.</param>
     /// <returns>The seven-character mask.</returns>
     private string Format(TextFormat format) =>
-        string.Create(MaskLength, (Bits: _bits, Format: format), static (span, state) =>
-        {
-            char placeholder = state.Format.Placeholder ?? '_';
-            for (int i = 0; i < MaskLength; i++)
-            {
-                int day = state.Format.MondayFirst ? (i + 1) % MaskLength : i;
-                bool selected = (state.Bits & (1 << day)) != 0;
-
-                span[i] = state.Format.Binary
-                    ? (selected ? '1' : '0')
-                    : (selected ? Letters[day] : placeholder);
-            }
-        });
+        format.Binary
+            ? CalendarValueSet.FormatBinary(_bits, MaskLength)
+            : CalendarValueSet.FormatLetters(_bits, DayLetters, format.MondayFirst ? 1 : 0, format.Placeholder ?? '_');
 }

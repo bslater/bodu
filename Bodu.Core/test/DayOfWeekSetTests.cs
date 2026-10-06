@@ -30,12 +30,6 @@ public sealed partial class DayOfWeekSetTests
     protected override int DomainSize => 7;
 
     /// <inheritdoc />
-    protected override DayOfWeekSet Empty => DayOfWeekSet.Empty;
-
-    /// <inheritdoc />
-    protected override DayOfWeekSet All => DayOfWeekSet.All;
-
-    /// <inheritdoc />
     /// <remarks>
     /// 32 and 38 are included because a shift of an <see cref="int" /> by 32 or more bits wraps, so a set that skipped
     /// its range check would answer for Sunday and Saturday instead.
@@ -65,30 +59,6 @@ public sealed partial class DayOfWeekSetTests
     /// <inheritdoc />
     protected override DayOfWeekSet Create(params DayOfWeek[]? values) =>
         new(values);
-
-    /// <inheritdoc />
-    protected override DayOfWeekSet FromUInt64(ulong bits) =>
-        DayOfWeekSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(DayOfWeekSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(DayOfWeekSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(DayOfWeekSet set, DayOfWeek value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override DayOfWeekSet With(DayOfWeekSet set, DayOfWeek value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override DayOfWeekSet Without(DayOfWeekSet set, DayOfWeek value) =>
-        set.Without(value);
 
     /// <summary>
     /// Provides all bitmask permutations with symbol strings in Monday-first order.

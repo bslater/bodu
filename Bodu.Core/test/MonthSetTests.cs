@@ -10,23 +10,42 @@ using Bodu.Test.Kat;
 namespace Bodu;
 
 /// <summary>
-/// Runs the calendar value set contract against <see cref="MonthSet" />, whose domain is 1 to 12.
+/// Runs the calendar value set contract against <see cref="MonthSet" />, whose domain is 1 to 12, and tests the letter
+/// mask only months have.
 /// </summary>
 [TestClass]
-public sealed class MonthSetTests
+public sealed partial class MonthSetTests
     : CalendarValueSetContractTests<MonthSet>
 {
+    /// <summary>
+    /// Gets the letter-mask rows: a set and the mask the <c>J</c> format writes for it, January first, with <c>_</c>
+    /// for a month not selected.
+    /// </summary>
+    private static IReadOnlyList<ValidKat<MonthSet, string>> LetterMaskCases { get; } =
+    [
+        new("no month", MonthSet.Empty, "____________"),
+        new("every month", MonthSet.All, "JFMAMJJASOND"),
+        new("January", new MonthSet(1), "J___________"),
+        new("February", new MonthSet(2), "_F__________"),
+        new("December", new MonthSet(12), "___________D"),
+        new("first quarter and December", new MonthSet(1, 2, 3, 12), "JFM________D"),
+        new("first month of each quarter", new MonthSet(1, 4, 7, 10), "J__A__J__O__"),
+        new("northern summer", new MonthSet(6, 7, 8), "_____JJA____"),
+        new("odd months", new MonthSet(1, 3, 5, 7, 9, 11), "J_M_M_J_S_N_"),
+        new("even months", new MonthSet(2, 4, 6, 8, 10, 12), "_F_A_J_A_O_D"),
+    ];
+
+    /// <summary>
+    /// Gets the letter-mask rows for <c>[DynamicData]</c>, one row per <see cref="LetterMaskCases" /> entry.
+    /// </summary>
+    public static IEnumerable<object[]> LetterMaskData =>
+        LetterMaskCases.Select(kat => new object[] { kat });
+
     /// <inheritdoc />
     protected override int Minimum => 1;
 
     /// <inheritdoc />
     protected override int Maximum => 12;
-
-    /// <inheritdoc />
-    protected override MonthSet Empty => MonthSet.Empty;
-
-    /// <inheritdoc />
-    protected override MonthSet All => MonthSet.All;
 
     /// <inheritdoc />
     protected override string ConstructorParameterName => "months";
@@ -46,30 +65,6 @@ public sealed class MonthSetTests
     /// <inheritdoc />
     protected override MonthSet Create(params int[]? values) =>
         new(values);
-
-    /// <inheritdoc />
-    protected override MonthSet FromUInt64(ulong bits) =>
-        MonthSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(MonthSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(MonthSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(MonthSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override MonthSet With(MonthSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override MonthSet Without(MonthSet set, int value) =>
-        set.Without(value);
 
     /// <inheritdoc />
     protected override MonthSet Parse(string s) =>

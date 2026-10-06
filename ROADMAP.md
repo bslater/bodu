@@ -535,7 +535,11 @@ Forward-looking:
   adopted them in the same release: cron holds its six fields as the
   sets, an RRULE tests its months, month days and weekdays against sets
   precomputed from its parts, and `RecurrenceRuleBuilder` takes each set
-  for the part it expresses.
+  for the part it expresses. Before 1.3.0 shipped, the six sets were
+  aligned: one `ulong` each, validated by mask in `FromUInt64`; the `G`,
+  `L` and binary formats with `ParseExact` / `TryParseExact` on the
+  numeric sets, and a letter mask on `MonthSet`; and the public
+  `ICalendarValueSet<TSelf, TValue>` over all six.
 - **The `Functional` seam has grown - railway primitives shipped.** ✅
   `Option<T>` (plus the non-generic `Option` companion), `Result` /
   `Result<T>` / `ResultError`, and `Either<TLeft,TRight>` landed as

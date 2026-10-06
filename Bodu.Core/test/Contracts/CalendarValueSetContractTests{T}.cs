@@ -27,7 +27,7 @@ namespace Bodu.Contracts;
 /// </remarks>
 public abstract partial class CalendarValueSetContractTests<TSet>
     : CalendarSetContractTests<TSet, int>
-    where TSet : struct, IEquatable<TSet>, IEqualityOperators<TSet, TSet, bool>, IBitwiseOperators<TSet, TSet, TSet>, IParsable<TSet>, IEnumerable<int>
+    where TSet : struct, ICalendarValueSet<TSet, int>
 {
     /// <summary>
     /// Gets the smallest value in the domain.
@@ -74,6 +74,34 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     /// <param name="result">The parsed set, or the default when parsing fails.</param>
     /// <returns>The type's answer.</returns>
     protected abstract bool TryParse(string? s, out TSet result);
+
+    /// <summary>
+    /// Calls the type's <see cref="ICalendarValueSet{TSelf, TValue}.ToString(string)" />.
+    /// </summary>
+    /// <param name="set">The set to write.</param>
+    /// <param name="format">The format string.</param>
+    /// <returns>The text the type writes.</returns>
+    protected static string Format(TSet set, string? format) =>
+        set.ToString(format);
+
+    /// <summary>
+    /// Calls the type's <see cref="ICalendarValueSet{TSelf, TValue}.ParseExact(string, string)" />.
+    /// </summary>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="format">The format the text must have.</param>
+    /// <returns>The parsed set.</returns>
+    protected static TSet ParseExact(string s, string format) =>
+        TSet.ParseExact(s, format);
+
+    /// <summary>
+    /// Calls the type's <see cref="ICalendarValueSet{TSelf, TValue}.TryParseExact(string, string, out TSelf)" />.
+    /// </summary>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="format">The format the text must have.</param>
+    /// <param name="result">The parsed set, or the default when parsing fails.</param>
+    /// <returns>The type's answer.</returns>
+    protected static bool TryParseExact(string? s, string? format, out TSet result) =>
+        TSet.TryParseExact(s, format, out result);
 
     /// <summary>
     /// Returns the canonical text rows built from the domain's bounds, followed by the type's own.
@@ -163,6 +191,52 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     }
 
     /// <summary>
+    /// Returns text rows that pin the order in which <c>Parse</c> and <c>TryParse</c> detect a text's form: exactly one
+    /// <c>0</c> or <c>1</c> per value of the domain, as given, is the binary form, even where the text also reads as a
+    /// list, and any other text is a list.
+    /// </summary>
+    /// <returns>The detection rows.</returns>
+    /// <remarks>
+    /// The list rows read as the values 1, 10 and 11, which every numeric domain holds.
+    /// </remarks>
+    protected IEnumerable<ValidKat<string, TSet>> DetectionCases()
+    {
+        int width = DomainSize;
+        string zeros = new('0', width - 1);
+
+        // Binary first. As lists, the first two would read as the numbers 0 and 1, and the last two would overflow.
+        yield return new("binary of no value", new string('0', width), Empty);
+        yield return new("binary of the maximum", zeros + "1", Create(Maximum));
+        yield return new("binary of the minimum", "1" + zeros, Create(Minimum));
+        yield return new("binary of every value", new string('1', width), All);
+
+        // Zeros and ones of any other length, or with whitespace, are a list.
+        yield return new("one", "1", Create(1));
+        yield return new("ten", "10", Create(10));
+        yield return new("eleven", "11", Create(11));
+        yield return new("one digit short of the binary form", zeros[1..] + "1", Create(1));
+        yield return new("one digit past the binary form", zeros + "01", Create(1));
+        yield return new("binary text after a space", " " + zeros + "1", Create(1));
+        yield return new("binary text before a space", zeros + "1 ", Create(1));
+        yield return new("the binary form's length, padded with spaces", "1" + new string(' ', width - 1), Create(1));
+    }
+
+    /// <summary>
+    /// Returns text rows that are neither the binary form nor a list, though each has the binary form's length or
+    /// holds binary text.
+    /// </summary>
+    /// <returns>The rows, each expecting <see cref="FormatException" />.</returns>
+    protected IEnumerable<InvalidKat<string>> DetectionFailureCases()
+    {
+        int width = DomainSize;
+        string zeros = new('0', width - 1);
+
+        yield return new("the binary form's length, with a 2", "2" + zeros, typeof(FormatException));
+        yield return new("the binary form's length, with a letter", zeros + "x", typeof(FormatException));
+        yield return new("binary text of the minimum after a space", " 1" + zeros, typeof(FormatException));
+    }
+
+    /// <summary>
     /// Writes the canonical text of a set of values: ascending, comma-separated, with each run of two or more
     /// consecutive values as an inclusive range.
     /// </summary>
@@ -193,6 +267,29 @@ public abstract partial class CalendarValueSetContractTests<TSet>
 
         return string.Join(",", parts);
     }
+
+    /// <summary>
+    /// Writes every value a set's bits select, ascending and comma-separated, without ranges: the <c>L</c> format.
+    /// </summary>
+    /// <param name="bits">The bits.</param>
+    /// <returns>The list, or the empty string when no bit is set.</returns>
+    /// <remarks>
+    /// This is a plain reading of the format, independent of the implementation, for the tests to compare with.
+    /// </remarks>
+    protected string ValuesReference(ulong bits) =>
+        string.Join(",", ValuesOf(bits).Select(value => Invariant($"{value}")));
+
+    /// <summary>
+    /// Writes one digit per value of the domain, lowest value first, <c>1</c> for a value the bits select and
+    /// <c>0</c> for one they do not: the binary format.
+    /// </summary>
+    /// <param name="bits">The bits.</param>
+    /// <returns>The binary text, one character per value of the domain.</returns>
+    /// <remarks>
+    /// This is a plain reading of the format, independent of the implementation, for the tests to compare with.
+    /// </remarks>
+    protected string BinaryReference(ulong bits) =>
+        new(Enumerable.Range(0, DomainSize).Select(i => ((bits >> i) & 1) != 0 ? '1' : '0').ToArray());
 
     /// <summary>
     /// Returns the values a set's bits select, read from the bits rather than from the set.

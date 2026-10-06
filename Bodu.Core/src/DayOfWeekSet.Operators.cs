@@ -15,7 +15,7 @@ public readonly partial struct DayOfWeekSet
     /// <param name="right">The second set.</param>
     /// <returns>The intersection of <paramref name="left" /> and <paramref name="right" />.</returns>
     public static DayOfWeekSet operator &(DayOfWeekSet left, DayOfWeekSet right) =>
-        new((byte)(left._bits & right._bits));
+        new(left._bits & right._bits);
 
     /// <summary>
     /// Returns the days that either set selects.
@@ -24,7 +24,7 @@ public readonly partial struct DayOfWeekSet
     /// <param name="right">The second set.</param>
     /// <returns>The union of <paramref name="left" /> and <paramref name="right" />.</returns>
     public static DayOfWeekSet operator |(DayOfWeekSet left, DayOfWeekSet right) =>
-        new((byte)(left._bits | right._bits));
+        new(left._bits | right._bits);
 
     /// <summary>
     /// Returns the days that exactly one of the sets selects.
@@ -33,7 +33,7 @@ public readonly partial struct DayOfWeekSet
     /// <param name="right">The second set.</param>
     /// <returns>The symmetric difference of <paramref name="left" /> and <paramref name="right" />.</returns>
     public static DayOfWeekSet operator ^(DayOfWeekSet left, DayOfWeekSet right) =>
-        new((byte)(left._bits ^ right._bits));
+        new(left._bits ^ right._bits);
 
     /// <summary>
     /// Returns the days of the week that the set does not select.
@@ -41,7 +41,7 @@ public readonly partial struct DayOfWeekSet
     /// <param name="value">The set.</param>
     /// <returns>The complement of <paramref name="value" /> within the seven days.</returns>
     public static DayOfWeekSet operator ~(DayOfWeekSet value) =>
-        new((byte)(~value._bits & AllBits));
+        new(~value._bits & AllBits);
 
     /// <summary>
     /// Determines whether two sets select the same days.

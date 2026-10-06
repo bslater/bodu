@@ -23,12 +23,6 @@ public sealed class MinuteSetTests
     protected override int Maximum => 59;
 
     /// <inheritdoc />
-    protected override MinuteSet Empty => MinuteSet.Empty;
-
-    /// <inheritdoc />
-    protected override MinuteSet All => MinuteSet.All;
-
-    /// <inheritdoc />
     protected override string ConstructorParameterName => "minutes";
 
     /// <inheritdoc />
@@ -46,30 +40,6 @@ public sealed class MinuteSetTests
     /// <inheritdoc />
     protected override MinuteSet Create(params int[]? values) =>
         new(values);
-
-    /// <inheritdoc />
-    protected override MinuteSet FromUInt64(ulong bits) =>
-        MinuteSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(MinuteSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(MinuteSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(MinuteSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override MinuteSet With(MinuteSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override MinuteSet Without(MinuteSet set, int value) =>
-        set.Without(value);
 
     /// <inheritdoc />
     protected override MinuteSet Parse(string s) =>

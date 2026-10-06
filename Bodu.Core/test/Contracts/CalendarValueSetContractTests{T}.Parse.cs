@@ -67,6 +67,35 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     }
 
     /// <summary>
+    /// Verifies that <c>Parse</c> reads exactly one <c>0</c> or <c>1</c> per value of the domain as the binary form,
+    /// even where the text also reads as a list, and zeros and ones of any other length, or with whitespace, as a list.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTextIsZerosAndOnes_ShouldReadTheBinaryFormOnlyAtTheDomainWidth()
+    {
+        foreach (ValidKat<string, TSet> kat in DetectionCases())
+            Assert.AreEqual(kat.Expected, Parse(kat.Input), kat.Name);
+    }
+
+    /// <summary>
+    /// Verifies that <c>Parse</c> reports text that is neither the binary form nor a list as a malformed list, with the
+    /// message that quotes the text, even when the text has the binary form's length.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTextIsNeitherBinaryNorAList_ShouldThrowFormatExceptionForAList()
+    {
+        foreach (InvalidKat<string> kat in DetectionFailureCases())
+        {
+            var ex = Assert.ThrowsExactly<FormatException>(() =>
+            {
+                _ = Parse(kat.Input);
+            }, kat.Name);
+
+            StringAssert.Contains(ex.Message, $"'{kat.Input}'", kat.Name);
+        }
+    }
+
+    /// <summary>
     /// Verifies that <c>Parse</c> throws <see cref="ArgumentNullException" /> naming its parameter for
     /// <see langword="null" />.
     /// </summary>

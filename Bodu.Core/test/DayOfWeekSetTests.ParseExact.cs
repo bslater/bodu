@@ -249,8 +249,8 @@ public partial class DayOfWeekSetTests
     {
         string[] formats =
         [
-            "S", "M", "E", "U", "D", "A", "SE", "SU", "SD", "SA", "ME", "MU", "MD", "MA", "B", "0", "1", "01",
-            "s", "m", "e", "u", "d", "a", "se", "su", "sd", "sa", "me", "mu", "md", "ma", "b", "mE", "Su",
+            "S", "G", "M", "E", "U", "D", "A", "SE", "SU", "SD", "SA", "ME", "MU", "MD", "MA", "B", "0", "1", "01",
+            "s", "g", "m", "e", "u", "d", "a", "se", "su", "sd", "sa", "me", "mu", "md", "ma", "b", "mE", "Su",
         ];
 
         for (int bits = 0; bits <= 0b111_1111; bits++)
@@ -264,6 +264,21 @@ public partial class DayOfWeekSetTests
                 Assert.AreEqual(set, DayOfWeekSet.ParseExact(text, format), $"bits {bits}, format '{format}', text '{text}'");
             }
         }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.ParseExact(string, string)" /> with the <c>G</c> format, in either case,
+    /// reads the default Sunday-first mask, the one the <c>S</c> format reads.
+    /// </summary>
+    [TestMethod]
+    [DataRow("G")]
+    [DataRow("g")]
+    public void ParseExact_WhenFormatIsG_ShouldReadTheSundayFirstMask(string format)
+    {
+        DayOfWeekSet result = DayOfWeekSet.ParseExact("_MTWTF_", format);
+
+        Assert.AreEqual(DayOfWeekSet.Weekdays, result);
+        Assert.AreEqual(DayOfWeekSet.ParseExact("SM____S", "S"), DayOfWeekSet.ParseExact("SM____S", format));
     }
 
     /// <summary>

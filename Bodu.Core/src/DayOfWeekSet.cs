@@ -53,13 +53,14 @@ public readonly partial struct DayOfWeekSet
       IBitwiseOperators<DayOfWeekSet, DayOfWeekSet, DayOfWeekSet>,
       IParsable<DayOfWeekSet>,
       IFormattable,
-      IEnumerable<DayOfWeek>
+      IEnumerable<DayOfWeek>,
+      ICalendarValueSet<DayOfWeekSet, DayOfWeek>
 {
     /// <summary>The bits that select every day of the week.</summary>
-    private const byte AllBits = 0b111_1111;
+    private const ulong AllBits = (1UL << 7) - 1;
 
     /// <summary>The selected days, bit <c>n</c> selecting <c>(DayOfWeek)n</c>.</summary>
-    private readonly byte _bits;
+    private readonly ulong _bits;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DayOfWeekSet" /> struct that selects the specified days.
@@ -73,13 +74,13 @@ public readonly partial struct DayOfWeekSet
     /// </remarks>
     public DayOfWeekSet(params DayOfWeek[]? days)
     {
-        byte bits = 0;
+        ulong bits = 0;
         if (days is not null)
         {
             foreach (DayOfWeek day in days)
             {
                 ThrowHelper.ThrowIfOutOfRange((int)day, (int)DayOfWeek.Sunday, (int)DayOfWeek.Saturday, paramName: nameof(days));
-                bits |= (byte)(1 << (int)day);
+                bits |= 1UL << (int)day;
             }
         }
 
@@ -90,7 +91,7 @@ public readonly partial struct DayOfWeekSet
     /// Initializes a new instance of the <see cref="DayOfWeekSet" /> struct from bits already known to lie in the week.
     /// </summary>
     /// <param name="bits">The bits, with nothing set above bit 6.</param>
-    private DayOfWeekSet(byte bits)
+    private DayOfWeekSet(ulong bits)
     {
         _bits = bits;
     }
@@ -125,9 +126,9 @@ public readonly partial struct DayOfWeekSet
     /// </exception>
     public static DayOfWeekSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, (ulong)AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
-        return new DayOfWeekSet((byte)bits);
+        return new DayOfWeekSet(bits);
     }
 
     /// <summary>
@@ -139,7 +140,7 @@ public readonly partial struct DayOfWeekSet
     /// including when <paramref name="day" /> is not one of the seven <see cref="DayOfWeek" /> values.
     /// </returns>
     public bool Contains(DayOfWeek day) =>
-        (uint)day <= (uint)DayOfWeek.Saturday && (_bits & (1 << (int)day)) != 0;
+        (uint)day <= (uint)DayOfWeek.Saturday && (_bits & (1UL << (int)day)) != 0;
 
     /// <summary>
     /// Returns an enumerator that yields the selected days in <see cref="DayOfWeek" /> order, Sunday first, without
@@ -176,7 +177,7 @@ public readonly partial struct DayOfWeekSet
     {
         ThrowHelper.ThrowIfOutOfRange((int)day, (int)DayOfWeek.Sunday, (int)DayOfWeek.Saturday, paramName: nameof(day));
 
-        return new DayOfWeekSet((byte)(_bits | (1 << (int)day)));
+        return new DayOfWeekSet(_bits | (1UL << (int)day));
     }
 
     /// <summary>
@@ -191,6 +192,6 @@ public readonly partial struct DayOfWeekSet
     {
         ThrowHelper.ThrowIfOutOfRange((int)day, (int)DayOfWeek.Sunday, (int)DayOfWeek.Saturday, paramName: nameof(day));
 
-        return new DayOfWeekSet((byte)(_bits & ~(1 << (int)day)));
+        return new DayOfWeekSet(_bits & ~(1UL << (int)day));
     }
 }

@@ -29,7 +29,9 @@ namespace Bodu;
 /// The text form lists the days in ascending order, separated by commas, each run of two or more consecutive days
 /// written as an inclusive range, so <c>"1,15"</c> selects the 1st and the 15th. The empty set is the empty string.
 /// <see cref="Parse(string)" /> reads any list of values and ranges in that form, in any order, and
-/// <see cref="ToString()" /> writes the canonical one.
+/// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every day without
+/// ranges, or a binary form with one character per day, and <see cref="Parse(string)" /> and
+/// <see cref="ParseExact(string, string)" /> read them back.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects day
@@ -53,7 +55,9 @@ public readonly partial struct DayOfMonthSet
       IEqualityOperators<DayOfMonthSet, DayOfMonthSet, bool>,
       IBitwiseOperators<DayOfMonthSet, DayOfMonthSet, DayOfMonthSet>,
       IParsable<DayOfMonthSet>,
-      IEnumerable<int>
+      IFormattable,
+      IEnumerable<int>,
+      ICalendarValueSet<DayOfMonthSet, int>
 {
     /// <summary>The smallest day in the set's domain.</summary>
     private const int MinimumValue = 1;
@@ -119,7 +123,7 @@ public readonly partial struct DayOfMonthSet
     /// </exception>
     public static DayOfMonthSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new DayOfMonthSet(bits);
     }

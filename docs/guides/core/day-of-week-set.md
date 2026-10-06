@@ -4,8 +4,9 @@ title: DayOfWeekSet
 
 # DayOfWeekSet
 
-`DayOfWeekSet` is an immutable set of days of the week, held in one byte. It is the day-of-week member of the
-[calendar value sets](calendar-value-sets.md), and it is the type the working-day APIs in Bodu.Core and
+`DayOfWeekSet` is an immutable set of days of the week. It is the day-of-week member of the
+[calendar value sets](calendar-value-sets.md), held in one `ulong` as they are and implementing
+`ICalendarValueSet<DayOfWeekSet, DayOfWeek>` with them, and it is the type the working-day APIs in Bodu.Core and
 Bodu.Globalization.Calendar take for a working week. It replaces `WeekPattern`, which Bodu.Core 1.3.0 removed; see
 [Migrating from WeekPattern](#migrating-from-weekpattern).
 
@@ -87,7 +88,7 @@ when it is not, Sunday first. `ToString` writes that form, and `ToString(format)
 
 | Format | Mask | Monday to Friday |
 |---|---|---|
-| `S`, the default | Sunday first, `_` for a day not selected | `_MTWTF_` |
+| `S` or `G`, the default | Sunday first, `_` for a day not selected | `_MTWTF_` |
 | `M` | Monday first, `_` for a day not selected | `MTWTF__` |
 | `E`, `U`, `D`, `A` | Sunday first, with a space, `_`, `-` or `*` for a day not selected | `-MTWTF-` for `D` |
 | `S` or `M` with `E`, `U`, `D` or `A` | that order with that placeholder | `MTWTF--` for `MD` |
@@ -118,7 +119,8 @@ bool ok = DayOfWeekSet.TryParse("MF", out DayOfWeekSet result); // false; result
 
 `DayOfWeekSet` implements `IFormattable`, so `$"{set:M}"` and `string.Format("{0:B}", set)` apply the format, and
 `IParsable<DayOfWeekSet>`, whose members ignore the format provider: the mask does not depend on culture. An
-unsupported format throws `FormatException`.
+unsupported format throws `FormatException` from `ToString` and `ParseExact`, and makes `TryParseExact` return
+`false`. `G` is the general format every calendar value set reads, and here it names the default mask.
 
 ## Pattern 5 - enumerate the days
 
@@ -221,6 +223,9 @@ To move a stored `WeekPattern.ToByte` value over, reverse its seven bits, or reb
 | `ToString()`, `ToString(string)`, `ToString(string, IFormatProvider)` | Write a seven-character mask. |
 | `\|`, `&`, `^`, `~`, `==`, `!=` | Union, intersection, symmetric difference, complement and equality. |
 | `GetEnumerator()` | The selected days in `DayOfWeek` order, Sunday first, without allocating. |
+
+`DayOfWeekSet` implements `ICalendarValueSet<DayOfWeekSet, DayOfWeek>`, the interface it shares with the other
+[calendar value sets](calendar-value-sets.md#pattern-6---work-with-any-set).
 
 ## Where to go next
 

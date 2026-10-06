@@ -24,7 +24,10 @@ namespace Bodu;
 /// The text form lists the months in ascending order, separated by commas, each run of two or more consecutive months
 /// written as an inclusive range, so <c>"1,4,7,10"</c> selects the first month of each quarter. The empty set is the
 /// empty string. <see cref="Parse(string)" /> reads any list of values and ranges in that form, in any order, and
-/// <see cref="ToString()" /> writes the canonical one.
+/// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every month without
+/// ranges, a binary form with one character per month, or a letter mask of the months' initials, such as
+/// <c>"JFM________D"</c>, and <see cref="Parse(string)" /> and <see cref="ParseExact(string, string)" /> read them
+/// back.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects month
@@ -48,7 +51,9 @@ public readonly partial struct MonthSet
       IEqualityOperators<MonthSet, MonthSet, bool>,
       IBitwiseOperators<MonthSet, MonthSet, MonthSet>,
       IParsable<MonthSet>,
-      IEnumerable<int>
+      IFormattable,
+      IEnumerable<int>,
+      ICalendarValueSet<MonthSet, int>
 {
     /// <summary>The smallest month in the set's domain.</summary>
     private const int MinimumValue = 1;
@@ -113,7 +118,7 @@ public readonly partial struct MonthSet
     /// </exception>
     public static MonthSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new MonthSet(bits);
     }

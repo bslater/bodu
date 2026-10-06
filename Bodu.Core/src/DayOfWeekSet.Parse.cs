@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 
 namespace Bodu;
 
@@ -67,7 +66,7 @@ public readonly partial struct DayOfWeekSet
     {
         ThrowHelper.ThrowIfNull(s);
         ThrowHelper.ThrowIfNull(format);
-        if (!TryParseFormat(format, out TextFormat textFormat)) throw new FormatException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_DayOfWeekSetFormat, format));
+        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfWeekSet));
 
         return ParseCore(s, textFormat);
     }
@@ -87,7 +86,7 @@ public readonly partial struct DayOfWeekSet
     /// </remarks>
     public static bool TryParse([NotNullWhen(true)] string? s, out DayOfWeekSet result)
     {
-        if (s is not null && TryParseCore(s, format: null, out byte bits, out _) == ParseFailure.None)
+        if (s is not null && TryParseCore(s, format: null, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new DayOfWeekSet(bits);
             return true;
@@ -119,7 +118,7 @@ public readonly partial struct DayOfWeekSet
         if (s is not null
             && format is not null
             && TryParseFormat(format, out TextFormat textFormat)
-            && TryParseCore(s, textFormat, out byte bits, out _) == ParseFailure.None)
+            && TryParseCore(s, textFormat, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new DayOfWeekSet(bits);
             return true;
@@ -146,91 +145,50 @@ public readonly partial struct DayOfWeekSet
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="s" /> is not a seven-character mask in <paramref name="format" />.
     /// </exception>
-    private static DayOfWeekSet ParseCore(string s, TextFormat? format) =>
-        TryParseCore(s, format, out byte bits, out int position) switch
-        {
-            ParseFailure.None => new DayOfWeekSet(bits),
-            ParseFailure.Length => throw new FormatException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_StringLength, MaskLength)),
-            _ => throw new FormatException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, s[position], position + 1)),
-        };
+    private static DayOfWeekSet ParseCore(string s, TextFormat? format)
+    {
+        CalendarValueSet.ParseFailure failure = TryParseCore(s, format, out ulong bits, out int position);
+
+        return failure == CalendarValueSet.ParseFailure.None
+            ? new DayOfWeekSet(bits)
+            : throw CalendarValueSet.CreateParseException(failure, s, position, (int)DayOfWeek.Sunday, (int)DayOfWeek.Saturday);
+    }
 
     /// <summary>
     /// Attempts to read a seven-character mask.
     /// </summary>
     /// <param name="text">The text to read.</param>
     /// <param name="format">The format of the text, or <see langword="null" /> to detect it.</param>
-    /// <param name="bits">When this method returns <see cref="ParseFailure.None" />, the bits the mask selects.</param>
-    /// <param name="position">
-    /// When this method returns <see cref="ParseFailure.Character" />, the index of the first character that does not
-    /// fit the mask.
+    /// <param name="bits">
+    /// When this method returns <see cref="CalendarValueSet.ParseFailure.None" />, the bits the mask selects.
     /// </param>
-    /// <returns>Why the text is not a mask, or <see cref="ParseFailure.None" /> when it is one.</returns>
-    private static ParseFailure TryParseCore(ReadOnlySpan<char> text, TextFormat? format, out byte bits, out int position)
+    /// <param name="position">
+    /// When this method returns <see cref="CalendarValueSet.ParseFailure.Character" />, the index of the first
+    /// character that does not fit the mask.
+    /// </param>
+    /// <returns>
+    /// Why the text is not a mask, or <see cref="CalendarValueSet.ParseFailure.None" /> when it is one.
+    /// </returns>
+    /// <remarks>
+    /// Without a format, a mask that begins with <c>0</c> or <c>1</c> is binary, and the letters of any other decide
+    /// whether it starts on Sunday or on Monday: the first letter that fits only one of the two orders, testing the
+    /// Sunday-first letter first. Only the final position has the same letter in both orders, <c>S</c>, so a mask whose
+    /// only letter is a final <c>S</c> is read Sunday first.
+    /// </remarks>
+    private static CalendarValueSet.ParseFailure TryParseCore(ReadOnlySpan<char> text, TextFormat? format, out ulong bits, out int position)
     {
-        bits = 0;
-        position = 0;
         if (text.Length != MaskLength)
-            return ParseFailure.Length;
-
-        bool binary;
-        bool? mondayFirst = null;
-        char? placeholder = null;
-        if (format is TextFormat known)
         {
-            binary = known.Binary;
-            mondayFirst = known.MondayFirst;
-            placeholder = known.Placeholder;
-        }
-        else
-        {
-            binary = text[0] is '0' or '1';
+            bits = 0;
+            position = 0;
+            return CalendarValueSet.ParseFailure.Length;
         }
 
-        byte selected = 0;
-        for (int i = 0; i < MaskLength; i++)
-        {
-            char c = text[i];
-            if (binary)
-            {
-                if (c == '1')
-                    selected |= (byte)(1 << i);
-                else if (c != '0')
-                    return Fail(i, out position);
+        bool binary = format is TextFormat known ? known.Binary : (text[0] is '0' or '1');
+        if (binary)
+            return CalendarValueSet.TryParseBinary(text, MaskLength, out bits, out position);
 
-                continue;
-            }
-
-            // Without a placeholder from the format, the first one in the text fixes it for the rest.
-            if (placeholder is null && c is '_' or '-' or '*' or ' ')
-                placeholder = c;
-
-            // Without an order from the format, the first letter decides it. Only the final position has the same
-            // letter in both orders, S, and testing the Sunday-first letter first reads it Sunday first.
-            char letter = char.ToUpperInvariant(c);
-            if (mondayFirst is null)
-            {
-                if (letter == Letters[i])
-                    mondayFirst = false;
-                else if (letter == Letters[(i + 1) % MaskLength])
-                    mondayFirst = true;
-            }
-
-            int day = mondayFirst == true ? (i + 1) % MaskLength : i;
-            if (letter == Letters[day])
-                selected |= (byte)(1 << day);
-            else if (c != placeholder)
-                return Fail(i, out position);
-        }
-
-        bits = selected;
-        return ParseFailure.None;
-
-        static ParseFailure Fail(int index, out int position)
-        {
-            position = index;
-            return ParseFailure.Character;
-        }
+        int? first = format is TextFormat named ? (named.MondayFirst ? 1 : 0) : null;
+        return CalendarValueSet.TryParseLetters(text, DayLetters, first, format?.Placeholder, out bits, out position);
     }
 }

@@ -53,8 +53,9 @@ Because `ThrowHelper` is the sole dependency most packages take on `Bodu.Core`, 
 | Pooled byte / char building without allocation | <xref:Bodu.Buffers.PooledBufferBuilder`1> | `ArrayPool<T>`-backed; implements `IBufferWriter<T>`; dispose to return the rented array. |
 | Range-keyed lookup (interval → value, or interval membership) | <xref:Bodu.Collections.Generic.RangeDictionary`2>, <xref:Bodu.Collections.Generic.RangeSet`1> | Half-open `[start, end)` keys with O(log n) lookup. |
 | One key mapping to many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | The indexer returns an empty live view, never `null`. |
-| Day-of-week masks you can union, intersect, and parse | <xref:Bodu.DayOfWeekSet> | Immutable set in one byte; `Parse("_MTWTF_")`, set operators, working-week presets. |
-| Sets of months, days of the month, hours, minutes, or seconds | <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> | Immutable bit sets; `Parse("1-3,12")`, set operators, allocation-free enumeration. |
+| Day-of-week masks you can union, intersect, and parse | <xref:Bodu.DayOfWeekSet> | Immutable set; `Parse("_MTWTF_")`, set operators, working-week presets. |
+| Sets of months, days of the month, hours, minutes, or seconds | <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> | Immutable bit sets; `Parse("1-3,12")`, `G` / `L` / binary formats, set operators, allocation-free enumeration. |
+| Code that works with any calendar value set | <xref:Bodu.ICalendarValueSet`2> | Static `Empty`, `All`, `FromUInt64`, `ParseExact`; membership, operators, formatting. |
 | Date arithmetic - first Monday of month, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> | Parameterized by the calendar-shape enums (quarter definitions, working weeks, week ordinals). |
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> | `ReverseBits`, `RotateBitsLeft` / `Right`, `ReverseBytes` over unsigned integers. |
 | Detect a file's encoding from its byte-order mark | <xref:Bodu.Text.EncodingDetection> | Non-allocating `TryDetectByPreamble` over the five canonical Unicode preambles. |

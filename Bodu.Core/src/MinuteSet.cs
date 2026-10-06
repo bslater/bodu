@@ -24,7 +24,9 @@ namespace Bodu;
 /// The text form lists the minutes in ascending order, separated by commas, each run of two or more consecutive minutes
 /// written as an inclusive range, so <c>"0,15,30,45"</c> selects every quarter hour. The empty set is the empty string.
 /// <see cref="Parse(string)" /> reads any list of values and ranges in that form, in any order, and
-/// <see cref="ToString()" /> writes the canonical one.
+/// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every minute without
+/// ranges, or a binary form with one character per minute, and <see cref="Parse(string)" /> and
+/// <see cref="ParseExact(string, string)" /> read them back.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects minute
@@ -48,7 +50,9 @@ public readonly partial struct MinuteSet
       IEqualityOperators<MinuteSet, MinuteSet, bool>,
       IBitwiseOperators<MinuteSet, MinuteSet, MinuteSet>,
       IParsable<MinuteSet>,
-      IEnumerable<int>
+      IFormattable,
+      IEnumerable<int>,
+      ICalendarValueSet<MinuteSet, int>
 {
     /// <summary>The smallest minute in the set's domain.</summary>
     private const int MinimumValue = 0;
@@ -113,7 +117,7 @@ public readonly partial struct MinuteSet
     /// </exception>
     public static MinuteSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new MinuteSet(bits);
     }
