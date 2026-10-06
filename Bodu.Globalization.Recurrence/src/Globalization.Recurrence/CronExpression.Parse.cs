@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Recurrence;
 
@@ -254,15 +255,25 @@ public sealed partial class CronExpression : IParsable<CronExpression>
 
         if (!TryParseField(fields[index++], 0, 59, null, false, minutes, out _, ref failureMessage)
             || !TryParseField(fields[index++], 0, 23, null, false, hours, out _, ref failureMessage)
-            || !TryParseDayOfMonthField(fields[index++], daysOfMonth, out bool domRestricted, out DayToken dayOfMonthToken, ref failureMessage)
+            || !TryParseDayOfMonthField(fields[index++], daysOfMonth, out bool domRestricted, out DayOfMonthToken? dayOfMonthToken, ref failureMessage)
             || !TryParseField(fields[index++], 1, 12, ResolveMonth, false, months, out _, ref failureMessage)
-            || !TryParseDayOfWeekField(fields[index], daysOfWeek, out bool dowRestricted, out DayToken dayOfWeekToken, ref failureMessage))
+            || !TryParseDayOfWeekField(fields[index], daysOfWeek, out bool dowRestricted, out DayOfWeekToken? dayOfWeekToken, ref failureMessage))
         {
             return false;
         }
 
         result = new CronExpression(
-            format, seconds, minutes, hours, daysOfMonth, months, daysOfWeek, domRestricted, dowRestricted, dayOfMonthToken, dayOfWeekToken);
+            format,
+            SecondSet.FromUInt64(ToBits(seconds, 0, 59)),
+            MinuteSet.FromUInt64(ToBits(minutes, 0, 59)),
+            HourSet.FromUInt64(ToBits(hours, 0, 23)),
+            DayOfMonthSet.FromUInt64(ToBits(daysOfMonth, 1, 31)),
+            MonthSet.FromUInt64(ToBits(months, 1, 12)),
+            DayOfWeekSet.FromUInt64(ToBits(daysOfWeek, 0, 6)),
+            domRestricted,
+            dowRestricted,
+            dayOfMonthToken,
+            dayOfWeekToken);
         return true;
     }
 
@@ -353,17 +364,19 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="field">The field text.</param>
     /// <param name="mask">The mask to populate when the field holds values.</param>
     /// <param name="restricted">Set to <see langword="true" /> when the field restricts the days.</param>
-    /// <param name="token">Set to the token the field holds, or the default when it holds values.</param>
+    /// <param name="token">Set to the token the field holds, or <see langword="null" /> when it holds values.</param>
     /// <param name="failureMessage">Set to a message naming the field when it does not parse.</param>
     /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
-    private static bool TryParseDayOfMonthField(string field, bool[] mask, out bool restricted, out DayToken token, ref string? failureMessage)
+    private static bool TryParseDayOfMonthField(string field, bool[] mask, out bool restricted, out DayOfMonthToken? token, ref string? failureMessage)
     {
-        if (TryParseDayOfMonthToken(field, out token))
+        if (TryParseDayOfMonthToken(field, out DayOfMonthToken parsed))
         {
+            token = parsed;
             restricted = true;
             return true;
         }
 
+        token = null;
         return TryParseField(field == "?" ? "*" : field, 1, 31, null, false, mask, out restricted, ref failureMessage);
     }
 
@@ -373,17 +386,19 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <param name="field">The field text.</param>
     /// <param name="mask">The mask to populate when the field holds values.</param>
     /// <param name="restricted">Set to <see langword="true" /> when the field restricts the days.</param>
-    /// <param name="token">Set to the token the field holds, or the default when it holds values.</param>
+    /// <param name="token">Set to the token the field holds, or <see langword="null" /> when it holds values.</param>
     /// <param name="failureMessage">Set to a message naming the field when it does not parse.</param>
     /// <returns><see langword="true" /> if the field parsed; otherwise <see langword="false" />.</returns>
-    private static bool TryParseDayOfWeekField(string field, bool[] mask, out bool restricted, out DayToken token, ref string? failureMessage)
+    private static bool TryParseDayOfWeekField(string field, bool[] mask, out bool restricted, out DayOfWeekToken? token, ref string? failureMessage)
     {
-        if (TryParseDayOfWeekToken(field, out token))
+        if (TryParseDayOfWeekToken(field, out DayOfWeekToken parsed))
         {
+            token = parsed;
             restricted = true;
             return true;
         }
 
+        token = null;
         return TryParseField(field == "?" ? "*" : field, 0, 7, ResolveWeekday, true, mask, out restricted, ref failureMessage);
     }
 
@@ -398,7 +413,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// weekday nearest either, and <c>nW</c> for the weekday nearest day n, from 1 to 31. A token stands for the whole
     /// field, so <c>1,2W</c>, <c>1-2W</c> and <c>1/2W</c> are not tokens, and fail as values do.
     /// </remarks>
-    private static bool TryParseDayOfMonthToken(string field, out DayToken token)
+    private static bool TryParseDayOfMonthToken(string field, out DayOfMonthToken token)
     {
         token = default;
         if (field.Length == 0)
@@ -417,7 +432,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
                 return false;
             }
 
-            token = new DayToken(nearestWeekday ? DayTokenKind.WeekdayNearestLastDay : DayTokenKind.LastDayOfMonth, offset, 0);
+            token = new DayOfMonthToken(offset, FromEnd: true, NearestWeekday: nearestWeekday);
             return true;
         }
 
@@ -425,7 +440,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             && int.TryParse(body, NumberStyles.None, CultureInfo.InvariantCulture, out int day)
             && day is >= 1 and <= 31)
         {
-            token = new DayToken(DayTokenKind.WeekdayNearestDay, day, 0);
+            token = new DayOfMonthToken(day, FromEnd: false, NearestWeekday: true);
             return true;
         }
 
@@ -443,7 +458,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// a number from 0 to 7 or a three-letter name. <c>L</c> alone, which Quartz reads as Saturday, is not a token
     /// here.
     /// </remarks>
-    private static bool TryParseDayOfWeekToken(string field, out DayToken token)
+    private static bool TryParseDayOfWeekToken(string field, out DayOfWeekToken token)
     {
         token = default;
         int hash = field.IndexOf('#', StringComparison.Ordinal);
@@ -456,7 +471,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
                 return false;
             }
 
-            token = new DayToken(DayTokenKind.NthWeekdayOfMonth, weekday % 7, field[hash + 1] - '0');
+            token = new DayOfWeekToken((DayOfWeek)(weekday % 7), (WeekOrdinal)(field[hash + 1] - '0'));
             return true;
         }
 
@@ -464,7 +479,7 @@ public sealed partial class CronExpression : IParsable<CronExpression>
             && field[^1] is 'L' or 'l'
             && TryResolveValue(field[..^1], 0, 7, ResolveWeekday, out int last))
         {
-            token = new DayToken(DayTokenKind.LastWeekdayOfMonth, last % 7, 0);
+            token = new DayOfWeekToken((DayOfWeek)(last % 7), WeekOrdinal.Last);
             return true;
         }
 
@@ -611,5 +626,26 @@ public sealed partial class CronExpression : IParsable<CronExpression>
         var mask = new bool[length];
         Array.Fill(mask, true);
         return mask;
+    }
+
+    /// <summary>
+    /// Packs a field mask into the bits of the field's set, bit n for the value <paramref name="min" /> + n.
+    /// </summary>
+    /// <param name="mask">The field mask, indexed by value.</param>
+    /// <param name="min">The inclusive minimum value.</param>
+    /// <param name="max">The inclusive maximum value.</param>
+    /// <returns>The bits the field's set type reads through <c>FromUInt64</c>.</returns>
+    private static ulong ToBits(bool[] mask, int min, int max)
+    {
+        ulong bits = 0;
+        for (int value = min; value <= max; value++)
+        {
+            if (mask[value])
+            {
+                bits |= 1UL << (value - min);
+            }
+        }
+
+        return bits;
     }
 }

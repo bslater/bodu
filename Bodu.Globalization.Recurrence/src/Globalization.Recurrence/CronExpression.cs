@@ -50,23 +50,23 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <summary>The number of years the occurrence search scans before giving up. The largest gap between two consecutive occurrences of any satisfiable expression is eight years - a February 29th expression crossing a non-leap century year such as 2100 (2096 → 2104) - so twelve years covers every real schedule with margin while still bounding the search for an expression that can never match (for example February 30th).</summary>
     private const int SearchHorizonYears = 12;
 
-    /// <summary>The set of matching seconds, indexed 0-59 (all set for the five-field layout).</summary>
-    private readonly bool[] _seconds;
+    /// <summary>The matching seconds (every second for the five-field layout).</summary>
+    private readonly SecondSet _seconds;
 
-    /// <summary>The set of matching minutes, indexed 0-59.</summary>
-    private readonly bool[] _minutes;
+    /// <summary>The matching minutes.</summary>
+    private readonly MinuteSet _minutes;
 
-    /// <summary>The set of matching hours, indexed 0-23.</summary>
-    private readonly bool[] _hours;
+    /// <summary>The matching hours.</summary>
+    private readonly HourSet _hours;
 
-    /// <summary>The set of matching days of the month, indexed 1-31.</summary>
-    private readonly bool[] _daysOfMonth;
+    /// <summary>The matching days of the month; empty when the field holds a Quartz token.</summary>
+    private readonly DayOfMonthSet _daysOfMonth;
 
-    /// <summary>The set of matching months, indexed 1-12.</summary>
-    private readonly bool[] _months;
+    /// <summary>The matching months.</summary>
+    private readonly MonthSet _months;
 
-    /// <summary>The set of matching days of the week, indexed 0 (Sunday) - 6 (Saturday).</summary>
-    private readonly bool[] _daysOfWeek;
+    /// <summary>The matching days of the week; empty when the field holds a Quartz token.</summary>
+    private readonly DayOfWeekSet _daysOfWeek;
 
     /// <summary>Indicates whether the day-of-month field is restricted (not <c>*</c>).</summary>
     private readonly bool _domRestricted;
@@ -74,11 +74,11 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <summary>Indicates whether the day-of-week field is restricted (not <c>*</c>).</summary>
     private readonly bool _dowRestricted;
 
-    /// <summary>The Quartz token the day-of-month field holds in place of values, if any.</summary>
-    private readonly DayToken _dayOfMonthToken;
+    /// <summary>The Quartz token the day-of-month field holds in place of values, or <see langword="null" />.</summary>
+    private readonly DayOfMonthToken? _dayOfMonthToken;
 
-    /// <summary>The Quartz token the day-of-week field holds in place of values, if any.</summary>
-    private readonly DayToken _dayOfWeekToken;
+    /// <summary>The Quartz token the day-of-week field holds in place of values, or <see langword="null" />.</summary>
+    private readonly DayOfWeekToken? _dayOfWeekToken;
 
     /// <summary>Indicates whether either day field holds a Quartz token, which the searches must then consult.</summary>
     private readonly bool _hasDayToken;
@@ -95,20 +95,20 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="daysOfWeek">The matching day-of-week set.</param>
     /// <param name="domRestricted">Whether the day-of-month field is restricted.</param>
     /// <param name="dowRestricted">Whether the day-of-week field is restricted.</param>
-    /// <param name="dayOfMonthToken">The Quartz token the day-of-month field holds, if any.</param>
-    /// <param name="dayOfWeekToken">The Quartz token the day-of-week field holds, if any.</param>
+    /// <param name="dayOfMonthToken">The Quartz token the day-of-month field holds, or <see langword="null" />.</param>
+    /// <param name="dayOfWeekToken">The Quartz token the day-of-week field holds, or <see langword="null" />.</param>
     private CronExpression(
         CronFormat format,
-        bool[] seconds,
-        bool[] minutes,
-        bool[] hours,
-        bool[] daysOfMonth,
-        bool[] months,
-        bool[] daysOfWeek,
+        SecondSet seconds,
+        MinuteSet minutes,
+        HourSet hours,
+        DayOfMonthSet daysOfMonth,
+        MonthSet months,
+        DayOfWeekSet daysOfWeek,
         bool domRestricted,
         bool dowRestricted,
-        DayToken dayOfMonthToken,
-        DayToken dayOfWeekToken)
+        DayOfMonthToken? dayOfMonthToken,
+        DayOfWeekToken? dayOfWeekToken)
     {
         Format = format;
         _seconds = seconds;
@@ -121,7 +121,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         _dowRestricted = dowRestricted;
         _dayOfMonthToken = dayOfMonthToken;
         _dayOfWeekToken = dayOfWeekToken;
-        _hasDayToken = !dayOfMonthToken.IsNone || !dayOfWeekToken.IsNone;
+        _hasDayToken = dayOfMonthToken is not null || dayOfWeekToken is not null;
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
-            if (!_months[candidate.Month])
+            if (!_months.Contains(candidate.Month))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -171,19 +171,19 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
                 continue;
             }
 
-            if (!_hours[candidate.Hour])
+            if (!_hours.Contains(candidate.Hour))
             {
                 candidate = StartOfHour(candidate).AddHours(1);
                 continue;
             }
 
-            if (!_minutes[candidate.Minute])
+            if (!_minutes.Contains(candidate.Minute))
             {
                 candidate = StartOfMinute(candidate).AddMinutes(1);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds[candidate.Second])
+            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
             {
                 candidate = candidate.AddSeconds(1);
                 continue;
@@ -223,7 +223,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
-            if (!_months[candidate.Month])
+            if (!_months.Contains(candidate.Month))
             {
                 candidate = StartOfMonth(candidate).Subtract(Unit);
                 continue;
@@ -235,19 +235,19 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
                 continue;
             }
 
-            if (!_hours[candidate.Hour])
+            if (!_hours.Contains(candidate.Hour))
             {
                 candidate = StartOfHour(candidate).Subtract(Unit);
                 continue;
             }
 
-            if (!_minutes[candidate.Minute])
+            if (!_minutes.Contains(candidate.Minute))
             {
                 candidate = StartOfMinute(candidate).Subtract(Unit);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds[candidate.Second])
+            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
             {
                 candidate = candidate.AddSeconds(-1);
                 continue;
@@ -305,7 +305,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <para>
     /// The day fields' restricted-ness participates through <see cref="DaysCombineByUnion" />, because that is what
     /// selects the union or intersection branch in <see cref="DayMatches" />: <c>0 0 */2 * MON</c> and
-    /// <c>0 0 1-31/2 * MON</c> carry identical masks yet select instants two weeks apart, so they are not equal values.
+    /// <c>0 0 1-31/2 * MON</c> carry identical field sets yet select instants two weeks apart, so they are not equal
+    /// values.
     /// </para>
     /// <para>
     /// Only the combination mode is compared, not each flag, because a single restricted day field is not observable:
@@ -319,12 +320,12 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         && DaysCombineByUnion == other.DaysCombineByUnion
         && _dayOfMonthToken == other._dayOfMonthToken
         && _dayOfWeekToken == other._dayOfWeekToken
-        && _seconds.AsSpan().SequenceEqual(other._seconds)
-        && _minutes.AsSpan().SequenceEqual(other._minutes)
-        && _hours.AsSpan().SequenceEqual(other._hours)
-        && _daysOfMonth.AsSpan().SequenceEqual(other._daysOfMonth)
-        && _months.AsSpan().SequenceEqual(other._months)
-        && _daysOfWeek.AsSpan().SequenceEqual(other._daysOfWeek);
+        && _seconds == other._seconds
+        && _minutes == other._minutes
+        && _hours == other._hours
+        && _daysOfMonth == other._daysOfMonth
+        && _months == other._months
+        && _daysOfWeek == other._daysOfWeek;
 
     /// <summary>
     /// Determines whether this expression is equal to another object.
@@ -342,10 +343,10 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </summary>
     /// <returns>A hash code consistent with <see cref="Equals(CronExpression)" />.</returns>
     /// <remarks>
-    /// Every field mask contributes its contents, matching the fields <see cref="Equals(CronExpression)" /> compares,
-    /// as does the day-field combination mode. Mixing only each mask's cardinality would satisfy the equality contract
-    /// but collapse the common case - a schedule selecting one value per field, such as <c>0 2 * * *</c> - onto a
-    /// single bucket.
+    /// Every field set contributes its values, matching the fields <see cref="Equals(CronExpression)" /> compares, as
+    /// does the day-field combination mode. Mixing only each field's count would satisfy the equality contract but
+    /// collapse the common case - a schedule selecting one value per field, such as <c>0 2 * * *</c> - onto a single
+    /// bucket.
     /// </remarks>
     public override int GetHashCode()
     {
@@ -354,12 +355,12 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         hash.Add(DaysCombineByUnion);
         hash.Add(_dayOfMonthToken);
         hash.Add(_dayOfWeekToken);
-        AddMask(ref hash, _seconds);
-        AddMask(ref hash, _minutes);
-        AddMask(ref hash, _hours);
-        AddMask(ref hash, _daysOfMonth);
-        AddMask(ref hash, _months);
-        AddMask(ref hash, _daysOfWeek);
+        hash.Add(_seconds);
+        hash.Add(_minutes);
+        hash.Add(_hours);
+        hash.Add(_daysOfMonth);
+        hash.Add(_months);
+        hash.Add(_daysOfWeek);
         return hash.ToHashCode();
     }
 
@@ -369,30 +370,6 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <value>The stepping unit.</value>
     private TimeSpan Unit =>
         Format == CronFormat.WithSeconds ? TimeSpan.FromSeconds(1) : TimeSpan.FromMinutes(1);
-
-    /// <summary>
-    /// Mixes a field mask's contents into a hash code.
-    /// </summary>
-    /// <param name="hash">The hash code being accumulated.</param>
-    /// <param name="mask">The field mask.</param>
-    /// <remarks>
-    /// The set indices are mixed rather than the raw mask, so the contribution is proportional to how many values the
-    /// field selects rather than to the field's range.
-    /// </remarks>
-    private static void AddMask(ref HashCode hash, bool[] mask)
-    {
-        for (int index = 0; index < mask.Length; index++)
-        {
-            if (mask[index])
-            {
-                hash.Add(index);
-            }
-        }
-
-        // A trailing sentinel keeps field boundaries distinct, so "minute 1, hour 2" cannot hash like
-        // "minute 1 and 2, hour (none)".
-        hash.Add(-1);
-    }
 
     /// <summary>
     /// Gets a value indicating whether the two day fields combine by union rather than by intersection.
@@ -410,16 +387,16 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
 
     /// <summary>
     /// Determines whether the day component of <paramref name="candidate" /> matches the day-of-month and day-of-week
-    /// field masks under the Vixie combination rule.
+    /// field sets under the Vixie combination rule.
     /// </summary>
     /// <param name="candidate">The instant to test.</param>
     /// <returns><see langword="true" /> when the day matches; otherwise <see langword="false" />.</returns>
     private bool DayMatches(DateTime candidate)
     {
-        bool domMatch = _daysOfMonth[candidate.Day];
-        bool dowMatch = _daysOfWeek[(int)candidate.DayOfWeek];
+        bool domMatch = _daysOfMonth.Contains(candidate.Day);
+        bool dowMatch = _daysOfWeek.Contains(candidate.DayOfWeek);
 
-        // Both field masks always apply; the restriction flags select only how they combine. Vixie takes the union
+        // Both field sets always apply; the restriction flags select only how they combine. Vixie takes the union
         // when neither day field begins with '*', and the intersection otherwise - so a stepped star such as "*/2"
         // still narrows the days it matches even though it does not make the field "restricted".
         return DaysCombineByUnion
@@ -434,12 +411,16 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// <param name="candidate">The instant to test.</param>
     /// <returns><see langword="true" /> when the day matches; otherwise <see langword="false" />.</returns>
     /// <remarks>
-    /// A field that holds a token decides the day through it; the other field, if it holds values, through its mask.
+    /// A field that holds a token decides the day through it; the other field, if it holds values, through its set.
     /// </remarks>
     private bool TokenDayMatches(DateTime candidate)
     {
-        bool domMatch = _dayOfMonthToken.IsNone ? _daysOfMonth[candidate.Day] : _dayOfMonthToken.Matches(candidate);
-        bool dowMatch = _dayOfWeekToken.IsNone ? _daysOfWeek[(int)candidate.DayOfWeek] : _dayOfWeekToken.Matches(candidate);
+        bool domMatch = _dayOfMonthToken is { } dayOfMonthToken
+            ? dayOfMonthToken.Matches(candidate)
+            : _daysOfMonth.Contains(candidate.Day);
+        bool dowMatch = _dayOfWeekToken is { } dayOfWeekToken
+            ? dayOfWeekToken.Matches(candidate)
+            : _daysOfWeek.Contains(candidate.DayOfWeek);
 
         return DaysCombineByUnion
             ? domMatch || dowMatch
@@ -473,7 +454,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         int guardYear = after.Year + SearchHorizonYears;
         while (candidate.Year <= guardYear)
         {
-            if (!_months[candidate.Month])
+            if (!_months.Contains(candidate.Month))
             {
                 candidate = StartOfMonth(candidate).AddMonths(1);
                 continue;
@@ -485,19 +466,19 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
                 continue;
             }
 
-            if (!_hours[candidate.Hour])
+            if (!_hours.Contains(candidate.Hour))
             {
                 candidate = StartOfHour(candidate).AddHours(1);
                 continue;
             }
 
-            if (!_minutes[candidate.Minute])
+            if (!_minutes.Contains(candidate.Minute))
             {
                 candidate = StartOfMinute(candidate).AddMinutes(1);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds[candidate.Second])
+            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
             {
                 candidate = candidate.AddSeconds(1);
                 continue;
@@ -533,7 +514,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         int guardYear = before.Year - SearchHorizonYears;
         while (candidate.Year >= guardYear)
         {
-            if (!_months[candidate.Month])
+            if (!_months.Contains(candidate.Month))
             {
                 candidate = StartOfMonth(candidate).Subtract(Unit);
                 continue;
@@ -545,19 +526,19 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
                 continue;
             }
 
-            if (!_hours[candidate.Hour])
+            if (!_hours.Contains(candidate.Hour))
             {
                 candidate = StartOfHour(candidate).Subtract(Unit);
                 continue;
             }
 
-            if (!_minutes[candidate.Minute])
+            if (!_minutes.Contains(candidate.Minute))
             {
                 candidate = StartOfMinute(candidate).Subtract(Unit);
                 continue;
             }
 
-            if (Format == CronFormat.WithSeconds && !_seconds[candidate.Second])
+            if (Format == CronFormat.WithSeconds && !_seconds.Contains(candidate.Second))
             {
                 candidate = candidate.AddSeconds(-1);
                 continue;
