@@ -532,9 +532,10 @@ Forward-looking:
   to bit 0; the calendar documents' `workingDays` text and the `.bcal`
   packs' working-week byte are unchanged. The extraction decision above
   carries over: the sets stay in Core. `Bodu.Globalization.Recurrence`
-  adopts them next, for its cron fields, its cron day tokens, the
-  day and month sets an RRULE tests, and one builder overload per rule
-  part.
+  adopted them in the same release: cron holds its six fields as the
+  sets, an RRULE tests its months, month days and weekdays against sets
+  precomputed from its parts, and `RecurrenceRuleBuilder` takes each set
+  for the part it expresses.
 - **The `Functional` seam has grown - railway primitives shipped.** ✅
   `Option<T>` (plus the non-generic `Option` companion), `Result` /
   `Result<T>` / `ResultError`, and `Either<TLeft,TRight>` landed as
@@ -1630,8 +1631,13 @@ filter were added to *Non-goals* instead.
   1.3.0, accepts the Quartz day tokens in cron (`L`, `L-n`, `nW`, `LW`,
   `dL`, `d#k` and `?`) in the shapes Cronos accepts, keeping Vixie's
   weekday numbering and union rule, which brings Cronos's 319 token
-  vectors into reconciliation. Deferred follow-on: a read-only `.ics`
-  (iCalendar) reader.
+  vectors into reconciliation. A seventh pass, also for 1.3.0, adopts
+  Bodu.Core's calendar value sets: cron holds its fields as the sets
+  and its day tokens as two typed records, an RRULE tests its months,
+  month days and weekdays against sets precomputed from its parts, and
+  `RecurrenceRuleBuilder` gains an overload per part that takes the set
+  expressing it. Deferred follow-on: a read-only `.ics` (iCalendar)
+  reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in
