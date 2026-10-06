@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Text;
+
 namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
@@ -33,4 +36,32 @@ public readonly record struct WeekDayNum(int Ordinal, DayOfWeek Day)
     /// <value><see langword="true" /> when <see cref="Ordinal" /> is zero; otherwise <see langword="false" />.</value>
     public bool IsEveryOccurrence =>
         Ordinal == 0;
+
+    /// <summary>
+    /// Returns the entry's <c>BYDAY</c> token, as a rule's text writes it.
+    /// </summary>
+    /// <returns>
+    /// The ordinal, when it is not zero, followed by the two-letter weekday: for example <c>-1FR</c>, <c>3TH</c> or
+    /// <c>TU</c>.
+    /// </returns>
+    /// <remarks>
+    /// A positive ordinal is written without a sign, so the token parses back to an equal entry. A day outside the
+    /// defined <see cref="DayOfWeek" /> values, which no rule can hold, has no token, so the record's member text is
+    /// returned instead.
+    /// </remarks>
+    public override string ToString()
+    {
+        if (Day is < DayOfWeek.Sunday or > DayOfWeek.Saturday)
+        {
+            var builder = new StringBuilder();
+            builder.Append(nameof(WeekDayNum)).Append(" { ");
+            if (PrintMembers(builder))
+                builder.Append(' ');
+
+            return builder.Append('}').ToString();
+        }
+
+        string day = IcalValue.FormatWeekDay(Day);
+        return Ordinal == 0 ? day : string.Concat(Ordinal.ToString(CultureInfo.InvariantCulture), day);
+    }
 }

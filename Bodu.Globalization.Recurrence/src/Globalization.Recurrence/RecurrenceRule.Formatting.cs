@@ -136,10 +136,7 @@ public sealed partial class RecurrenceRule : IFormattable
             if (i > 0)
                 builder.Append(',');
 
-            WeekDayNum entry = _byDay[i];
-            if (entry.Ordinal != 0)
-                builder.Append(entry.Ordinal.ToString(CultureInfo.InvariantCulture));
-            builder.Append(IcalValue.FormatWeekDay(entry.Day));
+            builder.Append(_byDay[i].ToString());
         }
     }
 }
