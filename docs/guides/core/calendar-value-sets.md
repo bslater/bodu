@@ -126,4 +126,6 @@ Each of `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet` has 
 
 - [DayOfWeekSet](day-of-week-set.md) - the set of days of the week, with working-week presets and mask formats.
 - [Date and time extensions](date-extensions.md) - the date arithmetic the sets pair with.
+- [RRULE recurrence rules](../recurrence/rrule.md#pattern-3---build-a-rule-fluently) - `RecurrenceRuleBuilder` takes each
+  set for the rule part it expresses, such as `ByMonth(MonthSet)` and `ByDay(DayOfWeekSet)`.
 - **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

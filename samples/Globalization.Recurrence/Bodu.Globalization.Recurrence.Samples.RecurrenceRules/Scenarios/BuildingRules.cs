@@ -191,6 +191,36 @@ public static class BuildingRules
         Console.WriteLine($"  occurs  : {JoinTimes(everyThirdHour.GetOccurrences(new DateTime(2026, 1, 1, 9, 0, 0)))}");
 
         Console.WriteLine();
+        Console.WriteLine("--- Calendar value sets: the same parts from Bodu.Core's sets ---");
+
+        // Each part a calendar value set can express also takes that set. The values are written in ascending order,
+        // and BYDAY Monday first, whatever order the set was built in: here the weekdays from the 28th to the end of
+        // each quarter's last month, at 09:30 and 17:30.
+        RecurrenceRule quarterEnds = new RecurrenceRuleBuilder(RecurrenceFrequency.Daily)
+            .ByMonth(MonthSet.Parse("12,3,6,9"))
+            .ByMonthDay(DayOfMonthSet.Parse("28-31"))
+            .ByDay(DayOfWeekSet.Weekdays)
+            .ByHour(HourSet.Parse("17,9"))
+            .ByMinute(new MinuteSet(30))
+            .BySecond(new SecondSet(0))
+            .WithCount(4)
+            .Build();
+
+        Console.WriteLine($"  built   : {quarterEnds}");
+        Console.WriteLine($"  occurs  : {JoinTimes(quarterEnds.GetOccurrences(new DateTime(2026, 1, 1)))}");
+
+        // A part that is present selects at least one value, so an empty set is rejected at the call; leave the part
+        // unset to place no limit on it.
+        try
+        {
+            _ = new RecurrenceRuleBuilder(RecurrenceFrequency.Yearly).ByMonth(MonthSet.Empty);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"  ByMonth(MonthSet.Empty) : {ex.GetType().Name} - {ex.Message}");
+        }
+
+        Console.WriteLine();
     }
 
     /// <summary>
