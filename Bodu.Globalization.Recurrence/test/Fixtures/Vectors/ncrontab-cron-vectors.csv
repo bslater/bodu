@@ -1,0 +1,197 @@
+# Cron vectors derived from NCrontab's CrontabScheduleTests.cs
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: NCrontab -- https://github.com/atifaziz/NCrontab -- NCrontab.Tests/CrontabScheduleTests.cs
+# commit: d122d586a0665580f3fde9b8cfc03c5e3abf1909
+# file-sha256: NCrontab.Tests/CrontabScheduleTests.cs bdcceaf4de1e04527cd05edd471666d782fe8fdce4bd5ddeef9cd0dd2239cfe7
+# licence: Apache-2.0 (Copyright (c) 2008 Atif Aziz; portions Copyright (c) 2001 The OpenSymphony Group). The rows restate the assertions (expressions and instants) with attribution; the upstream file is not committed.
+# method: extracted by extract-ncrontab-cron-vectors.py (the 174 [TestCase] rows parsed per test method; the [Test] assertions from a hand-maintained list in the script, each with its line)
+# note: NCrontab always intersects the two day fields, accepts any prefix of a month or day name, and returns the end bound from GetNextOccurrence(start, end) when nothing comes first; its six-part form puts seconds first as Bodu does. Left out: 4 [Test] methods of null-argument guards with no cron meaning
+# flags: dom-dow-intersect = both day fields restricted: NCrontab intersects them, Bodu takes the union
+name,kind,format,expression,from,expected,expectation,flags,reference
+CannotParseEmptyString-01,invalid,standard,,,,upstream,,"CannotParseEmptyString L51; Parse("""") throws CrontabException"
+TryParseEmptyString-01,invalid,standard,,,,upstream,,"TryParseEmptyString L61; TryParse("""") returns null"
+AllTimeString-01,to-string,standard,* * * * *,,* * * * *,upstream,,AllTimeString L65
+SixPartAllTimeString-01,to-string,withSeconds,* * * * * *,,* * * * * *,upstream,,SixPartAllTimeString L72; IncludingSeconds = true; seconds first as in Bodu
+CannotParseWhenSecondsRequired-01,invalid,withSeconds,* * * * *,,,upstream,,CannotParseWhenSecondsRequired L79; five fields with IncludingSeconds = true
+Formatting-01,equal,standard,"* 1-2,3 * * *",,* 1-3 * * *,upstream,,"Formatting L85; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-02,equal,standard,* * * */2 *,,"* * * 1,3,5,7,9,11 *",upstream,,"Formatting L86; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-03,equal,standard,10-40/15 * * * *,,"10,25,40 * * * *",upstream,,"Formatting L87; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-04,equal,standard,"* * * Mar,Jan,Aug Fri,Mon-Tue",,"* * * 1,3,8 1-2,5",upstream,,"Formatting L88; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-05,equal,withSeconds,"1 * 1-2,3 * * *",,1 * 1-3 * * *,upstream,,"Formatting L89; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-06,equal,withSeconds,22 * * * */2 *,,"22 * * * 1,3,5,7,9,11 *",upstream,,"Formatting L90; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-07,equal,withSeconds,33 10-40/15 * * * *,,"33 10,25,40 * * * *",upstream,,"Formatting L91; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Formatting-08,equal,withSeconds,"55 * * * Mar,Jan,Aug Fri,Mon-Tue",,"55 * * * 1,3,8 1-2,5",upstream,,"Formatting L92; NCrontab renders the expression as the other text; restated as the equality of the two spellings, since Bodu's canonical text lists values"
+Evaluations-001,next,standard,* * * * *,2003-01-01T00:00:00,2003-01-01T00:01:00,upstream,,Evaluations L105
+Evaluations-002,next,standard,* * * * *,2003-01-01T00:01:00,2003-01-01T00:02:00,upstream,,Evaluations L106
+Evaluations-003,next,standard,* * * * *,2003-01-01T00:02:00,2003-01-01T00:03:00,upstream,,Evaluations L107
+Evaluations-004,next,standard,* * * * *,2003-01-01T00:59:00,2003-01-01T01:00:00,upstream,,Evaluations L108
+Evaluations-005,next,standard,* * * * *,2003-01-01T01:59:00,2003-01-01T02:00:00,upstream,,Evaluations L109
+Evaluations-006,next,standard,* * * * *,2003-01-01T23:59:00,2003-01-02T00:00:00,upstream,,Evaluations L110
+Evaluations-007,next,standard,* * * * *,2003-12-31T23:59:00,2004-01-01T00:00:00,upstream,,Evaluations L111
+Evaluations-008,next,standard,* * * * *,2003-02-28T23:59:00,2003-03-01T00:00:00,upstream,,Evaluations L113
+Evaluations-009,next,standard,* * * * *,2004-02-28T23:59:00,2004-02-29T00:00:00,upstream,,Evaluations L114
+Evaluations-010,next,withSeconds,45 * * * * *,2003-01-01T00:00:00,2003-01-01T00:00:45,upstream,,"Evaluations L118; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-011,next,withSeconds,"45-47,48,49 * * * * *",2003-01-01T00:00:00,2003-01-01T00:00:45,upstream,,"Evaluations L120; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-012,next,withSeconds,"45-47,48,49 * * * * *",2003-01-01T00:00:45,2003-01-01T00:00:46,upstream,,"Evaluations L121; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-013,next,withSeconds,"45-47,48,49 * * * * *",2003-01-01T00:00:46,2003-01-01T00:00:47,upstream,,"Evaluations L122; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-014,next,withSeconds,"45-47,48,49 * * * * *",2003-01-01T00:00:47,2003-01-01T00:00:48,upstream,,"Evaluations L123; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-015,next,withSeconds,"45-47,48,49 * * * * *",2003-01-01T00:00:48,2003-01-01T00:00:49,upstream,,"Evaluations L124; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-016,next,withSeconds,"45-47,48,49 * * * * *",2003-01-01T00:00:49,2003-01-01T00:01:45,upstream,,"Evaluations L125; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-017,next,withSeconds,2/5 * * * * *,2003-01-01T00:00:00,2003-01-01T00:00:02,upstream,,"Evaluations L127; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-018,next,withSeconds,2/5 * * * * *,2003-01-01T00:00:02,2003-01-01T00:00:07,upstream,,"Evaluations L128; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-019,next,withSeconds,2/5 * * * * *,2003-01-01T00:00:50,2003-01-01T00:00:52,upstream,,"Evaluations L129; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-020,next,withSeconds,2/5 * * * * *,2003-01-01T00:00:52,2003-01-01T00:00:57,upstream,,"Evaluations L130; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-021,next,withSeconds,2/5 * * * * *,2003-01-01T00:00:57,2003-01-01T00:01:02,upstream,,"Evaluations L131; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-022,next,withSeconds,* 0-1 10 * * *,2021-02-24T09:50:35,2021-02-24T10:00:00,upstream,,"Evaluations L134; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-023,next,standard,45 * * * *,2003-01-01T00:00:00,2003-01-01T00:45:00,upstream,,Evaluations L138
+Evaluations-024,next,standard,"45-47,48,49 * * * *",2003-01-01T00:00:00,2003-01-01T00:45:00,upstream,,Evaluations L140
+Evaluations-025,next,standard,"45-47,48,49 * * * *",2003-01-01T00:45:00,2003-01-01T00:46:00,upstream,,Evaluations L141
+Evaluations-026,next,standard,"45-47,48,49 * * * *",2003-01-01T00:46:00,2003-01-01T00:47:00,upstream,,Evaluations L142
+Evaluations-027,next,standard,"45-47,48,49 * * * *",2003-01-01T00:47:00,2003-01-01T00:48:00,upstream,,Evaluations L143
+Evaluations-028,next,standard,"45-47,48,49 * * * *",2003-01-01T00:48:00,2003-01-01T00:49:00,upstream,,Evaluations L144
+Evaluations-029,next,standard,"45-47,48,49 * * * *",2003-01-01T00:49:00,2003-01-01T01:45:00,upstream,,Evaluations L145
+Evaluations-030,next,standard,2/5 * * * *,2003-01-01T00:00:00,2003-01-01T00:02:00,upstream,,Evaluations L147
+Evaluations-031,next,standard,2/5 * * * *,2003-01-01T00:02:00,2003-01-01T00:07:00,upstream,,Evaluations L148
+Evaluations-032,next,standard,2/5 * * * *,2003-01-01T00:50:00,2003-01-01T00:52:00,upstream,,Evaluations L149
+Evaluations-033,next,standard,2/5 * * * *,2003-01-01T00:52:00,2003-01-01T00:57:00,upstream,,Evaluations L150
+Evaluations-034,next,standard,2/5 * * * *,2003-01-01T00:57:00,2003-01-01T01:02:00,upstream,,Evaluations L151
+Evaluations-035,next,withSeconds,* * 10 * * *,2021-02-24T09:50:35,2021-02-24T10:00:00,upstream,,"Evaluations L154; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-036,next,withSeconds,* 55 * * * *,2021-02-24T09:50:35,2021-02-24T09:55:00,upstream,,"Evaluations L155; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-037,next,withSeconds,3 45 * * * *,2003-01-01T00:00:30,2003-01-01T00:45:03,upstream,,"Evaluations L157; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-038,next,withSeconds,"6 45-47,48,49 * * * *",2003-01-01T00:00:30,2003-01-01T00:45:06,upstream,,"Evaluations L159; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-039,next,withSeconds,"6 45-47,48,49 * * * *",2003-01-01T00:45:30,2003-01-01T00:46:06,upstream,,"Evaluations L160; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-040,next,withSeconds,"6 45-47,48,49 * * * *",2003-01-01T00:46:30,2003-01-01T00:47:06,upstream,,"Evaluations L161; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-041,next,withSeconds,"6 45-47,48,49 * * * *",2003-01-01T00:47:30,2003-01-01T00:48:06,upstream,,"Evaluations L162; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-042,next,withSeconds,"6 45-47,48,49 * * * *",2003-01-01T00:48:30,2003-01-01T00:49:06,upstream,,"Evaluations L163; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-043,next,withSeconds,"6 45-47,48,49 * * * *",2003-01-01T00:49:30,2003-01-01T01:45:06,upstream,,"Evaluations L164; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-044,next,withSeconds,9 2/5 * * * *,2003-01-01T00:00:30,2003-01-01T00:02:09,upstream,,"Evaluations L166; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-045,next,withSeconds,9 2/5 * * * *,2003-01-01T00:02:30,2003-01-01T00:07:09,upstream,,"Evaluations L167; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-046,next,withSeconds,9 2/5 * * * *,2003-01-01T00:50:30,2003-01-01T00:52:09,upstream,,"Evaluations L168; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-047,next,withSeconds,9 2/5 * * * *,2003-01-01T00:52:30,2003-01-01T00:57:09,upstream,,"Evaluations L169; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-048,next,withSeconds,9 2/5 * * * *,2003-01-01T00:57:30,2003-01-01T01:02:09,upstream,,"Evaluations L170; IncludingSeconds = true, seconds first as in Bodu"
+Evaluations-049,next,standard," * 3/4 * * *",2003-12-20T10:00:00,2003-12-20T11:00:00,upstream,,Evaluations L174
+Evaluations-050,next,standard," * 3   * * *",2003-12-20T00:30:00,2003-12-20T03:00:00,upstream,,Evaluations L175
+Evaluations-051,next,standard,30 3   * * *,2003-12-20T01:45:00,2003-12-20T03:30:00,upstream,,Evaluations L176
+Evaluations-052,next,standard,30  *  1 * *,2003-01-07T00:00:00,2003-02-01T00:30:00,upstream,,Evaluations L180
+Evaluations-053,next,standard,30  *  1 * *,2003-02-01T00:30:00,2003-02-01T01:30:00,upstream,,Evaluations L181
+Evaluations-054,next,standard,10  * 22    * *,2003-01-01T00:00:00,2003-01-22T00:10:00,upstream,,Evaluations L183
+Evaluations-055,next,standard,30 23 19    * *,2003-01-01T00:00:00,2003-01-19T23:30:00,upstream,,Evaluations L184
+Evaluations-056,next,standard,30 23 21    * *,2003-01-01T00:00:00,2003-01-21T23:30:00,upstream,,Evaluations L185
+Evaluations-057,next,standard," *  * 21    * *",2003-01-01T00:01:00,2003-01-21T00:00:00,upstream,,Evaluations L186
+Evaluations-058,next,standard," *  * 30,31 * *",2003-07-10T00:00:00,2003-07-30T00:00:00,upstream,,Evaluations L187
+Evaluations-059,next,standard,* * * 3 *,2002-02-28T23:59:59,2002-03-01T00:00:00,upstream,,Evaluations L191
+Evaluations-060,next,standard,* * * 3 *,2004-02-29T23:59:59,2004-03-01T00:00:00,upstream,,Evaluations L192
+Evaluations-061,next,standard,* * * 4 *,2002-03-31T23:59:59,2002-04-01T00:00:00,upstream,,Evaluations L193
+Evaluations-062,next,standard,* * * 5 *,2002-04-30T23:59:59,2002-05-01T00:00:00,upstream,,Evaluations L194
+Evaluations-063,next,standard,"0 0 15,30,31 * *",2000-01-01T00:00:00,2000-01-15T00:00:00,upstream,,Evaluations L198
+Evaluations-064,next,standard,"0 0 15,30,31 * *",2000-01-15T00:00:00,2000-01-30T00:00:00,upstream,,Evaluations L199
+Evaluations-065,next,standard,"0 0 15,30,31 * *",2000-01-30T00:00:00,2000-01-31T00:00:00,upstream,,Evaluations L200
+Evaluations-066,next,standard,"0 0 15,30,31 * *",2000-01-31T00:00:00,2000-02-15T00:00:00,upstream,,Evaluations L201
+Evaluations-067,next,standard,"0 0 15,30,31 * *",2000-02-15T00:00:00,2000-03-15T00:00:00,upstream,,Evaluations L203
+Evaluations-068,next,standard,"0 0 15,30,31 * *",2000-03-15T00:00:00,2000-03-30T00:00:00,upstream,,Evaluations L205
+Evaluations-069,next,standard,"0 0 15,30,31 * *",2000-03-30T00:00:00,2000-03-31T00:00:00,upstream,,Evaluations L206
+Evaluations-070,next,standard,"0 0 15,30,31 * *",2000-03-31T00:00:00,2000-04-15T00:00:00,upstream,,Evaluations L207
+Evaluations-071,next,standard,"0 0 15,30,31 * *",2000-04-15T00:00:00,2000-04-30T00:00:00,upstream,,Evaluations L209
+Evaluations-072,next,standard,"0 0 15,30,31 * *",2000-04-30T00:00:00,2000-05-15T00:00:00,upstream,,Evaluations L210
+Evaluations-073,next,standard,"0 0 15,30,31 * *",2000-05-15T00:00:00,2000-05-30T00:00:00,upstream,,Evaluations L212
+Evaluations-074,next,standard,"0 0 15,30,31 * *",2000-05-30T00:00:00,2000-05-31T00:00:00,upstream,,Evaluations L213
+Evaluations-075,next,standard,"0 0 15,30,31 * *",2000-05-31T00:00:00,2000-06-15T00:00:00,upstream,,Evaluations L214
+Evaluations-076,next,standard,"0 0 15,30,31 * *",2000-06-15T00:00:00,2000-06-30T00:00:00,upstream,,Evaluations L216
+Evaluations-077,next,standard,"0 0 15,30,31 * *",2000-06-30T00:00:00,2000-07-15T00:00:00,upstream,,Evaluations L217
+Evaluations-078,next,standard,"0 0 15,30,31 * *",2000-07-15T00:00:00,2000-07-30T00:00:00,upstream,,Evaluations L219
+Evaluations-079,next,standard,"0 0 15,30,31 * *",2000-07-30T00:00:00,2000-07-31T00:00:00,upstream,,Evaluations L220
+Evaluations-080,next,standard,"0 0 15,30,31 * *",2000-07-31T00:00:00,2000-08-15T00:00:00,upstream,,Evaluations L221
+Evaluations-081,next,standard,"0 0 15,30,31 * *",2000-08-15T00:00:00,2000-08-30T00:00:00,upstream,,Evaluations L223
+Evaluations-082,next,standard,"0 0 15,30,31 * *",2000-08-30T00:00:00,2000-08-31T00:00:00,upstream,,Evaluations L224
+Evaluations-083,next,standard,"0 0 15,30,31 * *",2000-08-31T00:00:00,2000-09-15T00:00:00,upstream,,Evaluations L225
+Evaluations-084,next,standard,"0 0 15,30,31 * *",2000-09-15T00:00:00,2000-09-30T00:00:00,upstream,,Evaluations L227
+Evaluations-085,next,standard,"0 0 15,30,31 * *",2000-09-30T00:00:00,2000-10-15T00:00:00,upstream,,Evaluations L228
+Evaluations-086,next,standard,"0 0 15,30,31 * *",2000-10-15T00:00:00,2000-10-30T00:00:00,upstream,,Evaluations L230
+Evaluations-087,next,standard,"0 0 15,30,31 * *",2000-10-30T00:00:00,2000-10-31T00:00:00,upstream,,Evaluations L231
+Evaluations-088,next,standard,"0 0 15,30,31 * *",2000-10-31T00:00:00,2000-11-15T00:00:00,upstream,,Evaluations L232
+Evaluations-089,next,standard,"0 0 15,30,31 * *",2000-11-15T00:00:00,2000-11-30T00:00:00,upstream,,Evaluations L234
+Evaluations-090,next,standard,"0 0 15,30,31 * *",2000-11-30T00:00:00,2000-12-15T00:00:00,upstream,,Evaluations L235
+Evaluations-091,next,standard,"0 0 15,30,31 * *",2000-12-15T00:00:00,2000-12-30T00:00:00,upstream,,Evaluations L237
+Evaluations-092,next,standard,"0 0 15,30,31 * *",2000-12-30T00:00:00,2000-12-31T00:00:00,upstream,,Evaluations L238
+Evaluations-093,next,standard,"0 0 15,30,31 * *",2000-12-31T00:00:00,2001-01-15T00:00:00,upstream,,Evaluations L239
+Evaluations-094,next,standard,10 * * 6 *,2003-12-01T05:00:00,2004-06-01T00:10:00,upstream,,Evaluations L243
+Evaluations-095,next,standard," 1 2 3 * *",2003-01-04T00:00:00,2003-02-03T02:01:00,upstream,,Evaluations L244
+Evaluations-096,next,standard,"10 * * Feb,Apr-Jun *",2002-07-01T05:00:00,2003-02-01T00:10:00,upstream,,"Evaluations L245; names cut to three letters (upstream 10 * * February,April-Jun *)"
+Evaluations-097,next,standard,0 12 1 6 *,2003-01-01T00:00:00,2003-06-01T12:00:00,upstream,,Evaluations L246
+Evaluations-098,next,standard,* 12 1 6 *,1988-09-11T14:23:00,1989-06-01T12:00:00,upstream,,Evaluations L247
+Evaluations-099,next,standard,* 12 1 6 *,1988-03-11T14:23:00,1988-06-01T12:00:00,upstream,,Evaluations L248
+Evaluations-100,next,standard,"* 2,4-8,15 * 6 *",1988-03-11T14:23:00,1988-06-01T02:00:00,upstream,,Evaluations L249
+Evaluations-101,next,standard,"20 * * jan,FeB,Mar,apr,May,JuN,Jul,Aug,SEP-Oct,Nov,DEC *",1988-03-11T14:23:00,1988-03-11T15:20:00,upstream,,"Evaluations L250; names cut to three letters (upstream 20 * * january,FeB,Mar,april,May,JuNE,July,Augu,SEPT-October,Nov,DECEM *)"
+Evaluations-102,next,standard,30 6 * * 0,2003-06-26T10:00:00,2003-06-29T06:30:00,upstream,,Evaluations L254
+Evaluations-103,next,standard,30 6 * * sun,2003-06-26T10:00:00,2003-06-29T06:30:00,upstream,,Evaluations L255; names cut to three letters (upstream 30 6 * * sunday)
+Evaluations-104,next,standard,30 6 * * SUN,2003-06-26T10:00:00,2003-06-29T06:30:00,upstream,,Evaluations L256; names cut to three letters (upstream 30 6 * * SUNDAY)
+Evaluations-105,next,standard,1 12 * * 2,2003-06-19T00:00:00,2003-06-24T12:01:00,upstream,,Evaluations L257
+Evaluations-106,next,standard,1 12 * * 2,2003-06-24T12:01:00,2003-07-01T12:01:00,upstream,,Evaluations L258
+Evaluations-107,next,standard,15 18 * * Mon,2003-06-01T14:55:00,2003-06-02T18:15:00,upstream,,Evaluations L260
+Evaluations-108,next,standard,15 18 * * Mon,2003-06-02T18:15:00,2003-06-09T18:15:00,upstream,,Evaluations L261
+Evaluations-109,next,standard,15 18 * * Mon,2003-06-09T18:15:00,2003-06-16T18:15:00,upstream,,Evaluations L262
+Evaluations-110,next,standard,15 18 * * Mon,2003-06-16T18:15:00,2003-06-23T18:15:00,upstream,,Evaluations L263
+Evaluations-111,next,standard,15 18 * * Mon,2003-06-23T18:15:00,2003-06-30T18:15:00,upstream,,Evaluations L264
+Evaluations-112,next,standard,15 18 * * Mon,2003-06-30T18:15:00,2003-07-07T18:15:00,upstream,,Evaluations L265
+Evaluations-113,next,standard,* * * * Mon,2003-01-01T00:00:00,2003-01-06T00:00:00,upstream,,Evaluations L267
+Evaluations-114,next,standard,45 16 1 * Mon,2003-01-01T12:00:00,2003-01-01T16:45:00,cronsim,,Evaluations L268; NCrontab intersects the day fields and asserts 2003-09-01 16:45:00; restated under the union: 1 January is the 1st
+Evaluations-115,next,standard,45 16 1 * Mon,2003-09-01T23:45:00,2003-09-08T16:45:00,cronsim,,Evaluations L269; NCrontab intersects the day fields and asserts 2003-12-01 16:45:00; restated under the union: the next Monday after 1 September 23:45
+Evaluations-116,next,standard,1 12 29 2 *,2000-01-01T12:00:00,2000-02-29T12:01:00,upstream,,Evaluations L273
+Evaluations-117,next,standard,1 12 29 2 *,2000-02-29T12:01:00,2004-02-29T12:01:00,upstream,,Evaluations L274
+Evaluations-118,next,standard,1 12 29 2 *,2004-02-29T12:01:00,2008-02-29T12:01:00,upstream,,Evaluations L275
+Evaluations-119,next,standard,1 12 28 2 *,2000-01-01T12:00:00,2000-02-28T12:01:00,upstream,,Evaluations L279
+Evaluations-120,next,standard,1 12 28 2 *,2000-02-28T12:01:00,2001-02-28T12:01:00,upstream,,Evaluations L280
+Evaluations-121,next,standard,1 12 28 2 *,2001-02-28T12:01:00,2002-02-28T12:01:00,upstream,,Evaluations L281
+Evaluations-122,next,standard,1 12 28 2 *,2002-02-28T12:01:00,2003-02-28T12:01:00,upstream,,Evaluations L282
+Evaluations-123,next,standard,1 12 28 2 *,2003-02-28T12:01:00,2004-02-28T12:01:00,upstream,,Evaluations L283
+Evaluations-124,next,standard,1 12 28 2 *,2004-02-29T12:01:00,2005-02-28T12:01:00,upstream,,Evaluations L284
+Evaluations-125,next,standard,40 14/1 * * *,2000-01-01T12:00:00,2000-01-01T14:40:00,upstream,,Evaluations L286
+Evaluations-126,next,standard,40 14/1 * * *,2000-01-01T14:40:00,2000-01-01T15:40:00,upstream,,Evaluations L287
+FiniteOccurrences-01,next,standard," *  * * * *  ",2003-01-01T00:00:00,2003-01-01T00:01:00,cronsim,,"FiniteOccurrences L297; GetNextOccurrence(start, end) returns the end 2003-01-01T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-02,next,standard," *  * * * *  ",2002-12-31T23:59:59,2003-01-01T00:00:00,cronsim,,"FiniteOccurrences L298; GetNextOccurrence(start, end) returns the end 2003-01-01T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-03,next,standard," *  * * * Mon",2002-12-31T23:59:59,2003-01-06T00:00:00,cronsim,,"FiniteOccurrences L299; GetNextOccurrence(start, end) returns the end 2003-01-01T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-04,next,standard," *  * * * Mon",2003-01-01T00:00:00,2003-01-06T00:00:00,cronsim,,"FiniteOccurrences L300; GetNextOccurrence(start, end) returns the end 2003-01-02T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-05,next,standard," *  * * * Mon",2003-01-01T00:00:00,2003-01-06T00:00:00,cronsim,,"FiniteOccurrences L301; GetNextOccurrence(start, end) returns the end 2003-01-02T12:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-06,next,standard,30 12 * * Mon,2003-01-01T00:00:00,2003-01-06T12:30:00,cronsim,,"FiniteOccurrences L302; GetNextOccurrence(start, end) returns the end 2003-01-06T12:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-07,next,withSeconds," *  *  * * * *  ",2003-01-01T00:00:00,2003-01-01T00:00:01,cronsim,,"FiniteOccurrences L304; GetNextOccurrence(start, end) returns the end 2003-01-01T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-08,next,withSeconds," *  *  * * * *  ",2002-12-31T23:59:59,2003-01-01T00:00:00,cronsim,,"FiniteOccurrences L305; GetNextOccurrence(start, end) returns the end 2003-01-01T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-09,next,withSeconds," *  *  * * * Mon",2002-12-31T23:59:59,2003-01-06T00:00:00,cronsim,,"FiniteOccurrences L306; GetNextOccurrence(start, end) returns the end 2003-01-01T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-10,next,withSeconds," *  *  * * * Mon",2003-01-01T00:00:00,2003-01-06T00:00:00,cronsim,,"FiniteOccurrences L307; GetNextOccurrence(start, end) returns the end 2003-01-02T00:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-11,next,withSeconds," *  *  * * * Mon",2003-01-01T00:00:00,2003-01-06T00:00:00,cronsim,,"FiniteOccurrences L308; GetNextOccurrence(start, end) returns the end 2003-01-02T12:00:00: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+FiniteOccurrences-12,next,withSeconds,10 30 12 * * Mon,2003-01-01T00:00:00,2003-01-06T12:30:10,cronsim,,"FiniteOccurrences L309; GetNextOccurrence(start, end) returns the end 2003-01-06T12:00:10: nothing before it; restated as the unbounded next occurrence, at or after the end; value from cronsim 2.7, checked by hand"
+DontLoopIndefinitely-01,unreachable-next,standard,* * 31 Feb *,2001-01-01T00:00:00,,derived,,"DontLoopIndefinitely L326; the end-bounded search from 2001-01-01 returns its end 2010-01-01 (L330); February never has a 31st, so there is no next occurrence"
+DontLoopIndefinitely-02,unreachable-next,withSeconds,* * * 31 Feb *,2001-01-01T00:00:00,,derived,,"DontLoopIndefinitely L327; the end-bounded search from 2001-01-01 returns its end 2010-01-01 (L330); February never has a 31st, so there is no next occurrence"
+BadSecondsField-01,invalid,standard,bad * * * * *,,,upstream,,BadSecondsField L347; Parse throws CrontabException and TryParse returns null
+BadMinutesField-01,invalid,standard,bad * * * *,,,upstream,,BadMinutesField L351; Parse throws CrontabException and TryParse returns null
+BadMinutesField-02,invalid,withSeconds,* bad * * * *,,,upstream,,BadMinutesField L352; Parse throws CrontabException and TryParse returns null
+BadHoursField-01,invalid,standard,* bad * * *,,,upstream,,BadHoursField L356; Parse throws CrontabException and TryParse returns null
+BadHoursField-02,invalid,withSeconds,* * bad * * *,,,upstream,,BadHoursField L357; Parse throws CrontabException and TryParse returns null
+BadDayField-01,invalid,standard,* * bad * *,,,upstream,,BadDayField L361; Parse throws CrontabException and TryParse returns null
+BadDayField-02,invalid,withSeconds,* * * bad * *,,,upstream,,BadDayField L362; Parse throws CrontabException and TryParse returns null
+BadMonthField-01,invalid,standard,* * * bad *,,,upstream,,BadMonthField L366; Parse throws CrontabException and TryParse returns null
+BadMonthField-02,invalid,withSeconds,* * * * bad *,,,upstream,,BadMonthField L367; Parse throws CrontabException and TryParse returns null
+BadDayOfWeekField-01,invalid,standard,"* * * * mon,bad,wed",,,upstream,,BadDayOfWeekField L371; Parse throws CrontabException and TryParse returns null
+BadDayOfWeekField-02,invalid,withSeconds,"* * * * * mon,bad,wed",,,upstream,,BadDayOfWeekField L372; Parse throws CrontabException and TryParse returns null
+OutOfRangeField-01,invalid,standard,"* 1,2,3,456,7,8,9 * * *",,,upstream,,OutOfRangeField L376; Parse throws CrontabException and TryParse returns null
+OutOfRangeField-02,invalid,withSeconds,"* * 1,2,3,456,7,8,9 * * *",,,upstream,,OutOfRangeField L377; Parse throws CrontabException and TryParse returns null
+NonNumberValueInNumericOnlyField-01,invalid,standard,"* 1,Z,3,4 * * *",,,upstream,,NonNumberValueInNumericOnlyField L381; Parse throws CrontabException and TryParse returns null
+NonNumberValueInNumericOnlyField-02,invalid,withSeconds,"* * 1,Z,3,4 * * *",,,upstream,,NonNumberValueInNumericOnlyField L382; Parse throws CrontabException and TryParse returns null
+NonNumericFieldInterval-01,invalid,standard,* 1/Z * * *,,,upstream,,NonNumericFieldInterval L386; Parse throws CrontabException and TryParse returns null
+NonNumericFieldInterval-02,invalid,withSeconds,* * 1/Z * * *,,,upstream,,NonNumericFieldInterval L387; Parse throws CrontabException and TryParse returns null
+NonNumericFieldRangeComponent-01,invalid,standard,* 3-l2 * * *,,,upstream,,NonNumericFieldRangeComponent L391; Parse throws CrontabException and TryParse returns null
+NonNumericFieldRangeComponent-02,invalid,withSeconds,* * 3-l2 * * *,,,upstream,,NonNumericFieldRangeComponent L392; Parse throws CrontabException and TryParse returns null
+GetNextOccurrences_NextOccurrenceInvalidTime_ShouldStopAtLastValidTime-01,next-inclusive,standard,0 0 29 Feb Mon,9988-02-29T00:00:00,9988-02-29T00:00:00,upstream,,"GetNextOccurrences_NextOccurrenceInvalidTime_ShouldStopAtLastValidTime L404; issue #21; the last occurrence from 9988-01-01 is 9988-02-29, so it is one; a 29 February and a Monday, it is one under the union too"
+GetNextOccurrences_NextOccurrenceInvalidTime_ShouldStopAtLastValidTime-02,unreachable-next,standard,0 0 29 Feb Mon,9988-02-29T00:00:00,,upstream,dom-dow-intersect,GetNextOccurrences_NextOccurrenceInvalidTime_ShouldStopAtLastValidTime L404; issue #21; nothing follows 9988-02-29 before DateTime.MaxValue (the next Monday 29 February would be in 10016)
+GetNextOccurrence-01,next,standard,0 0 29 Feb Mon,2017-01-01T00:00:00,2044-02-29T00:00:00,derived,dom-dow-intersect,"GetNextOccurrence L415; end bound 2017-12-31; NCrontab intersects the day fields (a Monday 29 February); it returns that end, as no Monday 29 February comes before it; the value is the next one under the intersection, 2044-02-29 (2016 and 2044 are the leap years either side whose 29 February is a Monday)"
+GetNextOccurrence-02,next,standard,0 0 29 Feb Mon,9000-01-01T00:00:00,9008-02-29T00:00:00,upstream,dom-dow-intersect,GetNextOccurrence L416; end bound 9008-12-31; NCrontab intersects the day fields (a Monday 29 February)
+NextOccurrencesFromMultipleSchedules-01-1,next-sequence,standard,0 * * * *,2003-01-01T00:00:00,2003-01-01T01:00:00|2003-01-01T02:00:00|2003-01-01T03:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L455; NCrontab merges the runs of 1 schedule(s); restated as each schedule's own run, this one of schedule 1"
+NextOccurrencesFromMultipleSchedules-02-1,next-sequence,standard,0 1 * * *,2003-01-01T00:00:00,2003-01-01T01:00:00|2003-01-02T01:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L457; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 1"
+NextOccurrencesFromMultipleSchedules-02-2,next-sequence,standard," 0 2 * * *",2003-01-01T00:00:00,2003-01-01T02:00:00|2003-01-02T02:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L457; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 2"
+NextOccurrencesFromMultipleSchedules-02-3,next-sequence,standard," 0 3 * * *",2003-01-01T00:00:00,2003-01-01T03:00:00|2003-01-02T03:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L457; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 3"
+NextOccurrencesFromMultipleSchedules-03-1,next-sequence,standard,0 2 * * *,2003-01-01T00:00:00,2003-01-01T02:00:00|2003-01-02T02:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L460; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 1"
+NextOccurrencesFromMultipleSchedules-03-2,next-sequence,standard,0 3 * * *,2003-01-01T00:00:00,2003-01-01T03:00:00|2003-01-02T03:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L460; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 2"
+NextOccurrencesFromMultipleSchedules-03-3,next-sequence,standard,0 1 * * *,2003-01-01T00:00:00,2003-01-01T01:00:00|2003-01-02T01:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L460; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 3"
+NextOccurrencesFromMultipleSchedules-04-1,next-sequence,standard,0 * * * *,2003-01-01T00:00:00,2003-01-01T01:00:00|2003-01-01T02:00:00|2003-01-01T03:00:00|2003-01-01T04:00:00,cronsim,,"NextOccurrencesFromMultipleSchedules L463; NCrontab merges the runs of 2 schedule(s); restated as each schedule's own run, this one of schedule 1; end bound 2003-01-01T03:30:00, so 2003-01-01T04:00:00 is appended: the first occurrence past the end bound 03:30, from cronsim 2.7"
+NextOccurrencesFromMultipleSchedules-05-1,next-sequence,standard,0 7-9 * * Mon,2003-01-01T00:00:00,2003-01-06T07:00:00|2003-01-06T08:00:00|2003-01-06T09:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L465; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 1"
+NextOccurrencesFromMultipleSchedules-05-2,next-sequence,standard,"0 6,18 * * Tue",2003-01-01T00:00:00,2003-01-07T06:00:00|2003-01-07T18:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L465; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 2"
+NextOccurrencesFromMultipleSchedules-05-3,next-sequence,standard,"0 3,*/6 * * Fri",2003-01-01T00:00:00,2003-01-03T00:00:00|2003-01-03T03:00:00|2003-01-03T06:00:00|2003-01-03T12:00:00|2003-01-03T18:00:00,upstream,,"NextOccurrencesFromMultipleSchedules L465; NCrontab merges the runs of 3 schedule(s); restated as each schedule's own run, this one of schedule 3"
