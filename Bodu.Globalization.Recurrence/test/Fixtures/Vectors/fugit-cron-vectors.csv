@@ -1,0 +1,449 @@
+# Cron vectors derived from fugit's test/cron_test.rb
+# source-class: third-party-comparison (implementation test suite, not an authority)
+# source: fugit -- https://github.com/floraison/fugit -- test/cron_test.rb
+# commit: f571bc080b5445499a81af20254afc057f384ab1
+# file-sha256: test/cron_test.rb 5345b7650592a8960557291b68d681abc0d727eeeb0ab053b706b01ccdf81028
+# licence: MIT (Copyright (c) 2017-2026, John Mettraux, jmettraux+flor@gmail.com). Expressions, instants and canonical strings are derived from the upstream tests with attribution; the upstream file itself is not committed.
+# method: extracted by extract-fugit-cron-vectors.py (tables parsed from the file; the bespoke fixed-instant tests are a hand-maintained list in the script, each with its line)
+# note: fugit unions the day fields when both are restricted, but counts a star-led step (*/2) as restricted and 1-31 as not; it adds L / last / negative month days (-1 is L, -n is L-(n-1)), d#-1 / d#L / d#last (Bodu dL), wrap-around ranges, hour 24, % / & / ~ extensions, /15, extra commas, a time-zone suffix, @noon, and rejects impossible day-month pairs. Single tokens are adapted to Bodu's spelling in code; the rest is flagged. Times are wall clock; rows run upstream in a named zone are kept only where no transition touches the answer.
+# note: left out, counted: #to_cron_s with a time-zone suffix (represents and round-trip tests) 2, cron with a time-zone suffix (parse / to_cron_s) 13, cron with its own time zone (next_time and match?) 2, cron with its own time zone (previous_time and match?) 12, expression holding a newline, which the line-based table cannot carry 3, library API with no cron meaning 9, library API with no cron meaning (#brute_frequency, #rough_frequency, #range) 58, nil input, which the table cannot express 1, relative to the wall clock 2, time-zone dependent (cron or from in a named zone) 6, time-zone suffix tests (the per-zone test over every TZInfo zone counted once, two offsets, three unknown names) 6, time-zone transition (DST groups) 16
+# flags: impossible-date = fugit rejects a day-month combination that never occurs (30 February); Bodu accepts it and its searches answer null
+# flags: macro = a macro outside crontab(5)'s seven (@noon)
+# flags: syntax-extension = fugit-only syntax: % modulo weeks, & (day AND), ~ random values, a step with no range (/15), empty list items, hour 24, negative month-day ranges
+# flags: token-list = Quartz-style tokens (L, d#k, dL, or negative month days, which map to L-n) inside lists or ranges, which Bodu rejects
+# flags: wrap-range = a reversed range (55-5, fri-sun, 11-2) that fugit wraps around; Bodu rejects it
+name,kind,format,expression,from,expected,expectation,flags,reference
+next-times-001,next,standard,* * * * *,2017-01-02T12:00:00,2017-01-02T12:01:00,upstream,,NEXT_TIMES L17; from is the file's NOW
+match-001,next-inclusive,standard,* * * * *,2017-01-02T12:01:00,2017-01-02T12:01:00,upstream,,#match? over NEXT_TIMES L17; match?(t) written as the next occurrence at or after t being t
+next-times-002,next,standard,5 0 * * *,2017-01-02T12:00:00,2017-01-03T00:05:00,upstream,,NEXT_TIMES L19; from is the file's NOW
+match-002,next-inclusive,standard,5 0 * * *,2017-01-03T00:05:00,2017-01-03T00:05:00,upstream,,#match? over NEXT_TIMES L19; match?(t) written as the next occurrence at or after t being t
+next-times-003,next,standard,15 14 1 * *,2017-01-02T12:00:00,2017-02-01T14:15:00,upstream,,NEXT_TIMES L20; from is the file's NOW
+match-003,next-inclusive,standard,15 14 1 * *,2017-02-01T14:15:00,2017-02-01T14:15:00,upstream,,#match? over NEXT_TIMES L20; match?(t) written as the next occurrence at or after t being t
+next-times-004,next,standard,0 0 1 1 *,2017-01-02T12:00:00,2018-01-01T00:00:00,upstream,,NEXT_TIMES L22; from is the file's NOW
+match-004,next-inclusive,standard,0 0 1 1 *,2018-01-01T00:00:00,2018-01-01T00:00:00,upstream,,#match? over NEXT_TIMES L22; match?(t) written as the next occurrence at or after t being t
+next-times-005,next,standard,* * 29 * *,2017-01-02T12:00:00,2017-01-29T00:00:00,upstream,,NEXT_TIMES L23; from is the file's NOW
+match-005,next-inclusive,standard,* * 29 * *,2017-01-29T00:00:00,2017-01-29T00:00:00,upstream,,#match? over NEXT_TIMES L23; match?(t) written as the next occurrence at or after t being t
+next-times-006,next,standard,* * 29 * *,2016-02-01T00:00:00,2016-02-29T00:00:00,upstream,,NEXT_TIMES L24
+match-006,next-inclusive,standard,* * 29 * *,2016-02-29T00:00:00,2016-02-29T00:00:00,upstream,,#match? over NEXT_TIMES L24; match?(t) written as the next occurrence at or after t being t
+next-times-007,next,standard,* * L * *,2016-02-01T00:00:00,2016-02-29T00:00:00,upstream,,NEXT_TIMES L25
+match-007,next-inclusive,standard,* * L * *,2016-02-29T00:00:00,2016-02-29T00:00:00,upstream,,#match? over NEXT_TIMES L25; match?(t) written as the next occurrence at or after t being t
+next-times-008,next,standard,* * L * *,2016-02-01T00:00:00,2016-02-29T00:00:00,upstream,,NEXT_TIMES L26; last written L
+match-008,next-inclusive,standard,* * L * *,2016-02-29T00:00:00,2016-02-29T00:00:00,upstream,,#match? over NEXT_TIMES L26; match?(t) written as the next occurrence at or after t being t; last written L
+next-times-009,next,standard,* * L * *,2016-02-01T00:00:00,2016-02-29T00:00:00,upstream,,NEXT_TIMES L27; -1 (fugit: 1 from the end) written L
+match-009,next-inclusive,standard,* * L * *,2016-02-29T00:00:00,2016-02-29T00:00:00,upstream,,#match? over NEXT_TIMES L27; match?(t) written as the next occurrence at or after t being t; -1 (fugit: 1 from the end) written L
+next-times-010,next,standard,* * L * *,2016-02-01T00:00:00,2016-02-29T00:00:00,upstream,,NEXT_TIMES L28
+match-010,next-inclusive,standard,* * L * *,2016-02-29T00:00:00,2016-02-29T00:00:00,upstream,,#match? over NEXT_TIMES L28; match?(t) written as the next occurrence at or after t being t
+next-times-011,next,standard,"0 0 L-3,L-2 * *",2016-02-01T00:00:00,2016-02-26T00:00:00,upstream,token-list,NEXT_TIMES L29; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2
+match-011,next-inclusive,standard,"0 0 L-3,L-2 * *",2016-02-26T00:00:00,2016-02-26T00:00:00,upstream,token-list,#match? over NEXT_TIMES L29; match?(t) written as the next occurrence at or after t being t; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2
+next-times-012,next,standard,"0 0 L-3,L-2 * *",2016-02-26T12:00:00,2016-02-27T00:00:00,upstream,token-list,NEXT_TIMES L30; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2
+match-012,next-inclusive,standard,"0 0 L-3,L-2 * *",2016-02-27T00:00:00,2016-02-27T00:00:00,upstream,token-list,#match? over NEXT_TIMES L30; match?(t) written as the next occurrence at or after t being t; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2
+next-times-013,next,standard,* * * * sun,2017-01-02T12:00:00,2017-01-08T00:00:00,upstream,,NEXT_TIMES L32; from is the file's NOW
+match-013,next-inclusive,standard,* * * * sun,2017-01-08T00:00:00,2017-01-08T00:00:00,upstream,,#match? over NEXT_TIMES L32; match?(t) written as the next occurrence at or after t being t
+next-times-014,next,standard,* * L-1 * *,2017-01-02T12:00:00,2017-01-30T00:00:00,upstream,,NEXT_TIMES L34; from is the file's NOW; -2 (fugit: 2 from the end) written L-1
+match-014,next-inclusive,standard,* * L-1 * *,2017-01-30T00:00:00,2017-01-30T00:00:00,upstream,,#match? over NEXT_TIMES L34; match?(t) written as the next occurrence at or after t being t; -2 (fugit: 2 from the end) written L-1
+next-times-015,next,standard,* * L * *,2017-01-02T12:00:00,2017-01-31T00:00:00,upstream,,NEXT_TIMES L35; from is the file's NOW; -1 (fugit: 1 from the end) written L
+match-015,next-inclusive,standard,* * L * *,2017-01-31T00:00:00,2017-01-31T00:00:00,upstream,,#match? over NEXT_TIMES L35; match?(t) written as the next occurrence at or after t being t; -1 (fugit: 1 from the end) written L
+next-times-016,next,standard,* * L * *,2017-01-02T12:00:00,2017-01-31T00:00:00,upstream,,NEXT_TIMES L36; from is the file's NOW
+match-016,next-inclusive,standard,* * L * *,2017-01-31T00:00:00,2017-01-31T00:00:00,upstream,,#match? over NEXT_TIMES L36; match?(t) written as the next occurrence at or after t being t
+next-times-017,next,standard,* * * * mon#2,2017-01-02T12:00:00,2017-01-09T00:00:00,upstream,,NEXT_TIMES L38; from is the file's NOW
+match-017,next-inclusive,standard,* * * * mon#2,2017-01-09T00:00:00,2017-01-09T00:00:00,upstream,,#match? over NEXT_TIMES L38; match?(t) written as the next occurrence at or after t being t
+next-times-018,next,standard,* * * * monL,2017-01-02T12:00:00,2017-01-30T00:00:00,upstream,,NEXT_TIMES L39; from is the file's NOW; mon#-1 (last mon of the month) written monL
+match-018,next-inclusive,standard,* * * * monL,2017-01-30T00:00:00,2017-01-30T00:00:00,upstream,,#match? over NEXT_TIMES L39; match?(t) written as the next occurrence at or after t being t; mon#-1 (last mon of the month) written monL
+next-times-019,next,standard,* * * * tueL,2017-01-02T12:00:00,2017-01-31T00:00:00,upstream,,NEXT_TIMES L40; from is the file's NOW; tue#L (last tue of the month) written tueL
+match-019,next-inclusive,standard,* * * * tueL,2017-01-31T00:00:00,2017-01-31T00:00:00,upstream,,#match? over NEXT_TIMES L40; match?(t) written as the next occurrence at or after t being t; tue#L (last tue of the month) written tueL
+next-times-020,next,standard,* * * * tueL,2017-01-02T12:00:00,2017-01-31T00:00:00,upstream,,NEXT_TIMES L41; from is the file's NOW; tue#last (last tue of the month) written tueL
+match-020,next-inclusive,standard,* * * * tueL,2017-01-31T00:00:00,2017-01-31T00:00:00,upstream,,#match? over NEXT_TIMES L41; match?(t) written as the next occurrence at or after t being t; tue#last (last tue of the month) written tueL
+next-times-021,next,standard,"* * * * mon#2,tue",2016-12-01T00:00:00,2016-12-06T00:00:00,upstream,token-list,NEXT_TIMES L42
+match-021,next-inclusive,standard,"* * * * mon#2,tue",2016-12-06T00:00:00,2016-12-06T00:00:00,upstream,token-list,#match? over NEXT_TIMES L42; match?(t) written as the next occurrence at or after t being t
+next-times-022,next,standard,"* * * * mon#2,tue",2016-12-07T00:00:00,2016-12-12T00:00:00,upstream,token-list,NEXT_TIMES L43
+match-022,next-inclusive,standard,"* * * * mon#2,tue",2016-12-12T00:00:00,2016-12-12T00:00:00,upstream,token-list,#match? over NEXT_TIMES L43; match?(t) written as the next occurrence at or after t being t
+next-times-023,next,standard,"0 0 * * mon#2,tue",2017-01-06T00:00:00,2017-01-09T00:00:00,upstream,token-list,NEXT_TIMES L45
+match-023,next-inclusive,standard,"0 0 * * mon#2,tue",2017-01-09T00:00:00,2017-01-09T00:00:00,upstream,token-list,#match? over NEXT_TIMES L45; match?(t) written as the next occurrence at or after t being t
+next-times-024,next,standard,"0 0 * * mon#2,tue",2017-01-30T00:00:00,2017-01-31T00:00:00,upstream,token-list,NEXT_TIMES L46
+match-024,next-inclusive,standard,"0 0 * * mon#2,tue",2017-01-31T00:00:00,2017-01-31T00:00:00,upstream,token-list,#match? over NEXT_TIMES L46; match?(t) written as the next occurrence at or after t being t
+next-times-025,next,standard,00 24 * * *,2017-01-01T12:00:00,2017-01-02T00:00:00,upstream,syntax-extension,NEXT_TIMES L48
+match-025,next-inclusive,standard,00 24 * * *,2017-01-02T00:00:00,2017-01-02T00:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L48; match?(t) written as the next occurrence at or after t being t
+next-times-026,next,standard,"30 04 1,15 * 5",2017-01-03T00:00:00,2017-01-06T04:30:00,upstream,,NEXT_TIMES L60
+match-026,next-inclusive,standard,"30 04 1,15 * 5",2017-01-06T04:30:00,2017-01-06T04:30:00,upstream,,#match? over NEXT_TIMES L60; match?(t) written as the next occurrence at or after t being t
+next-times-027,next,standard,"30 04 1,15 * 5",2017-01-14T00:00:00,2017-01-15T04:30:00,upstream,,NEXT_TIMES L61
+match-027,next-inclusive,standard,"30 04 1,15 * 5",2017-01-15T04:30:00,2017-01-15T04:30:00,upstream,,#match? over NEXT_TIMES L61; match?(t) written as the next occurrence at or after t being t
+next-times-028,next,standard,"30 04 1,15 * 5",2017-01-16T00:00:00,2017-01-20T04:30:00,upstream,,NEXT_TIMES L62
+match-028,next-inclusive,standard,"30 04 1,15 * 5",2017-01-20T04:30:00,2017-01-20T04:30:00,upstream,,#match? over NEXT_TIMES L62; match?(t) written as the next occurrence at or after t being t
+next-times-029,next,standard,0 8 L * mon-thu,2018-06-28T18:00:00,2018-06-30T08:00:00,upstream,,NEXT_TIMES L80 (run in Europe/Berlin; no transition touches the answer)
+match-029,next-inclusive,standard,0 8 L * mon-thu,2018-06-30T08:00:00,2018-06-30T08:00:00,upstream,,#match? over NEXT_TIMES L80 (run in Europe/Berlin); match?(t) written as the next occurrence at or after t being t
+next-times-030,next,standard,0 9 L-1 * *,2018-06-28T18:00:00,2018-06-29T09:00:00,upstream,,NEXT_TIMES L83 (run in Europe/Berlin; no transition touches the answer); -2 (fugit: 2 from the end) written L-1
+match-030,next-inclusive,standard,0 9 L-1 * *,2018-06-29T09:00:00,2018-06-29T09:00:00,upstream,,#match? over NEXT_TIMES L83 (run in Europe/Berlin); match?(t) written as the next occurrence at or after t being t; -2 (fugit: 2 from the end) written L-1
+next-times-031,next,standard,0 0 L-4 * *,2018-06-28T18:00:00,2018-07-27T00:00:00,upstream,,NEXT_TIMES L85 (run in Europe/Berlin; no transition touches the answer); -5 (fugit: 5 from the end) written L-4
+match-031,next-inclusive,standard,0 0 L-4 * *,2018-07-27T00:00:00,2018-07-27T00:00:00,upstream,,#match? over NEXT_TIMES L85 (run in Europe/Berlin); match?(t) written as the next occurrence at or after t being t; -5 (fugit: 5 from the end) written L-4
+next-times-032,next,standard,0 8 L * *,2018-06-28T18:00:00,2018-06-30T08:00:00,upstream,,NEXT_TIMES L88 (run in Europe/Berlin; no transition touches the answer)
+match-032,next-inclusive,standard,0 8 L * *,2018-06-30T08:00:00,2018-06-30T08:00:00,upstream,,#match? over NEXT_TIMES L88 (run in Europe/Berlin); match?(t) written as the next occurrence at or after t being t
+next-times-033,next,standard,0 9 29 feb *,2016-01-23T00:00:00,2016-02-29T09:00:00,upstream,,NEXT_TIMES L91
+match-033,next-inclusive,standard,0 9 29 feb *,2016-02-29T09:00:00,2016-02-29T09:00:00,upstream,,#match? over NEXT_TIMES L91; match?(t) written as the next occurrence at or after t being t
+next-times-034,next,standard,59 6 1-7 * 2,2020-03-15T07:29:00,2020-03-17T06:59:00,upstream,,NEXT_TIMES L93
+match-034,next-inclusive,standard,59 6 1-7 * 2,2020-03-17T06:59:00,2020-03-17T06:59:00,upstream,,#match? over NEXT_TIMES L93; match?(t) written as the next occurrence at or after t being t
+next-times-035,next,standard,59 6 1-7 * 2,2020-02-08T07:29:00,2020-02-11T06:59:00,upstream,,NEXT_TIMES L96
+match-035,next-inclusive,standard,59 6 1-7 * 2,2020-02-11T06:59:00,2020-02-11T06:59:00,upstream,,#match? over NEXT_TIMES L96; match?(t) written as the next occurrence at or after t being t
+next-times-036,next,standard,59 6 1-7 * 2,2020-02-29T07:29:00,2020-03-01T06:59:00,upstream,,NEXT_TIMES L99
+match-036,next-inclusive,standard,59 6 1-7 * 2,2020-03-01T06:59:00,2020-03-01T06:59:00,upstream,,#match? over NEXT_TIMES L99; match?(t) written as the next occurrence at or after t being t
+next-times-037,next,standard,"0 0 29 2 0,6",2021-12-27T09:47:00,2022-02-05T00:00:00,upstream,,NEXT_TIMES L103
+match-037,next-inclusive,standard,"0 0 29 2 0,6",2022-02-05T00:00:00,2022-02-05T00:00:00,upstream,,#match? over NEXT_TIMES L103; match?(t) written as the next occurrence at or after t being t
+next-times-038,next,standard,"0 0 29 2 sat,sun",2021-12-27T09:47:00,2022-02-05T00:00:00,upstream,,NEXT_TIMES L104
+match-038,next-inclusive,standard,"0 0 29 2 sat,sun",2022-02-05T00:00:00,2022-02-05T00:00:00,upstream,,#match? over NEXT_TIMES L104; match?(t) written as the next occurrence at or after t being t
+next-times-039,next,standard,"0 0 29 2 0,6",2021-12-27T09:47:00,2022-02-05T00:00:00,upstream,,NEXT_TIMES L105 (run in UTC; no transition touches the answer)
+match-039,next-inclusive,standard,"0 0 29 2 0,6",2022-02-05T00:00:00,2022-02-05T00:00:00,upstream,,#match? over NEXT_TIMES L105 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-040,next,standard,0 0 11 * 3-6,2021-12-27T09:47:00,2021-12-29T00:00:00,upstream,,NEXT_TIMES L107
+match-040,next-inclusive,standard,0 0 11 * 3-6,2021-12-29T00:00:00,2021-12-29T00:00:00,upstream,,#match? over NEXT_TIMES L107; match?(t) written as the next occurrence at or after t being t
+next-times-041,next,standard,0 9 * * sat%2,2019-01-01T09:00:00,2019-01-05T09:00:00,upstream,syntax-extension,NEXT_TIMES L113
+match-041,next-inclusive,standard,0 9 * * sat%2,2019-01-05T09:00:00,2019-01-05T09:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L113; match?(t) written as the next occurrence at or after t being t
+next-times-042,next,standard,0 10 * * sun%2,2019-04-11T09:00:00,2019-04-14T10:00:00,upstream,syntax-extension,NEXT_TIMES L115 (run in Europe/Berlin; no transition touches the answer)
+match-042,next-inclusive,standard,0 10 * * sun%2,2019-04-14T10:00:00,2019-04-14T10:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L115 (run in Europe/Berlin); match?(t) written as the next occurrence at or after t being t
+next-times-043,next,standard,0 10 * * sun%2+1,2019-04-11T09:00:00,2019-04-21T10:00:00,upstream,syntax-extension,NEXT_TIMES L117 (run in Europe/Berlin; no transition touches the answer)
+match-043,next-inclusive,standard,0 10 * * sun%2+1,2019-04-21T10:00:00,2019-04-21T10:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L117 (run in Europe/Berlin); match?(t) written as the next occurrence at or after t being t
+next-times-044,next,standard,59 23 * * 2,2021-02-02T00:00:00,2021-02-02T23:59:00,upstream,,NEXT_TIMES L122
+match-044,next-inclusive,standard,59 23 * * 2,2021-02-02T23:59:00,2021-02-02T23:59:00,upstream,,#match? over NEXT_TIMES L122; match?(t) written as the next occurrence at or after t being t
+next-times-045,next,standard,59 23 * * 2,2021-02-02T00:00:00,2021-02-02T23:59:00,upstream,,NEXT_TIMES L123 (run in UTC; no transition touches the answer)
+match-045,next-inclusive,standard,59 23 * * 2,2021-02-02T23:59:00,2021-02-02T23:59:00,upstream,,#match? over NEXT_TIMES L123 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-046,next,standard,59 18 * * 2#2,2021-02-09T17:41:10,2021-02-09T18:59:00,upstream,,NEXT_TIMES L126
+match-046,next-inclusive,standard,59 18 * * 2#2,2021-02-09T18:59:00,2021-02-09T18:59:00,upstream,,#match? over NEXT_TIMES L126; match?(t) written as the next occurrence at or after t being t
+next-times-047,next,standard,59 18 * * 2#2,2021-02-09T17:41:10,2021-02-09T18:59:00,upstream,,NEXT_TIMES L127 (run in UTC; no transition touches the answer)
+match-047,next-inclusive,standard,59 18 * * 2#2,2021-02-09T18:59:00,2021-02-09T18:59:00,upstream,,#match? over NEXT_TIMES L127 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-048,next,standard,15/30 * * * *,2021-02-09T19:00:00,2021-02-09T19:15:00,upstream,,NEXT_TIMES L130
+match-048,next-inclusive,standard,15/30 * * * *,2021-02-09T19:15:00,2021-02-09T19:15:00,upstream,,#match? over NEXT_TIMES L130; match?(t) written as the next occurrence at or after t being t
+next-times-049,next,standard,15/30 * * * *,2021-02-09T19:30:00,2021-02-09T19:45:00,upstream,,NEXT_TIMES L131
+match-049,next-inclusive,standard,15/30 * * * *,2021-02-09T19:45:00,2021-02-09T19:45:00,upstream,,#match? over NEXT_TIMES L131; match?(t) written as the next occurrence at or after t being t
+next-times-050,next,standard,15-40/30 * * * *,2021-02-09T19:30:00,2021-02-09T20:15:00,upstream,,NEXT_TIMES L132
+match-050,next-inclusive,standard,15-40/30 * * * *,2021-02-09T20:15:00,2021-02-09T20:15:00,upstream,,#match? over NEXT_TIMES L132; match?(t) written as the next occurrence at or after t being t
+next-times-051,next,standard,30 18 * * 2#5,2022-03-08T00:00:00,2022-03-29T18:30:00,upstream,,NEXT_TIMES L136 (run in UTC; no transition touches the answer)
+match-051,next-inclusive,standard,30 18 * * 2#5,2022-03-29T18:30:00,2022-03-29T18:30:00,upstream,,#match? over NEXT_TIMES L136 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-052,next,standard,30 18 * * 2#5,2022-03-08T00:00:00,2022-03-29T18:30:00,upstream,,NEXT_TIMES L137 (run in Europe/Paris; no transition touches the answer)
+match-052,next-inclusive,standard,30 18 * * 2#5,2022-03-29T18:30:00,2022-03-29T18:30:00,upstream,,#match? over NEXT_TIMES L137 (run in Europe/Paris); match?(t) written as the next occurrence at or after t being t
+next-times-054,next,standard,0 0 */2 * 1-5,2022-08-09T00:00:00,2022-08-11T00:00:00,cronsim,,"NEXT_TIMES L143 (run in UTC; no transition touches the answer); restated: fugit unions the star-led */2 with 1-5 (2022-08-10); Bodu intersects, answer from cronsim"
+match-054,next-inclusive,standard,0 0 */2 * 1-5,2022-08-10T00:00:00,2022-08-11T00:00:00,cronsim,,"#match? over NEXT_TIMES L143 (run in UTC); match?(t) written as the next occurrence at or after t being t; restated: fugit matches 2022-08-10 through its union; Bodu intersects odd days with Monday-Friday, so the first match at or after it comes from cronsim"
+next-times-055,next,standard,0 0 */2 * 1-5&,2022-08-09T00:00:00,2022-08-11T00:00:00,upstream,syntax-extension,NEXT_TIMES L144 (run in UTC; no transition touches the answer)
+match-055,next-inclusive,standard,0 0 */2 * 1-5&,2022-08-11T00:00:00,2022-08-11T00:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L144 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-056,next,standard,0 0 */2& * 1-5,2022-08-09T00:00:00,2022-08-11T00:00:00,upstream,syntax-extension,NEXT_TIMES L145 (run in UTC; no transition touches the answer)
+match-056,next-inclusive,standard,0 0 */2& * 1-5,2022-08-11T00:00:00,2022-08-11T00:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L145 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-057,next,standard,0 0 */2& * 1-5&,2022-08-09T00:00:00,2022-08-11T00:00:00,upstream,syntax-extension,NEXT_TIMES L146 (run in UTC; no transition touches the answer)
+match-057,next-inclusive,standard,0 0 */2& * 1-5&,2022-08-11T00:00:00,2022-08-11T00:00:00,upstream,syntax-extension,#match? over NEXT_TIMES L146 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-058,next,standard,59 6 1-7 * 2,2020-03-15T00:00:00,2020-03-17T06:59:00,upstream,,NEXT_TIMES L150 (run in UTC; no transition touches the answer)
+match-058,next-inclusive,standard,59 6 1-7 * 2,2020-03-17T06:59:00,2020-03-17T06:59:00,upstream,,#match? over NEXT_TIMES L150 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-059,next,standard,59 6 1-7 * 2&,2020-03-15T00:00:00,2020-04-07T06:59:00,upstream,syntax-extension,NEXT_TIMES L151 (run in UTC; no transition touches the answer)
+match-059,next-inclusive,standard,59 6 1-7 * 2&,2020-04-07T06:59:00,2020-04-07T06:59:00,upstream,syntax-extension,#match? over NEXT_TIMES L151 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-060,next,standard,59 6 1-7& * 2,2020-03-15T00:00:00,2020-04-07T06:59:00,upstream,syntax-extension,NEXT_TIMES L152 (run in UTC; no transition touches the answer)
+match-060,next-inclusive,standard,59 6 1-7& * 2,2020-04-07T06:59:00,2020-04-07T06:59:00,upstream,syntax-extension,#match? over NEXT_TIMES L152 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-061,next,standard,59 6 1-7& * 2&,2020-03-15T00:00:00,2020-04-07T06:59:00,upstream,syntax-extension,NEXT_TIMES L153 (run in UTC; no transition touches the answer)
+match-061,next-inclusive,standard,59 6 1-7& * 2&,2020-04-07T06:59:00,2020-04-07T06:59:00,upstream,syntax-extension,#match? over NEXT_TIMES L153 (run in UTC); match?(t) written as the next occurrence at or after t being t
+next-times-062,next,standard,0 0 1 jan *,2025-02-26T00:00:00,2026-01-01T00:00:00,upstream,,NEXT_TIMES L157 (run in Australia/Melbourne; no transition touches the answer)
+match-062,next-inclusive,standard,0 0 1 jan *,2026-01-01T00:00:00,2026-01-01T00:00:00,upstream,,#match? over NEXT_TIMES L157 (run in Australia/Melbourne); match?(t) written as the next occurrence at or after t being t
+next-times-063,next,standard,0 0 1 jan *,2025-02-27T00:00:00,2026-01-01T00:00:00,upstream,,NEXT_TIMES L158 (run in Australia/Melbourne; no transition touches the answer)
+match-063,next-inclusive,standard,0 0 1 jan *,2026-01-01T00:00:00,2026-01-01T00:00:00,upstream,,#match? over NEXT_TIMES L158 (run in Australia/Melbourne); match?(t) written as the next occurrence at or after t being t
+next-times-064,next,standard,0 0 1 jan *,2025-02-27T00:00:00,2026-01-01T00:00:00,upstream,,NEXT_TIMES L161 (run in Europe/Zurich; no transition touches the answer)
+match-064,next-inclusive,standard,0 0 1 jan *,2026-01-01T00:00:00,2026-01-01T00:00:00,upstream,,#match? over NEXT_TIMES L161 (run in Europe/Zurich); match?(t) written as the next occurrence at or after t being t
+previous-times-001,previous,standard,5 0 * * *,2017-01-01T00:00:00,2016-12-31T00:05:00,upstream,,PREVIOUS_TIMES L821
+previous-match-001,next-inclusive,standard,5 0 * * *,2016-12-31T00:05:00,2016-12-31T00:05:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L821; match?(t) written as the next occurrence at or after t being t"
+previous-times-002,previous,standard,5 0 * * *,2017-01-14T00:00:00,2017-01-13T00:05:00,upstream,,PREVIOUS_TIMES L822
+previous-match-002,next-inclusive,standard,5 0 * * *,2017-01-13T00:05:00,2017-01-13T00:05:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L822; match?(t) written as the next occurrence at or after t being t"
+previous-times-003,previous,standard,0 0 1 1 *,2017-03-15T00:00:00,2017-01-01T00:00:00,upstream,,PREVIOUS_TIMES L824
+previous-match-003,next-inclusive,standard,0 0 1 1 *,2017-01-01T00:00:00,2017-01-01T00:00:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L824; match?(t) written as the next occurrence at or after t being t"
+previous-times-004,previous,standard,0 12 1 1 *,2017-01-01T00:00:00,2016-01-01T12:00:00,upstream,,PREVIOUS_TIMES L825
+previous-match-004,next-inclusive,standard,0 12 1 1 *,2016-01-01T12:00:00,2016-01-01T12:00:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L825; match?(t) written as the next occurrence at or after t being t"
+previous-times-005,previous,standard,* * 29 * *,2017-03-15T00:00:00,2017-01-29T23:59:00,upstream,,PREVIOUS_TIMES L827
+previous-match-005,next-inclusive,standard,* * 29 * *,2017-01-29T23:59:00,2017-01-29T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L827; match?(t) written as the next occurrence at or after t being t"
+previous-times-006,previous,standard,* * 29 * *,2016-03-15T00:00:00,2016-02-29T23:59:00,upstream,,PREVIOUS_TIMES L828
+previous-match-006,next-inclusive,standard,* * 29 * *,2016-02-29T23:59:00,2016-02-29T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L828; match?(t) written as the next occurrence at or after t being t"
+previous-times-007,previous,standard,* * L * *,2017-03-15T00:00:00,2017-02-28T23:59:00,upstream,,PREVIOUS_TIMES L829
+previous-match-007,next-inclusive,standard,* * L * *,2017-02-28T23:59:00,2017-02-28T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L829; match?(t) written as the next occurrence at or after t being t"
+previous-times-008,previous,standard,* * L * *,2016-03-15T00:00:00,2016-02-29T23:59:00,upstream,,PREVIOUS_TIMES L830
+previous-match-008,next-inclusive,standard,* * L * *,2016-02-29T23:59:00,2016-02-29T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L830; match?(t) written as the next occurrence at or after t being t"
+previous-times-009,previous,standard,* * L * *,2016-03-15T00:00:00,2016-02-29T23:59:00,upstream,,PREVIOUS_TIMES L831; last written L
+previous-match-009,next-inclusive,standard,* * L * *,2016-02-29T23:59:00,2016-02-29T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L831; match?(t) written as the next occurrence at or after t being t; last written L"
+previous-times-010,previous,standard,* * L * *,2016-03-15T00:00:00,2016-02-29T23:59:00,upstream,,PREVIOUS_TIMES L832; -1 (fugit: 1 from the end) written L
+previous-match-010,next-inclusive,standard,* * L * *,2016-02-29T23:59:00,2016-02-29T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L832; match?(t) written as the next occurrence at or after t being t; -1 (fugit: 1 from the end) written L"
+previous-times-011,previous,standard,"0 0 L-3,L-2 * *",2017-03-15T00:00:00,2017-02-26T00:00:00,upstream,token-list,PREVIOUS_TIMES L833; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2
+previous-match-011,next-inclusive,standard,"0 0 L-3,L-2 * *",2017-02-26T00:00:00,2017-02-26T00:00:00,upstream,token-list,"#previous_time match? check, PREVIOUS_TIMES L833; match?(t) written as the next occurrence at or after t being t; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2"
+previous-times-012,previous,standard,"0 0 L-3,L-2 * *",2017-02-25T23:00:00,2017-02-25T00:00:00,upstream,token-list,PREVIOUS_TIMES L834; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2
+previous-match-012,next-inclusive,standard,"0 0 L-3,L-2 * *",2017-02-25T00:00:00,2017-02-25T00:00:00,upstream,token-list,"#previous_time match? check, PREVIOUS_TIMES L834; match?(t) written as the next occurrence at or after t being t; -4 (fugit: 4 from the end) written L-3; -3 (fugit: 3 from the end) written L-2"
+previous-times-013,previous,standard,* * * * sun,2017-01-31T00:00:00,2017-01-29T23:59:00,upstream,,PREVIOUS_TIMES L835
+previous-match-013,next-inclusive,standard,* * * * sun,2017-01-29T23:59:00,2017-01-29T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L835; match?(t) written as the next occurrence at or after t being t"
+previous-times-014,previous,standard,* * * * mon#2,2017-01-31T00:00:00,2017-01-09T23:59:00,upstream,,PREVIOUS_TIMES L836
+previous-match-014,next-inclusive,standard,* * * * mon#2,2017-01-09T23:59:00,2017-01-09T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L836; match?(t) written as the next occurrence at or after t being t"
+previous-times-015,previous,standard,* * * * monL,2017-01-31T00:00:00,2017-01-30T23:59:00,upstream,,PREVIOUS_TIMES L837; mon#-1 (last mon of the month) written monL
+previous-match-015,next-inclusive,standard,* * * * monL,2017-01-30T23:59:00,2017-01-30T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L837; match?(t) written as the next occurrence at or after t being t; mon#-1 (last mon of the month) written monL"
+previous-times-016,previous,standard,* * * * wedL,2017-01-31T00:00:00,2017-01-25T23:59:00,upstream,,PREVIOUS_TIMES L838; wed#L (last wed of the month) written wedL
+previous-match-016,next-inclusive,standard,* * * * wedL,2017-01-25T23:59:00,2017-01-25T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L838; match?(t) written as the next occurrence at or after t being t; wed#L (last wed of the month) written wedL"
+previous-times-017,previous,standard,* * * * wedL,2017-01-31T00:00:00,2017-01-25T23:59:00,upstream,,PREVIOUS_TIMES L839; wed#last (last wed of the month) written wedL
+previous-match-017,next-inclusive,standard,* * * * wedL,2017-01-25T23:59:00,2017-01-25T23:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L839; match?(t) written as the next occurrence at or after t being t; wed#last (last wed of the month) written wedL"
+previous-times-018,previous,standard,"* * * * mon#2,tue",2017-01-30T00:00:00,2017-01-24T23:59:00,upstream,token-list,PREVIOUS_TIMES L840
+previous-match-018,next-inclusive,standard,"* * * * mon#2,tue",2017-01-24T23:59:00,2017-01-24T23:59:00,upstream,token-list,"#previous_time match? check, PREVIOUS_TIMES L840; match?(t) written as the next occurrence at or after t being t"
+previous-times-019,previous,standard,"* * * * mon#2,wed",2017-01-10T00:00:00,2017-01-09T23:59:00,upstream,token-list,PREVIOUS_TIMES L841
+previous-match-019,next-inclusive,standard,"* * * * mon#2,wed",2017-01-09T23:59:00,2017-01-09T23:59:00,upstream,token-list,"#previous_time match? check, PREVIOUS_TIMES L841; match?(t) written as the next occurrence at or after t being t"
+previous-times-020,previous,standard,"30 04 1,15 * 5",2017-01-16T00:00:00,2017-01-15T04:30:00,upstream,,PREVIOUS_TIMES L842
+previous-match-020,next-inclusive,standard,"30 04 1,15 * 5",2017-01-15T04:30:00,2017-01-15T04:30:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L842; match?(t) written as the next occurrence at or after t being t"
+previous-times-021,previous,standard,"30 04 1,15 * 5",2017-01-15T00:00:00,2017-01-13T04:30:00,upstream,,PREVIOUS_TIMES L843
+previous-match-021,next-inclusive,standard,"30 04 1,15 * 5",2017-01-13T04:30:00,2017-01-13T04:30:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L843; match?(t) written as the next occurrence at or after t being t"
+previous-times-022,previous,standard,00 24 * * *,2017-01-02T12:00:00,2017-01-02T00:00:00,upstream,syntax-extension,PREVIOUS_TIMES L845
+previous-match-022,next-inclusive,standard,00 24 * * *,2017-01-02T00:00:00,2017-01-02T00:00:00,upstream,syntax-extension,"#previous_time match? check, PREVIOUS_TIMES L845; match?(t) written as the next occurrence at or after t being t"
+previous-times-023,previous,standard,"0 0 * * mon#2,tue",2017-01-09T12:00:00,2017-01-09T00:00:00,upstream,token-list,PREVIOUS_TIMES L847
+previous-match-023,next-inclusive,standard,"0 0 * * mon#2,tue",2017-01-09T00:00:00,2017-01-09T00:00:00,upstream,token-list,"#previous_time match? check, PREVIOUS_TIMES L847; match?(t) written as the next occurrence at or after t being t"
+previous-times-024,previous,standard,"0 0 * * mon#2,tue",2017-01-04T00:00:00,2017-01-03T00:00:00,upstream,token-list,PREVIOUS_TIMES L848
+previous-match-024,next-inclusive,standard,"0 0 * * mon#2,tue",2017-01-03T00:00:00,2017-01-03T00:00:00,upstream,token-list,"#previous_time match? check, PREVIOUS_TIMES L848; match?(t) written as the next occurrence at or after t being t"
+previous-times-025,previous,standard,0 20 31 oct *,2019-11-01T00:00:00,2019-10-31T20:00:00,upstream,,PREVIOUS_TIMES L850
+previous-match-025,next-inclusive,standard,0 20 31 oct *,2019-10-31T20:00:00,2019-10-31T20:00:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L850; match?(t) written as the next occurrence at or after t being t"
+previous-times-026,previous,standard,0 9 29 feb *,2019-03-23T00:00:00,2016-02-29T09:00:00,upstream,,PREVIOUS_TIMES L851
+previous-match-026,next-inclusive,standard,0 9 29 feb *,2016-02-29T09:00:00,2016-02-29T09:00:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L851; match?(t) written as the next occurrence at or after t being t"
+previous-times-027,previous,standard,59 6 1-7 * 2,2020-03-15T07:47:00,2020-03-10T06:59:00,upstream,,PREVIOUS_TIMES L853
+previous-match-027,next-inclusive,standard,59 6 1-7 * 2,2020-03-10T06:59:00,2020-03-10T06:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L853; match?(t) written as the next occurrence at or after t being t"
+previous-times-028,previous,standard,59 6 1-7 * 2,2020-03-04T06:00:00,2020-03-03T06:59:00,upstream,,PREVIOUS_TIMES L855
+previous-match-028,next-inclusive,standard,59 6 1-7 * 2,2020-03-03T06:59:00,2020-03-03T06:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L855; match?(t) written as the next occurrence at or after t being t"
+previous-times-029,previous,standard,59 6 1-7 * 2,2020-03-01T06:00:00,2020-02-25T06:59:00,upstream,,PREVIOUS_TIMES L857
+previous-match-029,next-inclusive,standard,59 6 1-7 * 2,2020-02-25T06:59:00,2020-02-25T06:59:00,upstream,,"#previous_time match? check, PREVIOUS_TIMES L857; match?(t) written as the next occurrence at or after t being t"
+parse-success-001,to-string,standard,@yearly,,0 0 1 1 *,upstream,,.parse success L1099; to_cron_s
+parse-success-002,to-string,standard,@annually,,0 0 1 1 *,upstream,,.parse success L1100; to_cron_s
+parse-success-003,to-string,standard,@monthly,,0 0 1 * *,upstream,,.parse success L1101; to_cron_s
+parse-success-004,to-string,standard,@weekly,,0 0 * * 0,upstream,,.parse success L1102; to_cron_s
+parse-success-005,to-string,standard,@daily,,0 0 * * *,upstream,,.parse success L1103; to_cron_s
+parse-success-006,to-string,standard,@midnight,,0 0 * * *,upstream,,.parse success L1104; to_cron_s
+parse-success-007,to-string,standard,@noon,,0 12 * * *,upstream,macro,.parse success L1105; to_cron_s
+parse-success-008,to-string,standard,@hourly,,0 * * * *,upstream,,.parse success L1106; to_cron_s
+parse-success-011,to-string,standard,5 0 * * *,,5 0 * * *,upstream,,.parse success L1113; to_cron_s
+parse-success-012,to-string,standard,15 14 1 * *,,15 14 1 * *,upstream,,.parse success L1115; to_cron_s
+parse-success-013,to-string,standard,0 22 * * 1-5,,"0 22 * * 1,2,3,4,5",upstream,,.parse success L1117; to_cron_s
+parse-success-014,to-string,standard,0 22 * * 0,,0 22 * * 0,upstream,,.parse success L1119; to_cron_s
+parse-success-015,to-string,standard,0 22 * * 7,,0 22 * * 0,upstream,,.parse success L1120; to_cron_s
+parse-success-016,to-string,standard,0 23 * * 7-1,,"0 23 * * 0,1",upstream,wrap-range,.parse success L1122; to_cron_s
+parse-success-017,to-string,standard,0 23 * * 6-1,,"0 23 * * 0,1,6",upstream,wrap-range,.parse success L1124; to_cron_s
+parse-success-018,to-string,standard,23 0-23/2 * * *,,"23 0,2,4,6,8,10,12,14,16,18,20,22 * * *",upstream,,.parse success L1126; to_cron_s
+parse-success-019,to-string,standard,"14,24 8-12,14-19/2 * * *",,"14,24 8,9,10,11,12,14,16,18 * * *",upstream,,.parse success L1131; to_cron_s
+parse-success-020,to-string,standard,"24,14 14-19/2,8-12 * * *",,"14,24 8,9,10,11,12,14,16,18 * * *",upstream,,.parse success L1132; to_cron_s
+parse-success-021,to-string,standard,*/1 1-3/1 * * *,,"* 1,2,3 * * *",upstream,,.parse success L1134; to_cron_s
+parse-success-022,to-string,standard,0 22 * * 5-1,,"0 22 * * 0,1,5,6",upstream,wrap-range,.parse success L1136; to_cron_s
+parse-success-023,to-string,standard,58-2/2 * * * 5-1/2,,"0,2,58 * * * 0,5",upstream,wrap-range,.parse success L1137; to_cron_s
+parse-success-024,to-string,standard,0 9-17/2 * * *,,"0 9,11,13,15,17 * * *",upstream,,.parse success L1139; to_cron_s
+parse-success-025,to-string,standard,0 */2 * * *,,"0 0,2,4,6,8,10,12,14,16,18,20,22 * * *",upstream,,.parse success L1140; to_cron_s
+parse-success-026,to-string,standard,0 0 * * */2,,"0 0 * * 0,2,4,6",upstream,,.parse success L1142; to_cron_s
+parse-success-027,to-string,standard,0 0 * * 1-5/2,,"0 0 * * 1,3,5",upstream,,.parse success L1143; to_cron_s
+parse-success-028,to-string,standard,0 0 * * 3/2,,"0 0 * * 0,3,5",derived,,".parse success L1144; to_cron_s; restated: fugit reads 3/2 in the weekday field as 3 alone; Bodu runs n/m to the field maximum 7, so 3,5,7(=0); canonical rendered by hand per cron.md"
+parse-success-029,to-string,standard,* * 1 * *,,* * 1 * *,upstream,,.parse success L1146; to_cron_s
+parse-success-030,to-string,standard,* * 01 * *,,* * 1 * *,upstream,,.parse success L1147; to_cron_s
+parse-success-031,to-string,standard,* * * 1 *,,* * * 1 *,upstream,,.parse success L1148; to_cron_s
+parse-success-032,to-string,standard,* * * 01 *,,* * * 1 *,upstream,,.parse success L1149; to_cron_s
+parse-success-033,to-string,standard,*/15 * * * *,,"0,15,30,45 * * * *",upstream,,.parse success L1151; to_cron_s
+parse-success-034,to-string,standard,/15 * * * *,,"0,15,30,45 * * * *",upstream,syntax-extension,.parse success L1152; to_cron_s
+parse-success-035,to-string,withSeconds,/15 * * * * *,,"0,15,30,45 * * * * *",upstream,syntax-extension,.parse success L1153; to_cron_s
+parse-success-036,to-string,standard,/15 /4 * * *,,"0,15,30,45 0,4,8,12,16,20 * * *",upstream,syntax-extension,.parse success L1154; to_cron_s
+parse-success-037,to-string,standard,0/15 * * * *,,"0,15,30,45 * * * *",upstream,,.parse success L1155; to_cron_s
+parse-success-038,to-string,standard,15/30 * * * *,,"15,45 * * * *",upstream,,.parse success L1157; to_cron_s
+parse-success-039,to-string,standard,15-40/30 * * * *,,15 * * * *,upstream,,.parse success L1158; to_cron_s
+parse-success-040,to-string,standard,0 4/12 * * *,,"0 4,16 * * *",upstream,,.parse success L1159; to_cron_s
+parse-success-041,to-string,standard,0 8/4 * * *,,"0 8,12,16,20 * * *",upstream,,.parse success L1160; to_cron_s
+parse-success-042,to-string,standard,0 15/1 * * *,,"0 15,16,17,18,19,20,21,22,23 * * *",upstream,,.parse success L1161; to_cron_s
+parse-success-043,to-string,standard,0 8-14/1 * * *,,"0 8,9,10,11,12,13,14 * * *",upstream,,.parse success L1162; to_cron_s
+parse-success-045,to-string,standard,0 19 * 7-8 0,,"0 19 * 7,8 0",upstream,,.parse success L1166; to_cron_s
+parse-success-046,to-string,standard,0 19 * nov-dec 0,,"0 19 * 11,12 0",upstream,,.parse success L1167; to_cron_s
+parse-success-047,to-string,standard,0 19 * 11-2 0,,"0 19 * 1,2,11,12 0",upstream,wrap-range,.parse success L1168; to_cron_s
+parse-success-048,to-string,standard,0 19 * nov-mar 0,,"0 19 * 1,2,3,11,12 0",upstream,wrap-range,.parse success L1169; to_cron_s
+parse-success-049,to-string,standard,10-15 7 * * *,,"10,11,12,13,14,15 7 * * *",upstream,,.parse success L1171; to_cron_s
+parse-success-050,to-string,standard,55-5 7 * * *,,"0,1,2,3,4,5,55,56,57,58,59 7 * * *",upstream,wrap-range,.parse success L1172; to_cron_s
+parse-success-051,to-string,standard,10 18-20 * * *,,"10 18,19,20 * * *",upstream,,.parse success L1173; to_cron_s
+parse-success-052,to-string,standard,10 23-04 * * *,,"10 0,1,2,3,4,23 * * *",upstream,wrap-range,.parse success L1174; to_cron_s
+parse-success-053,to-string,standard,0 23 10-15 * *,,"0 23 10,11,12,13,14,15 * *",upstream,,.parse success L1175; to_cron_s
+parse-success-054,to-string,standard,0 23 30-3 * *,,"0 23 1,2,3,30,31 * *",upstream,wrap-range,.parse success L1176; to_cron_s
+parse-success-055,to-string,standard,0 23 1 10-12 *,,"0 23 1 10,11,12 *",upstream,,.parse success L1177; to_cron_s
+parse-success-056,to-string,standard,0 23 1 11-2 *,,"0 23 1 1,2,11,12 *",upstream,wrap-range,.parse success L1178; to_cron_s
+parse-success-057,to-string,standard,0 23 * * fri-sun,,"0 23 * * 0,5,6",upstream,wrap-range,.parse success L1179; to_cron_s
+parse-success-058,to-string,standard,0 23 * * 5-0,,"0 23 * * 0,5,6",upstream,wrap-range,.parse success L1180; to_cron_s
+parse-success-059,to-string,standard,0 23 * * sat-mon,,"0 23 * * 0,1,6",upstream,wrap-range,.parse success L1181; to_cron_s
+parse-success-060,to-string,standard,0 23 * * 6-1,,"0 23 * * 0,1,6",upstream,wrap-range,.parse success L1182; to_cron_s
+parse-success-061,to-string,withSeconds,10-15 0 23 * * *,,"10,11,12,13,14,15 0 23 * * *",upstream,,.parse success L1183; to_cron_s
+parse-success-062,to-string,withSeconds,58-2 0 23 * * *,,"0,1,2,58,59 0 23 * * *",upstream,wrap-range,.parse success L1184; to_cron_s
+parse-success-063,to-string,standard,* 0-24 * * *,,"* 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 * * *",upstream,syntax-extension,.parse success L1186; to_cron_s
+parse-success-064,to-string,standard,* 22-24 * * *,,"* 0,22,23 * * *",upstream,syntax-extension,.parse success L1187; to_cron_s
+parse-success-065,invalid,standard,* * * 1-13 *,,,upstream,,.parse success L1188; parse returns nil
+parse-success-066,to-string,standard,59 6 1-7 * 2,,"59 6 1,2,3,4,5,6,7 * 2",upstream,,.parse success L1192; to_cron_s
+parse-success-067,to-string,standard,0 8-19/4 * * *,,"0 8,12,16 * * *",upstream,,.parse success L1196; to_cron_s
+parse-success-068,to-string,standard,1 /1 * * *,,1 * * * *,upstream,syntax-extension,.parse success L1200; to_cron_s
+parse-success-069,to-string,standard,1 */1 * * *,,1 * * * *,upstream,,.parse success L1201; to_cron_s
+parse-success-070,to-string,standard,1 0/1 * * *,,1 * * * *,upstream,,.parse success L1202; to_cron_s
+parse-success-071,to-string,standard,1 0-23/1 * * *,,1 * * * *,upstream,,.parse success L1203; to_cron_s
+parse-success-072,to-string,standard,0 * * * *,,0 * * * *,upstream,,.parse success L1208; to_cron_s
+parse-success-074,to-string,standard,0 /1 * * *,,0 * * * *,upstream,syntax-extension,.parse success L1210; to_cron_s
+parse-success-076,to-string,standard,0 */1 * * *,,0 * * * *,upstream,,.parse success L1212; to_cron_s
+parse-success-078,to-string,standard,0 0/1 * * *,,0 * * * *,upstream,,.parse success L1214; to_cron_s
+parse-success-080,to-string,standard,0 7/5 * * *,,"0 7,12,17,22 * * *",upstream,,.parse success L1217; to_cron_s
+parse-success-082,to-string,standard,0 7-17/5 * * *,,"0 7,12,17 * * *",upstream,,.parse success L1219; to_cron_s
+parse-success-084,to-string,standard,0 0/4 * * *,,"0 0,4,8,12,16,20 * * *",upstream,,.parse success L1222; to_cron_s
+parse-success-085,to-string,standard,0/30 * * * *,,"0,30 * * * *",upstream,,.parse success L1223; to_cron_s
+parse-success-087,to-string,standard,0 4/12 * * *,,"0 4,16 * * *",upstream,,.parse success L1225; to_cron_s
+parse-success-089,to-string,standard,30 7/4 * * *,,"30 7,11,15,19,23 * * *",upstream,,.parse success L1227; to_cron_s
+parse-success-090,to-string,standard,"9,,19 * * * *",,"9,19 * * * *",upstream,syntax-extension,.parse success L1229; to_cron_s
+parse-success-091,to-string,standard,",8 * * * *",,8 * * * *,upstream,syntax-extension,.parse success L1230; to_cron_s
+parse-success-092,to-string,standard,",,10,,20, * * * *",,"10,20 * * * *",upstream,syntax-extension,.parse success L1231; to_cron_s
+parse-success-093,to-string,standard,"10,,20 * 1,,11,,21, * *",,"10,20 * 1,11,21 * *",upstream,syntax-extension,.parse success L1232; to_cron_s
+parse-success-095,to-string,standard,* */27 * * *,,* 0 * * *,upstream,,.parse success L1235; to_cron_s
+parse-success-096,to-string,standard,* */24 * * *,,* 0 * * *,upstream,,.parse success L1236; to_cron_s
+parse-success-097,to-string,standard,* */23 * * *,,"* 0,23 * * *",upstream,,.parse success L1237; to_cron_s
+parse-success-098,to-string,standard,~ ~ ~ ~ ~,,0 0 1 1 0,upstream,syntax-extension,.parse success L1241; to_cron_s with { random: false }
+parse-success-099,to-string,standard,~ ~ ~ ~ ~,,30 12 16 7 3,upstream,syntax-extension,.parse success L1242; to_cron_s
+parse-success-100,to-string,standard,~30 * * * ~4,,15 * * * 2,upstream,syntax-extension,.parse success L1243; to_cron_s
+parse-success-101,to-string,standard,~30/10 * * * ~4/2,,"5,15,25 * * * 1,3",upstream,syntax-extension,.parse success L1244; to_cron_s
+parse-success-102,to-string,standard,30~ * * * 4~,,45 * * * 5,upstream,syntax-extension,.parse success L1245; to_cron_s
+parse-success-103,to-string,standard,30~/10 * * * 4~/2,,"35,45,55 * * * 5",upstream,syntax-extension,.parse success L1246; to_cron_s
+parse-success-104,to-string,standard,* * * 11~4 5~1,,* * * 2 0,upstream,syntax-extension,.parse success L1247; to_cron_s
+parse-success-105,to-string,standard,* * * 11~4/2 *,,"* * * 2,4,12 *",upstream,syntax-extension,.parse success L1248; to_cron_s
+parse-negative-monthdays-001,to-string,standard,* * L * *,,* * L * *,upstream,,.parse negative monthdays L1266; to_cron_s; -1 (fugit: 1 from the end) written L; fugit canonical * * -1 * * written * * L * *
+parse-negative-monthdays-002,to-string,standard,* * -7--1 * *,,"* * -7,-6,-5,-4,-3,-2,-1 * *",upstream,syntax-extension,.parse negative monthdays L1267; to_cron_s
+parse-negative-monthdays-003,to-string,standard,* * -1--27 * *,,"* * -31,-30,-29,-28,-27,-1 * *",upstream,syntax-extension,.parse negative monthdays L1268; to_cron_s
+parse-negative-monthdays-004,to-string,standard,* * -7--1/2 * *,,"* * -7,-5,-3,-1 * *",upstream,syntax-extension,.parse negative monthdays L1269; to_cron_s
+parse-negative-monthdays-005,to-string,standard,* * L * *,,* * L * *,upstream,,.parse negative monthdays L1270; to_cron_s; fugit canonical * * -1 * * written * * L * *
+parse-negative-monthdays-006,to-string,standard,* * -7-L * *,,"* * -7,-6,-5,-4,-3,-2,-1 * *",upstream,syntax-extension,.parse negative monthdays L1271; to_cron_s
+parse-negative-monthdays-007,to-string,standard,* * L * *,,* * L * *,upstream,,.parse negative monthdays L1272; to_cron_s; last written L; fugit canonical * * -1 * * written * * L * *
+parse-negative-monthdays-008,to-string,standard,* * 25-l * *,,"* * 25,26,27,28,29,30,31 * *",upstream,token-list,.parse negative monthdays L1274; to_cron_s
+parse-negative-monthdays-009,to-string,standard,* * 25-L * *,,"* * 25,26,27,28,29,30,31 * *",upstream,token-list,.parse negative monthdays L1275; to_cron_s
+parse-months-001,to-string,standard,* * * jan-mar *,,"* * * 1,2,3 *",upstream,,.parse months L1286; to_cron_s
+parse-months-002,to-string,standard,* * * Jan-Aug/2 *,,"* * * 1,3,5,7 *",upstream,,.parse months L1287; to_cron_s
+parse-weekdays-001,to-string,standard,"* * * * sun,mon",,"* * * * 0,1",upstream,,.parse weekdays L1296; to_cron_s
+parse-weekdays-002,to-string,standard,"* * * * Sun,mOn",,"* * * * 0,1",upstream,,.parse weekdays L1297; to_cron_s
+parse-weekdays-003,to-string,standard,* * * * mon-wed,,"* * * * 1,2,3",upstream,,.parse weekdays L1298; to_cron_s
+parse-weekdays-004,to-string,standard,"* * * * sun,2-4",,"* * * * 0,2,3,4",upstream,,.parse weekdays L1299; to_cron_s
+parse-weekdays-005,to-string,standard,"* * * * sun,mon-tue",,"* * * * 0,1,2",upstream,,.parse weekdays L1300; to_cron_s
+parse-weekdays-006,to-string,standard,"* * * * sun,Sun,0,7",,* * * * 0,upstream,,.parse weekdays L1301; to_cron_s
+parse-weekdays-hash-001,to-string,standard,"0 0 * * mon#1,tue",,"0 0 * * 1#1,2",upstream,token-list,.parse weekdays # L1311; to_cron_s
+parse-weekdays-hash-002,to-string,standard,"0 0 * * monL,tue",,"0 0 * * 1#-1,2",upstream,token-list,.parse weekdays # L1312; to_cron_s; mon#-1 (last mon of the month) written monL
+parse-weekdays-hash-003,to-string,standard,"0 0 * * monL,tue",,"0 0 * * 1#-1,2",upstream,token-list,.parse weekdays # L1313; to_cron_s; mon#L (last mon of the month) written monL
+parse-weekdays-hash-004,to-string,standard,"0 0 * * monL,tue",,"0 0 * * 1#-1,2",upstream,token-list,.parse weekdays # L1314; to_cron_s; mon#last (last mon of the month) written monL
+parse-failure-002,invalid,standard,,,,upstream,,.parse failure L1363; parse returns nil
+parse-failure-003,invalid,standard," ",,,upstream,,.parse failure L1364; parse returns nil
+parse-failure-004,invalid,standard,* 25 * * *,,,upstream,,.parse failure L1366; parse returns nil
+parse-failure-005,invalid,standard,* * L-31 * *,,,upstream,,.parse failure L1367; parse returns nil; -32 (fugit: 32 from the end) written L-31
+parse-failure-006,invalid,standard,* * 0 * *,,,upstream,,.parse failure L1369; parse returns nil
+parse-failure-007,invalid,standard,* * 00 * *,,,upstream,,.parse failure L1370; parse returns nil
+parse-failure-008,invalid,standard,* * * 0 *,,,upstream,,.parse failure L1371; parse returns nil
+parse-failure-009,invalid,standard,* * * 00 *,,,upstream,,.parse failure L1372; parse returns nil
+parse-failure-010,invalid,standard,*/0 * * * *,,,upstream,,.parse failure L1383; parse returns nil
+parse-failure-011,invalid,standard,0/0 * * * *,,,upstream,,.parse failure L1384; parse returns nil
+parse-failure-012,invalid,standard,* */0 * * *,,,upstream,,.parse failure L1385; parse returns nil
+parse-failure-013,invalid,standard,* * */0 * *,,,upstream,,.parse failure L1386; parse returns nil
+parse-failure-014,invalid,standard,* * * */0 *,,,upstream,,.parse failure L1387; parse returns nil
+parse-failure-015,invalid,withSeconds,*/0 * * * * *,,,upstream,,.parse failure L1392; parse returns nil
+parse-failure-016,invalid,withSeconds,0/0 * * * * *,,,upstream,,.parse failure L1393; parse returns nil
+parse-failure-017,invalid,withSeconds,* */0 * * * *,,,upstream,,.parse failure L1394; parse returns nil
+parse-failure-018,invalid,withSeconds,* * */0 * * *,,,upstream,,.parse failure L1395; parse returns nil
+parse-failure-019,invalid,withSeconds,* * * */0 * *,,,upstream,,.parse failure L1396; parse returns nil
+parse-failure-020,invalid,withSeconds,* * * * */0 *,,,upstream,,.parse failure L1397; parse returns nil
+parse-failure-021,invalid,standard,*/-1 * * * *,,,upstream,,.parse failure L1400; parse returns nil
+parse-failure-022,invalid,standard,0/-1 * * * *,,,upstream,,.parse failure L1401; parse returns nil
+parse-failure-023,invalid,standard,* */-1 * * *,,,upstream,,.parse failure L1402; parse returns nil
+parse-failure-024,invalid,standard,* * */-1 * *,,,upstream,,.parse failure L1403; parse returns nil
+parse-failure-025,invalid,standard,* * * */-1 *,,,upstream,,.parse failure L1404; parse returns nil
+parse-failure-026,invalid,standard,* * * * */-1,,,upstream,,.parse failure L1405; parse returns nil
+parse-impossible-001,invalid,standard,* * 32 1 *,,,upstream,,.parse impossible days L1422; parse returns nil
+parse-impossible-002,invalid,standard,* * 30 2 *,,,upstream,impossible-date,.parse impossible days L1424; parse returns nil
+parse-impossible-003,invalid,standard,"* * 30,31 2 *",,,upstream,impossible-date,.parse impossible days L1425; parse returns nil
+parse-impossible-004,invalid,standard,* * 31 4 *,,,upstream,impossible-date,.parse impossible days L1426; parse returns nil
+parse-impossible-005,invalid,standard,* * 31 6 *,,,upstream,impossible-date,.parse impossible days L1427; parse returns nil
+parse-impossible-006,invalid,standard,* * 31 9 *,,,upstream,impossible-date,.parse impossible days L1428; parse returns nil
+parse-impossible-007,invalid,standard,* * 31 11 *,,,upstream,impossible-date,.parse impossible days L1429; parse returns nil
+parse-impossible-008,invalid,standard,"* * 31 2,4 *",,,upstream,impossible-date,.parse impossible days L1430; parse returns nil
+parse-impossible-009,valid,standard,"* * 30,31 2,3 *",,,upstream,,".parse impossible days L1432; asserts fugit's months/monthdays arrays [ [ 3 ], [ 30, 31 ] ]; only the successful parse is transcribed"
+parse-impossible-010,valid,standard,"* * 30,31 4 *",,,upstream,,".parse impossible days L1434; asserts fugit's months/monthdays arrays [ [ 4 ], [ 30 ] ]; only the successful parse is transcribed"
+parse-impossible-011,valid,standard,"* * 30,31 3,4 *",,,upstream,,".parse impossible days L1436; asserts fugit's months/monthdays arrays [ [ 3, 4 ], [ 30, 31 ] ]; only the successful parse is transcribed"
+parse-impossible-012,valid,standard,"* * 31 3,4 *",,,upstream,,".parse impossible days L1437; asserts fugit's months/monthdays arrays [ [ 3 ], [ 31 ] ]; only the successful parse is transcribed"
+parse-weekday-arrays-001,valid,standard,* * * * sunL,,,upstream,,".parse weekdays L1463; asserts fugit's weekdays array [ [ 0, -1 ] ]; only the successful parse is transcribed; sun#L (last sun of the month) written sunL"
+parse-weekday-arrays-002,valid,standard,* * * * sun%2,,,upstream,syntax-extension,".parse weekdays L1464; asserts fugit's weekdays array [ [ 0, [ 2, 0 ] ] ]; only the successful parse is transcribed"
+parse-weekday-arrays-003,valid,standard,* * * * sun%2+1,,,upstream,syntax-extension,".parse weekdays L1465; asserts fugit's weekdays array [ [ 0, [ 2, 1 ] ] ]; only the successful parse is transcribed"
+do-parse-001,invalid,standard,* 25 * * *,,,upstream,,.do_parse L1484; raises ArgumentError
+do-parse-002,invalid,standard,* * L-31 * *,,,upstream,,.do_parse L1485; raises ArgumentError; -32 (fugit: 32 from the end) written L-31
+do-parse-003,invalid,standard,* * 0 * *,,,upstream,,.do_parse L1487; raises ArgumentError
+do-parse-004,invalid,standard,* * 00 * *,,,upstream,,.do_parse L1488; raises ArgumentError
+do-parse-005,invalid,standard,* * * 0 *,,,upstream,,.do_parse L1489; raises ArgumentError
+do-parse-006,invalid,standard,* * * 00 *,,,upstream,,.do_parse L1490; raises ArgumentError
+do-parse-007,invalid,standard,*/0 * * * *,,,upstream,,.do_parse L1492; raises ArgumentError
+do-parse-008,invalid,standard,0/0 * * * *,,,upstream,,.do_parse L1493; raises ArgumentError
+do-parse-009,invalid,standard,* */0 * * *,,,upstream,,.do_parse L1494; raises ArgumentError
+do-parse-010,invalid,standard,* * */0 * *,,,upstream,,.do_parse L1495; raises ArgumentError
+do-parse-011,invalid,standard,* * * */0 *,,,upstream,,.do_parse L1496; raises ArgumentError
+do-parse-012,invalid,withSeconds,*/0 * * * * *,,,upstream,,.do_parse L1501; raises ArgumentError
+do-parse-013,invalid,withSeconds,0/0 * * * * *,,,upstream,,.do_parse L1502; raises ArgumentError
+do-parse-014,invalid,withSeconds,* */0 * * * *,,,upstream,,.do_parse L1503; raises ArgumentError
+do-parse-015,invalid,withSeconds,* * */0 * * *,,,upstream,,.do_parse L1504; raises ArgumentError
+do-parse-016,invalid,withSeconds,* * * */0 * *,,,upstream,,.do_parse L1505; raises ArgumentError
+do-parse-017,invalid,withSeconds,* * * * */0 *,,,upstream,,.do_parse L1506; raises ArgumentError
+do-parse-018,invalid,standard,*/-1 * * * *,,,upstream,,.do_parse L1509; raises ArgumentError
+do-parse-019,invalid,standard,0/-1 * * * *,,,upstream,,.do_parse L1510; raises ArgumentError
+do-parse-020,invalid,standard,* */-1 * * *,,,upstream,,.do_parse L1511; raises ArgumentError
+do-parse-021,invalid,standard,* * */-1 * *,,,upstream,,.do_parse L1512; raises ArgumentError
+do-parse-022,invalid,standard,* * * */-1 *,,,upstream,,.do_parse L1513; raises ArgumentError
+do-parse-023,invalid,standard,* * * * */-1,,,upstream,,.do_parse L1514; raises ArgumentError
+to-cron-s-001,equal,standard,"0 */3 * * 1,2",,"0 0,3,6,9,12,15,18,21 * * 1,2",upstream,,"#to_cron_s L1556; assert(parse(source), parse(target))"
+to-cron-s-001-text,to-string,standard,"0 */3 * * 1,2",,"0 0,3,6,9,12,15,18,21 * * 1,2",upstream,,#to_cron_s L1556; to_cron_s
+to-cron-s-001-roundtrip,equal,standard,"0 */3 * * 1,2",,"0 0,3,6,9,12,15,18,21 * * 1,2",upstream,,#to_cron_s round trip L1587 over the L1556 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-002,equal,standard,"0 5 * * 1,2,3,4,5",,"0 5 * * 1,2,3,4,5",upstream,,"#to_cron_s L1557; assert(parse(source), parse(target))"
+to-cron-s-002-text,to-string,standard,"0 5 * * 1,2,3,4,5",,"0 5 * * 1,2,3,4,5",upstream,,#to_cron_s L1557; to_cron_s
+to-cron-s-002-roundtrip,equal,standard,"0 5 * * 1,2,3,4,5",,"0 5 * * 1,2,3,4,5",upstream,,#to_cron_s round trip L1587 over the L1557 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-003,equal,standard,"0 5 * * 1-4,fri#3",,"0 5 * * 1,2,3,4,5#3",upstream,token-list,"#to_cron_s L1558; assert(parse(source), parse(target))"
+to-cron-s-003-text,to-string,standard,"0 5 * * 1-4,fri#3",,"0 5 * * 1,2,3,4,5#3",upstream,token-list,#to_cron_s L1558; to_cron_s
+to-cron-s-003-roundtrip,equal,standard,"0 5 * * 1-4,fri#3",,"0 5 * * 1,2,3,4,5#3",upstream,token-list,#to_cron_s round trip L1587 over the L1558 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-005,equal,standard,0 13 * * wed,,0 13 * * 3,upstream,,"#to_cron_s L1560; assert(parse(source), parse(target))"
+to-cron-s-005-text,to-string,standard,0 13 * * wed,,0 13 * * 3,upstream,,#to_cron_s L1560; to_cron_s
+to-cron-s-005-roundtrip,equal,standard,0 13 * * wed,,0 13 * * 3,upstream,,#to_cron_s round trip L1587 over the L1560 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-006,equal,standard,0 13 * * wed%2,,0 13 * * 3%2,upstream,syntax-extension,"#to_cron_s L1561; assert(parse(source), parse(target))"
+to-cron-s-006-text,to-string,standard,0 13 * * wed%2,,0 13 * * 3%2,upstream,syntax-extension,#to_cron_s L1561; to_cron_s
+to-cron-s-006-roundtrip,equal,standard,0 13 * * wed%2,,0 13 * * 3%2,upstream,syntax-extension,#to_cron_s round trip L1587 over the L1561 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-007,equal,standard,0 13 * * wed%2+1,,0 13 * * 3%2+1,upstream,syntax-extension,"#to_cron_s L1562; assert(parse(source), parse(target))"
+to-cron-s-007-text,to-string,standard,0 13 * * wed%2+1,,0 13 * * 3%2+1,upstream,syntax-extension,#to_cron_s L1562; to_cron_s
+to-cron-s-007-roundtrip,equal,standard,0 13 * * wed%2+1,,0 13 * * 3%2+1,upstream,syntax-extension,#to_cron_s round trip L1587 over the L1562 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-008,equal,standard,0 0 L * *,,0 0 L * *,upstream,,"#to_cron_s L1564; assert(parse(source), parse(target)); fugit canonical 0 0 -1 * * written 0 0 L * *"
+to-cron-s-008-text,to-string,standard,0 0 L * *,,0 0 L * *,upstream,,#to_cron_s L1564; to_cron_s; fugit canonical 0 0 -1 * * written 0 0 L * *
+to-cron-s-008-roundtrip,equal,standard,0 0 L * *,,0 0 L * *,upstream,,#to_cron_s round trip L1587 over the L1564 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target; fugit canonical 0 0 -1 * * written 0 0 L * *
+to-cron-s-009,equal,standard,23 1-15/2 * * *,,"23 1,3,5,7,9,11,13,15 * * *",upstream,,"#to_cron_s L1565; assert(parse(source), parse(target))"
+to-cron-s-009-text,to-string,standard,23 1-15/2 * * *,,"23 1,3,5,7,9,11,13,15 * * *",upstream,,#to_cron_s L1565; to_cron_s
+to-cron-s-009-roundtrip,equal,standard,23 1-15/2 * * *,,"23 1,3,5,7,9,11,13,15 * * *",upstream,,#to_cron_s round trip L1587 over the L1565 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-010,equal,standard,* * * * sunL,,* * * * 0L,upstream,,"#to_cron_s L1566; assert(parse(source), parse(target)); sun#L (last sun of the month) written sunL; fugit canonical * * * * 0#-1 written * * * * 0L"
+to-cron-s-010-text,to-string,standard,* * * * sunL,,* * * * 0L,upstream,,#to_cron_s L1566; to_cron_s; sun#L (last sun of the month) written sunL; fugit canonical * * * * 0#-1 written * * * * 0L
+to-cron-s-010-roundtrip,equal,standard,* * * * sunL,,* * * * 0L,upstream,,#to_cron_s round trip L1587 over the L1566 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target; sun#L (last sun of the month) written sunL; fugit canonical * * * * 0#-1 written * * * * 0L
+to-cron-s-011,equal,standard,"0 0 12,13 * 1-5&",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,"#to_cron_s L1568; assert(parse(source), parse(target))"
+to-cron-s-011-text,to-string,standard,"0 0 12,13 * 1-5&",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,#to_cron_s L1568; to_cron_s
+to-cron-s-011-roundtrip,equal,standard,"0 0 12,13 * 1-5&",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,#to_cron_s round trip L1587 over the L1568 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-012,equal,standard,"0 0 12,13& * 1-5",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,"#to_cron_s L1569; assert(parse(source), parse(target))"
+to-cron-s-012-text,to-string,standard,"0 0 12,13& * 1-5",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,#to_cron_s L1569; to_cron_s
+to-cron-s-012-roundtrip,equal,standard,"0 0 12,13& * 1-5",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,#to_cron_s round trip L1587 over the L1569 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+to-cron-s-013,equal,standard,"0 0 12,13& * 1-5&",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,"#to_cron_s L1570; assert(parse(source), parse(target))"
+to-cron-s-013-text,to-string,standard,"0 0 12,13& * 1-5&",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,#to_cron_s L1570; to_cron_s
+to-cron-s-013-roundtrip,equal,standard,"0 0 12,13& * 1-5&",,"0 0 12,13 * 1,2,3,4,5&",upstream,syntax-extension,#to_cron_s round trip L1587 over the L1570 entry: parse(to_cron_s) equals parse; fugit's to_cron_s is the target
+seconds-001,valid,standard,* * * * *,,,upstream,,#seconds L1601; asserts fugit's seconds array [ 0 ]; only the successful parse is transcribed
+seconds-002,valid,withSeconds,5 * * * * *,,,upstream,,#seconds L1602; asserts fugit's seconds array [ 5 ]; only the successful parse is transcribed
+seconds-003,valid,withSeconds,"5,10 * * * * *",,,upstream,,"#seconds L1603; asserts fugit's seconds array [ 5, 10 ]; only the successful parse is transcribed"
+seconds-004,valid,withSeconds,*/10 * * * * *,,,upstream,,"#seconds L1604; asserts fugit's seconds array [ 0, 10, 20, 30, 40, 50 ]; only the successful parse is transcribed"
+sec6-text-001,to-string,withSeconds,* 5 0 * * *,,* 5 0 * * *,upstream,,sec6 L1650; to_cron_s
+sec6-array-001,valid,withSeconds,0 5 0 * * *,,,upstream,,"sec6 L1664; asserts fugit's to_a [ [ 0 ], [ 5 ], [ 0 ], nil, nil, nil ]; only the successful parse is transcribed"
+sec6-array-002,valid,standard,5 0 * * *,,,upstream,,"sec6 L1665; asserts fugit's to_a [ [ 0 ], [ 5 ], [ 0 ], nil, nil, nil ]; only the successful parse is transcribed"
+sec6-array-003,valid,withSeconds,* 5 0 * * *,,,upstream,,"sec6 L1667; asserts fugit's to_a [ nil, [ 5 ], [ 0 ], nil, nil, nil ]; only the successful parse is transcribed"
+sec6-next-001,next,withSeconds,15 5 0 * * *,2017-01-01T00:00:00,2017-01-01T00:05:15,upstream,,sec6 L1682; next_time
+sec6-previous-002,previous,withSeconds,15 5 0 * * *,2017-01-01T00:00:00,2016-12-31T00:05:15,upstream,,sec6 L1683; previous_time
+sec6-next-003,next,withSeconds,"15,30 5 0 * * *",2017-01-01T00:00:00,2017-01-01T00:05:15,upstream,,sec6 L1685; next_time
+sec6-next-004,next,withSeconds,"15,30 5 0 * * *",2017-01-01T00:05:15,2017-01-01T00:05:30,upstream,,sec6 L1686; next_time
+sec6-next-005,next,withSeconds,"15,30 5 0 * * *",2017-01-01T00:05:31,2017-01-02T00:05:15,upstream,,sec6 L1687; next_time
+sec6-previous-006,previous,withSeconds,"15,30 5 0 * * *",2017-01-01T00:00:00,2016-12-31T00:05:30,upstream,,sec6 L1689; previous_time
+sec6-previous-007,previous,withSeconds,"15,30 5 0 * * *",2017-01-01T00:05:30,2017-01-01T00:05:15,upstream,,sec6 L1690; previous_time
+parse-cron-001,to-string,standard,45 5 * * sun,,45 5 * * 0,upstream,,#parse_cron L1952; class and to_cron_s
+parse-cron-003,to-string,standard,*   *  L  * *,,* * L * *,upstream,,#parse_cron L1954; class and to_cron_s; last written L; fugit canonical * * -1 * * written * * L * *
+gh43-next,next,standard,0 8-19/4 * * *,2020-09-11T12:00:00,2020-09-11T16:00:00,upstream,,"New York skip (gh-43) L692 ""doesn't skip""; asserts nt.to_s =~ / 16:00:00 / (same day)"
+gh43-next-utc,next,standard,0 8-19/4 * * *,2020-09-11T12:00:00,2020-09-11T16:00:00,upstream,,"New York skip (gh-43) L707 ""doesn't skip (TZ UTC)""; run in UTC; asserts nt.utc.to_s =~ / 16:00:00 /"
+gh47-next-a,next,standard,0 8 * * 1%2+2,2021-04-21T07:00:00,2021-05-03T08:00:00,upstream,syntax-extension,gh-47 L746; next_time(2021-04-21 07:00:00).to_s =~ /^2021-05-03 08:00:00 /
+gh47-next-b,next,standard,0 8 * * 1%2,2021-04-21T07:00:00,2021-05-03T08:00:00,upstream,syntax-extension,gh-47 L746; asserts 0 8 * * 1%2 gives the same next_time as 0 8 * * 1%2+2
+parse-nada,invalid,standard,nada,,,upstream,,.parse L1081 'returns nil if test cannot parse'; parse('nada') is nil
+equality-001,equal,standard,* * * * *,,* * * * *,upstream,,#== L1528 'returns true when equal'
+equality-002,equal,standard,* * * * *,,* * */1 * *,upstream,,#== L1528 'returns true when equal'
+equality-003,not-equal,standard,* * * * *,,* * * * 1,upstream,,#== L1539 'returns false else'; == is false
+equality-004,not-equal,standard,* * * * *,,* * * * 1,upstream,,#== L1539 'returns false else'; != is true
+iterator-next,next-sequence,standard,0 12 * * mon#2,2024-02-16T12:00:00,2024-03-11T12:00:00|2024-04-08T12:00:00|2024-05-13T12:00:00|2024-06-10T12:00:00|2024-07-08T12:00:00,upstream,,#next L1714 'returns an iterator'; run in UTC; next('2024-02-16 12:00:00').take(5)
+iterator-prev,previous-sequence,standard,0 12 * * mon#2,2024-02-16T12:00:00,2024-02-12T12:00:00|2024-01-08T12:00:00|2023-12-11T12:00:00|2023-11-13T12:00:00|2023-10-09T12:00:00,upstream,,#prev L1736 'returns an iterator'; run in UTC; prev(Time.parse('2024-02-16 12:00:00')).take(5)
+within-range,next-sequence,standard,0 12 * * mon#2,2024-02-16T12:00:00,2024-03-11T12:00:00|2024-04-08T12:00:00|2024-05-13T12:00:00|2024-06-10T12:00:00|2024-07-08T12:00:00,upstream,,"#within L1757; run in UTC; within(2024-02-16 12:00..2024-08-01 12:00); the occurrences after the start, in order (the end bound itself is not a table kind)"
+within-start-end,next-sequence,standard,0 12 * * mon#2,2024-01-16T12:00:00,2024-02-12T12:00:00|2024-03-11T12:00:00|2024-04-08T12:00:00|2024-05-13T12:00:00|2024-06-10T12:00:00,upstream,,"#within L1776; run in UTC; within(2024-01-16 12:00, '2024-07-01 12:00'); the occurrences after the start, in order (the end bound itself is not a table kind)"
+modulo-monday-ref,next-sequence,standard,"0 12 * * 0%2+1,3%2+1",2025-09-25T00:00:00,2025-09-28T12:00:00|2025-10-08T12:00:00|2025-10-12T12:00:00|2025-10-22T12:00:00|2025-10-26T12:00:00|2025-11-05T12:00:00|2025-11-09T12:00:00,upstream,syntax-extension,modulo extension L1803; EtOrbi.rweek_ref = :monday; next('2025-09-25').take(7)
+modulo-sunday-ref,next-sequence,standard,"0 12 * * 0%2+1,3%2+1",2025-09-25T00:00:00,2025-10-05T12:00:00|2025-10-08T12:00:00|2025-10-19T12:00:00|2025-10-22T12:00:00|2025-11-02T12:00:00|2025-11-05T12:00:00|2025-11-16T12:00:00,upstream,syntax-extension,modulo extension L1824; EtOrbi.rweek_ref = :sunday; next('2025-09-25').take(7)
+modulo-tuesday,next-sequence,standard,20 0 * * 2%4,2025-09-25T00:00:00,2025-09-30T00:20:00|2025-10-28T00:20:00|2025-11-25T00:20:00|2025-12-23T00:20:00|2026-01-20T00:20:00|2026-02-17T00:20:00|2026-03-17T00:20:00|2026-04-14T00:20:00|2026-05-12T00:20:00|2026-06-09T00:20:00|2026-07-07T00:20:00|2026-08-04T00:20:00|2026-09-01T00:20:00|2026-09-29T00:20:00,upstream,syntax-extension,modulo extension L1847; next('2025-09-25').take(14)
+modulo-wednesday-a,next-sequence,standard,"12 0 * * wed%4,wed%4+1",2025-09-25T00:00:00,2025-10-01T00:12:00|2025-10-08T00:12:00|2025-10-29T00:12:00|2025-11-05T00:12:00|2025-11-26T00:12:00|2025-12-03T00:12:00|2025-12-24T00:12:00|2025-12-31T00:12:00|2026-01-21T00:12:00|2026-01-28T00:12:00|2026-02-18T00:12:00|2026-02-25T00:12:00|2026-03-18T00:12:00|2026-03-25T00:12:00,upstream,syntax-extension,"modulo extension L1877; next('2025-09-25').take(14), first assertion"
+modulo-wednesday-b,next-sequence,standard,"12 0 * * wed%4+1,wed%4",2025-09-25T00:00:00,2025-10-01T00:12:00|2025-10-08T00:12:00|2025-10-29T00:12:00|2025-11-05T00:12:00|2025-11-26T00:12:00|2025-12-03T00:12:00|2025-12-24T00:12:00|2025-12-31T00:12:00|2026-01-21T00:12:00|2026-01-28T00:12:00|2026-02-18T00:12:00|2026-02-25T00:12:00|2026-03-18T00:12:00|2026-03-25T00:12:00,upstream,syntax-extension,"modulo extension L1877; next('2025-09-25').take(14), second assertion"
+do-parse-cron-too-long,invalid,standard,"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ",,,upstream,,#do_parse_cron L1940; '* * * * * ' * 100 raises (fugit: input longer than 256; Bodu: 500 fields)
+parse-cron-too-long,invalid,standard,"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ",,,upstream,,#parse_cron L1971; '* * * * * ' * 100 is nil (fugit: input longer than 256; Bodu: 500 fields)
