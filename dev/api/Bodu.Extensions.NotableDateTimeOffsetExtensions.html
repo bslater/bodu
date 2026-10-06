@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_NotableDateTimeOffsetExtensions" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 NotableDateTimeOffsetExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.AddWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.AddWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ NotableDateTimeOffsetExtensions Class
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.AddWorkingDays.cs">NotableDateTimeOffsetExtensions.AddWorkingDays.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.AddWorkingDays.cs">NotableDateTimeOffsetExtensions.AddWorkingDays.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides working-day, traversal, and notable-date query extension methods over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a>,
@@ -186,9 +186,9 @@ that return a moved <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_AddWorkingDays_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.AddWorkingDays*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_AddWorkingDays_System_DateTimeOffset_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.AddWorkingDays(System.DateTimeOffset,System.Int32,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  AddWorkingDays(DateTimeOffset, int, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.AddWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_AddWorkingDays_System_DateTimeOffset_System_Int32_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.AddWorkingDays(System.DateTimeOffset,System.Int32,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  AddWorkingDays(DateTimeOffset, int, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.AddWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -197,7 +197,7 @@ that return a moved <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateTimeOffset AddWorkingDays(this DateTimeOffset date, int count, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateTimeOffset AddWorkingDays(this DateTimeOffset date, int count, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -214,7 +214,7 @@ that return a moved <a class="xref" href="https://learn.microsoft.com/dotnet/api
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -249,7 +249,7 @@ that return a moved <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_EnumerateNotableDates_System_DateTimeOffset_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.EnumerateNotableDates(System.DateTimeOffset,System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
   EnumerateNotableDates(DateTimeOffset, DateTimeOffset, INotableDateService, string, NotableDateFilter?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.EnumerateNotableDates.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.EnumerateNotableDates.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -282,7 +282,7 @@ that return a moved <a class="xref" href="https://learn.microsoft.com/dotnet/api
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
     <dd><p>The emitted occurrences, ordered by date then identity.</p>
 </dd>
   </dl>
@@ -308,9 +308,9 @@ that return a moved <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_EnumerateWorkingDays_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.EnumerateWorkingDays*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_EnumerateWorkingDays_System_DateTimeOffset_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.EnumerateWorkingDays(System.DateTimeOffset,System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  EnumerateWorkingDays(DateTimeOffset, DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.EnumerateWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_EnumerateWorkingDays_System_DateTimeOffset_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.EnumerateWorkingDays(System.DateTimeOffset,System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  EnumerateWorkingDays(DateTimeOffset, DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.EnumerateWorkingDays.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -320,7 +320,7 @@ and offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;DateTimeOffset&gt; EnumerateWorkingDays(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;DateTimeOffset&gt; EnumerateWorkingDays(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -337,7 +337,7 @@ and offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -372,7 +372,7 @@ and offset.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_GetNotableDates_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.GetNotableDates(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
   GetNotableDates(DateTimeOffset, INotableDateService, string, NotableDateFilter?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.GetNotableDates.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.GetNotableDates.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -402,7 +402,7 @@ and offset.</p>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
     <dd><p>The emitted occurrences; empty when there are none.</p>
 </dd>
   </dl>
@@ -428,9 +428,9 @@ and offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsNonWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsNonWorkingDay*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsNonWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsNonWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  IsNonWorkingDay(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsNonWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsNonWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsNonWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  IsNonWorkingDay(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsNonWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -439,7 +439,7 @@ and offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsNonWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsNonWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -453,7 +453,7 @@ and offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -488,7 +488,7 @@ and offset.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsNotableDate_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_Bodu_Globalization_Calendar_NotableDateFilter_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsNotableDate(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,Bodu.Globalization.Calendar.NotableDateFilter)">
   IsNotableDate(DateTimeOffset, INotableDateService, string, NotableDateFilter?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsNotableDate.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsNotableDate.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -544,9 +544,9 @@ and offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsWeekend_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsWeekend*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsWeekend_System_DateTimeOffset_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsWeekend(System.DateTimeOffset,System.Nullable{Bodu.WeekPattern})">
-  IsWeekend(DateTimeOffset, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsWeekend.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsWeekend_System_DateTimeOffset_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsWeekend(System.DateTimeOffset,System.Nullable{Bodu.DayOfWeekSet})">
+  IsWeekend(DateTimeOffset, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsWeekend.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -555,7 +555,7 @@ and offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsWeekend(this DateTimeOffset date, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsWeekend(this DateTimeOffset date, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -563,7 +563,7 @@ and offset.</p>
     <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a></dt>
     <dd><p>The value whose offset-local date is tested.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -590,9 +590,9 @@ and offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsWorkingDay*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  IsWorkingDay(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_IsWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.IsWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  IsWorkingDay(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.IsWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -601,7 +601,7 @@ and offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -615,7 +615,7 @@ and offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -648,9 +648,9 @@ and offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_NextWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.NextWorkingDay*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_NextWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.NextWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  NextWorkingDay(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.NextWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_NextWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.NextWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  NextWorkingDay(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.NextWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -659,7 +659,7 @@ and offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateTimeOffset NextWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateTimeOffset NextWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -673,7 +673,7 @@ and offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -706,9 +706,9 @@ and offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_PreviousWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.PreviousWorkingDay*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_PreviousWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.PreviousWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  PreviousWorkingDay(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.PreviousWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_PreviousWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.PreviousWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  PreviousWorkingDay(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.PreviousWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -717,7 +717,7 @@ and offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateTimeOffset PreviousWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateTimeOffset PreviousWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -731,7 +731,7 @@ and offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -764,9 +764,9 @@ and offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToNearestWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToNearestWorkingDay*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToNearestWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToNearestWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  SnapToNearestWorkingDay(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.SnapToNearestWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToNearestWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToNearestWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  SnapToNearestWorkingDay(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.SnapToNearestWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -776,7 +776,7 @@ offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateTimeOffset SnapToNearestWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateTimeOffset SnapToNearestWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -790,7 +790,7 @@ offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -823,9 +823,9 @@ offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToWorkingDay_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToWorkingDay*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  SnapToWorkingDay(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.SnapToWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToWorkingDay_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToWorkingDay(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  SnapToWorkingDay(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.SnapToWorkingDay.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -834,7 +834,7 @@ offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateTimeOffset SnapToWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateTimeOffset SnapToWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -848,7 +848,7 @@ offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -881,9 +881,9 @@ offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToWorkingDayBackward_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToWorkingDayBackward*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToWorkingDayBackward_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToWorkingDayBackward(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  SnapToWorkingDayBackward(DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.SnapToWorkingDayBackward.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_SnapToWorkingDayBackward_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.SnapToWorkingDayBackward(System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  SnapToWorkingDayBackward(DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.SnapToWorkingDayBackward.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -893,7 +893,7 @@ offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateTimeOffset SnapToWorkingDayBackward(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateTimeOffset SnapToWorkingDayBackward(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -907,7 +907,7 @@ offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -940,9 +940,9 @@ offset.</p>
   <a id="Bodu_Extensions_NotableDateTimeOffsetExtensions_WorkingDaysBetween_" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.WorkingDaysBetween*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_WorkingDaysBetween_System_DateTimeOffset_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_WeekPattern__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.WorkingDaysBetween(System.DateTimeOffset,System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.WeekPattern})">
-  WorkingDaysBetween(DateTimeOffset, DateTimeOffset, INotableDateService, string, WeekPattern?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.WorkingDaysBetween.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_NotableDateTimeOffsetExtensions_WorkingDaysBetween_System_DateTimeOffset_System_DateTimeOffset_Bodu_Globalization_Calendar_INotableDateService_System_String_System_Nullable_Bodu_DayOfWeekSet__" data-uid="Bodu.Extensions.NotableDateTimeOffsetExtensions.WorkingDaysBetween(System.DateTimeOffset,System.DateTimeOffset,Bodu.Globalization.Calendar.INotableDateService,System.String,System.Nullable{Bodu.DayOfWeekSet})">
+  WorkingDaysBetween(DateTimeOffset, DateTimeOffset, INotableDateService, string, DayOfWeekSet?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Globalization.Calendar/src/Extensions/NotableDateTimeOffsetExtensions.WorkingDaysBetween.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -951,7 +951,7 @@ offset.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static int WorkingDaysBetween(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, WeekPattern? workingWeek = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public static int WorkingDaysBetween(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -968,7 +968,7 @@ offset.</p>
     <dt><code>territory</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
     <dd><p>The requested territory code.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WeekPattern.Enumerator.cs">WeekPattern</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working-week pattern, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for Monday to Friday.</p>
 </dd>
   </dl>
@@ -1031,7 +1031,7 @@ offset.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f83599 · Built: 2026-10-05 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f67986 · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

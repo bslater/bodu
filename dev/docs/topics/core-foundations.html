@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="core-foundations">Core Foundations</h1>
 
-<p><strong>Bodu.Core</strong> is the foundation of the entire Bodu suite. Every other Bodu package depends on it - <code>Bodu.IO.Hashing</code>, <code>Bodu.Security.Cryptography</code>, <code>Bodu.Globalization.Calendar</code>, the text and serialization packages, <code>Bodu.Numerics</code>, and <code>Bodu.Financial</code> all reference it for shared primitives such as the centralized <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> argument-validation catalogue, <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>, the calendar-shape enums, and pooled buffers. It is also a useful library in its own right: a writer-style pooled buffer builder, async coordination and railway primitives, and a large set of date, numeric, span, and array extensions. The specialized collection catalogue - the bounded, ordered, navigable, graph, tree, and probabilistic collections - ships in the companion <strong><a href="../collections/index.html"><code>Bodu.Collections</code></a></strong> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe variants in <strong><a href="../collections-concurrent/index.html"><code>Bodu.Collections.Concurrent</code></a></strong> (which depends on <code>Bodu.Collections</code>).</p>
+<p><strong>Bodu.Core</strong> is the foundation of the entire Bodu suite. Every other Bodu package depends on it - <code>Bodu.IO.Hashing</code>, <code>Bodu.Security.Cryptography</code>, <code>Bodu.Globalization.Calendar</code>, the text and serialization packages, <code>Bodu.Numerics</code>, and <code>Bodu.Financial</code> all reference it for shared primitives such as the centralized <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> argument-validation catalogue, <a class="xref" href="../../api/Bodu.DayOfWeekSet.html">DayOfWeekSet</a>, the calendar-shape enums, and pooled buffers. It is also a useful library in its own right: a writer-style pooled buffer builder, async coordination and railway primitives, and a large set of date, numeric, span, and array extensions. The specialized collection catalogue - the bounded, ordered, navigable, graph, tree, and probabilistic collections - ships in the companion <strong><a href="../collections/index.html"><code>Bodu.Collections</code></a></strong> package (namespaces unchanged; it depends on <code>Bodu.Core</code>), and the thread-safe variants in <strong><a href="../collections-concurrent/index.html"><code>Bodu.Collections.Concurrent</code></a></strong> (which depends on <code>Bodu.Collections</code>).</p>
 <p>The package additionally ships the <strong><code>Bodu.Text</code></strong> namespace - character-encoding helpers over <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> that add byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, and validation. <code>Bodu.Text</code> is a namespace inside the <code>Bodu.Core</code> package, not a separate package; installing <code>Bodu.Core</code> gives you both surfaces.</p>
 <h2 id="members-of-this-topic">Members of this topic</h2>
 <table>
@@ -103,7 +103,7 @@
 <tr>
 <td><strong>Bodu.Core</strong></td>
 <td>Stable</td>
-<td>The <code>WeekPattern</code> value type, <code>PooledBufferBuilder&lt;T&gt;</code>, date / numeric / span extensions, the enumerable / dictionary / list extension surfaces, threading and functional primitives, and the <code>ThrowHelper</code> validation catalogue.</td>
+<td>The calendar value sets (<code>DayOfWeekSet</code>, <code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code>, <code>SecondSet</code>), <code>PooledBufferBuilder&lt;T&gt;</code>, date / numeric / span extensions, the enumerable / dictionary / list extension surfaces, threading and functional primitives, and the <code>ThrowHelper</code> validation catalogue.</td>
 <td><a href="../core/index.html">Introduction</a> · <a href="../core/concepts.html">Concepts</a> · <a href="../core/getting-started.html">Getting started</a></td>
 </tr>
 <tr>
@@ -129,7 +129,7 @@
 <h2 id="the-shape-of-the-topic">The shape of the topic</h2>
 <p><code>Bodu.Core</code> is organized into focused namespaces, each with a clear responsibility. The four you will reach for most often:</p>
 <ul>
-<li><strong><code>Bodu</code></strong> - root-namespace primitives: <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> (the argument-validation catalogue every Bodu library calls into), <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a> (an immutable day-of-week bitmask), and the <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a> abstraction with its <a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a> implementation.</li>
+<li><strong><code>Bodu</code></strong> - root-namespace primitives: <a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> (the argument-validation catalogue every Bodu library calls into), <a class="xref" href="../../api/Bodu.DayOfWeekSet.html">DayOfWeekSet</a> and the other calendar value sets (immutable bit sets of days of the week, months, days of the month, hours, minutes, and seconds), and the <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a> abstraction with its <a class="xref" href="../../api/Bodu.XorShiftRandom.html">XorShiftRandom</a> implementation.</li>
 <li><strong><code>Bodu.Collections.Generic</code></strong> (ships in the <code>Bodu.Collections</code> package) - bounded ring-backed collections (<a class="xref" href="../../api/Bodu.Collections.Generic.CircularBuffer-1.html">CircularBuffer&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Deque-1.html">Deque&lt;T&gt;</a>), the policy-driven <a class="xref" href="../../api/Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> cache, the insertion/access-ordered <a class="xref" href="../../api/Bodu.Collections.Generic.SequencedDictionary-2.html">SequencedDictionary&lt;TKey, TValue&gt;</a>, index-aware sets (<a class="xref" href="../../api/Bodu.Collections.Generic.IndexedSet-1.html">IndexedSet&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.OrderedSet-1.html">OrderedSet&lt;T&gt;</a>), the heap-backed <a class="xref" href="../../api/Bodu.Collections.Generic.IndexedPriorityQueue-2.html">IndexedPriorityQueue&lt;TElement, TPriority&gt;</a>, multi-map / multi-set types, and range-keyed lookups. The thread-safe <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer-1.html">ConcurrentCircularBuffer&lt;T&gt;</a>, <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentHashSet-1.html">ConcurrentHashSet&lt;T&gt;</a>, and <a class="xref" href="../../api/Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary-2.html">ConcurrentEvictingDictionary&lt;TKey, TValue&gt;</a> live in the <code>.Concurrent</code> sub-namespace, shipped by the <code>Bodu.Collections.Concurrent</code> package.</li>
 <li><strong><code>Bodu.Buffers</code></strong> - <a class="xref" href="../../api/Bodu.Buffers.PooledBufferBuilder-1.html">PooledBufferBuilder&lt;T&gt;</a>, an <code>ArrayPool&lt;T&gt;</code>-backed builder that assembles byte or character spans without allocation and slots into standard <code>IBufferWriter&lt;T&gt;</code> pipelines.</li>
 <li><strong><code>Bodu.Text</code></strong> - <a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a>, <a class="xref" href="../../api/Bodu.Text.EncodingExtensions.html">EncodingExtensions</a>, and <a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a>: the character-encoding surface that turns bytes into text and back through <code>System.Text.Encoding</code>, correctly and efficiently.</li>
@@ -139,7 +139,7 @@
 <p><code>Bodu.Core</code> is the one shared runtime dependency across the suite - every other topic's packages build on it. The <a href="../introduction.html">project introduction</a> spells out the dependency map; in topic terms:</p>
 <ul>
 <li><strong><a href="hashing-and-cryptography.html">Hashing &amp; Cryptography</a></strong> - <code>Bodu.IO.Hashing</code> and <code>Bodu.Security.Cryptography</code> take <code>ThrowHelper</code> for argument validation and share the pooled-buffer infrastructure.</li>
-<li><strong><a href="globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> - <code>Bodu.Globalization.Calendar</code> builds on <code>WeekPattern</code> and the calendar-shape enums (<code>CalendarQuarterDefinition</code>, <code>WorkingDaysOfWeek</code>, <code>WeekOrdinal</code>) that live in <code>Bodu.Core</code>.</li>
+<li><strong><a href="globalization-and-calendars.html">Globalization &amp; Calendars</a></strong> - <code>Bodu.Globalization.Calendar</code> builds on <code>DayOfWeekSet</code> and the calendar-shape enums (<code>CalendarQuarterDefinition</code>, <code>WorkingDaysOfWeek</code>, <code>WeekOrdinal</code>) that live in <code>Bodu.Core</code>.</li>
 <li><strong><a href="text-and-serialization.html">Text &amp; Serialization</a></strong> - <code>Bodu.Text.Encoding</code>, <code>Bodu.Text.Formats</code>, <code>Bodu.Text.Bencode</code>, and <code>Bodu.Text.Toml</code> validate through <code>ThrowHelper</code> and sit alongside the <code>Bodu.Text</code> character-encoding helpers.</li>
 <li><strong><a href="configuration.html">Configuration</a></strong> - <code>Bodu.Text.Configuration</code> and its <code>Microsoft.Extensions.Configuration</code> bridge sit on the same foundation via <code>Bodu.Text.Formats</code>.</li>
 <li><strong><a href="numerics-and-financial.html">Numerics &amp; Financial</a></strong> - <code>Bodu.Numerics</code> and <code>Bodu.Financial</code> validate through <code>ThrowHelper</code>; <code>Bodu.Financial</code> additionally builds on <code>Bodu.Numerics</code>.</li>
@@ -202,8 +202,13 @@
 </tr>
 <tr>
 <td>Day-of-week masks you can union, intersect, and parse</td>
-<td><a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a></td>
-<td>Immutable 7-bit bitmask value type; <code>Parse(&quot;_MTWTF_&quot;)</code>, bitwise operators, presets.</td>
+<td><a class="xref" href="../../api/Bodu.DayOfWeekSet.html">DayOfWeekSet</a></td>
+<td>Immutable set in one byte; <code>Parse(&quot;_MTWTF_&quot;)</code>, set operators, working-week presets.</td>
+</tr>
+<tr>
+<td>Sets of months, days of the month, hours, minutes, or seconds</td>
+<td><a class="xref" href="../../api/Bodu.MonthSet.html">MonthSet</a>, <a class="xref" href="../../api/Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="../../api/Bodu.HourSet.html">HourSet</a>, <a class="xref" href="../../api/Bodu.MinuteSet.html">MinuteSet</a>, <a class="xref" href="../../api/Bodu.SecondSet.html">SecondSet</a></td>
+<td>Immutable bit sets; <code>Parse(&quot;1-3,12&quot;)</code>, set operators, allocation-free enumeration.</td>
 </tr>
 <tr>
 <td>Date arithmetic - first Monday of month, ISO week-of-year, age</td>
@@ -300,7 +305,7 @@ if (EncodingDetection.TryDetectByPreamble(bytes, out var encoding))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f83599 · Built: 2026-10-05 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f67986 · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

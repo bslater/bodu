@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_WorkingDaysOfWeekExtensions" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 WorkingDaysOfWeekExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ WorkingDaysOfWeekExtensions Class
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs">WorkingDaysOfWeekExtensions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs">WorkingDaysOfWeekExtensions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides bidirectional conversion between the <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> enum sugar and the
-<a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> value type.</p>
+<a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> value type.</p>
 </div>
 
   <div class="codewrapper">
@@ -167,34 +167,34 @@ WorkingDaysOfWeekExtensions Class
 </h2>
 
 
-  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWeekPattern_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWeekPattern*"></a>
+  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWeekPattern_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWeekPattern(Bodu.WorkingDaysOfWeek)">
-  ToWeekPattern(WorkingDaysOfWeek)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_Bodu_WorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet(Bodu.WorkingDaysOfWeek)">
+  ToDayOfWeekSet(WorkingDaysOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the canonical <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> for the supplied <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value.</p>
+  <div class="markdown level1 summary"><p>Returns the canonical <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> for the supplied <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static WeekPattern ToWeekPattern(this WorkingDaysOfWeek value)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DayOfWeekSet ToDayOfWeekSet(this WorkingDaysOfWeek value)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
-    <dd><p>The named working-week pattern to convert.</p>
+    <dd><p>The named working week to convert.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
-    <dd><p>The <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> whose selected days match <code class="paramref">value</code>.</p>
+    <dt><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> whose selected days match <code class="paramref">value</code>.</p>
 </dd>
   </dl>
 
@@ -212,8 +212,7 @@ WorkingDaysOfWeekExtensions Class
 enumeration.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <code class="paramref">value</code> is <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>, which has no canonical
-pattern.</p>
+    <dd><p>Thrown when <code class="paramref">value</code> is <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>, which has no canonical set.</p>
 </dd>
   </dl>
 
@@ -221,29 +220,29 @@ pattern.</p>
   </section>
 
 
-  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWeekPattern_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWeekPattern*"></a>
+  <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWeekPattern_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWeekPattern(Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
-  ToWeekPattern(WorkingDaysOfWeek, IWeekendDefinitionProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToDayOfWeekSet(Bodu.WorkingDaysOfWeek,Bodu.Extensions.IWeekendDefinitionProvider)">
+  ToDayOfWeekSet(WorkingDaysOfWeek, IWeekendDefinitionProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the canonical <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> for the supplied <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value,
+  <div class="markdown level1 summary"><p>Returns the canonical <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> for the supplied <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value,
 consulting <code class="paramref">provider</code> when <code class="paramref">value</code> is
 <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static WeekPattern ToWeekPattern(this WorkingDaysOfWeek value, IWeekendDefinitionProvider? provider)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DayOfWeekSet ToDayOfWeekSet(this WorkingDaysOfWeek value, IWeekendDefinitionProvider? provider)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
-    <dd><p>The named working-week pattern to convert.</p>
+    <dd><p>The named working week to convert.</p>
 </dd>
     <dt><code>provider</code> <a class="xref" href="Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a></dt>
     <dd><p>A custom weekend provider consulted only when <code class="paramref">value</code> is
@@ -253,8 +252,8 @@ consulting <code class="paramref">provider</code> when <code class="paramref">va
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
-    <dd><p>The <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> whose selected days match the working-week implied by <code class="paramref">value</code>
+    <dt><a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> whose selected days match the working-week implied by <code class="paramref">value</code>
 (and <code class="paramref">provider</code> when applicable).</p>
 </dd>
   </dl>
@@ -285,33 +284,33 @@ enumeration.</p>
   <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_Bodu_WeekPattern_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek(Bodu.WeekPattern)">
-  ToWorkingDaysOfWeek(WeekPattern)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWorkingDaysOfWeek_Bodu_DayOfWeekSet_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek(Bodu.DayOfWeekSet)">
+  ToWorkingDaysOfWeek(DayOfWeekSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Returns the matching <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value for the supplied <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>, or
+  <div class="markdown level1 summary"><p>Returns the matching <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> value for the supplied <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a>, or
 <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> when no named preset matches.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static WorkingDaysOfWeek ToWorkingDaysOfWeek(this WeekPattern pattern)</code></pre>
+    <pre><code class="lang-csharp hljs">public static WorkingDaysOfWeek ToWorkingDaysOfWeek(this DayOfWeekSet workingWeek)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>pattern</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
-    <dd><p>The pattern to identify.</p>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The working week to identify.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
-    <dd><p>The <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> whose canonical pattern equals <code class="paramref">pattern</code>, or
-<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> when <code class="paramref">pattern</code> does not match any named preset.</p>
+    <dd><p>The <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> whose canonical set equals <code class="paramref">workingWeek</code>, or
+<a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> when <code class="paramref">workingWeek</code> does not match any named preset.</p>
 </dd>
   </dl>
 
@@ -330,24 +329,25 @@ enumeration.</p>
   <a id="Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_Bodu_WeekPattern_Bodu_WorkingDaysOfWeek__" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek(Bodu.WeekPattern,Bodu.WorkingDaysOfWeek@)">
-  TryGetWorkingDaysOfWeek(WeekPattern, out WorkingDaysOfWeek)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Extensions_WorkingDaysOfWeekExtensions_TryGetWorkingDaysOfWeek_Bodu_DayOfWeekSet_Bodu_WorkingDaysOfWeek__" data-uid="Bodu.Extensions.WorkingDaysOfWeekExtensions.TryGetWorkingDaysOfWeek(Bodu.DayOfWeekSet,Bodu.WorkingDaysOfWeek@)">
+  TryGetWorkingDaysOfWeek(DayOfWeekSet, out WorkingDaysOfWeek)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/Extensions/WorkingDaysOfWeekExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Attempts to identify the supplied <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> as a named <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset.</p>
+  <div class="markdown level1 summary"><p>Attempts to identify the supplied <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> as a named <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>
+preset.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool TryGetWorkingDaysOfWeek(this WeekPattern pattern, out WorkingDaysOfWeek value)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool TryGetWorkingDaysOfWeek(this DayOfWeekSet workingWeek, out WorkingDaysOfWeek value)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>pattern</code> <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a></dt>
-    <dd><p>The pattern to identify.</p>
+    <dt><code>workingWeek</code> <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a></dt>
+    <dd><p>The working week to identify.</p>
 </dd>
     <dt><code>value</code> <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></dt>
     <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, contains the matching <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a>;
@@ -358,7 +358,7 @@ otherwise, <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfW
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">pattern</code> matches a named preset; otherwise
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">workingWeek</code> matches a named preset; otherwise
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
@@ -402,7 +402,7 @@ otherwise, <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfW
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f83599 · Built: 2026-10-05 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f67986 · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

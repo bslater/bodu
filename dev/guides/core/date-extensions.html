@@ -145,7 +145,7 @@ DateTime nearestSat  = date.NearestDateOfWeek(DayOfWeek.Saturday);         // 20
 
 DateTime nextWorking = date.NextWeekday(WorkingDaysOfWeek.MondayToFriday); // 2024-05-16 (Thursday)
 DateTime afterFriday = new DateTime(2024, 5, 17).NextWeekday(WorkingDaysOfWeek.MondayToFriday);   // 2024-05-20 (Monday)
-DateTime mwfOnly     = new DateTime(2024, 5, 17).NextWeekday(WeekPattern.Parse(&quot;_M_W_F_&quot;));       // 2024-05-20
+DateTime mwfOnly     = new DateTime(2024, 5, 17).NextWeekday(DayOfWeekSet.Parse(&quot;_M_W_F_&quot;));      // 2024-05-20
 DateTime prevWorking = date.PreviousWeekday(WorkingDaysOfWeek.SundayToThursday);                  // 2024-05-14
 
 DateTime lastMonday  = date.NthDateOfWeekInMonth(DayOfWeek.Monday, WeekOrdinal.Last);    // 2024-05-27
@@ -158,7 +158,7 @@ DateTime lastRun = seriesStart.PreviousOccurrence(TimeSpan.FromDays(7), before: 
 </code></pre>
 <ul>
 <li><code>Next…</code> / <code>Previous…</code> are strict; the <code>…OrSame…</code> variants accept the receiver's own day. <code>NearestDateOfWeek</code> prefers the earlier date on a tie.</li>
-<li><code>NextWeekday</code> / <code>PreviousWeekday</code> step one day at a time until the day is a working day under the supplied <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset, <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>, or <code>Custom</code> + <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> - see <a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a>.</li>
+<li><code>NextWeekday</code> / <code>PreviousWeekday</code> step one day at a time until the day is a working day under the supplied <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset, <a class="xref" href="../../api/Bodu.DayOfWeekSet.html">DayOfWeekSet</a>, or <code>Custom</code> + <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a> - see <a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a>.</li>
 <li><code>NthDateOfWeekInMonth</code> takes a <a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a> (<code>First</code> … <code>Fifth</code>, <code>Last</code>) and throws <code>ArgumentOutOfRangeException</code> when the month has no such day (a fifth Monday in May 2024, for example); <code>Last</code> never throws.</li>
 <li><code>NextOccurrence(interval, after)</code> / <code>PreviousOccurrence(interval, before)</code> treat the receiver as the start of a fixed-interval series and return the first occurrence strictly after (or before) the bound, preserving the start's time of day. When <code>after</code> is at or before the start, the start itself is returned.</li>
 </ul>
@@ -229,7 +229,7 @@ bool weekday    = saturday.IsWeekday();                                         
 bool sixDayWeek = saturday.IsWeekday(WorkingDaysOfWeek.MondayToSaturday);       // true
 bool gulfRest   = saturday.IsWeekend(WorkingDaysOfWeek.SundayToThursday);       // true
 bool working    = saturday.IsInWorkingWeek(WorkingDaysOfWeek.SaturdayToWednesday);   // true
-bool rest       = saturday.IsRestDay(WeekPattern.Weekdays);                     // true
+bool rest       = saturday.IsRestDay(DayOfWeekSet.Weekdays);                    // true
 bool friOff     = DateTimeExtensions.IsWeekend(DayOfWeek.Friday, WorkingDaysOfWeek.SundayToThursday);   // true
 
 bool lastOfQ    = new DateTime(2024, 6, 30).IsLastDateOfQuarter();              // true
@@ -241,7 +241,7 @@ int daysInYear  = saturday.DaysInYear();                                        
 string dayName  = saturday.DayName(CultureInfo.GetCultureInfo(&quot;fr-FR&quot;));        // &quot;samedi&quot;
 string month    = saturday.MonthName(CultureInfo.InvariantCulture);             // &quot;May&quot;
 </code></pre>
-<p><code>IsWeekday</code> / <code>IsWeekend</code> and <code>IsInWorkingWeek</code> / <code>IsRestDay</code> are complementary pairs. The first pair takes the named <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset (and, for <code>Custom</code>, a weekend provider); the second takes either the preset or a raw <a class="xref" href="../../api/Bodu.WeekPattern.html">WeekPattern</a>. <code>IsInRange</code> has an overload on <code>DateTime?</code> that returns <code>false</code> for <code>null</code>.</p>
+<p><code>IsWeekday</code> / <code>IsWeekend</code> and <code>IsInWorkingWeek</code> / <code>IsRestDay</code> are complementary pairs. The first pair takes the named <a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> preset (and, for <code>Custom</code>, a weekend provider); the second takes either the preset or a raw <a class="xref" href="../../api/Bodu.DayOfWeekSet.html">DayOfWeekSet</a>. <code>IsInRange</code> has an overload on <code>DateTime?</code> that returns <code>false</code> for <code>null</code>.</p>
 <h2 id="pattern-7---age-truncation-and-day-boundaries">Pattern 7 - age, truncation, and day boundaries</h2>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions;
@@ -341,7 +341,7 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
 <th>Member family</th>
 <th>Parameterless default</th>
 <th><code>CultureInfo?</code></th>
-<th><code>WorkingDaysOfWeek</code> / <code>WeekPattern</code></th>
+<th><code>WorkingDaysOfWeek</code> / <code>DayOfWeekSet</code></th>
 <th><code>CalendarQuarterDefinition</code></th>
 <th><code>IQuarterDefinitionProvider</code></th>
 <th><code>IWeekendDefinitionProvider</code></th>
@@ -386,18 +386,18 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
 </tr>
 <tr>
 <td><code>IsInWorkingWeek</code>, <code>IsRestDay</code></td>
-<td>- (pattern required)</td>
+<td>- (working week required)</td>
 <td>-</td>
-<td><code>WorkingDaysOfWeek</code> or <code>WeekPattern</code></td>
+<td><code>WorkingDaysOfWeek</code> or <code>DayOfWeekSet</code></td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 </tr>
 <tr>
 <td><code>NextWeekday</code>, <code>PreviousWeekday</code></td>
-<td>- (pattern required)</td>
+<td>- (working week required)</td>
 <td>-</td>
-<td><code>WorkingDaysOfWeek</code> or <code>WeekPattern</code></td>
+<td><code>WorkingDaysOfWeek</code> or <code>DayOfWeekSet</code></td>
 <td>-</td>
 <td>-</td>
 <td>✓ with <code>WorkingDaysOfWeek.Custom</code></td>
@@ -503,8 +503,8 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a> - <code>CalendarQuarterDefinition</code>, <code>IQuarterDefinitionProvider</code>, <code>FiscalWeekQuarterProvider</code>, <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>WeekPattern</code> bridge.</li>
-<li><a href="week-pattern.html">WeekPattern</a> - the seven-day bitmask the working-week overloads consume.</li>
+<li><a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a> - <code>CalendarQuarterDefinition</code>, <code>IQuarterDefinitionProvider</code>, <code>FiscalWeekQuarterProvider</code>, <code>IWeekendDefinitionProvider</code>, and the <code>WorkingDaysOfWeek</code> ↔ <code>DayOfWeekSet</code> bridge.</li>
+<li><a href="day-of-week-set.html">DayOfWeekSet</a> - the set of days the working-week overloads consume.</li>
 <li><a href="string-extensions.html">String extensions</a> - the sibling <code>string</code> surface.</li>
 <li><a href="../calendar/index.html">Working-day and notable-date calculations</a> - when a plain working week is not enough and public holidays matter, <code>Bodu.Globalization.Calendar</code> layers on top of these extensions.</li>
 <li><a class="xref" href="../../api/Bodu.Extensions.html"><code>Bodu.Extensions</code> API reference</a> - every overload with full signatures.</li>
@@ -528,7 +528,7 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f83599 · Built: 2026-10-05 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f67986 · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

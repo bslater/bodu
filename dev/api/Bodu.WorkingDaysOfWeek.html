@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_WorkingDaysOfWeek" data-uid="Bodu.WorkingDaysOfWeek" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 WorkingDaysOfWeek Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WorkingDaysOfWeek.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/WorkingDaysOfWeek.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -105,7 +105,7 @@ WorkingDaysOfWeek Enum
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/6f83599c52bcadf92e4b3894dd08bae0eff6c912/Bodu.Core/src/WorkingDaysOfWeek.cs">WorkingDaysOfWeek.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/6f679862a7a742ced3b5c5a64bc34f2a7513cf2b/Bodu.Core/src/WorkingDaysOfWeek.cs">WorkingDaysOfWeek.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a named pattern of working days within a seven-day week.</p>
@@ -190,10 +190,10 @@ WorkingDaysOfWeek Enum
       <a class="xref" href="Bodu.Extensions.EnumExtensions.html#Bodu_Extensions_EnumExtensions_TryGetDescription__1___0_System_String__">EnumExtensions.TryGetDescription&lt;TEnum&gt;(TEnum, out string)</a>
   </div>
   <div>
-      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWeekPattern_Bodu_WorkingDaysOfWeek_">WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek)</a>
+      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_Bodu_WorkingDaysOfWeek_">WorkingDaysOfWeekExtensions.ToDayOfWeekSet(WorkingDaysOfWeek)</a>
   </div>
   <div>
-      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_ToWeekPattern_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
+      <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html#Bodu_Extensions_WorkingDaysOfWeekExtensions_ToDayOfWeekSet_Bodu_WorkingDaysOfWeek_Bodu_Extensions_IWeekendDefinitionProvider_">WorkingDaysOfWeekExtensions.ToDayOfWeekSet(WorkingDaysOfWeek, IWeekendDefinitionProvider?)</a>
   </div>
     </dd>
   </dl>
@@ -233,7 +233,7 @@ WorkingDaysOfWeek Enum
 </dd>
     <dt id="Bodu_WorkingDaysOfWeek_Custom" data-bodu-frameworks="net8.0 net10.0"><code>Custom = 7</code></dt>
   
-  <dd><p>Indicates a non-standard working week whose pattern is supplied externally via a <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a>.</p>
+  <dd><p>Indicates a non-standard working week whose pattern is supplied externally via a <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a>.</p>
 </dd>
     <dt id="Bodu_WorkingDaysOfWeek_AllDays" data-bodu-frameworks="net8.0 net10.0"><code>AllDays = 8</code></dt>
   <dd><p>Indicates that every day of the week is treated as a working day (no weekend is defined).</p>
@@ -247,13 +247,13 @@ configurations that do not define a standard weekend.</p>
   <h2 id="Bodu_WorkingDaysOfWeek_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 <a class="xref" href="Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> enumerates the commonly observed working-week patterns across global regions. Each
-named value maps to a canonical <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> preset and is interchangeable with the bitmask
+named value maps to a canonical <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> preset and is interchangeable with the bitmask
 representation through the conversion extension methods on
 <a class="xref" href="Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>.
 </p>
 <p>
 Use a named value when the working week is one of the listed patterns; use <a class="xref" href="Bodu.WorkingDaysOfWeek.html#Bodu_WorkingDaysOfWeek_Custom">Custom</a> together with a
-caller-supplied <a class="xref" href="Bodu.WeekPattern.html">WeekPattern</a> when the working week is non-standard (for example a four-day week or an
+caller-supplied <a class="xref" href="Bodu.DayOfWeekSet.html">DayOfWeekSet</a> when the working week is non-standard (for example a four-day week or an
 unevenly distributed schedule).
 </p>
 </div>
@@ -284,7 +284,7 @@ unevenly distributed schedule).
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f83599 · Built: 2026-10-05 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f67986 · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

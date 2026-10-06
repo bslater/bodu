@@ -1455,6 +1455,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfMonthSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfMonthSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfMonthSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfMonthSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the days a <xref href=\"Bodu.DayOfMonthSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfMonthSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfMonthSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfMonthSet",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfMonthSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of days of the month, 1 to 31.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfWeekSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfWeekSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfWeekSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfWeekSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the days a <xref href=\"Bodu.DayOfWeekSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in <xref href=\"System.DayOfWeek\" data-throw-if-not-resolved=\"false\"></xref> order, Sunday first,\nwithout allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.DayOfWeekSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.DayOfWeekSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.DayOfWeekSet",
+      "Summary": "<p sourcefile=\"api/Bodu.DayOfWeekSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of days of the week.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Extensions.ArrayExtensions.yml",
       "output": {
         ".html": {
@@ -1843,7 +1899,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.IWeekendDefinitionProviderExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides conversions from <xref href=\"Bodu.Extensions.IWeekendDefinitionProvider\" data-throw-if-not-resolved=\"false\"></xref> to the canonical <xref href=\"Bodu.WeekPattern\" data-throw-if-not-resolved=\"false\"></xref>\nvalue type used by the working-week APIs.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides conversions from <xref href=\"Bodu.Extensions.IWeekendDefinitionProvider\" data-throw-if-not-resolved=\"false\"></xref> to the canonical <xref href=\"Bodu.DayOfWeekSet\" data-throw-if-not-resolved=\"false\"></xref>\nvalue type used by the working-week APIs.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2067,7 +2123,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.WorkingDaysOfWeekExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.WorkingDaysOfWeekExtensions.yml\" sourcestartlinenumber=\"1\">Provides bidirectional conversion between the <xref href=\"Bodu.WorkingDaysOfWeek\" data-throw-if-not-resolved=\"false\"></xref> enum sugar and the\n<xref href=\"Bodu.WeekPattern\" data-throw-if-not-resolved=\"false\"></xref> value type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.WorkingDaysOfWeekExtensions.yml\" sourcestartlinenumber=\"1\">Provides bidirectional conversion between the <xref href=\"Bodu.WorkingDaysOfWeek\" data-throw-if-not-resolved=\"false\"></xref> enum sugar and the\n<xref href=\"Bodu.DayOfWeekSet\" data-throw-if-not-resolved=\"false\"></xref> value type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10583,6 +10639,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.HourSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.HourSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.HourSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.HourSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the hours a <xref href=\"Bodu.HourSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.HourSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.HourSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.HourSet",
+      "Summary": "<p sourcefile=\"api/Bodu.HourSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of hours of the day, 0 to 23.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.IO.Biff.BiffBlankRecord.yml",
       "output": {
         ".html": {
@@ -12921,6 +13005,62 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MinuteSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MinuteSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MinuteSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.MinuteSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the minutes a <xref href=\"Bodu.MinuteSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MinuteSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MinuteSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MinuteSet",
+      "Summary": "<p sourcefile=\"api/Bodu.MinuteSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of minutes of the hour, 0 to 59.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MonthSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MonthSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MonthSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.MonthSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the months a <xref href=\"Bodu.MonthSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.MonthSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.MonthSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.MonthSet",
+      "Summary": "<p sourcefile=\"api/Bodu.MonthSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of months of the year, 1 (January) to 12 (December).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Numerics.BigDecimal.yml",
       "output": {
         ".html": {
@@ -13380,6 +13520,34 @@
       "IsMRef": true,
       "Title": "Bodu.Numerics",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.SecondSet.Enumerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.SecondSet.Enumerator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.SecondSet.Enumerator",
+      "Summary": "<p sourcefile=\"api/Bodu.SecondSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the seconds a <xref href=\"Bodu.SecondSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.SecondSet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.SecondSet.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.SecondSet",
+      "Summary": "<p sourcefile=\"api/Bodu.SecondSet.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of seconds of the minute, 0 to 59.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -19977,34 +20145,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.WeekPattern.Enumerator.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.WeekPattern.Enumerator.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.WeekPattern.Enumerator",
-      "Summary": "<p sourcefile=\"api/Bodu.WeekPattern.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the selected days of a <xref href=\"Bodu.WeekPattern\" data-throw-if-not-resolved=\"false\"></xref> in Sunday-first order without allocating.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.WeekPattern.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.WeekPattern.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.WeekPattern",
-      "Summary": "<p sourcefile=\"api/Bodu.WeekPattern.yml\" sourcestartlinenumber=\"1\">Represents an immutable set of selected days in a standard seven-day week.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.WorkingDaysOfWeek.yml",
       "output": {
         ".html": {
@@ -21704,6 +21844,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "guides/core/calendar-value-sets.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/core/calendar-value-sets.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "guides/core/choosing-a-collection.md",
       "output": {
         ".html": {
@@ -21738,6 +21888,16 @@
       "output": {
         ".html": {
           "relative_path": "guides/core/date-extensions.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/core/day-of-week-set.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/core/day-of-week-set.html"
         }
       },
       "version": ""
@@ -22018,16 +22178,6 @@
       "output": {
         ".html": {
           "relative_path": "guides/core/trie.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "guides/core/week-pattern.md",
-      "output": {
-        ".html": {
-          "relative_path": "guides/core/week-pattern.html"
         }
       },
       "version": ""
@@ -23997,6 +24147,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "images/diagrams/day-of-week-set.svg",
+      "output": {
+        "resource": {
+          "relative_path": "images/diagrams/day-of-week-set.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "images/diagrams/deque.svg",
       "output": {
         "resource": {
@@ -24271,16 +24431,6 @@
       "output": {
         "resource": {
           "relative_path": "images/diagrams/toml-value-model.svg"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Resource",
-      "source_relative_path": "images/diagrams/week-pattern.svg",
-      "output": {
-        "resource": {
-          "relative_path": "images/diagrams/week-pattern.svg"
         }
       },
       "version": ""

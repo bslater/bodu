@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>DayOfWeekSet | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="DayOfWeekSet | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/core/day-of-week-set.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="dayofweekset">DayOfWeekSet</h1>
+
+<p><code>DayOfWeekSet</code> is an immutable set of days of the week, held in one byte. It is the day-of-week member of the
+<a href="calendar-value-sets.html">calendar value sets</a>, and it is the type the working-day APIs in Bodu.Core and
+Bodu.Globalization.Calendar take for a working week. It replaces <code>WeekPattern</code>, which Bodu.Core 1.3.0 removed; see
+<a href="#migrating-from-weekpattern">Migrating from WeekPattern</a>.</p>
+<p>Every operation that changes the selection returns a new set rather than changing the one it is called on.</p>
+<p><img src="../../images/diagrams/day-of-week-set.svg" alt="DayOfWeekSet - one bit per day, bit n for (DayOfWeek)n, with composition and bitwise operators"></p>
+<h2 id="pattern-1---build-a-set">Pattern 1 - build a set</h2>
+<p>Pass the days to the constructor, or start from a set and add or remove days with <code>With</code> and <code>Without</code>:</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+DayOfWeekSet weekdays = new DayOfWeekSet(
+    DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday);
+
+DayOfWeekSet fourDays = weekdays.Without(DayOfWeek.Friday);
+DayOfWeekSet withSaturday = fourDays.With(DayOfWeek.Saturday);
+
+Console.WriteLine(fourDays.Count);                         // 4
+Console.WriteLine(withSaturday.Contains(DayOfWeek.Monday)); // True
+Console.WriteLine(withSaturday.Contains(DayOfWeek.Friday)); // False
+</code></pre>
+<p><code>Contains</code> answers <code>false</code> for a value that is not one of the seven days, such as <code>(DayOfWeek)7</code>, so a membership
+test against <code>DateTime.DayOfWeek</code> never throws. The constructor, <code>With</code> and <code>Without</code> throw
+<code>ArgumentOutOfRangeException</code> for such a value.</p>
+<h2 id="pattern-2---use-the-presets">Pattern 2 - use the presets</h2>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+DayOfWeekSet workweek = DayOfWeekSet.Weekdays;          // Mon-Fri
+DayOfWeekSet weekend  = DayOfWeekSet.Weekend;           // Sat-Sun
+DayOfWeekSet every    = DayOfWeekSet.All;               // all seven days
+DayOfWeekSet none     = DayOfWeekSet.Empty;             // no days
+
+// Regional working weeks, one preset per WorkingDaysOfWeek member.
+DayOfWeekSet gulf     = DayOfWeekSet.SundayToThursday;  // Sun-Thu
+DayOfWeekSet sixDay   = DayOfWeekSet.MondayToSaturday;  // Mon-Sat
+</code></pre>
+<p><code>MondayToFriday</code> is the same set as <code>Weekdays</code>.</p>
+<h2 id="pattern-3---combine-sets">Pattern 3 - combine sets</h2>
+<p><code>|</code> is union, <code>&amp;</code> intersection, <code>^</code> symmetric difference (the days in exactly one of the sets), and <code>~</code> the
+complement within the week:</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+DayOfWeekSet mondayAndFriday = new DayOfWeekSet(DayOfWeek.Monday) | new DayOfWeekSet(DayOfWeek.Friday);
+
+// Intersect with the working week to drop any weekend days.
+DayOfWeekSet working = mondayAndFriday &amp; DayOfWeekSet.Weekdays;
+
+// The days not in the set.
+DayOfWeekSet restDays = ~DayOfWeekSet.Weekdays;          // Sat-Sun
+
+// The days that differ between two schedules.
+DayOfWeekSet oldShift = DayOfWeekSet.Parse(&quot;_MTW___&quot;);
+DayOfWeekSet newShift = DayOfWeekSet.Parse(&quot;__TWT__&quot;);
+DayOfWeekSet changed  = oldShift ^ newShift;              // Mon and Thu
+</code></pre>
+<p>Two sets are equal (<code>==</code>, <code>Equals</code>) when they select the same days. The sets are not ordered; to test whether one set
+contains another, use <code>(a &amp; b) == b</code>.</p>
+<h2 id="pattern-4---parse-and-format-the-mask">Pattern 4 - parse and format the mask</h2>
+<p>The text form is a seven-character mask with one character per day: the day's letter when it is selected and <code>_</code>
+when it is not, Sunday first. <code>ToString</code> writes that form, and <code>ToString(format)</code> writes the others:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Mask</th>
+<th>Monday to Friday</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>S</code>, the default</td>
+<td>Sunday first, <code>_</code> for a day not selected</td>
+<td><code>_MTWTF_</code></td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>Monday first, <code>_</code> for a day not selected</td>
+<td><code>MTWTF__</code></td>
+</tr>
+<tr>
+<td><code>E</code>, <code>U</code>, <code>D</code>, <code>A</code></td>
+<td>Sunday first, with a space, <code>_</code>, <code>-</code> or <code>*</code> for a day not selected</td>
+<td><code>-MTWTF-</code> for <code>D</code></td>
+</tr>
+<tr>
+<td><code>S</code> or <code>M</code> with <code>E</code>, <code>U</code>, <code>D</code> or <code>A</code></td>
+<td>that order with that placeholder</td>
+<td><code>MTWTF--</code> for <code>MD</code></td>
+</tr>
+<tr>
+<td><code>B</code>, <code>0</code>, <code>1</code>, <code>01</code></td>
+<td>binary, Sunday first, <code>1</code> for a selected day</td>
+<td><code>0111110</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>Parse</code> reads any of them. A day's letter, in either case, selects the day; <code>_</code>, <code>-</code>, <code>*</code> or a space leaves it out,
+one placeholder throughout; and the letters show whether the mask starts on Sunday or on Monday. A mask that begins
+with <code>0</code> or <code>1</code> is read as the binary form. <code>ParseExact</code> reads a mask in a format you name, which is the way to read
+Monday-first text whose only letter is a final <code>S</code>: <code>&quot;______S&quot;</code> fits both orders, and <code>Parse</code> reads it Sunday first,
+as Saturday. Anything else, an abbreviated list such as <code>&quot;MF&quot;</code> included, is not a mask: <code>Parse</code> throws
+<code>FormatException</code>, and <code>TryParse</code> returns <code>false</code> with the empty set.</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+DayOfWeekSet mwf  = DayOfWeekSet.Parse(&quot;_M_W_F_&quot;);         // Mon, Wed, Fri
+DayOfWeekSet tuth = DayOfWeekSet.Parse(&quot;__T_T__&quot;);         // Tue, Thu
+DayOfWeekSet bin  = DayOfWeekSet.Parse(&quot;0111110&quot;);         // Mon-Fri, binary form
+DayOfWeekSet sun  = DayOfWeekSet.ParseExact(&quot;______S&quot;, &quot;M&quot;); // Sunday, Monday first
+
+string mask   = DayOfWeekSet.Weekdays.ToString();          // &quot;_MTWTF_&quot;
+string monday = DayOfWeekSet.Weekdays.ToString(&quot;M&quot;);       // &quot;MTWTF__&quot;
+string binary = DayOfWeekSet.Weekdays.ToString(&quot;B&quot;);       // &quot;0111110&quot;
+
+bool ok = DayOfWeekSet.TryParse(&quot;MF&quot;, out DayOfWeekSet result); // false; result is empty
+</code></pre>
+<p><code>DayOfWeekSet</code> implements <code>IFormattable</code>, so <code>$&quot;{set:M}&quot;</code> and <code>string.Format(&quot;{0:B}&quot;, set)</code> apply the format, and
+<code>IParsable&lt;DayOfWeekSet&gt;</code>, whose members ignore the format provider: the mask does not depend on culture. An
+unsupported format throws <code>FormatException</code>.</p>
+<h2 id="pattern-5---enumerate-the-days">Pattern 5 - enumerate the days</h2>
+<p><code>foreach</code> over a set yields the selected days in <code>DayOfWeek</code> order, Sunday first, without allocating:</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+foreach (DayOfWeek day in DayOfWeekSet.Parse(&quot;_MTWTF_&quot;))
+    Console.WriteLine(day);
+
+// Monday, Tuesday, Wednesday, Thursday, Friday
+</code></pre>
+<h2 id="pattern-6---read-and-write-the-bits">Pattern 6 - read and write the bits</h2>
+<p><code>ToUInt64</code> returns the set's bits and <code>FromUInt64</code> builds a set from them. Bit <code>n</code> selects <code>(DayOfWeek)n</code>, so Sunday
+is bit 0 and Saturday bit 6; <code>FromUInt64</code> throws <code>ArgumentOutOfRangeException</code> for a bit above bit 6.</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+ulong gulfBits = DayOfWeekSet.SundayToThursday.ToUInt64();  // 31: bits 0 to 4
+DayOfWeekSet same = DayOfWeekSet.FromUInt64(gulfBits);       // Sun-Thu again
+</code></pre>
+<p>The binary text form is written Sunday first, so it reads the bits from bit 0 up: Sunday to Thursday is <code>&quot;1111100&quot;</code>,
+the reverse of how 31 is usually written in binary.</p>
+<h2 id="pattern-7---find-matching-dates">Pattern 7 - find matching dates</h2>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+// Every Tuesday and Thursday in April 2025.
+DayOfWeekSet tuesdayAndThursday = new DayOfWeekSet(DayOfWeek.Tuesday, DayOfWeek.Thursday);
+
+for (DateOnly day = new DateOnly(2025, 4, 1); day &lt;= new DateOnly(2025, 4, 30); day = day.AddDays(1))
+{
+    if (tuesdayAndThursday.Contains(day.DayOfWeek))
+        Console.WriteLine(day);
+}
+</code></pre>
+<h2 id="pattern-8---bridge-to-and-from-workingdaysofweek">Pattern 8 - bridge to and from WorkingDaysOfWeek</h2>
+<p><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a> names the common working weeks (<code>MondayToFriday</code>, <code>SaturdayToThursday</code>, ...). Convert
+between the two with the extension methods on <a class="xref" href="../../api/Bodu.Extensions.WorkingDaysOfWeekExtensions.html">WorkingDaysOfWeekExtensions</a>, for an API that
+takes one when you have the other:</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+using Bodu.Extensions;
+
+DayOfWeekSet saudiWeek = WorkingDaysOfWeek.SaturdayToWednesday.ToDayOfWeekSet();
+WorkingDaysOfWeek back = DayOfWeekSet.Weekdays.ToWorkingDaysOfWeek();   // MondayToFriday
+</code></pre>
+<h2 id="migrating-from-weekpattern">Migrating from WeekPattern</h2>
+<p><code>DayOfWeekSet</code> keeps <code>WeekPattern</code>'s text forms and presets, so text that a <code>WeekPattern</code> wrote, including the
+<code>workingDays</code> attributes of calendar documents, reads unchanged. The rest of the surface moved to the shape of the
+other calendar value sets:</p>
+<table>
+<thead>
+<tr>
+<th><code>WeekPattern</code></th>
+<th><code>DayOfWeekSet</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WeekPattern.AllDays</code></td>
+<td><code>DayOfWeekSet.All</code></td>
+</tr>
+<tr>
+<td><code>Empty</code>, <code>Weekdays</code>, <code>Weekend</code> and the other presets, static fields</td>
+<td>the same names, static properties</td>
+</tr>
+<tr>
+<td><code>new WeekPattern(string)</code></td>
+<td><code>DayOfWeekSet.Parse(string)</code></td>
+</tr>
+<tr>
+<td><code>pattern[day]</code> (indexer)</td>
+<td><code>set.Contains(day)</code></td>
+</tr>
+<tr>
+<td><code>Contains(day)</code> throws for a value that is not a day</td>
+<td><code>Contains(day)</code> returns <code>false</code> for it</td>
+</tr>
+<tr>
+<td><code>FromByte(byte)</code> / <code>ToByte()</code> / <code>ToInt32()</code>, Sunday at bit 6</td>
+<td><code>FromUInt64(ulong)</code> / <code>ToUInt64()</code>, Sunday at bit 0</td>
+</tr>
+<tr>
+<td>implicit conversion to <code>byte</code>, <code>IEquatable&lt;byte&gt;</code></td>
+<td>removed: use <code>ToUInt64()</code></td>
+</tr>
+<tr>
+<td><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>IComparable</code></td>
+<td>removed: the order meant nothing as a set relation</td>
+</tr>
+<tr>
+<td><code>[Serializable]</code> / <code>ISerializable</code></td>
+<td>removed: store the text form</td>
+</tr>
+<tr>
+<td><code>ToString(IFormatProvider)</code></td>
+<td><code>ToString()</code></td>
+</tr>
+<tr>
+<td>unsupported format in <code>ToString</code> throws <code>ArgumentException</code></td>
+<td>throws <code>FormatException</code>; an empty format means the default</td>
+</tr>
+<tr>
+<td><code>ToWeekPattern()</code> on <code>WorkingDaysOfWeek</code> and <code>IWeekendDefinitionProvider</code></td>
+<td><code>ToDayOfWeekSet()</code></td>
+</tr>
+</tbody>
+</table>
+<p>To move a stored <code>WeekPattern.ToByte</code> value over, reverse its seven bits, or rebuild the set from the days whose bit
+<code>6 - (int)day</code> is set.</p>
+<h2 id="api-summary">API summary</h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Empty</code>, <code>All</code></td>
+<td>The set of no day and the set of all seven.</td>
+</tr>
+<tr>
+<td><code>Weekdays</code>, <code>Weekend</code></td>
+<td>Monday to Friday, and Saturday and Sunday.</td>
+</tr>
+<tr>
+<td><code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>MondayToThursdayAndSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, <code>SundayToFriday</code>, <code>SundayToThursday</code></td>
+<td>The regional working weeks, one per <code>WorkingDaysOfWeek</code> member.</td>
+</tr>
+<tr>
+<td><code>DayOfWeekSet(params DayOfWeek[])</code></td>
+<td>The set of the days given.</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>The number of days selected, 0 to 7.</td>
+</tr>
+<tr>
+<td><code>Contains(DayOfWeek)</code></td>
+<td>Whether the day is selected; <code>false</code> for a value that is not a day.</td>
+</tr>
+<tr>
+<td><code>With(DayOfWeek)</code>, <code>Without(DayOfWeek)</code></td>
+<td>A set with the day added or removed.</td>
+</tr>
+<tr>
+<td><code>FromUInt64(ulong)</code>, <code>ToUInt64()</code></td>
+<td>The set's bits, bit <code>n</code> for <code>(DayOfWeek)n</code>.</td>
+</tr>
+<tr>
+<td><code>Parse</code>, <code>TryParse</code>, <code>ParseExact</code>, <code>TryParseExact</code></td>
+<td>Read a seven-character mask.</td>
+</tr>
+<tr>
+<td><code>ToString()</code>, <code>ToString(string)</code>, <code>ToString(string, IFormatProvider)</code></td>
+<td>Write a seven-character mask.</td>
+</tr>
+<tr>
+<td><code>\|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code>, <code>==</code>, <code>!=</code></td>
+<td>Union, intersection, symmetric difference, complement and equality.</td>
+</tr>
+<tr>
+<td><code>GetEnumerator()</code></td>
+<td>The selected days in <code>DayOfWeek</code> order, Sunday first, without allocating.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><a href="calendar-value-sets.html">Calendar value sets</a> - the sets of months, days of the month, hours, minutes and seconds.</li>
+<li><a href="calendar-shapes-and-providers.html">Fiscal quarters, working weeks, and weekend providers</a> - <code>WorkingDaysOfWeek</code>
+and the weekend providers.</li>
+<li><a href="../calendar/working-days.html">Working-day arithmetic</a> - working weeks in the calendar engine.</li>
+<li><strong><a href="../topics/core-foundations.html">Core Foundations guides</a></strong> - every guide in this topic.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 6f67986 · Built: 2026-10-06 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
