@@ -85,6 +85,9 @@ public partial class CronExpressionTests
     [DataRow("0 0 0 30 2 *", CronFormat.WithSeconds, "0013-12-31T00:00:00")]
     [DataRow("0 0 30W 2 *", CronFormat.Standard, "0013-12-31T00:00:00")]
     [DataRow("0 0 30 2 *", CronFormat.Standard, "0007-06-15T00:00:00")]
+    [DataRow("0 0 30 2 *", CronFormat.Standard, "0401-12-31T00:00:00")]
+    [DataRow("0 0 30W 2 *", CronFormat.Standard, "0401-12-31T00:00:00")]
+    [DataRow("0 0 30 2 *", CronFormat.Standard, "0300-01-01T00:00:00")]
     public void GetPreviousOccurrence_WhenTheSearchForANeverMatchingExpressionReachesTheStart_ShouldReturnNull(string expression, CronFormat format, string before)
     {
         CronExpression cron = CronExpression.Parse(expression, format);
@@ -110,5 +113,41 @@ public partial class CronExpressionTests
         CronExpression cron = CronExpression.Parse(expression, format);
 
         Assert.AreEqual(Instant(expected), cron.GetPreviousOccurrence(Instant(before)));
+    }
+
+    /// <summary>
+    /// Verifies that the search finds an occurrence decades back: the 29th of February on given weekdays recurs at gaps
+    /// of up to forty years, the non-leap 2100 included.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    /// <param name="format">The field layout.</param>
+    /// <param name="before">The instant the search starts from.</param>
+    /// <param name="expected">The expected previous occurrence.</param>
+    [TestMethod]
+    [DataRow("0 0 29 2 */5", CronFormat.Standard, "2032-01-01T00:00:00", "2008-02-29T00:00:00")]
+    [DataRow("0 0 0 29 2 */5", CronFormat.WithSeconds, "2032-01-01T00:00:00", "2008-02-29T00:00:00")]
+    [DataRow("0 0 * 2 MON#5", CronFormat.Standard, "2044-01-01T00:00:00", "2016-02-29T00:00:00")]
+    [DataRow("0 0 * 2 MON#5", CronFormat.Standard, "2112-01-01T00:00:00", "2072-02-29T00:00:00")]
+    public void GetPreviousOccurrence_WhenTheOccurrenceIsDecadesBack_ShouldReturnIt(string expression, CronFormat format, string before, string expected)
+    {
+        CronExpression cron = CronExpression.Parse(expression, format);
+
+        Assert.AreEqual(Instant(expected), cron.GetPreviousOccurrence(Instant(before)));
+    }
+
+    /// <summary>
+    /// Verifies that an expression that never matches returns <see langword="null" /> once the search has covered a
+    /// whole 400-year cycle of the calendar.
+    /// </summary>
+    /// <param name="expression">The cron expression.</param>
+    [TestMethod]
+    [DataRow("0 0 30 2 *")]
+    [DataRow("0 0 31 4,6,9,11 *")]
+    [DataRow("0 0 30W 2 *")]
+    public void GetPreviousOccurrence_WhenTheExpressionNeverMatches_ShouldReturnNull(string expression)
+    {
+        CronExpression cron = CronExpression.Parse(expression);
+
+        Assert.IsNull(cron.GetPreviousOccurrence(Instant("2026-03-10T00:00:00")));
     }
 }
