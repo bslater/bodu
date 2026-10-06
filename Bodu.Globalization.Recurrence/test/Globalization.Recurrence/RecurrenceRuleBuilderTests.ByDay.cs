@@ -91,4 +91,72 @@ public partial class RecurrenceRuleBuilderTests
 
         Assert.AreEqual(nameof(RecurrenceRule.ByDay), ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="RecurrenceRuleBuilder.ByDay(DayOfWeekSet)" /> rejects an empty set, naming the
+    /// <c>ByDay</c> part, since a rule part that is present selects at least one day.
+    /// </summary>
+    [TestMethod]
+    public void ByDay_WhenDayOfWeekSetIsEmpty_ShouldThrowArgumentException()
+    {
+        var builder = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly);
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = builder.ByDay(DayOfWeekSet.Empty);
+        });
+
+        Assert.AreEqual(nameof(RecurrenceRule.ByDay), ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RecurrenceRuleBuilder.ByDay(DayOfWeekSet)" /> writes the weekdays Monday first, so the
+    /// rule equals the one parsed from <c>BYDAY=MO,TU,WE,TH,FR</c>.
+    /// </summary>
+    [TestMethod]
+    public void ByDay_WhenDayOfWeekSetIsWeekdays_ShouldWriteMondayToFriday()
+    {
+        RecurrenceRule rule = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly).ByDay(DayOfWeekSet.Weekdays).Build();
+
+        Assert.AreEqual(RecurrenceRule.Parse("FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"), rule);
+        Assert.AreEqual("FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR", rule.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RecurrenceRuleBuilder.ByDay(DayOfWeekSet)" /> writes Sunday last, after Saturday, since
+    /// the days are written Monday first rather than in <see cref="DayOfWeek" /> order.
+    /// </summary>
+    [TestMethod]
+    public void ByDay_WhenDayOfWeekSetHoldsSaturdayAndSunday_ShouldWriteSundayLast()
+    {
+        RecurrenceRule rule = new RecurrenceRuleBuilder(RecurrenceFrequency.Weekly)
+            .ByDay(new DayOfWeekSet(DayOfWeek.Sunday, DayOfWeek.Saturday))
+            .Build();
+
+        Assert.AreEqual("FREQ=WEEKLY;BYDAY=SA,SU", rule.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RecurrenceRuleBuilder.ByDay(DayOfWeekSet)" /> builds the rule that
+    /// <see cref="RecurrenceRuleBuilder.ByDay(DayOfWeek[])" /> builds from the same days listed Monday first: entries
+    /// with no ordinal, one per day.
+    /// </summary>
+    [TestMethod]
+    public void ByDay_WhenDayOfWeekSetIsAll_ShouldBuildTheRuleTheDayOfWeekOverloadBuilds()
+    {
+        RecurrenceRule fromSet = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly).ByDay(DayOfWeekSet.All).Build();
+        RecurrenceRule fromDays = new RecurrenceRuleBuilder(RecurrenceFrequency.Monthly)
+            .ByDay(
+                DayOfWeek.Monday,
+                DayOfWeek.Tuesday,
+                DayOfWeek.Wednesday,
+                DayOfWeek.Thursday,
+                DayOfWeek.Friday,
+                DayOfWeek.Saturday,
+                DayOfWeek.Sunday)
+            .Build();
+
+        Assert.AreEqual(fromDays, fromSet);
+        Assert.IsTrue(fromSet.ByDay.All(entry => entry.IsEveryOccurrence));
+    }
 }

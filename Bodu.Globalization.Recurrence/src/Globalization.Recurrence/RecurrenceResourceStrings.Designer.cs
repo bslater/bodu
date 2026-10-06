@@ -187,6 +187,15 @@ namespace Bodu.Globalization.Recurrence {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The set supplied for the &apos;{0}&apos; recurrence rule part is empty; leave the part unset to place no limit on it..
+        /// </summary>
+        internal static string Arg_Invalid_RecurrenceRulePartEmptySet {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RecurrenceRulePartEmptySet", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The recurrence-rule text is empty or contains only white space..
         /// </summary>
         internal static string Format_Invalid_RecurrenceRuleEmpty {
