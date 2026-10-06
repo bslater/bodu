@@ -22,12 +22,14 @@ public sealed partial class RecurrenceCorpusTests
     private static readonly (string Directory, string Table)[] s_cronLibraryTables =
     [
         ("ccronexpr", "ccronexpr"),
+        ("cron-parser", "cron-parser"),
         ("croniter", "croniter"),
         ("cronos", "cronos-reverse"),
         ("cronsim", "cronsim"),
         ("gorhill", "gorhill"),
         ("gronx", "gronx"),
         ("ncrontab", "ncrontab"),
+        ("node-cron", "node-cron"),
         ("quartznet", "quartznet"),
         ("robfig", "robfig"),
         ("saffron", "saffron"),
@@ -413,12 +415,14 @@ public sealed partial class RecurrenceCorpusTests
         (string Table, int Rows, int InScope)[] recorded =
         [
             ("ccronexpr", 88, 88),
+            ("cron-parser", 285, 225),
             ("croniter", 389, 264),
             ("cronos-reverse", 29, 26),
             ("cronsim", 438, 432),
             ("gorhill", 69, 63),
             ("gronx", 434, 385),
             ("ncrontab", 187, 184),
+            ("node-cron", 97, 91),
             ("quartznet", 385, 269),
             ("robfig", 108, 104),
             ("saffron", 290, 244),
