@@ -78,4 +78,16 @@ public sealed class DayOfMonthSetTests
     /// <inheritdoc />
     protected override bool TryParse(string? s, out DayOfMonthSet result) =>
         DayOfMonthSet.TryParse(s, out result);
+
+    /// <inheritdoc />
+    protected override string Format(DayOfMonthSet set, string? format) =>
+        set.ToString(format);
+
+    /// <inheritdoc />
+    protected override DayOfMonthSet ParseExact(string s, string format) =>
+        DayOfMonthSet.ParseExact(s, format);
+
+    /// <inheritdoc />
+    protected override bool TryParseExact(string? s, string? format, out DayOfMonthSet result) =>
+        DayOfMonthSet.TryParseExact(s, format, out result);
 }

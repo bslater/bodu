@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
-
 namespace Bodu;
 
 public readonly partial struct DayOfWeekSet
@@ -53,7 +51,7 @@ public readonly partial struct DayOfWeekSet
     /// <description>Mask</description>
     /// </listheader>
     /// <item>
-    /// <term><c>S</c>, the default</term>
+    /// <term><c>S</c> or <c>G</c>, the default</term>
     /// <description>Sunday first, with <c>_</c> for a day not selected: <c>"_MTWTF_"</c>.</description>
     /// </item>
     /// <item>
@@ -83,7 +81,7 @@ public readonly partial struct DayOfWeekSet
 
         return TryParseFormat(format, out TextFormat textFormat)
             ? Format(textFormat)
-            : throw new FormatException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_DayOfWeekSetFormat, format));
+            : throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfWeekSet));
     }
 
     /// <summary>
@@ -116,7 +114,7 @@ public readonly partial struct DayOfWeekSet
                     result = TextFormat.BinaryForm;
                     return true;
 
-                case 'S' or 'M':
+                case 'S' or 'M' or 'G':
                     result = new TextFormat(first == 'M', Placeholder: null, Binary: false);
                     return true;
             }

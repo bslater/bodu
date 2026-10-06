@@ -104,6 +104,21 @@ public partial class DayOfWeekSetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.TryParseExact" /> with the <c>G</c> format, in either case, returns
+    /// <see langword="true" /> and reads the default Sunday-first mask.
+    /// </summary>
+    [TestMethod]
+    [DataRow("G")]
+    [DataRow("g")]
+    public void TryParseExact_WhenFormatIsG_ShouldReturnTrueAndReadTheSundayFirstMask(string format)
+    {
+        bool success = DayOfWeekSet.TryParseExact("_MTWTF_", format, out DayOfWeekSet result);
+
+        Assert.IsTrue(success);
+        Assert.AreEqual(DayOfWeekSet.Weekdays, result);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.TryParseExact" /> returns <see langword="false" /> and sets
     /// the result to <see cref="DayOfWeekSet.Empty" /> when the format is unrecognised.
     /// </summary>

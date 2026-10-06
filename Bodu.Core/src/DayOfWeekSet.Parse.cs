@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 
 namespace Bodu;
 
@@ -67,7 +66,7 @@ public readonly partial struct DayOfWeekSet
     {
         ThrowHelper.ThrowIfNull(s);
         ThrowHelper.ThrowIfNull(format);
-        if (!TryParseFormat(format, out TextFormat textFormat)) throw new FormatException(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_DayOfWeekSetFormat, format));
+        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfWeekSet));
 
         return ParseCore(s, textFormat);
     }
@@ -146,15 +145,14 @@ public readonly partial struct DayOfWeekSet
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="s" /> is not a seven-character mask in <paramref name="format" />.
     /// </exception>
-    private static DayOfWeekSet ParseCore(string s, TextFormat? format) =>
-        TryParseCore(s, format, out ulong bits, out int position) switch
-        {
-            CalendarValueSet.ParseFailure.None => new DayOfWeekSet(bits),
-            CalendarValueSet.ParseFailure.Length => throw new FormatException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_StringLength, MaskLength)),
-            _ => throw new FormatException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, s[position], position + 1)),
-        };
+    private static DayOfWeekSet ParseCore(string s, TextFormat? format)
+    {
+        CalendarValueSet.ParseFailure failure = TryParseCore(s, format, out ulong bits, out int position);
+
+        return failure == CalendarValueSet.ParseFailure.None
+            ? new DayOfWeekSet(bits)
+            : throw CalendarValueSet.CreateParseException(failure, s, position, (int)DayOfWeek.Sunday, (int)DayOfWeek.Saturday);
+    }
 
     /// <summary>
     /// Attempts to read a seven-character mask.

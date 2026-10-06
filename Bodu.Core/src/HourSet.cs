@@ -24,7 +24,9 @@ namespace Bodu;
 /// The text form lists the hours in ascending order, separated by commas, each run of two or more consecutive hours
 /// written as an inclusive range, so <c>"9-17"</c> selects nine to five. The empty set is the empty string.
 /// <see cref="Parse(string)" /> reads any list of values and ranges in that form, in any order, and
-/// <see cref="ToString()" /> writes the canonical one.
+/// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every hour without
+/// ranges, or a binary form with one character per hour, and <see cref="Parse(string)" /> and
+/// <see cref="ParseExact(string, string)" /> read them back.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects hour
@@ -48,6 +50,7 @@ public readonly partial struct HourSet
       IEqualityOperators<HourSet, HourSet, bool>,
       IBitwiseOperators<HourSet, HourSet, HourSet>,
       IParsable<HourSet>,
+      IFormattable,
       IEnumerable<int>
 {
     /// <summary>The smallest hour in the set's domain.</summary>

@@ -78,4 +78,16 @@ public sealed class SecondSetTests
     /// <inheritdoc />
     protected override bool TryParse(string? s, out SecondSet result) =>
         SecondSet.TryParse(s, out result);
+
+    /// <inheritdoc />
+    protected override string Format(SecondSet set, string? format) =>
+        set.ToString(format);
+
+    /// <inheritdoc />
+    protected override SecondSet ParseExact(string s, string format) =>
+        SecondSet.ParseExact(s, format);
+
+    /// <inheritdoc />
+    protected override bool TryParseExact(string? s, string? format, out SecondSet result) =>
+        SecondSet.TryParseExact(s, format, out result);
 }

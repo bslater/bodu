@@ -78,4 +78,16 @@ public sealed class MonthSetTests
     /// <inheritdoc />
     protected override bool TryParse(string? s, out MonthSet result) =>
         MonthSet.TryParse(s, out result);
+
+    /// <inheritdoc />
+    protected override string Format(MonthSet set, string? format) =>
+        set.ToString(format);
+
+    /// <inheritdoc />
+    protected override MonthSet ParseExact(string s, string format) =>
+        MonthSet.ParseExact(s, format);
+
+    /// <inheritdoc />
+    protected override bool TryParseExact(string? s, string? format, out MonthSet result) =>
+        MonthSet.TryParseExact(s, format, out result);
 }

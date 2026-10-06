@@ -1032,20 +1032,20 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a {1} format..
+        /// </summary>
+        internal static string Format_Invalid_CalendarValueSetFormat {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CalendarValueSetFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input string contains an invalid character &apos;{0}&apos; at position {1}..
         /// </summary>
         internal static string Format_Invalid_Character {
             get {
                 return ResourceManager.GetString("Format_Invalid_Character", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not a day-of-week set format..
-        /// </summary>
-        internal static string Format_Invalid_DayOfWeekSetFormat {
-            get {
-                return ResourceManager.GetString("Format_Invalid_DayOfWeekSetFormat", resourceCulture);
             }
         }
         

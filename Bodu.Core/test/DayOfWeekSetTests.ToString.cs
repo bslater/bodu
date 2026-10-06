@@ -291,6 +291,8 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     [DataRow("S", "SM____S")] // Sunday-first
     [DataRow("s", "SM____S")]
+    [DataRow("G", "SM____S")] // General, the Sunday-first default
+    [DataRow("g", "SM____S")]
     [DataRow("M", "M____SS")] // Monday-first
     [DataRow("m", "M____SS")]
     [DataRow("B", "1100001")] // Binary (Sunday + Monday + Saturday selected)

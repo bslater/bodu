@@ -78,4 +78,16 @@ public sealed class HourSetTests
     /// <inheritdoc />
     protected override bool TryParse(string? s, out HourSet result) =>
         HourSet.TryParse(s, out result);
+
+    /// <inheritdoc />
+    protected override string Format(HourSet set, string? format) =>
+        set.ToString(format);
+
+    /// <inheritdoc />
+    protected override HourSet ParseExact(string s, string format) =>
+        HourSet.ParseExact(s, format);
+
+    /// <inheritdoc />
+    protected override bool TryParseExact(string? s, string? format, out HourSet result) =>
+        HourSet.TryParseExact(s, format, out result);
 }

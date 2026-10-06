@@ -58,6 +58,168 @@ internal static partial class CalendarValueSet
         CreateMask(maximum - minimum + 1);
 
     /// <summary>
+    /// Writes the values a set's bits select as a comma-separated list, every value written out.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="minimum">The value bit zero selects.</param>
+    /// <returns>The list without ranges, or the empty string when no bit is set.</returns>
+    internal static string FormatValues(ulong bits, int minimum)
+    {
+        var builder = new StringBuilder();
+        while (bits != 0)
+        {
+            if (builder.Length > 0)
+                builder.Append(',');
+
+            builder.Append((minimum + BitOperations.TrailingZeroCount(bits)).ToString(CultureInfo.InvariantCulture));
+            bits &= bits - 1;
+        }
+
+        return builder.ToString();
+    }
+
+    /// <summary>
+    /// Writes a numeric set's bits in one of the forms every numeric set shares.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="form">The form to write.</param>
+    /// <returns>The text.</returns>
+    internal static string Format(ulong bits, int minimum, int maximum, NumericForm form) =>
+        form switch
+        {
+            NumericForm.Values => FormatValues(bits, minimum),
+            NumericForm.Binary => FormatBinary(bits, maximum - minimum + 1),
+            _ => Format(bits, minimum),
+        };
+
+    /// <summary>
+    /// Attempts to read a format string that names one of the forms every numeric set shares.
+    /// </summary>
+    /// <param name="format">The format string, in either case.</param>
+    /// <param name="form">When this method returns <see langword="true" />, the form it names.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="format" /> is <c>G</c>, <c>L</c>, <c>B</c>, <c>0</c>, <c>1</c> or
+    /// <c>01</c>; otherwise <see langword="false" />.
+    /// </returns>
+    internal static bool TryParseNumericFormat(ReadOnlySpan<char> format, out NumericForm form)
+    {
+        form = NumericForm.List;
+        if (format.Length == 2)
+        {
+            if (format[0] != '0' || format[1] != '1')
+                return false;
+
+            form = NumericForm.Binary;
+            return true;
+        }
+
+        if (format.Length != 1)
+            return false;
+
+        switch (char.ToUpperInvariant(format[0]))
+        {
+            case 'G':
+                form = NumericForm.List;
+                return true;
+
+            case 'L':
+                form = NumericForm.Values;
+                return true;
+
+            case 'B' or '0' or '1':
+                form = NumericForm.Binary;
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to read a numeric set's text in one form, without detecting it.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="form">The form of the text.</param>
+    /// <param name="bits">When this method returns <see cref="ParseFailure.None" />, the bits the text selects.</param>
+    /// <param name="position">
+    /// When this method returns <see cref="ParseFailure.Character" />, the index of the first character that does not
+    /// fit the form.
+    /// </param>
+    /// <returns>Why the text is not in the form, or <see cref="ParseFailure.None" /> when it is.</returns>
+    internal static ParseFailure TryParseExact(
+        ReadOnlySpan<char> text,
+        int minimum,
+        int maximum,
+        NumericForm form,
+        out ulong bits,
+        out int position)
+    {
+        if (form == NumericForm.Binary)
+            return TryParseBinary(text, maximum - minimum + 1, out bits, out position);
+
+        position = 0;
+        return TryParse(text, minimum, maximum, allowRanges: form == NumericForm.List, out bits)
+            ? ParseFailure.None
+            : ParseFailure.List;
+    }
+
+    /// <summary>
+    /// Attempts to read a numeric set's text, detecting its form: the binary form when the text, as given, has one
+    /// <c>0</c> or <c>1</c> per value of the domain, and otherwise a list of values and ranges.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="bits">When this method returns <see cref="ParseFailure.None" />, the bits the text selects.</param>
+    /// <returns>
+    /// <see cref="ParseFailure.None" /> when the text is in either form; otherwise <see cref="ParseFailure.List" />,
+    /// since a text that is not the binary form is read as a list.
+    /// </returns>
+    internal static ParseFailure TryParseDetected(ReadOnlySpan<char> text, int minimum, int maximum, out ulong bits)
+    {
+        int width = maximum - minimum + 1;
+        if (IsBinary(text, width))
+            return TryParseBinary(text, width, out bits, out _);
+
+        return TryParse(text, minimum, maximum, out bits) ? ParseFailure.None : ParseFailure.List;
+    }
+
+    /// <summary>
+    /// Creates the exception that describes why a text is not a set.
+    /// </summary>
+    /// <param name="failure">Why the text is not a set; not <see cref="ParseFailure.None" />.</param>
+    /// <param name="text">The text.</param>
+    /// <param name="position">
+    /// For <see cref="ParseFailure.Character" />, the index of the character that does not fit.
+    /// </param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <returns>The exception to throw.</returns>
+    internal static FormatException CreateParseException(ParseFailure failure, string text, int position, int minimum, int maximum) =>
+        failure switch
+        {
+            ParseFailure.Length => new FormatException(
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_StringLength, maximum - minimum + 1)),
+            ParseFailure.Character => new FormatException(
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, text[position], position + 1)),
+            _ => new FormatException(
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_CalendarValueList, text, minimum, maximum)),
+        };
+
+    /// <summary>
+    /// Creates the exception that reports a format string a set does not support.
+    /// </summary>
+    /// <param name="format">The format string.</param>
+    /// <param name="typeName">The name of the set's type.</param>
+    /// <returns>The exception to throw.</returns>
+    internal static FormatException CreateFormatStringException(string format, string typeName) =>
+        new(string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_CalendarValueSetFormat, format, typeName));
+
+    /// <summary>
     /// Writes a set's bits in the binary form: one character per value of the domain, lowest first, <c>1</c> for a
     /// selected value and <c>0</c> otherwise.
     /// </summary>
@@ -285,7 +447,27 @@ internal static partial class CalendarValueSet
     /// are unsigned decimal integers; a range <c>a-b</c> needs <c>a</c> no greater than <c>b</c>; values may repeat and
     /// ranges may overlap.
     /// </remarks>
-    internal static bool TryParse(ReadOnlySpan<char> text, int minimum, int maximum, out ulong bits)
+    internal static bool TryParse(ReadOnlySpan<char> text, int minimum, int maximum, out ulong bits) =>
+        TryParse(text, minimum, maximum, allowRanges: true, out bits);
+
+    /// <summary>
+    /// Attempts to read a comma-separated list of values and, when allowed, inclusive ranges.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="allowRanges">Whether an item may be an inclusive range <c>a-b</c>.</param>
+    /// <param name="bits">
+    /// When this method returns <see langword="true" />, the bits that select the values read.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="text" /> is a valid list; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The text is read as <see cref="TryParse(ReadOnlySpan{char}, int, int, out ulong)" /> reads it, except that a
+    /// range is not a valid item when <paramref name="allowRanges" /> is <see langword="false" />.
+    /// </remarks>
+    internal static bool TryParse(ReadOnlySpan<char> text, int minimum, int maximum, bool allowRanges, out ulong bits)
     {
         bits = 0;
         text = text.Trim();
@@ -296,7 +478,7 @@ internal static partial class CalendarValueSet
         {
             int comma = text.IndexOf(',');
             ReadOnlySpan<char> item = comma < 0 ? text : text[..comma];
-            if (!TryParseItem(item, minimum, maximum, ref bits))
+            if (!TryParseItem(item, minimum, maximum, allowRanges, ref bits))
             {
                 bits = 0;
                 return false;
@@ -315,14 +497,18 @@ internal static partial class CalendarValueSet
     /// <param name="item">The item text.</param>
     /// <param name="minimum">The smallest value in the domain.</param>
     /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="allowRanges">Whether the item may be an inclusive range.</param>
     /// <param name="bits">The bits to add the item's values to.</param>
     /// <returns>
     /// <see langword="true" /> when <paramref name="item" /> is a valid value or range; otherwise
     /// <see langword="false" />.
     /// </returns>
-    private static bool TryParseItem(ReadOnlySpan<char> item, int minimum, int maximum, ref ulong bits)
+    private static bool TryParseItem(ReadOnlySpan<char> item, int minimum, int maximum, bool allowRanges, ref ulong bits)
     {
         int dash = item.IndexOf('-');
+        if (dash >= 0 && !allowRanges)
+            return false;
+
         if (dash < 0)
         {
             if (!TryParseValue(item, minimum, maximum, out int value))

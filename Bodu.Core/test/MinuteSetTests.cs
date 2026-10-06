@@ -78,4 +78,16 @@ public sealed class MinuteSetTests
     /// <inheritdoc />
     protected override bool TryParse(string? s, out MinuteSet result) =>
         MinuteSet.TryParse(s, out result);
+
+    /// <inheritdoc />
+    protected override string Format(MinuteSet set, string? format) =>
+        set.ToString(format);
+
+    /// <inheritdoc />
+    protected override MinuteSet ParseExact(string s, string format) =>
+        MinuteSet.ParseExact(s, format);
+
+    /// <inheritdoc />
+    protected override bool TryParseExact(string? s, string? format, out MinuteSet result) =>
+        MinuteSet.TryParseExact(s, format, out result);
 }

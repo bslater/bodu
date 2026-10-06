@@ -27,7 +27,9 @@ namespace Bodu;
 /// The text form lists the seconds in ascending order, separated by commas, each run of two or more consecutive seconds
 /// written as an inclusive range, so <c>"0,30"</c> selects on the minute and the half minute. The empty set is the
 /// empty string. <see cref="Parse(string)" /> reads any list of values and ranges in that form, in any order, and
-/// <see cref="ToString()" /> writes the canonical one.
+/// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every second without
+/// ranges, or a binary form with one character per second, and <see cref="Parse(string)" /> and
+/// <see cref="ParseExact(string, string)" /> read them back.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects second
@@ -51,6 +53,7 @@ public readonly partial struct SecondSet
       IEqualityOperators<SecondSet, SecondSet, bool>,
       IBitwiseOperators<SecondSet, SecondSet, SecondSet>,
       IParsable<SecondSet>,
+      IFormattable,
       IEnumerable<int>
 {
     /// <summary>The smallest second in the set's domain.</summary>
