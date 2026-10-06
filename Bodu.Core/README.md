@@ -2,7 +2,7 @@
 
 > **API stability - Stable.**
 
-Foundational .NET 8 building blocks: extension methods over strings, dates, numerics, spans; 
+Foundational building blocks for .NET 8 and .NET 10: extension methods over strings, dates, numerics, spans; 
 pooled buffer builders; argument validation helpers; a non-cryptographic RNG; a synchronous 
 rate limiter; immutable calendar value sets (days of the week, months, days of the month, hours,
 minutes, and seconds); and a Result<T> type for explicit error handling.

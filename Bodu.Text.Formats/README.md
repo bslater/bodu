@@ -4,7 +4,7 @@
 
 > **Umbrella meta-package.** This package carries no code of its own - it references the three standalone line-format libraries so a single package reference brings in all of them.
 
-The Bodu line-oriented text formats on .NET 8, each a self-contained library shaped after `System.Text.Json`:
+The Bodu line-oriented text formats on .NET 8 and .NET 10, each a self-contained library shaped after `System.Text.Json`:
 
 | Format | Package | Token surface | Serializer | DOMs |
 |---|---|---|---|---|

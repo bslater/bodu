@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8. Hash algorithms derive from `System.IO.Hashing.NonCryptographicHashAlgorithm`, so they expose the standard `Append` / `GetCurrentHash` / `GetHashAndReset` streaming surface and slot into existing pipelines. This package covers data-integrity and identifier-validation use cases - **not** security. For keyed/cryptographic hashing use the sibling `Bodu.Security.Cryptography` package or the platform `System.Security.Cryptography` types.
+Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8 and .NET 10. Hash algorithms derive from `System.IO.Hashing.NonCryptographicHashAlgorithm`, so they expose the standard `Append` / `GetCurrentHash` / `GetHashAndReset` streaming surface and slot into existing pipelines. This package covers data-integrity and identifier-validation use cases - **not** security. For keyed/cryptographic hashing use the sibling `Bodu.Security.Cryptography` package or the platform `System.Security.Cryptography` types.
 
 ## Installation
 

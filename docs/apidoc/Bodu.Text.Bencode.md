@@ -6,7 +6,7 @@ uid: Bodu.Text.Bencode
 
 ## Purpose
 
-**Bodu.Text.Bencode** is a [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html) serializer for .NET 8. It maps plain CLR objects to and from Bencode - the BitTorrent metadata format - through a configurable converter model, over a low-level, forward-only token reader and writer, with both a mutable and a read-only document object model.
+**Bodu.Text.Bencode** is a [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html) serializer for .NET 8 and .NET 10. It maps plain CLR objects to and from Bencode - the BitTorrent metadata format - through a configurable converter model, over a low-level, forward-only token reader and writer, with both a mutable and a read-only document object model.
 
 The public surface layers four tiers: a static <xref:Bodu.Text.Bencode.BencodeSerializer> for object mapping, the <xref:Bodu.Text.Bencode.Reader.Utf8BencodeReader> / <xref:Bodu.Text.Bencode.Writer.Utf8BencodeWriter> `ref struct` pair for forward-only token processing, a mutable <xref:Bodu.Text.Bencode.Nodes.BencodeNode> DOM, and a read-only <xref:Bodu.Text.Bencode.Document.BencodeDocument> DOM. The twin library <xref:Bodu.Text.Toml> applies the identical shape to TOML.
 
