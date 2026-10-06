@@ -17,8 +17,9 @@ namespace Bodu.Contracts;
 /// <remarks>
 /// <para>
 /// A derived class describes its type's domain through <see cref="DomainSize" /> and <see cref="ElementAt(int)" />,
-/// the value that bit <c>n</c> of the set selects, and reaches the members no interface declares through the abstract
-/// adapters. The contract covers construction, <c>Empty</c>, <c>All</c>, <c>Count</c>, <c>Contains</c>, <c>With</c>,
+/// the value that bit <c>n</c> of the set selects, and reaches the constructor through <see cref="Create" />. Every
+/// other member is called through <see cref="ICalendarValueSet{TSelf, TValue}" />, so the contract also holds the
+/// interface to each type. The contract covers construction, <c>Empty</c>, <c>All</c>, <c>Count</c>, <c>Contains</c>, <c>With</c>,
 /// <c>Without</c>, the bits round trip, the operators, equality and hashing, enumeration, and the storage every Bodu
 /// calendar value set shares: one canonical bitmap in a <see cref="ulong" />, with the bits outside the domain clear.
 /// </para>
@@ -28,7 +29,7 @@ namespace Bodu.Contracts;
 /// </para>
 /// </remarks>
 public abstract partial class CalendarSetContractTests<TSet, TElement>
-    where TSet : struct, IEquatable<TSet>, IEqualityOperators<TSet, TSet, bool>, IBitwiseOperators<TSet, TSet, TSet>, IParsable<TSet>, IEnumerable<TElement>
+    where TSet : struct, ICalendarValueSet<TSet, TElement>
 {
     /// <summary>The seed of the random sets in <see cref="SampleSets" />, so that a failure reproduces.</summary>
     private const int SampleSeed = 20261005;
@@ -42,14 +43,17 @@ public abstract partial class CalendarSetContractTests<TSet, TElement>
     protected abstract int DomainSize { get; }
 
     /// <summary>
-    /// Gets the type's set that selects no value.
+    /// Gets the type's set that selects no value, through <see cref="ICalendarValueSet{TSelf, TValue}.Empty" />.
     /// </summary>
-    protected abstract TSet Empty { get; }
+    protected static TSet Empty =>
+        TSet.Empty;
 
     /// <summary>
-    /// Gets the type's set that selects every value in the domain.
+    /// Gets the type's set that selects every value in the domain, through
+    /// <see cref="ICalendarValueSet{TSelf, TValue}.All" />.
     /// </summary>
-    protected abstract TSet All { get; }
+    protected static TSet All =>
+        TSet.All;
 
     /// <summary>
     /// Gets values outside the domain, which <c>Contains</c> must reject without throwing and the constructor,
@@ -94,49 +98,55 @@ public abstract partial class CalendarSetContractTests<TSet, TElement>
     protected abstract TSet Create(params TElement[]? values);
 
     /// <summary>
-    /// Creates a set from its bits through the type's <c>FromUInt64</c>.
+    /// Creates a set from its bits through <see cref="ICalendarValueSet{TSelf, TValue}.FromUInt64(ulong)" />.
     /// </summary>
     /// <param name="bits">The bits.</param>
     /// <returns>The set the bits describe.</returns>
-    protected abstract TSet FromUInt64(ulong bits);
+    protected static TSet FromUInt64(ulong bits) =>
+        TSet.FromUInt64(bits);
 
     /// <summary>
-    /// Returns a set's bits through the type's <c>ToUInt64</c>.
+    /// Returns a set's bits through <see cref="ICalendarValueSet{TSelf, TValue}.ToUInt64" />.
     /// </summary>
     /// <param name="set">The set.</param>
     /// <returns>The set's bits.</returns>
-    protected abstract ulong ToUInt64(TSet set);
+    protected static ulong ToUInt64(TSet set) =>
+        set.ToUInt64();
 
     /// <summary>
-    /// Returns a set's <c>Count</c>.
+    /// Returns a set's <see cref="ICalendarValueSet{TSelf, TValue}.Count" />.
     /// </summary>
     /// <param name="set">The set.</param>
     /// <returns>The number of values the set selects.</returns>
-    protected abstract int Count(TSet set);
+    protected static int Count(TSet set) =>
+        set.Count;
 
     /// <summary>
-    /// Calls a set's <c>Contains</c>.
+    /// Calls a set's <see cref="ICalendarValueSet{TSelf, TValue}.Contains(TValue)" />.
     /// </summary>
     /// <param name="set">The set.</param>
     /// <param name="value">The value to test.</param>
     /// <returns>The set's answer.</returns>
-    protected abstract bool Contains(TSet set, TElement value);
+    protected static bool Contains(TSet set, TElement value) =>
+        set.Contains(value);
 
     /// <summary>
-    /// Calls a set's <c>With</c>.
+    /// Calls a set's <see cref="ICalendarValueSet{TSelf, TValue}.With(TValue)" />.
     /// </summary>
     /// <param name="set">The set.</param>
     /// <param name="value">The value to add.</param>
     /// <returns>The set's answer.</returns>
-    protected abstract TSet With(TSet set, TElement value);
+    protected static TSet With(TSet set, TElement value) =>
+        set.With(value);
 
     /// <summary>
-    /// Calls a set's <c>Without</c>.
+    /// Calls a set's <see cref="ICalendarValueSet{TSelf, TValue}.Without(TValue)" />.
     /// </summary>
     /// <param name="set">The set.</param>
     /// <param name="value">The value to remove.</param>
     /// <returns>The set's answer.</returns>
-    protected abstract TSet Without(TSet set, TElement value);
+    protected static TSet Without(TSet set, TElement value) =>
+        set.Without(value);
 
     /// <summary>
     /// Returns the sets the tests run over: the edge cases, then random sets from a fixed seed.

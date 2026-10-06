@@ -53,7 +53,8 @@ public readonly partial struct DayOfWeekSet
       IBitwiseOperators<DayOfWeekSet, DayOfWeekSet, DayOfWeekSet>,
       IParsable<DayOfWeekSet>,
       IFormattable,
-      IEnumerable<DayOfWeek>
+      IEnumerable<DayOfWeek>,
+      ICalendarValueSet<DayOfWeekSet, DayOfWeek>
 {
     /// <summary>The bits that select every day of the week.</summary>
     private const ulong AllBits = (1UL << 7) - 1;

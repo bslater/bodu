@@ -23,12 +23,6 @@ public sealed class DayOfMonthSetTests
     protected override int Maximum => 31;
 
     /// <inheritdoc />
-    protected override DayOfMonthSet Empty => DayOfMonthSet.Empty;
-
-    /// <inheritdoc />
-    protected override DayOfMonthSet All => DayOfMonthSet.All;
-
-    /// <inheritdoc />
     protected override string ConstructorParameterName => "days";
 
     /// <inheritdoc />
@@ -48,46 +42,10 @@ public sealed class DayOfMonthSetTests
         new(values);
 
     /// <inheritdoc />
-    protected override DayOfMonthSet FromUInt64(ulong bits) =>
-        DayOfMonthSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(DayOfMonthSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(DayOfMonthSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(DayOfMonthSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override DayOfMonthSet With(DayOfMonthSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override DayOfMonthSet Without(DayOfMonthSet set, int value) =>
-        set.Without(value);
-
-    /// <inheritdoc />
     protected override DayOfMonthSet Parse(string s) =>
         DayOfMonthSet.Parse(s);
 
     /// <inheritdoc />
     protected override bool TryParse(string? s, out DayOfMonthSet result) =>
         DayOfMonthSet.TryParse(s, out result);
-
-    /// <inheritdoc />
-    protected override string Format(DayOfMonthSet set, string? format) =>
-        set.ToString(format);
-
-    /// <inheritdoc />
-    protected override DayOfMonthSet ParseExact(string s, string format) =>
-        DayOfMonthSet.ParseExact(s, format);
-
-    /// <inheritdoc />
-    protected override bool TryParseExact(string? s, string? format, out DayOfMonthSet result) =>
-        DayOfMonthSet.TryParseExact(s, format, out result);
 }

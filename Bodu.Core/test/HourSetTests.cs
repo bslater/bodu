@@ -23,12 +23,6 @@ public sealed class HourSetTests
     protected override int Maximum => 23;
 
     /// <inheritdoc />
-    protected override HourSet Empty => HourSet.Empty;
-
-    /// <inheritdoc />
-    protected override HourSet All => HourSet.All;
-
-    /// <inheritdoc />
     protected override string ConstructorParameterName => "hours";
 
     /// <inheritdoc />
@@ -48,46 +42,10 @@ public sealed class HourSetTests
         new(values);
 
     /// <inheritdoc />
-    protected override HourSet FromUInt64(ulong bits) =>
-        HourSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(HourSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(HourSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(HourSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override HourSet With(HourSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override HourSet Without(HourSet set, int value) =>
-        set.Without(value);
-
-    /// <inheritdoc />
     protected override HourSet Parse(string s) =>
         HourSet.Parse(s);
 
     /// <inheritdoc />
     protected override bool TryParse(string? s, out HourSet result) =>
         HourSet.TryParse(s, out result);
-
-    /// <inheritdoc />
-    protected override string Format(HourSet set, string? format) =>
-        set.ToString(format);
-
-    /// <inheritdoc />
-    protected override HourSet ParseExact(string s, string format) =>
-        HourSet.ParseExact(s, format);
-
-    /// <inheritdoc />
-    protected override bool TryParseExact(string? s, string? format, out HourSet result) =>
-        HourSet.TryParseExact(s, format, out result);
 }

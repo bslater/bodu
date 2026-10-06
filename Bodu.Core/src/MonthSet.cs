@@ -52,7 +52,8 @@ public readonly partial struct MonthSet
       IBitwiseOperators<MonthSet, MonthSet, MonthSet>,
       IParsable<MonthSet>,
       IFormattable,
-      IEnumerable<int>
+      IEnumerable<int>,
+      ICalendarValueSet<MonthSet, int>
 {
     /// <summary>The smallest month in the set's domain.</summary>
     private const int MinimumValue = 1;

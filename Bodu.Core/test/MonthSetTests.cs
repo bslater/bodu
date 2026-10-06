@@ -48,12 +48,6 @@ public sealed partial class MonthSetTests
     protected override int Maximum => 12;
 
     /// <inheritdoc />
-    protected override MonthSet Empty => MonthSet.Empty;
-
-    /// <inheritdoc />
-    protected override MonthSet All => MonthSet.All;
-
-    /// <inheritdoc />
     protected override string ConstructorParameterName => "months";
 
     /// <inheritdoc />
@@ -73,46 +67,10 @@ public sealed partial class MonthSetTests
         new(values);
 
     /// <inheritdoc />
-    protected override MonthSet FromUInt64(ulong bits) =>
-        MonthSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(MonthSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(MonthSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(MonthSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override MonthSet With(MonthSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override MonthSet Without(MonthSet set, int value) =>
-        set.Without(value);
-
-    /// <inheritdoc />
     protected override MonthSet Parse(string s) =>
         MonthSet.Parse(s);
 
     /// <inheritdoc />
     protected override bool TryParse(string? s, out MonthSet result) =>
         MonthSet.TryParse(s, out result);
-
-    /// <inheritdoc />
-    protected override string Format(MonthSet set, string? format) =>
-        set.ToString(format);
-
-    /// <inheritdoc />
-    protected override MonthSet ParseExact(string s, string format) =>
-        MonthSet.ParseExact(s, format);
-
-    /// <inheritdoc />
-    protected override bool TryParseExact(string? s, string? format, out MonthSet result) =>
-        MonthSet.TryParseExact(s, format, out result);
 }

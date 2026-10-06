@@ -54,7 +54,8 @@ public readonly partial struct SecondSet
       IBitwiseOperators<SecondSet, SecondSet, SecondSet>,
       IParsable<SecondSet>,
       IFormattable,
-      IEnumerable<int>
+      IEnumerable<int>,
+      ICalendarValueSet<SecondSet, int>
 {
     /// <summary>The smallest second in the set's domain.</summary>
     private const int MinimumValue = 0;

@@ -27,7 +27,7 @@ namespace Bodu.Contracts;
 /// </remarks>
 public abstract partial class CalendarValueSetContractTests<TSet>
     : CalendarSetContractTests<TSet, int>
-    where TSet : struct, IEquatable<TSet>, IEqualityOperators<TSet, TSet, bool>, IBitwiseOperators<TSet, TSet, TSet>, IParsable<TSet>, IEnumerable<int>
+    where TSet : struct, ICalendarValueSet<TSet, int>
 {
     /// <summary>
     /// Gets the smallest value in the domain.
@@ -76,29 +76,32 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     protected abstract bool TryParse(string? s, out TSet result);
 
     /// <summary>
-    /// Calls the type's <c>ToString(string?)</c>.
+    /// Calls the type's <see cref="ICalendarValueSet{TSelf, TValue}.ToString(string)" />.
     /// </summary>
     /// <param name="set">The set to write.</param>
     /// <param name="format">The format string.</param>
     /// <returns>The text the type writes.</returns>
-    protected abstract string Format(TSet set, string? format);
+    protected static string Format(TSet set, string? format) =>
+        set.ToString(format);
 
     /// <summary>
-    /// Calls the type's <c>ParseExact</c>.
+    /// Calls the type's <see cref="ICalendarValueSet{TSelf, TValue}.ParseExact(string, string)" />.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="format">The format the text must have.</param>
     /// <returns>The parsed set.</returns>
-    protected abstract TSet ParseExact(string s, string format);
+    protected static TSet ParseExact(string s, string format) =>
+        TSet.ParseExact(s, format);
 
     /// <summary>
-    /// Calls the type's <c>TryParseExact</c>.
+    /// Calls the type's <see cref="ICalendarValueSet{TSelf, TValue}.TryParseExact(string, string, out TSelf)" />.
     /// </summary>
     /// <param name="s">The text to parse.</param>
     /// <param name="format">The format the text must have.</param>
     /// <param name="result">The parsed set, or the default when parsing fails.</param>
     /// <returns>The type's answer.</returns>
-    protected abstract bool TryParseExact(string? s, string? format, out TSet result);
+    protected static bool TryParseExact(string? s, string? format, out TSet result) =>
+        TSet.TryParseExact(s, format, out result);
 
     /// <summary>
     /// Returns the canonical text rows built from the domain's bounds, followed by the type's own.

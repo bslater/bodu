@@ -51,7 +51,8 @@ public readonly partial struct MinuteSet
       IBitwiseOperators<MinuteSet, MinuteSet, MinuteSet>,
       IParsable<MinuteSet>,
       IFormattable,
-      IEnumerable<int>
+      IEnumerable<int>,
+      ICalendarValueSet<MinuteSet, int>
 {
     /// <summary>The smallest minute in the set's domain.</summary>
     private const int MinimumValue = 0;

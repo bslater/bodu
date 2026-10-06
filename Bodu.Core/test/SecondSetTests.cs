@@ -23,12 +23,6 @@ public sealed class SecondSetTests
     protected override int Maximum => 59;
 
     /// <inheritdoc />
-    protected override SecondSet Empty => SecondSet.Empty;
-
-    /// <inheritdoc />
-    protected override SecondSet All => SecondSet.All;
-
-    /// <inheritdoc />
     protected override string ConstructorParameterName => "seconds";
 
     /// <inheritdoc />
@@ -48,46 +42,10 @@ public sealed class SecondSetTests
         new(values);
 
     /// <inheritdoc />
-    protected override SecondSet FromUInt64(ulong bits) =>
-        SecondSet.FromUInt64(bits);
-
-    /// <inheritdoc />
-    protected override ulong ToUInt64(SecondSet set) =>
-        set.ToUInt64();
-
-    /// <inheritdoc />
-    protected override int Count(SecondSet set) =>
-        set.Count;
-
-    /// <inheritdoc />
-    protected override bool Contains(SecondSet set, int value) =>
-        set.Contains(value);
-
-    /// <inheritdoc />
-    protected override SecondSet With(SecondSet set, int value) =>
-        set.With(value);
-
-    /// <inheritdoc />
-    protected override SecondSet Without(SecondSet set, int value) =>
-        set.Without(value);
-
-    /// <inheritdoc />
     protected override SecondSet Parse(string s) =>
         SecondSet.Parse(s);
 
     /// <inheritdoc />
     protected override bool TryParse(string? s, out SecondSet result) =>
         SecondSet.TryParse(s, out result);
-
-    /// <inheritdoc />
-    protected override string Format(SecondSet set, string? format) =>
-        set.ToString(format);
-
-    /// <inheritdoc />
-    protected override SecondSet ParseExact(string s, string format) =>
-        SecondSet.ParseExact(s, format);
-
-    /// <inheritdoc />
-    protected override bool TryParseExact(string? s, string? format, out SecondSet result) =>
-        SecondSet.TryParseExact(s, format, out result);
 }

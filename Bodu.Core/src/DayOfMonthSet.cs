@@ -56,7 +56,8 @@ public readonly partial struct DayOfMonthSet
       IBitwiseOperators<DayOfMonthSet, DayOfMonthSet, DayOfMonthSet>,
       IParsable<DayOfMonthSet>,
       IFormattable,
-      IEnumerable<int>
+      IEnumerable<int>,
+      ICalendarValueSet<DayOfMonthSet, int>
 {
     /// <summary>The smallest day in the set's domain.</summary>
     private const int MinimumValue = 1;
