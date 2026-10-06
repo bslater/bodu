@@ -11,8 +11,9 @@ using System.Text;
 namespace Bodu;
 
 /// <summary>
-/// Provides the bit handling and the text form shared by the numeric calendar value sets: <see cref="MonthSet" />,
-/// <see cref="DayOfMonthSet" />, <see cref="HourSet" />, <see cref="MinuteSet" />, and <see cref="SecondSet" />.
+/// Provides the bit handling and the text forms shared by the calendar value sets: <see cref="DayOfWeekSet" />,
+/// <see cref="MonthSet" />, <see cref="DayOfMonthSet" />, <see cref="HourSet" />, <see cref="MinuteSet" />, and
+/// <see cref="SecondSet" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -21,12 +22,30 @@ namespace Bodu;
 /// bitwise instruction.
 /// </para>
 /// <para>
-/// The text form is a comma-separated list in ascending order, with each run of two or more consecutive values written
-/// as an inclusive range: <c>"1-3,12"</c> for January to March and December. The empty set is the empty string.
+/// The numeric sets' text form is a comma-separated list in ascending order, with each run of two or more consecutive
+/// values written as an inclusive range: <c>"1-3,12"</c> for January to March and December. The empty set is the empty
+/// string.
+/// </para>
+/// <para>
+/// Every set also has a binary form, one character per value of the domain, lowest first, with <c>1</c> for a selected
+/// value; and a set whose values have letters, such as the days of the week, has a letter mask, the value's letter when
+/// it is selected and a placeholder when it is not.
 /// </para>
 /// </remarks>
-internal static class CalendarValueSet
+internal static partial class CalendarValueSet
 {
+    /// <summary>
+    /// Returns the mask of the low bits of a domain of the specified size.
+    /// </summary>
+    /// <param name="count">The number of values in the domain, from 0 to 64.</param>
+    /// <returns>A mask with the low <paramref name="count" /> bits set.</returns>
+    /// <remarks>
+    /// A 64-value domain is handled on its own, because a shift by 64 bits is a shift by none, so
+    /// <c>(1UL &lt;&lt; 64) - 1</c> would be zero rather than every bit.
+    /// </remarks>
+    internal static ulong CreateMask(int count) =>
+        count == 64 ? ulong.MaxValue : (1UL << count) - 1;
+
     /// <summary>
     /// Returns the mask of the low bits that select the values of a domain.
     /// </summary>
@@ -35,10 +54,161 @@ internal static class CalendarValueSet
     /// <returns>
     /// A mask with one bit set for each value from <paramref name="minimum" /> to <paramref name="maximum" />.
     /// </returns>
-    internal static ulong DomainMask(int minimum, int maximum)
+    internal static ulong DomainMask(int minimum, int maximum) =>
+        CreateMask(maximum - minimum + 1);
+
+    /// <summary>
+    /// Writes a set's bits in the binary form: one character per value of the domain, lowest first, <c>1</c> for a
+    /// selected value and <c>0</c> otherwise.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="width">The number of values in the domain.</param>
+    /// <returns>The binary form, <paramref name="width" /> characters long.</returns>
+    internal static string FormatBinary(ulong bits, int width) =>
+        string.Create(width, bits, static (span, bits) =>
+        {
+            for (int i = 0; i < span.Length; i++)
+                span[i] = ((bits >> i) & 1) != 0 ? '1' : '0';
+        });
+
+    /// <summary>
+    /// Attempts to read the binary form: exactly one <c>0</c> or <c>1</c> per value of the domain, lowest first.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="width">The number of values in the domain.</param>
+    /// <param name="bits">When this method returns <see cref="ParseFailure.None" />, the bits the text selects.</param>
+    /// <param name="position">
+    /// When this method returns <see cref="ParseFailure.Character" />, the index of the first character that is neither
+    /// <c>0</c> nor <c>1</c>.
+    /// </param>
+    /// <returns>Why the text is not in the binary form, or <see cref="ParseFailure.None" /> when it is.</returns>
+    internal static ParseFailure TryParseBinary(ReadOnlySpan<char> text, int width, out ulong bits, out int position)
     {
-        int count = maximum - minimum + 1;
-        return count == 64 ? ulong.MaxValue : (1UL << count) - 1;
+        bits = 0;
+        position = 0;
+        if (text.Length != width)
+            return ParseFailure.Length;
+
+        ulong selected = 0;
+        for (int i = 0; i < width; i++)
+        {
+            char c = text[i];
+            if (c == '1')
+            {
+                selected |= 1UL << i;
+            }
+            else if (c != '0')
+            {
+                position = i;
+                return ParseFailure.Character;
+            }
+        }
+
+        bits = selected;
+        return ParseFailure.None;
+    }
+
+    /// <summary>
+    /// Determines whether a text has the shape of the binary form: exactly one <c>0</c> or <c>1</c> per value of the
+    /// domain.
+    /// </summary>
+    /// <param name="text">The text to test, untrimmed.</param>
+    /// <param name="width">The number of values in the domain.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="text" /> is <paramref name="width" /> characters, each <c>0</c> or
+    /// <c>1</c>; otherwise <see langword="false" />.
+    /// </returns>
+    internal static bool IsBinary(ReadOnlySpan<char> text, int width) =>
+        text.Length == width && !text.ContainsAnyExcept('0', '1');
+
+    /// <summary>
+    /// Writes a set's bits as a letter mask: one character per value, the value's letter when it is selected and the
+    /// placeholder when it is not.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="letters">The letter of each value, in bit order.</param>
+    /// <param name="first">
+    /// The index of the value written first; the others follow in bit order, wrapping around.
+    /// </param>
+    /// <param name="placeholder">The character for a value not selected.</param>
+    /// <returns>The mask, one character per letter.</returns>
+    internal static string FormatLetters(ulong bits, string letters, int first, char placeholder) =>
+        string.Create(letters.Length, (Bits: bits, Letters: letters, First: first, Placeholder: placeholder), static (span, state) =>
+        {
+            for (int i = 0; i < span.Length; i++)
+            {
+                int index = (state.First + i) % span.Length;
+                span[i] = ((state.Bits >> index) & 1) != 0 ? state.Letters[index] : state.Placeholder;
+            }
+        });
+
+    /// <summary>
+    /// Attempts to read a letter mask: one character per value, the value's letter, in either case, when it is selected
+    /// and a placeholder when it is not, the same placeholder throughout.
+    /// </summary>
+    /// <param name="text">The text to read.</param>
+    /// <param name="letters">The upper-case letter of each value, in bit order.</param>
+    /// <param name="first">
+    /// The index of the value written first, or <see langword="null" /> to choose between 0 and 1 by the first letter
+    /// that fits only one of them.
+    /// </param>
+    /// <param name="placeholder">
+    /// The placeholder, or <see langword="null" /> to take the first of <c>_</c>, <c>-</c>, <c>*</c> or a space that
+    /// the text uses.
+    /// </param>
+    /// <param name="bits">When this method returns <see cref="ParseFailure.None" />, the bits the mask selects.</param>
+    /// <param name="position">
+    /// When this method returns <see cref="ParseFailure.Character" />, the index of the first character that fits
+    /// neither the value at its position nor the placeholder.
+    /// </param>
+    /// <returns>Why the text is not a letter mask, or <see cref="ParseFailure.None" /> when it is one.</returns>
+    internal static ParseFailure TryParseLetters(
+        ReadOnlySpan<char> text,
+        ReadOnlySpan<char> letters,
+        int? first,
+        char? placeholder,
+        out ulong bits,
+        out int position)
+    {
+        bits = 0;
+        position = 0;
+        int width = letters.Length;
+        if (text.Length != width)
+            return ParseFailure.Length;
+
+        ulong selected = 0;
+        for (int i = 0; i < width; i++)
+        {
+            char c = text[i];
+
+            // Without a placeholder from the caller, the first one in the text fixes it for the rest.
+            if (placeholder is null && c is '_' or '-' or '*' or ' ')
+                placeholder = c;
+
+            // Without a first value from the caller, the first letter that fits only one of the two orders decides it.
+            char letter = char.ToUpperInvariant(c);
+            if (first is null)
+            {
+                if (letter == letters[i])
+                    first = 0;
+                else if (letter == letters[(i + 1) % width])
+                    first = 1;
+            }
+
+            int index = ((first ?? 0) + i) % width;
+            if (letter == letters[index])
+            {
+                selected |= 1UL << index;
+            }
+            else if (c != placeholder)
+            {
+                position = i;
+                return ParseFailure.Character;
+            }
+        }
+
+        bits = selected;
+        return ParseFailure.None;
     }
 
     /// <summary>

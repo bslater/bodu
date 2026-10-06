@@ -13,11 +13,8 @@ public readonly partial struct DayOfWeekSet
     /// <summary>The number of characters in a mask, one per day.</summary>
     private const int MaskLength = 7;
 
-    /// <summary>
-    /// Gets the letter of each day, in <see cref="DayOfWeek" /> order.
-    /// </summary>
-    private static ReadOnlySpan<char> Letters =>
-        "SMTWTFS";
+    /// <summary>The letter of each day, in <see cref="DayOfWeek" /> order.</summary>
+    private const string DayLetters = "SMTWTFS";
 
     /// <summary>
     /// Returns the set as a seven-character mask, Sunday first, with each day's letter when it is selected and <c>_</c>
@@ -169,17 +166,7 @@ public readonly partial struct DayOfWeekSet
     /// <param name="format">The format.</param>
     /// <returns>The seven-character mask.</returns>
     private string Format(TextFormat format) =>
-        string.Create(MaskLength, (Bits: _bits, Format: format), static (span, state) =>
-        {
-            char placeholder = state.Format.Placeholder ?? '_';
-            for (int i = 0; i < MaskLength; i++)
-            {
-                int day = state.Format.MondayFirst ? (i + 1) % MaskLength : i;
-                bool selected = (state.Bits & (1UL << day)) != 0;
-
-                span[i] = state.Format.Binary
-                    ? (selected ? '1' : '0')
-                    : (selected ? Letters[day] : placeholder);
-            }
-        });
+        format.Binary
+            ? CalendarValueSet.FormatBinary(_bits, MaskLength)
+            : CalendarValueSet.FormatLetters(_bits, DayLetters, format.MondayFirst ? 1 : 0, format.Placeholder ?? '_');
 }
