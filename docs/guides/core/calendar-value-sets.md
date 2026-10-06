@@ -6,7 +6,7 @@ title: Calendar value sets
 
 Bodu.Core has an immutable set type for each calendar value a schedule selects from:
 
-| Type | Values | Text form |
+| Type | Values | Default text form |
 |---|---|---|
 | [`DayOfWeekSet`](day-of-week-set.md) | the seven `DayOfWeek` values | a seven-character mask, `"_MTWTF_"` |
 | `MonthSet` | months 1 to 12 | a list of values and ranges, `"1-3,12"` |
@@ -15,9 +15,10 @@ Bodu.Core has an immutable set type for each calendar value a schedule selects f
 | `MinuteSet` | minutes 0 to 59 | the same list form |
 | `SecondSet` | seconds 0 to 59 | the same list form |
 
-Each set holds one bit per value, so it never allocates, and testing a value, adding or removing one, or combining two
-sets is a single bitwise operation. The five numeric sets share one shape, which this page describes; `DayOfWeekSet`
-has the same members over `DayOfWeek`, plus its working-week presets and mask formats.
+A set never allocates, and testing a value, adding or removing one, or combining two sets is a single bitwise
+operation. All six implement [`ICalendarValueSet<TSelf, TValue>`](#pattern-6---work-with-any-set), so code written
+once works with any of them. The five numeric sets share one shape, which this page describes; `DayOfWeekSet` has the
+same members over `DayOfWeek`, plus its working-week presets and mask formats.
 
 ## Pattern 1 - build and test a set
 
@@ -66,7 +67,60 @@ A value outside the range, a descending range such as `"3-1"`, a sign, a step, o
 `FormatException` naming the text and the range, and `TryParse` returns `false` with the empty set. Each type
 implements `IParsable<TSelf>`; its members ignore the format provider, because the text does not depend on culture.
 
-## Pattern 3 - combine sets
+## Pattern 3 - write and read the other formats
+
+`ToString(format)` writes a set in one of three formats, and `ParseExact` and `TryParseExact` read text in the format
+you name:
+
+| Format | Text | January to March and December |
+|---|---|---|
+| `G`, the default | the list, each run of two or more consecutive values as a range | `1-3,12` |
+| `L` | every selected value, without ranges | `1,2,3,12` |
+| `B`, `0`, `1`, `01` | binary, one digit per value of the range, lowest first, `1` for a selected value | `111000000001` |
+
+`MonthSet` also writes a mask of the months' initials, January first, as `DayOfWeekSet` does for days:
+
+| Format | Mask | January to March and December |
+|---|---|---|
+| `J` | each selected month's initial in its place, `_` for a month not selected | `JFM________D` |
+| `E`, `U`, `D`, `A` | the same, with a space, `_`, `-` or `*` for a month not selected | `JFM--------D` for `D` |
+| `JE`, `JU`, `JD`, `JA` | the same as `E`, `U`, `D` and `A` | `JFM--------D` for `JD` |
+
+The format letters, and a mask's initials, are read in either case. `ParseExact` with `J` reads a mask with any one
+placeholder throughout, and with a format that names a placeholder, that placeholder alone. An unsupported format
+throws `FormatException` from `ToString` and `ParseExact`, and makes `TryParseExact` return `false`. Each type also
+implements `IFormattable`, so `$"{set:L}"` and `string.Format("{0:B}", set)` apply the format.
+
+<!-- run -->
+```csharp
+using Bodu;
+
+var months = new MonthSet(1, 2, 3, 12);
+
+Console.WriteLine(months.ToString("L"));        // 1,2,3,12
+Console.WriteLine(months.ToString("B"));        // 111000000001
+Console.WriteLine(months.ToString("J"));        // JFM________D
+Console.WriteLine($"{new HourSet(9, 17):B}");   // 000000000100000001000000
+
+MonthSet fromBinary  = MonthSet.ParseExact("111000000001", "B");
+MonthSet fromLetters = MonthSet.ParseExact("jfm--------d", "J");
+bool rangeUnderL     = MonthSet.TryParseExact("1-3,12", "L", out _);   // false: L has no ranges
+```
+
+`Parse` and `TryParse` read every format without being told which, testing the forms in a fixed order:
+
+1. Text that is exactly one `0` or `1` per value of the range, as given, is binary: twelve digits for a `MonthSet`,
+   sixty for a `MinuteSet`.
+2. For a `MonthSet`, twelve characters, each a month's initial in its place or a placeholder, the same one throughout,
+   are the letter mask.
+3. Anything else is a list.
+
+So binary text is binary even where it would also read as a list: to a `MonthSet`, `"000000000001"` is December,
+though as a list it would be January. Zeros and ones of any other length are a list, so `"10"` is October, and binary
+text with whitespace around it is read as a list too. Text that fits none of the forms fails with the list's message.
+To read one format only, call `ParseExact`.
+
+## Pattern 4 - combine sets
 
 `|` is union, `&` intersection, `^` symmetric difference, and `~` the complement within the type's range:
 
@@ -88,7 +142,7 @@ Console.WriteLine(overlap == HourSet.Empty);   // True
 Two sets are equal when they select the same values. The sets are not ordered; to test whether one contains another,
 use `(a & b) == b`.
 
-## Pattern 4 - enumerate and read the bits
+## Pattern 5 - enumerate and read the bits
 
 `foreach` yields the selected values in ascending order without allocating. `ToUInt64` returns the bits and
 `FromUInt64` builds a set from them: bit `n` selects the type's smallest value plus `n`, so bit 0 is month 1 in a
@@ -105,6 +159,41 @@ ulong bits = new MonthSet(1, 12).ToUInt64();   // 0b1000_0000_0001: bits 0 and 1
 MonthSet again = MonthSet.FromUInt64(bits);    // January and December
 ```
 
+## Pattern 6 - work with any set
+
+`ICalendarValueSet<TSelf, TValue>` declares what the six sets share: `Empty` and `All`, `Count`, `Contains`, `With`
+and `Without`, `FromUInt64` and `ToUInt64`, `ParseExact`, `TryParseExact` and `ToString(string)`, together with the
+operators, equality, `IParsable<TSelf>`, `IFormattable` and enumeration. `TValue` is `DayOfWeek` for `DayOfWeekSet` and
+`int` for the others. A method generic over the interface takes any of them:
+
+<!-- run -->
+```csharp
+using Bodu;
+
+static string Describe<TSet, TValue>(TSet set)
+    where TSet : ICalendarValueSet<TSet, TValue> =>
+    set == TSet.All ? "every value" : $"{set.Count} selected: {set}";
+
+static TSet ComplementOf<TSet, TValue>(string text)
+    where TSet : ICalendarValueSet<TSet, TValue> =>
+    ~TSet.Parse(text, null);
+
+Console.WriteLine(Describe<MonthSet, int>(new MonthSet(1, 4, 7, 10)));      // 4 selected: 1,4,7,10
+Console.WriteLine(Describe<DayOfWeekSet, DayOfWeek>(DayOfWeekSet.Weekend)); // 2 selected: S_____S
+Console.WriteLine(ComplementOf<HourSet, int>("0-5,18-23"));                 // 6-17
+```
+
+## How the sets are stored
+
+Each set is a `readonly struct` holding one `ulong`. Bit `n` selects the value at offset `n` from the smallest value of
+the type's range, and every bit past the range is clear, so a range has at most 64 values and two sets are equal
+exactly when their bits are. These are the bits `ToUInt64` returns and `FromUInt64` takes; `FromUInt64` rejects a bit
+past the range rather than dropping it. No set converts to or from a number implicitly or explicitly: call `ToUInt64`
+and `FromUInt64`.
+
+A membership test is therefore a range check and a bit test, `Count` is one population count, `|`, `&` and `^` are one
+bitwise instruction each, and `~` is one more to mask the complement to the range.
+
 ## API summary
 
 Each of `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet` has these members:
@@ -117,10 +206,15 @@ Each of `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet` has 
 | `Contains(int)` | Whether the value is selected; `false` outside the range. |
 | `With(int)`, `Without(int)` | A set with the value added or removed. |
 | `FromUInt64(ulong)`, `ToUInt64()` | The set's bits, bit `n` for the smallest value plus `n`. |
-| `Parse(string)`, `TryParse(string, out TSelf)` | Read a list of values and ranges. |
+| `Parse(string)`, `TryParse(string, out TSelf)` | Read a list of values and ranges, or binary text; `MonthSet` also its letter mask. |
+| `ParseExact(string, string)`, `TryParseExact(string, string, out TSelf)` | Read text in the format named. |
 | `ToString()` | Write the canonical list. |
+| `ToString(string)`, `ToString(string, IFormatProvider)` | Write the list (`G`), every value (`L`) or binary text (`B`); `MonthSet` also its letter mask (`J`). |
 | `\|`, `&`, `^`, `~`, `==`, `!=` | Union, intersection, symmetric difference, complement and equality. |
 | `GetEnumerator()` | The selected values in ascending order, without allocating. |
+
+Each also implements `ICalendarValueSet<TSelf, int>`, as `DayOfWeekSet` implements
+`ICalendarValueSet<DayOfWeekSet, DayOfWeek>`.
 
 ## Where to go next
 
