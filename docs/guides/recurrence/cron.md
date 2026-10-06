@@ -206,6 +206,8 @@ DateTime? never   = CronExpression.Parse("0 0 30 2 *").GetNextOccurrence(new Dat
 DateTime? neverBack = CronExpression.Parse("0 0 30 2 *").GetPreviousOccurrence(new DateTime(2026, 3, 10)); // null
 ```
 
+A search near either end of the calendar answers `null` rather than step past 0001-01-01 or 9999-12-31, and the `DateTimeOffset` overloads answer `null` for an occurrence whose UTC instant falls outside that range.
+
 `null` therefore means "no occurrence within twelve years", which for any real schedule means "never".
 
 ## `DateTimeOffset` handling

@@ -97,7 +97,7 @@ A <xref:Bodu.Globalization.Recurrence.CronExpression> matches an instant when ea
 
 ## The twelve-year search horizon
 
-A cron search walks forward (or backward) field by field and stops at a horizon of **twelve years** from the query instant. The largest gap between consecutive occurrences of any *satisfiable* expression is eight years - a February 29th schedule crossing a non-leap century year such as 2100 - so twelve years covers every real schedule with margin, while an expression that can never match (`0 0 30 2 *`, February 30th) answers `null` at the horizon instead of scanning unboundedly.
+A cron search walks forward (or backward) field by field and stops at a horizon of **twelve years** from the query instant. The largest gap between consecutive occurrences of any *satisfiable* expression is eight years - a February 29th schedule crossing a non-leap century year such as 2100 - so twelve years covers every real schedule with margin, while an expression that can never match (`0 0 30 2 *`, February 30th) answers `null` at the horizon instead of scanning unboundedly. A search near either end of the calendar answers `null` rather than step past 0001-01-01 or 9999-12-31.
 
 A rule search is bounded differently: an unbounded `RecurrenceRule` enumerates to the end of the representable calendar, so `GetNextOccurrence` on a rule that can never match (30 February yearly) also answers `null` rather than looping, just later.
 
