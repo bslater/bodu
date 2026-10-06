@@ -78,7 +78,7 @@ Occurrence enumeration over a window is lazy and terminates for every input, inc
 
 - A `RecurrenceRule` such as `FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=30` (30 February) enumerates empty and answers `null` from both point queries; the search bound is the end of the representable calendar (year 9999).
 - A `RecurrenceRule` point query or window begins at the frequency period that holds the instant it is given, not at the series start, so its cost does not grow with the age of the series; a `RecurrenceSet` does the same for each of its rules. Only a rule with `COUNT` is enumerated from its start, because the occurrences before a period decide how many it may still produce.
-- A `CronExpression` search scans a twelve-year horizon in each direction - enough to cover the largest gap of any satisfiable expression (a 29 February schedule crossing a non-leap century year) - and answers `null` past it.
+- A `CronExpression` search scans 400 years in each direction, one whole cycle of the Gregorian calendar, so an expression without a match in it never matches; `null` means "never".
 - An `AnchoredInterval` needs no scanning at all: its queries are O(1) arithmetic, and the sequence ends at the last representable occurrence.
 
 ## Conformance
@@ -119,7 +119,7 @@ The message names the offending token - "The duration component '4X' is not vali
 
 <div class="bodu-card">
   <h3><a href="cron.md">Cron expressions</a></h3>
-  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the twelve-year search horizon, and <code>DateTimeOffset</code> handling.</p>
+  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the 400-year search, and <code>DateTimeOffset</code> handling.</p>
 </div>
 
 <div class="bodu-card">

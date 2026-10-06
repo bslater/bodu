@@ -41,18 +41,19 @@ namespace Bodu.Globalization.Recurrence;
 /// wants a local-time schedule across a transition re-derives the offset on each evaluation.
 /// </para>
 /// <para>
-/// Occurrence searches are bounded by a twelve-year horizon in each direction, which covers the largest possible gap
-/// between occurrences of any satisfiable expression (a February 29th schedule crossing a non-leap century year); an
-/// expression that can never match, such as February 30th, answers <see langword="null" /> at the horizon rather than
-/// scanning unboundedly. A search also answers <see langword="null" /> rather than pass either end of the calendar,
-/// 0001-01-01 or 9999-12-31, and the <see cref="DateTimeOffset" /> overloads do so for an occurrence whose UTC instant
-/// falls outside that range.
+/// Occurrence searches scan 400 years in each direction: one whole cycle of the Gregorian calendar, which repeats
+/// exactly every 400 years, so an expression without a match in the cycle never matches, and a search answers
+/// <see langword="null" /> only when no occurrence follows (or precedes) the instant at all. Occurrences of a
+/// satisfiable expression can be decades apart: the 29th of February on a chosen weekday recurs at gaps of up to forty
+/// years. A search also answers <see langword="null" /> rather than pass either end of the calendar, 0001-01-01 or
+/// 9999-12-31, and the <see cref="DateTimeOffset" /> overloads do so for an occurrence whose UTC instant falls outside
+/// that range.
 /// </para>
 /// </remarks>
 public sealed partial class CronExpression : IEquatable<CronExpression>
 {
-    /// <summary>The number of years the occurrence search scans before giving up. The largest gap between two consecutive occurrences of any satisfiable expression is eight years - a February 29th expression crossing a non-leap century year such as 2100 (2096 → 2104) - so twelve years covers every real schedule with margin while still bounding the search for an expression that can never match (for example February 30th).</summary>
-    private const int SearchHorizonYears = 12;
+    /// <summary>The number of years the occurrence search scans before giving up: one whole cycle of the Gregorian calendar, which repeats exactly every 400 years (146,097 days, a whole number of weeks), so an expression without a match in the cycle never matches. A shorter horizon would answer null for satisfiable expressions: the 29th of February on a chosen weekday recurs at gaps of up to forty years, across a non-leap century year such as 2100.</summary>
+    private const int SearchHorizonYears = 400;
 
     /// <summary>The last year a forward search can start in and still search in place: its horizon then ends in or before 9998, so no step it takes can pass 9999-12-31.</summary>
     private const int LastYearSearchedInPlace = 9998 - SearchHorizonYears;
@@ -153,7 +154,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The next matching instant preserving the <see cref="DateTime.Kind" /> of <paramref name="after" />, or
-    /// <see langword="null" /> when none occurs within the search horizon or before the end of the calendar.
+    /// <see langword="null" /> when no later instant in the calendar matches.
     /// </returns>
     public DateTime? GetNextOccurrence(DateTime after, bool inclusive = false)
     {
@@ -224,7 +225,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The previous matching instant preserving the <see cref="DateTime.Kind" /> of <paramref name="before" />, or
-    /// <see langword="null" /> when none occurs within the search horizon or after the start of the calendar.
+    /// <see langword="null" /> when no earlier instant in the calendar matches.
     /// </returns>
     public DateTime? GetPreviousOccurrence(DateTime before, bool inclusive = false)
     {
@@ -294,8 +295,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// occurrence must be strictly later.
     /// </param>
     /// <returns>
-    /// The next matching instant carrying the offset of <paramref name="after" />, or <see langword="null" /> when none
-    /// occurs within the search horizon or before the last instant a <see cref="DateTimeOffset" /> can hold.
+    /// The next matching instant carrying the offset of <paramref name="after" />, or <see langword="null" /> when no
+    /// later instant that a <see cref="DateTimeOffset" /> can hold matches.
     /// </returns>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
     {
@@ -315,7 +316,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </param>
     /// <returns>
     /// The previous matching instant carrying the offset of <paramref name="before" />, or <see langword="null" /> when
-    /// none occurs within the search horizon or after the first instant a <see cref="DateTimeOffset" /> can hold.
+    /// no earlier instant that a <see cref="DateTimeOffset" /> can hold matches.
     /// </returns>
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
     {

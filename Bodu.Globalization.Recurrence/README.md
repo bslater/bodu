@@ -65,7 +65,8 @@ limits alongside `BYMONTHDAY`, and `BYWEEKNO` numbering generalized from the ISO
 
 - The Quartz day tokens keep Vixie's weekday numbering (0 or 7 for Sunday) and union rule, so a
   Quartz expression that names weekdays by number, or restricts both day fields, reads differently.
-- `CronExpression` searches a documented 12-year horizon before reporting no occurrence.
+- A `CronExpression` search for an expression that never matches scans a whole 400-year calendar cycle before
+  answering `null`.
 - No `.ics` reader - this package evaluates rules, it does not parse calendar files.
 
 Part of the [Bodu](https://github.com/bslater/bodu) utility library.
