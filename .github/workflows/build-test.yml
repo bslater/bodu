@@ -146,13 +146,14 @@ jobs:
 
           exit $status
 
-      - name: Build samples
+      - name: Build samples and the docs project
         run: |
-          # Every sample project that is a member of bodu.slnx, other than the sample test projects
-          # the Build step has already compiled. A sample is compiled the way a test project is: in
-          # Release, for every target framework, with warnings as errors, so a warning in sample code
-          # fails the pull request too. LiveRates and the library samples are compiled here although
-          # the next step does not run them.
+          # The members of bodu.slnx that the Build step does not reach: every sample project other
+          # than the sample test projects the Build step has already compiled, and docs/doc.csproj,
+          # the container for the documentation sources. Each is compiled the way a test project is:
+          # in Release, for every target framework, with warnings as errors, so a warning in one of
+          # them fails the pull request too. LiveRates and the library samples are compiled here
+          # although the next step does not run them.
           projects=$(grep -oE 'Path="samples/[^"]*\.csproj"' bodu.slnx \
             | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
             | grep -v '\.Test\.csproj$' \
@@ -166,11 +167,11 @@ jobs:
           # One build of a generated solution rather than a build per project: MSBuild evaluates the
           # libraries the samples share once and builds the samples in parallel, which takes seconds where
           # a build per project took minutes. A failing sample does not stop the others, so one run
-          # reports every failure. The solution holds the samples alone; the libraries they reference
-          # are built through those references, as the Build step built them.
+          # reports every failure. The solution holds these projects alone; the libraries the samples
+          # reference are built through those references, as the Build step built them.
           solution_dir="$RUNNER_TEMP/samples-solution"
           dotnet new sln --format slnx --name samples --output "$solution_dir"
-          dotnet sln "$solution_dir/samples.slnx" add --in-root --include-references false $projects
+          dotnet sln "$solution_dir/samples.slnx" add --in-root --include-references false $projects docs/doc.csproj
           dotnet build "$solution_dir/samples.slnx" --configuration Release -p:TreatWarningsAsErrors=true
 
       - name: Run samples
@@ -200,7 +201,7 @@ jobs:
 
           # Samples multi-target, so --framework is required: `dotnet run` refuses to guess.
           # They run on the newest supported framework only: the sample code is identical across
-          # legs, and the Build samples step above has compiled both, so running each sample twice
+          # legs, and the step above has compiled both, so running each sample twice
           # would double the step's wall-clock for no additional signal. --no-build runs what that
           # step compiled.
           for proj in $projects; do
