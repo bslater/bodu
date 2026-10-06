@@ -113,7 +113,7 @@ public readonly partial struct MonthSet
     /// </exception>
     public static MonthSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new MonthSet(bits);
     }

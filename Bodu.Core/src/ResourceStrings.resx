@@ -321,6 +321,9 @@
   <data name="Arg_OutOfRange_BadYearMonthDay" xml:space="preserve">
     <value>Year, Month, and Day parameters describe an unrepresentable DateTime.</value>
   </data>
+  <data name="Arg_OutOfRange_BitsOutsideMask" xml:space="preserve">
+    <value>The value sets bits 0x{0:X} outside the allowed mask 0x{1:X}.</value>
+  </data>
   <data name="Arg_OutOfRange_CountExceedsAvailable" xml:space="preserve">
     <value>The count must be non-negative and must not exceed the number of available items ({0}).</value>
   </data>

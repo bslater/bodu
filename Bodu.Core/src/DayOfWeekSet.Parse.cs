@@ -87,7 +87,7 @@ public readonly partial struct DayOfWeekSet
     /// </remarks>
     public static bool TryParse([NotNullWhen(true)] string? s, out DayOfWeekSet result)
     {
-        if (s is not null && TryParseCore(s, format: null, out byte bits, out _) == ParseFailure.None)
+        if (s is not null && TryParseCore(s, format: null, out ulong bits, out _) == ParseFailure.None)
         {
             result = new DayOfWeekSet(bits);
             return true;
@@ -119,7 +119,7 @@ public readonly partial struct DayOfWeekSet
         if (s is not null
             && format is not null
             && TryParseFormat(format, out TextFormat textFormat)
-            && TryParseCore(s, textFormat, out byte bits, out _) == ParseFailure.None)
+            && TryParseCore(s, textFormat, out ulong bits, out _) == ParseFailure.None)
         {
             result = new DayOfWeekSet(bits);
             return true;
@@ -147,7 +147,7 @@ public readonly partial struct DayOfWeekSet
     /// Thrown when <paramref name="s" /> is not a seven-character mask in <paramref name="format" />.
     /// </exception>
     private static DayOfWeekSet ParseCore(string s, TextFormat? format) =>
-        TryParseCore(s, format, out byte bits, out int position) switch
+        TryParseCore(s, format, out ulong bits, out int position) switch
         {
             ParseFailure.None => new DayOfWeekSet(bits),
             ParseFailure.Length => throw new FormatException(
@@ -167,7 +167,7 @@ public readonly partial struct DayOfWeekSet
     /// fit the mask.
     /// </param>
     /// <returns>Why the text is not a mask, or <see cref="ParseFailure.None" /> when it is one.</returns>
-    private static ParseFailure TryParseCore(ReadOnlySpan<char> text, TextFormat? format, out byte bits, out int position)
+    private static ParseFailure TryParseCore(ReadOnlySpan<char> text, TextFormat? format, out ulong bits, out int position)
     {
         bits = 0;
         position = 0;
@@ -188,14 +188,14 @@ public readonly partial struct DayOfWeekSet
             binary = text[0] is '0' or '1';
         }
 
-        byte selected = 0;
+        ulong selected = 0;
         for (int i = 0; i < MaskLength; i++)
         {
             char c = text[i];
             if (binary)
             {
                 if (c == '1')
-                    selected |= (byte)(1 << i);
+                    selected |= 1UL << i;
                 else if (c != '0')
                     return Fail(i, out position);
 
@@ -219,7 +219,7 @@ public readonly partial struct DayOfWeekSet
 
             int day = mondayFirst == true ? (i + 1) % MaskLength : i;
             if (letter == Letters[day])
-                selected |= (byte)(1 << day);
+                selected |= 1UL << day;
             else if (c != placeholder)
                 return Fail(i, out position);
         }

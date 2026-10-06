@@ -113,7 +113,7 @@ public readonly partial struct HourSet
     /// </exception>
     public static HourSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new HourSet(bits);
     }

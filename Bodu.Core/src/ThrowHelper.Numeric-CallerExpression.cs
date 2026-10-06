@@ -16,6 +16,33 @@ namespace Bodu;
 public static partial class ThrowHelper
 {
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> sets a bit that
+    /// <paramref name="mask" /> does not.
+    /// </summary>
+    /// <typeparam name="T">A binary integer type.</typeparam>
+    /// <param name="value">The bits to validate.</param>
+    /// <param name="mask">The bits <paramref name="value" /> may set.</param>
+    /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <c>(<paramref name="value" /> &amp; ~<paramref name="mask" />) != 0</c>.
+    /// </exception>
+    /// <remarks>
+    /// Unlike a comparison with the largest value the mask allows, the test holds for a mask whose bits are not
+    /// contiguous, such as a set of flags with a gap.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ThrowIfBitsOutsideMask<T>(
+        T value, T mask,
+        [CallerArgumentExpression(nameof(value))] string? paramName = null)
+        where T : IBinaryInteger<T>
+    {
+        if ((value & ~mask) != T.Zero)
+            throw new ArgumentOutOfRangeException(
+                paramName,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_BitsOutsideMask, value & ~mask, mask));
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="count" /> is negative or exceeds
     /// <paramref name="available" />.
     /// </summary>

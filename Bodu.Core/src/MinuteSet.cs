@@ -113,7 +113,7 @@ public readonly partial struct MinuteSet
     /// </exception>
     public static MinuteSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new MinuteSet(bits);
     }

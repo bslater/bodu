@@ -116,7 +116,7 @@ public readonly partial struct SecondSet
     /// </exception>
     public static SecondSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new SecondSet(bits);
     }

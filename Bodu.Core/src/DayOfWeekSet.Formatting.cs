@@ -175,7 +175,7 @@ public readonly partial struct DayOfWeekSet
             for (int i = 0; i < MaskLength; i++)
             {
                 int day = state.Format.MondayFirst ? (i + 1) % MaskLength : i;
-                bool selected = (state.Bits & (1 << day)) != 0;
+                bool selected = (state.Bits & (1UL << day)) != 0;
 
                 span[i] = state.Format.Binary
                     ? (selected ? '1' : '0')

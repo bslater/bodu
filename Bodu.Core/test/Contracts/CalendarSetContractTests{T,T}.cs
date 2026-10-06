@@ -19,7 +19,8 @@ namespace Bodu.Contracts;
 /// A derived class describes its type's domain through <see cref="DomainSize" /> and <see cref="ElementAt(int)" />,
 /// the value that bit <c>n</c> of the set selects, and reaches the members no interface declares through the abstract
 /// adapters. The contract covers construction, <c>Empty</c>, <c>All</c>, <c>Count</c>, <c>Contains</c>, <c>With</c>,
-/// <c>Without</c>, the bits round trip, the operators, equality and hashing, and enumeration.
+/// <c>Without</c>, the bits round trip, the operators, equality and hashing, enumeration, and the storage every Bodu
+/// calendar value set shares: one canonical bitmap in a <see cref="ulong" />, with the bits outside the domain clear.
 /// </para>
 /// <para>
 /// The tests compare each answer with the expected membership of every value in the domain rather than with the set's
@@ -27,7 +28,7 @@ namespace Bodu.Contracts;
 /// </para>
 /// </remarks>
 public abstract partial class CalendarSetContractTests<TSet, TElement>
-    where TSet : struct, IEquatable<TSet>, IEqualityOperators<TSet, TSet, bool>, IBitwiseOperators<TSet, TSet, TSet>, IEnumerable<TElement>
+    where TSet : struct, IEquatable<TSet>, IEqualityOperators<TSet, TSet, bool>, IBitwiseOperators<TSet, TSet, TSet>, IParsable<TSet>, IEnumerable<TElement>
 {
     /// <summary>The seed of the random sets in <see cref="SampleSets" />, so that a failure reproduces.</summary>
     private const int SampleSeed = 20261005;

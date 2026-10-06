@@ -119,7 +119,7 @@ public readonly partial struct DayOfMonthSet
     /// </exception>
     public static DayOfMonthSet FromUInt64(ulong bits)
     {
-        ThrowHelper.ThrowIfGreaterThan(bits, AllBits);
+        ThrowHelper.ThrowIfBitsOutsideMask(bits, AllBits);
 
         return new DayOfMonthSet(bits);
     }

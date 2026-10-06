@@ -24,10 +24,10 @@ public readonly partial struct DayOfWeekSet
         : IEnumerator<DayOfWeek>
     {
         /// <summary>The bits captured at construction.</summary>
-        private readonly byte _bits;
+        private readonly ulong _bits;
 
         /// <summary>The bits of the days not yet returned.</summary>
-        private uint _remaining;
+        private ulong _remaining;
 
         /// <summary>The day most recently returned.</summary>
         private DayOfWeek _current;
@@ -36,7 +36,7 @@ public readonly partial struct DayOfWeekSet
         /// Initializes a new instance of the <see cref="Enumerator" /> struct over the specified bits.
         /// </summary>
         /// <param name="bits">The bits of the set to enumerate.</param>
-        internal Enumerator(byte bits)
+        internal Enumerator(ulong bits)
         {
             _bits = bits;
             _remaining = bits;

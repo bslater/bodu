@@ -680,6 +680,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value sets bits 0x{0:X} outside the allowed mask 0x{1:X}..
+        /// </summary>
+        internal static string Arg_OutOfRange_BitsOutsideMask {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_BitsOutsideMask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The count must be non-negative and must not exceed the number of available items ({0})..
         /// </summary>
         internal static string Arg_OutOfRange_CountExceedsAvailable {
