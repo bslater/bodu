@@ -175,7 +175,7 @@ Every factory type lives in the `Bodu.Globalization.Calendar` namespace - the pa
 **Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.MiddleEastCalendarData>
 
-`SupportedCountries` = `AE`, `IL`, `JO`, `QA`, `SA`, `TR`. These resources lean on the non-Gregorian calendar systems and lunar projection: the Gulf states import the Saudi-aligned `global-islamic-umm-al-qura` catalogue, while Israel resolves the Hebrew-calendar festivals. Several rules carry a Sunday-Thursday (or Saturday-Thursday) working week and weekend-substitution adjustments - query with the matching <xref:Bodu.WeekPattern> preset when computing working days. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+`SupportedCountries` = `AE`, `IL`, `JO`, `QA`, `SA`, `TR`. These resources lean on the non-Gregorian calendar systems and lunar projection: the Gulf states import the Saudi-aligned `global-islamic-umm-al-qura` catalogue, while Israel resolves the Hebrew-calendar festivals. Several rules carry a Sunday-Thursday (or Saturday-Thursday) working week and weekend-substitution adjustments - query with the matching <xref:Bodu.DayOfWeekSet> preset when computing working days. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
 
 ### Africa - `AfricaCalendarData` {#africa}
 

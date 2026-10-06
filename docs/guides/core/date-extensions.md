@@ -67,7 +67,7 @@ DateTime nearestSat  = date.NearestDateOfWeek(DayOfWeek.Saturday);         // 20
 
 DateTime nextWorking = date.NextWeekday(WorkingDaysOfWeek.MondayToFriday); // 2024-05-16 (Thursday)
 DateTime afterFriday = new DateTime(2024, 5, 17).NextWeekday(WorkingDaysOfWeek.MondayToFriday);   // 2024-05-20 (Monday)
-DateTime mwfOnly     = new DateTime(2024, 5, 17).NextWeekday(WeekPattern.Parse("_M_W_F_"));       // 2024-05-20
+DateTime mwfOnly     = new DateTime(2024, 5, 17).NextWeekday(DayOfWeekSet.Parse("_M_W_F_"));      // 2024-05-20
 DateTime prevWorking = date.PreviousWeekday(WorkingDaysOfWeek.SundayToThursday);                  // 2024-05-14
 
 DateTime lastMonday  = date.NthDateOfWeekInMonth(DayOfWeek.Monday, WeekOrdinal.Last);    // 2024-05-27
@@ -80,7 +80,7 @@ DateTime lastRun = seriesStart.PreviousOccurrence(TimeSpan.FromDays(7), before: 
 ```
 
 - `Next…` / `Previous…` are strict; the `…OrSame…` variants accept the receiver's own day. `NearestDateOfWeek` prefers the earlier date on a tie.
-- `NextWeekday` / `PreviousWeekday` step one day at a time until the day is a working day under the supplied <xref:Bodu.WorkingDaysOfWeek> preset, <xref:Bodu.WeekPattern>, or `Custom` + <xref:Bodu.Extensions.IWeekendDefinitionProvider> - see [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md).
+- `NextWeekday` / `PreviousWeekday` step one day at a time until the day is a working day under the supplied <xref:Bodu.WorkingDaysOfWeek> preset, <xref:Bodu.DayOfWeekSet>, or `Custom` + <xref:Bodu.Extensions.IWeekendDefinitionProvider> - see [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md).
 - `NthDateOfWeekInMonth` takes a <xref:Bodu.Extensions.WeekOrdinal> (`First` … `Fifth`, `Last`) and throws `ArgumentOutOfRangeException` when the month has no such day (a fifth Monday in May 2024, for example); `Last` never throws.
 - `NextOccurrence(interval, after)` / `PreviousOccurrence(interval, before)` treat the receiver as the start of a fixed-interval series and return the first occurrence strictly after (or before) the bound, preserving the start's time of day. When `after` is at or before the start, the start itself is returned.
 
@@ -165,7 +165,7 @@ bool weekday    = saturday.IsWeekday();                                         
 bool sixDayWeek = saturday.IsWeekday(WorkingDaysOfWeek.MondayToSaturday);       // true
 bool gulfRest   = saturday.IsWeekend(WorkingDaysOfWeek.SundayToThursday);       // true
 bool working    = saturday.IsInWorkingWeek(WorkingDaysOfWeek.SaturdayToWednesday);   // true
-bool rest       = saturday.IsRestDay(WeekPattern.Weekdays);                     // true
+bool rest       = saturday.IsRestDay(DayOfWeekSet.Weekdays);                    // true
 bool friOff     = DateTimeExtensions.IsWeekend(DayOfWeek.Friday, WorkingDaysOfWeek.SundayToThursday);   // true
 
 bool lastOfQ    = new DateTime(2024, 6, 30).IsLastDateOfQuarter();              // true
@@ -178,7 +178,7 @@ string dayName  = saturday.DayName(CultureInfo.GetCultureInfo("fr-FR"));        
 string month    = saturday.MonthName(CultureInfo.InvariantCulture);             // "May"
 ```
 
-`IsWeekday` / `IsWeekend` and `IsInWorkingWeek` / `IsRestDay` are complementary pairs. The first pair takes the named <xref:Bodu.WorkingDaysOfWeek> preset (and, for `Custom`, a weekend provider); the second takes either the preset or a raw <xref:Bodu.WeekPattern>. `IsInRange` has an overload on `DateTime?` that returns `false` for `null`.
+`IsWeekday` / `IsWeekend` and `IsInWorkingWeek` / `IsRestDay` are complementary pairs. The first pair takes the named <xref:Bodu.WorkingDaysOfWeek> preset (and, for `Custom`, a weekend provider); the second takes either the preset or a raw <xref:Bodu.DayOfWeekSet>. `IsInRange` has an overload on `DateTime?` that returns `false` for `null`.
 
 ## Pattern 7 - age, truncation, and day boundaries
 
@@ -262,14 +262,14 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
 
 ## Overload matrix
 
-| Member family | Parameterless default | `CultureInfo?` | `WorkingDaysOfWeek` / `WeekPattern` | `CalendarQuarterDefinition` | `IQuarterDefinitionProvider` | `IWeekendDefinitionProvider` |
+| Member family | Parameterless default | `CultureInfo?` | `WorkingDaysOfWeek` / `DayOfWeekSet` | `CalendarQuarterDefinition` | `IQuarterDefinitionProvider` | `IWeekendDefinitionProvider` |
 |---|---|---|---|---|---|---|
 | `FirstDateOfWeek`, `LastDateOfWeek` | current culture's first day | ✓ | `WorkingDaysOfWeek` (first working day starts the week) | - | - | - |
 | `Quarter`, `FirstDateOfQuarter`, `LastDateOfQuarter`, `IsFirstDateOfQuarter`, `IsLastDateOfQuarter`, `FirstDateOfWeekInQuarter`, `LastDateOfWeekInQuarter` | `JanuaryToDecember` | - | - | ✓ (not `Custom`) | ✓ | - |
 | `FiscalYear`, `AddFiscalYears`, `IsFirstDateOfFiscalYear`, `IsLastDateOfFiscalYear`, static `FirstDateOfFiscalYear` / `LastDateOfFiscalYear` | - (provider required) | - | - | - | ✓ | - |
 | `IsWeekday`, `IsWeekend` | Saturday-Sunday weekend | - | `WorkingDaysOfWeek` | - | - | ✓ optional; **required** with `WorkingDaysOfWeek.Custom` |
-| `IsInWorkingWeek`, `IsRestDay` | - (pattern required) | - | `WorkingDaysOfWeek` or `WeekPattern` | - | - | - |
-| `NextWeekday`, `PreviousWeekday` | - (pattern required) | - | `WorkingDaysOfWeek` or `WeekPattern` | - | - | ✓ with `WorkingDaysOfWeek.Custom` |
+| `IsInWorkingWeek`, `IsRestDay` | - (working week required) | - | `WorkingDaysOfWeek` or `DayOfWeekSet` | - | - | - |
+| `NextWeekday`, `PreviousWeekday` | - (working week required) | - | `WorkingDaysOfWeek` or `DayOfWeekSet` | - | - | ✓ with `WorkingDaysOfWeek.Custom` |
 | `WeekOfYear`, `WeekOfMonth` | current culture's rule + first day | ✓ | - | - | - | - (also `(CalendarWeekRule, DayOfWeek)`) |
 | `DayName`, `MonthName`, static `GetMonthName` | current culture | ✓ | - | - | - | - |
 | `DaysInMonth` | Gregorian | ✓ (also `Calendar?`) | - | - | - | - |
@@ -295,8 +295,8 @@ A `null` `CultureInfo?` or `Calendar?` argument falls back to the same default a
 
 ## Where to go next
 
-- [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) - `CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`, and the `WorkingDaysOfWeek` ↔ `WeekPattern` bridge.
-- [WeekPattern](week-pattern.md) - the seven-day bitmask the working-week overloads consume.
+- [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) - `CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`, and the `WorkingDaysOfWeek` ↔ `DayOfWeekSet` bridge.
+- [DayOfWeekSet](day-of-week-set.md) - the set of days the working-week overloads consume.
 - [String extensions](string-extensions.md) - the sibling `string` surface.
 - [Working-day and notable-date calculations](../calendar/index.md) - when a plain working week is not enough and public holidays matter, `Bodu.Globalization.Calendar` layers on top of these extensions.
 - [`Bodu.Extensions` API reference](xref:Bodu.Extensions) - every overload with full signatures.

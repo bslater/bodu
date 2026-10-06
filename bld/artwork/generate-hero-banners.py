@@ -174,7 +174,7 @@ def add(name, title, aria, accent, lheader, lbody, up, down, rheader, rbody, cap
 
 add("hero-core", "Bodu.Core", "Bodu.Core - the foundation package: buffers, threading, functional seams, text, validation",
     "#3B82F6", "Bodu.Core",
-    mono(["PooledBufferBuilder", "WeekPattern", "AsyncLock · RateGate", "Option · Result",
+    mono(["PooledBufferBuilder", "DayOfWeekSet", "AsyncLock · RateGate", "Option · Result",
           "Memoizer · Either", "SequenceGenerator"], y0=44, dy=18),
     "extend", "validate", "Extensions",
     mono(["enumerable ops", "dictionary · list ops", "EncodingDetection", "StringEncoding",

@@ -58,7 +58,7 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ### Notable date vs. non-working day
 
-Not every notable date is a non-working day. A rule can describe a public holiday, observance, remembrance day, religious festival, or regional event. Working-day operations use the occurrence's `IsNonWorkingDay` flag together with the configured working week (a `Bodu.Core` `WeekPattern`) to decide whether a date should be skipped.
+Not every notable date is a non-working day. A rule can describe a public holiday, observance, remembrance day, religious festival, or regional event. Working-day operations use the occurrence's `IsNonWorkingDay` flag together with the configured working week (a `Bodu.Core` `DayOfWeekSet`) to decide whether a date should be skipped.
 
 ### Territory containment
 

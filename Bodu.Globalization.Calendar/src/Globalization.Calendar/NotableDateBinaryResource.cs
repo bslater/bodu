@@ -92,7 +92,7 @@ public static partial class NotableDateBinaryResource
         writer.WriteEnum(policy.SpanCollisionPolicy);
         writer.WriteEnum(policy.PriorityDirection);
         writer.WriteEnum(policy.ObservedDateRangePolicy);
-        writer.WriteByte(policy.WorkingWeek.ToByte());
+        writer.WriteByte(NotableDateBinaryFormat.EncodeWorkingWeek(policy.WorkingWeek));
         writer.WriteEnumList(policy.CategoryPrecedence);
     }
 

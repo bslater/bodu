@@ -67,7 +67,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 **Working-day arithmetic - `Bodu.Extensions`**
 
-- <xref:Bodu.Extensions.NotableDateOnlyExtensions> (the authoritative `DateOnly` surface), <xref:Bodu.Extensions.NotableDateTimeExtensions>, <xref:Bodu.Extensions.NotableDateTimeOffsetExtensions> - `IsWorkingDay`, `IsNonWorkingDay`, `IsNotableDate`, `NextWorkingDay`, `PreviousWorkingDay`, `SnapToWorkingDay`, `AddWorkingDays`, `WorkingDaysBetween`, `EnumerateWorkingDays`, `GetNotableDates`, … Each takes an `INotableDateService`, a `string territory`, and an optional `Bodu.Core` `WeekPattern` working week (defaults to Monday-Friday).
+- <xref:Bodu.Extensions.NotableDateOnlyExtensions> (the authoritative `DateOnly` surface), <xref:Bodu.Extensions.NotableDateTimeExtensions>, <xref:Bodu.Extensions.NotableDateTimeOffsetExtensions> - `IsWorkingDay`, `IsNonWorkingDay`, `IsNotableDate`, `NextWorkingDay`, `PreviousWorkingDay`, `SnapToWorkingDay`, `AddWorkingDays`, `WorkingDaysBetween`, `EnumerateWorkingDays`, `GetNotableDates`, … Each takes an `INotableDateService`, a `string territory`, and an optional `Bodu.Core` `DayOfWeekSet` working week (defaults to Monday-Friday).
 - <xref:Bodu.Extensions.NotableDateFiscalExtensions> - first / last working day of a fiscal year or quarter for a configurable fiscal-year start month.
 
 > [!NOTE]

@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Samples.WorkingDays.Scenarios;
 
 /// <summary>
 /// Demonstrates the working-day predicates over a week containing a public holiday: a working day is
-/// a day that is neither a weekend day (per the working-week pattern) nor a non-working notable date
+/// a day that is neither a weekend day (per the working week) nor a non-working notable date
 /// (per the service's rules) - both sources feed one answer.
 /// </summary>
 public static class WorkingDayChecks
@@ -30,7 +30,7 @@ public static class WorkingDayChecks
             why: "A working day is defined by two independent things - the shape of the week and the holiday "
                 + "rules - and code that consults only one of them is wrong in a way that shows up rarely enough "
                 + "to reach production. IsWorkingDay answers using both, so a caller cannot forget the holidays; "
-                + "IsWeekend answers using the week pattern alone, which is what lets the two together say not "
+                + "IsWeekend answers using the working week alone, which is what lets the two together say not "
                 + "just that a day is off but why. That distinction matters downstream, because a weekend and a "
                 + "public holiday often have different consequences in payroll and SLA rules even though both "
                 + "are non-working.",
@@ -39,11 +39,11 @@ public static class WorkingDayChecks
 
         // 2024-04-25 (Anzac Day, Thursday) sits inside this window, flanked by a normal weekend.
         // IsWorkingDay consults both sources (week shape + holiday rules); IsWeekend is purely the
-        // week pattern, so the two predicates together classify every day.
+        // working week, so the two predicates together classify every day.
         for (var day = new DateOnly(2024, 4, 22); day <= new DateOnly(2024, 4, 28); day = day.AddDays(1))
         {
             var kind = day.IsWorkingDay(service, "AU") ? "working"
-                : day.IsWeekend(WeekPattern.Weekdays) ? "weekend"
+                : day.IsWeekend(DayOfWeekSet.Weekdays) ? "weekend"
                 : "public holiday";
             Console.WriteLine($"    {day:yyyy-MM-dd} ({day.DayOfWeek,-9}) {kind}");
         }

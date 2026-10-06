@@ -55,7 +55,7 @@ public sealed class ResolutionPolicyBuilder
     /// Gets the configured working week.
     /// </summary>
     /// <value>The working-week pattern, or <see langword="null" /> when unset.</value>
-    internal WeekPattern? WorkingWeek { get; private set; }
+    internal DayOfWeekSet? WorkingWeek { get; private set; }
 
     /// <summary>
     /// Gets the configured category precedence, highest-winning first.
@@ -125,7 +125,7 @@ public sealed class ResolutionPolicyBuilder
     /// The working-week pattern, serialized as a seven-character Sunday-first binary string.
     /// </param>
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
-    public ResolutionPolicyBuilder WithWorkingWeek(WeekPattern workingWeek)
+    public ResolutionPolicyBuilder WithWorkingWeek(DayOfWeekSet workingWeek)
     {
         WorkingWeek = workingWeek;
         return this;
@@ -193,7 +193,7 @@ public sealed class ResolutionPolicyBuilder
         CollisionPolicy? spanCollisionPolicy,
         PriorityDirection? priorityDirection,
         ObservedDateRangePolicy? observedDateRangePolicy,
-        WeekPattern? workingWeek,
+        DayOfWeekSet? workingWeek,
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = null)
     {
         DuplicatePolicy = duplicatePolicy;

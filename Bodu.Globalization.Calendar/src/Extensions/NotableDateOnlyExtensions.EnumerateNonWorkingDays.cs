@@ -34,7 +34,7 @@ public static partial class NotableDateOnlyExtensions
     ///]]>
     /// </code>
     /// </example>
-    public static IEnumerable<DateOnly> EnumerateNonWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, WeekPattern? workingWeek = null)
+    public static IEnumerable<DateOnly> EnumerateNonWorkingDays(this DateOnly start, DateOnly end, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);

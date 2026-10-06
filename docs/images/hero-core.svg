@@ -17,7 +17,7 @@
 
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
       <text x="10" y="44">PooledBufferBuilder</text>
-      <text x="10" y="62">WeekPattern</text>
+      <text x="10" y="62">DayOfWeekSet</text>
       <text x="10" y="80">AsyncLock · RateGate</text>
       <text x="10" y="98">Option · Result</text>
       <text x="10" y="116">Memoizer · Either</text>

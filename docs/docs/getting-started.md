@@ -75,19 +75,19 @@ The foundation of the suite - see the **[Core Foundations overview](topics/core-
 
 ### Bodu.Core
 
-**Bodu.Core** is the foundation package - the `WeekPattern` value type, pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>`), and date / numeric / span extensions sitting on a centralized `ThrowHelper`. It is the one package every other Bodu library depends on.
+**Bodu.Core** is the foundation package - the calendar value sets (`DayOfWeekSet`, `MonthSet`, `HourSet`, ...), pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>`), and date / numeric / span extensions sitting on a centralized `ThrowHelper`. It is the one package every other Bodu library depends on.
 
 ```csharp
 using Bodu;
 
-WeekPattern weekdays = WeekPattern.Parse("_MTWTF_");
-WeekPattern weekend  = WeekPattern.Parse("S_____S");
-WeekPattern allDays  = weekdays | weekend;
+DayOfWeekSet weekdays = DayOfWeekSet.Parse("_MTWTF_");
+DayOfWeekSet weekend  = DayOfWeekSet.Parse("S_____S");
+DayOfWeekSet allDays  = weekdays | weekend;
 
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
 ```
 
-`WeekPattern` is an immutable 7-bit bitmask value type for sets of days of the week - compose with the bitwise operators, parse from compact text, and enumerate the selected days in order.
+`DayOfWeekSet` is an immutable set of days of the week - compose with the set operators, parse from compact text, and enumerate the selected days in order. `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet`, and `SecondSet` do the same for the other calendar fields.
 
 → **[Introduction](core/index.md)** · **[Getting started](core/getting-started.md)** · **[Guides](../guides/core/index.md)**
 

@@ -10,7 +10,7 @@ public static partial class DateOnlyExtensions
 {
     /// <summary>
     /// Determines whether the specified <see cref="DateOnly" /> falls on a day that is not selected in the supplied
-    /// <see cref="WeekPattern" /> working week.
+    /// <see cref="DayOfWeekSet" /> working week.
     /// </summary>
     /// <param name="date">The date to evaluate.</param>
     /// <param name="workingWeek">The working-week pattern.</param>
@@ -19,10 +19,10 @@ public static partial class DateOnlyExtensions
     /// <paramref name="workingWeek" />; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This predicate is the complement of <see cref="IsInWorkingWeek(DateOnly, WeekPattern)" /> and considers only the
-    /// day-of-week dimension. It does not consult any holiday catalogue.
+    /// This predicate is the complement of <see cref="IsInWorkingWeek(DateOnly, DayOfWeekSet)" /> and considers only
+    /// the day-of-week dimension. It does not consult any holiday catalogue.
     /// </remarks>
-    public static bool IsRestDay(this DateOnly date, WeekPattern workingWeek) =>
+    public static bool IsRestDay(this DateOnly date, DayOfWeekSet workingWeek) =>
         !workingWeek.Contains(date.DayOfWeek);
 
     /// <summary>
@@ -44,5 +44,5 @@ public static partial class DateOnlyExtensions
     /// pattern.
     /// </exception>
     public static bool IsRestDay(this DateOnly date, WorkingDaysOfWeek workingWeek) =>
-        IsRestDay(date, workingWeek.ToWeekPattern());
+        IsRestDay(date, workingWeek.ToDayOfWeekSet());
 }

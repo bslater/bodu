@@ -64,23 +64,23 @@ public static partial class DateTimeExtensions
     /// Thrown if <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
     /// enumeration.
     /// </exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "The provider is optional and is dereferenced only on the Custom path, after ResolveWorkingWeekPattern has rejected a null provider there; the flow analysis cannot see that relationship.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "The provider is optional and is dereferenced only on the Custom path, after ResolveWorkingWeek has rejected a null provider there; the flow analysis cannot see that relationship.")]
     public static DateTime PreviousWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
-        // Validate and convert the working week once; the per-day loop then tests pattern membership (or the
-        // custom provider) without re-resolving the pattern on every stepped day.
-        WeekPattern? pattern = ResolveWorkingWeekPattern(workingWeek, provider);
+        // Validate and convert the working week once; the per-day loop then tests membership of the working days
+        // (or asks the custom provider) without resolving them again on every stepped day.
+        DayOfWeekSet? resolved = ResolveWorkingWeek(workingWeek, provider);
 
         long ticks = dateTime.Ticks;
-        if (pattern is { } workingPattern)
+        if (resolved is { } workingDays)
         {
             do
             {
                 ticks -= TicksPerDay;
             }
-            while (!workingPattern.Contains(GetDayOfWeekFromTicks(ticks)));
+            while (!workingDays.Contains(GetDayOfWeekFromTicks(ticks)));
         }
         else
         {
@@ -107,9 +107,9 @@ public static partial class DateTimeExtensions
     /// <paramref name="workingWeek" />, with the original time-of-day and <see cref="DateTime.Kind" /> preserved.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="workingWeek" /> is <see cref="WeekPattern.Empty" />.
+    /// Thrown when <paramref name="workingWeek" /> is <see cref="DayOfWeekSet.Empty" />.
     /// </exception>
-    public static DateTime PreviousWeekday(this DateTime dateTime, WeekPattern workingWeek)
+    public static DateTime PreviousWeekday(this DateTime dateTime, DayOfWeekSet workingWeek)
     {
         if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), ResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
 

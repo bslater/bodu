@@ -10,7 +10,7 @@ public static partial class DateOnlyExtensions
 {
     /// <summary>
     /// Determines whether the specified <see cref="DateOnly" /> falls on a day that is selected in the supplied
-    /// <see cref="WeekPattern" /> working week.
+    /// <see cref="DayOfWeekSet" /> working week.
     /// </summary>
     /// <param name="date">The date to evaluate.</param>
     /// <param name="workingWeek">The working-week pattern.</param>
@@ -22,7 +22,7 @@ public static partial class DateOnlyExtensions
     /// This predicate considers only the day-of-week dimension. It does not consult any holiday catalogue. Combine it
     /// with a notable-date service when both working-week and holiday awareness are required.
     /// </remarks>
-    public static bool IsInWorkingWeek(this DateOnly date, WeekPattern workingWeek) =>
+    public static bool IsInWorkingWeek(this DateOnly date, DayOfWeekSet workingWeek) =>
         workingWeek.Contains(date.DayOfWeek);
 
     /// <summary>
@@ -44,5 +44,5 @@ public static partial class DateOnlyExtensions
     /// pattern.
     /// </exception>
     public static bool IsInWorkingWeek(this DateOnly date, WorkingDaysOfWeek workingWeek) =>
-        IsInWorkingWeek(date, workingWeek.ToWeekPattern());
+        IsInWorkingWeek(date, workingWeek.ToDayOfWeekSet());
 }

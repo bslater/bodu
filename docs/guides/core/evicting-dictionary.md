@@ -327,7 +327,7 @@ Because reads reorder those structures, enumerators are invalidated not only by 
 ## Where to go next
 
 - [Circular buffer](circular-buffer.md) - fixed-capacity FIFO ring buffer.
-- [WeekPattern](week-pattern.md) - immutable bitmask value type for sets of days of the week.
+- [DayOfWeekSet](day-of-week-set.md) - immutable set of days of the week, one of the calendar value sets.
 - [Bodu.Collections guide index](index.md) - all key types at a glance.
 - [Bodu.Collections.Generic API reference](xref:Bodu.Collections.Generic) - full namespace overview.
 - **[Core Foundations guides](../topics/core-foundations.md)** - every guide in this topic.

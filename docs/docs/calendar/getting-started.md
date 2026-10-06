@@ -118,7 +118,7 @@ DateOnly inFive    = today.AddWorkingDays(5, service, "AU-NSW");
 int      between   = today.WorkingDaysBetween(inFive, service, "AU-NSW");
 ```
 
-The same operations exist over `DateTime` and `DateTimeOffset` (`NotableDateTimeExtensions`, `NotableDateTimeOffsetExtensions`, also in `Bodu.Extensions`). Every method accepts an optional `Bodu.Core` `WeekPattern` to override the default Monday-Friday working week - e.g. `today.NextWorkingDay(service, "AE", WeekPattern.SundayToThursday)`.
+The same operations exist over `DateTime` and `DateTimeOffset` (`NotableDateTimeExtensions`, `NotableDateTimeOffsetExtensions`, also in `Bodu.Extensions`). Every method accepts an optional `Bodu.Core` `DayOfWeekSet` to override the default Monday-Friday working week - e.g. `today.NextWorkingDay(service, "AE", DayOfWeekSet.SundayToThursday)`.
 
 ### Register a custom algorithm
 

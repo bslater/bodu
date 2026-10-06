@@ -10,34 +10,34 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, WeekPattern)" /> returns
-    /// <see langword="false" /> when the date's day-of-week is selected in the supplied pattern.
+    /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, DayOfWeekSet)" /> returns
+    /// <see langword="false" /> when the date's day-of-week is selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void IsRestDay_WhenDayInPattern_ShouldReturnFalse()
+    public void IsRestDay_WhenDayInSet_ShouldReturnFalse()
     {
         var monday = new DateTime(2026, 5, 11);
 
-        Assert.IsFalse(monday.IsRestDay(WeekPattern.Weekdays));
+        Assert.IsFalse(monday.IsRestDay(DayOfWeekSet.Weekdays));
     }
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, WeekPattern)" /> returns
-    /// <see langword="true" /> when the date's day-of-week is not selected in the supplied pattern.
+    /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, DayOfWeekSet)" /> returns
+    /// <see langword="true" /> when the date's day-of-week is not selected in the supplied set.
     /// </summary>
     [TestMethod]
-    public void IsRestDay_WhenDayNotInPattern_ShouldReturnTrue()
+    public void IsRestDay_WhenDayNotInSet_ShouldReturnTrue()
     {
         var saturday = new DateTime(2026, 5, 16);
 
-        Assert.IsTrue(saturday.IsRestDay(WeekPattern.Weekdays));
+        Assert.IsTrue(saturday.IsRestDay(DayOfWeekSet.Weekdays));
     }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, WorkingDaysOfWeek)" /> agrees with the
-    /// <see cref="WeekPattern" /> overload for a named preset.
+    /// <see cref="DayOfWeekSet" /> overload for a named preset.
     /// </summary>
     [TestMethod]
-    public void IsRestDay_WhenUsingWorkingDaysOfWeekSugar_ShouldMatchWeekPatternOverload()
+    public void IsRestDay_WhenUsingWorkingDaysOfWeekSugar_ShouldMatchDayOfWeekSetOverload()
     {
         var friday = new DateTime(2026, 5, 15);
 

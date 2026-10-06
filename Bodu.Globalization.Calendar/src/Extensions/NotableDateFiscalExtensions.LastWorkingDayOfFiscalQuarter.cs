@@ -23,7 +23,7 @@ public static partial class NotableDateFiscalExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="fiscalYearStartMonth" /> is not between 1 and 12.
     /// </exception>
-    public static DateOnly LastWorkingDayOfFiscalQuarter(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, WeekPattern? workingWeek = null)
+    public static DateOnly LastWorkingDayOfFiscalQuarter(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);

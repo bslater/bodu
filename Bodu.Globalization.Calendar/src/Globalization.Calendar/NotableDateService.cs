@@ -634,7 +634,7 @@ public sealed class NotableDateService
             }
         }
 
-        WeekPattern workingWeek = _resource.ResolutionPolicy.WorkingWeek;
+        DayOfWeekSet workingWeek = _resource.ResolutionPolicy.WorkingWeek;
         for (int i = 0; i < candidates.Count; i++)
         {
             ResolutionCandidate candidate = candidates[i];
@@ -786,7 +786,7 @@ public sealed class NotableDateService
         DateOnly baseDate,
         string territory,
         StrategyResolutionContext context,
-        WeekPattern workingWeek,
+        DayOfWeekSet workingWeek,
         Func<DateOnly, bool> occupiedByAnother)
     {
         List<AdjustmentPolicy> candidates = new();
@@ -828,7 +828,7 @@ public sealed class NotableDateService
         DateOnly baseDate,
         string territory,
         StrategyResolutionContext context,
-        WeekPattern workingWeek,
+        DayOfWeekSet workingWeek,
         Func<DateOnly, bool> occupiedByAnother)
     {
         switch (policy.Trigger)

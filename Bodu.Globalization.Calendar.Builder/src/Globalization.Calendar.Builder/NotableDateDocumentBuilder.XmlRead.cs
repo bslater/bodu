@@ -41,9 +41,9 @@ public sealed partial class NotableDateDocumentBuilder
             return;
 
         ResolutionPolicyBuilder policy = new();
-        WeekPattern? workingWeek = null;
+        DayOfWeekSet? workingWeek = null;
         string? workingDays = (string?)element.Attribute("workingDays");
-        if (!string.IsNullOrEmpty(workingDays) && WeekPattern.TryParse(workingDays, out WeekPattern parsed))
+        if (!string.IsNullOrEmpty(workingDays) && DayOfWeekSet.TryParse(workingDays, out DayOfWeekSet parsed))
             workingWeek = parsed;
 
         XElement? precedenceElement = element.Element(BuilderXml.Namespace + "CategoryPrecedence");

@@ -13,7 +13,7 @@ namespace Bodu.Extensions;
 /// <remarks>
 /// <para>
 /// A working day is a day that is neither outside the working week nor a non-working notable date. The working week
-/// defaults to Monday through Friday and can be overridden with a <see cref="WeekPattern" />. The traversal and
+/// defaults to Monday through Friday and can be overridden with a <see cref="DayOfWeekSet" />. The traversal and
 /// counting methods resolve each candidate day through the service, so prefer the range-based
 /// <see cref="EnumerateNotableDates(DateOnly, DateOnly, INotableDateService, string, NotableDateFilter)" /> for large
 /// windows.
@@ -47,7 +47,7 @@ namespace Bodu.Extensions;
 /// </code>
 /// </example>
 /// <seealso cref="INotableDateService" /> <seealso cref="NotableDate" /> <seealso cref="NotableDateFilter" />
-/// <seealso cref="WeekPattern" /> <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)
+/// <seealso cref="DayOfWeekSet" /> <seealso href="../guides/calendar/working-days.html">Working-day arithmetic (guide)
 /// </seealso>
 public static partial class NotableDateOnlyExtensions
 {
@@ -81,7 +81,7 @@ public static partial class NotableDateOnlyExtensions
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">No working day is found within the traversal guard.</exception>
-    private static DateOnly Step(DateOnly date, int direction, INotableDateService service, string territory, WeekPattern? workingWeek)
+    private static DateOnly Step(DateOnly date, int direction, INotableDateService service, string territory, DayOfWeekSet? workingWeek)
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);
@@ -109,7 +109,7 @@ public static partial class NotableDateOnlyExtensions
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">No non-working day is found within the traversal guard.</exception>
-    private static DateOnly StepNonWorking(DateOnly date, int direction, INotableDateService service, string territory, WeekPattern? workingWeek)
+    private static DateOnly StepNonWorking(DateOnly date, int direction, INotableDateService service, string territory, DayOfWeekSet? workingWeek)
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNull(territory);

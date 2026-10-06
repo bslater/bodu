@@ -2,7 +2,8 @@
 
 A guided tour of the general-purpose building blocks in `Bodu.Core`: the `SequenceGenerator`
 catalogue, the pooled `PooledBufferBuilder<T>`, the LINQ-style enumerable operators, the string /
-comparable / numeric extension surfaces, `WeekPattern`, and the `Bodu.Threading` async primitives.
+comparable / numeric extension surfaces, `DayOfWeekSet` and the other calendar value sets, and the
+`Bodu.Threading` async primitives.
 Six scenarios, each over fixed inputs.
 
 Everything runs offline with fixed inputs - deterministic output every run.
@@ -167,37 +168,43 @@ computes primality, GCD, LCM, and a significant-figure round.
 `.ToConstantCase` / `.RemoveDiacritics` / `.Truncate`; `ComparableExtensions.Clamp` / `.IsBetween`;
 `NumericExtensions.IsPrime` / `.GreatestCommonDivisor` / `.LeastCommonMultiple` / `.RoundToSignificantDigits`.
 
-## Scenario 5 - WeekPatterns
+## Scenario 5 - DayOfWeekSets
 
-**Intent.** Show `WeekPattern` as a compact seven-bit day-of-week set: presets, the text formats it
-round-trips through, the set-style bitwise operators, and driving a working-day query from a date
-range.
+**Intent.** Show `DayOfWeekSet` as a compact day-of-week set - presets, the text formats it
+round-trips through, the set operators, and driving a working-day query from a date range - and its
+numeric siblings: `MinuteSet` writing a list in canonical form, and `MonthSet`, `DayOfMonthSet` and
+`HourSet` describing a schedule window.
 
 **What it does.** Takes the `MondayToFriday` preset, prints it in the Sunday-first, Monday-first,
-binary, and asterisk formats, parses its default rendering back to prove the round-trip, ORs in
-Saturday and complements `Weekdays` to derive the weekend, then walks the first week of 2024 asking
-each day whether it is selected.
+binary, and asterisk formats, parses each rendering back to prove the round trip, ORs in Saturday
+and complements `Weekdays` to derive the weekend, then walks the first week of 2024 asking each day
+whether it is selected. It then prints the canonical form of an unordered minute list, and tests
+three instants against a window of quarter-end months, the last days of the month, business hours
+and the working week.
 
 **What to expect.** The preset has `Count=5`; the formats agree on which five days are set; the
-round-trip is `True`; the complement of `Weekdays` is the two weekend days; and the date walk marks
-Mon-Fri as `work` and Sat/Sun as `off`:
+round trip is `True`; the complement of `Weekdays` is the two weekend days; the date walk marks
+Mon-Fri as `work` and Sat/Sun as `off`; and only the business-hours instant on the last Friday of
+March falls in the window:
 
 ```text
---- WeekPattern - seven-day selection sets ---
-  What   : Builds weekday patterns, formats each through the four format specifiers, and parses the text back to
-           confirm the round trip.
+--- DayOfWeekSet and the calendar value sets ---
+  What   : Builds a working week, formats it through four format specifiers, and parses each text back to confirm
+           the round trip; then builds a schedule window from a month set, a day-of-month set and an hour set.
   Why    : A set of weekdays is otherwise a bool[7] or a flags enum, and both lose to the same problem: nobody
-           agrees which day index zero is. WeekPattern fixes the order and makes the text form canonical, so a
-           pattern written in configuration, stored in a database and parsed back is the same pattern. The round
-           trip is the property worth demonstrating, because that is what makes the text form safe to persist.
-  Expect : One pattern renders four ways - masked, binary, and two annotated forms - all describing the same five
-           days. Parsing any of them returns an equal pattern, so the round trip is True.
+           agrees which day index zero is. DayOfWeekSet fixes the order and makes the text form canonical, so a set
+           written in configuration, stored in a database and parsed back is the same set. The numeric sets do the
+           same for months, days of the month, hours, minutes and seconds, so a schedule window is a few bit tests
+           rather than a list of ranges to search.
+  Expect : One set renders four ways - Sunday-first, Monday-first, binary and asterisk-filled - all describing the
+           same five days, and parsing every one of them returns an equal set. Only the first of the three instants
+           falls inside the quarter-end window.
 
   MondayToFriday   : Count=5, S-format='_MTWTF_'  (five days selected; the S format marks unselected days with an underscore so position is unambiguous)
   ToString("M")   : MTWTF__
   ToString("B")   : 0111110
   ToString("A")   : *MTWTF*
-  Parse round-trip: True
+  Parse round-trip: True  (all four renderings parse back to the same set)
   | Saturday      : Count=6, '_MTWTFS'
   ~Weekdays       : Count=2, 'S_____S' (the weekend)
   Working days 2024-01-01 .. 2024-01-07:
@@ -208,11 +215,17 @@ Mon-Fri as `work` and Sat/Sun as `off`:
     2024-01-05 Friday    -> work
     2024-01-06 Saturday  -> off
     2024-01-07 Sunday    -> off
+  MinuteSet       : '0-1,15,30,45'  (the canonical form of "45, 0, 30, 15, 0-1")
+  Window          : months '3,6,9,12', days '28-31', hours '9-17', 5 working days
+    2024-03-29 10:00 Friday    -> in window
+    2024-03-29 20:00 Friday    -> outside
+    2024-04-30 10:00 Tuesday   -> outside
 ```
 
-**APIs demonstrated.** `WeekPattern.MondayToFriday` / `.Weekdays`, `WeekPattern.Parse`,
-`WeekPattern.ToString(string)`, `WeekPattern.Count`, `WeekPattern.Contains`, the `|` and `~`
-operators, and the `==` equality operator.
+**APIs demonstrated.** `DayOfWeekSet.MondayToFriday` / `.Weekdays`, `DayOfWeekSet.Parse`,
+`DayOfWeekSet.ToString(string)`, `DayOfWeekSet.Count`, `DayOfWeekSet.Contains`, the `|` and `~`
+operators, and the `==` equality operator; `MinuteSet.Parse` and `ToString`; `MonthSet`,
+`DayOfMonthSet` and `HourSet` with `Parse` and `Contains`.
 
 ## Scenario 6 - AsyncPrimitives
 
@@ -259,7 +272,7 @@ Bodu.Core.Samples.CoreToolbox/
   Scenarios/PooledBuffers.cs
   Scenarios/EnumerableOperators.cs
   Scenarios/StringTransforms.cs
-  Scenarios/WeekPatterns.cs
+  Scenarios/DayOfWeekSets.cs
   Scenarios/AsyncPrimitives.cs
 ```
 

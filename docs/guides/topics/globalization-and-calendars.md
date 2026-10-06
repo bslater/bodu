@@ -29,7 +29,7 @@ If you are new to the family, start with the [topic overview](../../docs/topics/
 
 <div class="bodu-card">
   <h3><a href="../calendar/working-days.md">Working-day arithmetic</a></h3>
-  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> - <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, snap operations, and the <code>WeekPattern</code> working week.</p>
+  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> / <code>DateTimeOffset</code> - <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, snap operations, and the <code>DayOfWeekSet</code> working week.</p>
 </div>
 
 <div class="bodu-card">

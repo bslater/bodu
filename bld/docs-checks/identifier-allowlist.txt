@@ -23,6 +23,13 @@ GetProof
 IgnoreAnchoredPatterns
 CompositeDatedExchangeRateProvider   # former name, mentioned for readers migrating
 
+# Members Bodu.Core 1.3.0 removed, named by the DayOfWeekSet migration notes. The
+# CompatibilitySuppressions.xml files name some of them until the validation baseline
+# moves past 1.3.0; these entries keep the pages passing after that.
+WeekPattern
+ToWeekPattern
+FromByte
+
 # Table column labels naming cache backends, not types.
 InMemory
 TomlFile

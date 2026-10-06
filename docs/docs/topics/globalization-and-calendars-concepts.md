@@ -32,7 +32,7 @@ The `Bodu.Globalization.Calendar.Plugins` package loads custom `INotableDateAlgo
 
 ## Resolved date
 
-A **resolved date** (<xref:Bodu.Globalization.Calendar.NotableDate>) is the year-specific concrete output of one rule for one occurrence: the emitted `Date` (observed, after any adjustment), the calculated `ActualDate` (nominal), `IsObserved`, display name, category, territory, free-form tags, optional multi-day span, and the `IsNonWorkingDay` flag. That last flag matters across the topic - not every notable date is a closure. Mother's Day is notable but working; working-day arithmetic skips only occurrences with `IsNonWorkingDay = true`, combined with the configured working week (a `Bodu.Core` `WeekPattern`, default Monday-Friday).
+A **resolved date** (<xref:Bodu.Globalization.Calendar.NotableDate>) is the year-specific concrete output of one rule for one occurrence: the emitted `Date` (observed, after any adjustment), the calculated `ActualDate` (nominal), `IsObserved`, display name, category, territory, free-form tags, optional multi-day span, and the `IsNonWorkingDay` flag. That last flag matters across the topic - not every notable date is a closure. Mother's Day is notable but working; working-day arithmetic skips only occurrences with `IsNonWorkingDay = true`, combined with the configured working week (a `Bodu.Core` `DayOfWeekSet`, default Monday-Friday).
 
 ## Common catalogue
 

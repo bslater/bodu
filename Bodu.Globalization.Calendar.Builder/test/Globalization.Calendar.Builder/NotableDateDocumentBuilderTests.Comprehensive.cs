@@ -23,7 +23,7 @@ public partial class NotableDateDocumentBuilderTests
                 .WithSpanCollisionPolicy(RangeResolution.CollisionPolicy.CategoryPriority)
                 .WithPriorityDirection(RangeResolution.PriorityDirection.LowerWins)
                 .WithObservedDateRangePolicy(RangeResolution.ObservedDateRangePolicy.BothOccurrencesControlInclusion)
-                .WithWorkingWeek(WeekPattern.MondayToFriday)
+                .WithWorkingWeek(DayOfWeekSet.MondayToFriday)
                 .WithCategoryPrecedence(NotableDateCategory.PublicHoliday, NotableDateCategory.Religious, NotableDateCategory.Observance))
             .AddAdjustmentPolicy("adddays", a => a
                 .WithDescription("add days")
@@ -150,7 +150,7 @@ public partial class NotableDateDocumentBuilderTests
                 .WithSpanCollisionPolicy(RangeResolution.CollisionPolicy.CategoryPriority)
                 .WithPriorityDirection(RangeResolution.PriorityDirection.LowerWins)
                 .WithObservedDateRangePolicy(RangeResolution.ObservedDateRangePolicy.ActualOccurrenceControlsInclusion)
-                .WithWorkingWeek(WeekPattern.MondayToFriday)
+                .WithWorkingWeek(DayOfWeekSet.MondayToFriday)
                 .WithCategoryPrecedence(NotableDateCategory.PublicHoliday, NotableDateCategory.Religious))
             .AddAdjustmentPolicy("adddays", a => a
                 .WithDescription("add days")

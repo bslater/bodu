@@ -32,7 +32,7 @@ public static class Program
         WorkingDayChecks.Run(service);
         PaymentScheduling.Run(service);
         RangeCounting.Run(service);
-        FiscalAndWeekPatterns.Run(service);
+        FiscalAndWorkingWeeks.Run(service);
 
         Console.WriteLine("Done.");
     }

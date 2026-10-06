@@ -4,7 +4,8 @@
 
 Foundational .NET 8 building blocks: extension methods over strings, dates, numerics, spans; 
 pooled buffer builders; argument validation helpers; a non-cryptographic RNG; a synchronous 
-rate limiter; immutable day-of-week patterns; and a Result<T> type for explicit error handling.
+rate limiter; immutable calendar value sets (days of the week, months, days of the month, hours,
+minutes, and seconds); and a Result<T> type for explicit error handling.
 
 ## Collections
 
@@ -18,7 +19,10 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
 
 - `ThrowHelper` - argument validation helpers (null, range, enum, argument-expression capture)
 - `RateGate` (Bodu.Threading) - synchronous rate limiter (leading-edge throttling)
-- `WeekPattern` - immutable bitmask over seven days with composition operators
+- `DayOfWeekSet` - immutable set of days of the week with set operators and working-week presets; it
+  replaces `WeekPattern`, removed in 1.3.0
+- `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet`, `SecondSet` - the same shape over the other
+  calendar fields, written as a list of values and ranges (`1-3,12`)
 - `Result<T>` (Bodu.Functional) - explicit success/failure type
 - `XorShiftRandom` - high-performance xorshift128 PRNG (non-cryptographic)
 - `SequenceGenerator` (Bodu.Sequences) - lazy sequence factories (Range, Repeat, Fibonacci, etc.)

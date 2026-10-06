@@ -23,8 +23,10 @@
               href: core/pooled-buffer-builder.md
         - name: Bodu (root namespace)
           items:
-            - name: WeekPattern
-              href: core/week-pattern.md
+            - name: DayOfWeekSet
+              href: core/day-of-week-set.md
+            - name: Calendar value sets
+              href: core/calendar-value-sets.md
         - name: Bodu.Extensions
           items:
             - name: String extensions

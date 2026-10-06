@@ -21,20 +21,24 @@ dotnet add package Bodu.Collections.Concurrent  # thread-safe variants
 
 Every sample below needs only `Bodu.Core`. For collection samples (`CircularBuffer<T>`, `EvictingDictionary<TKey, TValue>`, `Deque<T>`, and the rest of the catalogue), see the [Bodu.Collections getting-started page](../collections/getting-started.md).
 
-### Week pattern (`WeekPattern`)
+### Calendar value sets (`DayOfWeekSet`, `MonthSet`, `HourSet`, ...)
 
 <!-- run -->
 ```csharp
 using Bodu;
 
-WeekPattern weekdays = WeekPattern.Parse("_MTWTF_");
-WeekPattern weekend  = WeekPattern.Parse("S_____S");
-WeekPattern allDays  = weekdays | weekend;
+DayOfWeekSet weekdays = DayOfWeekSet.Parse("_MTWTF_");
+DayOfWeekSet weekend  = DayOfWeekSet.Parse("S_____S");
+DayOfWeekSet allDays  = weekdays | weekend;
 
 bool monday = weekdays.Contains(DayOfWeek.Monday); // true
+
+MonthSet quarterEnds = MonthSet.Parse("3,6,9,12");
+HourSet  openHours   = HourSet.Parse("9-17");
+bool open = openHours.Contains(new DateTime(2025, 3, 31, 10, 0, 0).Hour); // true
 ```
 
-`WeekPattern` is an immutable `readonly struct`, so `With` / `Without` and the `|`, `&`, `^`, `~` operators each return a new value. Presets `WeekPattern.Empty`, `WeekPattern.Weekdays`, and `WeekPattern.Weekend` cover the common cases.
+Each set is an immutable `readonly struct`, so `With` / `Without` and the `|`, `&`, `^`, `~` operators each return a new value. Presets `DayOfWeekSet.Empty`, `DayOfWeekSet.Weekdays`, and `DayOfWeekSet.Weekend` cover the common cases; the numeric sets read and write a list of values and ranges (`"9-17"`). See the [DayOfWeekSet](../../guides/core/day-of-week-set.md) and [calendar value sets](../../guides/core/calendar-value-sets.md) guides.
 
 ### Railway outcomes (`Option<T>` / `Result<T>`)
 

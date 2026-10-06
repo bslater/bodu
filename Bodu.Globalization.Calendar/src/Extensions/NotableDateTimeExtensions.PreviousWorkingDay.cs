@@ -19,6 +19,6 @@ public static partial class NotableDateTimeExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    public static DateTime PreviousWorkingDay(this DateTime date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static DateTime PreviousWorkingDay(this DateTime date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         WithTimeOf(date, DateOnly.FromDateTime(date).PreviousWorkingDay(service, territory, workingWeek));
 }

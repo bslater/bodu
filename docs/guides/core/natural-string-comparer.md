@@ -52,6 +52,6 @@ Because the comparer also implements `IEqualityComparer<string?>`, any instance 
 ## Where to go next
 
 - <xref:Bodu.Extensions.NaturalStringComparer> - the full API surface, including the exact tiebreak and hashing contracts.
-- [WeekPattern](week-pattern.md) - another small, framework-style value primitive in `Bodu.Core`.
+- [DayOfWeekSet](day-of-week-set.md) - another small, framework-style value primitive in `Bodu.Core`.
 - [Core foundations](../topics/core-foundations.md) - the wider `Bodu.Core` toolbox.
 - [Core documentation](../../docs/core/index.md) - concepts and getting started for `Bodu.Core`.

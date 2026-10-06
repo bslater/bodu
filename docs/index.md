@@ -22,7 +22,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-core.svg" alt="Bodu.Core" />
   <h3>Bodu.Core</h3>
-  <p>The foundation package - a day-of-week <code>WeekPattern</code> value type, pooled buffers, async coordination primitives (<code>AsyncLock</code>, <code>RateGate</code>), railway outcomes (<code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>), date / numeric / span / array extensions, and a centralized <code>ThrowHelper</code>.</p>
+  <p>The foundation package - the calendar value sets (<code>DayOfWeekSet</code> and its siblings), pooled buffers, async coordination primitives (<code>AsyncLock</code>, <code>RateGate</code>), railway outcomes (<code>Option&lt;T&gt;</code>, <code>Result&lt;T&gt;</code>), date / numeric / span / array extensions, and a centralized <code>ThrowHelper</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/core/index.md">Introduction</a>
     <a href="guides/core/index.md">Guides</a>

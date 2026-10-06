@@ -84,7 +84,7 @@ Same-day collisions are governed by `SameDayCollisionPolicy` and overlapping mul
                   workingDays="0111110" />   <!-- Sunday-first; Mon-Fri working -->
 ```
 
-The runtime <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> carries these as `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `DuplicatePolicy`, `ObservedDateRangePolicy`, a `WorkingWeek` (a `Bodu.Core` `WeekPattern`), and a `CategoryPrecedence` list; `ResolutionPolicy.Default` is the all-defaults instance (`DuplicatePolicy.Error`, `CollisionPolicy.KeepAll` on both axes, `PriorityDirection.HigherWins`, Monday-Friday working week).
+The runtime <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> carries these as `SameDayCollisionPolicy`, `SpanCollisionPolicy`, `PriorityDirection`, `DuplicatePolicy`, `ObservedDateRangePolicy`, a `WorkingWeek` (a `Bodu.Core` `DayOfWeekSet`), and a `CategoryPrecedence` list; `ResolutionPolicy.Default` is the all-defaults instance (`DuplicatePolicy.Error`, `CollisionPolicy.KeepAll` on both axes, `PriorityDirection.HigherWins`, Monday-Friday working week).
 
 ### Category precedence (`CategoryPriority`)
 

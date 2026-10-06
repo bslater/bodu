@@ -19,6 +19,6 @@ public static partial class NotableDateTimeOffsetExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
-    public static bool IsNonWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, WeekPattern? workingWeek = null) =>
+    public static bool IsNonWorkingDay(this DateTimeOffset date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         DateOnly.FromDateTime(date.DateTime).IsNonWorkingDay(service, territory, workingWeek);
 }

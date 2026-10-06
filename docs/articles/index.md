@@ -9,7 +9,7 @@ If you are new to Bodu, start with the [project introduction](../docs/introducti
 Each top-level namespace has a landing page that introduces its purpose, lists its key types, and shows a minimal usage example before handing off to the auto-generated reference.
 
 - **[Bodu - Bodu.Core foundations](xref:Bodu)**
-  The `WeekPattern` value type, pooled buffers, the `Bodu.Threading` async coordination primitives, the `Bodu.Functional` railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), the date / numeric / span extensions, and the centralized `ThrowHelper` argument validation every other package builds on.
+  The calendar value sets (`DayOfWeekSet` and its siblings), pooled buffers, the `Bodu.Threading` async coordination primitives, the `Bodu.Functional` railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), the date / numeric / span extensions, and the centralized `ThrowHelper` argument validation every other package builds on.
 
 - **[Bodu.Collections.Generic - the Bodu.Collections catalogue](xref:Bodu.Collections.Generic)**
   Fixed-capacity circular buffers, the `Deque<T>`, the `EvictingDictionary<TKey, TValue>` with six eviction policies, the `SequencedDictionary<TKey, TValue>` (Java `LinkedHashMap` shape) with insertion/access ordering and O(1) first/last access, range-keyed dictionaries, navigable sets, interval trees, graphs, tries, and the probabilistic sketches - shipped in the `Bodu.Collections` package, with the lock-free and lock-striped variants in `Bodu.Collections.Concurrent`.
@@ -43,7 +43,7 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 
 ## Guides
 
-- **[Core Foundations guides](../guides/core/index.md)** - circular buffer, deque, evicting dictionary, week pattern.
+- **[Core Foundations guides](../guides/core/index.md)** - circular buffer, deque, evicting dictionary, day-of-week set.
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** - fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** - encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** - `NotableDateService`, built-in date-calculation algorithms, rule authoring (XML / JSON / [fluent builder](../guides/calendar/notable-date-builder.md)), working-day arithmetic, and [data packs](../guides/calendar/data-packs.md).

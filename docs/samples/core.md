@@ -36,9 +36,10 @@ The everyday utility surface: `SequenceGenerator` (Fibonacci, Range, Thue-Morse,
 more, all bounded), the pooled `PooledBufferBuilder<T>` output builder, the
 `Bodu.Collections.Generic.Extensions` LINQ operators (Batch, Windowed, Pairwise, Scan,
 RunLengthEncode, Interleave, ZipLongest), the string transforms (slug/kebab/snake/Pascal casing,
-diacritic removal) with the comparable and numeric extensions, `WeekPattern` presets and
-parse/format, and the deterministic single-flow use of the `Bodu.Threading` async primitives
-(`AsyncLazy`, `AsyncManualResetEvent`, `AsyncLock`). *Package: `Bodu.Core`.*
+diacritic removal) with the comparable and numeric extensions, `DayOfWeekSet` presets and
+parse/format with a schedule window over the numeric calendar value sets, and the deterministic
+single-flow use of the `Bodu.Threading` async primitives (`AsyncLazy`, `AsyncManualResetEvent`,
+`AsyncLock`). *Package: `Bodu.Core`.*
 
 ### Bodu.Core.Samples.TextEncoding
 

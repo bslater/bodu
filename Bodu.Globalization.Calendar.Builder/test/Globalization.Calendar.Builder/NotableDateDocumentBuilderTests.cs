@@ -23,7 +23,7 @@ public partial class NotableDateDocumentBuilderTests
             .WithMetadata(name: "Sample", description: "A sample document.", "unit-test")
             .WithResolutionPolicy(p => p
                 .WithDuplicatePolicy(RangeResolution.DuplicatePolicy.KeepFirst)
-                .WithWorkingWeek(WeekPattern.MondayToFriday))
+                .WithWorkingWeek(DayOfWeekSet.MondayToFriday))
             .AddAdjustmentPolicy("weekend-to-monday", a => a
                 .WithDescription("Observe weekend holidays on the next working day.")
                 .When(AdjustmentTrigger.IfWeekend)

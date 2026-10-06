@@ -196,5 +196,6 @@ Bodu.Core.Samples.FunctionalRailway/
 ## Related
 
 - `Bodu.Core.Samples.CoreToolbox` - sequences, pooled buffers, the enumerable operators, string and
-  numeric extensions, `WeekPattern`, and the async threading primitives.
+  numeric extensions, `DayOfWeekSet` and the other calendar value sets, and the async threading
+  primitives.
 - `Bodu.Core.Samples.TextEncoding` - BOM detection, transcoding, and pooled string encoding.

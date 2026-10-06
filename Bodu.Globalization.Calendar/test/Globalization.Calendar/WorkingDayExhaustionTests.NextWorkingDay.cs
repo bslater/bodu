@@ -16,7 +16,7 @@ public partial class WorkingDayExhaustionTests
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = new DateOnly(2025, 6, 2).NextWorkingDay(Service, "XX", WeekPattern.Empty);
+            _ = new DateOnly(2025, 6, 2).NextWorkingDay(Service, "XX", DayOfWeekSet.Empty);
         });
     }
 }

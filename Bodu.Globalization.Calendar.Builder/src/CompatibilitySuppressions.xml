@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids
+
+  Every entry here is a deliberate, reviewed decision. A suppression that nobody can explain is a
+  silenced bug, so do not add one without recording why below, and delete one the moment the reason
+  stops holding. Regenerating this file with -p:ApiCompatGenerateSuppressionFile=true rewrites it and
+  DISCARDS these comments - regenerate into a scratch copy and merge by hand instead.
+
+  Bodu.Core's DayOfWeekSet replaces WeekPattern in 1.3.0, so ResolutionPolicyBuilder.WithWorkingWeek
+  takes a DayOfWeekSet (CP0002). This is a deliberate break inside a minor release, chosen for 1.3.0
+  and called out in its release notes. Delete these entries when the Stable validation baseline moves
+  to 1.3.0.
+-->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder.WithWorkingWeek(Bodu.WeekPattern)</Target>
+    <Left>lib/net10.0/Bodu.Globalization.Calendar.Builder.dll</Left>
+    <Right>lib/net10.0/Bodu.Globalization.Calendar.Builder.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder.WithWorkingWeek(Bodu.WeekPattern)</Target>
+    <Left>lib/net8.0/Bodu.Globalization.Calendar.Builder.dll</Left>
+    <Right>lib/net8.0/Bodu.Globalization.Calendar.Builder.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

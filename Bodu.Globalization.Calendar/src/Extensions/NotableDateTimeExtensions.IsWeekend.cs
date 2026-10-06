@@ -16,6 +16,6 @@ public static partial class NotableDateTimeExtensions
     /// <returns>
     /// <see langword="true" /> if the date is not a working-week day; otherwise <see langword="false" />.
     /// </returns>
-    public static bool IsWeekend(this DateTime date, WeekPattern? workingWeek = null) =>
+    public static bool IsWeekend(this DateTime date, DayOfWeekSet? workingWeek = null) =>
         DateOnly.FromDateTime(date).IsWeekend(workingWeek);
 }

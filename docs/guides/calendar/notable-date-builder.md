@@ -98,7 +98,7 @@ builder.AddOverride(o => o
 ```csharp
 builder.WithResolutionPolicy(p => p
     .WithDuplicatePolicy(Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.KeepFirst)
-    .WithWorkingWeek(WeekPattern.MondayToFriday));
+    .WithWorkingWeek(DayOfWeekSet.MondayToFriday));
 ```
 
 ## Materializing, serializing, and saving

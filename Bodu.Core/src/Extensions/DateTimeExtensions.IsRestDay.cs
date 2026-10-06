@@ -10,7 +10,7 @@ public static partial class DateTimeExtensions
 {
     /// <summary>
     /// Determines whether the specified <see cref="DateTime" /> falls on a day that is not selected in the supplied
-    /// <see cref="WeekPattern" /> working week.
+    /// <see cref="DayOfWeekSet" /> working week.
     /// </summary>
     /// <param name="dateTime">The date and time to evaluate.</param>
     /// <param name="workingWeek">The working-week pattern.</param>
@@ -19,10 +19,10 @@ public static partial class DateTimeExtensions
     /// <paramref name="workingWeek" />; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This predicate is the complement of <see cref="IsInWorkingWeek(DateTime, WeekPattern)" /> and considers only the
-    /// day-of-week dimension. It does not consult any holiday catalogue.
+    /// This predicate is the complement of <see cref="IsInWorkingWeek(DateTime, DayOfWeekSet)" /> and considers only
+    /// the day-of-week dimension. It does not consult any holiday catalogue.
     /// </remarks>
-    public static bool IsRestDay(this DateTime dateTime, WeekPattern workingWeek) =>
+    public static bool IsRestDay(this DateTime dateTime, DayOfWeekSet workingWeek) =>
         !workingWeek.Contains(dateTime.DayOfWeek);
 
     /// <summary>
@@ -44,5 +44,5 @@ public static partial class DateTimeExtensions
     /// pattern.
     /// </exception>
     public static bool IsRestDay(this DateTime dateTime, WorkingDaysOfWeek workingWeek) =>
-        IsRestDay(dateTime, workingWeek.ToWeekPattern());
+        IsRestDay(dateTime, workingWeek.ToDayOfWeekSet());
 }
