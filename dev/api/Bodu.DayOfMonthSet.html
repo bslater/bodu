@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_DayOfMonthSet" data-uid="Bodu.DayOfMonthSet" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 DayOfMonthSet Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,14 +104,14 @@ DayOfMonthSet Struct
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Enumerator.cs">DayOfMonthSet.Enumerator.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Enumerator.cs">DayOfMonthSet.Enumerator.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable set of days of the month, 1 to 31.</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct DayOfMonthSet : IEquatable&lt;DayOfMonthSet&gt;, IEqualityOperators&lt;DayOfMonthSet, DayOfMonthSet, bool&gt;, IBitwiseOperators&lt;DayOfMonthSet, DayOfMonthSet, DayOfMonthSet&gt;, IParsable&lt;DayOfMonthSet&gt;, IEnumerable&lt;int&gt;, IEnumerable</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct DayOfMonthSet : ICalendarValueSet&lt;DayOfMonthSet, int&gt;, IEquatable&lt;DayOfMonthSet&gt;, IEqualityOperators&lt;DayOfMonthSet, DayOfMonthSet, bool&gt;, IBitwiseOperators&lt;DayOfMonthSet, DayOfMonthSet, DayOfMonthSet&gt;, IParsable&lt;DayOfMonthSet&gt;, IFormattable, IEnumerable&lt;int&gt;, IEnumerable</code></pre>
   </div>
 
 
@@ -121,10 +121,12 @@ DayOfMonthSet Struct
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="Bodu.ICalendarValueSet-2.html">ICalendarValueSet</a>&lt;<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iequalityoperators-3">IEqualityOperators</a>&lt;<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ibitwiseoperators-3">IBitwiseOperators</a>&lt;<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
     </dd>
@@ -375,7 +377,9 @@ question, which a caller answers by testing <code>DateTime.DaysInMonth(year, mon
 The text form lists the days in ascending order, separated by commas, each run of two or more consecutive days
 written as an inclusive range, so <code>"1,15"</code> selects the 1st and the 15th. The empty set is the empty string.
 <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Parse_System_String_">Parse(string)</a> reads any list of values and ranges in that form, in any order, and
-<a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString">ToString()</a> writes the canonical one.
+<a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString">ToString()</a> writes the canonical one. <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_">ToString(string?)</a> also writes every day without
+ranges, or a binary form with one character per day, and <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Parse_System_String_">Parse(string)</a> and
+<a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_System_String_System_String_">ParseExact(string, string)</a> read them back.
 </p>
 <p>
 <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToUInt64">ToUInt64()</a> and <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_FromUInt64_System_UInt64_">FromUInt64(ulong)</a> expose the bits directly: bit <code>n</code> selects day
@@ -393,7 +397,7 @@ written as an inclusive range, so <code>"1,15"</code> selects the 1st and the 15
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet__ctor_System_Int32___" data-uid="Bodu.DayOfMonthSet.#ctor(System.Int32[])">
   DayOfMonthSet(params int[]?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -438,48 +442,12 @@ written as an inclusive range, so <code>"1,15"</code> selects the 1st and the 15
 </h2>
 
 
-  <a id="Bodu_DayOfMonthSet_All_" data-uid="Bodu.DayOfMonthSet.All*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_DayOfMonthSet_All" data-uid="Bodu.DayOfMonthSet.All">
-  All
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets the set that selects every day from 1 to 31.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DayOfMonthSet All { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
   <a id="Bodu_DayOfMonthSet_Count_" data-uid="Bodu.DayOfMonthSet.Count*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_Count" data-uid="Bodu.DayOfMonthSet.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -511,42 +479,6 @@ written as an inclusive range, so <code>"1,15"</code> selects the 1st and the 15
   </section>
 
 
-  <a id="Bodu_DayOfMonthSet_Empty_" data-uid="Bodu.DayOfMonthSet.Empty*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_DayOfMonthSet_Empty" data-uid="Bodu.DayOfMonthSet.Empty">
-  Empty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets the set that selects no day.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DayOfMonthSet Empty { get; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
   <h2 class="section" id="methods">Methods
 </h2>
 
@@ -556,7 +488,7 @@ written as an inclusive range, so <code>"1,15"</code> selects the 1st and the 15
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_Contains_System_Int32_" data-uid="Bodu.DayOfMonthSet.Contains(System.Int32)">
   Contains(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -600,7 +532,7 @@ including when <code class="paramref">day</code> is outside 1 to 31.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_Equals_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.Equals(Bodu.DayOfMonthSet)">
   Equals(DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -643,7 +575,7 @@ including when <code class="paramref">day</code> is outside 1 to 31.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_Equals_System_Object_" data-uid="Bodu.DayOfMonthSet.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -681,61 +613,12 @@ including when <code class="paramref">day</code> is outside 1 to 31.</p>
   </section>
 
 
-  <a id="Bodu_DayOfMonthSet_FromUInt64_" data-uid="Bodu.DayOfMonthSet.FromUInt64*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_DayOfMonthSet_FromUInt64_System_UInt64_" data-uid="Bodu.DayOfMonthSet.FromUInt64(System.UInt64)">
-  FromUInt64(ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Creates a set from its bits, bit <code>n</code> selecting day <code>1 + n</code>.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DayOfMonthSet FromUInt64(ulong bits)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>bits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
-    <dd><p>The bits.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
-    <dd><p>The set that <code class="paramref">bits</code> describe.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p>Thrown when <code class="paramref">bits</code> sets a bit above bit 30, which selects no day.</p>
-</dd>
-  </dl>
-
-
-  </section>
-
-
   <a id="Bodu_DayOfMonthSet_GetEnumerator_" data-uid="Bodu.DayOfMonthSet.GetEnumerator*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_GetEnumerator" data-uid="Bodu.DayOfMonthSet.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -772,7 +655,7 @@ including when <code class="paramref">day</code> is outside 1 to 31.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_GetHashCode" data-uid="Bodu.DayOfMonthSet.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -809,11 +692,12 @@ including when <code class="paramref">day</code> is outside 1 to 31.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_Parse_System_String_" data-uid="Bodu.DayOfMonthSet.Parse(System.String)">
   Parse(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Converts a comma-separated list of days and inclusive ranges into a <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>.</p>
+  <div class="markdown level1 summary"><p>Converts text in one of the forms <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> writes into a
+<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, detecting the form.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -842,9 +726,17 @@ including when <code class="paramref">day</code> is outside 1 to 31.</p>
 
 
   <h4 class="section" id="Bodu_DayOfMonthSet_Parse_System_String__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Whitespace around the list and around each value is ignored, and an empty or blank string is the empty set.
-Values are unsigned decimal integers, a range <code>a-b</code> needs <code>a</code> no greater than <code>b</code>, and values may
-repeat or overlap.</p>
+  <div class="markdown level1 remarks"><p>
+A text of exactly 31 characters, each <code>0</code> or <code>1</code>, is the binary form, day 1 first. Any other text is a
+comma-separated list of days and inclusive ranges: whitespace around the list and around each value is ignored,
+an empty or blank string is the empty set, values are unsigned decimal integers, a range <code>a-b</code> needs
+<code>a</code> no greater than <code>b</code>, and values may repeat or overlap.
+</p>
+<p>
+The binary test comes first and reads the text as given, so text made only of <code>0</code> and <code>1</code> is a list
+only when it is not 31 characters long. <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_System_String_System_String_">ParseExact(string, string)</a> with the <code>"G"</code> format
+reads any text as a list.
+</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -853,7 +745,7 @@ repeat or overlap.</p>
     <dd><p>Thrown when <code class="paramref">s</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when <code class="paramref">s</code> is not a list of values and ranges from 1 to 31.</p>
+    <dd><p>Thrown when <code class="paramref">s</code> is neither the binary form nor a list of values and ranges from 1 to 31.</p>
 </dd>
   </dl>
 
@@ -866,7 +758,7 @@ repeat or overlap.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_ToString" data-uid="Bodu.DayOfMonthSet.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -883,7 +775,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The text form, such as <code>&quot;1,15&quot;</code>, or the empty string for the empty set.</p>
+    <dd><p>The text form, such as <code>&quot;1,15,30-31&quot;</code>, or the empty string for the empty set.</p>
 </dd>
   </dl>
 
@@ -899,12 +791,128 @@ of two or more consecutive days written as an inclusive range.</p>
   </section>
 
 
+  <a id="Bodu_DayOfMonthSet_ToString_" data-uid="Bodu.DayOfMonthSet.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_ToString_System_String_" data-uid="Bodu.DayOfMonthSet.ToString(System.String)">
+  ToString(string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the set as text in the specified format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or empty for the default.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_DayOfMonthSet_ToString_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The formats are described at <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_DayOfMonthSet_ToString_" data-uid="Bodu.DayOfMonthSet.ToString*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.DayOfMonthSet.ToString(System.String,System.IFormatProvider)">
+  ToString(string?, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Returns the set as text in the specified format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToString(string? format, IFormatProvider? formatProvider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or empty for the default.</p>
+</dd>
+    <dt><code>formatProvider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>Ignored; the text does not depend on culture.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_DayOfMonthSet_ToString_System_String_System_IFormatProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The formats, whose letters are read in either case, are:
+</p>
+<table><thead><tr><th class="term">Format</th><th class="description">Text</th></tr></thead><tbody><tr><td class="term"><code>G</code>, the default</td><td class="description">
+The days in ascending order, separated by commas, each run of two or more consecutive days as an inclusive
+range: <code>"1,15,30-31"</code>.
+</td></tr><tr><td class="term"><code>L</code></td><td class="description">Every selected day listed, without ranges: <code>"1,15,30,31"</code>.</td></tr><tr><td class="term"><code>B</code>, <code>0</code>, <code>1</code>, <code>01</code></td><td class="description">
+Binary, one character per day from 1 to 31, 1 first, with <code>1</code> for a selected day:
+<code>"1000000000000010000000000000011"</code>.
+</td></tr></tbody></table>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
   <a id="Bodu_DayOfMonthSet_ToUInt64_" data-uid="Bodu.DayOfMonthSet.ToUInt64*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_ToUInt64" data-uid="Bodu.DayOfMonthSet.ToUInt64">
   ToUInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -941,11 +949,12 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_TryParse_System_String_Bodu_DayOfMonthSet__" data-uid="Bodu.DayOfMonthSet.TryParse(System.String,Bodu.DayOfMonthSet@)">
   TryParse(string?, out DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Attempts to convert a comma-separated list of days and inclusive ranges into a <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>.</p>
+  <div class="markdown level1 summary"><p>Attempts to convert text in one of the forms <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> writes into a
+<a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>, detecting the form.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -966,8 +975,8 @@ of two or more consecutive days written as an inclusive range.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">s</code> is a list of values and ranges from 1 to 31; otherwise
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">s</code> is the binary form or a list of values and ranges from 1 to
+31; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
 
@@ -991,7 +1000,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_With_System_Int32_" data-uid="Bodu.DayOfMonthSet.With(System.Int32)">
   With(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1040,7 +1049,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_Without_System_Int32_" data-uid="Bodu.DayOfMonthSet.Without(System.Int32)">
   Without(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1088,12 +1097,194 @@ of two or more consecutive days written as an inclusive range.</p>
 </h2>
 
 
+  <a id="Bodu_DayOfMonthSet_All_" data-uid="Bodu.DayOfMonthSet.All*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_All" data-uid="Bodu.DayOfMonthSet.All">
+  All
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the set that selects every day from 1 to 31.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static DayOfMonthSet All { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_DayOfMonthSet_Empty_" data-uid="Bodu.DayOfMonthSet.Empty*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_Empty" data-uid="Bodu.DayOfMonthSet.Empty">
+  Empty
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets the set that selects no day.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static DayOfMonthSet Empty { get; }</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_DayOfMonthSet_FromUInt64_" data-uid="Bodu.DayOfMonthSet.FromUInt64*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_FromUInt64_System_UInt64_" data-uid="Bodu.DayOfMonthSet.FromUInt64(System.UInt64)">
+  FromUInt64(ulong)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Creates a set from its bits, bit <code>n</code> selecting day <code>1 + n</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static DayOfMonthSet FromUInt64(ulong bits)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bits</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.uint64">ulong</a></dt>
+    <dd><p>The bits.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
+    <dd><p>The set that <code class="paramref">bits</code> describe.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p>Thrown when <code class="paramref">bits</code> sets a bit above bit 30, which selects no day.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_DayOfMonthSet_ParseExact_" data-uid="Bodu.DayOfMonthSet.ParseExact*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_ParseExact_System_String_System_String_" data-uid="Bodu.DayOfMonthSet.ParseExact(System.String,System.String)">
+  ParseExact(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts text in the specified format into a <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static DayOfMonthSet ParseExact(string s, string format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to convert.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format of <code class="paramref">s</code>, one of those <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_">ToString(string?)</a> writes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
+    <dd><p>The set the text describes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_DayOfMonthSet_ParseExact_System_String_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p><code>&quot;G&quot;</code> reads a list of values and ranges as <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Parse_System_String_">Parse(string)</a> reads one, <code>&quot;L&quot;</code> a list of
+values without ranges, and <code>&quot;B&quot;</code>, <code>&quot;0&quot;</code>, <code>&quot;1&quot;</code> or <code>&quot;01&quot;</code> the binary form alone, 31
+characters with no whitespace. The format letters are read in either case.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p>Thrown when <code class="paramref">s</code> or <code class="paramref">format</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format, or <code class="paramref">s</code> is not text in that
+format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
   <a id="Bodu_DayOfMonthSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator_" data-uid="Bodu.DayOfMonthSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator" data-uid="Bodu.DayOfMonthSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator">
   IEnumerable&lt;int&gt;.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1130,7 +1321,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.DayOfMonthSet.System#Collections#IEnumerable#GetEnumerator">
   IEnumerable.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1167,7 +1358,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_System_IParsable_Bodu_DayOfMonthSet__Parse_System_String_System_IFormatProvider_" data-uid="Bodu.DayOfMonthSet.System#IParsable{Bodu#DayOfMonthSet}#Parse(System.String,System.IFormatProvider)">
   IParsable&lt;DayOfMonthSet&gt;.Parse(string, IFormatProvider)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1225,7 +1416,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_System_IParsable_Bodu_DayOfMonthSet__TryParse_System_String_System_IFormatProvider_Bodu_DayOfMonthSet__" data-uid="Bodu.DayOfMonthSet.System#IParsable{Bodu#DayOfMonthSet}#TryParse(System.String,System.IFormatProvider,Bodu.DayOfMonthSet@)">
   IParsable&lt;DayOfMonthSet&gt;.TryParse(string, IFormatProvider, out DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1269,12 +1460,65 @@ of two or more consecutive days written as an inclusive range.</p>
   </section>
 
 
+  <a id="Bodu_DayOfMonthSet_TryParseExact_" data-uid="Bodu.DayOfMonthSet.TryParseExact*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_DayOfMonthSet_TryParseExact_System_String_System_String_Bodu_DayOfMonthSet__" data-uid="Bodu.DayOfMonthSet.TryParseExact(System.String,System.String,Bodu.DayOfMonthSet@)">
+  TryParseExact(string?, string?, out DayOfMonthSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to convert text in the specified format into a <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static bool TryParseExact(string? s, string? format, out DayOfMonthSet result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The text to convert.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The format of <code class="paramref">s</code>, one of those <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_">ToString(string?)</a> writes.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.DayOfMonthSet.html">DayOfMonthSet</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the set the text describes; otherwise <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">format</code> is a supported format and <code class="paramref">s</code> is text
+in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_DayOfMonthSet_TryParseExact_System_String_System_String_Bodu_DayOfMonthSet___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The text is read as <a class="xref" href="Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_System_String_System_String_">ParseExact(string, string)</a> reads it.</p>
+</div>
+
+
+
+  </section>
+
+
   <a id="Bodu_DayOfMonthSet_op_BitwiseAnd_" data-uid="Bodu.DayOfMonthSet.op_BitwiseAnd*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_op_BitwiseAnd_Bodu_DayOfMonthSet_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.op_BitwiseAnd(Bodu.DayOfMonthSet,Bodu.DayOfMonthSet)">
   operator &amp;(DayOfMonthSet, DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1320,7 +1564,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_op_BitwiseOr_Bodu_DayOfMonthSet_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.op_BitwiseOr(Bodu.DayOfMonthSet,Bodu.DayOfMonthSet)">
   operator |(DayOfMonthSet, DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1366,7 +1610,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_op_Equality_Bodu_DayOfMonthSet_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.op_Equality(Bodu.DayOfMonthSet,Bodu.DayOfMonthSet)">
   operator ==(DayOfMonthSet, DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1412,7 +1656,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_op_ExclusiveOr_Bodu_DayOfMonthSet_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.op_ExclusiveOr(Bodu.DayOfMonthSet,Bodu.DayOfMonthSet)">
   operator ^(DayOfMonthSet, DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1458,7 +1702,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_op_Inequality_Bodu_DayOfMonthSet_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.op_Inequality(Bodu.DayOfMonthSet,Bodu.DayOfMonthSet)">
   operator !=(DayOfMonthSet, DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1504,7 +1748,7 @@ of two or more consecutive days written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_DayOfMonthSet_op_OnesComplement_Bodu_DayOfMonthSet_" data-uid="Bodu.DayOfMonthSet.op_OnesComplement(Bodu.DayOfMonthSet)">
   operator ~(DayOfMonthSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/faec4d42b40356ecee22dd229065823d6981b3df/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d97f25ffd12ae7e1c1fa32db92c6305baf62352f/Bodu.Core/src/DayOfMonthSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1569,7 +1813,7 @@ of two or more consecutive days written as an inclusive range.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: faec4d4 · Built: 2026-10-06 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d97f25f · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

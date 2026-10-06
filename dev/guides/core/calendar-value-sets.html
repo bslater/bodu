@@ -93,7 +93,7 @@
 <tr>
 <th>Type</th>
 <th>Values</th>
-<th>Text form</th>
+<th>Default text form</th>
 </tr>
 </thead>
 <tbody>
@@ -129,9 +129,10 @@
 </tr>
 </tbody>
 </table>
-<p>Each set holds one bit per value, so it never allocates, and testing a value, adding or removing one, or combining two
-sets is a single bitwise operation. The five numeric sets share one shape, which this page describes; <code>DayOfWeekSet</code>
-has the same members over <code>DayOfWeek</code>, plus its working-week presets and mask formats.</p>
+<p>A set never allocates, and testing a value, adding or removing one, or combining two sets is a single bitwise
+operation. All six implement <a href="#pattern-6---work-with-any-set"><code>ICalendarValueSet&lt;TSelf, TValue&gt;</code></a>, so code written
+once works with any of them. The five numeric sets share one shape, which this page describes; <code>DayOfWeekSet</code> has the
+same members over <code>DayOfWeek</code>, plus its working-week presets and mask formats.</p>
 <h2 id="pattern-1---build-and-test-a-set">Pattern 1 - build and test a set</h2>
 <!-- run -->
 <pre><code class="lang-csharp">using Bodu;
@@ -169,7 +170,93 @@ bool ok = SecondSet.TryParse(&quot;*/10&quot;, out SecondSet result); // false: 
 <p>A value outside the range, a descending range such as <code>&quot;3-1&quot;</code>, a sign, a step, or an empty item fails: <code>Parse</code> throws
 <code>FormatException</code> naming the text and the range, and <code>TryParse</code> returns <code>false</code> with the empty set. Each type
 implements <code>IParsable&lt;TSelf&gt;</code>; its members ignore the format provider, because the text does not depend on culture.</p>
-<h2 id="pattern-3---combine-sets">Pattern 3 - combine sets</h2>
+<h2 id="pattern-3---write-and-read-the-other-formats">Pattern 3 - write and read the other formats</h2>
+<p><code>ToString(format)</code> writes a set in one of three formats, and <code>ParseExact</code> and <code>TryParseExact</code> read text in the format
+you name:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Text</th>
+<th>January to March and December</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>G</code>, the default</td>
+<td>the list, each run of two or more consecutive values as a range</td>
+<td><code>1-3,12</code></td>
+</tr>
+<tr>
+<td><code>L</code></td>
+<td>every selected value, without ranges</td>
+<td><code>1,2,3,12</code></td>
+</tr>
+<tr>
+<td><code>B</code>, <code>0</code>, <code>1</code>, <code>01</code></td>
+<td>binary, one digit per value of the range, lowest first, <code>1</code> for a selected value</td>
+<td><code>111000000001</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>MonthSet</code> also writes a mask of the months' initials, January first, as <code>DayOfWeekSet</code> does for days:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Mask</th>
+<th>January to March and December</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>J</code></td>
+<td>each selected month's initial in its place, <code>_</code> for a month not selected</td>
+<td><code>JFM________D</code></td>
+</tr>
+<tr>
+<td><code>E</code>, <code>U</code>, <code>D</code>, <code>A</code></td>
+<td>the same, with a space, <code>_</code>, <code>-</code> or <code>*</code> for a month not selected</td>
+<td><code>JFM--------D</code> for <code>D</code></td>
+</tr>
+<tr>
+<td><code>JE</code>, <code>JU</code>, <code>JD</code>, <code>JA</code></td>
+<td>the same as <code>E</code>, <code>U</code>, <code>D</code> and <code>A</code></td>
+<td><code>JFM--------D</code> for <code>JD</code></td>
+</tr>
+</tbody>
+</table>
+<p>The format letters, and a mask's initials, are read in either case. <code>ParseExact</code> with <code>J</code> reads a mask with any one
+placeholder throughout, and with a format that names a placeholder, that placeholder alone. An unsupported format
+throws <code>FormatException</code> from <code>ToString</code> and <code>ParseExact</code>, and makes <code>TryParseExact</code> return <code>false</code>. Each type also
+implements <code>IFormattable</code>, so <code>$&quot;{set:L}&quot;</code> and <code>string.Format(&quot;{0:B}&quot;, set)</code> apply the format.</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+var months = new MonthSet(1, 2, 3, 12);
+
+Console.WriteLine(months.ToString(&quot;L&quot;));        // 1,2,3,12
+Console.WriteLine(months.ToString(&quot;B&quot;));        // 111000000001
+Console.WriteLine(months.ToString(&quot;J&quot;));        // JFM________D
+Console.WriteLine($&quot;{new HourSet(9, 17):B}&quot;);   // 000000000100000001000000
+
+MonthSet fromBinary  = MonthSet.ParseExact(&quot;111000000001&quot;, &quot;B&quot;);
+MonthSet fromLetters = MonthSet.ParseExact(&quot;jfm--------d&quot;, &quot;J&quot;);
+bool rangeUnderL     = MonthSet.TryParseExact(&quot;1-3,12&quot;, &quot;L&quot;, out _);   // false: L has no ranges
+</code></pre>
+<p><code>Parse</code> and <code>TryParse</code> read every format without being told which, testing the forms in a fixed order:</p>
+<ol>
+<li>Text that is exactly one <code>0</code> or <code>1</code> per value of the range, as given, is binary: twelve digits for a <code>MonthSet</code>,
+sixty for a <code>MinuteSet</code>.</li>
+<li>For a <code>MonthSet</code>, twelve characters, each a month's initial in its place or a placeholder, the same one throughout,
+are the letter mask.</li>
+<li>Anything else is a list.</li>
+</ol>
+<p>So binary text is binary even where it would also read as a list: to a <code>MonthSet</code>, <code>&quot;000000000001&quot;</code> is December,
+though as a list it would be January. Zeros and ones of any other length are a list, so <code>&quot;10&quot;</code> is October, and binary
+text with whitespace around it is read as a list too. Text that fits none of the forms fails with the list's message.
+To read one format only, call <code>ParseExact</code>.</p>
+<h2 id="pattern-4---combine-sets">Pattern 4 - combine sets</h2>
 <p><code>|</code> is union, <code>&amp;</code> intersection, <code>^</code> symmetric difference, and <code>~</code> the complement within the type's range:</p>
 <!-- run -->
 <pre><code class="lang-csharp">using Bodu;
@@ -186,7 +273,7 @@ Console.WriteLine(overlap == HourSet.Empty);   // True
 </code></pre>
 <p>Two sets are equal when they select the same values. The sets are not ordered; to test whether one contains another,
 use <code>(a &amp; b) == b</code>.</p>
-<h2 id="pattern-4---enumerate-and-read-the-bits">Pattern 4 - enumerate and read the bits</h2>
+<h2 id="pattern-5---enumerate-and-read-the-bits">Pattern 5 - enumerate and read the bits</h2>
 <p><code>foreach</code> yields the selected values in ascending order without allocating. <code>ToUInt64</code> returns the bits and
 <code>FromUInt64</code> builds a set from them: bit <code>n</code> selects the type's smallest value plus <code>n</code>, so bit 0 is month 1 in a
 <code>MonthSet</code> and hour 0 in an <code>HourSet</code>.</p>
@@ -199,6 +286,34 @@ foreach (int day in DayOfMonthSet.Parse(&quot;1,15,28-31&quot;))
 ulong bits = new MonthSet(1, 12).ToUInt64();   // 0b1000_0000_0001: bits 0 and 11
 MonthSet again = MonthSet.FromUInt64(bits);    // January and December
 </code></pre>
+<h2 id="pattern-6---work-with-any-set">Pattern 6 - work with any set</h2>
+<p><code>ICalendarValueSet&lt;TSelf, TValue&gt;</code> declares what the six sets share: <code>Empty</code> and <code>All</code>, <code>Count</code>, <code>Contains</code>, <code>With</code>
+and <code>Without</code>, <code>FromUInt64</code> and <code>ToUInt64</code>, <code>ParseExact</code>, <code>TryParseExact</code> and <code>ToString(string)</code>, together with the
+operators, equality, <code>IParsable&lt;TSelf&gt;</code>, <code>IFormattable</code> and enumeration. <code>TValue</code> is <code>DayOfWeek</code> for <code>DayOfWeekSet</code> and
+<code>int</code> for the others. A method generic over the interface takes any of them:</p>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+static string Describe&lt;TSet, TValue&gt;(TSet set)
+    where TSet : ICalendarValueSet&lt;TSet, TValue&gt; =&gt;
+    set == TSet.All ? &quot;every value&quot; : $&quot;{set.Count} selected: {set}&quot;;
+
+static TSet ComplementOf&lt;TSet, TValue&gt;(string text)
+    where TSet : ICalendarValueSet&lt;TSet, TValue&gt; =&gt;
+    ~TSet.Parse(text, null);
+
+Console.WriteLine(Describe&lt;MonthSet, int&gt;(new MonthSet(1, 4, 7, 10)));      // 4 selected: 1,4,7,10
+Console.WriteLine(Describe&lt;DayOfWeekSet, DayOfWeek&gt;(DayOfWeekSet.Weekend)); // 2 selected: S_____S
+Console.WriteLine(ComplementOf&lt;HourSet, int&gt;(&quot;0-5,18-23&quot;));                 // 6-17
+</code></pre>
+<h2 id="how-the-sets-are-stored">How the sets are stored</h2>
+<p>Each set is a <code>readonly struct</code> holding one <code>ulong</code>. Bit <code>n</code> selects the value at offset <code>n</code> from the smallest value of
+the type's range, and every bit past the range is clear, so a range has at most 64 values and two sets are equal
+exactly when their bits are. These are the bits <code>ToUInt64</code> returns and <code>FromUInt64</code> takes; <code>FromUInt64</code> rejects a bit
+past the range rather than dropping it. No set converts to or from a number implicitly or explicitly: call <code>ToUInt64</code>
+and <code>FromUInt64</code>.</p>
+<p>A membership test is therefore a range check and a bit test, <code>Count</code> is one population count, <code>|</code>, <code>&amp;</code> and <code>^</code> are one
+bitwise instruction each, and <code>~</code> is one more to mask the complement to the range.</p>
 <h2 id="api-summary">API summary</h2>
 <p>Each of <code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code> and <code>SecondSet</code> has these members:</p>
 <table>
@@ -235,11 +350,19 @@ MonthSet again = MonthSet.FromUInt64(bits);    // January and December
 </tr>
 <tr>
 <td><code>Parse(string)</code>, <code>TryParse(string, out TSelf)</code></td>
-<td>Read a list of values and ranges.</td>
+<td>Read a list of values and ranges, or binary text; <code>MonthSet</code> also its letter mask.</td>
+</tr>
+<tr>
+<td><code>ParseExact(string, string)</code>, <code>TryParseExact(string, string, out TSelf)</code></td>
+<td>Read text in the format named.</td>
 </tr>
 <tr>
 <td><code>ToString()</code></td>
 <td>Write the canonical list.</td>
+</tr>
+<tr>
+<td><code>ToString(string)</code>, <code>ToString(string, IFormatProvider)</code></td>
+<td>Write the list (<code>G</code>), every value (<code>L</code>) or binary text (<code>B</code>); <code>MonthSet</code> also its letter mask (<code>J</code>).</td>
 </tr>
 <tr>
 <td><code>\|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code>, <code>==</code>, <code>!=</code></td>
@@ -251,6 +374,8 @@ MonthSet again = MonthSet.FromUInt64(bits);    // January and December
 </tr>
 </tbody>
 </table>
+<p>Each also implements <code>ICalendarValueSet&lt;TSelf, int&gt;</code>, as <code>DayOfWeekSet</code> implements
+<code>ICalendarValueSet&lt;DayOfWeekSet, DayOfWeek&gt;</code>.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="day-of-week-set.html">DayOfWeekSet</a> - the set of days of the week, with working-week presets and mask formats.</li>
@@ -277,7 +402,7 @@ set for the rule part it expresses, such as <code>ByMonth(MonthSet)</code> and <
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: faec4d4 · Built: 2026-10-06 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d97f25f · Built: 2026-10-06 (UTC)</span>
         </div>
       </div>
     </footer>

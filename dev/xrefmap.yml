@@ -21890,6 +21890,21 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.Parse
   fullName: Bodu.DayOfMonthSet.Parse
   nameWithType: DayOfMonthSet.Parse
+- uid: Bodu.DayOfMonthSet.ParseExact(System.String,System.String)
+  name: ParseExact(string, string)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_System_String_System_String_
+  commentId: M:Bodu.DayOfMonthSet.ParseExact(System.String,System.String)
+  name.vb: ParseExact(String, String)
+  fullName: Bodu.DayOfMonthSet.ParseExact(string, string)
+  fullName.vb: Bodu.DayOfMonthSet.ParseExact(String, String)
+  nameWithType: DayOfMonthSet.ParseExact(string, string)
+  nameWithType.vb: DayOfMonthSet.ParseExact(String, String)
+- uid: Bodu.DayOfMonthSet.ParseExact*
+  name: ParseExact
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_
+  commentId: Overload:Bodu.DayOfMonthSet.ParseExact
+  fullName: Bodu.DayOfMonthSet.ParseExact
+  nameWithType: DayOfMonthSet.ParseExact
 - uid: Bodu.DayOfMonthSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator
   name: IEnumerable<int>.GetEnumerator()
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator
@@ -21956,6 +21971,24 @@ references:
   commentId: M:Bodu.DayOfMonthSet.ToString
   fullName: Bodu.DayOfMonthSet.ToString()
   nameWithType: DayOfMonthSet.ToString()
+- uid: Bodu.DayOfMonthSet.ToString(System.String)
+  name: ToString(string?)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_
+  commentId: M:Bodu.DayOfMonthSet.ToString(System.String)
+  name.vb: ToString(String)
+  fullName: Bodu.DayOfMonthSet.ToString(string?)
+  fullName.vb: Bodu.DayOfMonthSet.ToString(String)
+  nameWithType: DayOfMonthSet.ToString(string?)
+  nameWithType.vb: DayOfMonthSet.ToString(String)
+- uid: Bodu.DayOfMonthSet.ToString(System.String,System.IFormatProvider)
+  name: ToString(string?, IFormatProvider?)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_System_String_System_IFormatProvider_
+  commentId: M:Bodu.DayOfMonthSet.ToString(System.String,System.IFormatProvider)
+  name.vb: ToString(String, IFormatProvider)
+  fullName: Bodu.DayOfMonthSet.ToString(string?, System.IFormatProvider?)
+  fullName.vb: Bodu.DayOfMonthSet.ToString(String, System.IFormatProvider)
+  nameWithType: DayOfMonthSet.ToString(string?, IFormatProvider?)
+  nameWithType.vb: DayOfMonthSet.ToString(String, IFormatProvider)
 - uid: Bodu.DayOfMonthSet.ToString*
   name: ToString
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString_
@@ -21989,6 +22022,21 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.TryParse
   fullName: Bodu.DayOfMonthSet.TryParse
   nameWithType: DayOfMonthSet.TryParse
+- uid: Bodu.DayOfMonthSet.TryParseExact(System.String,System.String,Bodu.DayOfMonthSet@)
+  name: TryParseExact(string?, string?, out DayOfMonthSet)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParseExact_System_String_System_String_Bodu_DayOfMonthSet__
+  commentId: M:Bodu.DayOfMonthSet.TryParseExact(System.String,System.String,Bodu.DayOfMonthSet@)
+  name.vb: TryParseExact(String, String, DayOfMonthSet)
+  fullName: Bodu.DayOfMonthSet.TryParseExact(string?, string?, out Bodu.DayOfMonthSet)
+  fullName.vb: Bodu.DayOfMonthSet.TryParseExact(String, String, Bodu.DayOfMonthSet)
+  nameWithType: DayOfMonthSet.TryParseExact(string?, string?, out DayOfMonthSet)
+  nameWithType.vb: DayOfMonthSet.TryParseExact(String, String, DayOfMonthSet)
+- uid: Bodu.DayOfMonthSet.TryParseExact*
+  name: TryParseExact
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParseExact_
+  commentId: Overload:Bodu.DayOfMonthSet.TryParseExact
+  fullName: Bodu.DayOfMonthSet.TryParseExact
+  nameWithType: DayOfMonthSet.TryParseExact
 - uid: Bodu.DayOfMonthSet.With(System.Int32)
   name: With(int)
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_With_System_Int32_
@@ -82566,6 +82614,21 @@ references:
   commentId: Overload:Bodu.HourSet.Parse
   fullName: Bodu.HourSet.Parse
   nameWithType: HourSet.Parse
+- uid: Bodu.HourSet.ParseExact(System.String,System.String)
+  name: ParseExact(string, string)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_ParseExact_System_String_System_String_
+  commentId: M:Bodu.HourSet.ParseExact(System.String,System.String)
+  name.vb: ParseExact(String, String)
+  fullName: Bodu.HourSet.ParseExact(string, string)
+  fullName.vb: Bodu.HourSet.ParseExact(String, String)
+  nameWithType: HourSet.ParseExact(string, string)
+  nameWithType.vb: HourSet.ParseExact(String, String)
+- uid: Bodu.HourSet.ParseExact*
+  name: ParseExact
+  href: api/Bodu.HourSet.html#Bodu_HourSet_ParseExact_
+  commentId: Overload:Bodu.HourSet.ParseExact
+  fullName: Bodu.HourSet.ParseExact
+  nameWithType: HourSet.ParseExact
 - uid: Bodu.HourSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator
   name: IEnumerable<int>.GetEnumerator()
   href: api/Bodu.HourSet.html#Bodu_HourSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator
@@ -82632,6 +82695,24 @@ references:
   commentId: M:Bodu.HourSet.ToString
   fullName: Bodu.HourSet.ToString()
   nameWithType: HourSet.ToString()
+- uid: Bodu.HourSet.ToString(System.String)
+  name: ToString(string?)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_
+  commentId: M:Bodu.HourSet.ToString(System.String)
+  name.vb: ToString(String)
+  fullName: Bodu.HourSet.ToString(string?)
+  fullName.vb: Bodu.HourSet.ToString(String)
+  nameWithType: HourSet.ToString(string?)
+  nameWithType.vb: HourSet.ToString(String)
+- uid: Bodu.HourSet.ToString(System.String,System.IFormatProvider)
+  name: ToString(string?, IFormatProvider?)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_
+  commentId: M:Bodu.HourSet.ToString(System.String,System.IFormatProvider)
+  name.vb: ToString(String, IFormatProvider)
+  fullName: Bodu.HourSet.ToString(string?, System.IFormatProvider?)
+  fullName.vb: Bodu.HourSet.ToString(String, System.IFormatProvider)
+  nameWithType: HourSet.ToString(string?, IFormatProvider?)
+  nameWithType.vb: HourSet.ToString(String, IFormatProvider)
 - uid: Bodu.HourSet.ToString*
   name: ToString
   href: api/Bodu.HourSet.html#Bodu_HourSet_ToString_
@@ -82665,6 +82746,21 @@ references:
   commentId: Overload:Bodu.HourSet.TryParse
   fullName: Bodu.HourSet.TryParse
   nameWithType: HourSet.TryParse
+- uid: Bodu.HourSet.TryParseExact(System.String,System.String,Bodu.HourSet@)
+  name: TryParseExact(string?, string?, out HourSet)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryParseExact_System_String_System_String_Bodu_HourSet__
+  commentId: M:Bodu.HourSet.TryParseExact(System.String,System.String,Bodu.HourSet@)
+  name.vb: TryParseExact(String, String, HourSet)
+  fullName: Bodu.HourSet.TryParseExact(string?, string?, out Bodu.HourSet)
+  fullName.vb: Bodu.HourSet.TryParseExact(String, String, Bodu.HourSet)
+  nameWithType: HourSet.TryParseExact(string?, string?, out HourSet)
+  nameWithType.vb: HourSet.TryParseExact(String, String, HourSet)
+- uid: Bodu.HourSet.TryParseExact*
+  name: TryParseExact
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryParseExact_
+  commentId: Overload:Bodu.HourSet.TryParseExact
+  fullName: Bodu.HourSet.TryParseExact
+  nameWithType: HourSet.TryParseExact
 - uid: Bodu.HourSet.With(System.Int32)
   name: With(int)
   href: api/Bodu.HourSet.html#Bodu_HourSet_With_System_Int32_
@@ -82803,6 +82899,195 @@ references:
   fullName.vb: Bodu.HourSet.Not
   nameWithType: HourSet.operator ~
   nameWithType.vb: HourSet.Not
+- uid: Bodu.ICalendarValueSet`2
+  name: ICalendarValueSet<TSelf, TValue>
+  href: api/Bodu.ICalendarValueSet-2.html
+  commentId: T:Bodu.ICalendarValueSet`2
+  name.vb: ICalendarValueSet(Of TSelf, TValue)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue)
+  nameWithType: ICalendarValueSet<TSelf, TValue>
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue)
+- uid: Bodu.ICalendarValueSet`2.All
+  name: All
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_All
+  commentId: P:Bodu.ICalendarValueSet`2.All
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.All
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).All
+  nameWithType: ICalendarValueSet<TSelf, TValue>.All
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).All
+- uid: Bodu.ICalendarValueSet`2.All*
+  name: All
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_All_
+  commentId: Overload:Bodu.ICalendarValueSet`2.All
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.All
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).All
+  nameWithType: ICalendarValueSet<TSelf, TValue>.All
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).All
+- uid: Bodu.ICalendarValueSet`2.Contains(`1)
+  name: Contains(TValue)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Contains__1_
+  commentId: M:Bodu.ICalendarValueSet`2.Contains(`1)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Contains(TValue)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Contains(TValue)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Contains(TValue)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Contains(TValue)
+- uid: Bodu.ICalendarValueSet`2.Contains*
+  name: Contains
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Contains_
+  commentId: Overload:Bodu.ICalendarValueSet`2.Contains
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Contains
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Contains
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Contains
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Contains
+- uid: Bodu.ICalendarValueSet`2.Count
+  name: Count
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Count
+  commentId: P:Bodu.ICalendarValueSet`2.Count
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Count
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Count
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Count
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Count
+- uid: Bodu.ICalendarValueSet`2.Count*
+  name: Count
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Count_
+  commentId: Overload:Bodu.ICalendarValueSet`2.Count
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Count
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Count
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Count
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Count
+- uid: Bodu.ICalendarValueSet`2.Empty
+  name: Empty
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Empty
+  commentId: P:Bodu.ICalendarValueSet`2.Empty
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Empty
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Empty
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Empty
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Empty
+- uid: Bodu.ICalendarValueSet`2.Empty*
+  name: Empty
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Empty_
+  commentId: Overload:Bodu.ICalendarValueSet`2.Empty
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Empty
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Empty
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Empty
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Empty
+- uid: Bodu.ICalendarValueSet`2.FromUInt64(System.UInt64)
+  name: FromUInt64(ulong)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_FromUInt64_System_UInt64_
+  commentId: M:Bodu.ICalendarValueSet`2.FromUInt64(System.UInt64)
+  name.vb: FromUInt64(ULong)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.FromUInt64(ulong)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).FromUInt64(ULong)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.FromUInt64(ulong)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).FromUInt64(ULong)
+- uid: Bodu.ICalendarValueSet`2.FromUInt64*
+  name: FromUInt64
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_FromUInt64_
+  commentId: Overload:Bodu.ICalendarValueSet`2.FromUInt64
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.FromUInt64
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).FromUInt64
+  nameWithType: ICalendarValueSet<TSelf, TValue>.FromUInt64
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).FromUInt64
+- uid: Bodu.ICalendarValueSet`2.ParseExact(System.String,System.String)
+  name: ParseExact(string, string)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ParseExact_System_String_System_String_
+  commentId: M:Bodu.ICalendarValueSet`2.ParseExact(System.String,System.String)
+  name.vb: ParseExact(String, String)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ParseExact(string, string)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ParseExact(String, String)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ParseExact(string, string)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ParseExact(String, String)
+- uid: Bodu.ICalendarValueSet`2.ParseExact*
+  name: ParseExact
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ParseExact_
+  commentId: Overload:Bodu.ICalendarValueSet`2.ParseExact
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ParseExact
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ParseExact
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ParseExact
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ParseExact
+- uid: Bodu.ICalendarValueSet`2.ToString(System.String)
+  name: ToString(string?)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ToString_System_String_
+  commentId: M:Bodu.ICalendarValueSet`2.ToString(System.String)
+  name.vb: ToString(String)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ToString(string?)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ToString(String)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ToString(string?)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ToString(String)
+- uid: Bodu.ICalendarValueSet`2.ToString*
+  name: ToString
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ToString_
+  commentId: Overload:Bodu.ICalendarValueSet`2.ToString
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ToString
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ToString
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ToString
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ToString
+- uid: Bodu.ICalendarValueSet`2.ToUInt64
+  name: ToUInt64()
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ToUInt64
+  commentId: M:Bodu.ICalendarValueSet`2.ToUInt64
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ToUInt64()
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ToUInt64()
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ToUInt64()
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ToUInt64()
+- uid: Bodu.ICalendarValueSet`2.ToUInt64*
+  name: ToUInt64
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ToUInt64_
+  commentId: Overload:Bodu.ICalendarValueSet`2.ToUInt64
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ToUInt64
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ToUInt64
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ToUInt64
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ToUInt64
+- uid: Bodu.ICalendarValueSet`2.TryParseExact(System.String,System.String,`0@)
+  name: TryParseExact(string?, string?, out TSelf)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_TryParseExact_System_String_System_String__0__
+  commentId: M:Bodu.ICalendarValueSet`2.TryParseExact(System.String,System.String,`0@)
+  name.vb: TryParseExact(String, String, TSelf)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.TryParseExact(string?, string?, out TSelf)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).TryParseExact(String, String, TSelf)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.TryParseExact(string?, string?, out TSelf)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).TryParseExact(String, String, TSelf)
+- uid: Bodu.ICalendarValueSet`2.TryParseExact*
+  name: TryParseExact
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_TryParseExact_
+  commentId: Overload:Bodu.ICalendarValueSet`2.TryParseExact
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.TryParseExact
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).TryParseExact
+  nameWithType: ICalendarValueSet<TSelf, TValue>.TryParseExact
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).TryParseExact
+- uid: Bodu.ICalendarValueSet`2.With(`1)
+  name: With(TValue)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_With__1_
+  commentId: M:Bodu.ICalendarValueSet`2.With(`1)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.With(TValue)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).With(TValue)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.With(TValue)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).With(TValue)
+- uid: Bodu.ICalendarValueSet`2.With*
+  name: With
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_With_
+  commentId: Overload:Bodu.ICalendarValueSet`2.With
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.With
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).With
+  nameWithType: ICalendarValueSet<TSelf, TValue>.With
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).With
+- uid: Bodu.ICalendarValueSet`2.Without(`1)
+  name: Without(TValue)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Without__1_
+  commentId: M:Bodu.ICalendarValueSet`2.Without(`1)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Without(TValue)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Without(TValue)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Without(TValue)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Without(TValue)
+- uid: Bodu.ICalendarValueSet`2.Without*
+  name: Without
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Without_
+  commentId: Overload:Bodu.ICalendarValueSet`2.Without
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.Without
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).Without
+  nameWithType: ICalendarValueSet<TSelf, TValue>.Without
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).Without
 - uid: Bodu.IO
   name: Bodu.IO
   href: api/Bodu.IO.html
@@ -101987,6 +102272,21 @@ references:
   commentId: Overload:Bodu.MinuteSet.Parse
   fullName: Bodu.MinuteSet.Parse
   nameWithType: MinuteSet.Parse
+- uid: Bodu.MinuteSet.ParseExact(System.String,System.String)
+  name: ParseExact(string, string)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ParseExact_System_String_System_String_
+  commentId: M:Bodu.MinuteSet.ParseExact(System.String,System.String)
+  name.vb: ParseExact(String, String)
+  fullName: Bodu.MinuteSet.ParseExact(string, string)
+  fullName.vb: Bodu.MinuteSet.ParseExact(String, String)
+  nameWithType: MinuteSet.ParseExact(string, string)
+  nameWithType.vb: MinuteSet.ParseExact(String, String)
+- uid: Bodu.MinuteSet.ParseExact*
+  name: ParseExact
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ParseExact_
+  commentId: Overload:Bodu.MinuteSet.ParseExact
+  fullName: Bodu.MinuteSet.ParseExact
+  nameWithType: MinuteSet.ParseExact
 - uid: Bodu.MinuteSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator
   name: IEnumerable<int>.GetEnumerator()
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator
@@ -102053,6 +102353,24 @@ references:
   commentId: M:Bodu.MinuteSet.ToString
   fullName: Bodu.MinuteSet.ToString()
   nameWithType: MinuteSet.ToString()
+- uid: Bodu.MinuteSet.ToString(System.String)
+  name: ToString(string?)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ToString_System_String_
+  commentId: M:Bodu.MinuteSet.ToString(System.String)
+  name.vb: ToString(String)
+  fullName: Bodu.MinuteSet.ToString(string?)
+  fullName.vb: Bodu.MinuteSet.ToString(String)
+  nameWithType: MinuteSet.ToString(string?)
+  nameWithType.vb: MinuteSet.ToString(String)
+- uid: Bodu.MinuteSet.ToString(System.String,System.IFormatProvider)
+  name: ToString(string?, IFormatProvider?)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ToString_System_String_System_IFormatProvider_
+  commentId: M:Bodu.MinuteSet.ToString(System.String,System.IFormatProvider)
+  name.vb: ToString(String, IFormatProvider)
+  fullName: Bodu.MinuteSet.ToString(string?, System.IFormatProvider?)
+  fullName.vb: Bodu.MinuteSet.ToString(String, System.IFormatProvider)
+  nameWithType: MinuteSet.ToString(string?, IFormatProvider?)
+  nameWithType.vb: MinuteSet.ToString(String, IFormatProvider)
 - uid: Bodu.MinuteSet.ToString*
   name: ToString
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ToString_
@@ -102086,6 +102404,21 @@ references:
   commentId: Overload:Bodu.MinuteSet.TryParse
   fullName: Bodu.MinuteSet.TryParse
   nameWithType: MinuteSet.TryParse
+- uid: Bodu.MinuteSet.TryParseExact(System.String,System.String,Bodu.MinuteSet@)
+  name: TryParseExact(string?, string?, out MinuteSet)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParseExact_System_String_System_String_Bodu_MinuteSet__
+  commentId: M:Bodu.MinuteSet.TryParseExact(System.String,System.String,Bodu.MinuteSet@)
+  name.vb: TryParseExact(String, String, MinuteSet)
+  fullName: Bodu.MinuteSet.TryParseExact(string?, string?, out Bodu.MinuteSet)
+  fullName.vb: Bodu.MinuteSet.TryParseExact(String, String, Bodu.MinuteSet)
+  nameWithType: MinuteSet.TryParseExact(string?, string?, out MinuteSet)
+  nameWithType.vb: MinuteSet.TryParseExact(String, String, MinuteSet)
+- uid: Bodu.MinuteSet.TryParseExact*
+  name: TryParseExact
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParseExact_
+  commentId: Overload:Bodu.MinuteSet.TryParseExact
+  fullName: Bodu.MinuteSet.TryParseExact
+  nameWithType: MinuteSet.TryParseExact
 - uid: Bodu.MinuteSet.With(System.Int32)
   name: With(int)
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_With_System_Int32_
@@ -102444,6 +102777,21 @@ references:
   commentId: Overload:Bodu.MonthSet.Parse
   fullName: Bodu.MonthSet.Parse
   nameWithType: MonthSet.Parse
+- uid: Bodu.MonthSet.ParseExact(System.String,System.String)
+  name: ParseExact(string, string)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_ParseExact_System_String_System_String_
+  commentId: M:Bodu.MonthSet.ParseExact(System.String,System.String)
+  name.vb: ParseExact(String, String)
+  fullName: Bodu.MonthSet.ParseExact(string, string)
+  fullName.vb: Bodu.MonthSet.ParseExact(String, String)
+  nameWithType: MonthSet.ParseExact(string, string)
+  nameWithType.vb: MonthSet.ParseExact(String, String)
+- uid: Bodu.MonthSet.ParseExact*
+  name: ParseExact
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_ParseExact_
+  commentId: Overload:Bodu.MonthSet.ParseExact
+  fullName: Bodu.MonthSet.ParseExact
+  nameWithType: MonthSet.ParseExact
 - uid: Bodu.MonthSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator
   name: IEnumerable<int>.GetEnumerator()
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator
@@ -102510,6 +102858,24 @@ references:
   commentId: M:Bodu.MonthSet.ToString
   fullName: Bodu.MonthSet.ToString()
   nameWithType: MonthSet.ToString()
+- uid: Bodu.MonthSet.ToString(System.String)
+  name: ToString(string?)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_ToString_System_String_
+  commentId: M:Bodu.MonthSet.ToString(System.String)
+  name.vb: ToString(String)
+  fullName: Bodu.MonthSet.ToString(string?)
+  fullName.vb: Bodu.MonthSet.ToString(String)
+  nameWithType: MonthSet.ToString(string?)
+  nameWithType.vb: MonthSet.ToString(String)
+- uid: Bodu.MonthSet.ToString(System.String,System.IFormatProvider)
+  name: ToString(string?, IFormatProvider?)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_ToString_System_String_System_IFormatProvider_
+  commentId: M:Bodu.MonthSet.ToString(System.String,System.IFormatProvider)
+  name.vb: ToString(String, IFormatProvider)
+  fullName: Bodu.MonthSet.ToString(string?, System.IFormatProvider?)
+  fullName.vb: Bodu.MonthSet.ToString(String, System.IFormatProvider)
+  nameWithType: MonthSet.ToString(string?, IFormatProvider?)
+  nameWithType.vb: MonthSet.ToString(String, IFormatProvider)
 - uid: Bodu.MonthSet.ToString*
   name: ToString
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_ToString_
@@ -102543,6 +102909,21 @@ references:
   commentId: Overload:Bodu.MonthSet.TryParse
   fullName: Bodu.MonthSet.TryParse
   nameWithType: MonthSet.TryParse
+- uid: Bodu.MonthSet.TryParseExact(System.String,System.String,Bodu.MonthSet@)
+  name: TryParseExact(string?, string?, out MonthSet)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParseExact_System_String_System_String_Bodu_MonthSet__
+  commentId: M:Bodu.MonthSet.TryParseExact(System.String,System.String,Bodu.MonthSet@)
+  name.vb: TryParseExact(String, String, MonthSet)
+  fullName: Bodu.MonthSet.TryParseExact(string?, string?, out Bodu.MonthSet)
+  fullName.vb: Bodu.MonthSet.TryParseExact(String, String, Bodu.MonthSet)
+  nameWithType: MonthSet.TryParseExact(string?, string?, out MonthSet)
+  nameWithType.vb: MonthSet.TryParseExact(String, String, MonthSet)
+- uid: Bodu.MonthSet.TryParseExact*
+  name: TryParseExact
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParseExact_
+  commentId: Overload:Bodu.MonthSet.TryParseExact
+  fullName: Bodu.MonthSet.TryParseExact
+  nameWithType: MonthSet.TryParseExact
 - uid: Bodu.MonthSet.With(System.Int32)
   name: With(int)
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_With_System_Int32_
@@ -112522,6 +112903,21 @@ references:
   commentId: Overload:Bodu.SecondSet.Parse
   fullName: Bodu.SecondSet.Parse
   nameWithType: SecondSet.Parse
+- uid: Bodu.SecondSet.ParseExact(System.String,System.String)
+  name: ParseExact(string, string)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_ParseExact_System_String_System_String_
+  commentId: M:Bodu.SecondSet.ParseExact(System.String,System.String)
+  name.vb: ParseExact(String, String)
+  fullName: Bodu.SecondSet.ParseExact(string, string)
+  fullName.vb: Bodu.SecondSet.ParseExact(String, String)
+  nameWithType: SecondSet.ParseExact(string, string)
+  nameWithType.vb: SecondSet.ParseExact(String, String)
+- uid: Bodu.SecondSet.ParseExact*
+  name: ParseExact
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_ParseExact_
+  commentId: Overload:Bodu.SecondSet.ParseExact
+  fullName: Bodu.SecondSet.ParseExact
+  nameWithType: SecondSet.ParseExact
 - uid: Bodu.SecondSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator
   name: IEnumerable<int>.GetEnumerator()
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator
@@ -112588,6 +112984,24 @@ references:
   commentId: M:Bodu.SecondSet.ToString
   fullName: Bodu.SecondSet.ToString()
   nameWithType: SecondSet.ToString()
+- uid: Bodu.SecondSet.ToString(System.String)
+  name: ToString(string?)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_ToString_System_String_
+  commentId: M:Bodu.SecondSet.ToString(System.String)
+  name.vb: ToString(String)
+  fullName: Bodu.SecondSet.ToString(string?)
+  fullName.vb: Bodu.SecondSet.ToString(String)
+  nameWithType: SecondSet.ToString(string?)
+  nameWithType.vb: SecondSet.ToString(String)
+- uid: Bodu.SecondSet.ToString(System.String,System.IFormatProvider)
+  name: ToString(string?, IFormatProvider?)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_ToString_System_String_System_IFormatProvider_
+  commentId: M:Bodu.SecondSet.ToString(System.String,System.IFormatProvider)
+  name.vb: ToString(String, IFormatProvider)
+  fullName: Bodu.SecondSet.ToString(string?, System.IFormatProvider?)
+  fullName.vb: Bodu.SecondSet.ToString(String, System.IFormatProvider)
+  nameWithType: SecondSet.ToString(string?, IFormatProvider?)
+  nameWithType.vb: SecondSet.ToString(String, IFormatProvider)
 - uid: Bodu.SecondSet.ToString*
   name: ToString
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_ToString_
@@ -112621,6 +113035,21 @@ references:
   commentId: Overload:Bodu.SecondSet.TryParse
   fullName: Bodu.SecondSet.TryParse
   nameWithType: SecondSet.TryParse
+- uid: Bodu.SecondSet.TryParseExact(System.String,System.String,Bodu.SecondSet@)
+  name: TryParseExact(string?, string?, out SecondSet)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParseExact_System_String_System_String_Bodu_SecondSet__
+  commentId: M:Bodu.SecondSet.TryParseExact(System.String,System.String,Bodu.SecondSet@)
+  name.vb: TryParseExact(String, String, SecondSet)
+  fullName: Bodu.SecondSet.TryParseExact(string?, string?, out Bodu.SecondSet)
+  fullName.vb: Bodu.SecondSet.TryParseExact(String, String, Bodu.SecondSet)
+  nameWithType: SecondSet.TryParseExact(string?, string?, out SecondSet)
+  nameWithType.vb: SecondSet.TryParseExact(String, String, SecondSet)
+- uid: Bodu.SecondSet.TryParseExact*
+  name: TryParseExact
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParseExact_
+  commentId: Overload:Bodu.SecondSet.TryParseExact
+  fullName: Bodu.SecondSet.TryParseExact
+  nameWithType: SecondSet.TryParseExact
 - uid: Bodu.SecondSet.With(System.Int32)
   name: With(int)
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_With_System_Int32_
@@ -155337,6 +155766,21 @@ references:
   fullName.vb: Bodu.ThrowHelper.ThrowIfArrayTypeIsNotCompatible(Of TExpected)(System.Array, String)
   nameWithType: ThrowHelper.ThrowIfArrayTypeIsNotCompatible<TExpected>(Array, string?)
   nameWithType.vb: ThrowHelper.ThrowIfArrayTypeIsNotCompatible(Of TExpected)(Array, String)
+- uid: Bodu.ThrowHelper.ThrowIfBitsOutsideMask*
+  name: ThrowIfBitsOutsideMask
+  href: api/Bodu.ThrowHelper.html#Bodu_ThrowHelper_ThrowIfBitsOutsideMask_
+  commentId: Overload:Bodu.ThrowHelper.ThrowIfBitsOutsideMask
+  fullName: Bodu.ThrowHelper.ThrowIfBitsOutsideMask
+  nameWithType: ThrowHelper.ThrowIfBitsOutsideMask
+- uid: Bodu.ThrowHelper.ThrowIfBitsOutsideMask``1(``0,``0,System.String)
+  name: ThrowIfBitsOutsideMask<T>(T, T, string?)
+  href: api/Bodu.ThrowHelper.html#Bodu_ThrowHelper_ThrowIfBitsOutsideMask__1___0___0_System_String_
+  commentId: M:Bodu.ThrowHelper.ThrowIfBitsOutsideMask``1(``0,``0,System.String)
+  name.vb: ThrowIfBitsOutsideMask(Of T)(T, T, String)
+  fullName: Bodu.ThrowHelper.ThrowIfBitsOutsideMask<T>(T, T, string?)
+  fullName.vb: Bodu.ThrowHelper.ThrowIfBitsOutsideMask(Of T)(T, T, String)
+  nameWithType: ThrowHelper.ThrowIfBitsOutsideMask<T>(T, T, string?)
+  nameWithType.vb: ThrowHelper.ThrowIfBitsOutsideMask(Of T)(T, T, String)
 - uid: Bodu.ThrowHelper.ThrowIfCollectionIsEmpty*
   name: ThrowIfCollectionIsEmpty
   href: api/Bodu.ThrowHelper.html#Bodu_ThrowHelper_ThrowIfCollectionIsEmpty_

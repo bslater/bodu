@@ -10667,6 +10667,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.ICalendarValueSet-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.ICalendarValueSet-2.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.ICalendarValueSet<TSelf, TValue>",
+      "Summary": "<p sourcefile=\"api/Bodu.ICalendarValueSet-2.yml\" sourcestartlinenumber=\"1\">Defines an immutable set of values drawn from a fixed calendar domain of at most 64 values, such as the days of the\nweek or the minutes of an hour.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.IO.Biff.BiffBlankRecord.yml",
       "output": {
         ".html": {
