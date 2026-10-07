@@ -82,6 +82,10 @@ A <xref:Bodu.Financial.ExchangeRates.CurrencyPair> is `{ "from": "USD", "to": "J
 
 `services.AddFinancialJson(policy)` registers one configured `JsonSerializerOptions` as a **keyed singleton** under `FinancialJsonServiceCollectionExtensions.JsonOptionsKey` (`"Financial"`). Keying keeps the financial converters from leaking into the application's default JSON options - an ASP.NET Core response pipeline, for example - and lets a consumer resolve them explicitly with `GetRequiredKeyedService<JsonSerializerOptions>(JsonOptionsKey)` or a `[FromKeyedServices]` parameter.
 
+## Trimming and AOT
+
+The converters are reflection-free at the value level, and the package is marked AOT-compatible. The exception is the factory: it constructs a `MoneyOfTCurrencyJsonConverter<TCurrency>` for each currency type at run time, so its constructors, `AddFinancialJsonConverters`, and `AddFinancialJson` are annotated `[RequiresDynamicCode]`, and using them in a native-AOT application produces the standard analyzer warning. None of them needs `[RequiresUnreferencedCode]`, so trimming alone raises nothing. Under native AOT, register the closed `MoneyOfTCurrencyJsonConverter<TCurrency>` for each currency, with the five non-generic converters, and point a source-generated `JsonSerializerContext` at your DTOs - see [Trimming and AOT](../../guides/financial/json-serialization.md#trimming-and-aot) in the guide.
+
 ## Failure modes
 
 Every malformed payload surfaces as `JsonException`; the converters never coerce silently:

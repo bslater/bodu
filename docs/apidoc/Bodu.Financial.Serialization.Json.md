@@ -15,9 +15,9 @@ The core `Bodu.Financial` library is serialization-agnostic - its monetary types
 ## Static documentation
 
 - **[Introduction](~/docs/financial-serialization-json/index.md)** - the six converters, the policy model, and the scenario index.
-- **[Core concepts](~/docs/financial-serialization-json/concepts.md)** - canonical object shape, compact form, scale, verbatim `CalculatedMoney`, the rate and pair shapes, keyed options, failure modes.
+- **[Core concepts](~/docs/financial-serialization-json/concepts.md)** - canonical object shape, compact form, scale, verbatim `CalculatedMoney`, the rate and pair shapes, keyed options, trimming and AOT, failure modes.
 - **[Getting started](~/docs/financial-serialization-json/getting-started.md)** - install + minimal samples for each policy, each converter, and the DI registration.
-- **[Financial JSON serialization guide](~/guides/financial/json-serialization.md)** - every converter's wire shape under every policy, scale handling, DI, and migration notes.
+- **[Financial JSON serialization guide](~/guides/financial/json-serialization.md)** - every converter's wire shape under every policy, scale handling, DI, trimming and AOT, and migration notes.
 - **[Bodu.Financial introduction](~/docs/financial/index.md)** - how the converters fit into the broader monetary surface.
 - **[Bodu.Financial getting started](~/docs/financial/getting-started.md)** - the JSON section shows how to register the policy.
 

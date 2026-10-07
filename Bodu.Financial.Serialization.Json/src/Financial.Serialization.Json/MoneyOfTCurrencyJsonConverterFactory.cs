@@ -23,6 +23,10 @@ namespace Bodu.Financial.Serialization.Json;
 public sealed class MoneyOfTCurrencyJsonConverterFactory
     : JsonConverterFactory
 {
+    /// <summary>The message describing why the factory is incompatible with native AOT: it constructs a closed converter for each currency type at runtime, which requires dynamic code generation.</summary>
+    internal const string RequiresDynamicCodeMessage =
+        "MoneyOfTCurrencyJsonConverterFactory constructs a MoneyOfTCurrencyJsonConverter<TCurrency> for each currency type at runtime, which native AOT cannot do without runtime code generation. Register MoneyOfTCurrencyJsonConverter<TCurrency> for each currency instead.";
+
     /// <summary>The policy passed to every <see cref="MoneyOfTCurrencyJsonConverter{TCurrency}" /> produced by this factory.</summary>
     private readonly FinancialJsonPolicy _policy;
 
@@ -30,6 +34,7 @@ public sealed class MoneyOfTCurrencyJsonConverterFactory
     /// Initializes a new instance of the <see cref="MoneyOfTCurrencyJsonConverterFactory" /> class configured for the
     /// <see cref="FinancialJsonPolicy.Strict" /> shape.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public MoneyOfTCurrencyJsonConverterFactory()
         : this(FinancialJsonPolicy.Strict)
     {
@@ -43,6 +48,7 @@ public sealed class MoneyOfTCurrencyJsonConverterFactory
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="FinancialJsonPolicy" /> value.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public MoneyOfTCurrencyJsonConverterFactory(FinancialJsonPolicy policy)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
@@ -70,6 +76,7 @@ public sealed class MoneyOfTCurrencyJsonConverterFactory
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "Every instance is created through a constructor annotated with RequiresDynamicCode, so the requirement is reported where the factory is created.")]
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);

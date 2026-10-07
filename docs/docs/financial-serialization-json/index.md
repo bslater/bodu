@@ -84,9 +84,9 @@ Each converter has a parameterless constructor (defaulting to `Strict`) and a `(
 
 ## Where to go next
 
-- **[Core concepts](concepts.md)** - policy, canonical object shape, compact form, scale, verbatim `CalculatedMoney`, the rate and pair shapes, keyed options, failure modes.
+- **[Core concepts](concepts.md)** - policy, canonical object shape, compact form, scale, verbatim `CalculatedMoney`, the rate and pair shapes, keyed options, trimming and AOT, failure modes.
 - **[Getting started](getting-started.md)** - install + minimal samples for each policy, each converter, and the DI registration.
-- **[Financial JSON serialization guide](../../guides/financial/json-serialization.md)** - every converter's wire shape under every policy, scale handling, DI, and migration notes.
+- **[Financial JSON serialization guide](../../guides/financial/json-serialization.md)** - every converter's wire shape under every policy, scale handling, DI, trimming and AOT, and migration notes.
 - **[Monetary precision & unit pricing](../../guides/financial/monetary-precision.md)** - the three-tier precision model the `scale` property and `CalculatedMoney` serve.
 - **[Bodu.Financial introduction](../financial/index.md)** - the types being serialized.
 - **[Bodu.Numerics.Serialization.Json](../numerics-serialization-json/index.md)** - the sibling companion package for `Fraction<T>`, `Interval<T>`, and friends, with the same policy model.

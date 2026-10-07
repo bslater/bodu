@@ -56,6 +56,7 @@ public static class FinancialJsonSerializerOptionsExtensions
     /// serializes its full unrounded amount verbatim.
     /// </para>
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(MoneyOfTCurrencyJsonConverterFactory.RequiresDynamicCodeMessage)]
     public static JsonSerializerOptions AddFinancialJsonConverters(
         this JsonSerializerOptions options,
         FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)

@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using Bodu.Text.Serialization;
-#if TOML || YAML
+#if BENCODE || TOML || YAML
 using System.Diagnostics.CodeAnalysis;
 #endif
 
@@ -53,7 +53,10 @@ public sealed partial class YamlSerializerOptions
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
-#if TOML
+#if BENCODE
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
+#elif TOML
     [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
 #elif YAML

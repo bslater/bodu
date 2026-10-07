@@ -12,7 +12,7 @@ Unfamiliar with terms like *policy*, *canonical object shape*, *compact form*, *
 dotnet add package Bodu.Financial.Serialization.Json
 ```
 
-Targets `net8.0` and `net10.0`. Depends on `Bodu.Financial` (and transitively `Bodu.Numerics` and `Bodu.Core`) and on `Microsoft.Extensions.DependencyInjection.Abstractions` for the `AddFinancialJson` registration; `System.Text.Json` is part of the shared framework.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Financial` (and transitively `Bodu.Numerics` and `Bodu.Core`) and on `Microsoft.Extensions.DependencyInjection.Abstractions` for the `AddFinancialJson` registration; `System.Text.Json` is part of the shared framework. The package is marked AOT-compatible; the `Money<TCurrency>` factory and the two registrations that create it require dynamic code (see [Trimming and AOT](concepts.md#trimming-and-aot)).
 
 ## Minimal samples
 
