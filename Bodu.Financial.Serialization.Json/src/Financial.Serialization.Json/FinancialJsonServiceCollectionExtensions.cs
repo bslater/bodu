@@ -46,6 +46,7 @@ public static class FinancialJsonServiceCollectionExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="FinancialJsonPolicy" /> value.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(MoneyOfTCurrencyJsonConverterFactory.RequiresDynamicCodeMessage)]
     public static IServiceCollection AddFinancialJson(
         this IServiceCollection services,
         FinancialJsonPolicy policy = FinancialJsonPolicy.Strict)
