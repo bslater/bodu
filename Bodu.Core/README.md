@@ -23,7 +23,8 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
   calendar fields, written as a list of values and ranges (`1-3,12`), every value (`L`), binary text
   (`B`), or, for months, a mask of initials (`J`, `JFM________D`)
 - `ICalendarValueSet<TSelf, TValue>` - the interface the six calendar value sets share, for code that
-  works with any of them
+  works with any of them; every set also reads and writes its text over spans of characters and UTF-8
+  bytes (`ISpanParsable`, `IUtf8SpanParsable`, `ISpanFormattable`, `IUtf8SpanFormattable`)
 - `Result<T>` (Bodu.Functional) - explicit success/failure type
 - `XorShiftRandom` - high-performance xorshift128 PRNG (non-cryptographic)
 - `SequenceGenerator` (Bodu.Sequences) - lazy sequence factories (Range, Repeat, Fibonacci, etc.)
