@@ -167,6 +167,24 @@ string payload = JsonSerializer.Serialize(new Money<USD>(19.99m), financialJson)
 
 Inject it into a service with `[FromKeyedServices(FinancialJsonServiceCollectionExtensions.JsonOptionsKey)] JsonSerializerOptions options`. The registration is a plain `IServiceCollection` extension and does not require `AddFinancialService` from `Bodu.Financial.DependencyInjection`; the two compose freely.
 
+## Trimming and AOT
+
+The package is marked AOT-compatible, and the converters read and write through `Utf8JsonReader` and `Utf8JsonWriter` without reflection. The one exception is <xref:Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory>: `Money<TCurrency>` is an open generic, so the factory constructs a `MoneyOfTCurrencyJsonConverter<TCurrency>` for each currency type at run time, which native AOT cannot do without runtime code generation. Its constructors are therefore annotated `[RequiresDynamicCode]`, as are `AddFinancialJsonConverters` and `AddFinancialJson`, which create it, so a native-AOT application gets the standard analyzer warning where it registers them. Trimming needs no extra step: the factory names the converter type statically, so nothing carries `[RequiresUnreferencedCode]`.
+
+Under native AOT, register a closed converter for each currency you serialize, alongside the five non-generic converters, and point a source-generated `JsonSerializerContext` at your DTOs:
+
+<!-- compile -->
+```csharp
+var aotOptions = new JsonSerializerOptions();
+aotOptions.Converters.Add(new MoneyOfTCurrencyJsonConverter<USD>(FinancialJsonPolicy.Strict));
+aotOptions.Converters.Add(new MoneyOfTCurrencyJsonConverter<EUR>(FinancialJsonPolicy.Strict));
+aotOptions.Converters.Add(new MoneyJsonConverter(FinancialJsonPolicy.Strict));
+aotOptions.Converters.Add(new CalculatedMoneyJsonConverter(FinancialJsonPolicy.Strict));
+aotOptions.Converters.Add(new MoneyBagJsonConverter(FinancialJsonPolicy.Strict));
+aotOptions.Converters.Add(new ExchangeRateJsonConverter(FinancialJsonPolicy.Strict));
+aotOptions.Converters.Add(new CurrencyPairJsonConverter(FinancialJsonPolicy.Strict));
+```
+
 ## Failure modes
 
 Malformed payloads surface as `JsonException` on read; the converters never silently coerce:
