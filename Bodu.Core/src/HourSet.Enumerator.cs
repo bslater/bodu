@@ -12,11 +12,11 @@ namespace Bodu;
 public readonly partial struct HourSet
 {
     /// <summary>
-    /// Enumerates the hours a <see cref="HourSet" /> selects, in ascending order, without allocating.
+    /// Enumerates the hours an <see cref="HourSet" /> selects, in ascending order, without allocating.
     /// </summary>
     /// <remarks>
     /// Returned by <see cref="HourSet.GetEnumerator" /> and bound directly by <c>foreach</c>. The enumerator captures
-    /// the set's bits when it is created; a <see cref="HourSet" /> is immutable, so the snapshot is exact.
+    /// the set's bits when it is created; an <see cref="HourSet" /> is immutable, so the snapshot is exact.
     /// </remarks>
     public struct Enumerator
         : IEnumerator<int>

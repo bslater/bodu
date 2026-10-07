@@ -38,8 +38,8 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> if <paramref name="value" /> does not equal <paramref name="other" />
-    /// .
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> does not equal
+    /// <paramref name="other" />.
     /// </summary>
     /// <typeparam name="T">A type that implements <see cref="IEquatable{T}" />.</typeparam>
     /// <param name="value">The value to validate.</param>

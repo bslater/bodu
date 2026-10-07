@@ -6,7 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <Title>Bodu - DotEnv</Title>
-    <Description>A self-contained DotEnv library for .NET 8, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the forward-only ref-struct Utf8DotEnvReader/Utf8DotEnvWriter token surface over UTF-8, a mutable DotEnvNode DOM, a read-only DotEnvDocument DOM, and the DotEnvSerializer POCO mapper. DotEnv models a flat, ordered object of string-valued keys with export prefixes and comment trivia.</Description>
+    <Description>A self-contained DotEnv library for .NET 8 and .NET 10, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the forward-only ref-struct Utf8DotEnvReader/Utf8DotEnvWriter token surface over UTF-8, a mutable DotEnvNode DOM, a read-only DotEnvDocument DOM, and the DotEnvSerializer POCO mapper. DotEnv models a flat, ordered object of string-valued keys with export prefixes and comment trivia.</Description>
     <PackageTags>$(PackageTags);text;dotenv;env;configuration;serialization;serializer</PackageTags>
   </PropertyGroup>
 

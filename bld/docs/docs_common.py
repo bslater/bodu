@@ -92,8 +92,8 @@ def check_docs() -> ModuleType:
 def bodu_net_targets() -> list[str]:
     """Returns ``$(BoduNetTargets)`` from ``bld/TargetFrameworks.props``, in declaration order.
 
-    It is read through ``net_targets()`` in ``bld/check-docs.py``, whose ``targets`` check holds the READMEs
-    and the documentation site to the same list, so both tools share one grammar.
+    It is read through ``net_targets()`` in ``bld/check-docs.py``, whose ``targets`` check holds the READMEs,
+    the package descriptions and the documentation site to the same list, so both tools share one grammar.
     """
     tfms: list[str] = check_docs().net_targets()
     if not tfms:

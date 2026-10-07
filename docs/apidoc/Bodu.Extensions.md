@@ -24,7 +24,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 - <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> - a single helper, `LastDayOfWeek(this DateTimeFormatInfo)`, giving the day that closes a culture's week (derived from its `FirstDayOfWeek`). Lives in the sibling <xref:Bodu.Globalization.Extensions> namespace.
 - <xref:Bodu.Extensions.IQuarterDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProvider>, <xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions> - pluggable calendar-shape providers for non-Gregorian or fiscal quarters and non-Saturday/Sunday weekend conventions.
 - <xref:Bodu.Extensions.FiscalWeekQuarterProvider> - a built-in `IQuarterDefinitionProvider` that derives quarters from a fiscal-week pattern (<xref:Bodu.Extensions.FiscalWeekPattern>) for 4-4-5 / 4-5-4 / 5-4-4 retail-calendar workloads.
-- <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>, <xref:Bodu.WorkingDaysOfWeek> - working-day bitmask helpers.
+- <xref:Bodu.Extensions.WorkingDaysOfWeekExtensions>, <xref:Bodu.WorkingDaysOfWeek> - an enum naming the common working weeks, and the conversions between it and the <xref:Bodu.DayOfWeekSet> each week selects (`ToDayOfWeekSet`, `ToWorkingDaysOfWeek`, `TryGetWorkingDaysOfWeek`). The enum is not a bitmask: its members are not combined.
 
 **Calendar-shape enums**
 
@@ -40,7 +40,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 **Span, array, stream, buffer**
 
 - <xref:Bodu.Extensions.SpanExtensions> - `AsReadOnly`, `ToReversed` (copying; contrast the in-place BCL `MemoryExtensions.Reverse`).
-- <xref:Bodu.Extensions.ArrayExtensions> - `Clear`, `Copy`, `Pad`, `Reverse`, `Slice`, `ToMatrix`.
+- <xref:Bodu.Extensions.ArrayExtensions> - `Clear`, `Copy`, `PadLeft`, `PadRight`, `Slice`, `ToMatrix`, `ToReversed` (copying; contrast the in-place `Array.Reverse`).
 - <xref:Bodu.Extensions.StreamExtensions> - `ReadAllBytes` / `ReadAllBytesAsync` / `WriteAllBytes` / `WriteAllBytesAsync`.
 - <xref:Bodu.Extensions.BufferConverter> - `CopyTo`, `Read`, `SwapEndian`, `ToArray` over byte buffers and primitive types.
 

@@ -25,8 +25,9 @@ Eight checks, each independently runnable, all run by ``all``:
                frameworks a package targets names exactly $(BoduNetTargets)
                from bld/TargetFrameworks.props; and the opening paragraph of
                a package README, the repository README or a namespace
-               overview names every one of those .NET versions, or the
-               oldest as a minimum, when it names any
+               overview, and the <Description> of a packable project, names
+               every one of those .NET versions, or the oldest as a minimum,
+               when it names any
   sessions     every *.runsettings file at the repository root states its
                session limit in the comment above <TestSessionTimeout>, as
                "N minutes per assembly", and the value is that many minutes
@@ -458,6 +459,27 @@ def opening_paragraph(text: str) -> tuple[int, list[str]] | None:
     return None
 
 
+def named_versions_problem(text: str, expected: list[str]) -> str | None:
+    """Returns what is wrong with the .NET versions ``text`` names, or ``None`` when it names none or the right ones.
+
+    Text that introduces a package names the versions the package supports, so it must name every version
+    ``expected`` holds (".NET 8 and .NET 10"), or the oldest alone, as a minimum (".NET 8 and later").
+    """
+    named = sorted({int(version) for version in _NET_VERSION.findall(text)})
+    if not named:
+        return None
+
+    versions = sorted(int(tfm[3:].split(".")[0]) for tfm in expected if re.fullmatch(r"net\d+\.\d+", tfm))
+    minimums = {int(version) for version in _NET_MINIMUM.findall(text)}
+    if named == versions or (named == versions[:1] and minimums == set(named)):
+        return None
+
+    supported = " and ".join(f".NET {version}" for version in versions)
+    return (
+        f"names {', '.join(f'.NET {version}' for version in named)}, but $(BoduNetTargets) in "
+        f"bld/TargetFrameworks.props is {', '.join(expected)}: name {supported}, or .NET {versions[0]} and later")
+
+
 def framework_opening_problems(rel: str, text: str, expected: list[str]) -> list[str]:
     """Reports a page whose opening paragraph names .NET versions other than every one of ``expected``.
 
@@ -471,37 +493,51 @@ def framework_opening_problems(rel: str, text: str, expected: list[str]) -> list
         return []
 
     first_line, lines = opening
-    paragraph = " ".join(line.strip() for line in lines)
-    named = sorted({int(version) for version in _NET_VERSION.findall(paragraph)})
-    if not named:
-        return []
-
-    versions = sorted(int(tfm[3:].split(".")[0]) for tfm in expected if re.fullmatch(r"net\d+\.\d+", tfm))
-    minimums = {int(version) for version in _NET_MINIMUM.findall(paragraph)}
-    if named == versions or (named == versions[:1] and minimums == set(named)):
+    problem = named_versions_problem(" ".join(line.strip() for line in lines), expected)
+    if problem is None:
         return []
 
     line_no = first_line + next((index for index, line in enumerate(lines) if _NET_VERSION.search(line)), 0)
-    supported = " and ".join(f".NET {version}" for version in versions)
-    return [
-        f"{rel}:{line_no}: the opening paragraph names {', '.join(f'.NET {version}' for version in named)}, but "
-        f"$(BoduNetTargets) in bld/TargetFrameworks.props is {', '.join(expected)}: name {supported}, or "
-        f".NET {versions[0]} and later"]
+    return [f"{rel}:{line_no}: the opening paragraph {problem}"]
+
+
+# A project's package description, which may wrap over several lines.
+_DESCRIPTION = re.compile(r"<Description>(.*?)</Description>", re.DOTALL)
+
+
+def framework_description_problems(rel: str, text: str, expected: list[str]) -> list[str]:
+    """Reports a project file whose ``<Description>`` names .NET versions other than every one of ``expected``.
+
+    The description is packed into the package, and nuget.org shows it in search results and on the package page,
+    so it introduces the package as a README's opening paragraph does, and is held to the same rule.
+    """
+    problems = []
+    for match in _DESCRIPTION.finditer(text):
+        problem = named_versions_problem(" ".join(match.group(1).split()), expected)
+        if problem is None:
+            continue
+
+        mention = _NET_VERSION.search(text, match.start(1), match.end(1))
+        line_no = text.count("\n", 0, mention.start() if mention else match.start(1)) + 1
+        problems.append(f"{rel}:{line_no}: the package description {problem}")
+    return problems
 
 
 def check_targets() -> list[str]:
     """Holds every statement of the frameworks a package targets to ``$(BoduNetTargets)``.
 
     Every project sets ``<TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>``, so a package README (the page
-    nuget.org shows), the repository README and the documentation site name those frameworks wherever they name
-    any. Without this check the sentences go stale silently when the list changes, as they did when ``net10.0``
-    joined ``net8.0``: first the monikers, then the product names that open a package's README and overview.
+    nuget.org shows), a package's description, the repository README and the documentation site name those
+    frameworks wherever they name any. Without this check the sentences go stale silently when the list changes, as
+    they did when ``net10.0`` joined ``net8.0``: first the monikers, then the product names that open a package's
+    README, overview and description.
     """
     expected = net_targets()
     if not expected:
         return ["bld/TargetFrameworks.props: no <BoduNetTargets> found; the parser needs updating"]
 
-    readmes = {os.path.join(os.path.dirname(os.path.dirname(project)), "README.md") for project in packable_package_ids().values()}
+    projects = sorted(packable_package_ids().values())
+    readmes = {os.path.join(os.path.dirname(os.path.dirname(project)), "README.md") for project in projects}
     readmes.add(os.path.join(ROOT, "README.md"))
     readmes = sorted(path for path in readmes if os.path.exists(path))
     overviews = sorted(glob.glob(os.path.join(DOCS, "apidoc", "*.md")))
@@ -510,6 +546,8 @@ def check_targets() -> list[str]:
         problems += framework_claim_problems(os.path.relpath(page, ROOT).replace(os.sep, "/"), read(page), expected)
     for page in readmes + overviews:
         problems += framework_opening_problems(os.path.relpath(page, ROOT).replace(os.sep, "/"), read(page), expected)
+    for project in projects:
+        problems += framework_description_problems(os.path.relpath(project, ROOT).replace(os.sep, "/"), read(project), expected)
     return problems
 
 

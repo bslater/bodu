@@ -34,11 +34,13 @@ the four form-specific samples first if you already know which form you need.
 ## Conformance
 
 The semantics these samples demonstrate are not asserted by the samples alone. They are reconciled
-row by row against four committed corpora - the RFC's own worked examples, libical's occurrence
-counts, the occurrences python-dateutil produces for 200 generated sub-daily rules, and a cron vector
-table derived from Cronos's test suite - currently 1,353 in-scope rows with zero differences. `corpus/recurrence/README.md` records each table's provenance and every deliberate
-divergence, including the ones these samples call out (the Vixie day-field union rule and
-oversized-step handling).
+row by row against committed corpora - the RFC's own worked examples, libical's occurrence counts,
+the occurrences python-dateutil produces for 200 generated sub-daily rules, cron vector tables
+derived from the test suites of Cronos and twenty other cron libraries, and the scenarios of the
+fixes in those libraries' release notes - currently 7,076 in-scope rows with zero differences.
+`corpus/recurrence/README.md` records each table's provenance and every deliberate divergence,
+including the ones these samples call out (the Vixie day-field union rule and oversized-step
+handling).
 
 ## API coverage
 

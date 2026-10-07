@@ -30,7 +30,6 @@ namespace Bodu.Text.Toml.Writer;
 /// var buffer = new ArrayBufferWriter<byte>();
 /// var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions
 /// {
-///     SpecVersion = TomlSpecVersion.V1_1,   // permit 1.1-only constructs on write
 ///     MaxDepth = 16,
 /// });
 ///]]>

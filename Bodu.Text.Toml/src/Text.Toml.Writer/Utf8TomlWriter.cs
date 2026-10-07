@@ -123,9 +123,7 @@ public ref partial struct Utf8TomlWriter
     /// Initializes a new instance of the <see cref="Utf8TomlWriter" /> struct using the supplied options.
     /// </summary>
     /// <param name="output">The destination buffer writer.</param>
-    /// <param name="options">
-    /// The writer options controlling the specification version and maximum nesting depth.
-    /// </param>
+    /// <param name="options">The writer options controlling the maximum nesting depth.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>

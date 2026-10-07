@@ -44,7 +44,7 @@ If you have not yet installed the packages, start with the [topic overview](../.
 
 <div class="bodu-card">
   <h3><a href="../core/calendar-value-sets.md">Calendar value sets</a></h3>
-  <p>Immutable sets of months, days of the month, hours, minutes, and seconds - set operators, enumeration, and a list form (<code>1-3,12</code>).</p>
+  <p>Immutable sets of months, days of the month, hours, minutes, and seconds - set operators, enumeration, a list form (<code>1-3,12</code>), a list without ranges (<code>L</code>), binary (<code>B</code>), a mask of initials for months (<code>J</code>), and the <code>ICalendarValueSet&lt;TSelf, TValue&gt;</code> interface they share with <code>DayOfWeekSet</code>.</p>
 </div>
 
 </div>

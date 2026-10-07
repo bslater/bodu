@@ -6,7 +6,7 @@
 |---|---|---|
 | RFC 5545 recurrence rule | <xref:Bodu.Globalization.Recurrence.RecurrenceRule> | Calendar-aligned: `FREQ=WEEKLY;BYDAY=MO,FR`, anchored to a caller-supplied series start |
 | Composed rule set | <xref:Bodu.Globalization.Recurrence.RecurrenceSet> | One or more rules plus explicit `RDATE` additions and `EXDATE` exclusions |
-| Cron expression | <xref:Bodu.Globalization.Recurrence.CronExpression> | Calendar-aligned: Vixie five-field, optional-seconds six-field, and the `@` macros |
+| Cron expression | <xref:Bodu.Globalization.Recurrence.CronExpression> | Calendar-aligned: Vixie five-field, optional-seconds six-field, the `@` macros, and the Quartz day tokens `L`, `W`, `#` and `?` |
 | Anchored interval | <xref:Bodu.Globalization.Recurrence.AnchoredInterval> | Instant-aligned: occurrences at `anchor + k·interval` for `k ≥ 1`, e.g. "every 4 hours after the last completed run" |
 
 Every form parses from a canonical text (`TryParse`, including an overload that reports the specific parse defect as a message), renders back to text that re-parses to an equal value, and compares by value - so a host can persist schedules as text and detect configuration changes by comparison.
@@ -119,7 +119,7 @@ The message names the offending token - "The duration component '4X' is not vali
 
 <div class="bodu-card">
   <h3><a href="cron.md">Cron expressions</a></h3>
-  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the <code>@</code> macros, the 400-year search, and <code>DateTimeOffset</code> handling.</p>
+  <p><code>CronExpression</code> parsing in the five- and six-field layouts, the field syntax and the day-of-month / day-of-week union rule, the Quartz day tokens (<code>L</code>, <code>W</code>, <code>#</code>, <code>?</code>), the <code>@</code> macros, the 400-year search, and <code>DateTimeOffset</code> handling.</p>
 </div>
 
 <div class="bodu-card">

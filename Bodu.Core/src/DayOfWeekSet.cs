@@ -31,8 +31,9 @@ namespace Bodu;
 /// <c>(DayOfWeek)n</c>, so Sunday is bit 0 and Saturday bit 6.
 /// </para>
 /// <para>
-/// The presets name the common working weeks: <see cref="Weekdays" />, <see cref="Weekend" />, and one for each named
-/// <see cref="WorkingDaysOfWeek" /> value.
+/// The presets are <see cref="Weekdays" />, <see cref="Weekend" />, and one for each of the seven named working weeks
+/// of <see cref="WorkingDaysOfWeek" />. Its two other values have no preset: <see cref="WorkingDaysOfWeek.AllDays" />
+/// corresponds to <see cref="All" />, and <see cref="WorkingDaysOfWeek.Custom" /> has no set.
 /// </para>
 /// </remarks>
 /// <example>

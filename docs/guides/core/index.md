@@ -244,7 +244,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="calendar-value-sets.md">Calendar value sets</a></h3>
-  <p><code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code>, and <code>SecondSet</code> - immutable bit sets of the values a schedule selects, with set operators and a list form (<code>1-3,12</code>).</p>
+  <p><code>MonthSet</code>, <code>DayOfMonthSet</code>, <code>HourSet</code>, <code>MinuteSet</code>, and <code>SecondSet</code> - immutable bit sets of the values a schedule selects, with set operators, a list form (<code>1-3,12</code>), a list without ranges (<code>L</code>), binary (<code>B</code>), a mask of initials for months (<code>J</code>), and the <code>ICalendarValueSet&lt;TSelf, TValue&gt;</code> interface they share with <code>DayOfWeekSet</code>.</p>
 </div>
 
 </div>
