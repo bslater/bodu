@@ -91,6 +91,114 @@ public abstract partial class CalendarSetContractTests<TSet, TElement>
     protected abstract TElement ElementAt(int index);
 
     /// <summary>
+    /// Gets every format the type's <c>ToString(string)</c> accepts, in the cases it accepts them.
+    /// </summary>
+    protected abstract IReadOnlyList<string> Formats { get; }
+
+    /// <summary>
+    /// Gets formats that none of the six calendar value sets accepts.
+    /// </summary>
+    protected static IReadOnlyList<string> UnsupportedFormats { get; } =
+        ["X", "Q", "GG", "G ", " G", "10", "011", "LG", "BB", "JJ"];
+
+    /// <summary>
+    /// Gets the empty format, which selects the default form, followed by every format in <see cref="Formats" />.
+    /// </summary>
+    protected IEnumerable<string> FormatsAndDefault =>
+        Formats.Prepend(string.Empty);
+
+    /// <summary>
+    /// Returns the text the span and UTF-8 parsers are held to the string parsers over: every sample set in every
+    /// format, and text that is not a set of any type.
+    /// </summary>
+    /// <returns>The inputs, valid and invalid.</returns>
+    protected virtual IEnumerable<string> ParseInputs()
+    {
+        foreach (TSet set in SampleSets())
+        {
+            foreach (string format in FormatsAndDefault)
+                yield return set.ToString(format, null);
+        }
+
+        string[] other =
+        [
+            string.Empty, " ", "x", ",", "-", "*", "0", "1", "01", "10", "\u00e9", "\u0661", "\u00a01\u00a0",
+            new string('0', DomainSize), new string('1', DomainSize), new string('1', DomainSize + 1),
+            "SMTWTFS", "smtwtfs", "_MTWTF_", "MF", "JFMAMJJASOND", "JFM________D", "jfm--------d",
+        ];
+
+        foreach (string text in other)
+            yield return text;
+
+        // Long enough that the UTF-8 parsers decode into a rented buffer rather than the stack.
+        yield return new string(' ', 10_000) + All.ToString();
+    }
+
+    /// <summary>
+    /// Calls the type's <see cref="IParsable{TSelf}.Parse(string, IFormatProvider)" />.
+    /// </summary>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The format provider.</param>
+    /// <returns>The parsed set.</returns>
+    /// <remarks>
+    /// A call on <typeparamref name="TSet" /> itself with a string binds to <see cref="ISpanParsable{TSelf}" />'s
+    /// overload instead, because that interface derives from <see cref="IParsable{TSelf}" /> and C# drops a base
+    /// interface's members from the candidates; this helper's constraint names <see cref="IParsable{TSelf}" /> alone.
+    /// </remarks>
+    protected static TSet ParseString(string s, IFormatProvider? provider) =>
+        ParseThroughIParsable<TSet>(s, provider);
+
+    /// <summary>
+    /// Calls the type's <see cref="IParsable{TSelf}.TryParse(string, IFormatProvider, out TSelf)" />.
+    /// </summary>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The format provider.</param>
+    /// <param name="result">The parsed set, or the default when parsing fails.</param>
+    /// <returns>The type's answer.</returns>
+    /// <remarks>
+    /// The call goes through <see cref="IParsable{TSelf}" /> for the reason <see cref="ParseString" /> gives.
+    /// </remarks>
+    protected static bool TryParseString(string? s, IFormatProvider? provider, out TSet result) =>
+        TryParseThroughIParsable(s, provider, out result);
+
+    /// <summary>
+    /// Returns a description of a parse input for a failure message, with the control and non-ASCII characters
+    /// escaped and long inputs shortened.
+    /// </summary>
+    /// <param name="input">The input.</param>
+    /// <returns>The description.</returns>
+    protected static string Describe(string input)
+    {
+        string escaped = string.Concat(input.Select(c => c is >= ' ' and <= '~' ? c.ToString() : $"\\u{(int)c:x4}"));
+        return escaped.Length <= 80 ? $"'{escaped}'" : $"'{escaped[..80]}...' ({input.Length} characters)";
+    }
+
+    /// <summary>
+    /// Calls <see cref="IParsable{TSelf}.Parse(string, IFormatProvider)" /> on a type known only to implement
+    /// <see cref="IParsable{TSelf}" />.
+    /// </summary>
+    /// <typeparam name="T">The type to parse.</typeparam>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The format provider.</param>
+    /// <returns>The parsed value.</returns>
+    private static T ParseThroughIParsable<T>(string s, IFormatProvider? provider)
+        where T : IParsable<T> =>
+        T.Parse(s, provider);
+
+    /// <summary>
+    /// Calls <see cref="IParsable{TSelf}.TryParse(string, IFormatProvider, out TSelf)" /> on a type known only to
+    /// implement <see cref="IParsable{TSelf}" />.
+    /// </summary>
+    /// <typeparam name="T">The type to parse.</typeparam>
+    /// <param name="s">The text to parse.</param>
+    /// <param name="provider">The format provider.</param>
+    /// <param name="result">The parsed value, or the default when parsing fails.</param>
+    /// <returns>The type's answer.</returns>
+    private static bool TryParseThroughIParsable<T>(string? s, IFormatProvider? provider, out T result)
+        where T : IParsable<T> =>
+        T.TryParse(s, provider, out result!);
+
+    /// <summary>
     /// Creates a set through the type's <see langword="params" /> constructor.
     /// </summary>
     /// <param name="values">The values to select, or <see langword="null" />.</param>

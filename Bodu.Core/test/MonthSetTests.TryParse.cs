@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
 using Bodu.Test.Kat;
 
 namespace Bodu;
@@ -45,5 +46,30 @@ public sealed partial class MonthSetTests
 
         Assert.IsFalse(parsed);
         Assert.AreEqual(MonthSet.Empty, result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MonthSet.TryParse(ReadOnlySpan{char}, out MonthSet)" /> and
+    /// <see cref="MonthSet.TryParse(ReadOnlySpan{byte}, out MonthSet)" /> answer, for the text of all 4,096 sets in every format
+    /// and the default, what <see cref="MonthSet.TryParse(string, out MonthSet)" /> answers, with the same set.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenSpanOrUtf8IsToStringOfAnySetInAnyFormat_ShouldMatchTheStringOverload()
+    {
+        for (ulong bits = 0; bits <= 0xFFF; bits++)
+        {
+            MonthSet set = MonthSet.FromUInt64(bits);
+
+            foreach (string format in FormatsAndDefault)
+            {
+                string text = set.ToString(format);
+                bool expected = MonthSet.TryParse(text, out MonthSet fromString);
+
+                Assert.AreEqual(expected, MonthSet.TryParse(text.AsSpan(), out MonthSet fromSpan), $"bits {bits:X3}, format '{format}', text '{text}'");
+                Assert.AreEqual(fromString, fromSpan, $"bits {bits:X3}, format '{format}', text '{text}'");
+                Assert.AreEqual(expected, MonthSet.TryParse(Encoding.UTF8.GetBytes(text), out MonthSet fromUtf8), $"bits {bits:X3}, format '{format}', text '{text}', UTF-8");
+                Assert.AreEqual(fromString, fromUtf8, $"bits {bits:X3}, format '{format}', text '{text}', UTF-8");
+            }
+        }
     }
 }

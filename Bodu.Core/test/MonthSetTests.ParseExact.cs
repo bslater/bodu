@@ -178,4 +178,24 @@ public sealed partial class MonthSetTests
             }
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="MonthSet.ParseExact(ReadOnlySpan{char}, ReadOnlySpan{char})" /> reads back all 4,096 sets
+    /// written in every format.
+    /// </summary>
+    [TestMethod]
+    public void ParseExact_WhenSpanIsToStringOfAnySetInAnyFormat_ShouldReturnSet()
+    {
+        for (ulong bits = 0; bits <= 0xFFF; bits++)
+        {
+            MonthSet set = MonthSet.FromUInt64(bits);
+
+            foreach (string format in Formats)
+            {
+                string text = set.ToString(format);
+
+                Assert.AreEqual(set, MonthSet.ParseExact(text.AsSpan(), format.AsSpan()), $"bits {bits:X3}, format '{format}', text '{text}'");
+            }
+        }
+    }
 }

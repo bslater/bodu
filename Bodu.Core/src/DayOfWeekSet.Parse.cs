@@ -43,6 +43,19 @@ public readonly partial struct DayOfWeekSet
     }
 
     /// <summary>
+    /// Converts a span of characters holding a seven-character mask into a <see cref="DayOfWeekSet" />, detecting the
+    /// mask's form.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <returns>The set the characters describe.</returns>
+    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a seven-character mask.</exception>
+    /// <remarks>
+    /// The characters are read as <see cref="Parse(string)" /> reads a string.
+    /// </remarks>
+    public static DayOfWeekSet Parse(ReadOnlySpan<char> s) =>
+        ParseCore(s, format: null);
+
+    /// <summary>
     /// Converts a seven-character mask in the specified format into a <see cref="DayOfWeekSet" />.
     /// </summary>
     /// <param name="s">The text to convert.</param>
@@ -66,7 +79,29 @@ public readonly partial struct DayOfWeekSet
     {
         ThrowHelper.ThrowIfNull(s);
         ThrowHelper.ThrowIfNull(format);
-        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfWeekSet));
+
+        return ParseExact(s.AsSpan(), format.AsSpan());
+    }
+
+    /// <summary>
+    /// Converts a span of characters holding a seven-character mask in the specified format into a
+    /// <see cref="DayOfWeekSet" />.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="format">
+    /// The format of <paramref name="s" />, one of those <see cref="ToString(string)" /> writes.
+    /// </param>
+    /// <returns>The set the characters describe.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="format" /> is not a supported format, or <paramref name="s" /> is not a mask in that
+    /// format.
+    /// </exception>
+    /// <remarks>
+    /// The characters are read as <see cref="ParseExact(string, string)" /> reads a string.
+    /// </remarks>
+    public static DayOfWeekSet ParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format)
+    {
+        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format.ToString(), nameof(DayOfWeekSet));
 
         return ParseCore(s, textFormat);
     }
@@ -86,7 +121,31 @@ public readonly partial struct DayOfWeekSet
     /// </remarks>
     public static bool TryParse([NotNullWhen(true)] string? s, out DayOfWeekSet result)
     {
-        if (s is not null && TryParseCore(s, format: null, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
+        if (s is not null)
+            return TryParse(s.AsSpan(), out result);
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to convert a span of characters holding a seven-character mask into a <see cref="DayOfWeekSet" />,
+    /// detecting the mask's form.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the set the characters describe; otherwise
+    /// <see cref="Empty" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="s" /> is a seven-character mask; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The characters are read as <see cref="Parse(string)" /> reads a string.
+    /// </remarks>
+    public static bool TryParse(ReadOnlySpan<char> s, out DayOfWeekSet result)
+    {
+        if (TryParseCore(s, format: null, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new DayOfWeekSet(bits);
             return true;
@@ -115,9 +174,35 @@ public readonly partial struct DayOfWeekSet
     /// </remarks>
     public static bool TryParseExact([NotNullWhen(true)] string? s, [NotNullWhen(true)] string? format, out DayOfWeekSet result)
     {
-        if (s is not null
-            && format is not null
-            && TryParseFormat(format, out TextFormat textFormat)
+        if (s is not null && format is not null)
+            return TryParseExact(s.AsSpan(), format.AsSpan(), out result);
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to convert a span of characters holding a seven-character mask in the specified format into a
+    /// <see cref="DayOfWeekSet" />.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="format">
+    /// The format of <paramref name="s" />, one of those <see cref="ToString(string)" /> writes.
+    /// </param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the set the characters describe; otherwise
+    /// <see cref="Empty" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="format" /> is a supported format and <paramref name="s" /> is a
+    /// mask in it; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The characters are read as <see cref="ParseExact(string, string)" /> reads a string.
+    /// </remarks>
+    public static bool TryParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format, out DayOfWeekSet result)
+    {
+        if (TryParseFormat(format, out TextFormat textFormat)
             && TryParseCore(s, textFormat, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new DayOfWeekSet(bits);
@@ -136,6 +221,14 @@ public readonly partial struct DayOfWeekSet
     static bool IParsable<DayOfWeekSet>.TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out DayOfWeekSet result) =>
         TryParse(s, out result);
 
+    /// <inheritdoc />
+    static DayOfWeekSet ISpanParsable<DayOfWeekSet>.Parse(ReadOnlySpan<char> s, IFormatProvider? provider) =>
+        Parse(s);
+
+    /// <inheritdoc />
+    static bool ISpanParsable<DayOfWeekSet>.TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out DayOfWeekSet result) =>
+        TryParse(s, out result);
+
     /// <summary>
     /// Converts a mask into a set, or throws <see cref="FormatException" /> describing why it is not one.
     /// </summary>
@@ -145,7 +238,7 @@ public readonly partial struct DayOfWeekSet
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="s" /> is not a seven-character mask in <paramref name="format" />.
     /// </exception>
-    private static DayOfWeekSet ParseCore(string s, TextFormat? format)
+    private static DayOfWeekSet ParseCore(ReadOnlySpan<char> s, TextFormat? format)
     {
         CalendarValueSet.ParseFailure failure = TryParseCore(s, format, out ulong bits, out int position);
 

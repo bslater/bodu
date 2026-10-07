@@ -44,6 +44,15 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     /// </summary>
     protected abstract IReadOnlyList<ValidKat<string, TSet>> CanonicalTextCases { get; }
 
+    /// <summary>
+    /// Gets the formats every numeric calendar value set accepts, in both cases where a format is a letter.
+    /// </summary>
+    protected static IReadOnlyList<string> NumericFormats { get; } = ["G", "g", "L", "l", "B", "b", "0", "1", "01"];
+
+    /// <inheritdoc />
+    protected override IReadOnlyList<string> Formats =>
+        NumericFormats;
+
     /// <inheritdoc />
     protected sealed override int DomainSize =>
         Maximum - Minimum + 1;
@@ -102,6 +111,18 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     /// <returns>The type's answer.</returns>
     protected static bool TryParseExact(string? s, string? format, out TSet result) =>
         TSet.TryParseExact(s, format, out result);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The numeric sets add their canonical, lenient, malformed and detection rows.
+    /// </remarks>
+    protected override IEnumerable<string> ParseInputs() =>
+        base.ParseInputs()
+            .Concat(CanonicalCases().Select(kat => kat.Input))
+            .Concat(LenientCases().Select(kat => kat.Input))
+            .Concat(MalformedCases().Select(kat => kat.Input))
+            .Concat(DetectionCases().Select(kat => kat.Input))
+            .Concat(DetectionFailureCases().Select(kat => kat.Input));
 
     /// <summary>
     /// Returns the canonical text rows built from the domain's bounds, followed by the type's own.

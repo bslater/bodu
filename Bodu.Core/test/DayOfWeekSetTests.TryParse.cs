@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
 using Bodu.Test.Kat;
 
 namespace Bodu;
@@ -100,7 +101,7 @@ public partial class DayOfWeekSetTests
     [TestMethod]
     public void TryParse_WhenInputIsNull_ShouldReturnFalseAndSetEmpty()
     {
-        bool success = DayOfWeekSet.TryParse(null, out DayOfWeekSet result);
+        bool success = DayOfWeekSet.TryParse((string?)null, out DayOfWeekSet result);
 
         Assert.IsFalse(success);
         Assert.AreEqual(DayOfWeekSet.Empty, result);
@@ -135,4 +136,28 @@ public partial class DayOfWeekSetTests
         Assert.AreEqual(0, result.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.TryParse(ReadOnlySpan{char}, out DayOfWeekSet)" /> and
+    /// <see cref="DayOfWeekSet.TryParse(ReadOnlySpan{byte}, out DayOfWeekSet)" /> answer, for the text of all 128 sets in every format
+    /// and the default, what <see cref="DayOfWeekSet.TryParse(string, out DayOfWeekSet)" /> answers, with the same set.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenSpanOrUtf8IsToStringOfAnySetInAnyFormat_ShouldMatchTheStringOverload()
+    {
+        for (ulong bits = 0; bits <= 0x7F; bits++)
+        {
+            DayOfWeekSet set = DayOfWeekSet.FromUInt64(bits);
+
+            foreach (string format in FormatsAndDefault)
+            {
+                string text = set.ToString(format);
+                bool expected = DayOfWeekSet.TryParse(text, out DayOfWeekSet fromString);
+
+                Assert.AreEqual(expected, DayOfWeekSet.TryParse(text.AsSpan(), out DayOfWeekSet fromSpan), $"bits {bits:X2}, format '{format}', text '{text}'");
+                Assert.AreEqual(fromString, fromSpan, $"bits {bits:X2}, format '{format}', text '{text}'");
+                Assert.AreEqual(expected, DayOfWeekSet.TryParse(Encoding.UTF8.GetBytes(text), out DayOfWeekSet fromUtf8), $"bits {bits:X2}, format '{format}', text '{text}', UTF-8");
+                Assert.AreEqual(fromString, fromUtf8, $"bits {bits:X2}, format '{format}', text '{text}', UTF-8");
+            }
+        }
+    }
 }

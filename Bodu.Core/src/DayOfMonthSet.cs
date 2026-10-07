@@ -32,6 +32,9 @@ namespace Bodu;
 /// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every day without
 /// ranges, or a binary form with one character per day, and <see cref="Parse(string)" /> and
 /// <see cref="ParseExact(string, string)" /> read them back.
+/// <see cref="TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider)" /> writes the same text into a span
+/// of characters, its other overload into a span of UTF-8 bytes, and the span and UTF-8 overloads of <c>Parse</c>,
+/// <c>TryParse</c>, <c>ParseExact</c> and <c>TryParseExact</c> read it.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects day
@@ -55,7 +58,11 @@ public readonly partial struct DayOfMonthSet
       IEqualityOperators<DayOfMonthSet, DayOfMonthSet, bool>,
       IBitwiseOperators<DayOfMonthSet, DayOfMonthSet, DayOfMonthSet>,
       IParsable<DayOfMonthSet>,
+      ISpanParsable<DayOfMonthSet>,
+      IUtf8SpanParsable<DayOfMonthSet>,
       IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable,
       IEnumerable<int>,
       ICalendarValueSet<DayOfMonthSet, int>
 {

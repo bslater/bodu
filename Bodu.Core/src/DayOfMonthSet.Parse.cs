@@ -39,6 +39,23 @@ public readonly partial struct DayOfMonthSet
     {
         ThrowHelper.ThrowIfNull(s);
 
+        return Parse(s.AsSpan());
+    }
+
+    /// <summary>
+    /// Converts a span of characters in one of the forms <see cref="ToString(string, IFormatProvider)" /> writes into a
+    /// <see cref="DayOfMonthSet" />, detecting the form.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <returns>The set the characters describe.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is neither the binary form nor a list of values and ranges from 1 to 31.
+    /// </exception>
+    /// <remarks>
+    /// The characters are read as <see cref="Parse(string)" /> reads a string.
+    /// </remarks>
+    public static DayOfMonthSet Parse(ReadOnlySpan<char> s)
+    {
         CalendarValueSet.ParseFailure failure = CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, out ulong bits);
         return failure == CalendarValueSet.ParseFailure.None
             ? new DayOfMonthSet(bits)
@@ -69,7 +86,28 @@ public readonly partial struct DayOfMonthSet
     {
         ThrowHelper.ThrowIfNull(s);
         ThrowHelper.ThrowIfNull(format);
-        if (!CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)) throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfMonthSet));
+
+        return ParseExact(s.AsSpan(), format.AsSpan());
+    }
+
+    /// <summary>
+    /// Converts a span of characters in the specified format into a <see cref="DayOfMonthSet" />.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="format">
+    /// The format of <paramref name="s" />, one of those <see cref="ToString(string)" /> writes.
+    /// </param>
+    /// <returns>The set the characters describe.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="format" /> is not a supported format, or <paramref name="s" /> is not text in that
+    /// format.
+    /// </exception>
+    /// <remarks>
+    /// The characters are read as <see cref="ParseExact(string, string)" /> reads a string.
+    /// </remarks>
+    public static DayOfMonthSet ParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format)
+    {
+        if (!CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)) throw CalendarValueSet.CreateFormatStringException(format.ToString(), nameof(DayOfMonthSet));
 
         CalendarValueSet.ParseFailure failure = CalendarValueSet.TryParseExact(s, MinimumValue, MaximumValue, form, out ulong bits, out int position);
         return failure == CalendarValueSet.ParseFailure.None
@@ -94,7 +132,32 @@ public readonly partial struct DayOfMonthSet
     /// </remarks>
     public static bool TryParse([NotNullWhen(true)] string? s, out DayOfMonthSet result)
     {
-        if (s is not null && CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, out ulong bits) == CalendarValueSet.ParseFailure.None)
+        if (s is not null)
+            return TryParse(s.AsSpan(), out result);
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to convert a span of characters in one of the forms <see cref="ToString(string, IFormatProvider)" />
+    /// writes into a <see cref="DayOfMonthSet" />, detecting the form.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the set the characters describe; otherwise
+    /// <see cref="Empty" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="s" /> is the binary form or a list of values and ranges from 1 to
+    /// 31; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The characters are read as <see cref="Parse(string)" /> reads a string.
+    /// </remarks>
+    public static bool TryParse(ReadOnlySpan<char> s, out DayOfMonthSet result)
+    {
+        if (CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, out ulong bits) == CalendarValueSet.ParseFailure.None)
         {
             result = new DayOfMonthSet(bits);
             return true;
@@ -123,9 +186,34 @@ public readonly partial struct DayOfMonthSet
     /// </remarks>
     public static bool TryParseExact([NotNullWhen(true)] string? s, [NotNullWhen(true)] string? format, out DayOfMonthSet result)
     {
-        if (s is not null
-            && format is not null
-            && CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)
+        if (s is not null && format is not null)
+            return TryParseExact(s.AsSpan(), format.AsSpan(), out result);
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to convert a span of characters in the specified format into a <see cref="DayOfMonthSet" />.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="format">
+    /// The format of <paramref name="s" />, one of those <see cref="ToString(string)" /> writes.
+    /// </param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the set the characters describe; otherwise
+    /// <see cref="Empty" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="format" /> is a supported format and <paramref name="s" /> is text
+    /// in it; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The characters are read as <see cref="ParseExact(string, string)" /> reads a string.
+    /// </remarks>
+    public static bool TryParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format, out DayOfMonthSet result)
+    {
+        if (CalendarValueSet.TryParseNumericFormat(format, out CalendarValueSet.NumericForm form)
             && CalendarValueSet.TryParseExact(s, MinimumValue, MaximumValue, form, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new DayOfMonthSet(bits);
@@ -142,5 +230,13 @@ public readonly partial struct DayOfMonthSet
 
     /// <inheritdoc />
     static bool IParsable<DayOfMonthSet>.TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out DayOfMonthSet result) =>
+        TryParse(s, out result);
+
+    /// <inheritdoc />
+    static DayOfMonthSet ISpanParsable<DayOfMonthSet>.Parse(ReadOnlySpan<char> s, IFormatProvider? provider) =>
+        Parse(s);
+
+    /// <inheritdoc />
+    static bool ISpanParsable<DayOfMonthSet>.TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out DayOfMonthSet result) =>
         TryParse(s, out result);
 }

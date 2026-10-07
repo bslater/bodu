@@ -19,8 +19,11 @@ public readonly partial struct DayOfWeekSet
     /// when it is not.
     /// </summary>
     /// <returns>The mask, such as <c>"_MTWTF_"</c> for Monday to Friday.</returns>
-    public override string ToString() =>
-        Format(TextFormat.Default);
+    public override string ToString()
+    {
+        Span<char> buffer = stackalloc char[MaskLength];
+        return new string(buffer[..Write(TextFormat.Default, buffer)]);
+    }
 
     /// <summary>
     /// Returns the set as a seven-character mask in the specified format.
@@ -76,12 +79,72 @@ public readonly partial struct DayOfWeekSet
     /// </remarks>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
-        if (string.IsNullOrEmpty(format))
-            return Format(TextFormat.Default);
+        Span<char> buffer = stackalloc char[MaskLength];
+        return new string(buffer[..Write(format, buffer)]);
+    }
+
+    /// <summary>
+    /// Attempts to write the set as text in the specified format into a span of characters.
+    /// </summary>
+    /// <param name="destination">The span to write to.</param>
+    /// <param name="charsWritten">
+    /// When this method returns <see langword="true" />, the number of characters written; otherwise 0.
+    /// </param>
+    /// <param name="format">The format, or an empty span for the default.</param>
+    /// <param name="provider">Ignored; the text does not depend on culture.</param>
+    /// <returns>
+    /// <see langword="true" /> when the text fits in <paramref name="destination" />; otherwise
+    /// <see langword="false" />, and <paramref name="destination" /> is left unchanged.
+    /// </returns>
+    /// <exception cref="FormatException">Thrown when <paramref name="format" /> is not a supported format.</exception>
+    /// <remarks>
+    /// The text is the one <see cref="ToString(string, IFormatProvider)" /> returns for the same format.
+    /// </remarks>
+    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        Span<char> buffer = stackalloc char[MaskLength];
+        return CalendarValueSet.TryCopy(buffer[..Write(format, buffer)], destination, out charsWritten);
+    }
+
+    /// <summary>
+    /// Attempts to write the set as UTF-8 text in the specified format into a span of bytes.
+    /// </summary>
+    /// <param name="utf8Destination">The span to write to.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns <see langword="true" />, the number of bytes written; otherwise 0.
+    /// </param>
+    /// <param name="format">The format, or an empty span for the default.</param>
+    /// <param name="provider">Ignored; the text does not depend on culture.</param>
+    /// <returns>
+    /// <see langword="true" /> when the text fits in <paramref name="utf8Destination" />; otherwise
+    /// <see langword="false" />, and <paramref name="utf8Destination" /> is left unchanged.
+    /// </returns>
+    /// <exception cref="FormatException">Thrown when <paramref name="format" /> is not a supported format.</exception>
+    /// <remarks>
+    /// The text is the one <see cref="ToString(string, IFormatProvider)" /> returns for the same format. It is ASCII,
+    /// so each character is one byte.
+    /// </remarks>
+    public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format = default, IFormatProvider? provider = null)
+    {
+        Span<char> buffer = stackalloc char[MaskLength];
+        return CalendarValueSet.TryCopyUtf8(buffer[..Write(format, buffer)], utf8Destination, out bytesWritten);
+    }
+
+    /// <summary>
+    /// Writes the set as text in a format.
+    /// </summary>
+    /// <param name="format">The format, or an empty span for the default.</param>
+    /// <param name="buffer">The buffer to write to, <see cref="MaskLength" /> characters long.</param>
+    /// <returns>The number of characters written.</returns>
+    /// <exception cref="FormatException">Thrown when <paramref name="format" /> is not a supported format.</exception>
+    private int Write(ReadOnlySpan<char> format, Span<char> buffer)
+    {
+        if (format.IsEmpty)
+            return Write(TextFormat.Default, buffer);
 
         return TryParseFormat(format, out TextFormat textFormat)
-            ? Format(textFormat)
-            : throw CalendarValueSet.CreateFormatStringException(format, nameof(DayOfWeekSet));
+            ? Write(textFormat, buffer)
+            : throw CalendarValueSet.CreateFormatStringException(format.ToString(), nameof(DayOfWeekSet));
     }
 
     /// <summary>
@@ -138,9 +201,10 @@ public readonly partial struct DayOfWeekSet
     /// Writes the set as a mask in a format.
     /// </summary>
     /// <param name="format">The format.</param>
-    /// <returns>The seven-character mask.</returns>
-    private string Format(TextFormat format) =>
+    /// <param name="buffer">The buffer to write to, <see cref="MaskLength" /> characters long.</param>
+    /// <returns>The number of characters written, seven.</returns>
+    private int Write(TextFormat format, Span<char> buffer) =>
         format.Binary
-            ? CalendarValueSet.FormatBinary(_bits, MaskLength)
-            : CalendarValueSet.FormatLetters(_bits, DayLetters, format.MondayFirst ? 1 : 0, format.Placeholder ?? '_');
+            ? CalendarValueSet.WriteBinary(_bits, MaskLength, buffer)
+            : CalendarValueSet.WriteLetters(_bits, DayLetters, format.MondayFirst ? 1 : 0, format.Placeholder ?? '_', buffer);
 }

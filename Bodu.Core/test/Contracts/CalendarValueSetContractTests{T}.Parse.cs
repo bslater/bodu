@@ -5,12 +5,28 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text;
 using Bodu.Test.Kat;
 
 namespace Bodu.Contracts;
 
 public abstract partial class CalendarValueSetContractTests<TSet>
 {
+    /// <summary>
+    /// Verifies that a list long enough that UTF-8 text is decoded into a rented buffer, the smallest value three
+    /// thousand times, reads as the set of that value through the string, span and UTF-8 overloads.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTextIsAVeryLongList_ShouldReadItThroughEveryOverload()
+    {
+        string text = string.Join(",", Enumerable.Repeat(Minimum.ToString(CultureInfo.InvariantCulture), 3000));
+        TSet expected = Create(Minimum);
+
+        Assert.AreEqual(expected, Parse(text));
+        Assert.AreEqual(expected, TSet.Parse(text.AsSpan(), null));
+        Assert.AreEqual(expected, TSet.Parse(Encoding.UTF8.GetBytes(text), null));
+    }
+
     /// <summary>
     /// Verifies that <c>Parse</c> reads each canonical text row as its expected set.
     /// </summary>

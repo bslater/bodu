@@ -27,7 +27,9 @@ namespace Bodu;
 /// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every month without
 /// ranges, a binary form with one character per month, or a letter mask of the months' initials, such as
 /// <c>"JFM________D"</c>, and <see cref="Parse(string)" /> and <see cref="ParseExact(string, string)" /> read them
-/// back.
+/// back. <see cref="TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider)" /> writes the same text into a
+/// span of characters, its other overload into a span of UTF-8 bytes, and the span and UTF-8 overloads of <c>Parse</c>,
+/// <c>TryParse</c>, <c>ParseExact</c> and <c>TryParseExact</c> read it.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects month
@@ -51,7 +53,11 @@ public readonly partial struct MonthSet
       IEqualityOperators<MonthSet, MonthSet, bool>,
       IBitwiseOperators<MonthSet, MonthSet, MonthSet>,
       IParsable<MonthSet>,
+      ISpanParsable<MonthSet>,
+      IUtf8SpanParsable<MonthSet>,
       IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable,
       IEnumerable<int>,
       ICalendarValueSet<MonthSet, int>
 {

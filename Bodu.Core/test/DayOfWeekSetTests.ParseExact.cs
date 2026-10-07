@@ -295,4 +295,23 @@ public partial class DayOfWeekSetTests
         StringAssert.Contains(ex.Message, "'SZ'");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DayOfWeekSet.ParseExact(ReadOnlySpan{char}, ReadOnlySpan{char})" /> reads back all 128 sets
+    /// written in every format.
+    /// </summary>
+    [TestMethod]
+    public void ParseExact_WhenSpanIsToStringOfAnySetInAnyFormat_ShouldReturnSet()
+    {
+        for (ulong bits = 0; bits <= 0x7F; bits++)
+        {
+            DayOfWeekSet set = DayOfWeekSet.FromUInt64(bits);
+
+            foreach (string format in Formats)
+            {
+                string text = set.ToString(format);
+
+                Assert.AreEqual(set, DayOfWeekSet.ParseExact(text.AsSpan(), format.AsSpan()), $"bits {bits:X2}, format '{format}', text '{text}'");
+            }
+        }
+    }
 }

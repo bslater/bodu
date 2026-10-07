@@ -27,6 +27,9 @@ namespace Bodu;
 /// <see cref="ToString()" /> writes the canonical one. <see cref="ToString(string)" /> also writes every minute without
 /// ranges, or a binary form with one character per minute, and <see cref="Parse(string)" /> and
 /// <see cref="ParseExact(string, string)" /> read them back.
+/// <see cref="TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider)" /> writes the same text into a span
+/// of characters, its other overload into a span of UTF-8 bytes, and the span and UTF-8 overloads of <c>Parse</c>,
+/// <c>TryParse</c>, <c>ParseExact</c> and <c>TryParseExact</c> read it.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects minute
@@ -50,7 +53,11 @@ public readonly partial struct MinuteSet
       IEqualityOperators<MinuteSet, MinuteSet, bool>,
       IBitwiseOperators<MinuteSet, MinuteSet, MinuteSet>,
       IParsable<MinuteSet>,
+      ISpanParsable<MinuteSet>,
+      IUtf8SpanParsable<MinuteSet>,
       IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable,
       IEnumerable<int>,
       ICalendarValueSet<MinuteSet, int>
 {
