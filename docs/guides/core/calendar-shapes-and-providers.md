@@ -265,7 +265,7 @@ bool gulfWeekday    = friday.IsWeekday(WorkingDaysOfWeek.Custom, gulf);      // 
 DateTime next       = friday.NextWeekday(WorkingDaysOfWeek.Custom, gulf);    // 2024-05-19 (Sunday)
 DateTime previous   = friday.PreviousWeekday(WorkingDaysOfWeek.Custom, gulf);// 2024-05-16 (Thursday)
 
-DayOfWeekSet working = gulf.ToDayOfWeekSet();                                // the complement of the weekend
+DayOfWeekSet working = gulf.ToWorkingWeek();                                 // the complement of the weekend
 string symbols       = working.ToString();                                   // "SMTWT__" (Sunday-first; '_' = unselected)
 bool isPreset        = working == DayOfWeekSet.SundayToThursday;             // true
 WorkingDaysOfWeek named = working.ToWorkingDaysOfWeek();                     // SundayToThursday
@@ -279,7 +279,7 @@ Two failure modes are worth knowing:
 - `WorkingDaysOfWeek.Custom` **without** a provider throws `ArgumentOutOfRangeException` (parameter `workingWeek`) from `IsWeekend` / `IsWeekday`, and `ArgumentNullException` from `ToDayOfWeekSet(provider)`.
 - The provider is called once per day tested, so keep `IsWeekend` cheap and pure. A provider whose weekend is the whole week makes `NextWeekday` loop until it runs out of `DateTime` range.
 
-<xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet*> is the bridge from a provider to a <xref:Bodu.DayOfWeekSet>: it asks the provider about each of the seven days and returns the working days. Once you have the set, the `DayOfWeekSet` overloads of `IsInWorkingWeek`, `IsRestDay`, `NextWeekday`, and `PreviousWeekday` no longer need the provider at all.
+<xref:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek*> is the bridge from a provider to a <xref:Bodu.DayOfWeekSet>: it asks the provider about each of the seven days and returns the working days. Once you have the set, the `DayOfWeekSet` overloads of `IsInWorkingWeek`, `IsRestDay`, `NextWeekday`, and `PreviousWeekday` no longer need the provider at all.
 
 ## Pattern 6 - bridging `WorkingDaysOfWeek` and `DayOfWeekSet`
 
@@ -306,7 +306,7 @@ bool allDays          = WorkingDaysOfWeek.AllDays.ToDayOfWeekSet() == DayOfWeekS
 | `WorkingDaysOfWeek.ToDayOfWeekSet(IWeekendDefinitionProvider?)` | preset → set | The provider is consulted only for `Custom` (and must then be non-`null`). |
 | `DayOfWeekSet.ToWorkingDaysOfWeek()` | set → preset | Returns `Custom` when the set matches no named preset. |
 | `DayOfWeekSet.TryGetWorkingDaysOfWeek(out value)` | set → preset | `false` (and `value == Custom`) when no preset matches. |
-| `IWeekendDefinitionProvider.ToDayOfWeekSet()` | provider → set | Complement of the provider's weekend. |
+| `IWeekendDefinitionProvider.ToWorkingWeek()` | provider → set | Complement of the provider's weekend. |
 
 > [!TIP]
 > When a working week is a fixed, application-wide policy, resolve it to a `DayOfWeekSet` once and pass the set to the extension methods; the set overloads are a single bit test per day and never consult a provider.

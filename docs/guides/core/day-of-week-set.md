@@ -202,7 +202,8 @@ other calendar value sets:
 | `[Serializable]` / `ISerializable` | removed: store the text form |
 | `ToString(IFormatProvider)` | `ToString()` |
 | unsupported format in `ToString` throws `ArgumentException` | throws `FormatException`; an empty format means the default |
-| `ToWeekPattern()` on `WorkingDaysOfWeek` and `IWeekendDefinitionProvider` | `ToDayOfWeekSet()` |
+| `ToWeekPattern()` on `WorkingDaysOfWeek` | `ToDayOfWeekSet()` |
+| `ToWeekPattern()` on `IWeekendDefinitionProvider` | `ToWorkingWeek()` |
 
 To move a stored `WeekPattern.ToByte` value over, reverse its seven bits, or rebuild the set from the days whose bit
 `6 - (int)day` is set.

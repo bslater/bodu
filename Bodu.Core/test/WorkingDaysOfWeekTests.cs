@@ -181,30 +181,30 @@ public class WorkingDaysOfWeekTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToDayOfWeekSet" /> projects the provider's weekend
+    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToWorkingWeek" /> projects the provider's weekend
     /// definition onto the complement <see cref="DayOfWeekSet" />.
     /// </summary>
     [TestMethod]
-    public void IWeekendDefinitionProviderToDayOfWeekSet_WhenProviderReturnsFridayOnly_ShouldSelectAllOtherDays()
+    public void ToWorkingWeek_WhenProviderReturnsFridayOnly_ShouldSelectAllOtherDays()
     {
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
-        var days = provider.ToDayOfWeekSet();
+        var days = provider.ToWorkingWeek();
 
         Assert.AreEqual(6, days.Count);
         Assert.IsFalse(days.Contains(DayOfWeek.Friday));
     }
 
     /// <summary>
-    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToDayOfWeekSet" /> throws
+    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToWorkingWeek" /> throws
     /// <see cref="ArgumentNullException" /> when the provider argument is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void IWeekendDefinitionProviderToDayOfWeekSet_WhenProviderIsNull_ShouldThrowExactly()
+    public void ToWorkingWeek_WhenProviderIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = ((IWeekendDefinitionProvider)null!).ToDayOfWeekSet();
+            _ = ((IWeekendDefinitionProvider)null!).ToWorkingWeek();
         });
     }
 
