@@ -2,13 +2,14 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-A narrow, read-only reader for the **Excel 97-2003 binary workbook format** (BIFF8 /
-`.xls`). It exposes the raw cell values of each worksheet - strings, numbers, booleans,
-and errors - and nothing more. There is no formula evaluation, styling, charting, or
-date inference; turning a numeric cell into a date or a column into a record is the
-caller's job.
+A narrow, read-only reader for the **Excel binary workbook format** (`.xls`): BIFF8, as
+written by Excel 97-2003, and BIFF5, as written by Excel 5.0/95. It exposes the raw cell
+values of each worksheet - strings, numbers, booleans, and errors - and nothing more. There
+is no formula evaluation, styling, charting, or date inference; turning a numeric cell into
+a date or a column into a record is the caller's job.
 
-Built on [`Bodu.IO.Compound`](../Bodu.IO.Compound) for the underlying container.
+Built on [`Bodu.IO.Compound`](../Bodu.IO.Compound) for the underlying container and on
+[`Bodu.IO.Biff`](../Bodu.IO.Biff) for the record stream inside it.
 
 A workbook is opened as a disposable, read-only session that keeps the container open and
 reads each sheet on demand by seeking to the stream offset its bound-sheet record records,
