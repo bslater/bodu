@@ -6,7 +6,7 @@
     <RootNamespace>Bodu</RootNamespace>
     <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
     <Title>Bodu - Collections</Title>
-    <Description>Specialized generic collections for .NET 8: circular buffer, deque, evicting dictionary, sequenced dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set and range dictionary, segmented buffer, graphs (adjacency-list graph, traversal and shortest-path algorithms, disjoint set), and trees (n-ary tree, tries). Also ships the approximate sketches in Bodu.Collections.Probabilistic and the packed BitSet in Bodu.Collections.Specialized. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces. Thread-safe variants live in Bodu.Collections.Concurrent.</Description>
+    <Description>Specialized generic collections for .NET 8 and .NET 10: circular buffer, deque, evicting dictionary, sequenced dictionary, indexed and ordered sets, indexed priority queue, multi-value dictionary, multiset, range set and range dictionary, segmented buffer, graphs (adjacency-list graph, traversal and shortest-path algorithms, disjoint set), and trees (n-ary tree, tries). Also ships the approximate sketches in Bodu.Collections.Probabilistic and the packed BitSet in Bodu.Collections.Specialized. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL collection interfaces. Thread-safe variants live in Bodu.Collections.Concurrent.</Description>
     <PackageTags>$(PackageTags);collections;circular-buffer;deque;evicting-dictionary;priority-queue;graph;trie;bitset</PackageTags>
   </PropertyGroup>
 
