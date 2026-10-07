@@ -40,7 +40,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 **Span, array, stream, buffer**
 
 - <xref:Bodu.Extensions.SpanExtensions> - `AsReadOnly`, `ToReversed` (copying; contrast the in-place BCL `MemoryExtensions.Reverse`).
-- <xref:Bodu.Extensions.ArrayExtensions> - `Clear`, `Copy`, `Pad`, `Reverse`, `Slice`, `ToMatrix`.
+- <xref:Bodu.Extensions.ArrayExtensions> - `Clear`, `Copy`, `PadLeft`, `PadRight`, `Slice`, `ToMatrix`, `ToReversed` (copying; contrast the in-place `Array.Reverse`).
 - <xref:Bodu.Extensions.StreamExtensions> - `ReadAllBytes` / `ReadAllBytesAsync` / `WriteAllBytes` / `WriteAllBytesAsync`.
 - <xref:Bodu.Extensions.BufferConverter> - `CopyTo`, `Read`, `SwapEndian`, `ToArray` over byte buffers and primitive types.
 

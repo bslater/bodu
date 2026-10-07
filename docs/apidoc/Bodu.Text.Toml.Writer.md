@@ -11,7 +11,7 @@ uid: Bodu.Text.Toml.Writer
 ## Key types
 
 - <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> - the `ref struct` writer: `WriteStartTable` / `WriteEndTable`, `WriteStartArray` / `WriteEndArray`, `WritePropertyName`, the scalar writers (`WriteString`, `WriteInteger`, `WriteFloat`, `WriteBoolean`, `WriteOffsetDateTime`, `WriteLocalDateTime`, `WriteLocalDate`, `WriteLocalTime`) and their name-plus-value conveniences, plus `Flush` / `Reset` / `Dispose` for the stream constructors.
-- <xref:Bodu.Text.Toml.Writer.TomlWriterOptions> - `SpecVersion` and `MaxDepth`.
+- <xref:Bodu.Text.Toml.Writer.TomlWriterOptions> - `MaxDepth`, and the obsolete `SpecVersion`, which has no effect.
 
 ## Example
 

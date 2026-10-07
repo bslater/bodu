@@ -12,9 +12,10 @@ namespace Bodu;
 /// <remarks>
 /// <para>
 /// <see cref="WorkingDaysOfWeek" /> enumerates the commonly observed working-week patterns across global regions. Each
-/// named value maps to a canonical <see cref="DayOfWeekSet" /> preset and is interchangeable with the bitmask
-/// representation through the conversion extension methods on
-/// <see cref="Bodu.Extensions.WorkingDaysOfWeekExtensions" />.
+/// of the seven named working weeks corresponds to the <see cref="DayOfWeekSet" /> preset of the same name, and
+/// <see cref="AllDays" /> to <see cref="DayOfWeekSet.All" />; the extension methods on
+/// <see cref="Bodu.Extensions.WorkingDaysOfWeekExtensions" /> convert in both directions. <see cref="Custom" /> has no
+/// set of its own.
 /// </para>
 /// <para>
 /// Use a named value when the working week is one of the listed patterns; use <see cref="Custom" /> together with a

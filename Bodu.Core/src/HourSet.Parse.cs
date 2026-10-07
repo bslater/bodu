@@ -46,7 +46,7 @@ public readonly partial struct HourSet
     }
 
     /// <summary>
-    /// Converts text in the specified format into a <see cref="HourSet" />.
+    /// Converts text in the specified format into an <see cref="HourSet" />.
     /// </summary>
     /// <param name="s">The text to convert.</param>
     /// <param name="format">
@@ -105,7 +105,7 @@ public readonly partial struct HourSet
     }
 
     /// <summary>
-    /// Attempts to convert text in the specified format into a <see cref="HourSet" />.
+    /// Attempts to convert text in the specified format into an <see cref="HourSet" />.
     /// </summary>
     /// <param name="s">The text to convert.</param>
     /// <param name="format">

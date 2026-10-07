@@ -15,7 +15,7 @@ namespace Bodu;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A <see cref="HourSet" /> holds one bit per hour, so it never allocates, and testing, adding or removing an hour, or
+/// An <see cref="HourSet" /> holds one bit per hour, so it never allocates, and testing, adding or removing an hour, or
 /// combining two sets with <c>|</c>, <c>&amp;</c>, <c>^</c> and <c>~</c>, is a single bitwise operation.
 /// <see cref="Contains(int)" /> answers <see langword="false" /> for any value outside 0 to 23 rather than throwing,
 /// which keeps a membership test against <see cref="DateTime.Hour" /> to a comparison and a bit test.
