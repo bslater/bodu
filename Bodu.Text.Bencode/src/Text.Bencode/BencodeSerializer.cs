@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using Bodu.Buffers;
 using Bodu.Text.Bencode.Document;
 using Bodu.Text.Bencode.Nodes;
@@ -56,6 +57,8 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static byte[] Serialize<T>(T value, BencodeSerializerOptions? options = null)
     {
         using var buffer = new PooledBufferBuilder<byte>();
@@ -84,6 +87,8 @@ public static class BencodeSerializer
     /// buffered internally until each dictionary closes (canonical key ordering requires it), so a serialization
     /// failure part-way through a root-level list may leave that list's already-emitted bytes in the destination.
     /// </remarks>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static void Serialize<T>(IBufferWriter<byte> destination, T value, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -110,6 +115,8 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static void Serialize<T>(Stream destination, T value, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -133,6 +140,8 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static BencodeNode? SerializeToNode<T>(T value, BencodeSerializerOptions? options = null)
     {
         using var buffer = new PooledBufferBuilder<byte>();
@@ -153,6 +162,8 @@ public static class BencodeSerializer
     /// <exception cref="BencodeSerializationException">
     /// Thrown when a value cannot be represented in Bencode.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static BencodeDocument SerializeToDocument<T>(T value, BencodeSerializerOptions? options = null)
     {
         using var buffer = new PooledBufferBuilder<byte>();
@@ -177,6 +188,8 @@ public static class BencodeSerializer
     /// <exception cref="NotSupportedException">
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(BencodeNode node, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(node);
@@ -202,6 +215,8 @@ public static class BencodeSerializer
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="destination" /> does not support writing.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static async ValueTask SerializeAsync<T>(Stream destination, T value, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -239,6 +254,8 @@ public static class BencodeSerializer
     /// <exception cref="NotSupportedException">
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(ReadOnlySpan<byte> data, BencodeSerializerOptions? options = null)
     {
         BencodeSerializerOptions effective = options ?? s_defaultOptions;
@@ -269,6 +286,8 @@ public static class BencodeSerializer
     /// <exception cref="NotSupportedException">
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(byte[] data, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(data);
@@ -295,6 +314,8 @@ public static class BencodeSerializer
     /// The stream is buffered in full before parsing - the span-based reader requires the complete document in memory -
     /// so the stream's length is bounded by the 2 GiB managed-array ceiling.
     /// </remarks>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(Stream source, BencodeSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -325,6 +346,8 @@ public static class BencodeSerializer
     /// The stream is buffered in full before parsing - the span-based reader requires the complete document in memory -
     /// so only the buffering copy is asynchronous; parsing and binding run synchronously once the copy completes.
     /// </remarks>
+    [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static async ValueTask<T> DeserializeAsync<T>(Stream source, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
