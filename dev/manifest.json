@@ -10649,7 +10649,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.HourSet.Enumerator",
-      "Summary": "<p sourcefile=\"api/Bodu.HourSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the hours a <xref href=\"Bodu.HourSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.HourSet.Enumerator.yml\" sourcestartlinenumber=\"1\">Enumerates the hours an <xref href=\"Bodu.HourSet\" data-throw-if-not-resolved=\"false\"></xref> selects, in ascending order, without allocating.</p>\n"
     },
     {
       "type": "ManagedReference",
