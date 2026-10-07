@@ -23,7 +23,7 @@ Top-level primitives that don't fit into a sub-namespace.
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.DayOfWeekSet> | Immutable set of days of the week, with set operators, enumeration, the regional working-week presets, and parsing and formatting as a seven-character mask (`_MTWTF_`). |
-| <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> | Immutable sets of months, days of the month, hours, minutes, and seconds, with set operators, enumeration, and parsing and formatting as a list of values and ranges (`1-3,12`). |
+| <xref:Bodu.MonthSet>, <xref:Bodu.DayOfMonthSet>, <xref:Bodu.HourSet>, <xref:Bodu.MinuteSet>, <xref:Bodu.SecondSet> | Immutable sets of months, days of the month, hours, minutes, and seconds, with set operators, enumeration, and parsing and formatting as a list of values and ranges (`1-3,12`), a list without ranges (`L`), or binary (`B`), plus a mask of initials for months (`J`). All six sets, `DayOfWeekSet` included, implement <xref:Bodu.ICalendarValueSet`2>; the [calendar value sets guide](../../guides/core/calendar-value-sets.md) has the details. |
 | <xref:Bodu.IRandomGenerator> | Abstraction over random number generators - used by helpers (and the `Bodu.Collections` catalogue) that need pluggable randomness. |
 | <xref:Bodu.XorShiftRandom> | Fast non-cryptographic xor-shift PRNG implementing `IRandomGenerator`. |
 | <xref:Bodu.ThrowHelper> | Centralized parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |

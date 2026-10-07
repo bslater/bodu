@@ -38,7 +38,7 @@ HourSet  openHours   = HourSet.Parse("9-17");
 bool open = openHours.Contains(new DateTime(2025, 3, 31, 10, 0, 0).Hour); // true
 ```
 
-Each set is an immutable `readonly struct`, so `With` / `Without` and the `|`, `&`, `^`, `~` operators each return a new value. Presets `DayOfWeekSet.Empty`, `DayOfWeekSet.Weekdays`, and `DayOfWeekSet.Weekend` cover the common cases; the numeric sets read and write a list of values and ranges (`"9-17"`). See the [DayOfWeekSet](../../guides/core/day-of-week-set.md) and [calendar value sets](../../guides/core/calendar-value-sets.md) guides.
+Each set is an immutable `readonly struct`, so `With` / `Without` and the `|`, `&`, `^`, `~` operators each return a new value. Presets `DayOfWeekSet.Empty`, `DayOfWeekSet.Weekdays`, and `DayOfWeekSet.Weekend` cover the common cases; the numeric sets read and write a list of values and ranges (`"9-17"`) by default, and also a list without ranges (`L`), binary (`B`), and for months a mask of initials (`J`). `DayOfWeekSet` and the five numeric sets all implement `ICalendarValueSet<TSelf, TValue>`, so one generic method can take any of them. See the [DayOfWeekSet](../../guides/core/day-of-week-set.md) and [calendar value sets](../../guides/core/calendar-value-sets.md) guides.
 
 ### Railway outcomes (`Option<T>` / `Result<T>`)
 
