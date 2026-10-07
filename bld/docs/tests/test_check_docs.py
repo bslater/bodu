@@ -125,6 +125,44 @@ class FrameworkOpeningTests(unittest.TestCase):
         self.assertEqual([], opening_problems("# Widgets\n\n> Moved to Gadgets on .NET 8.\n"))
 
 
+def description_problems(text: str) -> list[str]:
+    return check_docs.framework_description_problems("x.csproj", text, EXPECTED)
+
+
+def project(description: str) -> str:
+    return (
+        "<Project Sdk=\"Microsoft.NET.Sdk\">\n\n  <PropertyGroup>\n"
+        "    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>\n"
+        f"    <Description>{description}</Description>\n  </PropertyGroup>\n\n</Project>\n")
+
+
+class FrameworkDescriptionTests(unittest.TestCase):
+    """The .NET versions a project's package description names."""
+
+    def test_framework_description_problems_when_description_names_one_version_should_report_its_line(self) -> None:
+        found = description_problems(project("Widgets for .NET 8: a widget and a gadget."))
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.csproj:5: the package description names .NET 8,"), found[0])
+
+    def test_framework_description_problems_when_description_names_every_version_should_report_nothing(self) -> None:
+        self.assertEqual([], description_problems(project("Widgets for .NET 8 and .NET 10.")))
+
+    def test_framework_description_problems_when_oldest_version_is_named_as_a_minimum_should_report_nothing(self) -> None:
+        self.assertEqual([], description_problems(project("Widgets for .NET 8 and later.")))
+
+    def test_framework_description_problems_when_newer_version_is_named_as_a_minimum_should_report_it(self) -> None:
+        self.assertEqual(1, len(description_problems(project("Widgets for .NET 10 and later."))))
+
+    def test_framework_description_problems_when_description_wraps_should_report_the_line_of_the_version(self) -> None:
+        found = description_problems(project("Widgets and gadgets\n      for .NET 8."))
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.csproj:6:"), found[0])
+
+    def test_framework_description_problems_when_version_is_outside_the_description_should_report_nothing(self) -> None:
+        text = project("Widgets ported from .NET Framework 4.8.").replace("</Project>", "<!-- Built on .NET 8. -->\n</Project>")
+        self.assertEqual([], description_problems(text))
+
+
 class NetTargetsTests(unittest.TestCase):
     """The one reader of $(BoduNetTargets) both documentation tools share."""
 
