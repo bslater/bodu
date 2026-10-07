@@ -14,9 +14,9 @@ The package is published as **Stable**: the public API surface is committed, and
 
 | Form | Type | Canonical text | Shape |
 |---|---|---|---|
-| RFC 5545 recurrence rule | <xref:Bodu.Globalization.Recurrence.RecurrenceRule> | `FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR` | Calendar-aligned. A base frequency (`DAILY` … `YEARLY`) refined by `INTERVAL`, bounded by `COUNT` or `UNTIL`, and filtered by the `BY*` parts. The rule carries no start of its own - the series start (`DTSTART`) is passed to every query. |
+| RFC 5545 recurrence rule | <xref:Bodu.Globalization.Recurrence.RecurrenceRule> | `FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE,FR` | Calendar-aligned. A base frequency (`SECONDLY` … `YEARLY`) refined by `INTERVAL`, bounded by `COUNT` or `UNTIL`, and filtered by the `BY*` parts. The rule carries no start of its own - the series start (`DTSTART`) is passed to every query. |
 | Composed rule set | <xref:Bodu.Globalization.Recurrence.RecurrenceSet> | An iCalendar property block: `DTSTART`, one or more `RRULE` lines, optional `RDATE` / `EXDATE` | One or more rules anchored at a common start, merged with explicit recurrence dates and with exception dates removed. |
-| Cron expression | <xref:Bodu.Globalization.Recurrence.CronExpression> | `0 2 * * MON-FRI`, `*/15 * * * *`, `@daily` | Calendar-aligned. The five-field Vixie layout (<xref:Bodu.Globalization.Recurrence.CronFormat>`.Standard`) or the six-field layout with a leading seconds field (`CronFormat.WithSeconds`), plus the `@yearly` / `@annually`, `@monthly`, `@weekly`, `@daily` / `@midnight`, and `@hourly` macros. |
+| Cron expression | <xref:Bodu.Globalization.Recurrence.CronExpression> | `0 2 * * MON-FRI`, `*/15 * * * *`, `@daily` | Calendar-aligned. The five-field Vixie layout (<xref:Bodu.Globalization.Recurrence.CronFormat>`.Standard`) or the six-field layout with a leading seconds field (`CronFormat.WithSeconds`), plus the `@yearly` / `@annually`, `@monthly`, `@weekly`, `@daily` / `@midnight`, and `@hourly` macros. The two day fields also take the [Quartz day tokens](../../guides/recurrence/cron.md#the-quartz-day-tokens) `L`, `W`, `#` and `?`. |
 | Anchored interval | <xref:Bodu.Globalization.Recurrence.AnchoredInterval> | `PT4H`, `P1DT2H30M`, `P2W` | Instant-aligned. Occurrences at `anchor + k·interval` for `k ≥ 1`; the anchor ("the last completed run", "contract start") is supplied to every query and is *not* itself an occurrence. |
 
 ## The common contract
@@ -46,7 +46,7 @@ Every answer is a pure function of its arguments. No member reads the wall clock
 | Schedule | Reach for | Why |
 |---|---|---|
 | "Daily at 02:00", "weekdays at 09:00", "every 15 minutes" | `CronExpression` | The operational shapes cron was designed for; the six-field layout adds seconds. |
-| "The last Friday of every month", "the second Tuesday", "every other week on Monday and Thursday" | `RecurrenceRule` | `BYDAY` ordinals (`-1FR`, `2TU`), `BYSETPOS`, `INTERVAL`, and the `COUNT` / `UNTIL` bounds. |
+| "The last Friday of every month", "the second Tuesday", "every other week on Monday and Thursday" | `RecurrenceRule`, or `CronExpression` for the first two | `BYDAY` ordinals (`-1FR`, `2TU`), `BYSETPOS`, `INTERVAL`, and the `COUNT` / `UNTIL` bounds. Cron's Quartz day tokens write the first two as `5L` and `2#2` (in Vixie's weekday numbering), but cron cannot express the third, which needs an interval over weeks. |
 | Schedules that must interoperate with iCalendar data (`RRULE` text from a calendar feed) | `RecurrenceRule` / `RecurrenceSet` | The text *is* the RFC 5545 grammar; a set parses the `DTSTART` / `RRULE` / `RDATE` / `EXDATE` block directly. |
 | "The Monday rule, plus this extra Thursday, minus the two dates we cancelled" | `RecurrenceSet` | Rules, explicit additions, and exclusions composed into one ascending, duplicate-free stream. |
 | "Every 4 hours after the previous run completed" | `AnchoredInterval` | Instant-aligned rather than calendar-aligned - the spacing is measured from an anchor the caller supplies. |
