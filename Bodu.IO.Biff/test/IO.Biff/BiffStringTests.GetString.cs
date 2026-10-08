@@ -118,20 +118,21 @@ public sealed partial class BiffStringTests
     }
 
     /// <summary>
-    /// Verifies that the characters, rich runs, and extended data are exposed as raw spans.
+    /// Verifies that the characters of a string whose flags byte sets the rich-text and extended-data bits start right
+    /// after the flags byte, since those bits are reserved outside the shared string table, and that no trailer is
+    /// exposed.
     /// </summary>
     [TestMethod]
-    public void RawCharacters_WhenTrailersPresent_ShouldExposeEachSpan()
+    public void RawCharacters_WhenFlagsSetTrailerBits_ShouldStartAfterTheFlags()
     {
         BiffString value = Unicode([0x01, 0x00, 0x0C, 0x01, 0x00, 0x02, 0x00, 0x00, 0x00, (byte)'z', 1, 2, 3, 4, 9, 9]);
 
-        Assert.AreEqual((byte)'z', value.RawCharacters[0]);
-        Assert.IsTrue(value.HasRichRuns);
-        Assert.AreEqual(1, value.RichRunCount);
-        CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 4 }, value.RichRuns.ToArray());
-        Assert.IsTrue(value.HasExtendedData);
-        CollectionAssert.AreEqual(new byte[] { 9, 9 }, value.ExtendedData.ToArray());
-        Assert.AreEqual(16, value.EncodedLength);
+        CollectionAssert.AreEqual(new byte[] { 0x01 }, value.RawCharacters.ToArray());
+        Assert.IsFalse(value.HasRichRuns);
+        Assert.IsTrue(value.RichRuns.IsEmpty);
+        Assert.IsFalse(value.HasExtendedData);
+        Assert.IsTrue(value.ExtendedData.IsEmpty);
+        Assert.AreEqual(4, value.EncodedLength);
     }
 
     /// <summary>
@@ -141,8 +142,8 @@ public sealed partial class BiffStringTests
     [TestMethod]
     [DataRow(new byte[] { 0x02, 0x00, 0x00, 0x41 }, DisplayName = "characters truncated")]
     [DataRow(new byte[] { 0x01, 0x00, 0x01, 0x41 }, DisplayName = "wide characters truncated")]
-    [DataRow(new byte[] { 0x01, 0x00, 0x08, 0x01, 0x00, 0x41, 0x00 }, DisplayName = "rich runs truncated")]
-    [DataRow(new byte[] { 0x01, 0x00, 0x04, 0x03, 0x00, 0x00, 0x00, 0x41 }, DisplayName = "extended data truncated")]
+    [DataRow(new byte[] { 0x02, 0x00, 0x0C, 0x41 }, DisplayName = "reserved flag bits, characters truncated")]
+    [DataRow(new byte[] { 0x01, 0x00, 0x0D, 0x41 }, DisplayName = "reserved flag bits, wide characters truncated")]
     [DataRow(new byte[] { 0x01 }, DisplayName = "length truncated")]
     public void ReadUnicode_WhenTruncated_ShouldThrowBiffFormatException(byte[] bytes)
     {
@@ -188,31 +189,34 @@ public sealed partial class BiffStringTests
     }
 
     /// <summary>
-    /// Verifies that a rich-text flag with a zero run count reports no runs.
+    /// Verifies that a string outside the shared string table whose flags byte sets the rich-text bit reports no runs
+    /// and reads no run count: the byte after the flags byte is its character.
     /// </summary>
     [TestMethod]
-    public void HasRichRuns_WhenFlagSetButCountIsZero_ShouldBeFalse()
+    public void HasRichRuns_WhenRichFlagIsSet_ShouldBeFalse()
     {
         BiffString value = Unicode([0x01, 0x00, 0x08, 0x00, 0x00, (byte)'a']);
 
         Assert.IsFalse(value.HasRichRuns);
         Assert.AreEqual(0, value.RichRunCount);
         Assert.IsTrue(value.RichRuns.IsEmpty);
-        Assert.AreEqual("a", value.GetString());
-        Assert.AreEqual(6, value.EncodedLength);
+        Assert.AreEqual("\0", value.GetString());
+        Assert.AreEqual(4, value.EncodedLength);
     }
 
     /// <summary>
-    /// Verifies that an extended-data flag with a zero size reports the flag with an empty span.
+    /// Verifies that a string outside the shared string table whose flags byte sets the extended-data bit reports no
+    /// extended data and reads no extended size: the byte after the flags byte is its character.
     /// </summary>
     [TestMethod]
-    public void HasExtendedData_WhenFlagSetButSizeIsZero_ShouldBeTrueWithEmptySpan()
+    public void HasExtendedData_WhenExtendedFlagIsSet_ShouldBeFalse()
     {
         BiffString value = Unicode([0x01, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, (byte)'a']);
 
-        Assert.IsTrue(value.HasExtendedData);
+        Assert.IsFalse(value.HasExtendedData);
         Assert.IsTrue(value.ExtendedData.IsEmpty);
-        Assert.AreEqual(8, value.EncodedLength);
+        Assert.AreEqual("\0", value.GetString());
+        Assert.AreEqual(4, value.EncodedLength);
     }
 
     /// <summary>
@@ -243,19 +247,22 @@ public sealed partial class BiffStringTests
     }
 
     /// <summary>
-    /// Verifies that an extended-data size that would overflow the payload arithmetic is rejected as a format
-    /// error rather than an arithmetic failure.
+    /// Verifies that a string whose flags byte sets the extended-data bit reads no extended size, however large the
+    /// bytes after the flags byte would make it: the first of them is the string's one character.
     /// </summary>
-    /// <param name="size">The declared extended-data size.</param>
+    /// <param name="size">The extended-data size the bytes after the flags byte would declare.</param>
     [TestMethod]
     [DataRow(0x7FFFFFFFu)]
     [DataRow(0x80000000u)]
     [DataRow(0xFFFFFFFFu)]
-    public void ReadUnicode_WhenExtendedSizeIsHostile_ShouldThrowBiffFormatException(uint size)
+    public void ReadUnicode_WhenExtendedFlagIsSet_ShouldNotReadAnExtendedSize(uint size)
     {
         byte[] bytes = [0x01, 0x00, 0x04, (byte)size, (byte)(size >> 8), (byte)(size >> 16), (byte)(size >> 24), (byte)'a'];
 
-        _ = Assert.ThrowsExactly<BiffFormatException>(() => _ = Unicode(bytes));
+        BiffString value = Unicode(bytes);
+
+        Assert.AreEqual(((char)(byte)size).ToString(), value.GetString());
+        Assert.AreEqual(4, value.EncodedLength);
     }
 
     /// <summary>

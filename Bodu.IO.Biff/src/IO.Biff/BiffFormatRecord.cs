@@ -40,6 +40,10 @@ public readonly ref struct BiffFormatRecord
     /// Gets the format code string.
     /// </summary>
     /// <value>The code as a span-backed view.</value>
+    /// <remarks>
+    /// In BIFF8 the code is an <c>XLUnicodeString</c>: only bit 0 of its flags byte, which selects 16-bit characters,
+    /// is read, and the other bits are ignored, so the view carries no rich-text runs or extended data.
+    /// </remarks>
     public BiffString Code { get; }
 
     /// <summary>

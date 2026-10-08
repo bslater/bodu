@@ -32,6 +32,10 @@ public readonly ref struct BiffStringRecord
     /// Gets the cached text.
     /// </summary>
     /// <value>The text as a span-backed view.</value>
+    /// <remarks>
+    /// In BIFF8 the text is an <c>XLUnicodeString</c>: only bit 0 of its flags byte, which selects 16-bit characters,
+    /// is read, and the other bits are ignored, so the view carries no rich-text runs or extended data.
+    /// </remarks>
     public BiffString Text { get; }
 
     /// <summary>

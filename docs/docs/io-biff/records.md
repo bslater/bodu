@@ -73,9 +73,9 @@ The version selects how every text field is stored; <xref:Bodu.IO.Biff.BiffStrin
 | | BIFF8 Unicode string | BIFF5 byte string |
 |---|---|---|
 | Length prefix | 8-bit in `BOUNDSHEET` and `FONT`, 16-bit elsewhere - a **character** count. | 8-bit in `BOUNDSHEET`, `FONT`, and `FORMAT`, 16-bit elsewhere - a **byte** count. |
-| Flags byte | Follows the length: bit 0 selects 16-bit code units over compressed 8-bit characters, bit 2 announces extended (phonetic) data, bit 3 announces rich-text runs. | None. |
+| Flags byte | Follows the length: bit 0 selects 16-bit code units over compressed 8-bit characters. In the shared string table, bit 2 announces extended (phonetic) data and bit 3 rich-text runs; in `BOUNDSHEET`, `FONT`, `FORMAT`, `LABEL` and `STRING` the other seven bits are reserved and ignored ([MS-XLS] 2.5.240 and 2.5.294), so the characters follow the flags byte directly. | None. |
 | Characters | UTF-16LE code units, or one low byte per character when every character fits (`IsHighByte` tells which). | Bytes in the code page the stream's `CODEPAGE` record declared (Windows-1252 when none has been read). |
-| Trailers | A 16-bit run count before the characters and four bytes per run after them; a 32-bit extended size before the characters and that many bytes after the runs. | None; `RSTRING` carries its own run table after the string. |
+| Trailers | Shared strings only: a 16-bit run count before the characters and four bytes per run after them; a 32-bit extended size before the characters and that many bytes after the runs. | None; `RSTRING` carries its own run table after the string. |
 | Writer | Chooses the compressed form when every character fits a byte, 16-bit code units otherwise. | Encodes with the writer's code page; a character the code page cannot represent becomes its replacement character. |
 
 ## Shared string table
@@ -101,7 +101,7 @@ A string that lies within one record is exposed as a span-backed <xref:Bodu.IO.B
 | `XF` payload | 16 bytes | 20 bytes |
 | `FILEPASS` | XOR key and hash | Type word, then XOR pair or RC4 header |
 | Shared strings | None - every text cell is a `LABEL` or `RSTRING` | `SST` in the globals, `LABELSST` cells |
-| Rich text | `RSTRING` cells | Runs inside the Unicode string |
+| Rich text | `RSTRING` cells | Runs inside the shared string |
 | Compound-file stream name | `Book` | `Workbook` |
 
 The reader establishes the version from the first `BOF` it reads, or from <xref:Bodu.IO.Biff.BiffReaderOptions.Version>; the writer is created with it. The version-dependent accessors - `GetBoundSheet`, `GetDimensions`, `GetLabel`, `GetString`, `GetFormat`, `GetFont`, `GetFilePass` - refuse to decode until it is known.

@@ -81,20 +81,21 @@ public sealed partial class BiffReaderTests
     }
 
     /// <summary>
-    /// Verifies that a BIFF8 label whose Unicode string carries rich-text runs exposes the runs and decodes only the
+    /// Verifies that a BIFF8 label laid out as a rich string exposes no runs: its text is an <c>XLUnicodeString</c>, whose
+    /// flags byte has no rich-text bit, so the bytes after the flags byte, the would-be run count included, are its
     /// characters.
     /// </summary>
     [TestMethod]
-    public void GetLabel_WhenBiff8StringHasRichRuns_ShouldDecodeCharactersAndExposeRuns()
+    public void GetLabel_WhenBiff8StringDeclaresRichRuns_ShouldExposeNoRuns()
     {
         byte[] head = new byte[6];
         BiffReader reader = ReadTo8(BiffTestRecords.Record(BiffRecordType.Label, [.. head, .. BiffTestRecords.UnicodeString("rich", richRuns: 2)]), BiffRecordType.Label);
 
         BiffLabelRecord label = reader.GetLabel();
 
-        Assert.AreEqual("rich", label.Text.GetString());
-        Assert.AreEqual(2, label.Text.RichRunCount);
-        Assert.AreEqual(8, label.Text.RichRuns.Length);
+        Assert.AreEqual("\u0002\0ri", label.Text.GetString());
+        Assert.AreEqual(0, label.Text.RichRunCount);
+        Assert.IsTrue(label.Text.RichRuns.IsEmpty);
     }
 
     /// <summary>
