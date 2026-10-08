@@ -13,7 +13,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// change.
 /// </summary>
 [TestClass]
-public class PublicApiTests
+public partial class PublicApiTests
 {
     /// <summary>
     /// Verifies that the public API of <c>Bodu.Numerics.Serialization.Json</c> matches its committed baseline, so a new
