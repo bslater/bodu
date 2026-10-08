@@ -4,6 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Text;
+using Bodu.Text.Serialization;
+using Bodu.Text.Toml.Document;
+using Bodu.Text.Toml.Nodes;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
@@ -382,6 +389,164 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that an empty array is read as an empty collection rather than <see langword="null" />: into an
+    /// <see cref="object" /> array member, into a <see cref="List{T}" /> member, and into a dictionary of objects, where
+    /// it surfaces as an array element with no items.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenArrayIsEmpty_ShouldYieldEmptyCollection()
+    {
+        ObjectArrayMemberModel objects = TomlSerializer.Deserialize<ObjectArrayMemberModel>("S = []\n");
+        Int32ListMemberModel integers = TomlSerializer.Deserialize<Int32ListMemberModel>("S = []\n");
+        Dictionary<string, object> table = TomlSerializer.Deserialize<Dictionary<string, object>>("S = []\n");
+
+        Assert.IsNotNull(objects.S, "The object array member.");
+        Assert.IsEmpty(objects.S, "The object array member.");
+        Assert.IsNotNull(integers.S, "The integer list member.");
+        Assert.IsEmpty(integers.S, "The integer list member.");
+        Assert.IsInstanceOfType<TomlElement>(table["S"], "The dictionary entry.");
+        Assert.AreEqual(TomlValueKind.Array, ((TomlElement)table["S"]).ValueKind, "The dictionary entry.");
+        Assert.AreEqual(0, ((TomlElement)table["S"]).GetArrayLength(), "The dictionary entry.");
+    }
+
+    /// <summary>
+    /// Verifies that an integer given for a collection member throws <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerIsReadIntoCollectionMember_ShouldThrowTomlSerializationException()
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ListNamedListModel>("List = 123\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a table given for a string collection member throws <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringCollectionMemberIsGivenTable_ShouldThrowTomlSerializationException()
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ThingsModel>("[things]\nfoo = \"bar\"");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an implicit table, defined only by the array-of-tables headers beneath it, given for a collection
+    /// member throws <see cref="TomlSerializationException" />, because a table binds only to a table-shaped member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenCollectionMemberIsGivenImplicitTable_ShouldThrowTomlSerializationException()
+    {
+        const string toml = "[[rules.allowlists]]\n  description = \"a\"\n\n[[rules.allowlists]]\n  description = \"b\"\n";
+
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<RuleListModel>(toml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing an array that holds a <see langword="null" /> element throws
+    /// <see cref="TomlSerializationException" /> rather than dropping the element or the array: a nullable-integer array
+    /// member through the serializer, and a <see cref="TomlArray" /> through <see cref="TomlNode.ToUtf8Bytes" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenArrayElementIsNull_ShouldThrowTomlSerializationException()
+    {
+        var model = new NullableInt32ArrayModel { Values = [1, null] };
+        var root = new TomlObject { ["values"] = new TomlArray { 1, null } };
+
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = root.ToUtf8Bytes();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a list and an array of objects are written as arrays of tables and read back to equal items in the
+    /// same order.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMembersAreListAndArrayOfClass_ShouldRoundTrip()
+    {
+        var original = new NamedValueCollectionsModel
+        {
+            ItemList = [new() { Name = "a", Value = 1 }, new() { Name = "b", Value = 2 }],
+            ItemArray = [new() { Name = "c", Value = 3 }],
+        };
+
+        string text = TomlSerializer.Serialize(original);
+        NamedValueCollectionsModel roundTripped = TomlSerializer.Deserialize<NamedValueCollectionsModel>(text);
+
+        Assert.AreEqual(
+            "[[ItemList]]\nName = \"a\"\nValue = 1\n\n[[ItemList]]\nName = \"b\"\nValue = 2\n\n[[ItemArray]]\nName = \"c\"\nValue = 3\n",
+            text);
+        CollectionAssert.AreEqual(new[] { ("a", 1), ("b", 2) }, roundTripped.ItemList.Select(item => (item.Name, item.Value)).ToArray());
+        CollectionAssert.AreEqual(new[] { ("c", 3) }, roundTripped.ItemArray.Select(item => (item.Name, item.Value)).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that an <see cref="ObservableCollection{T}" /> member is written as an array and read back into an
+    /// <see cref="ObservableCollection{T}" /> holding the same items.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemberIsObservableCollection_ShouldRoundTrip()
+    {
+        var original = new ObservableCollectionModel { Global = ["Hello, World!"] };
+
+        string text = TomlSerializer.Serialize(original);
+        ObservableCollectionModel roundTripped = TomlSerializer.Deserialize<ObservableCollectionModel>(text);
+
+        Assert.AreEqual("Global = [\"Hello, World!\"]\n", text);
+        CollectionAssert.AreEqual(new[] { "Hello, World!" }, roundTripped.Global);
+    }
+
+    /// <summary>
+    /// Verifies that an array with more items than a collection's initial capacity is read in full and in order, into
+    /// an integer array member under the snake-case policy and into a <see cref="TomlNode" /> tree.
+    /// </summary>
+    /// <param name="count">The number of items in the array.</param>
+    [TestMethod]
+    [DataRow(17)]
+    [DataRow(33)]
+    public void Deserialize_WhenArrayExceedsInitialCapacity_ShouldReadEveryItem(int count)
+    {
+        int[] expected = Enumerable.Range(1, count).ToArray();
+        string toml = $"items = [{string.Join(", ", expected.Select(item => item.ToString(CultureInfo.InvariantCulture)))}]\n";
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+
+        ItemsArrayModel model = TomlSerializer.Deserialize<ItemsArrayModel>(toml, options);
+        TomlArray node = TomlNode.Parse(Encoding.UTF8.GetBytes(toml))!["items"]!.AsArray();
+
+        CollectionAssert.AreEqual(expected, model.Items, "The integer array member.");
+        CollectionAssert.AreEqual(expected, node.Select(item => (int)item!).ToArray(), "The node tree.");
+    }
+
+    /// <summary>
+    /// Verifies that an array of inline tables binds one item per table to a list of objects, a key a table omits
+    /// leaving that item's default, and that serializing the model again keeps all three tables.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenArrayOfInlineTablesTargetsListOfClass_ShouldBindEachTable()
+    {
+        const string toml = "sub = [ { id = \"id1\", publish = true }, { id = \"id2\", publish = false }, { id = \"id3\" } ]\n";
+        (string, bool)[] expected = [("id1", true), ("id2", false), ("id3", false)];
+
+        PublishListModel model = TomlSerializer.Deserialize<PublishListModel>(toml);
+        PublishListModel reread = TomlSerializer.Deserialize<PublishListModel>(TomlSerializer.Serialize(model));
+
+        CollectionAssert.AreEqual(expected, model.Sub.Select(item => (item.Id, item.Publish)).ToArray(), "The document read.");
+        CollectionAssert.AreEqual(expected, reread.Sub.Select(item => (item.Id, item.Publish)).ToArray(), "The model written and read again.");
+    }
+
+    /// <summary>
     /// A model with a list member.
     /// </summary>
     private sealed class ListModel
@@ -529,5 +694,198 @@ public partial class TomlSerializerTests
         /// <summary>Gets or sets the integer bag.</summary>
         /// <value>The bag.</value>
         public System.Collections.Concurrent.ConcurrentBag<int> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A model with an <see cref="object" /> array member that holds <see langword="null" /> until it is read.
+    /// </summary>
+    private sealed class ObjectArrayMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the object array.
+        /// </summary>
+        /// <value>The array, or <see langword="null" />.</value>
+        public object[]? S { get; set; }
+    }
+
+    /// <summary>
+    /// A model with an integer list member that holds <see langword="null" /> until it is read.
+    /// </summary>
+    private sealed class Int32ListMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the integer list.
+        /// </summary>
+        /// <value>The list, or <see langword="null" />.</value>
+        public List<int>? S { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose string list member is named <c>List</c>.
+    /// </summary>
+    private sealed class ListNamedListModel
+    {
+        /// <summary>
+        /// Gets or sets the string list.
+        /// </summary>
+        /// <value>The list.</value>
+        public List<string> List { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a string list member written under the key <c>things</c>.
+    /// </summary>
+    private sealed class ThingsModel
+    {
+        /// <summary>
+        /// Gets or sets the strings.
+        /// </summary>
+        /// <value>The strings.</value>
+        [PropertyName("things")]
+        public List<string> Things { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a list of rules written under the key <c>rules</c>.
+    /// </summary>
+    private sealed class RuleListModel
+    {
+        /// <summary>
+        /// Gets or sets the rules.
+        /// </summary>
+        /// <value>The rules.</value>
+        [PropertyName("rules")]
+        public List<AllowlistRuleModel> Rules { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A rule holding a list of allowlists.
+    /// </summary>
+    private sealed class AllowlistRuleModel
+    {
+        /// <summary>
+        /// Gets or sets the allowlists.
+        /// </summary>
+        /// <value>The allowlists.</value>
+        [PropertyName("allowlists")]
+        public List<AllowlistModel> Allowlists { get; set; } = [];
+    }
+
+    /// <summary>
+    /// An allowlist with a description.
+    /// </summary>
+    private sealed class AllowlistModel
+    {
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>The description.</value>
+        [PropertyName("description")]
+        public string Description { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model with a nullable-integer array member.
+    /// </summary>
+    private sealed class NullableInt32ArrayModel
+    {
+        /// <summary>
+        /// Gets or sets the values, which may hold <see langword="null" /> elements.
+        /// </summary>
+        /// <value>The values.</value>
+        public int?[] Values { get; set; } = [];
+    }
+
+    /// <summary>
+    /// An item with a name and a value, written as a table.
+    /// </summary>
+    private sealed class NamedValueItem
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public int Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a list and an array of <see cref="NamedValueItem" />, each written as an array of tables.
+    /// </summary>
+    private sealed class NamedValueCollectionsModel
+    {
+        /// <summary>
+        /// Gets or sets the items held in a list.
+        /// </summary>
+        /// <value>The list.</value>
+        public List<NamedValueItem> ItemList { get; set; } = [];
+
+        /// <summary>
+        /// Gets or sets the items held in an array.
+        /// </summary>
+        /// <value>The array.</value>
+        public NamedValueItem[] ItemArray { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with an <see cref="ObservableCollection{T}" /> member.
+    /// </summary>
+    private sealed class ObservableCollectionModel
+    {
+        /// <summary>
+        /// Gets or sets the strings.
+        /// </summary>
+        /// <value>The collection.</value>
+        public ObservableCollection<string> Global { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with an integer array member, written <c>items</c> under the snake-case policy.
+    /// </summary>
+    private sealed class ItemsArrayModel
+    {
+        /// <summary>
+        /// Gets or sets the integers.
+        /// </summary>
+        /// <value>The integers.</value>
+        public int[] Items { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a list of publish entries written under the key <c>sub</c>.
+    /// </summary>
+    private sealed class PublishListModel
+    {
+        /// <summary>
+        /// Gets or sets the publish entries.
+        /// </summary>
+        /// <value>The entries.</value>
+        [PropertyName("sub")]
+        public List<PublishEntryModel> Sub { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A publish entry with an identifier and a flag.
+    /// </summary>
+    private sealed class PublishEntryModel
+    {
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        [PropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the entry is published.
+        /// </summary>
+        /// <value><see langword="true" /> when published; <see langword="false" /> by default.</value>
+        [PropertyName("publish")]
+        public bool Publish { get; set; }
     }
 }

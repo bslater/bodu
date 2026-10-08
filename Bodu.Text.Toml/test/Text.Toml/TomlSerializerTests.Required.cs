@@ -151,6 +151,21 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a missing required member is reported with a <see cref="TomlSerializationException" /> whose path
+    /// names the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRequiredMemberIsMissing_ShouldReportPath()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<RequiredNameModel>("other = 1\n");
+        });
+
+        Assert.AreEqual("Name", ex.Path);
+    }
+
+    /// <summary>
     /// A type whose member is declared with the C# <see langword="required" /> keyword.
     /// </summary>
     private sealed class RequiredKeywordModel
@@ -235,5 +250,18 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <value>The second value.</value>
         public required string Second { get; set; }
+    }
+
+    /// <summary>
+    /// A type whose only member is marked with <see cref="RequiredAttribute" />.
+    /// </summary>
+    private sealed class RequiredNameModel
+    {
+        /// <summary>
+        /// Gets or sets the required name.
+        /// </summary>
+        /// <value>The name.</value>
+        [Required]
+        public string Name { get; set; } = string.Empty;
     }
 }

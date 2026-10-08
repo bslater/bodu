@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using Bodu.Text.Toml.Document;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -211,6 +212,26 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a field a derived class re-declares with <see langword="new" /> is written once, with the derived
+    /// class's value, beside the fields only the derived class and only the base class declare.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsHiddenWithNew_ShouldWriteDerivedValue()
+    {
+        var options = new TomlSerializerOptions { IncludeFields = true };
+
+        string text = TomlSerializer.Serialize(new HidingFieldModel(), options);
+
+        Assert.AreEqual(1, text.Split("OverwrittenField").Length - 1, $"The hidden field is written once: {text}");
+        using var document = TomlDocument.Parse(text);
+        TomlElement root = document.RootElement;
+        Assert.AreEqual("derived value", root.GetProperty("OverwrittenField").GetString());
+        Assert.AreEqual("derived", root.GetProperty("DerivedField").GetString());
+        Assert.AreEqual("base", root.GetProperty("BaseField").GetString());
+        Assert.AreEqual(3, root.EnumerateObject().Count());
+    }
+
+    /// <summary>
     /// A model with both a public field and a public property, used to contrast the default property-only mapping
     /// with the <see cref="TomlSerializerOptions.IncludeFields" /> opt-in.
     /// </summary>
@@ -367,5 +388,39 @@ public partial class TomlSerializerTests
         /// <value>The hidden value.</value>
         [Bodu.Text.Serialization.Ignore]
         public int Hidden => _hidden;
+    }
+
+    /// <summary>
+    /// A base class with a field of its own and a field the derived class hides.
+    /// </summary>
+    private class HidingFieldBaseModel
+    {
+        /// <summary>
+        /// The field only the base class declares.
+        /// </summary>
+        public string BaseField = "base";
+
+        /// <summary>
+        /// The field the derived class hides with <see langword="new" />.
+        /// </summary>
+        public string OverwrittenField = "base value";
+    }
+
+    /// <summary>
+    /// A class that hides <see cref="HidingFieldBaseModel.OverwrittenField" /> with a field of the same name and declares
+    /// a field of its own.
+    /// </summary>
+    private sealed class HidingFieldModel
+        : HidingFieldBaseModel
+    {
+        /// <summary>
+        /// The field that hides the base class's field of the same name.
+        /// </summary>
+        public new string OverwrittenField = "derived value";
+
+        /// <summary>
+        /// The field only the derived class declares.
+        /// </summary>
+        public string DerivedField = "derived";
     }
 }

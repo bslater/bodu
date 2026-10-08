@@ -117,20 +117,23 @@ public sealed partial class Utf8TomlWriterTests
     /// <summary>
     /// Verifies that a string value containing an unpaired surrogate throws <see cref="ArgumentException" /> at the
     /// <see cref="Utf8TomlWriter.WriteString" /> call that supplied it, rather than deferring the failure to the
-    /// root-table close.
+    /// root-table close, and that nothing is written.
     /// </summary>
     [TestMethod]
     public void WriteString_WhenValueContainsLoneSurrogate_ShouldThrowArgumentException()
     {
+        ArrayBufferWriter<byte> buffer = new();
+
         _ = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            ArrayBufferWriter<byte> buffer = new();
             Utf8TomlWriter writer = new(buffer);
 
             writer.WriteStartTable();
             writer.WritePropertyName("s");
             writer.WriteString("a\uD800b");
         });
+
+        Assert.AreEqual(0, buffer.WrittenCount);
     }
 
     /// <summary>

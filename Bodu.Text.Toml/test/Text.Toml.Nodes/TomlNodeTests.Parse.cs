@@ -168,4 +168,20 @@ public partial class TomlNodeTests
         Assert.IsFalse(root.ContainsKey("name"));
         Assert.IsTrue(root.ContainsKey("Name"));
     }
+
+    /// <summary>
+    /// Verifies that a case-insensitive parse of two keys that differ only in case throws
+    /// <see cref="TomlFormatException" />, the duplicate-key error, because the table they build sees one key twice,
+    /// rather than keeping only one of them.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCaseInsensitiveKeysCollide_ShouldThrowTomlFormatException()
+    {
+        byte[] toml = Encoding.UTF8.GetBytes("a = 1\nA = 2\n");
+
+        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = TomlNode.Parse(toml, new TomlNodeOptions { PropertyNameCaseInsensitive = true });
+        });
+    }
 }

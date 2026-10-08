@@ -7,6 +7,7 @@
 using System.Collections.ObjectModel;
 using Bodu.Test.Assertions;
 using Bodu.Text.Serialization;
+using Bodu.Text.Toml.Document;
 using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
@@ -315,6 +316,64 @@ public partial class TomlSerializerTests
         {
             _ = new ObjectCreationHandlingAttribute((ObjectCreationHandling)99);
         }, "handling");
+    }
+
+    /// <summary>
+    /// Verifies that under the default <see cref="ObjectCreationHandling.Replace" /> an array of tables read into a
+    /// collection member that already holds items replaces them, so the member holds exactly the items read.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenCollectionMemberHasInitialItems_ShouldReplaceThem()
+    {
+        SeededSliceModel model = TomlSerializer.Deserialize<SeededSliceModel>("[[Slice]]\nName = 'c'\n\n[[Slice]]\nName = 'd'\n");
+
+        CollectionAssert.AreEqual(new[] { "c", "d" }, model.Slice.Select(item => item.Name).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a get-only dictionary member marked <see cref="ObjectCreationHandling.Populate" /> is populated with
+    /// a sub-table's entries, and that serializing the model writes a document that reads back to the same entries.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenGetOnlyDictionaryIsPopulated_ShouldRoundTrip()
+    {
+        GetOnlyNestedDictionaryModel model = TomlSerializer.Deserialize<GetOnlyNestedDictionaryModel>("[values.test]\na = 1\nb = true\n");
+        GetOnlyNestedDictionaryModel reread = TomlSerializer.Deserialize<GetOnlyNestedDictionaryModel>(TomlSerializer.Serialize(model));
+
+        Assert.IsTrue(model.Values.TryGetValue("test", out Dictionary<string, object>? read), "The document read: the test table.");
+        Assert.HasCount(2, read, "The document read: the test table's entries.");
+        Assert.AreEqual(1L, ((TomlElement)read["a"]).GetInt64(), "The document read: a.");
+        Assert.IsTrue(((TomlElement)read["b"]).GetBoolean(), "The document read: b.");
+        Assert.IsTrue(reread.Values.TryGetValue("test", out Dictionary<string, object>? written), "The model written and read again: the test table.");
+        Assert.HasCount(2, written, "The model written and read again: the test table's entries.");
+        Assert.AreEqual(1L, ((TomlElement)written["a"]).GetInt64(), "The model written and read again: a.");
+        Assert.IsTrue(((TomlElement)written["b"]).GetBoolean(), "The model written and read again: b.");
+    }
+
+    /// <summary>
+    /// Verifies that an empty table sets a class member that holds <see langword="null" /> to a new, empty instance
+    /// rather than leaving it <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTableIsEmpty_ShouldCreateMemberInstance()
+    {
+        EmptySectionHostModel model = TomlSerializer.Deserialize<EmptySectionHostModel>("[foo]\n");
+
+        Assert.IsNotNull(model.Foo);
+        Assert.IsNull(model.Foo.Name);
+    }
+
+    /// <summary>
+    /// Verifies that a table given for a class member that holds <see langword="null" /> creates the instance and
+    /// binds the table's members to it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTableTargetsNullMember_ShouldCreateInstance()
+    {
+        NullChildHostModel model = TomlSerializer.Deserialize<NullChildHostModel>("[Child]\nName = \"x\"\n");
+
+        Assert.IsNotNull(model.Child);
+        Assert.AreEqual("x", model.Child.Name);
     }
 
     /// <summary>
@@ -705,5 +764,92 @@ public partial class TomlSerializerTests
         /// <value>The record; <c>(0, 7)</c> until it is read.</value>
         [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public PopulatedRecord Value { get; set; } = new(0, 7);
+    }
+
+    /// <summary>
+    /// A model whose settable list of tables is seeded with two items.
+    /// </summary>
+    private sealed class SeededSliceModel
+    {
+        /// <summary>
+        /// Gets or sets the items, seeded with <c>a</c> and <c>b</c>.
+        /// </summary>
+        /// <value>The items.</value>
+        public List<SliceItemModel> Slice { get; set; } = [new() { Name = "a" }, new() { Name = "b" }];
+    }
+
+    /// <summary>
+    /// An item of <see cref="SeededSliceModel" />.
+    /// </summary>
+    private sealed class SliceItemModel
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model whose get-only dictionary of dictionaries is marked <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class GetOnlyNestedDictionaryModel
+    {
+        /// <summary>
+        /// Gets the tables, keyed by name, populated in place.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        [PropertyName("values")]
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public Dictionary<string, Dictionary<string, object>> Values { get; } = [];
+    }
+
+    /// <summary>
+    /// A model whose class member, written under the key <c>foo</c>, holds <see langword="null" /> until it is read.
+    /// </summary>
+    private sealed class EmptySectionHostModel
+    {
+        /// <summary>
+        /// Gets or sets the section.
+        /// </summary>
+        /// <value>The section, or <see langword="null" />.</value>
+        [PropertyName("foo")]
+        public EmptySectionModel? Foo { get; set; }
+    }
+
+    /// <summary>
+    /// A section whose member an empty table leaves unset.
+    /// </summary>
+    private sealed class EmptySectionModel
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name, or <see langword="null" />.</value>
+        public string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose class member holds <see langword="null" /> until it is read.
+    /// </summary>
+    private sealed class NullChildHostModel
+    {
+        /// <summary>
+        /// Gets or sets the child.
+        /// </summary>
+        /// <value>The child, or <see langword="null" />.</value>
+        public NamedChildModel? Child { get; set; }
+    }
+
+    /// <summary>
+    /// A child with a name.
+    /// </summary>
+    private sealed class NamedChildModel
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; } = string.Empty;
     }
 }

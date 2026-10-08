@@ -200,4 +200,20 @@ public sealed partial class Utf8TomlWriterTests
         Assert.AreEqual("bare-key_1 = 1\n\"needs quoting\" = 2\n", s_utf8.GetString(buffer.WrittenSpan));
     }
 
+    /// <summary>
+    /// Verifies that a key holding an unpaired surrogate throws <see cref="ArgumentException" /> for the key parameter
+    /// rather than being altered, since two keys altered alike could collide.
+    /// </summary>
+    [TestMethod]
+    public void WritePropertyName_WhenNameHasLoneSurrogate_ShouldThrowArgumentException()
+    {
+        _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(() =>
+        {
+            ArrayBufferWriter<byte> buffer = new();
+            Utf8TomlWriter writer = new(buffer);
+
+            writer.WriteStartTable();
+            writer.WritePropertyName("k\uD800");
+        }, "name");
+    }
 }

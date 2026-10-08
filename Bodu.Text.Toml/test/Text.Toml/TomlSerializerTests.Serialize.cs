@@ -5,10 +5,15 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 using Bodu.Test.Assertions;
 using Bodu.Test.Kat;
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Document;
+using Bodu.Text.Toml.Reader;
+using Bodu.Text.Toml.Serialization;
+using Bodu.Text.Toml.Writer;
 
 namespace Bodu.Text.Toml;
 
@@ -60,14 +65,19 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that serializing a <see cref="ulong" /> whose value exceeds the signed 64-bit range TOML can store
-    /// throws <see cref="TomlSerializationException" />.
+    /// throws <see cref="TomlSerializationException" />, from the first value past <see cref="long.MaxValue" /> to
+    /// <see cref="ulong.MaxValue" />, rather than writing an integer a conforming reader rejects or a wrapped negative
+    /// one.
     /// </summary>
+    /// <param name="value">The value to serialize.</param>
     [TestMethod]
-    public void Serialize_WhenUnsignedExceedsInt64Range_ShouldThrowTomlSerializationException()
+    [DataRow(9_223_372_036_854_775_808UL, DisplayName = "long.MaxValue + 1")]
+    [DataRow(ulong.MaxValue, DisplayName = "ulong.MaxValue")]
+    public void Serialize_WhenUnsignedExceedsInt64Range_ShouldThrowTomlSerializationException(ulong value)
     {
         Assert.ThrowsExactly<TomlSerializationException>(() =>
         {
-            _ = Serialize(ulong.MaxValue);
+            _ = Serialize(value);
         });
     }
 
@@ -404,4 +414,193 @@ public partial class TomlSerializerTests
         Assert.AreEqual($"Value = {kat.Expected}\n", text);
     }
 
+    /// <summary>
+    /// Verifies that a member whose converter writes no value makes serialization throw
+    /// <see cref="InvalidOperationException" />, because the writer is left holding a key with no value, and that
+    /// nothing is emitted, never a key without a value.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenConverterWritesNoValue_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            TomlSerializer.Serialize(buffer, new SilentMemberModel());
+        });
+
+        Assert.AreEqual(0, buffer.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that members marked with <see cref="Bodu.Text.Serialization.IgnoreAttribute" /> are skipped without a
+    /// converter being resolved for them, so a delegate member, and a dictionary member holding a delegate, do not stop
+    /// the rest of the model from being written.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenIgnoredMemberHasUnsupportedType_ShouldSkipIt()
+    {
+        var model = new IgnoredUnsupportedMembersModel
+        {
+            Func = () => { },
+            Map = new Dictionary<string, object> { ["f"] = new Action(() => { }) },
+        };
+
+        string text = TomlSerializer.Serialize(model);
+
+        Assert.AreEqual("Str = \"a\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a model with a member of a type TOML cannot represent, a delegate, throws
+    /// <see cref="TomlSerializationException" /> naming the member, rather than another exception.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberTypeIsUnsupported_ShouldThrowTomlSerializationException()
+    {
+        var model = new UnsupportedMemberModel { Callback = () => { } };
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.AreEqual("Callback", ex.Path);
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="IgnoreCondition.WhenWritingDefault" /> a string member holding only whitespace is
+    /// written, because it is not the member's default, while a <see langword="null" /> string member is omitted.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenWritingDefaultAndStringIsWhitespace_ShouldWriteIt()
+    {
+        var options = new TomlSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+
+        string text = TomlSerializer.Serialize(new NullableMemberModel { Present = " ", Absent = null }, options);
+
+        Assert.AreEqual("Present = \" \"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that floats are written with a period as the decimal separator, a whole value keeping its fraction,
+    /// when the current culture uses a comma.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenCurrentCultureUsesCommaDecimalSeparator_ShouldWritePeriod()
+    {
+        CultureInfo original = CultureInfo.CurrentCulture;
+        string text;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+            Assert.AreEqual(",", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, "The culture under test uses a comma.");
+
+            text = TomlSerializer.Serialize(new TwoDoublesModel());
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+
+        Assert.AreEqual("A = 2.0\nB = 1.5\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that an anonymous type is written with its property names, not the names of the compiler's backing
+    /// fields.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsAnonymousType_ShouldUsePropertyNames()
+    {
+        string text = TomlSerializer.Serialize(new { Foo = "bar" });
+
+        Assert.AreEqual("Foo = \"bar\"\n", text);
+    }
+
+    /// <summary>
+    /// A model whose only member is written by <see cref="SilentStringConverter" />, which writes nothing.
+    /// </summary>
+    private sealed class SilentMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the value the converter fails to write.
+        /// </summary>
+        /// <value>The value; <c>x</c> by default.</value>
+        [Converter(typeof(SilentStringConverter))]
+        public string Value { get; set; } = "x";
+    }
+
+    /// <summary>
+    /// A converter whose <see cref="Write" /> writes no value, leaving the key the serializer wrote without one.
+    /// </summary>
+    private sealed class SilentStringConverter
+        : TomlConverter<string>
+    {
+        /// <inheritdoc />
+        public override string Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+            reader.GetString();
+
+        /// <inheritdoc />
+        public override void Write(Utf8TomlWriter writer, string value, TomlSerializerOptions options)
+        {
+            // Deliberately writes nothing, as a custom converter returning no value does.
+        }
+    }
+
+    /// <summary>
+    /// A model whose ignored members are of types TOML cannot represent.
+    /// </summary>
+    private sealed class IgnoredUnsupportedMembersModel
+    {
+        /// <summary>
+        /// Gets or sets the string member, the only one written.
+        /// </summary>
+        /// <value>The string; <c>a</c> by default.</value>
+        public string Str { get; set; } = "a";
+
+        /// <summary>
+        /// Gets or sets an ignored delegate member.
+        /// </summary>
+        /// <value>The delegate, or <see langword="null" />.</value>
+        [Bodu.Text.Serialization.Ignore]
+        public Action? Func { get; set; }
+
+        /// <summary>
+        /// Gets or sets an ignored dictionary member whose values may be delegates.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        [Bodu.Text.Serialization.Ignore]
+        public Dictionary<string, object> Map { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a member of a type TOML cannot represent.
+    /// </summary>
+    private sealed class UnsupportedMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the delegate member.
+        /// </summary>
+        /// <value>The delegate, or <see langword="null" />.</value>
+        public Action? Callback { get; set; }
+    }
+
+    /// <summary>
+    /// A model with two <see cref="double" /> members, one of them a whole number.
+    /// </summary>
+    private sealed class TwoDoublesModel
+    {
+        /// <summary>
+        /// Gets or sets the whole-number value.
+        /// </summary>
+        /// <value>The value; 2.0 by default.</value>
+        public double A { get; set; } = 2.0;
+
+        /// <summary>
+        /// Gets or sets the fractional value.
+        /// </summary>
+        /// <value>The value; 1.5 by default.</value>
+        public double B { get; set; } = 1.5;
+    }
 }

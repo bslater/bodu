@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
@@ -490,6 +492,83 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that an enumeration-keyed dictionary member is written as a table keyed by the enumeration's member
+    /// names and read back to the same entries.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenDictionaryKeyIsEnum_ShouldRoundTrip()
+    {
+        var original = new EnumKeyedMemberModel { Values = new() { [KeyName.Value1] = "a" } };
+
+        string text = TomlSerializer.Serialize(original);
+        EnumKeyedMemberModel roundTripped = TomlSerializer.Deserialize<EnumKeyedMemberModel>(text);
+
+        Assert.AreEqual("[Values]\nValue1 = \"a\"\n", text);
+        Assert.HasCount(1, roundTripped.Values);
+        Assert.AreEqual("a", roundTripped.Values[KeyName.Value1]);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a model with a dictionary member a second time, through the converter the first call
+    /// cached on the options, writes the same table.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenDictionaryTypeIsSerializedAgain_ShouldUseCachedConverter()
+    {
+        var options = new TomlSerializerOptions();
+        var model = new MapMemberModel { Map = new() { ["a"] = 1 } };
+
+        string first = TomlSerializer.Serialize(model, options);
+        string second = TomlSerializer.Serialize(model, options);
+
+        Assert.AreEqual("[Map]\na = 1\n", first);
+        Assert.AreEqual(first, second);
+    }
+
+    /// <summary>
+    /// Verifies that a date-time of each kind given for a dictionary member throws
+    /// <see cref="TomlSerializationException" /> rather than failing in another way.
+    /// </summary>
+    /// <param name="toml">The document, which gives the member a date-time of one kind.</param>
+    [TestMethod]
+    [DataRow("items = 2023-01-01T10:20:30Z\n", DisplayName = "offset date-time")]
+    [DataRow("items = 2023-01-01T10:20:30\n", DisplayName = "local date-time")]
+    [DataRow("items = 2023-01-01\n", DisplayName = "local date")]
+    [DataRow("items = 10:20:30\n", DisplayName = "local time")]
+    public void Deserialize_WhenDateTimeIsReadIntoDictionaryMember_ShouldThrowTomlSerializationException(string toml)
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ItemDictionaryModel>(toml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an inline table given for a string value of a dictionary throws
+    /// <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenInlineTableIsReadIntoStringValue_ShouldThrowTomlSerializationException()
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<Dictionary<string, string>>("foo = {}\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an array of tables given for a dictionary member throws <see cref="TomlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenArrayTableIsReadIntoDictionaryOfInt32_ShouldThrowTomlSerializationException()
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<AnswerDictionaryModel>("[[test]]\nanswer = 42\n");
+        });
+    }
+
+    /// <summary>
     /// A model with a string-keyed dictionary member.
     /// </summary>
     private sealed class DictionaryModel
@@ -588,5 +667,83 @@ public partial class TomlSerializerTests
         /// <summary>Gets or sets the double-keyed dictionary.</summary>
         /// <value>The dictionary.</value>
         public Dictionary<double, string> Lookup { get; set; } = [];
+    }
+
+    /// <summary>
+    /// The enumeration whose member names key the dictionary of <see cref="EnumKeyedMemberModel" />.
+    /// </summary>
+    private enum KeyName
+    {
+        /// <summary>
+        /// The first key.
+        /// </summary>
+        Value1,
+
+        /// <summary>
+        /// The second key.
+        /// </summary>
+        Value2,
+    }
+
+    /// <summary>
+    /// A model with a dictionary member keyed by <see cref="KeyName" />.
+    /// </summary>
+    private sealed class EnumKeyedMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the strings, keyed by enumeration member.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        public Dictionary<KeyName, string> Values { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a string-keyed integer dictionary member.
+    /// </summary>
+    private sealed class MapMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the integers, keyed by name.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        public Dictionary<string, int> Map { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A model with a dictionary of tables written under the key <c>items</c>.
+    /// </summary>
+    private sealed class ItemDictionaryModel
+    {
+        /// <summary>
+        /// Gets or sets the items, keyed by name.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        [PropertyName("items")]
+        public Dictionary<string, DictionaryItemModel> Items { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A dictionary value with a single string member.
+    /// </summary>
+    private sealed class DictionaryItemModel
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model with a string-keyed integer dictionary written under the key <c>test</c>.
+    /// </summary>
+    private sealed class AnswerDictionaryModel
+    {
+        /// <summary>
+        /// Gets or sets the integers, keyed by name.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        [PropertyName("test")]
+        public Dictionary<string, int> Test { get; set; } = [];
     }
 }
