@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Ini_Writer_Utf8IniWriter" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Utf8IniWriter Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Utf8IniWriter Struct
   <dl><dt>Assembly</dt><dd>Bodu.Text.Ini.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Ini">Bodu.Text.Ini</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs">Utf8IniWriter.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs">Utf8IniWriter.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides a forward-only writer that emits INI text as UTF-8 bytes to an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.ibufferwriter-1">IBufferWriter&lt;T&gt;</a> or a
@@ -152,9 +152,28 @@ Utf8IniWriter Struct
 
 
   <h2 id="Bodu_Text_Ini_Writer_Utf8IniWriter_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>INI is line-oriented, so the writer emits progressively: <a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html#Bodu_Text_Ini_Writer_Utf8IniWriter_WriteSectionHeader_System_String_">WriteSectionHeader(string)</a> produces a
+  <div class="markdown level0 remarks"><p>
+INI is line-oriented, so the writer emits progressively: <a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html#Bodu_Text_Ini_Writer_Utf8IniWriter_WriteSectionHeader_System_String_">WriteSectionHeader(string)</a> produces a
 <code>[name]</code> line, <a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html#Bodu_Text_Ini_Writer_Utf8IniWriter_WritePropertyName_System_String_">WritePropertyName(string)</a> followed by <a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html#Bodu_Text_Ini_Writer_Utf8IniWriter_WriteString_System_String_">WriteString(string)</a> produces
-one <code>key=value</code> line, and <a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html#Bodu_Text_Ini_Writer_Utf8IniWriter_WriteComment_System_String_">WriteComment(string)</a> produces one comment line.</p>
+one <code>key=value</code> line, and <a class="xref" href="Bodu.Text.Ini.Writer.Utf8IniWriter.html#Bodu_Text_Ini_Writer_Utf8IniWriter_WriteComment_System_String_">WriteComment(string)</a> produces one comment line per line of its text.
+</p>
+<p>
+The writer writes only text that <a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a> reads back unchanged, and throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> for the following:
+</p>
+<ul><li>
+a value containing a line break, which a <code>key=value</code> line cannot hold, or beginning or ending with a space or a
+tab, which the reader trims;
+</li><li>
+a key that is empty, begins or ends with a space or a tab, contains <code>=</code> or a line break, or begins with
+<code>[</code>, <code>;</code> or <code>#</code>, which the reader would read as another key, a section header or a comment;
+</li><li>
+a section name that is empty, begins or ends with a space or a tab, contains a line break, or holds a <code>]</code> that
+a <code>;</code> or <code>#</code> follows after optional spaces and tabs, where the reader would end the name;
+</li><li>
+a key or a section name that begins with U+FEFF, which the reader skips as a byte order mark at the start of a
+document, refused wherever the name is written so that the rule does not depend on position.
+</li></ul>
 </div>
 
 
@@ -167,7 +186,7 @@ one <code>key=value</code> line, and <a class="xref" href="Bodu.Text.Ini.Writer.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter__ctor_System_Buffers_IBufferWriter_System_Byte__" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.#ctor(System.Buffers.IBufferWriter{System.Byte})">
   Utf8IniWriter(IBufferWriter&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -210,7 +229,7 @@ one <code>key=value</code> line, and <a class="xref" href="Bodu.Text.Ini.Writer.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter__ctor_System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Ini_Writer_IniWriterOptions_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.#ctor(System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Ini.Writer.IniWriterOptions)">
   Utf8IniWriter(IBufferWriter&lt;byte&gt;, IniWriterOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -257,7 +276,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter__ctor_System_IO_Stream_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.#ctor(System.IO.Stream)">
   Utf8IniWriter(Stream)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -300,7 +319,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter__ctor_System_IO_Stream_Bodu_Text_Ini_Writer_IniWriterOptions_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.#ctor(System.IO.Stream,Bodu.Text.Ini.Writer.IniWriterOptions)">
   Utf8IniWriter(Stream, IniWriterOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -351,7 +370,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_BytesCommitted" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.BytesCommitted">
   BytesCommitted
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -388,7 +407,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_BytesPending" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.BytesPending">
   BytesPending
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -429,7 +448,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_Dispose" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -460,7 +479,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_Flush" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.Flush">
   Flush()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -491,11 +510,12 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_WriteComment_System_String_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.WriteComment(System.String)">
   WriteComment(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Writes a comment line prefixed with the configured comment character, followed by a line feed.</p>
+  <div class="markdown level1 summary"><p>Writes a comment as one comment line per line of its text, each prefixed with the configured comment character
+and followed by a line feed.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -517,6 +537,11 @@ the supplied options.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Ini_Writer_Utf8IniWriter_WriteComment_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A carriage return, a line feed, or a carriage return followed by a line feed ends a line of the text, as it ends
+a line for <a class="xref" href="Bodu.Text.Ini.Reader.Utf8IniReader.html">Utf8IniReader</a>, so each line reads back as a comment of its own;
+an empty line becomes an empty comment line.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -534,7 +559,7 @@ the supplied options.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_WritePropertyName_System_String_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.WritePropertyName(System.String)">
   WritePropertyName(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -561,11 +586,22 @@ the value.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Ini_Writer_Utf8IniWriter_WritePropertyName_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A key beginning with <code>#</code> is refused even though a reader may disallow hash comments, because the writer
+cannot know the options its output will be read with. A key beginning with U+FEFF is refused wherever it is
+written, although the reader skips U+FEFF only at the start of a document, where it is a byte order mark, so
+that the rule does not depend on position.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is empty, begins or ends with a space or a tab, contains <code>=</code>, a
+carriage return or a line feed, or begins with <code>[</code>, <code>;</code> or <code>#</code>, since the reader would not read
+it back as this key, or when it begins with U+FEFF.</p>
 </dd>
   </dl>
 
@@ -578,7 +614,7 @@ the value.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_WriteSectionHeader_System_String_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.WriteSectionHeader(System.String)">
   WriteSectionHeader(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -604,11 +640,24 @@ the value.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Ini_Writer_Utf8IniWriter_WriteSectionHeader_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A name may hold any other <code>]</code>: the reader ends a section name at the first <code>]</code> that only whitespace or
+a comment follows, so <code>foo]bar</code> is written as <code>[foo]bar]</code> and read back unchanged. A <code>#</code> after a
+<code>]</code> is refused even though a reader may disallow hash comments, because the writer cannot know the options
+its output will be read with. A name beginning with U+FEFF is refused, as a key beginning with it is, even
+though the reader would read it back unchanged, so that keys and section names follow one rule wherever they are
+written.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">name</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">name</code> is empty, begins or ends with a space or a tab, contains a carriage return
+or a line feed, or holds a <code>]</code> that a <code>;</code> or <code>#</code> follows after optional spaces and tabs, since
+the reader would not read it back as this name, or when it begins with U+FEFF.</p>
 </dd>
   </dl>
 
@@ -621,7 +670,7 @@ the value.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Ini_Writer_Utf8IniWriter_WriteString_System_String_" data-uid="Bodu.Text.Ini.Writer.Utf8IniWriter.WriteString(System.String)">
   WriteString(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8401d1bf23507ac4550e550dc1c05cb4013e1883/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/fe767f3d981486a711995d0c03c422f5321c809e/Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -652,6 +701,10 @@ the value.</p>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
     <dd><p>Thrown when <code class="paramref">value</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Thrown when <code class="paramref">value</code> contains a carriage return or a line feed, which a <code>key=value</code> line
+cannot hold, or begins or ends with a space or a tab, which the reader trims.</p>
 </dd>
   </dl>
 
@@ -686,7 +739,7 @@ the value.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8401d1b · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: fe767f3 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

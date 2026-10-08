@@ -18265,7 +18265,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Ini.IniSerializationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.IniSerializationException.yml\" sourcestartlinenumber=\"1\">Represents an error that occurs while mapping a .NET object to or from INI with <xref href=\"Bodu.Text.Ini.IniSerializer\" data-throw-if-not-resolved=\"false\"></xref>, such\nas an unsupported root type, a member nested beyond INI's two levels, a missing required key, or a value that cannot\nbe converted to the target type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Ini.IniSerializationException.yml\" sourcestartlinenumber=\"1\">Represents an error that occurs while mapping a .NET object to or from INI with <xref href=\"Bodu.Text.Ini.IniSerializer\" data-throw-if-not-resolved=\"false\"></xref>, such\nas an unsupported root type, a member nested beyond INI's two levels, a missing required key, a value that cannot be\nconverted to the target type, or a key, section name or value that INI cannot represent.</p>\n"
     },
     {
       "type": "ManagedReference",

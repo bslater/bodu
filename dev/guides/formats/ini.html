@@ -151,7 +151,7 @@ root[&quot;metrics&quot;] = metrics;
 
 File.WriteAllBytes(&quot;app.ini&quot;, root.ToUtf8Bytes());
 </code></pre>
-<p>Every comment line from the source survives (<code>LeadingComments</code> on sections and values, <code>TrailingComments</code> per object). Layout is canonicalized: <code>key=value</code> without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps everything after <code>=</code> as value content.</p>
+<p>Every comment line from the source survives (<code>LeadingComments</code> on sections and values, <code>TrailingComments</code> per object). Layout is canonicalized: <code>key=value</code> without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps an inline <code>;</code> or <code>#</code> and the text after it as value content.</p>
 <h2 id="pattern-4---duplicate-policies">Pattern 4 - duplicate policies</h2>
 <p>Duplicates are resolved when the document is materialized, controlled by <code>IniDocumentOptions</code> (also on <code>IniSerializerOptions</code>):</p>
 <pre><code class="lang-csharp">using Bodu.Text.Ini.Reader;
@@ -167,9 +167,19 @@ using IniDocument document = IniDocument.Parse(bytes, IniReaderOptions.Default, 
 <h2 id="the-two-readers">The two readers</h2>
 <p><code>Utf8IniReader</code> streams the file <strong>as authored</strong> (section headers, keys, values, comments, in source order). The normalized <code>IniDocumentReader</code> pre-parses the whole document - duplicate-section merge declares structure out of source order - and emits the logical object-of-objects token stream that the serializer and read-only DOM consume.</p>
 <h2 id="dialect">Dialect</h2>
-<p><code>=</code> only (no <code>:</code>), values literal to end of line (quotes preserved, inline <code>;</code>/<code>#</code> kept as content), <code>;</code> and <code>#</code> full-line comments, BOM skipped, LF/CRLF/CR equivalent. See <a href="../../docs/formats/parser-policies.html">Parser policies</a>.</p>
+<p><code>=</code> only (no <code>:</code>), keys and values trimmed of the spaces and tabs around them, values otherwise literal to end of line (quotes preserved, inline <code>;</code>/<code>#</code> kept as content), <code>;</code> and <code>#</code> full-line comments, BOM skipped, LF/CRLF/CR equivalent. See <a href="../../docs/formats/parser-policies.html">Parser policies</a>.</p>
+<p>A section name runs to the first <code>]</code> that only whitespace or a comment follows, so a name may contain <code>]</code>: <code>[foo]bar]</code> names the section <code>foo]bar</code>, and <code>[server] ; primary</code> names <code>server</code>. A comment after a header is skipped, not reported as a comment token, so the mutable DOM does not keep it; any other text after the header, as in <code>[server] primary</code>, throws <code>IniFormatException</code>.</p>
+<h2 id="writing">Writing</h2>
+<p><code>Utf8IniWriter</code> writes only text that <code>Utf8IniReader</code> reads back unchanged, and throws <code>ArgumentException</code> for the text below, so the mutable DOM's <code>WriteTo</code> and <code>ToUtf8Bytes</code> refuse it too, and the serializer's <code>Serialize</code>, <code>SerializeAsync</code> and <code>SerializeSection</code> overloads report it as an <code>IniSerializationException</code> that names the section and key, with the writer's <code>ArgumentException</code> as its inner exception:</p>
+<ul>
+<li>a <strong>value</strong> containing a line break, which a <code>key=value</code> line cannot hold, or beginning or ending with a space or tab, which the reader trims (an empty value is written as <code>key=</code>);</li>
+<li>a <strong>key</strong> that is empty, begins or ends with a space or tab, contains <code>=</code> or a line break, or begins with <code>[</code>, <code>;</code> or <code>#</code>, which would read back as another key, a section header or a comment (<code>#</code> is refused even where <code>#</code> comments are disallowed, because the writer cannot know how its output will be read);</li>
+<li>a <strong>section name</strong> that is empty, begins or ends with a space or tab, contains a line break, or holds a <code>]</code> followed, after optional whitespace, by <code>;</code> or <code>#</code>, where the reader would end the name (any other <code>]</code> is fine: <code>WriteSectionHeader(&quot;foo]bar&quot;)</code> writes <code>[foo]bar]</code>, which reads back as <code>foo]bar</code>);</li>
+<li>a <strong>key or section name</strong> that begins with U+FEFF, which the reader skips as a byte order mark at the start of a document (refused wherever the name is written, so that the rule does not depend on position).</li>
+</ul>
+<p>A comment containing line breaks is written as one comment line per line, each with the comment prefix, so <code>WriteComment(&quot;first\nsecond&quot;)</code> writes <code>;first</code> and <code>;second</code>.</p>
 <h2 id="exceptions">Exceptions</h2>
-<p><code>IniFormatException</code> for malformed input and duplicate-policy violations (line/offset attached); <code>IniSerializationException</code> for binding failures (non-object root, depth beyond two levels, missing <code>[Required]</code> member, non-convertible value).</p>
+<p><code>IniFormatException</code> for malformed input and duplicate-policy violations (line/offset attached); <code>IniSerializationException</code> for binding failures (non-object root, depth beyond two levels, missing <code>[Required]</code> member, non-convertible value, a key, section name or value INI cannot represent); <code>ArgumentException</code> from the writer and the mutable DOM for text they refuse to write (see <a href="#writing">Writing</a>).</p>
 <h2 id="when-to-reach-for-bodutextconfiguration-instead">When to reach for <code>Bodu.Text.Configuration</code> instead</h2>
 <p>When you need EditorConfig-style behaviour - glob-targeted sections, layered resolution, typed views with diagnostics - use <code>Bodu.Text.Configuration</code>. It carries its own INI document model and does not depend on this package.</p>
 <h2 id="see-also">See also</h2>
@@ -195,7 +205,7 @@ using IniDocument document = IniDocument.Parse(bytes, IniReaderOptions.Default, 
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8401d1b · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: fe767f3 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>
