@@ -199,5 +199,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_IniLineBreak", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The text begins or ends with a space or a tab, which the INI reader trims..
+        /// </summary>
+        internal static string Arg_Invalid_IniSurroundingWhitespace {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSurroundingWhitespace", resourceCulture);
+            }
+        }
     }
 }

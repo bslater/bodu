@@ -106,4 +106,7 @@
   <data name="Arg_Invalid_IniLineBreak" xml:space="preserve">
     <value>The text contains a line break, which a single INI line cannot hold.</value>
   </data>
+  <data name="Arg_Invalid_IniSurroundingWhitespace" xml:space="preserve">
+    <value>The text begins or ends with a space or a tab, which the INI reader trims.</value>
+  </data>
 </root>

@@ -117,7 +117,7 @@ A section name runs to the first `]` that only whitespace or a comment follows, 
 
 ## Writing
 
-`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` and the serializer's `Serialize` overloads refuse it too: a value containing a line break, which a `key=value` line cannot hold. A comment containing line breaks is written as one comment line per line, each with the comment prefix, so `WriteComment("first\nsecond")` writes `;first` and `;second`.
+`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` and the serializer's `Serialize` overloads refuse it too: a value containing a line break, which a `key=value` line cannot hold, or beginning or ending with a space or tab, which the reader trims. An empty value is written as `key=`. A comment containing line breaks is written as one comment line per line, each with the comment prefix, so `WriteComment("first\nsecond")` writes `;first` and `;second`.
 
 ## Exceptions
 

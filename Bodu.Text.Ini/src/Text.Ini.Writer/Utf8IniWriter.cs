@@ -23,7 +23,7 @@ namespace Bodu.Text.Ini.Writer;
 /// <para>
 /// The writer writes only text that <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> reads back unchanged, and throws
 /// <see cref="ArgumentException" /> for anything else: a value containing a line break, which a <c>key=value</c> line
-/// cannot hold.
+/// cannot hold, or beginning or ending with a space or a tab, which the reader trims.
 /// </para>
 /// </remarks>
 public ref struct Utf8IniWriter
@@ -158,12 +158,13 @@ public ref struct Utf8IniWriter
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="value" /> contains a carriage return or a line feed, which a <c>key=value</c> line
-    /// cannot hold.
+    /// cannot hold, or begins or ends with a space or a tab, which the reader trims.
     /// </exception>
     public void WriteString(string value)
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowIfContainsLineBreak(value);
+        ThrowIfSurroundedByWhitespace(value);
 
         WriteText(value);
         WriteRaw("\n"u8);
@@ -234,6 +235,20 @@ public ref struct Utf8IniWriter
     private static void ThrowIfContainsLineBreak(string text, [CallerArgumentExpression(nameof(text))] string? paramName = null)
     {
         if (text.AsSpan().ContainsAny('\r', '\n')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniLineBreak, paramName);
+    }
+
+    /// <summary>
+    /// Throws when text begins or ends with a space or a tab, the whitespace
+    /// <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> trims from keys, values and section names.
+    /// </summary>
+    /// <param name="text">The text to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="text" /> begins or ends with a space or a tab.
+    /// </exception>
+    private static void ThrowIfSurroundedByWhitespace(string text, [CallerArgumentExpression(nameof(text))] string? paramName = null)
+    {
+        if (text.Length > 0 && (text[0] is ' ' or '\t' || text[^1] is ' ' or '\t')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniSurroundingWhitespace, paramName);
     }
 
     /// <summary>
