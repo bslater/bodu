@@ -119,4 +119,36 @@ public partial class ConfigurationDocumentTests
 
         Assert.AreEqual(2, doc.Sections[0].Entries[0].LineNumber);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.Load(TextReader, ConfigurationParseOptions?)" /> ignores a byte
+    /// order mark the reader delivers as the first character, as loading a stream ignores the stream's encoded mark.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenTextReaderStartsWithByteOrderMark_ShouldIgnoreTheMark()
+    {
+        using var reader = new StringReader("\uFEFF[*]\nkey = value\n");
+
+        var doc = ConfigurationDocument.Load(reader);
+
+        Assert.AreEqual("*", doc.Sections[0].Name);
+        Assert.AreEqual("value", doc.Sections[0].Entries[0].Value);
+    }
+
+    /// <summary>
+    /// Verifies that a stream holding a UTF-8 byte order mark loads into the same document that
+    /// <see cref="ConfigurationDocument.Parse(string)" /> reads from the decoded text, mark included.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenStreamStartsWithUtf8ByteOrderMark_ShouldMatchParseOfTheDecodedText()
+    {
+        byte[] bytes = [0xEF, 0xBB, 0xBF, .. Encoding.UTF8.GetBytes("[*]\nkey = value\n")];
+        using var stream = new MemoryStream(bytes);
+
+        var loaded = ConfigurationDocument.Load(stream);
+        var parsed = ConfigurationDocument.Parse(Encoding.UTF8.GetString(bytes));
+
+        Assert.AreEqual(loaded.Sections[0].Name, parsed.Sections[0].Name);
+        Assert.AreEqual(loaded.Sections[0].Entries[0].Value, parsed.Sections[0].Entries[0].Value);
+    }
 }
