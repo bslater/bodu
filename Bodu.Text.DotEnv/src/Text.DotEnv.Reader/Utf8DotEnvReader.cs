@@ -58,6 +58,9 @@ public ref struct Utf8DotEnvReader
     /// <summary>The 1-based line number of the current read position.</summary>
     private int _line;
 
+    /// <summary>The 1-based line number on which the current token begins.</summary>
+    private int _tokenLine;
+
     /// <summary>The reader lifecycle phase.</summary>
     private Phase _phase;
 
@@ -88,6 +91,9 @@ public ref struct Utf8DotEnvReader
     /// <summary>The decoded pending string value when escape processing applied; otherwise <see langword="null" />.</summary>
     private string? _pendingDecoded;
 
+    /// <summary>The 1-based line number on which the pending string value begins.</summary>
+    private int _pendingLine;
+
     /// <summary>Whether the pending entry carried an <c>export</c> prefix.</summary>
     private bool _pendingExport;
 
@@ -114,6 +120,7 @@ public ref struct Utf8DotEnvReader
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first key.
         _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
         _line = 1;
+        _tokenLine = 1;
         _phase = Phase.Start;
         _tokenType = DotEnvTokenType.None;
     }
@@ -148,8 +155,13 @@ public ref struct Utf8DotEnvReader
     /// <summary>
     /// Gets the 1-based line number at which the current token begins.
     /// </summary>
-    /// <value>The current line number.</value>
-    public readonly int LineNumber => _line;
+    /// <value>The line on which the current token begins.</value>
+    /// <remarks>
+    /// A string value that spans lines reports the line of its opening quote, the synthetic
+    /// <see cref="DotEnvTokenType.StartObject" /> reports line 1, and <see cref="DotEnvTokenType.EndObject" /> reports
+    /// the line at the end of the input. A line ends at a LF, a CR LF pair or a lone CR.
+    /// </remarks>
+    public readonly int LineNumber => _tokenLine;
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -263,6 +275,7 @@ public ref struct Utf8DotEnvReader
             case Phase.Start:
                 _phase = Phase.Body;
                 _tokenType = DotEnvTokenType.StartObject;
+                _tokenLine = _line;
                 return true;
 
             case Phase.End:
@@ -311,6 +324,7 @@ public ref struct Utf8DotEnvReader
             _decoded = _pendingDecoded;
             _currentIsExport = _pendingExport;
             _tokenType = DotEnvTokenType.String;
+            _tokenLine = _pendingLine;
             return true;
         }
 
@@ -322,6 +336,7 @@ public ref struct Utf8DotEnvReader
             {
                 _phase = Phase.End;
                 _tokenType = DotEnvTokenType.EndObject;
+                _tokenLine = _line;
                 _decoded = null;
                 _currentIsExport = false;
                 return true;
@@ -351,6 +366,7 @@ public ref struct Utf8DotEnvReader
                     _decoded = null;
                     _currentIsExport = false;
                     _tokenType = DotEnvTokenType.Comment;
+                    _tokenLine = _line;
                     SkipLineEnding();
                     return true;
                 }
@@ -417,12 +433,15 @@ public ref struct Utf8DotEnvReader
         _decoded = null;
         _currentIsExport = isExport;
         _tokenType = DotEnvTokenType.PropertyName;
+        _tokenLine = entryLine;
 
+        // The value starts on the entry's line, even when a double-quoted value goes on past it.
         _pendingString = true;
         _pendingValueStart = rawStart;
         _pendingValueLength = rawLength;
         _pendingDecoded = decoded;
         _pendingExport = isExport;
+        _pendingLine = entryLine;
     }
 
     /// <summary>

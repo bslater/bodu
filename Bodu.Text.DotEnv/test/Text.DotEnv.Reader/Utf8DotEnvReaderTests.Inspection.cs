@@ -166,16 +166,12 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
-    /// Verifies that the line number advances by one per entry, tracking the reader's position through the source.
+    /// Verifies that the line number advances by one per entry when the entries sit on consecutive lines.
     /// </summary>
     /// <remarks>
-    /// This pins the observed behaviour, which is not what the property documents. A <c>Read</c> that reports a
-    /// property name has already consumed that entry's whole line, so the line number is one ahead of the token
-    /// being reported - the first entry of a document reads as line 2, not line 1. The documentation says "the
-    /// 1-based line number at which the current token begins", so either the property or its summary is wrong;
-    /// deciding which is a product question rather than a test one, and the reader's own parse errors snapshot the
-    /// line separately and are unaffected either way. Asserted as a delta so the test states the relationship
-    /// without endorsing the off-by-one as correct.
+    /// Each property name reports the line on which its entry begins, so the line advances by one from each entry to
+    /// the next. <c>LineNumber_WhenTokenIsRead_ShouldReportTheLineOnWhichItBegins</c> pins the absolute line of every
+    /// kind of token.
     /// </remarks>
     [TestMethod]
     public void LineNumber_ShouldAdvanceOncePerEntry()

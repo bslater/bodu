@@ -155,8 +155,8 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
-    /// Verifies that a <c>#</c> separated from the <c>=</c> by whitespace starts an inline comment, so the entry's value
-    /// is empty rather than the comment text.
+    /// Verifies that a <c>#</c> separated from the <c>=</c> by whitespace starts an inline comment, so the entry's
+    /// value is empty rather than the comment text.
     /// </summary>
     /// <param name="testName">The human-readable scenario label.</param>
     /// <param name="source">The DotEnv source text.</param>
