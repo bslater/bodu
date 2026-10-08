@@ -184,4 +184,44 @@ public partial class TomlNodeTests
             _ = TomlNode.Parse(toml, new TomlNodeOptions { PropertyNameCaseInsensitive = true });
         });
     }
+
+    /// <summary>
+    /// Verifies that a case-insensitive parse throws <see cref="TomlFormatException" /> at the second of two keys that
+    /// differ only in case, rather than keeping one of their values: at the root, in a table, between table headers,
+    /// for dotted keys and in an inline table.
+    /// </summary>
+    /// <param name="toml">The document, whose key <c>A</c> matches an earlier key when case is ignored.</param>
+    /// <param name="line">The expected 1-based line of the second key.</param>
+    [TestMethod]
+    [DataRow("a = 1\nA = 2\n", 2, DisplayName = "at the root")]
+    [DataRow("[t]\na = 1\nA = 2\n", 3, DisplayName = "in a table")]
+    [DataRow("[a]\nx = 1\n[A]\ny = 2\n", 3, DisplayName = "between table headers")]
+    [DataRow("a.x = 1\nA.y = 2\n", 2, DisplayName = "dotted keys")]
+    [DataRow("t = { a = 1, A = 2 }\n", 1, DisplayName = "in an inline table")]
+    public void Parse_WhenCaseInsensitiveKeysCollide_ShouldReportTheSecondKey(string toml, int line)
+    {
+        byte[] utf8 = Encoding.UTF8.GetBytes(toml);
+
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = TomlNode.Parse(utf8, new TomlNodeOptions { PropertyNameCaseInsensitive = true });
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "The line of the second key.");
+        Assert.IsTrue(ex.Message.Contains("'A'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the default, case-sensitive parse keeps two keys that differ only in case as two entries, as TOML
+    /// requires.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenKeysDifferOnlyInCase_ShouldKeepBothKeys()
+    {
+        byte[] toml = Encoding.UTF8.GetBytes("a = 1\nA = 2\n");
+
+        TomlObject root = TomlNode.Parse(toml)!.AsObject();
+
+        CollectionAssert.AreEqual(new[] { "a", "A" }, root.Select(pair => pair.Key).ToArray());
+    }
 }
