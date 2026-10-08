@@ -101,6 +101,53 @@ public partial class IniObjectTests
     }
 
     /// <summary>
+    /// Verifies that writing a tree with a key the reader would read back as something else throws
+    /// <see cref="ArgumentException" /> rather than writing a different document.
+    /// </summary>
+    /// <param name="name">The key of the entry.</param>
+    [TestMethod]
+    [DataRow("", DisplayName = "empty")]
+    [DataRow(" k", DisplayName = "leading space")]
+    [DataRow("a=b", DisplayName = "equals sign")]
+    [DataRow("a\nb", DisplayName = "line break")]
+    [DataRow("[disturbing]", DisplayName = "leading bracket")]
+    [DataRow(";k", DisplayName = "leading semicolon")]
+    [DataRow("#k", DisplayName = "leading hash")]
+    public void WriteTo_WhenKeyWouldReadBackDifferently_ShouldThrowArgumentException(string name)
+    {
+        var root = new IniObject();
+        root[name] = new IniValue("v");
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = root.ToUtf8Bytes();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that writing a tree with a section name the reader would read back as something else throws
+    /// <see cref="ArgumentException" /> rather than writing a different document.
+    /// </summary>
+    /// <param name="name">The name of the section.</param>
+    [TestMethod]
+    [DataRow("", DisplayName = "empty")]
+    [DataRow("s ", DisplayName = "trailing space")]
+    [DataRow("a\rb", DisplayName = "line break")]
+    [DataRow("a];b", DisplayName = "bracket then comment marker")]
+    public void WriteTo_WhenSectionNameWouldReadBackDifferently_ShouldThrowArgumentException(string name)
+    {
+        var root = new IniObject();
+        var section = new IniObject();
+        section["k"] = new IniValue("v");
+        root[name] = section;
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = root.ToUtf8Bytes();
+        });
+    }
+
+    /// <summary>
     /// Verifies that a leading comment holding a line break is written as one comment line per line of its text.
     /// </summary>
     [TestMethod]
