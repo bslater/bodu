@@ -8,7 +8,7 @@
       <meta name="title" content="DelimitedSerializerOptions Class
  | BODU ">
       
-      <meta name="description" content="Provides configuration for , controlling column naming, case sensitivity, field inclusion, and the output delimiter, quote, and header behaviour.">
+      <meta name="description" content="Provides configuration for , controlling column naming, case sensitivity, field inclusion, and the delimiter, quote, comment character, and header behaviour.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Delimited_DelimitedSerializerOptions" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 DelimitedSerializerOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ DelimitedSerializerOptions Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Delimited.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Delimited">Bodu.Text.Delimited</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs">DelimitedSerializerOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs">DelimitedSerializerOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides configuration for <a class="xref" href="Bodu.Text.Delimited.DelimitedSerializer.html">DelimitedSerializer</a>, controlling column naming, case sensitivity, field
-inclusion, and the output delimiter, quote, and header behaviour.</p>
+inclusion, and the delimiter, quote, comment character, and header behaviour.</p>
 </div>
 
   <div class="codewrapper">
@@ -193,7 +193,7 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions__ctor" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.#ctor">
   DelimitedSerializerOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -224,7 +224,7 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions__ctor_Bodu_Text_Delimited_DelimitedSerializerDefaults_" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.#ctor(Bodu.Text.Delimited.DelimitedSerializerDefaults)">
   DelimitedSerializerOptions(DelimitedSerializerDefaults)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -260,12 +260,69 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
 </h2>
 
 
+  <a id="Bodu_Text_Delimited_DelimitedSerializerOptions_CommentChar_" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_CommentChar" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar">
+  CommentChar
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Gets or sets the comment character, or <code>'\0'</code> to use the default <code>'#'</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public char CommentChar { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a></dt>
+    <dd><p>The comment character.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Bodu_Text_Delimited_DelimitedSerializerOptions_CommentChar_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The serializer passes the comment character to the writer it creates, which quotes a record's first field when
+the field begins with it, so that a reader that allows comments with the same character reads the record back
+rather than skipping it (see <a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html#Bodu_Text_Delimited_Writer_DelimitedWriterOptions_CommentChar">CommentChar</a>). The serializer never
+skips comment lines itself: it reads every line as a record, whatever this character is.
+</p>
+<p>
+The character is also passed to the reader options, whose validation it shares, so it must be a character both
+the reader and the writer accept (see <a class="xref" href="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a> and
+<a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a>); otherwise serializing or deserializing throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.
+</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when set after the options have become read-only.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
   <a id="Bodu_Text_Delimited_DelimitedSerializerOptions_Default_" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.Default*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_Default" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.Default">
   Default
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -302,7 +359,7 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_Delimiter" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.Delimiter">
   Delimiter
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -328,6 +385,11 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Delimited_DelimitedSerializerOptions_Delimiter_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The serializer passes the delimiter to the reader and writer it creates, so it must be a character both accept
+(see <a class="xref" href="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a> and <a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a>); otherwise
+serializing or deserializing throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -345,7 +407,7 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_IncludeFields" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.IncludeFields">
   IncludeFields
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -388,7 +450,7 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_IsReadOnly" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.IsReadOnly">
   IsReadOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -425,7 +487,7 @@ inclusion, and the output delimiter, quote, and header behaviour.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_NoHeader" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.NoHeader">
   NoHeader
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -469,7 +531,7 @@ path.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_PropertyNameCaseInsensitive" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.PropertyNameCaseInsensitive">
   PropertyNameCaseInsensitive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -512,7 +574,7 @@ path.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_PropertyNamingPolicy" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.PropertyNamingPolicy">
   PropertyNamingPolicy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -555,7 +617,7 @@ path.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Delimited_DelimitedSerializerOptions_Quote" data-uid="Bodu.Text.Delimited.DelimitedSerializerOptions.Quote">
   Quote
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d2a6094a10cfd915150468f28166aab8bc11167b/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0b64154ea5d96600396bd955233026d89d1a3d84/Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializerOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -581,6 +643,11 @@ path.</p>
 
 
 
+  <h4 class="section" id="Bodu_Text_Delimited_DelimitedSerializerOptions_Quote_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The serializer passes the quote to the reader and writer it creates, so it must be a character both accept (see
+<a class="xref" href="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a> and <a class="xref" href="Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html">DelimitedWriterOptions</a>); otherwise
+serializing or deserializing throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a>.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -620,7 +687,7 @@ path.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d2a6094 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0b64154 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

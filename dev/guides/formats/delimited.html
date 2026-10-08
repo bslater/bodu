@@ -118,18 +118,55 @@ var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPoli
 List&lt;Trade&gt; trades = DelimitedSerializer.Deserialize&lt;Trade&gt;(csvText, options); // header trade_id → TradeId
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 </code></pre>
-<p>Scalars parse and format with <code>InvariantCulture</code>; <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Required]</code>, and <code>[PropertyOrder]</code> apply per member.</p>
+<p>The header row comes from the record type, so serializing an empty collection writes the header row alone, through every <code>Serialize</code> and <code>SerializeAsync</code> overload; with <code>NoHeader</code> it writes nothing. Scalars parse and format with <code>InvariantCulture</code>; <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Required]</code>, and <code>[PropertyOrder]</code> apply per member, and a property hidden with <code>new</code> maps once, to the most derived declaration. An empty field, or one of white space only, binds <code>null</code> to a nullable value-type member (<code>int?</code>, <code>DateTime?</code>, <code>decimal?</code>, and so on), except a <code>char?</code> member, to which only an empty field binds <code>null</code>: it converts any other field as a <code>char</code> member does, so a single space binds a space. Other members convert the text as it is, so a <code>string</code> member keeps the spaces and an <code>int</code> member throws <code>DelimitedSerializationException</code>. Temporal values are written in invariant round-trip forms that read back equal:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Written form</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DateTime</code></td>
+<td><code>O</code>, every tick and the kind</td>
+<td><code>2021-02-06T01:02:03.4567891Z</code></td>
+</tr>
+<tr>
+<td><code>DateTimeOffset</code></td>
+<td><code>O</code>, every tick and the offset</td>
+<td><code>2021-02-06T01:02:03.4567891+10:00</code></td>
+</tr>
+<tr>
+<td><code>DateOnly</code></td>
+<td><code>yyyy-MM-dd</code></td>
+<td><code>2021-02-06</code></td>
+</tr>
+<tr>
+<td><code>TimeOnly</code></td>
+<td><code>HH:mm:ss.fffffff</code></td>
+<td><code>01:02:03.4567891</code></td>
+</tr>
+<tr>
+<td><code>TimeSpan</code></td>
+<td><code>c</code></td>
+<td><code>1.02:03:04.5670000</code></td>
+</tr>
+</tbody>
+</table>
+<p>Reading also accepts the invariant general forms that earlier versions wrote, such as <code>02/06/2021 01:02:03</code>.</p>
 <h2 id="pattern-3---stream-records-from-a-large-file">Pattern 3 - stream records from a large file</h2>
 <pre><code class="lang-csharp">await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync&lt;Trade&gt;(stream, options))
 {
     Process(trade);
 }
 </code></pre>
-<p>Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - <code>SerializeAsync(stream, records)</code> where <code>records</code> is an <code>IAsyncEnumerable&lt;Trade&gt;</code> - encodes each record as it is produced, flushing in bounded batches.</p>
+<p>Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - <code>SerializeAsync(stream, records)</code> where <code>records</code> is an <code>IAsyncEnumerable&lt;Trade&gt;</code> - encodes each record as it is produced, flushing in bounded batches. A <code>DelimitedFormatException</code> from the streaming read reports its line and byte offset in the whole stream, as the buffered <code>Deserialize</code> does, and a byte-order mark is skipped only at the start of the stream, so a U+FEFF that begins a later record is kept, as <code>Deserialize</code> keeps it.</p>
 <h3 id="reflection-free-binding">Reflection-free binding</h3>
 <p>Annotate a partial record type with <code>[DelimitedRecord]</code> and reference the <code>Bodu.Text.Formats.Generators</code> source generator, and a static <code>DelimitedFactory</code> property (<code>IDelimitedRecordFactory&lt;Trade&gt;</code>) is emitted at compile time. Passing it to the factory overloads - <code>Serialize(records, Trade.DelimitedFactory)</code> / <code>Deserialize(csvText, Trade.DelimitedFactory)</code> - avoids the reflection binder entirely, making the path trimming- and AOT-safe. The interface can also be implemented by hand.</p>
 <h2 id="pattern-4---tsv-and-other-dialects">Pattern 4 - TSV and other dialects</h2>
-<p>The delimiter, quote, and comment characters live on the reader/writer options:</p>
+<p>The delimiter, quote, and comment characters live on the reader/writer options. Each must be an ASCII character other than CR and LF, and no two may be the same; the reader and writer constructors throw <code>ArgumentException</code> otherwise (see <a href="../../docs/formats/parser-policies.html">Parser policies</a>):</p>
 <pre><code class="lang-csharp">using Bodu.Text.Delimited.Reader;
 
 var tsv = new DelimitedReaderOptions { Delimiter = '\t' };
@@ -152,11 +189,11 @@ writer.Flush();
 <pre><code class="lang-csharp">var lenient = new DelimitedReaderOptions
 {
     FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,        // accept short/long rows
-    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord, // truncate at structural errors
+    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord, // skip malformed records whole
     DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeFirst,
 };
 </code></pre>
-<p>Strict field counts (the default) are measured against the header row and throw <code>DelimitedFormatException</code> with the line number. See <a href="../../docs/formats/parser-policies.html">Parser policies</a>.</p>
+<p>Strict field counts (the default) are measured against the header row and throw <code>DelimitedFormatException</code> with the line number and byte offset at which the offending record starts. See <a href="../../docs/formats/parser-policies.html">Parser policies</a>.</p>
 <h2 id="exceptions">Exceptions</h2>
 <p><code>DelimitedFormatException</code> for malformed input (position attached); <code>DelimitedSerializationException</code> for binding failures (unsupported record type, missing <code>[Required]</code> member, non-convertible value).</p>
 <h2 id="when-not-to-use-it">When <em>not</em> to use it</h2>
@@ -184,7 +221,7 @@ writer.Flush();
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d2a6094 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0b64154 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -89,7 +89,7 @@
 
 <p>Real-world CSV, <code>.env</code>, and INI files break their specs constantly. Each reader therefore couples a strict default with explicit, opt-in leniency knobs on its options struct.</p>
 <h2 id="common-diagnostic-surface">Common diagnostic surface</h2>
-<p>Every reader throws its format's <code>*FormatException</code> (<code>DelimitedFormatException</code>, <code>DotEnvFormatException</code>, <code>IniFormatException</code>) carrying the 1-based line number and byte offset at which the problem was detected. Serializer binding failures throw the format's <code>*SerializationException</code> instead.</p>
+<p>Every reader throws its format's <code>*FormatException</code> (<code>DelimitedFormatException</code>, <code>DotEnvFormatException</code>, <code>IniFormatException</code>) carrying the 1-based line number and byte offset at which the problem was detected. A Delimited error about a whole record, a field count that differs from the header's or a header that repeats a name, carries the line and offset at which that record starts, and <code>DelimitedSerializer.DeserializeAsyncEnumerableAsync</code> counts both from the start of the stream, whichever read held the error. Serializer binding failures throw the format's <code>*SerializationException</code> instead.</p>
 <h2 id="delimited">Delimited</h2>
 <p><code>DelimitedReaderOptions</code> carries the RFC 4180 dialect knobs:</p>
 <table>
@@ -108,17 +108,17 @@
 </tr>
 <tr>
 <td><code>MalformedRecordBehavior</code></td>
-<td><code>Throw</code> / <code>SkipRecord</code> (truncate the record at the structural error)</td>
+<td><code>Throw</code> / <code>SkipRecord</code> (skip the whole malformed record and continue with the next line)</td>
 <td><code>Throw</code></td>
 </tr>
 <tr>
 <td><code>DuplicateHeaderBehavior</code></td>
-<td><code>Throw</code> / <code>TakeFirst</code> / <code>TakeLast</code></td>
+<td><code>Throw</code> / <code>TakeFirst</code> / <code>TakeLast</code> (the first or last column with a repeated name keeps it, and the others are read under an empty name)</td>
 <td><code>Throw</code></td>
 </tr>
 <tr>
 <td><code>Delimiter</code>, <code>Quote</code></td>
-<td>any character</td>
+<td>an ASCII character other than CR and LF; the two must differ</td>
 <td><code>,</code> / <code>&quot;</code></td>
 </tr>
 <tr>
@@ -128,18 +128,22 @@
 </tr>
 <tr>
 <td><code>TrimFields</code></td>
-<td>trim unquoted fields</td>
+<td>trim spaces and tabs around each field: an unquoted field's value is trimmed, and the spaces and tabs around a quoted field's quotes are skipped, so the field is still read as quoted and its quoted text is kept whole; other white space, such as U+00A0 or U+3000, is kept</td>
 <td>off</td>
 </tr>
 <tr>
 <td><code>AllowComments</code>, <code>CommentChar</code></td>
-<td>skip comment lines</td>
+<td>skip comment lines; the character follows the <code>Delimiter</code> rule and must differ from <code>Delimiter</code> and <code>Quote</code>, even with comments off</td>
 <td>off / <code>#</code></td>
 </tr>
 </tbody>
 </table>
+<p>The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, and the writer emits its delimiter and quote the same way. Each must therefore be an ASCII character other than a carriage return or a line feed, and no two may be the same character; a character outside ASCII would otherwise be cut to one byte and matched inside other characters. The <code>Utf8DelimitedReader</code> and <code>Utf8DelimitedWriter</code> constructors, and the <code>DelimitedSerializer</code> methods that create them, throw <code>ArgumentException</code> for <code>options</code>, naming the offending option, when the characters break these rules.</p>
 <p>Strict field counts are measured against the header row, so they apply in header mode; positional mode accepts any shape unless you enforce one yourself.</p>
-<p>Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to <code>MalformedRecordBehavior</code>).</p>
+<p>Under <code>Ragged</code>, each field beyond the header's is named by its zero-based column index, so the fourth field under a three-column header is named <code>3</code>; such a name can coincide with a header's own name.</p>
+<p>Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to <code>MalformedRecordBehavior</code>). After a closing quote only the delimiter, a line break or the end of the input may follow, after spaces and tabs under <code>TrimFields</code>; anything else makes the record malformed. <code>Throw</code> reports the line and offset of the first offending byte, and <code>SkipRecord</code> skips the record, the rest of that line included, and continues with the next line. A record whose field count breaks the <code>Strict</code> policy is malformed too: <code>Throw</code> reports where it starts, and <code>SkipRecord</code> skips it.</p>
+<p>LF, CRLF and a lone CR each end a line. A blank line is skipped rather than read as a record of one empty field, which RFC 4180's grammar would make it, so the writer writes such a record as <code>&quot;&quot;</code>.</p>
+<p>The reader skips a UTF-8 byte-order mark at the start of its input, and <code>DelimitedSerializer.DeserializeAsyncEnumerableAsync</code> skips one only at the start of the stream, however its reads fall; a U+FEFF anywhere else is field content.</p>
 <h2 id="dotenv">DotEnv</h2>
 <p>The DotEnv dialect follows the mainstream <code>dotenv</code> implementations:</p>
 <ul>
@@ -205,7 +209,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d2a6094 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0b64154 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -136487,6 +136487,18 @@ references:
   fullName.vb: Bodu.Text.Delimited.DelimitedSerializerOptions.New
   nameWithType: DelimitedSerializerOptions.DelimitedSerializerOptions
   nameWithType.vb: DelimitedSerializerOptions.New
+- uid: Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar
+  name: CommentChar
+  href: api/Bodu.Text.Delimited.DelimitedSerializerOptions.html#Bodu_Text_Delimited_DelimitedSerializerOptions_CommentChar
+  commentId: P:Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar
+  fullName: Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar
+  nameWithType: DelimitedSerializerOptions.CommentChar
+- uid: Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar*
+  name: CommentChar
+  href: api/Bodu.Text.Delimited.DelimitedSerializerOptions.html#Bodu_Text_Delimited_DelimitedSerializerOptions_CommentChar_
+  commentId: Overload:Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar
+  fullName: Bodu.Text.Delimited.DelimitedSerializerOptions.CommentChar
+  nameWithType: DelimitedSerializerOptions.CommentChar
 - uid: Bodu.Text.Delimited.DelimitedSerializerOptions.Default
   name: Default
   href: api/Bodu.Text.Delimited.DelimitedSerializerOptions.html#Bodu_Text_Delimited_DelimitedSerializerOptions_Default
@@ -137942,6 +137954,18 @@ references:
   commentId: T:Bodu.Text.Delimited.Writer.DelimitedWriterOptions
   fullName: Bodu.Text.Delimited.Writer.DelimitedWriterOptions
   nameWithType: DelimitedWriterOptions
+- uid: Bodu.Text.Delimited.Writer.DelimitedWriterOptions.CommentChar
+  name: CommentChar
+  href: api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html#Bodu_Text_Delimited_Writer_DelimitedWriterOptions_CommentChar
+  commentId: P:Bodu.Text.Delimited.Writer.DelimitedWriterOptions.CommentChar
+  fullName: Bodu.Text.Delimited.Writer.DelimitedWriterOptions.CommentChar
+  nameWithType: DelimitedWriterOptions.CommentChar
+- uid: Bodu.Text.Delimited.Writer.DelimitedWriterOptions.CommentChar*
+  name: CommentChar
+  href: api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html#Bodu_Text_Delimited_Writer_DelimitedWriterOptions_CommentChar_
+  commentId: Overload:Bodu.Text.Delimited.Writer.DelimitedWriterOptions.CommentChar
+  fullName: Bodu.Text.Delimited.Writer.DelimitedWriterOptions.CommentChar
+  nameWithType: DelimitedWriterOptions.CommentChar
 - uid: Bodu.Text.Delimited.Writer.DelimitedWriterOptions.Default
   name: Default
   href: api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.html#Bodu_Text_Delimited_Writer_DelimitedWriterOptions_Default

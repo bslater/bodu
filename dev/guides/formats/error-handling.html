@@ -165,21 +165,21 @@ catch (DelimitedFormatException ex)
 <tr>
 <td><code>symbol,qty</code> / <code>MSFT,10,extra</code></td>
 <td><em>A delimited record has 3 field(s) but the header declares 2.</em></td>
-<td>line 3, offset 25</td>
+<td>line 2, offset 11</td>
 </tr>
 <tr>
 <td><code>symbol,qty</code> / <code>MSFT,&quot;10&quot;x</code></td>
-<td><em>A delimited record has 1 field(s) but the header declares 2.</em></td>
-<td>line 3, offset 22</td>
+<td><em>A quoted delimited field is followed by text other than a delimiter, a line break or the end of the input.</em></td>
+<td>line 2, offset 20</td>
 </tr>
 <tr>
 <td><code>symbol,symbol</code> / <code>MSFT,10</code></td>
 <td><em>The delimited header row contains the duplicate column name 'symbol'.</em></td>
-<td>line 2, offset 14</td>
+<td>line 1, offset 0</td>
 </tr>
 </tbody>
 </table>
-<p>The line number is the line on which the reader <em>detected</em> the problem - for a record error that is the line after the offending record's terminator, which is why single-line records report line 3 here.</p>
+<p>An error about a whole record - a field count that disagrees with the header, or a header that repeats a name - is reported where that record starts: the line it begins on and the offset of its first byte. Text after a closing quote is reported at the first offending byte, and an unterminated quoted field where the reader detected it, at the end of the input.</p>
 <h2 id="pattern-2---delimited-tolerating-dirty-input">Pattern 2 - Delimited: tolerating dirty input</h2>
 <p>Three <a class="xref" href="../../api/Bodu.Text.Delimited.Reader.DelimitedReaderOptions.html">DelimitedReaderOptions</a> policies convert the errors above into accepted input. Each has a strict default; the leniency is opt-in:</p>
 <table>
@@ -202,13 +202,13 @@ catch (DelimitedFormatException ex)
 <td><code>MalformedRecordBehavior</code></td>
 <td><code>Throw</code></td>
 <td><code>SkipRecord</code></td>
-<td>A record with a structural error (text after a closing quote) is truncated at the error and reading continues with the next record.</td>
+<td>A malformed record - one with text after a closing quote, or one whose field count breaks <code>Strict</code> - is skipped whole, and reading continues with the next line.</td>
 </tr>
 <tr>
 <td><code>DuplicateHeaderBehavior</code></td>
 <td><code>Throw</code></td>
 <td><code>TakeFirst</code> / <code>TakeLast</code></td>
-<td>A repeated column name maps to the first or last occurrence.</td>
+<td>A repeated column name maps to the first or last occurrence; the other columns with the name are read under an empty name.</td>
 </tr>
 </tbody>
 </table>
@@ -223,14 +223,14 @@ int raggedCount = ragged.RootElement.GetArrayLength();    // 2 records
 using DelimitedDocument skipped = DelimitedDocument.Parse(
     &quot;symbol,qty\nMSFT,\&quot;10\&quot;x\nAAPL,5\n&quot;u8,
     new DelimitedReaderOptions { MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord });
-int skippedCount = skipped.RootElement.GetArrayLength();  // 2 records - the malformed record is truncated at the error, not dropped
+int skippedCount = skipped.RootElement.GetArrayLength();  // 1 record - the malformed MSFT record is skipped whole
 
 using DelimitedDocument last = DelimitedDocument.Parse(
     &quot;symbol,symbol\nMSFT,10\n&quot;u8,
     new DelimitedReaderOptions { DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeLast });
 string symbol = last.RootElement[0].GetProperty(&quot;symbol&quot;).GetString();   // &quot;10&quot;
 </code></pre>
-<p>An unterminated quoted field is never tolerated - there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the <a href="../../docs/formats/parser-policies.html">parser policies</a> page. Note that these policies live on the <em>reader</em> options, which the DOMs and the token reader accept; <a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a> exposes only the dialect characters (<code>Delimiter</code>, <code>Quote</code>, <code>NoHeader</code>), so a typed <code>DelimitedSerializer.Deserialize&lt;T&gt;</code> always reads strictly.</p>
+<p>An unterminated quoted field is never tolerated - there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the <a href="../../docs/formats/parser-policies.html">parser policies</a> page. Note that these policies live on the <em>reader</em> options, which the DOMs and the token reader accept; <a class="xref" href="../../api/Bodu.Text.Delimited.DelimitedSerializerOptions.html">DelimitedSerializerOptions</a> exposes only the dialect characters (<code>Delimiter</code>, <code>Quote</code>, <code>CommentChar</code>) and <code>NoHeader</code>, so a typed <code>DelimitedSerializer.Deserialize&lt;T&gt;</code> always reads strictly.</p>
 <h2 id="pattern-3---delimited-binding-failures">Pattern 3 - Delimited: binding failures</h2>
 <p>A well-formed document that does not fit the record type raises <code>DelimitedSerializationException</code>. The typical cause is a scalar that does not parse; the <code>FormatException</code> from the conversion is preserved as the inner exception:</p>
 <!-- compile -->
@@ -464,7 +464,7 @@ IniSerializer.Deserialize&lt;AppConfig&gt;(&quot;Name=x\n[Server]\nPort=eighty\n
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d2a6094 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0b64154 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

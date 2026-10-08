@@ -139,7 +139,7 @@ partial class Trade
                 record.Symbol ?? string.Empty,
                 record.Quantity.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
                 record.Price.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
-                record.TradedAt.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
+                record.TradedAt.ToString(&quot;O&quot;, global::System.Globalization.CultureInfo.InvariantCulture),
                 record.Venue ?? string.Empty,
             };
         }
@@ -174,7 +174,7 @@ partial class Trade
     }
 }
 </code></pre>
-<p>Every conversion is explicit and invariant-culture; nothing in the file touches <code>System.Reflection</code>.</p>
+<p>Every conversion is explicit and invariant-culture, in the forms the reflection binder uses: <code>DateTime</code> and <code>DateTimeOffset</code> in the round-trip <code>O</code> form and <code>TimeSpan</code> in the constant <code>c</code> form, and, reading, <code>null</code> for a nullable member whose field is empty or white space (a <code>char?</code> member takes only an empty field as <code>null</code>). Nothing in the file touches <code>System.Reflection</code>.</p>
 <h2 id="step-3---serialize-and-deserialize-through-the-factory">Step 3 - serialize and deserialize through the factory</h2>
 <p>The factory overloads take the factory as an extra argument and are otherwise the same entry points:</p>
 <!-- compile -->
@@ -188,8 +188,8 @@ var trades = new List&lt;Trade&gt;
 
 string csv = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);
 // Symbol,Quantity,Price,traded_at,Venue
-// MSFT,100,412.5,03/02/2026 09:30:00 +00:00,XNAS
-// AAPL,25,189.99,03/02/2026 09:31:00 +00:00,
+// MSFT,100,412.5,2026-03-02T09:30:00.0000000+00:00,XNAS
+// AAPL,25,189.99,2026-03-02T09:31:00.0000000+00:00,
 
 List&lt;Trade&gt; back = DelimitedSerializer.Deserialize(csv, Trade.DelimitedFactory);
 // back[0].TradedAt → 2026-03-02T09:30:00+00:00; back[1].Venue → null (empty field)
@@ -239,9 +239,9 @@ string globals = IniSerializer.SerializeSection(&quot;&quot;, server, ServerSect
 // Port=5432
 // …
 </code></pre>
-<p><code>ServerSection.IniFactory.Keys</code> is <code>Host, Port, use_tls, Timeout</code>. A <code>null</code> nullable writes as an empty value (<code>Timeout=</code>) and an empty value reads back as <code>null</code>. Asking for a section the document does not contain raises <code>IniSerializationException</code>; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.</p>
+<p><code>ServerSection.IniFactory.Keys</code> is <code>Host, Port, use_tls, Timeout</code>. A <code>null</code> nullable is left out, as <code>IniSerializer</code> leaves it out under its default <code>WhenWritingNull</code> condition, and an empty value reads back as <code>null</code>. Asking for a section the document does not contain raises <code>IniSerializationException</code>; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.</p>
 <h2 id="byte-parity-with-the-reflection-binder">Byte parity with the reflection binder</h2>
-<p>The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through <code>DelimitedSerializer.Serialize(records)</code> and <code>DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)</code> yields <strong>identical text</strong> - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical <code>[section]</code> / <code>key=value</code> bytes the reflection binder emits for a section POCO.</p>
+<p>The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through <code>DelimitedSerializer.Serialize(records)</code> and <code>DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)</code> yields <strong>identical text</strong> - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical <code>[section]</code> / <code>key=value</code> bytes the reflection binder emits for a section POCO, leaving out the keys the binder leaves out: a member's own <code>[Ignore]</code> condition applies, and a member without one takes <code>WhenWritingNull</code>, the default. A factory never sees <code>IniSerializerOptions</code>, so a <code>DefaultIgnoreCondition</code> other than <code>WhenWritingNull</code> does not reach it.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">string reflection = DelimitedSerializer.Serialize(trades);                          // [RequiresUnreferencedCode]
 string generated  = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);  // no annotations
@@ -296,7 +296,7 @@ public sealed partial class Section&lt;T&gt; { … }   // BTFG003: … is generi
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d2a6094 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0b64154 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

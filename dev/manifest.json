@@ -16795,7 +16795,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.DelimitedMalformedRecordBehavior",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedMalformedRecordBehavior.yml\" sourcestartlinenumber=\"1\">Specifies how a delimited reader responds to a record that violates the configured field-count policy.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedMalformedRecordBehavior.yml\" sourcestartlinenumber=\"1\">Specifies how a delimited reader responds to a malformed record: one whose field count violates the configured\nfield-count policy, or one in which text follows a closing quote.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16865,7 +16865,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.DelimitedSerializerOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedSerializerOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for <xref href=\"Bodu.Text.Delimited.DelimitedSerializer\" data-throw-if-not-resolved=\"false\"></xref>, controlling column naming, case sensitivity, field\ninclusion, and the output delimiter, quote, and header behaviour.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.DelimitedSerializerOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for <xref href=\"Bodu.Text.Delimited.DelimitedSerializer\" data-throw-if-not-resolved=\"false\"></xref>, controlling column naming, case sensitivity, field\ninclusion, and the delimiter, quote, comment character, and header behaviour.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17117,7 +17117,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Delimited.Writer.DelimitedWriterOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for a <xref href=\"Bodu.Text.Delimited.Writer.Utf8DelimitedWriter\" data-throw-if-not-resolved=\"false\"></xref>, controlling the delimiter, quote character, and\nwhether a header row is emitted for object records.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Delimited.Writer.DelimitedWriterOptions.yml\" sourcestartlinenumber=\"1\">Provides configuration for a <xref href=\"Bodu.Text.Delimited.Writer.Utf8DelimitedWriter\" data-throw-if-not-resolved=\"false\"></xref>, controlling the delimiter, quote character, the\ncomment character the writer guards, and whether a header row is emitted for object records.</p>\n"
     },
     {
       "type": "ManagedReference",
