@@ -40,19 +40,23 @@ internal static partial class DelimitedThrowHelper
     }
 
     /// <summary>
-    /// Throws when writer options name a delimiter or quote character that the writer cannot use.
+    /// Throws when writer options name a delimiter, quote or comment character that the writer cannot use.
     /// </summary>
     /// <param name="options">The writer options to validate.</param>
     /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown when the effective delimiter or quote is not an ASCII character or is a carriage return or a line feed,
-    /// or when the delimiter equals the quote.
+    /// Thrown when the effective delimiter, quote or comment character is not an ASCII character or is a carriage
+    /// return or a line feed, when the delimiter equals the quote, or when the comment character equals the delimiter
+    /// or the quote.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowIfUnusableDialect(
         DelimitedWriterOptions options,
-        [CallerArgumentExpression(nameof(options))] string? paramName = null) =>
+        [CallerArgumentExpression(nameof(options))] string? paramName = null)
+    {
         ThrowIfUnusableDialect(options.EffectiveDelimiter, options.EffectiveQuote, paramName);
+        ThrowIfUnusableCommentChar(options.EffectiveCommentChar, options.EffectiveDelimiter, options.EffectiveQuote, paramName);
+    }
 
     /// <summary>
     /// Throws when a delimiter or quote character is unusable, or when the two are the same character.

@@ -80,7 +80,7 @@ using DelimitedDocument last = DelimitedDocument.Parse(
 string symbol = last.RootElement[0].GetProperty("symbol").GetString();   // "10"
 ```
 
-An unterminated quoted field is never tolerated - there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the [parser policies](../../docs/formats/parser-policies.md) page. Note that these policies live on the *reader* options, which the DOMs and the token reader accept; <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> exposes only the dialect characters (`Delimiter`, `Quote`, `NoHeader`), so a typed `DelimitedSerializer.Deserialize<T>` always reads strictly.
+An unterminated quoted field is never tolerated - there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the [parser policies](../../docs/formats/parser-policies.md) page. Note that these policies live on the *reader* options, which the DOMs and the token reader accept; <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> exposes only the dialect characters (`Delimiter`, `Quote`, `CommentChar`) and `NoHeader`, so a typed `DelimitedSerializer.Deserialize<T>` always reads strictly.
 
 ## Pattern 3 - Delimited: binding failures
 

@@ -37,7 +37,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
         public char Quote { get; init; }
 
         /// <summary>
-        /// Gets the comment character the reader uses.
+        /// Gets the comment character the reader skips comment lines with and the writer guards.
         /// </summary>
         /// <value>The <c>CommentChar</c> option, or <c>'\0'</c> for the default <c>#</c>.</value>
         public char CommentChar { get; init; }
@@ -141,6 +141,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
             {
                 Delimiter = Delimiter,
                 Quote = Quote,
+                CommentChar = CommentChar,
                 NoHeader = NoHeader,
             };
 

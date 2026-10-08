@@ -73,7 +73,7 @@ and each value is decoded with the escapes above, so a semicolon in a value is w
 
 | Option | Maps to | Values |
 |---|---|---|
-| `Delimiter`, `Quote`, `CommentChar` | the reader's and the writer's option of that name (`CommentChar` the reader's only) | one character; `\0` selects the default |
+| `Delimiter`, `Quote`, `CommentChar` | the reader's and the writer's option of that name | one character; `\0` selects the default |
 | `NoHeader` | the reader's and the writer's `NoHeader` | `true`, `false` |
 | `TrimFields`, `AllowComments` | the reader's options of that name | `true`, `false` |
 | `FieldCountBehavior`, `MalformedRecordBehavior`, `DuplicateHeaderBehavior` | the reader's policies | the enum member name |
@@ -98,14 +98,14 @@ A `write` or `write-reject` row's `input` is the same JSON shape. With headers, 
 `[name, value]` pairs written as an object record (`WriteStartObject`, `WritePropertyName` and `WriteString` per
 pair, `WriteEndObject`), the writer emitting the header row from the first record; with `NoHeader=true`, each record
 is an array of values written as a positional record. A JSON `null` is passed to the writer as `null`. The writer
-gets the row's `Delimiter`, `Quote` and `NoHeader`, and `expected` is the exact bytes, which end every record with
-CRLF.
+gets the row's `Delimiter`, `Quote`, `CommentChar` and `NoHeader`, and `expected` is the exact bytes, which end every
+record with CRLF.
 
 ### Round trip
 
 A `roundtrip` row reads `input` with the row's reader options, writes the records it read with the write notation's
-calls and the row's `Delimiter`, `Quote` and `NoHeader`, and reads the written bytes again with the same reader
-options. The two renderings must be equal.
+calls and the row's `Delimiter`, `Quote`, `CommentChar` and `NoHeader`, and reads the written bytes again with the
+same reader options. The two renderings must be equal.
 
 ## Counts
 

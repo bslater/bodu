@@ -120,6 +120,70 @@ public partial class Utf8DelimitedWriterTests
     }
 
     /// <summary>
+    /// Verifies that both writer constructors refuse, with an <see cref="ArgumentException" /> for <c>options</c> that
+    /// names the <c>CommentChar</c> option, a comment character that is a line feed, a carriage return or outside ASCII.
+    /// </summary>
+    /// <param name="commentChar">The comment character's code unit.</param>
+    [TestMethod]
+    [DataRow(0x0A)]
+    [DataRow(0x0D)]
+    [DataRow(0x20AC)]
+    public void Ctor_WhenTheCommentCharIsNotAsciiOrIsALineBreak_ShouldThrowArgumentException(int commentChar)
+    {
+        var options = new DelimitedWriterOptions { CommentChar = (char)commentChar };
+        using var stream = new MemoryStream();
+
+        var bufferEx = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new Utf8DelimitedWriter(new ArrayBufferWriter<byte>(), options);
+        });
+
+        var streamEx = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new Utf8DelimitedWriter(stream, options);
+        });
+
+        Assert.AreEqual("options", bufferEx.ParamName);
+        Assert.Contains("CommentChar", bufferEx.Message);
+        Assert.AreEqual("options", streamEx.ParamName);
+        Assert.Contains("CommentChar", streamEx.Message);
+    }
+
+    /// <summary>
+    /// Verifies that both writer constructors refuse, with an <see cref="ArgumentException" /> for <c>options</c> that
+    /// names the <c>CommentChar</c> option, a comment character equal to the delimiter or the quote, set explicitly or
+    /// left at its default: a <c>#</c> delimiter clashes with the default comment character.
+    /// </summary>
+    /// <param name="delimiter">The delimiter's code unit, or zero for the default comma.</param>
+    /// <param name="quote">The quote character's code unit, or zero for the default double quote.</param>
+    /// <param name="commentChar">The comment character's code unit, or zero for the default <c>#</c>.</param>
+    [TestMethod]
+    [DataRow(0x23, 0, 0)]
+    [DataRow(0, 0x27, 0x27)]
+    [DataRow(0, 0, 0x22)]
+    [DataRow(0x3B, 0, 0x3B)]
+    public void Ctor_WhenTheCommentCharIsTheDelimiterOrTheQuote_ShouldThrowArgumentException(int delimiter, int quote, int commentChar)
+    {
+        var options = new DelimitedWriterOptions { Delimiter = (char)delimiter, Quote = (char)quote, CommentChar = (char)commentChar };
+        using var stream = new MemoryStream();
+
+        var bufferEx = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new Utf8DelimitedWriter(new ArrayBufferWriter<byte>(), options);
+        });
+
+        var streamEx = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new Utf8DelimitedWriter(stream, options);
+        });
+
+        Assert.AreEqual("options", bufferEx.ParamName);
+        Assert.Contains("CommentChar", bufferEx.Message);
+        Assert.AreEqual("options", streamEx.ParamName);
+        Assert.Contains("CommentChar", streamEx.Message);
+    }
+
+    /// <summary>
     /// Verifies that distinct ASCII delimiter and quote characters other than CR and LF, control characters such as the
     /// tab and the unit separator included, are accepted and written with: a field holding the quote is quoted with it.
     /// </summary>

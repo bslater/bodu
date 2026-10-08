@@ -340,4 +340,37 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual("options", ex.ParamName);
         Assert.Contains("Delimiter", ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that the serializer reads a line beginning with the comment character as a record, since it never skips
+    /// comment lines: <c>#x,1</c> binds a person named <c>#x</c>.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenALineBeginsWithTheCommentChar_ShouldReadItAsARecord()
+    {
+        List<Person> people = DelimitedSerializer.Deserialize<Person>("Name,Age\n#x,1\n");
+
+        Assert.AreEqual(1, people.Count);
+        Assert.AreEqual("#x", people[0].Name);
+        Assert.AreEqual(1, people[0].Age);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing with a comment character equal to the quote throws the reader's
+    /// <see cref="ArgumentException" /> for <c>options</c>, naming both options.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheCommentCharIsTheQuote_ShouldThrowArgumentException()
+    {
+        var options = new DelimitedSerializerOptions { CommentChar = '"' };
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<Person>("Name,Age\nAda,36\n", options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+        Assert.Contains("CommentChar", ex.Message);
+        Assert.Contains("Quote", ex.Message);
+    }
 }

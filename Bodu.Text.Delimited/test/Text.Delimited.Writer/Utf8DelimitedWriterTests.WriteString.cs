@@ -104,6 +104,22 @@ public partial class Utf8DelimitedWriterTests
     }
 
     /// <summary>
+    /// Verifies that with <see cref="DelimitedWriterOptions.CommentChar" /> set to <c>;</c> the writer quotes a first
+    /// field beginning with <c>;</c> instead of one beginning with <c>#</c>, so a reader with the same comment character
+    /// reads both records back.
+    /// </summary>
+    [TestMethod]
+    public void WriteString_WhenTheCommentCharIsSet_ShouldQuoteAFirstFieldBeginningWithIt()
+    {
+        string[][] records = [[";comment-like", "b"], ["#x", "c"]];
+
+        string text = WritePositionalRecords(new DelimitedWriterOptions { CommentChar = ';' }, records);
+
+        Assert.AreEqual("\";comment-like\",b\r\n#x,c\r\n", text);
+        AssertReadBack(records, text, new DelimitedReaderOptions { NoHeader = true, AllowComments = true, CommentChar = ';' });
+    }
+
+    /// <summary>
     /// Writes positional records and returns the text written.
     /// </summary>
     /// <param name="options">The writer options.</param>

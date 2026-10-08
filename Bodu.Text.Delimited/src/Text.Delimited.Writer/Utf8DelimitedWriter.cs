@@ -22,8 +22,18 @@ namespace Bodu.Text.Delimited.Writer;
 /// values - contributes a value row with no header.
 /// </para>
 /// <para>
-/// Fields that contain the delimiter, the quote character, or a line break are automatically quoted, with internal
-/// quotes doubled, so the output round-trips through <see cref="Bodu.Text.Delimited.Reader.Utf8DelimitedReader" />.
+/// A field is quoted, with internal quotes doubled, when the reader would otherwise read it back differently: when it
+/// contains the delimiter, the quote character, or a line break; when it begins or ends with a space or a tab; when it
+/// is the first field of its record and begins with <see cref="DelimitedWriterOptions.CommentChar" />; and when it is
+/// the only field of its record and is empty. Every other field is written bare.
+/// </para>
+/// <para>
+/// The output therefore round-trips through <see cref="Bodu.Text.Delimited.Reader.Utf8DelimitedReader" /> with the same
+/// delimiter and quote: a record of one empty field is written <c>""</c> rather than as an empty line, which the reader
+/// skips; a first field is not read as a comment line by a reader that allows comments with the writer's comment
+/// character; and a reader with <see cref="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.TrimFields" /> keeps the
+/// spaces and tabs at a field's ends. A record with no fields at all is written as an empty line, which the reader
+/// skips.
 /// </para>
 /// </remarks>
 public ref struct Utf8DelimitedWriter
@@ -83,8 +93,9 @@ public ref struct Utf8DelimitedWriter
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> is not an ASCII character or is a carriage
-    /// return or a line feed, or when the delimiter equals the quote.
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote.
     /// </exception>
     public Utf8DelimitedWriter(IBufferWriter<byte> output, DelimitedWriterOptions options)
     {
@@ -122,8 +133,9 @@ public ref struct Utf8DelimitedWriter
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> is not an ASCII character or is a carriage
-    /// return or a line feed, or when the delimiter equals the quote.
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote.
     /// </exception>
     public Utf8DelimitedWriter(Stream stream, DelimitedWriterOptions options)
     {
@@ -280,35 +292,27 @@ public ref struct Utf8DelimitedWriter
             if (i > 0)
                 WriteChar(_options.EffectiveDelimiter);
 
-            WriteField(fields[i]);
+            WriteField(fields[i], isFirst: i == 0, isOnly: fields.Count == 1);
         }
 
         WriteRaw("\r\n"u8);
     }
 
     /// <summary>
-    /// Writes a single field, quoting and escaping it when required.
+    /// Writes a single field, quoting and escaping it when the reader would otherwise read it back differently.
     /// </summary>
     /// <param name="field">The field value.</param>
-    private void WriteField(string field)
+    /// <param name="isFirst">Whether the field is the first of its record.</param>
+    /// <param name="isOnly">Whether the field is the only one of its record.</param>
+    private void WriteField(string field, bool isFirst, bool isOnly)
     {
-        char quote = _options.EffectiveQuote;
-        char delimiter = _options.EffectiveDelimiter;
-
-        bool needsQuoting = false;
-        for (int i = 0; i < field.Length && !needsQuoting; i++)
-        {
-            char c = field[i];
-            if (c == delimiter || c == quote || c is '\r' or '\n')
-                needsQuoting = true;
-        }
-
-        if (!needsQuoting)
+        if (!NeedsQuoting(field, isFirst, isOnly))
         {
             WriteText(field);
             return;
         }
 
+        char quote = _options.EffectiveQuote;
         var sb = new StringBuilder(field.Length + 2);
         sb.Append(quote);
         foreach (char c in field)
@@ -321,6 +325,35 @@ public ref struct Utf8DelimitedWriter
 
         sb.Append(quote);
         WriteText(sb.ToString());
+    }
+
+    /// <summary>
+    /// Determines whether a field must be quoted to read back as written.
+    /// </summary>
+    /// <param name="field">The field value.</param>
+    /// <param name="isFirst">Whether the field is the first of its record.</param>
+    /// <param name="isOnly">Whether the field is the only one of its record.</param>
+    /// <returns><see langword="true" /> when the field must be quoted; otherwise <see langword="false" />.</returns>
+    private readonly bool NeedsQuoting(string field, bool isFirst, bool isOnly)
+    {
+        // A record of one empty field would otherwise be an empty line, which the reader skips.
+        if (field.Length == 0)
+            return isOnly;
+
+        // A first field beginning with the comment character would read as a comment line, and a reader with TrimFields
+        // would trim a space or a tab at either end.
+        if ((isFirst && field[0] == _options.EffectiveCommentChar) || field[0] is ' ' or '\t' || field[^1] is ' ' or '\t')
+            return true;
+
+        char quote = _options.EffectiveQuote;
+        char delimiter = _options.EffectiveDelimiter;
+        foreach (char c in field)
+        {
+            if (c == delimiter || c == quote || c is '\r' or '\n')
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>

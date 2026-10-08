@@ -10,7 +10,7 @@ namespace Bodu.Text.Delimited;
 
 /// <summary>
 /// Provides configuration for <see cref="DelimitedSerializer" />, controlling column naming, case sensitivity, field
-/// inclusion, and the output delimiter, quote, and header behaviour.
+/// inclusion, and the delimiter, quote, comment character, and header behaviour.
 /// </summary>
 /// <remarks>
 /// An options instance becomes read-only the first time it is used; mutating a property after that point throws
@@ -32,6 +32,9 @@ public sealed class DelimitedSerializerOptions
 
     /// <summary>The output quote character, or <c>'\0'</c> for the default double quote.</summary>
     private char _quote;
+
+    /// <summary>The comment character the writer guards, or <c>'\0'</c> for the default <c>'#'</c>.</summary>
+    private char _commentChar;
 
     /// <summary>Whether the header row is suppressed on the write path.</summary>
     private bool _noHeader;
@@ -158,6 +161,35 @@ public sealed class DelimitedSerializerOptions
     }
 
     /// <summary>
+    /// Gets or sets the comment character, or <c>'\0'</c> to use the default <c>'#'</c>.
+    /// </summary>
+    /// <value>The comment character.</value>
+    /// <exception cref="InvalidOperationException">Thrown when set after the options have become read-only.</exception>
+    /// <remarks>
+    /// <para>
+    /// The serializer passes the comment character to the writer it creates, which quotes a record's first field when
+    /// the field begins with it, so that a reader that allows comments with the same character reads the record back
+    /// rather than skipping it (see <see cref="Writer.DelimitedWriterOptions.CommentChar" />). The serializer never
+    /// skips comment lines itself: it reads every line as a record, whatever this character is.
+    /// </para>
+    /// <para>
+    /// The character is also passed to the reader options, whose validation it shares, so it must be a character both
+    /// the reader and the writer accept (see <see cref="Reader.DelimitedReaderOptions" /> and
+    /// <see cref="Writer.DelimitedWriterOptions" />); otherwise serializing or deserializing throws
+    /// <see cref="ArgumentException" />.
+    /// </para>
+    /// </remarks>
+    public char CommentChar
+    {
+        get => _commentChar;
+        set
+        {
+            VerifyMutable();
+            _commentChar = value;
+        }
+    }
+
+    /// <summary>
     /// Gets or sets a value indicating whether the header row is suppressed on the write path and absent on the read
     /// path.
     /// </summary>
@@ -191,14 +223,14 @@ public sealed class DelimitedSerializerOptions
     /// </summary>
     /// <returns>The reader options.</returns>
     internal Reader.DelimitedReaderOptions ToReaderOptions() =>
-        new() { Delimiter = _delimiter, Quote = _quote, NoHeader = _noHeader };
+        new() { Delimiter = _delimiter, Quote = _quote, CommentChar = _commentChar, NoHeader = _noHeader };
 
     /// <summary>
     /// Builds the writer options that mirror these serializer settings.
     /// </summary>
     /// <returns>The writer options.</returns>
     internal Writer.DelimitedWriterOptions ToWriterOptions() =>
-        new() { Delimiter = _delimiter, Quote = _quote, NoHeader = _noHeader };
+        new() { Delimiter = _delimiter, Quote = _quote, CommentChar = _commentChar, NoHeader = _noHeader };
 
     /// <summary>
     /// Creates the shared read-only default options.

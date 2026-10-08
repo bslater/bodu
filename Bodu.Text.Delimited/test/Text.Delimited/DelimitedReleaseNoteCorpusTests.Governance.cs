@@ -39,13 +39,13 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     {
         (string Library, int Fixes, int Applies, int Dialect, int NotApplicable, int Unknown, int Runnable)[] recorded =
         [
-            ("commons-csv", 116, 34, 5, 89, 0, 34),
+            ("commons-csv", 116, 35, 4, 89, 0, 34),
             ("cpython-csv", 66, 16, 2, 58, 0, 17),
             ("csv-parse", 101, 30, 6, 72, 0, 29),
-            ("csvhelper", 208, 44, 4, 166, 0, 26),
-            ("go-csv", 12, 11, 6, 2, 0, 11),
+            ("csvhelper", 208, 45, 3, 166, 0, 26),
+            ("go-csv", 12, 10, 7, 2, 0, 11),
             ("papaparse", 106, 32, 4, 71, 6, 31),
-            ("rust-csv", 34, 16, 3, 21, 0, 14),
+            ("rust-csv", 34, 17, 2, 21, 0, 14),
             ("sep", 16, 10, 1, 9, 0, 7),
             ("sylvan-csv", 57, 40, 6, 25, 0, 33),
         ];

@@ -306,4 +306,38 @@ public partial class DelimitedSerializerTests
         Assert.Contains("Delimiter", ex.Message);
         Assert.Contains("Quote", ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DelimitedSerializerOptions.CommentChar" /> reaches the writer: with <c>;</c> a record
+    /// whose first value begins with <c>;</c> is quoted and one beginning with <c>#</c> is written bare.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheCommentCharIsSet_ShouldQuoteAFirstValueBeginningWithIt()
+    {
+        var people = new List<Person> { new() { Name = ";x", Age = 1 }, new() { Name = "#y", Age = 2 } };
+
+        string text = DelimitedSerializer.Serialize(people, new DelimitedSerializerOptions { CommentChar = ';' });
+
+        Assert.AreEqual("Name,Age\r\n\";x\",1\r\n#y,2\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing with a comment character equal to the delimiter throws the writer's
+    /// <see cref="ArgumentException" /> for <c>options</c>, naming both options.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheCommentCharIsTheDelimiter_ShouldThrowArgumentException()
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = ';', CommentChar = ';' };
+        var people = new List<Person> { new() { Name = "Ada", Age = 36 } };
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(people, options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+        Assert.Contains("CommentChar", ex.Message);
+        Assert.Contains("Delimiter", ex.Message);
+    }
 }
