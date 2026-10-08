@@ -15,7 +15,7 @@ Each line format - **Delimited**, **DotEnv**, and **INI** - reports failure thro
 | INI | <xref:Bodu.Text.Ini.IniFormatException> - `LineNumber`, `Offset` | <xref:Bodu.Text.Ini.IniSerializationException> |
 | Base type | `FormatException` | `Exception` |
 | Raised by | the readers, both DOMs, and the serializer's read path | the serializer's bind (read) and shape checks (write) |
-| Position members | 1-based `LineNumber`, 0-based byte `Offset` (DotEnv adds a 1-based `ColumnNumber`); all `int?` - `null` when the failure has no single position | none; the message names the key or column |
+| Position members | 1-based `LineNumber`, 0-based byte `Offset` (DotEnv adds a 1-based `ColumnNumber`, counted in bytes); all `int?` - `null` when the failure has no single position | none; the message names the key or column |
 | `InnerException` | rarely set | the `FormatException` from a failed scalar conversion, when there is one |
 
 Two points follow from the table. First, the position members are nullable: a structural rule that spans the whole document - an INI global key colliding with a section of the same name, for example - reports no line. Second, the serializer's read path can throw *either* type: the document is parsed first (format exception), then bound (serialization exception), so a catch that must handle both needs two clauses.
@@ -120,7 +120,7 @@ DelimitedSerializer.Deserialize<Trade>("Symbol,Quantity\nMSFT,\"1\n");
 
 ## Pattern 4 - DotEnv: malformed input
 
-The DotEnv reader reports a line, a column, and a byte offset on every structural failure:
+The DotEnv reader reports a line, a column, and a byte offset on every structural failure. All three describe one position, the byte at which it found the error or the opening quote of an unterminated value, and the column counts bytes from the start of the line:
 
 <!-- compile -->
 ```csharp
@@ -135,7 +135,7 @@ catch (DotEnvFormatException ex)
 {
     Console.WriteLine($"{ex.Message} (line {ex.LineNumber}, column {ex.ColumnNumber}, offset {ex.Offset})");
 }
-// Unterminated double-quoted DotEnv value beginning on line 1. (line 1, column 1, offset 13)
+// Unterminated double-quoted DotEnv value beginning on line 1. (line 1, column 9, offset 8)
 ```
 
 | Input | Message | Position |

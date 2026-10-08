@@ -468,8 +468,9 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
-    /// Verifies that a rejected entry is reported at the line, the 1-based column and the byte offset at which the
-    /// reader detected the error, the column counted in bytes from the start of that byte's line.
+    /// Verifies that a rejected entry is reported at the line, the 1-based column and the byte offset of one position,
+    /// the byte at which the reader found the error or the opening quote of an unterminated value, the column counted
+    /// in bytes from the start of that position's line.
     /// </summary>
     /// <param name="testName">The human-readable scenario label.</param>
     /// <param name="source">The DotEnv source text.</param>
@@ -485,8 +486,8 @@ public partial class Utf8DotEnvReaderTests
     [DataRow("missing assignment after a CRLF line ending", "A=1\r\nKEY value\r\n", 2, 5, 9)]
     [DataRow("missing assignment after a lone CR line ending", "A=1\rKEY value\r", 2, 5, 8)]
     [DataRow("missing assignment after a byte-order mark", "﻿KEY value\n", 1, 5, 7)]
-    [DataRow("unterminated double quote at the end of the input", "KEY=\"abc", 1, 9, 8)]
-    [DataRow("unterminated single quote on a later line", "A=1\nKEY=  'abc\n", 2, 8, 11)]
+    [DataRow("unterminated double quote at the end of the input", "KEY=\"abc", 1, 5, 4)]
+    [DataRow("unterminated single quote on a later line", "A=1\nKEY=  'abc\n", 2, 7, 10)]
     public void Read_WhenEntryIsMalformed_ShouldReportTheLineColumnAndOffsetOfTheError(string testName, string source, int line, int column, int offset)
     {
         _ = testName;

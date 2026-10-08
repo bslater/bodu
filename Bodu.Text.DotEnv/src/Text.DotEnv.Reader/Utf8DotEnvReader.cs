@@ -466,7 +466,9 @@ public ref struct Utf8DotEnvReader
     /// <param name="rawStart">The source start of the content between the quotes.</param>
     /// <param name="rawLength">The source length of the content between the quotes.</param>
     /// <param name="decoded">The decoded value.</param>
-    /// <exception cref="DotEnvFormatException">Thrown when the value is unterminated.</exception>
+    /// <exception cref="DotEnvFormatException">
+    /// Thrown when the value is unterminated; the error is reported at the opening quote.
+    /// </exception>
     /// <remarks>
     /// The escapes resolved are <c>\\</c>, <c>\'</c>, <c>\"</c>, <c>\a</c>, <c>\b</c>, <c>\f</c>, <c>\n</c>, <c>\r</c>,
     /// <c>\t</c>, <c>\v</c> and <c>\$</c>, and a backslash before a line break, which continues the value on the next
@@ -474,6 +476,7 @@ public ref struct Utf8DotEnvReader
     /// </remarks>
     private void ReadDoubleQuoted(int startLine, out int rawStart, out int rawLength, out string? decoded)
     {
+        int quoteOffset = _position;
         _position++; // consume opening '"'
         rawStart = _position;
 
@@ -482,7 +485,7 @@ public ref struct Utf8DotEnvReader
         while (true)
         {
             if (_position >= _data.Length)
-                throw UnterminatedDoubleQuote(startLine);
+                throw UnterminatedDoubleQuote(startLine, quoteOffset);
 
             byte c = _data[_position];
 
@@ -498,7 +501,7 @@ public ref struct Utf8DotEnvReader
             {
                 _position++;
                 if (_position >= _data.Length)
-                    throw UnterminatedDoubleQuote(startLine);
+                    throw UnterminatedDoubleQuote(startLine, quoteOffset);
 
                 switch (_data[_position])
                 {
@@ -544,9 +547,12 @@ public ref struct Utf8DotEnvReader
     /// <param name="startLine">The 1-based line on which the opening quote appears.</param>
     /// <param name="rawStart">The source start of the content between the quotes.</param>
     /// <param name="rawLength">The source length of the content between the quotes.</param>
-    /// <exception cref="DotEnvFormatException">Thrown when the value is unterminated.</exception>
+    /// <exception cref="DotEnvFormatException">
+    /// Thrown when the value is unterminated; the error is reported at the opening quote.
+    /// </exception>
     private void ReadSingleQuoted(int startLine, out int rawStart, out int rawLength)
     {
+        int quoteOffset = _position;
         _position++; // consume opening '\''
         rawStart = _position;
 
@@ -562,10 +568,10 @@ public ref struct Utf8DotEnvReader
             }
 
             if (c is (byte)'\n' or (byte)'\r')
-                throw UnterminatedSingleQuote(startLine);
+                throw UnterminatedSingleQuote(startLine, quoteOffset);
         }
 
-        throw UnterminatedSingleQuote(startLine);
+        throw UnterminatedSingleQuote(startLine, quoteOffset);
     }
 
     /// <summary>
@@ -771,20 +777,22 @@ public ref struct Utf8DotEnvReader
         new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvMalformedEntry, line), line, ColumnAt(_position), _position);
 
     /// <summary>
-    /// Creates an unterminated double-quote exception.
+    /// Creates an unterminated double-quote exception, reported at the opening quote.
     /// </summary>
-    /// <param name="line">The 1-based line number on which the value began.</param>
+    /// <param name="line">The 1-based line number of the opening quote.</param>
+    /// <param name="quoteOffset">The zero-based byte offset of the opening quote.</param>
     /// <returns>The exception to throw.</returns>
-    private readonly DotEnvFormatException UnterminatedDoubleQuote(int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, line), line, ColumnAt(_position), _position);
+    private readonly DotEnvFormatException UnterminatedDoubleQuote(int line, int quoteOffset) =>
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, line), line, ColumnAt(quoteOffset), quoteOffset);
 
     /// <summary>
-    /// Creates an unterminated single-quote exception.
+    /// Creates an unterminated single-quote exception, reported at the opening quote.
     /// </summary>
-    /// <param name="line">The 1-based line number on which the value began.</param>
+    /// <param name="line">The 1-based line number of the opening quote.</param>
+    /// <param name="quoteOffset">The zero-based byte offset of the opening quote.</param>
     /// <returns>The exception to throw.</returns>
-    private readonly DotEnvFormatException UnterminatedSingleQuote(int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, ColumnAt(_position), _position);
+    private readonly DotEnvFormatException UnterminatedSingleQuote(int line, int quoteOffset) =>
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, ColumnAt(quoteOffset), quoteOffset);
 
     /// <summary>
     /// Creates an exception for text that follows a closing quote, reported at the first byte of that text.
