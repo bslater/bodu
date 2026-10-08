@@ -32,7 +32,7 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 - **Duplicate mapping keys** - by default (configurable via `YamlDuplicateKeyBehavior`).
 - **Duplicate / overriding anchors and cyclic aliases.** A repeated anchor name is rejected: anchor override is a YAML representation-graph feature outside this tree profile.
 - **Tabs used as indentation**, including a tab between a `-` entry indicator or an explicit `:` and the compact sequence or mapping that follows it on the line (tabs remain legal as separation whitespace, after a node property included).
-- **Invalid UTF-8, unpaired surrogates, invalid Unicode escapes, and non-printable control characters.**
+- **Invalid UTF-8, unpaired surrogates, invalid Unicode escapes, and non-printable control characters.** A surrogate escape is valid only as a high surrogate followed directly by a low one, the escaped pair JSON writes for a character outside the Basic Multilingual Plane, which decodes to that one character; a lone or reversed surrogate escape is rejected.
 - **Malformed or unsupported directives** and **unknown non-core tags**.
 
 This profile aligns with the Bodu TOML / Bencode and `System.Text.Json` architectural family. Broader YAML graph support (complex keys, anchor identity, a streaming event reader, richer tag resolution) is a deliberate future extension, not a silent partial behavior of this release.

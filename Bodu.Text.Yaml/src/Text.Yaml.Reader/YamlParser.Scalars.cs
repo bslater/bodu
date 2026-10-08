@@ -358,7 +358,7 @@ internal sealed partial class YamlParser
             case (byte)'L': AppendRune(buf, 0x2028); break;
             case (byte)'P': AppendRune(buf, 0x2029); break;
             case (byte)'x': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(2))); break;
-            case (byte)'u': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(4))); break;
+            case (byte)'u': AppendRune(buf, ReadUtf16Escape()); break;
             case (byte)'U': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(8))); break;
             default: throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
         }
@@ -392,6 +392,32 @@ internal sealed partial class YamlParser
         }
 
         return value;
+    }
+
+    /// <summary>
+    /// Reads the four hexadecimal digits of a 16-bit Unicode escape, combining a high surrogate with the low-surrogate
+    /// escape that must follow it directly, as JSON writes a character outside the Basic Multilingual Plane.
+    /// </summary>
+    /// <returns>The decoded code point.</returns>
+    /// <exception cref="YamlFormatException">
+    /// The escape is a lone low surrogate, or a high surrogate not followed directly by a low-surrogate escape.
+    /// </exception>
+    private int ReadUtf16Escape()
+    {
+        int unit = ReadHex(4);
+        if (unit is < 0xD800 or > 0xDBFF)
+            return ValidateEscapeCodePoint(unit);
+
+        if (Peek() != (byte)'\\' || PeekAt(1) != (byte)'u')
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
+
+        Advance();
+        Advance();
+        int low = ReadHex(4);
+        if (low is < 0xDC00 or > 0xDFFF)
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
+
+        return 0x10000 + ((unit - 0xD800) << 10) + (low - 0xDC00);
     }
 
     /// <summary>
