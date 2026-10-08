@@ -121,4 +121,32 @@ public partial class YamlSerializerTests
         Assert.AreEqual(1, restored[key]);
         Assert.AreEqual(2, restored["short"]);
     }
+
+    /// <summary>
+    /// Verifies that a string that would read back as another value if written plain round-trips as a string, as a key
+    /// and as a value, under both specification versions.
+    /// </summary>
+    /// <param name="value">The string to round-trip.</param>
+    /// <param name="version">The specification version the output is read under.</param>
+    [TestMethod]
+    [DataRow("019", YamlSpecVersion.V1_2)]
+    [DataRow("08", YamlSpecVersion.V1_2)]
+    [DataRow("019", YamlSpecVersion.V1_1)]
+    [DataRow("1:1", YamlSpecVersion.V1_1)]
+    [DataRow("<<", YamlSpecVersion.V1_2)]
+    [DataRow("<<", YamlSpecVersion.V1_1)]
+    public void SerializeDeserialize_WhenStringReadsAsAnotherValuePlain_ShouldRoundTrip(
+        string value,
+        YamlSpecVersion version)
+    {
+        var original = new Dictionary<string, string> { [value] = value };
+
+        string yaml = YamlSerializer.Serialize(original);
+        Dictionary<string, string> restored = YamlSerializer.Deserialize<Dictionary<string, string>>(
+            yaml,
+            new YamlSerializerOptions { SpecVersion = version })!;
+
+        Assert.AreEqual(1, restored.Count, yaml);
+        Assert.AreEqual(value, restored[value], yaml);
+    }
 }

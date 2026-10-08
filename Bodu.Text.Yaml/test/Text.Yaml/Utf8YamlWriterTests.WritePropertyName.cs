@@ -139,4 +139,23 @@ public partial class Utf8YamlWriterTests
 
         Assert.AreEqual("? " + key + "\n" + expectedValue, yaml);
     }
+
+    /// <summary>
+    /// Verifies that the key <c>&lt;&lt;</c> is written quoted, so that a reader that expands merge keys reads it back
+    /// as the ordinary key rather than as a merge key.
+    /// </summary>
+    [TestMethod]
+    public void WritePropertyName_WhenKeyIsMergeKeyText_ShouldQuote()
+    {
+        string yaml = Write(writer =>
+        {
+            writer.WriteStartMapping();
+            writer.WritePropertyName("<<");
+            writer.WriteStartSequence();
+            writer.WriteEndSequence();
+            writer.WriteEndMapping();
+        });
+
+        Assert.AreEqual("\"<<\": []\n", yaml);
+    }
 }
