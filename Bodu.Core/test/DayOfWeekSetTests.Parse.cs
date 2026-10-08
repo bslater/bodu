@@ -62,7 +62,7 @@ public partial class DayOfWeekSetTests
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = DayOfWeekSet.Parse(null!);
+            _ = DayOfWeekSet.Parse((string)null!);
         });
 
         Assert.AreEqual("s", ex.ParamName);

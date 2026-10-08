@@ -44,6 +44,24 @@ public readonly partial struct MonthSet
     {
         ThrowHelper.ThrowIfNull(s);
 
+        return Parse(s.AsSpan());
+    }
+
+    /// <summary>
+    /// Converts a span of characters in one of the forms <see cref="ToString(string, IFormatProvider)" /> writes into a
+    /// <see cref="MonthSet" />, detecting the form.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <returns>The set the characters describe.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is neither the binary form, the letter mask, nor a list of values and ranges
+    /// from 1 to 12.
+    /// </exception>
+    /// <remarks>
+    /// The characters are read as <see cref="Parse(string)" /> reads a string.
+    /// </remarks>
+    public static MonthSet Parse(ReadOnlySpan<char> s)
+    {
         CalendarValueSet.ParseFailure failure = CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, MonthLetters, out ulong bits);
         return failure == CalendarValueSet.ParseFailure.None
             ? new MonthSet(bits)
@@ -76,7 +94,28 @@ public readonly partial struct MonthSet
     {
         ThrowHelper.ThrowIfNull(s);
         ThrowHelper.ThrowIfNull(format);
-        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format, nameof(MonthSet));
+
+        return ParseExact(s.AsSpan(), format.AsSpan());
+    }
+
+    /// <summary>
+    /// Converts a span of characters in the specified format into a <see cref="MonthSet" />.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="format">
+    /// The format of <paramref name="s" />, one of those <see cref="ToString(string)" /> writes.
+    /// </param>
+    /// <returns>The set the characters describe.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="format" /> is not a supported format, or <paramref name="s" /> is not text in that
+    /// format.
+    /// </exception>
+    /// <remarks>
+    /// The characters are read as <see cref="ParseExact(string, string)" /> reads a string.
+    /// </remarks>
+    public static MonthSet ParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format)
+    {
+        if (!TryParseFormat(format, out TextFormat textFormat)) throw CalendarValueSet.CreateFormatStringException(format.ToString(), nameof(MonthSet));
 
         CalendarValueSet.ParseFailure failure = TryParseCore(s, textFormat, out ulong bits, out int position);
         return failure == CalendarValueSet.ParseFailure.None
@@ -101,7 +140,32 @@ public readonly partial struct MonthSet
     /// </remarks>
     public static bool TryParse([NotNullWhen(true)] string? s, out MonthSet result)
     {
-        if (s is not null && CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, MonthLetters, out ulong bits) == CalendarValueSet.ParseFailure.None)
+        if (s is not null)
+            return TryParse(s.AsSpan(), out result);
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to convert a span of characters in one of the forms <see cref="ToString(string, IFormatProvider)" />
+    /// writes into a <see cref="MonthSet" />, detecting the form.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the set the characters describe; otherwise
+    /// <see cref="Empty" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="s" /> is the binary form, the letter mask, or a list of values and
+    /// ranges from 1 to 12; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The characters are read as <see cref="Parse(string)" /> reads a string.
+    /// </remarks>
+    public static bool TryParse(ReadOnlySpan<char> s, out MonthSet result)
+    {
+        if (CalendarValueSet.TryParseDetected(s, MinimumValue, MaximumValue, MonthLetters, out ulong bits) == CalendarValueSet.ParseFailure.None)
         {
             result = new MonthSet(bits);
             return true;
@@ -130,9 +194,34 @@ public readonly partial struct MonthSet
     /// </remarks>
     public static bool TryParseExact([NotNullWhen(true)] string? s, [NotNullWhen(true)] string? format, out MonthSet result)
     {
-        if (s is not null
-            && format is not null
-            && TryParseFormat(format, out TextFormat textFormat)
+        if (s is not null && format is not null)
+            return TryParseExact(s.AsSpan(), format.AsSpan(), out result);
+
+        result = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to convert a span of characters in the specified format into a <see cref="MonthSet" />.
+    /// </summary>
+    /// <param name="s">The characters to convert.</param>
+    /// <param name="format">
+    /// The format of <paramref name="s" />, one of those <see cref="ToString(string)" /> writes.
+    /// </param>
+    /// <param name="result">
+    /// When this method returns <see langword="true" />, the set the characters describe; otherwise
+    /// <see cref="Empty" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="format" /> is a supported format and <paramref name="s" /> is text
+    /// in it; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The characters are read as <see cref="ParseExact(string, string)" /> reads a string.
+    /// </remarks>
+    public static bool TryParseExact(ReadOnlySpan<char> s, ReadOnlySpan<char> format, out MonthSet result)
+    {
+        if (TryParseFormat(format, out TextFormat textFormat)
             && TryParseCore(s, textFormat, out ulong bits, out _) == CalendarValueSet.ParseFailure.None)
         {
             result = new MonthSet(bits);
@@ -149,6 +238,14 @@ public readonly partial struct MonthSet
 
     /// <inheritdoc />
     static bool IParsable<MonthSet>.TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out MonthSet result) =>
+        TryParse(s, out result);
+
+    /// <inheritdoc />
+    static MonthSet ISpanParsable<MonthSet>.Parse(ReadOnlySpan<char> s, IFormatProvider? provider) =>
+        Parse(s);
+
+    /// <inheritdoc />
+    static bool ISpanParsable<MonthSet>.TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out MonthSet result) =>
         TryParse(s, out result);
 
     /// <summary>

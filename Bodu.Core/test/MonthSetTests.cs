@@ -54,6 +54,13 @@ public sealed partial class MonthSetTests
     protected override string ElementParameterName => "month";
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The numeric formats and the letter mask's: <c>J</c>, a placeholder letter alone, and <c>J</c> followed by one.
+    /// </remarks>
+    protected override IReadOnlyList<string> Formats { get; } =
+        [.. NumericFormats, "J", "j", "E", "U", "D", "A", "e", "a", "JE", "JU", "JD", "JA", "jd", "Ja"];
+
+    /// <inheritdoc />
     protected override IReadOnlyList<ValidKat<string, MonthSet>> CanonicalTextCases { get; } =
     [
         new("first month of each quarter", "1,4,7,10", new MonthSet(1, 4, 7, 10)),

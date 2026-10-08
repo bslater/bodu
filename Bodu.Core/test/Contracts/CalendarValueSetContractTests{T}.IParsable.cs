@@ -23,7 +23,7 @@ public abstract partial class CalendarValueSetContractTests<TSet>
         foreach (ValidKat<string, TSet> kat in CanonicalCases())
         {
             foreach (IFormatProvider? provider in providers)
-                Assert.AreEqual(kat.Expected, TSet.Parse(kat.Input, provider), $"{kat.Name}, provider {provider}");
+                Assert.AreEqual(kat.Expected, ParseString(kat.Input, provider), $"{kat.Name}, provider {provider}");
         }
     }
 
@@ -38,7 +38,7 @@ public abstract partial class CalendarValueSetContractTests<TSet>
         {
             Assert.ThrowsExactly<FormatException>(() =>
             {
-                _ = TSet.Parse(kat.Input, CultureInfo.InvariantCulture);
+                _ = ParseString(kat.Input, CultureInfo.InvariantCulture);
             }, kat.Name);
         }
     }
@@ -52,13 +52,13 @@ public abstract partial class CalendarValueSetContractTests<TSet>
     {
         foreach (ValidKat<string, TSet> kat in CanonicalCases())
         {
-            Assert.IsTrue(TSet.TryParse(kat.Input, CultureInfo.GetCultureInfo("ar-SA"), out TSet result), kat.Name);
+            Assert.IsTrue(TryParseString(kat.Input, CultureInfo.GetCultureInfo("ar-SA"), out TSet result), kat.Name);
             Assert.AreEqual(kat.Expected, result, kat.Name);
         }
 
         foreach (InvalidKat<string> kat in MalformedCases())
-            Assert.IsFalse(TSet.TryParse(kat.Input, CultureInfo.GetCultureInfo("ar-SA"), out _), kat.Name);
+            Assert.IsFalse(TryParseString(kat.Input, CultureInfo.GetCultureInfo("ar-SA"), out _), kat.Name);
 
-        Assert.IsFalse(TSet.TryParse(null, CultureInfo.InvariantCulture, out _));
+        Assert.IsFalse(TryParseString(null, CultureInfo.InvariantCulture, out _));
     }
 }

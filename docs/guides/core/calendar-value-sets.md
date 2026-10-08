@@ -120,6 +120,38 @@ though as a list it would be January. Zeros and ones of any other length are a l
 text with whitespace around it is read as a list too. Text that fits none of the forms fails with the list's message.
 To read one format only, call `ParseExact`.
 
+### Spans and UTF-8
+
+Every text form is ASCII, so the sets read and write it as characters or as UTF-8 bytes alike:
+
+- `TryFormat` writes the text `ToString(format)` returns into a span of characters or of UTF-8 bytes, without
+  allocating. When the span is too short it returns `false` and writes nothing; an unsupported format throws
+  `FormatException`, as it does from `ToString`.
+- `Parse` and `TryParse` also read a `ReadOnlySpan<char>`, or a `ReadOnlySpan<byte>` of UTF-8, and `ParseExact` and
+  `TryParseExact` a `ReadOnlySpan<char>`. They accept what the `string` overloads accept and throw the same messages;
+  bytes that are not valid UTF-8 are never a set.
+- The sets implement `ISpanFormattable` and `IUtf8SpanFormattable`, so string interpolation, `StringBuilder` and
+  `Utf8.TryWrite` format them through `TryFormat`, without an intermediate string.
+
+<!-- run -->
+```csharp
+using Bodu;
+
+var months = new MonthSet(1, 2, 3, 12);
+
+Span<char> chars = stackalloc char[32];
+bool written = months.TryFormat(chars, out int charsWritten, "L");   // true: chars[..charsWritten] is "1,2,3,12"
+
+Span<byte> utf8 = stackalloc byte[32];
+written = months.TryFormat(utf8, out int bytesWritten, "J");         // true: the bytes of "JFM________D"
+
+Span<char> small = stackalloc char[4];
+bool fits = months.TryFormat(small, out _);                          // false: "1-3,12" needs six characters
+
+MonthSet fromUtf8  = MonthSet.Parse("1-3,12"u8);
+MonthSet fromChars = MonthSet.ParseExact("111000000001".AsSpan(), "B");
+```
+
 ## Pattern 4 - combine sets
 
 `|` is union, `&` intersection, `^` symmetric difference, and `~` the complement within the type's range:
@@ -162,9 +194,11 @@ MonthSet again = MonthSet.FromUInt64(bits);    // January and December
 ## Pattern 6 - work with any set
 
 `ICalendarValueSet<TSelf, TValue>` declares what the six sets share: `Empty` and `All`, `Count`, `Contains`, `With`
-and `Without`, `FromUInt64` and `ToUInt64`, `ParseExact`, `TryParseExact` and `ToString(string)`, together with the
-operators, equality, `IParsable<TSelf>`, `IFormattable` and enumeration. `TValue` is `DayOfWeek` for `DayOfWeekSet` and
-`int` for the others. A method generic over the interface takes any of them:
+and `Without`, `FromUInt64` and `ToUInt64`, `ParseExact` and `TryParseExact` over strings and spans of characters, and
+`ToString(string)`, together with the operators, equality, enumeration, parsing from strings, spans and UTF-8
+(`IParsable<TSelf>`, `ISpanParsable<TSelf>`, `IUtf8SpanParsable<TSelf>`) and formatting to them (`IFormattable`,
+`ISpanFormattable`, `IUtf8SpanFormattable`). `TValue` is `DayOfWeek` for `DayOfWeekSet` and `int` for the others. A
+method generic over the interface takes any of them:
 
 <!-- run -->
 ```csharp
@@ -206,10 +240,11 @@ Each of `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet` has 
 | `Contains(int)` | Whether the value is selected; `false` outside the range. |
 | `With(int)`, `Without(int)` | A set with the value added or removed. |
 | `FromUInt64(ulong)`, `ToUInt64()` | The set's bits, bit `n` for the smallest value plus `n`. |
-| `Parse(string)`, `TryParse(string, out TSelf)` | Read a list of values and ranges, or binary text; `MonthSet` also its letter mask. |
-| `ParseExact(string, string)`, `TryParseExact(string, string, out TSelf)` | Read text in the format named. |
+| `Parse`, `TryParse` | Read a list of values and ranges, or binary text; `MonthSet` also its letter mask. Each takes a `string`, a `ReadOnlySpan<char>` or a `ReadOnlySpan<byte>` of UTF-8. |
+| `ParseExact`, `TryParseExact` | Read text in the format named, from a `string` or a `ReadOnlySpan<char>`. |
 | `ToString()` | Write the canonical list. |
 | `ToString(string)`, `ToString(string, IFormatProvider)` | Write the list (`G`), every value (`L`) or binary text (`B`); `MonthSet` also its letter mask (`J`). |
+| `TryFormat(Span<char>, ...)`, `TryFormat(Span<byte>, ...)` | Write the text `ToString(string)` returns into a span of characters or of UTF-8 bytes, without allocating. |
 | `\|`, `&`, `^`, `~`, `==`, `!=` | Union, intersection, symmetric difference, complement and equality. |
 | `GetEnumerator()` | The selected values in ascending order, without allocating. |
 

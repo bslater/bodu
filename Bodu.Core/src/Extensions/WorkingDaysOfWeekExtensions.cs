@@ -70,7 +70,7 @@ public static class WorkingDaysOfWeekExtensions
         if (value == WorkingDaysOfWeek.Custom)
         {
             ThrowHelper.ThrowIfNull(provider);
-            return provider.ToDayOfWeekSet();
+            return provider.ToWorkingWeek();
         }
 
         return value.ToDayOfWeekSet();

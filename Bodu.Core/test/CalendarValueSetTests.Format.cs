@@ -42,6 +42,21 @@ public sealed partial class CalendarValueSetTests
     }
 
     /// <summary>
+    /// Verifies that the longest list the text buffer allows, every value of a 64-value domain with three digits each,
+    /// is written whole: 64 values and 63 commas.
+    /// </summary>
+    [TestMethod]
+    public void FormatValues_WhenEveryValueHasThreeDigits_ShouldWriteTheLongestList()
+    {
+        string expected = string.Join(",", Enumerable.Range(936, 64));
+
+        string text = CalendarValueSet.FormatValues(ulong.MaxValue, 936);
+
+        Assert.AreEqual(expected, text);
+        Assert.AreEqual(CalendarValueSet.MaxTextLength - 1, text.Length);
+    }
+
+    /// <summary>
     /// Verifies that the list parser rejects a value one past a 64-value domain at either end.
     /// </summary>
     /// <param name="text">The list text.</param>

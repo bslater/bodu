@@ -43,6 +43,30 @@ public sealed partial class DayOfWeekSetTests
     /// <inheritdoc />
     protected override string ElementParameterName => "day";
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// The default mask's <c>G</c>, the Sunday-first and Monday-first masks with each placeholder, a placeholder letter
+    /// alone, and the binary forms.
+    /// </remarks>
+    protected override IReadOnlyList<string> Formats { get; } =
+    [
+        "G", "g", "S", "s", "M", "m", "E", "U", "D", "A", "e", "a", "SE", "SU", "SD", "SA", "ME", "MU", "MD", "MA",
+        "sd", "mA", "B", "b", "0", "1", "01",
+    ];
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The masks add an ambiguous final <c>S</c>, mixed placeholders, padded binary text, lists of initials and a
+    /// mask one character long or short.
+    /// </remarks>
+    protected override IEnumerable<string> ParseInputs() =>
+        base.ParseInputs().Concat(
+        [
+            "______S", "S______", "_MTWTF_ ", " _MTWTF_", "_MTWTF-", "*MTWTF*", "-MTWTF-", " MTWTF ", "MTWTF__",
+            "0111110 ", " 0111110", "011111", "01111100", "2111110", "SMTWTFSS", "SMTWTF", "MTWTFSS", "S_T_T_S",
+            "SuMo", "MF",
+        ]);
+
     /// <summary>
     /// Returns the set a seven-bit mask selects when it is written Sunday first, most significant bit first, the way
     /// the binary text form reads: <c>0b0111110</c> is Monday to Friday.

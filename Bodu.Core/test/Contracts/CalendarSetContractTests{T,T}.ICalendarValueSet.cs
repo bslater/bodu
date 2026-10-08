@@ -21,7 +21,7 @@ public abstract partial class CalendarSetContractTests<TSet, TElement>
         string[] expected =
         [
             "get_Empty", "get_All", "get_Count", "FromUInt64", "ToUInt64", "Contains", "With", "Without", "ParseExact",
-            "TryParseExact", "ToString",
+            "ParseExact", "TryParseExact", "TryParseExact", "ToString",
         ];
 
         CollectionAssert.AreEquivalent(expected, map.InterfaceMethods.Select(method => method.Name).ToArray());

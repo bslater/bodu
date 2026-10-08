@@ -25,6 +25,9 @@ namespace Bodu;
 /// <c>_</c> when it is not, Sunday first: <c>"_MTWTF_"</c> selects Monday to Friday. <see cref="ToString(string)" />
 /// can also write the mask Monday first, with another placeholder, or in binary (<c>"0111110"</c>), and
 /// <see cref="Parse(string)" /> reads any of those forms.
+/// <see cref="TryFormat(Span{char}, out int, ReadOnlySpan{char}, IFormatProvider)" /> writes the same text into a span
+/// of characters, its other overload into a span of UTF-8 bytes, and the span and UTF-8 overloads of <c>Parse</c>,
+/// <c>TryParse</c>, <c>ParseExact</c> and <c>TryParseExact</c> read it.
 /// </para>
 /// <para>
 /// <see cref="ToUInt64" /> and <see cref="FromUInt64(ulong)" /> expose the bits directly: bit <c>n</c> selects
@@ -53,7 +56,11 @@ public readonly partial struct DayOfWeekSet
       IEqualityOperators<DayOfWeekSet, DayOfWeekSet, bool>,
       IBitwiseOperators<DayOfWeekSet, DayOfWeekSet, DayOfWeekSet>,
       IParsable<DayOfWeekSet>,
+      ISpanParsable<DayOfWeekSet>,
+      IUtf8SpanParsable<DayOfWeekSet>,
       IFormattable,
+      ISpanFormattable,
+      IUtf8SpanFormattable,
       IEnumerable<DayOfWeek>,
       ICalendarValueSet<DayOfWeekSet, DayOfWeek>
 {

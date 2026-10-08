@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 using System.Text;
@@ -34,6 +37,13 @@ namespace Bodu;
 /// </remarks>
 internal static partial class CalendarValueSet
 {
+    /// <summary>The length of a buffer that holds a set's text in any form.</summary>
+    /// <remarks>
+    /// The longest text is a list of every value of a 64-value domain whose values have up to three digits: 64 values
+    /// and 63 commas, at most 255 characters. The sets' own domains have at most 60 values of at most two digits.
+    /// </remarks>
+    internal const int MaxTextLength = 256;
+
     /// <summary>
     /// Returns the mask of the low bits of a domain of the specified size.
     /// </summary>
@@ -65,17 +75,8 @@ internal static partial class CalendarValueSet
     /// <returns>The list without ranges, or the empty string when no bit is set.</returns>
     internal static string FormatValues(ulong bits, int minimum)
     {
-        var builder = new StringBuilder();
-        while (bits != 0)
-        {
-            if (builder.Length > 0)
-                builder.Append(',');
-
-            builder.Append((minimum + BitOperations.TrailingZeroCount(bits)).ToString(CultureInfo.InvariantCulture));
-            bits &= bits - 1;
-        }
-
-        return builder.ToString();
+        Span<char> buffer = stackalloc char[MaxTextLength];
+        return new string(buffer[..WriteList(bits, minimum, ranges: false, buffer)]);
     }
 
     /// <summary>
@@ -86,13 +87,147 @@ internal static partial class CalendarValueSet
     /// <param name="maximum">The largest value in the domain.</param>
     /// <param name="form">The form to write.</param>
     /// <returns>The text.</returns>
-    internal static string Format(ulong bits, int minimum, int maximum, NumericForm form) =>
+    internal static string Format(ulong bits, int minimum, int maximum, NumericForm form)
+    {
+        Span<char> buffer = stackalloc char[MaxTextLength];
+        return new string(buffer[..Write(bits, minimum, maximum, form, buffer)]);
+    }
+
+    /// <summary>
+    /// Writes a numeric set's bits in one of the forms every numeric set shares.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="minimum">The smallest value in the domain.</param>
+    /// <param name="maximum">The largest value in the domain.</param>
+    /// <param name="form">The form to write.</param>
+    /// <param name="buffer">The buffer to write to, at least <see cref="MaxTextLength" /> characters long.</param>
+    /// <returns>The number of characters written.</returns>
+    internal static int Write(ulong bits, int minimum, int maximum, NumericForm form, Span<char> buffer) =>
         form switch
         {
-            NumericForm.Values => FormatValues(bits, minimum),
-            NumericForm.Binary => FormatBinary(bits, maximum - minimum + 1),
-            _ => Format(bits, minimum),
+            NumericForm.Values => WriteList(bits, minimum, ranges: false, buffer),
+            NumericForm.Binary => WriteBinary(bits, maximum - minimum + 1, buffer),
+            _ => WriteList(bits, minimum, ranges: true, buffer),
         };
+
+    /// <summary>
+    /// Copies a set's text to a span of characters, or nothing when it does not fit.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="destination">The span to copy to.</param>
+    /// <param name="charsWritten">
+    /// When this method returns <see langword="true" />, the length of <paramref name="text" />; otherwise 0.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="text" /> fits in <paramref name="destination" />; otherwise
+    /// <see langword="false" />, with <paramref name="destination" /> unchanged.
+    /// </returns>
+    internal static bool TryCopy(ReadOnlySpan<char> text, Span<char> destination, out int charsWritten)
+    {
+        if (!text.TryCopyTo(destination))
+        {
+            charsWritten = 0;
+            return false;
+        }
+
+        charsWritten = text.Length;
+        return true;
+    }
+
+    /// <summary>
+    /// Copies a set's text to a span of UTF-8 bytes, or nothing when it does not fit.
+    /// </summary>
+    /// <param name="text">The text, which is ASCII, so one byte per character.</param>
+    /// <param name="utf8Destination">The span to copy to.</param>
+    /// <param name="bytesWritten">
+    /// When this method returns <see langword="true" />, the length of <paramref name="text" />; otherwise 0.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="text" /> fits in <paramref name="utf8Destination" />; otherwise
+    /// <see langword="false" />, with <paramref name="utf8Destination" /> unchanged.
+    /// </returns>
+    internal static bool TryCopyUtf8(ReadOnlySpan<char> text, Span<byte> utf8Destination, out int bytesWritten)
+    {
+        if (utf8Destination.Length < text.Length)
+        {
+            bytesWritten = 0;
+            return false;
+        }
+
+        OperationStatus status = Ascii.FromUtf16(text, utf8Destination, out bytesWritten);
+        Debug.Assert(status == OperationStatus.Done, "A set's text is ASCII.");
+        return true;
+    }
+
+    /// <summary>
+    /// Converts UTF-8 text into a set by decoding it and reading the characters as the set's character parser does.
+    /// </summary>
+    /// <typeparam name="TSet">The type of set.</typeparam>
+    /// <param name="utf8Text">The UTF-8 text.</param>
+    /// <returns>The set the text describes.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when the decoded text is not a set; an invalid UTF-8 sequence decodes to U+FFFD, which no form accepts.
+    /// </exception>
+    internal static TSet ParseUtf8<TSet>(ReadOnlySpan<byte> utf8Text)
+        where TSet : ISpanParsable<TSet>
+    {
+        char[]? rented = null;
+        Span<char> text = utf8Text.Length <= MaxTextLength
+            ? stackalloc char[MaxTextLength]
+            : rented = ArrayPool<char>.Shared.Rent(utf8Text.Length);
+
+        try
+        {
+            return TSet.Parse(text[..Decode(utf8Text, text)], provider: null);
+        }
+        finally
+        {
+            if (rented is not null)
+                ArrayPool<char>.Shared.Return(rented);
+        }
+    }
+
+    /// <summary>
+    /// Attempts to convert UTF-8 text into a set by decoding it and reading the characters as the set's character
+    /// parser does.
+    /// </summary>
+    /// <typeparam name="TSet">The type of set.</typeparam>
+    /// <param name="utf8Text">The UTF-8 text.</param>
+    /// <param name="result">When this method returns <see langword="true" />, the set the text describes.</param>
+    /// <returns>
+    /// <see langword="true" /> when the decoded text is a set; otherwise <see langword="false" />, which includes text
+    /// that is not valid UTF-8.
+    /// </returns>
+    internal static bool TryParseUtf8<TSet>(ReadOnlySpan<byte> utf8Text, [MaybeNullWhen(false)] out TSet result)
+        where TSet : ISpanParsable<TSet>
+    {
+        char[]? rented = null;
+        Span<char> text = utf8Text.Length <= MaxTextLength
+            ? stackalloc char[MaxTextLength]
+            : rented = ArrayPool<char>.Shared.Rent(utf8Text.Length);
+
+        try
+        {
+            return TSet.TryParse(text[..Decode(utf8Text, text)], provider: null, out result);
+        }
+        finally
+        {
+            if (rented is not null)
+                ArrayPool<char>.Shared.Return(rented);
+        }
+    }
+
+    /// <summary>
+    /// Decodes UTF-8 text, replacing each invalid sequence with U+FFFD.
+    /// </summary>
+    /// <param name="utf8Text">The UTF-8 text.</param>
+    /// <param name="text">
+    /// The buffer to decode into, at least as many characters long as <paramref name="utf8Text" /> has bytes, which
+    /// UTF-8 never exceeds.
+    /// </param>
+    /// <returns>The number of characters decoded.</returns>
+    private static int Decode(ReadOnlySpan<byte> utf8Text, Span<char> text) =>
+        Encoding.UTF8.GetChars(utf8Text, text);
 
     /// <summary>
     /// Attempts to read a format string that names one of the forms every numeric set shares.
@@ -249,7 +384,7 @@ internal static partial class CalendarValueSet
     /// <param name="minimum">The smallest value in the domain.</param>
     /// <param name="maximum">The largest value in the domain.</param>
     /// <returns>The exception to throw.</returns>
-    internal static FormatException CreateParseException(ParseFailure failure, string text, int position, int minimum, int maximum) =>
+    internal static FormatException CreateParseException(ParseFailure failure, ReadOnlySpan<char> text, int position, int minimum, int maximum) =>
         failure switch
         {
             ParseFailure.Length => new FormatException(
@@ -257,7 +392,7 @@ internal static partial class CalendarValueSet
             ParseFailure.Character => new FormatException(
                 string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_Character, text[position], position + 1)),
             _ => new FormatException(
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_CalendarValueList, text, minimum, maximum)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Format_Invalid_CalendarValueList, text.ToString(), minimum, maximum)),
         };
 
     /// <summary>
@@ -277,11 +412,23 @@ internal static partial class CalendarValueSet
     /// <param name="width">The number of values in the domain.</param>
     /// <returns>The binary form, <paramref name="width" /> characters long.</returns>
     internal static string FormatBinary(ulong bits, int width) =>
-        string.Create(width, bits, static (span, bits) =>
-        {
-            for (int i = 0; i < span.Length; i++)
-                span[i] = ((bits >> i) & 1) != 0 ? '1' : '0';
-        });
+        string.Create(width, bits, static (span, bits) => WriteBinary(bits, span.Length, span));
+
+    /// <summary>
+    /// Writes a set's bits in the binary form: one character per value of the domain, lowest first, <c>1</c> for a
+    /// selected value and <c>0</c> otherwise.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="width">The number of values in the domain.</param>
+    /// <param name="buffer">The buffer to write to, at least <paramref name="width" /> characters long.</param>
+    /// <returns>The number of characters written, <paramref name="width" />.</returns>
+    internal static int WriteBinary(ulong bits, int width, Span<char> buffer)
+    {
+        for (int i = 0; i < width; i++)
+            buffer[i] = ((bits >> i) & 1) != 0 ? '1' : '0';
+
+        return width;
+    }
 
     /// <summary>
     /// Attempts to read the binary form: exactly one <c>0</c> or <c>1</c> per value of the domain, lowest first.
@@ -345,14 +492,33 @@ internal static partial class CalendarValueSet
     /// <param name="placeholder">The character for a value not selected.</param>
     /// <returns>The mask, one character per letter.</returns>
     internal static string FormatLetters(ulong bits, string letters, int first, char placeholder) =>
-        string.Create(letters.Length, (Bits: bits, Letters: letters, First: first, Placeholder: placeholder), static (span, state) =>
+        string.Create(
+            letters.Length,
+            (Bits: bits, Letters: letters, First: first, Placeholder: placeholder),
+            static (span, state) => WriteLetters(state.Bits, state.Letters, state.First, state.Placeholder, span));
+
+    /// <summary>
+    /// Writes a set's bits as a letter mask: one character per value, the value's letter when it is selected and the
+    /// placeholder when it is not.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="letters">The letter of each value, in bit order.</param>
+    /// <param name="first">
+    /// The index of the value written first; the others follow in bit order, wrapping around.
+    /// </param>
+    /// <param name="placeholder">The character for a value not selected.</param>
+    /// <param name="buffer">The buffer to write to, at least as long as <paramref name="letters" />.</param>
+    /// <returns>The number of characters written, one per letter.</returns>
+    internal static int WriteLetters(ulong bits, ReadOnlySpan<char> letters, int first, char placeholder, Span<char> buffer)
+    {
+        for (int i = 0; i < letters.Length; i++)
         {
-            for (int i = 0; i < span.Length; i++)
-            {
-                int index = (state.First + i) % span.Length;
-                span[i] = ((state.Bits >> index) & 1) != 0 ? state.Letters[index] : state.Placeholder;
-            }
-        });
+            int index = (first + i) % letters.Length;
+            buffer[i] = ((bits >> index) & 1) != 0 ? letters[index] : placeholder;
+        }
+
+        return letters.Length;
+    }
 
     /// <summary>
     /// Attempts to read a letter mask: one character per value, the value's letter, in either case, when it is selected
@@ -458,26 +624,46 @@ internal static partial class CalendarValueSet
     /// <returns>The canonical text form, or the empty string when no bit is set.</returns>
     internal static string Format(ulong bits, int minimum)
     {
-        if (bits == 0)
-            return string.Empty;
+        Span<char> buffer = stackalloc char[MaxTextLength];
+        return new string(buffer[..WriteList(bits, minimum, ranges: true, buffer)]);
+    }
 
-        var builder = new StringBuilder();
+    /// <summary>
+    /// Writes the values a set's bits select as a comma-separated list in ascending order.
+    /// </summary>
+    /// <param name="bits">The set's bits.</param>
+    /// <param name="minimum">
+    /// The value bit zero selects, from 0 to 936, so that no value has more than three digits.
+    /// </param>
+    /// <param name="ranges">
+    /// Whether each run of two or more consecutive values is written as an inclusive range, rather than every value.
+    /// </param>
+    /// <param name="buffer">The buffer to write to, at least <see cref="MaxTextLength" /> characters long.</param>
+    /// <returns>The number of characters written, 0 when no bit is set.</returns>
+    internal static int WriteList(ulong bits, int minimum, bool ranges, Span<char> buffer)
+    {
+        Debug.Assert(minimum is >= 0 and <= 999 - 63, "Every value fits in three digits.");
+
+        int length = 0;
         while (bits != 0)
         {
             int start = BitOperations.TrailingZeroCount(bits);
-            int run = BitOperations.TrailingZeroCount(~(bits >> start));
-            if (builder.Length > 0)
-                builder.Append(',');
+            int run = ranges ? BitOperations.TrailingZeroCount(~(bits >> start)) : 1;
+            if (length > 0)
+                buffer[length++] = ',';
 
-            builder.Append((minimum + start).ToString(CultureInfo.InvariantCulture));
+            length += WriteValue(minimum + start, buffer[length..]);
             if (run > 1)
-                builder.Append('-').Append((minimum + start + run - 1).ToString(CultureInfo.InvariantCulture));
+            {
+                buffer[length++] = '-';
+                length += WriteValue(minimum + start + run - 1, buffer[length..]);
+            }
 
-            // Clear the run just written; a run that reaches bit 63 leaves nothing above it.
+            // Clear the values just written; a run that reaches bit 63 leaves nothing above it.
             bits = start + run >= 64 ? 0 : bits & ~((1UL << (start + run)) - 1);
         }
 
-        return builder.ToString();
+        return length;
     }
 
     /// <summary>
@@ -578,6 +764,19 @@ internal static partial class CalendarValueSet
         ulong range = DomainMask(low, high) << (low - minimum);
         bits |= range;
         return true;
+    }
+
+    /// <summary>
+    /// Writes one value as an unsigned decimal integer.
+    /// </summary>
+    /// <param name="value">The value, from 0 to 999.</param>
+    /// <param name="buffer">The buffer to write to, at least three characters long.</param>
+    /// <returns>The number of characters written.</returns>
+    private static int WriteValue(int value, Span<char> buffer)
+    {
+        bool written = value.TryFormat(buffer, out int length, provider: CultureInfo.InvariantCulture);
+        Debug.Assert(written, "The buffer holds every value.");
+        return length;
     }
 
     /// <summary>

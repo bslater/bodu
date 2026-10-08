@@ -122,6 +122,21 @@ bool ok = DayOfWeekSet.TryParse("MF", out DayOfWeekSet result); // false; result
 unsupported format throws `FormatException` from `ToString` and `ParseExact`, and makes `TryParseExact` return
 `false`. `G` is the general format every calendar value set reads, and here it names the default mask.
 
+The mask is ASCII, and the span and UTF-8 members of the
+[calendar value sets](calendar-value-sets.md#spans-and-utf-8) apply here too: `TryFormat` writes it into a span of
+seven characters or bytes without allocating, `Parse` and `TryParse` read a `ReadOnlySpan<char>` or UTF-8 bytes, and
+`ParseExact` and `TryParseExact` a `ReadOnlySpan<char>`.
+
+<!-- run -->
+```csharp
+using Bodu;
+
+Span<char> mask = stackalloc char[7];
+bool written = DayOfWeekSet.Weekdays.TryFormat(mask, out int charsWritten, "M");   // true: "MTWTF__"
+
+DayOfWeekSet fromUtf8 = DayOfWeekSet.Parse("_M_W_F_"u8);                           // Mon, Wed, Fri
+```
+
 ## Pattern 5 - enumerate the days
 
 `foreach` over a set yields the selected days in `DayOfWeek` order, Sunday first, without allocating:
@@ -202,7 +217,8 @@ other calendar value sets:
 | `[Serializable]` / `ISerializable` | removed: store the text form |
 | `ToString(IFormatProvider)` | `ToString()` |
 | unsupported format in `ToString` throws `ArgumentException` | throws `FormatException`; an empty format means the default |
-| `ToWeekPattern()` on `WorkingDaysOfWeek` and `IWeekendDefinitionProvider` | `ToDayOfWeekSet()` |
+| `ToWeekPattern()` on `WorkingDaysOfWeek` | `ToDayOfWeekSet()` |
+| `ToWeekPattern()` on `IWeekendDefinitionProvider` | `ToWorkingWeek()` |
 
 To move a stored `WeekPattern.ToByte` value over, reverse its seven bits, or rebuild the set from the days whose bit
 `6 - (int)day` is set.
@@ -219,8 +235,9 @@ To move a stored `WeekPattern.ToByte` value over, reverse its seven bits, or reb
 | `Contains(DayOfWeek)` | Whether the day is selected; `false` for a value that is not a day. |
 | `With(DayOfWeek)`, `Without(DayOfWeek)` | A set with the day added or removed. |
 | `FromUInt64(ulong)`, `ToUInt64()` | The set's bits, bit `n` for `(DayOfWeek)n`. |
-| `Parse`, `TryParse`, `ParseExact`, `TryParseExact` | Read a seven-character mask. |
+| `Parse`, `TryParse`, `ParseExact`, `TryParseExact` | Read a seven-character mask, from a `string` or a `ReadOnlySpan<char>`; `Parse` and `TryParse` also from UTF-8 bytes. |
 | `ToString()`, `ToString(string)`, `ToString(string, IFormatProvider)` | Write a seven-character mask. |
+| `TryFormat(Span<char>, ...)`, `TryFormat(Span<byte>, ...)` | Write the mask into a span of characters or of UTF-8 bytes, without allocating. |
 | `\|`, `&`, `^`, `~`, `==`, `!=` | Union, intersection, symmetric difference, complement and equality. |
 | `GetEnumerator()` | The selected days in `DayOfWeek` order, Sunday first, without allocating. |
 
