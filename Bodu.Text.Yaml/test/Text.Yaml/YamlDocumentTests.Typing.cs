@@ -321,4 +321,74 @@ public partial class YamlDocumentTests
         Assert.AreEqual(YamlValueKind.Float, doc.RootElement.GetProperty("b").ValueKind);
         Assert.AreEqual(5.0, doc.RootElement.GetProperty("b").GetDouble());
     }
+
+    /// <summary>
+    /// Verifies that a YAML 1.1 octal, binary or hexadecimal integer resolves with its sign, as the YAML 1.1 int type
+    /// allows, and that the unsigned forms resolve to the same magnitude.
+    /// </summary>
+    /// <param name="scalar">The plain scalar.</param>
+    /// <param name="expected">The integer the scalar resolves to.</param>
+    [TestMethod]
+    [DataRow("-02472256", -685230L, DisplayName = "negative octal")]
+    [DataRow("02472256", 685230L, DisplayName = "octal")]
+    [DataRow("+071_352", 29418L, DisplayName = "positive octal with a digit group")]
+    [DataRow("071_352", 29418L, DisplayName = "octal with a digit group")]
+    [DataRow("-017", -15L, DisplayName = "short negative octal")]
+    [DataRow(
+        "-0b1000000000000000000000000000000000000000000000000000000000000000",
+        long.MinValue,
+        DisplayName = "the minimum 64-bit integer in binary")]
+    [DataRow(
+        "0b111111111111111111111111111111111111111111111111111111111111111",
+        long.MaxValue,
+        DisplayName = "the maximum 64-bit integer in binary")]
+    [DataRow("-0b101", -5L, DisplayName = "negative binary")]
+    [DataRow("+0b1010_1010", 170L, DisplayName = "positive binary with a digit group")]
+    [DataRow("-0x1F", -31L, DisplayName = "negative hexadecimal")]
+    [DataRow("+0x1F", 31L, DisplayName = "positive hexadecimal")]
+    [DataRow("0x1F", 31L, DisplayName = "hexadecimal")]
+    public void Parse_WhenSignedRadixInteger_ForV11_ShouldResolveWithSign(string scalar, long expected)
+    {
+        var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", options);
+
+        Assert.AreEqual(YamlValueKind.Integer, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(expected, doc.RootElement.GetProperty("v").GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that a scalar whose digits begin with an underscore stays a string under YAML 1.1, whose int type
+    /// allows a digit-group underscore only after the first digit.
+    /// </summary>
+    /// <param name="scalar">The plain scalar.</param>
+    [TestMethod]
+    [DataRow("_123")]
+    [DataRow("-_123")]
+    [DataRow("+_123")]
+    [DataRow("_017")]
+    [DataRow("_0b101")]
+    [DataRow("_0x1F")]
+    public void Parse_WhenUnderscoreBeginsDigits_ForV11_ShouldStayString(string scalar)
+    {
+        var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", options);
+
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that the YAML 1.2 core schema still gives a binary or hexadecimal form no sign and reads a signed
+    /// leading-zero integer as decimal, so the YAML 1.1 forms leave the default version unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSignedRadixInteger_ForV12Core_ShouldKeepCoreReading()
+    {
+        using var doc = YamlDocument.Parse("bin: -0b101\nhex: +0x1F\noct: -02472256\nund: _123\n");
+
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("bin").ValueKind);
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("hex").ValueKind);
+        Assert.AreEqual(-2472256L, doc.RootElement.GetProperty("oct").GetInt64());
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("und").ValueKind);
+    }
 }
