@@ -28,9 +28,10 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="sectionName" />, <paramref name="value" />, or <paramref name="factory" /> is
     /// <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="IniSerializationException">
     /// Thrown when <paramref name="sectionName" />, or a key or value the factory supplies, is one that
-    /// <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged.
+    /// <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the message names the section and
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     public static string SerializeSection<TSection>(string sectionName, TSection value, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)
     {
@@ -54,9 +55,10 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" />, <paramref name="sectionName" />, <paramref name="value" />, or
     /// <paramref name="factory" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="IniSerializationException">
     /// Thrown when <paramref name="sectionName" />, or a key or value the factory supplies, is one that
-    /// <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged.
+    /// <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the message names the section and
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     public static void SerializeSection<TSection>(IBufferWriter<byte> destination, string sectionName, TSection value, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)
     {
@@ -70,13 +72,10 @@ public static partial class IniSerializer
 
         var writer = new Utf8IniWriter(destination);
         if (sectionName.Length > 0)
-            writer.WriteSectionHeader(sectionName);
+            WriteHeader(ref writer, sectionName);
 
         foreach (KeyValuePair<string, string> entry in factory.GetEntries(value))
-        {
-            writer.WritePropertyName(entry.Key);
-            writer.WriteString(entry.Value);
-        }
+            WriteEntry(ref writer, sectionName, entry.Key, entry.Value);
 
         writer.Flush();
     }

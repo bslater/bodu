@@ -8,8 +8,8 @@ namespace Bodu.Text.Ini;
 
 /// <summary>
 /// Represents an error that occurs while mapping a .NET object to or from INI with <see cref="IniSerializer" />, such
-/// as an unsupported root type, a member nested beyond INI's two levels, a missing required key, or a value that cannot
-/// be converted to the target type.
+/// as an unsupported root type, a member nested beyond INI's two levels, a missing required key, a value that cannot be
+/// converted to the target type, or a key, section name or value that INI cannot represent.
 /// </summary>
 public sealed class IniSerializationException
     : Exception

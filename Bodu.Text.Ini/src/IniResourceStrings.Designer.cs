@@ -235,5 +235,32 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_IniSectionNameComment", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section '{0}' has the key '{1}', which cannot be written so that it reads back unchanged..
+        /// </summary>
+        internal static string Op_Invalid_IniUnwritableKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniUnwritableKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section '{0}' has a value for the key '{1}' that cannot be written so that it reads back unchanged..
+        /// </summary>
+        internal static string Op_Invalid_IniUnwritableValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniUnwritableValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section name '{0}' cannot be written so that it reads back unchanged..
+        /// </summary>
+        internal static string Op_Invalid_IniUnwritableSectionName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniUnwritableSectionName", resourceCulture);
+            }
+        }
     }
 }

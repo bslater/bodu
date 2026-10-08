@@ -118,4 +118,13 @@
   <data name="Arg_Invalid_IniSectionNameComment" xml:space="preserve">
     <value>An INI section name cannot hold a ']' followed by ';' or '#', where the reader would end the name.</value>
   </data>
+  <data name="Op_Invalid_IniUnwritableKey" xml:space="preserve">
+    <value>The INI section '{0}' has the key '{1}', which cannot be written so that it reads back unchanged.</value>
+  </data>
+  <data name="Op_Invalid_IniUnwritableValue" xml:space="preserve">
+    <value>The INI section '{0}' has a value for the key '{1}' that cannot be written so that it reads back unchanged.</value>
+  </data>
+  <data name="Op_Invalid_IniUnwritableSectionName" xml:space="preserve">
+    <value>The INI section name '{0}' cannot be written so that it reads back unchanged.</value>
+  </data>
 </root>

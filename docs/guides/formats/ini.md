@@ -117,7 +117,7 @@ A section name runs to the first `]` that only whitespace or a comment follows, 
 
 ## Writing
 
-`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` and the serializer's `Serialize` overloads refuse it too:
+`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` refuse it too, and the serializer's `Serialize`, `SerializeAsync` and `SerializeSection` overloads report it as an `IniSerializationException` that names the section and key, with the writer's `ArgumentException` as its inner exception:
 
 - a **value** containing a line break, which a `key=value` line cannot hold, or beginning or ending with a space or tab, which the reader trims (an empty value is written as `key=`);
 - a **key** that is empty, begins or ends with a space or tab, contains `=` or a line break, or begins with `[`, `;` or `#`, which would read back as another key, a section header or a comment (`#` is refused even where `#` comments are disallowed, because the writer cannot know how its output will be read);
@@ -127,7 +127,7 @@ A comment containing line breaks is written as one comment line per line, each w
 
 ## Exceptions
 
-`IniFormatException` for malformed input and duplicate-policy violations (line/offset attached); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value); `ArgumentException` from the writer for text it cannot write so that it reads back unchanged (see [Writing](#writing)).
+`IniFormatException` for malformed input and duplicate-policy violations (line/offset attached); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value, a key, section name or value INI cannot represent); `ArgumentException` from the writer and the mutable DOM for text they cannot write so that it reads back unchanged (see [Writing](#writing)).
 
 ## When to reach for `Bodu.Text.Configuration` instead
 
