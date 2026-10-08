@@ -160,4 +160,43 @@ public partial class YamlSerializerTests
         Assert.AreEqual("A: 0.10000000149011612\n", yaml);
         Assert.AreEqual(0.1f, restored.A);
     }
+
+    /// <summary>
+    /// Verifies that a finite scalar outside the range of <see cref="float" /> throws
+    /// <see cref="YamlSerializationException" /> when bound to a <see cref="float" /> member, rather than narrowing to
+    /// an infinity.
+    /// </summary>
+    /// <param name="text">The scalar.</param>
+    [TestMethod]
+    [DataRow("1e300", DisplayName = "a positive overflow")]
+    [DataRow("-1e300", DisplayName = "a negative overflow")]
+    [DataRow("3.5e38", DisplayName = "just past the boundary")]
+    [DataRow("\"1e300\"", DisplayName = "a quoted overflow")]
+    public void Deserialize_WhenFiniteFloatExceedsSingleRange_ShouldThrowYamlSerializationException(string text)
+    {
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<MemberHolder<float>>($"A: {text}\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a scalar at the boundary of <see cref="float" />, one that underflows, and the special values bind
+    /// to a <see cref="float" /> member, rounding and underflow being accepted.
+    /// </summary>
+    /// <param name="text">The scalar.</param>
+    /// <param name="expected">The value expected.</param>
+    [TestMethod]
+    [DataRow("3.4028235e38", float.MaxValue, DisplayName = "the largest value")]
+    [DataRow("-3.4028235e38", float.MinValue, DisplayName = "the smallest value")]
+    [DataRow("1e-50", 0f, DisplayName = "an underflow")]
+    [DataRow(".inf", float.PositiveInfinity, DisplayName = "positive infinity")]
+    [DataRow("-.inf", float.NegativeInfinity, DisplayName = "negative infinity")]
+    [DataRow(".nan", float.NaN, DisplayName = "not a number")]
+    public void Deserialize_WhenFloatIsWithinSingleRangeOrSpecial_ShouldBindIt(string text, float expected)
+    {
+        MemberHolder<float> holder = YamlSerializer.Deserialize<MemberHolder<float>>($"A: {text}\n")!;
+
+        Assert.AreEqual(expected, holder.A);
+    }
 }
