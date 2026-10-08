@@ -62,4 +62,124 @@ public partial class YamlDocumentTests
         Assert.IsFalse(document.RootElement.TryGetProperty("b", out _));
         Assert.AreEqual(2, documents.Count);
     }
+
+    /// <summary>
+    /// Verifies that a byte-order mark before each document's <c>---</c>, as concatenated files carry, is skipped, so
+    /// each document reads as it would on its own.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkPrecedesEachDocumentStart_ShouldSkipEach()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments(
+            "\uFEFF---\na: 1\n\uFEFF---\nb: 2\n...\n\uFEFF---\nc: 3\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b", "c" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark before the <c>---</c> of a later document ends the document before it and is
+    /// skipped, rather than being read as a mapping key.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkPrecedesLaterDocumentStart_ShouldSkipIt()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("a: 1\n\uFEFF---\nb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark followed by a comment line before a later document's <c>---</c> is skipped
+    /// with the comment.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkAndCommentPrecedeDocumentStart_ShouldSkipBoth()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("a: 1\n\uFEFF# next\n---\nb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark at the start of the line after a document's <c>---</c> is skipped, so the key
+    /// it precedes does not begin with it.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkFollowsDocumentStart_ShouldSkipIt()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("\uFEFFa: 1\n---\n\uFEFFb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark before the content of a document that follows a <c>...</c> document end
+    /// marker is skipped.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkPrecedesContentAfterDocumentEnd_ShouldSkipIt()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("a: 1\n...\n\uFEFFb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark before the directives of a document that follows a <c>...</c> document end
+    /// marker is skipped, so the directive applies.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkPrecedesDirective_ShouldSkipIt()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments(
+            "a: 1\n...\n\uFEFF%YAML 1.2\n---\nb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark inside a double-quoted scalar is content, which YAML permits there, and is kept.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenByteOrderMarkIsInsideQuotedScalar_ShouldKeepIt()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("---\na: \"\uFEFFb\"\n---\nc: 3\n");
+
+        Assert.AreEqual("\uFEFFb", documents[0].RootElement.GetProperty("a").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="YamlDocument.Parse(string)" /> ends the first document at a byte-order mark before a
+    /// later document's <c>---</c> and returns it.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenByteOrderMarkPrecedesLaterDocumentStart_ShouldReturnFirstDocument()
+    {
+        using var document = YamlDocument.Parse("a: 1\n\uFEFF---\nb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a" }, KeysOf([document]));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="YamlDocument.Parse(string)" /> skips a byte-order mark at the start of the line after
+    /// the document's <c>---</c>.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenByteOrderMarkFollowsDocumentStart_ShouldSkipIt()
+    {
+        using var document = YamlDocument.Parse("---\n\uFEFFa: 1\n");
+
+        CollectionAssert.AreEqual(new[] { "a" }, KeysOf([document]));
+    }
+
+    /// <summary>
+    /// Lists the keys of each document's root mapping, comma-separated, with any byte-order mark shown as
+    /// <c>&lt;BOM&gt;</c> so that a failure names it.
+    /// </summary>
+    /// <param name="documents">The documents, each with a mapping at its root.</param>
+    /// <returns>One entry per document.</returns>
+    private static string[] KeysOf(IReadOnlyList<YamlDocument> documents) =>
+        [.. documents.Select(document =>
+            string.Join(',', document.RootElement.EnumerateMapping().Select(property => property.Name))
+                .Replace("\uFEFF", "<BOM>", StringComparison.Ordinal))];
 }
