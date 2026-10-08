@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Globalization;
+using System.Text;
 
 namespace Bodu.Text.Delimited;
 
@@ -194,6 +196,57 @@ public partial class DelimitedSerializerTests
         string text = DelimitedSerializer.Serialize(new List<Trade>());
 
         Assert.AreEqual("TradeId,Symbol,Price\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing an empty array to a buffer writer writes the header row alone.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAnEmptyArrayIsWrittenToABufferWriter_ShouldWriteTheHeaderRow()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+
+        DelimitedSerializer.Serialize(buffer, Array.Empty<Trade>());
+
+        Assert.AreEqual("TradeId,Symbol,Price\r\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
+    }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, serializing an empty collection writes
+    /// nothing at all.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheCollectionIsEmptyAndNoHeaderIsSet_ShouldWriteNothing()
+    {
+        string text = DelimitedSerializer.Serialize(new List<Trade>(), new DelimitedSerializerOptions { NoHeader = true });
+
+        Assert.AreEqual(string.Empty, text);
+    }
+
+    /// <summary>
+    /// Verifies that an empty collection of positional <see cref="string" /> array records, which have no header, writes
+    /// nothing.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAnEmptyCollectionHoldsPositionalRecords_ShouldWriteNothing()
+    {
+        string text = DelimitedSerializer.Serialize(new List<string[]>());
+
+        Assert.AreEqual(string.Empty, text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing an empty collection through a record factory writes the factory's header row alone,
+    /// and nothing with <see cref="DelimitedSerializerOptions.NoHeader" /> set.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAFactoryIsGivenAnEmptyCollection_ShouldWriteTheHeaderRow()
+    {
+        string withHeader = DelimitedSerializer.Serialize(new List<Person>(), new PersonFactory());
+        string withoutHeader = DelimitedSerializer.Serialize(new List<Person>(), new PersonFactory(), new DelimitedSerializerOptions { NoHeader = true });
+
+        Assert.AreEqual("Name,Age\r\n", withHeader);
+        Assert.AreEqual(string.Empty, withoutHeader);
     }
 
     /// <summary>

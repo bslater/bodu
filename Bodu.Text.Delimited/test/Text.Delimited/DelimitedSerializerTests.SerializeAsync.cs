@@ -119,6 +119,43 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that both <c>SerializeAsync</c> overloads, over an empty collection and over an empty asynchronous
+    /// sequence, write the header row alone.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenTheRecordsAreEmpty_ShouldWriteTheHeaderRow()
+    {
+        using var buffered = new MemoryStream();
+        using var incremental = new MemoryStream();
+
+        await DelimitedSerializer.SerializeAsync(buffered, new List<Trade>());
+        await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(new List<Trade>()));
+
+        Assert.AreEqual("TradeId,Symbol,Price\r\n", Encoding.UTF8.GetString(buffered.ToArray()));
+        Assert.AreEqual("TradeId,Symbol,Price\r\n", Encoding.UTF8.GetString(incremental.ToArray()));
+    }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, both <c>SerializeAsync</c> overloads
+    /// write nothing for empty records.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenTheRecordsAreEmptyAndNoHeaderIsSet_ShouldWriteNothing()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+        using var buffered = new MemoryStream();
+        using var incremental = new MemoryStream();
+
+        await DelimitedSerializer.SerializeAsync(buffered, new List<Trade>(), options);
+        await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(new List<Trade>()), options);
+
+        Assert.AreEqual(0, buffered.Length);
+        Assert.AreEqual(0, incremental.Length);
+    }
+
+    /// <summary>
     /// Yields records as an asynchronous sequence whose every step completes asynchronously without resuming on the
     /// caller's <see cref="SynchronizationContext" />, so that only the consumer could bring a deadlock about.
     /// </summary>
