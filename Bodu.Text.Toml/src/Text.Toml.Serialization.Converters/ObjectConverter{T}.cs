@@ -137,10 +137,14 @@ internal sealed partial class ObjectConverter<T>
 
         foreach (PropertyMetadata property in metadata.Properties)
         {
+            // The missing member's name starts the path, so each enclosing member's converter prepends its own.
             if (property.IsRequired && !present[property.SlotIndex])
             {
                 throw new TomlSerializationException(
-                    string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_MissingRequiredMember, property.WireName, typeof(T)));
+                    string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_MissingRequiredMember, property.WireName, typeof(T)))
+                {
+                    Path = property.WireName,
+                };
             }
         }
 

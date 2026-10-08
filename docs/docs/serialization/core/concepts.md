@@ -47,7 +47,7 @@ Formats with no null literal behave as though `WhenWritingNull` were always on -
 
 ## Required members and constructor binding
 
-A member is **required** when it carries `[Required]`, when it is declared with the C# `required` keyword, or when it binds to a constructor parameter that has no default value. On deserialization the structured serializers check every required member for presence *before* the instance is constructed and throw the format's serialization exception naming the missing wire key. (INI and DotEnv honor `[Required]` through their own binders; Delimited does not.)
+A member is **required** when it carries `[Required]`, when it is declared with the C# `required` keyword, or when it binds to a constructor parameter that has no default value. On deserialization the structured serializers check every required member for presence *before* the instance is constructed and throw the format's serialization exception naming the missing wire key; in TOML and YAML its `Path` is the dotted path to the missing member, such as `Inner.Name`. (INI and DotEnv honor `[Required]` through their own binders; Delimited does not.)
 
 Constructor selection follows a fixed ladder:
 
