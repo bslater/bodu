@@ -247,18 +247,32 @@ internal sealed partial class YamlParser
     /// <returns>The exception to throw.</returns>
     private YamlFormatException ErrorAt(int offset, string message)
     {
+        (int line, int column) = GetLineAndColumn(_source, _length, offset);
+        return new YamlFormatException(message, line, column, offset);
+    }
+
+    /// <summary>
+    /// Computes the 1-based line and column of a byte offset in a source, counting a line feed, a carriage return and
+    /// line feed pair, or a lone carriage return as one line break.
+    /// </summary>
+    /// <param name="source">The UTF-8 source.</param>
+    /// <param name="length">The number of bytes of <paramref name="source" /> that hold the source.</param>
+    /// <param name="offset">The zero-based byte offset.</param>
+    /// <returns>The 1-based line, and the 1-based column counted in UTF-8 bytes from the start of the line.</returns>
+    internal static (int Line, int Column) GetLineAndColumn(byte[] source, int length, int offset)
+    {
         int line = 0;
         int lineStart = 0;
-        int limit = Math.Min(offset, _length);
+        int limit = Math.Min(offset, length);
         for (int i = 0; i < limit; i++)
         {
-            byte b = _source[i];
+            byte b = source[i];
             if (b == (byte)'\n')
             {
                 line++;
                 lineStart = i + 1;
             }
-            else if (b == (byte)'\r' && (i + 1 >= _length || _source[i + 1] != (byte)'\n'))
+            else if (b == (byte)'\r' && (i + 1 >= length || source[i + 1] != (byte)'\n'))
             {
                 // A lone CR is a line break (Advance collapses CRLF, so only count the CR when no LF follows).
                 line++;
@@ -266,7 +280,7 @@ internal sealed partial class YamlParser
             }
         }
 
-        return new YamlFormatException(message, line + 1, offset - lineStart + 1, offset);
+        return (line + 1, offset - lineStart + 1);
     }
 
     /// <summary>

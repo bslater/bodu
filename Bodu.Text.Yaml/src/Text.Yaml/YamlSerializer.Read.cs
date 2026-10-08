@@ -81,7 +81,16 @@ public static partial class YamlSerializer
         if (!reader.Read())
             return returnType.IsValueType ? Activator.CreateInstance(returnType) : null;
 
-        return o.GetConverter(returnType).ReadAsObject(ref reader, returnType, o);
+        try
+        {
+            return o.GetConverter(returnType).ReadAsObject(ref reader, returnType, o);
+        }
+        catch (YamlSerializationException ex)
+        {
+            // A failure of the root value itself carries no position yet, so it takes the root token's.
+            reader.StampPosition(ex);
+            throw;
+        }
     }
 
     /// <summary>

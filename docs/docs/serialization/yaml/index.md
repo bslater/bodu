@@ -46,7 +46,7 @@ A single YAML stream can hold several documents separated by `---` (and optional
 
 ## Diagnostics with positions
 
-YAML is edited by hand, so failures point at the offending location. A malformed document raises <xref:Bodu.Text.Yaml.YamlFormatException> carrying the **line, column, and byte offset**; a document that parses but cannot bind to your type raises <xref:Bodu.Text.Yaml.YamlSerializationException>, which carries the offset and a dotted member `Path`.
+YAML is edited by hand, so failures point at the offending location. A malformed document raises <xref:Bodu.Text.Yaml.YamlFormatException> carrying the **line, column, and byte offset**; a document that parses but cannot bind to your type raises <xref:Bodu.Text.Yaml.YamlSerializationException>, which carries the line, column, and byte offset of the value that failed and a dotted `Path` of the document's keys.
 
 ## Headline types
 

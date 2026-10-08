@@ -11,7 +11,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Reads a child value on behalf of a container converter, attaching the child's path segment to any binding failure so
-/// the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key.
+/// the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key, and the
+/// position of the token the failure occurred on when the failure carries none.
 /// </summary>
 internal static class ChildBinder
 {
@@ -33,16 +34,13 @@ internal static class ChildBinder
         }
         catch (YamlSerializationException ex)
         {
+            reader.StampPosition(ex);
             ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
             throw;
         }
         catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
         {
-            throw new YamlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
-            {
-                Path = segment,
-            };
+            throw Wrap(ref reader, type, ex, segment);
         }
     }
 
@@ -66,16 +64,13 @@ internal static class ChildBinder
         }
         catch (YamlSerializationException ex)
         {
+            reader.StampPosition(ex);
             ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
             throw;
         }
         catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
         {
-            throw new YamlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
-            {
-                Path = segment,
-            };
+            throw Wrap(ref reader, type, ex, segment);
         }
     }
 
@@ -98,17 +93,34 @@ internal static class ChildBinder
         }
         catch (YamlSerializationException ex)
         {
+            reader.StampPosition(ex);
             ex.Path = YamlSerializationException.CombinePath(IndexSegment(index), ex.Path);
             throw;
         }
         catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
         {
-            throw new YamlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
-            {
-                Path = IndexSegment(index),
-            };
+            throw Wrap(ref reader, type, ex, IndexSegment(index));
         }
+    }
+
+    /// <summary>
+    /// Wraps a conversion failure of a child value in a binding failure carrying the child's path segment and the
+    /// position of the token the failure occurred on.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the token the failure occurred on.</param>
+    /// <param name="type">The child's declared type.</param>
+    /// <param name="inner">The conversion failure.</param>
+    /// <param name="segment">The path segment for the child.</param>
+    /// <returns>The binding failure to throw.</returns>
+    private static YamlSerializationException Wrap(ref Utf8YamlReader reader, Type type, Exception inner, string segment)
+    {
+        var exception = new YamlSerializationException(
+            string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), inner)
+        {
+            Path = segment,
+        };
+        reader.StampPosition(exception);
+        return exception;
     }
 
     /// <summary>

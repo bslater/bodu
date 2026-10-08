@@ -256,7 +256,7 @@ Both types are `ref struct`s - they cannot be boxed, stored on the heap, or capt
 Two exception types separate "the text is not YAML" from "the YAML does not fit your type":
 
 - <xref:Bodu.Text.Yaml.YamlFormatException> - malformed input. A subtype of `FormatException`. Because YAML is edited by hand, the exception carries `LineNumber`, `ColumnNumber`, and byte `Offset` (each nullable when no position applies; the offset and column count UTF-8 bytes). It is raised for inconsistent indentation, a tab used as indentation, an unterminated quoted scalar, an invalid escape, a cyclic or dangling alias, a duplicate mapping key under `Throw`, and nesting beyond `MaxDepth`.
-- <xref:Bodu.Text.Yaml.YamlSerializationException> - the document parsed, but a value cannot bind: a kind mismatch, an out-of-range or non-integral number under `Strict`, a multi-character `char`, a duplicate dictionary key on write, or an unmapped member when `UnmappedMemberHandling` is `Disallow`. It carries `Offset`, `LineNumber`, `ColumnNumber`, and a dotted member `Path` such as `server.endpoints[0].timeout` that pinpoints the offending member, index, or key.
+- <xref:Bodu.Text.Yaml.YamlSerializationException> - the document parsed, but a value cannot bind: a kind mismatch, an out-of-range or non-integral number under `Strict`, a multi-character `char`, a duplicate dictionary key on write, or an unmapped member when `UnmappedMemberHandling` is `Disallow`. It carries the `Offset`, `LineNumber`, and `ColumnNumber` of the value that failed, and a dotted `Path` such as `server.endpoints[0].timeout`, built from the keys as the document spells them, that pinpoints the offending member, index, or key.
 
 ```csharp
 try
