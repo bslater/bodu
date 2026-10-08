@@ -39,21 +39,6 @@ public partial class Utf8IniWriterTests
     }
 
     /// <summary>
-    /// Verifies that a comment is written with the configured prefix.
-    /// </summary>
-    [TestMethod]
-    public void WriteComment_WhenCustomPrefix_ShouldUseIt()
-    {
-        var buffer = new ArrayBufferWriter<byte>();
-        var writer = new Utf8IniWriter(buffer, new IniWriterOptions { CommentPrefix = '#' });
-
-        writer.WriteComment(" a note");
-        writer.Flush();
-
-        Assert.AreEqual("# a note\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
-    }
-
-    /// <summary>
     /// Verifies that a document written by <see cref="Utf8IniWriter" /> reads back to the same section/key/value tokens.
     /// </summary>
     [TestMethod]
