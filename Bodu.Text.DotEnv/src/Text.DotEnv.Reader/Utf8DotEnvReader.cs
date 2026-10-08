@@ -468,6 +468,11 @@ public ref struct Utf8DotEnvReader
     /// <param name="rawLength">The source length of the content between the quotes.</param>
     /// <param name="decoded">The decoded value.</param>
     /// <exception cref="DotEnvFormatException">Thrown when the value is unterminated.</exception>
+    /// <remarks>
+    /// The escapes resolved are <c>\\</c>, <c>\'</c>, <c>\"</c>, <c>\a</c>, <c>\b</c>, <c>\f</c>, <c>\n</c>, <c>\r</c>,
+    /// <c>\t</c>, <c>\v</c> and <c>\$</c>, and a backslash before a line break, which continues the value on the next
+    /// line; any other escape keeps its backslash, and octal escapes are not recognized.
+    /// </remarks>
     private void ReadDoubleQuoted(int startLine, out int rawStart, out int rawLength, out string? decoded)
     {
         _position++; // consume opening '"'
@@ -502,10 +507,15 @@ public ref struct Utf8DotEnvReader
                 switch (esc)
                 {
                     case (byte)'"': sb.Append('"'); break;
+                    case (byte)'\'': sb.Append('\''); break;
                     case (byte)'\\': sb.Append('\\'); break;
+                    case (byte)'a': sb.Append('\a'); break;
+                    case (byte)'b': sb.Append('\b'); break;
+                    case (byte)'f': sb.Append('\f'); break;
                     case (byte)'n': sb.Append('\n'); break;
-                    case (byte)'t': sb.Append('\t'); break;
                     case (byte)'r': sb.Append('\r'); break;
+                    case (byte)'t': sb.Append('\t'); break;
+                    case (byte)'v': sb.Append('\v'); break;
                     case (byte)'$': sb.Append('$'); break;
                     case (byte)'\n': _line++; break; // line continuation
                     case (byte)'\r':

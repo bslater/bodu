@@ -60,7 +60,7 @@ The mutable DOM preserves each entry's `export` flag through the round trip.
 
 ## Quoting rules
 
-- **Double quotes** delimit values, resolve escape sequences, and may span lines.
+- **Double quotes** delimit values and may span lines. They resolve the escapes `\\`, `\'`, `\"`, `\a`, `\b`, `\f`, `\n`, `\r`, `\t`, `\v` and `\$`, and a backslash before a line break continues the value on the next line; any other escape keeps its backslash, and octal escapes are not supported.
 - **Single quotes** delimit literal values.
 - **Unquoted** values are trimmed and end at an inline `#` comment, a `#` with whitespace before it: `KEY= # note` reads as an empty value, while `KEY=#note` and `URL=http://host/#top` keep their `#`.
 - An empty value (`KEY=`) is a real value, distinct from an absent key.

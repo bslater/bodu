@@ -34,6 +34,7 @@ The DotEnv dialect follows the mainstream `dotenv` implementations:
 
 - `export KEY=value` binds as `KEY`; the prefix is shell syntax (preserved by the mutable DOM, surfaced via `Utf8DotEnvReader.CurrentIsExport`).
 - Double-quoted values resolve escape sequences and may span lines; single-quoted values are literal; unquoted values end at an inline `#` comment.
+- In a double-quoted value, `\\`, `\'`, `\"`, `\a`, `\b`, `\f`, `\n`, `\r`, `\t`, `\v` and `\$` are resolved, and a backslash before a line break continues the value; any other escape keeps its backslash, and octal escapes are not supported.
 - Whitespace is any Unicode whitespace character other than CR and LF: it may precede a key or a comment, follow `export`, and surround `=`, and it is trimmed from both ends of an unquoted value.
 - After a closing quote, only whitespace and a `#` comment may follow on the line; any other text is malformed input.
 - An empty value is a real value, distinct from an absent key.

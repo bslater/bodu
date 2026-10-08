@@ -37,12 +37,12 @@ public sealed partial class DotEnvReleaseNoteCorpusTests
     {
         (string Library, int Fixes, int Applies, int Dialect, int NotApplicable, int Unknown)[] recorded =
         [
-            ("compose-go", 24, 29, 10, 9, 0),
+            ("compose-go", 24, 27, 12, 9, 0),
             ("dotenv-node", 45, 23, 13, 31, 0),
             ("dotenv-ruby", 59, 20, 1, 47, 0),
             ("dotenvy", 19, 13, 0, 14, 0),
             ("dotnetenv", 13, 28, 2, 7, 0),
-            ("godotenv", 27, 51, 9, 8, 0),
+            ("godotenv", 27, 48, 12, 8, 0),
             ("phpdotenv", 56, 42, 4, 36, 0),
             ("python-dotenv", 71, 53, 3, 53, 0),
         ];
