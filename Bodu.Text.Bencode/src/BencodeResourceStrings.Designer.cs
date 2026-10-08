@@ -481,6 +481,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A null root value cannot be written to Bencode, which has no null; a Bencode document is a single value..
+        /// </summary>
+        internal static string Op_NotSupported_NullRootValue {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullRootValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to A null node cannot be written to Bencode..
         /// </summary>
         internal static string Op_NotSupported_NullNode {

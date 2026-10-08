@@ -30,6 +30,13 @@ namespace Bodu.Text.Bencode;
 /// Output is always canonical Bencode: dictionary entries are emitted in ascending bytewise key order regardless of the
 /// declaration order of the corresponding members.
 /// </para>
+/// <para>
+/// Bencode has no null. A <see langword="null" /> member or dictionary value is omitted; a <see langword="null" /> list
+/// element, and a <see langword="null" /> root value, cannot be written and throw
+/// <see cref="BencodeSerializationException" />, because dropping them would shift later elements or leave no document
+/// at all. <see cref="SerializeToNode{T}" /> is the exception: it returns <see langword="null" />, which the node tree
+/// can hold in memory.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -55,7 +62,8 @@ public static class BencodeSerializer
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
-    /// Thrown when a value cannot be represented in Bencode.
+    /// Thrown when a value cannot be represented in Bencode, including when <paramref name="value" /> is
+    /// <see langword="null" />.
     /// </exception>
     [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
@@ -80,7 +88,8 @@ public static class BencodeSerializer
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
-    /// Thrown when a value cannot be represented in Bencode.
+    /// Thrown when a value cannot be represented in Bencode, including when <paramref name="value" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// The value is written through the buffer writer directly, with no intermediate array. Dictionary content is
@@ -113,7 +122,8 @@ public static class BencodeSerializer
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
-    /// Thrown when a value cannot be represented in Bencode.
+    /// Thrown when a value cannot be represented in Bencode, including when <paramref name="value" /> is
+    /// <see langword="null" />.
     /// </exception>
     [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
@@ -133,7 +143,10 @@ public static class BencodeSerializer
     /// <typeparam name="T">The type of the value to serialize.</typeparam>
     /// <param name="value">The value to serialize.</param>
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
-    /// <returns>The root node of the serialized value.</returns>
+    /// <returns>
+    /// The root node of the serialized value, or <see langword="null" /> when <paramref name="value" /> is
+    /// <see langword="null" />.
+    /// </returns>
     /// <exception cref="NotSupportedException">
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
@@ -144,6 +157,9 @@ public static class BencodeSerializer
     [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static BencodeNode? SerializeToNode<T>(T value, BencodeSerializerOptions? options = null)
     {
+        if (value is null)
+            return null;
+
         using var buffer = new PooledBufferBuilder<byte>();
         SerializeCore(buffer, value, options ?? s_defaultOptions);
         return BencodeNode.Parse(buffer.WrittenSpan);
@@ -160,7 +176,8 @@ public static class BencodeSerializer
     /// Thrown when no converter is configured for a type that is encountered.
     /// </exception>
     /// <exception cref="BencodeSerializationException">
-    /// Thrown when a value cannot be represented in Bencode.
+    /// Thrown when a value cannot be represented in Bencode, including when <paramref name="value" /> is
+    /// <see langword="null" />.
     /// </exception>
     [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
@@ -215,6 +232,13 @@ public static class BencodeSerializer
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="destination" /> does not support writing.
     /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when no converter is configured for a type that is encountered.
+    /// </exception>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when a value cannot be represented in Bencode, including when <paramref name="value" /> is
+    /// <see langword="null" />.
+    /// </exception>
     [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]
     public static async ValueTask SerializeAsync<T>(Stream destination, T value, BencodeSerializerOptions? options = null, CancellationToken cancellationToken = default)
@@ -234,8 +258,15 @@ public static class BencodeSerializer
     /// <param name="destination">The buffer writer that receives the Bencode bytes.</param>
     /// <param name="value">The value to serialize.</param>
     /// <param name="effective">The resolved serializer options.</param>
+    /// <exception cref="BencodeSerializationException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />, which no Bencode document can hold, or when a
+    /// value cannot be represented in Bencode.
+    /// </exception>
     private static void SerializeCore<T>(IBufferWriter<byte> destination, T value, BencodeSerializerOptions effective)
     {
+        if (value is null)
+            throw new BencodeSerializationException(BencodeResourceStrings.Op_NotSupported_NullRootValue);
+
         var writer = new Utf8BencodeWriter(destination, new BencodeWriterOptions { MaxDepth = effective.MaxDepth });
         SerializerEngine.Serialize(writer, value, effective);
     }
