@@ -86,6 +86,39 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that both <c>SerializeAsync</c> overloads, over a collection and over an asynchronous sequence, throw
+    /// the writer's <see cref="ArgumentException" /> for <c>options</c>, naming the <c>Quote</c> option, when the quote
+    /// character is not ASCII, whether or not there are records.
+    /// </summary>
+    /// <param name="count">The number of records serialized.</param>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(2)]
+    public async Task SerializeAsync_WhenTheQuoteIsNotAscii_ShouldThrowArgumentException(int count)
+    {
+        var options = new DelimitedSerializerOptions { Quote = '\u201C' };
+        List<Person> people = Enumerable.Range(0, count).Select(i => new Person { Name = "P" + i, Age = i }).ToList();
+        using var buffered = new MemoryStream();
+        using var incremental = new MemoryStream();
+
+        var bufferedEx = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(buffered, people, options);
+        });
+
+        var incrementalEx = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(people), options);
+        });
+
+        Assert.AreEqual("options", bufferedEx.ParamName);
+        Assert.Contains("Quote", bufferedEx.Message);
+        Assert.AreEqual("options", incrementalEx.ParamName);
+        Assert.Contains("Quote", incrementalEx.Message);
+    }
+
+    /// <summary>
     /// Yields records as an asynchronous sequence whose every step completes asynchronously without resuming on the
     /// caller's <see cref="SynchronizationContext" />, so that only the consumer could bring a deadlock about.
     /// </summary>

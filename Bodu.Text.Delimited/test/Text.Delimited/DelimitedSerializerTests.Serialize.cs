@@ -283,4 +283,27 @@ public partial class DelimitedSerializerTests
 
         Assert.AreEqual("Id,Value,Name\r\n1,,\r\n", text);
     }
+
+    /// <summary>
+    /// Verifies that serializing with a delimiter equal to the quote character throws the writer's
+    /// <see cref="ArgumentException" /> for <c>options</c>, naming both options, whether or not there are records.
+    /// </summary>
+    /// <param name="count">The number of records serialized.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(2)]
+    public void Serialize_WhenTheDelimiterIsTheQuote_ShouldThrowArgumentException(int count)
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = '\'', Quote = '\'' };
+        List<Person> people = Enumerable.Range(0, count).Select(i => new Person { Name = "P" + i, Age = i }).ToList();
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(people, options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+        Assert.Contains("Delimiter", ex.Message);
+        Assert.Contains("Quote", ex.Message);
+    }
 }

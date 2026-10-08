@@ -359,6 +359,26 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that enumerating with a delimiter outside ASCII throws the reader's <see cref="ArgumentException" /> for
+    /// <c>options</c>, naming the <c>Delimiter</c> option, rather than splitting the character's UTF-8 encoding.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTheDelimiterIsNotAscii_ShouldThrowArgumentException()
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = '\u00A3', NoHeader = true };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("a\u00A3b\nc\u00A3d\n"));
+
+        var ex = await Assert.ThrowsExactlyAsync<ArgumentException>(async () =>
+        {
+            _ = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<string[]>(stream, options));
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+        Assert.Contains("Delimiter", ex.Message);
+    }
+
+    /// <summary>
     /// Collects every record of an asynchronous sequence, without resuming on the caller's
     /// <see cref="SynchronizationContext" />.
     /// </summary>

@@ -321,4 +321,23 @@ public partial class DelimitedSerializerTests
         Assert.IsNull(records[1].Value);
         Assert.AreEqual(3, records[2].Value);
     }
+
+    /// <summary>
+    /// Verifies that deserializing with a line feed as the delimiter throws the reader's
+    /// <see cref="ArgumentException" /> for <c>options</c>, naming the <c>Delimiter</c> option, rather than reading
+    /// every line as one record.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheDelimiterIsALineFeed_ShouldThrowArgumentException()
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = '\n', NoHeader = true };
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<string[]>("a,b\nc,d\n", options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+        Assert.Contains("Delimiter", ex.Message);
+    }
 }
