@@ -47,6 +47,39 @@ public sealed partial class TomlDocumentReaderTests
     }
 
     /// <summary>
+    /// Verifies that an error about a key, found only once its value has been read, is reported where the key starts: a
+    /// redefined key, whether bare, dotted, quoted or given a multi-line value, a dotted key over a value, a dotted key
+    /// that extends an inline table or a table a header defined, and the same inside an inline table.
+    /// </summary>
+    /// <param name="toml">The document, whose last key cannot be assigned.</param>
+    /// <param name="line">The expected 1-based line of the key.</param>
+    /// <param name="column">The expected 1-based column of the key.</param>
+    /// <param name="offset">The expected zero-based byte offset of the key.</param>
+    [TestMethod]
+    [DataRow("a = 1\nb = 2\nb = 3\n", 3, 1, 12, DisplayName = "redefined bare key")]
+    [DataRow("foo.bar = 1\nfoo.bar = 2\n", 2, 1, 12, DisplayName = "redefined dotted key")]
+    [DataRow("a = 1\n  \"a\" = 2\n", 2, 3, 8, DisplayName = "redefined quoted key")]
+    [DataRow("a = 1\na = [\n  2,\n]\n", 2, 1, 6, DisplayName = "redefined key with a multi-line value")]
+    [DataRow("a = 1\na.b = 2\n", 2, 1, 6, DisplayName = "dotted key over a value")]
+    [DataRow("a = { b = 1 }\na.c = 2\n", 2, 1, 14, DisplayName = "dotted key extending an inline table")]
+    [DataRow("[a.b]\nx = 1\n[a]\nb.y = 2\n", 4, 1, 16, DisplayName = "dotted key extending a header's table")]
+    [DataRow("t = { a = 1, a = 2 }\n", 1, 14, 13, DisplayName = "redefined key in an inline table")]
+    [DataRow("t = { a.b = 1, a.b = 2 }\n", 1, 16, 15, DisplayName = "redefined dotted key in an inline table")]
+    [DataRow("t = { a = 1, a.b = 2 }\n", 1, 14, 13, DisplayName = "dotted key over a value in an inline table")]
+    [DataRow("t = { a = { b = 1 }, a.c = 2 }\n", 1, 22, 21, DisplayName = "dotted key extending an inline table in an inline table")]
+    public void Ctor_WhenKeyCannotBeAssigned_ShouldReportWhereTheKeyStarts(string toml, int line, int column, int offset)
+    {
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = Create(toml);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "The line of the key.");
+        Assert.AreEqual(column, ex.ColumnNumber, "The column of the key.");
+        Assert.AreEqual(offset, ex.Offset, "The offset of the key.");
+    }
+
+    /// <summary>
     /// Verifies that a key with no equals sign on a last line that has no line feed is reported on that line.
     /// </summary>
     [TestMethod]
