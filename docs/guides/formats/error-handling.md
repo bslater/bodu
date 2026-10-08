@@ -141,8 +141,8 @@ catch (DotEnvFormatException ex)
 | Input | Message | Position |
 |---|---|---|
 | `=abc` | *Invalid DotEnv key name '=' on line 1; keys must match [A-Za-z_][A-Za-z0-9_]\*.* | line 1, column 1, offset 0 |
-| `API KEY=abc` | *Malformed DotEnv entry on line 1; expected 'KEY=VALUE'.* | line 1, column 1, offset 4 |
-| `export API_KEY=abc` with `DisallowExportPrefix = true` | *Malformed DotEnv entry on line 1; expected 'KEY=VALUE'.* | line 1, column 1, offset 7 |
+| `API KEY=abc` | *Malformed DotEnv entry on line 1; expected 'KEY=VALUE'.* | line 1, column 5, offset 4 |
+| `export API_KEY=abc` with `DisallowExportPrefix = true` | *Malformed DotEnv entry on line 1; expected 'KEY=VALUE'.* | line 1, column 8, offset 7 |
 
 The DotEnv knobs on <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> run in the *strict* direction - the default dialect is already the permissive mainstream `dotenv` reading, and each option removes a feature: `DisallowExportPrefix` makes an `export` line malformed (above), `DisallowInlineComments` stops ` # note` from terminating an unquoted value (so `KEY=abc # note` reads as `abc # note` instead of `abc`), and `SkipComments` drops comment lines from the token stream. None of them turns an error into accepted input.
 

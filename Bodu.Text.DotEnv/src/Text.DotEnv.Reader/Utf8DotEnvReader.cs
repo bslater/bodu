@@ -685,7 +685,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="line">The 1-based line number.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException KeyError(string key, int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvInvalidKey, key, line), line, 1, _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvInvalidKey, key, line), line, ColumnAt(_position), _position);
 
     /// <summary>
     /// Creates a malformed-entry exception.
@@ -693,7 +693,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="line">The 1-based line number.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException MalformedError(int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvMalformedEntry, line), line, 1, _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvMalformedEntry, line), line, ColumnAt(_position), _position);
 
     /// <summary>
     /// Creates an unterminated double-quote exception.
@@ -701,7 +701,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="line">The 1-based line number on which the value began.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException UnterminatedDoubleQuote(int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, line), line, 1, _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote, line), line, ColumnAt(_position), _position);
 
     /// <summary>
     /// Creates an unterminated single-quote exception.
@@ -709,7 +709,25 @@ public ref struct Utf8DotEnvReader
     /// <param name="line">The 1-based line number on which the value began.</param>
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException UnterminatedSingleQuote(int line) =>
-        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, 1, _position);
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, ColumnAt(_position), _position);
+
+    /// <summary>
+    /// Computes the 1-based column of a source offset, counted in bytes from the start of the line that holds it.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset.</param>
+    /// <returns>The column; a byte-order mark at the start of the source is not counted.</returns>
+    /// <remarks>
+    /// A line starts after a <c>\n</c> or <c>\r</c> byte, matching the line endings the reader recognizes. The column
+    /// is computed only when an error is raised, so the hot path keeps no line-start state.
+    /// </remarks>
+    private readonly int ColumnAt(int offset)
+    {
+        int lineStart = _data[..offset].LastIndexOfAny((byte)'\n', (byte)'\r') + 1;
+        if (lineStart == 0 && _data.StartsWith(Utf8Bom))
+            lineStart = Utf8Bom.Length;
+
+        return offset - lineStart + 1;
+    }
 
     /// <summary>
     /// Enumerates the reader lifecycle phases.
