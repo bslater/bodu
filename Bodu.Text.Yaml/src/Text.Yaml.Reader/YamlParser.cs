@@ -675,27 +675,21 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Reads the textual form of a node that is used as a mapping key, decoding scalar keys to text.
+    /// Reads the text that names a mapping key, for a key node parsed as a node (a flow, flow-pair, or explicit key).
     /// </summary>
     /// <param name="row">The row index of the key node.</param>
-    /// <returns>The decoded key text, or a synthesized representation for non-scalar keys.</returns>
+    /// <returns>
+    /// The scalar's text as written, after quoting and escapes are processed, as an implicit block key is named.
+    /// </returns>
+    /// <exception cref="YamlFormatException">The key is a sequence, a mapping, or an alias.</exception>
     private string KeyTextOf(int row)
     {
         YamlReaderRow r = _rows[row];
-        if (r.Kind == YamlReaderNodeKind.Scalar && r.ValueKind == YamlValueKind.String)
-            return MaterializeString(r);
 
+        // A key is named by its text, never by the value the schema resolves the text to, so that 0x10 and 16, or y and
+        // yes under YAML 1.1, stay distinct keys in every key form.
         if (r.Kind == YamlReaderNodeKind.Scalar)
-        {
-            return r.ValueKind switch
-            {
-                YamlValueKind.Null => string.Empty,
-                YamlValueKind.Boolean => r.AsBoolean() ? "true" : "false",
-                YamlValueKind.Integer => r.AsInt64().ToString(CultureInfo.InvariantCulture),
-                YamlValueKind.Float => r.AsDouble().ToString(CultureInfo.InvariantCulture),
-                _ => string.Empty,
-            };
-        }
+            return ScalarText(r);
 
         // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
         throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);

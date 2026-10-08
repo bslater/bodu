@@ -531,7 +531,7 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Reads the text of a scalar row as written, for tag reinterpretation.
+    /// Reads the text of a scalar row as written, for tag reinterpretation and for naming a mapping key.
     /// </summary>
     /// <param name="r">The scalar row.</param>
     /// <returns>
