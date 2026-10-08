@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -53,7 +54,9 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// <para>
 /// Anchoring follows EditorConfig: a pattern with no <c>/</c> matches at any directory depth; a pattern with <c>/</c>
-/// is anchored to the start of the relative path.
+/// is anchored to the start of the relative path. A pattern that starts with <c>/</c> is anchored at the root as well,
+/// and a path given relative to the root matches it as if the path began with <c>/</c>, so <c>/src/*.cs</c> matches
+/// both <c>src/Foo.cs</c> and <c>/src/Foo.cs</c>, but not <c>lib/src/Foo.cs</c>.
 /// </para>
 /// <para>
 /// Compilation parses the glob once into a culture-invariant <see cref="Regex" />; subsequent
@@ -80,11 +83,17 @@ public sealed partial class ConfigurationPattern
     /// <summary>Maximum number of distinct (pattern, comparison) pairs retained in the shared compile cache before the cache is cleared. The cache exists to amortize regex compilation across repeated resolve calls; the crude eviction strategy is deliberate - patterns are typically tens, not thousands, and clearing the cache on overflow keeps memory bounded without an explicit LRU.</summary>
     private const int CompileCacheCapacity = 512;
 
+    /// <summary>The longest relative path, plus its added leading <c>/</c>, that a pattern starting with <c>/</c> matches from a stack buffer rather than a pooled array.</summary>
+    private const int RootedPathStackLimit = 256;
+
     /// <summary>The process-wide cache of compiled patterns keyed by source pattern and comparison mode, used to amortize regular-expression compilation across repeated resolve calls.</summary>
     private static readonly ConcurrentDictionary<(string Pattern, StringComparison Comparison), ConfigurationPattern> s_compileCache = new();
 
     /// <summary>The compiled regular expression that backs the pattern's match operations.</summary>
     private readonly Regex _regex;
+
+    /// <summary>Whether the source starts with <c>/</c>, anchoring the pattern at the root so that a path given relative to the root matches as if it began with <c>/</c>.</summary>
+    private readonly bool _rooted;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationPattern" /> class with the supplied source and
@@ -96,6 +105,7 @@ public sealed partial class ConfigurationPattern
     {
         Source = source;
         _regex = regex;
+        _rooted = source.StartsWith('/');
     }
 
     /// <summary>
@@ -190,7 +200,8 @@ public sealed partial class ConfigurationPattern
             or StringComparison.InvariantCultureIgnoreCase;
 
     /// <summary>
-    /// Determines whether the supplied relative path matches this pattern.
+    /// Determines whether the supplied relative path matches this pattern. When the pattern starts with <c>/</c>, a
+    /// path that does not is matched as if it began with <c>/</c>, because both name the same file under the root.
     /// </summary>
     /// <param name="relativePath">The path to test, with forward-slash separators.</param>
     /// <returns><see langword="true" /> when the path matches; otherwise, <see langword="false" />.</returns>
@@ -200,6 +211,35 @@ public sealed partial class ConfigurationPattern
         ThrowHelper.ThrowIfNull(relativePath);
 
         string normalized = relativePath.Replace('\\', '/');
-        return _regex.IsMatch(normalized);
+        return _rooted && !normalized.StartsWith('/')
+            ? IsMatchAsRooted(normalized)
+            : _regex.IsMatch(normalized);
+    }
+
+    /// <summary>
+    /// Matches a path given relative to the root against this pattern, which starts with <c>/</c>, as if the path began
+    /// with <c>/</c>, without allocating for a path that fits <see cref="RootedPathStackLimit" />.
+    /// </summary>
+    /// <param name="relativePath">The normalized path, which does not start with <c>/</c>.</param>
+    /// <returns><see langword="true" /> when the rooted path matches; otherwise, <see langword="false" />.</returns>
+    private bool IsMatchAsRooted(string relativePath)
+    {
+        int length = relativePath.Length + 1;
+        char[]? rented = null;
+        Span<char> rooted = length <= RootedPathStackLimit
+            ? stackalloc char[RootedPathStackLimit]
+            : (rented = ArrayPool<char>.Shared.Rent(length));
+
+        try
+        {
+            rooted[0] = '/';
+            relativePath.AsSpan().CopyTo(rooted[1..]);
+            return _regex.IsMatch(rooted[..length]);
+        }
+        finally
+        {
+            if (rented is not null)
+                ArrayPool<char>.Shared.Return(rented);
+        }
     }
 }

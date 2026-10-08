@@ -102,7 +102,7 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 | Profile | When to use |
 |---|---|
 | `Bodu` *(default)* | Bodu's own convention - EditorConfig-like with safer defaults. Use for application configuration authored by your team. |
-| `EditorConfigCompatible` | Strict EditorConfig 0.17.2 parity. Use when you are reading `.editorconfig` files that must round-trip through other tooling. |
+| `EditorConfigCompatible` | EditorConfig 0.17.2 alignment, with the differences noted below. Use when you are reading `.editorconfig` files that must round-trip through other tooling. |
 | `Strict` | Generated-file semantics - duplicates rejected, errors thrown. Use for machine-emitted files where ambiguity is a defect. |
 | `Relaxed` | User-authored file semantics - collect diagnostics, last-wins on duplicates. Use for end-user-facing configuration where forgiving parsing matters. |
 
@@ -205,7 +205,7 @@ Console.WriteLine(document.Sections[0].Name);            // "*.cs"
 Console.WriteLine(document.Sections[1]["indent_size"]);  // "2"
 ```
 
-The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, and otherwise behaves identically to the EditorConfig 0.17.2 specification.
+The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, keeps the dots in keys and lowercases them, and leaves the preamble out of the view. Beyond that it follows the EditorConfig 0.17.2 specification, with the glob differences [Views and resolution](views-and-resolution.md) documents, and it interprets no property: a value such as `indent_style = Tab` is reported as written, not lowercased.
 
 To go from the parsed `ConfigurationDocument` to a resolved typed view - including the EditorConfig glob behaviour where `[*.cs]` matches every `.cs` file - see [Views and resolution](views-and-resolution.md).
 

@@ -164,6 +164,8 @@ var options = new ConfigurationResolveOptions { PathRoot = "/repo/my-app" };
 ConfigurationView view = document.Resolve("/repo/my-app/src/svc/Foo.cs", options);
 ```
 
+A glob that starts with `/` is anchored at the root: a target given relative to the root, as written or after rebasing, matches it as if the target began with `/`. `[/src/*.cs]` therefore applies to `src/Foo.cs`, to `/src/Foo.cs`, and, with `PathRoot = "/repo"`, to `/repo/src/Foo.cs`, while `lib/src/Foo.cs` and `/elsewhere/src/Foo.cs` stay unmatched, as EditorConfig's core-test `leading_slash_relevance` expects.
+
 When a document is loaded with `ConfigurationDocument.Load(path)`, its originating directory is recorded and used as the implicit `PathRoot`, so anchored globs resolve against the right base without setting `PathRoot` explicitly. Documents parsed from a string or stream carry no path context - set `PathRoot` yourself when your globs are anchored.
 
 ## `ConfigurationKey` and `ConfigurationKeyOptions`
@@ -219,7 +221,7 @@ The glob grammar:
 | `[seq]` / `[!seq]` | Character set or its complement. A bracket expression that holds a `/` is literal text, brackets included, since one character cannot match a path separator. |
 | `\` | Escape the next character. |
 
-Patterns without `/` match at any depth. Patterns with `/` anchor to the start of the path. The grammar is the EditorConfig 0.17.2 specification verbatim, plus a bounded process-wide pattern cache so the same pattern compiled twice does not recompile.
+Patterns without `/` match at any depth. Patterns with `/` anchor to the start of the path. The grammar follows the EditorConfig 0.17.2 specification and is held to EditorConfig's core-tests for a bracket expression that holds a `/` (`brackets_slash_inside1` to `brackets_slash_inside3`), a brace group without a comma (`braces_single_choice`, `braces_empty_choice`, `braces_alpha_range1` to `braces_alpha_range6`) and a leading `/` (`leading_slash_relevance`). It departs from the EditorConfig cores in two documented ways: a `[` or `{` with no partner is rejected with `UnbalancedBracket` or `UnbalancedBrace` (see [Diagnostics](diagnostics.md)) where the cores read it as literal text, and a glob longer than 4096 characters is rejected with `PatternTooLong`. A bounded process-wide pattern cache means the same pattern compiled twice does not recompile.
 
 `Compile(pattern, StringComparison)` accepts an explicit comparison; the default `Ordinal` matches the EditorConfig requirement that paths be case-sensitive on case-sensitive file systems.
 

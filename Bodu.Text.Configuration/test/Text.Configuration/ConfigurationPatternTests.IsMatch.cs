@@ -137,4 +137,18 @@ public partial class ConfigurationPatternTests
         Assert.IsFalse(pattern.IsMatch("other/test1/file.java"));
         Assert.IsFalse(pattern.IsMatch("/other/test1/file.java"));
     }
+
+    /// <summary>
+    /// Verifies that a pattern starting with <c>/</c> matches a relative path longer than the stack buffer it is
+    /// rooted in, so a long path takes the pooled-array branch and still matches as if it began with <c>/</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsMatch_WhenPatternStartsWithSlashAndRelativePathIsLong_ShouldMatchAsIfRooted()
+    {
+        string directory = new('d', 300);
+        var pattern = ConfigurationPattern.Compile("/" + directory + "/*.cs");
+
+        Assert.IsTrue(pattern.IsMatch(directory + "/Foo.cs"));
+        Assert.IsFalse(pattern.IsMatch("other/" + directory + "/Foo.cs"));
+    }
 }

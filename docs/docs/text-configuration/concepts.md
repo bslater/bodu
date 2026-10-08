@@ -183,6 +183,10 @@ stripped; if it equals `PathRoot` exactly, only the filename survives; otherwise
 patterns (those that contain `/`) are then tested against the whole relative path; unanchored patterns (no `/`) match at
 any directory depth.
 
+A pattern that starts with `/` is anchored at the root as well, and a relative target matches it as if the target
+began with `/`: `[/src/*.cs]` applies to `src/Foo.cs`, to `/src/Foo.cs`, and to `/repo/src/Foo.cs` rebased under
+`PathRoot = "/repo"`, but not to `lib/src/Foo.cs`, nor to `/elsewhere/src/Foo.cs`, which lies outside that root.
+
 > [!IMPORTANT]
 > Section matching requires a target path. When `Resolve` is called with no target path (or `null`), the normalised
 > target is empty and **every named section is skipped** - only the preamble (when `ApplyPreambleProperties` is `true`)

@@ -145,13 +145,16 @@ format.indent.size  = 4
 format.indent.size = 2
 ```
 
-The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
+The grammar follows **EditorConfig**, with the glob differences documented in
+[Views and resolution](../../guides/text-configuration/views-and-resolution.md), and the default `Bodu` profile adds two
+extensions:
 
 1. **Inline comments** are recognised when introduced by whitespace (`key = value  # comment`) under the default `Bodu`
    profile. Set the profile to `EditorConfigCompatible` to disable them.
 2. **Key mapping** projects dotted keys (`logging.level.default`) to colon-delimited configuration keys
    (`logging:level:default`) for direct interoperability with `Microsoft.Extensions.Configuration`. Both forms work as
-   lookup inputs on the view; the canonical stored form is the colon-delimited one.
+   lookup inputs on the view; the canonical stored form is the colon-delimited one. The `EditorConfigCompatible`
+   profile keeps the dots instead, and lowercases keys as EditorConfig does.
 
 ## Where to go next
 
