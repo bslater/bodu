@@ -229,6 +229,10 @@ internal sealed partial class YamlParser
 
         while (true)
         {
+            // A leading or consecutive comma denotes a missing (empty) entry, which is not permitted.
+            if (Peek() == (byte)',')
+                throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
+
             // '?' introduces an explicit key only when followed by a separator; otherwise it begins a plain scalar.
             if (Peek() == (byte)'?' && IsFlowColonStop(PeekAt(1)))
             {
@@ -386,11 +390,12 @@ internal sealed partial class YamlParser
             throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         // Flow content continued onto a new line must be indented more than the owning block node; a closing
-        // delimiter may sit at the parent indentation.
-        if (crossed && _flowIndent >= 0 && !AtEnd && CurrentColumn() <= _flowIndent
-            && Peek() is not ((byte)']' or (byte)'}'))
+        // delimiter may sit at the owning node's indentation, but not to the left of it.
+        if (crossed && _flowIndent >= 0 && !AtEnd)
         {
-            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidIndentation);
+            int column = CurrentColumn();
+            if (Peek() is (byte)']' or (byte)'}' ? column < _flowIndent : column <= _flowIndent)
+                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlInvalidIndentation);
         }
     }
 }
