@@ -25,6 +25,11 @@ namespace Bodu.Text.Delimited.Reader;
 /// Fields are decoded on demand through <see cref="GetString" />: surrounding quotes are removed and doubled quotes are
 /// collapsed to a single literal. <see cref="ValueSpan" /> exposes the raw source bytes of a field value.
 /// </para>
+/// <para>
+/// A line ends at a line feed, a carriage return and line feed, or a lone carriage return, and a blank line is skipped
+/// rather than read as a record of one empty field. Under <see cref="DelimitedFieldCountBehavior.Ragged" />, each field
+/// beyond the header's is named by its zero-based column index.
+/// </para>
 /// </remarks>
 public ref struct Utf8DelimitedReader
 {

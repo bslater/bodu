@@ -28,7 +28,11 @@ The reader matches the delimiter, quote, and comment characters as single bytes 
 
 Strict field counts are measured against the header row, so they apply in header mode; positional mode accepts any shape unless you enforce one yourself.
 
+Under `Ragged`, each field beyond the header's is named by its zero-based column index, so the fourth field under a three-column header is named `3`; such a name can coincide with a header's own name.
+
 Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to `MalformedRecordBehavior`). After a closing quote only the delimiter, a line break or the end of the input may follow, after spaces and tabs under `TrimFields`; anything else makes the record malformed. `Throw` reports the line and offset of the first offending byte, and `SkipRecord` skips the record, the rest of that line included, and continues with the next line. A record whose field count breaks the `Strict` policy is malformed too: `Throw` reports where it starts, and `SkipRecord` skips it.
+
+LF, CRLF and a lone CR each end a line. A blank line is skipped rather than read as a record of one empty field, which RFC 4180's grammar would make it, so the writer writes such a record as `""`.
 
 The reader skips a UTF-8 byte-order mark at the start of its input, and `DelimitedSerializer.DeserializeAsyncEnumerableAsync` skips one only at the start of the stream, however its reads fall; a U+FEFF anywhere else is field content.
 

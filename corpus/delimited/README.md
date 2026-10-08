@@ -197,14 +197,13 @@ columns with a duplicated name are unnamed, but the reader gave them the name, s
 one field holding the last value. The reader now lists them under an empty name, mirroring `TakeLast`, so every surface
 finds the first value under the name.
 
-Three behaviours that `dialect` rows rely on are not in the reader's public documentation. A lone CR ends a line, which
-only the private `Utf8DelimitedReader.SkipLineEnding` documents. Blank lines are skipped, although RFC 4180's grammar
-reads an empty line as a record of one empty field: the reader documents that only in private XML documentation
-(`LoadRecord` and `SkipBlankAndCommentLines`, `Utf8DelimitedReader.cs` lines 363 and 566), and the writer's remarks
-mention it (`Utf8DelimitedWriter.cs` lines 32 and 35). And under `Ragged` an extra field is named by its zero-based
-index, a name that can collide with a real header, which nothing documents. The `dialect` rows that rely on them are
-go-csv 1.10 #22937 case 3 and papaparse 4.1.3 (a lone CR), sep 0.2.0 #10 case 3 and sylvan-csv 1.1.16 (blank lines), and
-csv-parse 4.0.1 (the extra field's name).
+Three behaviours that `dialect` rows rely on were stated only in private documentation until #939, which states them
+in `docs/docs/formats/parser-policies.md`, the reader's remarks and `DelimitedFieldCountBehavior.Ragged`. A lone CR ends
+a line, and a blank line is skipped, although RFC 4180's grammar reads an empty line as a record of one empty field
+(line 35). And under `Ragged` an extra field is named by its zero-based column index, a name that can coincide with a
+real header (line 31). The `dialect` rows that rely on them are go-csv 1.10 #22937 case 3 and papaparse 4.1.3 (a lone
+CR), sep 0.2.0 #10 case 3 and sylvan-csv 1.1.16 (blank lines), and csv-parse 4.0.1 (the extra field's name), and each
+cites the line that now states its rule.
 
 ## Ports and shared lineage
 
