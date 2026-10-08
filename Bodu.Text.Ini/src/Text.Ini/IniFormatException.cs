@@ -10,6 +10,14 @@ namespace Bodu.Text.Ini;
 /// Represents an error that occurs when INI data is malformed, such as an unterminated section header, an empty section
 /// name, or an entry with no assignment.
 /// </summary>
+/// <remarks>
+/// A duplicate section or key that the policies in <see cref="IniDocumentOptions" /> reject is reported at the
+/// offending section header or key: <see cref="LineNumber" /> is its line, and <see cref="Offset" /> the offset of the
+/// header's <c>[</c> or of the key's first byte. A global key that collides with a section of the same name is reported
+/// at that section's header when <see cref="Nodes.IniNode" /> parses the input, and with no position by
+/// <see cref="Document.IniDocument" />, <see cref="Reader.IniDocumentReader" /> and <see cref="IniSerializer" />, which
+/// check for the collision once the whole input has been read.
+/// </remarks>
 public sealed class IniFormatException
     : FormatException
 {

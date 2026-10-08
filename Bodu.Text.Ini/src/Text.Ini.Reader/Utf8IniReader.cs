@@ -48,6 +48,12 @@ public ref struct Utf8IniReader
     /// <summary>The 1-based line number of the current read position.</summary>
     private int _line;
 
+    /// <summary>The 1-based line number on which the current token begins.</summary>
+    private int _tokenLine;
+
+    /// <summary>The zero-based byte offset at which the current token begins.</summary>
+    private int _tokenStart;
+
     /// <summary>The kind of the current token.</summary>
     private IniTokenType _tokenType;
 
@@ -59,6 +65,12 @@ public ref struct Utf8IniReader
 
     /// <summary>The staged value text for the pending string token.</summary>
     private string? _pendingValue;
+
+    /// <summary>The 1-based line number on which the pending string token begins.</summary>
+    private int _pendingLine;
+
+    /// <summary>The zero-based byte offset at which the pending string token begins.</summary>
+    private int _pendingStart;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8IniReader" /> struct over the supplied bytes.
@@ -83,6 +95,8 @@ public ref struct Utf8IniReader
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first section or key.
         _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
         _line = 1;
+        _tokenLine = 1;
+        _tokenStart = _position;
         _tokenType = IniTokenType.None;
     }
 
@@ -100,8 +114,23 @@ public ref struct Utf8IniReader
     /// <summary>
     /// Gets the 1-based line number at which the current token begins.
     /// </summary>
-    /// <value>The current line number.</value>
-    public readonly int LineNumber => _line;
+    /// <value>The line on which the current token begins.</value>
+    /// <remarks>
+    /// Once <see cref="Read" /> returns <see langword="false" />, the line is the one at the end of the input. A line
+    /// ends at a LF, a CR LF pair or a lone CR.
+    /// </remarks>
+    public readonly int LineNumber => _tokenLine;
+
+    /// <summary>
+    /// Gets the zero-based byte offset at which the current token begins: the <c>[</c> of a section header, the comment
+    /// marker of a comment, or the first byte of a key or value after the spaces and tabs around it.
+    /// </summary>
+    /// <value>The offset of the current token's first byte within the source.</value>
+    /// <remarks>
+    /// The document models report a section or key that their duplicate policies reject at this offset, on the line
+    /// <see cref="LineNumber" /> gives.
+    /// </remarks>
+    internal readonly int TokenStartIndex => _tokenStart;
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -131,6 +160,8 @@ public ref struct Utf8IniReader
             _pendingString = false;
             _current = _pendingValue;
             _tokenType = IniTokenType.String;
+            _tokenLine = _pendingLine;
+            _tokenStart = _pendingStart;
             return true;
         }
 
@@ -141,6 +172,8 @@ public ref struct Utf8IniReader
             if (_position >= _data.Length)
             {
                 _tokenType = IniTokenType.None;
+                _tokenLine = _line;
+                _tokenStart = _position;
                 _current = null;
                 return false;
             }
@@ -191,6 +224,8 @@ public ref struct Utf8IniReader
         {
             _current = Encoding.UTF8.GetString(_data[textStart..end]);
             _tokenType = IniTokenType.Comment;
+            _tokenLine = _line;
+            _tokenStart = textStart - 1;
             SkipLineEnding();
             return true;
         }
@@ -213,6 +248,7 @@ public ref struct Utf8IniReader
     private void ReadSectionHeader()
     {
         int headerLine = _line;
+        int headerStart = _position;
         _position++; // consume '['
 
         int start = _position;
@@ -240,6 +276,8 @@ public ref struct Utf8IniReader
 
         _current = Encoding.UTF8.GetString(_data.Slice(nameStart, nameLength));
         _tokenType = IniTokenType.SectionHeader;
+        _tokenLine = headerLine;
+        _tokenStart = headerStart;
     }
 
     /// <summary>
@@ -322,9 +360,13 @@ public ref struct Utf8IniReader
 
         _current = Encoding.UTF8.GetString(_data.Slice(trimmedKeyStart, keyLength));
         _tokenType = IniTokenType.PropertyName;
+        _tokenLine = entryLine;
+        _tokenStart = trimmedKeyStart;
 
         _pendingString = true;
         _pendingValue = Encoding.UTF8.GetString(_data.Slice(trimmedValueStart, valueLength));
+        _pendingLine = entryLine;
+        _pendingStart = trimmedValueStart;
     }
 
     /// <summary>

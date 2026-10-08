@@ -128,7 +128,7 @@ A comment containing line breaks is written as one comment line per line, each w
 
 ## Exceptions
 
-`IniFormatException` for malformed input and duplicate-policy violations (line/offset attached); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value, a key, section name or value INI cannot represent); `ArgumentException` from the writer and the mutable DOM for text they refuse to write (see [Writing](#writing)).
+`IniFormatException` for malformed input and duplicate-policy violations (line/offset attached; a duplicate is reported at the offending section header or key); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value, a key, section name or value INI cannot represent); `ArgumentException` from the writer and the mutable DOM for text they refuse to write (see [Writing](#writing)).
 
 ## When to reach for `Bodu.Text.Configuration` instead
 

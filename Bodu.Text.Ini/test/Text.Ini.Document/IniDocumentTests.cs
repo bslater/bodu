@@ -14,7 +14,7 @@ namespace Bodu.Text.Ini.Document;
 /// object-of-objects shape.
 /// </summary>
 [TestClass]
-public class IniDocumentTests
+public partial class IniDocumentTests
 {
     /// <summary>
     /// Verifies that the root element enumerates the hoisted global keys as strings followed by the sections as

@@ -18,7 +18,7 @@ Each line format - **Delimited**, **DotEnv**, and **INI** - reports failure thro
 | Position members | 1-based `LineNumber`, 0-based byte `Offset` (DotEnv adds a 1-based `ColumnNumber`, counted in bytes); all `int?` - `null` when the failure has no single position | none; the message names the key or column |
 | `InnerException` | rarely set | the `FormatException` from a failed scalar conversion, when there is one |
 
-Two points follow from the table. First, the position members are nullable: a structural rule that spans the whole document - an INI global key colliding with a section of the same name, for example - reports no line. Second, the serializer's read path can throw *either* type: the document is parsed first (format exception), then bound (serialization exception), so a catch that must handle both needs two clauses.
+Two points follow from the table. First, the position members are nullable: a structural rule that spans the whole document - an INI global key colliding with a section of the same name, as `IniDocument` checks it, for example - reports no line. Second, the serializer's read path can throw *either* type: the document is parsed first (format exception), then bound (serialization exception), so a catch that must handle both needs two clauses.
 
 ## Pattern 1 - Delimited: malformed input
 
@@ -209,11 +209,11 @@ using Bodu.Text.Ini.Reader;
 
 IniDocument.Parse("[s]\nk=1\nk=2\n"u8, IniReaderOptions.Default,
     new IniDocumentOptions { DuplicateKeyBehavior = IniDuplicateKeyBehavior.Disallowed });
-// → throws IniFormatException: The INI section 's' defines the key 'k' more than once. (line 4, offset 12)
+// → throws IniFormatException: The INI section 's' defines the key 'k' more than once. (line 3, offset 8)
 
 IniDocument.Parse("[s]\nk=1\n[s]\nj=2\n"u8, IniReaderOptions.Default,
     new IniDocumentOptions { DuplicateSectionBehavior = IniDuplicateSectionBehavior.Disallowed });
-// → throws IniFormatException: The INI document defines the section 's' more than once. (line 4, offset 12)
+// → throws IniFormatException: The INI document defines the section 's' more than once. (line 3, offset 8)
 ```
 
 `IniSerializerOptions` surfaces the same two policies, and its `Strict` preset (`IniSerializerDefaults.Strict`) sets both to `Disallowed` - the `configparser` strict mode. The global/section name collision is the one duplicate that no policy tolerates, because both entries would claim the same root property; `IniSerializerOptions.GlobalSectionName` sidesteps it by mapping the global entries to a reserved root key instead of hoisting them.
