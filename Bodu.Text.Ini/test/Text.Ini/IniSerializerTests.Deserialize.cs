@@ -166,6 +166,35 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// Verifies that the strict defaults report a duplicate section or key at the offending header or key: its line,
+    /// and the offset of its first byte, the <c>[</c> of a header or the first byte of a key after any leading
+    /// whitespace.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The INI source, its lines separated by LF.</param>
+    /// <param name="lineEnding">The line ending written in place of each LF.</param>
+    /// <param name="line">The expected 1-based line of the offending header or key.</param>
+    /// <param name="offset">The expected zero-based byte offset of its first byte.</param>
+    [TestMethod]
+    [DataRow("duplicate section, CR LF", "; lead\n[s]\nk=1\n; before\n  [s]\nj=2\n", "\r\n", 5, 30)]
+    [DataRow("duplicate key in a section, LF", "[s]\n; note\nk=1\n  k = 2\nx=3\n", "\n", 4, 17)]
+    [DataRow("duplicate global key, lone CR", "; top\ng=1\ng=2\n[s]\nk=1\n", "\r", 3, 10)]
+    public void Deserialize_WhenStrictDefaultsRejectASectionOrKey_ShouldReportTheOffendingHeaderOrKey(string testName, string source, string lineEnding, int line, int offset)
+    {
+        _ = testName;
+        var options = new IniSerializerOptions(IniSerializerDefaults.Strict);
+
+        IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = IniSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(
+                source.Replace("\n", lineEnding, StringComparison.Ordinal), options);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, ex.Message);
+        Assert.AreEqual(offset, ex.Offset, ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a <see cref="float" /> member is parsed from its value with the invariant culture, so that a current
     /// culture whose decimal separator is a comma, and whose group separator is a period, reads the same value.
     /// </summary>

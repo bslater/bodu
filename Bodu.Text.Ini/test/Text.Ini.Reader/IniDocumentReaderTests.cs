@@ -15,7 +15,7 @@ namespace Bodu.Text.Ini.Reader;
 /// the constructor-time policy enforcement.
 /// </summary>
 [TestClass]
-public class IniDocumentReaderTests
+public partial class IniDocumentReaderTests
 {
     /// <summary>
     /// Reads every token and returns a compact transcript.
