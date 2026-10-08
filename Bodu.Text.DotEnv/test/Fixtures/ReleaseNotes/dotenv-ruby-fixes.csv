@@ -1,0 +1,75 @@
+# library: dotenv-ruby -- https://github.com/bkeepers/dotenv
+# releases: Changelog.md at 2840d9c4085a398cbde9f164465515b01c26a402 (SHA-256 e2847c759a5590defe338f33f493f8e07562095099120cde08e00149c165b711), every entry from 3.1.7 down to 0.3.0 (the file at 34156bf400cd67387fa6ed9f146778f6a2f5f743 now only links to that version and to the Releases page); GitHub Releases https://github.com/bkeepers/dotenv/releases (page 1, read 2026-10-08) for 3.1.8 and 3.2.0; the commit history for 0.1.0 to 0.2.0, which have no notes
+# licence: MIT
+# note: the RubyGems gem dotenv (and dotenv-rails); named dotenv-ruby here to tell it from the npm package (dotenv-node)
+# note: catalogued: entries that fix a defect; not catalogued: features (variable and command substitution, multiline values, templates, the CLI and its options, Rails integration features), 3.0.0's breaking change that stopped expanding \n, 2.8.0's unescaping of unquoted values (#421, a feature), documentation, CI, performance work (#515, #517, #534), dependency relaxations for new Rails versions, and test-only changes (#532)
+# note: scenarios are the regression tests each fix added (spec/dotenv/parser_spec.rb, earlier spec/dotenv/environment_spec.rb and spec/fixtures, read at the fix commit); PR #n is bkeepers/dotenv
+library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
+dotenv-ruby,3.2.0,PR #540,A command substitution referring to a variable whose value contains parentheses was mis-parsed,n/a,,,,,,,command substitution
+dotenv-ruby,3.1.8,PR #527,Loading crashed when .env is a directory,n/a,,,,,,,file loading
+dotenv-ruby,3.1.7,PR #523,"Line-ending normalisation collapsed repeated line breaks, dropping blank lines inside quoted values",applies,,parse,,"FOO=""a\n\nb\n\nc""","[[""FOO"",""a\\n\\nb\\n\\nc""]]",upstream,spec 'does not ignore empty lines in quoted string' in spec/dotenv/parser_spec.rb (merged as 5bbef66)
+dotenv-ruby,3.1.6,PR #519,The parser stopped returning the value already set in ENV for a redefined variable,n/a,,,,,,,overriding existing variables (values already in the process environment)
+dotenv-ruby,3.1.4,PR #512,Loading failed when only Spring::Client was loaded,n/a,,,,,,,Rails and Spring integration
+dotenv-ruby,3.1.3,PR #511,Spring was used even when it was not already loaded,n/a,,,,,,,Rails and Spring integration
+dotenv-ruby,3.1.2,PR #504,Stubbing ENV raised can't modify frozen Hash,n/a,,,,,,,the process environment (test autorestore)
+dotenv-ruby,3.1.1,PR #495,VERSION was not available unless the version file was required,n/a,,,,,,,packaging
+dotenv-ruby,3.1.1,PR #502,The template generator (-t) mishandled multi-line variables,n/a,,,,,,,CLI tool (template generation)
+dotenv-ruby,3.1.1,PR #503,restore raised when no state had been saved,n/a,,,,,,,the process environment (test autorestore)
+dotenv-ruby,3.1.0,PR #494,Regression with semantic-logger in Rails,n/a,,,,,,,Rails logging
+dotenv-ruby,3.0.3,PR #491,Circular require warning,n/a,,,,,,,the library's runtime (Ruby require order)
+dotenv-ruby,3.0.3,PR #489,The tagged logger Rails had configured was not used,n/a,,,,,,,Rails logging
+dotenv-ruby,3.0.3,PR #492,Exception on startup with Rails 7.1.0,n/a,,,,,,,Rails integration
+dotenv-ruby,3.0.2,PR #486,Dotenv::Rails.files could no longer be changed,n/a,,,,,,,Rails integration (the list of files to load)
+dotenv-ruby,3.0.1,PR #483,Test autorestore conflicted with climate_control and ice_age,n/a,,,,,,,the process environment (test autorestore)
+dotenv-ruby,3.0.1,PR #484,Files were not joined to Rails.root at load time,n/a,,,,,,,file discovery (Rails)
+dotenv-ruby,3.0.1,PR #481,The optional Rails dependency version was not checked,n/a,,,,,,,Rails integration
+dotenv-ruby,3.0.0,PR #460,Wrong precedence between files with Dotenv::Rails.overload,n/a,,,,,,,multiple files and overriding existing variables
+dotenv-ruby,3.0.0,PR #470,rake loaded development files for test tasks,n/a,,,,,,,multiple files (Rails environments)
+dotenv-ruby,2.8.1,PR #458,Support for end-of-life Ruby versions was dropped in a minor release; restored,n/a,,,,,,,the library's runtime (Ruby versions)
+dotenv-ruby,2.8.0,PR #416,The template generator (-t) mishandled export declarations,n/a,,,,,,,CLI tool (template generation)
+dotenv-ruby,2.7.6,PR #413,The template generator (-t) mishandled blank lines and comments,n/a,,,,,,,CLI tool (template generation)
+dotenv-ruby,2.7.6,PR #405,The dotenv-rails Rake task picked the wrong environment,n/a,,,,,,,Rails integration
+dotenv-ruby,2.7.5,PR #399,Whitespace after = broke the value,applies,1,parse,,FOO= bar,"[[""FOO"",""bar""]]",upstream,specs added by PR #399 in spec/dotenv/parser_spec.rb (merged as 93f2ca9): 'parses unquoted values with spaces after seperator'
+dotenv-ruby,2.7.5,PR #399,Whitespace after = broke the value,applies,2,parse,,"foo= ""bar#baz"" # comment","[[""foo"",""bar#baz""]]",upstream,specs added by PR #399 in spec/dotenv/parser_spec.rb (merged as 93f2ca9): 'allows # in quoted value with spaces after seperator'
+dotenv-ruby,2.7.4,PR #394,NoMethodError outside Rails,n/a,,,,,,,Rails integration
+dotenv-ruby,2.7.3,PR #384,Parallel spec tasks initialised in development,n/a,,,,,,,Rails integration
+dotenv-ruby,2.7.3,PR #391,Load order issue with Railties,n/a,,,,,,,Rails integration
+dotenv-ruby,2.7.2,PR #382,CLI regressions from 2.7.1,n/a,,,,,,,CLI tool
+dotenv-ruby,2.7.1,PR #376,Regression in the CLI,n/a,,,,,,,CLI tool
+dotenv-ruby,2.5.0,PR #346,"Multiline values came back with protection against the 2.3.0 regressions, among them #339: an empty value swallowed the next line",applies,,parse,,DATABASE_PASSWORD=\nDATABASE_USERNAME=root\nDATABASE_HOST=/tmp/mysql.sock,"[[""DATABASE_PASSWORD"",""""],[""DATABASE_USERNAME"",""root""],[""DATABASE_HOST"",""/tmp/mysql.sock""]]",upstream,"spec 'includes variables without values', added by 3802638f07 to address regression #339"
+dotenv-ruby,2.5.0,PR #345,Dotenv::Environment's API changed incompatibly in 2.4.0,n/a,,,,,,,the library's API (Dotenv::Environment)
+dotenv-ruby,2.4.0,PR #340,"The 2.3.0 multiline parser read commented-out lines as variables; reverted (regressions #336, #339, #341)",applies,1,parse,,# HELLO=world\n,[],upstream,"specs added by PR #340 (b023c9b0e8 and 294ab7bce2), with the reverts of PR #318 and PR #329: 'ignores commented out variables'"
+dotenv-ruby,2.4.0,PR #340,"The 2.3.0 multiline parser read commented-out lines as variables; reverted (regressions #336, #339, #341)",applies,2,parse,,# Uncomment to activate:\n,[],upstream,"specs added by PR #340 (b023c9b0e8 and 294ab7bce2), with the reverts of PR #318 and PR #329: 'ignores comment'"
+dotenv-ruby,2.3.0,PR #291,A line that sets no variable raised FormatError instead of being skipped,dialect,,reject,,lol$wut,DotEnvFormatException,derived,"dotenv skips the line ('ignores lines that are not variable assignments', merged as b44474f); in Bodu a line without = is malformed input (docs/guides/formats/dotenv.md:72, docs/docs/formats/dotenv/index.md:32)"
+dotenv-ruby,2.3.0,PR #313,Substitution preferred the file's value over an existing variable,n/a,,,,,,,variable expansion
+dotenv-ruby,2.3.0,PR #323,Interpolation during load ignored existing environment variables,n/a,,,,,,,variable expansion
+dotenv-ruby,2.3.0,PR #330,A Bundler require error was not rescued,n/a,,,,,,,the library's runtime (Bundler)
+dotenv-ruby,2.2.0,PR #277,"Trailing whitespace after a value broke parsing (with #276, under 2.1.2)",applies,1,parse,,FOO=bar  ,"[[""FOO"",""bar""]]",upstream,specs added by PR #277 in spec/dotenv/parser_spec.rb (merged as 63854ce)
+dotenv-ruby,2.2.0,PR #277,"Trailing whitespace after a value broke parsing (with #276, under 2.1.2)",applies,2,parse,,"FOO=""bar""  ","[[""FOO"",""bar""]]",upstream,specs added by PR #277 in spec/dotenv/parser_spec.rb (merged as 63854ce)
+dotenv-ruby,2.2.0,PR #277,"Trailing whitespace after a value broke parsing (with #276, under 2.1.2)",applies,3,parse,,FOO='bar'  ,"[[""FOO"",""bar""]]",upstream,specs added by PR #277 in spec/dotenv/parser_spec.rb (merged as 63854ce)
+dotenv-ruby,2.2.0,PR #277,"Trailing whitespace after a value broke parsing (with #276, under 2.1.2)",applies,4,parse,,"foo=""ba#r""  ","[[""foo"",""ba#r""]]",upstream,specs added by PR #277 in spec/dotenv/parser_spec.rb (merged as 63854ce)
+dotenv-ruby,2.2.0,PR #277,"Trailing whitespace after a value broke parsing (with #276, under 2.1.2)",applies,5,parse,,foo='ba#r'  ,"[[""foo"",""ba#r""]]",upstream,specs added by PR #277 in spec/dotenv/parser_spec.rb (merged as 63854ce)
+dotenv-ruby,2.2.0,PR #241,rspec Rake tasks initialised in development,n/a,,,,,,,Rails integration
+dotenv-ruby,2.2.0,PR #280,.env.local was loaded in the Rails test environment,n/a,,,,,,,multiple files (Rails environments)
+dotenv-ruby,2.1.2,PR #276,Leading whitespace before a variable broke parsing,applies,,parse,,  FOO=bar,"[[""FOO"",""bar""]]",upstream,spec 'parses values with leading spaces' (merged as 8f427d7)
+dotenv-ruby,2.1.2,PR #269,require 'dotenv/rails-now' failed on older Rails versions,n/a,,,,,,,Rails integration
+dotenv-ruby,2.1.1,PR #246,Load error with Spring and a custom config,n/a,,,,,,,Rails and Spring integration
+dotenv-ruby,2.1.0,PR #222,Some escaped $ characters were not unescaped,applies,1,parse,,"FOO=""bar\\$ \\$\\$""","[[""FOO"",""bar$ $$""]]",upstream,specs added by PR #222 (merged as 80e8a2d): 'escape $ properly when no alphabets/numbers/_ are followed by it'
+dotenv-ruby,2.1.0,PR #222,Some escaped $ characters were not unescaped,applies,2,parse,,"FOO=""bar $ ""","[[""FOO"",""bar $ ""]]",upstream,specs added by PR #222 (merged as 80e8a2d): 'ignore $ when it is not escaped and no variable is followed by it'
+dotenv-ruby,2.1.0,PR #225,A UTF-8 BOM at the start of the file broke the first variable,applies,,parse,,\u{FEFF}BOM=UTF-8,"[[""BOM"",""UTF-8""]]",upstream,spec 'loads a file with a Unicode BOM' with spec/fixtures/bom.env (merged as c44af19)
+dotenv-ruby,2.0.2,PR #194,A carriage return was not taken as a line ending,applies,1,parse,,FOO=bar\rbaz=fbb,"[[""FOO"",""bar""],[""baz"",""fbb""]]",upstream,specs added by PR #194 (merged as d2e4549): 'supports carriage return'
+dotenv-ruby,2.0.2,PR #194,A carriage return was not taken as a line ending,applies,2,parse,,FOO=bar\r\nbaz=fbb,"[[""FOO"",""bar""],[""baz"",""fbb""]]",upstream,specs added by PR #194 (merged as d2e4549): 'supports carriage return combine with new line'
+dotenv-ruby,2.0.2,PR #194,A carriage return was not taken as a line ending,applies,3,parse,,"FOO=""bar\\rbaz""","[[""FOO"",""bar\\rbaz""]]",upstream,specs added by PR #194 (merged as d2e4549): 'expands carriage return in quoted strings'
+dotenv-ruby,2.0.2,PR #189,dotenv-rails did not declare its runtime dependency on Rails 4,n/a,,,,,,,packaging
+dotenv-ruby,2.0.1,PR #181,Escaped variables were expanded incorrectly,n/a,,,,,,,variable expansion
+dotenv-ruby,2.0.0,#155,Calling Dotenv::Railtie.load in Rails 4.1 before the application was defined failed,n/a,,,,,,,Rails integration
+dotenv-ruby,1.0.1,#140,Load error with Spring when running rails server,n/a,,,,,,,Rails and Spring integration
+dotenv-ruby,1.0.0,PR #121,Deprecation warnings for File.exists?,n/a,,,,,,,the library's runtime (a deprecated Ruby API)
+dotenv-ruby,1.0.0,PR #122,The .env file was looked up from the current directory instead of Rails.root,n/a,,,,,,,file discovery (Rails)
+dotenv-ruby,1.0.0,PR #124,Variables were substituted inside single quotes,applies,,parse,,BAR='quote $FOO',"[[""BAR"",""quote $FOO""]]",upstream,"spec 'does not expand variables in single quoted strings' (merged as 9e98740); Bodu values are literal (docs/guides/formats/dotenv.md:7, :64)"
+dotenv-ruby,0.11.1,,dotenv-deployment 0.0.1 had issues; depend on ~> 0.0.2,n/a,,,,,,,packaging
+dotenv-ruby,0.9.0,fc588955a3,A variable with no value (FOO=) did not parse (listed as allowing variables without a value),applies,,parse,,FOO=,"[[""FOO"",""""]]",upstream,spec 'parses empty values' added by fc588955a3
+dotenv-ruby,0.4.0,d2042db4d3,Rake deprecation warnings (Rake::DSL),n/a,,,,,,,the library's runtime (Rake)
+dotenv-ruby,0.3.0,69ab17e9d3,Loading overrode variables already set in ENV,n/a,,,,,,,overriding existing variables
+dotenv-ruby,0.1.1,98f5916dd7,Loading failed when the .env file did not exist (from the commit history),n/a,,,,,,,file loading
+dotenv-ruby,0.1.1,PR #1,Rails 2.x compatibility (from the commit history),n/a,,,,,,,Rails integration
