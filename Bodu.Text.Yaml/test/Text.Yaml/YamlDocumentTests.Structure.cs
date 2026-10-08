@@ -343,4 +343,32 @@ public partial class YamlDocumentTests
             using var document = YamlDocument.Parse(yaml);
         });
     }
+
+    /// <summary>
+    /// Verifies that a tab between an explicit key's <c>:</c> and a compact sequence or mapping on the same line is
+    /// rejected, since it would indent the collection.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit value is a compact collection after a tab.</param>
+    [TestMethod]
+    [DataRow("? a\n:\t- b\n", DisplayName = "a compact sequence")]
+    [DataRow("? a\n:\tb: c\n", DisplayName = "a compact mapping")]
+    public void Parse_WhenTabPrecedesCompactExplicitValue_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a tab between an explicit key's <c>:</c> and a scalar on the same line is separation, and the
+    /// scalar is read as the value.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTabPrecedesScalarExplicitValue_ShouldReadScalar()
+    {
+        using var document = YamlDocument.Parse("? a\n:\tb\n");
+
+        Assert.AreEqual("""{"a":"b"}""", ToJson(document.RootElement));
+    }
 }

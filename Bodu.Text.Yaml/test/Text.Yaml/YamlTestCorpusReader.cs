@@ -44,10 +44,10 @@ internal static class YamlTestCorpusReader
     internal static readonly IReadOnlyDictionary<string, int> ExpectedCategoryCounts =
         new Dictionary<string, int>(StringComparer.Ordinal)
         {
-            ["SupportedPass"] = 235,
+            ["SupportedPass"] = 240,
             ["SupportedParseOnly"] = 13,
             ["SupportedFail"] = 94,
-            ["UnsupportedFeatureRejected"] = 60,
+            ["UnsupportedFeatureRejected"] = 55,
         };
 
     /// <summary>
@@ -68,18 +68,15 @@ internal static class YamlTestCorpusReader
         "565N",
         "57H4",
         "5TYM",
-        "5WE3",
         "6CA3",
         "6CK3",
         "6PBE",
         "6WLZ",
         "7FWL",
-        "7W2P",
         "8KB6",
         "8UDB",
         "9MMW",
         "9WXW",
-        "A2M4",
         "AB8U",
         "BEC7",
         "C4HZ",
@@ -92,7 +89,6 @@ internal static class YamlTestCorpusReader
         "E76Z",
         "HMQ5",
         "J7PZ",
-        "JTV5",
         "KH5V/01",
         "KK5P",
         "LX3P",
@@ -116,7 +112,6 @@ internal static class YamlTestCorpusReader
         "XW4D",
         "Z67P",
         "Z9M4",
-        "ZWK4",
     };
 
     /// <summary>

@@ -244,8 +244,9 @@ internal sealed partial class YamlParser
     {
         SkipBlankCommentLines();
 
-        // In block context the anchor and tag node properties may be spread across line breaks before the node.
-        string? anchor = TryReadAnchorAndTag(out string? tag, crossLines: true);
+        // In block context the anchor and tag node properties may be spread across line breaks before the node, on lines
+        // indented at least as far as the node's content.
+        string? anchor = TryReadAnchorAndTag(out string? tag, crossLines: true, minIndent);
 
         SkipBlankCommentLines();
 
@@ -295,7 +296,16 @@ internal sealed partial class YamlParser
 
         // Otherwise the node is either a block mapping or a single scalar. Decide by probing for a key indicator.
         if (TryDetectBlockMapping(col))
+        {
+            // An explicit key cannot begin on the same line as the mapping's own anchor or tag.
+            if (c == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)) && (anchor is not null || tag is not null)
+                && _line == _lastPropertyLine)
+            {
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+            }
+
             return Finish(ParseBlockMapping(col, anchor, tag), anchor);
+        }
 
         int scalar = ParseBlockScalarPlainOrQuoted(minIndent);
         ApplyProperties(scalar, anchor, tag);
@@ -389,16 +399,22 @@ internal sealed partial class YamlParser
             if (CurrentColumn() != indent)
                 break;
 
-            // Explicit key indicator '? key' / ': value'. Handle the common explicit-key form.
+            // An implicit key is always followed by its ':' value indicator; the ': value' line of an explicit '? key'
+            // is optional.
             int keyRow = ParseMappingKey(indent, out string? keyText);
 
-            ExpectValueIndicator();
-
-            int valueRow = ParseMappingValue(indent);
+            int valueRow;
+            if (keyRow >= 0)
+            {
+                valueRow = ParseExplicitMappingValue(indent);
+            }
+            else
+            {
+                ExpectValueIndicator();
+                valueRow = ParseMappingValue(indent);
+            }
 
             AddMappingChild(mapping, valueRow, keyText, keyIndex);
-
-            _ = keyRow;
         }
 
         return mapping;
@@ -411,7 +427,7 @@ internal sealed partial class YamlParser
     /// <param name="indent">The mapping indentation, used for explicit keys that span the value indicator.</param>
     /// <param name="keyText">When the method returns, the decoded key text.</param>
     /// <returns>
-    /// The row index of the parsed key node (retained for completeness; simple keys decode to text only).
+    /// The row index of an explicit key's node, or <c>-1</c> for a simple key, which decodes to text only.
     /// </returns>
     private int ParseMappingKey(int indent, out string keyText)
     {
@@ -427,6 +443,58 @@ internal sealed partial class YamlParser
 
         keyText = ReadSimpleKey();
         return -1;
+    }
+
+    /// <summary>
+    /// Parses the optional value of an explicit-key mapping entry: a <c>:</c> value indicator at the mapping's
+    /// indentation, then the value, which may begin on the indicator's line as a compact sequence or mapping.
+    /// </summary>
+    /// <param name="indent">The mapping indentation, at which the value indicator must appear.</param>
+    /// <returns>The row index of the value node, or of a null scalar when the entry has no value line.</returns>
+    /// <exception cref="YamlFormatException">
+    /// A tab separates the value indicator from a compact sequence or mapping.
+    /// </exception>
+    private int ParseExplicitMappingValue(int indent)
+    {
+        // Without a value indicator at the mapping's indentation the key's value is null. A ':' at another column is
+        // not this entry's indicator, so the content it begins is left to end the mapping.
+        if (AtStreamEnd() || AtDocumentBoundary() || CurrentColumn() != indent
+            || Peek() != (byte)':' || !IsBlankOrBreakOrEnd(PeekAt(1)))
+        {
+            return NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
+        }
+
+        Advance(); // ':'
+        int separation = _pos;
+        SkipSpaces();
+
+        if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
+            return ParseMappingValue(indent);
+
+        // A compact sequence or mapping on the indicator's line is indented by the spaces before it, which a tab cannot
+        // provide.
+        if (_source.AsSpan(separation, _pos - separation).Contains((byte)'\t') && AtCompactCollectionStart())
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
+        // Otherwise the value is a block node in its own right, so it may be a compact collection at its own column.
+        return ParseBlockNode(indent + 1);
+    }
+
+    /// <summary>
+    /// Determines whether the content at the cursor begins a compact block collection on the current line: a block
+    /// sequence entry, or a mapping entry whose simple key is followed by a value indicator.
+    /// </summary>
+    /// <returns><see langword="true" /> when a compact sequence or mapping begins at the cursor.</returns>
+    private bool AtCompactCollectionStart()
+    {
+        byte c = Peek();
+        if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            return true;
+
+        // Flow collections, aliases, block scalars, and node properties begin other nodes, even when a ':' follows
+        // later on the line.
+        return c is not ((byte)'[' or (byte)'{' or (byte)'*' or (byte)'|' or (byte)'>' or (byte)'&' or (byte)'!')
+            && TryDetectBlockMapping(CurrentColumn());
     }
 
     /// <summary>

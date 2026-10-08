@@ -695,8 +695,12 @@ internal sealed partial class YamlParser
     /// <param name="crossLines">
     /// Whether the node properties may be separated from each other and the node by line breaks (block context).
     /// </param>
+    /// <param name="minIndent">
+    /// The minimum column of a line the properties continue onto, when <paramref name="crossLines" /> is
+    /// <see langword="true" />; a less-indented line belongs to an enclosing node.
+    /// </param>
     /// <returns>The captured anchor name, or <see langword="null" />.</returns>
-    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false)
+    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false, int minIndent = 0)
     {
         string? anchor = null;
         tag = null;
@@ -704,9 +708,15 @@ internal sealed partial class YamlParser
         while (true)
         {
             if (crossLines)
+            {
                 SkipBlankCommentLines();
+                if (CurrentColumn() < minIndent)
+                    break;
+            }
             else
+            {
                 SkipSpaces();
+            }
 
             byte c = Peek();
 
