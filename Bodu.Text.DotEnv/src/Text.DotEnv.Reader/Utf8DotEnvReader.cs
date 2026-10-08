@@ -387,8 +387,7 @@ public ref struct Utf8DotEnvReader
 
         if (_position >= _data.Length || !IsKeyStart(_data[_position]))
         {
-            string bad = _position >= _data.Length ? string.Empty : ((char)_data[_position]).ToString();
-            throw KeyError(bad, entryLine);
+            throw KeyError(DescribeCharacterAt(_position), entryLine);
         }
 
         int keyStart = _position;
@@ -808,6 +807,22 @@ public ref struct Utf8DotEnvReader
             lineStart = Utf8Bom.Length;
 
         return offset - lineStart + 1;
+    }
+
+    /// <summary>
+    /// Describes the character at a source offset for an error message: the character as written, or its first byte in
+    /// hexadecimal when the bytes there are not valid UTF-8.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset of the character.</param>
+    /// <returns>The description; the empty string at the end of the source.</returns>
+    private readonly string DescribeCharacterAt(int offset)
+    {
+        if (offset >= _data.Length)
+            return string.Empty;
+
+        return Rune.DecodeFromUtf8(_data[offset..], out Rune rune, out _) == OperationStatus.Done
+            ? rune.ToString()
+            : string.Create(CultureInfo.CurrentCulture, $"0x{_data[offset]:X2}");
     }
 
     /// <summary>
