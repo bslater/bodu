@@ -68,4 +68,40 @@ public partial class ConfigurationResolverTests
 
         Assert.AreEqual("4", view.GetString("format:indent:size"));
     }
+
+    /// <summary>
+    /// Verifies that under <see cref="ConfigurationProfile.EditorConfigCompatible" /> a dotted key is reported as
+    /// written, keeping its dots, and is found under that name.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenEditorConfigCompatibleAndKeyIsDotted_ShouldKeepTheDots()
+    {
+        var doc = ConfigurationDocument.Parse(
+            "[*]\ndotnet_diagnostic.ide0005.severity = warning\n",
+            ConfigurationParseOptions.EditorConfigCompatible);
+
+        ConfigurationView view = doc.Resolve("Program.cs", ConfigurationResolveOptions.EditorConfigCompatible);
+
+        CollectionAssert.AreEqual(new[] { "dotnet_diagnostic.ide0005.severity" }, view.Keys.ToArray());
+        Assert.AreEqual("warning", view["dotnet_diagnostic.ide0005.severity"]);
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="ConfigurationProfile.EditorConfigCompatible" /> no preamble pair reaches the
+    /// resolved view, <c>root</c> included, while the document keeps the pairs in its global section.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenEditorConfigCompatible_ShouldLeaveTheWholePreambleOutOfTheView()
+    {
+        var doc = ConfigurationDocument.Parse(
+            "root = true\nindent_style = tab\n\n[*]\nindent_size = 4\n",
+            ConfigurationParseOptions.EditorConfigCompatible);
+
+        ConfigurationView view = doc.Resolve("Program.cs", ConfigurationResolveOptions.EditorConfigCompatible);
+
+        CollectionAssert.AreEqual(new[] { "indent_size" }, view.Keys.ToArray());
+        CollectionAssert.AreEqual(
+            new[] { "root", "indent_style" },
+            doc.GlobalSection.Entries.Select(entry => entry.Key).ToArray());
+    }
 }

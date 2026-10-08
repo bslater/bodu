@@ -56,4 +56,17 @@ public partial class ConfigurationParseOptionsTests
             _ = ConfigurationParseOptions.For((ConfigurationProfile)42);
         });
     }
+
+    /// <summary>
+    /// Verifies that the EditorConfig-compatible preset parses keys with the same
+    /// <see cref="ConfigurationKeyMapping.Identity" /> mapping its resolve preset uses.
+    /// </summary>
+    [TestMethod]
+    public void EditorConfigCompatible_WhenAccessed_ShouldUseIdentityKeyMapping()
+    {
+        Assert.AreEqual(ConfigurationKeyMapping.Identity, ConfigurationParseOptions.EditorConfigCompatible.KeyOptions.Mapping);
+        Assert.AreEqual(
+            ConfigurationKeyMapping.Identity,
+            ConfigurationParseOptions.For(ConfigurationProfile.EditorConfigCompatible).KeyOptions.Mapping);
+    }
 }
