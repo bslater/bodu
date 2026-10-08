@@ -37,4 +37,15 @@ internal enum YamlReaderRowFlags
     /// The node carries an explicit anchor and is a candidate alias target.
     /// </summary>
     Anchored = 8,
+
+    /// <summary>
+    /// The node is the value of a merge key: an entry whose key is the plain, untagged scalar <c>&lt;&lt;</c>, read
+    /// while merge keys are expanded.
+    /// </summary>
+    MergeKey = 16,
+
+    /// <summary>
+    /// The mapping already holds a merge key, so a second one is rejected.
+    /// </summary>
+    HasMergeKey = 32,
 }

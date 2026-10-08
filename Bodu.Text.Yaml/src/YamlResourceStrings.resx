@@ -36,6 +36,7 @@
   <data name="Format_Invalid_YamlInvalidTag" xml:space="preserve"><value>The tag is not valid.</value></data>
   <data name="Format_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The input does not contain valid UTF-8 text.</value></data>
   <data name="Format_Invalid_YamlMergeKeyTarget" xml:space="preserve"><value>A merge key value must be a mapping or a sequence of mappings.</value></data>
+  <data name="Format_Invalid_YamlDuplicateMergeKey" xml:space="preserve"><value>A mapping cannot hold more than one merge key; merge several mappings through one merge key whose value is a sequence.</value></data>
   <data name="Format_Invalid_YamlNestingTooDeep" xml:space="preserve"><value>YAML node nesting exceeds the maximum permitted depth of {0}.</value></data>
   <data name="Format_Invalid_YamlTabIndentation" xml:space="preserve"><value>A tab character cannot be used for indentation.</value></data>
   <data name="Format_Invalid_YamlUnexpectedContent" xml:space="preserve"><value>Unexpected content was found in this context.</value></data>

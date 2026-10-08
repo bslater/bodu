@@ -190,6 +190,9 @@ internal sealed partial class YamlParser
 
             YamlReaderRow v = _rows[value];
             v.Key = keyText;
+            if (IsMergeKeyNode(key) && _mergeKeyBehavior == YamlMergeKeyBehavior.Expand)
+                v.Flags |= YamlReaderRowFlags.MergeKey;
+
             _rows[value] = v;
             AppendChild(pair, value);
             return pair;
@@ -267,7 +270,7 @@ internal sealed partial class YamlParser
                 value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
             }
 
-            AddMappingChild(mapping, value, key, keyOffset, keyIndex);
+            AddMappingChild(mapping, value, key, keyOffset, IsMergeKeyNode(keyNode), keyIndex);
 
             SkipFlowWhitespace();
             byte c = Peek();

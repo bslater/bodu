@@ -251,6 +251,9 @@ internal sealed partial class YamlParser
     /// Expands a single mapping's merge key, preserving explicit-key and earlier-source precedence.
     /// </summary>
     /// <param name="mapping">The mapping row index.</param>
+    /// <exception cref="YamlFormatException">
+    /// The merge key's value is not a mapping, an alias of one, or a sequence of them.
+    /// </exception>
     private void ExpandMappingMerge(int mapping)
     {
         var keys = new HashSet<string>(StringComparer.Ordinal);
@@ -262,7 +265,7 @@ internal sealed partial class YamlParser
         while (child >= 0)
         {
             string? key = _rows[child].Key;
-            if (key == "<<" && mergeChild < 0)
+            if ((_rows[child].Flags & YamlReaderRowFlags.MergeKey) != 0 && mergeChild < 0)
             {
                 mergeChild = child;
                 mergePrev = prev;
@@ -281,6 +284,8 @@ internal sealed partial class YamlParser
 
         UnlinkChild(mapping, mergeChild, mergePrev);
 
+        // Only a mapping, or a sequence of mappings, can be merged; anything else is reported where the merge value is
+        // written, or, within a sequence written in place, at the offending item.
         var sources = new List<int>();
         int value = Resolve(mergeChild);
         YamlReaderRow valueRow = _rows[value];
@@ -290,19 +295,28 @@ internal sealed partial class YamlParser
         }
         else if (valueRow.Kind == YamlReaderNodeKind.Sequence)
         {
+            bool aliased = _rows[mergeChild].Kind == YamlReaderNodeKind.Alias;
             int element = valueRow.FirstChild;
             while (element >= 0)
             {
-                sources.Add(Resolve(element));
+                int source = Resolve(element);
+                if (_rows[source].Kind != YamlReaderNodeKind.Mapping)
+                {
+                    int at = aliased ? _rows[mergeChild].Offset : _rows[element].Offset;
+                    throw ErrorAt(at, YamlResourceStrings.Format_Invalid_YamlMergeKeyTarget);
+                }
+
+                sources.Add(source);
                 element = _rows[element].NextSibling;
             }
+        }
+        else
+        {
+            throw ErrorAt(_rows[mergeChild].Offset, YamlResourceStrings.Format_Invalid_YamlMergeKeyTarget);
         }
 
         foreach (int source in sources)
         {
-            if (_rows[source].Kind != YamlReaderNodeKind.Mapping)
-                continue;
-
             int pair = _rows[source].FirstChild;
             while (pair >= 0)
             {

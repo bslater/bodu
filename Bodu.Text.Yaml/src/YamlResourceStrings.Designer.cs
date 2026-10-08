@@ -199,6 +199,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A mapping cannot hold more than one merge key; merge several mappings through one merge key whose value is a sequence..
+        /// </summary>
+        internal static string Format_Invalid_YamlDuplicateMergeKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlDuplicateMergeKey", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to YAML node nesting exceeds the maximum permitted depth of {0}..
         /// </summary>
         internal static string Format_Invalid_YamlNestingTooDeep {

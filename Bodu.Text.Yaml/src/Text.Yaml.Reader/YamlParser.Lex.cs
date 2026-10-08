@@ -644,6 +644,9 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Reads a simple mapping key (plain or single-line quoted), leaving the cursor at the value indicator.
     /// </summary>
+    /// <param name="mergeKey">
+    /// When the method returns, whether the key is the plain, untagged scalar <c>&lt;&lt;</c>.
+    /// </param>
     /// <returns>The decoded key text.</returns>
     /// <remarks>
     /// A key decodes to text only, so a key's node properties are not kept with it; an anchored key is instead kept as
@@ -653,8 +656,9 @@ internal sealed partial class YamlParser
     /// The key is an alias or a flow collection, a plain key begins with an indicator that cannot begin a plain scalar,
     /// or the key is longer than an implicit key may be.
     /// </exception>
-    private string ReadSimpleKey()
+    private string ReadSimpleKey(out bool mergeKey)
     {
+        mergeKey = false;
         int keyStart = _pos;
         string? anchor = null;
         string? tag = null;
@@ -715,7 +719,9 @@ internal sealed partial class YamlParser
         if (anchor is not null)
             _ = NewPlainScalar(start, end, anchor, tag);
 
-        return Utf8(start, end - start);
+        string text = Utf8(start, end - start);
+        mergeKey = tag is null && text == "<<";
+        return text;
     }
 
     /// <summary>

@@ -401,7 +401,7 @@ internal sealed partial class YamlParser
 
             // An implicit key is always followed by its ':' value indicator; the ': value' line of an explicit '? key'
             // is optional.
-            int keyRow = ParseMappingKey(indent, out string? keyText, out int keyOffset);
+            int keyRow = ParseMappingKey(indent, out string? keyText, out int keyOffset, out bool mergeKey);
 
             int valueRow;
             if (keyRow >= 0)
@@ -414,7 +414,7 @@ internal sealed partial class YamlParser
                 valueRow = ParseMappingValue(indent);
             }
 
-            AddMappingChild(mapping, valueRow, keyText, keyOffset, keyIndex);
+            AddMappingChild(mapping, valueRow, keyText, keyOffset, mergeKey, keyIndex);
         }
 
         return mapping;
@@ -429,10 +429,13 @@ internal sealed partial class YamlParser
     /// <param name="keyOffset">
     /// When the method returns, the byte offset at which the key, or its first node property, begins.
     /// </param>
+    /// <param name="mergeKey">
+    /// When the method returns, whether the key is the plain, untagged scalar <c>&lt;&lt;</c>.
+    /// </param>
     /// <returns>
     /// The row index of an explicit key's node, or <c>-1</c> for a simple key, which decodes to text only.
     /// </returns>
-    private int ParseMappingKey(int indent, out string keyText, out int keyOffset)
+    private int ParseMappingKey(int indent, out string keyText, out int keyOffset, out bool mergeKey)
     {
         if (Peek() == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
         {
@@ -444,12 +447,13 @@ internal sealed partial class YamlParser
             int keyNode = ParseBlockNode(indent + 1);
             keyOffset = keyStart >= 0 ? keyStart : _rows[keyNode].Offset;
             keyText = KeyTextOf(keyNode);
+            mergeKey = IsMergeKeyNode(keyNode);
             SkipBlankCommentLines();
             return keyNode;
         }
 
         keyOffset = _pos;
-        keyText = ReadSimpleKey();
+        keyText = ReadSimpleKey(out mergeKey);
         return -1;
     }
 
@@ -710,21 +714,41 @@ internal sealed partial class YamlParser
     /// <param name="valueRow">The row index of the entry's value node.</param>
     /// <param name="keyText">The decoded key text.</param>
     /// <param name="keyOffset">The byte offset at which the key begins, where a duplicate key is reported.</param>
+    /// <param name="mergeKey">Whether the key is the plain, untagged scalar <c>&lt;&lt;</c>.</param>
     /// <param name="index">The key-to-child index tracking the mapping's existing keys.</param>
     /// <exception cref="YamlFormatException">
-    /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />.
+    /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />, or, while
+    /// merge keys are expanded, the key is a second merge key in the mapping, whatever the policy.
     /// </exception>
     private void AddMappingChild(
         int mapping,
         int valueRow,
         string keyText,
         int keyOffset,
+        bool mergeKey,
         Dictionary<string, int> index)
     {
         YamlReaderRow v = _rows[valueRow];
         v.Key = keyText;
-        _rows[valueRow] = v;
 
+        // While merge keys are expanded, the merge key is not the string "<<": it never collides with a quoted "<<",
+        // and a mapping holds at most one, whatever the duplicate-key policy, since several merges are written as one
+        // merge key whose value is a sequence.
+        if (mergeKey && _mergeKeyBehavior == YamlMergeKeyBehavior.Expand)
+        {
+            YamlReaderRow m = _rows[mapping];
+            if ((m.Flags & YamlReaderRowFlags.HasMergeKey) != 0)
+                throw ErrorAt(keyOffset, YamlResourceStrings.Format_Invalid_YamlDuplicateMergeKey);
+
+            m.Flags |= YamlReaderRowFlags.HasMergeKey;
+            _rows[mapping] = m;
+            v.Flags |= YamlReaderRowFlags.MergeKey;
+            _rows[valueRow] = v;
+            AppendChild(mapping, valueRow);
+            return;
+        }
+
+        _rows[valueRow] = v;
         if (index.TryGetValue(keyText, out int existing))
         {
             switch (_duplicateKeyBehavior)
@@ -743,6 +767,21 @@ internal sealed partial class YamlParser
 
         AppendChild(mapping, valueRow);
         index[keyText] = valueRow;
+    }
+
+    /// <summary>
+    /// Determines whether a key node is the merge key: the plain, untagged scalar <c>&lt;&lt;</c>.
+    /// </summary>
+    /// <param name="row">The row index of the key node.</param>
+    /// <returns>
+    /// <see langword="true" /> when the key is the plain, untagged scalar <c>&lt;&lt;</c>; otherwise
+    /// <see langword="false" />, including for a quoted or tagged <c>&lt;&lt;</c>, which is an ordinary key.
+    /// </returns>
+    private bool IsMergeKeyNode(int row)
+    {
+        YamlReaderRow r = _rows[row];
+        return r.Kind == YamlReaderNodeKind.Scalar && r.ScalarStyle == YamlScalarStyle.Plain && r.Tag is null
+            && r.ValueKind == YamlValueKind.String && _strings[(int)r.ScalarBits] == "<<";
     }
 
     /// <summary>
