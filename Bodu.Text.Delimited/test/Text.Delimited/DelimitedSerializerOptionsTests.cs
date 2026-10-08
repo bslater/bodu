@@ -16,10 +16,10 @@ namespace Bodu.Text.Delimited;
 public sealed class DelimitedSerializerOptionsTests
 {
     /// <summary>
-    /// Verifies that a new instance carries the general-purpose defaults. <see cref="DelimitedSerializerOptions.Delimiter" />,
-    /// <see cref="DelimitedSerializerOptions.Quote" /> and <see cref="DelimitedSerializerOptions.CommentChar" /> default
-    /// to <c>'\0'</c>, the documented sentinel meaning "use the format default", rather than to the characters
-    /// themselves.
+    /// Verifies that a new instance carries the general-purpose defaults.
+    /// <see cref="DelimitedSerializerOptions.Delimiter" />, <see cref="DelimitedSerializerOptions.Quote" /> and
+    /// <see cref="DelimitedSerializerOptions.CommentChar" /> default to <c>'\0'</c>, the documented sentinel meaning
+    /// "use the format default", rather than to the characters themselves.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenDefaultConstructed_ShouldCarryGeneralDefaults()

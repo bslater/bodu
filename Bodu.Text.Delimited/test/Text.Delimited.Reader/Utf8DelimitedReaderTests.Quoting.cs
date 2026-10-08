@@ -68,8 +68,8 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
-    /// Verifies that with <see cref="DelimitedReaderOptions.TrimFields" /> a field whose opening quote follows spaces is
-    /// read as a quoted field, so <c>1, 2, "test"</c> reads <c>test</c> without its quotes.
+    /// Verifies that with <see cref="DelimitedReaderOptions.TrimFields" /> a field whose opening quote follows spaces
+    /// is read as a quoted field, so <c>1, 2, "test"</c> reads <c>test</c> without its quotes.
     /// </summary>
     [TestMethod]
     public void Read_WhenTrimFieldsAndAQuoteFollowsWhiteSpace_ShouldReadAQuotedField()
@@ -97,8 +97,8 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
-    /// Verifies that with <see cref="DelimitedReaderOptions.TrimFields" /> the spaces and tabs on both sides of a quoted
-    /// field are trimmed while those inside its quotes are kept: <c>a, " b " ,c</c> and the same with tabs read
+    /// Verifies that with <see cref="DelimitedReaderOptions.TrimFields" /> the spaces and tabs on both sides of a
+    /// quoted field are trimmed while those inside its quotes are kept: <c>a, " b " ,c</c> and the same with tabs read
     /// <c>a</c>, <c> b </c> and <c>c</c>.
     /// </summary>
     /// <param name="useTabs">Whether tabs, rather than spaces, surround the quoted field.</param>

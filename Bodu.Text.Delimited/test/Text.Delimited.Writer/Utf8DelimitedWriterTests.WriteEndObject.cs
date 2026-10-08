@@ -15,8 +15,8 @@ namespace Bodu.Text.Delimited.Writer;
 public partial class Utf8DelimitedWriterTests
 {
     /// <summary>
-    /// Verifies that with <see cref="DelimitedWriterOptions.NoHeader" /> set, object records write only their value rows,
-    /// the header row their names would supply being suppressed.
+    /// Verifies that with <see cref="DelimitedWriterOptions.NoHeader" /> set, object records write only their value
+    /// rows, the header row their names would supply being suppressed.
     /// </summary>
     [TestMethod]
     public void WriteEndObject_WhenNoHeader_ShouldEmitOnlyValueRows()

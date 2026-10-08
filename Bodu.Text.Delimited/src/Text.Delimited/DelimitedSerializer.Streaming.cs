@@ -363,8 +363,8 @@ public static partial class DelimitedSerializer
         }
 
         // A record whose end coincides with the segment end is complete when it ended with a line feed, alone or as the
-        // second half of a CRLF. Otherwise it could still grow: its last field could continue, or the carriage return it
-        // ended with could be followed by a line feed. Such a record is accepted only when data follows it or the
+        // second half of a CRLF. Otherwise it could still grow: its last field could continue, or the carriage return
+        // it ended with could be followed by a line feed. Such a record is accepted only when data follows it or the
         // stream has ended.
         int accepted = 0;
         int consumed = 0;

@@ -254,8 +254,8 @@ public partial class Utf8DelimitedReaderTests
 
     /// <summary>
     /// Verifies that a record with fewer fields than the header is reported on its own line, 2, at the offset where it
-    /// starts, rather than at the line and offset after its line ending, whatever the line ending and whether or not one
-    /// follows the record.
+    /// starts, rather than at the line and offset after its line ending, whatever the line ending and whether or not
+    /// one follows the record.
     /// </summary>
     /// <param name="lineEnding">The name of the line ending used throughout: LF, CRLF or CR.</param>
     /// <param name="endsWithLineEnding">Whether a line ending follows the short record.</param>
@@ -316,7 +316,9 @@ public partial class Utf8DelimitedReaderTests
     /// it starts: line 1 at offset 0, line 1 after a byte order mark at offset 3, and line 3 after two blank lines at
     /// offset 2.
     /// </summary>
-    /// <param name="prefix">The name of what precedes the header: nothing, a byte order mark, or two blank lines.</param>
+    /// <param name="prefix">
+    /// The name of what precedes the header: nothing, a byte order mark, or two blank lines.
+    /// </param>
     /// <param name="line">The header's line.</param>
     /// <param name="offset">The header's offset.</param>
     [TestMethod]

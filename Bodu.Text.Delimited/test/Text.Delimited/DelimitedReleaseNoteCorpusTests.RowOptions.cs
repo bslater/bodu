@@ -89,7 +89,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
         /// </summary>
         /// <param name="text">The field; empty for the defaults.</param>
         /// <returns>The row options.</returns>
-        /// <exception cref="FormatException">An option is malformed, unknown, or has a value it does not accept.</exception>
+        /// <exception cref="FormatException">
+        /// An option is malformed, unknown, or has a value it does not accept.
+        /// </exception>
         public static RowOptions Parse(string text)
         {
             var options = new RowOptions();
@@ -177,7 +179,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
         /// <param name="name">The option name.</param>
         /// <param name="value">The decoded option value.</param>
         /// <returns>The member.</returns>
-        /// <exception cref="FormatException">The value is not the name of a member of <typeparamref name="TEnum" />.</exception>
+        /// <exception cref="FormatException">
+        /// The value is not the name of a member of <typeparamref name="TEnum" />.
+        /// </exception>
         private static TEnum ParseMember<TEnum>(string name, string value)
             where TEnum : struct, Enum =>
             Enum.GetNames<TEnum>().Contains(value, StringComparer.Ordinal)

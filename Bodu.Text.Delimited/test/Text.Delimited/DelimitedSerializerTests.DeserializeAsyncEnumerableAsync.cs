@@ -57,7 +57,9 @@ public partial class DelimitedSerializerTests
     /// Verifies that a stream returning one byte per read finds the line ending between a header and a record, whether
     /// it is CRLF, CR or LF, and yields the record <c>{ a = 1, b = 2 }</c>.
     /// </summary>
-    /// <param name="lineEnding">The name of the line ending after the header row: <c>CRLF</c>, <c>CR</c> or <c>LF</c>.</param>
+    /// <param name="lineEnding">
+    /// The name of the line ending after the header row: <c>CRLF</c>, <c>CR</c> or <c>LF</c>.
+    /// </param>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
     [DataRow("CRLF")]
@@ -82,8 +84,9 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a byte order mark delivered one byte per read, ahead of a header and a record in reads of their own,
-    /// is stripped, so that the first header name is <c>a</c> and the record binds as <c>{ a = d, b = e, c = f }</c>.
+    /// Verifies that a byte order mark delivered one byte per read, ahead of a header and a record in reads of their
+    /// own, is stripped, so that the first header name is <c>a</c> and the record binds as
+    /// <c>{ a = d, b = e, c = f }</c>.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -156,7 +159,8 @@ public partial class DelimitedSerializerTests
             Task<bool> next = records.MoveNextAsync().AsTask();
             yieldedWhileOpen = await Task.WhenAny(next, Task.Delay(s_openStreamTimeout)) == next;
 
-            // End the stream either way, so that a record held back until the end is still read and the enumeration ends.
+            // End the stream either way, so that a record held back until the end is still read and the enumeration
+            // ends.
             endOfStream.SetResult();
             first = await next ? records.Current : null;
         }
@@ -173,8 +177,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a record ending in a complete CRLF is yielded while the stream is still open, before any more input
-    /// or the end of the stream arrives.
+    /// Verifies that a record ending in a complete CRLF is yielded while the stream is still open, before any more
+    /// input or the end of the stream arrives.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -193,7 +197,8 @@ public partial class DelimitedSerializerTests
             Task<bool> next = records.MoveNextAsync().AsTask();
             yieldedWhileOpen = await Task.WhenAny(next, Task.Delay(s_openStreamTimeout)) == next;
 
-            // End the stream either way, so that a record held back until the end is still read and the enumeration ends.
+            // End the stream either way, so that a record held back until the end is still read and the enumeration
+            // ends.
             stream.End();
             first = await next ? records.Current : null;
         }
@@ -368,8 +373,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a record shorter than the header in the first read, which more reads follow, is reported at its line
-    /// in the stream, 3, and at the offset where it starts, 8.
+    /// Verifies that a record shorter than the header in the first read, which more reads follow, is reported at its
+    /// line in the stream, 3, and at the offset where it starts, 8.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -387,8 +392,9 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a record shorter than the header in a later read is reported at its line in the stream, 4, and at the
-    /// offset where it starts, 12, rather than at a position counted from the start of that read or with no position.
+    /// Verifies that a record shorter than the header in a later read is reported at its line in the stream, 4, and at
+    /// the offset where it starts, 12, rather than at a position counted from the start of that read or with no
+    /// position.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -406,8 +412,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that the line break inside a quoted field of a record consumed by an earlier read is counted, so a short
-    /// record in a later read is reported on line 4, at offset 12.
+    /// Verifies that the line break inside a quoted field of a record consumed by an earlier read is counted, so a
+    /// short record in a later read is reported on line 4, at offset 12.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -425,8 +431,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a quoted field still open when the stream ends, in a later read, is reported at the end of the stream:
-    /// line 3, offset 12.
+    /// Verifies that a quoted field still open when the stream ends, in a later read, is reported at the end of the
+    /// stream: line 3, offset 12.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -492,8 +498,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a stream returning <c>a,b\n1,2\n3,4</c> three bytes per read yields both records, the last of which
-    /// has no line ending: <c>{ a = 1, b = 2 }</c> and <c>{ a = 3, b = 4 }</c>.
+    /// Verifies that a stream returning <c>a,b\n1,2\n3,4</c> three bytes per read yields both records, the last of
+    /// which has no line ending: <c>{ a = 1, b = 2 }</c> and <c>{ a = 3, b = 4 }</c>.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -528,8 +534,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that enumerating with a delimiter outside ASCII throws the reader's <see cref="ArgumentException" /> for
-    /// <c>options</c>, naming the <c>Delimiter</c> option, rather than splitting the character's UTF-8 encoding.
+    /// Verifies that enumerating with a delimiter outside ASCII throws the reader's <see cref="ArgumentException" />
+    /// for <c>options</c>, naming the <c>Delimiter</c> option, rather than splitting the character's UTF-8 encoding.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
@@ -548,8 +554,9 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Feeds two pieces of input to an open stream and asserts that the record they hold is not yielded after the first,
-    /// whose end leaves the record's end unknown, and is yielded after the second, while the stream is still open.
+    /// Feeds two pieces of input to an open stream and asserts that the record they hold is not yielded after the
+    /// first, whose end leaves the record's end unknown, and is yielded after the second, while the stream is still
+    /// open.
     /// </summary>
     /// <param name="first">The first piece, which leaves the record's end unknown.</param>
     /// <param name="second">The second piece, which ends the record.</param>
@@ -575,7 +582,8 @@ public partial class DelimitedSerializerTests
             stream.Feed(Encoding.UTF8.GetBytes(second));
             yieldedWhileOpen = await Task.WhenAny(next, Task.Delay(s_openStreamTimeout)) == next;
 
-            // End the stream either way, so that a record held back until the end is still read and the enumeration ends.
+            // End the stream either way, so that a record held back until the end is still read and the enumeration
+            // ends.
             stream.End();
             record = await next ? records.Current : null;
         }

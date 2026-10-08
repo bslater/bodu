@@ -12,8 +12,8 @@ namespace Bodu.Text.Delimited;
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as malformed is rejected by <c>Utf8DelimitedReader</c> with
-    /// <see cref="DelimitedFormatException" />, the exception the row names.
+    /// Verifies that each catalogued input a fix established as malformed is rejected by <c>Utf8DelimitedReader</c>
+    /// with <see cref="DelimitedFormatException" />, the exception the row names.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]

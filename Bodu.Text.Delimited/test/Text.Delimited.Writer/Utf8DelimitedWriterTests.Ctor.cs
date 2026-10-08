@@ -121,7 +121,8 @@ public partial class Utf8DelimitedWriterTests
 
     /// <summary>
     /// Verifies that both writer constructors refuse, with an <see cref="ArgumentException" /> for <c>options</c> that
-    /// names the <c>CommentChar</c> option, a comment character that is a line feed, a carriage return or outside ASCII.
+    /// names the <c>CommentChar</c> option, a comment character that is a line feed, a carriage return or outside
+    /// ASCII.
     /// </summary>
     /// <param name="commentChar">The comment character's code unit.</param>
     [TestMethod]

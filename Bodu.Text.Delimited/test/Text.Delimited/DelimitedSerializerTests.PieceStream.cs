@@ -15,8 +15,8 @@ public partial class DelimitedSerializerTests
     /// </summary>
     /// <remarks>
     /// A read returns the rest of the current piece, or as much of it as the caller's buffer holds; it never joins two
-    /// pieces, and an empty piece is skipped. Once every piece is read, an asynchronous read waits for the end-of-stream
-    /// signal before it returns zero; a synchronous read returns zero at once.
+    /// pieces, and an empty piece is skipped. Once every piece is read, an asynchronous read waits for the
+    /// end-of-stream signal before it returns zero; a synchronous read returns zero at once.
     /// </remarks>
     private sealed class PieceStream
         : Stream

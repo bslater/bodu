@@ -84,9 +84,9 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DelimitedMalformedRecordBehavior.SkipRecord" /> skips a record with text after a closing
-    /// quote whole, its quoted line break included, and goes on with the next line, rather than keeping the fields
-    /// before the error or reading the text as a record.
+    /// Verifies that <see cref="DelimitedMalformedRecordBehavior.SkipRecord" /> skips a record with text after a
+    /// closing quote whole, its quoted line break included, and goes on with the next line, rather than keeping the
+    /// fields before the error or reading the text as a record.
     /// </summary>
     /// <param name="spansLines">Whether the malformed record's quoted field holds a line break.</param>
     [TestMethod]

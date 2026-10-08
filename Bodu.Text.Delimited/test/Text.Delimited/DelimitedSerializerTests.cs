@@ -329,8 +329,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// A base record type whose text <c>Name</c> property <see cref="SameTypeHidingRecord" /> hides with one of the same
-    /// type.
+    /// A base record type whose text <c>Name</c> property <see cref="SameTypeHidingRecord" /> hides with one of the
+    /// same type.
     /// </summary>
     public class TextNamedBase
     {

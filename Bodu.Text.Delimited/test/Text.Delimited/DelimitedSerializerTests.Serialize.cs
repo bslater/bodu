@@ -124,8 +124,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, serializing records writes their value
-    /// rows without the header row.
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, serializing records writes their
+    /// value rows without the header row.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenNoHeaderIsSet_ShouldNotWriteTheHeaderRow()
@@ -212,8 +212,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, serializing an empty collection writes
-    /// nothing at all.
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, serializing an empty collection
+    /// writes nothing at all.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTheCollectionIsEmptyAndNoHeaderIsSet_ShouldWriteNothing()
@@ -224,8 +224,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that an empty collection of positional <see cref="string" /> array records, which have no header, writes
-    /// nothing.
+    /// Verifies that an empty collection of positional <see cref="string" /> array records, which have no header,
+    /// writes nothing.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenAnEmptyCollectionHoldsPositionalRecords_ShouldWriteNothing()
@@ -250,8 +250,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that under a current culture whose decimal separator is a comma, a <see cref="double" /> is written with
-    /// the invariant culture's decimal point and reads back to the same value.
+    /// Verifies that under a current culture whose decimal separator is a comma, a <see cref="double" /> is written
+    /// with the invariant culture's decimal point and reads back to the same value.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenTheCurrentCultureUsesADecimalComma_ShouldWriteInvariantNumbers()
@@ -291,8 +291,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="long.MinValue" /> and <see cref="long.MaxValue" /> are written with every digit and read
-    /// back unchanged.
+    /// Verifies that <see cref="long.MinValue" /> and <see cref="long.MaxValue" /> are written with every digit and
+    /// read back unchanged.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenALongPropertyHoldsItsExtremes_ShouldWriteEveryDigit()

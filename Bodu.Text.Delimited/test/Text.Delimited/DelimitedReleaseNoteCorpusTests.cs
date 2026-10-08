@@ -103,7 +103,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     /// Selects the runnable rows of one kind as test data.
     /// </summary>
     /// <param name="kind">The row kind.</param>
-    /// <returns>One single-element argument array per <c>applies</c> or <c>dialect</c> row of <paramref name="kind" />.</returns>
+    /// <returns>
+    /// One single-element argument array per <c>applies</c> or <c>dialect</c> row of <paramref name="kind" />.
+    /// </returns>
     private static IEnumerable<object[]> RunnableRows(string kind) =>
         AllRows.Where(fix => fix.IsRunnable && fix.Kind == kind).Select(fix => new object[] { fix });
 
@@ -175,15 +177,19 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
 
     /// <summary>
     /// Writes records with <see cref="Utf8DelimitedWriter" />: an object record as
-    /// <see cref="Utf8DelimitedWriter.WriteStartObject" />, a <see cref="Utf8DelimitedWriter.WritePropertyName(string)" />
-    /// and <see cref="Utf8DelimitedWriter.WriteString(string)" /> call per field, and
+    /// <see cref="Utf8DelimitedWriter.WriteStartObject" />, a
+    /// <see cref="Utf8DelimitedWriter.WritePropertyName(string)" /> and
+    /// <see cref="Utf8DelimitedWriter.WriteString(string)" /> call per field, and
     /// <see cref="Utf8DelimitedWriter.WriteEndObject" />, and a positional record as a nested
-    /// <see cref="Utf8DelimitedWriter.WriteStartArray" /> of <see cref="Utf8DelimitedWriter.WriteString(string)" /> calls.
+    /// <see cref="Utf8DelimitedWriter.WriteStartArray" /> of <see cref="Utf8DelimitedWriter.WriteString(string)" />
+    /// calls.
     /// </summary>
     /// <param name="records">The records.</param>
     /// <param name="options">The writer options.</param>
     /// <returns>The written bytes.</returns>
-    /// <exception cref="ArgumentNullException">A name or value is <see langword="null" />, which the writer rejects.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// A name or value is <see langword="null" />, which the writer rejects.
+    /// </exception>
     private static byte[] WriteRecords(IReadOnlyList<FramedRecord> records, DelimitedWriterOptions options)
     {
         var buffer = new ArrayBufferWriter<byte>();
@@ -192,7 +198,8 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
         writer.WriteStartArray();
         foreach (FramedRecord record in records)
         {
-            // A JSON null in the write notation reaches the writer as null, which a write-reject row expects it to refuse.
+            // A JSON null in the write notation reaches the writer as null, which a write-reject row expects it to
+            // refuse.
             if (record.IsObject)
             {
                 writer.WriteStartObject();
@@ -407,11 +414,13 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
 
     /// <summary>
     /// Writes bytes in the catalogue's escape notation: printable ASCII as itself, a backslash, a line feed, a carriage
-    /// return, a tab and a NUL by their short escapes, each well-formed UTF-8 sequence as <c>\u{H...}</c>, and any other
-    /// byte as <c>\xHH</c>.
+    /// return, a tab and a NUL by their short escapes, each well-formed UTF-8 sequence as <c>\u{H...}</c>, and any
+    /// other byte as <c>\xHH</c>.
     /// </summary>
     /// <param name="bytes">The bytes.</param>
-    /// <returns>The escaped text, which <see cref="CorpusEscapes.Decode" /> turns back into <paramref name="bytes" />.</returns>
+    /// <returns>
+    /// The escaped text, which <see cref="CorpusEscapes.Decode" /> turns back into <paramref name="bytes" />.
+    /// </returns>
     private static string Escape(ReadOnlySpan<byte> bytes)
     {
         var text = new StringBuilder(bytes.Length);
@@ -481,7 +490,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     /// Describes an exception for a failure message.
     /// </summary>
     /// <param name="exception">The exception.</param>
-    /// <returns>Its type name, the line and offset a <see cref="DelimitedFormatException" /> carries, and its message.</returns>
+    /// <returns>
+    /// Its type name, the line and offset a <see cref="DelimitedFormatException" /> carries, and its message.
+    /// </returns>
     private static string Describe(Exception exception)
     {
         string position = exception is DelimitedFormatException { LineNumber: int line, Offset: int offset }

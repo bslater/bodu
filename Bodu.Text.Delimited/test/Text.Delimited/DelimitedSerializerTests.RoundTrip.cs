@@ -88,8 +88,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="DateTime" /> with seven digits of fractional seconds and <see cref="DateTimeKind.Utc" />
-    /// reads back with the same ticks and the same kind.
+    /// Verifies that a <see cref="DateTime" /> with seven digits of fractional seconds and
+    /// <see cref="DateTimeKind.Utc" /> reads back with the same ticks and the same kind.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenADateTimeHasFractionalSecondsAndUtcKind_ShouldRoundTripIt()
@@ -108,8 +108,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="DateTime" /> with seven digits of fractional seconds reads back with the same ticks and
-    /// the same kind, whichever <see cref="DateTimeKind" /> it has.
+    /// Verifies that a <see cref="DateTime" /> with seven digits of fractional seconds reads back with the same ticks
+    /// and the same kind, whichever <see cref="DateTimeKind" /> it has.
     /// </summary>
     /// <param name="kind">The value's kind.</param>
     [TestMethod]
@@ -186,8 +186,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="TimeSpan" /> of several days with seven digits of fractional seconds reads back as the
-    /// same duration, positive or negative.
+    /// Verifies that a <see cref="TimeSpan" /> of several days with seven digits of fractional seconds reads back as
+    /// the same duration, positive or negative.
     /// </summary>
     /// <param name="negative">Whether the duration is negative.</param>
     [TestMethod]
@@ -222,8 +222,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a property that hides a base property of the same type with <see langword="new" /> is written as one
-    /// column and reads back into the hiding property, leaving the hidden one unset.
+    /// Verifies that a property that hides a base property of the same type with <see langword="new" /> is written as
+    /// one column and reads back into the hiding property, leaving the hidden one unset.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenAPropertyHidesABasePropertyOfTheSameType_ShouldMapOneColumn()
@@ -265,8 +265,8 @@ public partial class DelimitedSerializerTests
     {
         await AssertManyRecordsRoundTripAsync(id => 1000L + id);
 
-        // Whole minutes of unspecified kind; fractional seconds and every kind are the subject of the DateTime round-trip
-        // tests above.
+        // Whole minutes of unspecified kind; fractional seconds and every kind are the subject of the DateTime
+        // round-trip tests above.
         await AssertManyRecordsRoundTripAsync(id => new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Unspecified).AddMinutes(id));
         await AssertManyRecordsRoundTripAsync(id => id / 7.0);
         await AssertManyRecordsRoundTripAsync(id => new Guid(id, (short)(id % 7), (short)(id % 11), 1, 2, 3, 4, 5, 6, 7, 8));

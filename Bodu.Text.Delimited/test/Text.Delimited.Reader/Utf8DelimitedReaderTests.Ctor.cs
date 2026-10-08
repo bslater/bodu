@@ -17,8 +17,8 @@ namespace Bodu.Text.Delimited.Reader;
 public partial class Utf8DelimitedReaderTests
 {
     /// <summary>
-    /// Verifies that the reader refuses, with <see cref="ArgumentException" />, a delimiter or quote that is a line feed
-    /// or a carriage return, and a delimiter equal to the quote.
+    /// Verifies that the reader refuses, with <see cref="ArgumentException" />, a delimiter or quote that is a line
+    /// feed or a carriage return, and a delimiter equal to the quote.
     /// </summary>
     /// <param name="delimiter">The delimiter's code unit, or zero for the default comma.</param>
     /// <param name="quote">The quote character's code unit, or zero for the default double quote.</param>
@@ -82,9 +82,9 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
-    /// Verifies that the reader refuses, with an <see cref="ArgumentException" /> for <c>options</c> whose message names
-    /// the offending option, a delimiter or comment character outside ASCII, which the reader would otherwise narrow to
-    /// a single byte and match inside other characters.
+    /// Verifies that the reader refuses, with an <see cref="ArgumentException" /> for <c>options</c> whose message
+    /// names the offending option, a delimiter or comment character outside ASCII, which the reader would otherwise
+    /// narrow to a single byte and match inside other characters.
     /// </summary>
     /// <param name="delimiter">The delimiter's code unit, or zero for the default comma.</param>
     /// <param name="commentChar">The comment character's code unit, or zero for the default <c>#</c>.</param>
@@ -157,9 +157,9 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
-    /// Verifies that the reader refuses a comment character equal to the delimiter even with comments off, so the options
-    /// stay coherent whether or not comments are later turned on: a <c>#</c> delimiter clashes with the default comment
-    /// character.
+    /// Verifies that the reader refuses a comment character equal to the delimiter even with comments off, so the
+    /// options stay coherent whether or not comments are later turned on: a <c>#</c> delimiter clashes with the default
+    /// comment character.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenTheCommentCharIsTheDelimiterAndCommentsAreOff_ShouldThrowArgumentException()

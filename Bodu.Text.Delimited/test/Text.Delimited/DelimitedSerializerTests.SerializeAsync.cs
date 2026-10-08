@@ -14,7 +14,7 @@ namespace Bodu.Text.Delimited;
 /// </summary>
 public partial class DelimitedSerializerTests
 {
-    /// <summary>How long a blocked caller waits for an asynchronous operation before it is taken to have deadlocked.</summary>
+    /// <summary>How long a blocked caller waits on an asynchronous operation before reporting a deadlock.</summary>
     private static readonly TimeSpan s_deadlockTimeout = TimeSpan.FromSeconds(10);
 
     /// <summary>

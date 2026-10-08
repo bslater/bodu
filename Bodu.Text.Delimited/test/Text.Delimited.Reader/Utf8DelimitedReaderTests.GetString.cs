@@ -12,9 +12,9 @@ namespace Bodu.Text.Delimited.Reader;
 public partial class Utf8DelimitedReaderTests
 {
     /// <summary>
-    /// Verifies that <see cref="Utf8DelimitedReader.GetString" /> throws <see cref="InvalidOperationException" /> before
-    /// the first <see cref="Utf8DelimitedReader.Read" /> and on the start and end tokens of the document and of a record,
-    /// none of which carries text.
+    /// Verifies that <see cref="Utf8DelimitedReader.GetString" /> throws <see cref="InvalidOperationException" />
+    /// before the first <see cref="Utf8DelimitedReader.Read" /> and on the start and end tokens of the document and of
+    /// a record, none of which carries text.
     /// </summary>
     /// <param name="reads">The number of tokens of <c>a,b\n1,2\n</c> read before the call.</param>
     /// <param name="token">The token the reader is on after those reads.</param>

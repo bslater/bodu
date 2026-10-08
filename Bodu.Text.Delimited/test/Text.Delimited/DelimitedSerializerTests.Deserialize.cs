@@ -261,8 +261,8 @@ public partial class DelimitedSerializerTests
 
     /// <summary>
     /// Verifies that an empty field bound to a non-nullable enumeration throws
-    /// <see cref="DelimitedSerializationException" /> rather than binding the zero member, while the same field bound to
-    /// a nullable enumeration binds <see langword="null" />.
+    /// <see cref="DelimitedSerializationException" /> rather than binding the zero member, while the same field bound
+    /// to a nullable enumeration binds <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenAnEmptyFieldBindsANonNullableEnum_ShouldThrowDelimitedSerializationException()
@@ -281,8 +281,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that an empty quoted field in a nullable <see cref="int" /> column binds <see langword="null" />, beside a
-    /// quoted <c>1</c> that binds 1.
+    /// Verifies that an empty quoted field in a nullable <see cref="int" /> column binds <see langword="null" />,
+    /// beside a quoted <c>1</c> that binds 1.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenANullableIntColumnIsAnEmptyQuotedField_ShouldBindNull()
@@ -308,8 +308,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a nullable <see cref="int" /> column holding only white space binds <see langword="null" />, between
-    /// records that bind 1 and 3.
+    /// Verifies that a nullable <see cref="int" /> column holding only white space binds <see langword="null" />,
+    /// between records that bind 1 and 3.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenANullableIntColumnIsWhiteSpace_ShouldBindNull()
@@ -417,7 +417,8 @@ public partial class DelimitedSerializerTests
 
     /// <summary>
     /// Verifies that temporal columns written in the invariant general forms of earlier versions still parse: a
-    /// <see cref="DateTime" />, a <see cref="DateTimeOffset" />, a <see cref="DateOnly" /> and a <see cref="TimeOnly" />.
+    /// <see cref="DateTime" />, a <see cref="DateTimeOffset" />, a <see cref="DateOnly" /> and a
+    /// <see cref="TimeOnly" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenTemporalColumnsHoldTheGeneralForms_ShouldParseThem()
@@ -434,9 +435,9 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a column whose property hides a base property of another type with <see langword="new" /> binds the
-    /// hiding property alone: <c>Name</c> reads into the text property, and the hidden <see cref="int" /> property keeps
-    /// its default rather than failing to parse the text.
+    /// Verifies that a column whose property hides a base property of another type with <see langword="new" /> binds
+    /// the hiding property alone: <c>Name</c> reads into the text property, and the hidden <see cref="int" /> property
+    /// keeps its default rather than failing to parse the text.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenAPropertyHidesABasePropertyWithNew_ShouldBindTheHidingProperty()

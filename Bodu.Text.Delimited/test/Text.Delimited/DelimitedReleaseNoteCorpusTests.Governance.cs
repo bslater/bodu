@@ -27,12 +27,12 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each library's catalogue holds the number of fixes, of rows in each class, and of runnable rows that
-    /// <c>corpus/delimited/README.md</c> records.
+    /// Verifies that each library's catalogue holds the number of fixes, of rows in each class, and of runnable rows
+    /// that <c>corpus/delimited/README.md</c> records.
     /// </summary>
     /// <remarks>
-    /// A catalogue that silently lost rows, moved a fix from <c>applies</c> to <c>n/a</c>, or turned a runnable row into
-    /// a <c>unit</c> row would quietly shrink the fixes this suite holds Bodu to.
+    /// A catalogue that silently lost rows, moved a fix from <c>applies</c> to <c>n/a</c>, or turned a runnable row
+    /// into a <c>unit</c> row would quietly shrink the fixes this suite holds Bodu to.
     /// </remarks>
     [TestMethod]
     public void FixCatalogues_WhenCounted_ShouldHoldTheRecordedRowsInEachClass()
@@ -186,8 +186,8 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that every row is written in canonical RFC 4180 form, which <c>corpus/delimited/README.md</c> requires: a
-    /// field is quoted only when it holds a comma or a double quote.
+    /// Verifies that every row is written in canonical RFC 4180 form, which <c>corpus/delimited/README.md</c> requires:
+    /// a field is quoted only when it holds a comma or a double quote.
     /// </summary>
     [TestMethod]
     public void FixCatalogues_WhenRowsAreRead_ShouldQuoteOnlyTheFieldsThatNeedIt()
@@ -258,7 +258,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     /// Joins fields into a catalogue line in canonical RFC 4180 form.
     /// </summary>
     /// <param name="fields">The fields, in column order.</param>
-    /// <returns>The line, each field that holds a comma or a double quote enclosed in quotes with its quotes doubled.</returns>
+    /// <returns>
+    /// The line, each field that holds a comma or a double quote enclosed in quotes with its quotes doubled.
+    /// </returns>
     private static string JoinCanonically(params string[] fields) =>
         string.Join(',', fields.Select(field => field.AsSpan().ContainsAny(',', '"')
             ? "\"" + field.Replace("\"", "\"\"", StringComparison.Ordinal) + "\""
@@ -268,7 +270,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     /// Checks that a row gives the expected result its kind compares against.
     /// </summary>
     /// <param name="fix">The row.</param>
-    /// <exception cref="FormatException">The expected result is empty, or is not in the catalogue's escape notation.</exception>
+    /// <exception cref="FormatException">
+    /// The expected result is empty, or is not in the catalogue's escape notation.
+    /// </exception>
     private static void RequireExpected(ReleaseNoteFix fix)
     {
         if (CorpusEscapes.Decode(fix.Expected).Length == 0)

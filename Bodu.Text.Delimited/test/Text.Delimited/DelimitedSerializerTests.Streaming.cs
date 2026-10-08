@@ -162,8 +162,8 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that serializing an empty asynchronous sequence of POCO records writes the record type's header row, and
-    /// nothing else, to the destination stream.
+    /// Verifies that serializing an empty asynchronous sequence of POCO records writes the record type's header row,
+    /// and nothing else, to the destination stream.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]

@@ -14,7 +14,8 @@ public partial class Utf8DelimitedReaderTests
 {
     /// <summary>
     /// Verifies that a field holding bytes that are not valid UTF-8 reads without error, that
-    /// <see cref="Utf8DelimitedReader.ValueSpan" /> exposes the field's raw bytes, and that the next field reads as usual.
+    /// <see cref="Utf8DelimitedReader.ValueSpan" /> exposes the field's raw bytes, and that the next field reads as
+    /// usual.
     /// </summary>
     [TestMethod]
     public void ValueSpan_WhenAFieldHoldsInvalidUtf8_ShouldExposeTheRawBytes()

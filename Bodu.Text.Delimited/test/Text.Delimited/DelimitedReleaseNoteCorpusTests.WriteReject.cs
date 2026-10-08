@@ -13,8 +13,8 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
     /// Verifies that writing each catalogued set of records a fix established as unwritable throws
-    /// <see cref="ArgumentNullException" />, the exception the row names, which <c>Utf8DelimitedWriter</c> documents for
-    /// a <see langword="null" /> name or value.
+    /// <see cref="ArgumentNullException" />, the exception the row names, which <c>Utf8DelimitedWriter</c> documents
+    /// for a <see langword="null" /> name or value.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]

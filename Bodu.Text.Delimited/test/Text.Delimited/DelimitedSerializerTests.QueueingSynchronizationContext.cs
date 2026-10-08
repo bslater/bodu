@@ -11,14 +11,14 @@ namespace Bodu.Text.Delimited;
 public partial class DelimitedSerializerTests
 {
     /// <summary>
-    /// A single-threaded <see cref="SynchronizationContext" />, like a UI thread's, whose posted callbacks run only when
-    /// its owner runs them.
+    /// A single-threaded <see cref="SynchronizationContext" />, like a UI thread's, whose posted callbacks run only
+    /// when its owner runs them.
     /// </summary>
     /// <remarks>
-    /// While the owning thread blocks on a task, it runs nothing, so a continuation that an <see langword="await" /> posts
-    /// here never runs and the task never completes: the deadlock a library avoids by not resuming on the caller's
-    /// context. <see cref="RunPosted" /> runs the queued callbacks afterwards, so that a test which found the deadlock
-    /// leaves nothing waiting.
+    /// While the owning thread blocks on a task, it runs nothing, so a continuation that an <see langword="await" />
+    /// posts here never runs and the task never completes: the deadlock a library avoids by not resuming on the
+    /// caller's context. <see cref="RunPosted" /> runs the queued callbacks afterwards, so that a test which found the
+    /// deadlock leaves nothing waiting.
     /// </remarks>
     private sealed class QueueingSynchronizationContext
         : SynchronizationContext

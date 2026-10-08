@@ -367,8 +367,8 @@ public ref struct Utf8DelimitedReader
 
             if (!ParseRecord())
             {
-                // Text after a closing quote: the cursor is on the offending byte, and the rest of its line belongs to the
-                // malformed record.
+                // Text after a closing quote: the cursor is on the offending byte, and the rest of its line belongs to
+                // the malformed record.
                 if (_options.MalformedRecordBehavior == DelimitedMalformedRecordBehavior.SkipRecord)
                 {
                     SkipRestOfLine();

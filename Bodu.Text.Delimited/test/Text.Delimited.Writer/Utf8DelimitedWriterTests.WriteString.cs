@@ -105,8 +105,8 @@ public partial class Utf8DelimitedWriterTests
 
     /// <summary>
     /// Verifies that with <see cref="DelimitedWriterOptions.CommentChar" /> set to <c>;</c> the writer quotes a first
-    /// field beginning with <c>;</c> instead of one beginning with <c>#</c>, so a reader with the same comment character
-    /// reads both records back.
+    /// field beginning with <c>;</c> instead of one beginning with <c>#</c>, so a reader with the same comment
+    /// character reads both records back.
     /// </summary>
     [TestMethod]
     public void WriteString_WhenTheCommentCharIsSet_ShouldQuoteAFirstFieldBeginningWithIt()

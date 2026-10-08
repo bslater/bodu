@@ -15,8 +15,8 @@ namespace Bodu.Text.Delimited.Reader;
 public partial class Utf8DelimitedReaderTests
 {
     /// <summary>
-    /// Verifies that at the end of the last record the reader reports line 3 when the third line has no line ending, and
-    /// line 4 when it ends with CRLF, the line number being that of the read position.
+    /// Verifies that at the end of the last record the reader reports line 3 when the third line has no line ending,
+    /// and line 4 when it ends with CRLF, the line number being that of the read position.
     /// </summary>
     /// <param name="endsWithCrLf">Whether a CRLF follows the last record.</param>
     /// <param name="expectedLine">The line number expected at the end of the last record.</param>
@@ -39,8 +39,8 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
-    /// Verifies that a line break inside a quoted field counts as a line: three records on four lines leave the reader on
-    /// line 4, and an unterminated quote opened on the fourth line is reported on line 4.
+    /// Verifies that a line break inside a quoted field counts as a line: three records on four lines leave the reader
+    /// on line 4, and an unterminated quote opened on the fourth line is reported on line 4.
     /// </summary>
     [TestMethod]
     public void LineNumber_WhenARecordHoldsAQuotedLineBreak_ShouldCountIt()
