@@ -59,4 +59,38 @@ public partial class IniObjectTests
             _ = root.ToUtf8Bytes();
         });
     }
+
+    /// <summary>
+    /// Verifies that writing a tree whose value contains a line break throws <see cref="ArgumentException" /> rather
+    /// than splitting the entry across lines.
+    /// </summary>
+    /// <param name="value">The value of the entry.</param>
+    [TestMethod]
+    [DataRow("a\nb", DisplayName = "LF")]
+    [DataRow("a\rb", DisplayName = "CR")]
+    [DataRow("a\r\nb", DisplayName = "CRLF")]
+    public void WriteTo_WhenValueContainsLineBreak_ShouldThrowArgumentException(string value)
+    {
+        var root = new IniObject();
+        root["key"] = new IniValue(value);
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = root.ToUtf8Bytes();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a leading comment holding a line break is written as one comment line per line of its text.
+    /// </summary>
+    [TestMethod]
+    public void WriteTo_WhenCommentContainsLineBreak_ShouldWriteEachLineAsAComment()
+    {
+        var root = new IniObject();
+        var value = new IniValue("v");
+        value.LeadingComments.Add("first\r\nsecond");
+        root["key"] = value;
+
+        Assert.AreEqual(";first\n;second\nkey=v\n", Encoding.UTF8.GetString(root.ToUtf8Bytes()));
+    }
 }
