@@ -1,0 +1,13 @@
+# library: sample -- https://example.invalid/sample
+# releases: none; a synthetic catalogue for the Bodu.Test.Corpus tests
+# licence: MIT
+# note: one row of every class, and one applies or dialect row of every kind
+library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
+sample,2.0.0,#2,Parse a value after a byte order mark,applies,1,parse,,\u{FEFF}a=1,"[[""a"",""1""]]",upstream,the sample parse row
+sample,2.0.0,#2,Parse a value after a byte order mark,applies,2,reject,Strict=true,\xFF,FormatException,derived,the sample reject row
+sample,2.0.0,#3,Quote a delimiter on write,dialect,,write,Delimiter=\x3B,"[""a;b""]","""a;b""\n",spec,the sample write row
+sample,1.1.0,#4,Refuse a value the writer cannot represent,applies,,write-reject,,\0,InvalidOperationException,derived,the sample write-reject row
+sample,1.1.0,,Keep a value through a round trip,applies,,roundtrip,,a=1\n,,upstream,the sample roundtrip row
+sample,1.0.0,PR #5,Bind a nullable member,applies,,unit,,ReleaseNoteGovernanceTests.FindMissingUnitTests_WhenEveryNamedTestExists_ShouldReportNothing,,upstream,the sample unit row
+sample,1.0.0,#6,Correct the package metadata,n/a,,,,,,,packaging
+sample,0.9.0,#7,Fix an unexplained crash,unknown,,,,,,,https://example.invalid/sample/issues/7 has no reproduction
