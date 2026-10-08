@@ -96,8 +96,14 @@ internal sealed partial class YamlParser
             int blanks = 0;
             while (true)
             {
+                // Only spaces indent a continuation line; a tab after them is separation, so a line indented by too
+                // few spaces before a tab ends the scalar.
                 int lineStart = _pos;
                 int p = _pos;
+                while (p < _length && _source[p] == (byte)' ')
+                    p++;
+
+                int indentation = p - lineStart;
                 while (p < _length && _source[p] is (byte)' ' or (byte)'\t')
                     p++;
 
@@ -116,10 +122,9 @@ internal sealed partial class YamlParser
                     continue;
                 }
 
-                int col = p - lineStart;
                 _pos = p;
 
-                if (col < minIndent || AtDocumentBoundary() || _source[p] == (byte)'#')
+                if (indentation < minIndent || AtDocumentBoundary() || _source[p] == (byte)'#')
                 {
                     _pos = savePos;
                     _line = saveLine;

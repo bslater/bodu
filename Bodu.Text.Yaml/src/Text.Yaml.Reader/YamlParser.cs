@@ -647,7 +647,6 @@ internal sealed partial class YamlParser
                 break;
 
             Advance(); // consume '-'
-            int entryColumn = CurrentColumn();
 
             bool separationHasTab = false;
             while (Peek() is (byte)' ' or (byte)'\t')
@@ -662,22 +661,23 @@ internal sealed partial class YamlParser
             if (separationHasTab && AtCompactCollectionStart())
                 throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
 
+            // The entry's node is indented from the dash (YAML 1.2.2 section 8.2.1), whether it begins on the dash's
+            // line or a later one: its content, and any line it continues onto, reaches at least the column after the
+            // dash, and a block scalar counts its indentation from the dash's column. A compact collection on the dash's
+            // line keeps its entries at its own column.
             int element;
             if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
             {
                 SkipLineTrailing();
                 SkipBlankCommentLines();
-                if (!AtStreamEnd() && !AtDocumentBoundary() && CurrentColumn() > entryColumn)
-                    element = ParseBlockNode(entryColumn + 1);
+                if (!AtStreamEnd() && !AtDocumentBoundary() && CurrentColumn() > indent)
+                    element = ParseBlockNode(indent + 1, indent);
                 else
                     element = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
             }
             else
             {
-                // Content on the same line as the dash; its effective indent is the column after the dash. A block
-                // scalar there still takes the dash's column as its parent indentation, so that an indentation
-                // indicator, or the detected indentation, counts from the dash.
-                element = ParseBlockNode(entryColumn + 1, indent);
+                element = ParseBlockNode(indent + 1, indent);
             }
 
             AppendChild(sequence, element);
