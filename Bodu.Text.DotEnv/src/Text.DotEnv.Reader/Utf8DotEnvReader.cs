@@ -500,10 +500,7 @@ public ref struct Utf8DotEnvReader
                 if (_position >= _data.Length)
                     throw UnterminatedDoubleQuote(startLine);
 
-                byte esc = _data[_position];
-                _position++;
-
-                switch (esc)
+                switch (_data[_position])
                 {
                     case (byte)'"': sb.Append('"'); break;
                     case (byte)'\'': sb.Append('\''); break;
@@ -519,15 +516,17 @@ public ref struct Utf8DotEnvReader
                     case (byte)'\n': _line++; break; // line continuation
                     case (byte)'\r':
                         _line++;
-                        if (_position < _data.Length && _data[_position] == (byte)'\n')
+                        if (_position + 1 < _data.Length && _data[_position + 1] == (byte)'\n')
                             _position++;
                         break;
                     default:
+                        // Not an escape: keep the backslash, and leave the character after it to the loop, which
+                        // decodes it whatever its UTF-8 length.
                         sb.Append('\\');
-                        sb.Append((char)esc);
-                        break;
+                        continue;
                 }
 
+                _position++; // consume the escaped character
                 continue;
             }
 
@@ -623,11 +622,19 @@ public ref struct Utf8DotEnvReader
         IsKeyStart(b) || b is >= (byte)'0' and <= (byte)'9';
 
     /// <summary>
-    /// Appends a source byte to the decode buffer, decoding a multi-byte UTF-8 sequence starting at the cursor.
+    /// Appends the character that starts at the cursor to the decode buffer, decoding its whole UTF-8 sequence.
     /// </summary>
     /// <param name="sb">The decode buffer.</param>
-    /// <param name="lead">The leading byte already at the cursor.</param>
-    /// <returns>The number of source bytes consumed (one for ASCII, two to four for a multibyte sequence).</returns>
+    /// <param name="lead">The first byte of the character, already at the cursor.</param>
+    /// <returns>
+    /// The number of source bytes consumed: the length of the character, or, where the bytes are not valid UTF-8, the
+    /// length of the sequence the decoder rejects.
+    /// </returns>
+    /// <remarks>
+    /// Bytes that are not valid UTF-8 are appended as one U+FFFD for each sequence the decoder rejects, as
+    /// <see cref="Encoding.UTF8" /> decodes them in a single-quoted or unquoted value. The decoder never takes an ASCII
+    /// byte into a rejected sequence, so a closing quote after one still closes the value.
+    /// </remarks>
     private readonly int AppendByte(StringBuilder sb, byte lead)
     {
         if (lead < 0x80)
@@ -636,16 +643,10 @@ public ref struct Utf8DotEnvReader
             return 1;
         }
 
-        // Decode the whole UTF-8 sequence for a non-ASCII lead byte.
-        int length = lead switch
-        {
-            >= 0xF0 => 4,
-            >= 0xE0 => 3,
-            _ => 2,
-        };
+        _ = Rune.DecodeFromUtf8(_data[_position..], out Rune rune, out int length);
 
-        length = Math.Min(length, _data.Length - _position);
-        sb.Append(Encoding.UTF8.GetString(_data.Slice(_position, length)));
+        Span<char> utf16 = stackalloc char[2];
+        sb.Append(utf16[..rune.EncodeToUtf16(utf16)]);
         return length;
     }
 
