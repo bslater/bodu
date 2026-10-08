@@ -113,6 +113,7 @@ public partial class IniObjectTests
     [DataRow("[disturbing]", DisplayName = "leading bracket")]
     [DataRow(";k", DisplayName = "leading semicolon")]
     [DataRow("#k", DisplayName = "leading hash")]
+    [DataRow("\uFEFFk", DisplayName = "leading byte order mark")]
     public void WriteTo_WhenKeyWouldReadBackDifferently_ShouldThrowArgumentException(string name)
     {
         var root = new IniObject();
@@ -134,6 +135,7 @@ public partial class IniObjectTests
     [DataRow("s ", DisplayName = "trailing space")]
     [DataRow("a\rb", DisplayName = "line break")]
     [DataRow("a];b", DisplayName = "bracket then comment marker")]
+    [DataRow("\uFEFFs", DisplayName = "leading byte order mark")]
     public void WriteTo_WhenSectionNameWouldReadBackDifferently_ShouldThrowArgumentException(string name)
     {
         var root = new IniObject();

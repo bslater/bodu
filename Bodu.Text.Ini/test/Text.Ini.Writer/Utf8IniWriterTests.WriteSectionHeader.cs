@@ -43,6 +43,32 @@ public partial class Utf8IniWriterTests
     }
 
     /// <summary>
+    /// Verifies that a section name beginning with U+FEFF throws <see cref="ArgumentException" /> naming the name
+    /// wherever it is written, the same rule as for keys, which the reader would read back without a leading byte order
+    /// mark.
+    /// </summary>
+    /// <param name="afterEntry">Whether an entry is written before the section header.</param>
+    [TestMethod]
+    [DataRow(false, DisplayName = "first in the document")]
+    [DataRow(true, DisplayName = "after an entry")]
+    public void WriteSectionHeader_WhenNameBeginsWithByteOrderMark_ShouldThrowArgumentException(bool afterEntry)
+    {
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            var writer = new Utf8IniWriter(new ArrayBufferWriter<byte>());
+            if (afterEntry)
+            {
+                writer.WritePropertyName("key");
+                writer.WriteString("value");
+            }
+
+            writer.WriteSectionHeader("\uFEFFsection");
+        });
+
+        Assert.AreEqual("name", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a section name holding <c>]</c>, <c>[</c>, comment markers or <c>=</c> where the reader reads them
     /// as part of the name is written and read back unchanged.
     /// </summary>

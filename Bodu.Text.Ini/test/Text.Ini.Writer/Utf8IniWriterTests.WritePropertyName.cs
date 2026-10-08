@@ -45,6 +45,28 @@ public partial class Utf8IniWriterTests
     }
 
     /// <summary>
+    /// Verifies that a key beginning with U+FEFF throws <see cref="ArgumentException" /> naming the key wherever it is
+    /// written, because the reader skips U+FEFF as a byte order mark at the start of a document.
+    /// </summary>
+    /// <param name="afterSection">Whether a section header is written before the key.</param>
+    [TestMethod]
+    [DataRow(false, DisplayName = "first in the document")]
+    [DataRow(true, DisplayName = "after a section header")]
+    public void WritePropertyName_WhenKeyBeginsWithByteOrderMark_ShouldThrowArgumentException(bool afterSection)
+    {
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            var writer = new Utf8IniWriter(new ArrayBufferWriter<byte>());
+            if (afterSection)
+                writer.WriteSectionHeader("s");
+
+            writer.WritePropertyName("\uFEFFkey");
+        });
+
+        Assert.AreEqual("name", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a key holding brackets, comment markers or whitespace inside it, which the reader reads literally,
     /// is written and read back unchanged.
     /// </summary>

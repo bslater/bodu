@@ -20,7 +20,7 @@ namespace Bodu.Text.Ini.Writer;
 public partial class Utf8IniWriterTests
 {
     /// <summary>The characters that matter to the INI dialect, which the short-name sweeps combine.</summary>
-    private const string SweepAlphabet = "a \t=[];#\r\n";
+    private const string SweepAlphabet = "a \t=[];#\r\n\uFEFF";
 
     /// <summary>The longest name the short-name sweeps try.</summary>
     private const int SweepMaxLength = 4;
@@ -73,7 +73,7 @@ public partial class Utf8IniWriterTests
     }
 
     /// <summary>
-    /// Writes text with its line breaks and tabs escaped, for a failure message.
+    /// Writes text with its line breaks, tabs and U+FEFF escaped, for a failure message.
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>The escaped text, quoted.</returns>
@@ -81,7 +81,8 @@ public partial class Utf8IniWriterTests
         "\"" + text
             .Replace("\r", @"\r", StringComparison.Ordinal)
             .Replace("\n", @"\n", StringComparison.Ordinal)
-            .Replace("\t", @"\t", StringComparison.Ordinal) + "\"";
+            .Replace("\t", @"\t", StringComparison.Ordinal)
+            .Replace("\uFEFF", @"\uFEFF", StringComparison.Ordinal) + "\"";
 
     /// <summary>
     /// Verifies that a global key, a section header, and section entries are emitted in order.
