@@ -9,7 +9,8 @@ using Bodu.Text.Ini;
 namespace Bodu.Text.Formats.Generators;
 
 /// <summary>
-/// Contains the end-to-end tests for the generated <c>GeneratedServerSection.IniFactory</c>.
+/// Contains the end-to-end tests for the generated INI section factories, chiefly
+/// <c>GeneratedServerSection.IniFactory</c>.
 /// </summary>
 public partial class FormatFactoryGeneratorTests
 {
@@ -74,5 +75,26 @@ public partial class FormatFactoryGeneratorTests
         Assert.AreEqual(80, restored.Port);
         Assert.IsFalse(restored.UseTls);
         Assert.IsNull(restored.Timeout);
+    }
+
+    /// <summary>
+    /// Verifies that a section of temporal values serializes through the generated INI factory to the same bytes as
+    /// INI's runtime reflection binder writes, in INI's own forms, which the delimited forms do not change.
+    /// </summary>
+    [TestMethod]
+    public void IniFactory_WhenTemporalValuesAreSerialized_ShouldMatchReflectionBinderOutput()
+    {
+        var section = new GeneratedScheduleSection
+        {
+            At = new DateTime(2021, 2, 6, 1, 2, 3, DateTimeKind.Utc).AddTicks(4567891),
+            AtOffset = new DateTimeOffset(2021, 2, 6, 1, 2, 3, TimeSpan.FromHours(10)).AddTicks(4567891),
+            Span = new TimeSpan(1, 2, 3, 4).Add(TimeSpan.FromTicks(5678901)),
+            Count = 7,
+        };
+
+        string reflection = IniSerializer.Serialize(new { schedule = section });
+        string generated = IniSerializer.SerializeSection("schedule", section, GeneratedScheduleSection.IniFactory);
+
+        Assert.AreEqual(reflection, generated);
     }
 }
