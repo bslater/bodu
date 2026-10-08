@@ -10,7 +10,7 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies block structural parsing and document markers: mixed mapping/sequence nesting, multi-key mapping
-/// entries, and the <c>---</c> / <c>...</c> document markers.
+/// entries, explicit <c>?</c> keys and their <c>:</c> values, and the <c>---</c> / <c>...</c> document markers.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -256,5 +256,91 @@ public partial class YamlDocumentTests
         });
 
         Assert.AreEqual(3, ex.LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit key with no <c>:</c> value line reads with a null value, whatever follows it: the end
+    /// of the stream, another explicit key, an implicit key, or a less-indented line.
+    /// </summary>
+    /// <param name="yaml">A mapping with an explicit key that has no value line.</param>
+    /// <param name="expected">The mapping expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("?", """{"":null}""", DisplayName = "an empty explicit key alone")]
+    [DataRow("?\n? a", """{"":null,"a":null}""", DisplayName = "an empty explicit key, then another")]
+    [DataRow("? a\n? b\n", """{"a":null,"b":null}""", DisplayName = "two explicit keys")]
+    [DataRow("? a\nb: 1\n", """{"a":null,"b":1}""", DisplayName = "an explicit key, then an implicit key")]
+    [DataRow("c:\n  ? a\nd: 2\n", """{"c":{"a":null},"d":2}""", DisplayName = "nested explicit key, outer key")]
+    public void Parse_WhenExplicitKeyHasNoValue_ShouldReadNullValue(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a compact sequence or mapping may begin on the line of an explicit key's <c>:</c>, indented by
+    /// its own column.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit value is a compact collection.</param>
+    /// <param name="expected">The mapping expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("? a\n: -\tb", """{"a":["b"]}""", DisplayName = "a compact sequence, separated by a tab")]
+    [DataRow("? a\n: - b\n  - c\n", """{"a":["b","c"]}""", DisplayName = "a compact sequence of two entries")]
+    [DataRow("? a\n: -\tb\n  -  -\tc\n     - d\n", """{"a":["b",["c","d"]]}""", DisplayName = "nested compact")]
+    [DataRow("? a\n: b: c\n  d: e\n", """{"a":{"b":"c","d":"e"}}""", DisplayName = "a compact mapping")]
+    public void Parse_WhenExplicitValueIsCompactCollection_ShouldReadIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that an explicit key's <c>:</c> indented past the column of its <c>?</c> is rejected, since the value
+    /// line must begin at the mapping's indentation.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit value indicator is indented past its key.</param>
+    [TestMethod]
+    [DataRow("? \"foo\"\n : \"bar\"\n", DisplayName = "a quoted key, then a value indicator one column in")]
+    [DataRow("? a\n  : b\n", DisplayName = "a plain key, then a value indicator two columns in")]
+    public void Parse_WhenExplicitValueIndicatorIsIndentedPastKey_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an anchor or tag before an explicit key's <c>?</c> on the same line is rejected, since a block
+    /// mapping cannot begin on the line of its own node properties.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit key follows node properties on its line.</param>
+    [TestMethod]
+    [DataRow("&a ? A", DisplayName = "an anchor, then a key with no value")]
+    [DataRow("&a ? A\n: B\n", DisplayName = "an anchor, then a key and its value")]
+    [DataRow("!!map ? A\n: B\n", DisplayName = "a tag, then a key and its value")]
+    public void Parse_WhenPropertiesPrecedeExplicitKeyOnItsLine_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a node property below an explicit key's <c>?</c> and not indented past it is not read as part of
+    /// the key, so the line it begins is rejected.
+    /// </summary>
+    /// <param name="yaml">A mapping with a node property at the explicit key's column on the line after it.</param>
+    [TestMethod]
+    [DataRow("?\n!!null", DisplayName = "a tag below an empty key")]
+    [DataRow("? &a\n!!str b\n", DisplayName = "a tag below a key's anchor")]
+    public void Parse_WhenPropertyBelowExplicitKeyIsNotIndented_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
     }
 }
