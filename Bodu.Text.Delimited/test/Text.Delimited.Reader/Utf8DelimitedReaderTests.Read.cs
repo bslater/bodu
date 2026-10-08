@@ -253,6 +253,90 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
+    /// Verifies that a record with fewer fields than the header is reported on its own line, 2, at the offset where it
+    /// starts, rather than at the line and offset after its line ending, whatever the line ending and whether or not one
+    /// follows the record.
+    /// </summary>
+    /// <param name="lineEnding">The name of the line ending used throughout: LF, CRLF or CR.</param>
+    /// <param name="endsWithLineEnding">Whether a line ending follows the short record.</param>
+    [TestMethod]
+    [DataRow("LF", false)]
+    [DataRow("LF", true)]
+    [DataRow("CRLF", false)]
+    [DataRow("CRLF", true)]
+    [DataRow("CR", true)]
+    public void Read_WhenARecordIsShorterThanTheHeader_ShouldReportWhereTheRecordStarts(string lineEnding, bool endsWithLineEnding)
+    {
+        string newLine = lineEnding switch { "CRLF" => "\r\n", "CR" => "\r", _ => "\n" };
+        string source = "a,b" + newLine + "1" + (endsWithLineEnding ? newLine : string.Empty);
+
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(2, ex.LineNumber);
+        Assert.AreEqual(3 + newLine.Length, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a record with more fields than the header, after a valid record, a blank line and a comment line,
+    /// is reported on its own line, 5, at the offset where it starts, 16.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenARecordIsLongerThanTheHeader_ShouldReportWhereTheRecordStarts()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe("a,b\n1,2\n\n# note\n3,4,5\n6,7\n", new DelimitedReaderOptions { AllowComments = true });
+        });
+
+        Assert.AreEqual(5, ex.LineNumber);
+        Assert.AreEqual(16, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a short record whose quoted field holds a line break is reported on the line where the record
+    /// starts, 2, at its first byte, rather than on the line where it ends.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenAShortRecordSpansLines_ShouldReportTheLineWhereItStarts()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe("a,b\n\"x\ny\"\n1,2\n");
+        });
+
+        Assert.AreEqual(2, ex.LineNumber);
+        Assert.AreEqual(4, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a header row that repeats a column name is reported on the header's own line at the offset where
+    /// it starts: line 1 at offset 0, line 1 after a byte order mark at offset 3, and line 3 after two blank lines at
+    /// offset 2.
+    /// </summary>
+    /// <param name="prefix">The name of what precedes the header: nothing, a byte order mark, or two blank lines.</param>
+    /// <param name="line">The header's line.</param>
+    /// <param name="offset">The header's offset.</param>
+    [TestMethod]
+    [DataRow("None", 1, 0)]
+    [DataRow("Bom", 1, 3)]
+    [DataRow("BlankLines", 3, 2)]
+    public void Read_WhenTheHeaderRepeatsAName_ShouldReportWhereTheHeaderStarts(string prefix, int line, int offset)
+    {
+        string source = prefix switch { "Bom" => "\uFEFF", "BlankLines" => "\n\n", _ => string.Empty } + "a,b,a\n1,2,3\n";
+
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
     /// Reads every record into its decoded field values.
     /// </summary>
     /// <param name="source">The CSV source text.</param>
