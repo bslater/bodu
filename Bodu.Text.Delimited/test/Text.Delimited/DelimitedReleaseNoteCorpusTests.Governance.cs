@@ -55,7 +55,8 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
             s_catalogs.Value.Select(catalog => catalog.Library).ToArray(),
             "The recorded counts do not cover the embedded catalogues.");
 
-        foreach ((ReleaseNoteCatalog catalog, (string library, int fixes, int applies, int dialect, int notApplicable, int unknown, int runnable)) in s_catalogs.Value.Zip(recorded))
+        foreach ((ReleaseNoteCatalog catalog, (string library, int fixes, int applies, int dialect, int notApplicable, int unknown, int runnable))
+            in s_catalogs.Value.Zip(recorded))
         {
             IReadOnlyDictionary<string, int> counts = catalog.CountByClass();
 

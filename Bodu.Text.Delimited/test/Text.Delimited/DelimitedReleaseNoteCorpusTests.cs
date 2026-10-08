@@ -32,8 +32,8 @@ namespace Bodu.Text.Delimited;
 /// <para>
 /// A write row's input is the same JSON shape, replayed on <see cref="Utf8DelimitedWriter" />: in header mode each
 /// record as an object record, whose first record supplies the header row, and with <c>NoHeader=true</c> each record as
-/// a positional record. A JSON <c>null</c> name or value reaches the writer as <see langword="null" />. A round-trip row
-/// reads its input, writes the records it read back with the row's dialect, and reads the written bytes again.
+/// a positional record. A JSON <c>null</c> name or value reaches the writer as <see langword="null" />. A round-trip
+/// row reads its input, writes the records it read back with the row's dialect, and reads the written bytes again.
 /// </para>
 /// <para>
 /// Expected and actual results are compared in the catalogue's escape notation, each well-formed UTF-8 sequence written
