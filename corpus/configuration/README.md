@@ -159,21 +159,36 @@ All 104 `applies` and `dialect` rows are runnable; there are no `unit` rows.
 
 ### Status
 
-No test in `Bodu.Text.Configuration.Test` reads these files yet. Every file loads without a problem through
-`ReleaseNoteCatalog` in `Bodu.Test.Corpus`, and a scratch harness that runs each row as described above was run
-against Bodu at 378a6099db on 2026-10-08: 91 of the 104 runnable rows pass. The 13 that fail have four causes, and the
-rows stay as they are until each is fixed test first:
+`ConfigurationReleaseNoteCorpusTests` in `Bodu.Text.Configuration.Test` runs every runnable row from byte-identical
+copies of these files embedded under `Fixtures/ReleaseNotes/`, pins the counts above, and checks that the copies match
+these files. All 104 runnable rows pass on net8.0 and net10.0, and no row was re-classed.
 
-- **Brackets that hold a `/` are read as a character class** (6 rows: editorconfig-core-c v0.12.0 cases 1 to 3,
-  editorconfig-core-py 0.12.0 edf2cb3e76 cases 1 to 3). The specification and core-test `brackets_slash_inside1` to
-  `brackets_slash_inside3` read such brackets literally, so `[ab[e/]cd.i]` matches only the name `ab[e/]cd.i`; Bodu
-  matches `ab/cd.i` and `abecd.i` instead, and not `ab[e/]cd.i`.
-- **`ConfigurationDocument.Parse(string)` keeps a leading byte order mark** (2 rows: editorconfig-core-c v0.9.1
-  12697755ea and editorconfig-core-py 0.10.0 b278104f25, core-test `bom_at_head`). The mark joins the first line, so a
-  file that opens with a comment fails with `MissingEquals`. `Load` strips the mark.
-- **Keys keep their case** (1 row: editorconfig-core-go v2.1.0 PR #15 case 1, core-test `lowercase_names`). The
-  specification lowercases every key after parsing; Bodu reports `TestProperty` as written.
-- **A brace group without a comma is read as a choice** (4 rows: editorconfig-core-go v2.1.0 PR #15 cases 5, 6 and 9,
-  and the `dialect` row v1.0.1 0ec8275ddc case 4). The specification reads `{single}`, `{}` and `{aardvark..antelope}`
-  literally. Bodu drops the braces, so `[{single}.b]` matches `single.b` but not `{single}.b`, `[{}.c]` matches `.c`
-  but not `{}.c`, and `[{foo}.go]` matches `foo.go`.
+The first run against Bodu failed 13 rows, with four causes, each since fixed test first:
+
+- **#864.** A bracket expression holding a `/` was read as a character class (editorconfig-core-c v0.12.0 cases 1
+  to 3, editorconfig-core-py 0.12.0 edf2cb3e76 cases 1 to 3). The glob compiler now reads it as literal text, brackets
+  included, so `[ab[e/]cd.i]` matches only `ab[e/]cd.i`, as core-tests `brackets_slash_inside1` to
+  `brackets_slash_inside3` require.
+- **#865.** `ConfigurationDocument.Parse(string)` kept a leading byte order mark, so a file opening with a comment
+  failed with `MissingEquals` (editorconfig-core-c v0.9.1 12697755ea, editorconfig-core-py 0.10.0 b278104f25).
+  `Parse`, `TryParse`, `ParseWithDiagnostics` and `Load(TextReader)` now ignore one leading U+FEFF under every profile,
+  as `Load` ignores a stream's mark.
+- **#866.** The `EditorConfigCompatible` profile reported keys in the case they were written in (editorconfig-core-go
+  v2.1.0 PR #15 case 1, core-test `lowercase_names`). It now lowercases them with the invariant culture, through the
+  new `ConfigurationKeyOptions.LowercaseKeys`; the other profiles keep keys as written.
+- **#867.** A brace group without a comma was read as a choice (editorconfig-core-go v2.1.0 PR #15 cases 5, 6 and 9,
+  and the `dialect` row v1.0.1 0ec8275ddc case 4). A group now expands only on a top-level comma or a range of two
+  integers, and anything else is literal text, so `[{single}.b]` matches only `{single}.b`, and the `dialect` row
+  passes as written.
+
+The research behind the catalogue found more, outside the rows, fixed the same way:
+
+- **#868.** A section glob starting with `/` matched only a target that itself started with `/`. A relative target now
+  matches it as if it began with `/` (core-test `leading_slash_relevance`).
+- **#869.** The `EditorConfigCompatible` profile mapped dotted keys to colons, though documented as identity mapping.
+  It now keeps the dots, and its documentation says that the whole preamble, `root` included, stays out of the view.
+- **#870.** The `Bodu` profile resolved the preamble's `root` pair as a property. No profile does now; the pair stays
+  in the document's global section.
+- **#871** to **#874** corrected documentation only: the `Normalized` write preset sorts nothing, `InvalidEscape` is
+  reserved and never raised, four passages of the configuration documentation contradicted the code, and the bridge
+  README named registration methods the package does not have.
