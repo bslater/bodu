@@ -21,7 +21,7 @@ Every reader throws its format's `*FormatException` (`DelimitedFormatException`,
 | `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` | `Throw` |
 | `Delimiter`, `Quote` | an ASCII character other than CR and LF; the two must differ | `,` / `"` |
 | `NoHeader` | treat the first record as data (records become positional arrays) | header mode |
-| `TrimFields` | trim unquoted fields | off |
+| `TrimFields` | trim spaces and tabs around each field: an unquoted field's value is trimmed, and the spaces and tabs around a quoted field's quotes are skipped, so the field is still read as quoted and its quoted text is kept whole; other white space, such as U+00A0 or U+3000, is kept | off |
 | `AllowComments`, `CommentChar` | skip comment lines; the character follows the `Delimiter` rule and must differ from `Delimiter` and `Quote`, even with comments off | off / `#` |
 
 The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, and the writer emits its delimiter and quote the same way. Each must therefore be an ASCII character other than a carriage return or a line feed, and no two may be the same character; a character outside ASCII would otherwise be cut to one byte and matched inside other characters. The `Utf8DelimitedReader` and `Utf8DelimitedWriter` constructors, and the `DelimitedSerializer` methods that create them, throw `ArgumentException` for `options`, naming the offending option, when the characters break these rules.

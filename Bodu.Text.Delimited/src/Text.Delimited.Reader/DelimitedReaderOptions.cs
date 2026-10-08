@@ -59,9 +59,22 @@ public readonly struct DelimitedReaderOptions
     public bool NoHeader { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether surrounding whitespace is trimmed from unquoted fields.
+    /// Gets a value indicating whether spaces and tabs around each field are trimmed.
     /// </summary>
     /// <value><see langword="true" /> to trim fields; otherwise <see langword="false" />.</value>
+    /// <remarks>
+    /// <para>
+    /// An unquoted field loses its leading and trailing spaces and tabs. Spaces and tabs before a quoted field's
+    /// opening quote and after its closing quote are skipped, so the field is still read as quoted, and the text
+    /// between its quotes is never trimmed. Without this option a field that begins with a space is unquoted, and any
+    /// quotes in it are literal text.
+    /// </para>
+    /// <para>
+    /// Only U+0020 (space) and U+0009 (tab) are trimmed: other white space, such as U+00A0 (no-break space), U+3000
+    /// (ideographic space) or U+000B (vertical tab), stays in the value. A delimiter or quote character that is a space
+    /// or a tab is never trimmed.
+    /// </para>
+    /// </remarks>
     public bool TrimFields { get; init; }
 
     /// <summary>

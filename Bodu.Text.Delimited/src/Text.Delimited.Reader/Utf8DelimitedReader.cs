@@ -379,12 +379,22 @@ public ref struct Utf8DelimitedReader
     /// <exception cref="DelimitedFormatException">Thrown when a quoted field is unterminated.</exception>
     private void ParseField()
     {
+        int start = _position;
+
+        // With TrimFields, white space before an opening quote is skipped, so the field is still read as quoted.
+        if (_options.TrimFields)
+        {
+            while (_position < _data.Length && IsTrimmedWhiteSpace(_data[_position]))
+                _position++;
+        }
+
         if (_position < _data.Length && _data[_position] == (byte)_options.EffectiveQuote)
         {
             ParseQuotedField();
             return;
         }
 
+        _position = start;
         ParseUnquotedField();
     }
 
@@ -417,7 +427,8 @@ public ref struct Utf8DelimitedReader
     }
 
     /// <summary>
-    /// Parses a quoted field, collapsing doubled quotes and permitting embedded delimiters and line breaks.
+    /// Parses a quoted field, collapsing doubled quotes and permitting embedded delimiters and line breaks, and with
+    /// <see cref="DelimitedReaderOptions.TrimFields" /> skips the spaces and tabs after its closing quote.
     /// </summary>
     /// <exception cref="DelimitedFormatException">Thrown when the field is unterminated.</exception>
     private void ParseQuotedField()
@@ -447,6 +458,14 @@ public ref struct Utf8DelimitedReader
                 _position++; // consume closing quote
                 _fields.Add(sb.ToString());
                 _fieldRanges.Add((rawStart, rawEnd - rawStart));
+
+                // With TrimFields, white space between the closing quote and what ends the field is skipped.
+                if (_options.TrimFields)
+                {
+                    while (_position < _data.Length && IsTrimmedWhiteSpace(_data[_position]))
+                        _position++;
+                }
+
                 return;
             }
 
@@ -456,6 +475,15 @@ public ref struct Utf8DelimitedReader
             _position += AppendByte(sb, b);
         }
     }
+
+    /// <summary>
+    /// Determines whether a byte is white space that <see cref="DelimitedReaderOptions.TrimFields" /> skips around a
+    /// quoted field: a space or a tab that is neither the delimiter nor the quote character.
+    /// </summary>
+    /// <param name="b">The source byte.</param>
+    /// <returns><see langword="true" /> when the byte is skipped; otherwise <see langword="false" />.</returns>
+    private readonly bool IsTrimmedWhiteSpace(byte b) =>
+        b is (byte)' ' or (byte)'\t' && b != (byte)_options.EffectiveDelimiter && b != (byte)_options.EffectiveQuote;
 
     /// <summary>
     /// Skips blank lines and, when enabled, comment lines beginning with the comment character.
