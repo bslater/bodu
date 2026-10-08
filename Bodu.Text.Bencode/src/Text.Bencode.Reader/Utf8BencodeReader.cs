@@ -345,7 +345,7 @@ public ref struct Utf8BencodeReader
         if (b == (byte)'e')
         {
             if (!hasTop)
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, _position);
+                throw UnexpectedByte(b, _position);
 
             Frame top = _frames[^1];
             if (top.IsDict && !top.ExpectKey)
@@ -409,7 +409,7 @@ public ref struct Utf8BencodeReader
                 return true;
 
             default:
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, _position);
+                throw UnexpectedByte(b, _position);
         }
     }
 
@@ -610,6 +610,25 @@ public ref struct Utf8BencodeReader
         new(message, offset);
 
     /// <summary>
+    /// Creates the exception thrown when a byte cannot begin a token at its position, naming the byte and its offset.
+    /// </summary>
+    /// <param name="value">The unexpected byte.</param>
+    /// <param name="offset">The byte offset of <paramref name="value" />.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// A printable ASCII byte is shown as its character and any other byte as <c>0xHH</c>, so that the message stays
+    /// readable whatever the input holds.
+    /// </remarks>
+    private static BencodeFormatException UnexpectedByte(byte value, int offset)
+    {
+        string shown = value is >= 0x20 and <= 0x7E
+            ? ((char)value).ToString()
+            : "0x" + value.ToString("X2", CultureInfo.InvariantCulture);
+
+        return Error(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, shown, offset), offset);
+    }
+
+    /// <summary>
     /// Updates the enclosing dictionary's key/value expectation after a complete value has been read.
     /// </summary>
     private readonly void AfterValue()
@@ -696,7 +715,7 @@ public ref struct Utf8BencodeReader
         {
             // A negative literal must fit the signed 64-bit range; there is no wider negative representation.
             if (!Utf8Parser.TryParse(number, out long value, out int consumed) || consumed != number.Length)
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerLiteralOutOfRange, start);
 
             _intValue = value;
             _uintValue = 0;
@@ -707,7 +726,7 @@ public ref struct Utf8BencodeReader
             // Bencode integers are arbitrary-precision per BEP 3; the reader accepts the full unsigned 64-bit range
             // and defers the signed-range check to GetInt64 so GetUInt64 can serve the wider values.
             if (!Utf8Parser.TryParse(number, out ulong value, out int consumed) || consumed != number.Length)
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerLiteralOutOfRange, start);
 
             _uintValue = value;
             _intExceedsInt64 = value > long.MaxValue;

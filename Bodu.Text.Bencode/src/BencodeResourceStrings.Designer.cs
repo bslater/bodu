@@ -72,6 +72,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The bencoded integer is outside the supported range, from -9223372036854775808 to 18446744073709551615..
+        /// </summary>
+        internal static string Format_Invalid_BencodeIntegerLiteralOutOfRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeIntegerLiteralOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
         /// </summary>
         internal static string Format_Invalid_BencodeIntegerOutOfRange {
