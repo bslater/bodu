@@ -86,7 +86,7 @@ public static partial class DelimitedSerializer
 
     /// <summary>
     /// Asynchronously deserializes the delimited content of the supplied stream, reading incrementally and yielding
-    /// each record as soon as its terminating line ending has been observed.
+    /// each record as soon as its terminating line ending has been read.
     /// </summary>
     /// <typeparam name="TRecord">The record type.</typeparam>
     /// <param name="source">The source stream.</param>
@@ -103,11 +103,18 @@ public static partial class DelimitedSerializer
     /// <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     /// <remarks>
+    /// <para>
     /// The stream is consumed in segments: only the bytes of records not yet terminated remain buffered, so memory use
-    /// is bounded by the longest single record rather than the document. A record that ends exactly at the current
-    /// buffer boundary is held back until the next segment (or the end of the stream) proves it complete, because more
-    /// fields could still follow. A malformed tail is retried as later segments arrive and only surfaces as a
+    /// is bounded by the longest single record rather than the document.
+    /// </para>
+    /// <para>
+    /// A record is yielded as soon as its line ending has been read, a line feed or a complete CRLF, even while the
+    /// stream stays open. A record is held back only while its end is not yet known: inside a quoted field, or before
+    /// its line ending has arrived, since more of its last field could follow; and when the input read so far ends with
+    /// a carriage return, which could be the first half of a CRLF. The end of the stream completes a record held back
+    /// for either reason. A malformed tail is retried as later segments arrive and only surfaces as a
     /// <see cref="DelimitedFormatException" /> once the end of the stream confirms it.
+    /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -316,13 +323,15 @@ public static partial class DelimitedSerializer
             // completed before the failure remain usable, and the tail is retried once more data arrives.
         }
 
-        // A record whose end coincides with the segment end could still grow, so it is only accepted when data
-        // follows it or the stream has ended.
+        // A record whose end coincides with the segment end is complete when it ended with a line feed, alone or as the
+        // second half of a CRLF. Otherwise it could still grow: its last field could continue, or the carriage return it
+        // ended with could be followed by a line feed. Such a record is accepted only when data follows it or the
+        // stream has ended.
         int accepted = 0;
         int consumed = 0;
         for (int i = 0; i < pending.Count; i++)
         {
-            if (recordEnds[i] < data.Length || finalBlock)
+            if (recordEnds[i] < data.Length || finalBlock || data[recordEnds[i] - 1] == (byte)'\n')
             {
                 accepted = i + 1;
                 consumed = recordEnds[i];
