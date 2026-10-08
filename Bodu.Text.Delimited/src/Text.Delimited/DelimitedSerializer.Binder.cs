@@ -119,12 +119,23 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>The string representation.</returns>
+    /// <remarks>
+    /// Temporal values are written in their invariant round-trip forms, so they read back equal: <c>O</c> for
+    /// <see cref="DateTime" /> and <see cref="DateTimeOffset" />, which keeps every tick and the kind or the offset;
+    /// the ISO 8601 forms <c>yyyy-MM-dd</c> for <see cref="DateOnly" /> and <c>HH:mm:ss.fffffff</c> for
+    /// <see cref="TimeOnly" />; and the constant <c>c</c> form for <see cref="TimeSpan" />.
+    /// </remarks>
     private static string ValueToString(object? value) =>
         value switch
         {
             null => string.Empty,
             string s => s,
             bool b => b ? "true" : "false",
+            DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
+            DateOnly date => date.ToString("O", CultureInfo.InvariantCulture),
+            TimeOnly time => time.ToString("O", CultureInfo.InvariantCulture),
+            TimeSpan span => span.ToString("c", CultureInfo.InvariantCulture),
             IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
             _ => value.ToString() ?? string.Empty,
         };
@@ -139,7 +150,9 @@ public static partial class DelimitedSerializer
     /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
     /// <remarks>
     /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type. Every
-    /// other target converts the text as it is.
+    /// other target converts the text as it is. Temporal values parse leniently with the invariant culture, so the
+    /// round-trip forms written by <see cref="ValueToString(object?)" /> read back, and so do the invariant general
+    /// forms that earlier versions wrote.
     /// </remarks>
     private static object? ConvertFromString(string raw, Type targetType, string column)
     {
@@ -163,6 +176,10 @@ public static partial class DelimitedSerializer
                 return DateTime.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             if (underlying == typeof(DateTimeOffset))
                 return DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            if (underlying == typeof(DateOnly))
+                return DateOnly.Parse(raw, CultureInfo.InvariantCulture);
+            if (underlying == typeof(TimeOnly))
+                return TimeOnly.Parse(raw, CultureInfo.InvariantCulture);
             if (underlying == typeof(TimeSpan))
                 return TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
             if (underlying == typeof(Uri))

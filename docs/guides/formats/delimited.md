@@ -43,7 +43,17 @@ List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText, options); /
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 ```
 
-Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on); other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`.
+Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on); other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`. Temporal values are written in invariant round-trip forms that read back equal:
+
+| Type | Written form | Example |
+|---|---|---|
+| `DateTime` | `O`, every tick and the kind | `2021-02-06T01:02:03.4567891Z` |
+| `DateTimeOffset` | `O`, every tick and the offset | `2021-02-06T01:02:03.4567891+10:00` |
+| `DateOnly` | `yyyy-MM-dd` | `2021-02-06` |
+| `TimeOnly` | `HH:mm:ss.fffffff` | `01:02:03.4567891` |
+| `TimeSpan` | `c` | `1.02:03:04.5670000` |
+
+Reading also accepts the invariant general forms that earlier versions wrote, such as `02/06/2021 01:02:03`.
 
 ## Pattern 3 - stream records from a large file
 

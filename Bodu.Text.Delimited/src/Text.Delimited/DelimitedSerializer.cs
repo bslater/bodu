@@ -33,6 +33,13 @@ namespace Bodu.Text.Delimited;
 /// member keeps it, and a numeric or date member throws <see cref="DelimitedSerializationException" /> for it.
 /// </para>
 /// <para>
+/// Temporal values are written in invariant round-trip forms and read back equal: <see cref="DateTime" /> and
+/// <see cref="DateTimeOffset" /> with the <c>O</c> format, which keeps every tick and the kind or the offset;
+/// <see cref="DateOnly" /> as <c>yyyy-MM-dd</c>; <see cref="TimeOnly" /> as <c>HH:mm:ss.fffffff</c>; and
+/// <see cref="TimeSpan" /> with the constant <c>c</c> format. Reading also accepts the invariant general forms that
+/// earlier versions wrote.
+/// </para>
+/// <para>
 /// The buffered stream overloads mirror the sibling quartet libraries. The
 /// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and
 /// the <see cref="IAsyncEnumerable{T}" /> serialize overload are truly incremental: records are parsed and yielded as

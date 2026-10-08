@@ -217,8 +217,8 @@ public partial class DelimitedSerializerTests
     {
         await AssertManyRecordsRoundTripAsync(id => 1000L + id);
 
-        // Whole minutes of unspecified kind, which the invariant general date format keeps exactly; fractional seconds
-        // and the kind are the subject of the DateTime round-trip test above.
+        // Whole minutes of unspecified kind; fractional seconds and every kind are the subject of the DateTime round-trip
+        // tests above.
         await AssertManyRecordsRoundTripAsync(id => new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Unspecified).AddMinutes(id));
         await AssertManyRecordsRoundTripAsync(id => id / 7.0);
         await AssertManyRecordsRoundTripAsync(id => new Guid(id, (short)(id % 7), (short)(id % 11), 1, 2, 3, 4, 5, 6, 7, 8));
