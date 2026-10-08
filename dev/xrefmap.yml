@@ -130560,6 +130560,15 @@ references:
   commentId: Overload:Bodu.Text.Bencode.Document.BencodeElement.GetInt64
   fullName: Bodu.Text.Bencode.Document.BencodeElement.GetInt64
   nameWithType: BencodeElement.GetInt64
+- uid: Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.ReadOnlySpan{System.Byte})
+  name: GetProperty(ReadOnlySpan<byte>)
+  href: api/Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetProperty_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.ReadOnlySpan{System.Byte})
+  name.vb: GetProperty(ReadOnlySpan(Of Byte))
+  fullName: Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.ReadOnlySpan(Of Byte))
+  nameWithType: BencodeElement.GetProperty(ReadOnlySpan<byte>)
+  nameWithType.vb: BencodeElement.GetProperty(ReadOnlySpan(Of Byte))
 - uid: Bodu.Text.Bencode.Document.BencodeElement.GetProperty(System.String)
   name: GetProperty(string)
   href: api/Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_GetProperty_System_String_
@@ -130768,6 +130777,15 @@ references:
   commentId: Overload:Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64
   fullName: Bodu.Text.Bencode.Document.BencodeElement.TryGetInt64
   nameWithType: BencodeElement.TryGetInt64
+- uid: Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.Document.BencodeElement@)
+  name: TryGetProperty(ReadOnlySpan<byte>, out BencodeElement)
+  href: api/Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_System_ReadOnlySpan_System_Byte__Bodu_Text_Bencode_Document_BencodeElement__
+  commentId: M:Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.ReadOnlySpan{System.Byte},Bodu.Text.Bencode.Document.BencodeElement@)
+  name.vb: TryGetProperty(ReadOnlySpan(Of Byte), BencodeElement)
+  fullName: Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.ReadOnlySpan<byte>, out Bodu.Text.Bencode.Document.BencodeElement)
+  fullName.vb: Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.ReadOnlySpan(Of Byte), Bodu.Text.Bencode.Document.BencodeElement)
+  nameWithType: BencodeElement.TryGetProperty(ReadOnlySpan<byte>, out BencodeElement)
+  nameWithType.vb: BencodeElement.TryGetProperty(ReadOnlySpan(Of Byte), BencodeElement)
 - uid: Bodu.Text.Bencode.Document.BencodeElement.TryGetProperty(System.String,Bodu.Text.Bencode.Document.BencodeElement@)
   name: TryGetProperty(string, out BencodeElement)
   href: api/Bodu.Text.Bencode.Document.BencodeElement.html#Bodu_Text_Bencode_Document_BencodeElement_TryGetProperty_System_String_Bodu_Text_Bencode_Document_BencodeElement__
@@ -130828,6 +130846,18 @@ references:
   commentId: T:Bodu.Text.Bencode.Document.BencodeProperty
   fullName: Bodu.Text.Bencode.Document.BencodeProperty
   nameWithType: BencodeProperty
+- uid: Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes
+  name: GetNameBytes()
+  href: api/Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_GetNameBytes
+  commentId: M:Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes
+  fullName: Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes()
+  nameWithType: BencodeProperty.GetNameBytes()
+- uid: Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes*
+  name: GetNameBytes
+  href: api/Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_GetNameBytes_
+  commentId: Overload:Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes
+  fullName: Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes
+  nameWithType: BencodeProperty.GetNameBytes
 - uid: Bodu.Text.Bencode.Document.BencodeProperty.Name
   name: Name
   href: api/Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_Name
@@ -130840,6 +130870,21 @@ references:
   commentId: Overload:Bodu.Text.Bencode.Document.BencodeProperty.Name
   fullName: Bodu.Text.Bencode.Document.BencodeProperty.Name
   nameWithType: BencodeProperty.Name
+- uid: Bodu.Text.Bencode.Document.BencodeProperty.NameEquals(System.ReadOnlySpan{System.Byte})
+  name: NameEquals(ReadOnlySpan<byte>)
+  href: api/Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_NameEquals_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.Text.Bencode.Document.BencodeProperty.NameEquals(System.ReadOnlySpan{System.Byte})
+  name.vb: NameEquals(ReadOnlySpan(Of Byte))
+  fullName: Bodu.Text.Bencode.Document.BencodeProperty.NameEquals(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.Text.Bencode.Document.BencodeProperty.NameEquals(System.ReadOnlySpan(Of Byte))
+  nameWithType: BencodeProperty.NameEquals(ReadOnlySpan<byte>)
+  nameWithType.vb: BencodeProperty.NameEquals(ReadOnlySpan(Of Byte))
+- uid: Bodu.Text.Bencode.Document.BencodeProperty.NameEquals*
+  name: NameEquals
+  href: api/Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_NameEquals_
+  commentId: Overload:Bodu.Text.Bencode.Document.BencodeProperty.NameEquals
+  fullName: Bodu.Text.Bencode.Document.BencodeProperty.NameEquals
+  nameWithType: BencodeProperty.NameEquals
 - uid: Bodu.Text.Bencode.Document.BencodeProperty.ToString
   name: ToString()
   href: api/Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_ToString

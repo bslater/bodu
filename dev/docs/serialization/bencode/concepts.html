@@ -137,7 +137,7 @@
 </tr>
 <tr>
 <td><code>PropertyNameCaseInsensitive</code></td>
-<td><code>false</code></td>
+<td><code>true</code></td>
 <td>Whether a document key matches a member name ignoring case on read.</td>
 </tr>
 <tr>
@@ -191,7 +191,7 @@
 </ol>
 <p>The first match wins, and the result is cached on the options.</p>
 <h2 id="attributes-callbacks-and-naming-policies">Attributes, callbacks, and naming policies</h2>
-<p>The full serialization surface lives in the <code>Bodu.Text.Bencode.Serialization</code> namespace:</p>
+<p>The attributes, callbacks, and naming policies are shared with the other Bodu text serializers and live in the <code>Bodu.Text.Serialization</code> namespace; the converter types live in <code>Bodu.Text.Bencode.Serialization</code>:</p>
 <ul>
 <li><strong>Attributes</strong> - <code>[PropertyName]</code>, <code>[Ignore]</code>, <code>[Converter]</code>, <code>[PropertyOrder]</code>, <code>[Constructor]</code>, <code>[Required]</code>, <code>[Include]</code>, <code>[ExtensionData]</code>, <code>[NamingPolicy]</code>, <code>[UnmappedMemberHandling]</code>, <code>[ObjectCreationHandling]</code>, <code>[StringEnumMemberName]</code>.</li>
 <li><strong>Callbacks</strong> - the <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnSerialized.html">IOnSerialized</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserializing.html">IOnDeserializing</a> / <a class="xref" href="../../../api/Bodu.Text.Serialization.IOnDeserialized.html">IOnDeserialized</a> interfaces, run at the matching point in the pipeline.</li>
@@ -201,8 +201,8 @@
 <h2 id="the-document-object-models">The document object models</h2>
 <p>When you do not want a model, the library offers two DOMs:</p>
 <ul>
-<li><strong>Mutable</strong> - <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> with the concrete <code>BencodeObject</code> (a keyed dictionary node), <code>BencodeArray</code> (a list node), and <code>BencodeValue</code> (a scalar node). <code>Parse</code> a document into a tree, index into it with <code>node[&quot;key&quot;]</code> / <code>node[index]</code>, mutate it, and write it back with <code>ToByteArray()</code>. Scalars convert with implicit operators (<code>string</code>, <code>long</code>, <code>int</code>, <code>ulong</code>, <code>byte[]</code> → <code>BencodeNode</code>) and explicit operators back the other way, and the tree supports <code>DeepClone()</code>, <code>DeepEquals(…)</code>, <code>ReplaceWith(…)</code>, and <code>GetPath()</code>. <code>Parse</code> returns <code>null</code> for an empty document.</li>
-<li><strong>Read-only</strong> - <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> with <code>BencodeElement</code> and <code>BencodeProperty</code>. A low-allocation view over a parsed buffer, walked through <code>RootElement</code>: <code>GetProperty</code> / <code>TryGetProperty</code>, the integer indexer for lists, <code>EnumerateObject()</code> / <code>EnumerateArray()</code>, and typed getters (<code>GetString</code>, <code>GetBytes</code>, <code>GetInt64</code>, <code>GetUInt64</code>, and the <code>TryGet…</code> pair). Each element's kind is a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a> (<code>Object</code>, <code>Array</code>, <code>ByteString</code>, <code>Integer</code>). <code>BencodeDocument</code> is disposable - it owns a pooled buffer, so wrap it in <code>using</code> and <code>Clone()</code> out any element that must outlive it.</li>
+<li><strong>Mutable</strong> - <a class="xref" href="../../../api/Bodu.Text.Bencode.Nodes.BencodeNode.html">BencodeNode</a> with the concrete <code>BencodeObject</code> (a keyed dictionary node), <code>BencodeArray</code> (a list node), and <code>BencodeValue</code> (a scalar node). <code>Parse</code> a document into a tree, index into it with <code>node[&quot;key&quot;]</code> / <code>node[index]</code>, mutate it, and write it back with <code>ToByteArray()</code>. Scalars convert with implicit operators (<code>string</code>, <code>long</code>, <code>int</code>, <code>ulong</code>, <code>byte[]</code> → <code>BencodeNode</code>) and explicit operators back the other way, and the tree supports <code>DeepClone()</code>, <code>DeepEquals(…)</code>, <code>ReplaceWith(…)</code>, and <code>GetPath()</code>. <code>Parse</code> throws <code>BencodeFormatException</code> for empty input.</li>
+<li><strong>Read-only</strong> - <a class="xref" href="../../../api/Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> with <code>BencodeElement</code> and <code>BencodeProperty</code>. A low-allocation view over a parsed buffer, walked through <code>RootElement</code>: <code>GetProperty</code> / <code>TryGetProperty</code> (by name, or by a key's exact bytes for keys that are not text), the integer indexer for lists, <code>EnumerateObject()</code> / <code>EnumerateArray()</code>, and typed getters (<code>GetString</code>, <code>GetBytes</code>, <code>GetInt64</code>, <code>GetUInt64</code>, and the <code>TryGet…</code> pair). Each element's kind is a <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeValueKind.html">BencodeValueKind</a> (<code>Object</code>, <code>Array</code>, <code>ByteString</code>, <code>Integer</code>). <code>BencodeDocument</code> is disposable - it owns a pooled buffer, so wrap it in <code>using</code> and <code>Clone()</code> out any element that must outlive it.</li>
 </ul>
 <h2 id="the-low-level-reader-and-writer">The low-level reader and writer</h2>
 <p><a class="xref" href="../../../api/Bodu.Text.Bencode.Reader.Utf8BencodeReader.html">Utf8BencodeReader</a> and <a class="xref" href="../../../api/Bodu.Text.Bencode.Writer.Utf8BencodeWriter.html">Utf8BencodeWriter</a> are forward-only, allocation-free <code>ref struct</code> token machines over <code>ReadOnlySpan&lt;byte&gt;</code> and <code>IBufferWriter&lt;byte&gt;</code> respectively. The serializer and every converter are built on this pair; reach for it directly to process tokens without binding to a model.</p>
@@ -225,7 +225,7 @@
 </tr>
 <tr>
 <td><code>ValueSpan</code> / <code>ValueTextEquals(…)</code></td>
-<td>The raw token bytes, or a zero-allocation comparison against UTF-8/<code>char</code>/<code>string</code> text.</td>
+<td>The current token's value as raw bytes (a byte string's or key's content, an integer's text without its <code>i</code> and <code>e</code>, nothing for a list or dictionary token), or a zero-allocation comparison of a byte string or key against UTF-8/<code>char</code>/<code>string</code> text.</td>
 </tr>
 <tr>
 <td><code>Skip()</code> / <code>TrySkip()</code></td>
@@ -269,7 +269,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8a08b7e · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 378a609 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

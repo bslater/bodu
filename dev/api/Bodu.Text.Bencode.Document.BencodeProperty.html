@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Bencode_Document_BencodeProperty" data-uid="Bodu.Text.Bencode.Document.BencodeProperty" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BencodeProperty Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8a08b7e0512f3b08115fa8d99701c43b5b2089ed/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BencodeProperty Struct
   <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8a08b7e0512f3b08115fa8d99701c43b5b2089ed/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs">BencodeProperty.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs">BencodeProperty.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a single key/value pair within an object <a class="xref" href="Bodu.Text.Bencode.Document.BencodeElement.html">BencodeElement</a>. Instances are produced by
@@ -190,9 +190,18 @@ BencodeProperty Struct
 
 
   <h2 id="Bodu_Text_Bencode_Document_BencodeProperty_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>The <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_Value">Value</a> is a view onto the owning <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> and is valid only for that
-document's lifetime; after the document is disposed, accessing the value throws
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>.</p>
+  <div class="markdown level0 remarks"><p>
+A Bencode dictionary key is a byte string, and need not be text: a tracker's scrape response, for example, keys its
+files by 20-byte info hashes. <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_Name">Name</a> decodes the key as UTF-8 for convenience, so a key that is not
+valid UTF-8 reads with U+FFFD in place of each invalid sequence and two such keys can share a name.
+<a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_GetNameBytes">GetNameBytes()</a> and <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_NameEquals_System_ReadOnlySpan_System_Byte__">NameEquals(ReadOnlySpan&lt;byte&gt;)</a> read the key's exact bytes.
+</p>
+<p>
+The <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_Value">Value</a> and the key's bytes are views onto the owning <a class="xref" href="Bodu.Text.Bencode.Document.BencodeDocument.html">BencodeDocument</a> and are valid
+only for that document's lifetime; after the document is disposed, reading them throws
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a>. <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_Name">Name</a> is decoded when the property is produced and stays
+readable.
+</p>
 </div>
 
 
@@ -205,7 +214,7 @@ document's lifetime; after the document is disposed, accessing the value throws
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeProperty_Name" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8a08b7e0512f3b08115fa8d99701c43b5b2089ed/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -224,7 +233,8 @@ document's lifetime; after the document is disposed, accessing the value throws
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>The property name.</p>
+    <dd><p>The property name. A key that is not valid UTF-8 decodes with U+FFFD in place of each invalid sequence; use
+<a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_GetNameBytes">GetNameBytes()</a> or <a class="xref" href="Bodu.Text.Bencode.Document.BencodeProperty.html#Bodu_Text_Bencode_Document_BencodeProperty_NameEquals_System_ReadOnlySpan_System_Byte__">NameEquals(ReadOnlySpan&lt;byte&gt;)</a> for the key's exact bytes.</p>
 </dd>
   </dl>
 
@@ -242,7 +252,7 @@ document's lifetime; after the document is disposed, accessing the value throws
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeProperty_Value" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.Value">
   Value
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8a08b7e0512f3b08115fa8d99701c43b5b2089ed/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -278,12 +288,110 @@ document's lifetime; after the document is disposed, accessing the value throws
 </h2>
 
 
+  <a id="Bodu_Text_Bencode_Document_BencodeProperty_GetNameBytes_" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_Document_BencodeProperty_GetNameBytes" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.GetNameBytes">
+  GetNameBytes()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Copies the dictionary key's raw bytes to a new array.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] GetNameBytes()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>[]</dt>
+    <dd><p>A copy of the key's bytes, exactly as they appear in the document.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this property is the default value and belongs to no document.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_Text_Bencode_Document_BencodeProperty_NameEquals_" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.NameEquals*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_Text_Bencode_Document_BencodeProperty_NameEquals_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.NameEquals(System.ReadOnlySpan{System.Byte})">
+  NameEquals(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Determines whether the dictionary key's raw bytes equal the supplied bytes, without allocating.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool NameEquals(ReadOnlySpan&lt;byte&gt; name)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>name</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The key bytes to compare with.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key's bytes equal <code class="paramref">name</code>; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
+    <dd><p>Thrown when this property is the default value and belongs to no document.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the owning document has been disposed.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
   <a id="Bodu_Text_Bencode_Document_BencodeProperty_ToString_" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.ToString*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Document_BencodeProperty_ToString" data-uid="Bodu.Text.Bencode.Document.BencodeProperty.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8a08b7e0512f3b08115fa8d99701c43b5b2089ed/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/378a6099db3979a7f1135a44c52c317619abe598/Bodu.Text.Bencode/src/Text.Bencode.Document/BencodeProperty.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -342,7 +450,7 @@ document's lifetime; after the document is disposed, accessing the value throws
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8a08b7e · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 378a609 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>
