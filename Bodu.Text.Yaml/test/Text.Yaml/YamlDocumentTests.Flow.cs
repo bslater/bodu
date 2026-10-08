@@ -168,4 +168,64 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual(expected, ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that a plain scalar in a flow collection may continue on following lines, which fold as in block
+    /// context: a single line break into a space, and each blank line into a line feed.
+    /// </summary>
+    /// <param name="yaml">A flow collection holding a plain scalar that spans lines.</param>
+    /// <param name="expected">The collection expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("[ a\n b ]", """["a b"]""", DisplayName = "a sequence entry over two lines")]
+    [DataRow("[ a\n\n b ]", """["a\nb"]""", DisplayName = "a sequence entry with a blank line")]
+    [DataRow("[ a\n  b\n  c, d ]", """["a b c","d"]""", DisplayName = "a sequence entry over three lines")]
+    [DataRow("{ a: b\n c }", """{"a":"b c"}""", DisplayName = "a mapping value over two lines")]
+    [DataRow(
+        "- { single line: value}\n- { multi\n  line: value}\n",
+        """[{"single line":"value"},{"multi line":"value"}]""",
+        DisplayName = "a mapping key over two lines")]
+    [DataRow("{ matches\n% : 20 }", """{"matches %":20}""", DisplayName = "a mapping key continued by a percent sign")]
+    public void Parse_WhenFlowPlainScalarSpansLines_ShouldFoldIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a comment line ends a plain scalar in a flow collection, so the scalar does not continue past it.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCommentLineFollowsFlowPlainScalar_ShouldEndIt()
+    {
+        using var document = YamlDocument.Parse("[ a\n # c\n , b ]");
+
+        Assert.AreEqual("""["a","b"]""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that text after a comment line that ends a plain scalar in a flow sequence is not joined to it, and
+    /// without a comma between them is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTextFollowsCommentLineAfterFlowPlainScalar_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse("[ a\n # c\n b ]");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the implicit key of a single-pair mapping entry in a flow sequence must stay on one line, so a
+    /// plain key that spans lines is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenFlowSequencePairKeySpansLines_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse("[ multi\n line: value ]");
+        });
+    }
 }
