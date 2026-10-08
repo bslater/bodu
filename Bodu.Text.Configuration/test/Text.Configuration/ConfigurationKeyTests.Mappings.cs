@@ -114,4 +114,34 @@ public partial class ConfigurationKeyTests
         Assert.AreEqual("dotnet.ca1000:severity", key.Path);
         Assert.AreEqual("Dotnet.CA1000:Severity", key.RawKey);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, keeps the whitespace
+    /// inside it.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMappingIsIdentityAndKeyHasInternalWhitespace_ShouldKeepIt()
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity };
+
+        var key = ConfigurationKey.Parse("a . b", options);
+
+        Assert.AreEqual("a . b", key.Path);
+        CollectionAssert.AreEqual(new[] { "a . b" }, key.Segments.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" /> trims only the ends of a key, as the reader trims
+    /// a key, and keeps the whitespace inside it.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMappingIsIdentityAndKeyHasSurroundingWhitespace_ShouldTrimOnlyItsEnds()
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity };
+
+        var key = ConfigurationKey.Parse(" a . b ", options);
+
+        Assert.AreEqual("a . b", key.Path);
+        Assert.AreEqual(" a . b ", key.RawKey);
+    }
 }

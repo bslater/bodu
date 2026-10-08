@@ -75,6 +75,20 @@ public partial class ConfigurationKeyTests
     }
 
     /// <summary>
+    /// Verifies that two keys that differ only in the whitespace around their separators compare equal and hash alike,
+    /// since each segment is trimmed.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenKeysDifferOnlyInWhitespaceAroundSeparators_ShouldReturnTrue()
+    {
+        var spaced = new ConfigurationKey("a . b");
+        var compact = new ConfigurationKey("a.b");
+
+        Assert.IsTrue(spaced.Equals(compact));
+        Assert.AreEqual(compact.GetHashCode(), spaced.GetHashCode());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="ConfigurationKey.ToString" /> returns the canonical key path.
     /// </summary>
     [TestMethod]

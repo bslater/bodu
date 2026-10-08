@@ -64,6 +64,23 @@ public partial class ConfigurationViewTests
     }
 
     /// <summary>
+    /// Verifies that under the dot-to-colon and colon mappings a key written with whitespace around its separator
+    /// resolves to the trimmed key, found under its dotted and colon forms.
+    /// </summary>
+    /// <param name="mapping">The key mapping the view is resolved with.</param>
+    [TestMethod]
+    [DataRow(ConfigurationKeyMapping.DotToColon)]
+    [DataRow(ConfigurationKeyMapping.Colon)]
+    public void Keys_WhenKeyHasWhitespaceAroundASeparator_ShouldHoldTheTrimmedKey(ConfigurationKeyMapping mapping)
+    {
+        ConfigurationView view = ResolveWithMapping("[*]\na . b = 1\n", mapping);
+
+        CollectionAssert.AreEqual(new[] { "a:b" }, view.Keys.ToArray());
+        Assert.AreEqual("1", view["a:b"]);
+        Assert.AreEqual("1", view["a.b"]);
+    }
+
+    /// <summary>
     /// Verifies that a lookup key that cannot be parsed as a configuration key resolves to "absent" without throwing.
     /// </summary>
     [TestMethod]
