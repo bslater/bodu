@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Ini;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Formats.Generators;
 
@@ -94,6 +95,51 @@ public partial class FormatFactoryGeneratorTests
 
         string reflection = IniSerializer.Serialize(new { schedule = section });
         string generated = IniSerializer.SerializeSection("schedule", section, GeneratedScheduleSection.IniFactory);
+
+        Assert.AreEqual(reflection, generated);
+    }
+
+    /// <summary>
+    /// Verifies that the generated INI factory leaves out a nullable key whose value is <see langword="null" />, as
+    /// INI's reflection binder does under its default <see cref="IgnoreCondition.WhenWritingNull" /> condition, rather
+    /// than writing the key with an empty value.
+    /// </summary>
+    [TestMethod]
+    public void IniFactory_WhenANullableValueIsNull_ShouldLeaveTheKeyOutAsTheReflectionBinderDoes()
+    {
+        var section = new GeneratedScheduleSection
+        {
+            At = new DateTime(2021, 2, 6, 1, 2, 3, DateTimeKind.Utc),
+            AtOffset = new DateTimeOffset(2021, 2, 6, 1, 2, 3, TimeSpan.Zero),
+            Span = TimeSpan.FromMinutes(90),
+            Count = null,
+        };
+
+        string reflection = IniSerializer.Serialize(new { schedule = section });
+        string generated = IniSerializer.SerializeSection("schedule", section, GeneratedScheduleSection.IniFactory);
+
+        Assert.AreEqual(reflection, generated);
+        Assert.IsFalse(generated.Contains("Count", StringComparison.Ordinal), generated);
+    }
+
+    /// <summary>
+    /// Verifies that the generated INI factory applies each member's own
+    /// <see cref="Bodu.Text.Serialization.IgnoreAttribute" /> condition, and the default
+    /// <see cref="IgnoreCondition.WhenWritingNull" /> to a member without one, so that it writes the same section as
+    /// INI's reflection binder whether the members hold their default values or others.
+    /// </summary>
+    /// <param name="useDefaults">Whether the members hold default values, rather than set ones.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void IniFactory_WhenMembersCarryIgnoreConditions_ShouldWriteTheSectionAsTheReflectionBinderDoes(bool useDefaults)
+    {
+        GeneratedConditionalSection section = useDefaults
+            ? new() { MaybeZero = 0, Text = string.Empty }
+            : new() { Plain = 1, Note = "n", Kept = 2, Zero = 3, MaybeZero = 4, Text = "t", Port = 5 };
+
+        string reflection = IniSerializer.Serialize(new { conditional = section });
+        string generated = IniSerializer.SerializeSection("conditional", section, GeneratedConditionalSection.IniFactory);
 
         Assert.AreEqual(reflection, generated);
     }
