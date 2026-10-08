@@ -96,9 +96,12 @@ public partial class YamlDocumentTests
         Assert.AreEqual("-0xF", doc.RootElement.GetProperty("v").GetString());
     }
 
-    /// <summary>Verifies that a signed octal literal is not an integer and stays a string under YAML 1.1.</summary>
+    /// <summary>
+    /// Verifies that a signed literal in the core schema's <c>0o</c> octal form, which takes no sign, stays a string
+    /// under YAML 1.1, whose own octal form is the leading-zero one.
+    /// </summary>
     [TestMethod]
-    public void Parse_WhenSignedOctalLiteral_ForV11_ShouldStayString()
+    public void Parse_WhenSignedCoreOctalLiteral_ForV11_ShouldStayString()
     {
         using var doc = YamlDocument.Parse("v: -0o7\n", new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 });
         Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
