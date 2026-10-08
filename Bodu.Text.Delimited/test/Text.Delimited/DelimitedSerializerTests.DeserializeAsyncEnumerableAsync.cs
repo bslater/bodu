@@ -368,6 +368,101 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a record shorter than the header in the first read, which more reads follow, is reported at its line
+    /// in the stream, 3, and at the offset where it starts, 8.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenAShortRecordIsInTheFirstRead_ShouldReportItsPositionInTheStream()
+    {
+        using var stream = new PieceStream(["a,b\n1,2\n3\n"u8.ToArray(), "4,5\n6,7\n"u8.ToArray()]);
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedFormatException>(async () =>
+        {
+            _ = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive));
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+        Assert.AreEqual(8, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a record shorter than the header in a later read is reported at its line in the stream, 4, and at the
+    /// offset where it starts, 12, rather than at a position counted from the start of that read or with no position.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenAShortRecordIsInALaterRead_ShouldReportItsPositionInTheStream()
+    {
+        using var stream = new PieceStream(["a,b\n1,2\n"u8.ToArray(), "3,4\n5\n6,7\n"u8.ToArray()]);
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedFormatException>(async () =>
+        {
+            _ = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive));
+        });
+
+        Assert.AreEqual(4, ex.LineNumber);
+        Assert.AreEqual(12, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that the line break inside a quoted field of a record consumed by an earlier read is counted, so a short
+    /// record in a later read is reported on line 4, at offset 12.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenAnEarlierReadHeldAQuotedLineBreak_ShouldCountItInTheLineReported()
+    {
+        using var stream = new PieceStream(["a,b\n\"1\n1\",2\n"u8.ToArray(), "3\n"u8.ToArray()]);
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedFormatException>(async () =>
+        {
+            _ = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive));
+        });
+
+        Assert.AreEqual(4, ex.LineNumber);
+        Assert.AreEqual(12, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a quoted field still open when the stream ends, in a later read, is reported at the end of the stream:
+    /// line 3, offset 12.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTheStreamEndsInsideAQuotedField_ShouldReportTheEndOfTheStream()
+    {
+        using var stream = new PieceStream(["a,b\n1,2\n"u8.ToArray(), "3,\"4"u8.ToArray()]);
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedFormatException>(async () =>
+        {
+            _ = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive));
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+        Assert.AreEqual(12, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that text after a closing quote in a later read is reported at the offending byte's position in the
+    /// stream: line 3, offset 13.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTextFollowsAClosingQuoteInALaterRead_ShouldReportItsPositionInTheStream()
+    {
+        using var stream = new PieceStream(["a,b\n1,2\n"u8.ToArray(), "3,\"4\"x\n"u8.ToArray()]);
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedFormatException>(async () =>
+        {
+            _ = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive));
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+        Assert.AreEqual(13, ex.Offset);
+    }
+
+    /// <summary>
     /// Verifies that records totalling 40 KiB after a header, which straddle the 16 KiB reads of the stream and end
     /// without a final line ending, are each yielded whole.
     /// </summary>
