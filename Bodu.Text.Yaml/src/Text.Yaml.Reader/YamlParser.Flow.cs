@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+
 namespace Bodu.Text.Yaml.Reader;
 
 /// <summary>
@@ -108,8 +110,9 @@ internal sealed partial class YamlParser
                 SkipFlowWhitespace();
             }
 
-            int element = ParseFlowNode();
+            // An implicit key must lie on its ':' indicator's line, so the line on which the element starts is kept.
             int elementLine = _line;
+            int element = ParseFlowNode();
             SkipFlowWhitespace();
 
             // A single-pair mapping element: `key: value` inside the sequence.
@@ -306,6 +309,38 @@ internal sealed partial class YamlParser
             throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         int start = _pos;
+        int end = ScanFlowPlainLine();
+
+        // A plain scalar may continue on following lines, which fold as in block context: a line break into a space,
+        // and each blank line into a line feed. A folded scalar is always a string.
+        StringBuilder? folded = null;
+        while (IsLineBreak(Peek()) && TryContinueFlowPlainScalar(out int blankLines))
+        {
+            folded ??= new StringBuilder(Utf8(start, end - start));
+            folded.Append(blankLines == 0 ? " " : new string('\n', blankLines));
+
+            int lineStart = _pos;
+            int lineEnd = ScanFlowPlainLine();
+            folded.Append(Utf8(lineStart, lineEnd - lineStart));
+        }
+
+        if (folded is not null)
+            return NewString(folded.ToString(), YamlScalarStyle.Plain, offset, null, null);
+
+        ReadOnlySpan<byte> span = _source.AsSpan(start, end - start);
+        YamlValueKind kind = YamlScalarResolver.Resolve(span, _version, out long bits);
+        return kind != YamlValueKind.String
+            ? NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null)
+            : NewString(Utf8(start, end - start), YamlScalarStyle.Plain, offset, null, null);
+    }
+
+    /// <summary>
+    /// Advances over one line of a plain scalar in flow context, stopping at a line break, a flow indicator, a value
+    /// indicator, or a comment.
+    /// </summary>
+    /// <returns>The byte offset just past the line's last non-space content byte.</returns>
+    private int ScanFlowPlainLine()
+    {
         int end = _pos;
         while (!IsBreakOrEnd(Peek()))
         {
@@ -324,12 +359,73 @@ internal sealed partial class YamlParser
                 end = _pos;
         }
 
-        ReadOnlySpan<byte> span = _source.AsSpan(start, end - start);
-        YamlValueKind kind = YamlScalarResolver.Resolve(span, _version, out long bits);
-        return kind != YamlValueKind.String
-            ? NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null)
-            : NewString(Utf8(start, end - start), YamlScalarStyle.Plain, offset, null, null);
+        return end;
     }
+
+    /// <summary>
+    /// Determines whether a plain scalar in flow context continues after the line break at the cursor, moving the
+    /// cursor to the continuation line's first content byte when it does and leaving it at the line break when it does
+    /// not.
+    /// </summary>
+    /// <param name="blankLines">
+    /// When the method returns, the number of blank lines before the continuation line.
+    /// </param>
+    /// <returns><see langword="true" /> when the scalar continues on a following line.</returns>
+    /// <remarks>
+    /// The scalar ends at a line that begins with a flow indicator, a value indicator, or a comment, at the end of the
+    /// input, and at a line that the flow collection's own rules reject (indented by a tab, not indented past the
+    /// owning block node, or a document marker), which the collection then reports.
+    /// </remarks>
+    private bool TryContinueFlowPlainScalar(out int blankLines)
+    {
+        int savePos = _pos;
+        int saveLine = _line;
+        int saveLineStart = _lineStart;
+
+        blankLines = 0;
+        Advance(); // the line break ending the previous line
+        while (true)
+        {
+            int p = _pos;
+            while (p < _length && _source[p] is (byte)' ' or (byte)'\t')
+                p++;
+
+            if (p < _length && IsLineBreak(_source[p]))
+            {
+                _pos = p;
+                Advance();
+                blankLines++;
+                continue;
+            }
+
+            _pos = p;
+            break;
+        }
+
+        byte c = Peek();
+        bool continues = !AtEnd
+            && _source[_lineStart] != (byte)'\t'
+            && (_flowIndent < 0 || CurrentColumn() > _flowIndent)
+            && !(CurrentColumn() == 0 && AtDocumentBoundary())
+            && c is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}' or (byte)'#')
+            && !(c == (byte)':' && IsFlowColonStop(PeekAt(1)));
+
+        if (!continues)
+        {
+            _pos = savePos;
+            _line = saveLine;
+            _lineStart = saveLineStart;
+        }
+
+        return continues;
+    }
+
+    /// <summary>
+    /// Determines whether a byte is a line feed or carriage return.
+    /// </summary>
+    /// <param name="b">The byte to test.</param>
+    /// <returns><see langword="true" /> when the byte begins a line break.</returns>
+    private static bool IsLineBreak(byte b) => b is (byte)'\n' or (byte)'\r';
 
     /// <summary>
     /// Determines whether a byte following a colon terminates a plain scalar in flow context.
