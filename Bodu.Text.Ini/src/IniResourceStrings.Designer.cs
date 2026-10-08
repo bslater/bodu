@@ -165,6 +165,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The section factory could not convert a value of the INI section '{0}' to type '{1}'..
+        /// </summary>
+        internal static string Format_Invalid_IniFactorySectionConversion {
+            get {
+                return ResourceManager.GetString("Format_Invalid_IniFactorySectionConversion", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The INI document does not contain the required key '{0}'..
         /// </summary>
         internal static string Op_Invalid_IniMissingRequiredKey {

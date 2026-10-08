@@ -95,7 +95,8 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniFormatException">Thrown when the text is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document does not contain a section named <paramref name="sectionName" />.
+    /// Thrown when the document does not contain a section named <paramref name="sectionName" />, or when the factory
+    /// cannot convert a value; the conversion error is then the inner exception.
     /// </exception>
     public static TSection DeserializeSection<TSection>(string text, string sectionName, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)
     {
@@ -121,7 +122,8 @@ public static partial class IniSerializer
     /// collision violates the configured policies.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document does not contain a section named <paramref name="sectionName" />.
+    /// Thrown when the document does not contain a section named <paramref name="sectionName" />, or when the factory
+    /// cannot convert a value; the conversion error is then the inner exception.
     /// </exception>
     public static TSection DeserializeSection<TSection>(ReadOnlySpan<byte> utf8Ini, string sectionName, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)
     {
@@ -134,14 +136,39 @@ public static partial class IniSerializer
         IniNormalizedDocument document = IniNormalizedDocument.Parse(utf8Ini, IniReaderOptions.Default, effective.ToDocumentOptions());
 
         if (sectionName.Length == 0)
-            return factory.Create(document.GlobalEntries);
+            return CreateSection(factory, document.GlobalEntries, sectionName);
 
         foreach (IniNormalizedSection section in document.Sections)
         {
             if (string.Equals(section.Name, sectionName, StringComparison.Ordinal))
-                return factory.Create(section.Entries);
+                return CreateSection(factory, section.Entries, sectionName);
         }
 
         throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniSectionNotFound, sectionName));
+    }
+
+    /// <summary>
+    /// Creates one section with a section factory, reporting a value the factory cannot convert as the binder reports
+    /// one.
+    /// </summary>
+    /// <typeparam name="TSection">The section type.</typeparam>
+    /// <param name="factory">The section factory.</param>
+    /// <param name="entries">The section's key/value entries, in source order.</param>
+    /// <param name="sectionName">The section name, or an empty string for the document's global keys.</param>
+    /// <returns>The created section.</returns>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when the factory cannot convert a value; the conversion error is the inner exception.
+    /// </exception>
+    private static TSection CreateSection<TSection>(IIniSectionFactory<TSection> factory, IEnumerable<KeyValuePair<string, string>> entries, string sectionName)
+    {
+        try
+        {
+            return factory.Create(entries);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new IniSerializationException(
+                string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniFactorySectionConversion, sectionName, typeof(TSection)), ex);
+        }
     }
 }

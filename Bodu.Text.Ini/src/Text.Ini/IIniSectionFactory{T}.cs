@@ -41,5 +41,11 @@ public interface IIniSectionFactory<TSection>
     /// </summary>
     /// <param name="entries">The section's key/value entries, in source order.</param>
     /// <returns>The created section.</returns>
+    /// <remarks>
+    /// A conversion error the factory throws, a <see cref="FormatException" />, <see cref="OverflowException" />,
+    /// <see cref="ArgumentException" /> or <see cref="InvalidCastException" />, reaches the caller of
+    /// <see cref="IniSerializer" /> as an <see cref="IniSerializationException" /> whose inner exception it is, as the
+    /// reflection binder reports a value it cannot convert.
+    /// </remarks>
     TSection Create(IEnumerable<KeyValuePair<string, string>> entries);
 }

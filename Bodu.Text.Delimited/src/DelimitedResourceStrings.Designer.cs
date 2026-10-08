@@ -136,5 +136,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Format_Invalid_DelimitedValueConversion", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The record factory could not convert a value of delimited record {0} to type '{1}'..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedFactoryRecordConversion {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedFactoryRecordConversion", resourceCulture);
+            }
+        }
     }
 }

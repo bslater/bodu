@@ -41,5 +41,11 @@ public interface IDelimitedRecordFactory<TRecord>
     /// bind positionally in <see cref="Headers" /> order.
     /// </param>
     /// <returns>The created record.</returns>
+    /// <remarks>
+    /// A conversion error the factory throws, a <see cref="FormatException" />, <see cref="OverflowException" />,
+    /// <see cref="ArgumentException" /> or <see cref="InvalidCastException" />, reaches the caller of
+    /// <see cref="DelimitedSerializer" /> as a <see cref="DelimitedSerializationException" /> whose inner exception it
+    /// is, as the reflection binder reports a value it cannot convert.
+    /// </remarks>
     TRecord Create(string[] fields, IReadOnlyList<string> headers);
 }

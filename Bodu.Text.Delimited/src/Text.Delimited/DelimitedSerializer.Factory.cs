@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 
 using Bodu.Text.Delimited.Writer;
@@ -106,6 +107,9 @@ public static partial class DelimitedSerializer
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when the factory cannot convert a field value; the conversion error is the inner exception.
+    /// </exception>
     public static List<TRecord> Deserialize<TRecord>(string text, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(text);
@@ -130,6 +134,9 @@ public static partial class DelimitedSerializer
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when the factory cannot convert a field value; the conversion error is the inner exception.
+    /// </exception>
     public static List<TRecord> Deserialize<TRecord>(ReadOnlySpan<byte> utf8Delimited, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(factory);
@@ -140,8 +147,8 @@ public static partial class DelimitedSerializer
         ReadRows(utf8Delimited, effective.ToReaderOptions(), out List<string> headers, out List<string[]> rows);
 
         var result = new List<TRecord>(rows.Count);
-        foreach (string[] row in rows)
-            result.Add(factory.Create(row, headers));
+        for (int i = 0; i < rows.Count; i++)
+            result.Add(CreateRecord(factory, rows[i], headers, i + 1));
 
         return result;
     }
@@ -163,6 +170,9 @@ public static partial class DelimitedSerializer
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when the factory cannot convert a field value; the conversion error is the inner exception.
+    /// </exception>
     public static List<TRecord> Deserialize<TRecord>(Stream source, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -172,5 +182,31 @@ public static partial class DelimitedSerializer
         source.CopyTo(memory);
 
         return Deserialize(memory.GetBuffer().AsSpan(0, (int)memory.Length), factory, options);
+    }
+
+    /// <summary>
+    /// Creates one record with a record factory, reporting a field value the factory cannot convert as the binder
+    /// reports one.
+    /// </summary>
+    /// <typeparam name="TRecord">The record type.</typeparam>
+    /// <param name="factory">The record factory.</param>
+    /// <param name="fields">The record's decoded fields.</param>
+    /// <param name="headers">The header row, or an empty list for a headerless document.</param>
+    /// <param name="recordNumber">The 1-based number of the record among the document's records.</param>
+    /// <returns>The created record.</returns>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when the factory cannot convert a field value; the conversion error is the inner exception.
+    /// </exception>
+    private static TRecord CreateRecord<TRecord>(IDelimitedRecordFactory<TRecord> factory, string[] fields, IReadOnlyList<string> headers, int recordNumber)
+    {
+        try
+        {
+            return factory.Create(fields, headers);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new DelimitedSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFactoryRecordConversion, recordNumber, typeof(TRecord)), ex);
+        }
     }
 }

@@ -85,4 +85,7 @@
   <data name="Format_Invalid_DelimitedValueConversion" xml:space="preserve">
     <value>The delimited value for column '{0}' could not be converted to type '{1}'.</value>
   </data>
+  <data name="Format_Invalid_DelimitedFactoryRecordConversion" xml:space="preserve">
+    <value>The record factory could not convert a value of delimited record {0} to type '{1}'.</value>
+  </data>
 </root>

@@ -75,6 +75,8 @@ The factory overloads are exact counterparts of the reflection entry points, wit
 
 Dialect options still apply on the factory path - `Delimiter`, `Quote`, and `NoHeader` for Delimited (a headerless document binds **positionally** in `Headers` order), and the duplicate-section / duplicate-key policies for INI (merging runs before the factory sees the entries). An empty INI section name writes or binds the document's **global keys**; a section that is absent from the input raises <xref:Bodu.Text.Ini.IniSerializationException>. `DotEnvSerializer` has no factory surface - it remains reflection-only.
 
+A value a factory cannot convert reaches the caller as the serializer's own exception, `DelimitedSerializationException` or `IniSerializationException`, with the conversion error - a `FormatException`, `OverflowException`, `ArgumentException` or `InvalidCastException` - as its inner exception, as the reflection path reports it. The serializer wraps that error around the factory's `Create` call, so a hand-written factory reports its conversion errors the same way.
+
 ## Writing a factory by hand
 
 The interfaces are small enough to implement directly when the generator cannot be used - a type you do not own, a non-scalar column, or a build that cannot host analyzers. The contract for Delimited: `Headers` (column names in field order), `GetFields(record)` (values in `Headers` order), and `Create(fields, headers)` where `headers` is the document's header row, or **empty** for a headerless document, in which case bind positionally.
