@@ -35,7 +35,7 @@ Because the format has only four kinds, several everyday .NET types have **no na
 | `bool` | none | a [custom converter](../../../guides/serialization/bencode/converters.md) - e.g. map to `i0e` / `i1e` |
 | `double` / `float` / `decimal` | none | a custom converter - e.g. a scaled integer or a byte string |
 | `DateTime` / `DateTimeOffset` / `DateOnly` / `TimeOnly` | none | a custom converter - e.g. Unix seconds as an integer |
-| `null` values | none | omitted on write by design |
+| `null` values | none | a `null` member or dictionary value is omitted on write; a `null` list element throws `BencodeSerializationException`, because dropping it would shift every later element |
 
 The library never invents a lossy representation on your behalf; the choice of encoding for these kinds is yours, made explicit through a <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1>.
 

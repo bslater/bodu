@@ -155,7 +155,7 @@ and confirmation the hash survived re-authoring:
 
 **Intent.** Show the typed layer for when the shape *is* known: `BencodeSerializer` maps the
 metainfo dictionary onto a POCO graph in one call. Torrent keys include spaces
-(`creation date`, `piece length`) - precisely what `[BencodePropertyName]` exists for - and
+(`creation date`, `piece length`) - precisely what `[PropertyName]` exists for - and
 binary values bind to `byte[]`.
 
 **What it does.** Defines `TorrentMeta` / `TorrentInfo` POCOs whose properties carry explicit
@@ -186,7 +186,7 @@ file - canonical encoding makes even the POCO round trip byte-exact.
 ```
 
 **APIs demonstrated.** `BencodeSerializer.Deserialize<T>(byte[])`,
-`BencodeSerializer.Serialize<T>`, `[BencodePropertyName]` (keys with spaces), `byte[]`
+`BencodeSerializer.Serialize<T>`, `[PropertyName]` (keys with spaces), `byte[]`
 binding for binary byte strings, nested POCO mapping.
 
 ## Layout

@@ -28,7 +28,7 @@ Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOpti
 |---|---|---|
 | `Converters` | empty | The user converter list, searched ahead of the built-ins. |
 | `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Serialization.NamingPolicy> applied to member names with no explicit `[PropertyName]`. |
-| `PropertyNameCaseInsensitive` | `false` | Whether a document key matches a member name ignoring case on read. |
+| `PropertyNameCaseInsensitive` | `true` | Whether a document key matches a member name ignoring case on read. |
 | `IncludeFields` | `false` | Whether public fields join properties as serializable members. |
 | `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Serialization.IgnoreCondition> for members with no explicit `[Ignore]`. |
 | `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Serialization.UnmappedMemberHandling>). |
@@ -58,7 +58,7 @@ The first match wins, and the result is cached on the options.
 
 ## Attributes, callbacks, and naming policies
 
-The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` namespace:
+The attributes, callbacks, and naming policies are shared with the other Bodu text serializers and live in the `Bodu.Text.Serialization` namespace; the converter types live in `Bodu.Text.Bencode.Serialization`:
 
 - **Attributes** - `[PropertyName]`, `[Ignore]`, `[Converter]`, `[PropertyOrder]`, `[Constructor]`, `[Required]`, `[Include]`, `[ExtensionData]`, `[NamingPolicy]`, `[UnmappedMemberHandling]`, `[ObjectCreationHandling]`, `[StringEnumMemberName]`.
 - **Callbacks** - the <xref:Bodu.Text.Serialization.IOnSerializing> / <xref:Bodu.Text.Serialization.IOnSerialized> / <xref:Bodu.Text.Serialization.IOnDeserializing> / <xref:Bodu.Text.Serialization.IOnDeserialized> interfaces, run at the matching point in the pipeline.
@@ -69,7 +69,7 @@ The full serialization surface lives in the `Bodu.Text.Bencode.Serialization` na
 
 When you do not want a model, the library offers two DOMs:
 
-- **Mutable** - <xref:Bodu.Text.Bencode.Nodes.BencodeNode> with the concrete `BencodeObject` (a keyed dictionary node), `BencodeArray` (a list node), and `BencodeValue` (a scalar node). `Parse` a document into a tree, index into it with `node["key"]` / `node[index]`, mutate it, and write it back with `ToByteArray()`. Scalars convert with implicit operators (`string`, `long`, `int`, `ulong`, `byte[]` → `BencodeNode`) and explicit operators back the other way, and the tree supports `DeepClone()`, `DeepEquals(…)`, `ReplaceWith(…)`, and `GetPath()`. `Parse` returns `null` for an empty document.
+- **Mutable** - <xref:Bodu.Text.Bencode.Nodes.BencodeNode> with the concrete `BencodeObject` (a keyed dictionary node), `BencodeArray` (a list node), and `BencodeValue` (a scalar node). `Parse` a document into a tree, index into it with `node["key"]` / `node[index]`, mutate it, and write it back with `ToByteArray()`. Scalars convert with implicit operators (`string`, `long`, `int`, `ulong`, `byte[]` → `BencodeNode`) and explicit operators back the other way, and the tree supports `DeepClone()`, `DeepEquals(…)`, `ReplaceWith(…)`, and `GetPath()`. `Parse` throws `BencodeFormatException` for empty input.
 - **Read-only** - <xref:Bodu.Text.Bencode.Document.BencodeDocument> with `BencodeElement` and `BencodeProperty`. A low-allocation view over a parsed buffer, walked through `RootElement`: `GetProperty` / `TryGetProperty`, the integer indexer for lists, `EnumerateObject()` / `EnumerateArray()`, and typed getters (`GetString`, `GetBytes`, `GetInt64`, `GetUInt64`, and the `TryGet…` pair). Each element's kind is a <xref:Bodu.Text.Bencode.BencodeValueKind> (`Object`, `Array`, `ByteString`, `Integer`). `BencodeDocument` is disposable - it owns a pooled buffer, so wrap it in `using` and `Clone()` out any element that must outlive it.
 
 ## The low-level reader and writer
