@@ -316,7 +316,7 @@ public ref struct Utf8DotEnvReader
 
         while (true)
         {
-            SkipSpacesAndTabs();
+            SkipWhitespace();
 
             if (_position >= _data.Length)
             {
@@ -374,15 +374,15 @@ public ref struct Utf8DotEnvReader
         int entryLine = _line;
         bool isExport = false;
 
-        // Optionally strip an "export " prefix (the word followed by at least one space or tab).
+        // Optionally strip an "export " prefix (the word followed by at least one whitespace character).
         if (_options.AllowExportPrefix &&
             _data.Length - _position > 6 &&
             _data.Slice(_position, 6).SequenceEqual("export"u8) &&
-            _data[_position + 6] is (byte)' ' or (byte)'\t')
+            WhitespaceLengthAt(_position + 6) > 0)
         {
             isExport = true;
             _position += 6;
-            SkipSpacesAndTabs();
+            SkipWhitespace();
         }
 
         if (_position >= _data.Length || !IsKeyStart(_data[_position]))
@@ -399,13 +399,13 @@ public ref struct Utf8DotEnvReader
         int keyLength = _position - keyStart;
 
         // Tolerate optional whitespace around the assignment (KEY = value), matching common .env loaders.
-        SkipSpacesAndTabs();
+        SkipWhitespace();
 
         if (_position >= _data.Length || _data[_position] != (byte)'=')
             throw MalformedError(entryLine);
 
         _position++; // consume '='
-        SkipSpacesAndTabs();
+        SkipWhitespace();
 
         ReadValue(entryLine, out int rawStart, out int rawLength, out string? decoded);
 
@@ -555,7 +555,8 @@ public ref struct Utf8DotEnvReader
     }
 
     /// <summary>
-    /// Reads an unquoted value to the end of the line, trimming surrounding whitespace and honouring inline comments.
+    /// Reads an unquoted value to the end of the line, honouring inline comments and trimming trailing whitespace; the
+    /// caller has already skipped the whitespace before the value.
     /// </summary>
     /// <param name="rawStart">The source start of the trimmed value.</param>
     /// <param name="rawLength">The source length of the trimmed value.</param>
@@ -568,16 +569,12 @@ public ref struct Utf8DotEnvReader
         int start = _position;
         int end = lineEnd;
 
-        // Trim leading whitespace.
-        while (start < end && _data[start] is (byte)' ' or (byte)'\t')
-            start++;
-
         // Honour an inline comment: a '#' preceded by whitespace, including the whitespace after '=', ends the value.
         if (_options.AllowInlineComments)
         {
             for (int i = start; i < end; i++)
             {
-                if (_data[i] == (byte)'#' && _data[i - 1] is (byte)' ' or (byte)'\t')
+                if (_data[i] == (byte)'#' && WhitespaceLengthBefore(i, 0) > 0)
                 {
                     end = i;
                     break;
@@ -586,8 +583,9 @@ public ref struct Utf8DotEnvReader
         }
 
         // Trim trailing whitespace.
-        while (end > start && _data[end - 1] is (byte)' ' or (byte)'\t')
-            end--;
+        int length;
+        while (end > start && (length = WhitespaceLengthBefore(end, start)) > 0)
+            end -= length;
 
         rawStart = start;
         rawLength = end - start;
@@ -638,12 +636,56 @@ public ref struct Utf8DotEnvReader
     }
 
     /// <summary>
-    /// Advances past space and tab characters on the current line.
+    /// Determines whether an ASCII byte is whitespace other than a line break: a space, tab, vertical tab or form feed.
     /// </summary>
-    private void SkipSpacesAndTabs()
+    /// <param name="b">The byte to test.</param>
+    /// <returns><see langword="true" /> when the byte is whitespace that does not end a line.</returns>
+    private static bool IsAsciiWhitespace(byte b) =>
+        b is (byte)' ' or (byte)'\t' or 0x0B or 0x0C;
+
+    /// <summary>
+    /// Gets the UTF-8 length of the whitespace character that starts at an offset: any Unicode whitespace character
+    /// except CR and LF, which end a line.
+    /// </summary>
+    /// <param name="offset">The zero-based offset of the character, within the source.</param>
+    /// <returns>The character's length in bytes, or zero when the character there is not whitespace.</returns>
+    private readonly int WhitespaceLengthAt(int offset)
     {
-        while (_position < _data.Length && _data[_position] is (byte)' ' or (byte)'\t')
-            _position++;
+        byte first = _data[offset];
+        if (first < 0x80)
+            return IsAsciiWhitespace(first) ? 1 : 0;
+
+        return Rune.DecodeFromUtf8(_data[offset..], out Rune rune, out int length) == OperationStatus.Done && Rune.IsWhiteSpace(rune)
+            ? length
+            : 0;
+    }
+
+    /// <summary>
+    /// Gets the UTF-8 length of the whitespace character that ends just before an offset: any Unicode whitespace
+    /// character except CR and LF.
+    /// </summary>
+    /// <param name="offset">The zero-based offset just past the character.</param>
+    /// <param name="floor">The lowest offset the character may start at.</param>
+    /// <returns>The character's length in bytes, or zero when the character there is not whitespace.</returns>
+    private readonly int WhitespaceLengthBefore(int offset, int floor)
+    {
+        byte last = _data[offset - 1];
+        if (last < 0x80)
+            return IsAsciiWhitespace(last) ? 1 : 0;
+
+        return Rune.DecodeLastFromUtf8(_data[floor..offset], out Rune rune, out int length) == OperationStatus.Done && Rune.IsWhiteSpace(rune)
+            ? length
+            : 0;
+    }
+
+    /// <summary>
+    /// Advances past whitespace on the current line: any Unicode whitespace character except CR and LF.
+    /// </summary>
+    private void SkipWhitespace()
+    {
+        int length;
+        while (_position < _data.Length && (length = WhitespaceLengthAt(_position)) > 0)
+            _position += length;
     }
 
     /// <summary>

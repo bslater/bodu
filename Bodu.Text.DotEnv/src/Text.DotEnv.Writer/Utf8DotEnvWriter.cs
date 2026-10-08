@@ -294,12 +294,16 @@ public ref struct Utf8DotEnvWriter
     /// </summary>
     /// <param name="value">The value to test.</param>
     /// <returns><see langword="true" /> when the value requires quoting.</returns>
+    /// <remarks>
+    /// The reader trims every Unicode whitespace character from the ends of an unquoted value, and a <c>#</c> after any
+    /// of them starts an inline comment, so the same whitespace set decides quoting here.
+    /// </remarks>
     private static bool NeedsQuoting(string value)
     {
         if (value.Length == 0)
             return false;
 
-        if (value[0] is ' ' or '\t' || value[^1] is ' ' or '\t')
+        if (char.IsWhiteSpace(value[0]) || char.IsWhiteSpace(value[^1]))
             return true;
 
         if (value[0] is '"' or '\'')
@@ -311,7 +315,7 @@ public ref struct Utf8DotEnvWriter
             if (c is '\n' or '\r' or '"' or '\\')
                 return true;
 
-            if (c == '#' && i > 0 && value[i - 1] is ' ' or '\t')
+            if (c == '#' && i > 0 && char.IsWhiteSpace(value[i - 1]))
                 return true;
         }
 

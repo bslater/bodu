@@ -64,6 +64,7 @@ The mutable DOM preserves each entry's `export` flag through the round trip.
 - **Single quotes** delimit literal values.
 - **Unquoted** values are trimmed and end at an inline `#` comment, a `#` with whitespace before it: `KEY= # note` reads as an empty value, while `KEY=#note` and `URL=http://host/#top` keep their `#`.
 - An empty value (`KEY=`) is a real value, distinct from an absent key.
+- Whitespace is any Unicode whitespace character other than CR and LF, which end a line, so a form feed or a no-break space counts as well as a space or a tab. It may precede a key or a comment, follow `export`, and surround `=`, and it is trimmed from both ends of an unquoted value.
 
 `DotEnvReaderOptions` can disable the `export` prefix or inline comments (`DisallowExportPrefix`, `DisallowInlineComments`).
 
