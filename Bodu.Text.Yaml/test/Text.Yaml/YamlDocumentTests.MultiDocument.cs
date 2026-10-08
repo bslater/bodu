@@ -9,7 +9,8 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies multi-document stream parsing through <see cref="YamlDocument.ParseAllDocuments(string)" />.
+/// Verifies multi-document stream parsing through <see cref="YamlDocument.ParseAllDocuments(string)" />, and how the
+/// single-document <see cref="YamlDocument.Parse(string)" /> reads a stream of several documents.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -41,5 +42,24 @@ public partial class YamlDocumentTests
         Assert.AreEqual(2, docs.Count);
         Assert.AreEqual("value1", docs[0].RootElement.GetProperty("key1").GetString());
         Assert.AreEqual("value2", docs[1].RootElement.GetProperty("key2").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="YamlDocument.Parse(string)" /> reads the first document of a two-document stream, as the
+    /// single-document entry point is documented to do, while <see cref="YamlDocument.ParseAllDocuments(string)" />
+    /// returns both documents.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenStreamHoldsTwoDocuments_ShouldReturnFirstDocument()
+    {
+        const string Yaml = "a: 1\n---\nb: 2\n";
+
+        using var document = YamlDocument.Parse(Yaml);
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments(Yaml);
+
+        Assert.AreEqual(YamlValueKind.Mapping, document.RootElement.ValueKind);
+        Assert.AreEqual(1L, document.RootElement.GetProperty("a").GetInt64());
+        Assert.IsFalse(document.RootElement.TryGetProperty("b", out _));
+        Assert.AreEqual(2, documents.Count);
     }
 }

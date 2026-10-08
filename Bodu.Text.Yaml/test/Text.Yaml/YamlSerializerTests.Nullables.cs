@@ -7,8 +7,8 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies that nullable value types round trip, exercising the converter that wraps the underlying value
-/// converter and short-circuits on a null scalar.
+/// Verifies that nullable value types, structs and flags enumerations included, round trip, exercising the converter
+/// that wraps the underlying value converter and short-circuits on a null scalar.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -72,6 +72,44 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a nullable struct round-trips: a value holding <c>Value = 2</c> reads back equal, and a null value
+    /// reads back null.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenNullableStructHasValue_ShouldRoundTrip()
+    {
+        ExampleStruct? original = new ExampleStruct { Value = 2 };
+        ExampleStruct? none = null;
+
+        ExampleStruct? restored = YamlSerializer.Deserialize<ExampleStruct?>(YamlSerializer.Serialize(original));
+        ExampleStruct? restoredNone = YamlSerializer.Deserialize<ExampleStruct?>(YamlSerializer.Serialize(none));
+
+        Assert.AreEqual(original, restored);
+        Assert.IsNull(restoredNone);
+    }
+
+    /// <summary>
+    /// Verifies that a flags enumeration round-trips as the enumeration and as its nullable form, for one member and
+    /// for a combination of members, and that a null nullable value round-trips as null.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenNullableEnumHasFlagsValue_ShouldRoundTrip()
+    {
+        PermissionFlags[] values = [PermissionFlags.Read, PermissionFlags.Read | PermissionFlags.Write];
+        PermissionFlags? none = null;
+
+        foreach (PermissionFlags value in values)
+        {
+            PermissionFlags? nullable = value;
+
+            Assert.AreEqual(value, YamlSerializer.Deserialize<PermissionFlags>(YamlSerializer.Serialize(value)), $"{value} as the enumeration.");
+            Assert.AreEqual(nullable, YamlSerializer.Deserialize<PermissionFlags?>(YamlSerializer.Serialize(nullable)), $"{value} as its nullable form.");
+        }
+
+        Assert.IsNull(YamlSerializer.Deserialize<PermissionFlags?>(YamlSerializer.Serialize(none)));
+    }
+
+    /// <summary>
     /// A holder exercising the nullable converter over several underlying value types.
     /// </summary>
     private sealed class NullableHolder
@@ -87,5 +125,15 @@ public partial class YamlSerializerTests
         /// <summary>Gets or sets a nullable boolean.</summary>
         /// <value>Whether the holder is active.</value>
         public bool? Active { get; set; }
+    }
+
+    /// <summary>
+    /// A struct carried as a nullable value.
+    /// </summary>
+    private struct ExampleStruct
+    {
+        /// <summary>Gets or sets the value.</summary>
+        /// <value>The value.</value>
+        public int Value { get; set; }
     }
 }

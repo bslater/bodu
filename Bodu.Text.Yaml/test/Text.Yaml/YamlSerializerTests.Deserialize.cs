@@ -4,11 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies <see cref="YamlSerializer.Deserialize{TValue}(string, YamlSerializerOptions)" />: dictionary binding,
-/// loosely-typed object binding, and case-insensitive property matching.
+/// loosely-typed object binding, case-insensitive property matching, and the kind of a bound timestamp.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -105,5 +107,28 @@ public partial class YamlSerializerTests
         });
 
         Assert.AreEqual(path, ex.Path);
+    }
+
+    /// <summary>
+    /// Verifies that a timestamp with a <c>Z</c> suffix binds to a <see cref="DateTime" /> whose kind is
+    /// <see cref="DateTimeKind.Utc" /> and whose value is the UTC time the text names.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDateTimeHasZSuffix_ShouldReturnUtcKind()
+    {
+        var options = new YamlSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
+
+        BirthRecord record = YamlSerializer.Deserialize<BirthRecord>("momentOfBirth: 1983-04-21T20:21:03.0041599Z\n", options)!;
+
+        Assert.AreEqual(DateTimeKind.Utc, record.MomentOfBirth.Kind);
+        Assert.AreEqual(new DateTime(1983, 4, 21, 20, 21, 3, DateTimeKind.Utc).AddTicks(41_599), record.MomentOfBirth);
+    }
+
+    /// <summary>A model holding a timestamp.</summary>
+    private sealed class BirthRecord
+    {
+        /// <summary>Gets or sets the moment of birth.</summary>
+        /// <value>The moment of birth.</value>
+        public DateTime MomentOfBirth { get; set; }
     }
 }

@@ -389,6 +389,30 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that an enumeration member whose <see cref="StringEnumMemberNameAttribute" /> name is empty is written as
+    /// the empty string, quoted so it does not read as null, and that the empty string reads back as that member.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStringEnumMemberNameIsEmpty_ShouldWriteEmptyString()
+    {
+        string text = YamlSerializer.Serialize(BlankNamedOption.Blank);
+
+        Assert.AreEqual("\"\"\n", text);
+        Assert.AreEqual(BlankNamedOption.Blank, YamlSerializer.Deserialize<BlankNamedOption>(text));
+    }
+
+    /// <summary>
+    /// Verifies that a root enumeration value binds its member name case-insensitively, so <c>onhold</c> and
+    /// <c>ONHOLD</c> both read as <see cref="HoldStatus.OnHold" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumNameCaseDiffers_ShouldBindMember()
+    {
+        Assert.AreEqual(HoldStatus.OnHold, YamlSerializer.Deserialize<HoldStatus>("onhold"));
+        Assert.AreEqual(HoldStatus.OnHold, YamlSerializer.Deserialize<HoldStatus>("ONHOLD"));
+    }
+
+    /// <summary>
     /// An enumeration whose members map to member-name scalars by default.
     /// </summary>
     private enum Status
@@ -509,5 +533,38 @@ public partial class YamlSerializerTests
         /// </summary>
         /// <value>The flags.</value>
         public PermissionFlags Flags { get; set; }
+    }
+
+    /// <summary>
+    /// An enumeration one of whose members is written under the empty name.
+    /// </summary>
+    private enum BlankNamedOption
+    {
+        /// <summary>
+        /// The member written as the empty string.
+        /// </summary>
+        [StringEnumMemberName("")]
+        Blank = 0,
+
+        /// <summary>
+        /// A member written under its own name.
+        /// </summary>
+        Named = 1,
+    }
+
+    /// <summary>
+    /// An enumeration with a two-word member, read back from names whose case differs.
+    /// </summary>
+    private enum HoldStatus
+    {
+        /// <summary>
+        /// The active state.
+        /// </summary>
+        Active = 0,
+
+        /// <summary>
+        /// The on-hold state.
+        /// </summary>
+        OnHold = 1,
     }
 }

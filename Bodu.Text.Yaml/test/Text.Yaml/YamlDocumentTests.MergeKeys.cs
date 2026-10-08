@@ -47,4 +47,23 @@ public partial class YamlDocumentTests
         Assert.AreEqual(999L, doc.RootElement.GetProperty("config").GetProperty("a").GetInt64());
         Assert.AreEqual(2L, doc.RootElement.GetProperty("config").GetProperty("b").GetInt64());
     }
+
+    /// <summary>
+    /// Verifies that merging an aliased sequence of 3,200 empty mappings into each of 3,200 targets is rejected with
+    /// <see cref="YamlFormatException" />: every merged alias counts toward the alias-expansion budget even when it folds
+    /// no keys, so the quadratic merge work cannot grow without bound.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMergeSequencesOfEmptyMappingsAmplify_ShouldThrowYamlFormatException()
+    {
+        const int Count = 3_200;
+        string yaml = "arr: &arr [" + string.Join(", ", Enumerable.Repeat("{}", Count)) + "]\ntargets:\n"
+            + string.Concat(Enumerable.Repeat("  - <<: *arr\n", Count));
+        var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
+
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml, options);
+        });
+    }
 }

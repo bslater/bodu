@@ -25,4 +25,21 @@ public partial class YamlNodeTests
 
         Assert.AreEqual("name: test\ncount: 3\ntags:\n  - alpha\n  - beta\n", obj.ToYamlString());
     }
+
+    /// <summary>
+    /// Verifies that a mapping entry holding <see langword="null" /> is written as <c>a: null</c> and parses back to an
+    /// entry whose value is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ToYamlString_WhenObjectHoldsNullValue_ShouldWriteNull()
+    {
+        var obj = new YamlObject { ["a"] = null };
+
+        string yaml = obj.ToYamlString();
+
+        Assert.AreEqual("a: null\n", yaml);
+        YamlObject parsed = YamlNode.Parse(yaml)!.AsObject();
+        Assert.IsTrue(parsed.TryGetValue("a", out YamlNode? value));
+        Assert.IsNull(value);
+    }
 }

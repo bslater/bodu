@@ -4,12 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Numerics;
+
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies the fixed-width integer surface of the serializer across the native-sized and 128-bit types: values inside
-/// the writer's signed 64-bit surface emit as YAML integers, values outside it emit as their invariant text and convert
-/// back exactly.
+/// Verifies the numeric value-type surface of the serializer: across the native-sized and 128-bit integer types, values
+/// inside the writer's signed 64-bit surface emit as YAML integers and values outside it emit as their invariant text
+/// and convert back exactly, and every built-in numeric type reads the invariant text of its extreme values exactly.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -169,6 +172,55 @@ public partial class YamlSerializerTests
         {
             _ = YamlSerializer.Deserialize<UInt128>("\"340282366920938463463374607431768211456\"\n");
         });
+    }
+
+    /// <summary>
+    /// Verifies that the invariant text of the minimum and maximum values of every built-in numeric type reads back,
+    /// through <see cref="YamlSerializer.Deserialize{TValue}(string, YamlSerializerOptions)" />, as exactly that value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenScalarIsNumericTypeExtreme_ShouldReadExactValue()
+    {
+        AssertReadsExtremes<byte>();
+        AssertReadsExtremes<sbyte>();
+        AssertReadsExtremes<short>();
+        AssertReadsExtremes<ushort>();
+        AssertReadsExtremes<int>();
+        AssertReadsExtremes<uint>();
+        AssertReadsExtremes<long>();
+        AssertReadsExtremes<ulong>();
+        AssertReadsExtremes<decimal>();
+        AssertReadsExtremes<float>();
+        AssertReadsExtremes<double>();
+    }
+
+    /// <summary>
+    /// Verifies that a root scalar binds to a <see cref="ushort" /> target as a <see cref="ushort" />, at its maximum
+    /// <c>65535</c>, and that a member typed <see cref="ushort" /> binds the scalar <c>7</c>.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTargetIsUInt16_ShouldReturnUInt16()
+    {
+        ushort root = YamlSerializer.Deserialize<ushort>("65535");
+        MemberHolder<ushort> holder = YamlSerializer.Deserialize<MemberHolder<ushort>>("A: 7\n")!;
+
+        Assert.AreEqual((ushort)65535, root);
+        Assert.AreEqual((ushort)7, holder.A);
+    }
+
+    /// <summary>
+    /// Asserts that the invariant text of a numeric type's minimum and maximum values deserializes to those values.
+    /// </summary>
+    /// <typeparam name="T">The numeric type.</typeparam>
+    private static void AssertReadsExtremes<T>()
+        where T : IMinMaxValue<T>, IFormattable
+    {
+        foreach (T value in new[] { T.MinValue, T.MaxValue })
+        {
+            string text = value.ToString(null, CultureInfo.InvariantCulture);
+
+            Assert.AreEqual(value, YamlSerializer.Deserialize<T>(text), $"{typeof(T).Name}: {text}");
+        }
     }
 
     /// <summary>

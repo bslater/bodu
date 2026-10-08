@@ -7,8 +7,10 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies that <see cref="YamlSerializer" /> applies strict numeric and scalar coercions, rejecting lossy
-/// conversions and round-tripping <see cref="decimal" /> and large <see cref="ulong" /> values without corruption.
+/// Verifies that <see cref="YamlSerializer" /> applies strict numeric and scalar coercions: integer and integral float
+/// scalars bind across the numeric kinds, lossy and out-of-range conversions are rejected, a <see cref="float" /> widens
+/// to <see cref="double" /> on write, and <see cref="decimal" /> and large <see cref="ulong" /> values round-trip without
+/// corruption.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -100,5 +102,62 @@ public partial class YamlSerializerTests
         char value = YamlSerializer.Deserialize<char>("a\n");
 
         Assert.AreEqual('a', value);
+    }
+
+    /// <summary>
+    /// Verifies that an integer scalar binds to a <see cref="double" /> member and an integral float scalar binds to an
+    /// <see cref="int" /> or a <see cref="uint" /> member, converting across the numeric kinds as the default
+    /// <see cref="YamlNumberHandling.Strict" /> handling documents.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerScalarTargetsDoubleOrIntegralFloatTargetsInt_ShouldConvert()
+    {
+        MemberHolder<double> asDouble = YamlSerializer.Deserialize<MemberHolder<double>>("A: 1\n")!;
+        MemberHolder<int> asInt = YamlSerializer.Deserialize<MemberHolder<int>>("A: 1.0\n")!;
+        MemberHolder<uint> asUInt = YamlSerializer.Deserialize<MemberHolder<uint>>("A: 1.0\n")!;
+
+        Assert.AreEqual(1.0, asDouble.A);
+        Assert.AreEqual(1, asInt.A);
+        Assert.AreEqual(1u, asUInt.A);
+    }
+
+    /// <summary>
+    /// Verifies that a negative integer bound to an unsigned target, <see cref="uint" />, <see cref="ushort" /> or
+    /// <see cref="ulong" />, throws <see cref="YamlSerializationException" /> rather than wrapping around.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerTargetsUnsignedType_ShouldThrowYamlSerializationException()
+    {
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<uint>("-1");
+        });
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<ushort>("-1");
+        });
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<ulong>("-1");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="float" /> member holding <c>0.1f</c> is written as the text of the
+    /// <see cref="double" /> it widens to, <c>0.10000000149011612</c>, and narrows back to <c>0.1f</c> on read, as the
+    /// built-in converter catalog documents.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenSingleMemberIsOneTenth_ShouldRoundTripThroughWidenedText()
+    {
+        var original = new MemberHolder<float> { A = 0.1f };
+
+        string yaml = YamlSerializer.Serialize(original);
+        MemberHolder<float> restored = YamlSerializer.Deserialize<MemberHolder<float>>(yaml)!;
+
+        Assert.AreEqual("A: 0.10000000149011612\n", yaml);
+        Assert.AreEqual(0.1f, restored.A);
     }
 }

@@ -76,6 +76,44 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing an <see cref="object" /> array nested ten deep under a
+    /// <see cref="YamlSerializerOptions.MaxDepth" /> of five throws <see cref="YamlSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenGraphNestsBeyondMaxDepth_ShouldThrowYamlSerializationException()
+    {
+        object[] nested = Enumerable.Range(1, 10).Aggregate<int, object[]>([], (root, _) => [root]);
+        var options = new YamlSerializerOptions { MaxDepth = 5 };
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(nested, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing a POCO chain one hundred levels deep with the default options throws
+    /// <see cref="YamlSerializationException" />, as a depth limit reached through the serializer is documented to,
+    /// rather than overflowing the stack.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenObjectGraphNestsBeyondMaxDepth_ShouldThrowYamlSerializationException()
+    {
+        var root = new RecursiveModel();
+        RecursiveModel current = root;
+        for (int depth = 1; depth < 100; depth++)
+        {
+            current.Child = new RecursiveModel();
+            current = current.Child;
+        }
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(root);
+        });
+    }
+
+    /// <summary>
     /// A self-referential POCO used to build graphs of controlled depth.
     /// </summary>
     private sealed class RecursiveModel
