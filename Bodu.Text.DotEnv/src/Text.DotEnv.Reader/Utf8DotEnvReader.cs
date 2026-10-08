@@ -530,7 +530,8 @@ public ref struct Utf8DotEnvReader
                 continue;
             }
 
-            if (c == (byte)'\n')
+            // A line ends at a LF, a CR LF pair or a lone CR, as it does between entries; a CR LF counts at its LF.
+            if (c == (byte)'\n' || (c == (byte)'\r' && (_position + 1 == _data.Length || _data[_position + 1] != (byte)'\n')))
                 _line++;
 
             _position += AppendByte(sb, c);

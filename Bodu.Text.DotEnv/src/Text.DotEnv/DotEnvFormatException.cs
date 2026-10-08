@@ -71,6 +71,9 @@ public sealed class DotEnvFormatException
     /// Gets the 1-based line number at which the parse error was detected, when available.
     /// </summary>
     /// <value>The line number, or <see langword="null" /> when no line is associated with the error.</value>
+    /// <remarks>
+    /// A line ends at a LF, a CR LF pair or a lone CR, inside a double-quoted value as well as between entries.
+    /// </remarks>
     public int? LineNumber { get; }
 
     /// <summary>
