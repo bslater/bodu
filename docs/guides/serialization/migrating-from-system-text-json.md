@@ -37,7 +37,7 @@ Every Bodu attribute lives in `Bodu.Text.Serialization` and derives from <xref:B
 | `[JsonExtensionData]` | <xref:Bodu.Text.Serialization.ExtensionDataAttribute> `[ExtensionData]` | The member's *type* differs per format - see [Pattern 8](#pattern-8---extension-data). Structured serializers only. |
 | `[JsonConstructor]` | <xref:Bodu.Text.Serialization.ConstructorAttribute> `[Constructor]` | Structured serializers only. |
 | `[JsonUnmappedMemberHandling(…)]` | <xref:Bodu.Text.Serialization.UnmappedMemberHandlingAttribute> `[UnmappedMemberHandling(…)]` | `Skip` / `Disallow`. Structured serializers only. |
-| `[JsonObjectCreationHandling(…)]` | <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> `[ObjectCreationHandling(…)]` | `Replace` / `Populate`. Structured serializers only. |
+| `[JsonObjectCreationHandling(…)]` | <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> `[ObjectCreationHandling(…)]` | `Replace` / `Populate`. Structured serializers only. Where `Populate` cannot apply (a parameterized constructor, an array, a struct member without a setter), Bodu replaces the value instead of throwing. |
 | `[JsonStringEnumMemberName("…")]` | <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute> `[StringEnumMemberName("…")]` | Structured serializers only. |
 | `[JsonNumberHandling(…)]` | - | No member-level equivalent. YAML has an options-level `NumberHandling` (`Strict` / `AllowFloatToInteger`); the other formats have none. |
 | `[JsonPolymorphic]` / `[JsonDerivedType]` | - | No attribute-driven polymorphism; write a converter factory with a discriminator - [TOML](toml/polymorphic-converters.md), [YAML](yaml/polymorphic-converters.md), [Bencode](bencode/polymorphic-converters.md). |

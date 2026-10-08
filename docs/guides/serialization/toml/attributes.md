@@ -78,7 +78,7 @@ public sealed class Counter
 }
 ```
 
-Both members now round-trip - the private setter is assigned on read, and the field participates like a property, following the same naming, ordering, ignore, required, and converter rules.
+Both members now round-trip - the private setter is assigned on read, and the field participates like a property, following the same naming, ordering, ignore, required, and converter rules. The attribute also brings in a property with no public accessor at all, such as `[Include] private int Version { get; set; }`, whether the type or one of its base classes declares it; non-public fields stay out.
 
 ## Pattern 5 - Control write order
 
@@ -177,7 +177,7 @@ public sealed class Pipeline
 }
 ```
 
-Deserialized entries are appended to the existing list instead of replacing it. The attribute applies to a member or a whole type; member beats type, and both beat the options-level `PreferredObjectCreationHandling`.
+Deserialized entries are appended to the existing list instead of replacing it. An object member populates the same way: the members read for it are set on the instance it holds, and the values the input does not mention stay as the type initialized them. The attribute applies to a member or a whole type; member beats type, and both beat the options-level `PreferredObjectCreationHandling`.
 
 ## Pattern 11 - Choose a converter
 

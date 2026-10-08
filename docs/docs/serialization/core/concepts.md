@@ -59,7 +59,7 @@ Parameters bind to members by **name, case-insensitively** - a `host` parameter 
 
 ## Include, fields, and non-public accessors
 
-By default a property participates when it has a public getter, and is assigned only through a public setter. `[Include]` binds through the declared accessors regardless of visibility, so `{ get; private set; }` and `{ get; init; }` round-trip. Public fields participate only when `IncludeFields` is on or the field carries `[Include]`; non-public fields are never surfaced.
+By default a property participates when it has a public getter, and is assigned only through a public setter. `[Include]` binds through the declared accessors regardless of visibility, so `{ get; private set; }` and `{ get; init; }` round-trip, and so does a property with no public accessor at all, such as a `private` one, whether the type or one of its base classes declares it. Public fields participate only when `IncludeFields` is on or the field carries `[Include]`; non-public fields are never surfaced.
 
 ## Extension data
 
@@ -71,7 +71,7 @@ A type may declare at most one `[ExtensionData]` member - two is a metadata erro
 
 ## Object creation handling
 
-<xref:Bodu.Text.Serialization.ObjectCreationHandling> applies to collection and dictionary members. `Replace` (the default) builds a new instance and assigns it; `Populate` adds the entries read from the input into the instance the member already holds, which is how a get-only `List<T>` initialized in the type round-trips. When the existing value is `null` or the member is not a populatable collection the serializer falls back to `Replace`. A member-level attribute beats a type-level one, and both beat `PreferredObjectCreationHandling`.
+<xref:Bodu.Text.Serialization.ObjectCreationHandling> applies to collection, dictionary, and object members. `Replace` (the default) builds a new instance and assigns it; `Populate` reads the member into the value it already holds, which is how a get-only `List<T>` or settings object initialized in the type round-trips. The entries read for a collection or dictionary are added to it, and the members read for an object are set on it, keeping the values the input does not mention and running the object's deserialization callbacks; a struct member is populated on a copy that its setter stores back. When there is nothing to populate, the serializer falls back to `Replace`: the existing value is `null`, the collection cannot grow (an array, or a read-only or fixed-size collection or dictionary), the object's type is built through a parameterized constructor, or a struct member has no setter. A member without a setter keeps its value. A member-level attribute beats a type-level one, and both beat `PreferredObjectCreationHandling`.
 
 ## Property order
 

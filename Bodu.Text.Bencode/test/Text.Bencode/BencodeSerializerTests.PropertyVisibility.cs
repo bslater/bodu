@@ -124,6 +124,50 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a property with no public accessor, opted in by <see cref="IncludeAttribute" />, is written and is
+    /// assigned on read through its private accessors.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenPrivatePropertyHasInclude_ShouldRoundTripIt()
+    {
+        byte[] bytes = BencodeSerializer.Serialize(new IncludedPrivatePropertyModel());
+        Assert.AreEqual("d5:Counti3ee", Encoding.Latin1.GetString(bytes));
+
+        IncludedPrivatePropertyModel model = BencodeSerializer.Deserialize<IncludedPrivatePropertyModel>(Encoding.Latin1.GetBytes("d5:Counti8ee"));
+        Assert.AreEqual(8, model.ReadCount());
+    }
+
+    /// <summary>
+    /// Verifies that a private property declared by a base class and opted in by <see cref="IncludeAttribute" /> is
+    /// written in canonical key order alongside the derived type's members and is assigned on read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenBaseClassPrivatePropertyHasInclude_ShouldRoundTripIt()
+    {
+        byte[] bytes = BencodeSerializer.Serialize(new IncludedDerivedModel());
+        Assert.AreEqual("d6:Hiddeni3e7:Visiblei4ee", Encoding.Latin1.GetString(bytes));
+
+        IncludedDerivedModel model = BencodeSerializer.Deserialize<IncludedDerivedModel>(Encoding.Latin1.GetBytes("d6:Hiddeni2e7:Visiblei1ee"));
+        Assert.AreEqual(1, model.Visible);
+        Assert.AreEqual(2, model.ReadHidden());
+    }
+
+    /// <summary>
+    /// Verifies that a private property without <see cref="IncludeAttribute" /> is neither written nor assigned on
+    /// read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenPrivatePropertyHasNoInclude_ShouldIgnoreIt()
+    {
+        byte[] bytes = BencodeSerializer.Serialize(new UnincludedPrivatePropertyModel());
+        Assert.AreEqual("d7:Visiblei4ee", Encoding.Latin1.GetString(bytes));
+
+        UnincludedPrivatePropertyModel model = BencodeSerializer.Deserialize<UnincludedPrivatePropertyModel>(Encoding.Latin1.GetBytes("d6:Hiddeni2e7:Visiblei1ee"));
+        Assert.AreEqual(1, model.Visible);
+        Assert.AreEqual(3, model.ReadHidden());
+    }
+
+    /// <summary>
     /// A model with a single read/write property, the baseline member shape.
     /// </summary>
     private sealed class ReadWriteModel
@@ -233,4 +277,81 @@ public partial class BencodeSerializerTests
         public int Value { get; private set; }
     }
 
+    /// <summary>
+    /// A model whose only member is a private property opted into serialization through <see cref="IncludeAttribute" />.
+    /// </summary>
+    private sealed class IncludedPrivatePropertyModel
+    {
+        /// <summary>
+        /// Gets or sets the count, through private accessors only.
+        /// </summary>
+        /// <value>The count; 3 until it is read.</value>
+        [Include]
+        private int Count { get; set; } = 3;
+
+        /// <summary>
+        /// Returns the value of the private property.
+        /// </summary>
+        /// <returns>The value of <see cref="Count" />.</returns>
+        public int ReadCount() =>
+            Count;
+    }
+
+    /// <summary>
+    /// A base class whose private property is opted into serialization through <see cref="IncludeAttribute" />.
+    /// </summary>
+    private class IncludedBaseModel
+    {
+        /// <summary>
+        /// Gets or sets the hidden value, through private accessors only.
+        /// </summary>
+        /// <value>The hidden value; 3 until it is read.</value>
+        [Include]
+        private int Hidden { get; set; } = 3;
+
+        /// <summary>
+        /// Returns the value of the private property.
+        /// </summary>
+        /// <returns>The value of <see cref="Hidden" />.</returns>
+        public int ReadHidden() =>
+            Hidden;
+    }
+
+    /// <summary>
+    /// A model that adds a public property to <see cref="IncludedBaseModel" />.
+    /// </summary>
+    private sealed class IncludedDerivedModel
+        : IncludedBaseModel
+    {
+        /// <summary>
+        /// Gets or sets the visible value.
+        /// </summary>
+        /// <value>The visible value; 4 until it is read.</value>
+        public int Visible { get; set; } = 4;
+    }
+
+    /// <summary>
+    /// A model with a public property and a private property that is not opted into serialization.
+    /// </summary>
+    private sealed class UnincludedPrivatePropertyModel
+    {
+        /// <summary>
+        /// Gets or sets the visible value.
+        /// </summary>
+        /// <value>The visible value; 4 until it is read.</value>
+        public int Visible { get; set; } = 4;
+
+        /// <summary>
+        /// Gets or sets the hidden value, through private accessors only.
+        /// </summary>
+        /// <value>The hidden value; always 3, since the serializer does not bind it.</value>
+        private int Hidden { get; set; } = 3;
+
+        /// <summary>
+        /// Returns the value of the private property.
+        /// </summary>
+        /// <returns>The value of <see cref="Hidden" />.</returns>
+        public int ReadHidden() =>
+            Hidden;
+    }
 }

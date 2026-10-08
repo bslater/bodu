@@ -26,7 +26,7 @@ Every attribute derives from the abstract <xref:Bodu.Text.Serialization.Serializ
 |---|---|---|
 | <xref:Bodu.Text.Serialization.PropertyNameAttribute> | property, field | Pins the wire key for one member, overriding the CLR name and any naming policy. |
 | <xref:Bodu.Text.Serialization.IgnoreAttribute> | property, field | Excludes the member - unconditionally (`Condition` defaults to `Always`) or only when writing `null` / the default value. |
-| <xref:Bodu.Text.Serialization.IncludeAttribute> | property, field | Forces a member in: binds non-public accessors (`{ get; private set; }`, `{ get; init; }`) and surfaces a public field even when `IncludeFields` is off. |
+| <xref:Bodu.Text.Serialization.IncludeAttribute> | property, field | Forces a member in: binds non-public accessors (`{ get; private set; }`, `{ get; init; }`, or a `private` property) and surfaces a public field even when `IncludeFields` is off. |
 | <xref:Bodu.Text.Serialization.PropertyOrderAttribute> | property, field | Sets the relative order in which members are presented to the writer (ascending; unannotated members are `0` and keep declaration order). |
 | <xref:Bodu.Text.Serialization.RequiredAttribute> | property, field | Fails deserialization when the key is absent - the same effect as the C# `required` keyword. |
 | <xref:Bodu.Text.Serialization.ConverterAttribute> | property, field, class, struct, enum | Names the converter type for a member (governs that member) or a type (governs every use). |
@@ -34,7 +34,7 @@ Every attribute derives from the abstract <xref:Bodu.Text.Serialization.Serializ
 | <xref:Bodu.Text.Serialization.ConstructorAttribute> | constructor | Selects the constructor used during deserialization when a type declares more than one. |
 | <xref:Bodu.Text.Serialization.NamingPolicyAttribute> | class, struct, interface | Applies one of the built-in policies to the annotated type's members, overriding the options-level policy. |
 | <xref:Bodu.Text.Serialization.UnmappedMemberHandlingAttribute> | class, struct, interface | Chooses, per type, whether an unknown key is skipped or rejected. |
-| <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> | class, struct, interface, property, field | Chooses whether a collection member is replaced with a new instance or populated in place. |
+| <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> | class, struct, interface, property, field | Chooses whether a collection, dictionary, or object member is replaced with a new instance or populated in place. |
 | <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute> | enum field | Sets the string written for one enumeration member when the enum is serialized by name. |
 
 ## Naming policies

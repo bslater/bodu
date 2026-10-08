@@ -126,7 +126,7 @@ The remaining shared attributes work in YAML exactly as in the siblings:
 | `[Converter(typeof(…))]` | Binds a converter or converter factory to a member, property, or type - for example `[Converter(typeof(YamlStringEnumConverter<Status>))]`. |
 | `[PropertyOrder(n)]` | Orders members on write (lower first; unattributed members keep reflection order at order `0`). |
 | `[Required]` | A missing key on read raises <xref:Bodu.Text.Yaml.YamlSerializationException> (the C# `required` keyword is honored too). |
-| `[Include]` | Surfaces a member with a non-public setter, or a field without `IncludeFields`. |
+| `[Include]` | Surfaces a property whose accessors are not public (a non-public setter, or a `private` property), or a field without `IncludeFields`. |
 | `[ExtensionData]` | Captures unmapped keys into a `Dictionary<string, object?>` member and writes them back out. |
 | `[Constructor]` | Selects the deserialization constructor for parameterized/immutable types. |
 | `[ObjectCreationHandling(…)]` | Per-member replace-vs-populate on read, overriding <xref:Bodu.Text.Yaml.YamlSerializerOptions.PreferredObjectCreationHandling>. |

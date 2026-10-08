@@ -18,14 +18,21 @@ namespace Bodu.Text.Yaml.Serialization.Metadata;
 #endif
 
 /// <summary>
-/// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its public properties, its public fields (when
+/// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its properties (those with a public getter, and
+/// those <see cref="IncludeAttribute" /> opts in whatever their accessors' visibility), its public fields (when
 /// surfaced by <see cref="FormatOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its constructors,
 /// applying the serializer's naming policy, attributes, and converter resolution rules.
 /// </summary>
 internal static class MetadataResolver
 {
-    /// <summary>The binding flags used to discover serializable instance members.</summary>
+    /// <summary>The binding flags used to discover serializable instance fields and constructors.</summary>
     private const BindingFlags MemberFlags = BindingFlags.Public | BindingFlags.Instance;
+
+    /// <summary>The binding flags used to discover candidate properties, non-public ones included, since <see cref="IncludeAttribute" /> opts in a property that has no public accessor.</summary>
+    private const BindingFlags PropertyFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+    /// <summary>The binding flags used to find the non-public properties a base type declares, since reflection over a derived type does not return the private ones.</summary>
+    private const BindingFlags DeclaredNonPublicPropertyFlags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
     /// <summary>
     /// Resolves the metadata describing how <paramref name="type" /> is mapped under the supplied options.
@@ -41,7 +48,7 @@ internal static class MetadataResolver
         List<Draft> drafts = [];
         PropertyMetadata? extensionData = null;
         int declarationIndex = 0;
-        foreach (PropertyInfo property in type.GetProperties(MemberFlags))
+        foreach (PropertyInfo property in GetCandidateProperties(type))
         {
             bool included = property.IsDefined(typeof(IncludeAttribute), inherit: true);
             if (property.GetIndexParameters().Length > 0 || property.GetMethod is null || (!property.GetMethod.IsPublic && !included))
@@ -239,6 +246,36 @@ internal static class MetadataResolver
             || type == typeof(IDictionary<string, FormatNode?>)
             || type == typeof(Dictionary<string, FormatNode?>);
 #endif
+
+    /// <summary>
+    /// Enumerates the properties considered for serialization: every instance property that reflection returns for the
+    /// type, public or not, followed by the private properties its base types declare with
+    /// <see cref="IncludeAttribute" />.
+    /// </summary>
+    /// <param name="type">The type whose properties are enumerated.</param>
+    /// <returns>The candidate properties, in reflection order, the type's own first.</returns>
+    /// <remarks>
+    /// Reflection over a type returns the non-public properties it declares and those it inherits, except the private
+    /// properties of its base types; those are collected from each base type in turn, nearest first, when they carry
+    /// <see cref="IncludeAttribute" />. A base type's private property whose name a property already collected uses is
+    /// skipped, so the more derived property takes precedence.
+    /// </remarks>
+    private static List<PropertyInfo> GetCandidateProperties(Type type)
+    {
+        List<PropertyInfo> properties = [.. type.GetProperties(PropertyFlags)];
+        HashSet<string> names = new(properties.Select(static property => property.Name), StringComparer.Ordinal);
+
+        for (Type? baseType = type.BaseType; baseType is not null; baseType = baseType.BaseType)
+        {
+            foreach (PropertyInfo property in baseType.GetProperties(DeclaredNonPublicPropertyFlags))
+            {
+                if (property.IsDefined(typeof(IncludeAttribute), inherit: false) && names.Add(property.Name))
+                    properties.Add(property);
+            }
+        }
+
+        return properties;
+    }
 
     /// <summary>
     /// Resolves the converter for a member, honoring a member-level converter attribute before falling back to the

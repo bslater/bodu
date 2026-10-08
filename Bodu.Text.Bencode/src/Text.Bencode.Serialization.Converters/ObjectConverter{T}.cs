@@ -25,14 +25,54 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// Bencode has no null token, so a member whose value is <see langword="null" /> is omitted from the output rather than
 /// written with a placeholder.
 /// </remarks>
-internal sealed class ObjectConverter<T>
-    : BencodeConverter<T>
+internal sealed partial class ObjectConverter<T>
+    : BencodeConverter<T>, IPopulatingConverter
 {
     /// <inheritdoc />
     public override T Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
 
+        TypeMetadata metadata = ReadMembers(ref reader, options, out object?[] values, out bool[] present, out Dictionary<string, BencodeNode?>? extensionEntries);
+
+        // Keep the instance boxed for the whole assignment phase. For a value type each member assignment must target
+        // the same box, so unboxing to T before assignment would mutate a throwaway copy and lose the values.
+        object instance = ObjectBinder.Construct(metadata, values, present);
+        Bind(metadata, values, present, extensionEntries, instance, options);
+        return (T)instance;
+    }
+
+    /// <inheritdoc />
+    ObjectPopulation IPopulatingConverter.ReadPopulation(ref Utf8BencodeReader reader, BencodeSerializerOptions options)
+    {
+        TypeMetadata metadata = ReadMembers(ref reader, options, out object?[] values, out bool[] present, out Dictionary<string, BencodeNode?>? extensionEntries);
+        return new Population(metadata, values, present, extensionEntries, options);
+    }
+
+    /// <summary>
+    /// Reads the members of the dictionary at the reader's position into slot-indexed buffers, without constructing an
+    /// instance.
+    /// </summary>
+    /// <param name="reader">The reader, positioned on the dictionary's start token.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="values">When this method returns, each member's read value at its metadata slot.</param>
+    /// <param name="present">When this method returns, whether each member slot was read from the input.</param>
+    /// <param name="extensionEntries">
+    /// When this method returns, the entries no member matched, or <see langword="null" /> when there are none.
+    /// </param>
+    /// <returns>The metadata of <typeparamref name="T" />.</returns>
+    /// <exception cref="BencodeSerializationException">
+    /// The reader is not on a dictionary, <typeparamref name="T" /> cannot be constructed, a member's value cannot be
+    /// read, a key repeats while duplicate keys are disallowed, a key maps to no member while unmapped members are
+    /// disallowed, or a required member is missing.
+    /// </exception>
+    private static TypeMetadata ReadMembers(
+        ref Utf8BencodeReader reader,
+        BencodeSerializerOptions options,
+        out object?[] values,
+        out bool[] present,
+        out Dictionary<string, BencodeNode?>? extensionEntries)
+    {
         if (reader.TokenType != BencodeTokenType.StartDictionary)
         {
             throw new BencodeSerializationException(
@@ -46,9 +86,9 @@ internal sealed class ObjectConverter<T>
 
         // Slot-indexed flat buffers replace a per-object Dictionary<PropertyMetadata, object?>: values holds each
         // member's read value at its metadata slot, and present distinguishes an absent member from a read null.
-        object?[] values = new object?[metadata.PropertyCount];
-        bool[] present = new bool[metadata.PropertyCount];
-        Dictionary<string, BencodeNode?>? extensionEntries = null;
+        values = new object?[metadata.PropertyCount];
+        present = new bool[metadata.PropertyCount];
+        extensionEntries = null;
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
         {
             // The key's bytes stay addressable after the reader moves on, because they are a slice of the input.
@@ -59,7 +99,11 @@ internal sealed class ObjectConverter<T>
 
             if (metadata.TryGetProperty(name, out PropertyMetadata? property) && property is not null)
             {
-                object? converted = property.Converter.ReadAsObject(ref reader, property.PropertyType, options);
+                // A member populated under ObjectCreationHandling.Populate is read without being constructed,
+                // because the instance it holds can be reached only once this object exists.
+                object? converted = reader.TokenType == BencodeTokenType.StartDictionary && ObjectBinder.PopulatesObject(metadata, property, options)
+                    ? ((IPopulatingConverter)property.Converter).ReadPopulation(ref reader, options)
+                    : property.Converter.ReadAsObject(ref reader, property.PropertyType, options);
 
                 // Lenient duplicate handling binds last-wins, matching the dictionary converter's indexer assignment.
                 if (!options.AllowDuplicateKeys && present[property.SlotIndex])
@@ -107,14 +151,33 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        // Keep the instance boxed for the whole assignment phase. For a value type each member assignment must target
-        // the same box, so unboxing to T before assignment would mutate a throwaway copy and lose the values.
-        object instance = BareConstruct(metadata, values, present);
+        return metadata;
+    }
+
+    /// <summary>
+    /// Binds read members to an instance: runs its <see cref="IOnDeserializing" /> callback, assigns the members, adds
+    /// the unmatched entries to its extension data, and runs its <see cref="IOnDeserialized" /> callback.
+    /// </summary>
+    /// <param name="metadata">The type metadata.</param>
+    /// <param name="values">The read member values, indexed by member slot.</param>
+    /// <param name="present">Whether each member slot was read from the input.</param>
+    /// <param name="extensionEntries">The entries no member matched, or <see langword="null" />.</param>
+    /// <param name="instance">
+    /// The instance to bind to, boxed when its type is a value type: a new one, or the one a populated member holds.
+    /// </param>
+    /// <param name="options">The serializer options.</param>
+    private static void Bind(
+        TypeMetadata metadata,
+        object?[] values,
+        bool[] present,
+        Dictionary<string, BencodeNode?>? extensionEntries,
+        object instance,
+        BencodeSerializerOptions options)
+    {
         (instance as IOnDeserializing)?.OnDeserializing();
-        AssignSettableMembers(metadata, values, present, instance, options);
+        ObjectBinder.AssignMembers(metadata, values, present, instance, options.PreferredObjectCreationHandling);
         PopulateExtensionData(metadata, instance, extensionEntries);
         (instance as IOnDeserialized)?.OnDeserialized();
-        return (T)instance;
     }
 
     /// <inheritdoc />
@@ -238,158 +301,5 @@ internal sealed class ObjectConverter<T>
 
         IgnoreCondition effective = property.ConditionalIgnore ?? options.DefaultIgnoreCondition;
         return effective == IgnoreCondition.WhenWritingDefault && Equals(value, property.DefaultTypeValue);
-    }
-
-    /// <summary>
-    /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
-    /// members are assigned in a separate step so that an <see cref="IOnDeserializing" /> callback can run between
-    /// construction and member population.
-    /// </summary>
-    /// <param name="metadata">The type metadata.</param>
-    /// <param name="values">The read member values, indexed by member slot.</param>
-    /// <param name="present">Whether each member slot was read from the input.</param>
-    /// <returns>The constructed instance, before any settable member is assigned.</returns>
-    /// <remarks>
-    /// For a parameterized constructor the bound arguments are gathered from <paramref name="values" /> (falling back
-    /// to each parameter's default), so an <see cref="IOnDeserializing" /> callback necessarily observes those
-    /// arguments already applied; for a parameterless constructor the instance is created empty.
-    /// </remarks>
-    private static object BareConstruct(TypeMetadata metadata, object?[] values, bool[] present)
-    {
-        if (metadata.UsesParameterizedConstructor)
-        {
-            object?[] arguments = new object?[metadata.ConstructorParameterCount];
-            for (int i = 0; i < arguments.Length; i++)
-            {
-                PropertyMetadata? parameter = metadata.GetConstructorParameter(i);
-                arguments[i] = parameter is not null && present[parameter.SlotIndex]
-                    ? values[parameter.SlotIndex]
-                    : metadata.GetConstructorDefault(i);
-            }
-
-            return metadata.Construct(arguments);
-        }
-
-        return metadata.Construct(null);
-    }
-
-    /// <summary>
-    /// Assigns the read values to the settable members of a constructed instance, honoring each member's effective
-    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read entries
-    /// into the existing collection or dictionary instead of replacing it.
-    /// </summary>
-    /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
-    /// <param name="values">The read member values, indexed by member slot.</param>
-    /// <param name="present">Whether each member slot was read from the input.</param>
-    /// <param name="instance">The instance to assign on.</param>
-    /// <param name="options">The serializer options that supply the default object-creation handling.</param>
-    /// <remarks>
-    /// Members bound to a constructor parameter are skipped when the type is built through a parameterized constructor,
-    /// since their values were already supplied to the constructor. For every other member the effective handling is
-    /// the member's <see cref="PropertyMetadata.CreationHandling" />, then the type's
-    /// <see cref="TypeMetadata.CreationHandling" />, then
-    /// <see cref="BencodeSerializerOptions.PreferredObjectCreationHandling" />;
-    /// <see cref="ObjectCreationHandling.Populate" /> is applied only when the member already holds a populatable
-    /// collection or dictionary, otherwise the value is set through the member's setter.
-    /// </remarks>
-    private static void AssignSettableMembers(TypeMetadata metadata, object?[] values, bool[] present, object instance, BencodeSerializerOptions options)
-    {
-        bool skipConstructorBound = metadata.UsesParameterizedConstructor;
-        foreach (PropertyMetadata property in metadata.Properties)
-        {
-            if (!present[property.SlotIndex])
-                continue;
-
-            if (skipConstructorBound && property.ConstructorParameterIndex >= 0)
-                continue;
-
-            object? value = values[property.SlotIndex];
-            ObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? options.PreferredObjectCreationHandling;
-            if (handling == ObjectCreationHandling.Populate && TryPopulate(property, instance, value))
-                continue;
-
-            if (property.CanSet)
-                property.SetValue(instance, value);
-        }
-    }
-
-    /// <summary>
-    /// Attempts to merge a freshly read collection or dictionary value into the instance already held by a member,
-    /// rather than replacing it. This lets a get-only collection or dictionary property round-trip under
-    /// <see cref="ObjectCreationHandling.Populate" />.
-    /// </summary>
-    /// <param name="property">The member whose existing value is populated.</param>
-    /// <param name="instance">The instance that owns the member.</param>
-    /// <param name="bufferedValue">The value read into a new collection or dictionary for the member.</param>
-    /// <returns>
-    /// <see langword="true" /> when the member's existing value was populated from <paramref name="bufferedValue" />;
-    /// otherwise <see langword="false" />, indicating the caller should set the value normally.
-    /// </returns>
-    /// <remarks>
-    /// The existing value must be non-<see langword="null" /> and shaped as a non-generic
-    /// <see cref="System.Collections.IDictionary" /> or <see cref="System.Collections.IList" />, or a closed
-    /// <c>ICollection&lt;T&gt;</c>, and the buffered value must be enumerable. A dictionary copies key/value pairs; a
-    /// list or collection adds elements in order. Any other shape returns <see langword="false" />.
-    /// </remarks>
-    private static bool TryPopulate(PropertyMetadata property, object instance, object? bufferedValue)
-    {
-        object? existing = property.GetValue(instance);
-        if (existing is null || bufferedValue is null)
-            return false;
-
-        if (existing is System.Collections.IDictionary existingDictionary && bufferedValue is System.Collections.IDictionary bufferedDictionary)
-        {
-            foreach (System.Collections.DictionaryEntry pair in bufferedDictionary)
-                existingDictionary[pair.Key] = pair.Value;
-
-            return true;
-        }
-
-        if (bufferedValue is not System.Collections.IEnumerable bufferedItems)
-            return false;
-
-        if (existing is System.Collections.IList existingList)
-        {
-            foreach (object? item in bufferedItems)
-                existingList.Add(item);
-
-            return true;
-        }
-
-        return TryPopulateGenericCollection(existing, bufferedItems);
-    }
-
-    /// <summary>
-    /// Attempts to add the buffered items into an existing value that implements a closed <c>ICollection&lt;T&gt;</c>
-    /// but is not a non-generic <see cref="System.Collections.IList" />, invoking the interface's <c>Add</c> method
-    /// through reflection.
-    /// </summary>
-    /// <param name="existing">The existing collection instance.</param>
-    /// <param name="bufferedItems">The items read for the member.</param>
-    /// <returns>
-    /// <see langword="true" /> when an <c>ICollection&lt;T&gt;</c> was found and the items were added; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    private static bool TryPopulateGenericCollection(object existing, System.Collections.IEnumerable bufferedItems)
-    {
-        Type? collectionInterface = Array.Find(
-            existing.GetType().GetInterfaces(),
-            static i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>));
-
-        if (collectionInterface is null)
-            return false;
-
-        System.Reflection.MethodInfo? add = collectionInterface.GetMethod("Add");
-        if (add is null)
-            return false;
-
-        object?[] argument = new object?[1];
-        foreach (object? item in bufferedItems)
-        {
-            argument[0] = item;
-            add.Invoke(existing, argument);
-        }
-
-        return true;
     }
 }
