@@ -192,3 +192,14 @@ The research behind the catalogue found more, outside the rows, fixed the same w
 - **#871** to **#874** corrected documentation only: the `Normalized` write preset sorts nothing, `InvalidEscape` is
   reserved and never raised, four passages of the configuration documentation contradicted the code, and the bridge
   README named registration methods the package does not have.
+- **#915.** `ConfigurationDocument.Load(path)` recorded no root, though six passages of the documentation said it did. A
+  document loaded by path now resolves its globs against the full path of the file's directory when no `PathRoot` is
+  set, as EditorConfig defines a glob, while an explicit `PathRoot` still wins and a parsed document has no root.
+- **#916.** The `Identity` mapping split a key and rejoined it on the first separator, so `a:b` became `a.b`. It now
+  keeps every key exactly as written, apart from the lowercasing `LowercaseKeys` asks for, so under
+  `EditorConfigCompatible` a dotted key and a colon-delimited one are two keys, and a key such as `a..b` is kept rather
+  than rejected.
+
+Two more defects that these fixes brought to light are open, both in documentation the code contradicts: #921
+(`ConfigurationKey` says whitespace in segments is trimmed, and it is not) and #922 (a resolved entry's `SourceLocation`
+never carries the document path, though two passages say a loaded document's does).
