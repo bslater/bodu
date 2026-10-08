@@ -644,15 +644,21 @@ internal sealed partial class YamlParser
     /// Reads a simple mapping key (plain or single-line quoted), leaving the cursor at the value indicator.
     /// </summary>
     /// <returns>The decoded key text.</returns>
+    /// <remarks>
+    /// A key decodes to text only, so a key's node properties are not kept with it; an anchored key is instead kept as
+    /// a scalar row outside the tree, which an alias can refer to.
+    /// </remarks>
     private string ReadSimpleKey()
     {
-        // A simple key may carry leading anchor and tag node properties; they are consumed so the key text is clean.
+        string? anchor = null;
+        string? tag = null;
         if (Peek() is (byte)'&' or (byte)'!')
         {
-            TryReadAnchorAndTag(out _);
+            anchor = TryReadAnchorAndTag(out tag);
             SkipSpaces();
         }
 
+        int offset = _pos;
         byte c = Peek();
 
         // An alias cannot serve as an implicit mapping key.
@@ -666,6 +672,9 @@ internal sealed partial class YamlParser
             // An implicit key must occupy a single line.
             if (_line != startLine)
                 throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
+
+            if (anchor is not null)
+                _ = NewString(quoted, c == (byte)'"' ? YamlScalarStyle.DoubleQuoted : YamlScalarStyle.SingleQuoted, offset, anchor, tag);
 
             return quoted;
         }
@@ -685,7 +694,16 @@ internal sealed partial class YamlParser
                 end = _pos;
         }
 
-        return Utf8(start, end - start);
+        string text = Utf8(start, end - start);
+        if (anchor is not null)
+        {
+            YamlValueKind kind = YamlScalarResolver.Resolve(_source.AsSpan(start, end - start), _version, out long bits);
+            _ = kind == YamlValueKind.String
+                ? NewString(text, YamlScalarStyle.Plain, offset, anchor, tag)
+                : NewScalar(kind, bits, YamlScalarStyle.Plain, offset, anchor, tag);
+        }
+
+        return text;
     }
 
     /// <summary>
@@ -726,9 +744,9 @@ internal sealed partial class YamlParser
 
             byte c = Peek();
 
-            // In block context, an anchor or tag that begins a mapping-entry line is the entry key's property, not a
-            // property of the node being read.
-            if (crossLines && c is (byte)'&' or (byte)'!' && TryDetectBlockMapping(0))
+            // In block context, properties followed on their line by an implicit key are the key's properties, not
+            // those of the node being read.
+            if (crossLines && c is (byte)'&' or (byte)'!' && PropertiesPrecedeImplicitKey())
                 break;
 
             // A node carries at most one anchor and one tag.
@@ -758,6 +776,97 @@ internal sealed partial class YamlParser
         }
 
         return anchor;
+    }
+
+    /// <summary>
+    /// Determines whether the node properties at the cursor are followed on their line by an implicit mapping key,
+    /// which makes them the key's properties rather than those of the node being read.
+    /// </summary>
+    /// <returns><see langword="true" /> when an implicit key follows the properties on their line.</returns>
+    /// <remarks>
+    /// The properties are skipped token by token, so an anchor name that ends in <c>:</c> keeps its colon, and only the
+    /// token after them decides. A <c>: </c> inside a flow collection there does not make the line a mapping entry; a
+    /// value indicator after the whole collection, on the same line, makes the collection an implicit key. An alias or
+    /// a block scalar there is the node the properties apply to.
+    /// </remarks>
+    private bool PropertiesPrecedeImplicitKey()
+    {
+        int savePos = _pos;
+        int saveLine = _line;
+        int saveLineStart = _lineStart;
+        try
+        {
+            while (Peek() is (byte)'&' or (byte)'!')
+            {
+                if (Peek() == (byte)'&')
+                    _ = ReadName(1);
+                else
+                    _ = ReadTag();
+
+                SkipSpaces();
+            }
+
+            byte c = Peek();
+            if (c is (byte)'[' or (byte)'{')
+            {
+                if (!SkipFlowCollectionOnLine())
+                    return false;
+
+                SkipSpaces();
+                return Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1));
+            }
+
+            if (IsBreakOrEnd(c) || c is (byte)'#' or (byte)'*' or (byte)'|' or (byte)'>')
+                return false;
+
+            // A block sequence entry or an explicit key indicator is not an implicit key.
+            if (c is (byte)'-' or (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
+                return false;
+
+            return ScanSimpleKeyHasColon();
+        }
+        finally
+        {
+            _pos = savePos;
+            _line = saveLine;
+            _lineStart = saveLineStart;
+        }
+    }
+
+    /// <summary>
+    /// Advances past a flow collection that opens at the cursor and closes on the same line, skipping its nested
+    /// collections and quoted scalars, for probing.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the collection closes on the line, with the cursor after its closing bracket;
+    /// <see langword="false" /> when the line ends first.
+    /// </returns>
+    private bool SkipFlowCollectionOnLine()
+    {
+        int depth = 0;
+        while (!IsBreakOrEnd(Peek()))
+        {
+            byte b = Peek();
+            if (b is (byte)'"' or (byte)'\'')
+            {
+                if (!SkipQuotedOnLine(b))
+                    return false;
+
+                continue;
+            }
+
+            _pos++;
+            if (b is (byte)'[' or (byte)'{')
+            {
+                depth++;
+            }
+            else if (b is (byte)']' or (byte)'}' && --depth == 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
