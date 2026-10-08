@@ -100,7 +100,7 @@ handling are free to diverge from the raw-INI dialect.
 | Property | Role |
 |---|---|
 | `Profile` | The profile this bag represents. Default `Bodu`. |
-| `PathRoot` | The directory anchor that anchored globs are rebased against. When `null`, the document's load path is used; when neither is available, `MissingPathRootMode` decides. |
+| `PathRoot` | The directory a target path is rebased against before globs are matched; an explicit value always wins. When `null`, a document loaded with `Load(path)` uses the directory of its file; when neither is available, the target is matched as given, and `MissingPathRootMode` decides what a path-less resolve does. |
 | `MissingPathRootMode` | UseEmptyRoot (default) / Throw. There is no `IgnoreAnchoredPatterns` value. |
 | `ApplyPreambleProperties` | Whether preamble (global section) properties contribute to the view. Default `true` (`Bodu`/`Strict`/`Relaxed`); `false` for `EditorConfigCompatible`. |
 | `PathComparison` | The `StringComparison` used when matching target paths against patterns. Default `Ordinal`. |
@@ -111,8 +111,9 @@ handling are free to diverge from the raw-INI dialect.
 > `MissingPathRootMode` only changes behaviour when **no target path is supplied to `Resolve` at all**. The `Throw`
 > mode raises `InvalidOperationException` when `PathRoot` is `null`, the document carries no load path, and `targetPath`
 > is `null` - the `EditorConfigCompatible` and `Strict` resolve profiles select it so a path-less resolve fails loudly
-> rather than silently returning a preamble-only view. When a target path *is* supplied, an absent `PathRoot` simply
-> means anchored globs are matched against the bare target path (the empty-root behaviour).
+> rather than silently returning a preamble-only view. When a target path *is* supplied and no root is known (no
+> `PathRoot`, and a document parsed rather than loaded from a file), anchored globs are matched against the bare target
+> path (the empty-root behaviour).
 
 **<xref:Bodu.Text.Configuration.ConfigurationWriteOptions>** controls `Save`: encoding, newline style, blank-line
 policy, property layout. Use the static `Bodu` / `EditorConfigCompatible` / `Normalized` presets (or `For(profile)`), or supply a
@@ -175,13 +176,14 @@ language follows EditorConfig:
 | `[abc]` / `[!abc]` | Character class / negated character class; a bracket expression that holds a `/` is literal text. |
 | `{a,b,c}` | Alternation; a group without a comma, such as `{single}` or `{}`, is literal text. |
 | `[*.cs]` | All `.cs` files at any depth (unanchored). |
-| `[src/**/*.cs]` | All `.cs` files under `src/` (anchored to `PathRoot`). |
+| `[src/**/*.cs]` | All `.cs` files under `src/` (anchored at the root: `PathRoot`, or the directory of a file loaded by path). |
 
 The **target path** is the value passed to `document.Resolve(targetPath)`. Before matching, the resolver normalises the
-path to forward slashes and rebases it relative to `PathRoot`: if the path begins with `PathRoot + "/"` that prefix is
-stripped; if it equals `PathRoot` exactly, only the filename survives; otherwise the path is matched as-is. Anchored
-patterns (those that contain `/`) are then tested against the whole relative path; unanchored patterns (no `/`) match at
-any directory depth.
+path to forward slashes and rebases it relative to the root, which is `PathRoot`, or when that is unset the directory of
+the file a document was loaded from with `Load(path)`: if the path begins with the root plus `/` that prefix is
+stripped; if it equals the root exactly, only the filename survives; otherwise, or when no root is known, the path is
+matched as-is. Anchored patterns (those that contain `/`) are then tested against the whole relative path; unanchored
+patterns (no `/`) match at any directory depth.
 
 A pattern that starts with `/` is anchored at the root as well, and a relative target matches it as if the target
 began with `/`: `[/src/*.cs]` applies to `src/Foo.cs`, to `/src/Foo.cs`, and to `/repo/src/Foo.cs` rebased under
@@ -192,9 +194,10 @@ began with `/`: `[/src/*.cs]` applies to `src/Foo.cs`, to `/src/Foo.cs`, and to 
 > target is empty and **every named section is skipped** - only the preamble (when `ApplyPreambleProperties` is `true`)
 > contributes to the view. A path-less resolve is therefore a preamble-only projection, not an "all sections" merge.
 
-When `PathRoot` is unset, <xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> decides what a *path-less*
-resolve does: `UseEmptyRoot` returns the preamble-only view described above, while `Throw` raises
-`InvalidOperationException`. The mode has no effect once a non-null target path is supplied.
+When no root is known, because `PathRoot` is unset and the document was not loaded from a file,
+<xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> decides what a *path-less* resolve does: `UseEmptyRoot`
+returns the preamble-only view described above, while `Throw` raises `InvalidOperationException`. The mode has no effect
+once a non-null target path is supplied.
 
 The pattern compiler is <xref:Bodu.Text.Configuration.ConfigurationPattern> - the same engine the resolver uses,
 exposed for callers who want to test pattern matching directly without instantiating a document. `Compile` memoises

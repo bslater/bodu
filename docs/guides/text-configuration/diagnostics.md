@@ -118,7 +118,7 @@ The parser raises three kinds of exception:
 
 1. **`ConfigurationParseException`** (a `FormatException`) - raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Exposes the primary `Diagnostic` and the full `Diagnostics` array of everything gathered before the failure; `Location` forwards to the primary diagnostic.
 2. **`ArgumentException` / `ArgumentNullException`** - for invalid inputs (null source, unreadable stream). Standard BCL contract.
-3. **`InvalidOperationException`** - raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`), the document carries none, and no target path is supplied.
+3. **`InvalidOperationException`** - raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`) but set no `PathRoot`, the document was not loaded from a file, and no target path is supplied.
 
 Diagnostics under `Collect` and `Ignore` modes never throw - the parser carries on, populates the result document on a best-effort basis, and emits the diagnostic list for the caller to inspect.
 

@@ -20,9 +20,11 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// <para>
 /// <see cref="PathRoot" /> rebases the target path before matching: a target under the root is matched relative to it,
-/// and any other target is matched as given. <see cref="MissingPathRootMode" /> applies only when <c>Resolve</c>
-/// receives no target path and no <see cref="PathRoot" /> is set:
-/// <see cref="ConfigurationMissingPathRootMode.UseEmptyRoot" /> returns the preamble-only view, and
+/// and any other target is matched as given. When <see cref="PathRoot" /> is not set, a document loaded with
+/// <see cref="ConfigurationDocument.Load(string, ConfigurationParseOptions?)" /> is rooted at the directory of its
+/// file, so a section's glob is relative to that file, as EditorConfig defines it; an explicit <see cref="PathRoot" />
+/// takes precedence. <see cref="MissingPathRootMode" /> applies only when <c>Resolve</c> receives no target path and no
+/// root is known: <see cref="ConfigurationMissingPathRootMode.UseEmptyRoot" /> returns the preamble-only view, and
 /// <see cref="ConfigurationMissingPathRootMode.Throw" /> raises <see cref="InvalidOperationException" />.
 /// </para>
 /// <para>
@@ -57,14 +59,17 @@ public sealed partial class ConfigurationResolveOptions
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>
-    /// Gets the optional path root used to evaluate anchored glob patterns. When <see langword="null" /> the document's
-    /// load path is used; if neither is available, <see cref="MissingPathRootMode" /> controls behaviour.
+    /// Gets the optional path root that a target path is rebased against before glob patterns are matched. When
+    /// <see langword="null" />, a document loaded from a file is rooted at that file's directory; when neither is
+    /// available, a target path is matched as given, and <see cref="MissingPathRootMode" /> governs a resolve with no
+    /// target path.
     /// </summary>
     /// <value>The path root, or <see langword="null" />.</value>
     public string? PathRoot { get; init; }
 
     /// <summary>
-    /// Gets how the resolver reacts to an absent <see cref="PathRoot" /> when the document was parsed from a string.
+    /// Gets how a resolve with no target path behaves when no root is known: <see cref="PathRoot" /> is not set and the
+    /// document was not loaded from a file.
     /// </summary>
     /// <value>The selected mode.</value>
     public ConfigurationMissingPathRootMode MissingPathRootMode { get; init; } =

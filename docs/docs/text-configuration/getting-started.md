@@ -131,12 +131,14 @@ await using FileStream fs = File.OpenRead("bodu.config");
 ConfigurationDocument fromStream = ConfigurationDocument.Load(fs);
 ```
 
-`Load(path)` records the originating directory so anchored glob patterns (e.g. `[src/**]`) can resolve against the
-correct root without an explicit `PathRoot` setting. `Load(Stream)` and `Parse(string)` produce documents with no
-path context: an anchored glob is matched against the target path as given, so `[src/*.txt]` matches `src/a.txt`, and
+`Load(path)` records the full path of the file's directory, and `Resolve` rebases a target path that lies under it when
+no `PathRoot` is set, so anchored glob patterns (e.g. `[src/**]`) are relative to the file, as EditorConfig defines
+them, without an explicit `PathRoot` setting; a `PathRoot` you set still wins. Pass the target as a full path: a
+relative one is matched as given. `Load(Stream)`, `Load(TextReader)` and `Parse(string)` produce documents with no path
+context: an anchored glob is matched against the target path as given, so `[src/*.txt]` matches `src/a.txt`, and
 `ConfigurationResolveOptions.PathRoot` only rebases a target that lies under it. `MissingPathRootMode` matters only when
-`Resolve` gets no target path at all: `UseEmptyRoot` (the `Bodu` profile default) returns the preamble-only view, and
-`Throw` (which the `EditorConfigCompatible` profile selects) raises `InvalidOperationException`.
+`Resolve` gets no target path and no root is known: `UseEmptyRoot` (the `Bodu` profile default) returns the
+preamble-only view, and `Throw` (which the `EditorConfigCompatible` profile selects) raises `InvalidOperationException`.
 
 ### Resolve options - anchor a path root
 

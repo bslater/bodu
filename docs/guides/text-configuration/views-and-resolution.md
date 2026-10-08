@@ -144,7 +144,7 @@ Every field of `ConfigurationResolveOptions`:
 | Field | Default | Effect |
 |---|---|---|
 | `Profile` | `Bodu` | Selects the cohort of resolve defaults. |
-| `PathRoot` | `null` | Optional anchor that anchored globs are rebased against; `null` defers to the document's load path. |
+| `PathRoot` | `null` | Optional root that a target path is rebased against before globs are matched; an explicit value always wins. `null` defers to the directory of the file a document was loaded from with `Load(path)`, and a target is matched as given when there is neither. |
 | `MissingPathRootMode` | `UseEmptyRoot` | Behaviour for a **path-less** resolve when no root is available - `UseEmptyRoot` returns a preamble-only view; `Throw` raises `InvalidOperationException`. No effect once a target path is supplied. |
 | `ApplyPreambleProperties` | `true` (Bodu/Strict/Relaxed) / `false` (EditorConfig) | Whether the global section contributes to the view. Its `root` pair never does: it marks the file as the root of its directory tree and stays in the document. |
 | `PathComparison` | `Ordinal` | `StringComparison` used to match the target path against globs (case-insensitive variants compile the regex with `IgnoreCase`). |
@@ -166,7 +166,7 @@ ConfigurationView view = document.Resolve("/repo/my-app/src/svc/Foo.cs", options
 
 A glob that starts with `/` is anchored at the root: a target given relative to the root, as written or after rebasing, matches it as if the target began with `/`. `[/src/*.cs]` therefore applies to `src/Foo.cs`, to `/src/Foo.cs`, and, with `PathRoot = "/repo"`, to `/repo/src/Foo.cs`, while `lib/src/Foo.cs` and `/elsewhere/src/Foo.cs` stay unmatched, as EditorConfig's core-test `leading_slash_relevance` expects.
 
-When a document is loaded with `ConfigurationDocument.Load(path)`, its originating directory is recorded and used as the implicit `PathRoot`, so anchored globs resolve against the right base without setting `PathRoot` explicitly. Documents parsed from a string or stream carry no path context - set `PathRoot` yourself when your globs are anchored.
+When a document is loaded with `ConfigurationDocument.Load(path)`, the full path of its file's directory is recorded and used as the implicit `PathRoot`, so anchored globs are relative to the file, as EditorConfig defines them, without setting `PathRoot` explicitly. An explicit `PathRoot` still wins. The recorded directory is a full path, so pass a full target path for it to rebase; a relative target is matched as given. Documents parsed from a string or loaded from a stream or a text reader carry no path context - set `PathRoot` yourself when your globs are anchored.
 
 ## `ConfigurationKey` and `ConfigurationKeyOptions`
 

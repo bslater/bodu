@@ -41,14 +41,15 @@ internal sealed class ConfigurationResolver
     /// <returns>The resolved view for <paramref name="targetPath" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The configured options require a path root, the document was parsed without one, and no target path was
-    /// supplied.
+    /// The configured options require a path root, none is set, the document was not loaded from a file, and no target
+    /// path was supplied.
     /// </exception>
     internal ConfigurationView Resolve(IniDocumentBase document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
 
-        string? pathRoot = _options.PathRoot;
+        // An explicit root wins; otherwise a document loaded from a file is rooted at that file's directory.
+        string? pathRoot = _options.PathRoot ?? (document as ConfigurationDocument)?.LoadDirectory;
         if (pathRoot is null && _options.MissingPathRootMode == ConfigurationMissingPathRootMode.Throw && targetPath is null)
             ConfigurationHelpers.ThrowResolveWithoutPathRoot();
 
