@@ -66,8 +66,8 @@ Anything else in `input` and `expected` is written with an escape: `\n`, `\r`, `
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 81 | The row runs, and Bodu must do what the fix established |
-| `dialect` | 8 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document |
+| `applies` | 76 | The row runs, and Bodu must do what the fix established |
+| `dialect` | 16 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document |
 | `n/a` | 43 | The fix concerns something Bodu does not have (a torrent or magnet-link model, a Rust or C++ API), memory management, a platform, packaging or performance; `reason` says which |
 | `unknown` | 0 | No scenario could be found |
 
@@ -79,12 +79,13 @@ integer, exactly as its text appears between `i` and `e`. Bytes are escaped as a
 written `\x20`. For example `d3:cow3:moo4:spam4:eggse` renders as `{ k:cow s:moo k:spam s:eggs }`. Transcripts are
 compared after each token's bytes are decoded, so `\u{E9}` and `\xC3\xA9` are the same.
 
-- The **Reader** surface (the default) drives `Utf8BencodeReader` until `Read` returns `false`. An integer's text is
-  taken from the input between its `i` and `e` (`TokenStartIndex` to `BytesConsumed`), because `ValueSpan` holds only
-  byte-string and key content.
+- The **Reader** surface (the default) drives `Utf8BencodeReader` until `Read` returns `false`, and renders every value
+  from `ValueSpan`: a key's or byte string's content, and an integer's text without its `i` and `e`.
 - The **Document** surface parses with `BencodeDocument.Parse` and walks `RootElement`. A key is rendered from
-  `BencodeProperty.Name` encoded as UTF-8, since the document exposes no key bytes, so a key that is not valid UTF-8
-  renders with U+FFFD; an integer's text comes from `GetRawBytes`.
+  `BencodeProperty.GetNameBytes`, its exact bytes, and an integer's text from `GetRawBytes`.
+- The **Node** surface parses with `BencodeNode.Parse` and walks the tree. The tree keeps no document order, so a
+  dictionary renders in ascending bytewise key order, the order its writer uses, and rows that read through it use
+  canonical input.
 
 | Kind | Passes when |
 |---|---|
@@ -103,7 +104,7 @@ holds Bodu to its documented integer range. An `i:` token must be canonical base
 
 | Option | Applies to | Values |
 |---|---|---|
-| `Surface` | the read of a `parse`, `reject` or `roundtrip` row | `Reader` (default) or `Document` |
+| `Surface` | the read of a `parse`, `reject` or `roundtrip` row | `Reader` (default), `Document` or `Node` |
 | `MaxDepth` | the reader, the document and the writer | a positive integer; Bodu caps it at 64 |
 | `AllowUnsortedKeys` | the reader and the document | `true` or `false` (default) |
 | `AllowDuplicateKeys` | the reader and the document | `true` or `false` (default) |
@@ -114,34 +115,40 @@ holds Bodu to its documented integer range. An `i:` token must be canonical base
 | Library | Fixes | Rows | applies | dialect | n/a | unknown |
 |---|---:|---:|---:|---:|---:|---:|
 | bencodenet | 21 | 26 | 10 | 0 | 16 | 0 |
-| bencode-py | 8 | 14 | 8 | 1 | 5 | 0 |
-| node-bencode | 13 | 26 | 17 | 5 | 4 | 0 |
+| bencode-py | 8 | 15 | 8 | 2 | 5 | 0 |
+| node-bencode | 13 | 28 | 14 | 10 | 4 | 0 |
 | bendy | 7 | 7 | 0 | 0 | 7 | 0 |
-| serde-bencode | 10 | 18 | 13 | 1 | 4 | 0 |
+| serde-bencode | 10 | 18 | 11 | 3 | 4 | 0 |
 | libtorrent | 11 | 21 | 17 | 0 | 4 | 0 |
 | transmission | 7 | 20 | 16 | 1 | 3 | 0 |
-| **Total** | **77** | **132** | **81** | **8** | **43** | **0** |
+| **Total** | **77** | **135** | **76** | **16** | **43** | **0** |
 
-Of the 89 `applies` and `dialect` rows, 72 are runnable and 17 are `unit` rows.
+Of the 92 `applies` and `dialect` rows, 74 are runnable and 18 are `unit` rows.
 
-### Status (2026-10-08, at c7b500d66a)
+### Status
 
-No test in the repository reads these files yet. Checked against `Bodu.Text.Bencode` as it stood when they were
-written, 69 of the 72 runnable rows pass. The three that fail have two causes:
+`BencodeReleaseNoteCorpusTests` in `Bodu.Text.Bencode.Test` runs every runnable row from copies of these files
+embedded under `Fixtures/ReleaseNotes/`, pins the counts above, and checks that each `unit` row names a test that
+exists and that the copies match these files. Every row passes.
 
-- **Dictionary keys through the document model** (bencode.py 3.0.0 PR #14 case 3, node-bencode 4.0.0 PR #150 case 2).
-  `BencodeDocument` exposes a key only as `BencodeProperty.Name`, a string decoded as UTF-8 with U+FFFD in place of
-  invalid bytes. A key that is not valid UTF-8, such as the 20-byte info hashes that key a tracker's scrape response,
-  is therefore mangled, two such keys can come back equal, and no member returns the key's bytes. The reader keeps them
-  intact.
-- **Empty input on the reader** (Transmission 1.05 case 2). `Utf8BencodeReader` reports no token and does not throw
-  for empty input, as `Read_WhenInputEmpty_ShouldReturnFalse` pins, although its documentation says it enforces a
-  single root value; `BencodeDocument.Parse` and `BencodeNode.Parse` reject empty input. node-bencode 0.11.0 case 4
-  asserts the reader's current behaviour, so one of the two rows becomes `dialect` once Bodu documents which rule its
-  reader follows.
+The first run against Bodu found these defects, each fixed test first:
 
-Several `unit` rows also describe behaviour Bodu does not have yet: a null collection element throws
-`BencodeSerializationException` although null values are documented as omitted on write (node-bencode 0.11.0 case 2,
-serde-bencode 0.1.3 case 2); a null root value throws (node-bencode 0.11.0 case 3, serde-bencode 0.1.3 case 1); and
-empty input read from a stream is reported as `BencodeSerializationException` rather than `BencodeFormatException`
-(BencodeNET 3.0.0 case 2).
+- **#818.** `BencodeDocument` exposed a dictionary key only as `BencodeProperty.Name`, decoded as UTF-8 with U+FFFD, so
+  a binary key, such as the info hashes that key a tracker's scrape response, could not be read back (bencode.py 3.0.0
+  PR #14 case 3, node-bencode 4.0.0 PR #150 case 2). `BencodeProperty.GetNameBytes` and `NameEquals` and the
+  `GetProperty(ReadOnlySpan<byte>)` overloads now give exact access.
+- **#819.** The node tree, string-keyed dictionaries and extension data merged keys that are not valid UTF-8. They now
+  refuse such a key, and dialect rows hold the node tree and the dictionary to that.
+- **#820.** `Utf8BencodeReader.ValueSpan` held the previous byte string on integer and container tokens.
+- **#821.** Two reader messages were left unformatted, and the out-of-range integer message named the wrong range.
+- **#822.** The reader accepted empty input (Transmission 1.05 case 2). Every surface now rejects it with
+  `BencodeFormatException`, and node-bencode 0.11.0 case 4 is a dialect row asserting that.
+- **#823.** A null root value gave a different result for each kind of type. `BencodeSerializer` now throws
+  `BencodeSerializationException` for one, and `SerializeToNode` returns `null`.
+- **#824.** The package README and the concepts pages contradicted the code.
+
+Bodu deliberately differs from two upstream fixes, and the rows say so as `dialect` rows. It throws for a null list
+element, which node-bencode and serde_bencode drop (node-bencode 0.11.0 case 2, serde-bencode 0.1.3 case 2), because
+dropping an element shifts every later one. It throws for a null root value, which they write as nothing
+(node-bencode 0.11.0 case 3, serde-bencode 0.1.3 case 1), because BEP 3 has no null and an empty output is not a
+document.
