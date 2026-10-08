@@ -58,7 +58,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 | <xref:Bodu.Text.Configuration.ConfigurationParseOptions> | Reader behaviour: inline-comment mode, duplicate-key / -section handling, diagnostic mode, length limits, key options. Static `Bodu` / `EditorConfigCompatible` / `Strict` / `Relaxed` presets. |
 | <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> | Resolver behaviour: `PathRoot`, `MissingPathRootMode`, `ApplyPreambleProperties`, `UnsetValueMode`, `PathComparison`, `KeyOptions`. |
 | <xref:Bodu.Text.Configuration.ConfigurationWriteOptions> | Save behaviour: encoding, newline style, blank-line policy, property formatting. |
-| <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> | Key behaviour: segment separators (default `.` and `:`), mapping (`DotToColon` / `Colon` / `Identity`), case sensitivity. |
+| <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> | Key behaviour: segment separators (default `.` and `:`), mapping (`DotToColon` / `Colon` / `Identity`), case sensitivity, lowercasing (`LowercaseKeys`). |
 
 ### Keys
 
@@ -96,7 +96,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 | Profile | Inline comments | Section headers | Duplicate keys | Diagnostics | Preamble in resolve | Missing path root | Unset semantics | Key mapping |
 |---|---|---|---|---|---|---|---|---|
 | `Bodu` (default) | WhitespaceIntroduced | Lenient | LastWins | Throw | Applied | UseEmptyRoot | Literal | DotToColon |
-| `EditorConfigCompatible` | Disabled | Strict | LastWins | Throw | Not applied | Throw | Removes value | Identity |
+| `EditorConfigCompatible` | Disabled | Strict | LastWins | Throw | Not applied | Throw | Removes value | Identity, lowercased |
 | `Strict` | Disabled | Strict | Disallowed | Throw | Applied | Throw | Removes value | DotToColon |
 | `Relaxed` | WhitespaceIntroduced | Lenient | LastWins | Collect | Applied | UseEmptyRoot | Literal | DotToColon |
 

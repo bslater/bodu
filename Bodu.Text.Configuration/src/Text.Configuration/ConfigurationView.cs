@@ -30,7 +30,8 @@ namespace Bodu.Text.Configuration;
 /// key options before consulting the backing dictionary. Enumeration yields keys in the canonical form of the key
 /// mapping: colon-delimited under the default <see cref="ConfigurationKeyMapping.DotToColon" />, and dot-delimited
 /// under <see cref="ConfigurationKeyMapping.Identity" />, the mapping of the
-/// <see cref="ConfigurationProfile.EditorConfigCompatible" /> profile, so a dotted key appears as written.
+/// <see cref="ConfigurationProfile.EditorConfigCompatible" /> profile, so a dotted key keeps its dots there; that
+/// profile also lowercases keys (<see cref="ConfigurationKeyOptions.LowercaseKeys" />).
 /// </para>
 /// </remarks>
 /// <example>

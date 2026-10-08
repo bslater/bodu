@@ -20,7 +20,8 @@ public sealed partial class ConfigurationParseOptions
     /// <summary>
     /// Gets the canonical option set for the EditorConfig-compatible profile: inline comments disabled, duplicates
     /// last-wins, preserve duplicate sections, throw-on-error diagnostics, and the
-    /// <see cref="ConfigurationKeyMapping.Identity" /> key mapping, so a key keeps its dots.
+    /// <see cref="ConfigurationKeyMapping.Identity" /> key mapping with keys lowercased, so a key keeps its dots and
+    /// reads as EditorConfig lowercases it.
     /// </summary>
     /// <value>A cached EditorConfig-compatible options instance.</value>
     public static ConfigurationParseOptions EditorConfigCompatible { get; } =

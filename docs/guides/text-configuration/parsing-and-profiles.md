@@ -116,6 +116,7 @@ The full per-profile table:
 | `SectionHeaderMode` | `Lenient` | `Strict` | `Strict` | `Lenient` |
 | `DiagnosticMode` | `Throw` | `Throw` | `Throw` | `Collect` |
 | `KeyOptions.Mapping` | `DotToColon` | `Identity` | `DotToColon` | `DotToColon` |
+| `KeyOptions.LowercaseKeys` | `false` | `true` | `false` | `false` |
 
 > [!NOTE]
 > The same four profiles also drive *resolve* defaults through <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> - `ApplyPreambleProperties`, `MissingPathRootMode`, and `UnsetValueMode`. Selecting a profile at parse time does not automatically apply its resolve defaults; pass the matching `ConfigurationResolveOptions` (or its `For(profile)` result) to `Resolve` so both halves of the pipeline agree. See [Views and resolution](views-and-resolution.md#pattern-5---resolve-options).

@@ -63,6 +63,10 @@ namespace Bodu.Text.Configuration;
 /// <term>Key mapping (<see cref="ConfigurationKeyOptions.Mapping" />)</term>
 /// <description>DotToColon | Identity | DotToColon | DotToColon</description>
 /// </item>
+/// <item>
+/// <term>Keys lowercased (<see cref="ConfigurationKeyOptions.LowercaseKeys" />)</term>
+/// <description>No | Yes | No | No</description>
+/// </item>
 /// </list>
 /// </remarks>
 /// <example>
@@ -84,9 +88,9 @@ public enum ConfigurationProfile
 
     /// <summary>
     /// Strict alignment with the public EditorConfig specification 0.17.2: inline comments disabled, identity key
-    /// mapping so a key keeps its dots, and the preamble left out of resolution, <c>root</c> included. The preamble's
-    /// pairs stay in the document's global section; resolution reads one document and searches no parent directory, so
-    /// acting on <c>root = true</c> is left to the caller.
+    /// mapping so a key keeps its dots, keys lowercased with the invariant culture, and the preamble left out of
+    /// resolution, <c>root</c> included. The preamble's pairs stay in the document's global section; resolution reads
+    /// one document and searches no parent directory, so acting on <c>root = true</c> is left to the caller.
     /// </summary>
     EditorConfigCompatible = 1,
 

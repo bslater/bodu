@@ -89,7 +89,7 @@ ConfigurationDocument generated = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.Strict);
 
-// EditorConfig-compatible - inline comments disabled, identity key mapping (keys keep their dots), no preamble.
+// EditorConfig-compatible - inline comments disabled, identity key mapping (keys keep their dots), keys lowercased, no preamble.
 ConfigurationDocument editorConfig = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.EditorConfigCompatible);

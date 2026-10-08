@@ -56,11 +56,12 @@ public sealed class ConfigurationKeyOptions
 
     /// <summary>
     /// Gets the key options of the EditorConfig-compatible profile: <see cref="ConfigurationKeyMapping.Identity" />
-    /// mapping, so a key keeps its dots, with the default separators and case-insensitive comparison.
+    /// mapping, so a key keeps its dots, and keys lowercased as EditorConfig requires, with the default separators and
+    /// case-insensitive comparison.
     /// </summary>
     /// <value>A cached options instance shared by the profile's parse and resolve presets.</value>
     internal static ConfigurationKeyOptions EditorConfigCompatible { get; } =
-        new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.Identity };
+        new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.Identity, LowercaseKeys = true };
 
     /// <summary>
     /// Gets the segment-separator characters recognised in a raw key when splitting into segments.
@@ -83,6 +84,17 @@ public sealed class ConfigurationKeyOptions
     /// <c>Microsoft.Extensions.Configuration</c>.
     /// </value>
     public bool CaseSensitive { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the logical key is lowercased with the casing rules of the invariant culture, as
+    /// EditorConfig lowercases every key after parsing. The default keeps the case each key was written in.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when <see cref="ConfigurationKey.Segments" /> and <see cref="ConfigurationKey.Path" />
+    /// are lowercased; otherwise, <see langword="false" />. <see cref="ConfigurationKey.RawKey" /> keeps the case it
+    /// was written in either way. The <see cref="ConfigurationProfile.EditorConfigCompatible" /> presets set it.
+    /// </value>
+    public bool LowercaseKeys { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the parser permits empty segments in a raw key (for example <c>a..b</c>). The

@@ -46,7 +46,7 @@ A **profile** is a named, validated combination of parse, resolve, and write opt
 | Profile | Intent |
 |---|---|
 | `Bodu` (default) | Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve. |
-| `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, identity key mapping (keys keep their dots), and the whole preamble, `root` included, dropped from resolve. |
+| `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, identity key mapping (keys keep their dots), keys lowercased, and the whole preamble, `root` included, dropped from resolve. |
 | `Strict` | Deterministic parsing for generated files: duplicate keys are rejected, key-only properties are not permitted. |
 | `Relaxed` | Permissive parsing of user-authored files: inline comments enabled, duplicates last-wins, diagnostics collected rather than thrown. |
 
@@ -153,7 +153,9 @@ not behaviour. `Identity` is the one mapping that round-trips the original delim
 `SegmentSeparators` defaults to `{ '.', ':' }`. `CaseSensitive` defaults to `false`, matching
 `Microsoft.Extensions.Configuration`, and is surfaced as a ready-made comparer via
 <xref:Bodu.Text.Configuration.ConfigurationKeyOptions.KeyComparer> (`StringComparer.Ordinal` or
-`StringComparer.OrdinalIgnoreCase`). `AllowEmptySegments` defaults to `false` - `a..b` is rejected with
+`StringComparer.OrdinalIgnoreCase`). `LowercaseKeys` defaults to `false`; when set, as the `EditorConfigCompatible`
+profile sets it, the segments and the path are lowercased with the invariant culture, as EditorConfig lowercases every
+key after parsing, while the raw key keeps its case. `AllowEmptySegments` defaults to `false` - `a..b` is rejected with
 `ArgumentException` unless the property is set explicitly. Keys are constructed through the
 <xref:Bodu.Text.Configuration.ConfigurationKey.Parse(System.String)> / `TryParse` factories or the equivalent
 constructor; control characters in a raw key are rejected at construction time. Equality compares the *segment

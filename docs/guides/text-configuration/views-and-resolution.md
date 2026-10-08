@@ -122,7 +122,7 @@ foreach (ConfigurationResolvedEntry entry in view.Entries)
     Console.WriteLine($"  {entry.Key} = {entry.Value}  (from {entry.SectionPattern ?? "<preamble>"})");
 ```
 
-`Values` returns the resolved dictionary; `Keys`, `Count`, and `GetEnumerator()` mirror the standard read-only collection contract, and enumeration yields keys in the canonical form of the key mapping: colon-delimited under the default `DotToColon`, dot-delimited under the `Identity` mapping the `EditorConfigCompatible` profile uses, so its dotted keys appear as written. `Entries` exposes the richer <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> view - same keys, same values, but with provenance: `Key`, `Value`, `SectionPattern` (the winning section's glob, or `null` for the preamble), and `SourceLocation`. Fetch a single key's provenance with `view.GetEntry("format:indent:size")`.
+`Values` returns the resolved dictionary; `Keys`, `Count`, and `GetEnumerator()` mirror the standard read-only collection contract, and enumeration yields keys in the canonical form of the key mapping: colon-delimited under the default `DotToColon`, dot-delimited under the `Identity` mapping the `EditorConfigCompatible` profile uses, so its dotted keys keep their dots (that profile also lowercases keys, as EditorConfig does). `Entries` exposes the richer <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> view - same keys, same values, but with provenance: `Key`, `Value`, `SectionPattern` (the winning section's glob, or `null` for the preamble), and `SourceLocation`. Fetch a single key's provenance with `view.GetEntry("format:indent:size")`.
 
 > [!NOTE]
 > `ConfigurationView` also implements `IReadOnlyDictionary<string, string?>`, but its indexer deviates from the dictionary contract: `view["absent:key"]` returns `null` rather than throwing `KeyNotFoundException`, matching `Microsoft.Extensions.Configuration`'s null-on-absent convention. Use `view.ContainsKey(key)` to distinguish an absent key from one whose value is `null`.
@@ -188,6 +188,7 @@ The behaviour is governed by `ConfigurationKeyOptions`:
 | `SegmentSeparators` | `{ '.', ':' }` | Characters recognised as path separators. |
 | `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation). |
 | `CaseSensitive` | `false` | Case-sensitive comparison (the default `false` matches `Microsoft.Extensions.Configuration`). |
+| `LowercaseKeys` | `false` | Lowercase the segments and the path with the invariant culture, as EditorConfig lowercases keys; the raw key keeps its case. The `EditorConfigCompatible` presets set it. |
 | `AllowEmptySegments` | `false` | Permit empty segments like `a..b`. |
 
 The static `ConfigurationKeyOptions.Default` is the cached default.

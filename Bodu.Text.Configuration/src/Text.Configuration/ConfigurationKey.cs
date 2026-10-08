@@ -16,7 +16,9 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// The struct stores the input <see cref="RawKey" /> verbatim. <see cref="Path" /> is the canonical colon-joined form
-/// derived from <see cref="Segments" />, applying the mapping policy from <see cref="ConfigurationKeyOptions" />.
+/// derived from <see cref="Segments" />, applying the mapping policy from <see cref="ConfigurationKeyOptions" />; when
+/// <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set, the segments, and so the path, are lowercased with the
+/// invariant culture while the raw key keeps the case it was written in.
 /// </para>
 /// <para>
 /// Equality compares the segment sequence under the configured comparer; the raw form is informational only.
@@ -198,11 +200,12 @@ public readonly partial struct ConfigurationKey
     public override string ToString() => Path;
 
     /// <summary>
-    /// Appends <paramref name="segment" /> to <paramref name="builder" />, enforcing the empty-segment policy.
+    /// Appends <paramref name="segment" /> to <paramref name="builder" />, enforcing the empty-segment policy and
+    /// lowercasing the segment when <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set.
     /// </summary>
     /// <param name="builder">The builder accumulating the key segments.</param>
     /// <param name="segment">The candidate segment span.</param>
-    /// <param name="options">The key options that determine whether empty segments are permitted.</param>
+    /// <param name="options">The key options governing empty segments and lowercasing.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="segment" /> is empty and <see cref="ConfigurationKeyOptions.AllowEmptySegments" /> is
     /// <see langword="false" />.
@@ -217,7 +220,8 @@ public readonly partial struct ConfigurationKey
             return;
         }
 
-        builder.Add(segment.ToString());
+        string text = segment.ToString();
+        builder.Add(options.LowercaseKeys ? text.ToLowerInvariant() : text);
     }
 
     /// <summary>

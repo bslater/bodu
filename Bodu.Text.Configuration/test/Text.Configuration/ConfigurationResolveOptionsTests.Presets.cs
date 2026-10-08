@@ -76,4 +76,17 @@ public partial class ConfigurationResolveOptionsTests
     {
         Assert.AreEqual(ConfigurationKeyMapping.DotToColon, ConfigurationResolveOptions.For(profile).KeyOptions.Mapping);
     }
+
+    /// <summary>
+    /// Verifies that the EditorConfig-compatible preset lowercases keys, as EditorConfig does after parsing, and that
+    /// the other presets keep keys as written.
+    /// </summary>
+    [TestMethod]
+    public void EditorConfigCompatible_WhenAccessed_ShouldLowercaseKeys()
+    {
+        Assert.IsTrue(ConfigurationResolveOptions.EditorConfigCompatible.KeyOptions.LowercaseKeys);
+        Assert.IsFalse(ConfigurationResolveOptions.Bodu.KeyOptions.LowercaseKeys);
+        Assert.IsFalse(ConfigurationResolveOptions.For(ConfigurationProfile.Strict).KeyOptions.LowercaseKeys);
+        Assert.IsFalse(ConfigurationResolveOptions.For(ConfigurationProfile.Relaxed).KeyOptions.LowercaseKeys);
+    }
 }
