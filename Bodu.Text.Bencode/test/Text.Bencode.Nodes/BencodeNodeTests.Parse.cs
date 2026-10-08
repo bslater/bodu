@@ -175,4 +175,28 @@ public partial class BencodeNodeTests
         Assert.AreSame(root, leaf.Root);
         Assert.IsNull(root.Parent);
     }
+
+    /// <summary>
+    /// Verifies that parsing a dictionary whose key is not valid UTF-8 throws <see cref="BencodeFormatException" /> at
+    /// the key, rather than replacing the key's bytes with U+FFFD, which can merge it with another key.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="input">The Bencode, expressed as Latin-1 text.</param>
+    /// <param name="keyOffset">The offset of the first key that is not valid UTF-8.</param>
+    [TestMethod]
+    [DataRow("two keys that decode alike", "d1:þi1e1:ÿi2ee", 1)]
+    [DataRow("one binary key", "d1:ÿi1ee", 1)]
+    [DataRow("a binary key in a nested dictionary", "d5:filesd4:éÿþài5eee", 9)]
+    public void Parse_WhenKeyIsNotValidUtf8_ShouldThrowBencodeFormatException(string testName, string input, int keyOffset)
+    {
+        _ = testName;
+        byte[] bytes = Bytes(input);
+
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeNode.Parse(bytes);
+        });
+
+        Assert.AreEqual(keyOffset, exception.Offset);
+    }
 }
