@@ -25,9 +25,9 @@ namespace Bodu.Text.Bencode.Reader;
 /// 64-bit ranges [<see cref="long.MinValue" />, <see cref="ulong.MaxValue" /> ]; values above
 /// <see cref="long.MaxValue" /> are readable only through <see cref="GetUInt64" />. The reader enforces the canonical
 /// Bencode grammar - integers without leading zeros or negative zero, byte-string lengths without leading zeros,
-/// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and a single root
-/// value with no trailing bytes - raising <see cref="BencodeFormatException" /> on any departure from that canonical
-/// form.
+/// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and exactly one
+/// root value with no trailing bytes - raising <see cref="BencodeFormatException" /> on any departure from that
+/// canonical form. Empty input holds no root value, so the first <see cref="Read" /> over it throws.
 /// </para>
 /// <para>
 /// Real-world documents produced by older encoders occasionally carry unsorted or duplicate dictionary keys. The opt-in
@@ -311,7 +311,9 @@ public ref struct Utf8BencodeReader
     /// <returns>
     /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document.
     /// </returns>
-    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the bytes are not valid Bencode, including when the input is empty and so holds no root value.
+    /// </exception>
     public bool Read()
     {
         // Once the root value has completed, the document is closed: no trailing bytes are permitted.
@@ -327,7 +329,8 @@ public ref struct Utf8BencodeReader
 
         if (_position >= _data.Length)
         {
-            if (_frames.Count > 0)
+            // An open container, or input that ends before any value starts, leaves the document incomplete.
+            if (_frames.Count > 0 || _data.IsEmpty)
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, _position);
 
             _tokenType = BencodeTokenType.None;

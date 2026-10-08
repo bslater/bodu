@@ -49,7 +49,7 @@ TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 
 **Nesting depth.** `Utf8BencodeReader`, `Utf8BencodeWriter`, `BencodeDocument`, and `BencodeSerializerOptions.MaxDepth` all default to a maximum depth of 64, which is also a hard ceiling: each can be configured lower, and a larger value is clamped to 64.
 
-**Single root.** A Bencode document is a single value. The reader rejects trailing bytes, and the writer rejects a second top-level value unless `BencodeWriterOptions.AllowMultipleRootValues` opts into concatenated-value framings.
+**Single root.** A Bencode document is a single value. The reader rejects empty input, which holds no value, and trailing bytes, and the writer rejects a second top-level value unless `BencodeWriterOptions.AllowMultipleRootValues` opts into concatenated-value framings.
 
 **Lenient reading of real-world documents.** Older encoders occasionally emit unsorted or duplicate dictionary keys. `AllowUnsortedKeys` and `AllowDuplicateKeys` - available on `BencodeReaderOptions`, `BencodeDocumentOptions`, and `BencodeSerializerOptions` - relax those two rules independently while everything else stays strict. With duplicates permitted, the document model returns the first occurrence from name lookups (enumeration shows every pair), while the node tree and the serializer bind last-wins. Writing is always strict.
 

@@ -247,7 +247,7 @@ public static class BencodeSerializer
     /// <param name="data">The Bencode bytes to read.</param>
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The deserialized value.</returns>
-    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode, or are empty.</exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
@@ -279,7 +279,7 @@ public static class BencodeSerializer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="data" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode, or are empty.</exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
@@ -306,7 +306,7 @@ public static class BencodeSerializer
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
-    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode, or are empty.</exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>
@@ -338,7 +338,7 @@ public static class BencodeSerializer
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
-    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
+    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode, or are empty.</exception>
     /// <exception cref="BencodeSerializationException">
     /// Thrown when the document cannot be bound to <typeparamref name="T" />.
     /// </exception>

@@ -39,7 +39,7 @@ public sealed partial class BencodeReleaseNoteCorpusTests
             ("bencodenet", 10, 0, 16, 0),
             ("bendy", 0, 0, 7, 0),
             ("libtorrent", 17, 0, 4, 0),
-            ("node-bencode", 15, 7, 4, 0),
+            ("node-bencode", 14, 8, 4, 0),
             ("serde-bencode", 11, 3, 4, 0),
             ("transmission", 16, 1, 3, 0),
         ];
