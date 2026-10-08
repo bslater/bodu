@@ -100,9 +100,9 @@ public sealed class ConfigurationKeyOptions
     public bool LowercaseKeys { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether the parser permits empty segments in a raw key (for example <c>a..b</c>). The
-    /// default rejects empty segments. <see cref="ConfigurationKeyMapping.Identity" /> does not split a key, so it has
-    /// no segment to reject.
+    /// Gets a value indicating whether the parser permits empty segments in a raw key (for example <c>a..b</c>, or
+    /// <c>a. .b</c>, whose middle segment is whitespace alone). The default rejects empty segments.
+    /// <see cref="ConfigurationKeyMapping.Identity" /> does not split a key, so it has no segment to reject.
     /// </summary>
     /// <value><see langword="true" /> when empty segments are allowed; otherwise, <see langword="false" />.</value>
     public bool AllowEmptySegments { get; init; }

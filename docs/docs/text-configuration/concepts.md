@@ -126,7 +126,7 @@ A configuration key has three concurrent forms:
 | Form | Example | Where used |
 |---|---|---|
 | **Raw key** | `logging.level.default` | The text as authored in the source file. |
-| **Segments** | `["logging", "level", "default"]` | Split on the configured separators; under `Identity`, the whole key is the one segment. |
+| **Segments** | `["logging", "level", "default"]` | Split on the configured separators, each trimmed of the whitespace around it; under `Identity`, the whole key, its ends trimmed, is the one segment. |
 | **Path** | `logging:level:default` | The canonical form stored in the view: colon-delimited, or the key as written under `Identity`. |
 
 <xref:Bodu.Text.Configuration.ConfigurationKey> is the read-only struct that holds all three.
@@ -147,7 +147,7 @@ mapping:
 |---|---|
 | `DotToColon` (default) | Split on the configured separators; rejoin with `:`. |
 | `Colon` | Split on the configured separators; rejoin with `:`. |
-| `Identity` | Keep the key exactly as written, apart from the lowercasing `LowercaseKeys` asks for; the key is not split, so its dots and colons stay as they are. |
+| `Identity` | Keep the key as written, apart from the whitespace at its ends and the lowercasing `LowercaseKeys` asks for; the key is not split, so its dots and colons, and the whitespace inside it, stay as they are. |
 
 `DotToColon` and `Colon` split on the full `SegmentSeparators` set and join with `:`, so they produce identical `Path`
 output - the distinction is naming intent, not behaviour. `Identity` does not split a key at all: `a:b`, `a.b` and
@@ -159,8 +159,10 @@ output - the distinction is naming intent, not behaviour. `Identity` does not sp
 <xref:Bodu.Text.Configuration.ConfigurationKeyOptions.KeyComparer> (`StringComparer.Ordinal` or
 `StringComparer.OrdinalIgnoreCase`). `LowercaseKeys` defaults to `false`; when set, as the `EditorConfigCompatible`
 profile sets it, the segments and the path are lowercased with the invariant culture, as EditorConfig lowercases every
-key after parsing, while the raw key keeps its case. `AllowEmptySegments` defaults to `false` - `a..b` is rejected with
-`ArgumentException` unless the property is set explicitly or the mapping is `Identity`. Keys are constructed through the
+key after parsing, while the raw key keeps its case. Whitespace around each segment is trimmed, so `a . b` and `a.b` are
+the same key, and a segment of whitespace alone, as in `a. .b`, counts as empty. `AllowEmptySegments` defaults to
+`false` - `a..b` is rejected with `ArgumentException` unless the property is set explicitly or the mapping is
+`Identity`, which trims only the ends of a key. Keys are constructed through the
 <xref:Bodu.Text.Configuration.ConfigurationKey.Parse(System.String)> / `TryParse` factories or the equivalent
 constructor; control characters in a raw key are rejected at construction time. Equality compares the *segment
 sequence* under the configured comparer, so the raw form is informational only - `Logging.Level` and

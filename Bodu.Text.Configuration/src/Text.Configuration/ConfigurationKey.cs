@@ -19,8 +19,8 @@ namespace Bodu.Text.Configuration;
 /// The struct stores the input <see cref="RawKey" /> verbatim. <see cref="Path" /> is derived from
 /// <see cref="Segments" /> by the mapping policy from <see cref="ConfigurationKeyOptions" />: it is the segments joined
 /// with a colon, or, under <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, the key as
-/// written. When <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set, the segments, and so the path, are
-/// lowercased with the invariant culture while the raw key keeps the case it was written in.
+/// written, its ends trimmed. When <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set, the segments, and so
+/// the path, are lowercased with the invariant culture while the raw key keeps the case it was written in.
 /// </para>
 /// <para>
 /// Equality compares the segment sequence under the configured comparer; the raw form is informational only.
@@ -29,8 +29,10 @@ namespace Bodu.Text.Configuration;
 /// Under every mapping but <see cref="ConfigurationKeyMapping.Identity" />, both dotted (<c>logging.level.default</c>)
 /// and colon-delimited (<c>logging:level:default</c>) source forms produce the same canonical <see cref="Path" />, so
 /// consumers can mix the two notations in a document without disturbing the resolved view; under
-/// <see cref="ConfigurationKeyMapping.Identity" /> they are two keys. Whitespace in segments is trimmed; control
-/// characters are rejected at construction time.
+/// <see cref="ConfigurationKeyMapping.Identity" /> they are two keys. Whitespace around each segment is trimmed, so
+/// <c>a . b</c> and <c>a.b</c> are the same key, and a segment of whitespace alone counts as empty; under
+/// <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, only the ends of the key are trimmed.
+/// Control characters are rejected at construction time.
 /// </para>
 /// </remarks>
 /// <example>
@@ -72,8 +74,8 @@ public readonly partial struct ConfigurationKey
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace; or, under a mapping
-    /// other than <see cref="ConfigurationKeyMapping.Identity" />, a segment was empty when empty segments are not
-    /// permitted.
+    /// other than <see cref="ConfigurationKeyMapping.Identity" />, a segment was empty or whitespace alone when empty
+    /// segments are not permitted.
     /// </exception>
     public ConfigurationKey(string rawKey, ConfigurationKeyOptions? options = null)
     {
@@ -115,7 +117,7 @@ public readonly partial struct ConfigurationKey
 
     /// <summary>
     /// Gets the logical key path derived from <see cref="Segments" />: the segments joined with a colon, or, under
-    /// <see cref="ConfigurationKeyMapping.Identity" />, the key as written.
+    /// <see cref="ConfigurationKeyMapping.Identity" />, the key as written, its ends trimmed.
     /// </summary>
     /// <value>The configuration key path, or the empty string for a default instance.</value>
     public string Path => _path ?? string.Empty;
@@ -127,8 +129,9 @@ public readonly partial struct ConfigurationKey
     public string RawKey => _rawKey ?? string.Empty;
 
     /// <summary>
-    /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators; under
-    /// <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, the whole key is the one segment.
+    /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators, each trimmed of the
+    /// whitespace around it; under <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, the
+    /// whole key, its ends trimmed, is the one segment.
     /// </summary>
     /// <value>An immutable array of segment strings.</value>
     public ImmutableArray<string> Segments => _segments.IsDefault ? [] : _segments;
@@ -278,19 +281,23 @@ public readonly partial struct ConfigurationKey
 
     /// <summary>
     /// Splits <paramref name="rawKey" /> into segments on the separator characters configured by
-    /// <paramref name="options" />, except under <see cref="ConfigurationKeyMapping.Identity" />, which keeps the whole
-    /// key as its one segment.
+    /// <paramref name="options" />, trimming the whitespace around each, except under
+    /// <see cref="ConfigurationKeyMapping.Identity" />, which keeps the whole key, its ends trimmed, as its one
+    /// segment.
     /// </summary>
     /// <param name="rawKey">The raw key to split.</param>
     /// <param name="options">The key options supplying the mapping and the recognised separators.</param>
     /// <returns>The ordered segments produced by the split.</returns>
-    /// <exception cref="ArgumentException">A segment was empty and empty segments are not permitted.</exception>
+    /// <exception cref="ArgumentException">
+    /// A segment was empty or whitespace alone and empty segments are not permitted.
+    /// </exception>
     private static ImmutableArray<string> SplitSegments(string rawKey, ConfigurationKeyOptions options)
     {
-        // Identity keeps a key exactly as written, apart from the case folding the options ask for, so a separator in
-        // it is ordinary text and cannot leave an empty segment.
+        // Identity keeps a key as written, apart from the whitespace at its ends, which the reader trims from a key
+        // too, and the case folding the options ask for; a separator in it is ordinary text and cannot leave an empty
+        // segment. The caller has rejected a key of whitespace alone, so the trimmed key is never empty.
         if (options.Mapping == ConfigurationKeyMapping.Identity)
-            return [ApplyCase(rawKey, options)];
+            return [ApplyCase(rawKey.Trim(), options)];
 
         IReadOnlyList<char> separators = options.SegmentSeparators;
         ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>();
@@ -301,12 +308,12 @@ public readonly partial struct ConfigurationKey
             char c = rawKey[i];
             if (IsSeparator(c, separators))
             {
-                AddSegment(builder, rawKey.AsSpan(start, i - start), options);
+                AddSegment(builder, rawKey.AsSpan(start, i - start).Trim(), options);
                 start = i + 1;
             }
         }
 
-        AddSegment(builder, rawKey.AsSpan(start, rawKey.Length - start), options);
+        AddSegment(builder, rawKey.AsSpan(start, rawKey.Length - start).Trim(), options);
 
         return builder.ToImmutable();
     }

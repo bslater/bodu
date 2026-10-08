@@ -40,8 +40,8 @@ public enum ConfigurationKeyMapping
     Colon = 1,
 
     /// <summary>
-    /// File keys are emitted unchanged: a key is not split into segments, so its dots and colons stay as written, and
-    /// the logical configuration key equals the raw key, lowercased when
+    /// File keys are not split into segments, so their dots and colons stay as written, and the logical configuration
+    /// key equals the raw key with the whitespace at its ends trimmed, lowercased when
     /// <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set. Use this when integrating with sources that use a
     /// custom segment convention; the <see cref="ConfigurationProfile.EditorConfigCompatible" /> presets use it.
     /// </summary>

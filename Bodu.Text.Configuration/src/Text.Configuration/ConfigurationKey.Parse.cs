@@ -15,7 +15,7 @@ public readonly partial struct ConfigurationKey
     /// <returns>A <see cref="ConfigurationKey" /> built from <paramref name="rawKey" />.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace, or contains an empty
-    /// segment when empty segments are not permitted.
+    /// segment, or one of whitespace alone, when empty segments are not permitted.
     /// </exception>
     public static ConfigurationKey Parse(string rawKey) =>
         Parse(rawKey, options: null);
@@ -28,8 +28,8 @@ public readonly partial struct ConfigurationKey
     /// <returns>A <see cref="ConfigurationKey" /> built from <paramref name="rawKey" />.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace, or, under a mapping
-    /// other than <see cref="ConfigurationKeyMapping.Identity" />, contains an empty segment when empty segments are
-    /// not permitted.
+    /// other than <see cref="ConfigurationKeyMapping.Identity" />, contains an empty segment, or one of whitespace
+    /// alone, when empty segments are not permitted.
     /// </exception>
     public static ConfigurationKey Parse(string rawKey, ConfigurationKeyOptions? options) =>
         new(rawKey, options);

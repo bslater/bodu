@@ -170,7 +170,7 @@ When a document is loaded with `ConfigurationDocument.Load(path)`, the full path
 
 ## `ConfigurationKey` and `ConfigurationKeyOptions`
 
-`ConfigurationKey` is the parsed form of a key - both the raw authored shape (`"logging.console.level"`) and the canonical colon-delimited path (`"logging:console:level"`), or, under the `Identity` mapping, the key as written, which is also its one segment. It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.
+`ConfigurationKey` is the parsed form of a key - both the raw authored shape (`"logging.console.level"`) and the canonical colon-delimited path (`"logging:console:level"`), or, under the `Identity` mapping, the key as written with its ends trimmed, which is also its one segment. Whitespace around each segment is trimmed, so `a . b` and `a.b` are the same key under the other mappings. It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.
 
 ```csharp
 using Bodu.Text.Configuration;
@@ -191,7 +191,7 @@ The behaviour is governed by `ConfigurationKeyOptions`:
 | `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation: the key is not split, so it keeps its dots and colons). |
 | `CaseSensitive` | `false` | Case-sensitive comparison (the default `false` matches `Microsoft.Extensions.Configuration`). |
 | `LowercaseKeys` | `false` | Lowercase the segments and the path with the invariant culture, as EditorConfig lowercases keys; the raw key keeps its case. The `EditorConfigCompatible` presets set it. |
-| `AllowEmptySegments` | `false` | Permit empty segments like `a..b`. `Identity` does not split a key, so it keeps `a..b` as written either way. |
+| `AllowEmptySegments` | `false` | Permit empty segments like `a..b`; a segment of whitespace alone, as in `a. .b`, counts as empty. `Identity` does not split a key, so it keeps `a..b` as written either way. |
 
 The static `ConfigurationKeyOptions.Default` is the cached default.
 
