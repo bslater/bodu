@@ -149,4 +149,45 @@ public partial class Utf8DotEnvReaderTests
             tokens,
             string.Join(" | ", tokens));
     }
+
+    /// <summary>
+    /// Verifies that a line break inside a double-quoted value counts as a line whether it is a LF, a CR LF or a lone
+    /// CR, as it does between entries, so an error on a later line reports that line.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text, with a malformed entry after the value.</param>
+    /// <param name="line">The 1-based line of the malformed entry.</param>
+    [TestMethod]
+    [DataRow("LF", "A=\"x\ny\"\nB C\n", 3)]
+    [DataRow("CR LF", "A=\"x\r\ny\"\r\nB C\r\n", 3)]
+    [DataRow("lone CR", "A=\"x\ry\"\rB C\r", 3)]
+    [DataRow("two lone CRs", "A=\"x\r\ry\"\rB C\r", 4)]
+    [DataRow("lone CR before the closing quote", "A=\"x\r\"\rB C\r", 3)]
+    [DataRow("LF then a lone CR", "A=\"x\n\ry\"\nB C\n", 4)]
+    [DataRow("lone CR after a backslash", "A=\"x\\\ry\"\rB C\r", 3)]
+    public void Read_WhenADoubleQuotedValueHoldsALineBreak_ShouldCountItAsALine(string testName, string source, int line)
+    {
+        _ = testName;
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a lone CR inside a double-quoted value stays part of the value, though it counts as a line.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenADoubleQuotedValueHoldsALoneCarriageReturn_ShouldKeepItInTheValue()
+    {
+        List<string> tokens = Transcribe("A=\"x\ry\"\rB=2\r");
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:A", "String:x\ry", "Name:B", "String:2", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
 }
