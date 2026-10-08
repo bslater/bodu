@@ -109,4 +109,13 @@
   <data name="Arg_Invalid_IniSurroundingWhitespace" xml:space="preserve">
     <value>The text begins or ends with a space or a tab, which the INI reader trims.</value>
   </data>
+  <data name="Arg_Invalid_IniKeyDelimiter" xml:space="preserve">
+    <value>An INI key cannot contain '=', where the reader would end the key.</value>
+  </data>
+  <data name="Arg_Invalid_IniKeyStart" xml:space="preserve">
+    <value>An INI key cannot begin with '[', ';' or '#', which the reader takes for a section header or a comment.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionNameComment" xml:space="preserve">
+    <value>An INI section name cannot hold a ']' followed by ';' or '#', where the reader would end the name.</value>
+  </data>
 </root>

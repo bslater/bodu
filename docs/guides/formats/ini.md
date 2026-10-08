@@ -117,7 +117,13 @@ A section name runs to the first `]` that only whitespace or a comment follows, 
 
 ## Writing
 
-`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` and the serializer's `Serialize` overloads refuse it too: a value containing a line break, which a `key=value` line cannot hold, or beginning or ending with a space or tab, which the reader trims. An empty value is written as `key=`. A comment containing line breaks is written as one comment line per line, each with the comment prefix, so `WriteComment("first\nsecond")` writes `;first` and `;second`.
+`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` and the serializer's `Serialize` overloads refuse it too:
+
+- a **value** containing a line break, which a `key=value` line cannot hold, or beginning or ending with a space or tab, which the reader trims (an empty value is written as `key=`);
+- a **key** that is empty, begins or ends with a space or tab, contains `=` or a line break, or begins with `[`, `;` or `#`, which would read back as another key, a section header or a comment (`#` is refused even where `#` comments are disallowed, because the writer cannot know how its output will be read);
+- a **section name** that is empty, begins or ends with a space or tab, contains a line break, or holds a `]` followed, after optional whitespace, by `;` or `#`, where the reader would end the name. Any other `]` is fine: `WriteSectionHeader("foo]bar")` writes `[foo]bar]`, which reads back as `foo]bar`.
+
+A comment containing line breaks is written as one comment line per line, each with the comment prefix, so `WriteComment("first\nsecond")` writes `;first` and `;second`.
 
 ## Exceptions
 

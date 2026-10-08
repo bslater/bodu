@@ -22,9 +22,28 @@ namespace Bodu.Text.Ini.Writer;
 /// </para>
 /// <para>
 /// The writer writes only text that <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> reads back unchanged, and throws
-/// <see cref="ArgumentException" /> for anything else: a value containing a line break, which a <c>key=value</c> line
-/// cannot hold, or beginning or ending with a space or a tab, which the reader trims.
+/// <see cref="ArgumentException" /> for anything else:
 /// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// a value containing a line break, which a <c>key=value</c> line cannot hold, or beginning or ending with a space or a
+/// tab, which the reader trims;
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// a key that is empty, begins or ends with a space or a tab, contains <c>=</c> or a line break, or begins with
+/// <c>[</c>, <c>;</c> or <c>#</c>, which the reader would read as another key, a section header or a comment;
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// a section name that is empty, begins or ends with a space or a tab, contains a line break, or holds a <c>]</c> that
+/// a <c>;</c> or <c>#</c> follows after optional spaces and tabs, where the reader would end the name.
+/// </description>
+/// </item>
+/// </list>
 /// </remarks>
 public ref struct Utf8IniWriter
 {
@@ -121,12 +140,26 @@ public ref struct Utf8IniWriter
     /// Writes a section header line (<c>[name]</c>).
     /// </summary>
     /// <param name="name">The section name.</param>
+    /// <remarks>
+    /// A name may hold any other <c>]</c>: the reader ends a section name at the first <c>]</c> that only whitespace or
+    /// a comment follows, so <c>foo]bar</c> is written as <c>[foo]bar]</c> and read back unchanged. A <c>#</c> after a
+    /// <c>]</c> is refused even though a reader may disallow hash comments, because the writer cannot know the options
+    /// its output will be read with.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is empty, begins or ends with a space or a tab, contains a carriage return
+    /// or a line feed, or holds a <c>]</c> that a <c>;</c> or <c>#</c> follows after optional spaces and tabs, since
+    /// the reader would not read it back as this name.
+    /// </exception>
     public void WriteSectionHeader(string name)
     {
-        ThrowHelper.ThrowIfNull(name);
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowIfContainsLineBreak(name);
+        ThrowIfSurroundedByWhitespace(name);
+        ThrowIfBracketPrecedesComment(name);
 
         WriteRaw("["u8);
         WriteText(name);
@@ -138,12 +171,25 @@ public ref struct Utf8IniWriter
     /// the value.
     /// </summary>
     /// <param name="name">The key name.</param>
+    /// <remarks>
+    /// A key beginning with <c>#</c> is refused even though a reader may disallow hash comments, because the writer
+    /// cannot know the options its output will be read with.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is empty, begins or ends with a space or a tab, contains <c>=</c>, a
+    /// carriage return or a line feed, or begins with <c>[</c>, <c>;</c> or <c>#</c>, since the reader would not read
+    /// it back as this key.
+    /// </exception>
     public void WritePropertyName(string name)
     {
-        ThrowHelper.ThrowIfNull(name);
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowIfContainsLineBreak(name);
+        ThrowIfSurroundedByWhitespace(name);
+        if (name.Contains('=')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniKeyDelimiter, nameof(name));
+        if (name[0] is '[' or ';' or '#') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniKeyStart, nameof(name));
 
         WriteText(name);
         WriteRaw("="u8);
@@ -223,6 +269,30 @@ public ref struct Utf8IniWriter
     /// Flushes any buffered bytes and releases the writer.
     /// </summary>
     public void Dispose() => Flush();
+
+    /// <summary>
+    /// Throws when a section name holds a <c>]</c> that a <c>;</c> or <c>#</c> follows after optional spaces and tabs,
+    /// where <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> would end the name.
+    /// </summary>
+    /// <param name="name">The section name to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> holds a <c>]</c> that a comment marker follows.
+    /// </exception>
+    private static void ThrowIfBracketPrecedesComment(string name, [CallerArgumentExpression(nameof(name))] string? paramName = null)
+    {
+        ReadOnlySpan<char> rest = name;
+        int bracket;
+        while ((bracket = rest.IndexOf(']')) >= 0)
+        {
+            rest = rest[(bracket + 1)..];
+
+            // A '#' counts even where the reader disallows hash comments, since the writer cannot know the reader's
+            // options.
+            ReadOnlySpan<char> next = rest.TrimStart(" \t");
+            if (!next.IsEmpty && next[0] is ';' or '#') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniSectionNameComment, paramName);
+        }
+    }
 
     /// <summary>
     /// Throws when text contains a line break, which a single INI line cannot hold.

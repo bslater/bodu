@@ -208,5 +208,32 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_IniSurroundingWhitespace", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An INI key cannot contain '=', where the reader would end the key..
+        /// </summary>
+        internal static string Arg_Invalid_IniKeyDelimiter {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniKeyDelimiter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An INI key cannot begin with '[', ';' or '#', which the reader takes for a section header or a comment..
+        /// </summary>
+        internal static string Arg_Invalid_IniKeyStart {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniKeyStart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An INI section name cannot hold a ']' followed by ';' or '#', where the reader would end the name..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionNameComment {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionNameComment", resourceCulture);
+            }
+        }
     }
 }
