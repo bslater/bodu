@@ -572,10 +572,10 @@ public ref struct Utf8DotEnvReader
         while (start < end && _data[start] is (byte)' ' or (byte)'\t')
             start++;
 
-        // Honour an inline comment: a '#' preceded by whitespace terminates the value.
+        // Honour an inline comment: a '#' preceded by whitespace, including the whitespace after '=', ends the value.
         if (_options.AllowInlineComments)
         {
-            for (int i = start + 1; i < end; i++)
+            for (int i = start; i < end; i++)
             {
                 if (_data[i] == (byte)'#' && _data[i - 1] is (byte)' ' or (byte)'\t')
                 {
