@@ -217,4 +217,22 @@ public partial class ConfigurationDocumentTests
         Assert.IsNull(doc.Resolve(Path.Combine(Path.GetTempPath(), "src", "a.cs"))["format:indent:size"]);
         Assert.AreEqual("4", doc.Resolve("src/a.cs")["format:indent:size"]);
     }
+
+    /// <summary>
+    /// Verifies that the resolved entries of a parsed document report no path in their source locations.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenResolved_ShouldReportNoPathInSourceLocations()
+    {
+        var doc = ConfigurationDocument.Parse("indent_style = tab\n[*]\nindent_size = 4\n");
+
+        ConfigurationView view = doc.Resolve("a.cs");
+        ConfigurationResolvedEntry? preamble = view.GetEntry("indent_style");
+        ConfigurationResolvedEntry? section = view.GetEntry("indent_size");
+
+        Assert.IsNotNull(preamble);
+        Assert.IsNotNull(section);
+        Assert.IsNull(preamble.SourceLocation.Path);
+        Assert.IsNull(section.SourceLocation.Path);
+    }
 }

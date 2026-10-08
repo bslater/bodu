@@ -243,4 +243,61 @@ public partial class ConfigurationDocumentTests
         Assert.IsNull(read.Resolve(absolute)["format:indent:size"]);
         Assert.AreEqual("4", streamed.Resolve("src/a.cs")["format:indent:size"]);
     }
+
+    /// <summary>
+    /// Verifies that each entry of a view resolved from a document loaded by path reports the full path of the file as
+    /// its <see cref="ConfigurationSourceLocation.Path" />, for a preamble entry and a section entry alike.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenResolved_ShouldReportTheFilePathInEachEntrysSourceLocation()
+    {
+        using TempFileScope scope = new("indent_style = tab\n[*]\nindent_size = 4\n");
+        var doc = ConfigurationDocument.Load(scope.Path);
+
+        ConfigurationView view = doc.Resolve(Path.Combine(scope.Directory, "a.cs"));
+        ConfigurationResolvedEntry? preamble = view.GetEntry("indent_style");
+        ConfigurationResolvedEntry? section = view.GetEntry("indent_size");
+
+        Assert.IsNotNull(preamble);
+        Assert.IsNotNull(section);
+        Assert.AreEqual(Path.GetFullPath(scope.Path), preamble.SourceLocation.Path);
+        Assert.AreEqual(Path.GetFullPath(scope.Path), section.SourceLocation.Path);
+    }
+
+    /// <summary>
+    /// Verifies that a document loaded through a relative path reports the full path of the file in the source
+    /// locations of its resolved entries.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenPathIsRelative_ShouldReportTheFullPathInEachEntrysSourceLocation()
+    {
+        using TempFileScope scope = new("[*]\nindent_size = 4\n");
+        string relative = Path.GetRelativePath(Environment.CurrentDirectory, scope.Path);
+        var doc = ConfigurationDocument.Load(relative);
+
+        ConfigurationResolvedEntry? entry = doc.Resolve("a.cs").GetEntry("indent_size");
+
+        Assert.IsNotNull(entry);
+        Assert.AreEqual(Path.GetFullPath(scope.Path), entry.SourceLocation.Path);
+    }
+
+    /// <summary>
+    /// Verifies that the resolved entries of a document loaded from a stream or a text reader report no path in their
+    /// source locations.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenDocumentComesFromStreamOrReader_ShouldReportNoPathInSourceLocations()
+    {
+        const string text = "[*]\nindent_size = 4\n";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+        using var reader = new StringReader(text);
+
+        ConfigurationResolvedEntry? streamed = ConfigurationDocument.Load(stream).Resolve("a.cs").GetEntry("indent_size");
+        ConfigurationResolvedEntry? read = ConfigurationDocument.Load(reader).Resolve("a.cs").GetEntry("indent_size");
+
+        Assert.IsNotNull(streamed);
+        Assert.IsNotNull(read);
+        Assert.IsNull(streamed.SourceLocation.Path);
+        Assert.IsNull(read.SourceLocation.Path);
+    }
 }
