@@ -45,7 +45,7 @@ A **profile** is a named, validated combination of parse, resolve, and write opt
 
 | Profile | Intent |
 |---|---|
-| `Bodu` (default) | Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve. |
+| `Bodu` (default) | Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve (its `root` pair excepted). |
 | `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, identity key mapping (keys keep their dots), keys lowercased, and the whole preamble, `root` included, dropped from resolve. |
 | `Strict` | Deterministic parsing for generated files: duplicate keys are rejected, key-only properties are not permitted. |
 | `Relaxed` | Permissive parsing of user-authored files: inline comments enabled, duplicates last-wins, diagnostics collected rather than thrown. |
@@ -207,7 +207,9 @@ The **preamble** is the EditorConfig name for the file's global section - proper
 section header. Bodu exposes it as <xref:Bodu.Text.Configuration.IniDocumentBase.GlobalSection>.
 
 Under the default `Bodu` profile, the resolver layers the preamble first and then each matching section in source
-order, so preamble properties act as defaults that any matching section can override. Under
+order, so preamble properties act as defaults that any matching section can override. The preamble's `root` pair is
+the exception under every profile: it marks the file as the root of its directory tree rather than configuring
+anything, so the resolver never projects it into a view. Under
 `EditorConfigCompatible`, `ApplyPreambleProperties` is `false`, so the preamble is dropped from resolve entirely, its
 well-known `root` pair included. The pair stays in the global section: resolution reads one document and searches no
 parent directory, so acting on `root = true` (no further `.editorconfig` files up the tree) is left to the caller.

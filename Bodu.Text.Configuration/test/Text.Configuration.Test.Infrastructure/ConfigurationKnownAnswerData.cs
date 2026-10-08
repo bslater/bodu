@@ -542,7 +542,7 @@ public static class ConfigurationKnownAnswerData
 
         items.Add(ConfigurationKat.ResolvePass(
             id: "RES-0002",
-            title: "Preamble does not participate in EditorConfig-compatible resolution except root",
+            title: "Preamble does not participate in EditorConfig-compatible resolution, root included",
             profile: "EditorConfigCompatible",
             targetPath: "src/Program.cs",
             source:

@@ -137,7 +137,7 @@ ConfigurationView view = document.Resolve(
     options: ConfigurationResolveOptions.EditorConfigCompatible);
 ```
 
-The default options (`ConfigurationResolveOptions.Bodu`) treat the global section's properties as participating preamble and the literal value `"unset"` as a normal string. The `EditorConfigCompatible` preset switches both - preamble properties are dropped from the resolved view, and `"unset"` removes the effective value the way EditorConfig requires.
+The default options (`ConfigurationResolveOptions.Bodu`) treat the global section's properties, except its `root` pair, as participating preamble and the literal value `"unset"` as a normal string. The `EditorConfigCompatible` preset switches both - preamble properties are dropped from the resolved view, and `"unset"` removes the effective value the way EditorConfig requires.
 
 Every field of `ConfigurationResolveOptions`:
 
@@ -146,7 +146,7 @@ Every field of `ConfigurationResolveOptions`:
 | `Profile` | `Bodu` | Selects the cohort of resolve defaults. |
 | `PathRoot` | `null` | Optional anchor that anchored globs are rebased against; `null` defers to the document's load path. |
 | `MissingPathRootMode` | `UseEmptyRoot` | Behaviour for a **path-less** resolve when no root is available - `UseEmptyRoot` returns a preamble-only view; `Throw` raises `InvalidOperationException`. No effect once a target path is supplied. |
-| `ApplyPreambleProperties` | `true` (Bodu/Strict/Relaxed) / `false` (EditorConfig) | Whether the global section contributes to the view. |
+| `ApplyPreambleProperties` | `true` (Bodu/Strict/Relaxed) / `false` (EditorConfig) | Whether the global section contributes to the view. Its `root` pair never does: it marks the file as the root of its directory tree and stays in the document. |
 | `PathComparison` | `Ordinal` | `StringComparison` used to match the target path against globs (case-insensitive variants compile the regex with `IgnoreCase`). |
 | `UnsetValueMode` | `TreatAsLiteral` (Bodu/Relaxed) / `RemoveEffectiveValue` (EditorConfig/Strict) | How a value equal to `"unset"` (case-insensitive) is treated. |
 | `KeyOptions` | `Default` | Segment-separator and mapping config (see below). Should match `ConfigurationParseOptions.KeyOptions`. |

@@ -47,7 +47,8 @@ namespace Bodu.Text.Configuration;
 /// </item>
 /// <item>
 /// <term>
-/// Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />)
+/// Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />; its
+/// <c>root</c> pair never does)
 /// </term>
 /// <description>Yes | No | Yes | Yes</description>
 /// </item>
@@ -82,7 +83,9 @@ public enum ConfigurationProfile
 {
     /// <summary>
     /// The default Bodu profile: EditorConfig-style section headers and globs, dotted-to-colon key mapping, last-wins
-    /// duplicate handling, whitespace-introduced inline comments, and preamble properties contributing to resolution.
+    /// duplicate handling, whitespace-introduced inline comments, and preamble properties contributing to resolution,
+    /// except the preamble's <c>root</c> pair, which marks the file as the root of its directory tree and is never
+    /// resolved.
     /// </summary>
     Bodu = 0,
 

@@ -17,6 +17,9 @@ internal sealed class ConfigurationResolver
     /// <summary>The EditorConfig sentinel value that removes a previously set key from the effective configuration. Compared case-insensitively to match real-world EditorConfig tooling - a deliberate deviation from the strict lower-case-only reading of the spec.</summary>
     private const string UnsetSentinel = "unset";
 
+    /// <summary>The preamble key that marks a configuration file as the root of its directory tree; it directs a search for further files and is never resolved as a property.</summary>
+    private const string RootKey = "root";
+
     /// <summary>The resolve options that govern key matching, precedence, and unset handling.</summary>
     private readonly ConfigurationResolveOptions _options;
 
@@ -105,6 +108,11 @@ internal sealed class ConfigurationResolver
     {
         foreach (IniEntry entry in section.Entries)
         {
+            // The preamble's root pair marks the file as the root of its directory tree. It directs the caller's search
+            // for further files rather than configuring anything, so it is never resolved; the document keeps it.
+            if (sectionPattern is null && entry.Key.AsSpan().Trim().Equals(RootKey, StringComparison.OrdinalIgnoreCase))
+                continue;
+
             string key = ConfigurationKey.Parse(entry.Key, _options.KeyOptions).Path;
 
             // EditorConfig "unset" sentinel handling.

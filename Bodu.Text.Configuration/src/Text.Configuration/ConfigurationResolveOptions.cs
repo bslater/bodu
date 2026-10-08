@@ -71,7 +71,9 @@ public sealed partial class ConfigurationResolveOptions
 
     /// <summary>
     /// Gets a value indicating whether preamble (global) properties contribute to resolution. Defaults to
-    /// <see langword="true" /> for the Bodu profile and <see langword="false" /> for EditorConfig-compatible.
+    /// <see langword="true" /> for the Bodu profile and <see langword="false" /> for EditorConfig-compatible. The
+    /// preamble's <c>root</c> pair never contributes: it marks the file as the root of its directory tree, and the
+    /// document keeps it in its global section for the caller that collects files up the tree.
     /// </summary>
     /// <value><see langword="true" /> when preamble properties are honoured.</value>
     public bool ApplyPreambleProperties { get; init; } = true;
