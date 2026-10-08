@@ -210,9 +210,10 @@ internal sealed partial class YamlParser
 
             if (r.Kind == YamlReaderNodeKind.Alias && r.Tag is not null)
             {
+                // The alias row's offset is where the alias is written, so the error points at it.
                 if (!anchors.TryGetValue(r.Tag, out int target))
                 {
-                    throw new YamlFormatException(string.Format(
+                    throw ErrorAt(r.Offset, string.Format(
                         CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlUndefinedAlias, r.Tag));
                 }
 

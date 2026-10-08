@@ -248,6 +248,7 @@ internal sealed partial class YamlParser
                 SkipFlowWhitespace();
             }
 
+            int keyOffset = _pos;
             int keyNode = ParseFlowNode();
             string key = KeyTextOf(keyNode);
             SkipFlowWhitespace();
@@ -266,7 +267,7 @@ internal sealed partial class YamlParser
                 value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
             }
 
-            AddMappingChild(mapping, value, key, keyIndex);
+            AddMappingChild(mapping, value, key, keyOffset, keyIndex);
 
             SkipFlowWhitespace();
             byte c = Peek();

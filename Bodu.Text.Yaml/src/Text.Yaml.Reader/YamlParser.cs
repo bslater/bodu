@@ -401,7 +401,7 @@ internal sealed partial class YamlParser
 
             // An implicit key is always followed by its ':' value indicator; the ': value' line of an explicit '? key'
             // is optional.
-            int keyRow = ParseMappingKey(indent, out string? keyText);
+            int keyRow = ParseMappingKey(indent, out string? keyText, out int keyOffset);
 
             int valueRow;
             if (keyRow >= 0)
@@ -414,7 +414,7 @@ internal sealed partial class YamlParser
                 valueRow = ParseMappingValue(indent);
             }
 
-            AddMappingChild(mapping, valueRow, keyText, keyIndex);
+            AddMappingChild(mapping, valueRow, keyText, keyOffset, keyIndex);
         }
 
         return mapping;
@@ -426,21 +426,29 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <param name="indent">The mapping indentation, used for explicit keys that span the value indicator.</param>
     /// <param name="keyText">When the method returns, the decoded key text.</param>
+    /// <param name="keyOffset">
+    /// When the method returns, the byte offset at which the key, or its first node property, begins.
+    /// </param>
     /// <returns>
     /// The row index of an explicit key's node, or <c>-1</c> for a simple key, which decodes to text only.
     /// </returns>
-    private int ParseMappingKey(int indent, out string keyText)
+    private int ParseMappingKey(int indent, out string keyText, out int keyOffset)
     {
         if (Peek() == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
         {
             Advance();
             SkipSpaces();
+
+            // A key on the indicator's line begins at the cursor; one on a later line begins at its node.
+            int keyStart = IsBreakOrEnd(Peek()) || Peek() == (byte)'#' ? -1 : _pos;
             int keyNode = ParseBlockNode(indent + 1);
+            keyOffset = keyStart >= 0 ? keyStart : _rows[keyNode].Offset;
             keyText = KeyTextOf(keyNode);
             SkipBlankCommentLines();
             return keyNode;
         }
 
+        keyOffset = _pos;
         keyText = ReadSimpleKey();
         return -1;
     }
@@ -701,11 +709,17 @@ internal sealed partial class YamlParser
     /// <param name="mapping">The mapping row index.</param>
     /// <param name="valueRow">The row index of the entry's value node.</param>
     /// <param name="keyText">The decoded key text.</param>
+    /// <param name="keyOffset">The byte offset at which the key begins, where a duplicate key is reported.</param>
     /// <param name="index">The key-to-child index tracking the mapping's existing keys.</param>
     /// <exception cref="YamlFormatException">
     /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />.
     /// </exception>
-    private void AddMappingChild(int mapping, int valueRow, string keyText, Dictionary<string, int> index)
+    private void AddMappingChild(
+        int mapping,
+        int valueRow,
+        string keyText,
+        int keyOffset,
+        Dictionary<string, int> index)
     {
         YamlReaderRow v = _rows[valueRow];
         v.Key = keyText;
@@ -723,7 +737,7 @@ internal sealed partial class YamlParser
                     break;
 
                 default:
-                    throw Error(YamlResourceStrings.Format_Invalid_YamlDuplicateKey);
+                    throw ErrorAt(keyOffset, YamlResourceStrings.Format_Invalid_YamlDuplicateKey);
             }
         }
 
