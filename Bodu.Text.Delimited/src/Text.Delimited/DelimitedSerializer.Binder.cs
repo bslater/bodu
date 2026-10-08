@@ -137,11 +137,16 @@ public static partial class DelimitedSerializer
     /// <param name="column">The column name, used for diagnostics.</param>
     /// <returns>The converted value.</returns>
     /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
+    /// <remarks>
+    /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type. Every
+    /// other target converts the text as it is.
+    /// </remarks>
     private static object? ConvertFromString(string raw, Type targetType, string column)
     {
         Type underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
-        if (Nullable.GetUnderlyingType(targetType) is not null && raw.Length == 0)
+        // A blank cell is often padded with spaces, so white space holds no value either.
+        if (Nullable.GetUnderlyingType(targetType) is not null && string.IsNullOrWhiteSpace(raw))
             return null;
 
         try

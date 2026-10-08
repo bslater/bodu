@@ -43,7 +43,7 @@ List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText, options); /
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 ```
 
-Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member.
+Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on); other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`.
 
 ## Pattern 3 - stream records from a large file
 

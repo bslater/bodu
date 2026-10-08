@@ -27,6 +27,12 @@ namespace Bodu.Text.Delimited;
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family.
 /// </para>
 /// <para>
+/// Field values convert with the invariant culture. An empty field, or one of white space only, binds
+/// <see langword="null" /> to a member of a nullable value type, such as <see cref="Nullable{T}" /> of
+/// <see cref="int" /> or of <see cref="DateTime" />. Other members convert the text as it is: a <see cref="string" />
+/// member keeps it, and a numeric or date member throws <see cref="DelimitedSerializationException" /> for it.
+/// </para>
+/// <para>
 /// The buffered stream overloads mirror the sibling quartet libraries. The
 /// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and
 /// the <see cref="IAsyncEnumerable{T}" /> serialize overload are truly incremental: records are parsed and yielded as
