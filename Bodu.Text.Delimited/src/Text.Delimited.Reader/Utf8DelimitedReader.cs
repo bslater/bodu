@@ -96,6 +96,10 @@ public ref struct Utf8DelimitedReader
     /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
     /// equals the delimiter or the quote. The comment character is checked even when comments are not allowed.
     /// </exception>
+    /// <remarks>
+    /// A UTF-8 byte-order mark at the start of <paramref name="data" /> is skipped; a U+FEFF anywhere else is field
+    /// content.
+    /// </remarks>
     public Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options)
     {
         DelimitedThrowHelper.ThrowIfUnusableDialect(options);
@@ -129,13 +133,18 @@ public ref struct Utf8DelimitedReader
     /// <remarks>
     /// <see cref="LineNumber" />, <see cref="RecordLine" />, <see cref="RecordOffset" /> and the positions of the
     /// <see cref="DelimitedFormatException" /> the reader raises count from the start of the whole input;
-    /// <see cref="BytesConsumed" /> still counts from the start of the segment.
+    /// <see cref="BytesConsumed" /> still counts from the start of the segment. Only the segment that starts the input,
+    /// at offset zero, skips a leading byte-order mark; a later segment reads a leading U+FEFF as field content.
     /// </remarks>
     internal Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options, int firstLine, long firstOffset)
         : this(data, options)
     {
         _line = firstLine;
         _offsetBase = firstOffset;
+
+        // A byte-order mark can only start the whole input, so a later segment starts with content.
+        if (firstOffset != 0)
+            _position = 0;
     }
 
     /// <summary>

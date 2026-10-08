@@ -109,7 +109,9 @@ public static partial class DelimitedSerializer
     /// <remarks>
     /// <para>
     /// The stream is consumed in segments: only the bytes of records not yet terminated remain buffered, so memory use
-    /// is bounded by the longest single record rather than the document.
+    /// is bounded by the longest single record rather than the document. A UTF-8 byte-order mark is skipped only at the
+    /// start of the stream; a U+FEFF that starts a later record, whichever segment it starts, is field content, as it
+    /// is for <see cref="Deserialize{TRecord}(Stream, DelimitedSerializerOptions?)" />.
     /// </para>
     /// <para>
     /// A record is yielded as soon as its line ending has been read, a line feed or a complete CRLF, even while the

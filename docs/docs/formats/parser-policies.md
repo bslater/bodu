@@ -30,6 +30,8 @@ Strict field counts are measured against the header row, so they apply in header
 
 Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to `MalformedRecordBehavior`). After a closing quote only the delimiter, a line break or the end of the input may follow, after spaces and tabs under `TrimFields`; anything else makes the record malformed. `Throw` reports the line and offset of the first offending byte, and `SkipRecord` skips the record, the rest of that line included, and continues with the next line. A record whose field count breaks the `Strict` policy is malformed too: `Throw` reports where it starts, and `SkipRecord` skips it.
 
+The reader skips a UTF-8 byte-order mark at the start of its input, and `DelimitedSerializer.DeserializeAsyncEnumerableAsync` skips one only at the start of the stream, however its reads fall; a U+FEFF anywhere else is field content.
+
 ## DotEnv
 
 The DotEnv dialect follows the mainstream `dotenv` implementations:
