@@ -44,6 +44,30 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Reads every entry from the supplied source as <c>KEY=value</c> text, prefixed with <c>export</c> and a space
+    /// when the entry carried the prefix.
+    /// </summary>
+    /// <param name="source">The DotEnv source text.</param>
+    /// <returns>The entries, in source order.</returns>
+    private static List<string> ReadEntryTexts(string source)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(source);
+        var reader = new Utf8DotEnvReader(bytes);
+        var entries = new List<string>();
+        string key = string.Empty;
+
+        while (reader.Read())
+        {
+            if (reader.TokenType == DotEnvTokenType.PropertyName)
+                key = reader.CurrentIsExport ? "export " + reader.GetString() : reader.GetString();
+            else if (reader.TokenType == DotEnvTokenType.String)
+                entries.Add($"{key}={reader.GetString()}");
+        }
+
+        return entries;
+    }
+
+    /// <summary>
     /// Verifies that a simple key/value assignment produces the framed property-name and string token stream.
     /// </summary>
     [TestMethod]
@@ -193,6 +217,54 @@ public partial class Utf8DotEnvReaderTests
             new List<string> { "StartObject", "Name:KEY", "String:# comment", "EndObject" },
             tokens,
             string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that a whitespace character other than space and tab is whitespace wherever the reader skips or trims
+    /// whitespace: before a key, on a blank line, before a comment, after <c>export</c>, around <c>=</c>, after an
+    /// unquoted value, and before an inline <c>#</c>.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="whitespace">The whitespace character, one to three UTF-8 bytes long.</param>
+    [TestMethod]
+    [DataRow("form feed", "\f")]
+    [DataRow("vertical tab", "\v")]
+    [DataRow("no-break space", " ")]
+    [DataRow("ideographic space", "　")]
+    public void Read_WhenWhitespaceIsNotSpaceOrTab_ShouldTreatItAsWhitespaceInEveryPosition(string testName, string whitespace)
+    {
+        _ = testName;
+        string w = whitespace;
+        (string Position, string Source, string Expected)[] cases =
+        [
+            ("before a key", $"{w}KEY=value\n", "KEY=value"),
+            ("on a blank line", $"{w}\nKEY=value\n", "KEY=value"),
+            ("before a comment", $"{w}# note\nKEY=value\n", "KEY=value"),
+            ("after export", $"export{w}KEY=value\n", "export KEY=value"),
+            ("before =", $"KEY{w}=value\n", "KEY=value"),
+            ("after =", $"KEY={w}value\n", "KEY=value"),
+            ("after an unquoted value", $"KEY=value{w}\n", "KEY=value"),
+            ("before an inline #", $"KEY=value{w}# note\n", "KEY=value"),
+            ("between = and an inline #", $"KEY={w}# note\n", "KEY="),
+            ("in every position at once", $"{w}export{w}KEY{w}={w}value{w}#{w}note{w}\n", "export KEY=value"),
+        ];
+        var problems = new List<string>();
+
+        foreach ((string position, string source, string expected) in cases)
+        {
+            try
+            {
+                List<string> entries = ReadEntryTexts(source);
+                if (entries.Count != 1 || entries[0] != expected)
+                    problems.Add($"{position}: read [{string.Join(", ", entries)}], expected [{expected}]");
+            }
+            catch (DotEnvFormatException ex)
+            {
+                problems.Add($"{position}: threw {ex.Message}");
+            }
+        }
+
+        Assert.AreEqual(0, problems.Count, string.Join(Environment.NewLine, problems));
     }
 
     /// <summary>
