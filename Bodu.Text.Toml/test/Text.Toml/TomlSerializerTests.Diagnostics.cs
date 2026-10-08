@@ -226,8 +226,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a table given for an array member is reported with the member's path and at the line of the
-    /// header that opens the table, rather than at the start of the document or at no position.
+    /// Verifies that a table given for an array member is reported with the member's path and at the line of the header
+    /// that opens the table, rather than at the start of the document or at no position.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenArrayMemberIsGivenTable_ShouldReportTablePosition()

@@ -32,7 +32,9 @@ public sealed partial class TomlReleaseNoteCorpusTests
         /// </summary>
         /// <param name="text">The field; empty for the defaults.</param>
         /// <returns>The row options.</returns>
-        /// <exception cref="FormatException">An option is malformed, unknown, or has a value it does not accept.</exception>
+        /// <exception cref="FormatException">
+        /// An option is malformed, unknown, or has a value it does not accept.
+        /// </exception>
         public static RowOptions Parse(string text)
         {
             var options = new RowOptions(default(TomlReaderOptions).SpecVersion, 0);

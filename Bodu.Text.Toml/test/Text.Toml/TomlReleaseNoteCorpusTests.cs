@@ -24,15 +24,15 @@ namespace Bodu.Text.Toml;
 /// <para>
 /// A read is described in toml-test's tagged JSON: a table is a JSON object, an array a JSON array, and every scalar an
 /// object of exactly <c>{"type": ..., "value": ...}</c>. A <c>parse</c> row reads its input with
-/// <see cref="TomlDocumentReader" /> into the comparison model of <see cref="TomlTestCorpusTests" /> and compares it with
-/// the expected tagged JSON through that suite's comparer: integers and floats by value, offset date-times by instant,
-/// the local kinds by value, and every fraction truncated to the 100-nanosecond tick Bodu keeps.
+/// <see cref="TomlDocumentReader" /> into the comparison model of <see cref="TomlTestCorpusTests" /> and compares it
+/// with the expected tagged JSON through that suite's comparer: integers and floats by value, offset date-times by
+/// instant, the local kinds by value, and every fraction truncated to the 100-nanosecond tick Bodu keeps.
 /// </para>
 /// <para>
 /// A <c>write</c> row replays its tagged JSON as calls on <see cref="Utf8TomlWriter" />, in the JSON's own order, and
-/// compares the bytes written. A <c>roundtrip</c> row parses its input with <see cref="TomlDocument" />, writes the root
-/// element back through <see cref="Utf8TomlWriter" />, reads that text again, and compares the two readings rendered as
-/// canonical tagged JSON.
+/// compares the bytes written. A <c>roundtrip</c> row parses its input with <see cref="TomlDocument" />, writes the
+/// root element back through <see cref="Utf8TomlWriter" />, reads that text again, and compares the two readings
+/// rendered as canonical tagged JSON.
 /// </para>
 /// <para>
 /// The <c>SpecVersion</c> option selects the TOML version the reader and the document parse under; the writer's output
@@ -111,7 +111,9 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// Selects the runnable rows of one kind as test data.
     /// </summary>
     /// <param name="kind">The row kind.</param>
-    /// <returns>One single-element argument array per <c>applies</c> or <c>dialect</c> row of <paramref name="kind" />.</returns>
+    /// <returns>
+    /// One single-element argument array per <c>applies</c> or <c>dialect</c> row of <paramref name="kind" />.
+    /// </returns>
     private static IEnumerable<object[]> RunnableRows(string kind) =>
         AllRows.Where(fix => fix.IsRunnable && fix.Kind == kind).Select(fix => new object[] { fix });
 
@@ -122,8 +124,8 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// <param name="toml">The UTF-8 TOML bytes.</param>
     /// <param name="options">The row options.</param>
     /// <returns>
-    /// The model of the root table, as <see cref="TomlTestCorpusTests.BuildValue" /> builds it: tables are dictionaries,
-    /// arrays are lists, and scalars are <see cref="TomlTestCorpusTests.Leaf" /> records.
+    /// The model of the root table, as <see cref="TomlTestCorpusTests.BuildValue" /> builds it: tables are
+    /// dictionaries, arrays are lists, and scalars are <see cref="TomlTestCorpusTests.Leaf" /> records.
     /// </returns>
     /// <exception cref="TomlFormatException">The reader rejects the document.</exception>
     private static object ReadModel(ReadOnlySpan<byte> toml, RowOptions options)
@@ -252,7 +254,9 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// Formats the fractional second of a tick count.
     /// </summary>
     /// <param name="ticks">The tick count.</param>
-    /// <returns>The fraction with a leading period and no trailing zero, or the empty string for a whole second.</returns>
+    /// <returns>
+    /// The fraction with a leading period and no trailing zero, or the empty string for a whole second.
+    /// </returns>
     private static string FormatFraction(long ticks)
     {
         long fraction = ticks % TimeSpan.TicksPerSecond;
@@ -275,8 +279,8 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// <param name="text">The rendering so far.</param>
     /// <param name="value">The string.</param>
     /// <remarks>
-    /// A quote, a backslash, a line feed, a carriage return and a tab use their short escapes, and every other character
-    /// outside printable ASCII is written <c>\uXXXX</c>, one UTF-16 code unit at a time.
+    /// A quote, a backslash, a line feed, a carriage return and a tab use their short escapes, and every other
+    /// character outside printable ASCII is written <c>\uXXXX</c>, one UTF-16 code unit at a time.
     /// </remarks>
     private static void AppendJsonString(StringBuilder text, string value)
     {
@@ -347,7 +351,9 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="element">The element.</param>
-    /// <exception cref="FormatException">The element is neither an object nor an array, or a scalar is malformed.</exception>
+    /// <exception cref="FormatException">
+    /// The element is neither an object nor an array, or a scalar is malformed.
+    /// </exception>
     private static void WriteElement(ref Utf8TomlWriter writer, JsonElement element)
     {
         switch (element.ValueKind)

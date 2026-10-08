@@ -138,8 +138,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a nullable member holding <see langword="null" /> is not written and one holding a value is written
-    /// as that value, and that the document reads back to the same two values.
+    /// Verifies that a nullable member holding <see langword="null" /> is not written and one holding a value is
+    /// written as that value, and that the document reads back to the same two values.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenMemberIsNullable_ShouldOmitNullAndWriteValue()

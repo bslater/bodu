@@ -407,8 +407,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// A class that hides <see cref="HidingFieldBaseModel.OverwrittenField" /> with a field of the same name and declares
-    /// a field of its own.
+    /// A class that hides <see cref="HidingFieldBaseModel.OverwrittenField" /> with a field of the same name and
+    /// declares a field of its own.
     /// </summary>
     private sealed class HidingFieldModel
         : HidingFieldBaseModel

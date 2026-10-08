@@ -331,8 +331,9 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a get-only dictionary member marked <see cref="ObjectCreationHandling.Populate" /> is populated with
-    /// a sub-table's entries, and that serializing the model writes a document that reads back to the same entries.
+    /// Verifies that a get-only dictionary member marked <see cref="ObjectCreationHandling.Populate" /> is populated
+    /// with a sub-table's entries, and that serializing the model writes a document that reads back to the same
+    /// entries.
     /// </summary>
     [TestMethod]
     public void SerializeDeserialize_WhenGetOnlyDictionaryIsPopulated_ShouldRoundTrip()
@@ -364,8 +365,8 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a table given for a class member that holds <see langword="null" /> creates the instance and
-    /// binds the table's members to it.
+    /// Verifies that a table given for a class member that holds <see langword="null" /> creates the instance and binds
+    /// the table's members to it.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenTableTargetsNullMember_ShouldCreateInstance()

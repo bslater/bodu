@@ -390,8 +390,8 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that an empty array is read as an empty collection rather than <see langword="null" />: into an
-    /// <see cref="object" /> array member, into a <see cref="List{T}" /> member, and into a dictionary of objects, where
-    /// it surfaces as an array element with no items.
+    /// <see cref="object" /> array member, into a <see cref="List{T}" /> member, and into a dictionary of objects,
+    /// where it surfaces as an array element with no items.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenArrayIsEmpty_ShouldYieldEmptyCollection()
@@ -450,8 +450,8 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that serializing an array that holds a <see langword="null" /> element throws
-    /// <see cref="TomlSerializationException" /> rather than dropping the element or the array: a nullable-integer array
-    /// member through the serializer, and a <see cref="TomlArray" /> through <see cref="TomlNode.ToUtf8Bytes" />.
+    /// <see cref="TomlSerializationException" /> rather than dropping the element or the array: a nullable-integer
+    /// array member through the serializer, and a <see cref="TomlArray" /> through <see cref="TomlNode.ToUtf8Bytes" />.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenArrayElementIsNull_ShouldThrowTomlSerializationException()

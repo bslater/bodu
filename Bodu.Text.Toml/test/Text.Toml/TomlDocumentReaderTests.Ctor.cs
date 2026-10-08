@@ -14,8 +14,8 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the <see cref="TomlDocumentReader" /> constructor, which reads the whole document: where the
-/// <see cref="TomlFormatException" /> it throws for a malformed document says the error is (its line, its column and its
-/// byte offset), and that the values it reads do not depend on the current culture.
+/// <see cref="TomlFormatException" /> it throws for a malformed document says the error is (its line, its column and
+/// its byte offset), and that the values it reads do not depend on the current culture.
 /// </summary>
 public sealed partial class TomlDocumentReaderTests
 {
@@ -94,8 +94,8 @@ public sealed partial class TomlDocumentReaderTests
     }
 
     /// <summary>
-    /// Verifies that a character outside the bare-key set is reported once, at the first byte of its UTF-8 encoding:
-    /// a key spelled U+03BC, and a line that opens with U+3000.
+    /// Verifies that a character outside the bare-key set is reported once, at the first byte of its UTF-8 encoding: a
+    /// key spelled U+03BC, and a line that opens with U+3000.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenBareKeyHasMultiByteCharacter_ShouldReportItsFirstByte()
@@ -121,7 +121,9 @@ public sealed partial class TomlDocumentReaderTests
     /// Verifies that a digit separator directly after a radix prefix is reported at the separator, not at the start of
     /// the value.
     /// </summary>
-    /// <param name="toml">The document, whose value puts a separator after a binary, hexadecimal or octal prefix.</param>
+    /// <param name="toml">
+    /// The document, whose value puts a separator after a binary, hexadecimal or octal prefix.
+    /// </param>
     [TestMethod]
     [DataRow("us-after-bin = 0b_1", DisplayName = "binary")]
     [DataRow("us-after-hex = 0x_1", DisplayName = "hexadecimal")]

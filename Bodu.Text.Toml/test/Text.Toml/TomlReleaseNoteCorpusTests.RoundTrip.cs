@@ -12,8 +12,8 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing each catalogued input back through <c>TomlDocument</c> and <c>Utf8TomlWriter</c> writes the
-    /// expected text, when the row gives it, and text that reads back to the same values as the input.
+    /// Verifies that writing each catalogued input back through <c>TomlDocument</c> and <c>Utf8TomlWriter</c> writes
+    /// the expected text, when the row gives it, and text that reads back to the same values as the input.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]
