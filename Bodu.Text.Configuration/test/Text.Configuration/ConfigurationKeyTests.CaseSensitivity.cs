@@ -57,4 +57,32 @@ public partial class ConfigurationKeyTests
 
         Assert.IsFalse(upper.Equals(lower));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyOptions.LowercaseKeys" /> lowercases the segments and the path with the
+    /// invariant culture while <see cref="ConfigurationKey.RawKey" /> keeps the case the key was written in.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenLowercaseKeysIsSet_ShouldLowercaseSegmentsAndPathOnly()
+    {
+        ConfigurationKeyOptions options = new() { LowercaseKeys = true };
+
+        var key = ConfigurationKey.Parse("Logging.LEVEL", options);
+
+        Assert.AreEqual("Logging.LEVEL", key.RawKey);
+        Assert.AreEqual("logging:level", key.Path);
+        CollectionAssert.AreEqual(new[] { "logging", "level" }, key.Segments.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that the default key options keep the case of every segment.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenLowercaseKeysIsUnset_ShouldKeepTheCaseOfSegments()
+    {
+        var key = ConfigurationKey.Parse("Logging.LEVEL");
+
+        Assert.IsFalse(ConfigurationKeyOptions.Default.LowercaseKeys);
+        Assert.AreEqual("Logging:LEVEL", key.Path);
+    }
 }

@@ -58,7 +58,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 | <xref:Bodu.Text.Configuration.ConfigurationParseOptions> | Reader behaviour: inline-comment mode, duplicate-key / -section handling, diagnostic mode, length limits, key options. Static `Bodu` / `EditorConfigCompatible` / `Strict` / `Relaxed` presets. |
 | <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> | Resolver behaviour: `PathRoot`, `MissingPathRootMode`, `ApplyPreambleProperties`, `UnsetValueMode`, `PathComparison`, `KeyOptions`. |
 | <xref:Bodu.Text.Configuration.ConfigurationWriteOptions> | Save behaviour: encoding, newline style, blank-line policy, property formatting. |
-| <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> | Key behaviour: segment separators (default `.` and `:`), mapping (`DotToColon` / `Colon` / `Identity`), case sensitivity. |
+| <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> | Key behaviour: segment separators (default `.` and `:`), mapping (`DotToColon` / `Colon` / `Identity`), case sensitivity, lowercasing (`LowercaseKeys`). |
 
 ### Keys
 
@@ -66,7 +66,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Configuration.ConfigurationKey> | Read-only struct with `RawKey`, `Path` (canonical colon-delimited form), `Segments`, and `CaseSensitive`. Static `Parse` / `TryParse` factories. |
+| <xref:Bodu.Text.Configuration.ConfigurationKey> | Read-only struct with `RawKey`, `Path` (canonical form: colon-delimited, or as written under `Identity`), `Segments`, and `CaseSensitive`. Static `Parse` / `TryParse` factories. |
 | <xref:Bodu.Text.Configuration.ConfigurationKeyMapping> | Enum: `DotToColon` (default), `Colon`, `Identity`. |
 
 ### Diagnostics
@@ -93,23 +93,25 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 ## Profile presets at a glance
 
-| Profile | Inline comments | Section headers | Duplicate keys | Diagnostics | Preamble in resolve | Missing path root | Unset semantics |
-|---|---|---|---|---|---|---|---|
-| `Bodu` (default) | WhitespaceIntroduced | Lenient | LastWins | Throw | Applied | UseEmptyRoot | Literal |
-| `EditorConfigCompatible` | Disabled | Strict | LastWins | Throw | Not applied | Throw | Removes value |
-| `Strict` | Disabled | Strict | Disallowed | Throw | Applied | Throw | Removes value |
-| `Relaxed` | WhitespaceIntroduced | Lenient | LastWins | Collect | Applied | UseEmptyRoot | Literal |
+| Profile | Inline comments | Section headers | Duplicate keys | Diagnostics | Preamble in resolve | Missing path root | Unset semantics | Key mapping |
+|---|---|---|---|---|---|---|---|---|
+| `Bodu` (default) | WhitespaceIntroduced | Lenient | LastWins | Throw | Applied | UseEmptyRoot | Literal | DotToColon |
+| `EditorConfigCompatible` | Disabled | Strict | LastWins | Throw | Not applied | Throw | Removes value | Identity, lowercased |
+| `Strict` | Disabled | Strict | Disallowed | Throw | Applied | Throw | Removes value | DotToColon |
+| `Relaxed` | WhitespaceIntroduced | Lenient | LastWins | Collect | Applied | UseEmptyRoot | Literal | DotToColon |
 
 Profiles split across two option types: the *parse* columns (inline comments, section headers, duplicate keys,
 diagnostics) come from <xref:Bodu.Text.Configuration.ConfigurationParseOptions>; the *resolve* columns (preamble, missing
-path root, unset) come from <xref:Bodu.Text.Configuration.ConfigurationResolveOptions>. Both bags are
+path root, unset) come from <xref:Bodu.Text.Configuration.ConfigurationResolveOptions>, and the key mapping from the
+`KeyOptions` both carry. Both bags are
 `init`-only-property classes, so the presets are starting points, not contracts - compose a custom bag and override only
 what needs to differ.
 
 > [!NOTE]
 > Under `EditorConfigCompatible`, preamble properties are dropped wholesale during resolve (`ApplyPreambleProperties =
-> false`). The well-known `root` key is handled by the *reader*, not by special-casing it in the resolver, so the
-> resolved view simply contains no preamble keys at all.
+> false`), the well-known `root` key included, so the resolved view contains no preamble keys at all. The pairs stay in
+> the document's global section; resolution reads one document and searches no parent directory, so acting on
+> `root = true` is left to the caller.
 
 ## Common scenarios
 
@@ -143,13 +145,16 @@ format.indent.size  = 4
 format.indent.size = 2
 ```
 
-The grammar matches **EditorConfig** verbatim with two Bodu-specific extensions:
+The grammar follows **EditorConfig**, with the glob differences documented in
+[Views and resolution](../../guides/text-configuration/views-and-resolution.md), and the default `Bodu` profile adds two
+extensions:
 
 1. **Inline comments** are recognised when introduced by whitespace (`key = value  # comment`) under the default `Bodu`
    profile. Set the profile to `EditorConfigCompatible` to disable them.
 2. **Key mapping** projects dotted keys (`logging.level.default`) to colon-delimited configuration keys
    (`logging:level:default`) for direct interoperability with `Microsoft.Extensions.Configuration`. Both forms work as
-   lookup inputs on the view; the canonical stored form is the colon-delimited one.
+   lookup inputs on the view; the canonical stored form is the colon-delimited one. The `EditorConfigCompatible`
+   profile keeps every key as written instead, its dots and colons included, and lowercases keys as EditorConfig does.
 
 ## Where to go next
 

@@ -53,6 +53,10 @@ public static class ConfigurationExtensions
     /// <param name="targetPath">The path the resolved view is evaluated for, or <see langword="null" />.</param>
     /// <returns>A populated <see cref="ConfigurationView" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// A document loaded with <see cref="ConfigurationDocument.Load(string, ConfigurationParseOptions?)" /> is rooted
+    /// at the directory of its file, so a target path under that directory is matched relative to it.
+    /// </remarks>
     public static ConfigurationView Resolve(this IniDocumentBase document, string? targetPath = null) =>
         document.Resolve(targetPath, options: null);
 
@@ -66,19 +70,27 @@ public static class ConfigurationExtensions
     /// <returns>A populated <see cref="ConfigurationView" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The supplied options require a path root and none was provided.
+    /// <paramref name="targetPath" /> is <see langword="null" />, <paramref name="options" /> selects
+    /// <see cref="ConfigurationMissingPathRootMode.Throw" />, and no root is known: <paramref name="options" /> sets no
+    /// <see cref="ConfigurationResolveOptions.PathRoot" /> and the document was not loaded from a file.
     /// </exception>
+    /// <remarks>
+    /// When <paramref name="options" /> sets no <see cref="ConfigurationResolveOptions.PathRoot" />, a document loaded
+    /// with <see cref="ConfigurationDocument.Load(string, ConfigurationParseOptions?)" /> is rooted at the directory of
+    /// its file, so a target path under that directory is matched relative to it.
+    /// </remarks>
     public static ConfigurationView Resolve(this IniDocumentBase document, string? targetPath, ConfigurationResolveOptions? options) =>
         new ConfigurationResolver(options ?? ConfigurationResolveOptions.Bodu).Resolve(document, targetPath);
 
     /// <summary>
-    /// Computes the colon-delimited configuration path for an entry's raw key using the supplied key options. Mirrors
+    /// Computes the configuration path for an entry's raw key using the supplied key options: colon-delimited, or the
+    /// key as written under <see cref="ConfigurationKeyMapping.Identity" />. Mirrors
     /// <see cref="ConfigurationKey.Parse(string, ConfigurationKeyOptions?)" /> and exposes the resulting
     /// <see cref="ConfigurationKey.Path" />.
     /// </summary>
     /// <param name="entry">The entry whose key should be transformed.</param>
     /// <param name="options">The key options, or <see langword="null" /> for the defaults.</param>
-    /// <returns>The colon-delimited configuration path.</returns>
+    /// <returns>The configuration path of the entry's key.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="entry" /> is <see langword="null" />.</exception>
     public static string ConfigurationPath(this IniEntry entry, ConfigurationKeyOptions? options = null)
     {

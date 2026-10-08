@@ -7,8 +7,8 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by
-/// <c>Microsoft.Extensions.Configuration</c>.
+/// Selects how raw configuration keys are mapped to the logical keys used by the resolved view: colon-delimited, as
+/// <c>Microsoft.Extensions.Configuration</c> expects, or, under <see cref="Identity" />, kept as written.
 /// </summary>
 /// <remarks>
 /// A future release may add a <c>MixedDotAndColon</c> mode that permits a single document to combine both separator
@@ -40,8 +40,10 @@ public enum ConfigurationKeyMapping
     Colon = 1,
 
     /// <summary>
-    /// File keys are emitted unchanged. The logical configuration key equals the raw key. Use this when integrating
-    /// with sources that use a custom segment convention.
+    /// File keys are not split into segments, so their dots and colons stay as written, and the logical configuration
+    /// key equals the raw key with the whitespace at its ends trimmed, lowercased when
+    /// <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set. Use this when integrating with sources that use a
+    /// custom segment convention; the <see cref="ConfigurationProfile.EditorConfigCompatible" /> presets use it.
     /// </summary>
     Identity = 2,
 }

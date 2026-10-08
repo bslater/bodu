@@ -479,7 +479,7 @@ public static class ConfigurationKnownAnswerData
         items.Add(ConfigurationKat.KeyPass("KEY-0004", "Underscore remains literal", "format.new_line.before_where_clause", "format:new_line:before_where_clause", ["format", "new_line", "before_where_clause"]));
         items.Add(ConfigurationKat.KeyPass("KEY-0005", "Hyphen remains literal", "tool.my-option.enabled", "tool:my-option:enabled", ["tool", "my-option", "enabled"]));
         items.Add(ConfigurationKat.KeyPass("KEY-0006", "Existing colon lookup normalizes to same logical key", "logging:level:default", "logging:level:default", ["logging", "level", "default"], mapping: "DotToColon"));
-        items.Add(ConfigurationKat.KeyPass("KEY-0007", "Identity mapping preserves dotted key", "logging.level.default", "logging.level.default", ["logging", "level", "default"], mapping: "Identity"));
+        items.Add(ConfigurationKat.KeyPass("KEY-0007", "Identity mapping preserves dotted key", "logging.level.default", "logging.level.default", ["logging.level.default"], mapping: "Identity"));
         items.Add(ConfigurationKat.KeyPass("KEY-0008", "Case-sensitive option preserves casing", "Logging.Level.Default", "Logging:Level:Default", ["Logging", "Level", "Default"], caseSensitive: true));
 
         items.Add(ConfigurationKat.KeyFail("KEY-1001", "Null key is rejected", null, "ArgumentNullException"));
@@ -542,7 +542,7 @@ public static class ConfigurationKnownAnswerData
 
         items.Add(ConfigurationKat.ResolvePass(
             id: "RES-0002",
-            title: "Preamble does not participate in EditorConfig-compatible resolution except root",
+            title: "Preamble does not participate in EditorConfig-compatible resolution, root included",
             profile: "EditorConfigCompatible",
             targetPath: "src/Program.cs",
             source:
@@ -555,11 +555,11 @@ public static class ConfigurationKnownAnswerData
                 """,
             expectedValues:
             [
-                ExpectedValue.Of("format:indent:size", "4"),
+                ExpectedValue.Of("format.indent.size", "4"),
             ],
             unexpectedKeys:
             [
-                "application:name",
+                "application.name",
             ]));
 
         items.Add(ConfigurationKat.ResolvePass(
@@ -626,7 +626,7 @@ public static class ConfigurationKnownAnswerData
             expectedValues: [],
             unexpectedKeys:
             [
-                "format:indent:size",
+                "format.indent.size",
             ],
             options: "UnsetRemovesEffectiveValue"));
 

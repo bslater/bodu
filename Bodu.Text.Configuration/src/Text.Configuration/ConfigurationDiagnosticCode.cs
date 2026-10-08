@@ -58,7 +58,9 @@ public enum ConfigurationDiagnosticCode
     InvalidKeyCharacter = 8,
 
     /// <summary>
-    /// An escape sequence in a value was malformed.
+    /// Reserved; not currently emitted. The reader decodes no escape sequence: a backslash only keeps the character
+    /// after it from being read as <c>=</c>, <c>#</c> or <c>;</c> and stays in the text, so no value can hold a
+    /// malformed one.
     /// </summary>
     InvalidEscape = 9,
 

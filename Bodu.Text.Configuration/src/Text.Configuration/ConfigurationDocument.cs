@@ -71,6 +71,26 @@ public sealed class ConfigurationDocument
     }
 
     /// <summary>
+    /// Gets the full path of the file this document was loaded from.
+    /// </summary>
+    /// <value>
+    /// The path each entry of a resolved view reports in its <see cref="ConfigurationResolvedEntry.SourceLocation" />,
+    /// or <see langword="null" /> when the document was parsed from text or loaded from a stream or a text reader.
+    /// </value>
+    internal string? LoadPath { get; private set; }
+
+    /// <summary>
+    /// Gets the full path of the directory that holds the file this document was loaded from.
+    /// </summary>
+    /// <value>
+    /// The directory that resolution rebases a target path against when
+    /// <see cref="ConfigurationResolveOptions.PathRoot" /> is not set, or <see langword="null" /> when the document was
+    /// parsed from text or loaded from a stream or a text reader.
+    /// </value>
+    internal string? LoadDirectory =>
+        LoadPath is null ? null : Path.GetDirectoryName(LoadPath);
+
+    /// <summary>
     /// Appends <paramref name="section" /> to the document. Exposed to the configuration reader so it can build the
     /// model without re-leaking a public INI mutation surface.
     /// </summary>
@@ -95,6 +115,11 @@ public sealed class ConfigurationDocument
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="ConfigurationParseException">The text could not be parsed.</exception>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationDocument Parse(string text) =>
         Parse(text, options: null);
 
@@ -106,13 +131,18 @@ public sealed class ConfigurationDocument
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="ConfigurationParseException">The text could not be parsed.</exception>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationDocument Parse(string text, ConfigurationParseOptions? options)
     {
         ThrowHelper.ThrowIfNull(text);
 
         using StringReader reader = new(text);
         return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu)
-            .Read(reader, path: null)
+            .Read(reader, path: null, ignoreLeadingByteOrderMark: true)
             .Document;
     }
 
@@ -128,12 +158,18 @@ public sealed class ConfigurationDocument
     /// The text could not be parsed and <see cref="ConfigurationParseOptions.DiagnosticMode" /> is
     /// <see cref="ConfigurationDiagnosticMode.Throw" />.
     /// </exception>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationParseResult ParseWithDiagnostics(string text, ConfigurationParseOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(text);
 
         using StringReader reader = new(text);
-        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu).Read(reader, path: null);
+        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu)
+            .Read(reader, path: null, ignoreLeadingByteOrderMark: true);
     }
 
     /// <summary>
@@ -142,6 +178,11 @@ public sealed class ConfigurationDocument
     /// <param name="text">The text to parse.</param>
     /// <param name="document">The parsed document on success; <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> on success; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static bool TryParse(string? text, out ConfigurationDocument? document) =>
         TryParse(text, options: null, out document);
 
@@ -152,6 +193,11 @@ public sealed class ConfigurationDocument
     /// <param name="options">The parse options, or <see langword="null" /> for the Bodu defaults.</param>
     /// <param name="document">The parsed document on success; <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> on success; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static bool TryParse(string? text, ConfigurationParseOptions? options, out ConfigurationDocument? document)
     {
         if (text is null)
@@ -180,6 +226,13 @@ public sealed class ConfigurationDocument
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
+    /// <remarks>
+    /// The document records the full path of the file. When <see cref="ConfigurationResolveOptions.PathRoot" /> is not
+    /// set, resolving the document rebases the target path against the directory that holds the file, so a section's
+    /// glob is relative to the file, as EditorConfig defines it; a <see cref="ConfigurationResolveOptions.PathRoot" />
+    /// that is set takes precedence. Each entry of a resolved view reports the full path of the file in its
+    /// <see cref="ConfigurationResolvedEntry.SourceLocation" />.
+    /// </remarks>
     public static ConfigurationDocument Load(string path) =>
         Load(path, options: null);
 
@@ -191,6 +244,13 @@ public sealed class ConfigurationDocument
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
+    /// <remarks>
+    /// The document records the full path of the file. When <see cref="ConfigurationResolveOptions.PathRoot" /> is not
+    /// set, resolving the document rebases the target path against the directory that holds the file, so a section's
+    /// glob is relative to the file, as EditorConfig defines it; a <see cref="ConfigurationResolveOptions.PathRoot" />
+    /// that is set takes precedence. Each entry of a resolved view reports the full path of the file in its
+    /// <see cref="ConfigurationResolvedEntry.SourceLocation" />.
+    /// </remarks>
     public static ConfigurationDocument Load(string path, ConfigurationParseOptions? options)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
@@ -198,7 +258,13 @@ public sealed class ConfigurationDocument
         ConfigurationParseOptions effective = options ?? ConfigurationParseOptions.Bodu;
         using FileStream stream = File.OpenRead(path);
         using StreamReader reader = new(stream, effective.DefaultEncoding, detectEncodingFromByteOrderMarks: true);
-        return new ConfigurationReader(effective).Read(reader, path).Document;
+        ConfigurationDocument document = new ConfigurationReader(effective).Read(reader, path, ignoreLeadingByteOrderMark: false).Document;
+
+        // EditorConfig globs are relative to the directory of the file that holds them, so that directory is the
+        // root a resolve falls back to when the caller supplies none, and the file is where each resolved entry says
+        // it came from.
+        document.LoadPath = Path.GetFullPath(path);
+        return document;
     }
 
     /// <summary>
@@ -227,7 +293,7 @@ public sealed class ConfigurationDocument
         Encoding effectiveEncoding = encoding ?? effective.DefaultEncoding;
 
         using StreamReader reader = new(stream, effectiveEncoding, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: leaveOpen);
-        return new ConfigurationReader(effective).Read(reader, path: null).Document;
+        return new ConfigurationReader(effective).Read(reader, path: null, ignoreLeadingByteOrderMark: false).Document;
     }
 
     /// <summary>
@@ -237,10 +303,17 @@ public sealed class ConfigurationDocument
     /// <param name="options">The parse options, or <see langword="null" /> for the defaults.</param>
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="reader" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// A single U+FEFF that opens the text <paramref name="reader" /> delivers is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationDocument Load(TextReader reader, ConfigurationParseOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(reader);
-        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu).Read(reader, path: null).Document;
+        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu)
+            .Read(reader, path: null, ignoreLeadingByteOrderMark: true)
+            .Document;
     }
 
     /// <summary>

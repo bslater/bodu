@@ -19,10 +19,13 @@ namespace Bodu.Text.Configuration;
 /// is used for path matching, and how the EditorConfig <c>unset</c> sentinel is handled.
 /// </para>
 /// <para>
-/// <see cref="PathRoot" /> deserves attention when the document was parsed from a string rather than loaded from a
-/// file. With no path on the document and <see cref="PathRoot" /> left <see langword="null" />, the resolver consults
-/// <see cref="MissingPathRootMode" /> to decide whether to use the empty root, throw, or fall back to the target path's
-/// parent - that choice changes which sections match.
+/// <see cref="PathRoot" /> rebases the target path before matching: a target under the root is matched relative to it,
+/// and any other target is matched as given. When <see cref="PathRoot" /> is not set, a document loaded with
+/// <see cref="ConfigurationDocument.Load(string, ConfigurationParseOptions?)" /> is rooted at the directory of its
+/// file, so a section's glob is relative to that file, as EditorConfig defines it; an explicit <see cref="PathRoot" />
+/// takes precedence. <see cref="MissingPathRootMode" /> applies only when <c>Resolve</c> receives no target path and no
+/// root is known: <see cref="ConfigurationMissingPathRootMode.UseEmptyRoot" /> returns the preamble-only view, and
+/// <see cref="ConfigurationMissingPathRootMode.Throw" /> raises <see cref="InvalidOperationException" />.
 /// </para>
 /// <para>
 /// <see cref="KeyOptions" /> should normally be the same instance passed to
@@ -56,14 +59,17 @@ public sealed partial class ConfigurationResolveOptions
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>
-    /// Gets the optional path root used to evaluate anchored glob patterns. When <see langword="null" /> the document's
-    /// load path is used; if neither is available, <see cref="MissingPathRootMode" /> controls behaviour.
+    /// Gets the optional path root that a target path is rebased against before glob patterns are matched. When
+    /// <see langword="null" />, a document loaded from a file is rooted at that file's directory; when neither is
+    /// available, a target path is matched as given, and <see cref="MissingPathRootMode" /> governs a resolve with no
+    /// target path.
     /// </summary>
     /// <value>The path root, or <see langword="null" />.</value>
     public string? PathRoot { get; init; }
 
     /// <summary>
-    /// Gets how the resolver reacts to an absent <see cref="PathRoot" /> when the document was parsed from a string.
+    /// Gets how a resolve with no target path behaves when no root is known: <see cref="PathRoot" /> is not set and the
+    /// document was not loaded from a file.
     /// </summary>
     /// <value>The selected mode.</value>
     public ConfigurationMissingPathRootMode MissingPathRootMode { get; init; } =
@@ -71,7 +77,9 @@ public sealed partial class ConfigurationResolveOptions
 
     /// <summary>
     /// Gets a value indicating whether preamble (global) properties contribute to resolution. Defaults to
-    /// <see langword="true" /> for the Bodu profile and <see langword="false" /> for EditorConfig-compatible.
+    /// <see langword="true" /> for the Bodu profile and <see langword="false" /> for EditorConfig-compatible. The
+    /// preamble's <c>root</c> pair never contributes: it marks the file as the root of its directory tree, and the
+    /// document keeps it in its global section for the caller that collects files up the tree.
     /// </summary>
     /// <value><see langword="true" /> when preamble properties are honoured.</value>
     public bool ApplyPreambleProperties { get; init; } = true;

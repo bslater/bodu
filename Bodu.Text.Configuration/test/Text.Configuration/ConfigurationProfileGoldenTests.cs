@@ -54,10 +54,10 @@ format.indent.size = unset
         ConfigurationView view = doc.Resolve("generated/Foo.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 
         // EditorConfigCompatible disables preamble layering for resolution.
-        Assert.IsNull(view["service:name"]);
+        Assert.IsNull(view["service.name"]);
 
         // EditorConfigCompatible treats unset as RemoveEffectiveValue - the indent setting is removed.
-        Assert.IsNull(view["format:indent:size"]);
+        Assert.IsNull(view["format.indent.size"]);
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ key = value
         ConfigurationView editorConfigView = editorConfig.Resolve("README.md", ConfigurationResolveOptions.EditorConfigCompatible);
 
         Assert.AreEqual("Bodu", boduView.GetString("service:name"));
-        Assert.IsNull(editorConfigView["service:name"]);
+        Assert.IsNull(editorConfigView["service.name"]);
     }
 
     /// <summary>

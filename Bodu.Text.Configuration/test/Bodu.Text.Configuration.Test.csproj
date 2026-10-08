@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Fixtures\ReleaseNotes\*-fixes.csv" />
+  </ItemGroup>
+
 </Project>

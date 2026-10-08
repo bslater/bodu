@@ -60,6 +60,35 @@ public partial class ConfigurationKeyTests
     }
 
     /// <summary>
+    /// Verifies that under <see cref="ConfigurationKeyMapping.Identity" /> a key with a dot and the same key with a
+    /// colon in its place compare unequal, since the mapping keeps each key as written.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenMappingIsIdentityAndKeysDifferInSeparator_ShouldReturnFalse()
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity };
+
+        var dotted = new ConfigurationKey("a.b", options);
+        var colon = new ConfigurationKey("a:b", options);
+
+        Assert.IsFalse(dotted.Equals(colon));
+    }
+
+    /// <summary>
+    /// Verifies that two keys that differ only in the whitespace around their separators compare equal and hash alike,
+    /// since each segment is trimmed.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenKeysDifferOnlyInWhitespaceAroundSeparators_ShouldReturnTrue()
+    {
+        var spaced = new ConfigurationKey("a . b");
+        var compact = new ConfigurationKey("a.b");
+
+        Assert.IsTrue(spaced.Equals(compact));
+        Assert.AreEqual(compact.GetHashCode(), spaced.GetHashCode());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="ConfigurationKey.ToString" /> returns the canonical key path.
     /// </summary>
     [TestMethod]

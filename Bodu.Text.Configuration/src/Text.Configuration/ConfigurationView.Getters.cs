@@ -16,7 +16,7 @@ public sealed partial class ConfigurationView
     /// <see cref="CultureInfo.InvariantCulture" />. Mirrors <c>IniSection.GetValue&lt;T&gt;(key)</c>.
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
-    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <returns>The parsed value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">The key is absent from the resolved view.</exception>
@@ -49,7 +49,7 @@ public sealed partial class ConfigurationView
     /// <see langword="false" /> on missing or malformed values. Never throws on a parse failure.
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
-    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <param name="value">When this method returns <see langword="true" />, contains the parsed value.</param>
     /// <returns>
     /// <see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.
@@ -72,7 +72,7 @@ public sealed partial class ConfigurationView
     /// <paramref name="fallback" /> when the key is absent. Present-but-malformed values still throw.
     /// </summary>
     /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
-    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <param name="fallback">The value to return when the key is absent.</param>
     /// <returns>The parsed value, or <paramref name="fallback" /> when the key is absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
@@ -93,7 +93,7 @@ public sealed partial class ConfigurationView
     /// <summary>
     /// Gets the raw string value for <paramref name="key" />, throwing if the key is missing.
     /// </summary>
-    /// <param name="key">The configuration key in colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <returns>The value as authored.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">The key is absent from the resolved view.</exception>
@@ -111,7 +111,7 @@ public sealed partial class ConfigurationView
     /// <summary>
     /// Gets the string value for <paramref name="key" />, returning <paramref name="fallback" /> when absent.
     /// </summary>
-    /// <param name="key">The configuration key in colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <param name="fallback">The value to return when the key is absent.</param>
     /// <returns>The resolved value or <paramref name="fallback" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>

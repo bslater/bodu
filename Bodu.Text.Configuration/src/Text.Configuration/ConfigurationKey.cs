@@ -10,21 +10,29 @@ using System.Diagnostics;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the
-/// resolved view and by <c>Microsoft.Extensions.Configuration</c>.
+/// Represents a configuration key in both its raw, file-level form and the logical form used by the resolved view,
+/// which is colon-delimited, as <c>Microsoft.Extensions.Configuration</c> expects, under every mapping but
+/// <see cref="ConfigurationKeyMapping.Identity" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The struct stores the input <see cref="RawKey" /> verbatim. <see cref="Path" /> is the canonical colon-joined form
-/// derived from <see cref="Segments" />, applying the mapping policy from <see cref="ConfigurationKeyOptions" />.
+/// The struct stores the input <see cref="RawKey" /> verbatim. <see cref="Path" /> is derived from
+/// <see cref="Segments" /> by the mapping policy from <see cref="ConfigurationKeyOptions" />: it is the segments joined
+/// with a colon, or, under <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, the key as
+/// written, its ends trimmed. When <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set, the segments, and so
+/// the path, are lowercased with the invariant culture while the raw key keeps the case it was written in.
 /// </para>
 /// <para>
 /// Equality compares the segment sequence under the configured comparer; the raw form is informational only.
 /// </para>
 /// <para>
-/// Both dotted (<c>logging.level.default</c>) and colon-delimited (<c>logging:level:default</c>) source forms produce
-/// the same canonical <see cref="Path" />, so consumers can mix the two notations in a document without disturbing the
-/// resolved view. Whitespace in segments is trimmed; control characters are rejected at construction time.
+/// Under every mapping but <see cref="ConfigurationKeyMapping.Identity" />, both dotted (<c>logging.level.default</c>)
+/// and colon-delimited (<c>logging:level:default</c>) source forms produce the same canonical <see cref="Path" />, so
+/// consumers can mix the two notations in a document without disturbing the resolved view; under
+/// <see cref="ConfigurationKeyMapping.Identity" /> they are two keys. Whitespace around each segment is trimmed, so
+/// <c>a . b</c> and <c>a.b</c> are the same key, and a segment of whitespace alone counts as empty; under
+/// <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, only the ends of the key are trimmed.
+/// Control characters are rejected at construction time.
 /// </para>
 /// </remarks>
 /// <example>
@@ -65,8 +73,9 @@ public readonly partial struct ConfigurationKey
     /// <param name="rawKey">The raw key as authored in the configuration source.</param>
     /// <param name="options">The key options to apply, or <see langword="null" /> for the defaults.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace; or a segment was
-    /// empty when empty segments are not permitted.
+    /// <paramref name="rawKey" /> is <see langword="null" />, empty, or contains only whitespace; or, under a mapping
+    /// other than <see cref="ConfigurationKeyMapping.Identity" />, a segment was empty or whitespace alone when empty
+    /// segments are not permitted.
     /// </exception>
     public ConfigurationKey(string rawKey, ConfigurationKeyOptions? options = null)
     {
@@ -107,9 +116,10 @@ public readonly partial struct ConfigurationKey
     public bool CaseSensitive { get; }
 
     /// <summary>
-    /// Gets the canonical colon-delimited logical key path derived from <see cref="Segments" />.
+    /// Gets the logical key path derived from <see cref="Segments" />: the segments joined with a colon, or, under
+    /// <see cref="ConfigurationKeyMapping.Identity" />, the key as written, its ends trimmed.
     /// </summary>
-    /// <value>The configuration key in colon-delimited form, or the empty string for a default instance.</value>
+    /// <value>The configuration key path, or the empty string for a default instance.</value>
     public string Path => _path ?? string.Empty;
 
     /// <summary>
@@ -119,7 +129,9 @@ public readonly partial struct ConfigurationKey
     public string RawKey => _rawKey ?? string.Empty;
 
     /// <summary>
-    /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators.
+    /// Gets the segments produced by splitting <see cref="RawKey" /> on the configured separators, each trimmed of the
+    /// whitespace around it; under <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, the
+    /// whole key, its ends trimmed, is the one segment.
     /// </summary>
     /// <value>An immutable array of segment strings.</value>
     public ImmutableArray<string> Segments => _segments.IsDefault ? [] : _segments;
@@ -198,11 +210,12 @@ public readonly partial struct ConfigurationKey
     public override string ToString() => Path;
 
     /// <summary>
-    /// Appends <paramref name="segment" /> to <paramref name="builder" />, enforcing the empty-segment policy.
+    /// Appends <paramref name="segment" /> to <paramref name="builder" />, enforcing the empty-segment policy and
+    /// lowercasing the segment when <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set.
     /// </summary>
     /// <param name="builder">The builder accumulating the key segments.</param>
     /// <param name="segment">The candidate segment span.</param>
-    /// <param name="options">The key options that determine whether empty segments are permitted.</param>
+    /// <param name="options">The key options governing empty segments and lowercasing.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="segment" /> is empty and <see cref="ConfigurationKeyOptions.AllowEmptySegments" /> is
     /// <see langword="false" />.
@@ -217,31 +230,29 @@ public readonly partial struct ConfigurationKey
             return;
         }
 
-        builder.Add(segment.ToString());
+        builder.Add(ApplyCase(segment.ToString(), options));
     }
 
     /// <summary>
-    /// Joins <paramref name="segments" /> into a canonical key path according to the configured mapping.
+    /// Returns <paramref name="text" /> lowercased with the casing rules of the invariant culture when
+    /// <see cref="ConfigurationKeyOptions.LowercaseKeys" /> is set, and unchanged otherwise.
     /// </summary>
-    /// <param name="segments">The key segments to join.</param>
-    /// <param name="options">The key options supplying the mapping policy.</param>
-    /// <returns>The canonical configuration key path.</returns>
-    private static string ComposePath(ImmutableArray<string> segments, ConfigurationKeyOptions options) =>
-        options.Mapping switch
-        {
-            ConfigurationKeyMapping.Identity => string.Join(GetFirstSeparator(options), segments),
-            ConfigurationKeyMapping.Colon => string.Join(':', segments),
-            ConfigurationKeyMapping.DotToColon => string.Join(':', segments),
-            _ => string.Join(':', segments),
-        };
+    /// <param name="text">The key or segment text.</param>
+    /// <param name="options">The key options deciding whether keys are lowercased.</param>
+    /// <returns>The text in the case the key options ask for.</returns>
+    private static string ApplyCase(string text, ConfigurationKeyOptions options) =>
+        options.LowercaseKeys ? text.ToLowerInvariant() : text;
 
     /// <summary>
-    /// Gets the first configured segment separator, falling back to <c>'.'</c> when none are configured.
+    /// Composes the key path from <paramref name="segments" /> according to the configured mapping: the one segment of
+    /// an <see cref="ConfigurationKeyMapping.Identity" /> key, which is the key as written, and otherwise the segments
+    /// joined with a colon.
     /// </summary>
-    /// <param name="options">The key options supplying the separator set.</param>
-    /// <returns>The first separator character, or <c>'.'</c> when the set is empty.</returns>
-    private static char GetFirstSeparator(ConfigurationKeyOptions options) =>
-        options.SegmentSeparators.Count > 0 ? options.SegmentSeparators[0] : '.';
+    /// <param name="segments">The key segments to compose.</param>
+    /// <param name="options">The key options supplying the mapping policy.</param>
+    /// <returns>The configuration key path.</returns>
+    private static string ComposePath(ImmutableArray<string> segments, ConfigurationKeyOptions options) =>
+        options.Mapping == ConfigurationKeyMapping.Identity ? segments[0] : string.Join(':', segments);
 
     /// <summary>
     /// Determines whether <paramref name="c" /> is one of the configured segment separators.
@@ -270,14 +281,24 @@ public readonly partial struct ConfigurationKey
 
     /// <summary>
     /// Splits <paramref name="rawKey" /> into segments on the separator characters configured by
-    /// <paramref name="options" />.
+    /// <paramref name="options" />, trimming the whitespace around each, except under
+    /// <see cref="ConfigurationKeyMapping.Identity" />, which keeps the whole key, its ends trimmed, as its one
+    /// segment.
     /// </summary>
     /// <param name="rawKey">The raw key to split.</param>
-    /// <param name="options">The key options supplying the recognised separators.</param>
+    /// <param name="options">The key options supplying the mapping and the recognised separators.</param>
     /// <returns>The ordered segments produced by the split.</returns>
-    /// <exception cref="ArgumentException">A segment was empty and empty segments are not permitted.</exception>
+    /// <exception cref="ArgumentException">
+    /// A segment was empty or whitespace alone and empty segments are not permitted.
+    /// </exception>
     private static ImmutableArray<string> SplitSegments(string rawKey, ConfigurationKeyOptions options)
     {
+        // Identity keeps a key as written, apart from the whitespace at its ends, which the reader trims from a key
+        // too, and the case folding the options ask for; a separator in it is ordinary text and cannot leave an empty
+        // segment. The caller has rejected a key of whitespace alone, so the trimmed key is never empty.
+        if (options.Mapping == ConfigurationKeyMapping.Identity)
+            return [ApplyCase(rawKey.Trim(), options)];
+
         IReadOnlyList<char> separators = options.SegmentSeparators;
         ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>();
 
@@ -287,12 +308,12 @@ public readonly partial struct ConfigurationKey
             char c = rawKey[i];
             if (IsSeparator(c, separators))
             {
-                AddSegment(builder, rawKey.AsSpan(start, i - start), options);
+                AddSegment(builder, rawKey.AsSpan(start, i - start).Trim(), options);
                 start = i + 1;
             }
         }
 
-        AddSegment(builder, rawKey.AsSpan(start, rawKey.Length - start), options);
+        AddSegment(builder, rawKey.AsSpan(start, rawKey.Length - start).Trim(), options);
 
         return builder.ToImmutable();
     }

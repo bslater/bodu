@@ -26,6 +26,8 @@ ConfigurationDocument document = ConfigurationDocument.Parse(source);
 
 `Parse(string)` returns a `ConfigurationDocument` - a first-class type that inherits the library's own read-only `IniDocumentBase` document model. Use the document directly when you only need read access to sections and entries; use [`Resolve`](views-and-resolution.md) when you want path projection and typed lookup.
 
+`Parse` ignores a single U+FEFF at the very start of the text - the byte order mark a decoder such as `Encoding.UTF8.GetString` leaves in place, which `Load` skips when it reads the same bytes - under every profile. A U+FEFF anywhere else is content.
+
 The default profile is `Bodu` - inline comments only after whitespace, lenient section headers, last-wins on duplicates, throw on the first error. Override the profile per call via `ConfigurationParseOptions`:
 
 ```csharp
@@ -44,7 +46,7 @@ ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen:
 ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 ```
 
-`Load(string)` reads UTF-8 by default - pass an `Encoding` explicitly when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime.
+`Load(string)` reads UTF-8 by default - pass an `Encoding` explicitly when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime; like `Parse`, it ignores one U+FEFF that opens the reader's text.
 
 ## Pattern 3 - non-throwing parse
 
@@ -100,7 +102,7 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 | Profile | When to use |
 |---|---|
 | `Bodu` *(default)* | Bodu's own convention - EditorConfig-like with safer defaults. Use for application configuration authored by your team. |
-| `EditorConfigCompatible` | Strict EditorConfig 0.17.2 parity. Use when you are reading `.editorconfig` files that must round-trip through other tooling. |
+| `EditorConfigCompatible` | EditorConfig 0.17.2 alignment, with the differences noted below. Use when you are reading `.editorconfig` files that must round-trip through other tooling. |
 | `Strict` | Generated-file semantics - duplicates rejected, errors thrown. Use for machine-emitted files where ambiguity is a defect. |
 | `Relaxed` | User-authored file semantics - collect diagnostics, last-wins on duplicates. Use for end-user-facing configuration where forgiving parsing matters. |
 
@@ -113,6 +115,8 @@ The full per-profile table:
 | `DuplicateSectionMode` | `Preserve` | `Preserve` | `Disallowed` | `Preserve` |
 | `SectionHeaderMode` | `Lenient` | `Strict` | `Strict` | `Lenient` |
 | `DiagnosticMode` | `Throw` | `Throw` | `Throw` | `Collect` |
+| `KeyOptions.Mapping` | `DotToColon` | `Identity` | `DotToColon` | `DotToColon` |
+| `KeyOptions.LowercaseKeys` | `false` | `true` | `false` | `false` |
 
 > [!NOTE]
 > The same four profiles also drive *resolve* defaults through <xref:Bodu.Text.Configuration.ConfigurationResolveOptions> - `ApplyPreambleProperties`, `MissingPathRootMode`, and `UnsetValueMode`. Selecting a profile at parse time does not automatically apply its resolve defaults; pass the matching `ConfigurationResolveOptions` (or its `For(profile)` result) to `Resolve` so both halves of the pipeline agree. See [Views and resolution](views-and-resolution.md#pattern-5---resolve-options).
@@ -201,7 +205,7 @@ Console.WriteLine(document.Sections[0].Name);            // "*.cs"
 Console.WriteLine(document.Sections[1]["indent_size"]);  // "2"
 ```
 
-The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, and otherwise behaves identically to the EditorConfig 0.17.2 specification.
+The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, keeps keys as written, dots and colons included, and lowercases them, and leaves the preamble out of the view. Beyond that it follows the EditorConfig 0.17.2 specification, with the glob differences [Views and resolution](views-and-resolution.md) documents, and it interprets no property: a value such as `indent_style = Tab` is reported as written, not lowercased.
 
 To go from the parsed `ConfigurationDocument` to a resolved typed view - including the EditorConfig glob behaviour where `[*.cs]` matches every `.cs` file - see [Views and resolution](views-and-resolution.md).
 

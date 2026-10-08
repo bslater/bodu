@@ -22,7 +22,7 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// <para>
 /// <see cref="Path" /> is set only when the configuration document was loaded from a file. Documents parsed from
-/// strings expose <see langword="null" /> here.
+/// strings or loaded from a stream or a text reader expose <see langword="null" /> here.
 /// </para>
 /// <para>
 /// <see cref="None" /> is the canonical "unknown" location and compares equal to a default-constructed instance. The
@@ -99,7 +99,7 @@ public readonly struct ConfigurationSourceLocation
 
     /// <summary>
     /// Gets the source file path that produced this location, or <see langword="null" /> when the document was parsed
-    /// from an in-memory string.
+    /// from text or loaded from a stream or a text reader.
     /// </summary>
     /// <value>The optional source path.</value>
     public string? Path { get; }

@@ -88,7 +88,6 @@ Stable codes - the values do not change across versions, so consumers can build 
 | Code | Trigger |
 |---|---|
 | `InvalidKeyCharacter` *(8)* | A key contained an illegal character (depends on `KeyOptions`). |
-| `InvalidEscape` *(9)* | A malformed escape sequence (e.g. `\x` followed by non-hex) appeared in a value. |
 | `KeyTooLong` *(11)* | The key exceeded `MaxKeyLength` (default 1024 chars). |
 | `LineTooLong` *(10)* | The line exceeded `MaxLineLength` (default 8192 chars). |
 
@@ -104,6 +103,11 @@ These fire when a section header is compiled as a `ConfigurationPattern`:
 | `BraceNestingTooDeep` *(15)* | Brace nesting exceeded the parser's nesting cap. |
 | `PatternTooLong` *(16)* | The compiled glob pattern exceeded the max compilable length. |
 
+### Reserved code
+
+`InvalidEscape` *(9)* - reserved and not raised. The reader decodes no escape sequence: a backslash only keeps the
+character after it from being read as `=`, `#` or `;`, and stays in the text, so no value can hold a malformed one.
+
 ### Default code
 
 `None` *(0)* - no specific code. Reserved for diagnostics produced from custom validators that do not have a catalogue entry; not used by the shipped parser.
@@ -114,7 +118,7 @@ The parser raises three kinds of exception:
 
 1. **`ConfigurationParseException`** (a `FormatException`) - raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Exposes the primary `Diagnostic` and the full `Diagnostics` array of everything gathered before the failure; `Location` forwards to the primary diagnostic.
 2. **`ArgumentException` / `ArgumentNullException`** - for invalid inputs (null source, unreadable stream). Standard BCL contract.
-3. **`InvalidOperationException`** - raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`), the document carries none, and no target path is supplied.
+3. **`InvalidOperationException`** - raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`) but set no `PathRoot`, the document was not loaded from a file, and no target path is supplied.
 
 Diagnostics under `Collect` and `Ignore` modes never throw - the parser carries on, populates the result document on a best-effort basis, and emits the diagnostic list for the caller to inspect.
 

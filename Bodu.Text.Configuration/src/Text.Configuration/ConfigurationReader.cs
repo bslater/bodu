@@ -20,6 +20,9 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 internal sealed partial class ConfigurationReader
 {
+    /// <summary>The character a byte order mark decodes to, U+FEFF ZERO WIDTH NO-BREAK SPACE.</summary>
+    private const char ByteOrderMark = '\uFEFF';
+
     /// <summary>The parse options that govern comment, duplicate, and diagnostic handling.</summary>
     private readonly ConfigurationParseOptions _options;
 
@@ -43,11 +46,15 @@ internal sealed partial class ConfigurationReader
     /// </summary>
     /// <param name="reader">The source of configuration text.</param>
     /// <param name="path">The optional file path used when emitting source locations.</param>
+    /// <param name="ignoreLeadingByteOrderMark">
+    /// <see langword="true" /> to ignore one U+FEFF at the start of the text, a byte order mark no decoder has removed;
+    /// <see langword="false" /> when the reader's decoder has already consumed the mark.
+    /// </param>
     /// <returns>
     /// A <see cref="ConfigurationParseResult" /> carrying the populated <see cref="ConfigurationDocument" /> and any
     /// diagnostics collected.
     /// </returns>
-    internal ConfigurationParseResult Read(TextReader reader, string? path)
+    internal ConfigurationParseResult Read(TextReader reader, string? path, bool ignoreLeadingByteOrderMark)
     {
         ThrowHelper.ThrowIfNull(reader);
 
@@ -60,6 +67,11 @@ internal sealed partial class ConfigurationReader
         while ((line = reader.ReadLine()) is not null)
         {
             lineNumber++;
+
+            // A single U+FEFF opening the text is a byte order mark, not content; one anywhere else is kept.
+            if (lineNumber == 1 && ignoreLeadingByteOrderMark && line.StartsWith(ByteOrderMark))
+                line = line[1..];
+
             currentSection = ProcessLine(document, currentSection, line, lineNumber, path);
         }
 

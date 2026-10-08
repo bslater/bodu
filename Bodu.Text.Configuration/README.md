@@ -8,8 +8,8 @@ that consumers can compose independently.
 The library separates three concerns:
 
 ```
-source text ──► ConfigurationDocument.Parse  ──► IniDocument
-IniDocument ──► .Resolve(targetPath)         ──► ConfigurationView
+source text ──► ConfigurationDocument.Parse  ──► ConfigurationDocument
+ConfigurationDocument ──► .Resolve(targetPath) ──► ConfigurationView
 ConfigurationView ──► .GetXxx(key)           ──► typed value
 ```
 

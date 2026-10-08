@@ -25,16 +25,22 @@ namespace Bodu.Text.Configuration;
 /// entirely.
 /// </para>
 /// <para>
-/// Lookups accept either the canonical colon-delimited form (<c>logging:level:default</c>) or the dotted form (
-/// <c>logging.level.default</c>); both resolve to the same value because dotted keys are normalized to colon-delimited
-/// form before consulting the backing dictionary. Enumeration yields keys in their canonical colon-delimited form.
+/// A lookup key is canonicalized with the view's key options before the backing dictionary is consulted, so under the
+/// default <see cref="ConfigurationKeyMapping.DotToColon" /> mapping the colon-delimited form (
+/// <c>logging:level:default</c>) and the dotted form (<c>logging.level.default</c>) resolve to the same value.
+/// <see cref="ConfigurationKeyMapping.Identity" />, the mapping of the
+/// <see cref="ConfigurationProfile.EditorConfigCompatible" /> profile, keeps every key as written, so a dotted key and
+/// a colon-delimited one are two keys there, each found under the name it was written with; that profile also
+/// lowercases keys (<see cref="ConfigurationKeyOptions.LowercaseKeys" />). Enumeration yields keys in the form the key
+/// mapping gives them: colon-delimited under the default mapping, and as written under
+/// <see cref="ConfigurationKeyMapping.Identity" />.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// IniDocument           doc  = ConfigurationDocument.Parse(text);
-/// ConfigurationView view = doc.Resolve("src/Foo.cs");
+/// ConfigurationDocument doc  = ConfigurationDocument.Parse(text);
+/// ConfigurationView     view = doc.Resolve("src/Foo.cs");
 ///
 /// // Indexer lookup - colon and dotted forms are equivalent.
 /// string? level = view["logging:level:default"];
@@ -82,8 +88,9 @@ public sealed partial class ConfigurationView
     /// resolved view.
     /// </summary>
     /// <param name="key">
-    /// The configuration key, in colon-delimited form (e.g. <c>logging:level:default</c>) or the dotted form (
-    /// <c>logging.level.default</c>). Both produce the same lookup.
+    /// The configuration key, in any accepted separator notation: under the default mapping the colon-delimited form
+    /// (e.g. <c>logging:level:default</c>) and the dotted form (<c>logging.level.default</c>) produce the same lookup,
+    /// and under <see cref="ConfigurationKeyMapping.Identity" /> a key is looked up as written.
     /// </param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
     /// <remarks>
@@ -106,7 +113,8 @@ public sealed partial class ConfigurationView
     /// <summary>
     /// Looks up a value by its stored key or by an equivalent key in any accepted notation. The lookup key is
     /// canonicalized through <see cref="ConfigurationKey" /> using the same options that produced the stored keys, so
-    /// dotted, colon-delimited, and mixed forms all resolve to the same value under every key mapping.
+    /// dotted, colon-delimited, and mixed forms all resolve to the same value under every key mapping but
+    /// <see cref="ConfigurationKeyMapping.Identity" />, which keeps a lookup key as written.
     /// </summary>
     /// <param name="key">The lookup key in any accepted separator notation.</param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
@@ -121,9 +129,9 @@ public sealed partial class ConfigurationView
     }
 
     /// <summary>
-    /// Canonicalizes <paramref name="key" /> to the colon-or-mapping-joined form used for the stored keys, using this
-    /// view's <see cref="ConfigurationKeyOptions" />. Returns <see langword="false" /> without throwing when the key
-    /// cannot be parsed, so an absent or malformed lookup key resolves to "not found" rather than an exception.
+    /// Canonicalizes <paramref name="key" /> to the form the key mapping gives the stored keys, using this view's
+    /// <see cref="ConfigurationKeyOptions" />. Returns <see langword="false" /> without throwing when the key cannot be
+    /// parsed, so an absent or malformed lookup key resolves to "not found" rather than an exception.
     /// </summary>
     /// <param name="key">The raw lookup key.</param>
     /// <param name="canonical">When this method returns <see langword="true" />, the canonical key path.</param>
@@ -178,7 +186,7 @@ public sealed partial class ConfigurationView
     /// Gets the origin metadata for <paramref name="key" />, or <see langword="null" /> when the key is absent from the
     /// resolved view.
     /// </summary>
-    /// <param name="key">The configuration key in either dotted or colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <returns>The resolved entry, or <see langword="null" /> when absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public ConfigurationResolvedEntry? GetEntry(string key)
@@ -218,10 +226,10 @@ public sealed partial class ConfigurationView
         Values.Values;
 
     /// <summary>
-    /// Attempts to get the value for <paramref name="key" /> without throwing, accepting either the colon-delimited or
-    /// the equivalent dotted form. Satisfies <see cref="IReadOnlyDictionary{TKey, TValue}.TryGetValue" />.
+    /// Attempts to get the value for <paramref name="key" /> without throwing, taking the key in any accepted separator
+    /// notation. Satisfies <see cref="IReadOnlyDictionary{TKey, TValue}.TryGetValue" />.
     /// </summary>
-    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="key">The configuration key, in any accepted separator notation.</param>
     /// <param name="value">When this method returns <see langword="true" />, contains the resolved value.</param>
     /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>

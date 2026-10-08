@@ -144,13 +144,18 @@ public sealed partial class ConfigurationPattern
     }
 
     /// <summary>
-    /// Translates the bracket character class beginning at <paramref name="start" /> into a regex set.
+    /// Translates the bracket character class beginning at <paramref name="start" /> into a regex set, or into the
+    /// literal text of the bracket expression when it holds an unescaped <c>/</c>.
     /// </summary>
     /// <param name="pattern">The glob expression being translated.</param>
     /// <param name="start">The index of the opening <c>[</c>.</param>
     /// <param name="sb">The buffer that receives the translated regex.</param>
     /// <returns>The index immediately following the closing <c>]</c>.</returns>
     /// <exception cref="ConfigurationParseException">The bracket is unbalanced.</exception>
+    /// <remarks>
+    /// A single-character class can never match a path separator, so EditorConfig reads a bracket expression that holds
+    /// a <c>/</c> as the literal text it is written as, brackets included; its <c>/</c> still anchors the pattern.
+    /// </remarks>
     private static int TranslateCharClass(string pattern, int start, StringBuilder sb)
     {
         int close = FindClosingBracket(pattern, start);
@@ -164,6 +169,14 @@ public sealed partial class ConfigurationPattern
         }
 
         string body = pattern.Substring(start + 1, close - start - 1);
+        if (ContainsUnescapedSlash(body))
+        {
+            sb.Append(@"\[");
+            AppendLiteral(body, sb);
+            sb.Append(@"\]");
+            return close + 1;
+        }
+
         sb.Append('[');
         int j = 0;
         if (body.Length > 0 && body[0] == '!')
@@ -195,6 +208,47 @@ public sealed partial class ConfigurationPattern
     }
 
     /// <summary>
+    /// Determines whether a bracket expression's body holds a <c>/</c> that no backslash escapes.
+    /// </summary>
+    /// <param name="body">The bracket expression's body, excluding the surrounding brackets.</param>
+    /// <returns>
+    /// <see langword="true" /> when the body holds an unescaped <c>/</c>; otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool ContainsUnescapedSlash(string body)
+    {
+        for (int i = 0; i < body.Length; i++)
+        {
+            if (body[i] == '\\' && i + 1 < body.Length)
+            {
+                i++;
+                continue;
+            }
+
+            if (body[i] == '/')
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Appends <paramref name="text" /> to <paramref name="sb" /> as regex text that matches it literally, a backslash
+    /// escaping the character after it as it does everywhere in a glob.
+    /// </summary>
+    /// <param name="text">The glob text to match literally.</param>
+    /// <param name="sb">The buffer that receives the translated regex.</param>
+    private static void AppendLiteral(string text, StringBuilder sb)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (text[i] == '\\' && i + 1 < text.Length)
+                i++;
+
+            sb.Append(Regex.Escape(text[i].ToString()));
+        }
+    }
+
+    /// <summary>
     /// Finds the index of the <c>]</c> that closes the character class opened at <paramref name="start" />.
     /// </summary>
     /// <param name="pattern">The glob expression to scan.</param>
@@ -219,7 +273,8 @@ public sealed partial class ConfigurationPattern
 
     /// <summary>
     /// Translates the brace group beginning at <paramref name="start" /> - an alternation or a numeric range - into
-    /// regex syntax.
+    /// regex syntax. A group that is neither, having no top-level comma and no two integer bounds, matches its braces
+    /// literally.
     /// </summary>
     /// <param name="pattern">The glob expression being translated.</param>
     /// <param name="start">The index of the opening <c>{</c>.</param>
@@ -244,8 +299,17 @@ public sealed partial class ConfigurationPattern
         if (TryTranslateNumericRange(body, sb))
             return close + 1;
 
-        // Brace alternation {a,b,c} with possible nesting.
+        // Brace alternation {a,b,c} with possible nesting. A group without a top-level comma is not a choice: its braces
+        // are literal text, and its body is translated like the rest of the glob.
         List<string> alternatives = SplitTopLevelCommas(body);
+        if (alternatives.Count == 1)
+        {
+            sb.Append(@"\{");
+            TranslateExpression(body, sb);
+            sb.Append(@"\}");
+            return close + 1;
+        }
+
         sb.Append("(?:");
         for (int i = 0; i < alternatives.Count; i++)
         {

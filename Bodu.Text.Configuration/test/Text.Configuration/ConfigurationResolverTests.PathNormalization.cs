@@ -110,4 +110,57 @@ format.indent.size = 2
             _ = doc.Resolve(targetPath: null, options);
         });
     }
+
+    /// <summary>
+    /// Verifies that under <see cref="ConfigurationProfile.EditorConfigCompatible" /> a section whose glob starts with
+    /// <c>/</c> applies to a target given relative to the configuration's root, alongside the sections without the
+    /// leading slash (EditorConfig core-test <c>leading_slash_relevance</c>).
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenSectionStartsWithSlashAndTargetIsRelative_ShouldApplyTheSection()
+    {
+        const string fixture = """
+root = true
+
+[/test1/file.{java,js,rb}]
+key1=val1
+[test1/file.{java,js,rb}]
+key2=val2
+[*.{java,js,rb}]
+key3=val3
+""";
+        var doc = ConfigurationDocument.Parse(fixture, ConfigurationParseOptions.EditorConfigCompatible);
+
+        ConfigurationView view = doc.Resolve("test1/file.java", ConfigurationResolveOptions.EditorConfigCompatible);
+
+        CollectionAssert.AreEqual(new[] { "key1", "key2", "key3" }, view.Keys.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a section whose glob starts with <c>/</c> applies to a target under
+    /// <see cref="ConfigurationResolveOptions.PathRoot" />, which the resolver rebases to a relative path first.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenSectionStartsWithSlashAndTargetIsUnderPathRoot_ShouldApplyTheSection()
+    {
+        var doc = ConfigurationDocument.Parse("[/src/*.cs]\nformat.indent.size = 2\n");
+
+        ConfigurationView view = doc.Resolve("/repo/src/Foo.cs", new ConfigurationResolveOptions { PathRoot = "/repo" });
+
+        Assert.AreEqual("2", view["format:indent:size"]);
+    }
+
+    /// <summary>
+    /// Verifies that a section whose glob starts with <c>/</c> does not apply to a target in another directory, given
+    /// relative to the root or outside <see cref="ConfigurationResolveOptions.PathRoot" />.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenSectionStartsWithSlashAndTargetIsElsewhere_ShouldNotApplyTheSection()
+    {
+        var doc = ConfigurationDocument.Parse("[/src/*.cs]\nformat.indent.size = 2\n");
+        var options = new ConfigurationResolveOptions { PathRoot = "/repo" };
+
+        Assert.IsNull(doc.Resolve("lib/src/Foo.cs", options)["format:indent:size"]);
+        Assert.IsNull(doc.Resolve("/elsewhere/src/Foo.cs", options)["format:indent:size"]);
+    }
 }

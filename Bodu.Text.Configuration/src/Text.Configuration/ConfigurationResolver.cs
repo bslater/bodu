@@ -17,6 +17,9 @@ internal sealed class ConfigurationResolver
     /// <summary>The EditorConfig sentinel value that removes a previously set key from the effective configuration. Compared case-insensitively to match real-world EditorConfig tooling - a deliberate deviation from the strict lower-case-only reading of the spec.</summary>
     private const string UnsetSentinel = "unset";
 
+    /// <summary>The preamble key that marks a configuration file as the root of its directory tree; it directs a search for further files and is never resolved as a property.</summary>
+    private const string RootKey = "root";
+
     /// <summary>The resolve options that govern key matching, precedence, and unset handling.</summary>
     private readonly ConfigurationResolveOptions _options;
 
@@ -38,14 +41,18 @@ internal sealed class ConfigurationResolver
     /// <returns>The resolved view for <paramref name="targetPath" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The configured options require a path root, the document was parsed without one, and no target path was
-    /// supplied.
+    /// The configured options require a path root, none is set, the document was not loaded from a file, and no target
+    /// path was supplied.
     /// </exception>
     internal ConfigurationView Resolve(IniDocumentBase document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
 
-        string? pathRoot = _options.PathRoot;
+        // An explicit root wins; otherwise a document loaded from a file is rooted at that file's directory, and its
+        // entries report the file as their source.
+        ConfigurationDocument? loaded = document as ConfigurationDocument;
+        string? pathRoot = _options.PathRoot ?? loaded?.LoadDirectory;
+        string? sourcePath = loaded?.LoadPath;
         if (pathRoot is null && _options.MissingPathRootMode == ConfigurationMissingPathRootMode.Throw && targetPath is null)
             ConfigurationHelpers.ThrowResolveWithoutPathRoot();
 
@@ -58,7 +65,7 @@ internal sealed class ConfigurationResolver
         // Apply the global section (preamble) first when enabled. Preamble entries are signalled by passing
         // a null section pattern through to ApplySection.
         if (_options.ApplyPreambleProperties)
-            ApplySection(document.GlobalSection, values, entries, sectionPattern: null);
+            ApplySection(document.GlobalSection, values, entries, sectionPattern: null, sourcePath);
 
         // Apply sections whose name (interpreted as a glob pattern) matches the target path, in source order.
         // Last-wins precedence is naturally handled by dictionary overwrite. The configured PathComparison
@@ -81,7 +88,7 @@ internal sealed class ConfigurationResolver
             }
 
             if (matched)
-                ApplySection(section, values, entries, sectionPattern: section.Name);
+                ApplySection(section, values, entries, sectionPattern: section.Name, sourcePath);
         }
 
         return new ConfigurationView(values, entries, _options.KeyOptions);
@@ -97,14 +104,24 @@ internal sealed class ConfigurationResolver
     /// <param name="sectionPattern">
     /// The section pattern, or <see langword="null" /> when <paramref name="section" /> is the preamble.
     /// </param>
+    /// <param name="sourcePath">
+    /// The full path of the file the document was loaded from, recorded in the source location of each entry, or
+    /// <see langword="null" />.
+    /// </param>
     private void ApplySection(
         IniSection section,
         Dictionary<string, string?> values,
         Dictionary<string, ConfigurationResolvedEntry> entries,
-        string? sectionPattern)
+        string? sectionPattern,
+        string? sourcePath)
     {
         foreach (IniEntry entry in section.Entries)
         {
+            // The preamble's root pair marks the file as the root of its directory tree. It directs the caller's search
+            // for further files rather than configuring anything, so it is never resolved; the document keeps it.
+            if (sectionPattern is null && entry.Key.AsSpan().Trim().Equals(RootKey, StringComparison.OrdinalIgnoreCase))
+                continue;
+
             string key = ConfigurationKey.Parse(entry.Key, _options.KeyOptions).Path;
 
             // EditorConfig "unset" sentinel handling.
@@ -120,7 +137,7 @@ internal sealed class ConfigurationResolver
             entries[key] = new ConfigurationResolvedEntry(
                 key,
                 entry.Value,
-                new ConfigurationSourceLocation(entry.LineNumber, linePosition: 1, length: entry.Key.Length),
+                new ConfigurationSourceLocation(entry.LineNumber, linePosition: 1, length: entry.Key.Length, sourcePath),
                 sectionPattern);
         }
     }

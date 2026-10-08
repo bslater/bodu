@@ -106,4 +106,133 @@ public partial class ConfigurationDocumentTests
         Assert.IsGreaterThanOrEqualTo(1, result.Diagnostics.Length);
         Assert.AreEqual(ConfigurationDiagnosticCode.MissingEquals, result.Diagnostics[0].Code);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.Parse(string, ConfigurationParseOptions?)" /> ignores a byte order
+    /// mark before a comment line under every profile, so the document resolves as the same file loaded from disk does
+    /// (EditorConfig core-test <c>bom_at_head</c>).
+    /// </summary>
+    /// <param name="profile">The profile whose parse and resolve options apply.</param>
+    [TestMethod]
+    [DataRow(ConfigurationProfile.Bodu)]
+    [DataRow(ConfigurationProfile.EditorConfigCompatible)]
+    [DataRow(ConfigurationProfile.Strict)]
+    [DataRow(ConfigurationProfile.Relaxed)]
+    public void Parse_WhenByteOrderMarkPrecedesCommentLine_ShouldIgnoreTheMark(ConfigurationProfile profile)
+    {
+        var doc = ConfigurationDocument.Parse(
+            "\uFEFF; test EditorConfig files with BOM\n\nroot = true\n\n[*]\nkey = value\n",
+            ConfigurationParseOptions.For(profile));
+
+        ConfigurationView view = doc.Resolve("a.c", ConfigurationResolveOptions.For(profile));
+
+        Assert.AreEqual("value", view.GetString("key"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.Parse(string, ConfigurationParseOptions?)" /> ignores a byte order
+    /// mark before a section header under every profile, reading the header as the first section.
+    /// </summary>
+    /// <param name="profile">The profile whose parse options apply.</param>
+    [TestMethod]
+    [DataRow(ConfigurationProfile.Bodu)]
+    [DataRow(ConfigurationProfile.EditorConfigCompatible)]
+    [DataRow(ConfigurationProfile.Strict)]
+    [DataRow(ConfigurationProfile.Relaxed)]
+    public void Parse_WhenByteOrderMarkPrecedesSectionHeader_ShouldReadTheSection(ConfigurationProfile profile)
+    {
+        var doc = ConfigurationDocument.Parse("\uFEFF[*]\nkey = value\n", ConfigurationParseOptions.For(profile));
+
+        Assert.HasCount(1, doc.Sections);
+        Assert.AreEqual("*", doc.Sections[0].Name);
+        Assert.AreEqual("value", doc.Sections[0].Entries[0].Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.Parse(string)" /> ignores only the first of two leading byte order
+    /// marks: the second stays content, so the first line is a property line without <c>=</c> and the parse throws
+    /// <see cref="ConfigurationParseException" /> for <see cref="ConfigurationDiagnosticCode.MissingEquals" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTextStartsWithTwoByteOrderMarks_ShouldIgnoreOnlyTheFirst()
+    {
+        var ex = Assert.ThrowsExactly<ConfigurationParseException>(() =>
+        {
+            _ = ConfigurationDocument.Parse("\uFEFF\uFEFF[*]\nkey = value\n");
+        });
+
+        Assert.AreEqual(ConfigurationDiagnosticCode.MissingEquals, ex.Diagnostic?.Code);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.Parse(string)" /> keeps a U+FEFF that does not start the text as
+    /// part of the value it appears in.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenByteOrderMarkIsInsideTheText_ShouldKeepItAsContent()
+    {
+        var doc = ConfigurationDocument.Parse("[*]\nkey = a\uFEFFb\n");
+
+        Assert.AreEqual("a\uFEFFb", doc.Sections[0].Entries[0].Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.TryParse(string?, out ConfigurationDocument?)" /> ignores a leading
+    /// byte order mark and returns <see langword="true" /> with the section read.
+    /// </summary>
+    [TestMethod]
+    public void TryParse_WhenTextStartsWithByteOrderMark_ShouldReturnTrueAndReadTheSection()
+    {
+        bool parsed = ConfigurationDocument.TryParse("\uFEFF[*]\nkey = value\n", out ConfigurationDocument? doc);
+
+        Assert.IsTrue(parsed);
+        Assert.IsNotNull(doc);
+        Assert.AreEqual("*", doc.Sections[0].Name);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationDocument.ParseWithDiagnostics(string, ConfigurationParseOptions?)" /> ignores
+    /// a leading byte order mark, reporting no diagnostic and reading the section.
+    /// </summary>
+    [TestMethod]
+    public void ParseWithDiagnostics_WhenTextStartsWithByteOrderMark_ShouldReportNoDiagnostics()
+    {
+        ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(
+            "\uFEFF[*]\nkey = value\n",
+            ConfigurationParseOptions.Relaxed);
+
+        Assert.IsEmpty(result.Diagnostics);
+        Assert.AreEqual("*", result.Document.Sections[0].Name);
+    }
+
+    /// <summary>
+    /// Verifies that a parsed document has no root: an absolute target is matched as given, so an anchored section does
+    /// not apply to it, while the same target given relative to the configuration's directory does match.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenResolvedWithoutPathRoot_ShouldMatchTheTargetAsGiven()
+    {
+        var doc = ConfigurationDocument.Parse("[src/*.cs]\nformat.indent.size = 4\n");
+
+        Assert.IsNull(doc.Resolve(Path.Combine(Path.GetTempPath(), "src", "a.cs"))["format:indent:size"]);
+        Assert.AreEqual("4", doc.Resolve("src/a.cs")["format:indent:size"]);
+    }
+
+    /// <summary>
+    /// Verifies that the resolved entries of a parsed document report no path in their source locations.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenResolved_ShouldReportNoPathInSourceLocations()
+    {
+        var doc = ConfigurationDocument.Parse("indent_style = tab\n[*]\nindent_size = 4\n");
+
+        ConfigurationView view = doc.Resolve("a.cs");
+        ConfigurationResolvedEntry? preamble = view.GetEntry("indent_style");
+        ConfigurationResolvedEntry? section = view.GetEntry("indent_size");
+
+        Assert.IsNotNull(preamble);
+        Assert.IsNotNull(section);
+        Assert.IsNull(preamble.SourceLocation.Path);
+        Assert.IsNull(section.SourceLocation.Path);
+    }
 }

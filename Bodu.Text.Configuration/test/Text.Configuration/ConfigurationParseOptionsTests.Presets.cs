@@ -56,4 +56,30 @@ public partial class ConfigurationParseOptionsTests
             _ = ConfigurationParseOptions.For((ConfigurationProfile)42);
         });
     }
+
+    /// <summary>
+    /// Verifies that the EditorConfig-compatible preset parses keys with the same
+    /// <see cref="ConfigurationKeyMapping.Identity" /> mapping its resolve preset uses.
+    /// </summary>
+    [TestMethod]
+    public void EditorConfigCompatible_WhenAccessed_ShouldUseIdentityKeyMapping()
+    {
+        Assert.AreEqual(ConfigurationKeyMapping.Identity, ConfigurationParseOptions.EditorConfigCompatible.KeyOptions.Mapping);
+        Assert.AreEqual(
+            ConfigurationKeyMapping.Identity,
+            ConfigurationParseOptions.For(ConfigurationProfile.EditorConfigCompatible).KeyOptions.Mapping);
+    }
+
+    /// <summary>
+    /// Verifies that the EditorConfig-compatible parse preset carries the same lowercasing key options as its resolve
+    /// preset.
+    /// </summary>
+    [TestMethod]
+    public void EditorConfigCompatible_WhenAccessed_ShouldShareTheResolvePresetKeyOptions()
+    {
+        Assert.AreSame(
+            ConfigurationResolveOptions.EditorConfigCompatible.KeyOptions,
+            ConfigurationParseOptions.EditorConfigCompatible.KeyOptions);
+        Assert.IsTrue(ConfigurationParseOptions.EditorConfigCompatible.KeyOptions.LowercaseKeys);
+    }
 }

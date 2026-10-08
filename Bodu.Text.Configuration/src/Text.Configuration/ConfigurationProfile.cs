@@ -47,7 +47,8 @@ namespace Bodu.Text.Configuration;
 /// </item>
 /// <item>
 /// <term>
-/// Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />)
+/// Preamble contributes to resolved view (<see cref="ConfigurationResolveOptions.ApplyPreambleProperties" />; its
+/// <c>root</c> pair never does)
 /// </term>
 /// <description>Yes | No | Yes | Yes</description>
 /// </item>
@@ -58,6 +59,14 @@ namespace Bodu.Text.Configuration;
 /// <item>
 /// <term>Missing path root (<see cref="ConfigurationMissingPathRootMode" />)</term>
 /// <description>UseEmptyRoot | Throw | Throw | UseEmptyRoot</description>
+/// </item>
+/// <item>
+/// <term>Key mapping (<see cref="ConfigurationKeyOptions.Mapping" />)</term>
+/// <description>DotToColon | Identity | DotToColon | DotToColon</description>
+/// </item>
+/// <item>
+/// <term>Keys lowercased (<see cref="ConfigurationKeyOptions.LowercaseKeys" />)</term>
+/// <description>No | Yes | No | No</description>
 /// </item>
 /// </list>
 /// </remarks>
@@ -74,13 +83,17 @@ public enum ConfigurationProfile
 {
     /// <summary>
     /// The default Bodu profile: EditorConfig-style section headers and globs, dotted-to-colon key mapping, last-wins
-    /// duplicate handling, whitespace-introduced inline comments, and preamble properties contributing to resolution.
+    /// duplicate handling, whitespace-introduced inline comments, and preamble properties contributing to resolution,
+    /// except the preamble's <c>root</c> pair, which marks the file as the root of its directory tree and is never
+    /// resolved.
     /// </summary>
     Bodu = 0,
 
     /// <summary>
-    /// Strict alignment with the public EditorConfig specification 0.17.2: inline comments disabled, the preamble's
-    /// <c>root</c> key alone participates in resolution, identity key mapping.
+    /// Strict alignment with the public EditorConfig specification 0.17.2: inline comments disabled, identity key
+    /// mapping so a key keeps its dots, keys lowercased with the invariant culture, and the preamble left out of
+    /// resolution, <c>root</c> included. The preamble's pairs stay in the document's global section; resolution reads
+    /// one document and searches no parent directory, so acting on <c>root = true</c> is left to the caller.
     /// </summary>
     EditorConfigCompatible = 1,
 

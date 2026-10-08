@@ -10,10 +10,12 @@ namespace Bodu.Text.Configuration;
 /// Defines how the configuration parser resolves a section name that appears more than once in the source.
 /// </summary>
 /// <remarks>
-/// The <see cref="Merge" /> value (the default) preserves the historical INI behaviour: entries from later occurrences
-/// are merged into the first occurrence. <see cref="MergeAll" /> is an explicit alias for this value.
+/// The <see cref="Merge" /> value is the zero value and keeps the historical INI behaviour: entries from later
+/// occurrences are merged into the first occurrence. <see cref="MergeAll" /> is an explicit alias for this value.
 /// <see cref="MergeAdjacent" /> and <see cref="Preserve" /> implement the finer-grained EditorConfig-style semantics
-/// the configuration profiles require.
+/// the configuration profiles require; <see cref="Preserve" /> is the default of
+/// <see cref="ConfigurationParseOptions.DuplicateSectionMode" /> and of every profile except
+/// <see cref="ConfigurationProfile.Strict" />, which uses <see cref="Disallowed" />.
 /// </remarks>
 public enum IniDuplicateSectionBehavior
 {

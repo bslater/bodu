@@ -32,7 +32,7 @@ string? lvl  = view["level"];            // "Information" - from [*.log], which 
 string? same = view["LEVEL"];            // "Information" - lookups are case-insensitive by default
 ```
 
-`Resolve(targetPath?)` is an extension method on `IniDocumentBase` (so it works on both `ConfigurationDocument` and `IniDocument`) from <xref:Bodu.Text.Configuration.ConfigurationExtensions>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a colon-delimited path via <xref:Bodu.Text.Configuration.ConfigurationKey> (dotted-to-colon by default), and produces a <xref:Bodu.Text.Configuration.ConfigurationView> queryable with either notation.
+`Resolve(targetPath?)` is an extension method on `IniDocumentBase` (so it works on both `ConfigurationDocument` and `IniDocument`) from <xref:Bodu.Text.Configuration.ConfigurationExtensions>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a path via <xref:Bodu.Text.Configuration.ConfigurationKey> (dotted-to-colon by default; the `Identity` mapping keeps a key as written), and produces a <xref:Bodu.Text.Configuration.ConfigurationView> that the default mapping lets you query with either notation.
 
 > [!IMPORTANT]
 > With **no** target path - `document.Resolve()` or `Resolve(null)` - every named section is skipped and the view contains only the preamble. This is the single most common surprise: an INI file whose sections are intended as namespaces will resolve to an empty-but-for-preamble view unless you treat the section names as globs and pass a matching target path, or read the sections directly off the document (`document.Sections[i]["key"]`) instead of resolving.
@@ -122,7 +122,7 @@ foreach (ConfigurationResolvedEntry entry in view.Entries)
     Console.WriteLine($"  {entry.Key} = {entry.Value}  (from {entry.SectionPattern ?? "<preamble>"})");
 ```
 
-`Values` returns the resolved dictionary; `Keys`, `Count`, and `GetEnumerator()` mirror the standard read-only collection contract, and enumeration yields keys in canonical colon-delimited form. `Entries` exposes the richer <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> view - same keys, same values, but with provenance: `Key`, `Value`, `SectionPattern` (the winning section's glob, or `null` for the preamble), and `SourceLocation`. Fetch a single key's provenance with `view.GetEntry("format:indent:size")`.
+`Values` returns the resolved dictionary; `Keys`, `Count`, and `GetEnumerator()` mirror the standard read-only collection contract, and enumeration yields keys in the canonical form of the key mapping: colon-delimited under the default `DotToColon`, and as written under the `Identity` mapping the `EditorConfigCompatible` profile uses, so its keys keep their dots and colons, and a dotted key and a colon-delimited one are two keys, each looked up under the name it was written with (that profile also lowercases keys, as EditorConfig does). `Entries` exposes the richer <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> view - same keys, same values, but with provenance: `Key`, `Value`, `SectionPattern` (the winning section's glob, or `null` for the preamble), and `SourceLocation`. Fetch a single key's provenance with `view.GetEntry("format:indent:size")`.
 
 > [!NOTE]
 > `ConfigurationView` also implements `IReadOnlyDictionary<string, string?>`, but its indexer deviates from the dictionary contract: `view["absent:key"]` returns `null` rather than throwing `KeyNotFoundException`, matching `Microsoft.Extensions.Configuration`'s null-on-absent convention. Use `view.ContainsKey(key)` to distinguish an absent key from one whose value is `null`.
@@ -137,16 +137,16 @@ ConfigurationView view = document.Resolve(
     options: ConfigurationResolveOptions.EditorConfigCompatible);
 ```
 
-The default options (`ConfigurationResolveOptions.Bodu`) treat the global section's properties as participating preamble and the literal value `"unset"` as a normal string. The `EditorConfigCompatible` preset switches both - preamble properties are dropped from the resolved view, and `"unset"` removes the effective value the way EditorConfig requires.
+The default options (`ConfigurationResolveOptions.Bodu`) treat the global section's properties, except its `root` pair, as participating preamble and the literal value `"unset"` as a normal string. The `EditorConfigCompatible` preset switches both - preamble properties are dropped from the resolved view, and `"unset"` removes the effective value the way EditorConfig requires.
 
 Every field of `ConfigurationResolveOptions`:
 
 | Field | Default | Effect |
 |---|---|---|
 | `Profile` | `Bodu` | Selects the cohort of resolve defaults. |
-| `PathRoot` | `null` | Optional anchor that anchored globs are rebased against; `null` defers to the document's load path. |
+| `PathRoot` | `null` | Optional root that a target path is rebased against before globs are matched; an explicit value always wins. `null` defers to the directory of the file a document was loaded from with `Load(path)`, and a target is matched as given when there is neither. |
 | `MissingPathRootMode` | `UseEmptyRoot` | Behaviour for a **path-less** resolve when no root is available - `UseEmptyRoot` returns a preamble-only view; `Throw` raises `InvalidOperationException`. No effect once a target path is supplied. |
-| `ApplyPreambleProperties` | `true` (Bodu/Strict/Relaxed) / `false` (EditorConfig) | Whether the global section contributes to the view. |
+| `ApplyPreambleProperties` | `true` (Bodu/Strict/Relaxed) / `false` (EditorConfig) | Whether the global section contributes to the view. Its `root` pair never does: it marks the file as the root of its directory tree and stays in the document. |
 | `PathComparison` | `Ordinal` | `StringComparison` used to match the target path against globs (case-insensitive variants compile the regex with `IgnoreCase`). |
 | `UnsetValueMode` | `TreatAsLiteral` (Bodu/Relaxed) / `RemoveEffectiveValue` (EditorConfig/Strict) | How a value equal to `"unset"` (case-insensitive) is treated. |
 | `KeyOptions` | `Default` | Segment-separator and mapping config (see below). Should match `ConfigurationParseOptions.KeyOptions`. |
@@ -164,11 +164,13 @@ var options = new ConfigurationResolveOptions { PathRoot = "/repo/my-app" };
 ConfigurationView view = document.Resolve("/repo/my-app/src/svc/Foo.cs", options);
 ```
 
-When a document is loaded with `ConfigurationDocument.Load(path)`, its originating directory is recorded and used as the implicit `PathRoot`, so anchored globs resolve against the right base without setting `PathRoot` explicitly. Documents parsed from a string or stream carry no path context - set `PathRoot` yourself when your globs are anchored.
+A glob that starts with `/` is anchored at the root: a target given relative to the root, as written or after rebasing, matches it as if the target began with `/`. `[/src/*.cs]` therefore applies to `src/Foo.cs`, to `/src/Foo.cs`, and, with `PathRoot = "/repo"`, to `/repo/src/Foo.cs`, while `lib/src/Foo.cs` and `/elsewhere/src/Foo.cs` stay unmatched, as EditorConfig's core-test `leading_slash_relevance` expects.
+
+When a document is loaded with `ConfigurationDocument.Load(path)`, the full path of its file's directory is recorded and used as the implicit `PathRoot`, so anchored globs are relative to the file, as EditorConfig defines them, without setting `PathRoot` explicitly. An explicit `PathRoot` still wins. The recorded directory is a full path, so pass a full target path for it to rebase; a relative target is matched as given. Documents parsed from a string or loaded from a stream or a text reader carry no path context - set `PathRoot` yourself when your globs are anchored.
 
 ## `ConfigurationKey` and `ConfigurationKeyOptions`
 
-`ConfigurationKey` is the parsed form of a key - both the raw authored shape (`"logging.console.level"`) and the canonical colon-delimited path (`"logging:console:level"`). It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.
+`ConfigurationKey` is the parsed form of a key - both the raw authored shape (`"logging.console.level"`) and the canonical colon-delimited path (`"logging:console:level"`), or, under the `Identity` mapping, the key as written with its ends trimmed, which is also its one segment. Whitespace around each segment is trimmed, so `a . b` and `a.b` are the same key under the other mappings. It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.
 
 ```csharp
 using Bodu.Text.Configuration;
@@ -185,10 +187,11 @@ The behaviour is governed by `ConfigurationKeyOptions`:
 
 | Field | Default | Effect |
 |---|---|---|
-| `SegmentSeparators` | `{ '.', ':' }` | Characters recognised as path separators. |
-| `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation). |
+| `SegmentSeparators` | `{ '.', ':' }` | Characters recognised as path separators. `Identity` does not split a key, so it ignores them. |
+| `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation: the key is not split, so it keeps its dots and colons). |
 | `CaseSensitive` | `false` | Case-sensitive comparison (the default `false` matches `Microsoft.Extensions.Configuration`). |
-| `AllowEmptySegments` | `false` | Permit empty segments like `a..b`. |
+| `LowercaseKeys` | `false` | Lowercase the segments and the path with the invariant culture, as EditorConfig lowercases keys; the raw key keeps its case. The `EditorConfigCompatible` presets set it. |
+| `AllowEmptySegments` | `false` | Permit empty segments like `a..b`; a segment of whitespace alone, as in `a. .b`, counts as empty. `Identity` does not split a key, so it keeps `a..b` as written either way. |
 
 The static `ConfigurationKeyOptions.Default` is the cached default.
 
@@ -213,12 +216,12 @@ The glob grammar:
 | `*` | Any character except `/`. |
 | `**` | Any sequence including `/`. |
 | `?` | A single character except `/`. |
-| `{a,b,c}` | Alternation (nesting allowed). |
-| `{n1..n2}` | Inclusive integer range. |
-| `[seq]` / `[!seq]` | Character set or its complement. |
+| `{a,b,c}` | Alternation (nesting allowed). A group without a top-level comma is not a choice: its braces are literal, so `{single}` matches only `{single}` and `{}` only `{}`. |
+| `{n1..n2}` | Inclusive integer range. Both bounds must be integers; otherwise the group is literal, so `{a..z}` matches only `{a..z}`. |
+| `[seq]` / `[!seq]` | Character set or its complement. A bracket expression that holds a `/` is literal text, brackets included, since one character cannot match a path separator. |
 | `\` | Escape the next character. |
 
-Patterns without `/` match at any depth. Patterns with `/` anchor to the start of the path. The grammar is the EditorConfig 0.17.2 specification verbatim, plus a bounded process-wide pattern cache so the same pattern compiled twice does not recompile.
+Patterns without `/` match at any depth. Patterns with `/` anchor to the start of the path. The grammar follows the EditorConfig 0.17.2 specification and is held to EditorConfig's core-tests for a bracket expression that holds a `/` (`brackets_slash_inside1` to `brackets_slash_inside3`), a brace group without a comma (`braces_single_choice`, `braces_empty_choice`, `braces_alpha_range1` to `braces_alpha_range6`) and a leading `/` (`leading_slash_relevance`). It departs from the EditorConfig cores in two documented ways: a `[` or `{` with no partner is rejected with `UnbalancedBracket` or `UnbalancedBrace` (see [Diagnostics](diagnostics.md)) where the cores read it as literal text, and a glob longer than 4096 characters is rejected with `PatternTooLong`. A bounded process-wide pattern cache means the same pattern compiled twice does not recompile.
 
 `Compile(pattern, StringComparison)` accepts an explicit comparison; the default `Ordinal` matches the EditorConfig requirement that paths be case-sensitive on case-sensitive file systems.
 

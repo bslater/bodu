@@ -49,4 +49,44 @@ public partial class ConfigurationResolveOptionsTests
             _ = ConfigurationResolveOptions.For((ConfigurationProfile)42);
         });
     }
+
+    /// <summary>
+    /// Verifies that the EditorConfig-compatible preset maps keys with <see cref="ConfigurationKeyMapping.Identity" />,
+    /// so an EditorConfig key keeps its dots, both through the cached preset and through
+    /// <see cref="ConfigurationResolveOptions.For(ConfigurationProfile)" />.
+    /// </summary>
+    [TestMethod]
+    public void EditorConfigCompatible_WhenAccessed_ShouldUseIdentityKeyMapping()
+    {
+        Assert.AreEqual(ConfigurationKeyMapping.Identity, ConfigurationResolveOptions.EditorConfigCompatible.KeyOptions.Mapping);
+        Assert.AreEqual(
+            ConfigurationKeyMapping.Identity,
+            ConfigurationResolveOptions.For(ConfigurationProfile.EditorConfigCompatible).KeyOptions.Mapping);
+    }
+
+    /// <summary>
+    /// Verifies that every preset other than the EditorConfig-compatible one keeps the dotted-to-colon key mapping.
+    /// </summary>
+    /// <param name="profile">The profile whose preset is checked.</param>
+    [TestMethod]
+    [DataRow(ConfigurationProfile.Bodu)]
+    [DataRow(ConfigurationProfile.Strict)]
+    [DataRow(ConfigurationProfile.Relaxed)]
+    public void For_WhenProfileIsNotEditorConfigCompatible_ShouldMapDotsToColons(ConfigurationProfile profile)
+    {
+        Assert.AreEqual(ConfigurationKeyMapping.DotToColon, ConfigurationResolveOptions.For(profile).KeyOptions.Mapping);
+    }
+
+    /// <summary>
+    /// Verifies that the EditorConfig-compatible preset lowercases keys, as EditorConfig does after parsing, and that
+    /// the other presets keep keys as written.
+    /// </summary>
+    [TestMethod]
+    public void EditorConfigCompatible_WhenAccessed_ShouldLowercaseKeys()
+    {
+        Assert.IsTrue(ConfigurationResolveOptions.EditorConfigCompatible.KeyOptions.LowercaseKeys);
+        Assert.IsFalse(ConfigurationResolveOptions.Bodu.KeyOptions.LowercaseKeys);
+        Assert.IsFalse(ConfigurationResolveOptions.For(ConfigurationProfile.Strict).KeyOptions.LowercaseKeys);
+        Assert.IsFalse(ConfigurationResolveOptions.For(ConfigurationProfile.Relaxed).KeyOptions.LowercaseKeys);
+    }
 }

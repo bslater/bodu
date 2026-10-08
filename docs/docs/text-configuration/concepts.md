@@ -45,8 +45,8 @@ A **profile** is a named, validated combination of parse, resolve, and write opt
 
 | Profile | Intent |
 |---|---|
-| `Bodu` (default) | Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve. |
-| `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, and preamble properties dropped from resolve (`root` is consumed by the reader). |
+| `Bodu` (default) | Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve (its `root` pair excepted). |
+| `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, identity key mapping (keys keep their dots), keys lowercased, and the whole preamble, `root` included, dropped from resolve. |
 | `Strict` | Deterministic parsing for generated files: duplicate keys are rejected, key-only properties are not permitted. |
 | `Relaxed` | Permissive parsing of user-authored files: inline comments enabled, duplicates last-wins, diagnostics collected rather than thrown. |
 
@@ -100,19 +100,20 @@ handling are free to diverge from the raw-INI dialect.
 | Property | Role |
 |---|---|
 | `Profile` | The profile this bag represents. Default `Bodu`. |
-| `PathRoot` | The directory anchor that anchored globs are rebased against. When `null`, the document's load path is used; when neither is available, `MissingPathRootMode` decides. |
+| `PathRoot` | The directory a target path is rebased against before globs are matched; an explicit value always wins. When `null`, a document loaded with `Load(path)` uses the directory of its file; when neither is available, the target is matched as given, and `MissingPathRootMode` decides what a path-less resolve does. |
 | `MissingPathRootMode` | UseEmptyRoot (default) / Throw. There is no `IgnoreAnchoredPatterns` value. |
 | `ApplyPreambleProperties` | Whether preamble (global section) properties contribute to the view. Default `true` (`Bodu`/`Strict`/`Relaxed`); `false` for `EditorConfigCompatible`. |
 | `PathComparison` | The `StringComparison` used when matching target paths against patterns. Default `Ordinal`. |
 | `UnsetValueMode` | TreatAsLiteral (default) / RemoveEffectiveValue (EditorConfig sentinel). |
-| `KeyOptions` | The key options applied when expanding raw keys into colon-delimited form. |
+| `KeyOptions` | The key options applied when expanding raw keys into the view's keys: colon-delimited under the default mapping, as written under the `Identity` mapping of the `EditorConfigCompatible` profile. |
 
 > [!IMPORTANT]
 > `MissingPathRootMode` only changes behaviour when **no target path is supplied to `Resolve` at all**. The `Throw`
 > mode raises `InvalidOperationException` when `PathRoot` is `null`, the document carries no load path, and `targetPath`
 > is `null` - the `EditorConfigCompatible` and `Strict` resolve profiles select it so a path-less resolve fails loudly
-> rather than silently returning a preamble-only view. When a target path *is* supplied, an absent `PathRoot` simply
-> means anchored globs are matched against the bare target path (the empty-root behaviour).
+> rather than silently returning a preamble-only view. When a target path *is* supplied and no root is known (no
+> `PathRoot`, and a document parsed rather than loaded from a file), anchored globs are matched against the bare target
+> path (the empty-root behaviour).
 
 **<xref:Bodu.Text.Configuration.ConfigurationWriteOptions>** controls `Save`: encoding, newline style, blank-line
 policy, property layout. Use the static `Bodu` / `EditorConfigCompatible` / `Normalized` presets (or `For(profile)`), or supply a
@@ -125,15 +126,17 @@ A configuration key has three concurrent forms:
 | Form | Example | Where used |
 |---|---|---|
 | **Raw key** | `logging.level.default` | The text as authored in the source file. |
-| **Segments** | `["logging", "level", "default"]` | Split on the configured separators. |
-| **Path** | `logging:level:default` | The canonical colon-delimited form stored in the view. |
+| **Segments** | `["logging", "level", "default"]` | Split on the configured separators, each trimmed of the whitespace around it; under `Identity`, the whole key, its ends trimmed, is the one segment. |
+| **Path** | `logging:level:default` | The canonical form stored in the view: colon-delimited, or the key as written under `Identity`. |
 
 <xref:Bodu.Text.Configuration.ConfigurationKey> is the read-only struct that holds all three.
 `ConfigurationKey.Parse(rawKey)` is the entry point; `TryParse` is the non-throwing variant.
 
-Lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the colon-delimited form -
-`view["logging.level.default"]` and `view["logging:level:default"]` return the same value. The view stores keys in
-the colon-delimited form to interoperate with `Microsoft.Extensions.Configuration`.
+Under the default mapping, lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the
+colon-delimited form - `view["logging.level.default"]` and `view["logging:level:default"]` return the same value - and
+the view stores keys in the colon-delimited form to interoperate with `Microsoft.Extensions.Configuration`. Under the
+`Identity` mapping, which the `EditorConfigCompatible` profile uses, a key is stored and looked up as written, so
+`logging.level.default` and `logging:level:default` are two keys.
 
 ## Key mapping
 
@@ -144,17 +147,22 @@ mapping:
 |---|---|
 | `DotToColon` (default) | Split on the configured separators; rejoin with `:`. |
 | `Colon` | Split on the configured separators; rejoin with `:`. |
-| `Identity` | Split on the configured separators; rejoin with the *first* configured separator (preserves the original delimiter). |
+| `Identity` | Keep the key as written, apart from the whitespace at its ends and the lowercasing `LowercaseKeys` asks for; the key is not split, so its dots and colons, and the whitespace inside it, stay as they are. |
 
-Splitting always uses the full `SegmentSeparators` set; `Mapping` only decides the join character. `DotToColon` and
-`Colon` therefore produce identical `Path` output under the default separator set - the distinction is naming intent,
-not behaviour. `Identity` is the one mapping that round-trips the original delimiter (joining on `'.'` by default).
+`DotToColon` and `Colon` split on the full `SegmentSeparators` set and join with `:`, so they produce identical `Path`
+output - the distinction is naming intent, not behaviour. `Identity` does not split a key at all: `a:b`, `a.b` and
+`a.b:c` keep their form, so a dotted key and a colon-delimited one are two keys, and neither `SegmentSeparators` nor
+`AllowEmptySegments` applies to it.
 
 `SegmentSeparators` defaults to `{ '.', ':' }`. `CaseSensitive` defaults to `false`, matching
 `Microsoft.Extensions.Configuration`, and is surfaced as a ready-made comparer via
 <xref:Bodu.Text.Configuration.ConfigurationKeyOptions.KeyComparer> (`StringComparer.Ordinal` or
-`StringComparer.OrdinalIgnoreCase`). `AllowEmptySegments` defaults to `false` - `a..b` is rejected with
-`ArgumentException` unless the property is set explicitly. Keys are constructed through the
+`StringComparer.OrdinalIgnoreCase`). `LowercaseKeys` defaults to `false`; when set, as the `EditorConfigCompatible`
+profile sets it, the segments and the path are lowercased with the invariant culture, as EditorConfig lowercases every
+key after parsing, while the raw key keeps its case. Whitespace around each segment is trimmed, so `a . b` and `a.b` are
+the same key, and a segment of whitespace alone, as in `a. .b`, counts as empty. `AllowEmptySegments` defaults to
+`false` - `a..b` is rejected with `ArgumentException` unless the property is set explicitly or the mapping is
+`Identity`, which trims only the ends of a key. Keys are constructed through the
 <xref:Bodu.Text.Configuration.ConfigurationKey.Parse(System.String)> / `TryParse` factories or the equivalent
 constructor; control characters in a raw key are rejected at construction time. Equality compares the *segment
 sequence* under the configured comparer, so the raw form is informational only - `Logging.Level` and
@@ -170,25 +178,31 @@ language follows EditorConfig:
 | `*` | Any characters except `/`. |
 | `**` | Any characters including `/`. |
 | `?` | Any single character. |
-| `[abc]` / `[!abc]` | Character class / negated character class. |
-| `{a,b,c}` | Alternation. |
+| `[abc]` / `[!abc]` | Character class / negated character class; a bracket expression that holds a `/` is literal text. |
+| `{a,b,c}` | Alternation; a group without a comma, such as `{single}` or `{}`, is literal text. |
 | `[*.cs]` | All `.cs` files at any depth (unanchored). |
-| `[src/**/*.cs]` | All `.cs` files under `src/` (anchored to `PathRoot`). |
+| `[src/**/*.cs]` | All `.cs` files under `src/` (anchored at the root: `PathRoot`, or the directory of a file loaded by path). |
 
 The **target path** is the value passed to `document.Resolve(targetPath)`. Before matching, the resolver normalises the
-path to forward slashes and rebases it relative to `PathRoot`: if the path begins with `PathRoot + "/"` that prefix is
-stripped; if it equals `PathRoot` exactly, only the filename survives; otherwise the path is matched as-is. Anchored
-patterns (those that contain `/`) are then tested against the whole relative path; unanchored patterns (no `/`) match at
-any directory depth.
+path to forward slashes and rebases it relative to the root, which is `PathRoot`, or when that is unset the directory of
+the file a document was loaded from with `Load(path)`: if the path begins with the root plus `/` that prefix is
+stripped; if it equals the root exactly, only the filename survives; otherwise, or when no root is known, the path is
+matched as-is. Anchored patterns (those that contain `/`) are then tested against the whole relative path; unanchored
+patterns (no `/`) match at any directory depth.
+
+A pattern that starts with `/` is anchored at the root as well, and a relative target matches it as if the target
+began with `/`: `[/src/*.cs]` applies to `src/Foo.cs`, to `/src/Foo.cs`, and to `/repo/src/Foo.cs` rebased under
+`PathRoot = "/repo"`, but not to `lib/src/Foo.cs`, nor to `/elsewhere/src/Foo.cs`, which lies outside that root.
 
 > [!IMPORTANT]
 > Section matching requires a target path. When `Resolve` is called with no target path (or `null`), the normalised
 > target is empty and **every named section is skipped** - only the preamble (when `ApplyPreambleProperties` is `true`)
 > contributes to the view. A path-less resolve is therefore a preamble-only projection, not an "all sections" merge.
 
-When `PathRoot` is unset, <xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> decides what a *path-less*
-resolve does: `UseEmptyRoot` returns the preamble-only view described above, while `Throw` raises
-`InvalidOperationException`. The mode has no effect once a non-null target path is supplied.
+When no root is known, because `PathRoot` is unset and the document was not loaded from a file,
+<xref:Bodu.Text.Configuration.ConfigurationMissingPathRootMode> decides what a *path-less* resolve does: `UseEmptyRoot`
+returns the preamble-only view described above, while `Throw` raises `InvalidOperationException`. The mode has no effect
+once a non-null target path is supplied.
 
 The pattern compiler is <xref:Bodu.Text.Configuration.ConfigurationPattern> - the same engine the resolver uses,
 exposed for callers who want to test pattern matching directly without instantiating a document. `Compile` memoises
@@ -201,9 +215,12 @@ The **preamble** is the EditorConfig name for the file's global section - proper
 section header. Bodu exposes it as <xref:Bodu.Text.Configuration.IniDocumentBase.GlobalSection>.
 
 Under the default `Bodu` profile, the resolver layers the preamble first and then each matching section in source
-order, so preamble properties act as defaults that any matching section can override. Under
-`EditorConfigCompatible`, `ApplyPreambleProperties` is `false`, so the preamble is dropped from resolve entirely - its
-well-known `root` directive is consumed by the reader rather than surfaced as a resolved key.
+order, so preamble properties act as defaults that any matching section can override. The preamble's `root` pair is
+the exception under every profile: it marks the file as the root of its directory tree rather than configuring
+anything, so the resolver never projects it into a view. Under
+`EditorConfigCompatible`, `ApplyPreambleProperties` is `false`, so the preamble is dropped from resolve entirely, its
+well-known `root` pair included. The pair stays in the global section: resolution reads one document and searches no
+parent directory, so acting on `root = true` (no further `.editorconfig` files up the tree) is left to the caller.
 
 ## Resolution layering
 
@@ -305,7 +322,8 @@ if (entry is not null)
 ```
 
 Only the `SourceLocation.LineNumber` is reliably populated; line position and length are approximate, and
-`SourceLocation.Path` is propagated only when the document was loaded from a file rather than parsed from a string.
+`SourceLocation.Path` is the full path of the file when the document was loaded from one with `Load(path)`, and `null`
+when it was parsed from a string or loaded from a stream or a text reader.
 
 ## Saving (round-trip)
 
