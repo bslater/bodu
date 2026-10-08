@@ -172,7 +172,7 @@ language follows EditorConfig:
 | `*` | Any characters except `/`. |
 | `**` | Any characters including `/`. |
 | `?` | Any single character. |
-| `[abc]` / `[!abc]` | Character class / negated character class. |
+| `[abc]` / `[!abc]` | Character class / negated character class; a bracket expression that holds a `/` is literal text. |
 | `{a,b,c}` | Alternation. |
 | `[*.cs]` | All `.cs` files at any depth (unanchored). |
 | `[src/**/*.cs]` | All `.cs` files under `src/` (anchored to `PathRoot`). |

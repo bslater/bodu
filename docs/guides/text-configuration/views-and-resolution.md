@@ -216,7 +216,7 @@ The glob grammar:
 | `?` | A single character except `/`. |
 | `{a,b,c}` | Alternation (nesting allowed). |
 | `{n1..n2}` | Inclusive integer range. |
-| `[seq]` / `[!seq]` | Character set or its complement. |
+| `[seq]` / `[!seq]` | Character set or its complement. A bracket expression that holds a `/` is literal text, brackets included, since one character cannot match a path separator. |
 | `\` | Escape the next character. |
 
 Patterns without `/` match at any depth. Patterns with `/` anchor to the start of the path. The grammar is the EditorConfig 0.17.2 specification verbatim, plus a bounded process-wide pattern cache so the same pattern compiled twice does not recompile.

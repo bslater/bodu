@@ -34,7 +34,9 @@ namespace Bodu.Text.Configuration;
 /// </item>
 /// <item>
 /// <description>
-/// <c>[seq]</c> - matches a single character in the set; <c>[!seq]</c> matches any character not in the set.
+/// <c>[seq]</c> - matches a single character in the set; <c>[!seq]</c> matches any character not in the set. A bracket
+/// expression that holds a <c>/</c> is literal text, brackets included, because a single character cannot match a path
+/// separator.
 /// </description>
 /// </item>
 /// <item>
