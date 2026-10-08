@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+
 namespace Bodu.Text.Ini;
 
 /// <summary>
@@ -61,5 +63,45 @@ public partial class IniSerializerTests
         {
             _ = IniSerializer.SerializeSection("database", section, (IIniSectionFactory<DatabaseSection>)null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that a value the factory supplies that INI cannot hold throws <see cref="IniSerializationException" />
+    /// naming the section and the key, with the writer's <see cref="ArgumentException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void SerializeSection_WhenFactoryValueCannotBeWritten_ShouldThrowIniSerializationException()
+    {
+        var section = new DatabaseSection { Host = "db\nexample", Port = 1 };
+
+        IniSerializationException ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.SerializeSection("database", section, new DatabaseSectionFactory());
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
+        Assert.Contains("'database'", ex.Message);
+        Assert.Contains("'Host'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section name INI would read back as something else throws
+    /// <see cref="IniSerializationException" /> naming the section, with the writer's <see cref="ArgumentException" />
+    /// as the inner exception, from the buffer-writer overload as well.
+    /// </summary>
+    [TestMethod]
+    public void SerializeSection_WhenSectionNameCannotBeWritten_ShouldThrowIniSerializationException()
+    {
+        var section = new DatabaseSection { Host = "db.example.com", Port = 1 };
+
+        IniSerializationException ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            IniSerializer.SerializeSection(new ArrayBufferWriter<byte>(), "database ", section, new DatabaseSectionFactory());
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
+        Assert.Contains("'database '", ex.Message);
     }
 }
