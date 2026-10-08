@@ -25,8 +25,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="records" /> or <paramref name="factory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
-    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
     /// </exception>
     public static string Serialize<TRecord>(IEnumerable<TRecord> records, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
@@ -50,8 +50,8 @@ public static partial class DelimitedSerializer
     /// <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
-    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
     /// </exception>
     public static void Serialize<TRecord>(IBufferWriter<byte> destination, IEnumerable<TRecord> records, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
@@ -103,8 +103,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the text is not valid delimited data.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
-    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     public static List<TRecord> Deserialize<TRecord>(string text, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
@@ -127,8 +127,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited data.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
-    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     public static List<TRecord> Deserialize<TRecord>(ReadOnlySpan<byte> utf8Delimited, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {
@@ -160,8 +160,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
-    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     public static List<TRecord> Deserialize<TRecord>(Stream source, IDelimitedRecordFactory<TRecord> factory, DelimitedSerializerOptions? options = null)
     {

@@ -66,8 +66,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <typeparamref name="T" /> is not a collection of records.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
-    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -93,8 +93,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <typeparamref name="T" /> is not a collection of records.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
-    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -156,8 +156,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <typeparamref name="T" /> is not a collection of records.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
-    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -184,8 +184,8 @@ public static partial class DelimitedSerializer
     /// <exception cref="DelimitedFormatException">Thrown when the text is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
-    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -206,8 +206,8 @@ public static partial class DelimitedSerializer
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
-    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -247,8 +247,8 @@ public static partial class DelimitedSerializer
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
-    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
