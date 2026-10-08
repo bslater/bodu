@@ -122,6 +122,80 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that a <c>#</c> separated from the <c>=</c> by whitespace starts an inline comment, so the entry's value
+    /// is empty rather than the comment text.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text.</param>
+    [TestMethod]
+    [DataRow("one space", "KEY= # comment\n")]
+    [DataRow("two spaces", "KEY=  # comment\n")]
+    [DataRow("a tab", "KEY=\t# comment\n")]
+    [DataRow("no final line feed", "KEY= # comment")]
+    public void Read_WhenWhitespaceSeparatesTheAssignmentFromAHash_ShouldReadAnEmptyValue(string testName, string source)
+    {
+        _ = testName;
+
+        List<string> tokens = Transcribe(source);
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", "String:", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that an entry whose value is only an inline comment does not swallow the entry on the next line.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenAnEmptyValueIsFollowedByACommentAndAnotherEntry_ShouldReadBothEntries()
+    {
+        List<string> tokens = Transcribe("KEY= # comment\nOTHER=val\n");
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", "String:", "Name:OTHER", "String:val", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that a <c>#</c> with no whitespace before it stays part of an unquoted value, whether it opens the
+    /// value or follows other text.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text.</param>
+    /// <param name="value">The expected value.</param>
+    [TestMethod]
+    [DataRow("a hash opening the value", "KEY=#value\n", "#value")]
+    [DataRow("a hash inside a URL", "KEY=http://host/#anchor\n", "http://host/#anchor")]
+    public void Read_WhenAHashHasNoWhitespaceBeforeIt_ShouldKeepItInTheValue(string testName, string source, string value)
+    {
+        _ = testName;
+
+        List<string> tokens = Transcribe(source);
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", $"String:{value}", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that with inline comments disallowed, a <c>#</c> after the whitespace that follows <c>=</c> stays part
+    /// of the value.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenInlineCommentsAreDisallowed_ShouldKeepAHashAfterTheAssignmentInTheValue()
+    {
+        List<string> tokens = Transcribe("KEY= # comment\n", new DotEnvReaderOptions { DisallowInlineComments = true });
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", "String:# comment", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
     /// Verifies that an empty document produces only the framing object tokens.
     /// </summary>
     [TestMethod]
