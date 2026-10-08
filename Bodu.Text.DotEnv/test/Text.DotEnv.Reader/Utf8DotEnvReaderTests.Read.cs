@@ -374,6 +374,56 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that the message for a key that starts with a character keys may not hold names that character as
+    /// written, whatever its UTF-8 length.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="character">The character that starts the key.</param>
+    [TestMethod]
+    [DataRow("a one-byte character", "-")]
+    [DataRow("a two-byte character", "é")]
+    [DataRow("a three-byte character", "€")]
+    [DataRow("a four-byte character", "\U0001F600")]
+    public void Read_WhenKeyStartsWithACharacterKeysCannotHold_ShouldNameItInTheMessage(string testName, string character)
+    {
+        _ = testName;
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe($"{character}KEY=1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains($"'{character}'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the message for a key that starts with a byte that does not begin a valid UTF-8 sequence names
+    /// that byte in hexadecimal rather than decoding it as a character.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="value">The byte that starts the key.</param>
+    /// <param name="named">The text the message should name.</param>
+    [TestMethod]
+    [DataRow("a byte that never starts a sequence", 0xFF, "'0xFF'")]
+    [DataRow("a lead byte without its continuation", 0xC3, "'0xC3'")]
+    [DataRow("a continuation byte", 0x80, "'0x80'")]
+    public void Read_WhenKeyStartsWithAByteThatIsNotUtf8_ShouldNameTheByteInHex(string testName, int value, string named)
+    {
+        _ = testName;
+        byte[] bytes = [(byte)value, .. "=1\n"u8];
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            var reader = new Utf8DotEnvReader(bytes);
+            while (reader.Read())
+            {
+            }
+        });
+
+        Assert.IsTrue(ex.Message.Contains(named, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that an empty document produces only the framing object tokens.
     /// </summary>
     [TestMethod]
