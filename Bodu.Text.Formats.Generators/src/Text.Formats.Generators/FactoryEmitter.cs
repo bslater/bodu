@@ -94,7 +94,7 @@ internal static class FactoryEmitter
         AppendLine(builder, indent + 1, "return new string[]");
         AppendLine(builder, indent + 1, "{");
         foreach (MemberModel member in model.Members)
-            AppendLine(builder, indent + 2, $"{BuildToStringExpression(member, "record")},");
+            AppendLine(builder, indent + 2, $"{BuildToStringExpression(member, "record", model.Kind)},");
         AppendLine(builder, indent + 1, "};");
         AppendLine(builder, indent, "}");
         AppendLine(builder, indent, string.Empty);
@@ -108,7 +108,7 @@ internal static class FactoryEmitter
         for (int i = 0; i < model.Members.Count; i++)
         {
             AppendLine(builder, indent + 2, $"if (fields.Length > {i})");
-            AppendLine(builder, indent + 3, $"result.{model.Members[i].PropertyName} = {BuildFromStringExpression(model.Members[i], $"fields[{i}]")};");
+            AppendLine(builder, indent + 3, $"result.{model.Members[i].PropertyName} = {BuildFromStringExpression(model.Members[i], $"fields[{i}]", model.Kind)};");
         }
 
         AppendLine(builder, indent + 2, "return result;");
@@ -159,7 +159,7 @@ internal static class FactoryEmitter
         AppendLine(builder, indent + 1, $"return new {Pair}[]");
         AppendLine(builder, indent + 1, "{");
         foreach (MemberModel member in model.Members)
-            AppendLine(builder, indent + 2, $"new {Pair}(\"{Escape(member.WireName)}\", {BuildToStringExpression(member, "section")}),");
+            AppendLine(builder, indent + 2, $"new {Pair}(\"{Escape(member.WireName)}\", {BuildToStringExpression(member, "section", model.Kind)}),");
         AppendLine(builder, indent + 1, "};");
         AppendLine(builder, indent, "}");
         AppendLine(builder, indent, string.Empty);
@@ -218,7 +218,7 @@ internal static class FactoryEmitter
         foreach (MemberModel member in model.Members)
         {
             AppendLine(builder, indent + 2, $"case \"{Escape(member.WireName)}\":");
-            AppendLine(builder, indent + 3, $"result.{member.PropertyName} = {BuildFromStringExpression(member, "value")};");
+            AppendLine(builder, indent + 3, $"result.{member.PropertyName} = {BuildFromStringExpression(member, "value", model.Kind)};");
             AppendLine(builder, indent + 3, "return;");
         }
 
@@ -230,7 +230,7 @@ internal static class FactoryEmitter
         {
             AppendLine(builder, indent + 1, $"if (string.Equals(name, \"{Escape(member.WireName)}\", global::System.StringComparison.OrdinalIgnoreCase))");
             AppendLine(builder, indent + 1, "{");
-            AppendLine(builder, indent + 2, $"result.{member.PropertyName} = {BuildFromStringExpression(member, "value")};");
+            AppendLine(builder, indent + 2, $"result.{member.PropertyName} = {BuildFromStringExpression(member, "value", model.Kind)};");
             AppendLine(builder, indent + 2, "return;");
             AppendLine(builder, indent + 1, "}");
         }
@@ -240,21 +240,22 @@ internal static class FactoryEmitter
 
     /// <summary>
     /// Builds the expression converting a member value on <paramref name="receiver" /> to its wire string, mirroring
-    /// the reflection binders' invariant formatting.
+    /// the invariant formatting of the format's reflection binder.
     /// </summary>
     /// <param name="member">The member model.</param>
     /// <param name="receiver">The instance expression.</param>
+    /// <param name="kind">The format whose reflection binder the expression mirrors.</param>
     /// <returns>The conversion expression text.</returns>
-    private static string BuildToStringExpression(MemberModel member, string receiver)
+    private static string BuildToStringExpression(MemberModel member, string receiver, FactoryKind kind)
     {
         string access = $"{receiver}.{member.PropertyName}";
         if (member.IsNullable)
-            return $"{access}.HasValue ? {FormatValue(member, $"{access}.Value")} : string.Empty";
+            return $"{access}.HasValue ? {FormatValue(member, $"{access}.Value", kind)} : string.Empty";
 
         if (member.Scalar == ScalarKind.String)
             return $"{access} ?? string.Empty";
 
-        return FormatValue(member, access);
+        return FormatValue(member, access, kind);
     }
 
     /// <summary>
@@ -262,8 +263,14 @@ internal static class FactoryEmitter
     /// </summary>
     /// <param name="member">The member model.</param>
     /// <param name="value">The non-null value expression.</param>
+    /// <param name="kind">The format whose reflection binder the expression mirrors.</param>
     /// <returns>The formatting expression text.</returns>
-    private static string FormatValue(MemberModel member, string value) =>
+    /// <remarks>
+    /// The delimited binder writes temporal values in their round-trip forms, <c>O</c> for <see cref="DateTime" /> and
+    /// <see cref="DateTimeOffset" /> and the constant <c>c</c> form for <see cref="TimeSpan" />; the INI binder writes
+    /// the invariant general forms, which for <see cref="TimeSpan" /> is the same <c>c</c> form.
+    /// </remarks>
+    private static string FormatValue(MemberModel member, string value, FactoryKind kind) =>
         member.Scalar switch
         {
             ScalarKind.String => value,
@@ -271,20 +278,30 @@ internal static class FactoryEmitter
             ScalarKind.Char => $"{value}.ToString()",
             ScalarKind.Number => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.Guid => $"{value}.ToString()",
+            ScalarKind.DateTime or ScalarKind.DateTimeOffset when kind == FactoryKind.Delimited =>
+                $"{value}.ToString(\"O\", global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.DateTime => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.DateTimeOffset => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
+            ScalarKind.TimeSpan when kind == FactoryKind.Delimited =>
+                $"{value}.ToString(\"c\", global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.TimeSpan => $"{value}.ToString()",
             _ => $"{value}.ToString()",
         };
 
     /// <summary>
-    /// Builds the expression converting a wire string to the member's type, mirroring the reflection binders' invariant
-    /// parsing. An empty string maps a nullable member to <see langword="null" />.
+    /// Builds the expression converting a wire string to the member's type, mirroring the invariant parsing of the
+    /// format's reflection binder.
     /// </summary>
     /// <param name="member">The member model.</param>
     /// <param name="value">The wire string expression.</param>
+    /// <param name="kind">The format whose reflection binder the expression mirrors.</param>
     /// <returns>The conversion expression text.</returns>
-    private static string BuildFromStringExpression(MemberModel member, string value)
+    /// <remarks>
+    /// An empty string maps a nullable member to <see langword="null" />. For a delimited record a string of white
+    /// space does too, as the delimited binder maps it, except for a nullable <see cref="char" />, which reads white
+    /// space as a <see cref="char" /> does; the INI binder maps only an empty string to <see langword="null" />.
+    /// </remarks>
+    private static string BuildFromStringExpression(MemberModel member, string value, FactoryKind kind)
     {
         string parse = member.Scalar switch
         {
@@ -300,9 +317,14 @@ internal static class FactoryEmitter
             _ => value,
         };
 
-        return member.IsNullable
-            ? $"{value}.Length == 0 ? default({member.TypeDisplay}?) : {parse}"
-            : parse;
+        if (!member.IsNullable)
+            return parse;
+
+        string holdsNoValue = kind == FactoryKind.Delimited && member.Scalar != ScalarKind.Char
+            ? $"string.IsNullOrWhiteSpace({value})"
+            : $"{value}.Length == 0";
+
+        return $"{holdsNoValue} ? default({member.TypeDisplay}?) : {parse}";
     }
 
     /// <summary>

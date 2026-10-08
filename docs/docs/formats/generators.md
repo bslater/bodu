@@ -18,7 +18,7 @@ For every annotated type the generator adds one file, `<Namespace>.<Type>.Delimi
 - a public static property - `DelimitedFactory` of type <xref:Bodu.Text.Delimited.IDelimitedRecordFactory`1>, or `IniFactory` of type <xref:Bodu.Text.Ini.IIniSectionFactory`1> - holding a singleton;
 - a private nested class implementing the interface: a static array of the resolved wire names in declaration order (`Headers` / `Keys`), a `GetFields` / `GetEntries` method that formats each member, a `Create` method that constructs the instance and binds decoded strings back, and a `Bind` helper that matches names ordinally first and case-insensitively as a fallback.
 
-The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and maps a `Nullable<T>` member to and from the empty string - mirroring the runtime reflection binders so the two paths are interchangeable.
+The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and writes a `null` `Nullable<T>` member as the empty string - mirroring the runtime reflection binders so the two paths are interchangeable. A Delimited factory follows the Delimited binder: it writes `DateTime` and `DateTimeOffset` in the round-trip `O` form and `TimeSpan` in the constant `c` form, and binds `null` to a nullable member whose field is empty or white space, except a `char?` member, which takes only an empty field as `null`. An INI factory follows the INI binder: the invariant general forms, and `null` for an empty value only.
 
 ## Wiring the generator into a project
 
@@ -94,7 +94,7 @@ public sealed class TradeFactory : IDelimitedRecordFactory<Trade>
         record.Symbol,
         record.Quantity.ToString(CultureInfo.InvariantCulture),
         record.Price.ToString(CultureInfo.InvariantCulture),
-        record.TradedAt.ToString(CultureInfo.InvariantCulture),
+        record.TradedAt.ToString("O", CultureInfo.InvariantCulture),
         record.Venue ?? string.Empty,
     ];
 
@@ -119,7 +119,7 @@ public sealed class TradeFactory : IDelimitedRecordFactory<Trade>
 }
 ```
 
-Format with `InvariantCulture` on the way out and parse with it on the way in, and the hand-written factory produces byte-identical output to both the generated factory and the reflection binder. The INI contract is the same shape over key/value pairs: `Keys`, `GetEntries(section)` returning `IEnumerable<KeyValuePair<string, string>>`, and `Create(entries)`.
+Format with `InvariantCulture`, in the round-trip `O` form for `DateTime` and `DateTimeOffset`, on the way out and parse with `InvariantCulture` on the way in, and the hand-written factory produces byte-identical output to both the generated factory and the reflection binder. The INI contract is the same shape over key/value pairs: `Keys`, `GetEntries(section)` returning `IEnumerable<KeyValuePair<string, string>>`, and `Create(entries)`.
 
 ## Trimming and AOT
 
