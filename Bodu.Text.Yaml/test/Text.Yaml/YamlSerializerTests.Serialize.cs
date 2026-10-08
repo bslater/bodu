@@ -85,6 +85,42 @@ public partial class YamlSerializerTests
         Assert.AreEqual("destination", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that a public field a derived type hides with <see langword="new" /> and a field of another type is
+    /// written once, from the derived declaration, rather than failing as two members mapped to one key.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenFieldIsHiddenWithNew_ShouldWriteTheDerivedField()
+    {
+        string text = YamlSerializer.Serialize(new HiddenFieldDerivedModel(), new YamlSerializerOptions { IncludeFields = true });
+
+        Assert.AreEqual("Value: derived\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property a derived type hides with <see langword="new" /> and a property of another type is
+    /// written once, from the derived declaration.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenPropertyIsHiddenByAnotherType_ShouldWriteTheDerivedProperty()
+    {
+        string text = YamlSerializer.Serialize(new HiddenPropertyDerivedModel());
+
+        Assert.AreEqual("Value: derived\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property hidden at each of two levels of derivation is written once, from the most derived
+    /// declaration.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsHiddenTwoLevelsDown_ShouldWriteTheMostDerivedMember()
+    {
+        string text = YamlSerializer.Serialize(new HiddenTwiceDerivedModel());
+
+        Assert.AreEqual("Value: derived\n", text);
+    }
+
     /// <summary>A custom converter that reads and writes a value as an uppercase string.</summary>
     private sealed class UpperConverter
         : YamlConverter<string>

@@ -345,4 +345,40 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual(0L, destination.Length);
     }
+
+    /// <summary>
+    /// Verifies that a public field a derived type hides with <see langword="new" /> and a field of another type is
+    /// written once, from the derived declaration, rather than failing as two members mapped to one key.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenFieldIsHiddenWithNew_ShouldWriteTheDerivedField()
+    {
+        string text = Encoding.Latin1.GetString(BencodeSerializer.Serialize(new HiddenFieldDerivedModel(), new BencodeSerializerOptions { IncludeFields = true }));
+
+        Assert.AreEqual("d5:Value7:derivede", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property a derived type hides with <see langword="new" /> and a property of another type is
+    /// written once, from the derived declaration.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenPropertyIsHiddenByAnotherType_ShouldWriteTheDerivedProperty()
+    {
+        string text = Encoding.Latin1.GetString(BencodeSerializer.Serialize(new HiddenPropertyDerivedModel()));
+
+        Assert.AreEqual("d5:Value7:derivede", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property hidden at each of two levels of derivation is written once, from the most derived
+    /// declaration.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsHiddenTwoLevelsDown_ShouldWriteTheMostDerivedMember()
+    {
+        string text = Encoding.Latin1.GetString(BencodeSerializer.Serialize(new HiddenTwiceDerivedModel()));
+
+        Assert.AreEqual("d5:Value7:derivede", text);
+    }
 }

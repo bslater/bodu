@@ -776,6 +776,18 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a key whose property a derived type hides with <see langword="new" /> and a property of another
+    /// type binds the derived property and leaves the hidden one at its initial value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPropertyIsHiddenByAnotherType_ShouldBindTheDerivedProperty()
+    {
+        HiddenPropertyDerivedModel model = TomlSerializer.Deserialize<HiddenPropertyDerivedModel>("Value = \"text\"\n");
+
+        Assert.AreEqual(("text", 1), (model.Value, ((HiddenPropertyBaseModel)model).Value));
+    }
+
+    /// <summary>
     /// A model with a single <see cref="double" /> member.
     /// </summary>
     private sealed class DoubleMemberModel
