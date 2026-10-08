@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -117,5 +119,168 @@ public partial class DelimitedSerializerTests
         {
             _ = DelimitedSerializer.Serialize(new List<Person>(), (IDelimitedRecordFactory<Person>)null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, serializing records writes their value
+    /// rows without the header row.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNoHeaderIsSet_ShouldNotWriteTheHeaderRow()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+
+        string text = DelimitedSerializer.Serialize(new List<NameRecord> { new() { Name = "test" } }, options);
+
+        Assert.AreEqual("test\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> property is written as an empty field that keeps its column.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAPropertyIsNull_ShouldWriteAnEmptyField()
+    {
+        string text = DelimitedSerializer.Serialize(new List<StringPairRecord> { new() { A = null, B = "x" } });
+
+        Assert.AreEqual("A,B\r\n,x\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property that hides a base type's property of the same name with the <see langword="new" />
+    /// modifier is written as a single column, the hiding property's.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAPropertyHidesABasePropertyWithNew_ShouldWriteOneColumn()
+    {
+        string text = DelimitedSerializer.Serialize(new List<HidingRecord> { new() { Name = "x" } });
+
+        Assert.AreEqual("Name\r\nx\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing records whose every property is ignored does not throw, and writes neither the ignored
+    /// names nor their values.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenEveryPropertyIsIgnored_ShouldNotThrow()
+    {
+        string text = DelimitedSerializer.Serialize(new List<IgnoredRecord> { new() { Secret = "hidden", Comment = "unseen" } });
+
+        Assert.DoesNotContain("Secret", text);
+        Assert.DoesNotContain("hidden", text);
+        Assert.DoesNotContain("Comment", text);
+        Assert.DoesNotContain("unseen", text);
+    }
+
+    /// <summary>
+    /// Verifies that a static property of the record type is not written as a column.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRecordTypeHasAStaticProperty_ShouldNotWriteIt()
+    {
+        string text = DelimitedSerializer.Serialize(new List<StaticPropertyRecord> { new() { A = "x" } });
+
+        Assert.AreEqual("A\r\nx\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing an empty collection writes the header row alone, the delimited guide taking the header
+    /// row from the record type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheCollectionIsEmpty_ShouldWriteTheHeaderRow()
+    {
+        string text = DelimitedSerializer.Serialize(new List<Trade>());
+
+        Assert.AreEqual("TradeId,Symbol,Price\r\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that under a current culture whose decimal separator is a comma, a <see cref="double" /> is written with
+    /// the invariant culture's decimal point and reads back to the same value.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheCurrentCultureUsesADecimalComma_ShouldWriteInvariantNumbers()
+    {
+        CultureInfo previous = CultureInfo.CurrentCulture;
+        string text;
+        List<DoubleRecord> restored;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+
+            text = DelimitedSerializer.Serialize(new List<DoubleRecord> { new() { X = 1.5 } });
+            restored = DelimitedSerializer.Deserialize<DoubleRecord>(text);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previous;
+        }
+
+        Assert.AreEqual("X\r\n1.5\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(1.5, restored[0].X);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="double.NaN" /> is written as <c>NaN</c> and reads back as NaN.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenADoubleIsNaN_ShouldWriteNaN()
+    {
+        string text = DelimitedSerializer.Serialize(new List<DoubleRecord> { new() { X = double.NaN } });
+        List<DoubleRecord> restored = DelimitedSerializer.Deserialize<DoubleRecord>(text);
+
+        Assert.AreEqual("X\r\nNaN\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.IsTrue(double.IsNaN(restored[0].X));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="long.MinValue" /> and <see cref="long.MaxValue" /> are written with every digit and read
+    /// back unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenALongPropertyHoldsItsExtremes_ShouldWriteEveryDigit()
+    {
+        var records = new List<FileSizeRecord> { new() { FileSize = long.MinValue }, new() { FileSize = long.MaxValue } };
+
+        string text = DelimitedSerializer.Serialize(records);
+        List<FileSizeRecord> restored = DelimitedSerializer.Deserialize<FileSizeRecord>(text);
+
+        Assert.AreEqual("FileSize\r\n-9223372036854775808\r\n9223372036854775807\r\n", text);
+        Assert.AreEqual(2, restored.Count);
+        Assert.AreEqual(long.MinValue, restored[0].FileSize);
+        Assert.AreEqual(long.MaxValue, restored[1].FileSize);
+    }
+
+    /// <summary>
+    /// Verifies that a formatted value holding the delimiter is quoted: with <c>.</c> as the delimiter, 1.5 is written
+    /// <c>"1.5"</c> and reads back as 1.5.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAFormattedValueHoldsTheDelimiter_ShouldQuoteIt()
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = '.' };
+
+        string text = DelimitedSerializer.Serialize(new List<DoubleRecord> { new() { X = 1.5 } }, options);
+        List<DoubleRecord> restored = DelimitedSerializer.Deserialize<DoubleRecord>(text, options);
+
+        Assert.AreEqual("X\r\n\"1.5\"\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(1.5, restored[0].X);
+    }
+
+    /// <summary>
+    /// Verifies that <see langword="null" /> nullable properties are written as empty fields after the values before
+    /// them.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullablePropertyIsNull_ShouldWriteAnEmptyField()
+    {
+        string text = DelimitedSerializer.Serialize(new List<NullableColumnsRecord> { new() { Id = 1, Value = null, Name = null } });
+
+        Assert.AreEqual("Id,Value,Name\r\n1,,\r\n", text);
     }
 }
