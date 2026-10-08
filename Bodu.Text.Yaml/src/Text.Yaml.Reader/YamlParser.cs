@@ -228,7 +228,19 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
     /// <returns>The row index of the parsed node.</returns>
-    private int ParseBlockNode(int minIndent)
+    private int ParseBlockNode(int minIndent) =>
+        ParseBlockNode(minIndent, minIndent - 1);
+
+    /// <summary>
+    /// Parses a block-context node: a block mapping, a block sequence, or a scalar, after consuming any node properties
+    /// (anchor and tag), with an explicit parent indentation for a block scalar.
+    /// </summary>
+    /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
+    /// <param name="blockScalarParentIndent">
+    /// The indentation of the node's parent, from which a block scalar's content indentation is counted.
+    /// </param>
+    /// <returns>The row index of the parsed node.</returns>
+    private int ParseBlockNode(int minIndent, int blockScalarParentIndent)
     {
         SkipBlankCommentLines();
 
@@ -276,10 +288,10 @@ internal sealed partial class YamlParser
             return Finish(alias, anchor);
         }
 
-        // A block scalar (literal or folded). The floor is the parent node's indentation (one less than the column at
-        // which this node's content must appear), so a less-indented following line ends the scalar.
+        // A block scalar (literal or folded). The floor is the parent node's indentation, so a less-indented following
+        // line ends the scalar.
         if (c == (byte)'|' || c == (byte)'>')
-            return Finish(ParseBlockScalar(minIndent - 1, anchor, tag), anchor);
+            return Finish(ParseBlockScalar(blockScalarParentIndent, anchor, tag), anchor);
 
         // Otherwise the node is either a block mapping or a single scalar. Decide by probing for a key indicator.
         if (TryDetectBlockMapping(col))
@@ -579,8 +591,10 @@ internal sealed partial class YamlParser
             }
             else
             {
-                // Content on the same line as the dash; its effective indent is the column after the dash.
-                element = ParseBlockNode(entryColumn + 1);
+                // Content on the same line as the dash; its effective indent is the column after the dash. A block
+                // scalar there still takes the dash's column as its parent indentation, so that an indentation
+                // indicator, or the detected indentation, counts from the dash.
+                element = ParseBlockNode(entryColumn + 1, indent);
             }
 
             AppendChild(sequence, element);
