@@ -81,6 +81,26 @@ public partial class IniObjectTests
     }
 
     /// <summary>
+    /// Verifies that writing a tree whose value begins or ends with whitespace throws <see cref="ArgumentException" />
+    /// rather than writing a value the reader would trim.
+    /// </summary>
+    /// <param name="value">The value of the entry.</param>
+    [TestMethod]
+    [DataRow(" a", DisplayName = "leading space")]
+    [DataRow("a\t", DisplayName = "trailing tab")]
+    [DataRow(" ", DisplayName = "only a space")]
+    public void WriteTo_WhenValueHasSurroundingWhitespace_ShouldThrowArgumentException(string value)
+    {
+        var root = new IniObject();
+        root["key"] = new IniValue(value);
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = root.ToUtf8Bytes();
+        });
+    }
+
+    /// <summary>
     /// Verifies that a leading comment holding a line break is written as one comment line per line of its text.
     /// </summary>
     [TestMethod]
