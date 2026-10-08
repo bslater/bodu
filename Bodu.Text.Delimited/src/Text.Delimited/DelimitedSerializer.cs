@@ -31,8 +31,10 @@ namespace Bodu.Text.Delimited;
 /// <para>
 /// Field values convert with the invariant culture. An empty field, or one of white space only, binds
 /// <see langword="null" /> to a member of a nullable value type, such as <see cref="Nullable{T}" /> of
-/// <see cref="int" /> or of <see cref="DateTime" />. Other members convert the text as it is: a <see cref="string" />
-/// member keeps it, and a numeric or date member throws <see cref="DelimitedSerializationException" /> for it.
+/// <see cref="int" /> or of <see cref="DateTime" />. A nullable <see cref="char" /> is the exception: only an empty
+/// field binds <see langword="null" /> to it, and any other field converts as it does for a <see cref="char" /> member,
+/// so a single space binds a space. Other members convert the text as it is: a <see cref="string" /> member keeps it,
+/// and a numeric or date member throws <see cref="DelimitedSerializationException" /> for it.
 /// </para>
 /// <para>
 /// Temporal values are written in invariant round-trip forms and read back equal: <see cref="DateTime" /> and

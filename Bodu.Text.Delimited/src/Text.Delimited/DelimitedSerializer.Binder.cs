@@ -170,17 +170,22 @@ public static partial class DelimitedSerializer
     /// <returns>The converted value.</returns>
     /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
     /// <remarks>
-    /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type. Every
-    /// other target converts the text as it is. Temporal values parse leniently with the invariant culture, so the
-    /// round-trip forms written by <see cref="ValueToString(object?)" /> read back, and so do the invariant general
-    /// forms that earlier versions wrote.
+    /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type,
+    /// except that a nullable <see cref="char" /> converts to <see langword="null" /> for an empty value alone and
+    /// reads white space as a <see cref="char" /> does. Every other target converts the text as it is. Temporal values
+    /// parse leniently with the invariant culture, so the round-trip forms written by
+    /// <see cref="ValueToString(object?)" /> read back, and so do the invariant general forms that earlier versions
+    /// wrote.
     /// </remarks>
     private static object? ConvertFromString(string raw, Type targetType, string column)
     {
-        Type underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
+        Type? nullableUnderlying = Nullable.GetUnderlyingType(targetType);
+        Type underlying = nullableUnderlying ?? targetType;
 
-        // A blank cell is often padded with spaces, so white space holds no value either.
-        if (Nullable.GetUnderlyingType(targetType) is not null && string.IsNullOrWhiteSpace(raw))
+        // A blank cell is often padded with spaces, so white space holds no value either; but one space is a character,
+        // so a char? holds no value only when the text is empty.
+        bool holdsNoValue = raw.Length == 0 || (underlying != typeof(char) && string.IsNullOrWhiteSpace(raw));
+        if (nullableUnderlying is not null && holdsNoValue)
             return null;
 
         try
