@@ -75,6 +75,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected text follows the INI section header on line {0}; only whitespace or a comment may follow the closing ']'..
+        /// </summary>
+        internal static string Format_Invalid_IniSectionTrailingText {
+            get {
+                return ResourceManager.GetString("Format_Invalid_IniSectionTrailingText", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Malformed INI entry on line {0}; expected 'key=value'..
         /// </summary>
         internal static string Format_Invalid_IniMissingAssignment {

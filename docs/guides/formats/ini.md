@@ -113,6 +113,8 @@ The defaults merge repeated sections and keep the last duplicate key - the permi
 
 `=` only (no `:`), values literal to end of line (quotes preserved, inline `;`/`#` kept as content), `;` and `#` full-line comments, BOM skipped, LF/CRLF/CR equivalent. See [Parser policies](../../docs/formats/parser-policies.md).
 
+A section name runs to the first `]` that only whitespace or a comment follows, so a name may contain `]`: `[foo]bar]` names the section `foo]bar`, and `[server] ; primary` names `server`. A comment after a header is skipped, not reported as a comment token, so the mutable DOM does not keep it; any other text after the header, as in `[server] primary`, throws `IniFormatException`.
+
 ## Exceptions
 
 `IniFormatException` for malformed input and duplicate-policy violations (line/offset attached); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value).

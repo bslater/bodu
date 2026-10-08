@@ -64,6 +64,9 @@
   <data name="Format_Invalid_IniEmptySectionName" xml:space="preserve">
     <value>An INI section header has an empty name.</value>
   </data>
+  <data name="Format_Invalid_IniSectionTrailingText" xml:space="preserve">
+    <value>Unexpected text follows the INI section header on line {0}; only whitespace or a comment may follow the closing ']'.</value>
+  </data>
   <data name="Format_Invalid_IniMissingAssignment" xml:space="preserve">
     <value>Malformed INI entry on line {0}; expected 'key=value'.</value>
   </data>
