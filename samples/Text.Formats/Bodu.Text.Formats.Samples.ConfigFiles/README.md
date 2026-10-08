@@ -164,12 +164,12 @@ credentials - reporting the source line for each entry.
            key and value arrive as separate tokens, so the loop holds the key across the read - that is the shape of
            every forward-only reader, and why the line number is captured with the key rather than with the value.
 
-  line  4: APP_ENV = 'production'
-  line  5: APP_PORT = '8080'
-  line  6: DATABASE_URL = 'postgres://app:placeholder@localhost:5432/app_db'  <- check for embedded credentials
-  line  7: FEATURE_FLAGS = 'search,exports'
-  line  8: GREETING = 'Hello, operator'
-  line  9: EMPTY_VALUE = ''
+  line  3: APP_ENV = 'production'
+  line  4: APP_PORT = '8080'
+  line  5: DATABASE_URL = 'postgres://app:placeholder@localhost:5432/app_db'  <- check for embedded credentials
+  line  6: FEATURE_FLAGS = 'search,exports'
+  line  7: GREETING = 'Hello, operator'
+  line  8: EMPTY_VALUE = ''
   (the line number comes from the reader, not reconstructed - a materialized document would have discarded it)
 ```
 
