@@ -32,4 +32,22 @@ public partial class Utf8DelimitedWriterTests
 
         Assert.AreEqual("a,b,c\r\nx,y,z\r\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
     }
+
+    /// <summary>
+    /// Verifies that the header row follows the same quoting rules as a value row: a first name beginning with the
+    /// comment character and a name with a space at either end are quoted.
+    /// </summary>
+    [TestMethod]
+    public void WriteEndObject_WhenHeaderNamesWouldReadBackDifferently_ShouldQuoteThem()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8DelimitedWriter(buffer);
+
+        writer.WriteStartArray();
+        WriteRecord(ref writer, ("#id", "1"), (" name ", "Ada"));
+        writer.WriteEndArray();
+        writer.Flush();
+
+        Assert.AreEqual("\"#id\",\" name \"\r\n1,Ada\r\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
+    }
 }
