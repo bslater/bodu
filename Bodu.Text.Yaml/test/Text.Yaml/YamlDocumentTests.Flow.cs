@@ -105,4 +105,67 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual("""["?a","?b"]""", ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that an empty entry in a flow mapping, a comma with no entry before it, is rejected, as it is in a flow
+    /// sequence.
+    /// </summary>
+    /// <param name="yaml">A flow mapping with an empty entry.</param>
+    [TestMethod]
+    [DataRow("{ , }", DisplayName = "a lone comma")]
+    [DataRow("{,}", DisplayName = "a lone comma, unspaced")]
+    [DataRow("{ , a: 1 }", DisplayName = "a leading comma")]
+    [DataRow("{foo, bar,, baz}", DisplayName = "two consecutive commas")]
+    [DataRow("{ a: 1,\n  ,\n  b: 2 }", DisplayName = "a comma alone on a line")]
+    public void Parse_WhenFlowMappingHasEmptyEntry_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a single trailing comma after a flow mapping's last entry is accepted.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenFlowMappingHasTrailingComma_ShouldParse()
+    {
+        using var document = YamlDocument.Parse("{ a: 1, b, }");
+
+        Assert.AreEqual("""{"a":1,"b":null}""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that the closing bracket of a flow collection that is a block mapping's value is rejected when it sits
+    /// left of the column of the mapping's keys.
+    /// </summary>
+    /// <param name="yaml">A block mapping whose flow value closes left of the mapping's keys.</param>
+    [TestMethod]
+    [DataRow(" foo: {\n  bar: boom\n}\n", DisplayName = "a flow mapping, closed at column 0 under a key at column 1")]
+    [DataRow(" foo: [\n  boom\n]\n", DisplayName = "a flow sequence, closed at column 0 under a key at column 1")]
+    [DataRow("a:\n  foo: {\n    bar: boom\n }\n", DisplayName = "a nested flow mapping, closed one column left")]
+    public void Parse_WhenFlowClosingBracketIsLeftOfItsKey_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the closing bracket of a flow collection that is a block mapping's value may sit in the column of
+    /// the mapping's keys.
+    /// </summary>
+    /// <param name="yaml">A block mapping whose flow value closes in the column of its keys.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("foo: {\n  bar: boom\n}\n", """{"foo":{"bar":"boom"}}""", DisplayName = "a flow mapping at column 0")]
+    [DataRow("a:\n  foo: [\n    1\n  ]\n", """{"a":{"foo":[1]}}""", DisplayName = "a nested flow sequence")]
+    public void Parse_WhenFlowClosingBracketIsInItsKeyColumn_ShouldParse(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
 }
