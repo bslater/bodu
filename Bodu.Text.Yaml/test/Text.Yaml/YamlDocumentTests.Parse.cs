@@ -196,6 +196,60 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that an alias naming an undefined anchor is reported at the alias, with its line, column and offset, in
+    /// block and flow collections.
+    /// </summary>
+    /// <param name="yaml">A document with an alias to an undefined anchor.</param>
+    /// <param name="line">The line of the alias.</param>
+    /// <param name="column">The column of the alias.</param>
+    /// <param name="offset">The byte offset of the alias.</param>
+    [TestMethod]
+    [DataRow("a: *x", 1, 4, 3, DisplayName = "a block mapping value")]
+    [DataRow("- *x", 1, 3, 2, DisplayName = "a block sequence entry")]
+    [DataRow("a: 1\nb:\n  - *nope\n", 3, 5, 12, DisplayName = "a nested block sequence entry")]
+    [DataRow("{ a: *x }", 1, 6, 5, DisplayName = "a flow mapping value")]
+    [DataRow("[ 1, *x ]", 1, 6, 5, DisplayName = "a flow sequence entry")]
+    public void Parse_WhenAliasIsUndefined_ShouldReportAliasPosition(string yaml, int line, int column, int offset)
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(column, ex.ColumnNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that a key a mapping repeats is reported where the repeated key starts, with its line, column and
+    /// offset, in block and flow mappings.
+    /// </summary>
+    /// <param name="yaml">A document with a repeated mapping key.</param>
+    /// <param name="line">The line of the repeated key.</param>
+    /// <param name="column">The column of the repeated key.</param>
+    /// <param name="offset">The byte offset of the repeated key.</param>
+    [TestMethod]
+    [DataRow("a: 1\nb: 2\na: 3\n", 3, 1, 10, DisplayName = "a block mapping")]
+    [DataRow("obj:\n  a: 1\n  b: 2\n  a: 3\n", 4, 3, 21, DisplayName = "a nested block mapping")]
+    [DataRow("- a: 1\n  a: 2\n", 2, 3, 9, DisplayName = "a compact mapping in a sequence")]
+    [DataRow("&k a: 1\n&j a: 2\n", 2, 1, 8, DisplayName = "an anchored key, from its anchor")]
+    [DataRow("? a\n: 1\n? a\n: 2\n", 3, 3, 10, DisplayName = "an explicit key")]
+    [DataRow("{ a: 1, b: 2, a: 3 }", 1, 15, 14, DisplayName = "a flow mapping")]
+    [DataRow("{ a: 1,\n  a: 2 }", 2, 3, 10, DisplayName = "a flow mapping across lines")]
+    public void Parse_WhenKeyIsDuplicated_ShouldReportKeyPosition(string yaml, int line, int column, int offset)
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(column, ex.ColumnNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
     /// Verifies that a tab indenting the third line of a document whose lines end in CRLF is reported at line 3, each
     /// CRLF counting as one line break.
     /// </summary>
