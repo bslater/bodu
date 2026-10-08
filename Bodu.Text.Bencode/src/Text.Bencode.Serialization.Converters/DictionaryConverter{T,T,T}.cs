@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text.Unicode;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Writer;
 using Bodu.Text.Serialization;
@@ -82,6 +83,15 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
         Dictionary<TKey, TValue> entries = [];
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
         {
+            // Every key kind is read from text, and a key that is not valid UTF-8 would decode with U+FFFD, which alters
+            // it and can merge it with another key, so it is refused rather than changed.
+            if (!Utf8.IsValid(reader.ValueSpan))
+            {
+                throw new BencodeSerializationException(
+                    string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_DictionaryKeyNotUtf8, reader.TokenStartIndex, typeof(TDictionary)),
+                    reader.TokenStartIndex);
+            }
+
             TKey key = ParseKey(reader.GetString());
             reader.Read();
             entries[key] = (TValue)_valueConverter.ReadAsObject(ref reader, typeof(TValue), options)!;

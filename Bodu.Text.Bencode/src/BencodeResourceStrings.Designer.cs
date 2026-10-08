@@ -199,6 +199,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary key at offset {0} is not valid UTF-8 text, which a BencodeObject key requires..
+        /// </summary>
+        internal static string Format_Invalid_BencodeNodeKeyNotUtf8 {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeNodeKeyNotUtf8", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected bencode token '{0}' at offset {1}..
         /// </summary>
         internal static string Format_Invalid_BencodeUnexpectedToken {
@@ -288,6 +297,15 @@ namespace Bodu {
         internal static string Op_Invalid_MissingRequiredMember {
             get {
                 return ResourceManager.GetString("Op_Invalid_MissingRequiredMember", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary key at offset {0} is not valid UTF-8 text, so it cannot be read as a key of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_DictionaryKeyNotUtf8 {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DictionaryKeyNotUtf8", resourceCulture);
             }
         }
 

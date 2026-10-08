@@ -6,6 +6,7 @@
 
 using System.Buffers;
 using System.Globalization;
+using System.Text.Unicode;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Writer;
 
@@ -203,7 +204,8 @@ public abstract class BencodeNode
     /// <param name="data">The Bencode source bytes.</param>
     /// <returns>The root node of the parsed tree.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode.
+    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode, or when it holds a dictionary
+    /// key that is not valid UTF-8 text, which a <see cref="BencodeObject" /> key requires.
     /// </exception>
     /// <remarks>
     /// The underlying reader enforces the canonical grammar - a single root value, ascending unique dictionary keys,
@@ -220,7 +222,8 @@ public abstract class BencodeNode
     /// <param name="options">The node options controlling property-name case sensitivity.</param>
     /// <returns>The root node of the parsed tree.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode.
+    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode, or when it holds a dictionary
+    /// key that is not valid UTF-8 text, which a <see cref="BencodeObject" /> key requires.
     /// </exception>
     /// <remarks>
     /// Every <see cref="BencodeObject" /> materialized while parsing adopts the comparison selected by
@@ -239,7 +242,8 @@ public abstract class BencodeNode
     /// <returns>The root node of the parsed tree.</returns>
     /// <exception cref="BencodeFormatException">
     /// Thrown when <paramref name="data" /> is empty or is not a single Bencode value acceptable under
-    /// <paramref name="documentOptions" />.
+    /// <paramref name="documentOptions" />, or when it holds a dictionary key that is not valid UTF-8 text, which a
+    /// <see cref="BencodeObject" /> key requires.
     /// </exception>
     /// <remarks>
     /// When <see cref="Document.BencodeDocumentOptions.AllowDuplicateKeys" /> is set, repeated keys collapse into the
@@ -320,6 +324,15 @@ public abstract class BencodeNode
                 var obj = new BencodeObject(options);
                 while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
                 {
+                    // A key that is not valid UTF-8 would decode with U+FFFD, which alters it and can merge it with
+                    // another key, so it is refused rather than changed.
+                    if (!Utf8.IsValid(reader.ValueSpan))
+                    {
+                        throw new BencodeFormatException(
+                            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeNodeKeyNotUtf8, reader.TokenStartIndex),
+                            reader.TokenStartIndex);
+                    }
+
                     string key = reader.GetString();
                     reader.Read();
                     obj[key] = ReadFrom(ref reader, options);

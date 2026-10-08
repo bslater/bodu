@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text.Unicode;
 using Bodu.Text.Bencode.Nodes;
 using Bodu.Text.Bencode.Reader;
 using Bodu.Text.Bencode.Serialization.Metadata;
@@ -50,6 +51,9 @@ internal sealed class ObjectConverter<T>
         Dictionary<string, BencodeNode?>? extensionEntries = null;
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
         {
+            // The key's bytes stay addressable after the reader moves on, because they are a slice of the input.
+            ReadOnlySpan<byte> nameBytes = reader.ValueSpan;
+            int nameOffset = reader.TokenStartIndex;
             string name = reader.GetString();
             reader.Read();
 
@@ -70,6 +74,14 @@ internal sealed class ObjectConverter<T>
             }
             else if (metadata.ExtensionData is not null)
             {
+                // An extension-data key is kept as text, so a key that is not valid UTF-8 is refused rather than altered.
+                if (!Utf8.IsValid(nameBytes))
+                {
+                    throw new BencodeSerializationException(
+                        string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_DictionaryKeyNotUtf8, nameOffset, typeof(T)),
+                        nameOffset);
+                }
+
                 extensionEntries ??= new Dictionary<string, BencodeNode?>(StringComparer.Ordinal);
                 extensionEntries[name] = BencodeNode.ReadFrom(ref reader);
             }

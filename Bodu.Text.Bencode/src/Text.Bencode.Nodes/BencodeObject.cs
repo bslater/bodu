@@ -14,12 +14,16 @@ namespace Bodu.Text.Bencode.Nodes;
 /// Represents a mutable Bencode (BEP 3) dictionary as a string-keyed collection of child nodes.
 /// </summary>
 /// <remarks>
-/// Keys are CLR strings encoded as UTF-8 byte strings on the wire. In-memory ordering is not contractual: the writer
-/// emits entries in canonical ascending bytewise key order regardless of insertion order. A value may be
-/// <see langword="null" /> in memory, but an object containing a <see langword="null" /> value cannot be written
-/// because Bencode has no null token. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
-/// <see cref="BencodeNode.Parent" /> so it can be added to another container.
+/// Keys are CLR strings encoded as UTF-8 byte strings on the wire, so
+/// <see cref="BencodeNode.Parse(ReadOnlySpan{byte})" /> refuses a dictionary key that is not valid UTF-8 text with
+/// <see cref="BencodeFormatException" /> rather than alter it; read a document with binary keys, such as the info-hash
+/// keys of a tracker's scrape response, through <see cref="Document.BencodeDocument" /> or
+/// <see cref="Reader.Utf8BencodeReader" />. In-memory ordering is not contractual: the writer emits entries in
+/// canonical ascending bytewise key order regardless of insertion order. A value may be <see langword="null" /> in
+/// memory, but an object containing a <see langword="null" /> value cannot be written because Bencode has no null
+/// token. Adding a node that already belongs to another container throws an <see cref="InvalidOperationException" />;
+/// removing or replacing a value detaches it, clearing its <see cref="BencodeNode.Parent" /> so it can be added to
+/// another container.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

@@ -35,11 +35,11 @@ public sealed partial class BencodeReleaseNoteCorpusTests
     {
         (string Library, int Applies, int Dialect, int NotApplicable, int Unknown)[] recorded =
         [
-            ("bencode-py", 8, 1, 5, 0),
+            ("bencode-py", 8, 2, 5, 0),
             ("bencodenet", 10, 0, 16, 0),
             ("bendy", 0, 0, 7, 0),
             ("libtorrent", 17, 0, 4, 0),
-            ("node-bencode", 14, 8, 4, 0),
+            ("node-bencode", 14, 10, 4, 0),
             ("serde-bencode", 11, 3, 4, 0),
             ("transmission", 16, 1, 3, 0),
         ];
