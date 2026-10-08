@@ -199,7 +199,9 @@ The research behind the catalogue found more, outside the rows, fixed the same w
   keeps every key exactly as written, apart from the lowercasing `LowercaseKeys` asks for, so under
   `EditorConfigCompatible` a dotted key and a colon-delimited one are two keys, and a key such as `a..b` is kept rather
   than rejected.
-
-Two more defects that these fixes brought to light are open, both in documentation the code contradicts: #921
-(`ConfigurationKey` says whitespace in segments is trimmed, and it is not) and #922 (a resolved entry's `SourceLocation`
-never carries the document path, though two passages say a loaded document's does).
+- **#921.** `ConfigurationKey` said whitespace in segments was trimmed, and none was. Each segment is now trimmed, so
+  the key written `a . b` is `a:b`, a segment of whitespace alone counts as empty, and under `Identity`, which does not
+  split a key, only the ends of the key are trimmed.
+- **#922.** A resolved entry's `SourceLocation.Path` was always `null`, though two passages said a loaded document's
+  carried the path. A document loaded by path now records the full path of its file, and every entry resolved from it
+  reports that path.
