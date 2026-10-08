@@ -8,7 +8,7 @@ Real-world CSV, `.env`, and INI files break their specs constantly. Each reader 
 
 ## Common diagnostic surface
 
-Every reader throws its format's `*FormatException` (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`) carrying the 1-based line number and byte offset at which the problem was detected. A Delimited error about a whole record, a field count that differs from the header's or a header that repeats a name, carries the line and offset at which that record starts. Serializer binding failures throw the format's `*SerializationException` instead.
+Every reader throws its format's `*FormatException` (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`) carrying the 1-based line number and byte offset at which the problem was detected. A Delimited error about a whole record, a field count that differs from the header's or a header that repeats a name, carries the line and offset at which that record starts, and `DelimitedSerializer.DeserializeAsyncEnumerableAsync` counts both from the start of the stream, whichever read held the error. Serializer binding failures throw the format's `*SerializationException` instead.
 
 ## Delimited
 

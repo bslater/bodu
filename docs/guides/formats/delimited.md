@@ -54,7 +54,7 @@ await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsyn
 }
 ```
 
-Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` - encodes each record as it is produced, flushing in bounded batches.
+Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` - encodes each record as it is produced, flushing in bounded batches. A `DelimitedFormatException` from the streaming read reports its line and byte offset in the whole stream, as the buffered `Deserialize` does.
 
 ### Reflection-free binding
 

@@ -43,6 +43,9 @@ public ref struct Utf8DelimitedReader
     /// <summary>The current record's raw source ranges, parallel to <see cref="_fields" />.</summary>
     private readonly List<(int Start, int Length)> _fieldRanges;
 
+    /// <summary>The offset, in the whole input, of the first byte of <see cref="_data" />.</summary>
+    private readonly long _offsetBase;
+
     /// <summary>The read position of the next byte to consume.</summary>
     private int _position;
 
@@ -111,6 +114,31 @@ public ref struct Utf8DelimitedReader
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DelimitedReader" /> struct over a segment of a larger input,
+    /// reporting lines and error offsets as positions in that input.
+    /// </summary>
+    /// <param name="data">The delimited source bytes of the segment, which starts at the start of a line.</param>
+    /// <param name="options">The reader options.</param>
+    /// <param name="firstLine">The 1-based line number, in the whole input, of the segment's first line.</param>
+    /// <param name="firstOffset">The offset, in the whole input, of the segment's first byte.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="LineNumber" />, <see cref="RecordLine" />, <see cref="RecordOffset" /> and the positions of the
+    /// <see cref="DelimitedFormatException" /> the reader raises count from the start of the whole input;
+    /// <see cref="BytesConsumed" /> still counts from the start of the segment.
+    /// </remarks>
+    internal Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options, int firstLine, long firstOffset)
+        : this(data, options)
+    {
+        _line = firstLine;
+        _offsetBase = firstOffset;
+    }
+
+    /// <summary>
     /// Gets the UTF-8 byte-order mark.
     /// </summary>
     private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
@@ -126,6 +154,18 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     /// <value>The current line number.</value>
     public readonly int LineNumber => _line;
+
+    /// <summary>
+    /// Gets the 1-based line number on which the current record starts.
+    /// </summary>
+    /// <value>The record's first line; meaningful once a record has been read.</value>
+    internal readonly int RecordLine => _recordLine;
+
+    /// <summary>
+    /// Gets the offset, in the whole input, at which the current record starts.
+    /// </summary>
+    /// <value>The offset of the record's first byte; meaningful once a record has been read.</value>
+    internal readonly long RecordOffset => _offsetBase + _recordStart;
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -288,7 +328,7 @@ public ref struct Utf8DelimitedReader
                 switch (_options.DuplicateHeaderBehavior)
                 {
                     case DelimitedDuplicateHeaderBehavior.Throw:
-                        throw new DelimitedFormatException(
+                        throw CreateFormatException(
                             string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedDuplicateHeader, name), _recordLine, _recordStart);
 
                     case DelimitedDuplicateHeaderBehavior.TakeLast:
@@ -335,7 +375,7 @@ public ref struct Utf8DelimitedReader
                     continue;
                 }
 
-                throw new DelimitedFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedTextAfterClosingQuote, _line, _position);
+                throw CreateFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedTextAfterClosingQuote, _line, _position);
             }
 
             if (_options.HasHeader && _headers.Count > 0 &&
@@ -345,7 +385,7 @@ public ref struct Utf8DelimitedReader
                 if (_options.MalformedRecordBehavior == DelimitedMalformedRecordBehavior.SkipRecord)
                     continue;
 
-                throw new DelimitedFormatException(
+                throw CreateFormatException(
                     string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, _headers.Count, _fields.Count), _recordLine, _recordStart);
             }
 
@@ -460,7 +500,7 @@ public ref struct Utf8DelimitedReader
         while (true)
         {
             if (_position >= _data.Length)
-                throw new DelimitedFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedUnterminatedQuote, _line, _position);
+                throw CreateFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedUnterminatedQuote, _line, _position);
 
             byte b = _data[_position];
 
@@ -559,6 +599,17 @@ public ref struct Utf8DelimitedReader
         sb.Append(Encoding.UTF8.GetString(_data.Slice(_position, length)));
         return length;
     }
+
+    /// <summary>
+    /// Creates the exception for a parse error at a position in <see cref="_data" />, reporting the offset in the whole
+    /// input.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="line">The 1-based line number of the error.</param>
+    /// <param name="position">The position of the error in <see cref="_data" />.</param>
+    /// <returns>The exception to throw.</returns>
+    private readonly DelimitedFormatException CreateFormatException(string message, int line, int position) =>
+        new(message, line, _offsetBase + position);
 
     /// <summary>
     /// Skips the rest of the current line, its line ending included, so that reading continues with the next line.

@@ -115,6 +115,11 @@ public static partial class DelimitedSerializer
     /// for either reason. A malformed tail is retried as later segments arrive and only surfaces as a
     /// <see cref="DelimitedFormatException" /> once the end of the stream confirms it.
     /// </para>
+    /// <para>
+    /// Every <see cref="DelimitedFormatException" /> reports its line and byte offset counted from the start of the
+    /// stream, as <see cref="Deserialize{TRecord}(Stream, DelimitedSerializerOptions?)" /> does, whichever read held
+    /// the error; an offset greater than <see cref="int.MaxValue" /> is reported as <see langword="null" />.
+    /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -138,7 +143,12 @@ public static partial class DelimitedSerializer
             int buffered = 0;
             bool finalBlock = false;
             List<string>? headers = null;
-            var rows = new List<string[]>();
+            var rows = new List<(string[] Fields, int Line, long Offset)>();
+
+            // The line and offset, in the whole stream, of the buffer's first byte, so that every error reports its
+            // position in the stream rather than in the segment being parsed.
+            int segmentLine = 1;
+            long segmentOffset = 0;
 
             while (true)
             {
@@ -160,19 +170,20 @@ public static partial class DelimitedSerializer
                 }
 
                 rows.Clear();
-                int consumed = ParseCompleteRecords(buffer.AsSpan(0, buffered), finalBlock, readerOptions, rows, ref headers);
+                int consumed = ParseCompleteRecords(buffer.AsSpan(0, buffered), finalBlock, readerOptions, rows, ref headers, ref segmentLine, segmentOffset);
 
                 if (consumed > 0)
                 {
                     buffer.AsSpan(consumed, buffered - consumed).CopyTo(buffer);
                     buffered -= consumed;
+                    segmentOffset += consumed;
                 }
 
-                foreach (string[] row in rows)
+                foreach ((string[] row, int line, long offset) in rows)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (SkipContinuationRow(row, headers, readerOptions))
+                    if (SkipContinuationRow(row, line, offset, headers, readerOptions))
                         continue;
 
                     yield return isStringArray
@@ -258,11 +269,18 @@ public static partial class DelimitedSerializer
     /// <param name="data">The buffered segment.</param>
     /// <param name="finalBlock">Whether the segment is the end of the stream.</param>
     /// <param name="options">The reader options.</param>
-    /// <param name="rows">The accumulator that receives the complete records' decoded fields.</param>
+    /// <param name="rows">
+    /// The accumulator that receives the complete records' decoded fields, each with the line and offset in the stream
+    /// at which the record starts.
+    /// </param>
     /// <param name="headers">
     /// The captured header columns; <see langword="null" /> until the header row is proven complete, after which
     /// continuation segments parse positionally.
     /// </param>
+    /// <param name="firstLine">
+    /// The line, in the stream, of the segment's first byte; advanced to the line after the last accepted record.
+    /// </param>
+    /// <param name="firstOffset">The offset, in the stream, of the segment's first byte.</param>
     /// <returns>The number of bytes consumed by the accepted records (and the header row on first capture).</returns>
     /// <exception cref="DelimitedFormatException">
     /// Thrown when the segment is malformed and <paramref name="finalBlock" /> shows no further data can complete it.
@@ -271,16 +289,18 @@ public static partial class DelimitedSerializer
         ReadOnlySpan<byte> data,
         bool finalBlock,
         DelimitedReaderOptions options,
-        List<string[]> rows,
-        ref List<string>? headers)
+        List<(string[] Fields, int Line, long Offset)> rows,
+        ref List<string>? headers,
+        ref int firstLine,
+        long firstOffset)
     {
         // The first pass parses in the configured header mode so the reader applies its own header policies; once the
         // header is captured, continuation segments no longer contain it and must parse positionally.
         DelimitedReaderOptions passOptions = headers is null ? options : options with { NoHeader = true };
-        var reader = new Utf8DelimitedReader(data, passOptions);
+        var reader = new Utf8DelimitedReader(data, passOptions, firstLine, firstOffset);
 
-        var pending = new List<string[]>();
-        var recordEnds = new List<int>();
+        var pending = new List<(string[] Fields, int Line, long Offset)>();
+        var recordEnds = new List<(int Offset, int Line)>();
         List<string>? current = null;
         int depth = 0;
 
@@ -300,8 +320,8 @@ public static partial class DelimitedSerializer
                     case DelimitedTokenType.EndObject:
                         if (depth == 2 && current is not null)
                         {
-                            pending.Add([.. current]);
-                            recordEnds.Add(reader.BytesConsumed);
+                            pending.Add(([.. current], reader.RecordLine, reader.RecordOffset));
+                            recordEnds.Add((reader.BytesConsumed, reader.LineNumber));
                             current = null;
                         }
 
@@ -331,15 +351,20 @@ public static partial class DelimitedSerializer
         int consumed = 0;
         for (int i = 0; i < pending.Count; i++)
         {
-            if (recordEnds[i] < data.Length || finalBlock || data[recordEnds[i] - 1] == (byte)'\n')
+            int end = recordEnds[i].Offset;
+            if (end < data.Length || finalBlock || data[end - 1] == (byte)'\n')
             {
                 accepted = i + 1;
-                consumed = recordEnds[i];
+                consumed = end;
             }
         }
 
         for (int i = 0; i < accepted; i++)
             rows.Add(pending[i]);
+
+        // The next segment starts where the last accepted record ended, on the line after it.
+        if (accepted > 0)
+            firstLine = recordEnds[accepted - 1].Line;
 
         // The header row shares the completeness rule: it is trusted once a record beyond it is accepted, or once the
         // stream ends.
@@ -354,6 +379,8 @@ public static partial class DelimitedSerializer
     /// itself no longer sees the header to enforce it.
     /// </summary>
     /// <param name="row">The decoded row.</param>
+    /// <param name="line">The line, in the stream, on which the row's record starts.</param>
+    /// <param name="offset">The offset, in the stream, at which the row's record starts.</param>
     /// <param name="headers">The captured header columns, or <see langword="null" /> in headerless mode.</param>
     /// <param name="options">The reader options.</param>
     /// <returns><see langword="true" /> when the row should be skipped.</returns>
@@ -361,7 +388,7 @@ public static partial class DelimitedSerializer
     /// Thrown when the row violates the strict field count and the malformed-record policy is
     /// <see cref="DelimitedMalformedRecordBehavior.Throw" />.
     /// </exception>
-    private static bool SkipContinuationRow(string[] row, List<string>? headers, DelimitedReaderOptions options)
+    private static bool SkipContinuationRow(string[] row, int line, long offset, List<string>? headers, DelimitedReaderOptions options)
     {
         if (options.NoHeader ||
             headers is null ||
@@ -376,6 +403,6 @@ public static partial class DelimitedSerializer
             return true;
 
         throw new DelimitedFormatException(
-            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, headers.Count, row.Length));
+            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, headers.Count, row.Length), line, offset);
     }
 }
