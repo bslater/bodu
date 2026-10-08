@@ -173,4 +173,25 @@ public partial class YamlDocumentTests
     /// <returns>The entries' string values, in order.</returns>
     private static string[] StringsOf(YamlElement sequence) =>
         [.. sequence.EnumerateSequence().Select(entry => entry.GetString())];
+
+    /// <summary>
+    /// Verifies that a block scalar that begins on the line after a sequence entry's dash takes the entry's dash column
+    /// as its parent indentation, so an indentation indicator counts from the dash, as when it begins on the dash's
+    /// line.
+    /// </summary>
+    /// <param name="yaml">A sequence whose entry is a block scalar on the line after the dash.</param>
+    /// <param name="expected">The content the entry is expected to hold.</param>
+    [TestMethod]
+    [DataRow("-\n  |1\n   x\n", "  x\n", DisplayName = "literal, indicator 1")]
+    [DataRow("-\n  |2\n   x\n", " x\n", DisplayName = "literal, indicator 2")]
+    [DataRow("-\n  >1\n   folded\n", "  folded\n", DisplayName = "folded, indicator 1")]
+    [DataRow("  -\n    |1\n     x\n", "  x\n", DisplayName = "indented sequence, literal, indicator 1")]
+    [DataRow("-\n |1\n  x\n", " x\n", DisplayName = "one column past the dash, indicator 1")]
+    [DataRow("-\n  |\n   x\n", "x\n", DisplayName = "detected indentation")]
+    public void Parse_WhenSequenceEntryBlockScalarStartsOnNextLine_ShouldCountFromDash(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, document.RootElement[0].GetString());
+    }
 }

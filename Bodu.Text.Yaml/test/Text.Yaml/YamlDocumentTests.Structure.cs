@@ -371,4 +371,54 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual("""{"a":"b"}""", ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that a sequence entry's content may continue, or begin, on lines indented one column past the dash, as
+    /// YAML 1.2.2 section 8.2.1 allows, whether the content starts on the dash's line or the next.
+    /// </summary>
+    /// <param name="yaml">A sequence whose entry content reaches one column past the dash.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- single\n - entry\n", """["single - entry"]""", DisplayName = "a dash on the continuation line")]
+    [DataRow("- a\n b\n", """["a b"]""", DisplayName = "a plain scalar continued")]
+    [DataRow("-\n  a\n b\n", """["a b"]""", DisplayName = "a plain scalar on the next line, continued")]
+    [DataRow("-\n a\n", """["a"]""", DisplayName = "a plain scalar on the next line")]
+    [DataRow("- \"a\n b\"\n", """["a b"]""", DisplayName = "a double-quoted scalar continued")]
+    [DataRow("- - a\n   b\n", """[["a b"]]""", DisplayName = "a nested entry's plain scalar continued")]
+    [DataRow("- !!seq\n - nested\n", """[["nested"]]""", DisplayName = "a tagged sequence on the next line")]
+    [DataRow("- !!map\n a: 1\n", """[{"a":1}]""", DisplayName = "a tagged mapping on the next line")]
+    [DataRow("-\n a: 1\n", """[{"a":1}]""", DisplayName = "a mapping on the next line")]
+    [DataRow("-   a: 1\n    b: 2\n", """[{"a":1,"b":2}]""", DisplayName = "a compact mapping after spaces")]
+    public void Parse_WhenSequenceEntryContentIsOneColumnPastDash_ShouldReadIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that YAML specification example 8.22 (block collection nodes), whose tagged sequence entry holds a
+    /// sequence indented one column past the dash, reads as the specification gives.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSpecificationExample8Point22_ShouldReadNestedCollections()
+    {
+        using var document = YamlDocument.Parse(
+            "sequence: !!seq\n- entry\n- !!seq\n - nested\nmapping: !!map\n foo: bar\n");
+
+        Assert.AreEqual("""{"sequence":["entry",["nested"]],"mapping":{"foo":"bar"}}""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a compact mapping after a sequence entry's dash keeps its entries at its own column, so an entry
+    /// indented less than the first is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCompactMappingEntryIsIndentedLessThanFirst_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse("-   a: 1\n  b: 2\n");
+        });
+    }
 }

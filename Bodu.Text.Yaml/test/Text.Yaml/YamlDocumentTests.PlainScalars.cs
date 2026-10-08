@@ -167,4 +167,38 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual(expected, ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that a tab never counts as indentation in a plain scalar's continuation line: a line indented by too
+    /// few spaces before a tab ends the scalar, and its tab is then rejected as indentation.
+    /// </summary>
+    /// <param name="yaml">A document whose plain scalar is followed by a tab-indented line.</param>
+    [TestMethod]
+    [DataRow(" - foo\n \t- bar\n", DisplayName = "a sequence entry after a space and a tab")]
+    [DataRow("- a\n\tb\n", DisplayName = "a sequence entry's scalar")]
+    [DataRow("a: b\n\tc\n", DisplayName = "a mapping value")]
+    [DataRow("key:\n  a\n\tb\n", DisplayName = "a mapping value on the next line")]
+    public void Parse_WhenTabIndentsPlainContinuation_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a tab after a continuation line's indentation spaces is separation, so the line continues the
+    /// plain scalar.
+    /// </summary>
+    /// <param name="yaml">A document whose plain scalar continues after spaces and a tab.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- a\n \tb\n", """["a b"]""", DisplayName = "a sequence entry's scalar")]
+    [DataRow("a: b\n \tc\n", """{"a":"b c"}""", DisplayName = "a mapping value")]
+    public void Parse_WhenTabFollowsContinuationIndentation_ShouldContinueScalar(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
 }
