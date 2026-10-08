@@ -452,18 +452,19 @@ public partial class Utf8BencodeReaderTests
     }
 
     /// <summary>
-    /// Verifies that an empty input yields no tokens and reports <see cref="BencodeTokenType.None" /> without
-    /// throwing.
+    /// Verifies that empty input, which holds no root value, is rejected on the first read with
+    /// <see cref="BencodeFormatException" /> at offset zero.
     /// </summary>
     [TestMethod]
-    public void Read_WhenInputEmpty_ShouldReturnFalse()
+    public void Read_WhenInputEmpty_ShouldThrowBencodeFormatException()
     {
-        var reader = new Utf8BencodeReader([]);
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader([]);
+            _ = reader.Read();
+        });
 
-        Assert.IsFalse(reader.Read());
-        Assert.AreEqual(BencodeTokenType.None, reader.TokenType);
-        Assert.AreEqual(0, reader.BytesConsumed);
-        Assert.AreEqual(0, reader.CurrentDepth);
+        Assert.AreEqual(0, exception.Offset);
     }
 
     /// <summary>

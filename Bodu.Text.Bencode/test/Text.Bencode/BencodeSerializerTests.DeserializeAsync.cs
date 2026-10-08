@@ -70,4 +70,19 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("source", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that deserializing an empty stream, which holds no root value, throws
+    /// <see cref="BencodeFormatException" />, as every Bencode reader does.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsync_WhenSourceIsEmpty_ShouldThrowBencodeFormatException()
+    {
+        using var source = new MemoryStream();
+
+        await Assert.ThrowsExactlyAsync<BencodeFormatException>(async () =>
+        {
+            _ = await BencodeSerializer.DeserializeAsync<StreamModel>(source);
+        });
+    }
 }

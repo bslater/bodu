@@ -380,4 +380,17 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual("abcdefghij", model.Value);
     }
+
+    /// <summary>
+    /// Verifies that deserializing empty input, which holds no root value, throws <see cref="BencodeFormatException" />,
+    /// as every Bencode reader does, rather than <see cref="BencodeSerializationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDataIsEmpty_ShouldThrowBencodeFormatException()
+    {
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<StreamModel>(ReadOnlySpan<byte>.Empty);
+        });
+    }
 }
