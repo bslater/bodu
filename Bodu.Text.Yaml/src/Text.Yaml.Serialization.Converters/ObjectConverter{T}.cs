@@ -87,7 +87,7 @@ internal sealed class ObjectConverter<T>
         // then passing it to the assignment helpers re-boxes a throwaway copy, so all settable-member and
         // extension-data writes (and any mutating deserialization callback) would be silently lost. Threading the
         // single box through and unboxing only at the return preserves those writes.
-        object boxed = BareConstruct(metadata, values, present);
+        object boxed = ObjectBinder.Construct(metadata, values, present);
         (boxed as IOnDeserializing)?.OnDeserializing();
         AssignSettableMembers(metadata, values, present, boxed, options);
         PopulateExtensionData(metadata, boxed, extensionEntries);
@@ -262,34 +262,6 @@ internal sealed class ObjectConverter<T>
             IgnoreCondition.WhenWritingDefault => value is null || Equals(value, property.DefaultTypeValue),
             _ => false,
         };
-    }
-
-    /// <summary>
-    /// Constructs the instance using the type's construction plan, invoking the chosen constructor only. Settable
-    /// members are assigned in a separate step so that an <see cref="IOnDeserializing" /> callback can run between
-    /// construction and member population.
-    /// </summary>
-    /// <param name="metadata">The type metadata.</param>
-    /// <param name="values">The read member values, indexed by member slot.</param>
-    /// <param name="present">Whether each member slot was read from the input.</param>
-    /// <returns>The constructed instance, before any settable member is assigned.</returns>
-    private static object BareConstruct(TypeMetadata metadata, object?[] values, bool[] present)
-    {
-        if (metadata.UsesParameterizedConstructor)
-        {
-            object?[] arguments = new object?[metadata.ConstructorParameterCount];
-            for (int i = 0; i < arguments.Length; i++)
-            {
-                PropertyMetadata? parameter = metadata.GetConstructorParameter(i);
-                arguments[i] = parameter is not null && present[parameter.SlotIndex]
-                    ? values[parameter.SlotIndex]
-                    : metadata.GetConstructorDefault(i);
-            }
-
-            return metadata.Construct(arguments);
-        }
-
-        return metadata.Construct(null);
     }
 
     /// <summary>
