@@ -124,4 +124,50 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual(expected, ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that an anchor or tag before a flow collection applies to the collection, even when a <c>: </c>
+    /// inside the collection makes the line look like an implicit key.
+    /// </summary>
+    /// <param name="yaml">A document with node properties before a flow collection that holds a <c>: </c>.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- &a { x: 1 }", """[{"x":1}]""", DisplayName = "an anchor in a sequence entry")]
+    [DataRow("- &A { x: 1 }\n- *A", """[{"x":1},{"x":1}]""", DisplayName = "an anchor an alias refers to")]
+    [DataRow("&a { x: 1 }", """{"x":1}""", DisplayName = "an anchor on the root")]
+    [DataRow("- !!map { x: 1 }", """[{"x":1}]""", DisplayName = "a tag in a sequence entry")]
+    [DataRow("- &a [ { x: 1 } ]", """[[{"x":1}]]""", DisplayName = "an anchor before a flow sequence")]
+    public void Parse_WhenPropertiesPrecedeFlowCollectionWithColon_ShouldApplyToCollection(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that an anchor name runs to the next white space, so a name that ends in <c>:</c> keeps the colon,
+    /// whether it anchors a scalar or an implicit key (YAML test suite case 2SXE).
+    /// </summary>
+    /// <param name="yaml">A document with an anchor whose name ends in a colon.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("&: value", "\"value\"", DisplayName = "an anchor named by a colon alone, on a scalar")]
+    [DataRow("&a: key: &a value\nfoo:\n  *a:\n", """{"key":"value","foo":"key"}""", DisplayName = "2SXE")]
+    public void Parse_WhenAnchorNameEndsInColon_ShouldKeepTheColon(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that an anchor on an implicit mapping key defines the key's scalar, so an alias can refer to it.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenAliasRefersToAnchoredImplicitKey_ShouldResolveToKey()
+    {
+        using var document = YamlDocument.Parse("&k key: v\nother: *k\n");
+
+        Assert.AreEqual("""{"key":"v","other":"key"}""", ToJson(document.RootElement));
+    }
 }
