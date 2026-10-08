@@ -81,8 +81,9 @@ public sealed class ConfigurationResolvedEntry
     /// </summary>
     /// <value>
     /// The source location. Only the <see cref="ConfigurationSourceLocation.LineNumber" /> is reliably populated - line
-    /// position and length are approximate and the document path is propagated only when the document was loaded from a
-    /// file.
+    /// position and length are approximate - and <see cref="ConfigurationSourceLocation.Path" /> is the full path of
+    /// the file when the document was loaded from one, and <see langword="null" /> when it was parsed from text or
+    /// loaded from a stream or a text reader.
     /// </value>
     public ConfigurationSourceLocation SourceLocation { get; }
 

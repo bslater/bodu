@@ -322,7 +322,8 @@ if (entry is not null)
 ```
 
 Only the `SourceLocation.LineNumber` is reliably populated; line position and length are approximate, and
-`SourceLocation.Path` is propagated only when the document was loaded from a file rather than parsed from a string.
+`SourceLocation.Path` is the full path of the file when the document was loaded from one with `Load(path)`, and `null`
+when it was parsed from a string or loaded from a stream or a text reader.
 
 ## Saving (round-trip)
 

@@ -71,6 +71,15 @@ public sealed class ConfigurationDocument
     }
 
     /// <summary>
+    /// Gets the full path of the file this document was loaded from.
+    /// </summary>
+    /// <value>
+    /// The path each entry of a resolved view reports in its <see cref="ConfigurationResolvedEntry.SourceLocation" />,
+    /// or <see langword="null" /> when the document was parsed from text or loaded from a stream or a text reader.
+    /// </value>
+    internal string? LoadPath { get; private set; }
+
+    /// <summary>
     /// Gets the full path of the directory that holds the file this document was loaded from.
     /// </summary>
     /// <value>
@@ -78,7 +87,8 @@ public sealed class ConfigurationDocument
     /// <see cref="ConfigurationResolveOptions.PathRoot" /> is not set, or <see langword="null" /> when the document was
     /// parsed from text or loaded from a stream or a text reader.
     /// </value>
-    internal string? LoadDirectory { get; private set; }
+    internal string? LoadDirectory =>
+        LoadPath is null ? null : Path.GetDirectoryName(LoadPath);
 
     /// <summary>
     /// Appends <paramref name="section" /> to the document. Exposed to the configuration reader so it can build the
@@ -217,10 +227,11 @@ public sealed class ConfigurationDocument
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
     /// <remarks>
-    /// The document records the full path of the directory that holds the file. When
-    /// <see cref="ConfigurationResolveOptions.PathRoot" /> is not set, resolving the document rebases the target path
-    /// against that directory, so a section's glob is relative to the file, as EditorConfig defines it; a
-    /// <see cref="ConfigurationResolveOptions.PathRoot" /> that is set takes precedence.
+    /// The document records the full path of the file. When <see cref="ConfigurationResolveOptions.PathRoot" /> is not
+    /// set, resolving the document rebases the target path against the directory that holds the file, so a section's
+    /// glob is relative to the file, as EditorConfig defines it; a <see cref="ConfigurationResolveOptions.PathRoot" />
+    /// that is set takes precedence. Each entry of a resolved view reports the full path of the file in its
+    /// <see cref="ConfigurationResolvedEntry.SourceLocation" />.
     /// </remarks>
     public static ConfigurationDocument Load(string path) =>
         Load(path, options: null);
@@ -234,10 +245,11 @@ public sealed class ConfigurationDocument
     /// <exception cref="ArgumentNullException"><paramref name="path" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException"><paramref name="path" /> is empty or whitespace.</exception>
     /// <remarks>
-    /// The document records the full path of the directory that holds the file. When
-    /// <see cref="ConfigurationResolveOptions.PathRoot" /> is not set, resolving the document rebases the target path
-    /// against that directory, so a section's glob is relative to the file, as EditorConfig defines it; a
-    /// <see cref="ConfigurationResolveOptions.PathRoot" /> that is set takes precedence.
+    /// The document records the full path of the file. When <see cref="ConfigurationResolveOptions.PathRoot" /> is not
+    /// set, resolving the document rebases the target path against the directory that holds the file, so a section's
+    /// glob is relative to the file, as EditorConfig defines it; a <see cref="ConfigurationResolveOptions.PathRoot" />
+    /// that is set takes precedence. Each entry of a resolved view reports the full path of the file in its
+    /// <see cref="ConfigurationResolvedEntry.SourceLocation" />.
     /// </remarks>
     public static ConfigurationDocument Load(string path, ConfigurationParseOptions? options)
     {
@@ -249,8 +261,9 @@ public sealed class ConfigurationDocument
         ConfigurationDocument document = new ConfigurationReader(effective).Read(reader, path, ignoreLeadingByteOrderMark: false).Document;
 
         // EditorConfig globs are relative to the directory of the file that holds them, so that directory is the
-        // root a resolve falls back to when the caller supplies none.
-        document.LoadDirectory = Path.GetDirectoryName(Path.GetFullPath(path));
+        // root a resolve falls back to when the caller supplies none, and the file is where each resolved entry says
+        // it came from.
+        document.LoadPath = Path.GetFullPath(path);
         return document;
     }
 
