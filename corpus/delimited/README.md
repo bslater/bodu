@@ -171,10 +171,12 @@ were written. Each cause became an issue, fixed test first:
   collection writes the header row alone in header mode, from every `Serialize` and `SerializeAsync` overload (csvhelper
   2.8.3). And a member hidden with `new` maps to one column, its most derived declaration (csvhelper 12.2.2).
 
-Fixing these turned up three more defects, each fixed the same way. The streaming deserializer dropped a U+FEFF that
+Fixing these turned up five more defects, each fixed the same way. The streaming deserializer dropped a U+FEFF that
 started a record in a later buffered segment, as if it were a byte-order mark (#912). The source generator's delimited
 factories kept the general temporal forms and the empty-only `null` rule that #853 and #854 had replaced in the
-reflection binder (#913). And the writer's API overview showed LF line endings where the writer writes CRLF (#914).
+reflection binder (#913); the generated factories also let a raw conversion exception escape where the binders throw
+their serialization exceptions (#924), and the INI ones wrote a `null` key that `IniSerializer` leaves out (#923). And
+the writer's API overview showed LF line endings where the writer writes CRLF (#914).
 
 The fixes moved eleven rows between classes. Six became `dialect` rows, citing the documents the fixes wrote. go-csv
 1.10 #19410 cases 2 and 3, where Go matches a non-ASCII delimiter or comment character as a whole rune, are now `unit`
@@ -190,14 +192,15 @@ and rust-csv 1.3.0 #283 case 1 expect a first field that begins with the comment
 ### Documentation that disagrees with the behaviour or with itself
 
 The first run listed seven places where the documentation disagreed with the behaviour or with itself. The fixes above
-corrected six of them, and #911 the seventh: `DelimitedDuplicateHeaderBehavior.TakeFirst` said that later columns with a
-duplicated name are unnamed, though the reader keeps every column's name; it is `TakeLast` that reports the earlier
-columns under an empty name.
+corrected six of them, and #911 the seventh, in the code: `DelimitedDuplicateHeaderBehavior.TakeFirst` said that later
+columns with a duplicated name are unnamed, but the reader gave them the name, so `DelimitedNode.Parse` folded them into
+one field holding the last value. The reader now lists them under an empty name, mirroring `TakeLast`, so every surface
+finds the first value under the name.
 
 Three behaviours that `dialect` rows rely on are not in the reader's public documentation. A lone CR ends a line, which
 only the private `Utf8DelimitedReader.SkipLineEnding` documents. Blank lines are skipped, although RFC 4180's grammar
 reads an empty line as a record of one empty field: the reader documents that only in private XML documentation
-(`LoadRecord` and `SkipBlankAndCommentLines`, `Utf8DelimitedReader.cs` lines 357 and 560), and the writer's remarks
+(`LoadRecord` and `SkipBlankAndCommentLines`, `Utf8DelimitedReader.cs` lines 363 and 566), and the writer's remarks
 mention it (`Utf8DelimitedWriter.cs` lines 32 and 35). And under `Ragged` an extra field is named by its zero-based
 index, a name that can collide with a real header, which nothing documents. The `dialect` rows that rely on them are
 go-csv 1.10 #22937 case 3 and papaparse 4.1.3 (a lone CR), sep 0.2.0 #10 case 3 and sylvan-csv 1.1.16 (blank lines), and
