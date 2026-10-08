@@ -733,7 +733,11 @@ internal sealed partial class YamlParser
         {
             if (crossLines)
             {
-                SkipBlankCommentLines();
+                // Separation on the current line may hold tabs; only a following line's indentation may not.
+                SkipSpaces();
+                if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
+                    SkipBlankCommentLines();
+
                 if (CurrentColumn() < minIndent)
                     break;
             }

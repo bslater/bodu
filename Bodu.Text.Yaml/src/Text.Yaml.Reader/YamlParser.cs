@@ -491,9 +491,12 @@ internal sealed partial class YamlParser
         if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
             return true;
 
-        // Flow collections, aliases, block scalars, and node properties begin other nodes, even when a ':' follows
-        // later on the line.
-        return c is not ((byte)'[' or (byte)'{' or (byte)'*' or (byte)'|' or (byte)'>' or (byte)'&' or (byte)'!')
+        // Node properties begin a compact mapping when an implicit key follows them on the line.
+        if (c is (byte)'&' or (byte)'!')
+            return PropertiesPrecedeImplicitKey();
+
+        // Flow collections, aliases, and block scalars begin other nodes, even when a ':' follows later on the line.
+        return c is not ((byte)'[' or (byte)'{' or (byte)'*' or (byte)'|' or (byte)'>')
             && TryDetectBlockMapping(CurrentColumn());
     }
 
@@ -643,8 +646,8 @@ internal sealed partial class YamlParser
                 _pos++;
             }
 
-            // A tab cannot indent a nested block sequence entry that begins on the dash's line.
-            if (separationHasTab && Peek() == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            // A tab cannot indent a compact sequence or mapping that begins on the dash's line.
+            if (separationHasTab && AtCompactCollectionStart())
                 throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
 
             int element;

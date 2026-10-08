@@ -31,7 +31,7 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 - **Complex (non-scalar) mapping keys** - keys must resolve to scalar strings. A sequence or mapping used as a key is rejected, not coerced.
 - **Duplicate mapping keys** - by default (configurable via `YamlDuplicateKeyBehavior`).
 - **Duplicate / overriding anchors and cyclic aliases.** A repeated anchor name is rejected: anchor override is a YAML representation-graph feature outside this tree profile.
-- **Tabs used as indentation** (tabs remain legal as separation whitespace).
+- **Tabs used as indentation**, including a tab between a `-` entry indicator or an explicit `:` and the compact sequence or mapping that follows it on the line (tabs remain legal as separation whitespace, after a node property included).
 - **Invalid UTF-8, unpaired surrogates, invalid Unicode escapes, and non-printable control characters.**
 - **Malformed or unsupported directives** and **unknown non-core tags**.
 
