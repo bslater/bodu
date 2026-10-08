@@ -47,6 +47,39 @@ internal static class ChildBinder
     }
 
     /// <summary>
+    /// Reads a child mapping into an <see cref="ObjectPopulation" /> for a member populated under
+    /// <see cref="Text.Serialization.ObjectCreationHandling.Populate" />, attaching the member's path segment to any
+    /// binding failure.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the child mapping's start token.</param>
+    /// <param name="converter">The member's converter.</param>
+    /// <param name="type">The member's declared type.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="segment">The path segment for this child (the member's name).</param>
+    /// <returns>The members read, ready to be bound to the instance the member holds.</returns>
+    /// <exception cref="YamlSerializationException">The child cannot be bound to the member's type.</exception>
+    internal static ObjectPopulation ReadPopulation(ref Utf8YamlReader reader, IPopulatingConverter converter, Type type, YamlSerializerOptions options, string segment)
+    {
+        try
+        {
+            return converter.ReadPopulation(ref reader, options);
+        }
+        catch (YamlSerializationException ex)
+        {
+            ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
+            throw;
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        {
+            throw new YamlSerializationException(
+                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
+            {
+                Path = segment,
+            };
+        }
+    }
+
+    /// <summary>
     /// Reads a child value keyed by a sequence index. The <c>[i]</c> segment text is produced only when a failure
     /// occurs, so the success path allocates nothing for the segment.
     /// </summary>

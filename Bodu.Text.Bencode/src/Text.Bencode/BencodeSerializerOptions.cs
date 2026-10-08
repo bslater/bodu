@@ -287,8 +287,9 @@ public sealed partial class BencodeSerializerOptions
     /// </summary>
     /// <value>The preferred object-creation handling; <see cref="ObjectCreationHandling.Replace" /> by default.</value>
     /// <remarks>
-    /// <see cref="ObjectCreationHandling.Populate" /> applies only to collection and dictionary members whose existing
-    /// value is non-<see langword="null" />; in every other case the serializer replaces the value.
+    /// <see cref="ObjectCreationHandling.Populate" /> reads a collection, dictionary, or object member into the value
+    /// it already holds; when the member holds nothing that can be populated, the serializer replaces the value (see
+    /// <see cref="ObjectCreationHandling" />).
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is undefined.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>

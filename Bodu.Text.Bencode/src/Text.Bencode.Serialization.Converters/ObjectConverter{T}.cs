@@ -25,14 +25,54 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// Bencode has no null token, so a member whose value is <see langword="null" /> is omitted from the output rather than
 /// written with a placeholder.
 /// </remarks>
-internal sealed class ObjectConverter<T>
-    : BencodeConverter<T>
+internal sealed partial class ObjectConverter<T>
+    : BencodeConverter<T>, IPopulatingConverter
 {
     /// <inheritdoc />
     public override T Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
 
+        TypeMetadata metadata = ReadMembers(ref reader, options, out object?[] values, out bool[] present, out Dictionary<string, BencodeNode?>? extensionEntries);
+
+        // Keep the instance boxed for the whole assignment phase. For a value type each member assignment must target
+        // the same box, so unboxing to T before assignment would mutate a throwaway copy and lose the values.
+        object instance = ObjectBinder.Construct(metadata, values, present);
+        Bind(metadata, values, present, extensionEntries, instance, options);
+        return (T)instance;
+    }
+
+    /// <inheritdoc />
+    ObjectPopulation IPopulatingConverter.ReadPopulation(ref Utf8BencodeReader reader, BencodeSerializerOptions options)
+    {
+        TypeMetadata metadata = ReadMembers(ref reader, options, out object?[] values, out bool[] present, out Dictionary<string, BencodeNode?>? extensionEntries);
+        return new Population(metadata, values, present, extensionEntries, options);
+    }
+
+    /// <summary>
+    /// Reads the members of the dictionary at the reader's position into slot-indexed buffers, without constructing an
+    /// instance.
+    /// </summary>
+    /// <param name="reader">The reader, positioned on the dictionary's start token.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="values">When this method returns, each member's read value at its metadata slot.</param>
+    /// <param name="present">When this method returns, whether each member slot was read from the input.</param>
+    /// <param name="extensionEntries">
+    /// When this method returns, the entries no member matched, or <see langword="null" /> when there are none.
+    /// </param>
+    /// <returns>The metadata of <typeparamref name="T" />.</returns>
+    /// <exception cref="BencodeSerializationException">
+    /// The reader is not on a dictionary, <typeparamref name="T" /> cannot be constructed, a member's value cannot be
+    /// read, a key repeats while duplicate keys are disallowed, a key maps to no member while unmapped members are
+    /// disallowed, or a required member is missing.
+    /// </exception>
+    private static TypeMetadata ReadMembers(
+        ref Utf8BencodeReader reader,
+        BencodeSerializerOptions options,
+        out object?[] values,
+        out bool[] present,
+        out Dictionary<string, BencodeNode?>? extensionEntries)
+    {
         if (reader.TokenType != BencodeTokenType.StartDictionary)
         {
             throw new BencodeSerializationException(
@@ -46,9 +86,9 @@ internal sealed class ObjectConverter<T>
 
         // Slot-indexed flat buffers replace a per-object Dictionary<PropertyMetadata, object?>: values holds each
         // member's read value at its metadata slot, and present distinguishes an absent member from a read null.
-        object?[] values = new object?[metadata.PropertyCount];
-        bool[] present = new bool[metadata.PropertyCount];
-        Dictionary<string, BencodeNode?>? extensionEntries = null;
+        values = new object?[metadata.PropertyCount];
+        present = new bool[metadata.PropertyCount];
+        extensionEntries = null;
         while (reader.Read() && reader.TokenType != BencodeTokenType.EndDictionary)
         {
             // The key's bytes stay addressable after the reader moves on, because they are a slice of the input.
@@ -59,7 +99,11 @@ internal sealed class ObjectConverter<T>
 
             if (metadata.TryGetProperty(name, out PropertyMetadata? property) && property is not null)
             {
-                object? converted = property.Converter.ReadAsObject(ref reader, property.PropertyType, options);
+                // A member populated under ObjectCreationHandling.Populate is read without being constructed,
+                // because the instance it holds can be reached only once this object exists.
+                object? converted = reader.TokenType == BencodeTokenType.StartDictionary && ObjectBinder.PopulatesObject(metadata, property, options)
+                    ? ((IPopulatingConverter)property.Converter).ReadPopulation(ref reader, options)
+                    : property.Converter.ReadAsObject(ref reader, property.PropertyType, options);
 
                 // Lenient duplicate handling binds last-wins, matching the dictionary converter's indexer assignment.
                 if (!options.AllowDuplicateKeys && present[property.SlotIndex])
@@ -107,14 +151,33 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        // Keep the instance boxed for the whole assignment phase. For a value type each member assignment must target
-        // the same box, so unboxing to T before assignment would mutate a throwaway copy and lose the values.
-        object instance = ObjectBinder.Construct(metadata, values, present);
+        return metadata;
+    }
+
+    /// <summary>
+    /// Binds read members to an instance: runs its <see cref="IOnDeserializing" /> callback, assigns the members, adds
+    /// the unmatched entries to its extension data, and runs its <see cref="IOnDeserialized" /> callback.
+    /// </summary>
+    /// <param name="metadata">The type metadata.</param>
+    /// <param name="values">The read member values, indexed by member slot.</param>
+    /// <param name="present">Whether each member slot was read from the input.</param>
+    /// <param name="extensionEntries">The entries no member matched, or <see langword="null" />.</param>
+    /// <param name="instance">
+    /// The instance to bind to, boxed when its type is a value type: a new one, or the one a populated member holds.
+    /// </param>
+    /// <param name="options">The serializer options.</param>
+    private static void Bind(
+        TypeMetadata metadata,
+        object?[] values,
+        bool[] present,
+        Dictionary<string, BencodeNode?>? extensionEntries,
+        object instance,
+        BencodeSerializerOptions options)
+    {
         (instance as IOnDeserializing)?.OnDeserializing();
         ObjectBinder.AssignMembers(metadata, values, present, instance, options.PreferredObjectCreationHandling);
         PopulateExtensionData(metadata, instance, extensionEntries);
         (instance as IOnDeserialized)?.OnDeserialized();
-        return (T)instance;
     }
 
     /// <inheritdoc />

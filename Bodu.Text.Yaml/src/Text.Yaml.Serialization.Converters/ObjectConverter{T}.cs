@@ -24,8 +24,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// whose value is <see langword="null" /> writes the YAML null scalar unless the member's ignore condition - or the
 /// serializer-wide <see cref="YamlSerializerOptions.DefaultIgnoreCondition" /> - omits it.
 /// </remarks>
-internal sealed class ObjectConverter<T>
-    : YamlConverter<T>
+internal sealed partial class ObjectConverter<T>
+    : YamlConverter<T>, IPopulatingConverter
 {
     /// <inheritdoc />
     public override T Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options)
@@ -35,6 +35,47 @@ internal sealed class ObjectConverter<T>
         if (reader.TokenType == YamlTokenType.Null)
             return default!;
 
+        TypeMetadata metadata = ReadMembers(ref reader, options, out object?[] values, out bool[] present, out Dictionary<string, object?>? extensionEntries);
+
+        // Keep the constructed instance boxed through every mutation. For a value type, unboxing to a local T and
+        // then passing it to the assignment helpers re-boxes a throwaway copy, so all settable-member and
+        // extension-data writes (and any mutating deserialization callback) would be silently lost. Threading the
+        // single box through and unboxing only at the return preserves those writes.
+        object boxed = ObjectBinder.Construct(metadata, values, present);
+        Bind(metadata, values, present, extensionEntries, boxed, options);
+        return (T)boxed;
+    }
+
+    /// <inheritdoc />
+    ObjectPopulation IPopulatingConverter.ReadPopulation(ref Utf8YamlReader reader, YamlSerializerOptions options)
+    {
+        TypeMetadata metadata = ReadMembers(ref reader, options, out object?[] values, out bool[] present, out Dictionary<string, object?>? extensionEntries);
+        return new Population(metadata, values, present, extensionEntries, options);
+    }
+
+    /// <summary>
+    /// Reads the members of the mapping at the reader's position into slot-indexed buffers, without constructing an
+    /// instance.
+    /// </summary>
+    /// <param name="reader">The reader, positioned on the mapping's start token.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="values">When this method returns, each member's read value at its metadata slot.</param>
+    /// <param name="present">When this method returns, whether each member slot was read from the input.</param>
+    /// <param name="extensionEntries">
+    /// When this method returns, the entries no member matched, or <see langword="null" /> when there are none.
+    /// </param>
+    /// <returns>The metadata of <typeparamref name="T" />.</returns>
+    /// <exception cref="YamlSerializationException">
+    /// The reader is not on a mapping, <typeparamref name="T" /> cannot be constructed, a member's value cannot be
+    /// read, a key maps to no member while unmapped members are disallowed, or a required member is missing.
+    /// </exception>
+    private static TypeMetadata ReadMembers(
+        ref Utf8YamlReader reader,
+        YamlSerializerOptions options,
+        out object?[] values,
+        out bool[] present,
+        out Dictionary<string, object?>? extensionEntries)
+    {
         if (reader.TokenType != YamlTokenType.StartMapping)
             throw new YamlSerializationException(YamlResourceStrings.Op_Invalid_YamlExpectedMapping);
 
@@ -45,9 +86,9 @@ internal sealed class ObjectConverter<T>
         // Slot-indexed flat buffers hold each member's read value at its metadata slot; present distinguishes an
         // absent member from a read null. Duplicate keys are governed by the reader's duplicate-key policy, so a key
         // that survives it (last-wins) overwrites the earlier read value rather than failing here.
-        object?[] values = new object?[metadata.PropertyCount];
-        bool[] present = new bool[metadata.PropertyCount];
-        Dictionary<string, object?>? extensionEntries = null;
+        values = new object?[metadata.PropertyCount];
+        present = new bool[metadata.PropertyCount];
+        extensionEntries = null;
         while (reader.Read() && reader.TokenType != YamlTokenType.EndMapping)
         {
             string name = reader.GetString();
@@ -55,7 +96,11 @@ internal sealed class ObjectConverter<T>
 
             if (metadata.TryGetProperty(name, out PropertyMetadata? property) && property is not null)
             {
-                values[property.SlotIndex] = ChildBinder.Read(ref reader, property.Converter, property.PropertyType, options, property.WireName);
+                // A member populated under ObjectCreationHandling.Populate is read without being constructed,
+                // because the instance it holds can be reached only once this object exists.
+                values[property.SlotIndex] = reader.TokenType == YamlTokenType.StartMapping && ObjectBinder.PopulatesObject(metadata, property, options)
+                    ? ChildBinder.ReadPopulation(ref reader, (IPopulatingConverter)property.Converter, property.PropertyType, options, property.WireName)
+                    : ChildBinder.Read(ref reader, property.Converter, property.PropertyType, options, property.WireName);
                 present[property.SlotIndex] = true;
             }
             else if (metadata.ExtensionData is not null)
@@ -83,16 +128,33 @@ internal sealed class ObjectConverter<T>
             }
         }
 
-        // Keep the constructed instance boxed through every mutation. For a value type, unboxing to a local T and
-        // then passing it to the assignment helpers re-boxes a throwaway copy, so all settable-member and
-        // extension-data writes (and any mutating deserialization callback) would be silently lost. Threading the
-        // single box through and unboxing only at the return preserves those writes.
-        object boxed = ObjectBinder.Construct(metadata, values, present);
-        (boxed as IOnDeserializing)?.OnDeserializing();
-        ObjectBinder.AssignMembers(metadata, values, present, boxed, options.PreferredObjectCreationHandling);
-        PopulateExtensionData(metadata, boxed, extensionEntries);
-        (boxed as IOnDeserialized)?.OnDeserialized();
-        return (T)boxed;
+        return metadata;
+    }
+
+    /// <summary>
+    /// Binds read members to an instance: runs its <see cref="IOnDeserializing" /> callback, assigns the members, adds
+    /// the unmatched entries to its extension data, and runs its <see cref="IOnDeserialized" /> callback.
+    /// </summary>
+    /// <param name="metadata">The type metadata.</param>
+    /// <param name="values">The read member values, indexed by member slot.</param>
+    /// <param name="present">Whether each member slot was read from the input.</param>
+    /// <param name="extensionEntries">The entries no member matched, or <see langword="null" />.</param>
+    /// <param name="instance">
+    /// The instance to bind to, boxed when its type is a value type: a new one, or the one a populated member holds.
+    /// </param>
+    /// <param name="options">The serializer options.</param>
+    private static void Bind(
+        TypeMetadata metadata,
+        object?[] values,
+        bool[] present,
+        Dictionary<string, object?>? extensionEntries,
+        object instance,
+        YamlSerializerOptions options)
+    {
+        (instance as IOnDeserializing)?.OnDeserializing();
+        ObjectBinder.AssignMembers(metadata, values, present, instance, options.PreferredObjectCreationHandling);
+        PopulateExtensionData(metadata, instance, extensionEntries);
+        (instance as IOnDeserialized)?.OnDeserialized();
     }
 
     /// <inheritdoc />

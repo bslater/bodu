@@ -26,7 +26,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <summary>
 /// Binds the members an object converter has read to an instance: it constructs the instance through the type's
 /// construction plan, then assigns each read member through its setter or, under
-/// <see cref="ObjectCreationHandling.Populate" />, adds the read entries into the value the member already holds.
+/// <see cref="ObjectCreationHandling.Populate" />, reads the member into the value it already holds: the entries of a
+/// collection or dictionary are added to it, and the members of an object are set on it.
 /// </summary>
 /// <remarks>
 /// The object converters of every format share these steps, so they apply one object-creation rule; each converter
@@ -68,9 +69,43 @@ internal static class ObjectBinder
     }
 
     /// <summary>
-    /// Assigns the read values to the members of a constructed instance, honoring each member's effective
-    /// object-creation handling so that a <see cref="ObjectCreationHandling.Populate" /> member merges its read entries
-    /// into the existing collection or dictionary instead of replacing it.
+    /// Determines whether a member is read into an <see cref="ObjectPopulation" />, so that the members read for it are
+    /// set on the object it holds rather than on a new instance.
+    /// </summary>
+    /// <param name="owner">The metadata of the type that declares the member.</param>
+    /// <param name="property">The member being read.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>
+    /// <see langword="true" /> when the member's effective handling is <see cref="ObjectCreationHandling.Populate" />
+    /// and its value is an object the serializer can populate; otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The member's converter must read objects (implement <see cref="IPopulatingConverter" />), and the member's type
+    /// must be built through a parameterless constructor: a member set only by a parameterized constructor could not be
+    /// set on an existing instance. A member bound to a parameter of its owner's constructor is never populated, since
+    /// its value is passed to that constructor, and a member of a value type is populated only when it has a setter to
+    /// store the populated copy. Every other member is read as usual.
+    /// </remarks>
+    internal static bool PopulatesObject(TypeMetadata owner, PropertyMetadata property, FormatOptions options)
+    {
+        ObjectCreationHandling handling = property.CreationHandling ?? owner.CreationHandling ?? options.PreferredObjectCreationHandling;
+        if (handling != ObjectCreationHandling.Populate || property.Converter is not IPopulatingConverter)
+            return false;
+
+        if (owner.UsesParameterizedConstructor && property.ConstructorParameterIndex >= 0)
+            return false;
+
+        if (property.PropertyType.IsValueType && !property.CanSet)
+            return false;
+
+        TypeMetadata metadata = options.GetTypeMetadata(property.PropertyType);
+        return metadata.CanConstruct && !metadata.UsesParameterizedConstructor;
+    }
+
+    /// <summary>
+    /// Assigns the read values to the members of an instance, honoring each member's effective object-creation
+    /// handling, so that a <see cref="ObjectCreationHandling.Populate" /> member is read into the value it already
+    /// holds instead of being replaced.
     /// </summary>
     /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
     /// <param name="values">The read member values, indexed by member slot.</param>
@@ -78,12 +113,20 @@ internal static class ObjectBinder
     /// <param name="instance">The instance to assign on, boxed when the type is a value type.</param>
     /// <param name="preferredHandling">The serializer-wide object-creation handling.</param>
     /// <remarks>
+    /// <para>
     /// Members bound to a constructor parameter are skipped when the type is built through a parameterized constructor,
     /// since their values were already supplied to the constructor. For every other member the effective handling is
     /// the member's <see cref="PropertyMetadata.CreationHandling" />, then the type's
-    /// <see cref="TypeMetadata.CreationHandling" />, then <paramref name="preferredHandling" />;
-    /// <see cref="ObjectCreationHandling.Populate" /> is applied only when the member already holds a populatable
-    /// collection or dictionary, otherwise the value is set through the member's setter.
+    /// <see cref="TypeMetadata.CreationHandling" />, then <paramref name="preferredHandling" />.
+    /// </para>
+    /// <para>
+    /// A member read into an <see cref="ObjectPopulation" /> has its members set on the object it holds; a value of a
+    /// value type is populated on the copy the getter returns, which the setter then stores. When the member holds
+    /// <see langword="null" />, a new instance is built from the same read members instead. A collection or dictionary
+    /// read under <see cref="ObjectCreationHandling.Populate" /> is merged into the one the member holds when that can
+    /// grow. In every other case the value is set through the member's setter, and a member without one keeps its
+    /// value.
+    /// </para>
     /// </remarks>
     internal static void AssignMembers(TypeMetadata metadata, object?[] values, bool[] present, object instance, ObjectCreationHandling preferredHandling)
     {
@@ -97,9 +140,28 @@ internal static class ObjectBinder
                 continue;
 
             object? value = values[property.SlotIndex];
-            ObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? preferredHandling;
-            if (handling == ObjectCreationHandling.Populate && TryPopulate(property, instance, value))
-                continue;
+            if (value is ObjectPopulation population)
+            {
+                object? existing = property.GetValue(instance);
+                if (existing is not null)
+                {
+                    population.Populate(existing);
+
+                    // A value-type member returned a boxed copy, which now holds the read members and must be stored.
+                    if (property.PropertyType.IsValueType)
+                        property.SetValue(instance, existing);
+
+                    continue;
+                }
+
+                value = population.Create();
+            }
+            else
+            {
+                ObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? preferredHandling;
+                if (handling == ObjectCreationHandling.Populate && TryPopulate(property, instance, value))
+                    continue;
+            }
 
             if (property.CanSet)
                 property.SetValue(instance, value);

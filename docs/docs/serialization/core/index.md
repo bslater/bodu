@@ -34,7 +34,7 @@ Every attribute derives from the abstract <xref:Bodu.Text.Serialization.Serializ
 | <xref:Bodu.Text.Serialization.ConstructorAttribute> | constructor | Selects the constructor used during deserialization when a type declares more than one. |
 | <xref:Bodu.Text.Serialization.NamingPolicyAttribute> | class, struct, interface | Applies one of the built-in policies to the annotated type's members, overriding the options-level policy. |
 | <xref:Bodu.Text.Serialization.UnmappedMemberHandlingAttribute> | class, struct, interface | Chooses, per type, whether an unknown key is skipped or rejected. |
-| <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> | class, struct, interface, property, field | Chooses whether a collection member is replaced with a new instance or populated in place. |
+| <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> | class, struct, interface, property, field | Chooses whether a collection, dictionary, or object member is replaced with a new instance or populated in place. |
 | <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute> | enum field | Sets the string written for one enumeration member when the enum is serialized by name. |
 
 ## Naming policies

@@ -271,6 +271,11 @@ public sealed partial class YamlSerializerOptions
     /// <value>
     /// The preferred object-creation handling; the default is <see cref="ObjectCreationHandling.Replace" />.
     /// </value>
+    /// <remarks>
+    /// <see cref="ObjectCreationHandling.Populate" /> reads a collection, dictionary, or object member into the value
+    /// it already holds; when the member holds nothing that can be populated, the serializer replaces the value (see
+    /// <see cref="ObjectCreationHandling" />).
+    /// </remarks>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
     public ObjectCreationHandling PreferredObjectCreationHandling
     {

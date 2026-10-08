@@ -177,7 +177,7 @@ public sealed class Pipeline
 }
 ```
 
-Deserialized entries are appended to the existing list instead of replacing it. The attribute applies to a member or a whole type; member beats type, and both beat the options-level `PreferredObjectCreationHandling`.
+Deserialized entries are appended to the existing list instead of replacing it. An object member populates the same way: the members read for it are set on the instance it holds, and the values the input does not mention stay as the type initialized them. The attribute applies to a member or a whole type; member beats type, and both beat the options-level `PreferredObjectCreationHandling`.
 
 ## Pattern 11 - Choose a converter
 
