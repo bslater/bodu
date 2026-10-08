@@ -648,6 +648,10 @@ internal sealed partial class YamlParser
     /// A key decodes to text only, so a key's node properties are not kept with it; an anchored key is instead kept as
     /// a scalar row outside the tree, which an alias can refer to.
     /// </remarks>
+    /// <exception cref="YamlFormatException">
+    /// The key is an alias or a flow collection, or a plain key begins with an indicator that cannot begin a plain
+    /// scalar.
+    /// </exception>
     private string ReadSimpleKey()
     {
         string? anchor = null;
@@ -678,6 +682,16 @@ internal sealed partial class YamlParser
 
             return quoted;
         }
+
+        // A flow collection in implicit-key position is a sequence or mapping key, which the profile rejects rather than
+        // reading its brackets as the text of a scalar key.
+        if (c is (byte)'[' or (byte)'{')
+            throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+
+        // A plain key is a plain scalar, so it cannot begin with an indicator (production 126, ns-plain-first); a value
+        // indicator at the start of the entry is an empty key instead.
+        if (!(c == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1))) && !CanBeginPlainScalar(flow: false))
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         int start = _pos;
         int end = _pos;

@@ -45,9 +45,9 @@ internal static class YamlTestCorpusReader
         new Dictionary<string, int>(StringComparer.Ordinal)
         {
             ["SupportedPass"] = 252,
-            ["SupportedParseOnly"] = 13,
+            ["SupportedParseOnly"] = 12,
             ["SupportedFail"] = 94,
-            ["UnsupportedFeatureRejected"] = 43,
+            ["UnsupportedFeatureRejected"] = 44,
         };
 
     /// <summary>
@@ -65,6 +65,7 @@ internal static class YamlTestCorpusReader
         "565N",
         "57H4",
         "5TYM",
+        "6BFJ",
         "6CA3",
         "6CK3",
         "6PBE",
@@ -109,7 +110,6 @@ internal static class YamlTestCorpusReader
     private static readonly HashSet<string> SupportedParseOnlyIds = new(StringComparer.Ordinal)
     {
         "4ABK",
-        "6BFJ",
         "6M2F",
         "CFD4",
         "DFF7",
