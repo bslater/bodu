@@ -17,8 +17,8 @@ namespace Bodu.Test.Kat;
 public sealed class KatDisplayNameTests
 {
     /// <summary>
-    /// Verifies that <see cref="KatDisplayName.GetDisplayName" /> returns
-    /// <c>"{methodName}({kat.Name})"</c> when the first row element is an <see cref="IKat" /> instance.
+    /// Verifies that <see cref="KatDisplayName.GetDisplayName" /> returns the row's <see cref="IKat.Name" /> when
+    /// the first row element is an <see cref="IKat" /> instance.
     /// </summary>
     [TestMethod]
     public void GetDisplayName_WhenFirstElementIsKat_ShouldReturnNamedRow()

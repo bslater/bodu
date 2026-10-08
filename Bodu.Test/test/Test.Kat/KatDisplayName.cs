@@ -19,9 +19,9 @@ namespace Bodu.Test.Kat;
 /// attribute. The signature matches the MSTest contract <c>static string (MethodInfo methodInfo, object?[] data)</c>.
 /// </para>
 /// <para>
-/// When the first element of <paramref name="data" /> implements <see cref="IKat" />, the returned string is
-/// <c>"{methodName}({kat.Name})"</c>; otherwise the method name is returned unchanged. This allows the helper to be
-/// applied uniformly even on test methods whose rows are not all KATs.
+/// When the first element of <paramref name="data" /> implements <see cref="IKat" />, the returned string is that row's
+/// <see cref="IKat.Name" />; otherwise it is the method name. This allows the helper to be applied uniformly even on
+/// test methods whose rows are not all KATs.
 /// </para>
 /// </remarks>
 public static class KatDisplayName
@@ -32,7 +32,7 @@ public static class KatDisplayName
     /// <param name="methodInfo">The test method whose row is being named.</param>
     /// <param name="data">The row payload supplied by the dynamic data source.</param>
     /// <returns>
-    /// <c>"{methodInfo.Name}({kat.Name})"</c> when the first element of <paramref name="data" /> implements
+    /// The row's <see cref="IKat.Name" /> when the first element of <paramref name="data" /> implements
     /// <see cref="IKat" />; otherwise <paramref name="methodInfo" />.<see cref="MemberInfo.Name" />.
     /// </returns>
     /// <exception cref="ArgumentNullException">

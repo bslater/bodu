@@ -77,6 +77,38 @@ corpus/
 └── uk/                          GOV.UK bank-holiday feed 2019-2028, archived verbatim (official-published)
 ```
 
+## Release-note fix catalogues (`<area>/fixes/`)
+
+The structured-format readers are held to the defect fixes other libraries have shipped for the same formats. For
+each format area (`bencode`, `toml`, `yaml`, `delimited`, `dotenv`, `ini`, `configuration`, `compound`, `biff`,
+`pst`, `msg`), the release notes of comparable libraries are read in full, and every entry that fixes a defect or
+addresses an issue becomes a row in `<area>/fixes/<library>-fixes.csv`. The cron catalogue in
+`recurrence/cron-fixes/` was the first, and these use the same classes in a generalised layout. Each area's README
+lists its sources, what was read and when, the licences, the rendering its rows use, and its counts.
+
+A catalogue is UTF-8 holding only printable ASCII and line feeds. It opens with `# library: <library> -- <repository>`,
+`# releases: ...` and `# licence: ...`, then any `# note: ...` lines, then the columns
+`library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason`.
+
+| Column | Content |
+|---|---|
+| `class` | `applies` (Bodu must do what the fix established), `dialect` (Bodu documents a different behaviour, cited in `reason`), `n/a` (an API, language, platform or packaging matter Bodu does not share) or `unknown` (no scenario was found) |
+| `kind` | `parse`, `reject`, `write`, `write-reject`, `roundtrip`, or `unit` (the scenario needs typed code, so `input` names the test that covers it) |
+| `options` | `Name=Value;Name=Value`, mapped by the area's tests to reader, writer or document options |
+| `input`, `expected` | Escaped: `\n \r \t \0 \\`, `\xHH` for a byte and `\u{H...}` for a Unicode scalar, so raw bytes and non-ASCII text never appear in the file |
+| `expectation` | `upstream` (the fix's own test), `spec`, `derived` (worked out in `reason`) or `oracle:<tool>` |
+| `reason` | Required on every row; for a runnable row it cites the upstream test or issue |
+
+No upstream file is committed. A row's input is a minimal reproduction: a short input from a permissively licensed
+library's regression test may be restated with the test named in `reason`, and a copyleft library contributes only
+inputs written for the row. A port and its original are not independent evidence.
+
+Each area's test project embeds byte-for-byte copies under `Fixtures/ReleaseNotes/` and reads them through
+`Bodu.Test.Corpus` (in `Bodu.Test`). `ReleaseNoteCatalog` checks every rule above,
+`CorpusTree.AssertEmbeddedCopiesMatch` keeps the copies equal to this tree, and `ReleaseNoteGovernance` checks that
+each `unit` row's test exists. A row that fails is a defect: it gets an issue, then a failing regression test, then
+the fix.
+
 ## Source register (research pass, 2026-08-03)
 
 Datasets delivered by the external research pass, each verified before commit
