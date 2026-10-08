@@ -115,9 +115,13 @@ The defaults merge repeated sections and keep the last duplicate key - the permi
 
 A section name runs to the first `]` that only whitespace or a comment follows, so a name may contain `]`: `[foo]bar]` names the section `foo]bar`, and `[server] ; primary` names `server`. A comment after a header is skipped, not reported as a comment token, so the mutable DOM does not keep it; any other text after the header, as in `[server] primary`, throws `IniFormatException`.
 
+## Writing
+
+`Utf8IniWriter` writes only text that `Utf8IniReader` reads back unchanged, and throws `ArgumentException` for anything else, so the mutable DOM's `WriteTo` and `ToUtf8Bytes` and the serializer's `Serialize` overloads refuse it too: a value containing a line break, which a `key=value` line cannot hold. A comment containing line breaks is written as one comment line per line, each with the comment prefix, so `WriteComment("first\nsecond")` writes `;first` and `;second`.
+
 ## Exceptions
 
-`IniFormatException` for malformed input and duplicate-policy violations (line/offset attached); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value).
+`IniFormatException` for malformed input and duplicate-policy violations (line/offset attached); `IniSerializationException` for binding failures (non-object root, depth beyond two levels, missing `[Required]` member, non-convertible value); `ArgumentException` from the writer for text it cannot write so that it reads back unchanged (see [Writing](#writing)).
 
 ## When to reach for `Bodu.Text.Configuration` instead
 

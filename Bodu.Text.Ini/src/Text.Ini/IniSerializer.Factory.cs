@@ -28,6 +28,10 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="sectionName" />, <paramref name="value" />, or <paramref name="factory" /> is
     /// <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" />, or a key or value the factory supplies, is one that
+    /// <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged.
+    /// </exception>
     public static string SerializeSection<TSection>(string sectionName, TSection value, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)
     {
         var buffer = new ArrayBufferWriter<byte>();
@@ -49,6 +53,10 @@ public static partial class IniSerializer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" />, <paramref name="sectionName" />, <paramref name="value" />, or
     /// <paramref name="factory" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="sectionName" />, or a key or value the factory supplies, is one that
+    /// <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged.
     /// </exception>
     public static void SerializeSection<TSection>(IBufferWriter<byte> destination, string sectionName, TSection value, IIniSectionFactory<TSection> factory, IniSerializerOptions? options = null)
     {

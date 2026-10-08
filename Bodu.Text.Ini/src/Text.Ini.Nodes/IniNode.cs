@@ -162,12 +162,20 @@ public abstract class IniNode
     /// Writes this node's INI representation to the supplied writer.
     /// </summary>
     /// <param name="writer">The writer that receives the INI bytes.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
+    /// would not read back unchanged.
+    /// </exception>
     public abstract void WriteTo(ref Utf8IniWriter writer);
 
     /// <summary>
     /// Serializes this node to a new UTF-8 byte array.
     /// </summary>
     /// <returns>The INI bytes.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
+    /// would not read back unchanged.
+    /// </exception>
     public byte[] ToUtf8Bytes()
     {
         var buffer = new ArrayBufferWriter<byte>();
@@ -182,6 +190,10 @@ public abstract class IniNode
     /// Serializes this node to INI text.
     /// </summary>
     /// <returns>The INI text.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
+    /// would not read back unchanged.
+    /// </exception>
     public override string ToString() =>
         Encoding.UTF8.GetString(ToUtf8Bytes());
 

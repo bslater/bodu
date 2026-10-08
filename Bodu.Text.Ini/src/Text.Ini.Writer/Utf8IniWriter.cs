@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Bodu.Text.Ini.Writer;
@@ -14,9 +15,16 @@ namespace Bodu.Text.Ini.Writer;
 /// <see cref="Stream" />. The writer is a <see langword="ref struct" />.
 /// </summary>
 /// <remarks>
+/// <para>
 /// INI is line-oriented, so the writer emits progressively: <see cref="WriteSectionHeader(string)" /> produces a
 /// <c>[name]</c> line, <see cref="WritePropertyName(string)" /> followed by <see cref="WriteString(string)" /> produces
-/// one <c>key=value</c> line, and <see cref="WriteComment(string)" /> produces one comment line.
+/// one <c>key=value</c> line, and <see cref="WriteComment(string)" /> produces one comment line per line of its text.
+/// </para>
+/// <para>
+/// The writer writes only text that <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> reads back unchanged, and throws
+/// <see cref="ArgumentException" /> for anything else: a value containing a line break, which a <c>key=value</c> line
+/// cannot hold.
+/// </para>
 /// </remarks>
 public ref struct Utf8IniWriter
 {
@@ -148,18 +156,29 @@ public ref struct Utf8IniWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> contains a carriage return or a line feed, which a <c>key=value</c> line
+    /// cannot hold.
+    /// </exception>
     public void WriteString(string value)
     {
         ThrowHelper.ThrowIfNull(value);
+        ThrowIfContainsLineBreak(value);
 
         WriteText(value);
         WriteRaw("\n"u8);
     }
 
     /// <summary>
-    /// Writes a comment line prefixed with the configured comment character, followed by a line feed.
+    /// Writes a comment as one comment line per line of its text, each prefixed with the configured comment character
+    /// and followed by a line feed.
     /// </summary>
     /// <param name="text">The comment text, without the leading prefix.</param>
+    /// <remarks>
+    /// A carriage return, a line feed, or a carriage return followed by a line feed ends a line of the text, as it ends
+    /// a line for <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" />, so each line reads back as a comment of its own;
+    /// an empty line becomes an empty comment line.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
@@ -167,10 +186,20 @@ public ref struct Utf8IniWriter
     {
         ThrowHelper.ThrowIfNull(text);
 
-        Span<char> prefix = [_options.EffectiveCommentPrefix];
-        WriteText(new string(prefix));
-        WriteText(text);
-        WriteRaw("\n"u8);
+        ReadOnlySpan<char> remaining = text;
+        int lineBreak;
+        while ((lineBreak = remaining.IndexOfAny('\r', '\n')) >= 0)
+        {
+            WriteCommentLine(remaining[..lineBreak]);
+
+            int next = lineBreak + 1;
+            if (remaining[lineBreak] == '\r' && next < remaining.Length && remaining[next] == '\n')
+                next++;
+
+            remaining = remaining[next..];
+        }
+
+        WriteCommentLine(remaining);
     }
 
     /// <summary>
@@ -195,10 +224,35 @@ public ref struct Utf8IniWriter
     public void Dispose() => Flush();
 
     /// <summary>
+    /// Throws when text contains a line break, which a single INI line cannot hold.
+    /// </summary>
+    /// <param name="text">The text to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="text" /> contains a carriage return or a line feed.
+    /// </exception>
+    private static void ThrowIfContainsLineBreak(string text, [CallerArgumentExpression(nameof(text))] string? paramName = null)
+    {
+        if (text.AsSpan().ContainsAny('\r', '\n')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniLineBreak, paramName);
+    }
+
+    /// <summary>
+    /// Writes one comment line: the configured comment prefix, the text and a line feed.
+    /// </summary>
+    /// <param name="line">The text of the line, which holds no line break.</param>
+    private void WriteCommentLine(ReadOnlySpan<char> line)
+    {
+        ReadOnlySpan<char> prefix = [_options.EffectiveCommentPrefix];
+        WriteText(prefix);
+        WriteText(line);
+        WriteRaw("\n"u8);
+    }
+
+    /// <summary>
     /// Writes the supplied text as UTF-8 bytes verbatim.
     /// </summary>
     /// <param name="text">The text to write.</param>
-    private void WriteText(string text)
+    private void WriteText(scoped ReadOnlySpan<char> text)
     {
         int byteCount = Encoding.UTF8.GetByteCount(text);
         Span<byte> destination = _output.GetSpan(byteCount);

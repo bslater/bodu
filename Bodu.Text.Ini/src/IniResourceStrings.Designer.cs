@@ -190,5 +190,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_IniSectionNotFound", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The text contains a line break, which a single INI line cannot hold..
+        /// </summary>
+        internal static string Arg_Invalid_IniLineBreak {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniLineBreak", resourceCulture);
+            }
+        }
     }
 }

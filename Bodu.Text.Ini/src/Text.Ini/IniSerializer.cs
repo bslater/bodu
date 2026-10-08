@@ -44,6 +44,10 @@ public static partial class IniSerializer
     /// <exception cref="IniSerializationException">
     /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> maps to a key, section name or value that <see cref="Utf8IniWriter" />
+    /// refuses because it would not read back unchanged.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static string Serialize<T>(T value, IniSerializerOptions? options = null)
@@ -66,6 +70,10 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniSerializationException">
     /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> maps to a key, section name or value that <see cref="Utf8IniWriter" />
+    /// refuses because it would not read back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -95,6 +103,10 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniSerializationException">
     /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> maps to a key, section name or value that <see cref="Utf8IniWriter" />
+    /// refuses because it would not read back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]

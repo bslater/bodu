@@ -103,4 +103,7 @@
   <data name="Op_Invalid_IniSectionNotFound" xml:space="preserve">
     <value>The INI document does not contain a section named '{0}'.</value>
   </data>
+  <data name="Arg_Invalid_IniLineBreak" xml:space="preserve">
+    <value>The text contains a line break, which a single INI line cannot hold.</value>
+  </data>
 </root>
