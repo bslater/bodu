@@ -55,13 +55,27 @@ public sealed class TomlArray
     /// <exception cref="InvalidOperationException">
     /// Thrown when an element already belongs to another container.
     /// </exception>
+    /// <remarks>
+    /// When an item is rejected, construction fails and every item is left with the parent it had before, so the items
+    /// can be added elsewhere.
+    /// </remarks>
     public TomlArray(params TomlNode?[] items)
     {
         ThrowHelper.ThrowIfNull(items);
 
         _items = new List<TomlNode?>(items.Length);
-        foreach (TomlNode? item in items)
-            Add(item);
+        try
+        {
+            foreach (TomlNode? item in items)
+                Add(item);
+        }
+        catch
+        {
+            // The array is abandoned, so the items it already holds are released; the item that failed was never
+            // attached.
+            Clear();
+            throw;
+        }
     }
 
     /// <inheritdoc />
@@ -141,10 +155,16 @@ public sealed class TomlArray
         _items.IndexOf(item);
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The item is attached only once it has been inserted, so an insert rejected because the index is outside the
+    /// array leaves the item with the parent it had.
+    /// </remarks>
     public void Insert(int index, TomlNode? item)
     {
-        item?.AssignParent(this);
+        item?.ThrowIfBelongsToOtherContainer(this);
+
         _items.Insert(index, item);
+        item?.AssignParent(this);
     }
 
     /// <inheritdoc />
