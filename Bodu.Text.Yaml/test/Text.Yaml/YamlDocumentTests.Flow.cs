@@ -71,4 +71,38 @@ public partial class YamlDocumentTests
         Assert.AreEqual(0, doc.RootElement.GetProperty("items").GetSequenceLength());
         Assert.AreEqual(YamlValueKind.Mapping, doc.RootElement.GetProperty("config").ValueKind);
     }
+
+    /// <summary>
+    /// Verifies that a <c>?</c> followed by a separator inside a flow sequence begins a single-pair mapping entry, with
+    /// an explicit key and an optional value.
+    /// </summary>
+    /// <param name="yaml">A flow sequence holding an explicit-key entry.</param>
+    /// <param name="expected">The sequence expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("[ ? ]", """[{"":null}]""", DisplayName = "an empty key")]
+    [DataRow("[? 123]", """[{"123":null}]""", DisplayName = "a key with no value")]
+    [DataRow("[ 123, ? ]", """[123,{"":null}]""", DisplayName = "an empty key after an entry")]
+    [DataRow("[ 123, ? 456 ]", """[123,{"456":null}]""", DisplayName = "a key with no value after an entry")]
+    [DataRow("[ ? a : b ]", """[{"a":"b"}]""", DisplayName = "a key and its value")]
+    [DataRow("[ ? : b ]", """[{"":"b"}]""", DisplayName = "an empty key and a value")]
+    [DataRow("[ ? a\n  : b ]", """[{"a":"b"}]""", DisplayName = "a value indicator on the next line")]
+    [DataRow("[ ? a, b ]", """[{"a":null},"b"]""", DisplayName = "a key with no value, then an entry")]
+    public void Parse_WhenFlowSequenceHoldsExplicitKey_ShouldReadSinglePairMapping(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a <c>?</c> followed by a character other than a separator inside a flow sequence begins a plain
+    /// scalar, not an explicit key.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenFlowSequenceEntryStartsWithQuestionMark_ShouldReadPlainScalar()
+    {
+        using var document = YamlDocument.Parse("[ ?a, ?b ]");
+
+        Assert.AreEqual("""["?a","?b"]""", ToJson(document.RootElement));
+    }
 }
