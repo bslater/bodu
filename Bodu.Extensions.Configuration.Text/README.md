@@ -32,17 +32,17 @@ The repository ships an offline, `dotnet run`-able sample for this package -
 
 | Feature | `Microsoft.Extensions.Configuration.Json` | `Bodu.Extensions.Configuration.Text` |
 |---|---|---|
-| `AddXxxFile(builder, path)` | `AddJsonFile(builder, path)` | `AddTextConfiguration(builder, path)` |
+| `AddXxxFile(builder, path)` | `AddJsonFile(builder, path)` | `AddTextConfigurationFile(builder, path)` |
 | `AddXxxFile(builder, path, optional, reloadOnChange)` | yes | yes (extra `targetPath`) |
 | `AddXxxFile(builder, provider, path, optional, reloadOnChange)` | yes | yes |
 | `AddXxxFile(builder, Action<XxxSource>)` | yes | yes |
-| `AddXxxStream(builder, Stream)` | `AddJsonStream(builder, stream)` | `AddTextConfiguration(builder, stream)` |
+| `AddXxxStream(builder, Stream)` | `AddJsonStream(builder, stream)` | `AddTextConfigurationStream(builder, stream)` |
 | `IFileProvider`-backed reload-on-change | yes | yes (inherited) |
 | `GetReloadToken` / change tokens | yes | yes (inherited) |
 | `GetSection`, `GetChildren`, `Bind` | yes | yes (via colon-delimited keys) |
 | Default-filename convention | none | `.boduconfig` then `bodu.config` |
-| Programmatic-document entry point | none | `AddTextConfiguration(builder, IniDocument)` |
-| `IOptions<T>` helper | provided by `Microsoft.Extensions.Options.ConfigurationExtensions` | `AddTextConfigurationOptions<TOptions>` |
+| Programmatic-document entry point | none | `AddTextConfigurationDocument(builder, IniDocumentBase)` |
+| `IOptions<T>` helper | provided by `Microsoft.Extensions.Options.ConfigurationExtensions` | `AddConfigurationOptions<TOptions>` |
 
 ## Worked examples
 
@@ -53,7 +53,7 @@ using Microsoft.Extensions.Configuration;
 using Bodu.Extensions.Configuration.Text;
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddTextConfiguration("app.boduconfig", optional: false, reloadOnChange: true)
+    .AddTextConfigurationFile("app.boduconfig", optional: false, reloadOnChange: true)
     .Build();
 
 string? indentSize = config["format:indent:size"];
@@ -65,13 +65,15 @@ The source uses dotted keys (`format.indent.size`), which the bridge translates 
 ### Load from a stream
 
 ```csharp
+using System.Text;
+
 using MemoryStream stream = new(Encoding.UTF8.GetBytes("""
 service.name = Bodu
 service.port = 8080
 """));
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddTextConfiguration(stream)
+    .AddTextConfigurationStream(stream)
     .Build();
 ```
 
@@ -86,7 +88,7 @@ using Microsoft.Extensions.FileProviders;
 var fileProvider = new PhysicalFileProvider(repoRoot);
 
 IConfiguration config = new ConfigurationBuilder()
-    .AddTextConfiguration(fileProvider, "app.boduconfig")
+    .AddTextConfigurationFile(fileProvider, "app.boduconfig")
     .Build();
 ```
 
@@ -97,7 +99,7 @@ which section a build resolves against:
 
 ```csharp
 new ConfigurationBuilder()
-    .AddTextConfiguration(source =>
+    .AddTextConfigurationFile(source =>
     {
         source.Path = "app.boduconfig";
         source.TargetPath = "src/Foo.cs";  // selects [src/**/*.cs] when present
@@ -105,8 +107,8 @@ new ConfigurationBuilder()
     .Build();
 ```
 
-When `TargetPath` is `null`, only preamble (top-of-file) keys flow into the configuration view - anchored
-sections are skipped.
+When `TargetPath` is `null`, only preamble (top-of-file) keys flow into the configuration view - every named
+section is skipped, since a section applies only to the target paths its glob matches.
 
 ## Array binding
 
@@ -148,10 +150,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 services.AddOptions();
-services.AddTextConfigurationOptions<ServiceOptions>(config, sectionName: "service");
+services.AddConfigurationOptions<ServiceOptions>(config, sectionName: "service");
 
 var options = provider.GetRequiredService<IOptions<ServiceOptions>>().Value;
 ```
 
 The helper is a thin shim over `services.Configure<TOptions>(config.GetSection(name))` - it exists for
-discoverability alongside the `AddTextConfiguration` API surface.
+discoverability alongside the `AddTextConfigurationFile` / `AddTextConfigurationStream` registration surface.
