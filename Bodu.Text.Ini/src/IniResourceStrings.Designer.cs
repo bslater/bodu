@@ -228,6 +228,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The text begins with U+FEFF, which the INI reader skips as a byte order mark at the start of a document..
+        /// </summary>
+        internal static string Arg_Invalid_IniByteOrderMark {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniByteOrderMark", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to An INI section name cannot hold a ']' followed by ';' or '#', where the reader would end the name..
         /// </summary>
         internal static string Arg_Invalid_IniSectionNameComment {

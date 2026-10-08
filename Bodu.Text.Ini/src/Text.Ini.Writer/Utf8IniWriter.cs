@@ -22,7 +22,7 @@ namespace Bodu.Text.Ini.Writer;
 /// </para>
 /// <para>
 /// The writer writes only text that <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> reads back unchanged, and throws
-/// <see cref="ArgumentException" /> for anything else:
+/// <see cref="ArgumentException" /> for the following:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -40,7 +40,13 @@ namespace Bodu.Text.Ini.Writer;
 /// <item>
 /// <description>
 /// a section name that is empty, begins or ends with a space or a tab, contains a line break, or holds a <c>]</c> that
-/// a <c>;</c> or <c>#</c> follows after optional spaces and tabs, where the reader would end the name.
+/// a <c>;</c> or <c>#</c> follows after optional spaces and tabs, where the reader would end the name;
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// a key or a section name that begins with U+FEFF, which the reader skips as a byte order mark at the start of a
+/// document, refused wherever the name is written so that the rule does not depend on position.
 /// </description>
 /// </item>
 /// </list>
@@ -144,7 +150,9 @@ public ref struct Utf8IniWriter
     /// A name may hold any other <c>]</c>: the reader ends a section name at the first <c>]</c> that only whitespace or
     /// a comment follows, so <c>foo]bar</c> is written as <c>[foo]bar]</c> and read back unchanged. A <c>#</c> after a
     /// <c>]</c> is refused even though a reader may disallow hash comments, because the writer cannot know the options
-    /// its output will be read with.
+    /// its output will be read with. A name beginning with U+FEFF is refused, as a key beginning with it is, even
+    /// though the reader would read it back unchanged, so that keys and section names follow one rule wherever they are
+    /// written.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
@@ -152,13 +160,14 @@ public ref struct Utf8IniWriter
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="name" /> is empty, begins or ends with a space or a tab, contains a carriage return
     /// or a line feed, or holds a <c>]</c> that a <c>;</c> or <c>#</c> follows after optional spaces and tabs, since
-    /// the reader would not read it back as this name.
+    /// the reader would not read it back as this name, or when it begins with U+FEFF.
     /// </exception>
     public void WriteSectionHeader(string name)
     {
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowIfContainsLineBreak(name);
         ThrowIfSurroundedByWhitespace(name);
+        ThrowIfStartsWithByteOrderMark(name);
         ThrowIfBracketPrecedesComment(name);
 
         WriteRaw("["u8);
@@ -173,7 +182,9 @@ public ref struct Utf8IniWriter
     /// <param name="name">The key name.</param>
     /// <remarks>
     /// A key beginning with <c>#</c> is refused even though a reader may disallow hash comments, because the writer
-    /// cannot know the options its output will be read with.
+    /// cannot know the options its output will be read with. A key beginning with U+FEFF is refused wherever it is
+    /// written, although the reader skips U+FEFF only at the start of a document, where it is a byte order mark, so
+    /// that the rule does not depend on position.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
@@ -181,13 +192,14 @@ public ref struct Utf8IniWriter
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="name" /> is empty, begins or ends with a space or a tab, contains <c>=</c>, a
     /// carriage return or a line feed, or begins with <c>[</c>, <c>;</c> or <c>#</c>, since the reader would not read
-    /// it back as this key.
+    /// it back as this key, or when it begins with U+FEFF.
     /// </exception>
     public void WritePropertyName(string name)
     {
         ThrowHelper.ThrowIfNullOrEmpty(name);
         ThrowIfContainsLineBreak(name);
         ThrowIfSurroundedByWhitespace(name);
+        ThrowIfStartsWithByteOrderMark(name);
         if (name.Contains('=')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniKeyDelimiter, nameof(name));
         if (name[0] is '[' or ';' or '#') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniKeyStart, nameof(name));
 
@@ -319,6 +331,22 @@ public ref struct Utf8IniWriter
     private static void ThrowIfSurroundedByWhitespace(string text, [CallerArgumentExpression(nameof(text))] string? paramName = null)
     {
         if (text.Length > 0 && (text[0] is ' ' or '\t' || text[^1] is ' ' or '\t')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniSurroundingWhitespace, paramName);
+    }
+
+    /// <summary>
+    /// Throws when a name begins with U+FEFF, which <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> skips as a byte
+    /// order mark at the start of a document.
+    /// </summary>
+    /// <param name="name">The key or section name to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <remarks>
+    /// The reader skips the mark only at the start of a document, but a name beginning with it is refused wherever it
+    /// is written, so that the rule does not depend on position.
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> begins with U+FEFF.</exception>
+    private static void ThrowIfStartsWithByteOrderMark(string name, [CallerArgumentExpression(nameof(name))] string? paramName = null)
+    {
+        if (name.Length > 0 && name[0] == '\uFEFF') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniByteOrderMark, paramName);
     }
 
     /// <summary>

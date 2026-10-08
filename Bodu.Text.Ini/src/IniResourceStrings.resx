@@ -115,6 +115,9 @@
   <data name="Arg_Invalid_IniKeyStart" xml:space="preserve">
     <value>An INI key cannot begin with '[', ';' or '#', which the reader takes for a section header or a comment.</value>
   </data>
+  <data name="Arg_Invalid_IniByteOrderMark" xml:space="preserve">
+    <value>The text begins with U+FEFF, which the INI reader skips as a byte order mark at the start of a document.</value>
+  </data>
   <data name="Arg_Invalid_IniSectionNameComment" xml:space="preserve">
     <value>An INI section name cannot hold a ']' followed by ';' or '#', where the reader would end the name.</value>
   </data>

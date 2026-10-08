@@ -167,7 +167,9 @@ tests now pass. No row was re-classed: every fix made Bodu do what the release-n
   the keys `[this parses back as a section]` and `[disturbing]` were written as lines that read back as section
   headers. `WritePropertyName` now refuses a key that is empty, begins or ends with a space or tab, contains `=` or
   a line break, or begins with `[`, `;` or `#`, and `WriteSectionHeader` refuses a name that is empty, begins or
-  ends with a space or tab, contains a line break, or holds a `]` that a comment marker follows.
+  ends with a space or tab, contains a line break, or holds a `]` that a comment marker follows. Both also refuse a
+  name beginning with U+FEFF wherever it is written, since the reader skips a byte order mark at the start of a
+  document (a sweep in the writer tests found this; no row covers it).
 
 The documents now match the code. Five of them said an INI value runs literally to the end of the line, although
 the reader trims the whitespace around keys and values (issue #844, documentation only); they now say so. The
