@@ -302,6 +302,19 @@ public sealed partial class BencodeDocument
     }
 
     /// <summary>
+    /// Gets the raw bytes of the dictionary key stored at the supplied row index.
+    /// </summary>
+    /// <param name="keyRow">The row index of a key (a byte-string row in key position).</param>
+    /// <returns>The key's bytes, valid only until the document is disposed.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    internal ReadOnlySpan<byte> GetKeySpan(int keyRow)
+    {
+        byte[] data = EnsureNotDisposed();
+        ref readonly Row row = ref _rows[keyRow];
+        return data.AsSpan(row.Location, row.Length);
+    }
+
+    /// <summary>
     /// Gets the kind of the value at the supplied row index.
     /// </summary>
     /// <param name="index">The row index.</param>
@@ -450,36 +463,51 @@ public sealed partial class BencodeDocument
     /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
     internal bool TryGetProperty(int objIndex, string name, out int valueRow)
     {
-        byte[] data = EnsureNotDisposed();
-        ref readonly Row obj = ref _rows[objIndex];
-        if (obj.Kind != BencodeValueKind.Object)
-            throw KindMismatch(BencodeValueKind.Object, obj.Kind);
-
         // Compare against the raw key bytes so byte strings that are not valid UTF-8 still match correctly.
         int byteCount = Encoding.UTF8.GetByteCount(name);
         byte[] needle = ArrayPool<byte>.Shared.Rent(byteCount);
         try
         {
             Encoding.UTF8.GetBytes(name, needle);
-            ReadOnlySpan<byte> needleSpan = needle.AsSpan(0, byteCount);
-
-            int cur = objIndex + 1;
-            for (int i = 0; i < obj.ChildCount; i++)
-            {
-                ref readonly Row key = ref _rows[cur];
-                int valueRowCandidate = cur + 1;
-                if (data.AsSpan(key.Location, key.Length).SequenceEqual(needleSpan))
-                {
-                    valueRow = valueRowCandidate;
-                    return true;
-                }
-
-                cur = valueRowCandidate + _rows[valueRowCandidate].NumberOfRows;
-            }
+            return TryGetProperty(objIndex, needle.AsSpan(0, byteCount), out valueRow);
         }
         finally
         {
             ArrayPool<byte>.Shared.Return(needle);
+        }
+    }
+
+    /// <summary>
+    /// Attempts to locate the value of the property whose key is the supplied bytes within the object at the supplied
+    /// row index.
+    /// </summary>
+    /// <param name="objIndex">The object's row index.</param>
+    /// <param name="name">The raw key bytes to find.</param>
+    /// <param name="valueRow">When this method returns, the row index of the matching value; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when a matching property was found; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the element is not an object.</exception>
+    internal bool TryGetProperty(int objIndex, ReadOnlySpan<byte> name, out int valueRow)
+    {
+        byte[] data = EnsureNotDisposed();
+        ref readonly Row obj = ref _rows[objIndex];
+        if (obj.Kind != BencodeValueKind.Object)
+            throw KindMismatch(BencodeValueKind.Object, obj.Kind);
+
+        int cur = objIndex + 1;
+        for (int i = 0; i < obj.ChildCount; i++)
+        {
+            ref readonly Row key = ref _rows[cur];
+            int valueRowCandidate = cur + 1;
+            if (data.AsSpan(key.Location, key.Length).SequenceEqual(name))
+            {
+                valueRow = valueRowCandidate;
+                return true;
+            }
+
+            cur = valueRowCandidate + _rows[valueRowCandidate].NumberOfRows;
         }
 
         valueRow = 0;

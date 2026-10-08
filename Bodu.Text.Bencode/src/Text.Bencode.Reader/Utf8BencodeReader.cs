@@ -25,9 +25,9 @@ namespace Bodu.Text.Bencode.Reader;
 /// 64-bit ranges [<see cref="long.MinValue" />, <see cref="ulong.MaxValue" /> ]; values above
 /// <see cref="long.MaxValue" /> are readable only through <see cref="GetUInt64" />. The reader enforces the canonical
 /// Bencode grammar - integers without leading zeros or negative zero, byte-string lengths without leading zeros,
-/// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and a single root
-/// value with no trailing bytes - raising <see cref="BencodeFormatException" /> on any departure from that canonical
-/// form.
+/// dictionary keys that are byte strings in strictly ascending bytewise order, balanced containers, and exactly one
+/// root value with no trailing bytes - raising <see cref="BencodeFormatException" /> on any departure from that
+/// canonical form. Empty input holds no root value, so the first <see cref="Read" /> over it throws.
 /// </para>
 /// <para>
 /// Real-world documents produced by older encoders occasionally carry unsorted or duplicate dictionary keys. The opt-in
@@ -95,10 +95,10 @@ public ref struct Utf8BencodeReader
     /// <summary>The start offset of the current token within the source bytes.</summary>
     private int _tokenStart;
 
-    /// <summary>The start offset of the current byte-string token's content.</summary>
+    /// <summary>The start offset of the current token's value: a byte string's content or an integer's text.</summary>
     private int _valueStart;
 
-    /// <summary>The length of the current byte-string token's content.</summary>
+    /// <summary>The length of the current token's value; zero for a container token or when no token is current.</summary>
     private int _valueLength;
 
     /// <summary>
@@ -168,9 +168,13 @@ public ref struct Utf8BencodeReader
     public readonly BencodeTokenType TokenType => _tokenType;
 
     /// <summary>
-    /// Gets the raw content bytes of the current byte-string or property-name token.
+    /// Gets the raw bytes of the current token's value.
     /// </summary>
-    /// <value>The byte-string content.</value>
+    /// <value>
+    /// For a byte string or property name, its content without the length prefix; for an integer, its text without the
+    /// <c>i</c> and <c>e</c> delimiters, such as <c>42</c> or <c>-7</c>; for a list or dictionary start or end token,
+    /// and before the first token or after the last, an empty span.
+    /// </value>
     public readonly ReadOnlySpan<byte> ValueSpan => _data.Slice(_valueStart, _valueLength);
 
     /// <summary>
@@ -307,7 +311,9 @@ public ref struct Utf8BencodeReader
     /// <returns>
     /// <see langword="true" /> when a token was read; <see langword="false" /> at the end of the document.
     /// </returns>
-    /// <exception cref="BencodeFormatException">Thrown when the bytes are not valid Bencode.</exception>
+    /// <exception cref="BencodeFormatException">
+    /// Thrown when the bytes are not valid Bencode, including when the input is empty and so holds no root value.
+    /// </exception>
     public bool Read()
     {
         // Once the root value has completed, the document is closed: no trailing bytes are permitted.
@@ -317,27 +323,32 @@ public ref struct Utf8BencodeReader
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeTrailingData, _position);
 
             _tokenType = BencodeTokenType.None;
+            _valueLength = 0;
             return false;
         }
 
         if (_position >= _data.Length)
         {
-            if (_frames.Count > 0)
+            // An open container, or input that ends before any value starts, leaves the document incomplete.
+            if (_frames.Count > 0 || _data.IsEmpty)
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, _position);
 
             _tokenType = BencodeTokenType.None;
+            _valueLength = 0;
             return false;
         }
 
         bool hasTop = _frames.Count > 0;
         bool inDictKey = false;
         _tokenStart = _position;
+        _valueStart = _position;
+        _valueLength = 0;
         byte b = _data[_position];
 
         if (b == (byte)'e')
         {
             if (!hasTop)
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, _position);
+                throw UnexpectedByte(b, _position);
 
             Frame top = _frames[^1];
             if (top.IsDict && !top.ExpectKey)
@@ -401,7 +412,7 @@ public ref struct Utf8BencodeReader
                 return true;
 
             default:
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, _position);
+                throw UnexpectedByte(b, _position);
         }
     }
 
@@ -602,6 +613,25 @@ public ref struct Utf8BencodeReader
         new(message, offset);
 
     /// <summary>
+    /// Creates the exception thrown when a byte cannot begin a token at its position, naming the byte and its offset.
+    /// </summary>
+    /// <param name="value">The unexpected byte.</param>
+    /// <param name="offset">The byte offset of <paramref name="value" />.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// A printable ASCII byte is shown as its character and any other byte as <c>0xHH</c>, so that the message stays
+    /// readable whatever the input holds.
+    /// </remarks>
+    private static BencodeFormatException UnexpectedByte(byte value, int offset)
+    {
+        string shown = value is >= 0x20 and <= 0x7E
+            ? ((char)value).ToString()
+            : "0x" + value.ToString("X2", CultureInfo.InvariantCulture);
+
+        return Error(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeUnexpectedToken, shown, offset), offset);
+    }
+
+    /// <summary>
     /// Updates the enclosing dictionary's key/value expectation after a complete value has been read.
     /// </summary>
     private readonly void AfterValue()
@@ -688,7 +718,7 @@ public ref struct Utf8BencodeReader
         {
             // A negative literal must fit the signed 64-bit range; there is no wider negative representation.
             if (!Utf8Parser.TryParse(number, out long value, out int consumed) || consumed != number.Length)
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerLiteralOutOfRange, start);
 
             _intValue = value;
             _uintValue = 0;
@@ -699,13 +729,15 @@ public ref struct Utf8BencodeReader
             // Bencode integers are arbitrary-precision per BEP 3; the reader accepts the full unsigned 64-bit range
             // and defers the signed-range check to GetInt64 so GetUInt64 can serve the wider values.
             if (!Utf8Parser.TryParse(number, out ulong value, out int consumed) || consumed != number.Length)
-                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerOutOfRange, start);
+                throw Error(BencodeResourceStrings.Format_Invalid_BencodeIntegerLiteralOutOfRange, start);
 
             _uintValue = value;
             _intExceedsInt64 = value > long.MaxValue;
             _intValue = _intExceedsInt64 ? 0 : (long)value;
         }
 
+        _valueStart = signStart;
+        _valueLength = _position - signStart;
         _position++;
         _tokenType = BencodeTokenType.Integer;
     }

@@ -269,4 +269,21 @@ public partial class BencodeSerializerTests
         [ExtensionData]
         public Dictionary<string, int>? Extra { get; set; }
     }
+
+    /// <summary>
+    /// Verifies that an unmatched key that is not valid UTF-8 cannot be captured into extension data and throws
+    /// <see cref="BencodeSerializationException" /> at the key, rather than merging it with another such key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenExtensionDataKeyIsNotValidUtf8_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:x1:þi1e1:ÿi2ee");
+
+        BencodeSerializationException exception = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<DictionaryExtensionDataModel>(bytes);
+        });
+
+        Assert.AreEqual(10, exception.BytesOffset);
+    }
 }

@@ -66,4 +66,21 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("destination", ex.ParamName);
     }
 
+    /// <summary>
+    /// Verifies that asynchronously serializing a <see langword="null" /> root value throws
+    /// <see cref="BencodeSerializationException" /> and writes nothing.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenValueIsNull_ShouldThrowBencodeSerializationException()
+    {
+        using var destination = new MemoryStream();
+
+        await Assert.ThrowsExactlyAsync<BencodeSerializationException>(async () =>
+        {
+            await BencodeSerializer.SerializeAsync<string?>(destination, null);
+        });
+
+        Assert.AreEqual(0L, destination.Length);
+    }
 }

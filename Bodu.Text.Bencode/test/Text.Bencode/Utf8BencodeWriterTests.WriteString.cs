@@ -69,4 +69,35 @@ public partial class Utf8BencodeWriterTests
         }, "value");
     }
 
+    /// <summary>
+    /// Verifies that non-ASCII text written as a value through <see cref="Utf8BencodeWriter.WriteString(string)" />, as a
+    /// key through <see cref="Utf8BencodeWriter.WritePropertyName(string)" />, and as a document through
+    /// <see cref="BencodeSerializer.Serialize{T}(T, BencodeSerializerOptions?)" /> is prefixed with its UTF-8 byte
+    /// length rather than its character count.
+    /// </summary>
+    [TestMethod]
+    public void WriteString_WhenValueIsNotAscii_ShouldPrefixUtf8ByteLength()
+    {
+        const string Text = "été";
+        const string Emoji = "\U0001F600";
+        byte[] expectedValue = [.. "5:"u8, 0xC3, 0xA9, (byte)'t', 0xC3, 0xA9];
+        byte[] expectedDictionary = [(byte)'d', .. expectedValue, .. "i1e4:"u8, 0xF0, 0x9F, 0x98, 0x80, .. "i2ee"u8];
+
+        var valueBuffer = new ArrayBufferWriter<byte>();
+        var valueWriter = new Utf8BencodeWriter(valueBuffer);
+        valueWriter.WriteString(Text);
+
+        var dictionaryBuffer = new ArrayBufferWriter<byte>();
+        var dictionaryWriter = new Utf8BencodeWriter(dictionaryBuffer);
+        dictionaryWriter.WriteStartDictionary();
+        dictionaryWriter.WritePropertyName(Text);
+        dictionaryWriter.WriteInteger(1);
+        dictionaryWriter.WritePropertyName(Emoji);
+        dictionaryWriter.WriteInteger(2);
+        dictionaryWriter.WriteEndDictionary();
+
+        CollectionAssert.AreEqual(expectedValue, valueBuffer.WrittenSpan.ToArray());
+        CollectionAssert.AreEqual(expectedDictionary, dictionaryBuffer.WrittenSpan.ToArray());
+        CollectionAssert.AreEqual(expectedValue, BencodeSerializer.Serialize(Text));
+    }
 }

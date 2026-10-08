@@ -232,4 +232,117 @@ public partial class BencodeSerializerTests
         Assert.AreEqual("i5e", Encoding.Latin1.GetString(buffer.WrittenSpan));
     }
 
+    /// <summary>
+    /// Verifies that a <see langword="null" /> reference-type member is omitted from the written dictionary while a
+    /// value-type member holding zero is written.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsNull_ShouldOmitKey()
+    {
+        var model = new NullAndZeroModel { Empty = null, Zero = 0 };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d4:Zeroi0ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> string as the document root throws
+    /// <see cref="BencodeSerializationException" />, because Bencode has no null and an empty output is not a document.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsNull_ShouldThrowBencodeSerializationException()
+    {
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize<string?>(null);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see cref="double" />, which has no Bencode form, throws
+    /// <see cref="NotSupportedException" /> rather than writing a truncated integer.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsDouble_ShouldThrowNotSupportedException()
+    {
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(42.23);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="ulong" /> member above <see cref="long.MaxValue" /> is written with all its digits,
+    /// not as the negative number a cast through <see cref="long" /> would give.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenUInt64AboveInt64Max_ShouldWriteAllDigits()
+    {
+        var model = new ULongModel { Value = ulong.MaxValue };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d5:Valuei18446744073709551615ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see cref="char" /> value, which has no built-in converter, throws
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsChar_ShouldThrowNotSupportedException()
+    {
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = BencodeSerializer.Serialize('a');
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> object as the document root throws
+    /// <see cref="BencodeSerializationException" /> rather than returning an empty array, which no reader accepts.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenClassValueIsNull_ShouldThrowBencodeSerializationException()
+    {
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize<StreamModel?>(null);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> root value to a buffer writer throws
+    /// <see cref="BencodeSerializationException" /> and writes nothing.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsNull_ForBufferWriterOverload_ShouldThrowBencodeSerializationException()
+    {
+        var destination = new ArrayBufferWriter<byte>();
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            BencodeSerializer.Serialize<string?>(destination, null);
+        });
+
+        Assert.AreEqual(0, destination.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> root value to a stream throws
+    /// <see cref="BencodeSerializationException" /> and writes nothing.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsNull_ForStreamOverload_ShouldThrowBencodeSerializationException()
+    {
+        using var destination = new MemoryStream();
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            BencodeSerializer.Serialize<int?>(destination, null);
+        });
+
+        Assert.AreEqual(0L, destination.Length);
+    }
 }

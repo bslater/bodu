@@ -173,7 +173,7 @@ public partial class BencodeDocumentTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = root.GetProperty(null!);
+            _ = root.GetProperty((string)null!);
         }, "propertyName");
     }
 
@@ -190,7 +190,7 @@ public partial class BencodeDocumentTests
 
         _ = ExceptionAssert.ThrowsExactlyWithParamName<ArgumentNullException>(() =>
         {
-            _ = root.TryGetProperty(null!, out _);
+            _ = root.TryGetProperty((string)null!, out _);
         }, "propertyName");
     }
 
@@ -326,5 +326,73 @@ public partial class BencodeDocumentTests
         byte[] second = document.RootElement.GetBytes();
 
         Assert.AreEqual((byte)'s', second[0]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeElement.GetProperty(ReadOnlySpan{byte})" /> finds a key by its exact bytes, here a
+    /// binary key of the shape a tracker's scrape response uses, which no <see cref="string" /> can name.
+    /// </summary>
+    [TestMethod]
+    public void GetProperty_WhenKeyBytesAreNotValidUtf8_ShouldFindTheExactKey()
+    {
+        using var document = BencodeDocument.Parse(Bytes("d5:filesd4:éÿþàd8:completei5ee4:éÿþád8:completei7eeee"));
+        BencodeElement files = document.RootElement.GetProperty("files"u8);
+
+        BencodeElement stats = files.GetProperty([0xE9, 0xFF, 0xFE, 0xE1]);
+
+        Assert.AreEqual(7L, stats.GetProperty("complete"u8).GetInt64());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeElement.GetProperty(ReadOnlySpan{byte})" /> throws
+    /// <see cref="KeyNotFoundException" /> naming the bytes in hexadecimal when no key has them.
+    /// </summary>
+    [TestMethod]
+    public void GetProperty_WhenNoKeyHasTheBytes_ShouldThrowKeyNotFoundException()
+    {
+        using var document = BencodeDocument.Parse(Bytes("d1:þi1ee"));
+        BencodeElement root = document.RootElement;
+
+        KeyNotFoundException exception = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = root.GetProperty([0xFF, 0x01]);
+        });
+
+        StringAssert.Contains(exception.Message, "FF01");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeElement.TryGetProperty(ReadOnlySpan{byte}, out BencodeElement)" /> returns the
+    /// value of the key with the exact bytes, and <see langword="false" /> with the default element when none has them.
+    /// </summary>
+    [TestMethod]
+    public void TryGetProperty_WhenKeyBytesAreNotValidUtf8_ShouldMatchOnlyTheExactKey()
+    {
+        using var document = BencodeDocument.Parse(Bytes("d1:þi1e1:ÿi2ee"));
+        BencodeElement root = document.RootElement;
+
+        bool foundSecond = root.TryGetProperty([0xFF], out BencodeElement second);
+        bool foundMissing = root.TryGetProperty([0xFD], out BencodeElement missing);
+
+        Assert.IsTrue(foundSecond);
+        Assert.AreEqual(2L, second.GetInt64());
+        Assert.IsFalse(foundMissing);
+        Assert.AreEqual(default, missing);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeElement.GetProperty(ReadOnlySpan{byte})" /> on an element that is not an object
+    /// throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetProperty_WhenElementIsNotObject_ForKeyBytes_ShouldThrowInvalidOperationException()
+    {
+        using var document = BencodeDocument.Parse(Bytes("li1ee"));
+        BencodeElement root = document.RootElement;
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = root.GetProperty("key"u8);
+        });
     }
 }

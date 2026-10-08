@@ -542,4 +542,54 @@ public partial class BencodeSerializerTests
         public object Deserialize(byte[] bytes) =>
             _deserialize(bytes);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="char" /> dictionary keys are written as the UTF-8 encoding of the character, a non-ASCII
+    /// character included, in bytewise key order.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenDictionaryKeyIsNonAsciiChar_ShouldWriteUtf8Bytes()
+    {
+        var value = new Dictionary<char, int> { ['é'] = 1, ['a'] = 2 };
+        byte[] expected = [.. "d1:ai2e2:"u8, 0xC3, 0xA9, .. "i1ee"u8];
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        CollectionAssert.AreEqual(expected, bytes);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing dictionary keys that are not valid UTF-8 into a <see cref="string" />-keyed
+    /// dictionary throws <see cref="BencodeSerializationException" /> at the first such key, rather than merging the
+    /// keys, which decode to the same text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDictionaryKeyIsNotValidUtf8_ForStringKeys_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d1:þi1e1:ÿi2ee");
+
+        BencodeSerializationException exception = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<string, long>>(bytes);
+        });
+
+        Assert.AreEqual(1, exception.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that deserializing dictionary keys that are not valid UTF-8 into a <see cref="char" />-keyed dictionary
+    /// throws <see cref="BencodeSerializationException" /> at the first such key, rather than reading each as U+FFFD.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDictionaryKeyIsNotValidUtf8_ForCharKeys_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d1:þi1e1:ÿi2ee");
+
+        BencodeSerializationException exception = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<char, long>>(bytes);
+        });
+
+        Assert.AreEqual(1, exception.BytesOffset);
+    }
 }

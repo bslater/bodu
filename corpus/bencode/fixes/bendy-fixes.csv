@@ -1,0 +1,13 @@
+# library: bendy -- https://github.com/P3KI/bendy
+# releases: CHANGELOG.md at 94cef149a70c45404ff757a03d4876e8f11aac75 (SHA-256 1703b1c72e9e4999658c965903cfccb1d0e76ddd800bb06a1163f574e29a77e3), 0.1.0 to 0.6.1; GitHub releases https://github.com/P3KI/bendy/releases (one page, v0.1.0 to v0.2.1), read 2026-10-08; and the commit history of master at the same commit, read because the changelog has no entries for 0.4.0-beta.2 to beta.4 and omits some fixes
+# licence: BSD-3-Clause
+# note: only fixes are catalogued; features, refactors, performance work (PR #62), documentation, tests (the leading-zero cases of 290a2dd40d), build and dependency changes (#5) are not, nor are fixes made before 0.1.0 or improvements the project describes as additions (#3, the trailing-bytes option of PR #34, Send and Sync decoding errors)
+# note: every fix bendy lists concerns Rust's type system, no_std builds or error display, so none carries a bencode scenario; Bodu's BEP 3 corpus (Bep3CorpusTests) already draws on bendy's decoder tests
+library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
+bendy,0.6.1,d3a56b0382,no_std builds broke because the state tracker used std::mem instead of core::mem,n/a,,,,,,,"platform: Rust no_std builds"
+bendy,0.5.0,0f1d46cc97,Displaying a DecodingError lost its context in 0.4.0,n/a,,,,,,,"error message text: how a decoding error displays its context"
+bendy,0.4.0-beta.3,249f497e01,The UTF-8 checks meant for debug builds sat behind a cfg flag that could never be set,n/a,,,,,,,"internal debug assertions; no behaviour change"
+bendy,0.3.2,PR #41,The serde Deserializer for Value tied its lifetime to the value (5bed9884fe),n/a,,,,,,,"language: Rust lifetimes"
+bendy,0.3.1,#37,"A Vec of Value, or a map of them, failed to compile because the containers' depth constant overflowed (PR #39, 3badbe9010)",n/a,,,,,,,"language: a compile-time constant overflow in Rust; Bodu tracks nesting depth at run time"
+bendy,0.2.1,32bd97394b,The FromBencode implementation for BTreeMap was missing,n/a,,,,,,,"API: a Rust trait implementation"
+bendy,0.1.1,#1,"AsString lacked the derives (Eq, Hash and others) needed to decode into a HashMap keyed by it (016f2ac98f)",n/a,,,,,,,"API: Rust trait derives"

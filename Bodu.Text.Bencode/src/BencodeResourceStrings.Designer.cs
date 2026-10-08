@@ -72,6 +72,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The bencoded integer is outside the supported range, from -9223372036854775808 to 18446744073709551615..
+        /// </summary>
+        internal static string Format_Invalid_BencodeIntegerLiteralOutOfRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeIntegerLiteralOutOfRange", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
         /// </summary>
         internal static string Format_Invalid_BencodeIntegerOutOfRange {
@@ -190,6 +199,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary key at offset {0} is not valid UTF-8 text, which a BencodeObject key requires..
+        /// </summary>
+        internal static string Format_Invalid_BencodeNodeKeyNotUtf8 {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeNodeKeyNotUtf8", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected bencode token '{0}' at offset {1}..
         /// </summary>
         internal static string Format_Invalid_BencodeUnexpectedToken {
@@ -279,6 +297,15 @@ namespace Bodu {
         internal static string Op_Invalid_MissingRequiredMember {
             get {
                 return ResourceManager.GetString("Op_Invalid_MissingRequiredMember", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary key at offset {0} is not valid UTF-8 text, so it cannot be read as a key of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_DictionaryKeyNotUtf8 {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DictionaryKeyNotUtf8", resourceCulture);
             }
         }
 
@@ -472,6 +499,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A null root value cannot be written to Bencode, which has no null; a Bencode document is a single value..
+        /// </summary>
+        internal static string Op_NotSupported_NullRootValue {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_NullRootValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to A null node cannot be written to Bencode..
         /// </summary>
         internal static string Op_NotSupported_NullNode {
@@ -495,6 +531,15 @@ namespace Bodu {
         internal static string Op_Invalid_DefaultElement {
             get {
                 return ResourceManager.GetString("Op_Invalid_DefaultElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The operation is not valid on a default BencodeProperty that belongs to no document..
+        /// </summary>
+        internal static string Op_Invalid_DefaultProperty {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultProperty", resourceCulture);
             }
         }
 
@@ -585,6 +630,15 @@ namespace Bodu {
         internal static string IO_KeyNotFound_Property {
             get {
                 return ResourceManager.GetString("IO_KeyNotFound_Property", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No property whose key is the bytes {0} was found..
+        /// </summary>
+        internal static string IO_KeyNotFound_PropertyBytes {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_PropertyBytes", resourceCulture);
             }
         }
 

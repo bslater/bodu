@@ -173,4 +173,18 @@ public partial class BencodeSerializerTests
         /// <value>The name.</value>
         public string Name { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Verifies that an unmapped key that is not valid UTF-8 is skipped like any other unmapped key when the model has
+    /// no extension data, so a binary key the model does not ask for does not stop the read.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUnmappedKeyIsNotValidUtf8_ShouldSkipIt()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d4:Name1:x1:þi1e1:ÿi2ee");
+
+        PlainNameModel model = BencodeSerializer.Deserialize<PlainNameModel>(bytes);
+
+        Assert.AreEqual("x", model.Name);
+    }
 }

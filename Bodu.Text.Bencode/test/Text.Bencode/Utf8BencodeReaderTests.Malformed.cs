@@ -331,4 +331,56 @@ public partial class Utf8BencodeReaderTests
 
         Assert.AreEqual(BencodeTokenType.None, reader.TokenType);
     }
+
+    /// <summary>
+    /// Verifies that a byte that cannot start a value is reported with the byte and its offset in the exception
+    /// message, rather than with the message's unfilled placeholders.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="input">The malformed Bencode, expressed as Latin-1 text.</param>
+    /// <param name="expectedFragment">The part of the message that names the byte and its offset.</param>
+    [TestMethod]
+    [DataRow("stray end at the root", "ee", "'e' at offset 0")]
+    [DataRow("letter in a list", "lxe", "'x' at offset 1")]
+    [DataRow("letter where a key belongs", "d1:ai1eq", "'q' at offset 7")]
+    [DataRow("byte outside ASCII", "ÿ", "'0xFF' at offset 0")]
+    public void Read_WhenByteCannotStartValue_ShouldNameTheByteAndOffset(string testName, string input, string expectedFragment)
+    {
+        _ = testName;
+        byte[] bytes = Bytes(input);
+
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            while (reader.Read())
+            {
+            }
+        });
+
+        StringAssert.Contains(exception.Message, expectedFragment);
+    }
+
+    /// <summary>
+    /// Verifies that an integer literal outside the range the reader supports is reported with that range, from
+    /// <see cref="long.MinValue" /> to <see cref="ulong.MaxValue" />.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="input">The out-of-range integer, expressed as Latin-1 text.</param>
+    [TestMethod]
+    [DataRow("one above ulong.MaxValue", "i18446744073709551616e")]
+    [DataRow("one below long.MinValue", "i-9223372036854775809e")]
+    public void Read_WhenIntegerLiteralIsOutOfRange_ShouldNameTheSupportedRange(string testName, string input)
+    {
+        _ = testName;
+        byte[] bytes = Bytes(input);
+
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            _ = reader.Read();
+        });
+
+        StringAssert.Contains(exception.Message, "-9223372036854775808");
+        StringAssert.Contains(exception.Message, "18446744073709551615");
+    }
 }

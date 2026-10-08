@@ -463,4 +463,35 @@ public partial class BencodeSerializerTests
         /// <value>The label.</value>
         public string Label { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Verifies that a list of lists reads every element of every inner list, and writes back the same bytes.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenListOfLists_ShouldReadEveryElement()
+    {
+        const string Encoded = "lli1ei2eeli3ei4eee";
+
+        List<List<long>> value = BencodeSerializer.Deserialize<List<List<long>>>(Encoding.ASCII.GetBytes(Encoded));
+
+        Assert.AreEqual(2, value.Count);
+        CollectionAssert.AreEqual(new long[] { 1, 2 }, value[0]);
+        CollectionAssert.AreEqual(new long[] { 3, 4 }, value[1]);
+        Assert.AreEqual(Encoded, Encoding.ASCII.GetString(BencodeSerializer.Serialize(value)));
+    }
+
+    /// <summary>
+    /// Verifies that serializing a list of <see cref="Nullable{T}" /> values holding a <see langword="null" /> element
+    /// throws <see cref="BencodeSerializationException" /> rather than dropping the element.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNullableListElementIsNull_ShouldThrowBencodeSerializationException()
+    {
+        var value = new List<int?> { 1, null, 2 };
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(value);
+        });
+    }
 }

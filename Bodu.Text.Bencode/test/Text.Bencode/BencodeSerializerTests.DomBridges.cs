@@ -111,4 +111,30 @@ public partial class BencodeSerializerTests
         /// <value>The label.</value>
         public string Label { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeSerializer.SerializeToNode{T}" /> returns <see langword="null" /> for a
+    /// <see langword="null" /> value, a value the node tree can hold in memory, as
+    /// <see cref="System.Text.Json.JsonSerializer.SerializeToNode{TValue}(TValue, System.Text.Json.JsonSerializerOptions?)" /> does.
+    /// </summary>
+    [TestMethod]
+    public void SerializeToNode_WhenValueIsNull_ShouldReturnNull()
+    {
+        BencodeNode? node = BencodeSerializer.SerializeToNode<BridgeModel?>(null);
+
+        Assert.IsNull(node);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeSerializer.SerializeToDocument{T}" /> throws
+    /// <see cref="BencodeSerializationException" /> for a <see langword="null" /> value, which a document cannot root.
+    /// </summary>
+    [TestMethod]
+    public void SerializeToDocument_WhenValueIsNull_ShouldThrowBencodeSerializationException()
+    {
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            using BencodeDocument document = BencodeSerializer.SerializeToDocument<BridgeModel?>(null);
+        });
+    }
 }

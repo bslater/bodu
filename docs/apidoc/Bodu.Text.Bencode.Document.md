@@ -11,9 +11,9 @@ uid: Bodu.Text.Bencode.Document
 ## Key types
 
 - <xref:Bodu.Text.Bencode.Document.BencodeDocument> - the disposable owner: `Parse` (from `byte[]` or `ReadOnlySpan<byte>`), `RootElement`, `WriteTo`.
-- <xref:Bodu.Text.Bencode.Document.BencodeElement> - the value cursor: `ValueKind`, `GetString` / `GetBytes` / `GetRawBytes` / `GetInt64` / `GetUInt64` (+ `TryGet*`), `GetProperty` / `TryGetProperty`, an integer indexer, `GetArrayLength`, `EnumerateArray` / `EnumerateObject`, `Clone`, and `WriteTo`.
+- <xref:Bodu.Text.Bencode.Document.BencodeElement> - the value cursor: `ValueKind`, `GetString` / `GetBytes` / `GetRawBytes` / `GetInt64` / `GetUInt64` (+ `TryGet*`), `GetProperty` / `TryGetProperty` (by name, or by a key's exact bytes), an integer indexer, `GetArrayLength`, `EnumerateArray` / `EnumerateObject`, `Clone`, and `WriteTo`.
 - <xref:Bodu.Text.Bencode.Document.BencodeElement.ArrayEnumerator> / <xref:Bodu.Text.Bencode.Document.BencodeElement.ObjectEnumerator> - the struct enumerators returned by `EnumerateArray` / `EnumerateObject`.
-- <xref:Bodu.Text.Bencode.Document.BencodeProperty> - a `Name` / `Value` pair yielded by `EnumerateObject`.
+- <xref:Bodu.Text.Bencode.Document.BencodeProperty> - a `Name` / `Value` pair yielded by `EnumerateObject`; `GetNameBytes` and `NameEquals` read the key's exact bytes, which `Name` cannot hold when the key is not valid UTF-8.
 - <xref:Bodu.Text.Bencode.Document.BencodeDocumentOptions> - `MaxDepth`, `AllowUnsortedKeys`, `AllowDuplicateKeys`.
 
 ## Example

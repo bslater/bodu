@@ -292,6 +292,59 @@ public readonly partial struct BencodeElement
     }
 
     /// <summary>
+    /// Gets the value of the property whose dictionary key is the supplied bytes within this object element.
+    /// </summary>
+    /// <param name="propertyName">The raw key bytes of the property to retrieve.</param>
+    /// <returns>The value element of the matching property.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this element is not an <see cref="BencodeValueKind.Object" />.
+    /// </exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown when no property's key is <paramref name="propertyName" />.
+    /// </exception>
+    /// <remarks>
+    /// The key is compared byte for byte, so this overload finds keys that are not text, such as the 20-byte info-hash
+    /// keys of a tracker's scrape response, which no <see cref="string" /> can name exactly.
+    /// </remarks>
+    public BencodeElement GetProperty(ReadOnlySpan<byte> propertyName)
+    {
+        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
+            return new BencodeElement(_document, valueRow);
+
+        throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.IO_KeyNotFound_PropertyBytes, Convert.ToHexString(propertyName)));
+    }
+
+    /// <summary>
+    /// Attempts to get the value of the property whose dictionary key is the supplied bytes within this object element.
+    /// </summary>
+    /// <param name="propertyName">The raw key bytes of the property to retrieve.</param>
+    /// <param name="value">
+    /// When this method returns, the value element of the matching property; otherwise the default element.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when a matching property was found; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this element is not an <see cref="BencodeValueKind.Object" />.
+    /// </exception>
+    /// <remarks>
+    /// The key is compared byte for byte, so this overload finds keys that are not text.
+    /// </remarks>
+    public bool TryGetProperty(ReadOnlySpan<byte> propertyName, out BencodeElement value)
+    {
+        if (_document.TryGetProperty(_index, propertyName, out int valueRow))
+        {
+            value = new BencodeElement(_document, valueRow);
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
+    /// <summary>
     /// Returns an enumerator that iterates the elements of this array element in order.
     /// </summary>
     /// <returns>An <see cref="ArrayEnumerator" /> over the array's elements.</returns>
