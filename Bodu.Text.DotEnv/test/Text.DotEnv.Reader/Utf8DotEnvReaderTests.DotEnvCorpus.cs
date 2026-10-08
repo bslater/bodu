@@ -59,7 +59,6 @@ public partial class Utf8DotEnvReaderTests
                 new("unquoted utf8 value", "CITY=Zürich\n", [["CITY", "Zürich"]]),
                 new("single-quoted hash kept", "SQ='a # not comment'\n", [["SQ", "a # not comment"]]),
                 new("last duplicate surfaced in order", "D=1\nD=2\n", [["D", "1"], ["D", "2"]]),
-                new("trailing junk after quoted value dropped", "TJ=\"v\"junk\n", [["TJ", "v"]]),
             };
 
             foreach (ValidKat<string, string[][]> row in rows)
@@ -83,6 +82,7 @@ public partial class Utf8DotEnvReaderTests
                 new("key starting with a digit", "1KEY=v\n", typeof(DotEnvFormatException)),
                 new("key starting with a dash", "-KEY=v\n", typeof(DotEnvFormatException)),
                 new("escape at end of input", "A=\"x\\", typeof(DotEnvFormatException)),
+                new("text after a closing quote", "TJ=\"v\"junk\n", typeof(DotEnvFormatException)),
             };
 
             foreach (InvalidKat<string> row in rows)

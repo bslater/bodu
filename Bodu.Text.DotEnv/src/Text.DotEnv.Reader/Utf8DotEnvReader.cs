@@ -409,7 +409,7 @@ public ref struct Utf8DotEnvReader
 
         ReadValue(entryLine, out int rawStart, out int rawLength, out string? decoded);
 
-        // Consume any remaining bytes to the end of the line, then the line terminator.
+        // Consume a trailing comment, if there is one, then the line terminator.
         SkipToEndOfLine();
         SkipLineEnding();
 
@@ -435,12 +435,16 @@ public ref struct Utf8DotEnvReader
     /// <param name="decoded">
     /// The decoded value when escape processing applied; otherwise <see langword="null" />.
     /// </param>
-    /// <exception cref="DotEnvFormatException">Thrown when a quoted value is unterminated.</exception>
+    /// <exception cref="DotEnvFormatException">
+    /// Thrown when a quoted value is unterminated, or when text other than whitespace and a comment follows its closing
+    /// quote.
+    /// </exception>
     private void ReadValue(int startLine, out int rawStart, out int rawLength, out string? decoded)
     {
         if (_position < _data.Length && _data[_position] == (byte)'"')
         {
             ReadDoubleQuoted(startLine, out rawStart, out rawLength, out decoded);
+            SkipAfterClosingQuote();
             return;
         }
 
@@ -448,6 +452,7 @@ public ref struct Utf8DotEnvReader
         {
             ReadSingleQuoted(startLine, out rawStart, out rawLength);
             decoded = null;
+            SkipAfterClosingQuote();
             return;
         }
 
@@ -689,6 +694,23 @@ public ref struct Utf8DotEnvReader
     }
 
     /// <summary>
+    /// Advances past the whitespace after a closing quote, and checks that only a comment or the end of the line
+    /// follows it.
+    /// </summary>
+    /// <exception cref="DotEnvFormatException">Thrown when any other text follows the closing quote.</exception>
+    /// <remarks>
+    /// A comment here may follow the quote directly, and is allowed whether or not inline comments are, since
+    /// <see cref="DotEnvReaderOptions.DisallowInlineComments" /> governs only unquoted values.
+    /// </remarks>
+    private void SkipAfterClosingQuote()
+    {
+        SkipWhitespace();
+
+        if (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r' or (byte)'#'))
+            throw TextAfterClosingQuoteError();
+    }
+
+    /// <summary>
     /// Advances to the end of the current line without consuming the line terminator.
     /// </summary>
     private void SkipToEndOfLine()
@@ -752,6 +774,13 @@ public ref struct Utf8DotEnvReader
     /// <returns>The exception to throw.</returns>
     private readonly DotEnvFormatException UnterminatedSingleQuote(int line) =>
         new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote, line), line, ColumnAt(_position), _position);
+
+    /// <summary>
+    /// Creates an exception for text that follows a closing quote, reported at the first byte of that text.
+    /// </summary>
+    /// <returns>The exception to throw.</returns>
+    private readonly DotEnvFormatException TextAfterClosingQuoteError() =>
+        new(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvTextAfterClosingQuote, _line), _line, ColumnAt(_position), _position);
 
     /// <summary>
     /// Computes the 1-based column of a source offset, counted in bytes from the start of the line that holds it.

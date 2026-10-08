@@ -88,6 +88,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected text after the closing quote of a DotEnv value on line {0}..
+        /// </summary>
+        internal static string Format_Invalid_DotEnvTextAfterClosingQuote {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DotEnvTextAfterClosingQuote", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unterminated double-quoted DotEnv value beginning on line {0}..
         /// </summary>
         internal static string Format_Invalid_DotEnvUnterminatedDoubleQuote {

@@ -67,6 +67,9 @@
   <data name="Format_Invalid_DotEnvMalformedEntry" xml:space="preserve">
     <value>Malformed DotEnv entry on line {0}; expected 'KEY=VALUE'.</value>
   </data>
+  <data name="Format_Invalid_DotEnvTextAfterClosingQuote" xml:space="preserve">
+    <value>Unexpected text after the closing quote of a DotEnv value on line {0}.</value>
+  </data>
   <data name="Format_Invalid_DotEnvUnterminatedDoubleQuote" xml:space="preserve">
     <value>Unterminated double-quoted DotEnv value beginning on line {0}.</value>
   </data>

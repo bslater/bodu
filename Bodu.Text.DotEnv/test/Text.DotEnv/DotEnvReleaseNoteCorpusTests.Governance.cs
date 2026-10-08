@@ -38,7 +38,7 @@ public sealed partial class DotEnvReleaseNoteCorpusTests
         (string Library, int Fixes, int Applies, int Dialect, int NotApplicable, int Unknown)[] recorded =
         [
             ("compose-go", 24, 29, 10, 9, 0),
-            ("dotenv-node", 45, 25, 11, 31, 0),
+            ("dotenv-node", 45, 23, 13, 31, 0),
             ("dotenv-ruby", 59, 20, 1, 47, 0),
             ("dotenvy", 19, 13, 0, 14, 0),
             ("dotnetenv", 13, 28, 2, 7, 0),
@@ -79,8 +79,8 @@ public sealed partial class DotEnvReleaseNoteCorpusTests
     {
         (string Kind, int Rows)[] recorded =
         [
-            ("parse", 209),
-            ("reject", 63),
+            ("parse", 206),
+            ("reject", 66),
             ("write", 3),
             ("write-reject", 0),
             ("roundtrip", 19),
