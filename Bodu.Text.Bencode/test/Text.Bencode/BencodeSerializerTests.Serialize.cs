@@ -298,4 +298,51 @@ public partial class BencodeSerializerTests
             _ = BencodeSerializer.Serialize('a');
         });
     }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> object as the document root throws
+    /// <see cref="BencodeSerializationException" /> rather than returning an empty array, which no reader accepts.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenClassValueIsNull_ShouldThrowBencodeSerializationException()
+    {
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize<StreamModel?>(null);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> root value to a buffer writer throws
+    /// <see cref="BencodeSerializationException" /> and writes nothing.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsNull_ForBufferWriterOverload_ShouldThrowBencodeSerializationException()
+    {
+        var destination = new ArrayBufferWriter<byte>();
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            BencodeSerializer.Serialize<string?>(destination, null);
+        });
+
+        Assert.AreEqual(0, destination.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a <see langword="null" /> root value to a stream throws
+    /// <see cref="BencodeSerializationException" /> and writes nothing.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenValueIsNull_ForStreamOverload_ShouldThrowBencodeSerializationException()
+    {
+        using var destination = new MemoryStream();
+
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            BencodeSerializer.Serialize<int?>(destination, null);
+        });
+
+        Assert.AreEqual(0L, destination.Length);
+    }
 }
