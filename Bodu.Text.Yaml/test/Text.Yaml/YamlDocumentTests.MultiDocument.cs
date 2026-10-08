@@ -173,6 +173,80 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that content following a complete root node with no <c>---</c> or <c>...</c> marker between them is
+    /// rejected, as <see cref="YamlDocument.Parse(string)" /> rejects it, rather than read as a further document.
+    /// </summary>
+    /// <param name="yaml">The stream: a root node, then more content with no document marker before it.</param>
+    [TestMethod]
+    [DataRow("one # comment\ntwo\n", DisplayName = "plain scalar and comment, then a plain scalar")]
+    [DataRow("word1  # comment\nword2\n", DisplayName = "plain scalar and spaced comment, then a plain scalar")]
+    [DataRow("[ 42 ]\nhello\n", DisplayName = "flow sequence, then a plain scalar")]
+    [DataRow("- \"foo\"\n - bar\n", DisplayName = "block sequence, then an entry indented past it")]
+    [DataRow("foo: \"1\"\n bar: 2\n", DisplayName = "block mapping, then a key indented past it")]
+    [DataRow("-\n-0", DisplayName = "block sequence, then a plain scalar")]
+    public void ParseAllDocuments_WhenContentFollowsRootNodeWithoutMarker_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            _ = YamlDocument.ParseAllDocuments(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that text other than a comment after a <c>...</c> document end marker on its line is rejected, whether
+    /// the marker ends a document or follows an earlier marker.
+    /// </summary>
+    /// <param name="yaml">The stream, with text after a <c>...</c> marker.</param>
+    [TestMethod]
+    [DataRow("---\nkey: value\n... invalid\n", DisplayName = "after an explicit document")]
+    [DataRow("hello: world\n... this is no comment\n", DisplayName = "after a bare document")]
+    [DataRow("a: 1\n...\n... invalid\n", DisplayName = "after an earlier document end marker")]
+    public void ParseAllDocuments_WhenTextFollowsDocumentEndMarker_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            _ = YamlDocument.ParseAllDocuments(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a directive after a document with no <c>...</c> document end marker between them is rejected.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenDirectiveFollowsDocumentWithoutDocumentEnd_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            _ = YamlDocument.ParseAllDocuments("---\nscalar1 # comment\n%YAML 1.2\n---\nscalar2\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a comment after a <c>...</c> document end marker on its line is accepted, and the document that
+    /// follows is read.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenCommentFollowsDocumentEndMarker_ShouldReadNextDocument()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("a: 1\n... # end\nb: 2\n");
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, KeysOf(documents));
+    }
+
+    /// <summary>
+    /// Verifies that a directive after a <c>...</c> document end marker is accepted and applies to the document that
+    /// follows.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenDirectiveFollowsDocumentEnd_ShouldApplyToNextDocument()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("a: 1\n...\n%YAML 1.1\n---\nb: yes\n");
+
+        Assert.AreEqual(2, documents.Count);
+        Assert.IsTrue(documents[1].RootElement.GetProperty("b").GetBoolean());
+    }
+
+    /// <summary>
     /// Lists the keys of each document's root mapping, comma-separated, with any byte-order mark shown as
     /// <c>&lt;BOM&gt;</c> so that a failure names it.
     /// </summary>
