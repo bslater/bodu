@@ -107,10 +107,10 @@ internal sealed partial class YamlParser
     internal List<YamlReaderRow> Parse()
     {
         ValidateSource();
-        SkipByteOrderMark();
+        SkipDocumentPrefix();
         SkipDirectivesAndDocumentStart();
 
-        SkipBlankCommentLines();
+        SkipDocumentPrefix();
 
         ParseDocumentBody();
 
@@ -144,12 +144,13 @@ internal sealed partial class YamlParser
     {
         var documents = new List<(List<YamlReaderRow>, string[])>();
         ValidateSource();
-        SkipByteOrderMark();
 
         while (true)
         {
+            // Each document may begin with a byte-order mark, before its directives, its '---', or its content.
+            SkipDocumentPrefix();
             SkipDirectivesAndDocumentStart();
-            SkipBlankCommentLines();
+            SkipDocumentPrefix();
 
             // An empty region with no explicit '---' start and no content is not a document.
             if (!_documentStartConsumed && (AtStreamEnd() || (CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())))

@@ -20,7 +20,7 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 
 - Block and flow sequences and mappings.
 - Plain, single-quoted, double-quoted, literal (`|`), and folded (`>`) scalars, with chomping and indentation indicators.
-- Comments, the `---` / `...` document markers, and multi-document streams.
+- Comments, the `---` / `...` document markers, and multi-document streams, in which any document may begin with a byte-order mark.
 - Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans - no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, sexagesimal numbers). A document's `%YAML` directive is honored for scalar resolution, overriding the configured `SpecVersion` for that document.
 - Anchors and aliases, subject to **acyclic** tree resolution.
 - The core tags (`!!str`, `!!null`, `!!bool`, `!!int`, `!!float`) and `%TAG` handle expansion. An explicit core tag whose content is invalid for the tag (for example `!!int abc`) is rejected, not silently degraded.

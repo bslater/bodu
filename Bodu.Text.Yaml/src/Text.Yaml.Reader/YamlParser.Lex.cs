@@ -275,29 +275,105 @@ internal sealed partial class YamlParser
     private bool AtStreamEnd() => AtEnd;
 
     /// <summary>
-    /// Determines whether the cursor is at a document-boundary marker (<c>---</c> or <c>...</c>) at column zero.
+    /// Determines whether the cursor is at a document-boundary marker (<c>---</c> or <c>...</c>) at column zero, or at
+    /// a byte-order mark at column zero that opens the prefix of a following document.
     /// </summary>
-    /// <returns><see langword="true" /> when a document marker begins at the cursor.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a document marker, or the prefix of the next document, begins at the cursor.
+    /// </returns>
     private bool AtDocumentBoundary()
     {
         if (CurrentColumn() != 0)
             return false;
 
-        return Marker((byte)'-') || Marker((byte)'.');
-
-        bool Marker(byte b) =>
-            Peek() == b && PeekAt(1) == b && PeekAt(2) == b && IsBlankOrBreakOrEnd(PeekAt(3));
+        return IsMarkerAt(_pos, (byte)'-') || IsMarkerAt(_pos, (byte)'.') || AtByteOrderMarkBeforeDocumentStart();
     }
 
     /// <summary>
-    /// Skips a UTF-8 byte-order mark when present at the start of the source.
+    /// Determines whether a three-character document marker (<c>---</c> or <c>...</c>) followed by a separator begins
+    /// at a byte offset.
     /// </summary>
-    private void SkipByteOrderMark()
+    /// <param name="offset">The byte offset to test.</param>
+    /// <param name="marker">The marker character, <c>-</c> or <c>.</c>.</param>
+    /// <returns><see langword="true" /> when the marker begins at <paramref name="offset" />.</returns>
+    private bool IsMarkerAt(int offset, byte marker) =>
+        ByteAt(offset) == marker && ByteAt(offset + 1) == marker && ByteAt(offset + 2) == marker
+        && IsBlankOrBreakOrEnd(ByteAt(offset + 3));
+
+    /// <summary>
+    /// Returns the byte at an absolute offset, or zero when the offset is past the end of the source.
+    /// </summary>
+    /// <param name="offset">The byte offset.</param>
+    /// <returns>The byte at the offset, or zero.</returns>
+    private byte ByteAt(int offset) => offset < _length ? _source[offset] : (byte)0;
+
+    /// <summary>
+    /// Determines whether a UTF-8 byte-order mark begins at a byte offset.
+    /// </summary>
+    /// <param name="offset">The byte offset to test.</param>
+    /// <returns><see langword="true" /> when the three bytes at <paramref name="offset" /> encode U+FEFF.</returns>
+    private bool IsByteOrderMarkAt(int offset) =>
+        ByteAt(offset) == 0xEF && ByteAt(offset + 1) == 0xBB && ByteAt(offset + 2) == 0xBF;
+
+    /// <summary>
+    /// Determines whether a byte-order mark at the cursor opens the prefix of a following document: after it come only
+    /// blank lines, comment lines, and further byte-order marks at the start of a line, and then a <c>---</c> marker.
+    /// </summary>
+    /// <returns><see langword="true" /> when the byte-order mark belongs to the next document.</returns>
+    /// <remarks>
+    /// A byte-order mark may begin any document in a stream but cannot appear inside one, so a mark at the start of a
+    /// line ends the current document when the next document's <c>---</c> follows it.
+    /// </remarks>
+    private bool AtByteOrderMarkBeforeDocumentStart()
     {
-        if (_length >= 3 && _source[0] == 0xEF && _source[1] == 0xBB && _source[2] == 0xBF)
+        if (!IsByteOrderMarkAt(_pos))
+            return false;
+
+        int p = _pos;
+        while (true)
         {
-            _pos = 3;
-            _lineStart = 3;
+            // Here p is at the start of a line; marks there are part of the prefix, and the marker may follow them.
+            while (IsByteOrderMarkAt(p))
+                p += 3;
+
+            if (IsMarkerAt(p, (byte)'-'))
+                return true;
+
+            while (ByteAt(p) is (byte)' ' or (byte)'\t')
+                p++;
+
+            if (ByteAt(p) == (byte)'#')
+            {
+                while (!IsBreakOrEnd(ByteAt(p)))
+                    p++;
+            }
+
+            if (p >= _length || ByteAt(p) is not ((byte)'\n' or (byte)'\r'))
+                return false;
+
+            p += ByteAt(p) == (byte)'\r' && ByteAt(p + 1) == (byte)'\n' ? 2 : 1;
+        }
+    }
+
+    /// <summary>
+    /// Advances past the prefix that may precede a document: blank lines, comment lines, and a byte-order mark at the
+    /// start of any of them, leaving the cursor at the document's first directive, marker, or content byte.
+    /// </summary>
+    /// <remarks>
+    /// A byte-order mark may begin any document in a stream, not only the first, and may also begin the first content
+    /// line after a document's <c>---</c>. Columns on the rest of the mark's line count from after the mark, so a
+    /// marker or key that follows it is at column zero.
+    /// </remarks>
+    private void SkipDocumentPrefix()
+    {
+        while (true)
+        {
+            SkipBlankCommentLines();
+            if (CurrentColumn() != 0 || !IsByteOrderMarkAt(_pos))
+                return;
+
+            _pos += 3;
+            _lineStart = _pos;
         }
     }
 
