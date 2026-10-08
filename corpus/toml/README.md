@@ -171,7 +171,8 @@ these defects, each fixed test first:
   and `ObjectCreationHandling.Populate` dropped what was read into a get-only object member. The Tomlyn 2.2.1 row
   (`2ea74fc`, case 2) now writes with get-only populated members.
 - **#831.** A finite float outside the `float` or `Half` range read as an infinity (go-toml v1.8.0, PR #388). It is now
-  a serialization error, as an integer overflow is; `inf`, `-inf` and `nan` read as before.
+  a serialization error, as an integer overflow is; `inf`, `-inf` and `nan` read as before. #910, found while fixing
+  it, applies the same range check to `TomlValue.TryGetValue<float>` and `Utf8TomlReader.TryGetSingle`.
 - **#832.** An error about a key was reported at its value (go-toml v2.4.0, PR #1069). A redefined key, a dotted key
   over a value, and a dotted key that extends an inline table or a header's table are now reported where the key
   starts.
@@ -179,8 +180,8 @@ these defects, each fixed test first:
   members to one key (tomlet 1.3.5, `30044159ba`). Only the most derived declaration of a name is now a member, in
   the Bencode and YAML serializers too.
 - **#858.** A missing required member's `TomlSerializationException.Path` stopped at the member that holds it (Tomlyn
-  1.0.0, `ed08af40e2`). It now names the member, `Name` at the root and `Inner.Name` below it, in YAML too;
-  `BencodeSerializationException` has no `Path`.
+  1.0.0, `ed08af40e2`). It now names the member, `Name` at the root and `Inner.Name` below it, in YAML too.
+  `BencodeSerializationException` has no `Path`, so the fix does not apply to Bencode.
 - **#859.** A delegate member was serialized as an object of its own members and failed on `MethodInfo`
   (BurntSushi/toml v0.4.0, `e9b5b17cf9`). Delegates, reflection types and pointers now fail with
   `NotSupportedException` naming the member's type, in Bencode and YAML too. The row now names
@@ -188,15 +189,16 @@ these defects, each fixed test first:
 - **#860.** A misplaced digit separator was reported past the end of the number (toml 1.0.2, toml_edit 0.25.2 and
   toml_parser 1.0.9, `5a7b742018`). It is now reported at the separator, in integers of every radix and in floats.
 - **#861.** A case-insensitive `TomlNode.Parse` kept only the second of two keys that differ only in case (toml 1.1.7,
-  `ee71246d38`, case 1). It now throws `TomlFormatException` at the second; `BencodeNode.Parse` had the same defect
-  and the same fix.
+  `ee71246d38`, case 1). It now throws `TomlFormatException` where the second key starts; `BencodeNode.Parse` had the
+  same defect and the same fix.
 - **#862.** A `TomlObject` that rejected a duplicate key left the values it was given attached to it (toml 1.1.7,
   `ee71246d38`, case 2). A failed add or construction now leaves every value with the parent it had, and so does a
-  `BencodeObject`.
+  `BencodeObject`. #909, found while fixing it, does the same for an insert or construction of a `TomlArray` or
+  `BencodeArray`.
 - **#863.** A float literal beyond the binary64 range reads as an infinity, which no Bodu document said. The
   `GetDouble` remarks and the `double` row of `builtin-converters.md` now say so, and toml 0.4.2 (`3322bcd086`,
   case 2) and toml_edit 0.18.0 (`234025daea`), which reject `a = 9e99999`, became `dialect` rows that expect `inf`,
-  citing `TomlDocumentReader.cs:330-333`.
+  citing `TomlDocumentReader.cs:390-393`.
 
 Every other difference from a fix is a documented dialect difference: leap seconds, year 0000, offsets beyond 14
 hours, the nesting limit of 64, integers outside the signed 64-bit range, the sign of `nan`, a float beyond the
