@@ -29,6 +29,9 @@
     <EmbeddedResource Include="Fixtures\Writer\*.cfb">
       <LogicalName>Bodu.IO.Compound.Fixtures.Writer.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Fixtures\ReleaseNotes\*-fixes.csv">
+      <LogicalName>Bodu.IO.Compound.Fixtures.ReleaseNotes.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
