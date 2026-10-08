@@ -359,4 +359,50 @@ public sealed partial class BiffSstReaderTests
         Assert.AreEqual($"s{count - 1}", strings[^1]);
         Assert.AreEqual(BiffTestRecords.Bof8().Length + records.Sum(r => r.Length), consumed);
     }
+
+    /// <summary>
+    /// Verifies that a CONTINUE record holding only a continued string's flags byte contributes no characters, and that
+    /// the string goes on in the next CONTINUE record, whose own flags byte applies, with the next string still aligned.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenContinuationHoldsOnlyTheFlagsByte_ShouldContinueInTheNextRecord()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(2, 2, [0x06, 0x00, Compressed, (byte)'a', (byte)'b', (byte)'c']),
+            BiffTestRecords.Continue(Wide),
+            BiffTestRecords.Continue([Compressed, (byte)'d', (byte)'e', (byte)'f', .. BiffTestRecords.UnicodeString("next")]));
+
+        CollectionAssert.AreEqual(new[] { "abcdef", "next" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that several CONTINUE records in a row that each hold only a flags byte are passed over, and the
+    /// string's characters resume in the first record that holds any, read by that record's flags byte.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSeveralContinuationsHoldOnlyFlagsBytes_ShouldContinueAfterThemAll()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x04, 0x00, Compressed, (byte)'a', (byte)'b']),
+            BiffTestRecords.Continue(Compressed),
+            BiffTestRecords.Continue(Wide),
+            BiffTestRecords.Continue(Wide, 0x63, 0x00, 0x64, 0x00));
+
+        CollectionAssert.AreEqual(new[] { "abcd" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a string whose header ends the SST record, and whose first CONTINUE record holds only a flags byte,
+    /// reads all its characters from the CONTINUE record after it.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenCharactersBeginAfterAFlagsOnlyContinuation_ShouldReadThemFromTheNextRecord()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x02, 0x00, Compressed]),
+            BiffTestRecords.Continue(Wide),
+            BiffTestRecords.Continue(Compressed, (byte)'x', (byte)'y'));
+
+        CollectionAssert.AreEqual(new[] { "xy" }, ReadAll(stream, out _));
+    }
 }
