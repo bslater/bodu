@@ -9,6 +9,11 @@ namespace Bodu.Text.Delimited;
 /// <summary>
 /// Specifies how a delimited reader resolves a header row that contains the same column name more than once.
 /// </summary>
+/// <remarks>
+/// The policy is a reader option, so it applies to <see cref="Reader.Utf8DelimitedReader" /> and to the document models
+/// parsed through it. <see cref="DelimitedSerializer" /> takes no reader policies: in header mode it always throws
+/// <see cref="DelimitedFormatException" /> for a duplicate header name.
+/// </remarks>
 public enum DelimitedDuplicateHeaderBehavior
 {
     /// <summary>
@@ -17,12 +22,14 @@ public enum DelimitedDuplicateHeaderBehavior
     Throw = 0,
 
     /// <summary>
-    /// The first occurrence of a duplicated header name wins; later columns with that name are unnamed.
+    /// The reader reports every column under its own name, so a duplicated name appears once for each column that has
+    /// it, and <see cref="Document.DelimitedElement.GetProperty(string)" /> finds the first of them.
     /// </summary>
     TakeFirst,
 
     /// <summary>
-    /// The last occurrence of a duplicated header name wins.
+    /// The reader reports the last column with a duplicated name under that name and the earlier ones under an empty
+    /// name, so <see cref="Document.DelimitedElement.GetProperty(string)" /> finds the last of them.
     /// </summary>
     TakeLast,
 }
