@@ -22,6 +22,10 @@ namespace Bodu.Numerics.Serialization.Json;
 public sealed class IntervalSetJsonConverterFactory
     : JsonConverterFactory
 {
+    /// <summary>The message describing why the factory is incompatible with native AOT: it constructs a closed converter for each component type at run time, which requires dynamic code generation.</summary>
+    internal const string RequiresDynamicCodeMessage =
+        "IntervalSetJsonConverterFactory constructs a IntervalSetJsonConverter<T> for each component type at run time, which native AOT cannot do without runtime code generation. Register IntervalSetJsonConverter<T> for each component type instead.";
+
     /// <summary>The policy passed to every <see cref="IntervalSetJsonConverter{T}" /> produced by this factory.</summary>
     private readonly NumericsJsonPolicy _policy;
 
@@ -29,6 +33,7 @@ public sealed class IntervalSetJsonConverterFactory
     /// Initializes a new instance of the <see cref="IntervalSetJsonConverterFactory" /> class configured for the
     /// <see cref="NumericsJsonPolicy.Strict" /> shape.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public IntervalSetJsonConverterFactory()
         : this(NumericsJsonPolicy.Strict)
     {
@@ -42,6 +47,7 @@ public sealed class IntervalSetJsonConverterFactory
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="policy" /> is not a defined <see cref="NumericsJsonPolicy" /> value.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public IntervalSetJsonConverterFactory(NumericsJsonPolicy policy)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
@@ -69,7 +75,7 @@ public sealed class IntervalSetJsonConverterFactory
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
-    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "Reached only through reflection-based JSON serialization, whose public entry points carry the RequiresDynamicCode annotation.")]
+    [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Aot", "IL3050", Justification = "Every instance is created through a constructor annotated with RequiresDynamicCode, so the requirement is reported where the factory is created.")]
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);

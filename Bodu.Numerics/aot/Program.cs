@@ -5,7 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Numerics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Bodu.Numerics;
+using Bodu.Numerics.Serialization.Json;
 
 int failures = 0;
 
@@ -86,6 +89,40 @@ foreach (var sample in new[] { 5, 1, 4, 2 })
 
 Check(movingMinMax.Minimum == 1 && movingMinMax.Maximum == 4, "MovingMinMax<int> window extrema");
 
+// Bodu.Numerics.Serialization.Json's native-AOT path: the closed converters, registered on the options a
+// source-generated context is built from. The converter factories cannot run here, because they close each converter
+// over its component type at run time; that is why they and AddNumericsJsonConverters carry RequiresDynamicCode.
+var jsonOptions = new JsonSerializerOptions();
+jsonOptions.Converters.Add(new FractionJsonConverter<int>());
+jsonOptions.Converters.Add(new IntervalJsonConverter<double>());
+jsonOptions.Converters.Add(new DiscreteIntervalJsonConverter<int>());
+jsonOptions.Converters.Add(new IntervalSetJsonConverter<int>());
+jsonOptions.Converters.Add(new ComplexJsonConverter<double>());
+jsonOptions.Converters.Add(new BigDecimalJsonConverter());
+var jsonContext = new SmokeJsonContext(jsonOptions);
+
+var measurement = new SmokeMeasurement
+{
+    Ratio = new Fraction<int>(1, 3),
+    Range = Interval<double>.Closed(0.5, 1.5),
+    Days = DiscreteInterval<int>.Closed(1, 7),
+    Gaps = IntervalSet<int>.Of(Interval<int>.Closed(1, 2), Interval<int>.Closed(5, 8)),
+    Impedance = new Complex<double>(3, -4),
+    Amount = BigDecimal.FromDecimal(19.99m),
+};
+
+string payload = JsonSerializer.Serialize(measurement, jsonContext.SmokeMeasurement);
+SmokeMeasurement? roundTripped = JsonSerializer.Deserialize(payload, jsonContext.SmokeMeasurement);
+Check(
+    roundTripped is not null
+        && roundTripped.Ratio == measurement.Ratio
+        && roundTripped.Range == measurement.Range
+        && roundTripped.Days == measurement.Days
+        && roundTripped.Gaps == measurement.Gaps
+        && roundTripped.Impedance == measurement.Impedance
+        && roundTripped.Amount == measurement.Amount,
+    "Bodu.Numerics.Serialization.Json closed converters round-trip through a source-generated context");
+
 if (failures == 0)
 {
     Console.WriteLine("Bodu.Numerics AOT smoke: all checks passed.");
@@ -101,3 +138,35 @@ static T CreateChecked<T, TSource>(TSource value)
     where T : INumberBase<T>
     where TSource : INumberBase<TSource> =>
     T.CreateChecked(value);
+
+/// <summary>
+/// The source-generated serializer context for <see cref="SmokeMeasurement" />.
+/// </summary>
+[JsonSerializable(typeof(SmokeMeasurement))]
+internal sealed partial class SmokeJsonContext : JsonSerializerContext
+{
+}
+
+/// <summary>
+/// A data-transfer object that carries one value of each serializable <c>Bodu.Numerics</c> type.
+/// </summary>
+internal sealed class SmokeMeasurement
+{
+    /// <summary>Gets or sets a fraction.</summary>
+    public Fraction<int> Ratio { get; set; }
+
+    /// <summary>Gets or sets a continuous interval.</summary>
+    public Interval<double> Range { get; set; }
+
+    /// <summary>Gets or sets a discrete interval.</summary>
+    public DiscreteInterval<int> Days { get; set; }
+
+    /// <summary>Gets or sets an interval set.</summary>
+    public IntervalSet<int> Gaps { get; set; }
+
+    /// <summary>Gets or sets a complex number.</summary>
+    public Complex<double> Impedance { get; set; }
+
+    /// <summary>Gets or sets an arbitrary-precision decimal.</summary>
+    public BigDecimal Amount { get; set; }
+}

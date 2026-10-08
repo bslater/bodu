@@ -2,19 +2,23 @@ name: Bodu.Numerics NativeAOT smoke
 
 # Publishes the Bodu.Numerics AOT smoke app with NativeAOT and runs the native binary, so the
 # reflection-based bounded-type probe in Fraction<T> is proven to survive trimming and native
-# compilation rather than relying on the IL2026 / IL3050 suppressions alone.
+# compilation rather than relying on the IL2026 / IL3050 suppressions alone, and so is
+# Bodu.Numerics.Serialization.Json's documented native-AOT path (closed converters on the options
+# of a source-generated context).
 
 on:
   push:
     branches: [ master ]
     paths:
       - 'Bodu.Numerics/**'
+      - 'Bodu.Numerics.Serialization.Json/**'
       - 'Bodu.Core/**'
       - '.github/workflows/numerics-aot-smoke.yml'
   pull_request:
     branches: [ master ]
     paths:
       - 'Bodu.Numerics/**'
+      - 'Bodu.Numerics.Serialization.Json/**'
       - 'Bodu.Core/**'
       - '.github/workflows/numerics-aot-smoke.yml'
   workflow_dispatch:

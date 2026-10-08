@@ -111,11 +111,24 @@ These helpers call the reflection-based `JsonSerializer` and are annotated `[Req
 
 ## Trimming and AOT
 
-The converters are reflection-free at the value level: `AddNumericsJsonConverters` registers the factory set, and you point a source-generated `JsonSerializerContext` at your DTO so the trimmer can see the closed types. Prefer that path over the `ToJson()` / `FromJson()` helpers whenever trimming or AOT is in play.
+The package is marked AOT-compatible, and the converters read and write through `Utf8JsonReader` and `Utf8JsonWriter` without reflection. The exception is the factories. `Fraction<T>`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`, and `Complex<T>` are open generics, so each factory constructs a closed converter for each component type at run time, which native AOT cannot do without runtime code generation. The factories' constructors are therefore annotated `[RequiresDynamicCode]`, as is `AddNumericsJsonConverters`, which creates them, so a native-AOT application gets the standard analyzer warning where it registers them. Trimming needs no extra step: each factory names its converter type statically, so only the `ToJson()` / `FromJson()` helpers carry `[RequiresUnreferencedCode]`.
+
+Under native AOT, register a closed converter for each type your DTOs use, and point a source-generated `JsonSerializerContext` at the DTOs:
+
+<!-- compile -->
+```csharp
+var aotOptions = new JsonSerializerOptions();
+aotOptions.Converters.Add(new FractionJsonConverter<int>(NumericsJsonPolicy.Strict));
+aotOptions.Converters.Add(new IntervalJsonConverter<double>(NumericsJsonPolicy.Strict));
+aotOptions.Converters.Add(new IntervalSetJsonConverter<double>(NumericsJsonPolicy.Strict));
+aotOptions.Converters.Add(new BigDecimalJsonConverter(NumericsJsonPolicy.Strict));
+```
+
+Build the context from those options, as `new AppJsonContext(aotOptions)`, and serialize through its type information. The closed converters are what the factories produce, so the wire shapes are the same.
 
 ## How the converters resolve the generic parameter
 
-`Fraction<T>`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`, and `Complex<T>` are open generics, so the registered entries are *factories* that bind the concrete `T` per request and produce the matching closed converter. You never instantiate the closed converters directly - register the factory (via `AddNumericsJsonConverters` or by adding it to `Converters`) and serialize as normal. `BigDecimal` is non-generic, so it registers as a single <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> rather than a factory.
+`Fraction<T>`, `Interval<T>`, `DiscreteInterval<T>`, `IntervalSet<T>`, and `Complex<T>` are open generics, so the registered entries are *factories* that bind the concrete `T` per request and produce the matching closed converter. Ordinarily you do not instantiate the closed converters yourself: register the factory (via `AddNumericsJsonConverters` or by adding it to `Converters`) and serialize as normal. Native AOT is the exception, because it cannot construct a closed converter at run time; see [Trimming and AOT](#trimming-and-aot). `BigDecimal` is non-generic, so it registers as a single <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> rather than a factory.
 
 ## Custom backing types - `Fraction<BigInteger>` without precision loss
 
