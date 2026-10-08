@@ -208,6 +208,102 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a get-only member of a class type sets the read
+    /// members on the instance the member holds, leaving its other members as they were.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndGetOnlyObjectMember_ShouldPopulateTheHeldInstance()
+    {
+        PopulateGetOnlyObjectModel model = TomlSerializer.Deserialize<PopulateGetOnlyObjectModel>("[Inner]\nX = 5\n");
+
+        Assert.AreEqual(5, model.Inner.X);
+        Assert.AreEqual(7, model.Inner.Y);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a settable member of a class type populates the
+    /// instance the member holds rather than replacing it with a new one.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndSettableObjectMember_ShouldPopulateTheHeldInstance()
+    {
+        PopulateSettableObjectModel model = TomlSerializer.Deserialize<PopulateSettableObjectModel>("[Inner]\nX = 5\n");
+
+        Assert.IsTrue(model.HoldsSeed());
+        Assert.AreEqual(5, model.Inner.X);
+        Assert.AreEqual(7, model.Inner.Y);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> falls back to replacing a member of a class type
+    /// that holds <see langword="null" />, since there is no instance to populate.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndNullObjectMember_ShouldFallBackToReplace()
+    {
+        PopulateNullObjectModel model = TomlSerializer.Deserialize<PopulateNullObjectModel>("[Inner]\nX = 5\n");
+
+        Assert.IsNotNull(model.Inner);
+        Assert.AreEqual(5, model.Inner.X);
+        Assert.AreEqual(0, model.Inner.Y);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on the options populates object members at every
+    /// level, so a nested get-only member keeps the values the input does not set.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenOptionsPopulateAndNestedObjectMembers_ShouldPopulateEachLevel()
+    {
+        var options = new TomlSerializerOptions { PreferredObjectCreationHandling = ObjectCreationHandling.Populate };
+
+        PopulateOuterModel model = TomlSerializer.Deserialize<PopulateOuterModel>("[Middle.Inner]\nX = 5\n", options);
+
+        Assert.AreEqual(5, model.Middle.Inner.X);
+        Assert.AreEqual(7, model.Middle.Inner.Y);
+        Assert.AreEqual(9, model.Middle.Z);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> on a settable member of a struct type populates a
+    /// copy of the held value and stores the copy back through the setter.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndSettableStructMember_ShouldPopulateAndStoreTheValue()
+    {
+        PopulateStructMemberModel model = TomlSerializer.Deserialize<PopulateStructMemberModel>("[Point]\nX = 5\n");
+
+        Assert.AreEqual(5, model.Point.X);
+        Assert.AreEqual(7, model.Point.Y);
+    }
+
+    /// <summary>
+    /// Verifies that populating an object member runs the deserialization callbacks once on the instance the member
+    /// holds.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndObjectMemberHasCallbacks_ShouldRunThemOnTheHeldInstance()
+    {
+        PopulateCallbackModel model = TomlSerializer.Deserialize<PopulateCallbackModel>("[Inner]\nX = 5\n");
+
+        Assert.AreEqual(5, model.Inner.X);
+        Assert.AreEqual(1, model.Inner.ReadDeserializingCount());
+        Assert.AreEqual(1, model.Inner.ReadDeserializedCount());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> replaces a member whose type is built through a
+    /// parameterized constructor, since a value set only by its constructor cannot be set on the held instance.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndObjectMemberHasParameterizedConstructor_ShouldReplaceIt()
+    {
+        PopulateRecordMemberModel model = TomlSerializer.Deserialize<PopulateRecordMemberModel>("[Value]\nX = 5\n");
+
+        Assert.AreEqual(new PopulatedRecord(5, 0), model.Value);
+    }
+
+    /// <summary>
     /// Verifies that constructing <see cref="ObjectCreationHandlingAttribute" /> with an undefined
     /// <see cref="ObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>handling</c>.
@@ -392,5 +488,222 @@ public partial class TomlSerializerTests
         /// <value>The dictionary.</value>
         [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public Dictionary<string, int> Counts { get; } = new() { ["a"] = 1, ["b"] = 2 };
+    }
+
+    /// <summary>
+    /// A class whose members a populated member's input sets in part.
+    /// </summary>
+    private sealed class PopulatedInner
+    {
+        /// <summary>
+        /// Gets or sets the value the input sets.
+        /// </summary>
+        /// <value>The value; 0 until it is read.</value>
+        public int X { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value the input leaves alone.
+        /// </summary>
+        /// <value>The value; 0 unless a model seeds it.</value>
+        public int Y { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose get-only member of a class type, seeded with <c>Y = 7</c>, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateGetOnlyObjectModel
+    {
+        /// <summary>
+        /// Gets the held instance.
+        /// </summary>
+        /// <value>The instance the model creates.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedInner Inner { get; } = new() { Y = 7 };
+    }
+
+    /// <summary>
+    /// A model whose settable member of a class type, seeded with <c>Y = 7</c>, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />, and which remembers the instance it seeded.
+    /// </summary>
+    private sealed class PopulateSettableObjectModel
+    {
+        /// <summary>The instance the model seeds the member with.</summary>
+        private readonly PopulatedInner _seed = new() { Y = 7 };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PopulateSettableObjectModel" /> class.
+        /// </summary>
+        public PopulateSettableObjectModel()
+        {
+            Inner = _seed;
+        }
+
+        /// <summary>
+        /// Gets or sets the held instance.
+        /// </summary>
+        /// <value>The instance the model seeds, until the member is replaced.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedInner Inner { get; set; }
+
+        /// <summary>
+        /// Returns whether the member still holds the instance the model seeded it with.
+        /// </summary>
+        /// <returns><see langword="true" /> when the member holds the seeded instance.</returns>
+        public bool HoldsSeed() =>
+            ReferenceEquals(Inner, _seed);
+    }
+
+    /// <summary>
+    /// A model whose settable member of a class type holds <see langword="null" /> and is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateNullObjectModel
+    {
+        /// <summary>
+        /// Gets or sets the held instance.
+        /// </summary>
+        /// <value>The instance; <see langword="null" /> until it is read.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedInner? Inner { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose get-only member holds a <see cref="PopulateMiddleModel" />.
+    /// </summary>
+    private sealed class PopulateOuterModel
+    {
+        /// <summary>
+        /// Gets the held middle level.
+        /// </summary>
+        /// <value>The instance the model creates.</value>
+        public PopulateMiddleModel Middle { get; } = new();
+    }
+
+    /// <summary>
+    /// The middle level of <see cref="PopulateOuterModel" />: a get-only member of a class type, seeded with
+    /// <c>Y = 7</c>, and a value the input leaves alone.
+    /// </summary>
+    private sealed class PopulateMiddleModel
+    {
+        /// <summary>
+        /// Gets the held inner level.
+        /// </summary>
+        /// <value>The instance the model creates.</value>
+        public PopulatedInner Inner { get; } = new() { Y = 7 };
+
+        /// <summary>
+        /// Gets or sets a value the input leaves alone.
+        /// </summary>
+        /// <value>The value; 9 unless it is read.</value>
+        public int Z { get; set; } = 9;
+    }
+
+    /// <summary>
+    /// A struct whose members a populated member's input sets in part.
+    /// </summary>
+    private struct PopulatedPoint
+    {
+        /// <summary>
+        /// Gets or sets the value the input sets.
+        /// </summary>
+        /// <value>The value.</value>
+        public int X { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value the input leaves alone.
+        /// </summary>
+        /// <value>The value.</value>
+        public int Y { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose settable member of a struct type, seeded with <c>Y = 7</c>, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateStructMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the held value.
+        /// </summary>
+        /// <value>The value; <c>Y = 7</c> until it is read.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedPoint Point { get; set; } = new() { Y = 7 };
+    }
+
+    /// <summary>
+    /// A class that counts the deserialization callbacks it receives.
+    /// </summary>
+    private sealed class PopulatedCallbackInner
+        : IOnDeserializing, IOnDeserialized
+    {
+        /// <summary>The number of <see cref="IOnDeserializing.OnDeserializing" /> calls received.</summary>
+        private int _deserializing;
+
+        /// <summary>The number of <see cref="IOnDeserialized.OnDeserialized" /> calls received.</summary>
+        private int _deserialized;
+
+        /// <summary>
+        /// Gets or sets the value the input sets.
+        /// </summary>
+        /// <value>The value; 0 until it is read.</value>
+        public int X { get; set; }
+
+        /// <summary>
+        /// Returns the number of <see cref="IOnDeserializing.OnDeserializing" /> calls received.
+        /// </summary>
+        /// <returns>The call count.</returns>
+        public int ReadDeserializingCount() =>
+            _deserializing;
+
+        /// <summary>
+        /// Returns the number of <see cref="IOnDeserialized.OnDeserialized" /> calls received.
+        /// </summary>
+        /// <returns>The call count.</returns>
+        public int ReadDeserializedCount() =>
+            _deserialized;
+
+        /// <inheritdoc />
+        void IOnDeserializing.OnDeserializing() =>
+            _deserializing++;
+
+        /// <inheritdoc />
+        void IOnDeserialized.OnDeserialized() =>
+            _deserialized++;
+    }
+
+    /// <summary>
+    /// A model whose get-only member holds a <see cref="PopulatedCallbackInner" /> and is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateCallbackModel
+    {
+        /// <summary>
+        /// Gets the held instance.
+        /// </summary>
+        /// <value>The instance the model creates.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedCallbackInner Inner { get; } = new();
+    }
+
+    /// <summary>
+    /// A record built through its constructor, whose second value defaults to 0.
+    /// </summary>
+    /// <param name="X">The value the input sets.</param>
+    /// <param name="Y">The value the input leaves alone.</param>
+    private sealed record PopulatedRecord(int X, int Y = 0);
+
+    /// <summary>
+    /// A model whose settable member holds a <see cref="PopulatedRecord" />, seeded with <c>Y = 7</c>, and is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateRecordMemberModel
+    {
+        /// <summary>
+        /// Gets or sets the held record.
+        /// </summary>
+        /// <value>The record; <c>(0, 7)</c> until it is read.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public PopulatedRecord Value { get; set; } = new(0, 7);
     }
 }
