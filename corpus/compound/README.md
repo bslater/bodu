@@ -12,12 +12,13 @@ below adds no file to it: every one of its inputs is generated.
 
 ## `fixes/` - the release-note fix catalogue
 
-The release notes of five compound-file libraries were read in full, and every fix they list that touches the
-container format, or the parts of their API that Bodu shares, is catalogued: one file per library,
-`fixes/<library>-fixes.csv`, one row per fix, or one per case where a fix needs several. A scenario is, first, the
-regression test the fix added, read from its commit, and otherwise the scenario its issue or commit describes. Each
-row records the version, the reference (an issue, a pull request or a commit) and a short summary in our own words,
-then a class, and, for a runnable row, the input and the result Bodu must give.
+The release notes of five compound-file libraries were read in full, and every fix they list that touches the container
+format, the OLE property sets Bodu reads, or the parts of their API that Bodu shares, is catalogued: one file per
+library, `fixes/<library>-fixes.csv`, and two for Apache POI, whose compound-file layer (POIFS) and property-set layer
+(HPSF) are separate modules, with one row per fix, or one per case where a fix needs several. A scenario is, first, the
+regression test the fix added, read from its commit, and otherwise the scenario its issue or commit describes. Each row
+records the version, the reference (an issue, a pull request or a commit) and a short summary in our own words, then a
+class, and, for a runnable row, the input and the result Bodu must give.
 
 ### Sources
 
@@ -27,6 +28,7 @@ then a class, and, for a runnable row, the input and the result Bodu must give.
 | `openmcdf-fixes.csv` | [OpenMcdf](https://github.com/ironfede/openmcdf) | C# | `CHANGELOG.md` at 8e2907a2717cb43212b1be249f6ed5a6f824bfc0 (SHA-256 e71936330303d524a94359c815a5258bf149651f13e98f73ea9b22e95ac28a5f), 1.0 to 3.3.0, and the GitHub releases, pages 1-4 (v2.1.1.29598 to v3.3.0); each fix read in the commits of its pull request; issues #14, #15, #52, #53, #68, #69, #70, #75, #76 and #256, read 2026-10-08 | MPL-2.0 |
 | `cfb-fixes.csv` | [cfb](https://github.com/mdsteele/rust-cfb) | Rust | There is no changelog and there are no GitHub releases, so the commit history: master at 9b4e6479144009101eced6623aca73d4e762bca1 (2026-09-20), v0.1.0 to v0.15.0, each fix under the first version tag that contains it; issues #30 and #34, read 2026-10-08 | MIT |
 | `poi-fixes.csv` | [Apache POI](https://github.com/apache/poi), POIFS | Java | The change log pages [changes.html](https://poi.apache.org/changes.html) (SHA-256 0160cc45b13a338988d64dc6863f72c1ecef9ff133d8b2c8d5c771ee9d6bdca3, 4.0.0 to the unreleased 6.0.0), [changes-3x.html](https://poi.apache.org/devel/history/changes-3x.html) (SHA-256 3332f9f5bf4288220d1da148f39aa8b72085628c9748d52dde2543a1dc37ab5f, 3.0-alpha1 to 3.17) and [changes-pre3x.html](https://poi.apache.org/devel/history/changes-pre3x.html) (SHA-256 b9dea0044cb83d867f1177d074026538dec234879f2af088f7d9361790cc9aac, 0.1 to 2.5.1-FINAL), read 2026-10-08; each fix read in its commit in the Git mirror, trunk at ae62bb5116b9aee19ebd5834e3a82066132c9f7f | Apache-2.0 |
+| `poi-hpsf-fixes.csv` | [Apache POI](https://github.com/apache/poi), HPSF | Java | The same three change log pages, read 2026-10-08; each fix read in its commit in the Git mirror, trunk at ae62bb5116b9aee19ebd5834e3a82066132c9f7f | Apache-2.0 |
 | `compoundfiles-fixes.csv` | [compoundfiles](https://github.com/waveform80/compoundfiles) | Python | `docs/changelog.rst` at dd68dec26ba04315ee6df4170946b6a6daefa54f (SHA-256 2ae046cb0a04134a978cbb689d0f4ecddcb17bc24ccb171a50fa9846a7da5ab7), 0.1 to 0.3, with the commits of #2, read 2026-10-08 | MIT |
 
 Each file's header repeats its sources and records what was left out and why. The specifications were read as the
@@ -37,8 +39,8 @@ Microsoft Open Specifications DOCX files, kept outside the repository:
 | [MS-CFB] Compound File Binary File Format | 12.0, 2024-04-23 | `https://winprotocoldocs-bhdugrdyduf5h2e4.b02.azurefd.net/MS-CFB/%5bMS-CFB%5d-240423.docx` | 2d650184072a148ba98ad0b68072fd5ad7780e46f3528d7f263f3127b2dadab5 |
 | [MS-OSHARED] Office Common Data Types and Objects Structures | 2025-11-13 | `https://officeprotocoldocs-f5hpbjgea6b8gneq.b02.azurefd.net/files/MS-OSHARED/%5bMS-OSHARED%5d-251113.docx` | 3a17ec72868a7ba8c9c987995c8902e832a42d66eecbf149101a4e6c7255f87c |
 
-[MS-OSHARED] is cited only by the property-set rows (document parts and the summary information streams), which
-OpenMcdf's and olefile's notes include and which Bodu reads through `OlePropertySet`.
+[MS-OSHARED] is cited only by the property-set rows (document parts, heading pairs and the summary information
+streams), which OpenMcdf's, olefile's and POI's HPSF notes include and which Bodu reads through `OlePropertySet`.
 
 ### What is catalogued
 
@@ -48,11 +50,11 @@ OpenMcdf's and olefile's notes include and which Bodu reads through `OleProperty
 - cfb has no release notes, so its commit history was read instead; for the other four the release notes govern, and
   a commit is read to find a fix's scenario. compoundfiles' one entry for several fixes (#2) is broken down by its
   commits.
-- Apache POI: only POIFS, its compound-file layer. Every fix-marked entry the change log files under the POIFS module
-  is catalogued, with the fixes filed under another module whose commit changes POIFS or whose text names it. The
-  application modules (HSSF, HWPF, HSLF, HSMF) are not, and neither is HPSF, POI's property-set reader, although Bodu
-  reads property sets: that is the obvious next source. ASF Bugzilla now admits only logged-in users, so POI's bug
-  reports were not read; each entry was traced to the commit that fixed it.
+- Apache POI: POIFS, its compound-file layer, in `poi-fixes.csv`, and HPSF, its property-set layer, in
+  `poi-hpsf-fixes.csv`. Every fix-marked entry the change log files under either module is catalogued, with the fixes
+  filed under another module whose commit changes POIFS or HPSF or whose text names it. The application modules
+  (HSSF, HWPF, HSLF, HSMF) are not. ASF Bugzilla now admits only logged-in users, so POI's bug reports were not read;
+  each entry was traced to the commit that fixed it.
 - OpenMcdf is MPL-2.0, so every input in its file was written for this catalogue and none of its test data or code is
   restated. From the permissive libraries a short scenario from a regression test may be restated, with the test named
   in `reason`.
@@ -92,10 +94,10 @@ a name, which is `<library> fix <version> <reference>: <summary>`, followed by `
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 261 | The row runs, and Bodu must do what the fix established |
-| `dialect` | 31 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document or the [MS-CFB] section |
-| `n/a` | 80 | The fix concerns something Bodu does not have (encryption, VBA, Ole10Native, OOXML packages, file transactions, an API Bodu does not offer), the library's language or runtime, a platform, packaging or performance; `reason` says which |
-| `unknown` | 3 | No scenario could be found; `reason` links what was read |
+| `applies` | 276 | The row runs, and Bodu must do what the fix established |
+| `dialect` | 32 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document or the [MS-CFB] section |
+| `n/a` | 85 | The fix concerns something Bodu does not have (encryption, VBA, Ole10Native, OOXML packages, file transactions, thumbnails, an API Bodu does not offer), the library's language or runtime, a platform, packaging or performance; `reason` says which |
+| `unknown` | 4 | No scenario could be found; `reason` links what was read |
 
 ### How a row runs
 
@@ -232,13 +234,14 @@ script ends with an implicit `Commit`.
 | Library | Fixes | Rows | applies | dialect | n/a | unknown |
 |---|---:|---:|---:|---:|---:|---:|
 | olefile | 56 | 70 | 37 | 12 | 20 | 1 |
-| openmcdf | 135 | 164 | 119 | 12 | 32 | 1 |
+| openmcdf | 135 | 165 | 120 | 12 | 32 | 1 |
 | cfb | 49 | 71 | 66 | 1 | 4 | 0 |
 | poi | 50 | 59 | 32 | 4 | 22 | 1 |
+| poi-hpsf | 20 | 21 | 14 | 1 | 5 | 1 |
 | compoundfiles | 3 | 11 | 7 | 2 | 2 | 0 |
-| **Total** | **293** | **375** | **261** | **31** | **80** | **3** |
+| **Total** | **313** | **397** | **276** | **32** | **85** | **4** |
 
-Of the 292 `applies` and `dialect` rows, 192 are runnable and 100 are `unit` rows.
+Of the 308 `applies` and `dialect` rows, 192 are runnable and 116 are `unit` rows.
 
 ### Status
 
@@ -280,8 +283,8 @@ crashed, 152 passed and 40 failed. The failures, which are reported here and not
   (`CompoundValidationLevel.cs:46-47`; compoundfiles #2 case 7). A chain that leaves the FAT is recovered (olefile 0.44
   cf8bd94140 case 2 passes).
 
-Where a scratch probe or the code settled a `unit` row, its reason says what Bodu does today. Seven of them describe
-behaviour Bodu lacks:
+Where a scratch probe or the code settled a `unit` row, its reason says what Bodu does today. Thirteen of them
+describe behaviour Bodu lacks:
 
 - Unused directory slots are written with zero sibling and child links rather than `NOSTREAM` ([MS-CFB] 2.6.3;
   OpenMcdf PR #376 case 2, cfb 32983e7d16 case 2).
@@ -289,4 +292,11 @@ behaviour Bodu lacks:
   version-4 container past 2 GB chains stream data through the range lock sector ([MS-CFB] 2.8; OpenMcdf PR #270).
 - A `CompoundFileVersion` that is neither `V3` nor `V4` is written as version 3 rather than rejected (OpenMcdf PR #314
   case 2).
-- Document parts written as unaligned strings, as [MS-OSHARED] 2.3.3.2.2.1 requires, are dropped (OpenMcdf PR #108).
+- Document parts and heading pairs written as unaligned strings, as [MS-OSHARED] 2.3.3.1.12 to 2.3.3.1.15 and
+  2.3.3.2.2.1 require, are dropped or misread (OpenMcdf PR #108, POI HPSF 3.8-FINAL).
+- A string or dictionary length whose byte count overflows `Int32` escapes from `OlePropertySet.Parse` as
+  `OverflowException` (POI HPSF PR #1064 case 1 and PR #1345).
+- A `VT_ARRAY` value is read as a scalar of its element type rather than dropped (POI HPSF PR #1064 case 2, OpenMcdf
+  PR #371 case 2).
+- A Unicode string that begins on the next 4-byte boundary, as some writers place it, is dropped (POI HPSF
+  3.10-beta2).
