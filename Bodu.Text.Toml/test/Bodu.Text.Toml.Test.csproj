@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Byte-identical copies of corpus/toml/fixes/*-fixes.csv, the release-note fix catalogue the corpus tests run. -->
+    <EmbeddedResource Include="Fixtures\ReleaseNotes\*-fixes.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
 
