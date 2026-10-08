@@ -26,6 +26,8 @@ ConfigurationDocument document = ConfigurationDocument.Parse(source);
 
 `Parse(string)` returns a `ConfigurationDocument` - a first-class type that inherits the library's own read-only `IniDocumentBase` document model. Use the document directly when you only need read access to sections and entries; use [`Resolve`](views-and-resolution.md) when you want path projection and typed lookup.
 
+`Parse` ignores a single U+FEFF at the very start of the text - the byte order mark a decoder such as `Encoding.UTF8.GetString` leaves in place, which `Load` skips when it reads the same bytes - under every profile. A U+FEFF anywhere else is content.
+
 The default profile is `Bodu` - inline comments only after whitespace, lenient section headers, last-wins on duplicates, throw on the first error. Override the profile per call via `ConfigurationParseOptions`:
 
 ```csharp
@@ -44,7 +46,7 @@ ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen:
 ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 ```
 
-`Load(string)` reads UTF-8 by default - pass an `Encoding` explicitly when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime.
+`Load(string)` reads UTF-8 by default - pass an `Encoding` explicitly when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime; like `Parse`, it ignores one U+FEFF that opens the reader's text.
 
 ## Pattern 3 - non-throwing parse
 

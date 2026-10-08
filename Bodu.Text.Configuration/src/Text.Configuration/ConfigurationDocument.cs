@@ -95,6 +95,11 @@ public sealed class ConfigurationDocument
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="ConfigurationParseException">The text could not be parsed.</exception>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationDocument Parse(string text) =>
         Parse(text, options: null);
 
@@ -106,13 +111,18 @@ public sealed class ConfigurationDocument
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="ConfigurationParseException">The text could not be parsed.</exception>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationDocument Parse(string text, ConfigurationParseOptions? options)
     {
         ThrowHelper.ThrowIfNull(text);
 
         using StringReader reader = new(text);
         return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu)
-            .Read(reader, path: null)
+            .Read(reader, path: null, ignoreLeadingByteOrderMark: true)
             .Document;
     }
 
@@ -128,12 +138,18 @@ public sealed class ConfigurationDocument
     /// The text could not be parsed and <see cref="ConfigurationParseOptions.DiagnosticMode" /> is
     /// <see cref="ConfigurationDiagnosticMode.Throw" />.
     /// </exception>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationParseResult ParseWithDiagnostics(string text, ConfigurationParseOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(text);
 
         using StringReader reader = new(text);
-        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu).Read(reader, path: null);
+        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu)
+            .Read(reader, path: null, ignoreLeadingByteOrderMark: true);
     }
 
     /// <summary>
@@ -142,6 +158,11 @@ public sealed class ConfigurationDocument
     /// <param name="text">The text to parse.</param>
     /// <param name="document">The parsed document on success; <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> on success; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static bool TryParse(string? text, out ConfigurationDocument? document) =>
         TryParse(text, options: null, out document);
 
@@ -152,6 +173,11 @@ public sealed class ConfigurationDocument
     /// <param name="options">The parse options, or <see langword="null" /> for the Bodu defaults.</param>
     /// <param name="document">The parsed document on success; <see langword="null" /> on failure.</param>
     /// <returns><see langword="true" /> on success; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A single U+FEFF at the start of <paramref name="text" /> is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static bool TryParse(string? text, ConfigurationParseOptions? options, out ConfigurationDocument? document)
     {
         if (text is null)
@@ -198,7 +224,7 @@ public sealed class ConfigurationDocument
         ConfigurationParseOptions effective = options ?? ConfigurationParseOptions.Bodu;
         using FileStream stream = File.OpenRead(path);
         using StreamReader reader = new(stream, effective.DefaultEncoding, detectEncodingFromByteOrderMarks: true);
-        return new ConfigurationReader(effective).Read(reader, path).Document;
+        return new ConfigurationReader(effective).Read(reader, path, ignoreLeadingByteOrderMark: false).Document;
     }
 
     /// <summary>
@@ -227,7 +253,7 @@ public sealed class ConfigurationDocument
         Encoding effectiveEncoding = encoding ?? effective.DefaultEncoding;
 
         using StreamReader reader = new(stream, effectiveEncoding, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: leaveOpen);
-        return new ConfigurationReader(effective).Read(reader, path: null).Document;
+        return new ConfigurationReader(effective).Read(reader, path: null, ignoreLeadingByteOrderMark: false).Document;
     }
 
     /// <summary>
@@ -237,10 +263,17 @@ public sealed class ConfigurationDocument
     /// <param name="options">The parse options, or <see langword="null" /> for the defaults.</param>
     /// <returns>A populated <see cref="ConfigurationDocument" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="reader" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// A single U+FEFF that opens the text <paramref name="reader" /> delivers is ignored as a byte order mark, as
+    /// <see cref="Load(Stream, ConfigurationParseOptions?, Encoding?, bool)" /> ignores the mark that opens a stream; a
+    /// U+FEFF anywhere else is content.
+    /// </remarks>
     public static ConfigurationDocument Load(TextReader reader, ConfigurationParseOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(reader);
-        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu).Read(reader, path: null).Document;
+        return new ConfigurationReader(options ?? ConfigurationParseOptions.Bodu)
+            .Read(reader, path: null, ignoreLeadingByteOrderMark: true)
+            .Document;
     }
 
     /// <summary>
