@@ -327,6 +327,10 @@ public ref struct TomlDocumentReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
+    /// <remarks>
+    /// A float literal is rounded to binary64 as IEEE 754 conversion rounds it, so a literal beyond the binary64 range,
+    /// such as <c>1e400</c>, reads as positive or negative infinity, and one too small to represent reads as zero.
+    /// </remarks>
     public readonly double GetDouble() =>
         _tokenType == TomlTokenType.Float
             ? _rows[_currentRow].AsDouble()

@@ -29,7 +29,7 @@ A user converter, or a converter named by a `[Converter]` attribute, is consulte
 | `Uri` | string, the original URI text | string | Relative and absolute URIs round-trip. |
 | `Version` | string, the component form (`"1.2.3.4"`) | version string | Leading/trailing whitespace is rejected. |
 | `TimeSpan` | string, invariant constant format (`"1.02:03:04.5670000"`) | `"c"`-format string | The round-trippable constant format. |
-| `double` | float (including `inf` / `-inf` / `nan`) | float | |
+| `double` | float (including `inf` / `-inf` / `nan`) | float | A literal beyond the binary64 range, such as `1e400`, reads as an infinity, and one too small to represent reads as zero: the reader rounds every literal to binary64 as IEEE 754 does. |
 | `float` | float | float | Widens to binary64 on write; narrows on read. |
 | `Half` | float | float | Exact widening on write; **saturating** IEEE 754 narrow on read - an out-of-range finite float reads back as ±infinity. |
 | `decimal` | float **or** invariant string, per <xref:Bodu.Text.Toml.TomlDecimalHandling> | float, integer, **or** string | `Float` (default) is native but lossy beyond binary64; `String` round-trips all 28 digits. Read accepts all three forms regardless of the setting. |
