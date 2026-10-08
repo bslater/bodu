@@ -329,6 +329,75 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A base record type whose text <c>Name</c> property <see cref="SameTypeHidingRecord" /> hides with one of the same
+    /// type.
+    /// </summary>
+    public class TextNamedBase
+    {
+        /// <summary>Gets or sets the base name, which a derived type hides.</summary>
+        /// <value>The base name.</value>
+        public string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A record POCO whose text <c>Name</c> property hides the base type's text <c>Name</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    public sealed class SameTypeHidingRecord
+        : TextNamedBase
+    {
+        /// <summary>Gets or sets the name, hiding the base type's.</summary>
+        /// <value>The name.</value>
+        public new string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A record type whose text <c>Name</c> property hides the <see cref="int" /> <c>Name</c> of
+    /// <see cref="NamedBase" />, and which <see cref="TwiceHidingRecord" /> hides in turn.
+    /// </summary>
+    public class HidingMiddle
+        : NamedBase
+    {
+        /// <summary>Gets or sets the middle name, hiding the base type's and hidden by a derived type.</summary>
+        /// <value>The middle name.</value>
+        public new string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A record POCO whose <see cref="decimal" /> <c>Name</c> property hides a <c>Name</c> that itself hides another,
+    /// two levels down.
+    /// </summary>
+    public sealed class TwiceHidingRecord
+        : HidingMiddle
+    {
+        /// <summary>Gets or sets the name, hiding both base types'.</summary>
+        /// <value>The name.</value>
+        public new decimal Name { get; set; }
+    }
+
+    /// <summary>
+    /// A base record type with an <see cref="int" /> <c>Name</c> field, which <see cref="FieldHidingRecord" /> hides.
+    /// </summary>
+    public class FieldNamedBase
+    {
+        /// <summary>The base name, which a derived type hides.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "The serializer maps public fields only with IncludeFields, and this record exists to test that mapping.")]
+        public int Name;
+    }
+
+    /// <summary>
+    /// A record POCO whose text <c>Name</c> field hides the base type's <c>Name</c> field with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    public sealed class FieldHidingRecord
+        : FieldNamedBase
+    {
+        /// <summary>The name, hiding the base type's.</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "The serializer maps public fields only with IncludeFields, and this record exists to test that mapping.")]
+        public new string? Name;
+    }
+
+    /// <summary>
     /// A record POCO whose every property is excluded with <see cref="Bodu.Text.Serialization.IgnoreAttribute" />.
     /// </summary>
     public sealed class IgnoredRecord

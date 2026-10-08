@@ -432,4 +432,19 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(new TimeOnly(1, 2), records[0].Time);
         Assert.AreEqual(new TimeSpan(1, 2, 3, 4, 567), records[0].Span);
     }
+
+    /// <summary>
+    /// Verifies that a column whose property hides a base property of another type with <see langword="new" /> binds the
+    /// hiding property alone: <c>Name</c> reads into the text property, and the hidden <see cref="int" /> property keeps
+    /// its default rather than failing to parse the text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAPropertyHidesABasePropertyWithNew_ShouldBindTheHidingProperty()
+    {
+        List<HidingRecord> records = DelimitedSerializer.Deserialize<HidingRecord>("Name\nx\n");
+
+        Assert.AreEqual(1, records.Count);
+        Assert.AreEqual("x", records[0].Name);
+        Assert.AreEqual(0, ((NamedBase)records[0]).Name);
+    }
 }

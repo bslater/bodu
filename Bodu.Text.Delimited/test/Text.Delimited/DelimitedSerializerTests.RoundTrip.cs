@@ -207,6 +207,54 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a property hidden two levels down, behind a text and an <see cref="int" /> declaration, is written
+    /// as one column, the most derived <see cref="decimal" /> property's, and reads back into it.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAPropertyIsHiddenTwoLevelsDown_ShouldMapTheMostDerivedProperty()
+    {
+        string text = DelimitedSerializer.Serialize(new List<TwiceHidingRecord> { new() { Name = 1.5m } });
+        List<TwiceHidingRecord> restored = DelimitedSerializer.Deserialize<TwiceHidingRecord>(text);
+
+        Assert.AreEqual("Name\r\n1.5\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(1.5m, restored[0].Name);
+    }
+
+    /// <summary>
+    /// Verifies that a property that hides a base property of the same type with <see langword="new" /> is written as one
+    /// column and reads back into the hiding property, leaving the hidden one unset.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAPropertyHidesABasePropertyOfTheSameType_ShouldMapOneColumn()
+    {
+        string text = DelimitedSerializer.Serialize(new List<SameTypeHidingRecord> { new() { Name = "y" } });
+        List<SameTypeHidingRecord> restored = DelimitedSerializer.Deserialize<SameTypeHidingRecord>(text);
+
+        Assert.AreEqual("Name\r\ny\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual("y", restored[0].Name);
+        Assert.IsNull(((TextNamedBase)restored[0]).Name);
+    }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.IncludeFields" /> a field that hides a base field with
+    /// <see langword="new" /> is written as one column, the hiding field's, and reads back into it.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAFieldHidesABaseFieldWithNew_ShouldMapTheHidingField()
+    {
+        var options = new DelimitedSerializerOptions { IncludeFields = true };
+
+        string text = DelimitedSerializer.Serialize(new List<FieldHidingRecord> { new() { Name = "f" } }, options);
+        List<FieldHidingRecord> restored = DelimitedSerializer.Deserialize<FieldHidingRecord>(text, options);
+
+        Assert.AreEqual("Name\r\nf\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual("f", restored[0].Name);
+    }
+
+    /// <summary>
     /// Verifies that 10,000 records, enough to pass the incremental writer's flush buffer several times, keep every
     /// value through a write to a stream and a read back, for <see cref="long" />, <see cref="DateTime" />,
     /// <see cref="double" /> and <see cref="Guid" /> values.
