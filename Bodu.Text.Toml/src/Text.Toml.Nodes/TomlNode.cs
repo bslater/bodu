@@ -235,12 +235,13 @@ public abstract class TomlNode
     /// <remarks>
     /// Every <see cref="TomlObject" /> materialized while parsing adopts the comparison selected by
     /// <paramref name="options" />, so a case-insensitive parse yields a tree whose table lookups ignore case. Such a
-    /// tree cannot hold two keys of one table that differ only in case, which TOML allows, so the parse throws at the
-    /// second of them rather than keep only one of their values.
+    /// tree cannot hold two keys of one table that differ only in case, which TOML allows, so the parse throws where
+    /// the second of them starts rather than keep only one of their values.
     /// </remarks>
     public static TomlNode? Parse(ReadOnlySpan<byte> utf8Toml, TomlNodeOptions options)
     {
-        var reader = new TomlDocumentReader(utf8Toml);
+        // A case-insensitive parse records where each key starts, so a collision is reported at the second key.
+        var reader = new TomlDocumentReader(utf8Toml, default, recordKeyOffsets: options.PropertyNameCaseInsensitive);
         if (!reader.Read())
             throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
 

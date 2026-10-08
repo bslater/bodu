@@ -24,8 +24,8 @@ public struct TomlNodeOptions
     /// <remarks>
     /// TOML keys are case-sensitive, so a valid document can hold two keys in one table that differ only in case, such
     /// as <c>a</c> and <c>A</c>. A table that ignores case cannot hold both, so
-    /// <see cref="TomlNode.Parse(ReadOnlySpan{byte}, TomlNodeOptions)" /> throws <see cref="TomlFormatException" /> at
-    /// the second of the two keys rather than keep only one of their values.
+    /// <see cref="TomlNode.Parse(ReadOnlySpan{byte}, TomlNodeOptions)" /> throws <see cref="TomlFormatException" />,
+    /// positioned where the second of the two keys starts, rather than keep only one of their values.
     /// </remarks>
     public bool PropertyNameCaseInsensitive { get; set; }
 }
