@@ -114,6 +114,84 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that serializing an object graph whose mappings nest exactly
+    /// <see cref="YamlSerializerOptions.MaxDepth" /> deep succeeds, at the default depth and at configured ones.
+    /// </summary>
+    /// <param name="maxDepth">The configured maximum depth, or zero for the default of 64.</param>
+    /// <param name="levels">The number of nested mappings the graph writes.</param>
+    [TestMethod]
+    [DataRow(0, 64, DisplayName = "the default depth")]
+    [DataRow(5, 5, DisplayName = "a depth of 5")]
+    [DataRow(1, 1, DisplayName = "a depth of 1")]
+    public void Serialize_WhenGraphNestsToMaxDepth_ShouldSucceed(int maxDepth, int levels)
+    {
+        var options = new YamlSerializerOptions { MaxDepth = maxDepth };
+
+        string yaml = YamlSerializer.Serialize(BuildChain(levels), options);
+
+        Assert.IsTrue(yaml.Contains("Child", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that serializing an object graph whose mappings nest one level deeper than
+    /// <see cref="YamlSerializerOptions.MaxDepth" /> throws <see cref="YamlSerializationException" />, even when the
+    /// deepest mapping holds only null members, at the default depth and at configured ones.
+    /// </summary>
+    /// <param name="maxDepth">The configured maximum depth, or zero for the default of 64.</param>
+    /// <param name="levels">The number of nested mappings the graph would write.</param>
+    [TestMethod]
+    [DataRow(0, 65, DisplayName = "the default depth")]
+    [DataRow(5, 6, DisplayName = "a depth of 5")]
+    [DataRow(1, 2, DisplayName = "a depth of 1")]
+    public void Serialize_WhenGraphNestsOnePastMaxDepth_ShouldThrowYamlSerializationException(int maxDepth, int levels)
+    {
+        var options = new YamlSerializerOptions { MaxDepth = maxDepth };
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(BuildChain(levels), options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that serializing sequences nested one level deeper than <see cref="YamlSerializerOptions.MaxDepth" />
+    /// throws <see cref="YamlSerializationException" /> even when the deepest sequence is empty, and that sequences
+    /// nested exactly that deep serialize.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenSequencesNestOnePastMaxDepth_ShouldThrowYamlSerializationException()
+    {
+        var options = new YamlSerializerOptions { MaxDepth = 3 };
+        object[] atLimit = [new object[] { Array.Empty<object>() }];
+        object[] pastLimit = [new object[] { new object[] { Array.Empty<object>() } }];
+
+        _ = YamlSerializer.Serialize(atLimit, options);
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(pastLimit, options);
+        });
+    }
+
+    /// <summary>
+    /// Builds a chain of nested <see cref="RecursiveModel" /> instances that serializes as the given number of nested
+    /// mappings.
+    /// </summary>
+    /// <param name="levels">The number of models in the chain.</param>
+    /// <returns>The outermost model.</returns>
+    private static RecursiveModel BuildChain(int levels)
+    {
+        var root = new RecursiveModel();
+        RecursiveModel current = root;
+        for (int level = 1; level < levels; level++)
+        {
+            current.Child = new RecursiveModel();
+            current = current.Child;
+        }
+
+        return root;
+    }
+
+    /// <summary>
     /// A self-referential POCO used to build graphs of controlled depth.
     /// </summary>
     private sealed class RecursiveModel
