@@ -17,7 +17,7 @@ Every reader throws its format's `*FormatException` (`DelimitedFormatException`,
 | Knob | Values | Default |
 |---|---|---|
 | `FieldCountBehavior` | `Strict` (every record matches the header's field count) / `Ragged` | `Strict` |
-| `MalformedRecordBehavior` | `Throw` / `SkipRecord` (truncate the record at the structural error) | `Throw` |
+| `MalformedRecordBehavior` | `Throw` / `SkipRecord` (skip the whole malformed record and continue with the next line) | `Throw` |
 | `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` | `Throw` |
 | `Delimiter`, `Quote` | an ASCII character other than CR and LF; the two must differ | `,` / `"` |
 | `NoHeader` | treat the first record as data (records become positional arrays) | header mode |
@@ -28,7 +28,7 @@ The reader matches the delimiter, quote, and comment characters as single bytes 
 
 Strict field counts are measured against the header row, so they apply in header mode; positional mode accepts any shape unless you enforce one yourself.
 
-Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to `MalformedRecordBehavior`).
+Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to `MalformedRecordBehavior`). After a closing quote only the delimiter, a line break or the end of the input may follow, after spaces and tabs under `TrimFields`; anything else makes the record malformed. `Throw` reports the line and offset of the first offending byte, and `SkipRecord` skips the record, the rest of that line included, and continues with the next line. A record whose field count breaks the `Strict` policy is malformed too: `Throw` reports where it starts, and `SkipRecord` skips it.
 
 ## DotEnv
 

@@ -100,7 +100,8 @@ public readonly struct DelimitedReaderOptions
     public DelimitedFieldCountBehavior FieldCountBehavior { get; init; }
 
     /// <summary>
-    /// Gets the policy applied to a record that violates the field-count policy.
+    /// Gets the policy applied to a malformed record: one that violates the field-count policy, or one in which text
+    /// follows a closing quote.
     /// </summary>
     /// <value>The malformed-record behavior.</value>
     public DelimitedMalformedRecordBehavior MalformedRecordBehavior { get; init; }

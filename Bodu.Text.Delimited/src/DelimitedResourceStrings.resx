@@ -70,6 +70,9 @@
   <data name="Format_Invalid_DelimitedFieldCount" xml:space="preserve">
     <value>A delimited record has {1} field(s) but the header declares {0}.</value>
   </data>
+  <data name="Format_Invalid_DelimitedTextAfterClosingQuote" xml:space="preserve">
+    <value>A quoted delimited field is followed by text other than a delimiter, a line break or the end of the input.</value>
+  </data>
   <data name="Format_Invalid_DelimitedUnterminatedQuote" xml:space="preserve">
     <value>A quoted delimited field was not terminated before the end of the input.</value>
   </data>

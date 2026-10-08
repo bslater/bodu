@@ -93,6 +93,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A quoted delimited field is followed by text other than a delimiter, a line break or the end of the input..
+        /// </summary>
+        internal static string Format_Invalid_DelimitedTextAfterClosingQuote {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DelimitedTextAfterClosingQuote", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to A quoted delimited field was not terminated before the end of the input..
         /// </summary>
         internal static string Format_Invalid_DelimitedUnterminatedQuote {

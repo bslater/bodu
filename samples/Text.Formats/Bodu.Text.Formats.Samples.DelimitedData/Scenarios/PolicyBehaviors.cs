@@ -36,13 +36,11 @@ public static class PolicyBehaviors
                 + "the opposite case, where stopping on row 4,000 of 50,000 is not a service to anybody. Making "
                 + "the strict behaviour the default matters: a reader that is quietly permissive turns a broken "
                 + "file into a plausible-looking import, and the damage surfaces much later.",
-            expect: "Both strict parses throw. The second reports a field-count mismatch rather than a quoting "
-                + "error, because the stray characters after the closing quote collapse that row to two fields "
-                + "and the count check fires first - the message names the symptom the reader reached, not the "
-                + "root cause. The lenient parses accept the same input and keep the rows, with the field counts "
-                + "showing exactly what was preserved. Note that skipping a malformed record keeps the fields "
-                + "already parsed, leaving a short row - which is why that policy is paired with ragged rather "
-                + "than used alone.");
+            expect: "Both strict parses throw. The first names the field-count mismatch; the second names the real "
+                + "problem, the stray characters after the closing quote, at the line and offset where they start. "
+                + "The lenient parses accept the same input: ragged rows keep the field counts they have, and "
+                + "skipping drops the malformed record whole, so the rows that remain are exactly the well-formed "
+                + "ones.");
 
         // Row 2 is short (2 fields), row 3 is long (4 fields).
         var ragged = Encoding.UTF8.GetBytes("sku,name,stock\nA1,Widget,12\nB2,Bolt\nC3,Nut,40,extra\n");
@@ -78,21 +76,20 @@ public static class PolicyBehaviors
         }
         catch (DelimitedFormatException ex)
         {
-            Console.WriteLine($"  Throw (default)  : {ex.Message}"
-                + "  (the stray characters after the closing quote collapse the row to two fields, so the field-count check is what rejects it first)");
+            Console.WriteLine($"  Throw (default)  : {ex.Message} (line {ex.LineNumber}, offset {ex.Offset})"
+                + "  (the error names the stray characters after the closing quote, where they start)");
         }
 
-        // SkipRecord discards the rest of the malformed record but keeps the fields parsed so
-        // far, leaving a short row - so lenient ingestion pairs it with Ragged.
+        // SkipRecord drops the malformed record whole, the rest of its line included, and goes on
+        // with the next line, so no part of the broken row reaches the import.
         using (var skipped = DelimitedDocument.Parse(malformed, new DelimitedReaderOptions
         {
             NoHeader = true,
             MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord,
-            FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,
         }))
         {
-            Console.WriteLine($"  SkipRecord+Ragged: kept {skipped.RootElement.GetArrayLength()} rows, field counts [{string.Join(", ", FieldCounts(skipped))}] (malformed row truncated)"
-                + "  (skipping keeps the fields already parsed, so the row comes out short - which is why this policy is paired with Ragged)");
+            Console.WriteLine($"  SkipRecord       : kept {skipped.RootElement.GetArrayLength()} rows, field counts [{string.Join(", ", FieldCounts(skipped))}]"
+                + "  (the malformed record is skipped whole, so the rows that remain are exactly the well-formed ones)");
         }
 
         Console.WriteLine();

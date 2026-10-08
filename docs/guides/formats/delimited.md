@@ -93,7 +93,7 @@ writer.Flush();
 var lenient = new DelimitedReaderOptions
 {
     FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,        // accept short/long rows
-    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord, // truncate at structural errors
+    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord, // skip malformed records whole
     DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeFirst,
 };
 ```
