@@ -228,4 +228,53 @@ public partial class YamlDocumentTests
             using var document = YamlDocument.Parse("[ multi\n line: value ]");
         });
     }
+
+    /// <summary>
+    /// Verifies that a value indicator directly after a JSON-like key, a quoted scalar, begins the key's value with no
+    /// space before it, in a flow sequence and in a flow mapping.
+    /// </summary>
+    /// <param name="yaml">A flow collection with a quoted key followed directly by its value indicator.</param>
+    /// <param name="expected">The collection expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("[ \"JSON like\":adjacent ]", """[{"JSON like":"adjacent"}]""", DisplayName = "a double-quoted key")]
+    [DataRow("[ 'single':adjacent ]", """[{"single":"adjacent"}]""", DisplayName = "a single-quoted key in a sequence")]
+    [DataRow("[ \"a\":, b ]", """[{"a":null},"b"]""", DisplayName = "a quoted key with an empty value in a sequence")]
+    [DataRow("{ \"a\":b, 'c':1 }", """{"a":"b","c":1}""", DisplayName = "quoted keys in a mapping")]
+    public void Parse_WhenValueIndicatorIsAdjacentToQuotedKey_ShouldReadValue(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a value indicator directly after a flow collection used as a key in a flow sequence is read as the
+    /// key's value indicator, so the entry is rejected as a complex key rather than as malformed flow.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenValueIndicatorIsAdjacentToCollectionKey_ShouldRejectComplexKey()
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse("[ [a]:b ]");
+        });
+
+        Assert.AreEqual(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that after a plain key in a flow mapping, a <c>:</c> followed by a character that could continue a
+    /// plain scalar is not a value indicator, so a <c>:</c> that a comment separates from the key is rejected.
+    /// </summary>
+    /// <param name="yaml">A flow mapping whose plain key ends at a comment, with <c>:1</c> on the next line.</param>
+    [TestMethod]
+    [DataRow("{a\n#c\n:1}", DisplayName = "a comment line between the key and the value indicator")]
+    [DataRow("{ a #c\n:1 }", DisplayName = "a comment after the key")]
+    public void Parse_WhenColonAfterPlainFlowKeyIsFollowedByPlainCharacter_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
 }
