@@ -116,17 +116,18 @@ use the escapes above, so a semicolon inside a value is `\x3B`.
 
 - **Bodu's dialect wins where it is documented.** A fix that strips quotes or reads escapes inside them, strips an
   inline `;` or `#` comment, or accepts `:` as a delimiter becomes a `dialect` row asserting Bodu's documented
-  reading: a value runs literally to the end of the line, quotes are preserved, an inline `;` or `#` is content,
-  and `=` is the only delimiter (Parser policies, INI).
+  reading: a value is literal to the end of the line apart from the spaces and tabs around it, which are trimmed,
+  quotes are preserved, an inline `;` or `#` is content, and `=` is the only delimiter (Parser policies, INI).
 - **What the dialect cannot write, the writer must refuse.** Bodu has no quoting, escaping or continuation lines,
   so a value holding a line break, a value with leading or trailing spaces or tabs (which the reader trims), and a
   key that contains `=` or starts with `[` cannot be written so that they read back unchanged. Where a fix made
   its writer handle such a value, the row is `applies`, kind `write-reject`, expecting `ArgumentException`, the
   repository's argument-validation convention: refusing is the only faithful behaviour left, and writing a line
-  that reads back as something else is the defect the fix removed. These expectations are `derived`.
+  that reads back as something else is the defect the fix removed. These expectations are `derived`, and
+  `Utf8IniWriter` now meets them (below).
 - **A header with `]` inside it.** configparser, go-ini and iniparser fixed their readers to end a section name at
-  the last `]` on the line; rust-ini (by default) and inih end it at the first. Bodu's documents do not say which,
-  so these rows stay `applies` with the fixes' reading, and fail (below).
+  a later `]` on the line; rust-ini (by default) and inih end it at the first. Bodu's documents did not say which,
+  so these rows are `applies` with the fixes' reading; Bodu now documents that reading (below).
 - **Special names are data.** `__proto__`, `constructor` and other names that reached object prototypes in npm ini
   are ordinary section and key names to Bodu, so those rows are `applies`.
 - **Typed and DOM scenarios are `unit` rows**: mapping-protocol and editing fixes against `IniObject` and
@@ -142,26 +143,36 @@ use the escapes above, so a semicolon inside a value is `\x3B`.
 
 ### What the catalogue found
 
-Of the 132 rows that run as data, 120 pass and 12 fail today. The failures have four causes:
+When the catalogue first ran, 120 of the 132 rows that run as data passed and 12 failed, and of the 14 `unit` tests
+the go-ini 1.34.0 one failed. Each cause became an issue and was fixed test first, so all 132 rows and all 14 `unit`
+tests now pass. No row was re-classed: every fix made Bodu do what the release-note fix established.
 
-- **The writer writes a line break inside a value** (4 rows): configparser 3.15.0b4 #143927 cases 1-3 (LF, CR and
-  CRLF) and configparser 2.3 `00824ed733` case 1. `key1` = `a\nb` is written as `key1=a` and a bare line `b`,
-  which reads back as a different document or not at all. A comment holding a line break is written the same way
-  (go-ini 1.34.0 `5e9692864e`, a `unit` row).
-- **The writer writes keys that read back as something else** (3 rows): configparser 3.14.0a6 #65697 cases 1-2
-  (the key `a=b` is written as `a=b=c`, read back as key `a`; the key `[this parses back as a section]` is written
-  as a line that reads back as a section header) and npm-ini 1.0.2 `b80890bf43` case 2 (the global key
-  `[disturbing]`).
-- **The writer writes a value's leading and trailing spaces** (1 row): go-ini 1.60.1 #260 case 2. `  val ue1 ` is
-  written as `bar1=  val ue1 ` and reads back as `val ue1`.
-- **A section header ends at its first `]`, and the rest of the line is dropped without an error** (4 rows):
-  configparser 3.11.0a1 bpo-38741, go-ini 1.16.0 #46 and iniparser 4.2 PR #159 cases 1-2. `[foo]bar]` names the
-  section `foo`; `[123]45]` names it `123`.
+- **A section header ended at its first `]`, and the rest of the line was dropped without an error** (issue #845;
+  4 rows: configparser 3.11.0a1 bpo-38741, go-ini 1.16.0 #46 and iniparser 4.2 PR #159 cases 1-2). `[foo]bar]`
+  named the section `foo`. A section name now runs to the first `]` that only whitespace or a comment follows, so
+  `[foo]bar]` names `foo]bar` and `[123]45]` names `123]45`; other text after the header throws
+  `IniFormatException`, and a comment after it is still skipped rather than reported as a comment token. The rule
+  is stated in [Parser policies](../../docs/docs/formats/parser-policies.md) (INI), the INI guide and the remarks
+  of `Utf8IniReader`.
+- **The writer wrote a line break inside a value or a comment** (issue #841; 4 rows: configparser 3.15.0b4 #143927
+  cases 1-3 and configparser 2.3 `00824ed733` case 1, and the go-ini 1.34.0 `5e9692864e` `unit` test). `key1` =
+  `a\nb` was written as `key1=a` and a bare line `b`. `WriteString` now throws `ArgumentException` for a value
+  containing CR or LF, and `WriteComment` writes text holding line breaks as one comment line per line, each with
+  the comment prefix.
+- **The writer wrote a value's leading and trailing spaces, which the reader trims** (issue #843; 1 row: go-ini
+  1.60.1 #260 case 2). `  val ue1 ` was written as `bar1=  val ue1 ` and read back as `val ue1`. `WriteString` now
+  refuses a value that begins or ends with a space or tab; an empty value is still written.
+- **The writer wrote keys that read back as something else** (issue #842; 3 rows: configparser 3.14.0a6 #65697
+  cases 1-2 and npm-ini 1.0.2 `b80890bf43` case 2). The key `a=b` was written as `a=b=c`, read back as key `a`, and
+  the keys `[this parses back as a section]` and `[disturbing]` were written as lines that read back as section
+  headers. `WritePropertyName` now refuses a key that is empty, begins or ends with a space or tab, contains `=` or
+  a line break, or begins with `[`, `;` or `#`, and `WriteSectionHeader` refuses a name that is empty, begins or
+  ends with a space or tab, contains a line break, or holds a `]` that a comment marker follows.
 
-Two documents contradict the writer's behaviour: the remarks of `Utf8IniWriter`
-(`Bodu.Text.Ini/src/Text.Ini.Writer/Utf8IniWriter.cs`, lines 17-19) say that `WritePropertyName` and `WriteString`
-produce one `key=value` line and `WriteComment` one comment line, and the summary of `IniNode`
-(`Bodu.Text.Ini/src/Text.Ini.Nodes/IniNode.cs`, lines 22-23) says that authoring and round-tripping are faithful;
-a value or comment holding a line break, or a key containing `=`, is written as text that reads back as other
-entries. The text after a header's first `]` is dropped without any document saying so: the error-handling guide
-(`docs/guides/formats/error-handling.md`, line 178) says only that a header must close on its line.
+The documents now match the code. Five of them said an INI value runs literally to the end of the line, although
+the reader trims the whitespace around keys and values (issue #844, documentation only); they now say so. The
+remarks of `Utf8IniWriter` said that each call writes one line, and the summary of `IniNode` that authoring and
+round-tripping are faithful, while text the dialect cannot hold was written as other lines; the writer now
+refuses that text, and its rules are documented in its remarks and the INI guide (Writing). The error-handling
+guide (`docs/guides/formats/error-handling.md`) now says that only whitespace or a comment may follow a header,
+and lists the new message.
