@@ -48,6 +48,9 @@ public ref struct Utf8IniReader
     /// <summary>The 1-based line number of the current read position.</summary>
     private int _line;
 
+    /// <summary>The 1-based line number on which the current token begins.</summary>
+    private int _tokenLine;
+
     /// <summary>The kind of the current token.</summary>
     private IniTokenType _tokenType;
 
@@ -59,6 +62,9 @@ public ref struct Utf8IniReader
 
     /// <summary>The staged value text for the pending string token.</summary>
     private string? _pendingValue;
+
+    /// <summary>The 1-based line number on which the pending string token begins.</summary>
+    private int _pendingLine;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8IniReader" /> struct over the supplied bytes.
@@ -83,6 +89,7 @@ public ref struct Utf8IniReader
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first section or key.
         _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
         _line = 1;
+        _tokenLine = 1;
         _tokenType = IniTokenType.None;
     }
 
@@ -100,8 +107,22 @@ public ref struct Utf8IniReader
     /// <summary>
     /// Gets the 1-based line number at which the current token begins.
     /// </summary>
-    /// <value>The current line number.</value>
-    public readonly int LineNumber => _line;
+    /// <value>The line on which the current token begins.</value>
+    /// <remarks>
+    /// Once <see cref="Read" /> returns <see langword="false" />, the line is the one at the end of the input. A line
+    /// ends at a LF, a CR LF pair or a lone CR.
+    /// </remarks>
+    public readonly int LineNumber => _tokenLine;
+
+    /// <summary>
+    /// Gets the 1-based line number of the read position, which is past the line ending of the token just read.
+    /// </summary>
+    /// <value>The line of the next byte to read.</value>
+    /// <remarks>
+    /// The document models report a section or key that their duplicate policies reject at this line, beside
+    /// <see cref="BytesConsumed" />, so that the line and the offset of the error describe the same position.
+    /// </remarks>
+    internal readonly int PositionLineNumber => _line;
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -131,6 +152,7 @@ public ref struct Utf8IniReader
             _pendingString = false;
             _current = _pendingValue;
             _tokenType = IniTokenType.String;
+            _tokenLine = _pendingLine;
             return true;
         }
 
@@ -141,6 +163,7 @@ public ref struct Utf8IniReader
             if (_position >= _data.Length)
             {
                 _tokenType = IniTokenType.None;
+                _tokenLine = _line;
                 _current = null;
                 return false;
             }
@@ -191,6 +214,7 @@ public ref struct Utf8IniReader
         {
             _current = Encoding.UTF8.GetString(_data[textStart..end]);
             _tokenType = IniTokenType.Comment;
+            _tokenLine = _line;
             SkipLineEnding();
             return true;
         }
@@ -240,6 +264,7 @@ public ref struct Utf8IniReader
 
         _current = Encoding.UTF8.GetString(_data.Slice(nameStart, nameLength));
         _tokenType = IniTokenType.SectionHeader;
+        _tokenLine = headerLine;
     }
 
     /// <summary>
@@ -322,9 +347,11 @@ public ref struct Utf8IniReader
 
         _current = Encoding.UTF8.GetString(_data.Slice(trimmedKeyStart, keyLength));
         _tokenType = IniTokenType.PropertyName;
+        _tokenLine = entryLine;
 
         _pendingString = true;
         _pendingValue = Encoding.UTF8.GetString(_data.Slice(trimmedValueStart, valueLength));
+        _pendingLine = entryLine;
     }
 
     /// <summary>

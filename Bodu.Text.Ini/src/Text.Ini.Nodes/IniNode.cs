@@ -231,7 +231,7 @@ public abstract class IniNode
             {
                 throw new IniFormatException(
                     string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniGlobalKeyCollision, name),
-                    reader.LineNumber,
+                    reader.PositionLineNumber,
                     reader.BytesConsumed);
             }
 
@@ -239,7 +239,7 @@ public abstract class IniNode
             {
                 throw new IniFormatException(
                     string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniDuplicateSection, name),
-                    reader.LineNumber,
+                    reader.PositionLineNumber,
                     reader.BytesConsumed);
             }
 
@@ -292,7 +292,7 @@ public abstract class IniNode
                 default:
                     throw new IniFormatException(
                         string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniDuplicateKey, targetName, key),
-                        reader.LineNumber,
+                        reader.PositionLineNumber,
                         reader.BytesConsumed);
             }
 

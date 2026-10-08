@@ -75,7 +75,7 @@ internal sealed class IniNormalizedDocument
                         {
                             throw new IniFormatException(
                                 string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniDuplicateSection, name),
-                                reader.LineNumber,
+                                reader.PositionLineNumber,
                                 reader.BytesConsumed);
                         }
 
@@ -99,7 +99,7 @@ internal sealed class IniNormalizedDocument
                     List<KeyValuePair<string, string>> entries = currentSection < 0 ? document.GlobalEntries : document.Sections[currentSection].Entries;
                     Dictionary<string, int> index = currentSection < 0 ? globalIndex : entryIndexes[currentSection];
                     string sectionName = currentSection < 0 ? string.Empty : document.Sections[currentSection].Name;
-                    AddEntry(entries, index, pendingKey!, reader.GetString(), sectionName, documentOptions.DuplicateKeyBehavior, reader.LineNumber, reader.BytesConsumed);
+                    AddEntry(entries, index, pendingKey!, reader.GetString(), sectionName, documentOptions.DuplicateKeyBehavior, reader.PositionLineNumber, reader.BytesConsumed);
                     pendingKey = null;
                     break;
 
