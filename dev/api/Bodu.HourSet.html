@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_HourSet" data-uid="Bodu.HourSet" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 HourSet Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Enumerator.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,14 +104,14 @@ HourSet Struct
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Enumerator.cs">HourSet.Enumerator.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Enumerator.cs">HourSet.Enumerator.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable set of hours of the day, 0 to 23.</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct HourSet : ICalendarValueSet&lt;HourSet, int&gt;, IEquatable&lt;HourSet&gt;, IEqualityOperators&lt;HourSet, HourSet, bool&gt;, IBitwiseOperators&lt;HourSet, HourSet, HourSet&gt;, IParsable&lt;HourSet&gt;, IFormattable, IEnumerable&lt;int&gt;, IEnumerable</code></pre>
+    <pre><code class="lang-csharp hljs">public readonly struct HourSet : ICalendarValueSet&lt;HourSet, int&gt;, IEquatable&lt;HourSet&gt;, IEqualityOperators&lt;HourSet, HourSet, bool&gt;, IBitwiseOperators&lt;HourSet, HourSet, HourSet&gt;, ISpanParsable&lt;HourSet&gt;, IParsable&lt;HourSet&gt;, IUtf8SpanParsable&lt;HourSet&gt;, ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEnumerable&lt;int&gt;, IEnumerable</code></pre>
   </div>
 
 
@@ -125,8 +125,12 @@ HourSet Struct
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a class="xref" href="Bodu.HourSet.html">HourSet</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.iequalityoperators-3">IEqualityOperators</a>&lt;<a class="xref" href="Bodu.HourSet.html">HourSet</a>, <a class="xref" href="Bodu.HourSet.html">HourSet</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.ibitwiseoperators-3">IBitwiseOperators</a>&lt;<a class="xref" href="Bodu.HourSet.html">HourSet</a>, <a class="xref" href="Bodu.HourSet.html">HourSet</a>, <a class="xref" href="Bodu.HourSet.html">HourSet</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable</a>&lt;<a class="xref" href="Bodu.HourSet.html">HourSet</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable</a>&lt;<a class="xref" href="Bodu.HourSet.html">HourSet</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1">IUtf8SpanParsable</a>&lt;<a class="xref" href="Bodu.HourSet.html">HourSet</a>&gt;</div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable">ISpanFormattable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable">IFormattable</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable">IUtf8SpanFormattable</a></div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</div>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.ienumerable">IEnumerable</a></div>
     </dd>
@@ -375,6 +379,9 @@ written as an inclusive range, so <code>"9-17"</code> selects nine to five. The 
 <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString">ToString()</a> writes the canonical one. <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_">ToString(string?)</a> also writes every hour without
 ranges, or a binary form with one character per hour, and <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Parse_System_String_">Parse(string)</a> and
 <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ParseExact_System_String_System_String_">ParseExact(string, string)</a> read them back.
+<a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_">TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)</a> writes the same text into a span
+of characters, its other overload into a span of UTF-8 bytes, and the span and UTF-8 overloads of <code>Parse</code>,
+<code>TryParse</code>, <code>ParseExact</code> and <code>TryParseExact</code> read it.
 </p>
 <p>
 <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToUInt64">ToUInt64()</a> and <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_FromUInt64_System_UInt64_">FromUInt64(ulong)</a> expose the bits directly: bit <code>n</code> selects hour
@@ -392,7 +399,7 @@ ranges, or a binary form with one character per hour, and <a class="xref" href="
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet__ctor_System_Int32___" data-uid="Bodu.HourSet.#ctor(System.Int32[])">
   HourSet(params int[]?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -442,7 +449,7 @@ ranges, or a binary form with one character per hour, and <a class="xref" href="
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Count" data-uid="Bodu.HourSet.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -483,7 +490,7 @@ ranges, or a binary form with one character per hour, and <a class="xref" href="
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Contains_System_Int32_" data-uid="Bodu.HourSet.Contains(System.Int32)">
   Contains(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -527,7 +534,7 @@ not, including when <code class="paramref">hour</code> is outside 0 to 23.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Equals_Bodu_HourSet_" data-uid="Bodu.HourSet.Equals(Bodu.HourSet)">
   Equals(HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -570,7 +577,7 @@ not, including when <code class="paramref">hour</code> is outside 0 to 23.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Equals_System_Object_" data-uid="Bodu.HourSet.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -613,7 +620,7 @@ not, including when <code class="paramref">hour</code> is outside 0 to 23.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_GetEnumerator" data-uid="Bodu.HourSet.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -650,7 +657,7 @@ not, including when <code class="paramref">hour</code> is outside 0 to 23.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_GetHashCode" data-uid="Bodu.HourSet.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -685,9 +692,116 @@ not, including when <code class="paramref">hour</code> is outside 0 to 23.</p>
   <a id="Bodu_HourSet_Parse_" data-uid="Bodu.HourSet.Parse*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_Parse_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.HourSet.Parse(System.ReadOnlySpan{System.Byte})">
+  Parse(ReadOnlySpan&lt;byte&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts UTF-8 text in one of the forms <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> writes into a
+<a class="xref" href="Bodu.HourSet.html">HourSet</a>, detecting the form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HourSet Parse(ReadOnlySpan&lt;byte&gt; utf8Text)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 text to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>The set the text describes.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_Parse_System_ReadOnlySpan_System_Byte___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The text is decoded and read as <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Parse_System_String_">Parse(string)</a> reads a string.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">utf8Text</code> is not valid UTF-8, or is neither the binary form nor a list of values
+and ranges from 0 to 23.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_Parse_" data-uid="Bodu.HourSet.Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_Parse_System_ReadOnlySpan_System_Char__" data-uid="Bodu.HourSet.Parse(System.ReadOnlySpan{System.Char})">
+  Parse(ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts a span of characters in one of the forms <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> writes into a
+<a class="xref" href="Bodu.HourSet.html">HourSet</a>, detecting the form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HourSet Parse(ReadOnlySpan&lt;char&gt; s)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to convert.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>The set the characters describe.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_Parse_System_ReadOnlySpan_System_Char___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The characters are read as <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Parse_System_String_">Parse(string)</a> reads a string.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">s</code> is neither the binary form nor a list of values and ranges from 0 to 23.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_Parse_" data-uid="Bodu.HourSet.Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Parse_System_String_" data-uid="Bodu.HourSet.Parse(System.String)">
   Parse(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -753,7 +867,7 @@ reads any text as a list.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_ToString" data-uid="Bodu.HourSet.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -791,7 +905,7 @@ of two or more consecutive hours written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_ToString_System_String_" data-uid="Bodu.HourSet.ToString(System.String)">
   ToString(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -843,7 +957,7 @@ of two or more consecutive hours written as an inclusive range.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.HourSet.ToString(System.String,System.IFormatProvider)">
   ToString(string?, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -907,7 +1021,7 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_ToUInt64" data-uid="Bodu.HourSet.ToUInt64">
   ToUInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -939,12 +1053,240 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   </section>
 
 
+  <a id="Bodu_HourSet_TryFormat_" data-uid="Bodu.HourSet.TryFormat*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.HourSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to write the set as UTF-8 text in the specified format into a span of bytes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryFormat(Span&lt;byte&gt; utf8Destination, out int bytesWritten, ReadOnlySpan&lt;char&gt; format = default, IFormatProvider? provider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span to write to.</p>
+</dd>
+    <dt><code>bytesWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the number of bytes written; otherwise 0.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format, or an empty span for the default.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>Ignored; the text does not depend on culture.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the text fits in <code class="paramref">utf8Destination</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and <code class="paramref">utf8Destination</code> is left unchanged.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The text is the one <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> returns for the same format. It is ASCII,
+so each character is one byte.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_TryFormat_" data-uid="Bodu.HourSet.TryFormat*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.HourSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to write the set as text in the specified format into a span of characters.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool TryFormat(Span&lt;char&gt; destination, out int charsWritten, ReadOnlySpan&lt;char&gt; format = default, IFormatProvider? provider = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>destination</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span to write to.</p>
+</dd>
+    <dt><code>charsWritten</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the number of characters written; otherwise 0.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format, or an empty span for the default.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>Ignored; the text does not depend on culture.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the text fits in <code class="paramref">destination</code>; otherwise
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, and <code class="paramref">destination</code> is left unchanged.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The text is the one <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> returns for the same format.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_TryParse_" data-uid="Bodu.HourSet.TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_HourSet__" data-uid="Bodu.HourSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.HourSet@)">
+  TryParse(ReadOnlySpan&lt;byte&gt;, out HourSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to convert UTF-8 text in one of the forms <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> writes into
+an <a class="xref" href="Bodu.HourSet.html">HourSet</a>, detecting the form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(ReadOnlySpan&lt;byte&gt; utf8Text, out HourSet result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The UTF-8 text to convert.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the set the text describes; otherwise <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">utf8Text</code> is valid UTF-8 for the binary form or a list of values
+and ranges from 0 to 23; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_HourSet___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The text is decoded and read as <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Parse_System_String_">Parse(string)</a> reads a string.</p>
+</div>
+
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_TryParse_" data-uid="Bodu.HourSet.TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_HourSet__" data-uid="Bodu.HourSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.HourSet@)">
+  TryParse(ReadOnlySpan&lt;char&gt;, out HourSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to convert a span of characters in one of the forms <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a>
+writes into an <a class="xref" href="Bodu.HourSet.html">HourSet</a>, detecting the form.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParse(ReadOnlySpan&lt;char&gt; s, out HourSet result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to convert.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the set the characters describe; otherwise
+<a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">s</code> is the binary form or a list of values and ranges from 0 to
+23; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_HourSet___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The characters are read as <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Parse_System_String_">Parse(string)</a> reads a string.</p>
+</div>
+
+
+
+  </section>
+
+
   <a id="Bodu_HourSet_TryParse_" data-uid="Bodu.HourSet.TryParse*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_TryParse_System_String_Bodu_HourSet__" data-uid="Bodu.HourSet.TryParse(System.String,Bodu.HourSet@)">
   TryParse(string?, out HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -995,7 +1337,7 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_With_System_Int32_" data-uid="Bodu.HourSet.With(System.Int32)">
   With(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1044,7 +1386,7 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Without_System_Int32_" data-uid="Bodu.HourSet.Without(System.Int32)">
   Without(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1097,7 +1439,7 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_All" data-uid="Bodu.HourSet.All">
   All
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1133,7 +1475,7 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_Empty" data-uid="Bodu.HourSet.Empty">
   Empty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1169,7 +1511,7 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_FromUInt64_System_UInt64_" data-uid="Bodu.HourSet.FromUInt64(System.UInt64)">
   FromUInt64(ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1216,9 +1558,65 @@ Binary, one character per hour from 0 to 23, 0 first, with <code>1</code> for a 
   <a id="Bodu_HourSet_ParseExact_" data-uid="Bodu.HourSet.ParseExact*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__" data-uid="Bodu.HourSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+  ParseExact(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts a span of characters in the specified format into an <a class="xref" href="Bodu.HourSet.html">HourSet</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static HourSet ParseExact(ReadOnlySpan&lt;char&gt; s, ReadOnlySpan&lt;char&gt; format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to convert.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format of <code class="paramref">s</code>, one of those <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_">ToString(string?)</a> writes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>The set the characters describe.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The characters are read as <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ParseExact_System_String_System_String_">ParseExact(string, string)</a> reads a string.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format, or <code class="paramref">s</code> is not text in that
+format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_ParseExact_" data-uid="Bodu.HourSet.ParseExact*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_ParseExact_System_String_System_String_" data-uid="Bodu.HourSet.ParseExact(System.String,System.String)">
   ParseExact(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1279,7 +1677,7 @@ format.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_System_Collections_Generic_IEnumerable_System_Int32__GetEnumerator" data-uid="Bodu.HourSet.System#Collections#Generic#IEnumerable{System#Int32}#GetEnumerator">
   IEnumerable&lt;int&gt;.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1316,7 +1714,7 @@ format.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.HourSet.System#Collections#IEnumerable#GetEnumerator">
   IEnumerable.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1353,7 +1751,7 @@ format.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_System_IParsable_Bodu_HourSet__Parse_System_String_System_IFormatProvider_" data-uid="Bodu.HourSet.System#IParsable{Bodu#HourSet}#Parse(System.String,System.IFormatProvider)">
   IParsable&lt;HourSet&gt;.Parse(string, IFormatProvider)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1411,7 +1809,7 @@ format.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_System_IParsable_Bodu_HourSet__TryParse_System_String_System_IFormatProvider_Bodu_HourSet__" data-uid="Bodu.HourSet.System#IParsable{Bodu#HourSet}#TryParse(System.String,System.IFormatProvider,Bodu.HourSet@)">
   IParsable&lt;HourSet&gt;.TryParse(string, IFormatProvider, out HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1455,12 +1853,274 @@ format.</p>
   </section>
 
 
+  <a id="Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__Parse_" data-uid="Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+  ISpanParsable&lt;HourSet&gt;.Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a span of characters into a value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static HourSet ISpanParsable&lt;HourSet&gt;.Parse(ReadOnlySpan&lt;char&gt; s, IFormatProvider provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span of characters to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>An object that provides culture-specific formatting information about <code class="paramref">s</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>The result of parsing <code class="paramref">s</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">s</code> is not in the correct format.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p><code class="paramref">s</code> is not representable by <a class="xref" href="Bodu.HourSet.html">HourSet</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__TryParse_" data-uid="Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_HourSet__" data-uid="Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.HourSet@)">
+  ISpanParsable&lt;HourSet&gt;.TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider, out HourSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Tries to parse a span of characters into a value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static bool ISpanParsable&lt;HourSet&gt;.TryParse(ReadOnlySpan&lt;char&gt; s, IFormatProvider provider, out HourSet result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The span of characters to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>An object that provides culture-specific formatting information about <code class="paramref">s</code>.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>When this method returns, contains the result of successfully parsing <code class="paramref">s</code>, or an undefined value on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">s</code> was successfully parsed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__Parse_" data-uid="Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#Parse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
+  IUtf8SpanParsable&lt;HourSet&gt;.Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Parses a span of UTF-8 characters into a value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static HourSet IUtf8SpanParsable&lt;HourSet&gt;.Parse(ReadOnlySpan&lt;byte&gt; utf8Text, IFormatProvider provider)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of UTF-8 characters to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>An object that provides culture-specific formatting information about <code class="paramref">utf8Text</code>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>The result of parsing <code class="paramref">utf8Text</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p><code class="paramref">utf8Text</code> is not in the correct format.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.overflowexception">OverflowException</a></dt>
+    <dd><p><code class="paramref">utf8Text</code> is not representable by <a class="xref" href="Bodu.HourSet.html">HourSet</a>.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__TryParse_" data-uid="Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#TryParse*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_HourSet__" data-uid="Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.HourSet@)">
+  IUtf8SpanParsable&lt;HourSet&gt;.TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider, out HourSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Tries to parse a span of UTF-8 characters into a value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static bool IUtf8SpanParsable&lt;HourSet&gt;.TryParse(ReadOnlySpan&lt;byte&gt; utf8Text, IFormatProvider provider, out HourSet result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>utf8Text</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
+    <dd><p>The span of UTF-8 characters to parse.</p>
+</dd>
+    <dt><code>provider</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformatprovider">IFormatProvider</a></dt>
+    <dd><p>An object that provides culture-specific formatting information about <code class="paramref">utf8Text</code>.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>On return, contains the result of successfully parsing <code class="paramref">utf8Text</code> or an undefined value on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> if <code class="paramref">utf8Text</code> was successfully parsed; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_HourSet_TryParseExact_" data-uid="Bodu.HourSet.TryParseExact*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_HourSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_HourSet__" data-uid="Bodu.HourSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.HourSet@)">
+  TryParseExact(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;char&gt;, out HourSet)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to convert a span of characters in the specified format into an <a class="xref" href="Bodu.HourSet.html">HourSet</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">static bool TryParseExact(ReadOnlySpan&lt;char&gt; s, ReadOnlySpan&lt;char&gt; format, out HourSet result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to convert.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format of <code class="paramref">s</code>, one of those <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ToString_System_String_">ToString(string?)</a> writes.</p>
+</dd>
+    <dt><code>result</code> <a class="xref" href="Bodu.HourSet.html">HourSet</a></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the set the characters describe; otherwise
+<a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">format</code> is a supported format and <code class="paramref">s</code> is text
+in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Bodu_HourSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_HourSet___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The characters are read as <a class="xref" href="Bodu.HourSet.html#Bodu_HourSet_ParseExact_System_String_System_String_">ParseExact(string, string)</a> reads a string.</p>
+</div>
+
+
+
+  </section>
+
+
   <a id="Bodu_HourSet_TryParseExact_" data-uid="Bodu.HourSet.TryParseExact*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_TryParseExact_System_String_System_String_Bodu_HourSet__" data-uid="Bodu.HourSet.TryParseExact(System.String,System.String,Bodu.HourSet@)">
   TryParseExact(string?, string?, out HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1513,7 +2173,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_op_BitwiseAnd_Bodu_HourSet_Bodu_HourSet_" data-uid="Bodu.HourSet.op_BitwiseAnd(Bodu.HourSet,Bodu.HourSet)">
   operator &amp;(HourSet, HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1559,7 +2219,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_op_BitwiseOr_Bodu_HourSet_Bodu_HourSet_" data-uid="Bodu.HourSet.op_BitwiseOr(Bodu.HourSet,Bodu.HourSet)">
   operator |(HourSet, HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1605,7 +2265,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_op_Equality_Bodu_HourSet_Bodu_HourSet_" data-uid="Bodu.HourSet.op_Equality(Bodu.HourSet,Bodu.HourSet)">
   operator ==(HourSet, HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1651,7 +2311,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_op_ExclusiveOr_Bodu_HourSet_Bodu_HourSet_" data-uid="Bodu.HourSet.op_ExclusiveOr(Bodu.HourSet,Bodu.HourSet)">
   operator ^(HourSet, HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1697,7 +2357,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_op_Inequality_Bodu_HourSet_Bodu_HourSet_" data-uid="Bodu.HourSet.op_Inequality(Bodu.HourSet,Bodu.HourSet)">
   operator !=(HourSet, HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1743,7 +2403,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_HourSet_op_OnesComplement_Bodu_HourSet_" data-uid="Bodu.HourSet.op_OnesComplement(Bodu.HourSet)">
   operator ~(HourSet)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/HourSet.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1808,7 +2468,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c7b500d · Built: 2026-10-07 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 95690ae · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

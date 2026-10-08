@@ -21875,6 +21875,24 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.GetHashCode
   fullName: Bodu.DayOfMonthSet.GetHashCode
   nameWithType: DayOfMonthSet.GetHashCode
+- uid: Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan{System.Byte})
+  name: Parse(ReadOnlySpan<byte>)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Parse_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan{System.Byte})
+  name.vb: Parse(ReadOnlySpan(Of Byte))
+  fullName: Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan(Of Byte))
+  nameWithType: DayOfMonthSet.Parse(ReadOnlySpan<byte>)
+  nameWithType.vb: DayOfMonthSet.Parse(ReadOnlySpan(Of Byte))
+- uid: Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan{System.Char})
+  name: Parse(ReadOnlySpan<char>)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Parse_System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan{System.Char})
+  name.vb: Parse(ReadOnlySpan(Of Char))
+  fullName: Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.DayOfMonthSet.Parse(System.ReadOnlySpan(Of Char))
+  nameWithType: DayOfMonthSet.Parse(ReadOnlySpan<char>)
+  nameWithType.vb: DayOfMonthSet.Parse(ReadOnlySpan(Of Char))
 - uid: Bodu.DayOfMonthSet.Parse(System.String)
   name: Parse(string)
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_Parse_System_String_
@@ -21890,6 +21908,15 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.Parse
   fullName: Bodu.DayOfMonthSet.Parse
   nameWithType: DayOfMonthSet.Parse
+- uid: Bodu.DayOfMonthSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.DayOfMonthSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.DayOfMonthSet.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.DayOfMonthSet.ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: DayOfMonthSet.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: DayOfMonthSet.ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.DayOfMonthSet.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ParseExact_System_String_System_String_
@@ -21965,6 +21992,66 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.System#IParsable{Bodu#DayOfMonthSet}#TryParse
   fullName: Bodu.DayOfMonthSet.System.IParsable<Bodu.DayOfMonthSet>.TryParse
   nameWithType: DayOfMonthSet.IParsable<DayOfMonthSet>.TryParse
+- uid: Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: ISpanParsable<DayOfMonthSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_ISpanParsable_Bodu_DayOfMonthSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.DayOfMonthSet.System.ISpanParsable<Bodu.DayOfMonthSet>.Parse(System.ReadOnlySpan<char>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: DayOfMonthSet.ISpanParsable<DayOfMonthSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#Parse*
+  name: ISpanParsable<DayOfMonthSet>.Parse
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_ISpanParsable_Bodu_DayOfMonthSet__Parse_
+  commentId: Overload:Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#Parse
+  fullName: Bodu.DayOfMonthSet.System.ISpanParsable<Bodu.DayOfMonthSet>.Parse
+  nameWithType: DayOfMonthSet.ISpanParsable<DayOfMonthSet>.Parse
+- uid: Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.DayOfMonthSet@)
+  name: ISpanParsable<DayOfMonthSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out DayOfMonthSet)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_ISpanParsable_Bodu_DayOfMonthSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_DayOfMonthSet__
+  commentId: M:Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.DayOfMonthSet@)
+  name.vb: ''
+  fullName: Bodu.DayOfMonthSet.System.ISpanParsable<Bodu.DayOfMonthSet>.TryParse(System.ReadOnlySpan<char>, System.IFormatProvider, out Bodu.DayOfMonthSet)
+  fullName.vb: ''
+  nameWithType: DayOfMonthSet.ISpanParsable<DayOfMonthSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out DayOfMonthSet)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#TryParse*
+  name: ISpanParsable<DayOfMonthSet>.TryParse
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_ISpanParsable_Bodu_DayOfMonthSet__TryParse_
+  commentId: Overload:Bodu.DayOfMonthSet.System#ISpanParsable{Bodu#DayOfMonthSet}#TryParse
+  fullName: Bodu.DayOfMonthSet.System.ISpanParsable<Bodu.DayOfMonthSet>.TryParse
+  nameWithType: DayOfMonthSet.ISpanParsable<DayOfMonthSet>.TryParse
+- uid: Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name: IUtf8SpanParsable<DayOfMonthSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_IUtf8SpanParsable_Bodu_DayOfMonthSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_
+  commentId: M:Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.DayOfMonthSet.System.IUtf8SpanParsable<Bodu.DayOfMonthSet>.Parse(System.ReadOnlySpan<byte>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: DayOfMonthSet.IUtf8SpanParsable<DayOfMonthSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#Parse*
+  name: IUtf8SpanParsable<DayOfMonthSet>.Parse
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_IUtf8SpanParsable_Bodu_DayOfMonthSet__Parse_
+  commentId: Overload:Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#Parse
+  fullName: Bodu.DayOfMonthSet.System.IUtf8SpanParsable<Bodu.DayOfMonthSet>.Parse
+  nameWithType: DayOfMonthSet.IUtf8SpanParsable<DayOfMonthSet>.Parse
+- uid: Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.DayOfMonthSet@)
+  name: IUtf8SpanParsable<DayOfMonthSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out DayOfMonthSet)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_IUtf8SpanParsable_Bodu_DayOfMonthSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_DayOfMonthSet__
+  commentId: M:Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.DayOfMonthSet@)
+  name.vb: ''
+  fullName: Bodu.DayOfMonthSet.System.IUtf8SpanParsable<Bodu.DayOfMonthSet>.TryParse(System.ReadOnlySpan<byte>, System.IFormatProvider, out Bodu.DayOfMonthSet)
+  fullName.vb: ''
+  nameWithType: DayOfMonthSet.IUtf8SpanParsable<DayOfMonthSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out DayOfMonthSet)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#TryParse*
+  name: IUtf8SpanParsable<DayOfMonthSet>.TryParse
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_System_IUtf8SpanParsable_Bodu_DayOfMonthSet__TryParse_
+  commentId: Overload:Bodu.DayOfMonthSet.System#IUtf8SpanParsable{Bodu#DayOfMonthSet}#TryParse
+  fullName: Bodu.DayOfMonthSet.System.IUtf8SpanParsable<Bodu.DayOfMonthSet>.TryParse
+  nameWithType: DayOfMonthSet.IUtf8SpanParsable<DayOfMonthSet>.TryParse
 - uid: Bodu.DayOfMonthSet.ToString
   name: ToString()
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_ToString
@@ -22007,6 +22094,48 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.ToUInt64
   fullName: Bodu.DayOfMonthSet.ToUInt64
   nameWithType: DayOfMonthSet.ToUInt64
+- uid: Bodu.DayOfMonthSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.DayOfMonthSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.DayOfMonthSet.TryFormat(System.Span<byte>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.DayOfMonthSet.TryFormat(System.Span(Of Byte), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: DayOfMonthSet.TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: DayOfMonthSet.TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.DayOfMonthSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.DayOfMonthSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.DayOfMonthSet.TryFormat(System.Span<char>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.DayOfMonthSet.TryFormat(System.Span(Of Char), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: DayOfMonthSet.TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: DayOfMonthSet.TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.DayOfMonthSet.TryFormat*
+  name: TryFormat
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryFormat_
+  commentId: Overload:Bodu.DayOfMonthSet.TryFormat
+  fullName: Bodu.DayOfMonthSet.TryFormat
+  nameWithType: DayOfMonthSet.TryFormat
+- uid: Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.DayOfMonthSet@)
+  name: TryParse(ReadOnlySpan<byte>, out DayOfMonthSet)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_DayOfMonthSet__
+  commentId: M:Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.DayOfMonthSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Byte), DayOfMonthSet)
+  fullName: Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan<byte>, out Bodu.DayOfMonthSet)
+  fullName.vb: Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan(Of Byte), Bodu.DayOfMonthSet)
+  nameWithType: DayOfMonthSet.TryParse(ReadOnlySpan<byte>, out DayOfMonthSet)
+  nameWithType.vb: DayOfMonthSet.TryParse(ReadOnlySpan(Of Byte), DayOfMonthSet)
+- uid: Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.DayOfMonthSet@)
+  name: TryParse(ReadOnlySpan<char>, out DayOfMonthSet)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_DayOfMonthSet__
+  commentId: M:Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.DayOfMonthSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Char), DayOfMonthSet)
+  fullName: Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan<char>, out Bodu.DayOfMonthSet)
+  fullName.vb: Bodu.DayOfMonthSet.TryParse(System.ReadOnlySpan(Of Char), Bodu.DayOfMonthSet)
+  nameWithType: DayOfMonthSet.TryParse(ReadOnlySpan<char>, out DayOfMonthSet)
+  nameWithType.vb: DayOfMonthSet.TryParse(ReadOnlySpan(Of Char), DayOfMonthSet)
 - uid: Bodu.DayOfMonthSet.TryParse(System.String,Bodu.DayOfMonthSet@)
   name: TryParse(string?, out DayOfMonthSet)
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParse_System_String_Bodu_DayOfMonthSet__
@@ -22022,6 +22151,15 @@ references:
   commentId: Overload:Bodu.DayOfMonthSet.TryParse
   fullName: Bodu.DayOfMonthSet.TryParse
   nameWithType: DayOfMonthSet.TryParse
+- uid: Bodu.DayOfMonthSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.DayOfMonthSet@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out DayOfMonthSet)
+  href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_DayOfMonthSet__
+  commentId: M:Bodu.DayOfMonthSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.DayOfMonthSet@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), DayOfMonthSet)
+  fullName: Bodu.DayOfMonthSet.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out Bodu.DayOfMonthSet)
+  fullName.vb: Bodu.DayOfMonthSet.TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), Bodu.DayOfMonthSet)
+  nameWithType: DayOfMonthSet.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out DayOfMonthSet)
+  nameWithType.vb: DayOfMonthSet.TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), DayOfMonthSet)
 - uid: Bodu.DayOfMonthSet.TryParseExact(System.String,System.String,Bodu.DayOfMonthSet@)
   name: TryParseExact(string?, string?, out DayOfMonthSet)
   href: api/Bodu.DayOfMonthSet.html#Bodu_DayOfMonthSet_TryParseExact_System_String_System_String_Bodu_DayOfMonthSet__
@@ -22413,6 +22551,24 @@ references:
   commentId: Overload:Bodu.DayOfWeekSet.MondayToThursdayAndSaturday
   fullName: Bodu.DayOfWeekSet.MondayToThursdayAndSaturday
   nameWithType: DayOfWeekSet.MondayToThursdayAndSaturday
+- uid: Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan{System.Byte})
+  name: Parse(ReadOnlySpan<byte>)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_Parse_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan{System.Byte})
+  name.vb: Parse(ReadOnlySpan(Of Byte))
+  fullName: Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan(Of Byte))
+  nameWithType: DayOfWeekSet.Parse(ReadOnlySpan<byte>)
+  nameWithType.vb: DayOfWeekSet.Parse(ReadOnlySpan(Of Byte))
+- uid: Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan{System.Char})
+  name: Parse(ReadOnlySpan<char>)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_Parse_System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan{System.Char})
+  name.vb: Parse(ReadOnlySpan(Of Char))
+  fullName: Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.DayOfWeekSet.Parse(System.ReadOnlySpan(Of Char))
+  nameWithType: DayOfWeekSet.Parse(ReadOnlySpan<char>)
+  nameWithType.vb: DayOfWeekSet.Parse(ReadOnlySpan(Of Char))
 - uid: Bodu.DayOfWeekSet.Parse(System.String)
   name: Parse(string)
   href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_Parse_System_String_
@@ -22428,6 +22584,15 @@ references:
   commentId: Overload:Bodu.DayOfWeekSet.Parse
   fullName: Bodu.DayOfWeekSet.Parse
   nameWithType: DayOfWeekSet.Parse
+- uid: Bodu.DayOfWeekSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.DayOfWeekSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.DayOfWeekSet.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.DayOfWeekSet.ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: DayOfWeekSet.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: DayOfWeekSet.ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.DayOfWeekSet.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_ParseExact_System_String_System_String_
@@ -22551,6 +22716,66 @@ references:
   commentId: Overload:Bodu.DayOfWeekSet.System#IParsable{Bodu#DayOfWeekSet}#TryParse
   fullName: Bodu.DayOfWeekSet.System.IParsable<Bodu.DayOfWeekSet>.TryParse
   nameWithType: DayOfWeekSet.IParsable<DayOfWeekSet>.TryParse
+- uid: Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: ISpanParsable<DayOfWeekSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_ISpanParsable_Bodu_DayOfWeekSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.DayOfWeekSet.System.ISpanParsable<Bodu.DayOfWeekSet>.Parse(System.ReadOnlySpan<char>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: DayOfWeekSet.ISpanParsable<DayOfWeekSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#Parse*
+  name: ISpanParsable<DayOfWeekSet>.Parse
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_ISpanParsable_Bodu_DayOfWeekSet__Parse_
+  commentId: Overload:Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#Parse
+  fullName: Bodu.DayOfWeekSet.System.ISpanParsable<Bodu.DayOfWeekSet>.Parse
+  nameWithType: DayOfWeekSet.ISpanParsable<DayOfWeekSet>.Parse
+- uid: Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.DayOfWeekSet@)
+  name: ISpanParsable<DayOfWeekSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out DayOfWeekSet)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_ISpanParsable_Bodu_DayOfWeekSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_DayOfWeekSet__
+  commentId: M:Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.DayOfWeekSet@)
+  name.vb: ''
+  fullName: Bodu.DayOfWeekSet.System.ISpanParsable<Bodu.DayOfWeekSet>.TryParse(System.ReadOnlySpan<char>, System.IFormatProvider, out Bodu.DayOfWeekSet)
+  fullName.vb: ''
+  nameWithType: DayOfWeekSet.ISpanParsable<DayOfWeekSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out DayOfWeekSet)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#TryParse*
+  name: ISpanParsable<DayOfWeekSet>.TryParse
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_ISpanParsable_Bodu_DayOfWeekSet__TryParse_
+  commentId: Overload:Bodu.DayOfWeekSet.System#ISpanParsable{Bodu#DayOfWeekSet}#TryParse
+  fullName: Bodu.DayOfWeekSet.System.ISpanParsable<Bodu.DayOfWeekSet>.TryParse
+  nameWithType: DayOfWeekSet.ISpanParsable<DayOfWeekSet>.TryParse
+- uid: Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name: IUtf8SpanParsable<DayOfWeekSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_IUtf8SpanParsable_Bodu_DayOfWeekSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_
+  commentId: M:Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.DayOfWeekSet.System.IUtf8SpanParsable<Bodu.DayOfWeekSet>.Parse(System.ReadOnlySpan<byte>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: DayOfWeekSet.IUtf8SpanParsable<DayOfWeekSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#Parse*
+  name: IUtf8SpanParsable<DayOfWeekSet>.Parse
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_IUtf8SpanParsable_Bodu_DayOfWeekSet__Parse_
+  commentId: Overload:Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#Parse
+  fullName: Bodu.DayOfWeekSet.System.IUtf8SpanParsable<Bodu.DayOfWeekSet>.Parse
+  nameWithType: DayOfWeekSet.IUtf8SpanParsable<DayOfWeekSet>.Parse
+- uid: Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.DayOfWeekSet@)
+  name: IUtf8SpanParsable<DayOfWeekSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out DayOfWeekSet)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_IUtf8SpanParsable_Bodu_DayOfWeekSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_DayOfWeekSet__
+  commentId: M:Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.DayOfWeekSet@)
+  name.vb: ''
+  fullName: Bodu.DayOfWeekSet.System.IUtf8SpanParsable<Bodu.DayOfWeekSet>.TryParse(System.ReadOnlySpan<byte>, System.IFormatProvider, out Bodu.DayOfWeekSet)
+  fullName.vb: ''
+  nameWithType: DayOfWeekSet.IUtf8SpanParsable<DayOfWeekSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out DayOfWeekSet)
+  nameWithType.vb: ''
+- uid: Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#TryParse*
+  name: IUtf8SpanParsable<DayOfWeekSet>.TryParse
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_System_IUtf8SpanParsable_Bodu_DayOfWeekSet__TryParse_
+  commentId: Overload:Bodu.DayOfWeekSet.System#IUtf8SpanParsable{Bodu#DayOfWeekSet}#TryParse
+  fullName: Bodu.DayOfWeekSet.System.IUtf8SpanParsable<Bodu.DayOfWeekSet>.TryParse
+  nameWithType: DayOfWeekSet.IUtf8SpanParsable<DayOfWeekSet>.TryParse
 - uid: Bodu.DayOfWeekSet.ToString
   name: ToString()
   href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_ToString
@@ -22593,6 +22818,48 @@ references:
   commentId: Overload:Bodu.DayOfWeekSet.ToUInt64
   fullName: Bodu.DayOfWeekSet.ToUInt64
   nameWithType: DayOfWeekSet.ToUInt64
+- uid: Bodu.DayOfWeekSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.DayOfWeekSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.DayOfWeekSet.TryFormat(System.Span<byte>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.DayOfWeekSet.TryFormat(System.Span(Of Byte), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: DayOfWeekSet.TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: DayOfWeekSet.TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.DayOfWeekSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.DayOfWeekSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.DayOfWeekSet.TryFormat(System.Span<char>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.DayOfWeekSet.TryFormat(System.Span(Of Char), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: DayOfWeekSet.TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: DayOfWeekSet.TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.DayOfWeekSet.TryFormat*
+  name: TryFormat
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryFormat_
+  commentId: Overload:Bodu.DayOfWeekSet.TryFormat
+  fullName: Bodu.DayOfWeekSet.TryFormat
+  nameWithType: DayOfWeekSet.TryFormat
+- uid: Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.DayOfWeekSet@)
+  name: TryParse(ReadOnlySpan<byte>, out DayOfWeekSet)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_DayOfWeekSet__
+  commentId: M:Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.DayOfWeekSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Byte), DayOfWeekSet)
+  fullName: Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan<byte>, out Bodu.DayOfWeekSet)
+  fullName.vb: Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan(Of Byte), Bodu.DayOfWeekSet)
+  nameWithType: DayOfWeekSet.TryParse(ReadOnlySpan<byte>, out DayOfWeekSet)
+  nameWithType.vb: DayOfWeekSet.TryParse(ReadOnlySpan(Of Byte), DayOfWeekSet)
+- uid: Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.DayOfWeekSet@)
+  name: TryParse(ReadOnlySpan<char>, out DayOfWeekSet)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_DayOfWeekSet__
+  commentId: M:Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.DayOfWeekSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Char), DayOfWeekSet)
+  fullName: Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan<char>, out Bodu.DayOfWeekSet)
+  fullName.vb: Bodu.DayOfWeekSet.TryParse(System.ReadOnlySpan(Of Char), Bodu.DayOfWeekSet)
+  nameWithType: DayOfWeekSet.TryParse(ReadOnlySpan<char>, out DayOfWeekSet)
+  nameWithType.vb: DayOfWeekSet.TryParse(ReadOnlySpan(Of Char), DayOfWeekSet)
 - uid: Bodu.DayOfWeekSet.TryParse(System.String,Bodu.DayOfWeekSet@)
   name: TryParse(string?, out DayOfWeekSet)
   href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryParse_System_String_Bodu_DayOfWeekSet__
@@ -22608,6 +22875,15 @@ references:
   commentId: Overload:Bodu.DayOfWeekSet.TryParse
   fullName: Bodu.DayOfWeekSet.TryParse
   nameWithType: DayOfWeekSet.TryParse
+- uid: Bodu.DayOfWeekSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.DayOfWeekSet@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out DayOfWeekSet)
+  href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_DayOfWeekSet__
+  commentId: M:Bodu.DayOfWeekSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.DayOfWeekSet@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), DayOfWeekSet)
+  fullName: Bodu.DayOfWeekSet.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out Bodu.DayOfWeekSet)
+  fullName.vb: Bodu.DayOfWeekSet.TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), Bodu.DayOfWeekSet)
+  nameWithType: DayOfWeekSet.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out DayOfWeekSet)
+  nameWithType.vb: DayOfWeekSet.TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), DayOfWeekSet)
 - uid: Bodu.DayOfWeekSet.TryParseExact(System.String,System.String,Bodu.DayOfWeekSet@)
   name: TryParseExact(string?, string?, out DayOfWeekSet)
   href: api/Bodu.DayOfWeekSet.html#Bodu_DayOfWeekSet_TryParseExact_System_String_System_String_Bodu_DayOfWeekSet__
@@ -27957,18 +28233,18 @@ references:
   commentId: T:Bodu.Extensions.IWeekendDefinitionProviderExtensions
   fullName: Bodu.Extensions.IWeekendDefinitionProviderExtensions
   nameWithType: IWeekendDefinitionProviderExtensions
-- uid: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet(Bodu.Extensions.IWeekendDefinitionProvider)
-  name: ToDayOfWeekSet(IWeekendDefinitionProvider)
-  href: api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.html#Bodu_Extensions_IWeekendDefinitionProviderExtensions_ToDayOfWeekSet_Bodu_Extensions_IWeekendDefinitionProvider_
-  commentId: M:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet(Bodu.Extensions.IWeekendDefinitionProvider)
-  fullName: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet(Bodu.Extensions.IWeekendDefinitionProvider)
-  nameWithType: IWeekendDefinitionProviderExtensions.ToDayOfWeekSet(IWeekendDefinitionProvider)
-- uid: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet*
-  name: ToDayOfWeekSet
-  href: api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.html#Bodu_Extensions_IWeekendDefinitionProviderExtensions_ToDayOfWeekSet_
-  commentId: Overload:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet
-  fullName: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToDayOfWeekSet
-  nameWithType: IWeekendDefinitionProviderExtensions.ToDayOfWeekSet
+- uid: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek(Bodu.Extensions.IWeekendDefinitionProvider)
+  name: ToWorkingWeek(IWeekendDefinitionProvider)
+  href: api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.html#Bodu_Extensions_IWeekendDefinitionProviderExtensions_ToWorkingWeek_Bodu_Extensions_IWeekendDefinitionProvider_
+  commentId: M:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek(Bodu.Extensions.IWeekendDefinitionProvider)
+  fullName: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek(Bodu.Extensions.IWeekendDefinitionProvider)
+  nameWithType: IWeekendDefinitionProviderExtensions.ToWorkingWeek(IWeekendDefinitionProvider)
+- uid: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek*
+  name: ToWorkingWeek
+  href: api/Bodu.Extensions.IWeekendDefinitionProviderExtensions.html#Bodu_Extensions_IWeekendDefinitionProviderExtensions_ToWorkingWeek_
+  commentId: Overload:Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek
+  fullName: Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWorkingWeek
+  nameWithType: IWeekendDefinitionProviderExtensions.ToWorkingWeek
 - uid: Bodu.Extensions.IdentifierCase
   name: IdentifierCase
   href: api/Bodu.Extensions.IdentifierCase.html
@@ -82599,6 +82875,24 @@ references:
   commentId: Overload:Bodu.HourSet.GetHashCode
   fullName: Bodu.HourSet.GetHashCode
   nameWithType: HourSet.GetHashCode
+- uid: Bodu.HourSet.Parse(System.ReadOnlySpan{System.Byte})
+  name: Parse(ReadOnlySpan<byte>)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_Parse_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.HourSet.Parse(System.ReadOnlySpan{System.Byte})
+  name.vb: Parse(ReadOnlySpan(Of Byte))
+  fullName: Bodu.HourSet.Parse(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.HourSet.Parse(System.ReadOnlySpan(Of Byte))
+  nameWithType: HourSet.Parse(ReadOnlySpan<byte>)
+  nameWithType.vb: HourSet.Parse(ReadOnlySpan(Of Byte))
+- uid: Bodu.HourSet.Parse(System.ReadOnlySpan{System.Char})
+  name: Parse(ReadOnlySpan<char>)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_Parse_System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.HourSet.Parse(System.ReadOnlySpan{System.Char})
+  name.vb: Parse(ReadOnlySpan(Of Char))
+  fullName: Bodu.HourSet.Parse(System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.HourSet.Parse(System.ReadOnlySpan(Of Char))
+  nameWithType: HourSet.Parse(ReadOnlySpan<char>)
+  nameWithType.vb: HourSet.Parse(ReadOnlySpan(Of Char))
 - uid: Bodu.HourSet.Parse(System.String)
   name: Parse(string)
   href: api/Bodu.HourSet.html#Bodu_HourSet_Parse_System_String_
@@ -82614,6 +82908,15 @@ references:
   commentId: Overload:Bodu.HourSet.Parse
   fullName: Bodu.HourSet.Parse
   nameWithType: HourSet.Parse
+- uid: Bodu.HourSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.HourSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.HourSet.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.HourSet.ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: HourSet.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: HourSet.ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.HourSet.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.HourSet.html#Bodu_HourSet_ParseExact_System_String_System_String_
@@ -82689,6 +82992,66 @@ references:
   commentId: Overload:Bodu.HourSet.System#IParsable{Bodu#HourSet}#TryParse
   fullName: Bodu.HourSet.System.IParsable<Bodu.HourSet>.TryParse
   nameWithType: HourSet.IParsable<HourSet>.TryParse
+- uid: Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: ISpanParsable<HourSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.HourSet.System.ISpanParsable<Bodu.HourSet>.Parse(System.ReadOnlySpan<char>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: HourSet.ISpanParsable<HourSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#Parse*
+  name: ISpanParsable<HourSet>.Parse
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__Parse_
+  commentId: Overload:Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#Parse
+  fullName: Bodu.HourSet.System.ISpanParsable<Bodu.HourSet>.Parse
+  nameWithType: HourSet.ISpanParsable<HourSet>.Parse
+- uid: Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.HourSet@)
+  name: ISpanParsable<HourSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out HourSet)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_HourSet__
+  commentId: M:Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.HourSet@)
+  name.vb: ''
+  fullName: Bodu.HourSet.System.ISpanParsable<Bodu.HourSet>.TryParse(System.ReadOnlySpan<char>, System.IFormatProvider, out Bodu.HourSet)
+  fullName.vb: ''
+  nameWithType: HourSet.ISpanParsable<HourSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out HourSet)
+  nameWithType.vb: ''
+- uid: Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#TryParse*
+  name: ISpanParsable<HourSet>.TryParse
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_ISpanParsable_Bodu_HourSet__TryParse_
+  commentId: Overload:Bodu.HourSet.System#ISpanParsable{Bodu#HourSet}#TryParse
+  fullName: Bodu.HourSet.System.ISpanParsable<Bodu.HourSet>.TryParse
+  nameWithType: HourSet.ISpanParsable<HourSet>.TryParse
+- uid: Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name: IUtf8SpanParsable<HourSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_
+  commentId: M:Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.HourSet.System.IUtf8SpanParsable<Bodu.HourSet>.Parse(System.ReadOnlySpan<byte>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: HourSet.IUtf8SpanParsable<HourSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#Parse*
+  name: IUtf8SpanParsable<HourSet>.Parse
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__Parse_
+  commentId: Overload:Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#Parse
+  fullName: Bodu.HourSet.System.IUtf8SpanParsable<Bodu.HourSet>.Parse
+  nameWithType: HourSet.IUtf8SpanParsable<HourSet>.Parse
+- uid: Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.HourSet@)
+  name: IUtf8SpanParsable<HourSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out HourSet)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_HourSet__
+  commentId: M:Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.HourSet@)
+  name.vb: ''
+  fullName: Bodu.HourSet.System.IUtf8SpanParsable<Bodu.HourSet>.TryParse(System.ReadOnlySpan<byte>, System.IFormatProvider, out Bodu.HourSet)
+  fullName.vb: ''
+  nameWithType: HourSet.IUtf8SpanParsable<HourSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out HourSet)
+  nameWithType.vb: ''
+- uid: Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#TryParse*
+  name: IUtf8SpanParsable<HourSet>.TryParse
+  href: api/Bodu.HourSet.html#Bodu_HourSet_System_IUtf8SpanParsable_Bodu_HourSet__TryParse_
+  commentId: Overload:Bodu.HourSet.System#IUtf8SpanParsable{Bodu#HourSet}#TryParse
+  fullName: Bodu.HourSet.System.IUtf8SpanParsable<Bodu.HourSet>.TryParse
+  nameWithType: HourSet.IUtf8SpanParsable<HourSet>.TryParse
 - uid: Bodu.HourSet.ToString
   name: ToString()
   href: api/Bodu.HourSet.html#Bodu_HourSet_ToString
@@ -82731,6 +83094,48 @@ references:
   commentId: Overload:Bodu.HourSet.ToUInt64
   fullName: Bodu.HourSet.ToUInt64
   nameWithType: HourSet.ToUInt64
+- uid: Bodu.HourSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.HourSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.HourSet.TryFormat(System.Span<byte>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.HourSet.TryFormat(System.Span(Of Byte), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: HourSet.TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: HourSet.TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.HourSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.HourSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.HourSet.TryFormat(System.Span<char>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.HourSet.TryFormat(System.Span(Of Char), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: HourSet.TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: HourSet.TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.HourSet.TryFormat*
+  name: TryFormat
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryFormat_
+  commentId: Overload:Bodu.HourSet.TryFormat
+  fullName: Bodu.HourSet.TryFormat
+  nameWithType: HourSet.TryFormat
+- uid: Bodu.HourSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.HourSet@)
+  name: TryParse(ReadOnlySpan<byte>, out HourSet)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_HourSet__
+  commentId: M:Bodu.HourSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.HourSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Byte), HourSet)
+  fullName: Bodu.HourSet.TryParse(System.ReadOnlySpan<byte>, out Bodu.HourSet)
+  fullName.vb: Bodu.HourSet.TryParse(System.ReadOnlySpan(Of Byte), Bodu.HourSet)
+  nameWithType: HourSet.TryParse(ReadOnlySpan<byte>, out HourSet)
+  nameWithType.vb: HourSet.TryParse(ReadOnlySpan(Of Byte), HourSet)
+- uid: Bodu.HourSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.HourSet@)
+  name: TryParse(ReadOnlySpan<char>, out HourSet)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_HourSet__
+  commentId: M:Bodu.HourSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.HourSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Char), HourSet)
+  fullName: Bodu.HourSet.TryParse(System.ReadOnlySpan<char>, out Bodu.HourSet)
+  fullName.vb: Bodu.HourSet.TryParse(System.ReadOnlySpan(Of Char), Bodu.HourSet)
+  nameWithType: HourSet.TryParse(ReadOnlySpan<char>, out HourSet)
+  nameWithType.vb: HourSet.TryParse(ReadOnlySpan(Of Char), HourSet)
 - uid: Bodu.HourSet.TryParse(System.String,Bodu.HourSet@)
   name: TryParse(string?, out HourSet)
   href: api/Bodu.HourSet.html#Bodu_HourSet_TryParse_System_String_Bodu_HourSet__
@@ -82746,6 +83151,15 @@ references:
   commentId: Overload:Bodu.HourSet.TryParse
   fullName: Bodu.HourSet.TryParse
   nameWithType: HourSet.TryParse
+- uid: Bodu.HourSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.HourSet@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out HourSet)
+  href: api/Bodu.HourSet.html#Bodu_HourSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_HourSet__
+  commentId: M:Bodu.HourSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.HourSet@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), HourSet)
+  fullName: Bodu.HourSet.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out Bodu.HourSet)
+  fullName.vb: Bodu.HourSet.TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), Bodu.HourSet)
+  nameWithType: HourSet.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out HourSet)
+  nameWithType.vb: HourSet.TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), HourSet)
 - uid: Bodu.HourSet.TryParseExact(System.String,System.String,Bodu.HourSet@)
   name: TryParseExact(string?, string?, out HourSet)
   href: api/Bodu.HourSet.html#Bodu_HourSet_TryParseExact_System_String_System_String_Bodu_HourSet__
@@ -82989,6 +83403,15 @@ references:
   fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).FromUInt64
   nameWithType: ICalendarValueSet<TSelf, TValue>.FromUInt64
   nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).FromUInt64
+- uid: Bodu.ICalendarValueSet`2.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.ICalendarValueSet`2.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: ICalendarValueSet<TSelf, TValue>.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.ICalendarValueSet`2.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ParseExact_System_String_System_String_
@@ -83039,6 +83462,15 @@ references:
   fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).ToUInt64
   nameWithType: ICalendarValueSet<TSelf, TValue>.ToUInt64
   nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).ToUInt64
+- uid: Bodu.ICalendarValueSet`2.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},`0@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out TSelf)
+  href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char___0__
+  commentId: M:Bodu.ICalendarValueSet`2.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},`0@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), TSelf)
+  fullName: Bodu.ICalendarValueSet<TSelf, TValue>.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out TSelf)
+  fullName.vb: Bodu.ICalendarValueSet(Of TSelf, TValue).TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), TSelf)
+  nameWithType: ICalendarValueSet<TSelf, TValue>.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out TSelf)
+  nameWithType.vb: ICalendarValueSet(Of TSelf, TValue).TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), TSelf)
 - uid: Bodu.ICalendarValueSet`2.TryParseExact(System.String,System.String,`0@)
   name: TryParseExact(string?, string?, out TSelf)
   href: api/Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_TryParseExact_System_String_System_String__0__
@@ -102257,6 +102689,24 @@ references:
   commentId: Overload:Bodu.MinuteSet.GetHashCode
   fullName: Bodu.MinuteSet.GetHashCode
   nameWithType: MinuteSet.GetHashCode
+- uid: Bodu.MinuteSet.Parse(System.ReadOnlySpan{System.Byte})
+  name: Parse(ReadOnlySpan<byte>)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_Parse_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.MinuteSet.Parse(System.ReadOnlySpan{System.Byte})
+  name.vb: Parse(ReadOnlySpan(Of Byte))
+  fullName: Bodu.MinuteSet.Parse(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.MinuteSet.Parse(System.ReadOnlySpan(Of Byte))
+  nameWithType: MinuteSet.Parse(ReadOnlySpan<byte>)
+  nameWithType.vb: MinuteSet.Parse(ReadOnlySpan(Of Byte))
+- uid: Bodu.MinuteSet.Parse(System.ReadOnlySpan{System.Char})
+  name: Parse(ReadOnlySpan<char>)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_Parse_System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.MinuteSet.Parse(System.ReadOnlySpan{System.Char})
+  name.vb: Parse(ReadOnlySpan(Of Char))
+  fullName: Bodu.MinuteSet.Parse(System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.MinuteSet.Parse(System.ReadOnlySpan(Of Char))
+  nameWithType: MinuteSet.Parse(ReadOnlySpan<char>)
+  nameWithType.vb: MinuteSet.Parse(ReadOnlySpan(Of Char))
 - uid: Bodu.MinuteSet.Parse(System.String)
   name: Parse(string)
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_Parse_System_String_
@@ -102272,6 +102722,15 @@ references:
   commentId: Overload:Bodu.MinuteSet.Parse
   fullName: Bodu.MinuteSet.Parse
   nameWithType: MinuteSet.Parse
+- uid: Bodu.MinuteSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.MinuteSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.MinuteSet.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.MinuteSet.ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: MinuteSet.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: MinuteSet.ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.MinuteSet.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ParseExact_System_String_System_String_
@@ -102347,6 +102806,66 @@ references:
   commentId: Overload:Bodu.MinuteSet.System#IParsable{Bodu#MinuteSet}#TryParse
   fullName: Bodu.MinuteSet.System.IParsable<Bodu.MinuteSet>.TryParse
   nameWithType: MinuteSet.IParsable<MinuteSet>.TryParse
+- uid: Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: ISpanParsable<MinuteSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_ISpanParsable_Bodu_MinuteSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.MinuteSet.System.ISpanParsable<Bodu.MinuteSet>.Parse(System.ReadOnlySpan<char>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: MinuteSet.ISpanParsable<MinuteSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#Parse*
+  name: ISpanParsable<MinuteSet>.Parse
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_ISpanParsable_Bodu_MinuteSet__Parse_
+  commentId: Overload:Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#Parse
+  fullName: Bodu.MinuteSet.System.ISpanParsable<Bodu.MinuteSet>.Parse
+  nameWithType: MinuteSet.ISpanParsable<MinuteSet>.Parse
+- uid: Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.MinuteSet@)
+  name: ISpanParsable<MinuteSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out MinuteSet)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_ISpanParsable_Bodu_MinuteSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_MinuteSet__
+  commentId: M:Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.MinuteSet@)
+  name.vb: ''
+  fullName: Bodu.MinuteSet.System.ISpanParsable<Bodu.MinuteSet>.TryParse(System.ReadOnlySpan<char>, System.IFormatProvider, out Bodu.MinuteSet)
+  fullName.vb: ''
+  nameWithType: MinuteSet.ISpanParsable<MinuteSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out MinuteSet)
+  nameWithType.vb: ''
+- uid: Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#TryParse*
+  name: ISpanParsable<MinuteSet>.TryParse
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_ISpanParsable_Bodu_MinuteSet__TryParse_
+  commentId: Overload:Bodu.MinuteSet.System#ISpanParsable{Bodu#MinuteSet}#TryParse
+  fullName: Bodu.MinuteSet.System.ISpanParsable<Bodu.MinuteSet>.TryParse
+  nameWithType: MinuteSet.ISpanParsable<MinuteSet>.TryParse
+- uid: Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name: IUtf8SpanParsable<MinuteSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_IUtf8SpanParsable_Bodu_MinuteSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_
+  commentId: M:Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.MinuteSet.System.IUtf8SpanParsable<Bodu.MinuteSet>.Parse(System.ReadOnlySpan<byte>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: MinuteSet.IUtf8SpanParsable<MinuteSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#Parse*
+  name: IUtf8SpanParsable<MinuteSet>.Parse
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_IUtf8SpanParsable_Bodu_MinuteSet__Parse_
+  commentId: Overload:Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#Parse
+  fullName: Bodu.MinuteSet.System.IUtf8SpanParsable<Bodu.MinuteSet>.Parse
+  nameWithType: MinuteSet.IUtf8SpanParsable<MinuteSet>.Parse
+- uid: Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.MinuteSet@)
+  name: IUtf8SpanParsable<MinuteSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out MinuteSet)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_IUtf8SpanParsable_Bodu_MinuteSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_MinuteSet__
+  commentId: M:Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.MinuteSet@)
+  name.vb: ''
+  fullName: Bodu.MinuteSet.System.IUtf8SpanParsable<Bodu.MinuteSet>.TryParse(System.ReadOnlySpan<byte>, System.IFormatProvider, out Bodu.MinuteSet)
+  fullName.vb: ''
+  nameWithType: MinuteSet.IUtf8SpanParsable<MinuteSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out MinuteSet)
+  nameWithType.vb: ''
+- uid: Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#TryParse*
+  name: IUtf8SpanParsable<MinuteSet>.TryParse
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_System_IUtf8SpanParsable_Bodu_MinuteSet__TryParse_
+  commentId: Overload:Bodu.MinuteSet.System#IUtf8SpanParsable{Bodu#MinuteSet}#TryParse
+  fullName: Bodu.MinuteSet.System.IUtf8SpanParsable<Bodu.MinuteSet>.TryParse
+  nameWithType: MinuteSet.IUtf8SpanParsable<MinuteSet>.TryParse
 - uid: Bodu.MinuteSet.ToString
   name: ToString()
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_ToString
@@ -102389,6 +102908,48 @@ references:
   commentId: Overload:Bodu.MinuteSet.ToUInt64
   fullName: Bodu.MinuteSet.ToUInt64
   nameWithType: MinuteSet.ToUInt64
+- uid: Bodu.MinuteSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.MinuteSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.MinuteSet.TryFormat(System.Span<byte>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.MinuteSet.TryFormat(System.Span(Of Byte), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: MinuteSet.TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: MinuteSet.TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.MinuteSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.MinuteSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.MinuteSet.TryFormat(System.Span<char>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.MinuteSet.TryFormat(System.Span(Of Char), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: MinuteSet.TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: MinuteSet.TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.MinuteSet.TryFormat*
+  name: TryFormat
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryFormat_
+  commentId: Overload:Bodu.MinuteSet.TryFormat
+  fullName: Bodu.MinuteSet.TryFormat
+  nameWithType: MinuteSet.TryFormat
+- uid: Bodu.MinuteSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.MinuteSet@)
+  name: TryParse(ReadOnlySpan<byte>, out MinuteSet)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_MinuteSet__
+  commentId: M:Bodu.MinuteSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.MinuteSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Byte), MinuteSet)
+  fullName: Bodu.MinuteSet.TryParse(System.ReadOnlySpan<byte>, out Bodu.MinuteSet)
+  fullName.vb: Bodu.MinuteSet.TryParse(System.ReadOnlySpan(Of Byte), Bodu.MinuteSet)
+  nameWithType: MinuteSet.TryParse(ReadOnlySpan<byte>, out MinuteSet)
+  nameWithType.vb: MinuteSet.TryParse(ReadOnlySpan(Of Byte), MinuteSet)
+- uid: Bodu.MinuteSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.MinuteSet@)
+  name: TryParse(ReadOnlySpan<char>, out MinuteSet)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_MinuteSet__
+  commentId: M:Bodu.MinuteSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.MinuteSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Char), MinuteSet)
+  fullName: Bodu.MinuteSet.TryParse(System.ReadOnlySpan<char>, out Bodu.MinuteSet)
+  fullName.vb: Bodu.MinuteSet.TryParse(System.ReadOnlySpan(Of Char), Bodu.MinuteSet)
+  nameWithType: MinuteSet.TryParse(ReadOnlySpan<char>, out MinuteSet)
+  nameWithType.vb: MinuteSet.TryParse(ReadOnlySpan(Of Char), MinuteSet)
 - uid: Bodu.MinuteSet.TryParse(System.String,Bodu.MinuteSet@)
   name: TryParse(string?, out MinuteSet)
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParse_System_String_Bodu_MinuteSet__
@@ -102404,6 +102965,15 @@ references:
   commentId: Overload:Bodu.MinuteSet.TryParse
   fullName: Bodu.MinuteSet.TryParse
   nameWithType: MinuteSet.TryParse
+- uid: Bodu.MinuteSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.MinuteSet@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out MinuteSet)
+  href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_MinuteSet__
+  commentId: M:Bodu.MinuteSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.MinuteSet@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), MinuteSet)
+  fullName: Bodu.MinuteSet.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out Bodu.MinuteSet)
+  fullName.vb: Bodu.MinuteSet.TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), Bodu.MinuteSet)
+  nameWithType: MinuteSet.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out MinuteSet)
+  nameWithType.vb: MinuteSet.TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), MinuteSet)
 - uid: Bodu.MinuteSet.TryParseExact(System.String,System.String,Bodu.MinuteSet@)
   name: TryParseExact(string?, string?, out MinuteSet)
   href: api/Bodu.MinuteSet.html#Bodu_MinuteSet_TryParseExact_System_String_System_String_Bodu_MinuteSet__
@@ -102762,6 +103332,24 @@ references:
   commentId: Overload:Bodu.MonthSet.GetHashCode
   fullName: Bodu.MonthSet.GetHashCode
   nameWithType: MonthSet.GetHashCode
+- uid: Bodu.MonthSet.Parse(System.ReadOnlySpan{System.Byte})
+  name: Parse(ReadOnlySpan<byte>)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_Parse_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.MonthSet.Parse(System.ReadOnlySpan{System.Byte})
+  name.vb: Parse(ReadOnlySpan(Of Byte))
+  fullName: Bodu.MonthSet.Parse(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.MonthSet.Parse(System.ReadOnlySpan(Of Byte))
+  nameWithType: MonthSet.Parse(ReadOnlySpan<byte>)
+  nameWithType.vb: MonthSet.Parse(ReadOnlySpan(Of Byte))
+- uid: Bodu.MonthSet.Parse(System.ReadOnlySpan{System.Char})
+  name: Parse(ReadOnlySpan<char>)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_Parse_System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.MonthSet.Parse(System.ReadOnlySpan{System.Char})
+  name.vb: Parse(ReadOnlySpan(Of Char))
+  fullName: Bodu.MonthSet.Parse(System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.MonthSet.Parse(System.ReadOnlySpan(Of Char))
+  nameWithType: MonthSet.Parse(ReadOnlySpan<char>)
+  nameWithType.vb: MonthSet.Parse(ReadOnlySpan(Of Char))
 - uid: Bodu.MonthSet.Parse(System.String)
   name: Parse(string)
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_Parse_System_String_
@@ -102777,6 +103365,15 @@ references:
   commentId: Overload:Bodu.MonthSet.Parse
   fullName: Bodu.MonthSet.Parse
   nameWithType: MonthSet.Parse
+- uid: Bodu.MonthSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.MonthSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.MonthSet.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.MonthSet.ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: MonthSet.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: MonthSet.ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.MonthSet.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_ParseExact_System_String_System_String_
@@ -102852,6 +103449,66 @@ references:
   commentId: Overload:Bodu.MonthSet.System#IParsable{Bodu#MonthSet}#TryParse
   fullName: Bodu.MonthSet.System.IParsable<Bodu.MonthSet>.TryParse
   nameWithType: MonthSet.IParsable<MonthSet>.TryParse
+- uid: Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: ISpanParsable<MonthSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_ISpanParsable_Bodu_MonthSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.MonthSet.System.ISpanParsable<Bodu.MonthSet>.Parse(System.ReadOnlySpan<char>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: MonthSet.ISpanParsable<MonthSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#Parse*
+  name: ISpanParsable<MonthSet>.Parse
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_ISpanParsable_Bodu_MonthSet__Parse_
+  commentId: Overload:Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#Parse
+  fullName: Bodu.MonthSet.System.ISpanParsable<Bodu.MonthSet>.Parse
+  nameWithType: MonthSet.ISpanParsable<MonthSet>.Parse
+- uid: Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.MonthSet@)
+  name: ISpanParsable<MonthSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out MonthSet)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_ISpanParsable_Bodu_MonthSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_MonthSet__
+  commentId: M:Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.MonthSet@)
+  name.vb: ''
+  fullName: Bodu.MonthSet.System.ISpanParsable<Bodu.MonthSet>.TryParse(System.ReadOnlySpan<char>, System.IFormatProvider, out Bodu.MonthSet)
+  fullName.vb: ''
+  nameWithType: MonthSet.ISpanParsable<MonthSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out MonthSet)
+  nameWithType.vb: ''
+- uid: Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#TryParse*
+  name: ISpanParsable<MonthSet>.TryParse
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_ISpanParsable_Bodu_MonthSet__TryParse_
+  commentId: Overload:Bodu.MonthSet.System#ISpanParsable{Bodu#MonthSet}#TryParse
+  fullName: Bodu.MonthSet.System.ISpanParsable<Bodu.MonthSet>.TryParse
+  nameWithType: MonthSet.ISpanParsable<MonthSet>.TryParse
+- uid: Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name: IUtf8SpanParsable<MonthSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_IUtf8SpanParsable_Bodu_MonthSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_
+  commentId: M:Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.MonthSet.System.IUtf8SpanParsable<Bodu.MonthSet>.Parse(System.ReadOnlySpan<byte>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: MonthSet.IUtf8SpanParsable<MonthSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#Parse*
+  name: IUtf8SpanParsable<MonthSet>.Parse
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_IUtf8SpanParsable_Bodu_MonthSet__Parse_
+  commentId: Overload:Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#Parse
+  fullName: Bodu.MonthSet.System.IUtf8SpanParsable<Bodu.MonthSet>.Parse
+  nameWithType: MonthSet.IUtf8SpanParsable<MonthSet>.Parse
+- uid: Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.MonthSet@)
+  name: IUtf8SpanParsable<MonthSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out MonthSet)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_IUtf8SpanParsable_Bodu_MonthSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_MonthSet__
+  commentId: M:Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.MonthSet@)
+  name.vb: ''
+  fullName: Bodu.MonthSet.System.IUtf8SpanParsable<Bodu.MonthSet>.TryParse(System.ReadOnlySpan<byte>, System.IFormatProvider, out Bodu.MonthSet)
+  fullName.vb: ''
+  nameWithType: MonthSet.IUtf8SpanParsable<MonthSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out MonthSet)
+  nameWithType.vb: ''
+- uid: Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#TryParse*
+  name: IUtf8SpanParsable<MonthSet>.TryParse
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_System_IUtf8SpanParsable_Bodu_MonthSet__TryParse_
+  commentId: Overload:Bodu.MonthSet.System#IUtf8SpanParsable{Bodu#MonthSet}#TryParse
+  fullName: Bodu.MonthSet.System.IUtf8SpanParsable<Bodu.MonthSet>.TryParse
+  nameWithType: MonthSet.IUtf8SpanParsable<MonthSet>.TryParse
 - uid: Bodu.MonthSet.ToString
   name: ToString()
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_ToString
@@ -102894,6 +103551,48 @@ references:
   commentId: Overload:Bodu.MonthSet.ToUInt64
   fullName: Bodu.MonthSet.ToUInt64
   nameWithType: MonthSet.ToUInt64
+- uid: Bodu.MonthSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.MonthSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.MonthSet.TryFormat(System.Span<byte>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.MonthSet.TryFormat(System.Span(Of Byte), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: MonthSet.TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: MonthSet.TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.MonthSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.MonthSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.MonthSet.TryFormat(System.Span<char>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.MonthSet.TryFormat(System.Span(Of Char), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: MonthSet.TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: MonthSet.TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.MonthSet.TryFormat*
+  name: TryFormat
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryFormat_
+  commentId: Overload:Bodu.MonthSet.TryFormat
+  fullName: Bodu.MonthSet.TryFormat
+  nameWithType: MonthSet.TryFormat
+- uid: Bodu.MonthSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.MonthSet@)
+  name: TryParse(ReadOnlySpan<byte>, out MonthSet)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_MonthSet__
+  commentId: M:Bodu.MonthSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.MonthSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Byte), MonthSet)
+  fullName: Bodu.MonthSet.TryParse(System.ReadOnlySpan<byte>, out Bodu.MonthSet)
+  fullName.vb: Bodu.MonthSet.TryParse(System.ReadOnlySpan(Of Byte), Bodu.MonthSet)
+  nameWithType: MonthSet.TryParse(ReadOnlySpan<byte>, out MonthSet)
+  nameWithType.vb: MonthSet.TryParse(ReadOnlySpan(Of Byte), MonthSet)
+- uid: Bodu.MonthSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.MonthSet@)
+  name: TryParse(ReadOnlySpan<char>, out MonthSet)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_MonthSet__
+  commentId: M:Bodu.MonthSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.MonthSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Char), MonthSet)
+  fullName: Bodu.MonthSet.TryParse(System.ReadOnlySpan<char>, out Bodu.MonthSet)
+  fullName.vb: Bodu.MonthSet.TryParse(System.ReadOnlySpan(Of Char), Bodu.MonthSet)
+  nameWithType: MonthSet.TryParse(ReadOnlySpan<char>, out MonthSet)
+  nameWithType.vb: MonthSet.TryParse(ReadOnlySpan(Of Char), MonthSet)
 - uid: Bodu.MonthSet.TryParse(System.String,Bodu.MonthSet@)
   name: TryParse(string?, out MonthSet)
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParse_System_String_Bodu_MonthSet__
@@ -102909,6 +103608,15 @@ references:
   commentId: Overload:Bodu.MonthSet.TryParse
   fullName: Bodu.MonthSet.TryParse
   nameWithType: MonthSet.TryParse
+- uid: Bodu.MonthSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.MonthSet@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out MonthSet)
+  href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_MonthSet__
+  commentId: M:Bodu.MonthSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.MonthSet@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), MonthSet)
+  fullName: Bodu.MonthSet.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out Bodu.MonthSet)
+  fullName.vb: Bodu.MonthSet.TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), Bodu.MonthSet)
+  nameWithType: MonthSet.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out MonthSet)
+  nameWithType.vb: MonthSet.TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), MonthSet)
 - uid: Bodu.MonthSet.TryParseExact(System.String,System.String,Bodu.MonthSet@)
   name: TryParseExact(string?, string?, out MonthSet)
   href: api/Bodu.MonthSet.html#Bodu_MonthSet_TryParseExact_System_String_System_String_Bodu_MonthSet__
@@ -112888,6 +113596,24 @@ references:
   commentId: Overload:Bodu.SecondSet.GetHashCode
   fullName: Bodu.SecondSet.GetHashCode
   nameWithType: SecondSet.GetHashCode
+- uid: Bodu.SecondSet.Parse(System.ReadOnlySpan{System.Byte})
+  name: Parse(ReadOnlySpan<byte>)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_Parse_System_ReadOnlySpan_System_Byte__
+  commentId: M:Bodu.SecondSet.Parse(System.ReadOnlySpan{System.Byte})
+  name.vb: Parse(ReadOnlySpan(Of Byte))
+  fullName: Bodu.SecondSet.Parse(System.ReadOnlySpan<byte>)
+  fullName.vb: Bodu.SecondSet.Parse(System.ReadOnlySpan(Of Byte))
+  nameWithType: SecondSet.Parse(ReadOnlySpan<byte>)
+  nameWithType.vb: SecondSet.Parse(ReadOnlySpan(Of Byte))
+- uid: Bodu.SecondSet.Parse(System.ReadOnlySpan{System.Char})
+  name: Parse(ReadOnlySpan<char>)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_Parse_System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.SecondSet.Parse(System.ReadOnlySpan{System.Char})
+  name.vb: Parse(ReadOnlySpan(Of Char))
+  fullName: Bodu.SecondSet.Parse(System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.SecondSet.Parse(System.ReadOnlySpan(Of Char))
+  nameWithType: SecondSet.Parse(ReadOnlySpan<char>)
+  nameWithType.vb: SecondSet.Parse(ReadOnlySpan(Of Char))
 - uid: Bodu.SecondSet.Parse(System.String)
   name: Parse(string)
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_Parse_System_String_
@@ -112903,6 +113629,15 @@ references:
   commentId: Overload:Bodu.SecondSet.Parse
   fullName: Bodu.SecondSet.Parse
   nameWithType: SecondSet.Parse
+- uid: Bodu.SecondSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name: ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__
+  commentId: M:Bodu.SecondSet.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})
+  name.vb: ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
+  fullName: Bodu.SecondSet.ParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>)
+  fullName.vb: Bodu.SecondSet.ParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char))
+  nameWithType: SecondSet.ParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>)
+  nameWithType.vb: SecondSet.ParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char))
 - uid: Bodu.SecondSet.ParseExact(System.String,System.String)
   name: ParseExact(string, string)
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_ParseExact_System_String_System_String_
@@ -112978,6 +113713,66 @@ references:
   commentId: Overload:Bodu.SecondSet.System#IParsable{Bodu#SecondSet}#TryParse
   fullName: Bodu.SecondSet.System.IParsable<Bodu.SecondSet>.TryParse
   nameWithType: SecondSet.IParsable<SecondSet>.TryParse
+- uid: Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: ISpanParsable<SecondSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_ISpanParsable_Bodu_SecondSet__Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.SecondSet.System.ISpanParsable<Bodu.SecondSet>.Parse(System.ReadOnlySpan<char>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: SecondSet.ISpanParsable<SecondSet>.Parse(ReadOnlySpan<char>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#Parse*
+  name: ISpanParsable<SecondSet>.Parse
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_ISpanParsable_Bodu_SecondSet__Parse_
+  commentId: Overload:Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#Parse
+  fullName: Bodu.SecondSet.System.ISpanParsable<Bodu.SecondSet>.Parse
+  nameWithType: SecondSet.ISpanParsable<SecondSet>.Parse
+- uid: Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.SecondSet@)
+  name: ISpanParsable<SecondSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out SecondSet)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_ISpanParsable_Bodu_SecondSet__TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_SecondSet__
+  commentId: M:Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.SecondSet@)
+  name.vb: ''
+  fullName: Bodu.SecondSet.System.ISpanParsable<Bodu.SecondSet>.TryParse(System.ReadOnlySpan<char>, System.IFormatProvider, out Bodu.SecondSet)
+  fullName.vb: ''
+  nameWithType: SecondSet.ISpanParsable<SecondSet>.TryParse(ReadOnlySpan<char>, IFormatProvider, out SecondSet)
+  nameWithType.vb: ''
+- uid: Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#TryParse*
+  name: ISpanParsable<SecondSet>.TryParse
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_ISpanParsable_Bodu_SecondSet__TryParse_
+  commentId: Overload:Bodu.SecondSet.System#ISpanParsable{Bodu#SecondSet}#TryParse
+  fullName: Bodu.SecondSet.System.ISpanParsable<Bodu.SecondSet>.TryParse
+  nameWithType: SecondSet.ISpanParsable<SecondSet>.TryParse
+- uid: Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name: IUtf8SpanParsable<SecondSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_IUtf8SpanParsable_Bodu_SecondSet__Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_
+  commentId: M:Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)
+  name.vb: ''
+  fullName: Bodu.SecondSet.System.IUtf8SpanParsable<Bodu.SecondSet>.Parse(System.ReadOnlySpan<byte>, System.IFormatProvider)
+  fullName.vb: ''
+  nameWithType: SecondSet.IUtf8SpanParsable<SecondSet>.Parse(ReadOnlySpan<byte>, IFormatProvider)
+  nameWithType.vb: ''
+- uid: Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#Parse*
+  name: IUtf8SpanParsable<SecondSet>.Parse
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_IUtf8SpanParsable_Bodu_SecondSet__Parse_
+  commentId: Overload:Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#Parse
+  fullName: Bodu.SecondSet.System.IUtf8SpanParsable<Bodu.SecondSet>.Parse
+  nameWithType: SecondSet.IUtf8SpanParsable<SecondSet>.Parse
+- uid: Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.SecondSet@)
+  name: IUtf8SpanParsable<SecondSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out SecondSet)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_IUtf8SpanParsable_Bodu_SecondSet__TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_SecondSet__
+  commentId: M:Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.SecondSet@)
+  name.vb: ''
+  fullName: Bodu.SecondSet.System.IUtf8SpanParsable<Bodu.SecondSet>.TryParse(System.ReadOnlySpan<byte>, System.IFormatProvider, out Bodu.SecondSet)
+  fullName.vb: ''
+  nameWithType: SecondSet.IUtf8SpanParsable<SecondSet>.TryParse(ReadOnlySpan<byte>, IFormatProvider, out SecondSet)
+  nameWithType.vb: ''
+- uid: Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#TryParse*
+  name: IUtf8SpanParsable<SecondSet>.TryParse
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_System_IUtf8SpanParsable_Bodu_SecondSet__TryParse_
+  commentId: Overload:Bodu.SecondSet.System#IUtf8SpanParsable{Bodu#SecondSet}#TryParse
+  fullName: Bodu.SecondSet.System.IUtf8SpanParsable<Bodu.SecondSet>.TryParse
+  nameWithType: SecondSet.IUtf8SpanParsable<SecondSet>.TryParse
 - uid: Bodu.SecondSet.ToString
   name: ToString()
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_ToString
@@ -113020,6 +113815,48 @@ references:
   commentId: Overload:Bodu.SecondSet.ToUInt64
   fullName: Bodu.SecondSet.ToUInt64
   nameWithType: SecondSet.ToUInt64
+- uid: Bodu.SecondSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.SecondSet.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.SecondSet.TryFormat(System.Span<byte>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.SecondSet.TryFormat(System.Span(Of Byte), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: SecondSet.TryFormat(Span<byte>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: SecondSet.TryFormat(Span(Of Byte), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.SecondSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name: TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_
+  commentId: M:Bodu.SecondSet.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)
+  name.vb: TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+  fullName: Bodu.SecondSet.TryFormat(System.Span<char>, out int, System.ReadOnlySpan<char>, System.IFormatProvider?)
+  fullName.vb: Bodu.SecondSet.TryFormat(System.Span(Of Char), Integer, System.ReadOnlySpan(Of Char), System.IFormatProvider)
+  nameWithType: SecondSet.TryFormat(Span<char>, out int, ReadOnlySpan<char>, IFormatProvider?)
+  nameWithType.vb: SecondSet.TryFormat(Span(Of Char), Integer, ReadOnlySpan(Of Char), IFormatProvider)
+- uid: Bodu.SecondSet.TryFormat*
+  name: TryFormat
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryFormat_
+  commentId: Overload:Bodu.SecondSet.TryFormat
+  fullName: Bodu.SecondSet.TryFormat
+  nameWithType: SecondSet.TryFormat
+- uid: Bodu.SecondSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.SecondSet@)
+  name: TryParse(ReadOnlySpan<byte>, out SecondSet)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParse_System_ReadOnlySpan_System_Byte__Bodu_SecondSet__
+  commentId: M:Bodu.SecondSet.TryParse(System.ReadOnlySpan{System.Byte},Bodu.SecondSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Byte), SecondSet)
+  fullName: Bodu.SecondSet.TryParse(System.ReadOnlySpan<byte>, out Bodu.SecondSet)
+  fullName.vb: Bodu.SecondSet.TryParse(System.ReadOnlySpan(Of Byte), Bodu.SecondSet)
+  nameWithType: SecondSet.TryParse(ReadOnlySpan<byte>, out SecondSet)
+  nameWithType.vb: SecondSet.TryParse(ReadOnlySpan(Of Byte), SecondSet)
+- uid: Bodu.SecondSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.SecondSet@)
+  name: TryParse(ReadOnlySpan<char>, out SecondSet)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParse_System_ReadOnlySpan_System_Char__Bodu_SecondSet__
+  commentId: M:Bodu.SecondSet.TryParse(System.ReadOnlySpan{System.Char},Bodu.SecondSet@)
+  name.vb: TryParse(ReadOnlySpan(Of Char), SecondSet)
+  fullName: Bodu.SecondSet.TryParse(System.ReadOnlySpan<char>, out Bodu.SecondSet)
+  fullName.vb: Bodu.SecondSet.TryParse(System.ReadOnlySpan(Of Char), Bodu.SecondSet)
+  nameWithType: SecondSet.TryParse(ReadOnlySpan<char>, out SecondSet)
+  nameWithType.vb: SecondSet.TryParse(ReadOnlySpan(Of Char), SecondSet)
 - uid: Bodu.SecondSet.TryParse(System.String,Bodu.SecondSet@)
   name: TryParse(string?, out SecondSet)
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParse_System_String_Bodu_SecondSet__
@@ -113035,6 +113872,15 @@ references:
   commentId: Overload:Bodu.SecondSet.TryParse
   fullName: Bodu.SecondSet.TryParse
   nameWithType: SecondSet.TryParse
+- uid: Bodu.SecondSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.SecondSet@)
+  name: TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out SecondSet)
+  href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__Bodu_SecondSet__
+  commentId: M:Bodu.SecondSet.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},Bodu.SecondSet@)
+  name.vb: TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), SecondSet)
+  fullName: Bodu.SecondSet.TryParseExact(System.ReadOnlySpan<char>, System.ReadOnlySpan<char>, out Bodu.SecondSet)
+  fullName.vb: Bodu.SecondSet.TryParseExact(System.ReadOnlySpan(Of Char), System.ReadOnlySpan(Of Char), Bodu.SecondSet)
+  nameWithType: SecondSet.TryParseExact(ReadOnlySpan<char>, ReadOnlySpan<char>, out SecondSet)
+  nameWithType.vb: SecondSet.TryParseExact(ReadOnlySpan(Of Char), ReadOnlySpan(Of Char), SecondSet)
 - uid: Bodu.SecondSet.TryParseExact(System.String,System.String,Bodu.SecondSet@)
   name: TryParseExact(string?, string?, out SecondSet)
   href: api/Bodu.SecondSet.html#Bodu_SecondSet_TryParseExact_System_String_System_String_Bodu_SecondSet__

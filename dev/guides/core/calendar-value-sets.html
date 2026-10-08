@@ -256,6 +256,35 @@ are the letter mask.</li>
 though as a list it would be January. Zeros and ones of any other length are a list, so <code>&quot;10&quot;</code> is October, and binary
 text with whitespace around it is read as a list too. Text that fits none of the forms fails with the list's message.
 To read one format only, call <code>ParseExact</code>.</p>
+<h3 id="spans-and-utf-8">Spans and UTF-8</h3>
+<p>Every text form is ASCII, so the sets read and write it as characters or as UTF-8 bytes alike:</p>
+<ul>
+<li><code>TryFormat</code> writes the text <code>ToString(format)</code> returns into a span of characters or of UTF-8 bytes, without
+allocating. When the span is too short it returns <code>false</code> and writes nothing; an unsupported format throws
+<code>FormatException</code>, as it does from <code>ToString</code>.</li>
+<li><code>Parse</code> and <code>TryParse</code> also read a <code>ReadOnlySpan&lt;char&gt;</code>, or a <code>ReadOnlySpan&lt;byte&gt;</code> of UTF-8, and <code>ParseExact</code> and
+<code>TryParseExact</code> a <code>ReadOnlySpan&lt;char&gt;</code>. They accept what the <code>string</code> overloads accept and throw the same messages;
+bytes that are not valid UTF-8 are never a set.</li>
+<li>The sets implement <code>ISpanFormattable</code> and <code>IUtf8SpanFormattable</code>, so string interpolation, <code>StringBuilder</code> and
+<code>Utf8.TryWrite</code> format them through <code>TryFormat</code>, without an intermediate string.</li>
+</ul>
+<!-- run -->
+<pre><code class="lang-csharp">using Bodu;
+
+var months = new MonthSet(1, 2, 3, 12);
+
+Span&lt;char&gt; chars = stackalloc char[32];
+bool written = months.TryFormat(chars, out int charsWritten, &quot;L&quot;);   // true: chars[..charsWritten] is &quot;1,2,3,12&quot;
+
+Span&lt;byte&gt; utf8 = stackalloc byte[32];
+written = months.TryFormat(utf8, out int bytesWritten, &quot;J&quot;);         // true: the bytes of &quot;JFM________D&quot;
+
+Span&lt;char&gt; small = stackalloc char[4];
+bool fits = months.TryFormat(small, out _);                          // false: &quot;1-3,12&quot; needs six characters
+
+MonthSet fromUtf8  = MonthSet.Parse(&quot;1-3,12&quot;u8);
+MonthSet fromChars = MonthSet.ParseExact(&quot;111000000001&quot;.AsSpan(), &quot;B&quot;);
+</code></pre>
 <h2 id="pattern-4---combine-sets">Pattern 4 - combine sets</h2>
 <p><code>|</code> is union, <code>&amp;</code> intersection, <code>^</code> symmetric difference, and <code>~</code> the complement within the type's range:</p>
 <!-- run -->
@@ -288,9 +317,11 @@ MonthSet again = MonthSet.FromUInt64(bits);    // January and December
 </code></pre>
 <h2 id="pattern-6---work-with-any-set">Pattern 6 - work with any set</h2>
 <p><code>ICalendarValueSet&lt;TSelf, TValue&gt;</code> declares what the six sets share: <code>Empty</code> and <code>All</code>, <code>Count</code>, <code>Contains</code>, <code>With</code>
-and <code>Without</code>, <code>FromUInt64</code> and <code>ToUInt64</code>, <code>ParseExact</code>, <code>TryParseExact</code> and <code>ToString(string)</code>, together with the
-operators, equality, <code>IParsable&lt;TSelf&gt;</code>, <code>IFormattable</code> and enumeration. <code>TValue</code> is <code>DayOfWeek</code> for <code>DayOfWeekSet</code> and
-<code>int</code> for the others. A method generic over the interface takes any of them:</p>
+and <code>Without</code>, <code>FromUInt64</code> and <code>ToUInt64</code>, <code>ParseExact</code> and <code>TryParseExact</code> over strings and spans of characters, and
+<code>ToString(string)</code>, together with the operators, equality, enumeration, parsing from strings, spans and UTF-8
+(<code>IParsable&lt;TSelf&gt;</code>, <code>ISpanParsable&lt;TSelf&gt;</code>, <code>IUtf8SpanParsable&lt;TSelf&gt;</code>) and formatting to them (<code>IFormattable</code>,
+<code>ISpanFormattable</code>, <code>IUtf8SpanFormattable</code>). <code>TValue</code> is <code>DayOfWeek</code> for <code>DayOfWeekSet</code> and <code>int</code> for the others. A
+method generic over the interface takes any of them:</p>
 <!-- run -->
 <pre><code class="lang-csharp">using Bodu;
 
@@ -349,12 +380,12 @@ bitwise instruction each, and <code>~</code> is one more to mask the complement 
 <td>The set's bits, bit <code>n</code> for the smallest value plus <code>n</code>.</td>
 </tr>
 <tr>
-<td><code>Parse(string)</code>, <code>TryParse(string, out TSelf)</code></td>
-<td>Read a list of values and ranges, or binary text; <code>MonthSet</code> also its letter mask.</td>
+<td><code>Parse</code>, <code>TryParse</code></td>
+<td>Read a list of values and ranges, or binary text; <code>MonthSet</code> also its letter mask. Each takes a <code>string</code>, a <code>ReadOnlySpan&lt;char&gt;</code> or a <code>ReadOnlySpan&lt;byte&gt;</code> of UTF-8.</td>
 </tr>
 <tr>
-<td><code>ParseExact(string, string)</code>, <code>TryParseExact(string, string, out TSelf)</code></td>
-<td>Read text in the format named.</td>
+<td><code>ParseExact</code>, <code>TryParseExact</code></td>
+<td>Read text in the format named, from a <code>string</code> or a <code>ReadOnlySpan&lt;char&gt;</code>.</td>
 </tr>
 <tr>
 <td><code>ToString()</code></td>
@@ -363,6 +394,10 @@ bitwise instruction each, and <code>~</code> is one more to mask the complement 
 <tr>
 <td><code>ToString(string)</code>, <code>ToString(string, IFormatProvider)</code></td>
 <td>Write the list (<code>G</code>), every value (<code>L</code>) or binary text (<code>B</code>); <code>MonthSet</code> also its letter mask (<code>J</code>).</td>
+</tr>
+<tr>
+<td><code>TryFormat(Span&lt;char&gt;, ...)</code>, <code>TryFormat(Span&lt;byte&gt;, ...)</code></td>
+<td>Write the text <code>ToString(string)</code> returns into a span of characters or of UTF-8 bytes, without allocating.</td>
 </tr>
 <tr>
 <td><code>\|</code>, <code>&amp;</code>, <code>^</code>, <code>~</code>, <code>==</code>, <code>!=</code></td>
@@ -402,7 +437,7 @@ set for the rule part it expresses, such as <code>ByMonth(MonthSet)</code> and <
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c7b500d · Built: 2026-10-07 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 95690ae · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

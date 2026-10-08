@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_ICalendarValueSet_2" data-uid="Bodu.ICalendarValueSet`2" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ICalendarValueSet&lt;TSelf, TValue&gt; Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ICalendarValueSet&lt;TSelf, TValue&gt; Interface
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs">ICalendarValueSet{T,T}.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs">ICalendarValueSet{T,T}.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Defines an immutable set of values drawn from a fixed calendar domain of at most 64 values, such as the days of the
@@ -112,7 +112,7 @@ week or the minutes of an hour.</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface ICalendarValueSet&lt;TSelf, TValue&gt; : IEquatable&lt;TSelf&gt;, IEqualityOperators&lt;TSelf, TSelf, bool&gt;, IBitwiseOperators&lt;TSelf, TSelf, TSelf&gt;, IParsable&lt;TSelf&gt;, IFormattable, IEnumerable&lt;TValue&gt;, IEnumerable where TSelf : ICalendarValueSet&lt;TSelf, TValue&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public interface ICalendarValueSet&lt;TSelf, TValue&gt; : IEquatable&lt;TSelf&gt;, IEqualityOperators&lt;TSelf, TSelf, bool&gt;, IBitwiseOperators&lt;TSelf, TSelf, TSelf&gt;, ISpanParsable&lt;TSelf&gt;, IParsable&lt;TSelf&gt;, IUtf8SpanParsable&lt;TSelf&gt;, ISpanFormattable, IFormattable, IUtf8SpanFormattable, IEnumerable&lt;TValue&gt;, IEnumerable where TSelf : ICalendarValueSet&lt;TSelf, TValue&gt;</code></pre>
   </div>
 
 
@@ -138,13 +138,31 @@ week or the minutes of an hour.</p>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iequatable-1.equals">IEquatable&lt;TSelf&gt;.Equals(TSelf)</a>
     </div>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1.parse">ISpanParsable&lt;TSelf&gt;.Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1.tryparse">ISpanParsable&lt;TSelf&gt;.TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider, out TSelf)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1.parse">IParsable&lt;TSelf&gt;.Parse(string, IFormatProvider)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1.tryparse">IParsable&lt;TSelf&gt;.TryParse(string, IFormatProvider, out TSelf)</a>
     </div>
     <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1.parse">IUtf8SpanParsable&lt;TSelf&gt;.Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanparsable-1.tryparse">IUtf8SpanParsable&lt;TSelf&gt;.TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider, out TSelf)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanformattable.tryformat">ISpanFormattable.TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider)</a>
+    </div>
+    <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iformattable.tostring">IFormattable.ToString(string, IFormatProvider)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iutf8spanformattable.tryformat">IUtf8SpanFormattable.TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1.getenumerator">IEnumerable&lt;TValue&gt;.GetEnumerator()</a>
@@ -345,7 +363,9 @@ equal numbers.
 </p>
 <p>
 Each type documents its domain, its text forms and the formats <a class="xref" href="Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ToString_System_String_">ToString(string?)</a> and
-<a class="xref" href="Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ParseExact_System_String_System_String_">ParseExact(string, string)</a> accept.
+<a class="xref" href="Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_ParseExact_System_String_System_String_">ParseExact(string, string)</a> accept. Every text form is ASCII, so the members that write to or read
+from a span of characters or of UTF-8 bytes handle the same text as the members that take and return a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>.
 </p>
 </div>
 
@@ -359,7 +379,7 @@ Each type documents its domain, its text forms and the formats <a class="xref" h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_All" data-uid="Bodu.ICalendarValueSet`2.All">
   All
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -395,7 +415,7 @@ Each type documents its domain, its text forms and the formats <a class="xref" h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_Count" data-uid="Bodu.ICalendarValueSet`2.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -432,7 +452,7 @@ Each type documents its domain, its text forms and the formats <a class="xref" h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_Empty" data-uid="Bodu.ICalendarValueSet`2.Empty">
   Empty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -472,7 +492,7 @@ Each type documents its domain, its text forms and the formats <a class="xref" h
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_Contains__1_" data-uid="Bodu.ICalendarValueSet`2.Contains(`1)">
   Contains(TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -516,7 +536,7 @@ not, including when <code class="paramref">value</code> is outside the domain.</
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_FromUInt64_System_UInt64_" data-uid="Bodu.ICalendarValueSet`2.FromUInt64(System.UInt64)">
   FromUInt64(ulong)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -564,9 +584,62 @@ value.</p>
   <a id="Bodu_ICalendarValueSet_2_ParseExact_" data-uid="Bodu.ICalendarValueSet`2.ParseExact*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_ICalendarValueSet_2_ParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char__" data-uid="Bodu.ICalendarValueSet`2.ParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+  ParseExact(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;char&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Converts a span of characters in the specified format into a set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static abstract TSelf ParseExact(ReadOnlySpan&lt;char&gt; s, ReadOnlySpan&lt;char&gt; format)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to convert.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format of <code class="paramref">s</code>, one of those the type writes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">TSelf</span></dt>
+    <dd><p>The set the characters describe.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
+    <dd><p>Thrown when <code class="paramref">format</code> is not a supported format, or <code class="paramref">s</code> is not text in that
+format.</p>
+</dd>
+  </dl>
+
+
+  </section>
+
+
+  <a id="Bodu_ICalendarValueSet_2_ParseExact_" data-uid="Bodu.ICalendarValueSet`2.ParseExact*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_ParseExact_System_String_System_String_" data-uid="Bodu.ICalendarValueSet`2.ParseExact(System.String,System.String)">
   ParseExact(string, string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -622,7 +695,7 @@ format.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_ToString_System_String_" data-uid="Bodu.ICalendarValueSet`2.ToString(System.String)">
   ToString(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -671,7 +744,7 @@ format.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_ToUInt64" data-uid="Bodu.ICalendarValueSet`2.ToUInt64">
   ToUInt64()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -707,9 +780,60 @@ of the domain.</p>
   <a id="Bodu_ICalendarValueSet_2_TryParseExact_" data-uid="Bodu.ICalendarValueSet`2.TryParseExact*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
+  <h3 id="Bodu_ICalendarValueSet_2_TryParseExact_System_ReadOnlySpan_System_Char__System_ReadOnlySpan_System_Char___0__" data-uid="Bodu.ICalendarValueSet`2.TryParseExact(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},`0@)">
+  TryParseExact(ReadOnlySpan&lt;char&gt;, ReadOnlySpan&lt;char&gt;, out TSelf)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+
+  <div class="markdown level1 summary"><p>Attempts to convert a span of characters in the specified format into a set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static abstract bool TryParseExact(ReadOnlySpan&lt;char&gt; s, ReadOnlySpan&lt;char&gt; format, out TSelf result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>s</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The characters to convert.</p>
+</dd>
+    <dt><code>format</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.char">char</a>&gt;</dt>
+    <dd><p>The format of <code class="paramref">s</code>, one of those the type writes.</p>
+</dd>
+    <dt><code>result</code> <span class="xref">TSelf</span></dt>
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, the set the characters describe; otherwise
+<a class="xref" href="Bodu.ICalendarValueSet-2.html#Bodu_ICalendarValueSet_2_Empty">Empty</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">format</code> is a supported format and <code class="paramref">s</code> is text
+in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  </section>
+
+
+  <a id="Bodu_ICalendarValueSet_2_TryParseExact_" data-uid="Bodu.ICalendarValueSet`2.TryParseExact*"></a>
+
+  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_TryParseExact_System_String_System_String__0__" data-uid="Bodu.ICalendarValueSet`2.TryParseExact(System.String,System.String,`0@)">
   TryParseExact(string?, string?, out TSelf)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -759,7 +883,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_With__1_" data-uid="Bodu.ICalendarValueSet`2.With(`1)">
   With(TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -808,7 +932,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_ICalendarValueSet_2_Without__1_" data-uid="Bodu.ICalendarValueSet`2.Without(`1)">
   Without(TValue)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c7b500d66a65c2222d71685d8afcde2a9851ec4d/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/95690ae228a07dff34179fcc5ebfbdf822c4f77f/Bodu.Core/src/ICalendarValueSet%7BT%2CT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -879,7 +1003,7 @@ in it; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-ref
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c7b500d · Built: 2026-10-07 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 95690ae · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>
