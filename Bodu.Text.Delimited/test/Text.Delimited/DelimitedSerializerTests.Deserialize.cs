@@ -416,6 +416,55 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a nullable <see cref="char" /> column holding one white-space character binds that character, as a
+    /// <see cref="char" /> column does, rather than <see langword="null" />.
+    /// </summary>
+    /// <param name="field">The field's text, which the input encloses in quotes.</param>
+    /// <param name="expected">The character the field holds.</param>
+    [TestMethod]
+    [DataRow(" ", ' ')]
+    [DataRow("\t", '\t')]
+    [DataRow(" ", ' ')]
+    public void Deserialize_WhenANullableCharColumnIsAWhiteSpaceCharacter_ShouldBindTheCharacter(string field, char expected)
+    {
+        string text = $"Id,Value\n1,\"{field}\"\n";
+
+        List<IdValueRecord<char?>> records = DelimitedSerializer.Deserialize<IdValueRecord<char?>>(text);
+
+        Assert.AreEqual(1, records.Count);
+        Assert.AreEqual((char?)expected, records[0].Value);
+        Assert.AreEqual(DelimitedSerializer.Deserialize<IdValueRecord<char>>(text)[0].Value, records[0].Value);
+    }
+
+    /// <summary>
+    /// Verifies that a nullable <see cref="char" /> column holding two spaces throws
+    /// <see cref="DelimitedSerializationException" />, as a <see cref="char" /> column does, since the text is not one
+    /// character.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenANullableCharColumnIsTwoSpaces_ShouldThrowDelimitedSerializationException()
+    {
+        Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<IdValueRecord<char?>>("Id,Value\n1,\"  \"\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an empty field in a nullable <see cref="char" /> column, unquoted or quoted, binds
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenANullableCharColumnIsEmpty_ShouldBindNull()
+    {
+        List<IdValueRecord<char?>> records = DelimitedSerializer.Deserialize<IdValueRecord<char?>>("Id,Value\n1,\n2,\"\"\n");
+
+        Assert.AreEqual(2, records.Count);
+        Assert.IsNull(records[0].Value);
+        Assert.IsNull(records[1].Value);
+    }
+
+    /// <summary>
     /// Verifies that temporal columns written in the invariant general forms of earlier versions still parse: a
     /// <see cref="DateTime" />, a <see cref="DateTimeOffset" />, a <see cref="DateOnly" /> and a
     /// <see cref="TimeOnly" />.

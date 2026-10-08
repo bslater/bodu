@@ -207,6 +207,30 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a nullable <see cref="char" /> reads back as it was written: a space and a tab as themselves, and
+    /// <see langword="null" /> as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenANullableCharIsWhiteSpaceOrNull_ShouldRoundTripIt()
+    {
+        var records = new List<IdValueRecord<char?>>
+        {
+            new() { Id = 1, Value = ' ' },
+            new() { Id = 2, Value = '\t' },
+            new() { Id = 3, Value = null },
+        };
+
+        string text = DelimitedSerializer.Serialize(records);
+        List<IdValueRecord<char?>> restored = DelimitedSerializer.Deserialize<IdValueRecord<char?>>(text);
+
+        string written = $"The serializer wrote {text.ReplaceLineEndings(@"\r\n").Replace("\t", @"\t", StringComparison.Ordinal)}.";
+        Assert.AreEqual(3, restored.Count, written);
+        Assert.AreEqual((char?)' ', restored[0].Value, written);
+        Assert.AreEqual((char?)'\t', restored[1].Value, written);
+        Assert.IsNull(restored[2].Value, written);
+    }
+
+    /// <summary>
     /// Verifies that a property hidden two levels down, behind a text and an <see cref="int" /> declaration, is written
     /// as one column, the most derived <see cref="decimal" /> property's, and reads back into it.
     /// </summary>
