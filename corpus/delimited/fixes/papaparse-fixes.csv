@@ -1,0 +1,121 @@
+# library: papaparse -- https://github.com/mholt/PapaParse
+# releases: GitHub Releases https://github.com/mholt/PapaParse/releases pages 1 and 2 (WebFetch, 2026-10-08; 18 releases, 3.0 to 5.7.0) and CHANGELOG.md at 4843fc2021bbe04bdc176e71f4c9f8f8388af7bc (SHA-256 1adeea595be106ca354bcecaf39fd4aa3de5db72f7bea4b56835cd4433d8670e; 5.4.1 to 5.7.0); most release notes only say bug fixes and many tags (0.5.2 to 2.1.4 and most patch releases) have none, so the git log of a blobless clone at that commit (547 commits) was read for fix commits, each catalogued under the first tag containing it
+# licence: MIT
+# note: sources: CHANGELOG.md for 5.4.1 to 5.7.0, the GitHub release notes for the fixes they list, and fix commits for everything else; a fix found in more than one is catalogued once
+# note: not catalogued: features (including feature work that cites an issue, such as beforeFirstChunk for #186), documentation and website changes (including the README entry #986 that 5.4.1 lists as a fix), tests, refactors and benchmarks
+# note: Papa Parse is JavaScript for browsers and Node.js: fixes to workers, FileReader and network streaming, jQuery, RequireJS and UMD packaging, the step, chunk and complete callbacks, pause, resume and abort, preview, dynamic typing and its regular expressions (the ReDoS fix of 5.2.0 included), delimiter guessing, transformHeader, header renaming, escapeFormulae and the unparse options are n/a
+# note: Papa Parse reads without a header by default (rows restating its tests set NoHeader=true) and keeps an empty line as a row of one empty field, where Bodu skips blank lines
+library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
+papaparse,5.6.1,#1135,Header de-duplication ran again on every resumed row,n/a,,,,,,,"header renaming, which Bodu does not have (its duplicate-header policies are Throw, TakeFirst and TakeLast)"
+papaparse,5.6.1,#1130,transformHeader was called more than once per header in streaming mode,n/a,,,,,,,"the transformHeader option, which Bodu does not have"
+papaparse,5.5.5,#1128,Delimiter detection preferred field count over row consistency,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,5.5.5,#1140,Dates were not written as full ISO 8601 text,applies,,unit,,DelimitedSerializerTests.SerializeDeserialize_WhenADateTimeHasFractionalSecondsAndUtcKind_ShouldRoundTripIt,,derived,"the fix writes dates with toISOString (an invalid JavaScript date as an empty field), keeping every component; a record { DateTime At } holding 2021-02-06T01:02:03.4567891Z (DateTimeKind.Utc) serializes to text that deserializes to the same value and kind"
+papaparse,5.5.4,08265f1358,The byte order mark was not stripped from the first header name,applies,1,parse,NoHeader=true,"\u{FEFF}A,B\nX,Y","[[""A"",""B""],[""X"",""Y""]]",upstream,test-cases.js: UTF-8 BOM encoded input is stripped from invisible BOM character
+papaparse,5.5.4,08265f1358,The byte order mark was not stripped from the first header name,applies,2,parse,,"\u{FEFF}A,B\nX,Y","[[[""A"",""X""],[""B"",""Y""]]]",upstream,test-cases.js: with a header the column key is stripped of the BOM
+papaparse,5.5.4,#1068,Unparsing did not quote and double a custom quote character,applies,,write,NoHeader=true;Quote=+,"[[""a"",""x+y""]]","a,+x++y+\r\n",upstream,"test-cases.js (PR #1124): a value holding the quote character + is quoted and the character doubled; Papa Parse writes no final line ending, Bodu ends the record with CRLF; the escapeChar variant is n/a"
+papaparse,5.5.3,#1095,Duplicate header counting could loop forever,n/a,,,,,,,"header renaming, which Bodu does not have (its duplicate-header policies are Throw, TakeFirst and TakeLast)"
+papaparse,5.5.2,#1086,Headers were parsed more than once,n/a,,,,,,,performance only
+papaparse,5.5.0,#1025,escapeFormulae mishandled boolean values,n/a,,,,,,,"the escapeFormulae option, which Bodu does not have"
+papaparse,5.5.0,#997,The cursor position was wrong after renaming duplicate headers,n/a,,,,,,,"header renaming, which Bodu does not have (its duplicate-header policies are Throw, TakeFirst and TakeLast)"
+papaparse,5.5.0,#1045,skipFirstNLines skipped lines in every chunk and could consume the header,n/a,,,,,,,"the skipFirstNLines option, which Bodu does not have"
+papaparse,5.5.0,#1052,Header renaming mishandled some duplicates,n/a,,,,,,,"header renaming, which Bodu does not have (its duplicate-header policies are Throw, TakeFirst and TakeLast)"
+papaparse,5.4.1,,Duplicate headers were tested beyond the first row,n/a,,,,,,,"header renaming, which Bodu does not have (its duplicate-header policies are Throw, TakeFirst and TakeLast)"
+papaparse,5.4.1,,Duplicate header renaming was corrected,n/a,,,,,,,"header renaming, which Bodu does not have (its duplicate-header policies are Throw, TakeFirst and TakeLast)"
+papaparse,5.4.0,#961,UTF-8 files with a byte order mark were not handled,applies,,parse,,"\u{FEFF}A,B,C\nX,Y,Z\n","[[[""A"",""X""],[""B"",""Y""],[""C"",""Z""]]]",upstream,node-tests.js 'handles utf-8 BOM encoded files' (utf-8-bom-sample.csv)
+papaparse,5.4.0,PR #956,Duplicate header names overwrote data (#129); they are now renamed,dialect,,reject,,"a,a\n1,2",DelimitedFormatException,derived,"the fix renames the second a to a_1 so that both values survive; Bodu's documented default DuplicateHeaderBehavior is Throw (parser-policies.md line 21), which loses no data either"
+papaparse,5.4.0,#959,The ISO date regular expression of dynamic typing,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,5.4.0,PR #937,The check that a web worker belongs to Papa Parse was unreliable (GH-788),n/a,,,,,,,browser file reading and web workers
+papaparse,5.3.2,#919,The unparse columns option failed with object input,n/a,,,,,,,the unparse columns option
+papaparse,5.3.2,#879,A multi-character delimiter next to a quoted field was misread,n/a,,,,,,,"multi-character delimiters, which Bodu does not have"
+papaparse,5.3.2,#925,A null quoteChar was not treated as empty,n/a,,,,,,,the JavaScript configuration object
+papaparse,5.3.1,#872,The ISO date regular expression of dynamic typing matched part of a string,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,5.3.1,#863,The float regular expression of dynamic typing ignored the case of the exponent,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,5.2.0,#777,A regular expression of dynamic typing was open to denial of service,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,5.2.0,#769,this was used where self preserves the binding,n/a,,,,,,,the JavaScript runtime
+papaparse,5.1.1,#714,The step callback misbehaved when skipping empty lines,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,5.1.0,#706,A streamed record starting with an empty field was misread in header mode,applies,,parse,,"title,name\ntest title 01,test name 01\n,test name 02\n","[[[""title"",""test title 01""],[""name"",""test name 01""]],[[""title"",""""],[""name"",""test name 02""]]]",upstream,"node-tests.js: piped streaming CSV with header (sample-header.csv, PR #707)"
+papaparse,5.1.0,#699,Misplaced quotes inside unquoted fields were misread,applies,,parse,NoHeader=true,"A,B"",C\nD,E"",F","[[""A"",""B\\"""",""C""],[""D"",""E\\"""",""F""]]",upstream,"test-cases.js: misplaced quotes in data twice, not as opening quotes (PR #702)"
+papaparse,5.1.0,#709,The Range header logic of the network streamer,n/a,,,,,,,"network streaming (download), which Bodu does not have"
+papaparse,5.0.2,PR #696,A line starting with an unquoted empty field was misread,applies,,parse,NoHeader=true,",b,c\n""d"",e,f","[["""",""b"",""c""],[""d"",""e"",""f""]]",upstream,test-cases.js: line starts with unquoted empty field
+papaparse,5.0.0,#665,Delimiter guessing failed when not all fields are quoted,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,5.0.0,#636,Pausing and resuming in quick succession threw and could loop forever,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,5.0.0,#619,Data parsed through the step callback with headers was wrong,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,5.0.0,f6b1b36c3f,Delimiter guessing failed when mixed with commas,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,5.0.0,#595,Downloads sent an If-None-Match header,n/a,,,,,,,"network streaming (download), which Bodu does not have"
+papaparse,4.6.2,PR #569,Unparsing with skipEmptyLines greedy and headers,n/a,,,,,,,the unparse skipEmptyLines option
+papaparse,4.5.1,PR #542,Line breaks inside quoted header fields confused line ending detection,applies,1,parse,NoHeader=true,"""a\r\na"",""b""\n""c"",""d""\n""e"",""f""\n""g"",""h""\n""i"",""j""","[[""a\\r\\na"",""b""],[""c"",""d""],[""e"",""f""],[""g"",""h""],[""i"",""j""]]",upstream,"test-cases.js: carriage return in header inside quotes, with line feed endings"
+papaparse,4.5.1,PR #542,Line breaks inside quoted header fields confused line ending detection,applies,2,parse,NoHeader=true,"""a\na"",""b""\r\n""c"",""d""\r\n""e"",""f""\r\n""g"",""h""\r\n""i"",""j""","[[""a\\na"",""b""],[""c"",""d""],[""e"",""f""],[""g"",""h""],[""i"",""j""]]",upstream,"test-cases.js: line feed in header inside quotes, with CRLF endings"
+papaparse,4.5.1,#514,A line ending in a quoted field followed by a line starting with an empty field,applies,1,parse,NoHeader=true,"a,b,c\n,e,f\n,""h"",""i""\n,""k"",""l""","[[""a"",""b"",""c""],["""",""e"",""f""],["""",""h"",""i""],["""",""k"",""l""]]",upstream,"test-cases.js (commit 161466f): line ends with quoted field, first field of next line is empty"
+papaparse,4.5.1,#514,A line ending in a quoted field followed by a line starting with an empty field,applies,2,parse,NoHeader=true,"a,b,c\r\n,e,f\r\n,""h"",""i""\r\n,""k"",""l""","[[""a"",""b"",""c""],["""",""e"",""f""],["""",""h"",""i""],["""",""k"",""l""]]",upstream,the same test with CRLF
+papaparse,4.5.0,PR #509,Error rows were reported inaccurately with chunked parsing,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenAnErrorFollowsTheFirstRead_ShouldReportItsLineInTheStream,,derived,"the fix counts rows across chunks for its error reports; over a stream of a header and 3000 records of a,b (more than one 16 KiB read) ending in a record with an unterminated quote, DeserializeAsyncEnumerableAsync throws DelimitedFormatException whose LineNumber is that record's line in the whole input (3002), not its line within the read"
+papaparse,4.5.0,PR #504,A null primitive was turned into an object when copying the configuration,n/a,,,,,,,the JavaScript configuration object
+papaparse,4.5.0,PR #503,Comment lines were counted when guessing the delimiter,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,4.4.0,PR #490,Pause and resume failed with ReadableStreamStreamer,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,4.4.0,86c37d6108,Fake chunk callbacks and the streamer's paused state,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,4.3.5,#309,Empty lines were not skipped while guessing the delimiter,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,4.3.0,242e7ef0d9,A debugger statement was left in the library,n/a,,,,,,,the JavaScript runtime
+papaparse,4.1.3,4569c6d486,Mixed line endings were detected wrongly,dialect,,parse,NoHeader=true,"a,b,c\nd,e,f\rg,h,i\n","[[""a"",""b"",""c""],[""d"",""e"",""f""],[""g"",""h"",""i""]]",derived,"test-cases.js: the first line ending found (LF) is the only one, so the CR is data, giving [a,b,c], [d,e,f\rg,h,i] and a final empty row; Bodu takes a lone CR as a line terminator (the XML documentation of Utf8DelimitedReader.SkipLineEnding) and skips the final empty line"
+papaparse,4.1.3,cea69b4ac4,The newline option was ignored by delimiter detection,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,4.1.3,79154acb13,"complete(results, file) was not called with the file",n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,4.1.3,PR #305,The UMD wrapper,n/a,,,,,,,packaging
+papaparse,4.1.3,fbf22867bf,The global Papa variable name,n/a,,,,,,,packaging
+papaparse,4.1.2,69eeb71df6,An empty quoted field at the end of the input,applies,,parse,NoHeader=true,"a,b,""""\na,b,""""","[[""a"",""b"",""""],[""a"",""b"",""""]]",upstream,test-cases.js: empty quoted field at EOF is empty
+papaparse,4.1.2,#209,RequireJS wiring,n/a,,,,,,,packaging
+papaparse,4.1.2,#196,A Range header was sent when not streaming,n/a,,,,,,,"network streaming (download), which Bodu does not have"
+papaparse,4.1.1,#8,The complete callback received partial results,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,4.1.1,208b229a3a,Aborting parsing did not work,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,4.1.1,347befde6c,RequireJS integration,n/a,,,,,,,packaging
+papaparse,4.1.0,22d321095c,Cleanup and various minor fixes,unknown,,,,,,,"commit 22d3210 names no scenario, and the pull requests it cites (#136 allow aborting workers, #138 StringStreamer refactoring) are enhancements"
+papaparse,4.1.0,PR #120,The worker script path,n/a,,,,,,,browser file reading and web workers
+papaparse,4.0.7,#121,A quoted field with five quotes in a row and a delimiter,applies,,parse,NoHeader=true,"""1"",""cnonce="""""""",nc="""""""""",""2""","[[""1"",""cnonce=\\""\\"",nc=\\""\\"""",""2""]]",upstream,"test-cases.js: quoted field with 5 quotes in a row and a delimiter in there, too (the input reported in #121)"
+papaparse,4.0.6,#117,A Safari regression,n/a,,,,,,,browser file reading and web workers
+papaparse,4.0.5,#115,A quoted field at the end of a row holding a delimiter and a line break,applies,,parse,NoHeader=true,"a,b,""c,c\nc""\nd,e,f","[[""a"",""b"",""c,c\\nc""],[""d"",""e"",""f""]]",upstream,test-cases.js: quoted fields at end of row with delimiter and line break
+papaparse,4.0.4,b209603bad,Preview when streaming files,n/a,,,,,,,"the preview option, which Bodu does not have"
+papaparse,4.0.3,c483ced162,The comment character and the delimiter were compared loosely,n/a,,,,,,,the JavaScript runtime
+papaparse,4.0.2,a126dd250e,Some quoted fields were misread,applies,1,parse,NoHeader=true,"a,b,""c""""c""""""\nd,e,f","[[""a"",""b"",""c\\""c\\""""],[""d"",""e"",""f""]]",upstream,test-cases.js: quoted field at end of row (but not at EOF) has quotes
+papaparse,4.0.2,a126dd250e,Some quoted fields were misread,applies,2,parse,NoHeader=true,",,\n,,,","[["""","""",""""],["""","""","""",""""]]",upstream,test-cases.js: input is just empty fields
+papaparse,4.0.1,#111,The complete callback was not invoked when parsing through jQuery,n/a,,,,,,,the jQuery plugin
+papaparse,4.0.0,#110,The error callback was not invoked when a download threw,n/a,,,,,,,"network streaming (download), which Bodu does not have"
+papaparse,4.0.0,3ea908439f,Bug fixes in the core parser rewrite,unknown,,,,,,,"the release notes of Papa Parse 4 (https://github.com/mholt/PapaParse/releases, 4.0.5) list only 'Bug fixes', and commit 3ea9084 rewrites the parser and its tests without naming them"
+papaparse,3.1.4,#108,TRUE and FALSE were not converted to booleans by dynamic typing,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,3.1.4,#105,File streaming outside workers in Safari,n/a,,,,,,,browser file reading and web workers
+papaparse,3.1.4,#106,File parsing in workers in Safari,n/a,,,,,,,browser file reading and web workers
+papaparse,3.1.3,#92,"Pause, resume and preview",n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,3.1.2,#84,A stray semicolon and trailing comma broke older browsers,n/a,,,,,,,the JavaScript runtime
+papaparse,3.1.1,#83,Extra fields in header mode were mishandled,dialect,1,reject,,"A,B,C\r\na,b,c,d,e\r\nf,g,h",DelimitedFormatException,derived,"test-cases.js 'Row with too many fields' keeps d and e under __parsed_extra and reports TooManyFields; Bodu's documented default field-count policy is Strict, which rejects the record (parser-policies.md line 19)"
+papaparse,3.1.1,#83,Extra fields in header mode were mishandled,applies,2,parse,,"A,B,C",[],upstream,test-cases.js: header row only gives no records
+papaparse,3.1.1,#83,Extra fields in header mode were mishandled,applies,3,parse,,"A,B,C\r\na,b,","[[[""A"",""a""],[""B"",""b""],[""C"",""""]]]",upstream,test-cases.js: row with enough fields but blank field at end
+papaparse,3.1.0,6d21cbc11a,A null value was written as text when converting JSON to CSV; now an empty value (#82),dialect,,write-reject,NoHeader=true,"[[""a"",null]]",ArgumentNullException,derived,"Papa Parse writes null as an empty field; Bodu's Utf8DelimitedWriter.WriteString documents ArgumentNullException for a null value, leaving null handling to the serializer"
+papaparse,3.1.0,#77,"With a header row, preview counted the header",n/a,,,,,,,"the preview option, which Bodu does not have"
+papaparse,3.1.0,#76,Firefox could not use FileReader in a worker,n/a,,,,,,,browser file reading and web workers
+papaparse,3.1.0,#74,Memory was freed when not streaming or chunking,n/a,,,,,,,browser file reading and web workers
+papaparse,3.1.0,c1d6d1ae70,The line count ignored line breaks inside quoted fields,applies,,unit,,Utf8DelimitedReaderTests.Read_WhenAnErrorFollowsAQuotedLineBreak_ShouldCountTheQuotedLine,,derived,"commit c1d6d1a (no test) counts the line breaks inside quoted fields; reading a\n""b\nc""\n""d (NoHeader) throws DelimitedFormatException with LineNumber 4"
+papaparse,3.1.0,,The complete callback did not fire properly when parsing in a worker,n/a,,,,,,,browser file reading and web workers
+papaparse,3.0.1,#67,Quotes around a delimiter inside a quoted field (the edge case of escaped quotes the 3.1 notes name),applies,1,parse,NoHeader=true,"A,"""""","""""",C","[[""A"",""\\"",\\"""",""C""]]",upstream,test-cases.js: quoted field with quotes around delimiter
+papaparse,3.0.1,#67,Quotes around a delimiter inside a quoted field (the edge case of escaped quotes the 3.1 notes name),applies,2,parse,NoHeader=true,"A,"","""""",C","[[""A"","",\\"""",""C""]]",upstream,test-cases.js: quoted field with quotes on one side of delimiter
+papaparse,3.0.1,51a43ea648,A quick fix in the file streamer,n/a,,,,,,,browser file reading and web workers
+papaparse,3.0.0,0400748b69,Network streaming in Chrome,n/a,,,,,,,"network streaming (download), which Bodu does not have"
+papaparse,3.0.0,919a5ad255,Numerous improvements and significant bug fixes,unknown,,,,,,,"commit 919a5ad names no scenario and adds no test; the 3.0 release notes (https://github.com/mholt/PapaParse/releases, 3.0.0) list improved handling of misplaced quotes without an example"
+papaparse,3.0.0,e3d33a6678,Bug fixes and performance improvements,unknown,,,,,,,commit e3d33a6 names no scenario and adds no test
+papaparse,3.0.0,6ea06d4a6f,A bug in guessDelimiter,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,2.1.4,7ee167d675,Streaming large files cut lines at chunk boundaries or left off the last line,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenRecordsStraddleReadBoundaries_ShouldJoinThem,,derived,"commit 7ee167d joins the line cut at each chunk boundary and keeps the last line; over a stream of a header and records totalling 40 KiB whose records straddle each 16 KiB read, the last without a line ending, DeserializeAsyncEnumerableAsync yields every record whole"
+papaparse,2.1.3,#43,Classic Mac files (CR line endings) were read as one line,applies,,parse,,"F1,F2,F3\rV1,2,V3","[[[""F1"",""V1""],[""F2"",""2""],[""F3"",""V3""]]]",derived,commits 0dac71b and 774ed83 make a lone CR end a line; Bodu takes a lone CR as a line terminator
+papaparse,2.1.3,#44,A string was compared to a number in the chunk size check,n/a,,,,,,,the JavaScript runtime
+papaparse,2.0.8,0ef7affc73,Use with Ember.js,n/a,,,,,,,the JavaScript runtime
+papaparse,2.0.6,PR #33,Aborting from the step callback was ignored,n/a,,,,,,,"the step, chunk and complete callbacks with pause, resume and abort, which Bodu does not have"
+papaparse,2.0.5,f25df7194f,An empty line at the beginning of a file was mishandled,applies,,parse,,"\nF1,F2,F3\nV1,2,V3","[[[""F1"",""V1""],[""F2"",""2""],[""F3"",""V3""]]]",derived,commit f25df71 (no test) is the file-reading half of the #30 fix; the header follows the empty line
+papaparse,2.0.4,#30,An empty first line of input was mishandled,applies,,parse,,"\r\nF1,F2,F3\r\nV1,2,V3","[[[""F1"",""V1""],[""F2"",""2""],[""F3"",""V3""]]]",upstream,"tests.js (commit 2194d2d) reads F1,F2,F3 as the header after the empty first line; its input also holds a line of one space, which Papa Parse 2 dropped and is left out here"
+papaparse,2.0.3,68d8798c14,Streaming truncated the last line,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenTheLastRecordHasNoLineEnding_ShouldYieldIt,,derived,"commit 68d8798 (no test) keeps the last line when streaming; over a stream returning a,b\n1,2\n3,4 three bytes per read, DeserializeAsyncEnumerableAsync yields { a = 1, b = 2 } and { a = 3, b = 4 }"
+papaparse,2.0.2,#18,"File type checking rejected valid files (#18, #22)",n/a,,,,,,,browser file reading and web workers
+papaparse,1.1.1,#14,Delimiter guessing was slow,n/a,,,,,,,"delimiter guessing, which Bodu does not have"
+papaparse,1.0.0,#9,Errors were not keyed by row,n/a,,,,,,,the error structure of the JavaScript result object
+papaparse,1.0.0,e4facc2b54,Significant fixes and refactoring,unknown,,,,,,,"commit e4facc2 names no scenario, and its test changes do not single one out"
+papaparse,0.6.1,89b570ba46,The floats regular expression of dynamic typing,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,0.6.0,#5,A quote followed by CRLF was not taken as the end of a field,applies,,parse,NoHeader=true,"""a""\r\n""b""\r\n","[[""a""],[""b""]]",derived,commit 7accd53 (no test) lets a CRLF after a closing quote end the field and the line
+papaparse,0.5.9,5bcf28d6d9,CR characters were dropped from field values; only CRLF and LF end a line,applies,,parse,NoHeader=true,"""a\rb"",c\r\nd,e","[[""a\\rb"",""c""],[""d"",""e""]]",derived,commit 5bcf28d (no test) keeps a CR inside a value and treats CRLF as one line ending
+papaparse,0.5.7,#4,An empty first field was mishandled,applies,,parse,NoHeader=true,",b,c\nd,e,f","[["""",""b"",""c""],[""d"",""e"",""f""]]",derived,commit c47809e (no test) fixes the empty first field
+papaparse,0.5.6,078bc8858a,Parsing failed when no delimiter was given,n/a,,,,,,,the JavaScript configuration defaults
+papaparse,0.5.5,e5b22b86e8,A quote at the first or last character of the input was not recognised,applies,,parse,NoHeader=true,"""a"",""b""","[[""a"",""b""]]",derived,commit e5b22b8 (no test) lets a quote open at the start and close at the end of the input
+papaparse,0.5.4,b2b9ed2c18,Internet Explorer 8 compatibility,n/a,,,,,,,platform: Internet Explorer 8
+papaparse,0.5.3,eb1d7eab10,Negative numbers in dynamic typing,n/a,,,,,,,"dynamic typing, which Bodu does not have (its serializer converts with the .NET parsers)"
+papaparse,0.5.2,486561da4a,"Bug fixes, optimizations and dynamic typing",unknown,,,,,,,commit 486561d names no scenario and adds no test
