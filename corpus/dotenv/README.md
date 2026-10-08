@@ -171,10 +171,25 @@ catalogue met a message that misnamed what it reported. Each has an issue and is
 
 - **#838.** `DotEnvFormatException.ColumnNumber` is documented as the 1-based column of the error within its line, but
   the reader passed column 1 for every error. It now reports the column of the byte that `Offset` gives, counted in
-  bytes from the start of its line, and the table in `docs/guides/formats/error-handling.md` shows the real columns.
+  bytes from the start of its line, and an unterminated quoted value is reported at its opening quote, so the line, the
+  column and the offset always describe one position; the table and the example in
+  `docs/guides/formats/error-handling.md` show the real positions.
 - **#839.** `DotEnvLimits.MaxEntryLength` was documented as the bound a resumable streaming path applies to an entry,
   but the reader has no streaming path, nothing read the constant, and its message (`Format_Invalid_DotEnvEntryTooLong`)
   was never used. The class and the message are removed.
 - **#840.** The message for an invalid key named the offending character by casting its first byte to a `char`, so a
   character outside ASCII came out as the Latin-1 character of its lead byte. It now names the character as written, or
   a byte that begins no valid UTF-8 sequence in hex, as `0xFF`.
+
+Fixing those turned up three more defects that no row reaches. Each has an issue and is fixed:
+
+- **#902.** In double quotes, a backslash before a character outside ASCII cast the character's first byte to a `char`,
+  so the value was mis-decoded, or failed as unterminated when the character came just before the closing quote, and a
+  byte that begins no valid UTF-8 sequence could swallow the closing quote. The character after such a backslash is now
+  decoded whole and keeps its backslash, as `docs/guides/formats/dotenv.md:63` says any other escape does, and bytes
+  that are not valid UTF-8 read as U+FFFD, as they do in single quotes and unquoted values.
+- **#903.** A lone CR inside a double-quoted value was kept in the value but not counted as a line, so every later error
+  reported a line one too low. It now counts, as a LF and a CR LF do.
+- **#905.** `Utf8DotEnvReader.LineNumber` reported the line after each comment and entry, because the reader consumed
+  the line ending before it returned the token. Each token now reports the line on which it begins, and a double-quoted
+  value spanning lines the line of its opening quote.
