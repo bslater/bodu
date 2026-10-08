@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+
 using Bodu.Text.Delimited.Document;
 using Bodu.Text.Delimited.Reader;
 
@@ -51,6 +53,40 @@ public partial class Utf8DelimitedReaderTests
         using DelimitedDocument document = DelimitedDocument.Parse("id,name,id\n1,Ada,2\n"u8, options);
 
         Assert.AreEqual("2", document.RootElement[0].GetProperty("id").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DelimitedDuplicateHeaderBehavior.TakeFirst" /> leaves a duplicated name to its first
+    /// column and reports every later column with the name under an empty name, both as the record's property names and
+    /// in <see cref="Utf8DelimitedReader.Headers" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDuplicateHeaderTakeFirst_ShouldReportLaterColumnsUnderAnEmptyName()
+    {
+        const string Source = "a,b,a,a\n1,2,3,4\n";
+        var options = new DelimitedReaderOptions { DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeFirst };
+
+        CollectionAssert.AreEqual(
+            new[] { "StartArray", "StartObject", "Name:a", "String:1", "Name:b", "String:2", "Name:", "String:3", "Name:", "String:4", "EndObject", "EndArray" },
+            Transcribe(Source, options));
+        CollectionAssert.AreEqual(new[] { "a", "b", string.Empty, string.Empty }, ReadHeaders(Source, options));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DelimitedDuplicateHeaderBehavior.TakeLast" /> leaves a duplicated name to its last
+    /// column and reports every earlier column with the name under an empty name, both as the record's property names
+    /// and in <see cref="Utf8DelimitedReader.Headers" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDuplicateHeaderTakeLast_ShouldReportEarlierColumnsUnderAnEmptyName()
+    {
+        const string Source = "a,b,a,a\n1,2,3,4\n";
+        var options = new DelimitedReaderOptions { DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeLast };
+
+        CollectionAssert.AreEqual(
+            new[] { "StartArray", "StartObject", "Name:", "String:1", "Name:b", "String:2", "Name:", "String:3", "Name:a", "String:4", "EndObject", "EndArray" },
+            Transcribe(Source, options));
+        CollectionAssert.AreEqual(new[] { string.Empty, "b", string.Empty, "a" }, ReadHeaders(Source, options));
     }
 
     /// <summary>
@@ -117,5 +153,21 @@ public partial class Utf8DelimitedReaderTests
         Assert.AreEqual(1, document.RootElement.GetArrayLength());
         Assert.AreEqual("3", document.RootElement[0].GetProperty("a").GetString());
         Assert.AreEqual("4", document.RootElement[0].GetProperty("b").GetString());
+    }
+
+    /// <summary>
+    /// Reads the whole of a source and returns the header names the reader reports at its end.
+    /// </summary>
+    /// <param name="source">The delimited source text.</param>
+    /// <param name="options">The reader options.</param>
+    /// <returns>The header names.</returns>
+    private static string[] ReadHeaders(string source, DelimitedReaderOptions options)
+    {
+        var reader = new Utf8DelimitedReader(Encoding.UTF8.GetBytes(source), options);
+        while (reader.Read())
+        {
+        }
+
+        return [.. reader.Headers];
     }
 }
