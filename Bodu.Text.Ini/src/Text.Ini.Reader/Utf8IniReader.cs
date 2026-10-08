@@ -23,7 +23,15 @@ namespace Bodu.Text.Ini.Reader;
 /// </para>
 /// <para>
 /// The reader surfaces raw text in source order; it does not resolve duplicate sections/keys, apply case rules, or
-/// strip inline comments. A value retains everything after the assignment to the end of the line.
+/// strip inline comments. The spaces and tabs around a key and around a value are trimmed; everything else in a value,
+/// to the end of the line, is literal, inline comment markers included.
+/// </para>
+/// <para>
+/// A section name runs from the <c>[</c> to the first <c>]</c> on the line that only whitespace or a comment follows,
+/// so a name may contain <c>]</c>: <c>[foo]bar]</c> names the section <c>foo]bar</c>. A comment starts with <c>;</c>
+/// or, unless <see cref="IniReaderOptions.DisallowHashComments" /> is set, <c>#</c>. A comment after a header is
+/// skipped rather than reported as a <see cref="IniTokenType.Comment" /> token, and any other text after the header
+/// throws <see cref="IniFormatException" />.
 /// </para>
 /// </remarks>
 public ref struct Utf8IniReader
@@ -145,7 +153,7 @@ public ref struct Utf8IniReader
                 continue;
             }
 
-            if (b == (byte)';' || (b == (byte)'#' && _options.AllowHashComments))
+            if (IsCommentStart(b))
             {
                 if (ReadComment())
                     return true;
@@ -194,32 +202,95 @@ public ref struct Utf8IniReader
     /// <summary>
     /// Reads a section header (<c>[name]</c>) beginning at the cursor.
     /// </summary>
-    /// <exception cref="IniFormatException">Thrown when the header is unterminated or the name is empty.</exception>
+    /// <remarks>
+    /// The name runs to the first <c>]</c> on the line that only whitespace or a comment follows, so it may itself
+    /// contain <c>]</c>. The whitespace or comment after that <c>]</c> is skipped.
+    /// </remarks>
+    /// <exception cref="IniFormatException">
+    /// Thrown when the line holds no <c>]</c>, when text that is neither whitespace nor a comment follows every
+    /// <c>]</c> on it, or when the name is empty.
+    /// </exception>
     private void ReadSectionHeader()
     {
         int headerLine = _line;
         _position++; // consume '['
 
         int start = _position;
-        while (_position < _data.Length && _data[_position] is not ((byte)']' or (byte)'\n' or (byte)'\r'))
-            _position++;
+        SkipToEndOfLine();
+        int lineEnd = _position;
 
-        if (_position >= _data.Length || _data[_position] != (byte)']')
-            throw Error(IniResourceStrings.Format_Invalid_IniUnterminatedSection, headerLine);
+        int end = FindHeaderEnd(start, lineEnd, out int trailingText);
+        if (end < 0)
+        {
+            if (trailingText < 0)
+                throw Error(IniResourceStrings.Format_Invalid_IniUnterminatedSection, headerLine);
 
-        int end = _position;
-        _position++; // consume ']'
+            _position = trailingText;
+            throw Error(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniSectionTrailingText, headerLine), headerLine);
+        }
+
+        _position = end + 1; // consume through the ']' that ends the header
 
         (int nameStart, int nameLength) = Trim(start, end);
         if (nameLength == 0)
             throw Error(IniResourceStrings.Format_Invalid_IniEmptySectionName, headerLine);
 
-        SkipToEndOfLine();
+        _position = lineEnd; // skip the whitespace or comment after the header
         SkipLineEnding();
 
         _current = Encoding.UTF8.GetString(_data.Slice(nameStart, nameLength));
         _tokenType = IniTokenType.SectionHeader;
     }
+
+    /// <summary>
+    /// Finds the <c>]</c> that ends a section header: the first on the line that only whitespace or a comment follows.
+    /// </summary>
+    /// <param name="start">The offset just past the opening <c>[</c>.</param>
+    /// <param name="lineEnd">The offset of the line terminator, or the length of the data.</param>
+    /// <param name="trailingText">
+    /// When the method returns -1, the offset of the first byte that is not whitespace after the last <c>]</c> on the
+    /// line, or -1 when the line holds no <c>]</c>.
+    /// </param>
+    /// <returns>The offset of the <c>]</c> that ends the header, or -1 when no <c>]</c> on the line does.</returns>
+    private readonly int FindHeaderEnd(int start, int lineEnd, out int trailingText)
+    {
+        trailingText = -1;
+        int index = start;
+
+        while (index < lineEnd)
+        {
+            if (_data[index] != (byte)']')
+            {
+                index++;
+                continue;
+            }
+
+            // What follows this ']' after any whitespace decides: the end of the line or a comment ends the header
+            // here, and anything else is part of the name, or the text after the header when no later ']' ends it. The
+            // scan resumes past the whitespace, which holds no ']', so no byte is examined more than twice.
+            int next = index + 1;
+            while (next < lineEnd && _data[next] is (byte)' ' or (byte)'\t')
+                next++;
+
+            if (next == lineEnd || IsCommentStart(_data[next]))
+                return index;
+
+            trailingText = next;
+            index = next;
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Determines whether a byte starts a comment: <c>;</c> always, and <c>#</c> unless the options disallow it.
+    /// </summary>
+    /// <param name="value">The byte to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="value" /> starts a comment; otherwise <see langword="false" />.
+    /// </returns>
+    private readonly bool IsCommentStart(byte value) =>
+        value == (byte)';' || (value == (byte)'#' && _options.AllowHashComments);
 
     /// <summary>
     /// Reads a <c>key=value</c> entry beginning at the cursor, emitting the key and staging the value.

@@ -19,6 +19,71 @@ namespace Bodu.Text.Ini.Writer;
 [TestClass]
 public partial class Utf8IniWriterTests
 {
+    /// <summary>The characters that matter to the INI dialect, which the short-name sweeps combine.</summary>
+    private const string SweepAlphabet = "a \t=[];#\r\n\uFEFF";
+
+    /// <summary>The longest name the short-name sweeps try.</summary>
+    private const int SweepMaxLength = 4;
+
+    /// <summary>
+    /// Enumerates every name of one to <see cref="SweepMaxLength" /> characters drawn from <see cref="SweepAlphabet" />.
+    /// </summary>
+    /// <returns>The names, shortest first.</returns>
+    private static IEnumerable<string> ShortNames()
+    {
+        int combinations = 1;
+        for (int length = 1; length <= SweepMaxLength; length++)
+        {
+            combinations *= SweepAlphabet.Length;
+            for (int combination = 0; combination < combinations; combination++)
+            {
+                var chars = new char[length];
+                int rest = combination;
+                for (int i = 0; i < length; i++)
+                {
+                    chars[i] = SweepAlphabet[rest % SweepAlphabet.Length];
+                    rest /= SweepAlphabet.Length;
+                }
+
+                yield return new string(chars);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reads INI bytes back as a transcript of <c>Kind:Text</c> tokens separated by <c>|</c>.
+    /// </summary>
+    /// <param name="utf8Ini">The INI bytes.</param>
+    /// <returns>The transcript, or a description of the <see cref="IniFormatException" /> the bytes raise.</returns>
+    private static string ReadBack(ReadOnlySpan<byte> utf8Ini)
+    {
+        var tokens = new List<string>();
+        try
+        {
+            var reader = new Utf8IniReader(utf8Ini);
+            while (reader.Read())
+                tokens.Add($"{reader.TokenType}:{reader.GetString()}");
+        }
+        catch (IniFormatException ex)
+        {
+            tokens.Add($"throws IniFormatException: {ex.Message}");
+        }
+
+        return string.Join('|', tokens);
+    }
+
+    /// <summary>
+    /// Writes text with its line breaks, tabs and U+FEFF escaped, for a failure message.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns>The escaped text, quoted.</returns>
+    private static string Escape(string text) =>
+        "\"" + text
+            .Replace("\r", @"\r", StringComparison.Ordinal)
+            .Replace("\n", @"\n", StringComparison.Ordinal)
+            .Replace("\t", @"\t", StringComparison.Ordinal)
+            .Replace("\uFEFF", @"\uFEFF", StringComparison.Ordinal) + "\"";
+
     /// <summary>
     /// Verifies that a global key, a section header, and section entries are emitted in order.
     /// </summary>
@@ -36,21 +101,6 @@ public partial class Utf8IniWriterTests
         writer.Flush();
 
         Assert.AreEqual("key0=a\n[db]\nhost=localhost\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
-    }
-
-    /// <summary>
-    /// Verifies that a comment is written with the configured prefix.
-    /// </summary>
-    [TestMethod]
-    public void WriteComment_WhenCustomPrefix_ShouldUseIt()
-    {
-        var buffer = new ArrayBufferWriter<byte>();
-        var writer = new Utf8IniWriter(buffer, new IniWriterOptions { CommentPrefix = '#' });
-
-        writer.WriteComment(" a note");
-        writer.Flush();
-
-        Assert.AreEqual("# a note\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
     }
 
     /// <summary>

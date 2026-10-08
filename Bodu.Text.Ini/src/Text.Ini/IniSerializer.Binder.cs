@@ -61,6 +61,10 @@ public static partial class IniSerializer
     /// <param name="writer">The writer.</param>
     /// <param name="dictionary">The root dictionary.</param>
     /// <param name="options">The serializer options.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when a section nests beyond INI's two levels, or when a key, section name or value cannot be written so
+    /// that it reads back unchanged.
+    /// </exception>
     private static void WriteRootDictionary(ref Utf8IniWriter writer, IDictionary dictionary, IniSerializerOptions options)
     {
         foreach (DictionaryEntry entry in dictionary)
@@ -69,7 +73,7 @@ public static partial class IniSerializer
             if (entry.Value is IDictionary nested)
             {
                 if (IsGlobalName(key, options))
-                    WriteDictionaryEntries(ref writer, nested, options);
+                    WriteDictionaryEntries(ref writer, string.Empty, nested, options);
 
                 continue;
             }
@@ -77,8 +81,7 @@ public static partial class IniSerializer
             if (ShouldSkipDictionaryValue(entry.Value, options))
                 continue;
 
-            writer.WritePropertyName(key);
-            writer.WriteString(ValueToString(entry.Value));
+            WriteEntry(ref writer, string.Empty, key, ValueToString(entry.Value));
         }
 
         foreach (DictionaryEntry entry in dictionary)
@@ -86,8 +89,8 @@ public static partial class IniSerializer
             string key = KeyToString(entry.Key);
             if (entry.Value is IDictionary nested && !IsGlobalName(key, options))
             {
-                writer.WriteSectionHeader(key);
-                WriteDictionaryEntries(ref writer, nested, options);
+                WriteHeader(ref writer, key);
+                WriteDictionaryEntries(ref writer, key, nested, options);
             }
         }
     }
@@ -100,7 +103,8 @@ public static partial class IniSerializer
     /// <param name="value">The root object.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when a member cannot be represented within INI's two levels.
+    /// Thrown when a member cannot be represented within INI's two levels, or when a key, section name or value cannot
+    /// be written so that it reads back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -116,8 +120,7 @@ public static partial class IniSerializer
                 if (ShouldSkipOnWrite(memberValue, member, options))
                     continue;
 
-                writer.WritePropertyName(member.Name);
-                writer.WriteString(ValueToString(memberValue));
+                WriteEntry(ref writer, string.Empty, member.Name, ValueToString(memberValue));
             }
             else if (IsGlobalName(member.Name, options))
             {
@@ -139,7 +142,7 @@ public static partial class IniSerializer
             if (ShouldSkipOnWrite(memberValue, member, options))
                 continue;
 
-            writer.WriteSectionHeader(member.Name);
+            WriteHeader(ref writer, member.Name);
             if (memberValue is not null)
                 WriteSectionBody(ref writer, member.Name, memberValue, options);
         }
@@ -153,14 +156,19 @@ public static partial class IniSerializer
     /// <param name="sectionName">The section name, used for diagnostics.</param>
     /// <param name="body">The section-shaped value.</param>
     /// <param name="options">The serializer options.</param>
-    /// <exception cref="IniSerializationException">Thrown when the value nests beyond INI's two levels.</exception>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when the value nests beyond INI's two levels, or when a key or value cannot be written so that it reads
+    /// back unchanged.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteSectionBody(ref Utf8IniWriter writer, string sectionName, object body, IniSerializerOptions options)
     {
+        // The reserved global section's entries are written as global keys, so a refused entry is reported as global.
+        string entrySection = IsGlobalName(sectionName, options) ? string.Empty : sectionName;
         if (body is IDictionary dictionary)
         {
-            WriteDictionaryEntries(ref writer, dictionary, options);
+            WriteDictionaryEntries(ref writer, entrySection, dictionary, options);
             return;
         }
 
@@ -181,8 +189,7 @@ public static partial class IniSerializer
             if (ShouldSkipOnWrite(memberValue, member, options))
                 continue;
 
-            writer.WritePropertyName(member.Name);
-            writer.WriteString(ValueToString(memberValue));
+            WriteEntry(ref writer, entrySection, member.Name, ValueToString(memberValue));
         }
 
         (body as IOnSerialized)?.OnSerialized();
@@ -192,12 +199,14 @@ public static partial class IniSerializer
     /// Writes the entries of a string-keyed dictionary as <c>key=value</c> lines.
     /// </summary>
     /// <param name="writer">The writer.</param>
+    /// <param name="sectionName">The section the entries are written in, or an empty string for global entries.</param>
     /// <param name="entries">The dictionary to write.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when an entry value is itself a dictionary, which INI cannot represent inside a section.
+    /// Thrown when an entry value is itself a dictionary, which INI cannot represent inside a section, or when an
+    /// entry's key or value cannot be written so that it reads back unchanged.
     /// </exception>
-    private static void WriteDictionaryEntries(ref Utf8IniWriter writer, IDictionary entries, IniSerializerOptions options)
+    private static void WriteDictionaryEntries(ref Utf8IniWriter writer, string sectionName, IDictionary entries, IniSerializerOptions options)
     {
         foreach (DictionaryEntry entry in entries)
         {
@@ -207,8 +216,62 @@ public static partial class IniSerializer
             if (ShouldSkipDictionaryValue(entry.Value, options))
                 continue;
 
-            writer.WritePropertyName(KeyToString(entry.Key));
-            writer.WriteString(ValueToString(entry.Value));
+            WriteEntry(ref writer, sectionName, KeyToString(entry.Key), ValueToString(entry.Value));
+        }
+    }
+
+    /// <summary>
+    /// Writes one <c>key=value</c> entry, reporting a key or value the writer refuses as an
+    /// <see cref="IniSerializationException" /> that names the section and the key.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="sectionName">The section the entry is written in, or an empty string for a global entry.</param>
+    /// <param name="key">The key.</param>
+    /// <param name="value">The value.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when <see cref="Utf8IniWriter" /> refuses the key or the value because it would not read back unchanged;
+    /// the writer's <see cref="ArgumentException" /> is the inner exception.
+    /// </exception>
+    private static void WriteEntry(ref Utf8IniWriter writer, string sectionName, string key, string value)
+    {
+        try
+        {
+            writer.WritePropertyName(key);
+        }
+        catch (ArgumentException ex) when (ex.GetType() == typeof(ArgumentException))
+        {
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniUnwritableKey, sectionName, key), ex);
+        }
+
+        try
+        {
+            writer.WriteString(value);
+        }
+        catch (ArgumentException ex) when (ex.GetType() == typeof(ArgumentException))
+        {
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniUnwritableValue, sectionName, key), ex);
+        }
+    }
+
+    /// <summary>
+    /// Writes a section header, reporting a section name the writer refuses as an
+    /// <see cref="IniSerializationException" /> that names the section.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="sectionName">The section name.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when <see cref="Utf8IniWriter" /> refuses the name because it would not read back unchanged; the writer's
+    /// <see cref="ArgumentException" /> is the inner exception.
+    /// </exception>
+    private static void WriteHeader(ref Utf8IniWriter writer, string sectionName)
+    {
+        try
+        {
+            writer.WriteSectionHeader(sectionName);
+        }
+        catch (ArgumentException ex) when (ex.GetType() == typeof(ArgumentException))
+        {
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniUnwritableSectionName, sectionName), ex);
         }
     }
 

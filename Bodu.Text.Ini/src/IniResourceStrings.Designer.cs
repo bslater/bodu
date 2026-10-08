@@ -75,6 +75,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected text follows the INI section header on line {0}; only whitespace or a comment may follow the closing ']'..
+        /// </summary>
+        internal static string Format_Invalid_IniSectionTrailingText {
+            get {
+                return ResourceManager.GetString("Format_Invalid_IniSectionTrailingText", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Malformed INI entry on line {0}; expected 'key=value'..
         /// </summary>
         internal static string Format_Invalid_IniMissingAssignment {
@@ -179,6 +188,87 @@ namespace Bodu {
         internal static string Op_Invalid_IniSectionNotFound {
             get {
                 return ResourceManager.GetString("Op_Invalid_IniSectionNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The text contains a line break, which a single INI line cannot hold..
+        /// </summary>
+        internal static string Arg_Invalid_IniLineBreak {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniLineBreak", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The text begins or ends with a space or a tab, which the INI reader trims..
+        /// </summary>
+        internal static string Arg_Invalid_IniSurroundingWhitespace {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSurroundingWhitespace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An INI key cannot contain '=', where the reader would end the key..
+        /// </summary>
+        internal static string Arg_Invalid_IniKeyDelimiter {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniKeyDelimiter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An INI key cannot begin with '[', ';' or '#', which the reader takes for a section header or a comment..
+        /// </summary>
+        internal static string Arg_Invalid_IniKeyStart {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniKeyStart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The text begins with U+FEFF, which the INI reader skips as a byte order mark at the start of a document..
+        /// </summary>
+        internal static string Arg_Invalid_IniByteOrderMark {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniByteOrderMark", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An INI section name cannot hold a ']' followed by ';' or '#', where the reader would end the name..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionNameComment {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionNameComment", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section '{0}' has the key '{1}', which cannot be written so that it reads back unchanged..
+        /// </summary>
+        internal static string Op_Invalid_IniUnwritableKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniUnwritableKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section '{0}' has a value for the key '{1}' that cannot be written so that it reads back unchanged..
+        /// </summary>
+        internal static string Op_Invalid_IniUnwritableValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniUnwritableValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section name '{0}' cannot be written so that it reads back unchanged..
+        /// </summary>
+        internal static string Op_Invalid_IniUnwritableSectionName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniUnwritableSectionName", resourceCulture);
             }
         }
     }

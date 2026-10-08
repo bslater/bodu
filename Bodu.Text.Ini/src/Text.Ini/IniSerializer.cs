@@ -42,7 +42,10 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The INI text.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, or when <paramref name="value" />
+    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
+    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
+    /// inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -65,7 +68,10 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, or when <paramref name="value" />
+    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
+    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
+    /// inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -94,7 +100,10 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, or when <paramref name="value" />
+    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
+    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
+    /// inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]

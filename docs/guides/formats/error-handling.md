@@ -175,7 +175,7 @@ As with Delimited, a syntax error in the same call is the format exception (`Api
 
 ## Pattern 6 - INI: malformed input and document-model rules
 
-The INI reader's dialect is deliberately conservative: `=` is the only delimiter, a header must close on its line, and comments are full-line only. Those produce positioned `IniFormatException`s:
+The INI reader's dialect is deliberately conservative: `=` is the only delimiter, a header must close on its line with nothing but whitespace or a comment after it, and any other comment is a line of its own. Those produce positioned `IniFormatException`s:
 
 <!-- compile -->
 ```csharp
@@ -196,6 +196,7 @@ catch (IniFormatException ex)
 | Input | Message | Position |
 |---|---|---|
 | `[server` / `port=8080` | *An INI section header was not terminated with ']' before the end of the line.* | line 1, offset 7 |
+| `[server] port` / `port=8080` | *Unexpected text follows the INI section header on line 1; only whitespace or a comment may follow the closing ']'.* | line 1, offset 9 |
 | `# c` / `k=1` with `DisallowHashComments = true` | *Malformed INI entry on line 1; expected 'key=value'.* | line 1, offset 3 |
 | `server=1` / `[server]` / `port=8080` | *The global INI key 'server' collides with a section of the same name.* | no position (`null`) |
 

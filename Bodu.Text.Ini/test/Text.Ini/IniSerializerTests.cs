@@ -77,6 +77,36 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model with a public global key and a private property, which is not part of its serialized form.
+    /// </summary>
+    private sealed class PrivateMemberConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets a value the serializer must not write, because the property is private.</summary>
+        private string Ignored { get; set; } = "ignored";
+    }
+
+    /// <summary>
+    /// A root model whose only member is an integer.
+    /// </summary>
+    private sealed class PortConfig
+    {
+        /// <summary>Gets or sets the port number (a global key).</summary>
+        public int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose only member is a <see cref="float" />.
+    /// </summary>
+    private sealed class RatioConfig
+    {
+        /// <summary>Gets or sets the ratio (a global key).</summary>
+        public float Ratio { get; set; }
+    }
+
+    /// <summary>
     /// A hand-written <see cref="IIniSectionFactory{TSection}" /> for <see cref="DatabaseSection" />, standing in for
     /// the generated factory in the reflection-free section-overload tests.
     /// </summary>

@@ -37,7 +37,7 @@ The serializer binders use reflection by default. For trimming and ahead-of-time
 
 ## Trivia and round-trip preservation
 
-The read-only DOMs drop comments. The mutable DOMs preserve what each format needs for faithful rewrites: DotEnv keeps the per-entry `export` flag, and INI nodes carry `LeadingComments` (comment lines before a section or entry) plus a `TrailingComments` block per object. INI deliberately does **not** model inline comments - the dialect treats everything after `=` as value content, so an emitted inline comment would be re-read as part of the value.
+The read-only DOMs drop comments. The mutable DOMs preserve what each format needs for faithful rewrites: DotEnv keeps the per-entry `export` flag, and INI nodes carry `LeadingComments` (comment lines before a section or entry) plus a `TrailingComments` block per object. INI deliberately does **not** model inline comments - the dialect treats an inline `;` or `#` and the text after it as value content, so an emitted inline comment would be re-read as part of the value.
 
 ## Dialect policies
 

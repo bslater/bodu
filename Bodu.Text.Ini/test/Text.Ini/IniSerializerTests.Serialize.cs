@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
+
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini;
@@ -125,5 +127,115 @@ public partial class IniSerializerTests
         {
             _ = IniSerializer.Serialize(config);
         });
+    }
+
+    /// <summary>
+    /// Verifies that only a POCO's public members are written, so that a private property is left out.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTypeHasNonPublicMembers_ShouldWriteOnlyPublicOnes()
+    {
+        var config = new PrivateMemberConfig { Name = "Unknwon" };
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Name=Unknwon\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that an integer member holding zero is written under the default options rather than left out.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenIntMemberIsZero_ShouldWriteTheKey()
+    {
+        var config = new PortConfig { Port = 0 };
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Port=0\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a global member whose value INI cannot hold, a string with a line break, throws
+    /// <see cref="IniSerializationException" /> naming the key, with the writer's <see cref="ArgumentException" /> as
+    /// the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenGlobalValueCannotBeWritten_ShouldThrowIniSerializationException()
+    {
+        var config = new ServerConfig { Name = "first\nsecond" };
+
+        IniSerializationException ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            IniSerializer.Serialize(new ArrayBufferWriter<byte>(), config);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
+        Assert.Contains("'Name'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section member whose value INI cannot hold throws <see cref="IniSerializationException" />
+    /// naming the section and the key, with the writer's <see cref="ArgumentException" /> as the inner exception.
+    /// </summary>
+    /// <param name="host">The value of the section's <c>Host</c> member.</param>
+    [TestMethod]
+    [DataRow("db\nexample", DisplayName = "line break")]
+    [DataRow(" db.example ", DisplayName = "surrounding whitespace")]
+    public void Serialize_WhenSectionValueCannotBeWritten_ShouldThrowIniSerializationException(string host)
+    {
+        var config = new ServerConfig { Name = "app", Database = new DatabaseSection { Host = host, Port = 1 } };
+
+        IniSerializationException ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
+        Assert.Contains("'Database'", ex.Message);
+        Assert.Contains("'Host'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary key INI would read back as something else, <c>a=b</c>, throws
+    /// <see cref="IniSerializationException" /> naming the section and the key, with the writer's
+    /// <see cref="ArgumentException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenDictionaryKeyCannotBeWritten_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, Dictionary<string, string>> { ["db"] = new() { ["a=b"] = "c" } };
+
+        IniSerializationException ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
+        Assert.Contains("'db'", ex.Message);
+        Assert.Contains("'a=b'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section name INI would read back as something else throws
+    /// <see cref="IniSerializationException" /> naming the section, with the writer's <see cref="ArgumentException" />
+    /// as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenSectionNameCannotBeWritten_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, Dictionary<string, string>> { ["db];primary"] = new() { ["host"] = "x" } };
+
+        IniSerializationException ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
+        Assert.Contains("'db];primary'", ex.Message);
     }
 }

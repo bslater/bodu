@@ -42,8 +42,9 @@ The DotEnv dialect follows the mainstream `dotenv` implementations:
 The `Utf8IniReader` dialect is deliberately conservative (the `configparser`-compatible reading):
 
 - `=` is the only key/value delimiter; a `:` line is malformed.
-- A value runs literally to the end of the line - quotes are preserved and an inline `;` or `#` is **content**, not a comment.
+- The spaces and tabs around a key and around a value are trimmed; everything else in a value is literal to the end of the line - quotes are preserved and an inline `;` or `#` is **content**, not a comment. Because the reader trims it, `Utf8IniWriter` refuses a key or value that begins or ends with a space or tab rather than write one that reads back without it.
 - Both `;` and `#` start full-line comments (`IniReaderOptions.DisallowHashComments` restricts to `;`).
+- A section name runs to the first `]` that only whitespace or a comment follows, so `[foo]bar]` names `foo]bar`, and the spaces and tabs around the name are trimmed. A comment after a header is skipped rather than reported as a comment token; any other text after the header is malformed. `Utf8IniWriter` therefore refuses a section name that holds a `]` followed by a comment marker, or that begins or ends with a space or tab.
 - A leading UTF-8 BOM is skipped; LF, CRLF, and lone-CR line endings are equivalent.
 
 Duplicate handling is a **document-model** policy (`IniDocumentOptions`, also surfaced on `IniSerializerOptions`), because the source-order reader reports the file verbatim:

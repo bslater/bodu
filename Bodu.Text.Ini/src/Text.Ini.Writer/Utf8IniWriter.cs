@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Bodu.Text.Ini.Writer;
@@ -14,9 +15,41 @@ namespace Bodu.Text.Ini.Writer;
 /// <see cref="Stream" />. The writer is a <see langword="ref struct" />.
 /// </summary>
 /// <remarks>
+/// <para>
 /// INI is line-oriented, so the writer emits progressively: <see cref="WriteSectionHeader(string)" /> produces a
 /// <c>[name]</c> line, <see cref="WritePropertyName(string)" /> followed by <see cref="WriteString(string)" /> produces
-/// one <c>key=value</c> line, and <see cref="WriteComment(string)" /> produces one comment line.
+/// one <c>key=value</c> line, and <see cref="WriteComment(string)" /> produces one comment line per line of its text.
+/// </para>
+/// <para>
+/// The writer writes only text that <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> reads back unchanged, and throws
+/// <see cref="ArgumentException" /> for the following:
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// <description>
+/// a value containing a line break, which a <c>key=value</c> line cannot hold, or beginning or ending with a space or a
+/// tab, which the reader trims;
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// a key that is empty, begins or ends with a space or a tab, contains <c>=</c> or a line break, or begins with
+/// <c>[</c>, <c>;</c> or <c>#</c>, which the reader would read as another key, a section header or a comment;
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// a section name that is empty, begins or ends with a space or a tab, contains a line break, or holds a <c>]</c> that
+/// a <c>;</c> or <c>#</c> follows after optional spaces and tabs, where the reader would end the name;
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// a key or a section name that begins with U+FEFF, which the reader skips as a byte order mark at the start of a
+/// document, refused wherever the name is written so that the rule does not depend on position.
+/// </description>
+/// </item>
+/// </list>
 /// </remarks>
 public ref struct Utf8IniWriter
 {
@@ -113,12 +146,29 @@ public ref struct Utf8IniWriter
     /// Writes a section header line (<c>[name]</c>).
     /// </summary>
     /// <param name="name">The section name.</param>
+    /// <remarks>
+    /// A name may hold any other <c>]</c>: the reader ends a section name at the first <c>]</c> that only whitespace or
+    /// a comment follows, so <c>foo]bar</c> is written as <c>[foo]bar]</c> and read back unchanged. A <c>#</c> after a
+    /// <c>]</c> is refused even though a reader may disallow hash comments, because the writer cannot know the options
+    /// its output will be read with. A name beginning with U+FEFF is refused, as a key beginning with it is, even
+    /// though the reader would read it back unchanged, so that keys and section names follow one rule wherever they are
+    /// written.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is empty, begins or ends with a space or a tab, contains a carriage return
+    /// or a line feed, or holds a <c>]</c> that a <c>;</c> or <c>#</c> follows after optional spaces and tabs, since
+    /// the reader would not read it back as this name, or when it begins with U+FEFF.
+    /// </exception>
     public void WriteSectionHeader(string name)
     {
-        ThrowHelper.ThrowIfNull(name);
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowIfContainsLineBreak(name);
+        ThrowIfSurroundedByWhitespace(name);
+        ThrowIfStartsWithByteOrderMark(name);
+        ThrowIfBracketPrecedesComment(name);
 
         WriteRaw("["u8);
         WriteText(name);
@@ -130,12 +180,28 @@ public ref struct Utf8IniWriter
     /// the value.
     /// </summary>
     /// <param name="name">The key name.</param>
+    /// <remarks>
+    /// A key beginning with <c>#</c> is refused even though a reader may disallow hash comments, because the writer
+    /// cannot know the options its output will be read with. A key beginning with U+FEFF is refused wherever it is
+    /// written, although the reader skips U+FEFF only at the start of a document, where it is a byte order mark, so
+    /// that the rule does not depend on position.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is empty, begins or ends with a space or a tab, contains <c>=</c>, a
+    /// carriage return or a line feed, or begins with <c>[</c>, <c>;</c> or <c>#</c>, since the reader would not read
+    /// it back as this key, or when it begins with U+FEFF.
+    /// </exception>
     public void WritePropertyName(string name)
     {
-        ThrowHelper.ThrowIfNull(name);
+        ThrowHelper.ThrowIfNullOrEmpty(name);
+        ThrowIfContainsLineBreak(name);
+        ThrowIfSurroundedByWhitespace(name);
+        ThrowIfStartsWithByteOrderMark(name);
+        if (name.Contains('=')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniKeyDelimiter, nameof(name));
+        if (name[0] is '[' or ';' or '#') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniKeyStart, nameof(name));
 
         WriteText(name);
         WriteRaw("="u8);
@@ -148,18 +214,30 @@ public ref struct Utf8IniWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="value" /> contains a carriage return or a line feed, which a <c>key=value</c> line
+    /// cannot hold, or begins or ends with a space or a tab, which the reader trims.
+    /// </exception>
     public void WriteString(string value)
     {
         ThrowHelper.ThrowIfNull(value);
+        ThrowIfContainsLineBreak(value);
+        ThrowIfSurroundedByWhitespace(value);
 
         WriteText(value);
         WriteRaw("\n"u8);
     }
 
     /// <summary>
-    /// Writes a comment line prefixed with the configured comment character, followed by a line feed.
+    /// Writes a comment as one comment line per line of its text, each prefixed with the configured comment character
+    /// and followed by a line feed.
     /// </summary>
     /// <param name="text">The comment text, without the leading prefix.</param>
+    /// <remarks>
+    /// A carriage return, a line feed, or a carriage return followed by a line feed ends a line of the text, as it ends
+    /// a line for <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" />, so each line reads back as a comment of its own;
+    /// an empty line becomes an empty comment line.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
@@ -167,10 +245,20 @@ public ref struct Utf8IniWriter
     {
         ThrowHelper.ThrowIfNull(text);
 
-        Span<char> prefix = [_options.EffectiveCommentPrefix];
-        WriteText(new string(prefix));
-        WriteText(text);
-        WriteRaw("\n"u8);
+        ReadOnlySpan<char> remaining = text;
+        int lineBreak;
+        while ((lineBreak = remaining.IndexOfAny('\r', '\n')) >= 0)
+        {
+            WriteCommentLine(remaining[..lineBreak]);
+
+            int next = lineBreak + 1;
+            if (remaining[lineBreak] == '\r' && next < remaining.Length && remaining[next] == '\n')
+                next++;
+
+            remaining = remaining[next..];
+        }
+
+        WriteCommentLine(remaining);
     }
 
     /// <summary>
@@ -195,10 +283,89 @@ public ref struct Utf8IniWriter
     public void Dispose() => Flush();
 
     /// <summary>
+    /// Throws when a section name holds a <c>]</c> that a <c>;</c> or <c>#</c> follows after optional spaces and tabs,
+    /// where <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> would end the name.
+    /// </summary>
+    /// <param name="name">The section name to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> holds a <c>]</c> that a comment marker follows.
+    /// </exception>
+    private static void ThrowIfBracketPrecedesComment(string name, [CallerArgumentExpression(nameof(name))] string? paramName = null)
+    {
+        ReadOnlySpan<char> rest = name;
+        int bracket;
+        while ((bracket = rest.IndexOf(']')) >= 0)
+        {
+            rest = rest[(bracket + 1)..];
+
+            // A '#' counts even where the reader disallows hash comments, since the writer cannot know the reader's
+            // options.
+            ReadOnlySpan<char> next = rest.TrimStart(" \t");
+            if (!next.IsEmpty && next[0] is ';' or '#') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniSectionNameComment, paramName);
+        }
+    }
+
+    /// <summary>
+    /// Throws when text contains a line break, which a single INI line cannot hold.
+    /// </summary>
+    /// <param name="text">The text to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="text" /> contains a carriage return or a line feed.
+    /// </exception>
+    private static void ThrowIfContainsLineBreak(string text, [CallerArgumentExpression(nameof(text))] string? paramName = null)
+    {
+        if (text.AsSpan().ContainsAny('\r', '\n')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniLineBreak, paramName);
+    }
+
+    /// <summary>
+    /// Throws when text begins or ends with a space or a tab, the whitespace
+    /// <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> trims from keys, values and section names.
+    /// </summary>
+    /// <param name="text">The text to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="text" /> begins or ends with a space or a tab.
+    /// </exception>
+    private static void ThrowIfSurroundedByWhitespace(string text, [CallerArgumentExpression(nameof(text))] string? paramName = null)
+    {
+        if (text.Length > 0 && (text[0] is ' ' or '\t' || text[^1] is ' ' or '\t')) throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniSurroundingWhitespace, paramName);
+    }
+
+    /// <summary>
+    /// Throws when a name begins with U+FEFF, which <see cref="Bodu.Text.Ini.Reader.Utf8IniReader" /> skips as a byte
+    /// order mark at the start of a document.
+    /// </summary>
+    /// <param name="name">The key or section name to check.</param>
+    /// <param name="paramName">The parameter name reported in the exception; inferred from the call site.</param>
+    /// <remarks>
+    /// The reader skips the mark only at the start of a document, but a name beginning with it is refused wherever it
+    /// is written, so that the rule does not depend on position.
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> begins with U+FEFF.</exception>
+    private static void ThrowIfStartsWithByteOrderMark(string name, [CallerArgumentExpression(nameof(name))] string? paramName = null)
+    {
+        if (name.Length > 0 && name[0] == '\uFEFF') throw new ArgumentException(IniResourceStrings.Arg_Invalid_IniByteOrderMark, paramName);
+    }
+
+    /// <summary>
+    /// Writes one comment line: the configured comment prefix, the text and a line feed.
+    /// </summary>
+    /// <param name="line">The text of the line, which holds no line break.</param>
+    private void WriteCommentLine(ReadOnlySpan<char> line)
+    {
+        ReadOnlySpan<char> prefix = [_options.EffectiveCommentPrefix];
+        WriteText(prefix);
+        WriteText(line);
+        WriteRaw("\n"u8);
+    }
+
+    /// <summary>
     /// Writes the supplied text as UTF-8 bytes verbatim.
     /// </summary>
     /// <param name="text">The text to write.</param>
-    private void WriteText(string text)
+    private void WriteText(scoped ReadOnlySpan<char> text)
     {
         int byteCount = Encoding.UTF8.GetByteCount(text);
         Span<byte> destination = _output.GetSpan(byteCount);

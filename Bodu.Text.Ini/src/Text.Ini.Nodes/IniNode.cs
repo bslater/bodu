@@ -22,8 +22,8 @@ namespace Bodu.Text.Ini.Nodes;
 /// Unlike the other quartet DOMs, this tree deliberately bears comment trivia so that authoring and round-tripping are
 /// faithful: <see cref="LeadingComments" /> holds the comment lines that precede a node, and each
 /// <see cref="IniObject" /> additionally holds the trailing comment block at the end of its scope. Inline comments are
-/// not modeled - the reader dialect keeps everything after the assignment as part of the value, so an emitted inline
-/// comment would be re-read as value text.
+/// not modeled - the reader dialect keeps an inline comment marker and the text after it as part of the value, so an
+/// emitted inline comment would be re-read as value text.
 /// </remarks>
 public abstract class IniNode
 {
@@ -162,12 +162,20 @@ public abstract class IniNode
     /// Writes this node's INI representation to the supplied writer.
     /// </summary>
     /// <param name="writer">The writer that receives the INI bytes.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
+    /// would not read back unchanged.
+    /// </exception>
     public abstract void WriteTo(ref Utf8IniWriter writer);
 
     /// <summary>
     /// Serializes this node to a new UTF-8 byte array.
     /// </summary>
     /// <returns>The INI bytes.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
+    /// would not read back unchanged.
+    /// </exception>
     public byte[] ToUtf8Bytes()
     {
         var buffer = new ArrayBufferWriter<byte>();
@@ -182,6 +190,10 @@ public abstract class IniNode
     /// Serializes this node to INI text.
     /// </summary>
     /// <returns>The INI text.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
+    /// would not read back unchanged.
+    /// </exception>
     public override string ToString() =>
         Encoding.UTF8.GetString(ToUtf8Bytes());
 
