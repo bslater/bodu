@@ -113,22 +113,7 @@ internal sealed partial class YamlParser
         SkipDocumentPrefix();
 
         ParseDocumentBody();
-
-        // Trailing content after the first document (other than a document boundary) is not permitted here.
-        SkipBlankCommentLines();
-        if (!AtStreamEnd() && !AtDocumentBoundary())
-            throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
-
-        // A document-end marker line may carry only a trailing comment.
-        if (!AtStreamEnd() && Peek() == (byte)'.')
-        {
-            Advance();
-            Advance();
-            Advance();
-            SkipSpaces();
-            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#')
-                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
-        }
+        ParseDocumentEnd();
 
         Compose();
         return _rows;
@@ -156,13 +141,7 @@ internal sealed partial class YamlParser
             if (!_documentStartConsumed && (AtStreamEnd() || (CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())))
             {
                 if (!AtEnd && Peek() == (byte)'.')
-                {
-                    while (!IsBreakOrEnd(Peek()))
-                        _pos++;
-
-                    if (!AtEnd)
-                        Advance();
-                }
+                    SkipDocumentEndMarker();
 
                 SkipBlankCommentLines();
                 if (AtStreamEnd())
@@ -174,21 +153,12 @@ internal sealed partial class YamlParser
             _rows = [];
             _strings = [];
 
+            // Each document obeys the rules Parse applies to the first: it ends at a document boundary or the end
+            // of the stream, so content after its root node cannot begin another document without a marker.
             ParseDocumentBody();
+            ParseDocumentEnd();
             Compose();
             documents.Add((_rows, _strings.ToArray()));
-
-            SkipBlankCommentLines();
-
-            // Consume a document-end marker ('...') line so the next iteration starts cleanly.
-            if (!AtEnd && CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())
-            {
-                while (!IsBreakOrEnd(Peek()))
-                    _pos++;
-
-                if (!AtEnd)
-                    Advance();
-            }
 
             SkipBlankCommentLines();
             if (AtStreamEnd())
@@ -215,6 +185,41 @@ internal sealed partial class YamlParser
             // The first node created becomes the root and therefore occupies index zero.
             ParseBlockNode(0);
         }
+    }
+
+    /// <summary>
+    /// Verifies that the document just parsed ends at a document boundary or the end of the stream, and consumes the
+    /// <c>...</c> document-end marker line that ends it, if any.
+    /// </summary>
+    /// <remarks>
+    /// A document ends only at a <c>---</c> or <c>...</c> marker or at the end of the stream. Content after the root
+    /// node, including a directive, therefore cannot follow without a marker: a directive must come after a <c>...</c>
+    /// or at the start of the stream.
+    /// </remarks>
+    /// <exception cref="YamlFormatException">
+    /// Content follows the root node without a document marker, or text other than a comment follows the <c>...</c>
+    /// marker on its line.
+    /// </exception>
+    private void ParseDocumentEnd()
+    {
+        SkipBlankCommentLines();
+        if (!AtStreamEnd() && !AtDocumentBoundary())
+            throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
+
+        if (!AtStreamEnd() && Peek() == (byte)'.')
+            SkipDocumentEndMarker();
+    }
+
+    /// <summary>
+    /// Consumes a <c>...</c> document-end marker line at the cursor, which may carry only a trailing comment.
+    /// </summary>
+    /// <exception cref="YamlFormatException">Text other than a comment follows the marker on its line.</exception>
+    private void SkipDocumentEndMarker()
+    {
+        Advance();
+        Advance();
+        Advance();
+        SkipLineTrailing();
     }
 
     /// <summary>

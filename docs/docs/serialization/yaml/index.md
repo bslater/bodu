@@ -42,7 +42,7 @@ Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` 
 
 ## Multi-document streams
 
-A single YAML stream can hold several documents separated by `---` (and optionally terminated by `...`). <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> returns every document as an `IReadOnlyList<YamlDocument>`; the single-document `Parse` and the serializer's `Deserialize<T>` read the first.
+A single YAML stream can hold several documents separated by `---` (and optionally terminated by `...`, which may share its line only with a comment). A document's `%YAML` and `%TAG` directives go before its `---`, at the start of the stream or after a `...`. <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> returns every document as an `IReadOnlyList<YamlDocument>`, and throws <xref:Bodu.Text.Yaml.YamlFormatException> when content follows a document without one of those markers before it; the single-document `Parse` and the serializer's `Deserialize<T>` read the first.
 
 ## Diagnostics with positions
 
