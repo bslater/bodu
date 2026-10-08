@@ -18,7 +18,7 @@ For every annotated type the generator adds one file, `<Namespace>.<Type>.Delimi
 - a public static property - `DelimitedFactory` of type <xref:Bodu.Text.Delimited.IDelimitedRecordFactory`1>, or `IniFactory` of type <xref:Bodu.Text.Ini.IIniSectionFactory`1> - holding a singleton;
 - a private nested class implementing the interface: a static array of the resolved wire names in declaration order (`Headers` / `Keys`), a `GetFields` / `GetEntries` method that formats each member, a `Create` method that constructs the instance and binds decoded strings back, and a `Bind` helper that matches names ordinally first and case-insensitively as a fallback.
 
-The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and maps a `Nullable<T>` member to and from the empty string - mirroring the runtime reflection binders so the two paths are interchangeable.
+The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and writes a `null` member as the empty string, or, in an INI factory, leaves it out as `IniSerializer` does - mirroring the runtime reflection binders so the two paths are interchangeable. A Delimited factory follows the Delimited binder: it writes `DateTime` and `DateTimeOffset` in the round-trip `O` form and `TimeSpan` in the constant `c` form, and binds `null` to a nullable member whose field is empty or white space, except a `char?` member, which takes only an empty field as `null`. An INI factory follows the INI binder: the invariant general forms, and `null` for an empty value only.
 
 ## Wiring the generator into a project
 
@@ -48,7 +48,7 @@ To inspect the emitted source, set `<EmitCompilerGeneratedFiles>true</EmitCompil
 | Constructible with `new T()` - a parameterless constructor reachable from inside the type. | `Create` instantiates the type before binding; the nested factory can reach a private constructor. |
 | Mapped members are **public instance properties with a public getter and a public, non-`init` setter**. | Static members, indexers, non-public accessors, `init`-only setters, and fields are not mapped (silently). |
 | Each mapped property's type is a supported scalar or its `Nullable<T>`: `string`, `bool`, `char`, `sbyte`/`byte`/`short`/`ushort`/`int`/`uint`/`long`/`ulong`, `float`/`double`/`decimal`, `Guid`, `DateTime`, `DateTimeOffset`, `TimeSpan`, or any enum. | Anything else - `Uri`, collections, nested objects - is skipped with `BTFG002`; the factory is still generated for the remaining members. |
-| `[Ignore]` with the default condition excludes a member; `[Ignore(Condition = …)]` with any *other* condition leaves it mapped. | The factory has no write-time conditional path - the wire is string-only. |
+| `[Ignore]` with the default condition excludes a member; `[Ignore(Condition = …)]` with any *other* condition leaves it mapped. An INI factory applies that condition when writing, and `WhenWritingNull`, the serializer's default, to a member without one, as `IniSerializer` does; a Delimited factory writes every mapped member, as `DelimitedSerializer` does. | A factory never sees the serializer options, so an INI factory cannot follow a `DefaultIgnoreCondition` other than `WhenWritingNull`, and a delimited record cannot leave out a column. |
 
 Two behaviors differ from the reflection binder by design: the options-level `PropertyNamingPolicy` is **not** applied by a factory (its header and key names are fixed at compile time, so pin names with `[PropertyName]`), and `IncludeFields` has no effect (fields are never mapped).
 
@@ -75,6 +75,8 @@ The factory overloads are exact counterparts of the reflection entry points, wit
 
 Dialect options still apply on the factory path - `Delimiter`, `Quote`, and `NoHeader` for Delimited (a headerless document binds **positionally** in `Headers` order), and the duplicate-section / duplicate-key policies for INI (merging runs before the factory sees the entries). An empty INI section name writes or binds the document's **global keys**; a section that is absent from the input raises <xref:Bodu.Text.Ini.IniSerializationException>. `DotEnvSerializer` has no factory surface - it remains reflection-only.
 
+A value a factory cannot convert reaches the caller as the serializer's own exception, `DelimitedSerializationException` or `IniSerializationException`, with the conversion error - a `FormatException`, `OverflowException`, `ArgumentException` or `InvalidCastException` - as its inner exception, as the reflection path reports it. The serializer wraps that error around the factory's `Create` call, so a hand-written factory reports its conversion errors the same way.
+
 ## Writing a factory by hand
 
 The interfaces are small enough to implement directly when the generator cannot be used - a type you do not own, a non-scalar column, or a build that cannot host analyzers. The contract for Delimited: `Headers` (column names in field order), `GetFields(record)` (values in `Headers` order), and `Create(fields, headers)` where `headers` is the document's header row, or **empty** for a headerless document, in which case bind positionally.
@@ -94,7 +96,7 @@ public sealed class TradeFactory : IDelimitedRecordFactory<Trade>
         record.Symbol,
         record.Quantity.ToString(CultureInfo.InvariantCulture),
         record.Price.ToString(CultureInfo.InvariantCulture),
-        record.TradedAt.ToString(CultureInfo.InvariantCulture),
+        record.TradedAt.ToString("O", CultureInfo.InvariantCulture),
         record.Venue ?? string.Empty,
     ];
 
@@ -119,7 +121,7 @@ public sealed class TradeFactory : IDelimitedRecordFactory<Trade>
 }
 ```
 
-Format with `InvariantCulture` on the way out and parse with it on the way in, and the hand-written factory produces byte-identical output to both the generated factory and the reflection binder. The INI contract is the same shape over key/value pairs: `Keys`, `GetEntries(section)` returning `IEnumerable<KeyValuePair<string, string>>`, and `Create(entries)`.
+Format with `InvariantCulture`, in the round-trip `O` form for `DateTime` and `DateTimeOffset`, on the way out and parse with `InvariantCulture` on the way in, and the hand-written factory produces byte-identical output to both the generated factory and the reflection binder. The INI contract is the same shape over key/value pairs: `Keys`, `GetEntries(section)` returning `IEnumerable<KeyValuePair<string, string>>`, and `Create(entries)`.
 
 ## Trimming and AOT
 

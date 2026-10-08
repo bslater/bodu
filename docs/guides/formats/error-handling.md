@@ -44,11 +44,11 @@ The other structural failures, with the position each reports:
 
 | Input | Message | Position |
 |---|---|---|
-| `symbol,qty` / `MSFT,10,extra` | *A delimited record has 3 field(s) but the header declares 2.* | line 3, offset 25 |
-| `symbol,qty` / `MSFT,"10"x` | *A delimited record has 1 field(s) but the header declares 2.* | line 3, offset 22 |
-| `symbol,symbol` / `MSFT,10` | *The delimited header row contains the duplicate column name 'symbol'.* | line 2, offset 14 |
+| `symbol,qty` / `MSFT,10,extra` | *A delimited record has 3 field(s) but the header declares 2.* | line 2, offset 11 |
+| `symbol,qty` / `MSFT,"10"x` | *A quoted delimited field is followed by text other than a delimiter, a line break or the end of the input.* | line 2, offset 20 |
+| `symbol,symbol` / `MSFT,10` | *The delimited header row contains the duplicate column name 'symbol'.* | line 1, offset 0 |
 
-The line number is the line on which the reader *detected* the problem - for a record error that is the line after the offending record's terminator, which is why single-line records report line 3 here.
+An error about a whole record - a field count that disagrees with the header, or a header that repeats a name - is reported where that record starts: the line it begins on and the offset of its first byte. Text after a closing quote is reported at the first offending byte, and an unterminated quoted field where the reader detected it, at the end of the input.
 
 ## Pattern 2 - Delimited: tolerating dirty input
 
@@ -57,8 +57,8 @@ Three <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> policies convert 
 | Policy | Default | Lenient value | Effect |
 |---|---|---|---|
 | `FieldCountBehavior` | `Strict` | `Ragged` | Records with more or fewer fields than the header are accepted as-is. |
-| `MalformedRecordBehavior` | `Throw` | `SkipRecord` | A record with a structural error (text after a closing quote) is truncated at the error and reading continues with the next record. |
-| `DuplicateHeaderBehavior` | `Throw` | `TakeFirst` / `TakeLast` | A repeated column name maps to the first or last occurrence. |
+| `MalformedRecordBehavior` | `Throw` | `SkipRecord` | A malformed record - one with text after a closing quote, or one whose field count breaks `Strict` - is skipped whole, and reading continues with the next line. |
+| `DuplicateHeaderBehavior` | `Throw` | `TakeFirst` / `TakeLast` | A repeated column name maps to the first or last occurrence; the other columns with the name are read under an empty name. |
 
 <!-- compile -->
 ```csharp
@@ -72,7 +72,7 @@ int raggedCount = ragged.RootElement.GetArrayLength();    // 2 records
 using DelimitedDocument skipped = DelimitedDocument.Parse(
     "symbol,qty\nMSFT,\"10\"x\nAAPL,5\n"u8,
     new DelimitedReaderOptions { MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord });
-int skippedCount = skipped.RootElement.GetArrayLength();  // 2 records - the malformed record is truncated at the error, not dropped
+int skippedCount = skipped.RootElement.GetArrayLength();  // 1 record - the malformed MSFT record is skipped whole
 
 using DelimitedDocument last = DelimitedDocument.Parse(
     "symbol,symbol\nMSFT,10\n"u8,
@@ -80,7 +80,7 @@ using DelimitedDocument last = DelimitedDocument.Parse(
 string symbol = last.RootElement[0].GetProperty("symbol").GetString();   // "10"
 ```
 
-An unterminated quoted field is never tolerated - there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the [parser policies](../../docs/formats/parser-policies.md) page. Note that these policies live on the *reader* options, which the DOMs and the token reader accept; <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> exposes only the dialect characters (`Delimiter`, `Quote`, `NoHeader`), so a typed `DelimitedSerializer.Deserialize<T>` always reads strictly.
+An unterminated quoted field is never tolerated - there is no policy for it, because the reader cannot know where the record was meant to end. The full dialect table is on the [parser policies](../../docs/formats/parser-policies.md) page. Note that these policies live on the *reader* options, which the DOMs and the token reader accept; <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> exposes only the dialect characters (`Delimiter`, `Quote`, `CommentChar`) and `NoHeader`, so a typed `DelimitedSerializer.Deserialize<T>` always reads strictly.
 
 ## Pattern 3 - Delimited: binding failures
 

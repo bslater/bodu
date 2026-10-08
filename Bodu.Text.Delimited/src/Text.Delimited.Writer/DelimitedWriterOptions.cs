@@ -7,12 +7,20 @@
 namespace Bodu.Text.Delimited.Writer;
 
 /// <summary>
-/// Provides configuration for a <see cref="Utf8DelimitedWriter" />, controlling the delimiter, quote character, and
-/// whether a header row is emitted for object records.
+/// Provides configuration for a <see cref="Utf8DelimitedWriter" />, controlling the delimiter, quote character, the
+/// comment character the writer guards, and whether a header row is emitted for object records.
 /// </summary>
 /// <remarks>
-/// The options are an immutable value type; the delimiter and quote fall back to their RFC 4180 defaults (<c>','</c>
-/// and <c>'"'</c>) when left unset.
+/// <para>
+/// The options are an immutable value type. When left unset, the delimiter, quote, and comment characters fall back to
+/// their defaults: <c>','</c>, <c>'"'</c>, and <c>'#'</c>.
+/// </para>
+/// <para>
+/// The writer emits the delimiter and quote as single bytes of its UTF-8 output and compares the comment character with
+/// single characters, so each must be an ASCII character other than a carriage return or a line feed, and no two of
+/// them may be the same character. The <see cref="Utf8DelimitedWriter" /> constructors throw
+/// <see cref="ArgumentException" /> for options that break these rules.
+/// </para>
 /// </remarks>
 public readonly struct DelimitedWriterOptions
 {
@@ -26,13 +34,39 @@ public readonly struct DelimitedWriterOptions
     /// Gets the field delimiter, or <c>'\0'</c> to use the default comma.
     /// </summary>
     /// <value>The delimiter character.</value>
+    /// <remarks>
+    /// The delimiter must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Quote" /> and <see cref="CommentChar" />.
+    /// </remarks>
     public char Delimiter { get; init; }
 
     /// <summary>
     /// Gets the quote character, or <c>'\0'</c> to use the default double quote.
     /// </summary>
     /// <value>The quote character.</value>
+    /// <remarks>
+    /// The quote must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Delimiter" /> and <see cref="CommentChar" />.
+    /// </remarks>
     public char Quote { get; init; }
+
+    /// <summary>
+    /// Gets the comment character a reader of the output may use, or <c>'\0'</c> to use the default <c>'#'</c>.
+    /// </summary>
+    /// <value>The comment character.</value>
+    /// <remarks>
+    /// <para>
+    /// The writer never writes comments. It quotes a record's first field when the field begins with this character, so
+    /// that a reader that allows comments with the same character reads the record rather than skipping it as a comment
+    /// line. Quoting such a field is harmless for a reader that does not allow comments, so the writer guards the
+    /// character whether or not the eventual reader allows them.
+    /// </para>
+    /// <para>
+    /// The comment character must be an ASCII character other than a carriage return or a line feed, and must differ
+    /// from <see cref="Delimiter" /> and <see cref="Quote" />.
+    /// </para>
+    /// </remarks>
+    public char CommentChar { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the header row is suppressed for object records.
@@ -51,4 +85,10 @@ public readonly struct DelimitedWriterOptions
     /// </summary>
     /// <value>The quote character.</value>
     internal char EffectiveQuote => Quote == '\0' ? '"' : Quote;
+
+    /// <summary>
+    /// Gets the effective comment character, resolving the unset default to a hash.
+    /// </summary>
+    /// <value>The comment character.</value>
+    internal char EffectiveCommentChar => CommentChar == '\0' ? '#' : CommentChar;
 }

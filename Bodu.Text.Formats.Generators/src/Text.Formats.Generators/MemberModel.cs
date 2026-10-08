@@ -18,9 +18,14 @@ namespace Bodu.Text.Formats.Generators;
 /// The fully qualified display of the property's effective (nullable-unwrapped) type, used in emitted casts and parse
 /// calls.
 /// </param>
+/// <param name="IgnoreCondition">
+/// The numeric value of the write-time condition the property's own <c>[Ignore]</c> sets, or <see langword="null" />
+/// when the property has none.
+/// </param>
 internal sealed record MemberModel(
     string PropertyName,
     string WireName,
     ScalarKind Scalar,
     bool IsNullable,
-    string TypeDisplay);
+    string TypeDisplay,
+    int? IgnoreCondition);

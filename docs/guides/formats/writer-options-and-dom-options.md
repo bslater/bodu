@@ -12,7 +12,7 @@ This guide lists every member of every such struct with its default, and shows t
 
 | Struct | Passed to | Members |
 |---|---|---|
-| <xref:Bodu.Text.Delimited.Writer.DelimitedWriterOptions> | `Utf8DelimitedWriter(output, options)` | `Delimiter`, `Quote`, `NoHeader` |
+| <xref:Bodu.Text.Delimited.Writer.DelimitedWriterOptions> | `Utf8DelimitedWriter(output, options)` | `Delimiter`, `Quote`, `CommentChar`, `NoHeader` |
 | <xref:Bodu.Text.DotEnv.Writer.DotEnvWriterOptions> | `Utf8DotEnvWriter(output, options)` | `WriteExportPrefix` |
 | <xref:Bodu.Text.Ini.Writer.IniWriterOptions> | `Utf8IniWriter(output, options)` | `CommentPrefix` |
 | <xref:Bodu.Text.Bencode.Writer.BencodeWriterOptions> | `Utf8BencodeWriter(output, options)` | `MaxDepth`, `AllowMultipleRootValues` |
@@ -33,9 +33,14 @@ The line-format structs are `readonly struct`s with `init` accessors and a stati
 
 | Member | Type | Default | Effect |
 |---|---|---|---|
-| `Delimiter` | `char` | `'\0'` → `,` | The field separator. |
-| `Quote` | `char` | `'\0'` → `"` | The quoting character; a field containing the delimiter, the quote, or a line break is wrapped in it, with embedded quotes doubled. |
+| `Delimiter` | `char` | `'\0'` → `,` | The field separator: an ASCII character other than CR and LF, distinct from `Quote`. |
+| `Quote` | `char` | `'\0'` → `"` | The quoting character, an ASCII character other than CR and LF, distinct from `Delimiter`; a field that would not otherwise read back as written is wrapped in it, with embedded quotes doubled (see below). |
+| `CommentChar` | `char` | `'\0'` → `#` | The comment character a reader of the output may use, an ASCII character other than CR and LF, distinct from `Delimiter` and `Quote`. The writer never writes comments; it quotes a record's first field when the field begins with this character. |
 | `NoHeader` | `bool` | `false` | Suppress the header row that the first object record would otherwise emit. |
+
+The writer emits the delimiter and quote as single UTF-8 bytes, so its constructors throw `ArgumentException` for a delimiter, quote, or comment character outside ASCII, for a carriage return or a line feed, and for any two of them that are the same character ([parser policies](../../docs/formats/parser-policies.md) states the rule for the reader too).
+
+A field is quoted when the reader would otherwise read it back differently: when it contains the delimiter, the quote, or a line break; when it begins or ends with a space or a tab, which a reader with `TrimFields` would trim; when it is a record's first field and begins with `CommentChar`, which a reader that allows comments would skip; and when it is the only field of its record and is empty, which would otherwise be an empty line. Every other field is written bare.
 
 Records written as objects (`WriteStartObject` / `WritePropertyName` / `WriteString`) emit a header from the first record's property names unless `NoHeader` is set. A tab-separated, header-less file with single-quote quoting:
 
@@ -63,7 +68,7 @@ symbol,note
 MSFT,"say ""hi"", now"
 ```
 
-Records end with `\r\n` in both dialects. `DelimitedSerializerOptions` exposes the same three members and forwards them to this struct (and to the reader options) on your behalf.
+Records end with `\r\n` in both dialects. `DelimitedSerializerOptions` exposes the same four members and forwards them to this struct (and to the reader options) on your behalf.
 
 ## Pattern 2 - DotEnv writer: the `export` prefix
 

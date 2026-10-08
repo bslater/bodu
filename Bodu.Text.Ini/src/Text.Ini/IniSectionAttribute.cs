@@ -15,7 +15,12 @@ namespace Bodu.Text.Ini;
 /// <para>
 /// The generated factory maps the type's public read/write instance properties in declaration order, honouring
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> for key names and skipping members annotated with
-/// <see cref="Bodu.Text.Serialization.IgnoreAttribute" />. Scalar values convert with the invariant culture.
+/// <see cref="Bodu.Text.Serialization.IgnoreAttribute" />. Scalar values convert with the invariant culture. When
+/// writing, the factory leaves out the keys the reflection binder of <see cref="IniSerializer" /> leaves out under each
+/// member's own <see cref="Bodu.Text.Serialization.IgnoreAttribute.Condition" />, and under
+/// <see cref="Bodu.Text.Serialization.IgnoreCondition.WhenWritingNull" />, the default, for a member without one; the
+/// factory never sees <see cref="IniSerializerOptions" />, so another
+/// <see cref="IniSerializerOptions.DefaultIgnoreCondition" /> does not apply to it.
 /// </para>
 /// <para>
 /// The annotated type must be declared <see langword="partial" /> so the generator can add the factory to it. Passing

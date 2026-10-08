@@ -34,7 +34,7 @@ Author or edit through the mutable node DOMs - insertion-ordered maps (`DotEnvOb
 
 All three readers throw their `*FormatException` with a line/offset by default. Leniency is opt-in per dialect:
 
-- **Delimited** - `FieldCountBehavior.Ragged` accepts records whose field count differs from the header; `MalformedRecordBehavior.SkipRecord` truncates a structurally broken record instead of throwing; `DuplicateHeaderBehavior` picks a winner for repeated column names.
+- **Delimited** - `FieldCountBehavior.Ragged` accepts records whose field count differs from the header; `MalformedRecordBehavior.SkipRecord` skips a malformed record whole instead of throwing; `DuplicateHeaderBehavior` picks a winner for repeated column names.
 - **DotEnv** - the reader is line-incremental, so one malformed line fails fast with its position; quoting errors (an unterminated quote) always throw.
 - **INI** - malformed lines (no `=`, unterminated `[section`) always throw; duplicate sections and keys are resolved by the document-model policies (`Merge` / `Disallowed`, `LastWins` / `FirstWins` / `Disallowed`).
 

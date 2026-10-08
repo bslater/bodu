@@ -11,9 +11,18 @@ namespace Bodu.Text.Delimited.Reader;
 /// handling, and the field-count and duplicate-header policies.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The options are an immutable value type. Because the default value of a <see cref="char" /> is <c>'\0'</c>, the
 /// delimiter, quote, and comment characters fall back to their RFC 4180 defaults (<c>','</c>, <c>'"'</c>, <c>'#'</c>)
 /// when left unset, and headers are read by default (set <see cref="NoHeader" /> to disable).
+/// </para>
+/// <para>
+/// The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, so each must be
+/// an ASCII character other than a carriage return or a line feed, and no two of them may be the same character. The
+/// comment character must differ from the delimiter and the quote even when <see cref="AllowComments" /> is not set.
+/// The <see cref="Utf8DelimitedReader" /> constructor throws <see cref="ArgumentException" /> for options that break
+/// these rules.
+/// </para>
 /// </remarks>
 public readonly struct DelimitedReaderOptions
 {
@@ -27,12 +36,20 @@ public readonly struct DelimitedReaderOptions
     /// Gets the field delimiter, or <c>'\0'</c> to use the default comma.
     /// </summary>
     /// <value>The delimiter character.</value>
+    /// <remarks>
+    /// The delimiter must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Quote" /> and <see cref="CommentChar" />.
+    /// </remarks>
     public char Delimiter { get; init; }
 
     /// <summary>
     /// Gets the quote character, or <c>'\0'</c> to use the default double quote.
     /// </summary>
     /// <value>The quote character.</value>
+    /// <remarks>
+    /// The quote must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Delimiter" /> and <see cref="CommentChar" />.
+    /// </remarks>
     public char Quote { get; init; }
 
     /// <summary>
@@ -42,9 +59,22 @@ public readonly struct DelimitedReaderOptions
     public bool NoHeader { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether surrounding whitespace is trimmed from unquoted fields.
+    /// Gets a value indicating whether spaces and tabs around each field are trimmed.
     /// </summary>
     /// <value><see langword="true" /> to trim fields; otherwise <see langword="false" />.</value>
+    /// <remarks>
+    /// <para>
+    /// An unquoted field loses its leading and trailing spaces and tabs. Spaces and tabs before a quoted field's
+    /// opening quote and after its closing quote are skipped, so the field is still read as quoted, and the text
+    /// between its quotes is never trimmed. Without this option a field that begins with a space is unquoted, and any
+    /// quotes in it are literal text.
+    /// </para>
+    /// <para>
+    /// Only U+0020 (space) and U+0009 (tab) are trimmed: other white space, such as U+00A0 (no-break space), U+3000
+    /// (ideographic space) or U+000B (vertical tab), stays in the value. A delimiter or quote character that is a space
+    /// or a tab is never trimmed.
+    /// </para>
+    /// </remarks>
     public bool TrimFields { get; init; }
 
     /// <summary>
@@ -57,6 +87,10 @@ public readonly struct DelimitedReaderOptions
     /// Gets the comment character, or <c>'\0'</c> to use the default <c>'#'</c>.
     /// </summary>
     /// <value>The comment character.</value>
+    /// <remarks>
+    /// The comment character must be an ASCII character other than a carriage return or a line feed, and must differ
+    /// from <see cref="Delimiter" /> and <see cref="Quote" />, even when <see cref="AllowComments" /> is not set.
+    /// </remarks>
     public char CommentChar { get; init; }
 
     /// <summary>
@@ -66,7 +100,8 @@ public readonly struct DelimitedReaderOptions
     public DelimitedFieldCountBehavior FieldCountBehavior { get; init; }
 
     /// <summary>
-    /// Gets the policy applied to a record that violates the field-count policy.
+    /// Gets the policy applied to a malformed record: one that violates the field-count policy, or one in which text
+    /// follows a closing quote.
     /// </summary>
     /// <value>The malformed-record behavior.</value>
     public DelimitedMalformedRecordBehavior MalformedRecordBehavior { get; init; }

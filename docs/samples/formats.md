@@ -32,8 +32,8 @@ the whole file onto typed records with <xref:Bodu.Text.Delimited.DelimitedSerial
 snake_case naming policy; the policy knobs for dirty input -
 <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior> (`Strict` throws, `Ragged` admits
 short/long rows) and <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior>
-(`SkipRecord` truncates the malformed record, which is why lenient ingestion pairs it with
-`Ragged`); the mutable <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> DOM round-tripping with
+(`Throw` reports text after a closing quote at the offending byte, `SkipRecord` skips the
+malformed record whole); the mutable <xref:Bodu.Text.Delimited.Nodes.DelimitedNode> DOM round-tripping with
 selective quoting plus writer-options CSV→TSV dialect conversion; and a constant-memory
 <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> →
 <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> token filter pipeline that never

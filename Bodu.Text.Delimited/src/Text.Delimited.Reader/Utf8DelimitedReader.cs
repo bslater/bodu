@@ -25,6 +25,11 @@ namespace Bodu.Text.Delimited.Reader;
 /// Fields are decoded on demand through <see cref="GetString" />: surrounding quotes are removed and doubled quotes are
 /// collapsed to a single literal. <see cref="ValueSpan" /> exposes the raw source bytes of a field value.
 /// </para>
+/// <para>
+/// A line ends at a line feed, a carriage return and line feed, or a lone carriage return, and a blank line is skipped
+/// rather than read as a record of one empty field. Under <see cref="DelimitedFieldCountBehavior.Ragged" />, each field
+/// beyond the header's is named by its zero-based column index.
+/// </para>
 /// </remarks>
 public ref struct Utf8DelimitedReader
 {
@@ -43,11 +48,20 @@ public ref struct Utf8DelimitedReader
     /// <summary>The current record's raw source ranges, parallel to <see cref="_fields" />.</summary>
     private readonly List<(int Start, int Length)> _fieldRanges;
 
+    /// <summary>The offset, in the whole input, of the first byte of <see cref="_data" />.</summary>
+    private readonly long _offsetBase;
+
     /// <summary>The read position of the next byte to consume.</summary>
     private int _position;
 
     /// <summary>The 1-based line number of the current read position.</summary>
     private int _line;
+
+    /// <summary>The 1-based line number on which the current record starts.</summary>
+    private int _recordLine;
+
+    /// <summary>The byte offset at which the current record starts.</summary>
+    private int _recordStart;
 
     /// <summary>The reader lifecycle stage.</summary>
     private Stage _stage;
@@ -82,8 +96,19 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     /// <param name="data">The delimited source bytes.</param>
     /// <param name="options">The reader options.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote. The comment character is checked even when comments are not allowed.
+    /// </exception>
+    /// <remarks>
+    /// A UTF-8 byte-order mark at the start of <paramref name="data" /> is skipped; a U+FEFF anywhere else is field
+    /// content.
+    /// </remarks>
     public Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options)
     {
+        DelimitedThrowHelper.ThrowIfUnusableDialect(options);
+
         _data = data;
         _options = options;
         _headers = [];
@@ -95,6 +120,36 @@ public ref struct Utf8DelimitedReader
         _line = 1;
         _stage = Stage.Start;
         _tokenType = DelimitedTokenType.None;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DelimitedReader" /> struct over a segment of a larger input,
+    /// reporting lines and error offsets as positions in that input.
+    /// </summary>
+    /// <param name="data">The delimited source bytes of the segment, which starts at the start of a line.</param>
+    /// <param name="options">The reader options.</param>
+    /// <param name="firstLine">The 1-based line number, in the whole input, of the segment's first line.</param>
+    /// <param name="firstOffset">The offset, in the whole input, of the segment's first byte.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote.
+    /// </exception>
+    /// <remarks>
+    /// <see cref="LineNumber" />, <see cref="RecordLine" />, <see cref="RecordOffset" /> and the positions of the
+    /// <see cref="DelimitedFormatException" /> the reader raises count from the start of the whole input;
+    /// <see cref="BytesConsumed" /> still counts from the start of the segment. Only the segment that starts the input,
+    /// at offset zero, skips a leading byte-order mark; a later segment reads a leading U+FEFF as field content.
+    /// </remarks>
+    internal Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options, int firstLine, long firstOffset)
+        : this(data, options)
+    {
+        _line = firstLine;
+        _offsetBase = firstOffset;
+
+        // A byte-order mark can only start the whole input, so a later segment starts with content.
+        if (firstOffset != 0)
+            _position = 0;
     }
 
     /// <summary>
@@ -113,6 +168,18 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     /// <value>The current line number.</value>
     public readonly int LineNumber => _line;
+
+    /// <summary>
+    /// Gets the 1-based line number on which the current record starts.
+    /// </summary>
+    /// <value>The record's first line; meaningful once a record has been read.</value>
+    internal readonly int RecordLine => _recordLine;
+
+    /// <summary>
+    /// Gets the offset, in the whole input, at which the current record starts.
+    /// </summary>
+    /// <value>The offset of the record's first byte; meaningful once a record has been read.</value>
+    internal readonly long RecordOffset => _offsetBase + _recordStart;
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -260,6 +327,10 @@ public ref struct Utf8DelimitedReader
     /// <summary>
     /// Copies the current record's fields into the header list, applying the duplicate-header policy.
     /// </summary>
+    /// <remarks>
+    /// The two lenient policies are mirror images: the winning column keeps a duplicated name, and every other column
+    /// with it is listed under an empty name, so a lookup by name finds the winner.
+    /// </remarks>
     /// <exception cref="DelimitedFormatException">
     /// Thrown when a duplicate header violates the configured policy.
     /// </exception>
@@ -275,14 +346,16 @@ public ref struct Utf8DelimitedReader
                 switch (_options.DuplicateHeaderBehavior)
                 {
                     case DelimitedDuplicateHeaderBehavior.Throw:
-                        throw new DelimitedFormatException(
-                            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedDuplicateHeader, name), _line, _position);
+                        throw CreateFormatException(
+                            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedDuplicateHeader, name), _recordLine, _recordStart);
 
                     case DelimitedDuplicateHeaderBehavior.TakeLast:
                         _headers[existing] = string.Empty;
                         break;
 
                     default:
+                        // TakeFirst: the earlier column keeps the name, so this one is listed without it.
+                        name = string.Empty;
                         break;
                 }
             }
@@ -292,7 +365,8 @@ public ref struct Utf8DelimitedReader
     }
 
     /// <summary>
-    /// Loads the next record's fields, skipping blank and comment lines and applying the field-count policy.
+    /// Loads the next record's fields, skipping blank and comment lines and applying the malformed-record and
+    /// field-count policies.
     /// </summary>
     /// <returns><see langword="true" /> when a record was loaded; <see langword="false" /> at end of input.</returns>
     /// <exception cref="DelimitedFormatException">
@@ -307,7 +381,22 @@ public ref struct Utf8DelimitedReader
             if (_position >= _data.Length)
                 return false;
 
-            ParseRecord();
+            // An error about the record as a whole is reported where the record starts, not after its line ending.
+            _recordLine = _line;
+            _recordStart = _position;
+
+            if (!ParseRecord())
+            {
+                // Text after a closing quote: the cursor is on the offending byte, and the rest of its line belongs to
+                // the malformed record.
+                if (_options.MalformedRecordBehavior == DelimitedMalformedRecordBehavior.SkipRecord)
+                {
+                    SkipRestOfLine();
+                    continue;
+                }
+
+                throw CreateFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedTextAfterClosingQuote, _line, _position);
+            }
 
             if (_options.HasHeader && _headers.Count > 0 &&
                 _options.FieldCountBehavior == DelimitedFieldCountBehavior.Strict &&
@@ -316,8 +405,8 @@ public ref struct Utf8DelimitedReader
                 if (_options.MalformedRecordBehavior == DelimitedMalformedRecordBehavior.SkipRecord)
                     continue;
 
-                throw new DelimitedFormatException(
-                    string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, _headers.Count, _fields.Count), _line, _position);
+                throw CreateFormatException(
+                    string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, _headers.Count, _fields.Count), _recordLine, _recordStart);
             }
 
             return true;
@@ -327,49 +416,61 @@ public ref struct Utf8DelimitedReader
     /// <summary>
     /// Parses a single record from the cursor into <see cref="_fields" /> and <see cref="_fieldRanges" />.
     /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the record ends at a line ending or the end of the input; <see langword="false" />
+    /// when text follows a closing quote, with the cursor left on the offending byte.
+    /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when a quoted field is unterminated.</exception>
-    private void ParseRecord()
+    private bool ParseRecord()
     {
         _fields.Clear();
         _fieldRanges.Clear();
 
         while (true)
         {
-            ParseField();
+            if (!ParseField())
+                return false;
 
             if (_position >= _data.Length)
-                return;
+                return true;
 
-            byte b = _data[_position];
-            if (b == (byte)_options.EffectiveDelimiter)
+            if (_data[_position] == (byte)_options.EffectiveDelimiter)
             {
                 _position++;
                 continue;
             }
 
-            if (b is (byte)'\r' or (byte)'\n')
-            {
-                SkipLineEnding();
-                return;
-            }
-
-            return;
+            // A well-formed field ends only at the delimiter, a line ending or the end of the input.
+            SkipLineEnding();
+            return true;
         }
     }
 
     /// <summary>
     /// Parses a single field from the cursor, dispatching between quoted and unquoted forms.
     /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the field ends at the delimiter, a line ending or the end of the input;
+    /// <see langword="false" /> when text follows a closing quote.
+    /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when a quoted field is unterminated.</exception>
-    private void ParseField()
+    private bool ParseField()
     {
-        if (_position < _data.Length && _data[_position] == (byte)_options.EffectiveQuote)
+        int start = _position;
+
+        // With TrimFields, white space before an opening quote is skipped, so the field is still read as quoted.
+        if (_options.TrimFields)
         {
-            ParseQuotedField();
-            return;
+            while (_position < _data.Length && IsTrimmedWhiteSpace(_data[_position]))
+                _position++;
         }
 
+        if (_position < _data.Length && _data[_position] == (byte)_options.EffectiveQuote)
+            return ParseQuotedField();
+
+        _position = start;
         ParseUnquotedField();
+        return true;
     }
 
     /// <summary>
@@ -401,10 +502,15 @@ public ref struct Utf8DelimitedReader
     }
 
     /// <summary>
-    /// Parses a quoted field, collapsing doubled quotes and permitting embedded delimiters and line breaks.
+    /// Parses a quoted field, collapsing doubled quotes and permitting embedded delimiters and line breaks, and with
+    /// <see cref="DelimitedReaderOptions.TrimFields" /> skips the spaces and tabs after its closing quote.
     /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the delimiter, a line ending or the end of the input follows the closing quote;
+    /// <see langword="false" /> when other text does, with the cursor left on it.
+    /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when the field is unterminated.</exception>
-    private void ParseQuotedField()
+    private bool ParseQuotedField()
     {
         byte quote = (byte)_options.EffectiveQuote;
         _position++; // consume opening quote
@@ -414,7 +520,7 @@ public ref struct Utf8DelimitedReader
         while (true)
         {
             if (_position >= _data.Length)
-                throw new DelimitedFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedUnterminatedQuote, _line, _position);
+                throw CreateFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedUnterminatedQuote, _line, _position);
 
             byte b = _data[_position];
 
@@ -431,7 +537,18 @@ public ref struct Utf8DelimitedReader
                 _position++; // consume closing quote
                 _fields.Add(sb.ToString());
                 _fieldRanges.Add((rawStart, rawEnd - rawStart));
-                return;
+
+                // With TrimFields, white space between the closing quote and what ends the field is skipped.
+                if (_options.TrimFields)
+                {
+                    while (_position < _data.Length && IsTrimmedWhiteSpace(_data[_position]))
+                        _position++;
+                }
+
+                // Only the delimiter, a line ending or the end of the input may follow a closing quote.
+                return _position >= _data.Length
+                    || _data[_position] == (byte)_options.EffectiveDelimiter
+                    || _data[_position] is (byte)'\r' or (byte)'\n';
             }
 
             if (b == (byte)'\n')
@@ -440,6 +557,15 @@ public ref struct Utf8DelimitedReader
             _position += AppendByte(sb, b);
         }
     }
+
+    /// <summary>
+    /// Determines whether a byte is white space that <see cref="DelimitedReaderOptions.TrimFields" /> skips around a
+    /// quoted field: a space or a tab that is neither the delimiter nor the quote character.
+    /// </summary>
+    /// <param name="b">The source byte.</param>
+    /// <returns><see langword="true" /> when the byte is skipped; otherwise <see langword="false" />.</returns>
+    private readonly bool IsTrimmedWhiteSpace(byte b) =>
+        b is (byte)' ' or (byte)'\t' && b != (byte)_options.EffectiveDelimiter && b != (byte)_options.EffectiveQuote;
 
     /// <summary>
     /// Skips blank lines and, when enabled, comment lines beginning with the comment character.
@@ -492,6 +618,28 @@ public ref struct Utf8DelimitedReader
         length = Math.Min(length, _data.Length - _position);
         sb.Append(Encoding.UTF8.GetString(_data.Slice(_position, length)));
         return length;
+    }
+
+    /// <summary>
+    /// Creates the exception for a parse error at a position in <see cref="_data" />, reporting the offset in the whole
+    /// input.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="line">The 1-based line number of the error.</param>
+    /// <param name="position">The position of the error in <see cref="_data" />.</param>
+    /// <returns>The exception to throw.</returns>
+    private readonly DelimitedFormatException CreateFormatException(string message, int line, int position) =>
+        new(message, line, _offsetBase + position);
+
+    /// <summary>
+    /// Skips the rest of the current line, its line ending included, so that reading continues with the next line.
+    /// </summary>
+    private void SkipRestOfLine()
+    {
+        while (_position < _data.Length && _data[_position] is not ((byte)'\r' or (byte)'\n'))
+            _position++;
+
+        SkipLineEnding();
     }
 
     /// <summary>

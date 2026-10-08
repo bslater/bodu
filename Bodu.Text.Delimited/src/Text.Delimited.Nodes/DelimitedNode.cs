@@ -48,6 +48,10 @@ public abstract class DelimitedNode
     /// <param name="options">The reader options.</param>
     /// <returns>The parsed <see cref="DelimitedArray" /> document.</returns>
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited text.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> names a delimiter, quote, or comment character that the reader cannot
+    /// use (see <see cref="DelimitedReaderOptions" />).
+    /// </exception>
     public static DelimitedArray Parse(ReadOnlySpan<byte> utf8Delimited, DelimitedReaderOptions options)
     {
         var reader = new Utf8DelimitedReader(utf8Delimited, options);

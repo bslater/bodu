@@ -19,5 +19,9 @@ public enum DelimitedFieldCountBehavior
     /// <summary>
     /// Records may have any field count; short records expose fewer fields and long records expose more.
     /// </summary>
+    /// <remarks>
+    /// In header mode, each field beyond the header's is named by its zero-based column index, so the fourth field
+    /// under a three-column header is named <c>3</c>; such a name can coincide with a header's own name.
+    /// </remarks>
     Ragged,
 }

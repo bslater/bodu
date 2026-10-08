@@ -8,7 +8,7 @@ Real-world CSV, `.env`, and INI files break their specs constantly. Each reader 
 
 ## Common diagnostic surface
 
-Every reader throws its format's `*FormatException` (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`) carrying the 1-based line number and byte offset at which the problem was detected. Serializer binding failures throw the format's `*SerializationException` instead.
+Every reader throws its format's `*FormatException` (`DelimitedFormatException`, `DotEnvFormatException`, `IniFormatException`) carrying the 1-based line number and byte offset at which the problem was detected. A Delimited error about a whole record, a field count that differs from the header's or a header that repeats a name, carries the line and offset at which that record starts, and `DelimitedSerializer.DeserializeAsyncEnumerableAsync` counts both from the start of the stream, whichever read held the error. Serializer binding failures throw the format's `*SerializationException` instead.
 
 ## Delimited
 
@@ -17,16 +17,24 @@ Every reader throws its format's `*FormatException` (`DelimitedFormatException`,
 | Knob | Values | Default |
 |---|---|---|
 | `FieldCountBehavior` | `Strict` (every record matches the header's field count) / `Ragged` | `Strict` |
-| `MalformedRecordBehavior` | `Throw` / `SkipRecord` (truncate the record at the structural error) | `Throw` |
-| `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` | `Throw` |
-| `Delimiter`, `Quote` | any character | `,` / `"` |
+| `MalformedRecordBehavior` | `Throw` / `SkipRecord` (skip the whole malformed record and continue with the next line) | `Throw` |
+| `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` (the first or last column with a repeated name keeps it, and the others are read under an empty name) | `Throw` |
+| `Delimiter`, `Quote` | an ASCII character other than CR and LF; the two must differ | `,` / `"` |
 | `NoHeader` | treat the first record as data (records become positional arrays) | header mode |
-| `TrimFields` | trim unquoted fields | off |
-| `AllowComments`, `CommentChar` | skip comment lines | off / `#` |
+| `TrimFields` | trim spaces and tabs around each field: an unquoted field's value is trimmed, and the spaces and tabs around a quoted field's quotes are skipped, so the field is still read as quoted and its quoted text is kept whole; other white space, such as U+00A0 or U+3000, is kept | off |
+| `AllowComments`, `CommentChar` | skip comment lines; the character follows the `Delimiter` rule and must differ from `Delimiter` and `Quote`, even with comments off | off / `#` |
+
+The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, and the writer emits its delimiter and quote the same way. Each must therefore be an ASCII character other than a carriage return or a line feed, and no two may be the same character; a character outside ASCII would otherwise be cut to one byte and matched inside other characters. The `Utf8DelimitedReader` and `Utf8DelimitedWriter` constructors, and the `DelimitedSerializer` methods that create them, throw `ArgumentException` for `options`, naming the offending option, when the characters break these rules.
 
 Strict field counts are measured against the header row, so they apply in header mode; positional mode accepts any shape unless you enforce one yourself.
 
-Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to `MalformedRecordBehavior`).
+Under `Ragged`, each field beyond the header's is named by its zero-based column index, so the fourth field under a three-column header is named `3`; such a name can coincide with a header's own name.
+
+Where the reader is always strict: an unterminated quoted field throws, and characters after a closing quote are a structural error (subject to `MalformedRecordBehavior`). After a closing quote only the delimiter, a line break or the end of the input may follow, after spaces and tabs under `TrimFields`; anything else makes the record malformed. `Throw` reports the line and offset of the first offending byte, and `SkipRecord` skips the record, the rest of that line included, and continues with the next line. A record whose field count breaks the `Strict` policy is malformed too: `Throw` reports where it starts, and `SkipRecord` skips it.
+
+LF, CRLF and a lone CR each end a line. A blank line is skipped rather than read as a record of one empty field, which RFC 4180's grammar would make it, so the writer writes such a record as `""`.
+
+The reader skips a UTF-8 byte-order mark at the start of its input, and `DelimitedSerializer.DeserializeAsyncEnumerableAsync` skips one only at the start of the stream, however its reads fall; a U+FEFF anywhere else is field content.
 
 ## DotEnv
 

@@ -49,6 +49,27 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
+    /// Writes the header row of a record type, the names of its readable members, as a row of its own; a record type
+    /// with no readable member has no header row.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="members">The mapped members.</param>
+    private static void WriteHeaderRow(ref Utf8DelimitedWriter writer, Member[] members)
+    {
+        if (!Array.Exists(members, static member => member.CanRead))
+            return;
+
+        writer.WriteStartArray();
+        foreach (Member member in members)
+        {
+            if (member.CanRead)
+                writer.WriteString(member.Name);
+        }
+
+        writer.WriteEndArray();
+    }
+
+    /// <summary>
     /// Writes a positional <see cref="string" /> array record as a delimited array.
     /// </summary>
     /// <param name="writer">The writer.</param>
@@ -119,12 +140,23 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="value">The value to convert.</param>
     /// <returns>The string representation.</returns>
+    /// <remarks>
+    /// Temporal values are written in their invariant round-trip forms, so they read back equal: <c>O</c> for
+    /// <see cref="DateTime" /> and <see cref="DateTimeOffset" />, which keeps every tick and the kind or the offset;
+    /// the ISO 8601 forms <c>yyyy-MM-dd</c> for <see cref="DateOnly" /> and <c>HH:mm:ss.fffffff</c> for
+    /// <see cref="TimeOnly" />; and the constant <c>c</c> form for <see cref="TimeSpan" />.
+    /// </remarks>
     private static string ValueToString(object? value) =>
         value switch
         {
             null => string.Empty,
             string s => s,
             bool b => b ? "true" : "false",
+            DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
+            DateOnly date => date.ToString("O", CultureInfo.InvariantCulture),
+            TimeOnly time => time.ToString("O", CultureInfo.InvariantCulture),
+            TimeSpan span => span.ToString("c", CultureInfo.InvariantCulture),
             IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
             _ => value.ToString() ?? string.Empty,
         };
@@ -137,11 +169,23 @@ public static partial class DelimitedSerializer
     /// <param name="column">The column name, used for diagnostics.</param>
     /// <returns>The converted value.</returns>
     /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
+    /// <remarks>
+    /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type,
+    /// except that a nullable <see cref="char" /> converts to <see langword="null" /> for an empty value alone and
+    /// reads white space as a <see cref="char" /> does. Every other target converts the text as it is. Temporal values
+    /// parse leniently with the invariant culture, so the round-trip forms written by
+    /// <see cref="ValueToString(object?)" /> read back, and so do the invariant general forms that earlier versions
+    /// wrote.
+    /// </remarks>
     private static object? ConvertFromString(string raw, Type targetType, string column)
     {
-        Type underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
+        Type? nullableUnderlying = Nullable.GetUnderlyingType(targetType);
+        Type underlying = nullableUnderlying ?? targetType;
 
-        if (Nullable.GetUnderlyingType(targetType) is not null && raw.Length == 0)
+        // A blank cell is often padded with spaces, so white space holds no value either; but one space is a character,
+        // so a char? holds no value only when the text is empty.
+        bool holdsNoValue = raw.Length == 0 || (underlying != typeof(char) && string.IsNullOrWhiteSpace(raw));
+        if (nullableUnderlying is not null && holdsNoValue)
             return null;
 
         try
@@ -158,6 +202,10 @@ public static partial class DelimitedSerializer
                 return DateTime.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             if (underlying == typeof(DateTimeOffset))
                 return DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            if (underlying == typeof(DateOnly))
+                return DateOnly.Parse(raw, CultureInfo.InvariantCulture);
+            if (underlying == typeof(TimeOnly))
+                return TimeOnly.Parse(raw, CultureInfo.InvariantCulture);
             if (underlying == typeof(TimeSpan))
                 return TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
             if (underlying == typeof(Uri))
@@ -198,32 +246,63 @@ public static partial class DelimitedSerializer
     /// <param name="type">The record type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <remarks>
+    /// Each member name is mapped once, to its most derived declaration: a property or field hidden with the
+    /// <see langword="new" /> modifier is not mapped, for writing or for reading. When that most derived declaration is
+    /// ignored, the name is not mapped at all.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static Member[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         DelimitedSerializerOptions options)
     {
-        var members = new List<Member>();
-
+        // Reflection returns a member hidden with new beside the member that hides it, so only the most derived
+        // declaration of each name is kept, at the position its name first appeared.
+        var declarations = new List<MemberInfo>();
         foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (property.GetIndexParameters().Length != 0 || property.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                continue;
-
-            members.Add(Member.FromProperty(property, options));
+            if (property.GetIndexParameters().Length == 0)
+                KeepMostDerived(declarations, property);
         }
 
         if (options.IncludeFields)
         {
             foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (fieldInfo.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                    continue;
+                KeepMostDerived(declarations, fieldInfo);
+        }
 
-                members.Add(Member.FromField(fieldInfo, options));
-            }
+        var members = new List<Member>(declarations.Count);
+        foreach (MemberInfo declaration in declarations)
+        {
+            if (declaration.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
+                continue;
+
+            members.Add(declaration is PropertyInfo property ? Member.FromProperty(property, options) : Member.FromField((FieldInfo)declaration, options));
         }
 
         return [.. members.OrderBy(static m => m.Order)];
+    }
+
+    /// <summary>
+    /// Adds a member declaration to the list unless the list already holds the same name from a more derived type, and
+    /// replaces, in place, a declaration of the same name that it hides.
+    /// </summary>
+    /// <param name="declarations">The declarations kept so far, one per name.</param>
+    /// <param name="candidate">The declaration to consider.</param>
+    private static void KeepMostDerived(List<MemberInfo> declarations, MemberInfo candidate)
+    {
+        int existing = declarations.FindIndex(declaration => string.Equals(declaration.Name, candidate.Name, StringComparison.Ordinal));
+        if (existing < 0)
+        {
+            declarations.Add(candidate);
+            return;
+        }
+
+        if (candidate.DeclaringType is { } declaringType &&
+            declarations[existing].DeclaringType is { } keptType &&
+            declaringType.IsSubclassOf(keptType))
+        {
+            declarations[existing] = candidate;
+        }
     }
 }

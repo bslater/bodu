@@ -66,7 +66,7 @@ partial class Trade
                 record.Symbol ?? string.Empty,
                 record.Quantity.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
                 record.Price.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
-                record.TradedAt.ToString(global::System.Globalization.CultureInfo.InvariantCulture),
+                record.TradedAt.ToString("O", global::System.Globalization.CultureInfo.InvariantCulture),
                 record.Venue ?? string.Empty,
             };
         }
@@ -102,7 +102,7 @@ partial class Trade
 }
 ```
 
-Every conversion is explicit and invariant-culture; nothing in the file touches `System.Reflection`.
+Every conversion is explicit and invariant-culture, in the forms the reflection binder uses: `DateTime` and `DateTimeOffset` in the round-trip `O` form and `TimeSpan` in the constant `c` form, and, reading, `null` for a nullable member whose field is empty or white space (a `char?` member takes only an empty field as `null`). Nothing in the file touches `System.Reflection`.
 
 ## Step 3 - serialize and deserialize through the factory
 
@@ -120,8 +120,8 @@ var trades = new List<Trade>
 
 string csv = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);
 // Symbol,Quantity,Price,traded_at,Venue
-// MSFT,100,412.5,03/02/2026 09:30:00 +00:00,XNAS
-// AAPL,25,189.99,03/02/2026 09:31:00 +00:00,
+// MSFT,100,412.5,2026-03-02T09:30:00.0000000+00:00,XNAS
+// AAPL,25,189.99,2026-03-02T09:31:00.0000000+00:00,
 
 List<Trade> back = DelimitedSerializer.Deserialize(csv, Trade.DelimitedFactory);
 // back[0].TradedAt → 2026-03-02T09:30:00+00:00; back[1].Venue → null (empty field)
@@ -180,11 +180,11 @@ string globals = IniSerializer.SerializeSection("", server, ServerSection.IniFac
 // …
 ```
 
-`ServerSection.IniFactory.Keys` is `Host, Port, use_tls, Timeout`. A `null` nullable writes as an empty value (`Timeout=`) and an empty value reads back as `null`. Asking for a section the document does not contain raises `IniSerializationException`; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.
+`ServerSection.IniFactory.Keys` is `Host, Port, use_tls, Timeout`. A `null` nullable is left out, as `IniSerializer` leaves it out under its default `WhenWritingNull` condition, and an empty value reads back as `null`. Asking for a section the document does not contain raises `IniSerializationException`; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.
 
 ## Byte parity with the reflection binder
 
-The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through `DelimitedSerializer.Serialize(records)` and `DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)` yields **identical text** - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical `[section]` / `key=value` bytes the reflection binder emits for a section POCO.
+The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through `DelimitedSerializer.Serialize(records)` and `DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)` yields **identical text** - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical `[section]` / `key=value` bytes the reflection binder emits for a section POCO, leaving out the keys the binder leaves out: a member's own `[Ignore]` condition applies, and a member without one takes `WhenWritingNull`, the default. A factory never sees `IniSerializerOptions`, so a `DefaultIgnoreCondition` other than `WhenWritingNull` does not reach it.
 
 <!-- compile -->
 ```csharp

@@ -58,11 +58,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Arg_Invalid_DelimitedDialectCharacter" xml:space="preserve">
+    <value>The {0} option is U+{1:X4}, which a delimited reader or writer cannot use: the character must be ASCII and must not be a carriage return or a line feed.</value>
+  </data>
+  <data name="Arg_Invalid_DelimitedDialectCharactersEqual" xml:space="preserve">
+    <value>The {0} and {1} options are both U+{2:X4}, but they must be different characters.</value>
+  </data>
   <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
     <value>The delimited header row contains the duplicate column name '{0}'.</value>
   </data>
   <data name="Format_Invalid_DelimitedFieldCount" xml:space="preserve">
     <value>A delimited record has {1} field(s) but the header declares {0}.</value>
+  </data>
+  <data name="Format_Invalid_DelimitedTextAfterClosingQuote" xml:space="preserve">
+    <value>A quoted delimited field is followed by text other than a delimiter, a line break or the end of the input.</value>
   </data>
   <data name="Format_Invalid_DelimitedUnterminatedQuote" xml:space="preserve">
     <value>A quoted delimited field was not terminated before the end of the input.</value>
@@ -75,5 +84,8 @@
   </data>
   <data name="Format_Invalid_DelimitedValueConversion" xml:space="preserve">
     <value>The delimited value for column '{0}' could not be converted to type '{1}'.</value>
+  </data>
+  <data name="Format_Invalid_DelimitedFactoryRecordConversion" xml:space="preserve">
+    <value>The record factory could not convert a value of delimited record {0} to type '{1}'.</value>
   </data>
 </root>

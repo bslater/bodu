@@ -43,7 +43,17 @@ List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText, options); /
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 ```
 
-Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member.
+The header row comes from the record type, so serializing an empty collection writes the header row alone, through every `Serialize` and `SerializeAsync` overload; with `NoHeader` it writes nothing. Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member, and a property hidden with `new` maps once, to the most derived declaration. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on), except a `char?` member, to which only an empty field binds `null`: it converts any other field as a `char` member does, so a single space binds a space. Other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`. Temporal values are written in invariant round-trip forms that read back equal:
+
+| Type | Written form | Example |
+|---|---|---|
+| `DateTime` | `O`, every tick and the kind | `2021-02-06T01:02:03.4567891Z` |
+| `DateTimeOffset` | `O`, every tick and the offset | `2021-02-06T01:02:03.4567891+10:00` |
+| `DateOnly` | `yyyy-MM-dd` | `2021-02-06` |
+| `TimeOnly` | `HH:mm:ss.fffffff` | `01:02:03.4567891` |
+| `TimeSpan` | `c` | `1.02:03:04.5670000` |
+
+Reading also accepts the invariant general forms that earlier versions wrote, such as `02/06/2021 01:02:03`.
 
 ## Pattern 3 - stream records from a large file
 
@@ -54,7 +64,7 @@ await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsyn
 }
 ```
 
-Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` - encodes each record as it is produced, flushing in bounded batches.
+Both directions are genuinely incremental: records are parsed and yielded as stream segments arrive (memory is bounded by the longest record, not the document), and the write direction - `SerializeAsync(stream, records)` where `records` is an `IAsyncEnumerable<Trade>` - encodes each record as it is produced, flushing in bounded batches. A `DelimitedFormatException` from the streaming read reports its line and byte offset in the whole stream, as the buffered `Deserialize` does, and a byte-order mark is skipped only at the start of the stream, so a U+FEFF that begins a later record is kept, as `Deserialize` keeps it.
 
 ### Reflection-free binding
 
@@ -62,7 +72,7 @@ Annotate a partial record type with `[DelimitedRecord]` and reference the `Bodu.
 
 ## Pattern 4 - TSV and other dialects
 
-The delimiter, quote, and comment characters live on the reader/writer options:
+The delimiter, quote, and comment characters live on the reader/writer options. Each must be an ASCII character other than CR and LF, and no two may be the same; the reader and writer constructors throw `ArgumentException` otherwise (see [Parser policies](../../docs/formats/parser-policies.md)):
 
 ```csharp
 using Bodu.Text.Delimited.Reader;
@@ -93,12 +103,12 @@ writer.Flush();
 var lenient = new DelimitedReaderOptions
 {
     FieldCountBehavior = DelimitedFieldCountBehavior.Ragged,        // accept short/long rows
-    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord, // truncate at structural errors
+    MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord, // skip malformed records whole
     DuplicateHeaderBehavior = DelimitedDuplicateHeaderBehavior.TakeFirst,
 };
 ```
 
-Strict field counts (the default) are measured against the header row and throw `DelimitedFormatException` with the line number. See [Parser policies](../../docs/formats/parser-policies.md).
+Strict field counts (the default) are measured against the header row and throw `DelimitedFormatException` with the line number and byte offset at which the offending record starts. See [Parser policies](../../docs/formats/parser-policies.md).
 
 ## Exceptions
 

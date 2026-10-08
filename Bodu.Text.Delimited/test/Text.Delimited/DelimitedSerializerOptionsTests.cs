@@ -16,8 +16,9 @@ namespace Bodu.Text.Delimited;
 public sealed class DelimitedSerializerOptionsTests
 {
     /// <summary>
-    /// Verifies that a new instance carries the general-purpose defaults. <see cref="DelimitedSerializerOptions.Delimiter" />
-    /// and <see cref="DelimitedSerializerOptions.Quote" /> default to <c>'\0'</c>, the documented sentinel meaning
+    /// Verifies that a new instance carries the general-purpose defaults.
+    /// <see cref="DelimitedSerializerOptions.Delimiter" />, <see cref="DelimitedSerializerOptions.Quote" /> and
+    /// <see cref="DelimitedSerializerOptions.CommentChar" /> default to <c>'\0'</c>, the documented sentinel meaning
     /// "use the format default", rather than to the characters themselves.
     /// </summary>
     [TestMethod]
@@ -27,6 +28,7 @@ public sealed class DelimitedSerializerOptionsTests
 
         Assert.AreEqual('\0', options.Delimiter);
         Assert.AreEqual('\0', options.Quote);
+        Assert.AreEqual('\0', options.CommentChar);
         Assert.IsFalse(options.NoHeader);
         Assert.IsFalse(options.PropertyNameCaseInsensitive);
         Assert.IsFalse(options.IncludeFields);
@@ -96,6 +98,7 @@ public sealed class DelimitedSerializerOptionsTests
         {
             Delimiter = '\t',
             Quote = '\'',
+            CommentChar = ';',
             NoHeader = true,
             PropertyNameCaseInsensitive = true,
             IncludeFields = true,
@@ -104,6 +107,7 @@ public sealed class DelimitedSerializerOptionsTests
 
         Assert.AreEqual('\t', options.Delimiter);
         Assert.AreEqual('\'', options.Quote);
+        Assert.AreEqual(';', options.CommentChar);
         Assert.IsTrue(options.NoHeader);
         Assert.IsTrue(options.PropertyNameCaseInsensitive);
         Assert.IsTrue(options.IncludeFields);
@@ -144,6 +148,7 @@ public sealed class DelimitedSerializerOptionsTests
     [
         ["Delimiter", (Action<DelimitedSerializerOptions>)(o => o.Delimiter = ';')],
         ["Quote", (Action<DelimitedSerializerOptions>)(o => o.Quote = '\'')],
+        ["CommentChar", (Action<DelimitedSerializerOptions>)(o => o.CommentChar = ';')],
         ["NoHeader", (Action<DelimitedSerializerOptions>)(o => o.NoHeader = true)],
         ["PropertyNameCaseInsensitive", (Action<DelimitedSerializerOptions>)(o => o.PropertyNameCaseInsensitive = true)],
         ["IncludeFields", (Action<DelimitedSerializerOptions>)(o => o.IncludeFields = true)],

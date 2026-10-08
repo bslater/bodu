@@ -36,11 +36,15 @@ public static partial class DelimitedSerializer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> or <paramref name="records" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
+    /// </exception>
     /// <remarks>
     /// The sequence is never materialized: each record is encoded as it is produced and flushed to
     /// <paramref name="destination" /> in bounded batches, so memory use is independent of the sequence length. The
     /// header row (for a POCO record type, unless <see cref="DelimitedSerializerOptions.NoHeader" /> is set) is emitted
-    /// before the first record.
+    /// before the first record, or on its own when the sequence has no records.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -52,9 +56,12 @@ public static partial class DelimitedSerializer
         DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
         effective.MakeReadOnly();
 
+        // The per-record writers validate the options too, but an empty sequence creates none, so validate up front.
+        DelimitedWriterOptions writerOptions = effective.ToWriterOptions();
+        DelimitedThrowHelper.ThrowIfUnusableDialect(writerOptions, nameof(options));
+
         bool isStringArray = typeof(TRecord) == typeof(string[]);
         Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
-        DelimitedWriterOptions writerOptions = effective.ToWriterOptions();
 
         var buffer = new ArrayBufferWriter<byte>();
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
@@ -73,13 +80,17 @@ public static partial class DelimitedSerializer
             }
         }
 
+        // The header row comes from the record type, so a sequence without records still writes it.
+        if (headerPending)
+            WriteStreamingHeader(buffer, members, writerOptions);
+
         if (buffer.WrittenCount > 0)
             await destination.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Asynchronously deserializes the delimited content of the supplied stream, reading incrementally and yielding
-    /// each record as soon as its terminating line ending has been observed.
+    /// each record as soon as its terminating line ending has been read.
     /// </summary>
     /// <typeparam name="TRecord">The record type.</typeparam>
     /// <param name="source">The source stream.</param>
@@ -91,12 +102,30 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
+    /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
+    /// </exception>
     /// <remarks>
+    /// <para>
     /// The stream is consumed in segments: only the bytes of records not yet terminated remain buffered, so memory use
-    /// is bounded by the longest single record rather than the document. A record that ends exactly at the current
-    /// buffer boundary is held back until the next segment (or the end of the stream) proves it complete, because more
-    /// fields could still follow. A malformed tail is retried as later segments arrive and only surfaces as a
+    /// is bounded by the longest single record rather than the document. A UTF-8 byte-order mark is skipped only at the
+    /// start of the stream; a U+FEFF that starts a later record, whichever segment it starts, is field content, as it
+    /// is for <see cref="Deserialize{TRecord}(Stream, DelimitedSerializerOptions?)" />.
+    /// </para>
+    /// <para>
+    /// A record is yielded as soon as its line ending has been read, a line feed or a complete CRLF, even while the
+    /// stream stays open. A record is held back only while its end is not yet known: inside a quoted field, or before
+    /// its line ending has arrived, since more of its last field could follow; and when the input read so far ends with
+    /// a carriage return, which could be the first half of a CRLF. The end of the stream completes a record held back
+    /// for either reason. A malformed tail is retried as later segments arrive and only surfaces as a
     /// <see cref="DelimitedFormatException" /> once the end of the stream confirms it.
+    /// </para>
+    /// <para>
+    /// Every <see cref="DelimitedFormatException" /> reports its line and byte offset counted from the start of the
+    /// stream, as <see cref="Deserialize{TRecord}(Stream, DelimitedSerializerOptions?)" /> does, whichever read held
+    /// the error; an offset greater than <see cref="int.MaxValue" /> is reported as <see langword="null" />.
+    /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -106,7 +135,10 @@ public static partial class DelimitedSerializer
 
         DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
         effective.MakeReadOnly();
+
+        // Validate before the first read, so that unusable options fail without consuming the stream.
         DelimitedReaderOptions readerOptions = effective.ToReaderOptions();
+        DelimitedThrowHelper.ThrowIfUnusableDialect(readerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
         Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
@@ -117,7 +149,12 @@ public static partial class DelimitedSerializer
             int buffered = 0;
             bool finalBlock = false;
             List<string>? headers = null;
-            var rows = new List<string[]>();
+            var rows = new List<(string[] Fields, int Line, long Offset)>();
+
+            // The line and offset, in the whole stream, of the buffer's first byte, so that every error reports its
+            // position in the stream rather than in the segment being parsed.
+            int segmentLine = 1;
+            long segmentOffset = 0;
 
             while (true)
             {
@@ -139,19 +176,20 @@ public static partial class DelimitedSerializer
                 }
 
                 rows.Clear();
-                int consumed = ParseCompleteRecords(buffer.AsSpan(0, buffered), finalBlock, readerOptions, rows, ref headers);
+                int consumed = ParseCompleteRecords(buffer.AsSpan(0, buffered), finalBlock, readerOptions, rows, ref headers, ref segmentLine, segmentOffset);
 
                 if (consumed > 0)
                 {
                     buffer.AsSpan(consumed, buffered - consumed).CopyTo(buffer);
                     buffered -= consumed;
+                    segmentOffset += consumed;
                 }
 
-                foreach (string[] row in rows)
+                foreach ((string[] row, int line, long offset) in rows)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    if (SkipContinuationRow(row, headers, readerOptions))
+                    if (SkipContinuationRow(row, line, offset, headers, readerOptions))
                         continue;
 
                     yield return isStringArray
@@ -167,6 +205,21 @@ public static partial class DelimitedSerializer
         {
             ArrayPool<byte>.Shared.Return(buffer);
         }
+    }
+
+    /// <summary>
+    /// Encodes the header row on its own into the batch buffer, for a sequence that ended without a record.
+    /// </summary>
+    /// <param name="destination">The batch buffer.</param>
+    /// <param name="members">The mapped members of the POCO record type.</param>
+    /// <param name="writerOptions">The writer options.</param>
+    private static void WriteStreamingHeader(IBufferWriter<byte> destination, Member[] members, DelimitedWriterOptions writerOptions)
+    {
+        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true });
+        writer.WriteStartArray();
+        WriteHeaderRow(ref writer, members);
+        writer.WriteEndArray();
+        writer.Flush();
     }
 
     /// <summary>
@@ -237,11 +290,18 @@ public static partial class DelimitedSerializer
     /// <param name="data">The buffered segment.</param>
     /// <param name="finalBlock">Whether the segment is the end of the stream.</param>
     /// <param name="options">The reader options.</param>
-    /// <param name="rows">The accumulator that receives the complete records' decoded fields.</param>
+    /// <param name="rows">
+    /// The accumulator that receives the complete records' decoded fields, each with the line and offset in the stream
+    /// at which the record starts.
+    /// </param>
     /// <param name="headers">
     /// The captured header columns; <see langword="null" /> until the header row is proven complete, after which
     /// continuation segments parse positionally.
     /// </param>
+    /// <param name="firstLine">
+    /// The line, in the stream, of the segment's first byte; advanced to the line after the last accepted record.
+    /// </param>
+    /// <param name="firstOffset">The offset, in the stream, of the segment's first byte.</param>
     /// <returns>The number of bytes consumed by the accepted records (and the header row on first capture).</returns>
     /// <exception cref="DelimitedFormatException">
     /// Thrown when the segment is malformed and <paramref name="finalBlock" /> shows no further data can complete it.
@@ -250,16 +310,18 @@ public static partial class DelimitedSerializer
         ReadOnlySpan<byte> data,
         bool finalBlock,
         DelimitedReaderOptions options,
-        List<string[]> rows,
-        ref List<string>? headers)
+        List<(string[] Fields, int Line, long Offset)> rows,
+        ref List<string>? headers,
+        ref int firstLine,
+        long firstOffset)
     {
         // The first pass parses in the configured header mode so the reader applies its own header policies; once the
         // header is captured, continuation segments no longer contain it and must parse positionally.
         DelimitedReaderOptions passOptions = headers is null ? options : options with { NoHeader = true };
-        var reader = new Utf8DelimitedReader(data, passOptions);
+        var reader = new Utf8DelimitedReader(data, passOptions, firstLine, firstOffset);
 
-        var pending = new List<string[]>();
-        var recordEnds = new List<int>();
+        var pending = new List<(string[] Fields, int Line, long Offset)>();
+        var recordEnds = new List<(int Offset, int Line)>();
         List<string>? current = null;
         int depth = 0;
 
@@ -279,8 +341,8 @@ public static partial class DelimitedSerializer
                     case DelimitedTokenType.EndObject:
                         if (depth == 2 && current is not null)
                         {
-                            pending.Add([.. current]);
-                            recordEnds.Add(reader.BytesConsumed);
+                            pending.Add(([.. current], reader.RecordLine, reader.RecordOffset));
+                            recordEnds.Add((reader.BytesConsumed, reader.LineNumber));
                             current = null;
                         }
 
@@ -302,21 +364,28 @@ public static partial class DelimitedSerializer
             // completed before the failure remain usable, and the tail is retried once more data arrives.
         }
 
-        // A record whose end coincides with the segment end could still grow, so it is only accepted when data
-        // follows it or the stream has ended.
+        // A record whose end coincides with the segment end is complete when it ended with a line feed, alone or as the
+        // second half of a CRLF. Otherwise it could still grow: its last field could continue, or the carriage return
+        // it ended with could be followed by a line feed. Such a record is accepted only when data follows it or the
+        // stream has ended.
         int accepted = 0;
         int consumed = 0;
         for (int i = 0; i < pending.Count; i++)
         {
-            if (recordEnds[i] < data.Length || finalBlock)
+            int end = recordEnds[i].Offset;
+            if (end < data.Length || finalBlock || data[end - 1] == (byte)'\n')
             {
                 accepted = i + 1;
-                consumed = recordEnds[i];
+                consumed = end;
             }
         }
 
         for (int i = 0; i < accepted; i++)
             rows.Add(pending[i]);
+
+        // The next segment starts where the last accepted record ended, on the line after it.
+        if (accepted > 0)
+            firstLine = recordEnds[accepted - 1].Line;
 
         // The header row shares the completeness rule: it is trusted once a record beyond it is accepted, or once the
         // stream ends.
@@ -331,6 +400,8 @@ public static partial class DelimitedSerializer
     /// itself no longer sees the header to enforce it.
     /// </summary>
     /// <param name="row">The decoded row.</param>
+    /// <param name="line">The line, in the stream, on which the row's record starts.</param>
+    /// <param name="offset">The offset, in the stream, at which the row's record starts.</param>
     /// <param name="headers">The captured header columns, or <see langword="null" /> in headerless mode.</param>
     /// <param name="options">The reader options.</param>
     /// <returns><see langword="true" /> when the row should be skipped.</returns>
@@ -338,7 +409,7 @@ public static partial class DelimitedSerializer
     /// Thrown when the row violates the strict field count and the malformed-record policy is
     /// <see cref="DelimitedMalformedRecordBehavior.Throw" />.
     /// </exception>
-    private static bool SkipContinuationRow(string[] row, List<string>? headers, DelimitedReaderOptions options)
+    private static bool SkipContinuationRow(string[] row, int line, long offset, List<string>? headers, DelimitedReaderOptions options)
     {
         if (options.NoHeader ||
             headers is null ||
@@ -353,6 +424,6 @@ public static partial class DelimitedSerializer
             return true;
 
         throw new DelimitedFormatException(
-            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, headers.Count, row.Length));
+            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, headers.Count, row.Length), line, offset);
     }
 }

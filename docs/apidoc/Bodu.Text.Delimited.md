@@ -32,5 +32,5 @@ string csv = DelimitedSerializer.Serialize(trades, options);
 ## Notes
 
 - **Streaming preferred for large inputs.** Use `DeserializeAsyncEnumerableAsync<TRecord>` for typed rows, or the `Utf8DelimitedReader` token loop for full control.
-- **Round-trip determinism.** Writing quotes only the fields that require it under the configured delimiter/quote characters.
+- **Round-trip determinism.** Writing quotes only the fields that would not otherwise read back as written under the configured delimiter, quote, and comment characters.
 - **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [delimited guide](~/guides/formats/delimited.md).

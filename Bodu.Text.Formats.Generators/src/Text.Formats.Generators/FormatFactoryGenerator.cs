@@ -262,7 +262,35 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
             WireName: wireName,
             Scalar: scalar,
             IsNullable: isNullable,
-            TypeDisplay: effective.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+            TypeDisplay: effective.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+            IgnoreCondition: ReadIgnoreCondition(property));
+    }
+
+    /// <summary>
+    /// Reads the write-time condition a property's own <c>[Ignore]</c> annotation sets.
+    /// </summary>
+    /// <param name="property">The property symbol.</param>
+    /// <returns>
+    /// The numeric value of the annotation's <c>Condition</c>, or <see langword="null" /> when the property has no
+    /// <c>[Ignore]</c> annotation; a mapped property never carries <c>IgnoreCondition.Always</c>.
+    /// </returns>
+    private static int? ReadIgnoreCondition(IPropertySymbol property)
+    {
+        foreach (AttributeData attribute in property.GetAttributes())
+        {
+            if (attribute.AttributeClass?.ToDisplayString() != IgnoreAttributeName)
+                continue;
+
+            foreach (KeyValuePair<string, TypedConstant> argument in attribute.NamedArguments)
+            {
+                if (argument.Key == "Condition" && argument.Value.Value is int condition)
+                    return condition;
+            }
+
+            return IgnoreConditionAlways;
+        }
+
+        return null;
     }
 
     /// <summary>

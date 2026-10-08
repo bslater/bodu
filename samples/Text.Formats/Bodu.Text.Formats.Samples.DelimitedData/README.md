@@ -64,21 +64,20 @@ closing quote, first strictly and then with `MalformedRecordBehavior.SkipRecord`
            of 50,000 is not a service to anybody. Making the strict behaviour the default matters: a reader that is
            quietly permissive turns a broken file into a plausible-looking import, and the damage surfaces much
            later.
-  Expect : Both strict parses throw. The second reports a field-count mismatch rather than a quoting error, because
-           the stray characters after the closing quote collapse that row to two fields and the count check fires
-           first - the message names the symptom the reader reached, not the root cause. The lenient parses accept
-           the same input and keep the rows, with the field counts showing exactly what was preserved. Note that
-           skipping a malformed record keeps the fields already parsed, leaving a short row - which is why that
-           policy is paired with ragged rather than used alone.
+  Expect : Both strict parses throw. The first names the field-count mismatch; the second names the real problem,
+           the stray characters after the closing quote, at the line and offset where they start. The lenient parses
+           accept the same input: ragged rows keep the field counts they have, and skipping drops the malformed
+           record whole, so the rows that remain are exactly the well-formed ones.
 
   Strict (default) : A delimited record has 2 field(s) but the header declares 3.  (the default fails loudly - a ragged row from a known generator means a bug upstream, not data to import)
   Ragged           : accepted 4 rows with field counts [3, 3, 2, 4]  (the counts differ per row and are visible - the policy accepts the variance rather than hiding it)
-  Throw (default)  : A delimited record has 2 field(s) but the header declares 3.  (the stray characters after the closing quote collapse the row to two fields, so the field-count check is what rejects it first)
-  SkipRecord+Ragged: kept 5 rows, field counts [3, 3, 2, 2, 3] (malformed row truncated)  (skipping keeps the fields already parsed, so the row comes out short - which is why this policy is paired with Ragged)
+  Throw (default)  : A quoted delimited field is followed by text other than a delimiter, a line break or the end of the input. (line 3, offset 37)  (the error names the stray characters after the closing quote, where they start)
+  SkipRecord       : kept 3 rows, field counts [3, 3, 3]  (the malformed record is skipped whole, so the rows that remain are exactly the well-formed ones)
 ```
 
-Note the second strict failure reports a field-count mismatch rather than a quoting error: the
-stray characters collapse that row to two fields, so the count check fires first.
+Note the second strict failure names the stray characters after the closing quote, at the line
+and offset where they start, and that skipping drops the malformed record whole rather than
+keeping part of it.
 
 **APIs demonstrated.** `DelimitedReaderOptions.NoHeader` / `FieldCountBehavior` /
 `MalformedRecordBehavior`, `DelimitedFormatException`.
