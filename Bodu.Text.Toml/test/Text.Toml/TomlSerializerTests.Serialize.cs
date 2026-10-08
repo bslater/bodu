@@ -453,19 +453,20 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that serializing a model with a member of a type TOML cannot represent, a delegate, throws
-    /// <see cref="TomlSerializationException" /> naming the member, rather than another exception.
+    /// <see cref="NotSupportedException" /> naming the member's type, rather than an exception about one of the
+    /// delegate's own members.
     /// </summary>
     [TestMethod]
-    public void Serialize_WhenMemberTypeIsUnsupported_ShouldThrowTomlSerializationException()
+    public void Serialize_WhenMemberTypeIsUnsupported_ShouldThrowNotSupportedException()
     {
         var model = new UnsupportedMemberModel { Callback = () => { } };
 
-        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
             _ = TomlSerializer.Serialize(model);
         });
 
-        Assert.AreEqual("Callback", ex.Path);
+        Assert.IsTrue(ex.Message.Contains("System.Action", StringComparison.Ordinal), ex.Message);
     }
 
     /// <summary>
@@ -552,6 +553,40 @@ public partial class TomlSerializerTests
         string text = TomlSerializer.Serialize(new HiddenTwiceDerivedModel());
 
         Assert.AreEqual("Value = \"derived\"\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a member whose type is a generic delegate, <see cref="Func{TResult}" /> of
+    /// <see cref="int" />, throws <see cref="NotSupportedException" /> naming that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsAFunc_ShouldThrowNotSupportedException()
+    {
+        var model = new ValueModel<Func<int>> { Value = () => 1 };
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(Func<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a member whose type is the reflection type <see cref="Type" /> throws
+    /// <see cref="NotSupportedException" /> naming that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsAType_ShouldThrowNotSupportedException()
+    {
+        var model = new ValueModel<Type> { Value = typeof(int) };
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(Type).ToString(), StringComparison.Ordinal), ex.Message);
     }
 
     /// <summary>

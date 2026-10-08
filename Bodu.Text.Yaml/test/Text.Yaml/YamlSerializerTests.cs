@@ -199,4 +199,17 @@ public partial class YamlSerializerTests
         [Required]
         public string Name { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// A generic single-member model that holds a value of the type under test under the key <c>Value</c>.
+    /// </summary>
+    /// <typeparam name="T">The member type.</typeparam>
+    private sealed class ValueModel<T>
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public T? Value { get; set; }
+    }
 }

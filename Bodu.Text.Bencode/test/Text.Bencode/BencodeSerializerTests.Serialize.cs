@@ -381,4 +381,56 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual("d5:Value7:derivede", text);
     }
+
+    /// <summary>
+    /// Verifies that serializing a member whose type is the delegate <see cref="Action" /> throws
+    /// <see cref="NotSupportedException" /> naming that type, rather than treating the delegate as an object of its own
+    /// members.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsAnAction_ShouldThrowNotSupportedException()
+    {
+        var model = new SingleValueModel<Action> { Value = () => { } };
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(Action).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a member whose type is a generic delegate, <see cref="Func{TResult}" /> of
+    /// <see cref="int" />, throws <see cref="NotSupportedException" /> naming that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsAFunc_ShouldThrowNotSupportedException()
+    {
+        var model = new SingleValueModel<Func<int>> { Value = () => 1 };
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(Func<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that serializing a member whose type is the reflection type <see cref="Type" /> throws
+    /// <see cref="NotSupportedException" /> naming that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenMemberIsAType_ShouldThrowNotSupportedException()
+    {
+        var model = new SingleValueModel<Type> { Value = typeof(int) };
+
+        NotSupportedException ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(typeof(Type).ToString(), StringComparison.Ordinal), ex.Message);
+    }
 }
