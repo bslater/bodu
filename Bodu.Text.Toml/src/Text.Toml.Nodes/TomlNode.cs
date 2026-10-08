@@ -229,11 +229,14 @@ public abstract class TomlNode
     /// <param name="options">The node options controlling property-name case sensitivity.</param>
     /// <returns>The root node of the parsed tree, which is always a <see cref="TomlObject" />.</returns>
     /// <exception cref="TomlFormatException">
-    /// Thrown when <paramref name="utf8Toml" /> is not a valid TOML document.
+    /// Thrown when <paramref name="utf8Toml" /> is not a valid TOML document, or when <paramref name="options" />
+    /// selects case-insensitive lookups and a table holds two keys that differ only in case.
     /// </exception>
     /// <remarks>
     /// Every <see cref="TomlObject" /> materialized while parsing adopts the comparison selected by
-    /// <paramref name="options" />, so a case-insensitive parse yields a tree whose table lookups ignore case.
+    /// <paramref name="options" />, so a case-insensitive parse yields a tree whose table lookups ignore case. Such a
+    /// tree cannot hold two keys of one table that differ only in case, which TOML allows, so the parse throws at the
+    /// second of them rather than keep only one of their values.
     /// </remarks>
     public static TomlNode? Parse(ReadOnlySpan<byte> utf8Toml, TomlNodeOptions options)
     {
@@ -316,9 +319,17 @@ public abstract class TomlNode
                 var obj = new TomlObject(options);
                 while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
                 {
+                    // The reader rejects a repeated key, so a key the table already holds differs from the earlier one
+                    // only in case: keeping either value would silently lose the other.
                     string key = reader.GetString();
+                    if (options.PropertyNameCaseInsensitive && obj.ContainsKey(key))
+                    {
+                        throw reader.CreateFormatException(
+                            string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Format_Invalid_TomlKeyCaseCollision, key));
+                    }
+
                     reader.Read();
-                    obj[key] = ReadFrom(ref reader, options);
+                    obj.Add(key, ReadFrom(ref reader, options));
                 }
 
                 return obj;

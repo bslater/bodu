@@ -21,6 +21,7 @@
   <data name="Format_Invalid_TomlArrayTableConflict" xml:space="preserve"><value>The key conflicts with an existing array of tables.</value></data>
   <data name="Format_Invalid_TomlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>
   <data name="Format_Invalid_TomlDuplicateKey" xml:space="preserve"><value>The key is already defined.</value></data>
+  <data name="Format_Invalid_TomlKeyCaseCollision" xml:space="preserve"><value>The key '{0}' matches an earlier key in the same table when case is ignored, which a case-insensitive TomlObject cannot hold.</value></data>
   <data name="Format_Invalid_TomlDuplicateTable" xml:space="preserve"><value>The table is already defined.</value></data>
   <data name="Format_Invalid_TomlExpectedEquals" xml:space="preserve"><value>Expected an equals sign after the key.</value></data>
   <data name="Format_Invalid_TomlExpectedKey" xml:space="preserve"><value>Expected a key.</value></data>

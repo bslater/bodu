@@ -207,8 +207,38 @@ public ref struct TomlDocumentReader
         if (exception.Offset is not null || _tokenType == TomlTokenType.None)
             return;
 
-        int offset = _offset;
+        (int line, int column) = Locate(_offset);
+        exception.Offset = _offset;
+        exception.LineNumber = line;
+        exception.ColumnNumber = column;
+    }
 
+    /// <summary>
+    /// Creates a <see cref="TomlFormatException" /> positioned at the current token, for a document that is valid TOML
+    /// but cannot be read into the form a consumer requires.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// The position is the current token's. For a <see cref="TomlTokenType.PropertyName" /> it is where the entry's
+    /// node begins: on the key's line, at the value of a key/value pair or at the key of a table header.
+    /// </remarks>
+    internal readonly TomlFormatException CreateFormatException(string message)
+    {
+        (int line, int column) = Locate(_offset);
+        return new TomlFormatException(message, line, column, _offset);
+    }
+
+    /// <summary>
+    /// Computes the line and column of a byte offset in the source.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset.</param>
+    /// <returns>
+    /// The 1-based line, and the 1-based column within it, which counts UTF-8 bytes, matching
+    /// <see cref="TomlFormatException" />.
+    /// </returns>
+    private readonly (int Line, int Column) Locate(int offset)
+    {
         int line = 1;
         int lineStart = 0;
         int limit = Math.Min(offset, _source.Length);
@@ -221,9 +251,7 @@ public ref struct TomlDocumentReader
             }
         }
 
-        exception.Offset = offset;
-        exception.LineNumber = line;
-        exception.ColumnNumber = offset - lineStart + 1;
+        return (line, offset - lineStart + 1);
     }
 
     /// <summary>

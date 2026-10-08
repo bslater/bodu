@@ -222,12 +222,16 @@ public abstract class BencodeNode
     /// <param name="options">The node options controlling property-name case sensitivity.</param>
     /// <returns>The root node of the parsed tree.</returns>
     /// <exception cref="BencodeFormatException">
-    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode, or when it holds a dictionary
-    /// key that is not valid UTF-8 text, which a <see cref="BencodeObject" /> key requires.
+    /// Thrown when <paramref name="data" /> is empty or is not valid canonical Bencode; when it holds a dictionary key
+    /// that is not valid UTF-8 text, which a <see cref="BencodeObject" /> key requires; or when
+    /// <paramref name="options" /> selects case-insensitive lookups and a dictionary holds two keys that differ only in
+    /// case.
     /// </exception>
     /// <remarks>
     /// Every <see cref="BencodeObject" /> materialized while parsing adopts the comparison selected by
     /// <paramref name="options" />, so a case-insensitive parse yields a tree whose dictionary lookups ignore case.
+    /// Such a tree cannot hold two keys of one dictionary that differ only in case, so the parse throws at the second
+    /// of them rather than keep only one of their values.
     /// </remarks>
     public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options) =>
         Parse(data, options, default);
@@ -242,12 +246,14 @@ public abstract class BencodeNode
     /// <returns>The root node of the parsed tree.</returns>
     /// <exception cref="BencodeFormatException">
     /// Thrown when <paramref name="data" /> is empty or is not a single Bencode value acceptable under
-    /// <paramref name="documentOptions" />, or when it holds a dictionary key that is not valid UTF-8 text, which a
-    /// <see cref="BencodeObject" /> key requires.
+    /// <paramref name="documentOptions" />; when it holds a dictionary key that is not valid UTF-8 text, which a
+    /// <see cref="BencodeObject" /> key requires; or when <paramref name="options" /> selects case-insensitive lookups
+    /// and a dictionary holds two keys that differ only in case.
     /// </exception>
     /// <remarks>
     /// When <see cref="Document.BencodeDocumentOptions.AllowDuplicateKeys" /> is set, repeated keys collapse into the
-    /// dictionary-backed <see cref="BencodeObject" /> with the last occurrence winning.
+    /// dictionary-backed <see cref="BencodeObject" /> with the last occurrence winning. Two keys that differ only in
+    /// case are not a repeated key, so a case-insensitive parse rejects them even then.
     /// </remarks>
     public static BencodeNode? Parse(ReadOnlySpan<byte> data, BencodeNodeOptions options, Document.BencodeDocumentOptions documentOptions)
     {
@@ -333,7 +339,17 @@ public abstract class BencodeNode
                             reader.TokenStartIndex);
                     }
 
+                    // An exact repeat reaches here only when duplicate keys are allowed, and collapses with the last
+                    // occurrence winning. A different key that ignoring case merges with an earlier one is refused
+                    // instead: keeping either value would silently lose the other.
                     string key = reader.GetString();
+                    if (options.PropertyNameCaseInsensitive && obj.ContainsKey(key) && !obj.Keys.Contains(key, StringComparer.Ordinal))
+                    {
+                        throw new BencodeFormatException(
+                            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Format_Invalid_BencodeNodeKeyCaseCollision, key, reader.TokenStartIndex),
+                            reader.TokenStartIndex);
+                    }
+
                     reader.Read();
                     obj[key] = ReadFrom(ref reader, options);
                 }

@@ -239,7 +239,7 @@ Opening a container past `MaxDepth` throws `InvalidOperationException` (*The max
 
 | Struct | Member | Default | Effect |
 |---|---|---|---|
-| `BencodeNodeOptions` | `PropertyNameCaseInsensitive` | `false` | Key lookups on the `BencodeObject` (and its indexer) ignore case. |
+| `BencodeNodeOptions` | `PropertyNameCaseInsensitive` | `false` | Key lookups on the `BencodeObject` (and its indexer) ignore case. `BencodeNode.Parse` throws `BencodeFormatException` at the second of two keys in one dictionary that differ only in case, since the object cannot hold both. |
 | `BencodeDocumentOptions` | `MaxDepth` | `0` → 64 | Deepest nesting the parser accepts; exceeding it throws `BencodeFormatException`. |
 | `BencodeDocumentOptions` | `AllowUnsortedKeys` | `false` | Accept dictionaries whose keys are not in raw byte order. |
 | `BencodeDocumentOptions` | `AllowDuplicateKeys` | `false` | Accept a repeated key; the **first** occurrence is kept. |
@@ -278,7 +278,7 @@ long viaNode = BencodeNode.Parse("d1:bi1e1:ai2ee"u8, default, new BencodeDocumen
 
 | Struct | Member | Default | Effect |
 |---|---|---|---|
-| `TomlNodeOptions` | `PropertyNameCaseInsensitive` | `false` | Key lookups on the `TomlObject` ignore case. |
+| `TomlNodeOptions` | `PropertyNameCaseInsensitive` | `false` | Key lookups on the `TomlObject` ignore case. `TomlNode.Parse` throws `TomlFormatException` at the second of two keys in one table that differ only in case, since the table cannot hold both. |
 | `TomlDocumentOptions` | `SpecVersion` | `V1_0` | Parse under TOML v1.0.0 or v1.1.0 (v1.1.0 adds multi-line inline tables, trailing commas, and second-precision omission). |
 | `TomlDocumentOptions` | `MaxDepth` | `0` → 64 | Deepest nesting the parser accepts; exceeding it throws `TomlFormatException`. |
 

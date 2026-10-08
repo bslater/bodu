@@ -32,6 +32,7 @@
   <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve"><value>The bencoded value contains trailing data.</value></data>
   <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve"><value>Unexpected end of bencoded data.</value></data>
   <data name="Format_Invalid_BencodeNodeKeyNotUtf8" xml:space="preserve"><value>The dictionary key at offset {0} is not valid UTF-8 text, which a BencodeObject key requires.</value></data>
+  <data name="Format_Invalid_BencodeNodeKeyCaseCollision" xml:space="preserve"><value>The dictionary key '{0}' at offset {1} matches an earlier key when case is ignored, which a case-insensitive BencodeObject cannot hold.</value></data>
   <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve"><value>Unexpected bencode token '{0}' at offset {1}.</value></data>
   <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be sorted by raw byte order.</value></data>
   <data name="Format_Invalid_BencodeDuplicateDictionaryKeys" xml:space="preserve"><value>Bencoded dictionary keys must be unique.</value></data>

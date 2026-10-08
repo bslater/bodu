@@ -85,6 +85,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' matches an earlier key in the same table when case is ignored, which a case-insensitive TomlObject cannot hold..
+        /// </summary>
+        internal static string Format_Invalid_TomlKeyCaseCollision {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlKeyCaseCollision", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The table is already defined..
         /// </summary>
         internal static string Format_Invalid_TomlDuplicateTable {
