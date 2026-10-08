@@ -23,9 +23,18 @@ public partial class Utf8DotEnvReaderTests
     /// <param name="source">The DotEnv source text.</param>
     /// <param name="options">The reader options.</param>
     /// <returns>The token transcript.</returns>
-    private static List<string> Transcribe(string source, DotEnvReaderOptions options = default)
+    private static List<string> Transcribe(string source, DotEnvReaderOptions options = default) =>
+        Transcribe(Encoding.UTF8.GetBytes(source), options);
+
+    /// <summary>
+    /// Reads every token from the supplied source bytes, which need not be valid UTF-8, and returns a compact
+    /// <c>Kind:Value</c> transcript.
+    /// </summary>
+    /// <param name="bytes">The DotEnv source bytes.</param>
+    /// <param name="options">The reader options.</param>
+    /// <returns>The token transcript.</returns>
+    private static List<string> Transcribe(byte[] bytes, DotEnvReaderOptions options = default)
     {
-        byte[] bytes = Encoding.UTF8.GetBytes(source);
         var reader = new Utf8DotEnvReader(bytes, options);
         var tokens = new List<string>();
 

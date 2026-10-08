@@ -86,4 +86,67 @@ public partial class Utf8DotEnvReaderTests
             new List<string> { "StartObject", "Name:GREETING", "String:café ☕", "EndObject" },
             tokens);
     }
+
+    /// <summary>
+    /// Verifies that a backslash before a character outside ASCII is kept with that character, whatever its UTF-8
+    /// length and however the value is quoted, since the pair is not an escape, and that the entry after it is read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="quote">The quote around the value, or the empty string for an unquoted value.</param>
+    /// <param name="value">The text of the value, which is also the text it should read as.</param>
+    [TestMethod]
+    [DataRow("double-quoted two-byte character", "\"", "\\é")]
+    [DataRow("double-quoted three-byte character between letters", "\"", "a\\€b")]
+    [DataRow("double-quoted four-byte character", "\"", "\\\U0001F600")]
+    [DataRow("double-quoted two in a row", "\"", "\\é\\ü")]
+    [DataRow("single-quoted two-byte character", "'", "\\é")]
+    [DataRow("single-quoted three-byte character between letters", "'", "a\\€b")]
+    [DataRow("unquoted two-byte character", "", "\\é")]
+    [DataRow("unquoted four-byte character", "", "\\\U0001F600")]
+    public void Read_WhenABackslashPrecedesACharacterOutsideAscii_ShouldKeepTheBackslashAndTheCharacter(string testName, string quote, string value)
+    {
+        _ = testName;
+
+        List<string> tokens = Transcribe($"KEY={quote}{value}{quote}\nNEXT=1\n");
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", $"String:{value}", "Name:NEXT", "String:1", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that bytes that are not valid UTF-8 read as U+FFFD, one for each sequence the decoder rejects, however
+    /// the value is quoted, and that they never swallow the closing quote, so the value ends where it should and the
+    /// entry after it is read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="quote">The quote around the value, or the empty string for an unquoted value.</param>
+    /// <param name="invalid">The bytes written after <c>a</c> in the value, in hexadecimal.</param>
+    /// <param name="expected">The text the value should read as.</param>
+    [TestMethod]
+    [DataRow("double-quoted continuation byte", "\"", "80", "a�")]
+    [DataRow("double-quoted byte that never starts a sequence", "\"", "FF", "a�")]
+    [DataRow("double-quoted lead byte without its continuation", "\"", "C3", "a�")]
+    [DataRow("double-quoted three-byte sequence cut short", "\"", "E282", "a�")]
+    [DataRow("double-quoted four-byte sequence cut short", "\"", "F09F98", "a�")]
+    [DataRow("double-quoted two continuation bytes", "\"", "8080", "a��")]
+    [DataRow("double-quoted encoded surrogate", "\"", "EDA080", "a���")]
+    [DataRow("double-quoted backslash before a continuation byte", "\"", "5C80", "a\\�")]
+    [DataRow("single-quoted continuation byte", "'", "80", "a�")]
+    [DataRow("single-quoted three-byte sequence cut short", "'", "E282", "a�")]
+    [DataRow("unquoted continuation byte", "", "80", "a�")]
+    [DataRow("unquoted three-byte sequence cut short", "", "E282", "a�")]
+    public void Read_WhenAValueHoldsBytesThatAreNotUtf8_ShouldReadReplacementCharactersAndTheNextEntry(string testName, string quote, string invalid, string expected)
+    {
+        _ = testName;
+        byte[] bytes = [.. Encoding.UTF8.GetBytes($"K={quote}a"), .. Convert.FromHexString(invalid), .. Encoding.UTF8.GetBytes($"{quote}\nNEXT=1\n")];
+
+        List<string> tokens = Transcribe(bytes);
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:K", $"String:{expected}", "Name:NEXT", "String:1", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
 }
