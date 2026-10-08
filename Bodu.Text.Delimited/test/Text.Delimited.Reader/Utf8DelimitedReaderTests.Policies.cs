@@ -82,4 +82,40 @@ public partial class Utf8DelimitedReaderTests
         Assert.AreEqual("3", document.RootElement[0].GetProperty("a").GetString());
         Assert.AreEqual("4", document.RootElement[0].GetProperty("b").GetString());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DelimitedMalformedRecordBehavior.SkipRecord" /> skips a record with text after a closing
+    /// quote whole, its quoted line break included, and goes on with the next line, rather than keeping the fields
+    /// before the error or reading the text as a record.
+    /// </summary>
+    /// <param name="spansLines">Whether the malformed record's quoted field holds a line break.</param>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void Read_WhenMalformedRecordSkipAndTextFollowsAClosingQuote_ShouldSkipTheWholeRecord(bool spansLines)
+    {
+        var options = new DelimitedReaderOptions { NoHeader = true, MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord };
+        string source = "x,y\n\"a" + (spansLines ? "\nb" : string.Empty) + "\"c,d\ne,f\n";
+
+        List<string[]> records = ReadRecords(source, options);
+
+        Assert.AreEqual(2, records.Count);
+        CollectionAssert.AreEqual(new[] { "x", "y" }, records[0]);
+        CollectionAssert.AreEqual(new[] { "e", "f" }, records[1]);
+    }
+
+    /// <summary>
+    /// Verifies that in header mode <see cref="DelimitedMalformedRecordBehavior.SkipRecord" /> drops a record with text
+    /// after a closing quote and binds the next record to the header.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenMalformedRecordSkipAndTextFollowsAClosingQuoteInHeaderMode_ShouldBindTheNextRecord()
+    {
+        var options = new DelimitedReaderOptions { MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord };
+        using DelimitedDocument document = DelimitedDocument.Parse("a,b\n1,\"2\"x\n3,4\n"u8, options);
+
+        Assert.AreEqual(1, document.RootElement.GetArrayLength());
+        Assert.AreEqual("3", document.RootElement[0].GetProperty("a").GetString());
+        Assert.AreEqual("4", document.RootElement[0].GetProperty("b").GetString());
+    }
 }

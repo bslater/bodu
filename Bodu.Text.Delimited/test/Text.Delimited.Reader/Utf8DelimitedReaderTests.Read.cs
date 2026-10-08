@@ -337,6 +337,63 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
+    /// Verifies that text after a closing quote makes the record malformed, so the default policy throws
+    /// <see cref="DelimitedFormatException" /> at the offending byte, rather than ending the record at the quote and
+    /// reading the text as a new record: <c>"a"b,c</c> fails at offset 3 of line 1, or at offset 9 of line 2 after a
+    /// header.
+    /// </summary>
+    /// <param name="noHeader">Whether the input has no header row.</param>
+    /// <param name="line">The offending byte's line.</param>
+    /// <param name="offset">The offending byte's offset.</param>
+    [TestMethod]
+    [DataRow(true, 1, 3)]
+    [DataRow(false, 2, 9)]
+    public void Read_WhenTextFollowsAClosingQuote_ShouldThrowAtTheOffendingByte(bool noHeader, int line, int offset)
+    {
+        string source = (noHeader ? string.Empty : "h1,h2\n") + "\"a\"b,c\n";
+
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe(source, new DelimitedReaderOptions { NoHeader = noHeader });
+        });
+
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that text after a quoted field that spans lines is reported on the line of the offending byte, 3, at
+    /// its offset, 9.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTextFollowsAClosingQuoteOnALaterLineOfTheRecord_ShouldReportThatLine()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe("a,b\n\"x\ny\"z\n", new DelimitedReaderOptions { NoHeader = true });
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+        Assert.AreEqual(9, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedReaderOptions.TrimFields" /> spaces after a closing quote are allowed but
+    /// text after them is not: <c>"a" x</c> throws <see cref="DelimitedFormatException" /> at the <c>x</c>, offset 4.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTrimFieldsAndTextFollowsTheSpacesAfterAClosingQuote_ShouldThrowAtTheText()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe("\"a\" x\n", new DelimitedReaderOptions { NoHeader = true, TrimFields = true });
+        });
+
+        Assert.AreEqual(1, ex.LineNumber);
+        Assert.AreEqual(4, ex.Offset);
+    }
+
+    /// <summary>
     /// Reads every record into its decoded field values.
     /// </summary>
     /// <param name="source">The CSV source text.</param>
