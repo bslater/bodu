@@ -150,4 +150,22 @@ public partial class Utf8BencodeReaderTests
         CollectionAssert.AreEqual(Bytes("cow"), reader.GetBytes());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Utf8BencodeReader.GetInt64" /> on an integer above <see cref="long.MaxValue" />, which the
+    /// reader accepts, reports the <see cref="long" /> range it cannot read the value into.
+    /// </summary>
+    [TestMethod]
+    public void GetInt64_WhenIntegerExceedsInt64_ShouldNameTheInt64Range()
+    {
+        byte[] bytes = Bytes("i9223372036854775808e");
+
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            var reader = new Utf8BencodeReader(bytes);
+            _ = reader.Read();
+            _ = reader.GetInt64();
+        });
+
+        StringAssert.Contains(exception.Message, "Int64");
+    }
 }
