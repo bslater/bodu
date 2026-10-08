@@ -44,11 +44,11 @@ The other structural failures, with the position each reports:
 
 | Input | Message | Position |
 |---|---|---|
-| `symbol,qty` / `MSFT,10,extra` | *A delimited record has 3 field(s) but the header declares 2.* | line 3, offset 25 |
-| `symbol,qty` / `MSFT,"10"x` | *A delimited record has 1 field(s) but the header declares 2.* | line 3, offset 22 |
-| `symbol,symbol` / `MSFT,10` | *The delimited header row contains the duplicate column name 'symbol'.* | line 2, offset 14 |
+| `symbol,qty` / `MSFT,10,extra` | *A delimited record has 3 field(s) but the header declares 2.* | line 2, offset 11 |
+| `symbol,qty` / `MSFT,"10"x` | *A delimited record has 1 field(s) but the header declares 2.* | line 2, offset 20 |
+| `symbol,symbol` / `MSFT,10` | *The delimited header row contains the duplicate column name 'symbol'.* | line 1, offset 0 |
 
-The line number is the line on which the reader *detected* the problem - for a record error that is the line after the offending record's terminator, which is why single-line records report line 3 here.
+An error about a whole record - a field count that disagrees with the header, or a header that repeats a name - is reported where that record starts: the line it begins on and the offset of its first byte. The second row is such an error too, because the reader ends the record `MSFT,"10"` at the closing quote and reads `x` as a record of one field. An unterminated quoted field is reported where the reader detected it, at the end of the input.
 
 ## Pattern 2 - Delimited: tolerating dirty input
 

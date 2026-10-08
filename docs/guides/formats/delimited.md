@@ -98,7 +98,7 @@ var lenient = new DelimitedReaderOptions
 };
 ```
 
-Strict field counts (the default) are measured against the header row and throw `DelimitedFormatException` with the line number. See [Parser policies](../../docs/formats/parser-policies.md).
+Strict field counts (the default) are measured against the header row and throw `DelimitedFormatException` with the line number and byte offset at which the offending record starts. See [Parser policies](../../docs/formats/parser-policies.md).
 
 ## Exceptions
 

@@ -49,6 +49,12 @@ public ref struct Utf8DelimitedReader
     /// <summary>The 1-based line number of the current read position.</summary>
     private int _line;
 
+    /// <summary>The 1-based line number on which the current record starts.</summary>
+    private int _recordLine;
+
+    /// <summary>The byte offset at which the current record starts.</summary>
+    private int _recordStart;
+
     /// <summary>The reader lifecycle stage.</summary>
     private Stage _stage;
 
@@ -283,7 +289,7 @@ public ref struct Utf8DelimitedReader
                 {
                     case DelimitedDuplicateHeaderBehavior.Throw:
                         throw new DelimitedFormatException(
-                            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedDuplicateHeader, name), _line, _position);
+                            string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedDuplicateHeader, name), _recordLine, _recordStart);
 
                     case DelimitedDuplicateHeaderBehavior.TakeLast:
                         _headers[existing] = string.Empty;
@@ -314,6 +320,9 @@ public ref struct Utf8DelimitedReader
             if (_position >= _data.Length)
                 return false;
 
+            // An error about the record as a whole is reported where the record starts, not after its line ending.
+            _recordLine = _line;
+            _recordStart = _position;
             ParseRecord();
 
             if (_options.HasHeader && _headers.Count > 0 &&
@@ -324,7 +333,7 @@ public ref struct Utf8DelimitedReader
                     continue;
 
                 throw new DelimitedFormatException(
-                    string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, _headers.Count, _fields.Count), _line, _position);
+                    string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedFieldCount, _headers.Count, _fields.Count), _recordLine, _recordStart);
             }
 
             return true;

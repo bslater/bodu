@@ -54,14 +54,23 @@ public sealed class DelimitedFormatException
     }
 
     /// <summary>
-    /// Gets the 1-based line number at which the parse error was detected, when available.
+    /// Gets the 1-based line number of the parse error, when available.
     /// </summary>
     /// <value>The line number, or <see langword="null" /> when no line is associated with the error.</value>
+    /// <remarks>
+    /// An error about a record as a whole, a field count that differs from the header's or a header row that repeats a
+    /// column name, is reported on the line where that record starts. Other errors, such as an unterminated quoted
+    /// field, are reported on the line at which the reader detected them.
+    /// </remarks>
     public int? LineNumber { get; }
 
     /// <summary>
-    /// Gets the zero-based byte offset at which the parse error was detected, when available.
+    /// Gets the zero-based byte offset of the parse error, when available.
     /// </summary>
     /// <value>The byte offset, or <see langword="null" /> when no position is associated with the error.</value>
+    /// <remarks>
+    /// An error about a record as a whole is reported at the offset of the record's first byte; other errors at the
+    /// offset at which the reader detected them.
+    /// </remarks>
     public int? Offset { get; }
 }
