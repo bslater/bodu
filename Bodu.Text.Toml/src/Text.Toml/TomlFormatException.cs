@@ -21,7 +21,7 @@ namespace Bodu.Text.Toml;
 /// <see cref="ColumnNumber" /> in addition to the absolute character <see cref="Offset" />. Each is
 /// <see langword="null" /> when the error is not associated with a specific location. An error about a key, such as a
 /// duplicate key or a dotted key that extends a value, is positioned where the key starts, although it is found only
-/// once the key's value has been read.
+/// once the key's value has been read, and a misplaced digit separator in a number is positioned at the separator.
 /// </para>
 /// </remarks>
 /// <example>

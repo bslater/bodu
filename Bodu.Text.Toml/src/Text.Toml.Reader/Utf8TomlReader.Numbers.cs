@@ -142,15 +142,15 @@ public ref partial struct Utf8TomlReader
             switch (token[1])
             {
                 case (byte)'x':
-                    SetInteger(ParseRadixInteger(token[2..], 16));
+                    SetInteger(ParseRadixInteger(token, 16));
                     return true;
 
                 case (byte)'o':
-                    SetInteger(ParseRadixInteger(token[2..], 8));
+                    SetInteger(ParseRadixInteger(token, 8));
                     return true;
 
                 case (byte)'b':
-                    SetInteger(ParseRadixInteger(token[2..], 2));
+                    SetInteger(ParseRadixInteger(token, 2));
                     return true;
             }
         }
@@ -211,7 +211,7 @@ public ref partial struct Utf8TomlReader
             if (b == (byte)'_')
             {
                 if (j == 0 || j == body.Length - 1 || !IsDigit(body[j - 1]) || !IsDigit(body[j + 1]))
-                    throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
+                    throw NumberError(TomlResourceStrings.Format_Invalid_TomlInvalidNumber, i + j);
                 continue;
             }
 
@@ -253,14 +253,16 @@ public ref partial struct Utf8TomlReader
     }
 
     /// <summary>
-    /// Parses a hexadecimal, octal, or binary integer body, enforcing underscore placement and the <see cref="long" />
+    /// Parses a hexadecimal, octal, or binary integer token, enforcing underscore placement and the <see cref="long" />
     /// range.
     /// </summary>
-    /// <param name="body">The token bytes after the radix prefix.</param>
+    /// <param name="token">The token bytes, starting with the two-byte radix prefix.</param>
     /// <param name="radix">The numeric base (16, 8, or 2).</param>
     /// <returns>The integer value.</returns>
-    private readonly long ParseRadixInteger(ReadOnlySpan<byte> body, int radix)
+    private readonly long ParseRadixInteger(ReadOnlySpan<byte> token, int radix)
     {
+        const int PrefixLength = 2;
+        ReadOnlySpan<byte> body = token[PrefixLength..];
         if (body.IsEmpty)
             throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
 
@@ -271,7 +273,7 @@ public ref partial struct Utf8TomlReader
                 continue;
 
             if (j == 0 || j == body.Length - 1 || !IsNeighborDigit(body[j - 1], allowHexLetters) || !IsNeighborDigit(body[j + 1], allowHexLetters))
-                throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
+                throw NumberError(TomlResourceStrings.Format_Invalid_TomlInvalidNumber, PrefixLength + j);
         }
 
         ulong value = 0;
@@ -308,7 +310,7 @@ public ref partial struct Utf8TomlReader
             if (b == (byte)'_')
             {
                 if (j == 0 || j == token.Length - 1 || !IsDigit(token[j - 1]) || !IsDigit(token[j + 1]))
-                    throw Error(TomlResourceStrings.Format_Invalid_TomlInvalidNumber);
+                    throw NumberError(TomlResourceStrings.Format_Invalid_TomlInvalidNumber, j);
                 continue;
             }
 
@@ -371,6 +373,20 @@ public ref partial struct Utf8TomlReader
 
         return i == s.Length && (hasFraction || hasExponent);
     }
+
+    /// <summary>
+    /// Creates a <see cref="TomlFormatException" /> positioned at a byte of the number token being scanned, for an
+    /// error that a specific character of the literal causes, such as a misplaced digit separator.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="index">The index of the offending byte within the token.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// A number never spans lines, so the offending byte lies on the token's line, <paramref name="index" /> columns
+    /// after the token's first byte.
+    /// </remarks>
+    private readonly TomlFormatException NumberError(string message, int index) =>
+        new(message, _tokenLine, _tokenColumn + index, _tokenStart + index);
 
     /// <summary>
     /// Indicates whether <paramref name="b" /> may sit adjacent to an underscore in a numeric literal of the given
