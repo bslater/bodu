@@ -142,6 +142,21 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> merges read entries into a get-only dictionary
+    /// member, overwriting matching keys and adding new ones.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndGetOnlyDictionary_ShouldMergeEntries()
+    {
+        GetOnlyDictionaryModel model = BencodeSerializer.Deserialize<GetOnlyDictionaryModel>(Encoding.Latin1.GetBytes("d6:Countsd1:bi9e1:ci3eee"));
+
+        Assert.AreEqual(1, model.Counts["a"]);
+        Assert.AreEqual(9, model.Counts["b"]);
+        Assert.AreEqual(3, model.Counts["c"]);
+        Assert.HasCount(3, model.Counts);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="ObjectCreationHandling.Populate" /> falls back to replacing the value when the
     /// member's existing value is <see langword="null" />, since there is no instance to populate.
     /// </summary>
@@ -376,5 +391,19 @@ public partial class BencodeSerializerTests
         [ObjectCreationHandling(ObjectCreationHandling.Populate)]
         public IReadOnlyDictionary<string, int> Counts { get; set; } =
             new ReadOnlyDictionary<string, int>(new Dictionary<string, int>(StringComparer.Ordinal) { ["a"] = 1 });
+    }
+
+    /// <summary>
+    /// A model whose get-only dictionary member, seeded with two entries, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class GetOnlyDictionaryModel
+    {
+        /// <summary>
+        /// Gets the dictionary, seeded with the entries <c>a = 1</c> and <c>b = 2</c>.
+        /// </summary>
+        /// <value>The dictionary.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public Dictionary<string, int> Counts { get; } = new() { ["a"] = 1, ["b"] = 2 };
     }
 }
