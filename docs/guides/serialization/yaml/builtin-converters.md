@@ -20,7 +20,7 @@ YAML carries the JSON-compatible core scalar kinds - string, integer, float, Boo
 | `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` | integer scalar | integer | Checked conversions; a value outside the target type raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 | `ulong` `nuint` `Int128` `UInt128` | integer scalar, or the invariant decimal text outside the signed 64-bit range | integer or string | A value the writer's signed 64-bit integer surface cannot hold is emitted as its exact decimal text (quoted only when a leading sign would otherwise resolve it numerically) and converts back exactly on read. |
 | `double` | float scalar | float | `NaN`, `+∞`, and `−∞` write as `.nan`, `.inf`, and `-.inf`. |
-| `float` | float scalar | float | Widens to `double` on write; narrows on read. |
+| `float` | float scalar | float | Widens to `double` on write; narrows on read, where a finite value outside the `float` range raises <xref:Bodu.Text.Yaml.YamlSerializationException> rather than becoming an infinity. Rounding and underflow are accepted, and `.inf`, `-.inf`, and `.nan` read as `float`'s own values. |
 | `decimal` | quoted string of the exact invariant text | float scalar or string | Quoted because the exact text would otherwise resolve as a `double`; the quoting preserves the full `decimal` precision. |
 | `DateTime` | string, round-trip (`"o"`) ISO-8601 | string | Read with `DateTimeStyles.RoundtripKind`. There is no native YAML timestamp type; the value travels as a string scalar. |
 | `DateTimeOffset` | string, round-trip (`"o"`) ISO-8601 | string | As `DateTime`, preserving the offset. |
