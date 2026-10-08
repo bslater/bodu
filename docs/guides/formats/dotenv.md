@@ -60,10 +60,12 @@ The mutable DOM preserves each entry's `export` flag through the round trip.
 
 ## Quoting rules
 
-- **Double quotes** delimit values, resolve escape sequences, and may span lines.
+- **Double quotes** delimit values and may span lines. They resolve the escapes `\\`, `\'`, `\"`, `\a`, `\b`, `\f`, `\n`, `\r`, `\t`, `\v` and `\$`, and a backslash before a line break continues the value on the next line; any other escape keeps its backslash, and octal escapes are not supported.
 - **Single quotes** delimit literal values.
-- **Unquoted** values are trimmed and end at an inline `#` comment.
+- **Unquoted** values are trimmed and end at an inline `#` comment, a `#` with whitespace before it: `KEY= # note` reads as an empty value, while `KEY=#note` and `URL=http://host/#top` keep their `#`.
 - An empty value (`KEY=`) is a real value, distinct from an absent key.
+- Whitespace is any Unicode whitespace character other than CR and LF, which end a line, so a form feed or a no-break space counts as well as a space or a tab. It may precede a key or a comment, follow `export`, and surround `=`, and it is trimmed from both ends of an unquoted value.
+- After a closing quote, only whitespace and a `#` comment may follow on the line; any other text, as in `KEY="a"b` or `KEY='a' b`, is malformed input.
 
 `DotEnvReaderOptions` can disable the `export` prefix or inline comments (`DisallowExportPrefix`, `DisallowInlineComments`).
 

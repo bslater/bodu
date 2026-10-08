@@ -69,6 +69,11 @@ public readonly struct DotEnvElement
     /// <exception cref="InvalidOperationException">Thrown when this element is not an object.</exception>
     /// <exception cref="KeyNotFoundException">Thrown when the property is not present.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <remarks>
+    /// When the document defines <paramref name="name" /> more than once, the last definition is returned, as
+    /// <c>JsonElement.GetProperty</c> matches the last definition of a repeated property;
+    /// <see cref="EnumerateObject" /> still yields every definition in source order.
+    /// </remarks>
     public DotEnvElement GetProperty(string name)
     {
         if (!TryGetProperty(name, out DotEnvElement value))
@@ -90,6 +95,11 @@ public readonly struct DotEnvElement
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when this element is not an object.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <remarks>
+    /// When the document defines <paramref name="name" /> more than once, the last definition is returned, as
+    /// <c>JsonElement.GetProperty</c> matches the last definition of a repeated property;
+    /// <see cref="EnumerateObject" /> still yields every definition in source order.
+    /// </remarks>
     public bool TryGetProperty(string name, out DotEnvElement value)
     {
         ThrowHelper.ThrowIfNull(name);

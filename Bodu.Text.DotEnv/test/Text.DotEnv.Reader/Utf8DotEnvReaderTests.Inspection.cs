@@ -166,16 +166,12 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
-    /// Verifies that the line number advances by one per entry, tracking the reader's position through the source.
+    /// Verifies that the line number advances by one per entry when the entries sit on consecutive lines.
     /// </summary>
     /// <remarks>
-    /// This pins the observed behaviour, which is not what the property documents. A <c>Read</c> that reports a
-    /// property name has already consumed that entry's whole line, so the line number is one ahead of the token
-    /// being reported - the first entry of a document reads as line 2, not line 1. The documentation says "the
-    /// 1-based line number at which the current token begins", so either the property or its summary is wrong;
-    /// deciding which is a product question rather than a test one, and the reader's own parse errors snapshot the
-    /// line separately and are unaffected either way. Asserted as a delta so the test states the relationship
-    /// without endorsing the off-by-one as correct.
+    /// Each property name reports the line on which its entry begins, so the line advances by one from each entry to
+    /// the next. <c>LineNumber_WhenTokenIsRead_ShouldReportTheLineOnWhichItBegins</c> pins the absolute line of every
+    /// kind of token.
     /// </remarks>
     [TestMethod]
     public void LineNumber_ShouldAdvanceOncePerEntry()
@@ -191,6 +187,80 @@ public partial class Utf8DotEnvReaderTests
 
         AdvanceTo(ref reader, DotEnvTokenType.PropertyName);
         Assert.AreEqual(first + 2, reader.LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that every token reports the line on which it begins, whether the lines end in a LF, a CR LF or a lone
+    /// CR and whether or not the last line ends in one: a comment its own line, an entry's property name and string
+    /// value the line of the entry, and the closing object the line at the end of the input.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    /// <param name="finalLineEnding">Whether the last line ends in a line ending.</param>
+    [TestMethod]
+    [DataRow("LF", "\n", true)]
+    [DataRow("LF without a final line ending", "\n", false)]
+    [DataRow("CR LF", "\r\n", true)]
+    [DataRow("CR LF without a final line ending", "\r\n", false)]
+    [DataRow("lone CR", "\r", true)]
+    [DataRow("lone CR without a final line ending", "\r", false)]
+    public void LineNumber_WhenTokenIsRead_ShouldReportTheLineOnWhichItBegins(string testName, string lineEnding, bool finalLineEnding)
+    {
+        _ = testName;
+        string source = string.Join(lineEnding, "# first", "A=1", string.Empty, "export B='two'", "  C = \"three\" # note", "# last");
+        if (finalLineEnding)
+            source += lineEnding;
+
+        List<string> lines = ReadTokenLines(source);
+
+        var expected = new List<string>
+        {
+            "StartObject:1", "Comment:1", "PropertyName:2", "String:2", "PropertyName:4", "String:4", "PropertyName:5",
+            "String:5", "Comment:6", $"EndObject:{(finalLineEnding ? 7 : 6)}",
+        };
+        CollectionAssert.AreEqual(expected, lines, string.Join(" | ", lines));
+    }
+
+    /// <summary>
+    /// Verifies that a double-quoted value spanning lines reports the line of its opening quote, and that the entry
+    /// after it reports its own line, whatever the line endings inside and after the value.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line, and inside the value.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void LineNumber_WhenAValueSpansLines_ShouldReportTheLineOfItsOpeningQuote(string testName, string lineEnding)
+    {
+        _ = testName;
+        string source = string.Join(lineEnding, "A=1", "B=\"x", "y", "z\"", "C=3") + lineEnding;
+
+        List<string> lines = ReadTokenLines(source);
+
+        var expected = new List<string>
+        {
+            "StartObject:1", "PropertyName:1", "String:1", "PropertyName:2", "String:2", "PropertyName:5", "String:5",
+            "EndObject:6",
+        };
+        CollectionAssert.AreEqual(expected, lines, string.Join(" | ", lines));
+    }
+
+    /// <summary>
+    /// Reads every token from the supplied source and returns each token's kind and line number.
+    /// </summary>
+    /// <param name="source">The DotEnv source text.</param>
+    /// <returns>A <c>Kind:Line</c> entry for each token, in order.</returns>
+    private static List<string> ReadTokenLines(string source)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(source);
+        var reader = new Utf8DotEnvReader(bytes);
+        var lines = new List<string>();
+
+        while (reader.Read())
+            lines.Add($"{reader.TokenType}:{reader.LineNumber}");
+
+        return lines;
     }
 
     /// <summary>

@@ -150,7 +150,8 @@ public sealed class DotEnvDocument
     }
 
     /// <summary>
-    /// Finds the index of the first entry with the specified key.
+    /// Finds the index of the last entry with the specified key, so that a key defined more than once resolves to its
+    /// last definition.
     /// </summary>
     /// <param name="key">The key name.</param>
     /// <returns>The zero-based entry index, or <c>-1</c> when the key is absent.</returns>
@@ -158,7 +159,7 @@ public sealed class DotEnvDocument
     {
         ThrowIfDisposed();
 
-        for (int i = 0; i < _entries.Count; i++)
+        for (int i = _entries.Count - 1; i >= 0; i--)
         {
             if (string.Equals(_entries[i].Key, key, StringComparison.Ordinal))
                 return i;

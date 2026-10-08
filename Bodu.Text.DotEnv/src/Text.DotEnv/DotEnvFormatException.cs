@@ -17,9 +17,10 @@ namespace Bodu.Text.DotEnv;
 /// hierarchy so callers can catch it alongside other parse failures.
 /// </para>
 /// <para>
-/// Because DotEnv is a line-oriented format, the exception records its position as a <see cref="LineNumber" /> and
-/// <see cref="ColumnNumber" /> in addition to the absolute byte <see cref="Offset" />. Each is <see langword="null" />
-/// when the error is not associated with a specific location.
+/// Because DotEnv is a line-oriented format, the exception records its position as a <see cref="LineNumber" /> and a
+/// byte <see cref="ColumnNumber" /> in addition to the absolute byte <see cref="Offset" />. The reader sets all three
+/// to one position: the byte at which it found the error, or the opening quote of an unterminated quoted value. Each is
+/// <see langword="null" /> when the error is not associated with a specific location.
 /// </para>
 /// </remarks>
 public sealed class DotEnvFormatException
@@ -57,7 +58,7 @@ public sealed class DotEnvFormatException
     /// </summary>
     /// <param name="message">The error message.</param>
     /// <param name="line">The 1-based line number at which the error occurred.</param>
-    /// <param name="column">The 1-based column number within the line at which the error occurred.</param>
+    /// <param name="column">The 1-based column within the line, counted in bytes, at which the error occurred.</param>
     /// <param name="offset">The zero-based byte offset from the start of the source.</param>
     public DotEnvFormatException(string message, int line, int column, int offset)
         : base(message)
@@ -71,12 +72,21 @@ public sealed class DotEnvFormatException
     /// Gets the 1-based line number at which the parse error was detected, when available.
     /// </summary>
     /// <value>The line number, or <see langword="null" /> when no line is associated with the error.</value>
+    /// <remarks>
+    /// A line ends at a LF, a CR LF pair or a lone CR, inside a double-quoted value as well as between entries.
+    /// </remarks>
     public int? LineNumber { get; }
 
     /// <summary>
-    /// Gets the 1-based column number within the line at which the parse error was detected, when available.
+    /// Gets the 1-based column, counted in bytes from the start of the line, at which the parse error was detected,
+    /// when available.
     /// </summary>
     /// <value>The column number, or <see langword="null" /> when no column is associated with the error.</value>
+    /// <remarks>
+    /// The column counts UTF-8 bytes, as <see cref="Offset" /> does, not decoded characters, so a character outside
+    /// ASCII earlier on the line counts as its two to four bytes. A byte-order mark at the start of the source is
+    /// counted by <see cref="Offset" /> but not by the column.
+    /// </remarks>
     public int? ColumnNumber { get; }
 
     /// <summary>

@@ -61,15 +61,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to A single DotEnv entry exceeded the maximum buffered length of {0} bytes before it resolved (line {1})..
-        /// </summary>
-        internal static string Format_Invalid_DotEnvEntryTooLong {
-            get {
-                return ResourceManager.GetString("Format_Invalid_DotEnvEntryTooLong", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Invalid DotEnv key name '{0}' on line {1}; keys must match [A-Za-z_][A-Za-z0-9_]*..
         /// </summary>
         internal static string Format_Invalid_DotEnvInvalidKey {
@@ -84,6 +75,15 @@ namespace Bodu {
         internal static string Format_Invalid_DotEnvMalformedEntry {
             get {
                 return ResourceManager.GetString("Format_Invalid_DotEnvMalformedEntry", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected text after the closing quote of a DotEnv value on line {0}..
+        /// </summary>
+        internal static string Format_Invalid_DotEnvTextAfterClosingQuote {
+            get {
+                return ResourceManager.GetString("Format_Invalid_DotEnvTextAfterClosingQuote", resourceCulture);
             }
         }
 

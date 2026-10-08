@@ -38,7 +38,8 @@ public readonly struct DotEnvReaderOptions
     /// </summary>
     /// <value><see langword="true" /> to disable inline comments; otherwise <see langword="false" />.</value>
     /// <remarks>
-    /// The property is inverted so the parameterless <see cref="Default" /> enables inline comments.
+    /// The property is inverted so the parameterless <see cref="Default" /> enables inline comments. It does not affect
+    /// a comment after a closing quote, which is allowed either way.
     /// </remarks>
     public bool DisallowInlineComments { get; init; }
 

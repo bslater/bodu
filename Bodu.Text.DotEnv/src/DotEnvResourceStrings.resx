@@ -58,14 +58,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Format_Invalid_DotEnvEntryTooLong" xml:space="preserve">
-    <value>A single DotEnv entry exceeded the maximum buffered length of {0} bytes before it resolved (line {1}).</value>
-  </data>
   <data name="Format_Invalid_DotEnvInvalidKey" xml:space="preserve">
     <value>Invalid DotEnv key name '{0}' on line {1}; keys must match [A-Za-z_][A-Za-z0-9_]*.</value>
   </data>
   <data name="Format_Invalid_DotEnvMalformedEntry" xml:space="preserve">
     <value>Malformed DotEnv entry on line {0}; expected 'KEY=VALUE'.</value>
+  </data>
+  <data name="Format_Invalid_DotEnvTextAfterClosingQuote" xml:space="preserve">
+    <value>Unexpected text after the closing quote of a DotEnv value on line {0}.</value>
   </data>
   <data name="Format_Invalid_DotEnvUnterminatedDoubleQuote" xml:space="preserve">
     <value>Unterminated double-quoted DotEnv value beginning on line {0}.</value>
