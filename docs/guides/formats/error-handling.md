@@ -58,7 +58,7 @@ Three <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> policies convert 
 |---|---|---|---|
 | `FieldCountBehavior` | `Strict` | `Ragged` | Records with more or fewer fields than the header are accepted as-is. |
 | `MalformedRecordBehavior` | `Throw` | `SkipRecord` | A malformed record - one with text after a closing quote, or one whose field count breaks `Strict` - is skipped whole, and reading continues with the next line. |
-| `DuplicateHeaderBehavior` | `Throw` | `TakeFirst` / `TakeLast` | A repeated column name maps to the first or last occurrence. |
+| `DuplicateHeaderBehavior` | `Throw` | `TakeFirst` / `TakeLast` | A repeated column name maps to the first or last occurrence; the other columns with the name are read under an empty name. |
 
 <!-- compile -->
 ```csharp

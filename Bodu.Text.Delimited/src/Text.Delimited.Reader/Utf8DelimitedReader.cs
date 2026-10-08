@@ -322,6 +322,10 @@ public ref struct Utf8DelimitedReader
     /// <summary>
     /// Copies the current record's fields into the header list, applying the duplicate-header policy.
     /// </summary>
+    /// <remarks>
+    /// The two lenient policies are mirror images: the winning column keeps a duplicated name, and every other column
+    /// with it is listed under an empty name, so a lookup by name finds the winner.
+    /// </remarks>
     /// <exception cref="DelimitedFormatException">
     /// Thrown when a duplicate header violates the configured policy.
     /// </exception>
@@ -345,6 +349,8 @@ public ref struct Utf8DelimitedReader
                         break;
 
                     default:
+                        // TakeFirst: the earlier column keeps the name, so this one is listed without it.
+                        name = string.Empty;
                         break;
                 }
             }

@@ -18,7 +18,7 @@ Every reader throws its format's `*FormatException` (`DelimitedFormatException`,
 |---|---|---|
 | `FieldCountBehavior` | `Strict` (every record matches the header's field count) / `Ragged` | `Strict` |
 | `MalformedRecordBehavior` | `Throw` / `SkipRecord` (skip the whole malformed record and continue with the next line) | `Throw` |
-| `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` | `Throw` |
+| `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` (the first or last column with a repeated name keeps it, and the others are read under an empty name) | `Throw` |
 | `Delimiter`, `Quote` | an ASCII character other than CR and LF; the two must differ | `,` / `"` |
 | `NoHeader` | treat the first record as data (records become positional arrays) | header mode |
 | `TrimFields` | trim spaces and tabs around each field: an unquoted field's value is trimmed, and the spaces and tabs around a quoted field's quotes are skipped, so the field is still read as quoted and its quoted text is kept whole; other white space, such as U+00A0 or U+3000, is kept | off |
