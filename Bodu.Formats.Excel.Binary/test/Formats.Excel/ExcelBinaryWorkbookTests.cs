@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Formats.Excel;
 
 /// <summary>
@@ -35,4 +37,14 @@ public partial class ExcelBinaryWorkbookTests
 
         return grid;
     }
+
+    /// <summary>
+    /// Describes a cell for comparing two readings of a workbook.
+    /// </summary>
+    /// <param name="cell">The cell.</param>
+    /// <returns>The cell's row, column, kind and value, comma-separated and culture-invariant.</returns>
+    private static string DescribeCell(ExcelCell cell) =>
+        string.Create(
+            CultureInfo.InvariantCulture,
+            $"{cell.RowIndex},{cell.ColumnIndex},{cell.Kind},{cell.StringValue}{cell.NumberValue}{cell.BooleanValue}{cell.ErrorValue}");
 }

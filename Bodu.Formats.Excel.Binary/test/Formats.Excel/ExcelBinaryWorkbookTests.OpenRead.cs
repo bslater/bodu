@@ -469,4 +469,164 @@ public partial class ExcelBinaryWorkbookTests
 
         Assert.AreEqual(1.0, ReadCellGrid(workbook, "Sheet1")[(0, 0)].NumberValue);
     }
+
+    /// <summary>
+    /// Verifies that two different workbooks opened and read at the same time, a thousand times across eight threads,
+    /// each yield exactly the cells they yield when read alone.
+    /// </summary>
+    /// <remarks>
+    /// Each iteration opens both workbooks and reads their cells alternately, one from each in turn, so that state
+    /// leaking between two open workbooks, on one thread or across threads, mixes their cells up.
+    /// </remarks>
+    [TestMethod]
+    public void OpenRead_WhenTwoWorkbooksAreReadConcurrently_ShouldReadEachOwnCells()
+    {
+        byte[] first = BuildLettersWorkbook();
+        byte[] second = BuildXyWorkbook();
+        string expectedFirst = ReadCellsAlone(first);
+        string expectedSecond = ReadCellsAlone(second);
+        var mismatches = 0;
+
+        Parallel.For(0, 1000, new ParallelOptions { MaxDegreeOfParallelism = 8 }, _ =>
+        {
+            using var firstWorkbook = ExcelBinaryWorkbook.OpenRead(new MemoryStream(first, writable: false));
+            using var secondWorkbook = ExcelBinaryWorkbook.OpenRead(new MemoryStream(second, writable: false));
+            using ExcelWorksheetReader firstReader = firstWorkbook.OpenWorksheet(0);
+            using ExcelWorksheetReader secondReader = secondWorkbook.OpenWorksheet(0);
+
+            var firstCells = new List<string>();
+            var secondCells = new List<string>();
+            var firstMore = true;
+            var secondMore = true;
+            while (firstMore || secondMore)
+            {
+                if (firstMore)
+                {
+                    firstMore = firstReader.TryReadCell(out ExcelCell firstCell);
+                    if (firstMore)
+                        firstCells.Add(DescribeCell(firstCell));
+                }
+
+                if (secondMore)
+                {
+                    secondMore = secondReader.TryReadCell(out ExcelCell secondCell);
+                    if (secondMore)
+                        secondCells.Add(DescribeCell(secondCell));
+                }
+            }
+
+            if (string.Join(";", firstCells) != expectedFirst || string.Join(";", secondCells) != expectedSecond)
+                Interlocked.Increment(ref mismatches);
+        });
+
+        Assert.AreEqual(0, mismatches, "Concurrent readings differed from the workbooks' single-threaded readings.");
+    }
+
+    /// <summary>
+    /// Verifies that two workbooks read a thousand times each on eight threads, each reading opening its own workbook
+    /// over its own stream, always yield the cells a single-threaded reading yields.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenManyWorkbooksAreReadConcurrently_ShouldMatchSequentialReads()
+    {
+        byte[][] workbooks = [BuildLettersWorkbook(), BuildXyWorkbook()];
+        string[] expected = [ReadCellsAlone(workbooks[0]), ReadCellsAlone(workbooks[1])];
+        var mismatches = 0;
+
+        Parallel.For(0, 2000, new ParallelOptions { MaxDegreeOfParallelism = 8 }, i =>
+        {
+            if (ReadCellsAlone(workbooks[i % 2]) != expected[i % 2])
+                Interlocked.Increment(ref mismatches);
+        });
+
+        Assert.AreEqual(0, mismatches, "Concurrent readings differed from the workbooks' single-threaded readings.");
+    }
+
+    /// <summary>
+    /// Verifies that when <see cref="ExcelBinaryWorkbook.OpenRead(string)" /> rejects a file that is not a compound
+    /// file, it releases the file, so the file can then be opened exclusively and deleted.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenFileIsNotAWorkbook_ShouldReleaseTheFile()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-xls-{Guid.NewGuid():N}.xls");
+        File.WriteAllBytes(path, new byte[1024]);
+
+        try
+        {
+            _ = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+            {
+                _ = ExcelBinaryWorkbook.OpenRead(path);
+            });
+
+            using (new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+            }
+
+            File.Delete(path);
+            Assert.IsFalse(File.Exists(path));
+        }
+        finally
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Builds a workbook whose sheet holds A1 <c>a</c> and A2 <c>c</c> from its string table <c>a</c>, <c>b</c>,
+    /// <c>c</c>, B1 1.5 and B2 the RK number 30.
+    /// </summary>
+    /// <returns>The compound file bytes.</returns>
+    private static byte[] BuildLettersWorkbook()
+    {
+        byte[][] body =
+        [
+            Biff8TestWorkbook.LabelSst(0, 0, 0),
+            Biff8TestWorkbook.Number(0, 1, 1.5),
+            Biff8TestWorkbook.LabelSst(1, 0, 2),
+            Biff8TestWorkbook.Rk(1, 1, 0x7A),
+        ];
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [Biff8TestWorkbook.Sst("a", "b", "c")],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, body));
+
+        return xls.ToArray();
+    }
+
+    /// <summary>
+    /// Builds a workbook whose sheet holds A1 <c>y</c> and A2 <c>x</c> from its string table <c>x</c>, <c>y</c>, B1 2.5
+    /// and B2 <see langword="true" />.
+    /// </summary>
+    /// <returns>The compound file bytes.</returns>
+    private static byte[] BuildXyWorkbook()
+    {
+        byte[][] body =
+        [
+            Biff8TestWorkbook.LabelSst(0, 0, 1),
+            Biff8TestWorkbook.Number(0, 1, 2.5),
+            Biff8TestWorkbook.LabelSst(1, 0, 0),
+            Biff8TestWorkbook.BoolErr(1, 1, 1, isError: false),
+        ];
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [Biff8TestWorkbook.Sst("x", "y")],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, body));
+
+        return xls.ToArray();
+    }
+
+    /// <summary>
+    /// Opens a workbook over its own stream and describes the cells of its first sheet.
+    /// </summary>
+    /// <param name="xls">The compound file bytes.</param>
+    /// <returns>
+    /// The cells, described by <see cref="DescribeCell" /> and separated by semicolons, in reading order.
+    /// </returns>
+    private static string ReadCellsAlone(byte[] xls)
+    {
+        using var workbook = ExcelBinaryWorkbook.OpenRead(new MemoryStream(xls, writable: false));
+        using ExcelWorksheetReader reader = workbook.OpenWorksheet(0);
+
+        return string.Join(";", reader.ReadCells().Select(DescribeCell));
+    }
 }

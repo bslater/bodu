@@ -25,4 +25,16 @@ public partial class ExcelSerialDateTests
 
         Assert.AreEqual(new DateOnly(year, month, day), result);
     }
+
+    /// <summary>
+    /// Verifies that serials before March 1900 follow the OLE Automation dates rather than the dates Excel shows: 1 is
+    /// 1899-12-31, 60 is 1900-02-28 and 61 is 1900-03-01, the first date on which the two agree.
+    /// </summary>
+    [TestMethod]
+    public void FromSerialDate_WhenSerialIsBeforeMarch1900_ShouldFollowOleAutomationDates()
+    {
+        Assert.AreEqual(new DateOnly(1899, 12, 31), ExcelSerialDate.FromSerialDate(1.0, ExcelDateSystem.Excel1900));
+        Assert.AreEqual(new DateOnly(1900, 2, 28), ExcelSerialDate.FromSerialDate(60.0, ExcelDateSystem.Excel1900));
+        Assert.AreEqual(new DateOnly(1900, 3, 1), ExcelSerialDate.FromSerialDate(61.0, ExcelDateSystem.Excel1900));
+    }
 }
