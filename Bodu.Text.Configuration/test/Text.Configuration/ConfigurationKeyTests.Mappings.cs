@@ -46,4 +46,72 @@ public partial class ConfigurationKeyTests
 
         Assert.AreEqual("a.b.c", key.Path);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" /> keeps a key exactly as written, as its path and as
+    /// its one segment, whether the key holds a colon, a dot, both, or neither.
+    /// </summary>
+    /// <param name="rawKey">The key as written.</param>
+    [TestMethod]
+    [DataRow("a:b")]
+    [DataRow("a.b")]
+    [DataRow("a.b:c")]
+    [DataRow("ab")]
+    public void Parse_WhenMappingIsIdentity_ShouldKeepTheKeyAsWritten(string rawKey)
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity };
+
+        var key = ConfigurationKey.Parse(rawKey, options);
+
+        Assert.AreEqual(rawKey, key.Path);
+        CollectionAssert.AreEqual(new[] { rawKey }, key.Segments.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" /> keeps the dots of a key when the colon is the
+    /// first configured separator, rather than rejoining the key on the colon.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMappingIsIdentityAndColonIsTheFirstSeparator_ShouldKeepTheDots()
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity, SegmentSeparators = [':', '.'] };
+
+        var key = ConfigurationKey.Parse("a.b:c", options);
+
+        Assert.AreEqual("a.b:c", key.Path);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" />, which does not split a key, keeps a key whose
+    /// separators would leave an empty segment under the other mappings.
+    /// </summary>
+    /// <param name="rawKey">The key as written.</param>
+    [TestMethod]
+    [DataRow(".a")]
+    [DataRow("a..b")]
+    [DataRow("a:")]
+    public void Parse_WhenMappingIsIdentityAndKeyWouldHaveAnEmptySegment_ShouldKeepTheKey(string rawKey)
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity };
+
+        var key = ConfigurationKey.Parse(rawKey, options);
+
+        Assert.AreEqual(rawKey, key.Path);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" /> with
+    /// <see cref="ConfigurationKeyOptions.LowercaseKeys" /> set changes nothing in a key but its case, its dots and
+    /// colons included, while the raw key keeps its case.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMappingIsIdentityAndLowercaseKeysIsSet_ShouldOnlyLowercaseTheKey()
+    {
+        ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity, LowercaseKeys = true };
+
+        var key = ConfigurationKey.Parse("Dotnet.CA1000:Severity", options);
+
+        Assert.AreEqual("dotnet.ca1000:severity", key.Path);
+        Assert.AreEqual("Dotnet.CA1000:Severity", key.RawKey);
+    }
 }

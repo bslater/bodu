@@ -89,6 +89,40 @@ public partial class ConfigurationResolverTests
     }
 
     /// <summary>
+    /// Verifies that under <see cref="ConfigurationProfile.EditorConfigCompatible" /> a key is reported exactly as
+    /// written, whether it holds a colon, a dot, both, or neither, and is found under that name, so a key with a dot
+    /// and the same key with a colon in its place stay two keys.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenEditorConfigCompatibleAndKeyHasAColon_ShouldKeepTheKeyAsWritten()
+    {
+        var doc = ConfigurationDocument.Parse(
+            "[*]\na:b = 1\na.b = 2\nc.d:e = 3\nf = 4\n",
+            ConfigurationParseOptions.EditorConfigCompatible);
+
+        ConfigurationView view = doc.Resolve("a.txt", ConfigurationResolveOptions.EditorConfigCompatible);
+
+        CollectionAssert.AreEqual(new[] { "a:b", "a.b", "c.d:e", "f" }, view.Keys.ToArray());
+        Assert.AreEqual("1", view["a:b"]);
+        Assert.AreEqual("2", view["a.b"]);
+        Assert.AreEqual("3", view["c.d:e"]);
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="ConfigurationProfile.EditorConfigCompatible" />, whose key mapping does not split
+    /// a key, a key that holds an empty segment under the other mappings is accepted and reported as written.
+    /// </summary>
+    [TestMethod]
+    public void Resolve_WhenEditorConfigCompatibleAndKeyHasAnEmptySegment_ShouldKeepTheKey()
+    {
+        var doc = ConfigurationDocument.Parse("[*]\na..b = 1\n.c = 2\n", ConfigurationParseOptions.EditorConfigCompatible);
+
+        ConfigurationView view = doc.Resolve("a.txt", ConfigurationResolveOptions.EditorConfigCompatible);
+
+        CollectionAssert.AreEqual(new[] { "a..b", ".c" }, view.Keys.ToArray());
+    }
+
+    /// <summary>
     /// Verifies that under <see cref="ConfigurationProfile.EditorConfigCompatible" /> no preamble pair reaches the
     /// resolved view, <c>root</c> included, while the document keeps the pairs in its global section.
     /// </summary>
