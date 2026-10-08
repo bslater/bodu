@@ -204,4 +204,17 @@ public partial class ConfigurationDocumentTests
         Assert.IsEmpty(result.Diagnostics);
         Assert.AreEqual("*", result.Document.Sections[0].Name);
     }
+
+    /// <summary>
+    /// Verifies that a parsed document has no root: an absolute target is matched as given, so an anchored section does
+    /// not apply to it, while the same target given relative to the configuration's directory does match.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenResolvedWithoutPathRoot_ShouldMatchTheTargetAsGiven()
+    {
+        var doc = ConfigurationDocument.Parse("[src/*.cs]\nformat.indent.size = 4\n");
+
+        Assert.IsNull(doc.Resolve(Path.Combine(Path.GetTempPath(), "src", "a.cs"))["format:indent:size"]);
+        Assert.AreEqual("4", doc.Resolve("src/a.cs")["format:indent:size"]);
+    }
 }

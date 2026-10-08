@@ -151,4 +151,96 @@ public partial class ConfigurationDocumentTests
         Assert.AreEqual(loaded.Sections[0].Name, parsed.Sections[0].Name);
         Assert.AreEqual(loaded.Sections[0].Entries[0].Value, parsed.Sections[0].Entries[0].Value);
     }
+
+    /// <summary>
+    /// Verifies that a document loaded from a path resolves its sections against the file's directory when no
+    /// <see cref="ConfigurationResolveOptions.PathRoot" /> is given: under the EditorConfig-compatible profile an
+    /// anchored section applies to a target under that directory, and an unanchored one matches by file name.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenResolvedWithoutPathRoot_ShouldRootSectionsAtTheFilesDirectory()
+    {
+        using TempFileScope scope = new("root = true\n[/src/*.cs]\nindent_size = 4\n[*.md]\nindent_size = 2\n");
+        var doc = ConfigurationDocument.Load(scope.Path, ConfigurationParseOptions.EditorConfigCompatible);
+
+        ConfigurationView source = doc.Resolve(
+            Path.Combine(scope.Directory, "src", "a.cs"),
+            ConfigurationResolveOptions.EditorConfigCompatible);
+        ConfigurationView notes = doc.Resolve(
+            Path.Combine(scope.Directory, "docs", "notes.md"),
+            ConfigurationResolveOptions.EditorConfigCompatible);
+
+        Assert.AreEqual("4", source["indent_size"]);
+        Assert.AreEqual("2", notes["indent_size"]);
+    }
+
+    /// <summary>
+    /// Verifies that under the default profile a section anchored without a leading slash applies, in a document loaded
+    /// from a path, to a target under the file's directory, and not to one outside it.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenResolvedWithoutPathRoot_ShouldMatchAnchoredSectionsRelativeToTheFile()
+    {
+        using TempFileScope scope = new("[src/*.cs]\nformat.indent.size = 4\n");
+        var doc = ConfigurationDocument.Load(scope.Path);
+
+        ConfigurationView inside = doc.Resolve(Path.Combine(scope.Directory, "src", "a.cs"));
+        ConfigurationView outside = doc.Resolve(Path.Combine(scope.Directory, "lib", "src", "a.cs"));
+
+        Assert.AreEqual("4", inside["format:indent:size"]);
+        Assert.IsNull(outside["format:indent:size"]);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit <see cref="ConfigurationResolveOptions.PathRoot" /> overrides the directory of the file a
+    /// document was loaded from.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenPathRootIsGiven_ShouldOverrideTheFilesDirectory()
+    {
+        using TempFileScope scope = new("[src/*.cs]\nformat.indent.size = 4\n");
+        var doc = ConfigurationDocument.Load(scope.Path);
+        string elsewhere = Path.Combine(scope.Directory, "elsewhere");
+        var options = new ConfigurationResolveOptions { PathRoot = elsewhere };
+
+        Assert.AreEqual("4", doc.Resolve(Path.Combine(elsewhere, "src", "a.cs"), options)["format:indent:size"]);
+        Assert.IsNull(doc.Resolve(Path.Combine(scope.Directory, "src", "a.cs"), options)["format:indent:size"]);
+    }
+
+    /// <summary>
+    /// Verifies that a document loaded from a path supplies its directory as a root, so resolving it with no target
+    /// path under <see cref="ConfigurationMissingPathRootMode.Throw" /> returns the preamble-only view rather than
+    /// throwing.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenResolvedWithoutTargetUnderThrowMode_ShouldReturnThePreambleView()
+    {
+        using TempFileScope scope = new("indent_style = tab\n[*]\nindent_size = 4\n");
+        var doc = ConfigurationDocument.Load(scope.Path);
+        var options = new ConfigurationResolveOptions { MissingPathRootMode = ConfigurationMissingPathRootMode.Throw };
+
+        ConfigurationView view = doc.Resolve(null, options);
+
+        CollectionAssert.AreEqual(new[] { "indent_style" }, view.Keys.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a document loaded from a stream or a text reader has no root, so an absolute target is matched as
+    /// given and an anchored section does not apply to it, as before.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenDocumentComesFromStreamOrReader_ShouldRecordNoRoot()
+    {
+        const string text = "[src/*.cs]\nformat.indent.size = 4\n";
+        string absolute = Path.Combine(Path.GetTempPath(), "src", "a.cs");
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+        using var reader = new StringReader(text);
+
+        var streamed = ConfigurationDocument.Load(stream);
+        var read = ConfigurationDocument.Load(reader);
+
+        Assert.IsNull(streamed.Resolve(absolute)["format:indent:size"]);
+        Assert.IsNull(read.Resolve(absolute)["format:indent:size"]);
+        Assert.AreEqual("4", streamed.Resolve("src/a.cs")["format:indent:size"]);
+    }
 }
