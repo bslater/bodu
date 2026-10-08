@@ -9,8 +9,8 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies core-tag composition: the <c>!!str</c> tag forces a string and the <c>!!int</c> tag reinterprets a
-/// quoted scalar as an integer.
+/// Verifies core-tag composition: the <c>!!str</c> tag forces a string, the <c>!!int</c> tag reinterprets a quoted
+/// scalar as an integer, and a node with two tags is rejected.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -97,5 +97,24 @@ public partial class YamlDocumentTests
         using var doc = YamlDocument.Parse("a: !!null\nb: !!null value\n");
         Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("a").ValueKind);
         Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("b").ValueKind);
+    }
+
+    /// <summary>
+    /// Verifies that a node with two tags is rejected, rather than the second tag being read as the start of a plain
+    /// scalar.
+    /// </summary>
+    /// <param name="yaml">A document with a node that carries two tags.</param>
+    [TestMethod]
+    [DataRow("! ! ! ...a", DisplayName = "three non-specific tags")]
+    [DataRow("!!str !!int 5", DisplayName = "two core tags")]
+    [DataRow("- !!str !!str x", DisplayName = "a sequence entry")]
+    [DataRow("[ !!str !!str x ]", DisplayName = "a flow sequence entry")]
+    [DataRow("k: !!str !!str x", DisplayName = "a mapping value")]
+    public void Parse_WhenNodeHasTwoTags_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
     }
 }

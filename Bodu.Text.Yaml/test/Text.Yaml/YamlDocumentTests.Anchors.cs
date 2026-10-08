@@ -9,8 +9,8 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies anchor and alias composition: an alias resolves to its anchor's value or subtree, and an undefined
-/// alias is rejected.
+/// Verifies anchor and alias composition: an alias resolves to its anchor's value or subtree, an undefined alias is
+/// rejected, and so is a node with two anchors.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -54,5 +54,23 @@ public partial class YamlDocumentTests
         });
 
         Assert.IsTrue(ex.Message.Contains("missing", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that a node with two anchors is rejected, rather than the second anchor being read as the start of a
+    /// plain scalar or key.
+    /// </summary>
+    /// <param name="yaml">A document with a node that carries two anchors.</param>
+    [TestMethod]
+    [DataRow("&a &b x", DisplayName = "a scalar")]
+    [DataRow("- &a &b x", DisplayName = "a sequence entry")]
+    [DataRow("[ &a &b x ]", DisplayName = "a flow sequence entry")]
+    [DataRow("&a &b key: v", DisplayName = "an implicit key")]
+    public void Parse_WhenNodeHasTwoAnchors_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
     }
 }

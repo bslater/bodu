@@ -9,8 +9,8 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies plain-scalar parsing rules: the colon and hash indicator boundaries, multi-line folding, and empty
-/// (null) mapping values.
+/// Verifies plain-scalar parsing rules: the indicators a plain scalar cannot begin with, the colon and hash indicator
+/// boundaries, multi-line folding, and empty (null) mapping values.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -66,5 +66,64 @@ public partial class YamlDocumentTests
     {
         using var doc = YamlDocument.Parse("? key\n:\n");
         Assert.AreEqual(YamlValueKind.Null, doc.RootElement.GetProperty("key").ValueKind);
+    }
+
+    /// <summary>
+    /// Verifies that a plain scalar in block context cannot begin with an indicator that YAML reserves there, nor with
+    /// <c>-</c>, <c>?</c> or <c>:</c> followed by a space.
+    /// </summary>
+    /// <param name="yaml">A document whose plain scalar begins with an indicator.</param>
+    [TestMethod]
+    [DataRow("]", DisplayName = "a closing bracket")]
+    [DataRow("}", DisplayName = "a closing brace")]
+    [DataRow("- ]", DisplayName = "a closing bracket as a sequence entry")]
+    [DataRow("a: }", DisplayName = "a closing brace as a mapping value")]
+    [DataRow("a: ? b", DisplayName = "a question mark and a space as a mapping value")]
+    [DataRow("a: : b", DisplayName = "a colon and a space as a mapping value")]
+    [DataRow("a: @b", DisplayName = "a commercial at")]
+    [DataRow("a: `b", DisplayName = "a grave accent")]
+    public void Parse_WhenBlockPlainScalarStartsWithIndicator_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a plain scalar in flow context cannot begin with an indicator that YAML reserves there, nor with
+    /// <c>-</c>, <c>?</c> or <c>:</c> followed by a space or a flow indicator.
+    /// </summary>
+    /// <param name="yaml">A flow collection whose plain scalar begins with an indicator.</param>
+    [TestMethod]
+    [DataRow("[ |a ]", DisplayName = "a vertical bar")]
+    [DataRow("[ >a ]", DisplayName = "a greater-than sign")]
+    [DataRow("[ %a ]", DisplayName = "a percent sign")]
+    [DataRow("[ @a ]", DisplayName = "a commercial at")]
+    [DataRow("[ `a ]", DisplayName = "a grave accent")]
+    [DataRow("{ a: ? b }", DisplayName = "a question mark and a space as a mapping value")]
+    [DataRow("[ -, a ]", DisplayName = "a hyphen before a comma")]
+    public void Parse_WhenFlowPlainScalarStartsWithIndicator_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>-</c>, <c>?</c> and <c>:</c> may begin a plain scalar when a character that could continue
+    /// the scalar follows them, in block and flow context.
+    /// </summary>
+    /// <param name="yaml">A document whose plain scalars begin with those indicators.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- -a\n- ?a\n- :a\n", """["-a","?a",":a"]""", DisplayName = "block context")]
+    [DataRow("[ -a, ?a, :a ]", """["-a","?a",":a"]""", DisplayName = "flow context")]
+    public void Parse_WhenPlainScalarStartsWithIndicatorAndSafeCharacter_ShouldReadIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
     }
 }
