@@ -148,4 +148,42 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual(expected, ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that a high-surrogate escape followed directly by a low-surrogate escape, as JSON writes a character
+    /// outside the Basic Multilingual Plane, decodes to that one character.
+    /// </summary>
+    /// <param name="yaml">A document with an escaped surrogate pair in double quotes.</param>
+    /// <param name="prefix">The text expected before the character.</param>
+    [TestMethod]
+    [DataRow("\"\\uD83D\\uDC4D\"", "", DisplayName = "alone")]
+    [DataRow("Test: \"x\\uD83D\\uDC4D\"\n", "x", DisplayName = "as a mapping value, after text")]
+    public void Parse_WhenEscapedSurrogatePair_ShouldDecodeOneCharacter(string yaml, string prefix)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        YamlElement value = document.RootElement.ValueKind == YamlValueKind.Mapping
+            ? document.RootElement.GetProperty("Test")
+            : document.RootElement;
+        Assert.AreEqual(prefix + char.ConvertFromUtf32(0x1F44D), value.GetString());
+    }
+
+    /// <summary>
+    /// Verifies that a surrogate escape that is not a high surrogate followed directly by a low surrogate is rejected.
+    /// </summary>
+    /// <param name="yaml">A document with an unpaired surrogate escape.</param>
+    [TestMethod]
+    [DataRow("\"\\uD83D\"", DisplayName = "a lone high surrogate")]
+    [DataRow("\"\\uDC4D\"", DisplayName = "a lone low surrogate")]
+    [DataRow("\"\\uDC4D\\uD83D\"", DisplayName = "a reversed pair")]
+    [DataRow("\"\\uD83Dabc\"", DisplayName = "a high surrogate followed by text")]
+    [DataRow("\"\\uD83D\\u0041\"", DisplayName = "a high surrogate followed by another escape")]
+    [DataRow("\"\\uD83D\\uD83D\"", DisplayName = "two high surrogates")]
+    public void Parse_WhenSurrogateEscapeIsUnpaired_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
 }
