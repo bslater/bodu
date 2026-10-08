@@ -95,10 +95,10 @@ public ref struct Utf8BencodeReader
     /// <summary>The start offset of the current token within the source bytes.</summary>
     private int _tokenStart;
 
-    /// <summary>The start offset of the current byte-string token's content.</summary>
+    /// <summary>The start offset of the current token's value: a byte string's content or an integer's text.</summary>
     private int _valueStart;
 
-    /// <summary>The length of the current byte-string token's content.</summary>
+    /// <summary>The length of the current token's value; zero for a container token or when no token is current.</summary>
     private int _valueLength;
 
     /// <summary>
@@ -168,9 +168,13 @@ public ref struct Utf8BencodeReader
     public readonly BencodeTokenType TokenType => _tokenType;
 
     /// <summary>
-    /// Gets the raw content bytes of the current byte-string or property-name token.
+    /// Gets the raw bytes of the current token's value.
     /// </summary>
-    /// <value>The byte-string content.</value>
+    /// <value>
+    /// For a byte string or property name, its content without the length prefix; for an integer, its text without the
+    /// <c>i</c> and <c>e</c> delimiters, such as <c>42</c> or <c>-7</c>; for a list or dictionary start or end token,
+    /// and before the first token or after the last, an empty span.
+    /// </value>
     public readonly ReadOnlySpan<byte> ValueSpan => _data.Slice(_valueStart, _valueLength);
 
     /// <summary>
@@ -317,6 +321,7 @@ public ref struct Utf8BencodeReader
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeTrailingData, _position);
 
             _tokenType = BencodeTokenType.None;
+            _valueLength = 0;
             return false;
         }
 
@@ -326,12 +331,15 @@ public ref struct Utf8BencodeReader
                 throw Error(BencodeResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, _position);
 
             _tokenType = BencodeTokenType.None;
+            _valueLength = 0;
             return false;
         }
 
         bool hasTop = _frames.Count > 0;
         bool inDictKey = false;
         _tokenStart = _position;
+        _valueStart = _position;
+        _valueLength = 0;
         byte b = _data[_position];
 
         if (b == (byte)'e')
@@ -706,6 +714,8 @@ public ref struct Utf8BencodeReader
             _intValue = _intExceedsInt64 ? 0 : (long)value;
         }
 
+        _valueStart = signStart;
+        _valueLength = _position - signStart;
         _position++;
         _tokenType = BencodeTokenType.Integer;
     }

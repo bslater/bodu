@@ -127,8 +127,8 @@ public sealed partial class BencodeReleaseNoteCorpusTests
     /// <param name="options">The row options.</param>
     /// <returns>The transcript.</returns>
     /// <remarks>
-    /// An integer is rendered from the input between its <c>i</c> and <c>e</c>, from
-    /// <see cref="Utf8BencodeReader.TokenStartIndex" /> to <see cref="Utf8BencodeReader.BytesConsumed" />.
+    /// Every value is rendered from <see cref="Utf8BencodeReader.ValueSpan" />: a key's or byte string's content, and an
+    /// integer's text without its <c>i</c> and <c>e</c>.
     /// </remarks>
     private static string RenderReader(byte[] input, RowOptions options)
     {
@@ -144,7 +144,7 @@ public sealed partial class BencodeReleaseNoteCorpusTests
                 BencodeTokenType.EndDictionary => "}",
                 BencodeTokenType.PropertyName => "k:" + EncodeToken(reader.ValueSpan),
                 BencodeTokenType.ByteString => "s:" + EncodeToken(reader.ValueSpan),
-                BencodeTokenType.Integer => "i:" + EncodeToken(input.AsSpan(reader.TokenStartIndex + 1, reader.BytesConsumed - reader.TokenStartIndex - 2)),
+                BencodeTokenType.Integer => "i:" + EncodeToken(reader.ValueSpan),
                 _ => throw new InvalidOperationException($"The reader reported the unexpected token {reader.TokenType}."),
             });
         }

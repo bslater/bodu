@@ -82,7 +82,7 @@ The reader is positioned on a token by `Read()` (which returns `false` at the en
 |---|---|
 | `GetString()` / `GetBytes()` | The current byte-string or property-name token as UTF-8 text or raw bytes. |
 | `GetInt32()` / `GetInt64()` / `GetUInt64()` | The current integer token, range-checked to the target width; the `TryGet…` overloads return `false` instead of throwing. |
-| `ValueSpan` / `ValueTextEquals(…)` | The raw token bytes, or a zero-allocation comparison against UTF-8/`char`/`string` text. |
+| `ValueSpan` / `ValueTextEquals(…)` | The current token's value as raw bytes (a byte string's or key's content, an integer's text without its `i` and `e`, nothing for a list or dictionary token), or a zero-allocation comparison of a byte string or key against UTF-8/`char`/`string` text. |
 | `Skip()` / `TrySkip()` | Step over the current value in full, including a nested list or dictionary subtree. |
 | `BytesConsumed` / `CurrentDepth` / `TokenStartIndex` | Diagnostic position state. |
 
