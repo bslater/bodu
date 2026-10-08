@@ -224,26 +224,6 @@ internal sealed partial class YamlParser
     /// <returns>The row index of the parsed node.</returns>
     private int ParseBlockNode(int minIndent)
     {
-        if (++_depth > _maxDepth)
-            throw Error(string.Format(System.Globalization.CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
-
-        try
-        {
-            return ParseBlockNodeCore(minIndent);
-        }
-        finally
-        {
-            _depth--;
-        }
-    }
-
-    /// <summary>
-    /// Parses a block-context node after the depth guard has been applied.
-    /// </summary>
-    /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
-    /// <returns>The row index of the parsed node.</returns>
-    private int ParseBlockNodeCore(int minIndent)
-    {
         SkipBlankCommentLines();
 
         // In block context the anchor and tag node properties may be spread across line breaks before the node.
@@ -350,13 +330,34 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a block mapping whose entries begin at the given indentation.
+    /// Parses a block mapping whose entries begin at the given indentation, counting it toward the nesting depth.
     /// </summary>
     /// <param name="indent">The column at which each key begins.</param>
     /// <param name="anchor">The anchor captured for the mapping node, or <see langword="null" />.</param>
     /// <param name="tag">The tag captured for the mapping node, or <see langword="null" />.</param>
     /// <returns>The row index of the mapping.</returns>
+    /// <exception cref="YamlFormatException">The mapping would nest deeper than the maximum depth.</exception>
     private int ParseBlockMapping(int indent, string? anchor, string? tag)
+    {
+        EnterCollection();
+        try
+        {
+            return ParseBlockMappingCore(indent, anchor, tag);
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a block mapping whose entries begin at the given indentation, after the depth guard has been applied.
+    /// </summary>
+    /// <param name="indent">The column at which each key begins.</param>
+    /// <param name="anchor">The anchor captured for the mapping node, or <see langword="null" />.</param>
+    /// <param name="tag">The tag captured for the mapping node, or <see langword="null" />.</param>
+    /// <returns>The row index of the mapping.</returns>
+    private int ParseBlockMappingCore(int indent, string? anchor, string? tag)
     {
         int mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, anchor, tag);
         var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -504,13 +505,34 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a block sequence whose entries begin at the given indentation.
+    /// Parses a block sequence whose entries begin at the given indentation, counting it toward the nesting depth.
     /// </summary>
     /// <param name="indent">The column at which each <c>-</c> entry marker appears.</param>
     /// <param name="anchor">The anchor captured for the sequence node, or <see langword="null" />.</param>
     /// <param name="tag">The tag captured for the sequence node, or <see langword="null" />.</param>
     /// <returns>The row index of the sequence.</returns>
+    /// <exception cref="YamlFormatException">The sequence would nest deeper than the maximum depth.</exception>
     private int ParseBlockSequence(int indent, string? anchor, string? tag)
+    {
+        EnterCollection();
+        try
+        {
+            return ParseBlockSequenceCore(indent, anchor, tag);
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a block sequence whose entries begin at the given indentation, after the depth guard has been applied.
+    /// </summary>
+    /// <param name="indent">The column at which each <c>-</c> entry marker appears.</param>
+    /// <param name="anchor">The anchor captured for the sequence node, or <see langword="null" />.</param>
+    /// <param name="tag">The tag captured for the sequence node, or <see langword="null" />.</param>
+    /// <returns>The row index of the sequence.</returns>
+    private int ParseBlockSequenceCore(int indent, string? anchor, string? tag)
     {
         int sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, anchor, tag);
 
@@ -644,6 +666,17 @@ internal sealed partial class YamlParser
 
         if (previous >= 0)
             UnlinkChild(parent, child, previous);
+    }
+
+    /// <summary>
+    /// Enters a sequence or mapping, counting it toward the nesting depth. Only collections count, so a maximum depth
+    /// of N admits N nested collections whatever scalar sits at the deepest level.
+    /// </summary>
+    /// <exception cref="YamlFormatException">The collection would nest deeper than the maximum depth.</exception>
+    private void EnterCollection()
+    {
+        if (++_depth > _maxDepth)
+            throw Error(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
     }
 
     /// <summary>

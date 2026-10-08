@@ -315,7 +315,7 @@ long inner = d.RootElement.GetProperty("x").GetProperty("a").GetInt64();   // 1
 | `DuplicateKeyBehavior` | `Throw` | `Throw` · `UseFirst` · `UseLast` | What a repeated mapping key means. |
 | `MergeKeyBehavior` | `Expand` | `Expand` · `Disabled` · `PreserveAsNormalKey` | Whether `<<: *alias` merges the referenced mapping (existing keys win) or is retained as an ordinary key named `<<`. `Disabled` and `PreserveAsNormalKey` produce the same tree; the second spells out the intent. |
 | `SpecVersion` | `V1_2` | `V1_2` · `V1_1` | The core schema: under 1.2 only `true` / `false` are booleans; 1.1 restores `yes` / `no` / `on` / `off`. |
-| `MaxDepth` | `0` → 64 | | Deepest node nesting the parser accepts; exceeding it throws `YamlFormatException`. |
+| `MaxDepth` | `0` → 64 | | Deepest nesting of sequences and mappings the parser accepts, flow or block; a scalar at the deepest level does not count. Exceeding it throws `YamlFormatException`. |
 
 <!-- compile -->
 ```csharp

@@ -33,29 +33,10 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a flow node, applying the nesting-depth guard before dispatching.
-    /// </summary>
-    /// <returns>The row index of the parsed node.</returns>
-    private int ParseFlowNode()
-    {
-        if (++_depth > _maxDepth)
-            throw Error(string.Format(System.Globalization.CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
-
-        try
-        {
-            return ParseFlowNodeCore();
-        }
-        finally
-        {
-            _depth--;
-        }
-    }
-
-    /// <summary>
     /// Parses a flow node, dispatching to a flow sequence, flow mapping, alias, or flow scalar.
     /// </summary>
     /// <returns>The row index of the parsed node.</returns>
-    private int ParseFlowNodeCore()
+    private int ParseFlowNode()
     {
         SkipFlowWhitespace();
         string? anchor = TryReadAnchorAndTag(out string? tag);
@@ -77,10 +58,30 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a flow sequence, supporting plain elements and implicit single-pair mapping entries.
+    /// Parses a flow sequence, supporting plain elements and implicit single-pair mapping entries, counting it toward
+    /// the nesting depth.
     /// </summary>
     /// <returns>The row index of the sequence.</returns>
+    /// <exception cref="YamlFormatException">The sequence would nest deeper than the maximum depth.</exception>
     private int ParseFlowSequence()
+    {
+        EnterCollection();
+        try
+        {
+            return ParseFlowSequenceCore();
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a flow sequence, supporting plain elements and implicit single-pair mapping entries, after the depth
+    /// guard has been applied.
+    /// </summary>
+    /// <returns>The row index of the sequence.</returns>
+    private int ParseFlowSequenceCore()
     {
         int sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, null, null);
         Advance(); // '['
@@ -111,19 +112,7 @@ internal sealed partial class YamlParser
 
                 Advance();
                 SkipFlowWhitespace();
-                int pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[element].Offset, null, null);
-                string key = KeyTextOf(element);
-                int value;
-                if (Peek() is (byte)',' or (byte)']')
-                    value = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
-                else
-                    value = ParseFlowNode();
-
-                YamlReaderRow v = _rows[value];
-                v.Key = key;
-                _rows[value] = v;
-                AppendChild(pair, value);
-                element = pair;
+                element = ParseFlowPair(element);
                 SkipFlowWhitespace();
             }
 
@@ -156,10 +145,58 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a flow mapping of comma-separated key/value entries.
+    /// Parses the value of an implicit single-pair mapping entry inside a flow sequence and builds the mapping around
+    /// its already parsed key, counting the mapping toward the nesting depth.
+    /// </summary>
+    /// <param name="key">The row index of the parsed key node.</param>
+    /// <returns>The row index of the single-pair mapping.</returns>
+    /// <exception cref="YamlFormatException">The mapping would nest deeper than the maximum depth.</exception>
+    private int ParseFlowPair(int key)
+    {
+        EnterCollection();
+        try
+        {
+            int pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[key].Offset, null, null);
+            string keyText = KeyTextOf(key);
+            int value = Peek() is (byte)',' or (byte)']'
+                ? NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null)
+                : ParseFlowNode();
+
+            YamlReaderRow v = _rows[value];
+            v.Key = keyText;
+            _rows[value] = v;
+            AppendChild(pair, value);
+            return pair;
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a flow mapping of comma-separated key/value entries, counting it toward the nesting depth.
     /// </summary>
     /// <returns>The row index of the mapping.</returns>
+    /// <exception cref="YamlFormatException">The mapping would nest deeper than the maximum depth.</exception>
     private int ParseFlowMapping()
+    {
+        EnterCollection();
+        try
+        {
+            return ParseFlowMappingCore();
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a flow mapping of comma-separated key/value entries, after the depth guard has been applied.
+    /// </summary>
+    /// <returns>The row index of the mapping.</returns>
+    private int ParseFlowMappingCore()
     {
         int mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, null, null);
         var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
