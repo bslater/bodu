@@ -340,6 +340,40 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that a double-quoted value resolves each escape in the documented set to its character, joins a line
+    /// ending in a backslash to the next, and keeps the backslash of any other escape, octal-looking ones included.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="escape">The escape sequence, written between <c>x</c> and <c>y</c> in the value.</param>
+    /// <param name="expected">The text the escape should read as.</param>
+    [TestMethod]
+    [DataRow("backslash", "\\\\", "\\")]
+    [DataRow("single quote", "\\'", "'")]
+    [DataRow("double quote", "\\\"", "\"")]
+    [DataRow("bell", "\\a", "\a")]
+    [DataRow("backspace", "\\b", "\b")]
+    [DataRow("form feed", "\\f", "\f")]
+    [DataRow("line feed", "\\n", "\n")]
+    [DataRow("carriage return", "\\r", "\r")]
+    [DataRow("tab", "\\t", "\t")]
+    [DataRow("vertical tab", "\\v", "\v")]
+    [DataRow("dollar", "\\$", "$")]
+    [DataRow("line continuation", "\\\n", "")]
+    [DataRow("line continuation after CRLF", "\\\r\n", "")]
+    [DataRow("unknown letter", "\\z", "\\z")]
+    [DataRow("unknown space", "\\ ", "\\ ")]
+    [DataRow("octal-looking digits", "\\0123", "\\0123")]
+    public void Read_WhenDoubleQuotedValueHasAnEscape_ShouldResolveOnlyTheDocumentedSet(string testName, string escape, string expected)
+    {
+        _ = testName;
+
+        List<string> entries = ReadEntryTexts($"KEY=\"x{escape}y\"\n");
+
+        Assert.AreEqual(1, entries.Count, string.Join(" | ", entries));
+        Assert.AreEqual($"KEY=x{expected}y", entries[0]);
+    }
+
+    /// <summary>
     /// Verifies that an empty document produces only the framing object tokens.
     /// </summary>
     [TestMethod]
