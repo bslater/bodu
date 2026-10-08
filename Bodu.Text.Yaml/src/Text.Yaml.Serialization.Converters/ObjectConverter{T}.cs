@@ -89,7 +89,7 @@ internal sealed class ObjectConverter<T>
         // single box through and unboxing only at the return preserves those writes.
         object boxed = ObjectBinder.Construct(metadata, values, present);
         (boxed as IOnDeserializing)?.OnDeserializing();
-        AssignSettableMembers(metadata, values, present, boxed, options);
+        ObjectBinder.AssignMembers(metadata, values, present, boxed, options.PreferredObjectCreationHandling);
         PopulateExtensionData(metadata, boxed, extensionEntries);
         (boxed as IOnDeserialized)?.OnDeserialized();
         return (T)boxed;
@@ -262,59 +262,5 @@ internal sealed class ObjectConverter<T>
             IgnoreCondition.WhenWritingDefault => value is null || Equals(value, property.DefaultTypeValue),
             _ => false,
         };
-    }
-
-    /// <summary>
-    /// Assigns the read values to the members of a constructed instance: a settable member is assigned through its
-    /// setter, and a get-only member merges into the collection it already holds only under
-    /// <see cref="ObjectCreationHandling.Populate" />, mirroring the former binding walker.
-    /// </summary>
-    /// <param name="metadata">The type metadata, used to determine constructor binding and effective handling.</param>
-    /// <param name="values">The read member values, indexed by member slot.</param>
-    /// <param name="present">Whether each member slot was read from the input.</param>
-    /// <param name="instance">The instance to assign on.</param>
-    /// <param name="options">The serializer options that supply the default object-creation handling.</param>
-    private static void AssignSettableMembers(TypeMetadata metadata, object?[] values, bool[] present, object instance, YamlSerializerOptions options)
-    {
-        bool skipConstructorBound = metadata.UsesParameterizedConstructor;
-        foreach (PropertyMetadata property in metadata.Properties)
-        {
-            if (!present[property.SlotIndex])
-                continue;
-
-            if (skipConstructorBound && property.ConstructorParameterIndex >= 0)
-                continue;
-
-            object? value = values[property.SlotIndex];
-            if (property.CanSet)
-            {
-                property.SetValue(instance, value);
-                continue;
-            }
-
-            ObjectCreationHandling handling = property.CreationHandling ?? metadata.CreationHandling ?? options.PreferredObjectCreationHandling;
-            if (handling == ObjectCreationHandling.Populate)
-                TryPopulate(property, instance, value);
-        }
-    }
-
-    /// <summary>
-    /// Merges a freshly read sequence into the list instance a get-only member already holds, so a get-only collection
-    /// property round-trips under <see cref="ObjectCreationHandling.Populate" />.
-    /// </summary>
-    /// <param name="property">The member whose existing value is populated.</param>
-    /// <param name="instance">The instance that owns the member.</param>
-    /// <param name="bufferedValue">The value read into a new collection for the member.</param>
-    private static void TryPopulate(PropertyMetadata property, object instance, object? bufferedValue)
-    {
-        if (property.GetValue(instance) is not System.Collections.IList existing || bufferedValue is not System.Collections.IEnumerable items || bufferedValue is string)
-            return;
-
-        // An array, or any other read-only or fixed-size list, cannot take the read elements, so the member keeps it.
-        if (existing.IsReadOnly || existing.IsFixedSize)
-            return;
-
-        foreach (object? item in items)
-            existing.Add(item);
     }
 }

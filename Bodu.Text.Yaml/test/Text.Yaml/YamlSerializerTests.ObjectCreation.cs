@@ -11,9 +11,10 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies object-construction behavior beyond a public parameterless constructor: a type with only a parameterized
-/// constructor (such as a positional record) is built by binding its constructor parameters, and a get-only collection
-/// member marked <see cref="ObjectCreationHandling.Populate" /> merges the read items into its existing instance
-/// rather than being skipped.
+/// constructor (such as a positional record) is built by binding its constructor parameters, and
+/// <see cref="ObjectCreationHandling.Populate" />, set on the options, the type or the member, merges the read entries
+/// into the collection or dictionary a member already holds, settable or not, with the same precedence and
+/// fallbacks as the TOML and Bencode serializers.
 /// </summary>
 public partial class YamlSerializerTests
 {

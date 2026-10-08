@@ -121,13 +121,15 @@ internal static class ObjectBinder
     /// <remarks>
     /// The existing value must be non-<see langword="null" /> and shaped as a non-generic <see cref="IDictionary" /> or
     /// <see cref="IList" />, or a closed <c>ICollection&lt;T&gt;</c>, that can grow: an array, or any read-only or
-    /// fixed-size collection, cannot take the read entries. The buffered value must be enumerable. A dictionary copies
-    /// key/value pairs; a list or collection adds elements in order. Any other shape returns <see langword="false" />.
+    /// fixed-size collection, cannot take the read entries. The buffered value must be enumerable, and not a string. A
+    /// dictionary copies key/value pairs; a list or collection adds elements in order. Any other shape returns
+    /// <see langword="false" />.
     /// </remarks>
     private static bool TryPopulate(PropertyMetadata property, object instance, object? bufferedValue)
     {
+        // A string is enumerable, but a scalar read for a member is never spread into the collection it holds.
         object? existing = property.GetValue(instance);
-        if (existing is null || bufferedValue is null)
+        if (existing is null || bufferedValue is null || bufferedValue is string)
             return false;
 
         if (existing is IDictionary existingDictionary && bufferedValue is IDictionary bufferedDictionary)
