@@ -214,8 +214,8 @@ The glob grammar:
 | `*` | Any character except `/`. |
 | `**` | Any sequence including `/`. |
 | `?` | A single character except `/`. |
-| `{a,b,c}` | Alternation (nesting allowed). |
-| `{n1..n2}` | Inclusive integer range. |
+| `{a,b,c}` | Alternation (nesting allowed). A group without a top-level comma is not a choice: its braces are literal, so `{single}` matches only `{single}` and `{}` only `{}`. |
+| `{n1..n2}` | Inclusive integer range. Both bounds must be integers; otherwise the group is literal, so `{a..z}` matches only `{a..z}`. |
 | `[seq]` / `[!seq]` | Character set or its complement. A bracket expression that holds a `/` is literal text, brackets included, since one character cannot match a path separator. |
 | `\` | Escape the next character. |
 

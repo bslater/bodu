@@ -173,7 +173,7 @@ language follows EditorConfig:
 | `**` | Any characters including `/`. |
 | `?` | Any single character. |
 | `[abc]` / `[!abc]` | Character class / negated character class; a bracket expression that holds a `/` is literal text. |
-| `{a,b,c}` | Alternation. |
+| `{a,b,c}` | Alternation; a group without a comma, such as `{single}` or `{}`, is literal text. |
 | `[*.cs]` | All `.cs` files at any depth (unanchored). |
 | `[src/**/*.cs]` | All `.cs` files under `src/` (anchored to `PathRoot`). |
 

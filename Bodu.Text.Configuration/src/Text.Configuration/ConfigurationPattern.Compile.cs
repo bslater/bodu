@@ -273,7 +273,8 @@ public sealed partial class ConfigurationPattern
 
     /// <summary>
     /// Translates the brace group beginning at <paramref name="start" /> - an alternation or a numeric range - into
-    /// regex syntax.
+    /// regex syntax. A group that is neither, having no top-level comma and no two integer bounds, matches its braces
+    /// literally.
     /// </summary>
     /// <param name="pattern">The glob expression being translated.</param>
     /// <param name="start">The index of the opening <c>{</c>.</param>
@@ -298,8 +299,17 @@ public sealed partial class ConfigurationPattern
         if (TryTranslateNumericRange(body, sb))
             return close + 1;
 
-        // Brace alternation {a,b,c} with possible nesting.
+        // Brace alternation {a,b,c} with possible nesting. A group without a top-level comma is not a choice: its braces
+        // are literal text, and its body is translated like the rest of the glob.
         List<string> alternatives = SplitTopLevelCommas(body);
+        if (alternatives.Count == 1)
+        {
+            sb.Append(@"\{");
+            TranslateExpression(body, sb);
+            sb.Append(@"\}");
+            return close + 1;
+        }
+
         sb.Append("(?:");
         for (int i = 0; i < alternatives.Count; i++)
         {

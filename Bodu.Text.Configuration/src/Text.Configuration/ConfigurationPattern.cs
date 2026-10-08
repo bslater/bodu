@@ -27,10 +27,17 @@ namespace Bodu.Text.Configuration;
 /// <description><c>?</c> - matches a single character except <c>/</c>.</description>
 /// </item>
 /// <item>
-/// <description><c>{a,b,c}</c> - matches any of the comma-separated alternatives (nesting permitted).</description>
+/// <description>
+/// <c>{a,b,c}</c> - matches any of the comma-separated alternatives (nesting permitted). A brace group without a
+/// top-level comma is not a choice: its braces are literal text, so <c>{single}</c> matches only <c>{single}</c> and
+/// <c>{}</c> only <c>{}</c>.
+/// </description>
 /// </item>
 /// <item>
-/// <description><c>{n1..n2}</c> - matches any decimal integer in the inclusive range.</description>
+/// <description>
+/// <c>{n1..n2}</c> - matches any decimal integer in the inclusive range. Both bounds must be integers; otherwise the
+/// group is literal text, so <c>{a..z}</c> matches only <c>{a..z}</c>.
+/// </description>
 /// </item>
 /// <item>
 /// <description>
