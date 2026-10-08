@@ -93,23 +93,25 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 ## Profile presets at a glance
 
-| Profile | Inline comments | Section headers | Duplicate keys | Diagnostics | Preamble in resolve | Missing path root | Unset semantics |
-|---|---|---|---|---|---|---|---|
-| `Bodu` (default) | WhitespaceIntroduced | Lenient | LastWins | Throw | Applied | UseEmptyRoot | Literal |
-| `EditorConfigCompatible` | Disabled | Strict | LastWins | Throw | Not applied | Throw | Removes value |
-| `Strict` | Disabled | Strict | Disallowed | Throw | Applied | Throw | Removes value |
-| `Relaxed` | WhitespaceIntroduced | Lenient | LastWins | Collect | Applied | UseEmptyRoot | Literal |
+| Profile | Inline comments | Section headers | Duplicate keys | Diagnostics | Preamble in resolve | Missing path root | Unset semantics | Key mapping |
+|---|---|---|---|---|---|---|---|---|
+| `Bodu` (default) | WhitespaceIntroduced | Lenient | LastWins | Throw | Applied | UseEmptyRoot | Literal | DotToColon |
+| `EditorConfigCompatible` | Disabled | Strict | LastWins | Throw | Not applied | Throw | Removes value | Identity |
+| `Strict` | Disabled | Strict | Disallowed | Throw | Applied | Throw | Removes value | DotToColon |
+| `Relaxed` | WhitespaceIntroduced | Lenient | LastWins | Collect | Applied | UseEmptyRoot | Literal | DotToColon |
 
 Profiles split across two option types: the *parse* columns (inline comments, section headers, duplicate keys,
 diagnostics) come from <xref:Bodu.Text.Configuration.ConfigurationParseOptions>; the *resolve* columns (preamble, missing
-path root, unset) come from <xref:Bodu.Text.Configuration.ConfigurationResolveOptions>. Both bags are
+path root, unset) come from <xref:Bodu.Text.Configuration.ConfigurationResolveOptions>, and the key mapping from the
+`KeyOptions` both carry. Both bags are
 `init`-only-property classes, so the presets are starting points, not contracts - compose a custom bag and override only
 what needs to differ.
 
 > [!NOTE]
 > Under `EditorConfigCompatible`, preamble properties are dropped wholesale during resolve (`ApplyPreambleProperties =
-> false`). The well-known `root` key is handled by the *reader*, not by special-casing it in the resolver, so the
-> resolved view simply contains no preamble keys at all.
+> false`), the well-known `root` key included, so the resolved view contains no preamble keys at all. The pairs stay in
+> the document's global section; resolution reads one document and searches no parent directory, so acting on
+> `root = true` is left to the caller.
 
 ## Common scenarios
 

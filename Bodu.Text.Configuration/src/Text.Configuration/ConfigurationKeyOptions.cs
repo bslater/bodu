@@ -55,6 +55,14 @@ public sealed class ConfigurationKeyOptions
     public static ConfigurationKeyOptions Default { get; } = new ConfigurationKeyOptions();
 
     /// <summary>
+    /// Gets the key options of the EditorConfig-compatible profile: <see cref="ConfigurationKeyMapping.Identity" />
+    /// mapping, so a key keeps its dots, with the default separators and case-insensitive comparison.
+    /// </summary>
+    /// <value>A cached options instance shared by the profile's parse and resolve presets.</value>
+    internal static ConfigurationKeyOptions EditorConfigCompatible { get; } =
+        new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.Identity };
+
+    /// <summary>
     /// Gets the segment-separator characters recognised in a raw key when splitting into segments.
     /// </summary>
     /// <value>A non-empty set of separator characters. The default is <c>{ '.', ':' }</c>.</value>

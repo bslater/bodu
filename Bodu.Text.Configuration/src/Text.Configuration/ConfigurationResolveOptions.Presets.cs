@@ -15,7 +15,9 @@ public sealed partial class ConfigurationResolveOptions
     public static ConfigurationResolveOptions Bodu { get; } = For(ConfigurationProfile.Bodu);
 
     /// <summary>
-    /// Gets the canonical option set for the EditorConfig-compatible profile.
+    /// Gets the canonical option set for the EditorConfig-compatible profile: preamble properties left out, the
+    /// <c>unset</c> sentinel removing a value, a path root or target path required, and the
+    /// <see cref="ConfigurationKeyMapping.Identity" /> key mapping, so a key keeps its dots.
     /// </summary>
     /// <value>A cached EditorConfig-compatible options instance.</value>
     public static ConfigurationResolveOptions EditorConfigCompatible { get; } =
@@ -43,6 +45,7 @@ public sealed partial class ConfigurationResolveOptions
             ConfigurationProfile.EditorConfigCompatible => new ConfigurationResolveOptions
             {
                 Profile = ConfigurationProfile.EditorConfigCompatible,
+                KeyOptions = ConfigurationKeyOptions.EditorConfigCompatible,
                 ApplyPreambleProperties = false,
                 MissingPathRootMode = ConfigurationMissingPathRootMode.Throw,
                 UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,

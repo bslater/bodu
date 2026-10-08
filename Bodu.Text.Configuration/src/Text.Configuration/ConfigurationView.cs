@@ -25,9 +25,12 @@ namespace Bodu.Text.Configuration;
 /// entirely.
 /// </para>
 /// <para>
-/// Lookups accept either the canonical colon-delimited form (<c>logging:level:default</c>) or the dotted form (
-/// <c>logging.level.default</c>); both resolve to the same value because dotted keys are normalized to colon-delimited
-/// form before consulting the backing dictionary. Enumeration yields keys in their canonical colon-delimited form.
+/// Lookups accept either the colon-delimited form (<c>logging:level:default</c>) or the dotted form (
+/// <c>logging.level.default</c>); both resolve to the same value because a lookup key is canonicalized with the view's
+/// key options before consulting the backing dictionary. Enumeration yields keys in the canonical form of the key
+/// mapping: colon-delimited under the default <see cref="ConfigurationKeyMapping.DotToColon" />, and dot-delimited
+/// under <see cref="ConfigurationKeyMapping.Identity" />, the mapping of the
+/// <see cref="ConfigurationProfile.EditorConfigCompatible" /> profile, so a dotted key appears as written.
 /// </para>
 /// </remarks>
 /// <example>

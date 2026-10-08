@@ -46,7 +46,7 @@ A **profile** is a named, validated combination of parse, resolve, and write opt
 | Profile | Intent |
 |---|---|
 | `Bodu` (default) | Permissive Bodu defaults: dotted-to-colon keys, whitespace-introduced inline comments, last-wins duplicates, preamble participates in resolve. |
-| `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, and preamble properties dropped from resolve (`root` is consumed by the reader). |
+| `EditorConfigCompatible` | Strict alignment with EditorConfig 0.17.2: inline comments disabled, strict section headers, identity key mapping (keys keep their dots), and the whole preamble, `root` included, dropped from resolve. |
 | `Strict` | Deterministic parsing for generated files: duplicate keys are rejected, key-only properties are not permitted. |
 | `Relaxed` | Permissive parsing of user-authored files: inline comments enabled, duplicates last-wins, diagnostics collected rather than thrown. |
 
@@ -105,7 +105,7 @@ handling are free to diverge from the raw-INI dialect.
 | `ApplyPreambleProperties` | Whether preamble (global section) properties contribute to the view. Default `true` (`Bodu`/`Strict`/`Relaxed`); `false` for `EditorConfigCompatible`. |
 | `PathComparison` | The `StringComparison` used when matching target paths against patterns. Default `Ordinal`. |
 | `UnsetValueMode` | TreatAsLiteral (default) / RemoveEffectiveValue (EditorConfig sentinel). |
-| `KeyOptions` | The key options applied when expanding raw keys into colon-delimited form. |
+| `KeyOptions` | The key options applied when expanding raw keys into the view's keys: colon-delimited under the default mapping, dot-delimited under the `Identity` mapping of the `EditorConfigCompatible` profile. |
 
 > [!IMPORTANT]
 > `MissingPathRootMode` only changes behaviour when **no target path is supplied to `Resolve` at all**. The `Throw`
@@ -202,8 +202,9 @@ section header. Bodu exposes it as <xref:Bodu.Text.Configuration.IniDocumentBase
 
 Under the default `Bodu` profile, the resolver layers the preamble first and then each matching section in source
 order, so preamble properties act as defaults that any matching section can override. Under
-`EditorConfigCompatible`, `ApplyPreambleProperties` is `false`, so the preamble is dropped from resolve entirely - its
-well-known `root` directive is consumed by the reader rather than surfaced as a resolved key.
+`EditorConfigCompatible`, `ApplyPreambleProperties` is `false`, so the preamble is dropped from resolve entirely, its
+well-known `root` pair included. The pair stays in the global section: resolution reads one document and searches no
+parent directory, so acting on `root = true` (no further `.editorconfig` files up the tree) is left to the caller.
 
 ## Resolution layering
 
