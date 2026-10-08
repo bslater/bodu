@@ -22,6 +22,9 @@ public partial class DelimitedSerializerTests
     /// <summary>How long a record may take to be yielded while the stream that holds it stays open.</summary>
     private static readonly TimeSpan s_openStreamTimeout = TimeSpan.FromSeconds(5);
 
+    /// <summary>How long a record whose end is not yet known is watched, to see that it is not yielded early.</summary>
+    private static readonly TimeSpan s_heldBackWait = TimeSpan.FromMilliseconds(250);
+
     /// <summary>
     /// Verifies that a stream returning one byte per read yields the records <c>[a, b]</c> and <c>[c"d, e]</c> of
     /// <c>a,b</c>, CRLF, <c>"c""d",e</c>, the records that reading the whole text gives.
@@ -167,6 +170,77 @@ public partial class DelimitedSerializerTests
         Assert.IsNotNull(first);
         Assert.AreEqual("1", first.A);
         Assert.AreEqual("2", first.B);
+    }
+
+    /// <summary>
+    /// Verifies that a record ending in a complete CRLF is yielded while the stream is still open, before any more input
+    /// or the end of the stream arrives.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenACrLfLineArrivesBeforeTheStreamEnds_ShouldYieldItAtOnce()
+    {
+        using var stream = new FeedStream();
+        IAsyncEnumerator<LetterRecord> records = DelimitedSerializer
+            .DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive)
+            .GetAsyncEnumerator();
+
+        bool yieldedWhileOpen;
+        LetterRecord? first;
+        try
+        {
+            stream.Feed("a,b\r\n1,2\r\n"u8.ToArray());
+            Task<bool> next = records.MoveNextAsync().AsTask();
+            yieldedWhileOpen = await Task.WhenAny(next, Task.Delay(s_openStreamTimeout)) == next;
+
+            // End the stream either way, so that a record held back until the end is still read and the enumeration ends.
+            stream.End();
+            first = await next ? records.Current : null;
+        }
+        finally
+        {
+            stream.End();
+            await records.DisposeAsync();
+        }
+
+        Assert.IsTrue(yieldedWhileOpen, "The record was held back until the stream ended.");
+        Assert.IsNotNull(first);
+        Assert.AreEqual("1", first.A);
+        Assert.AreEqual("2", first.B);
+    }
+
+    /// <summary>
+    /// Verifies that a record whose CRLF is split across reads is held back while the input read so far ends with the
+    /// CR, which could be the first half of a CRLF, and is yielded as soon as the LF arrives, while the stream is still
+    /// open.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenAReadEndsOnTheCrOfACrLf_ShouldYieldTheRecordWhenTheLfArrives()
+    {
+        await AssertYieldedOnlyAfterTheSecondPieceAsync("a,b\r\n1,2\r", "\n", "1", "2");
+    }
+
+    /// <summary>
+    /// Verifies that a record with no line ending yet is held back, since more of its last field may follow, and is
+    /// yielded as soon as its line feed arrives, while the stream is still open.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenARecordHasNoLineEndingYet_ShouldYieldItWhenTheLineEndingArrives()
+    {
+        await AssertYieldedOnlyAfterTheSecondPieceAsync("a,b\n1,2", "\n", "1", "2");
+    }
+
+    /// <summary>
+    /// Verifies that a record whose quoted field, holding a line feed, spans reads is held back while the field is open
+    /// and is yielded as soon as its line ending arrives, while the stream is still open.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenAQuotedFieldSpansReads_ShouldYieldTheRecordWhenItsLineEndingArrives()
+    {
+        await AssertYieldedOnlyAfterTheSecondPieceAsync("a,b\n\"x\n", "y\",2\n", "x\ny", "2");
     }
 
     /// <summary>
@@ -376,6 +450,51 @@ public partial class DelimitedSerializerTests
 
         Assert.AreEqual("options", ex.ParamName);
         Assert.Contains("Delimiter", ex.Message);
+    }
+
+    /// <summary>
+    /// Feeds two pieces of input to an open stream and asserts that the record they hold is not yielded after the first,
+    /// whose end leaves the record's end unknown, and is yielded after the second, while the stream is still open.
+    /// </summary>
+    /// <param name="first">The first piece, which leaves the record's end unknown.</param>
+    /// <param name="second">The second piece, which ends the record.</param>
+    /// <param name="expectedA">The record's expected first column.</param>
+    /// <param name="expectedB">The record's expected second column.</param>
+    /// <returns>A task that completes when the record has been read and checked.</returns>
+    private static async Task AssertYieldedOnlyAfterTheSecondPieceAsync(string first, string second, string expectedA, string expectedB)
+    {
+        using var stream = new FeedStream();
+        IAsyncEnumerator<LetterRecord> records = DelimitedSerializer
+            .DeserializeAsyncEnumerableAsync<LetterRecord>(stream, s_caseInsensitive)
+            .GetAsyncEnumerator();
+
+        bool heldBack;
+        bool yieldedWhileOpen;
+        LetterRecord? record;
+        try
+        {
+            stream.Feed(Encoding.UTF8.GetBytes(first));
+            Task<bool> next = records.MoveNextAsync().AsTask();
+            heldBack = await Task.WhenAny(next, Task.Delay(s_heldBackWait)) != next;
+
+            stream.Feed(Encoding.UTF8.GetBytes(second));
+            yieldedWhileOpen = await Task.WhenAny(next, Task.Delay(s_openStreamTimeout)) == next;
+
+            // End the stream either way, so that a record held back until the end is still read and the enumeration ends.
+            stream.End();
+            record = await next ? records.Current : null;
+        }
+        finally
+        {
+            stream.End();
+            await records.DisposeAsync();
+        }
+
+        Assert.IsTrue(heldBack, "The record was yielded before its end was known.");
+        Assert.IsTrue(yieldedWhileOpen, "The record was held back until the stream ended.");
+        Assert.IsNotNull(record);
+        Assert.AreEqual(expectedA, record.A);
+        Assert.AreEqual(expectedB, record.B);
     }
 
     /// <summary>
