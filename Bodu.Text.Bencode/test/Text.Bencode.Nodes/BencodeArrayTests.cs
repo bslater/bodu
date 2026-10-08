@@ -14,7 +14,7 @@ namespace Bodu.Text.Bencode.Nodes;
 /// the single-parent rule on assignment, enumeration semantics, and insertion-order serialization.
 /// </summary>
 [TestClass]
-public class BencodeArrayTests
+public partial class BencodeArrayTests
 {
     /// <summary>
     /// Verifies that the params constructor preserves the supplied items in order.
