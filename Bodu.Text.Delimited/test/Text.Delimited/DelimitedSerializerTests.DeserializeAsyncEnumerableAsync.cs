@@ -103,6 +103,47 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a U+FEFF that starts a record in a later buffered segment is kept as the first character of its
+    /// field, as reading the whole text keeps it, rather than skipped as a byte-order mark: with reads of each of these
+    /// sizes, the segment that holds <c>x</c> ends before the record after it is complete.
+    /// </summary>
+    /// <param name="pieceSize">The number of bytes each read returns.</param>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(3)]
+    [DataRow(5)]
+    [DataRow(7)]
+    public async Task DeserializeAsyncEnumerableAsync_WhenAByteOrderMarkStartsALaterSegment_ShouldKeepIt(int pieceSize)
+    {
+        const string Text = "x\n\uFEFFyy\nz\n";
+        using var stream = new FixedChunkStream(Encoding.UTF8.GetBytes(Text), pieceSize);
+
+        await AssertStreamedRecordsAsync(stream, Text, [["x"], ["\uFEFFyy"], ["z"]]);
+    }
+
+    /// <summary>
+    /// Verifies that a byte-order mark at the start of the stream is still skipped, whatever the size of the reads
+    /// that deliver it, so that the records read are <c>[x]</c> and <c>[y]</c>, as reading the whole text gives.
+    /// </summary>
+    /// <param name="pieceSize">The number of bytes each read returns.</param>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(3)]
+    [DataRow(5)]
+    [DataRow(64)]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTheStreamStartsWithAByteOrderMark_ShouldSkipIt(int pieceSize)
+    {
+        const string Text = "\uFEFFx\ny\n";
+        using var stream = new FixedChunkStream(Encoding.UTF8.GetBytes(Text), pieceSize);
+
+        await AssertStreamedRecordsAsync(stream, Text, [["x"], ["y"]]);
+    }
+
+    /// <summary>
     /// Verifies that an empty stream completes the enumeration without a record or an error.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
