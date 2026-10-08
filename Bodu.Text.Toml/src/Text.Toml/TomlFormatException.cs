@@ -19,7 +19,9 @@ namespace Bodu.Text.Toml;
 /// <para>
 /// Because TOML is a line-oriented format, the exception records its position as a <see cref="LineNumber" /> and
 /// <see cref="ColumnNumber" /> in addition to the absolute character <see cref="Offset" />. Each is
-/// <see langword="null" /> when the error is not associated with a specific location.
+/// <see langword="null" /> when the error is not associated with a specific location. An error about a key, such as a
+/// duplicate key or a dotted key that extends a value, is positioned where the key starts, although it is found only
+/// once the key's value has been read.
 /// </para>
 /// </remarks>
 /// <example>

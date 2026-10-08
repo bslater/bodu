@@ -18,7 +18,8 @@ namespace Bodu.Text.Toml.Reader;
 /// The lexer owns lexical validation; this type owns everything structural: dotted-key semantics, table reopening,
 /// implicit-versus-explicit table tracking, arrays of tables, duplicate definitions, inline-table closedness, and the
 /// maximum nesting depth. The split means a structurally invalid document lexes cleanly and is rejected here, with the
-/// error position taken from the offending token.
+/// error position taken from the offending token; an error about a key, such as a redefinition, is reported where the
+/// key starts, although it is detected only once the key's value has been read.
 /// </para>
 /// <para>
 /// TOML cannot be tokenized into tree order in a single forward pass, because out-of-line <c>[table]</c> and
@@ -28,7 +29,7 @@ namespace Bodu.Text.Toml.Reader;
 /// <c>TomlDocument</c> and the depth-first cursor in <see cref="TomlDocumentReader" />.
 /// </para>
 /// </remarks>
-internal sealed class TomlDocumentBuilder
+internal sealed partial class TomlDocumentBuilder
 {
     /// <summary>The child count at which a table switches from a linear sibling scan to a hashed key index.</summary>
     /// <remarks>
@@ -125,12 +126,8 @@ internal sealed class TomlDocumentBuilder
 
                 case TomlTokenType.Key:
                 default:
-                {
-                    List<string> path = ReadKeyPath(ref lexer);
-                    int value = ReadValue(ref lexer);
-                    AssignKeyValue(_current, path, value, ref lexer);
+                    ReadKeyValue(_current, ref lexer);
                     break;
-                }
             }
         }
 
@@ -251,9 +248,7 @@ internal sealed class TomlDocumentBuilder
                     if (lexer.TokenType == TomlTokenType.EndInlineTable)
                         break;
 
-                    List<string> path = ReadKeyPath(ref lexer);
-                    int value = ReadValue(ref lexer);
-                    AssignKeyValue(table, path, value, ref lexer);
+                    ReadKeyValue(table, ref lexer);
                 }
 
                 AddFlag(table, TomlReaderRowFlags.Inline);
@@ -433,21 +428,39 @@ internal sealed class TomlDocumentBuilder
     }
 
     /// <summary>
+    /// Reads a key/value pair and assigns it under <paramref name="target" />.
+    /// </summary>
+    /// <param name="target">The row index of the table receiving the assignment.</param>
+    /// <param name="lexer">The lexer, positioned on the pair's first key token.</param>
+    /// <remarks>
+    /// The key can be assigned only once its value has been read, so its start is recorded first: an error about the
+    /// key is then reported where the key starts, not at the value the lexer has moved on to.
+    /// </remarks>
+    private void ReadKeyValue(int target, ref Utf8TomlReader lexer)
+    {
+        var keyStart = new KeyStart(lexer.LineNumber, lexer.ColumnNumber, lexer.TokenStartIndex);
+        List<string> path = ReadKeyPath(ref lexer);
+        int value = ReadValue(ref lexer);
+        AssignKeyValue(target, path, value, keyStart, ref lexer);
+    }
+
+    /// <summary>
     /// Assigns a key/value pair under <paramref name="target" />, creating intermediate dotted-key tables.
     /// </summary>
     /// <param name="target">The row index of the table receiving the assignment.</param>
     /// <param name="path">The dotted key path.</param>
     /// <param name="value">The row index of the value to assign.</param>
-    /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void AssignKeyValue(int target, List<string> path, int value, ref Utf8TomlReader lexer)
+    /// <param name="keyStart">The position at which the key starts, used for errors about the key.</param>
+    /// <param name="lexer">The lexer whose current token supplies the positions of other errors.</param>
+    private void AssignKeyValue(int target, List<string> path, int value, KeyStart keyStart, ref Utf8TomlReader lexer)
     {
         int table = target;
         for (int i = 0; i < path.Count - 1; i++)
-            table = WalkDottedSegment(table, path[i], ref lexer);
+            table = WalkDottedSegment(table, path[i], keyStart, ref lexer);
 
         string key = path[^1];
         if (FindChild(table, key) >= 0)
-            throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlDuplicateKey);
+            throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlDuplicateKey);
 
         Link(table, value, key);
     }
@@ -457,21 +470,22 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="table">The row index of the table to walk from.</param>
     /// <param name="key">The segment key.</param>
-    /// <param name="lexer">The lexer whose current token supplies error positions.</param>
+    /// <param name="keyStart">The position at which the dotted key starts, used for errors about the key.</param>
+    /// <param name="lexer">The lexer whose current token supplies the positions of other errors.</param>
     /// <returns>The row index of the intermediate table.</returns>
-    private int WalkDottedSegment(int table, string key, ref Utf8TomlReader lexer)
+    private int WalkDottedSegment(int table, string key, KeyStart keyStart, ref Utf8TomlReader lexer)
     {
         int existing = FindChild(table, key);
         if (existing >= 0)
         {
             if (_rows[existing].Kind != TomlReaderNodeKind.Table)
-                throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlKeyOnValue);
+                throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlKeyOnValue);
             if (HasFlag(existing, TomlReaderRowFlags.Inline))
-                throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
+                throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
 
             // Dotted keys may not extend a table already defined in [table] form (see toml-lang/toml#846).
             if (HasFlag(existing, TomlReaderRowFlags.HeaderDefined))
-                throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlDuplicateTable);
+                throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlDuplicateTable);
 
             // Traversing an implicit super-table with a dotted key defines it via dotted keys: a later [table] header
             // may no longer re-open it, mirroring the rule that headers cannot redefine dotted-key tables.
