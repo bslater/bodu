@@ -1,0 +1,222 @@
+# library: csvhelper -- https://github.com/JoshClose/CsvHelper
+# releases: src/CsvHelper.Website/input/change-log/index.md at 33970e5183383bdac1fbce3b3fbcdf46b318ca52 (SHA-256 1d2115e3f52406d7a6fe4d2f21184ced7c272a8e71f7e06ddefb31a818f0c7fb), every Bug Fixes item from 0.12.0 to 33.1.0; scenarios are the tests of the fix commits, found with git log in a blobless clone
+# licence: MS-PL OR Apache-2.0
+# note: every item under a Bug Fixes heading is catalogued (including the two under the misspelt Big Fixes and the unheaded 15.0.10 item), plus the 2.0.0 Features item that fixes exception wrapping; the 15.0.6 item Fixed test not building is a test-only change and is not; Features and Breaking Changes items are not catalogued
+# note: the change log names no issues, so reference is the fix commit (or #n when its message names an issue), empty where no commit could be tied to the item
+# note: CsvHelper's buffer-boundary parser fixes are restated as unit rows for Bodu's only chunked reader, DelimitedSerializer.DeserializeAsyncEnumerableAsync, fed by a stream that returns a few bytes per read
+# note: Bodu has no class maps, pluggable type converters, CsvDataReader, dynamic records, delimiter detection, reading callbacks, escape character, multi-character delimiters or formula-injection sanitising; fixes to those are n/a
+library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
+csvhelper,33.1.0,,Dispose and DisposeAsync added to the writer's async write methods,n/a,,,,,,,disposal plumbing of CsvWriter's async methods
+csvhelper,33.1.0,,UseDefaultOnConversionFailure did not work when the default value is null,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,33.0.1,,More members marked nullable,n/a,,,,,,,nullable annotations of the C# API
+csvhelper,32.0.3,,Dispose the IEnumerator in CsvWriter,n/a,,,,,,,disposal of the records enumerator inside WriteRecords
+csvhelper,32.0.2,,An IEnumerable being written was enumerated twice,n/a,,,,,,,API: WriteRecords' enumeration of a lazy IEnumerable; Bodu's Serialize enumerates once
+csvhelper,32.0.1,,"FastDynamicObject fully implements IDictionary<string, object>",n/a,,,,,,,"dynamic records, which Bodu does not have"
+csvhelper,31.0.4,,GuidConverter throws TypeConverterException instead of FormatException,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,31.0.3,,TypeConverter<T> did not work for a Nullable T,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,31.0.2,,Removed the dependency on System.Linq.Async,n/a,,,,,,,packaging: dependencies
+csvhelper,31.0.1,,Added InformationalVersion to the assembly info,n/a,,,,,,,packaging: assembly metadata
+csvhelper,30.1.0,,Quotes at end of line were ignored when LineBreakInQuotedFieldIsBadData is on,n/a,,,,,,,"the LineBreakInQuotedFieldIsBadData option, which Bodu does not have"
+csvhelper,30.1.0,,Convert on an empty Map() threw,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,30.1.0,b6b6b79bfd,Writing with HasHeaderRecord false still wrote a header record,applies,,unit,,DelimitedSerializerTests.Serialize_WhenNoHeaderIsSet_ShouldNotWriteTheHeaderRow,,upstream,WriteRecords_NonGeneric_HasHeaderRecord(false) expects test\r\n with no header; serializing records with one property Name = test and DelimitedSerializerOptions.NoHeader = true gives test\r\n
+csvhelper,30.1.0,,This operation is only valid on generic types was thrown,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,30.1.0,,CsvDataReader could not be used after lines were read manually,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,30.1.0,,CsvDataReader did not work with HasHeaderRecord false,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,30.1.0,,CsvReader.ColumnCount did not match CsvParser.Count,n/a,,,,,,,API: CsvReader.ColumnCount
+csvhelper,30.1.0,278511424a,GetDelimiter did not detect the delimiter when there are blank lines,n/a,,,,,,,"delimiter detection (DetectDelimiter), which Bodu does not have"
+csvhelper,30.1.0,,Header validation reported an error once per field,n/a,,,,,,,header validation messages of class maps
+csvhelper,30.0.3,,.NET 7 and 8 lacked DateOnly and TimeOnly support,n/a,,,,,,,CsvHelper's converter registration per target framework; Bodu's serializer converts through Convert.ChangeType
+csvhelper,30.0.1,90dcb88c29,The escape character was not escaped when it differs from the quote,n/a,,,,,,,"an escape character distinct from the quote, which Bodu does not have"
+csvhelper,30.0.1,,CsvWriter did not pass leaveOpen on to the other constructor,n/a,,,,,,,API: the leaveOpen constructor argument
+csvhelper,30.0.1,,A TypeConverter was assigned to a member that has a Convert expression,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,30.0.0,,Null check added in WriteRecords,n/a,,,,,,,API: a null records argument; Bodu's Serialize writes an empty document for null rather than failing
+csvhelper,30.0.0,,Fixed interpolation in an exception message,n/a,,,,,,,exception message text
+csvhelper,30.0.0,,Constructor mapping was used although the parameter has a type converter,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,29.0.0,f3d8038950,Delimiter detection logic,n/a,,,,,,,"delimiter detection (DetectDelimiter), which Bodu does not have"
+csvhelper,29.0.0,,ConfigureAwait(false) added to async calls,n/a,,,,,,,async plumbing (ConfigureAwait)
+csvhelper,29.0.0,cfefc95b25,TryGetField threw when several header rows were read,n/a,,,,,,,API: CsvReader.TryGetField
+csvhelper,29.0.0,,MemberMap.Validate passed the wrong type to the expression,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,29.0.0,,MemberMap<T>.Convert did not work with static methods,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,29.0.0,,DateTimeConverter and DateTimeOffsetConverter threw an exception other than TypeConverterException,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,29.0.0,,MissingFieldFound was not called when IgnoreBlankLines is off,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,28.0.1,,Nullable annotations disabled until null issues are fixed,n/a,,,,,,,nullable annotations of the C# API
+csvhelper,28.0.0,81550d783c,Collection members did not get the right MemberMapData when converting items,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,28.0.0,2177b15c8c,BadDataFound was called several times for one field,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,28.0.0,9137bde39c,Reading without a header failed when a name had been mapped,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,28.0.0,#1954,A quoted field after white space was not recognised when the buffer swapped there (Trim mode),applies,,parse,TrimFields=true,"field1, field2, field3\n1, 2, ""test""\n3, 4, ""TEST""","[[[""field1"",""1""],[""field2"",""2""],[""field3"",""test""]],[[""field1"",""3""],[""field2"",""4""],[""field3"",""TEST""]]]",upstream,"Issue1954 tests (commit 4ebde8dbe0): with trimming on, a quoted value preceded by a space reads as test; Bodu keeps the quotes, because a field that does not start with the quote is read as unquoted and TrimFields then trims it, which no Bodu document describes"
+csvhelper,27.2.1,,Dependencies changed to the minimal needed versions,n/a,,,,,,,packaging: dependencies
+csvhelper,27.1.1,,Delimiter detection in the parser's async read,n/a,,,,,,,"delimiter detection (DetectDelimiter), which Bodu does not have"
+csvhelper,27.0.4,dca4f2f170,Delimiter detection looks line by line,n/a,,,,,,,"delimiter detection (DetectDelimiter), which Bodu does not have"
+csvhelper,27.0.3,,Exact dependency versions specified,n/a,,,,,,,packaging: dependencies
+csvhelper,27.0.2,,Delimiter detection,n/a,,,,,,,"delimiter detection (DetectDelimiter), which Bodu does not have"
+csvhelper,27.0.1,72cad999ee,A tab in the default white-space characters made a tab delimiter throw,applies,,parse,NoHeader=true;TrimFields=true;Delimiter=\t,a\t b \tc\n,"[[""a"",""b"",""c""]]",derived,"commit 72cad99 removed tab from the trimmed white space so that a tab delimiter works with trimming; Bodu's TrimFields trims space and tab inside a field, which a tab delimiter has already ended"
+csvhelper,26.0.1,,Constant did not work when the field is missing,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,26.0.0,,"Removed all init properties, which caused problems",n/a,,,,,,,API: CsvConfiguration's init properties
+csvhelper,26.0.0,,The exception message did not contain the header record,n/a,,,,,,,exception message text
+csvhelper,25.0.0,,Stack overflow when BadDataFound read Parser[int] or Parser.Record,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,24.0.1,108553e198,Trimming a field of only white space,applies,,parse,NoHeader=true;TrimFields=true,"a,          \n","[[""a"",""""]]",upstream,Trim_AllWhitespace_EmptyString: a field of only spaces trims to the empty string
+csvhelper,24.0.0,c369d189e1,ShouldQuote got the wrong field type when writing records,n/a,,,,,,,"the ShouldQuote callback, which Bodu does not have"
+csvhelper,24.0.0,0e20d7838d,CharCount and ByteCount were wrong when trimming,applies,,unit,,Utf8DelimitedReaderTests.BytesConsumed_WhenFieldsAreTrimmed_ShouldCountEveryByteRead,,upstream,"Read_Trimmed_WhiteSpaceCorrect: after reading 1, 2\r\n with trimming the byte count is the whole line; with TrimFields and NoHeader, BytesConsumed after the record's EndArray is 6"
+csvhelper,22.1.2,7f989664fc,Data corruption when the parser buffer ran out between an escape and a quote,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenADoubledQuoteIsSplitAcrossReads_ShouldDecodeIt,,upstream,"Read_BufferEndsAtEscape_FieldIsNotBadData uses a 16-character buffer; CsvHelper's buffer-boundary parser fix; Bodu's chunked reader is the streaming deserializer, so the test feeds DeserializeAsyncEnumerableAsync<string[]> (NoHeader) from a stream returning at most 16 bytes per ReadAsync over a,""bcdefghijklm""""nopqrstuvwxyz""\r\n and expects [a, bcdefghijklm""nopqrstuvwxyz], the records Deserialize reads from the whole text"
+csvhelper,22.1.1,24ce088fe8,"CsvConfiguration.NewLine was set when null, making IsNewLine true",n/a,,,,,,,API: CsvConfiguration.NewLine; Bodu's writer always ends records with CRLF
+csvhelper,22.1.0,,EnumIgnoreCase did not reach the converter when reading,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,22.0.0,,EnumConverter failed when an enum has duplicate names or values,n/a,,,,,,,CsvHelper's EnumConverter; Bodu's serializer parses enum names with Enum.Parse
+csvhelper,21.3.1,,CsvContext was not passed to AutoMap,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,21.2.1,72b75265a0,The processed field buffer was too small after a resize,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenAQuotedFieldWithDoubledQuotesOutgrowsTheReadBuffer_ShouldDecodeIt,,derived,"CsvHelper's buffer-boundary parser fix; Bodu's chunked reader is the streaming deserializer, so the test feeds DeserializeAsyncEnumerableAsync<string[]> (NoHeader) from a stream returning at most 16384 bytes per ReadAsync over a quoted field of 40,000 bytes holding a doubled quote every 100 bytes and expects the field with each doubled quote collapsed, the records Deserialize reads from the whole text"
+csvhelper,21.1.2,678193e8b8,Parser state was not reset when the buffer filled in the middle of a state,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenEveryReadReturnsOneByte_ShouldKeepTheParserState,,derived,"CsvHelper's buffer-boundary parser fix; Bodu's chunked reader is the streaming deserializer, so the test feeds DeserializeAsyncEnumerableAsync<string[]> (NoHeader) from a stream returning at most 1 bytes per ReadAsync over a,""b,c""\r\n""d""""e"",f\r\n and expects [a, b,c] and [d""e, f], the records Deserialize reads from the whole text"
+csvhelper,21.1.1,20c32fb953,Parsing failed when the buffer ended in the middle of a line ending,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenAReadEndsBetweenCrAndLf_ShouldNotAddAField,,upstream,"Read_BufferSplitsCrLf_NoBufferResize_DoesntAddExtraField; CsvHelper's buffer-boundary parser fix; Bodu's chunked reader is the streaming deserializer, so the test feeds DeserializeAsyncEnumerableAsync<string[]> (NoHeader) from a stream returning at most 16 bytes per ReadAsync over 1,200000\r\n3,400000\r\n5,600\r\n and expects [1, 200000], [3, 400000] and [5, 600], two fields each, the records Deserialize reads from the whole text"
+csvhelper,21.0.6,3b83271692,Writing a field larger than twice the buffer size,applies,,unit,,Utf8DelimitedWriterTests.WriteString_WhenAFieldIsLongerThanTheScratchBuffer_ShouldWriteItWhole,,upstream,"Write_FieldThatIsLargerThenTwiceTheBuffer_Writes: a record [one, 1000 random lowercase letters] written to a Stream comes out as one,<the letters>\r\n"
+csvhelper,21.0.5,,VB could not set init properties on CsvConfiguration,n/a,,,,,,,API: CsvConfiguration construction from VB
+csvhelper,21.0.4,,Cache misses in the reader and writer,n/a,,,,,,,performance only (record delegate caching)
+csvhelper,21.0.2,f03232c72d,CsvConfiguration.NewLine did not default to CRLF,applies,,write,NoHeader=true,"[[""a"",""b""],[""c"",""d""]]","a,b\r\nc,d\r\n",spec,"commit f03232c: writing needs a valid RFC 4180 file, whose records end with CRLF (section 2, rule 1)"
+csvhelper,21.0.1,,CsvWriter did not track Row and Index,n/a,,,,,,,API: CsvWriter.Row and Index counters
+csvhelper,21.0.0,,init did not work on platforms other than net50,n/a,,,,,,,platform: target frameworks
+csvhelper,21.0.0,,CRLF could not be written where Environment.NewLine is CRLF,applies,,write,NoHeader=true,"[[""x""]]",x\r\n,derived,the record terminator must not depend on Environment.NewLine; Bodu's writer writes CRLF on every platform
+csvhelper,17.0.1,,EnumConverter failed for an enum whose underlying type is not Int32,n/a,,,,,,,CsvHelper's EnumConverter; Bodu's serializer parses enum names with Enum.Parse
+csvhelper,15.0.10,,IgnoreAttribute on a reference property ignores the whole property tree when auto mapped,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,15.0.9,,CsvDataReader.FieldCount threw when there were no records,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,15.0.8,,CsvDataReader.GetOrdinal did not fall back to a case-insensitive match,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,15.0.7,#1595,Writing a null value did not write a field,applies,,unit,,DelimitedSerializerTests.Serialize_WhenAPropertyIsNull_ShouldWriteAnEmptyField,,upstream,"commit 2d2ef73 (#1595, #1454) writes a field for a null value; a record { string A = null; string B = x } serializes to A,B\r\n,x\r\n"
+csvhelper,15.0.5,,A multi-character delimiter failed when its first character came just before it,n/a,,,,,,,"multi-character delimiters, which Bodu does not have"
+csvhelper,15.0.4,,ReflectionHelper cache keys were not always unique,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,15.0.3,,Default number styles of DecimalConverter and DoubleConverter follow Microsoft's recommendation,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,15.0.2,,DataReader.GetValues failed when column and row counts differ,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,15.0.1,,Downgraded System.Threading.Tasks.Extensions for an assembly loading error,n/a,,,,,,,packaging: dependencies
+csvhelper,12.3.2,,Double and single converters test format R only when no format is given,n/a,,,,,,,the .NET Framework R-format round-trip workaround of CsvHelper's converters
+csvhelper,12.3.1,,Workaround for a .NET Framework bug causing StackOverflowException,n/a,,,,,,,the .NET Framework runtime
+csvhelper,12.2.3,,Round-trip default format tests R and falls back to G9 or G17,n/a,,,,,,,the .NET Framework R-format round-trip workaround of CsvHelper's converters
+csvhelper,12.2.2,,A property hiding a parent's with new was mapped twice,applies,,unit,,DelimitedSerializerTests.Serialize_WhenAPropertyHidesABasePropertyWithNew_ShouldWriteOneColumn,,derived,the fix maps a hidden property once; a record type whose property Name hides a base class property Name (new modifier) serializes with one Name column
+csvhelper,12.2.2,,NullReferenceException when writing with every property ignored,applies,,unit,,DelimitedSerializerTests.Serialize_WhenEveryPropertyIsIgnored_ShouldNotThrow,,derived,the fix writes records whose properties are all ignored without failing; with [Ignore] on every property Serialize does not throw
+csvhelper,12.2.1,,TryGetField of DateTime threw Index out of bounds,n/a,,,,,,,API: CsvReader.TryGetField
+csvhelper,12.2.1,b007492fe0,RawRecord gained spaces when TrimOptions.Trim is used,n/a,,,,,,,"API: RawRecord, which Bodu does not have"
+csvhelper,12.2.0,,SingleConverter and DoubleConverter made round-trippable,applies,,unit,,DelimitedSerializerTests.SerializeDeserialize_WhenADoubleNeedsSeventeenDigits_ShouldRoundTripIt,,derived,doubles must survive a round trip: a record with double X = 0.1 + 0.2 serializes to 0.30000000000000004 and deserializes to the same value
+csvhelper,12.1.3,d0e1bf518b,"Always write CRLF line endings, as RFC 4180 requires",applies,,write,NoHeader=true,"[[""a""]]",a\r\n,spec,"commit d0e1bf5: RFC 4180 section 2, rule 1"
+csvhelper,12.1.2,d70d8c8eab,CsvDataReader skipped the first row when there is no header,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,12.1.2,,CsvDataReader did not return DBNull.Value for null values,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,12.1.2,,IsDBNull treated an empty string as null,n/a,,,,,,,"CsvDataReader (an IDataReader over the parser), which Bodu does not have"
+csvhelper,12.1.1,,ReadAsync did not behave like Read,n/a,,,,,,,API: CsvReader.ReadAsync
+csvhelper,12.0.1,,Writing a dynamic object sorted the header without a sort,n/a,,,,,,,"dynamic records, which Bodu does not have"
+csvhelper,11.0.1,,leaveOpen was not used in the context's dispose,n/a,,,,,,,API: leaveOpen disposal
+csvhelper,9.2.3,dae221a66b,TrimOptions.InsideQuotes failed with escaped quotes in the field,n/a,,,,,,,"trimming inside quotes (TrimOptions.InsideQuotes), which Bodu does not have"
+csvhelper,9.2.2,,NamedIndexes was not reset by ReadHeader,n/a,,,,,,,API: CsvReader.ReadHeader
+csvhelper,9.2.1,,A TypeConverterAttribute on a reference was not used,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,9.0.2,,WriteAsync did not call SanitizeForInjection,n/a,,,,,,,"formula-injection sanitising (SanitizeForInjection), which Bodu does not have"
+csvhelper,9.0.1,,The leaveOpen parameter of the CsvParser constructor was hard-coded,n/a,,,,,,,API: the leaveOpen constructor argument
+csvhelper,9.0.1,,Header validation ran on members mapped only by index,n/a,,,,,,,header validation of class maps
+csvhelper,8.1.1,,"IgnoreBlankLines was not checked in GetField<T>(int, ITypeConverter)",n/a,,,,,,,API: CsvReader.GetField overloads
+csvhelper,8.0.0,,Added missing interface methods to the configurations,n/a,,,,,,,API: configuration interfaces
+csvhelper,8.0.0,090f65bf2b,Parsing CR-only line endings with quoted fields,applies,1,parse,NoHeader=true,"""1""\r2","[[""1""],[""2""]]",upstream,CrTests.SingleFieldAndMultipleRowsAndFirstFieldInFirstRowIsQuotedAndNoLineEndingTest
+csvhelper,8.0.0,090f65bf2b,Parsing CR-only line endings with quoted fields,applies,2,parse,NoHeader=true,"""1""\r2\r","[[""1""],[""2""]]",upstream,CrTests.SingleFieldAndMultipleRowsAndFirstFieldInFirstRowIsQuotedAndHasLineEndingTest
+csvhelper,8.0.0,,GetField called the ObjectResolver,n/a,,,,,,,API: the ObjectResolver
+csvhelper,8.0.0,,Contexts are not serialized in exceptions,n/a,,,,,,,API: exception serialization
+csvhelper,8.0.0,,ObjectResolver fallback caused a StackOverflowException,n/a,,,,,,,API: the ObjectResolver
+csvhelper,7.1.1,,Added a CsvWriter constructor that sets leaveOpen,n/a,,,,,,,API: the leaveOpen constructor argument
+csvhelper,7.1.1,,CsvWriter.Dispose can be called more than once,applies,,unit,,Utf8DelimitedWriterTests.Dispose_WhenCalledTwice_ShouldNotThrow,,derived,a stream-backed Utf8DelimitedWriter disposed twice neither throws nor writes the pending bytes twice
+csvhelper,7.1.1,,ConfigureAwait(false) added to all async calls,n/a,,,,,,,async plumbing (ConfigureAwait)
+csvhelper,7.0.1,,Private constructors can instantiate records,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,6.1.1,,Circular references when auto mapping,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,6.0.3,,LINQPad: types from different assemblies cached in the writer,n/a,,,,,,,type caching across assembly loads
+csvhelper,6.0.2,,LINQPad: types from different assemblies cached,n/a,,,,,,,type caching across assembly loads
+csvhelper,6.0.0,,A map for an interface was not used when writing,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,5.0.0,,The DefaultTypeConverterException message was not used,n/a,,,,,,,exception message text
+csvhelper,4.0.3,,ReadingExceptionOccurred is called from the GetRecord methods,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,4.0.2,b9fb549df7,Parsing failed when the buffer spans a field,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenAFieldSpansReads_ShouldReadIt,,upstream,"InsideQuotesStartSpacesInFieldDelimiterInFieldSmallBufferNoNewlineTest reads with a 1-character buffer (its InsideQuotes trimming is not Bodu's); CsvHelper's buffer-boundary parser fix; Bodu's chunked reader is the streaming deserializer, so the test feeds DeserializeAsyncEnumerableAsync<string[]> (NoHeader) from a stream returning at most 1 bytes per ReadAsync over "" a ,b c"",b\r\n and expects [ a ,b c, b], the records Deserialize reads from the whole text"
+csvhelper,4.0.1,b186c338ae,Trimming inside quotes failed when the character after a space was a delimiter or line break,n/a,,,,,,,"trimming inside quotes (TrimOptions.InsideQuotes), which Bodu does not have"
+csvhelper,3.4.0,,Sub-property mapping could not update a member of an auto-created map,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.1.1,,IEnumerable could not be written,n/a,,,,,,,API: WriteRecords over a non-generic IEnumerable
+csvhelper,3.1.0,,Flush CsvWriter on Dispose,applies,,unit,,Utf8DelimitedWriterTests.Dispose_WhenBytesArePending_ShouldFlushThemToTheStream,,derived,a Utf8DelimitedWriter over a Stream that writes a record and is disposed without Flush leaves the record in the stream (Dispose is documented to flush)
+csvhelper,3.1.0,,ShouldSkipRecord is not called at end of stream,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,3.1.0,,ShouldUseConstructorParameters returns false when there are no constructors,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.1.0,,Header validation skips members using ConvertUsing or Constant,n/a,,,,,,,header validation of class maps
+csvhelper,3.0.0,,CsvClassMapCollection[type] chose the wrong map in an inheritance tree,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.0.0,,ShouldSkipRecord always overrode SkipEmptyRecords,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,3.0.0,,Ignoring header white space failed when a property name had the same white space,n/a,,,,,,,"header-matching options (IgnoreHeaderWhiteSpace), which Bodu does not have"
+csvhelper,3.0.0,179c1a853a,"With comments on, a first field starting with the comment character is quoted",dialect,1,write,NoHeader=true,"[[""#no comment""]]",#no comment\r\n,derived,"WriteCommentCharInFieldWithCommentsOnTest expects ""#no comment""; Bodu's writer has no comment setting and quotes only for the delimiter, the quote or a line break (Utf8DelimitedWriter remarks), as the test's comments-off case expects"
+csvhelper,3.0.0,179c1a853a,"With comments on, a first field starting with the comment character is quoted",applies,2,roundtrip,NoHeader=true;AllowComments=true,"""#no comment"",x\n",,upstream,WriteCommentCharInFieldWithCommentsOnTest: the value must not read back as a comment; the writer documents that its output round-trips through the reader
+csvhelper,3.0.0,,Type converter options set in the factory did not work with maps,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,3.0.0,012db7e95e,A line ending spanning the buffer left a CR in the field,applies,,unit,,DelimitedSerializerTests.DeserializeAsyncEnumerableAsync_WhenAQuotedFieldEndsBeforeACrLfSplitAcrossReads_ShouldNotKeepTheCr,,upstream,"BufferSplitsCrCnTestWith4LengthBuffer; CsvHelper's buffer-boundary parser fix; Bodu's chunked reader is the streaming deserializer, so the test feeds DeserializeAsyncEnumerableAsync<string[]> (NoHeader) from a stream returning at most 4 bytes per ReadAsync over ""1""\r\n2\r\n and expects [1] and [2], the records Deserialize reads from the whole text"
+csvhelper,3.0.0,616c6a9ad9,A character was skipped when a line ending was inside a quoted field,applies,1,parse,NoHeader=true,"""a\r"",b\r\n","[[""a\\r"",""b""]]",upstream,QuotedFieldWithCarriageReturnTest
+csvhelper,3.0.0,616c6a9ad9,A character was skipped when a line ending was inside a quoted field,applies,2,parse,NoHeader=true,"""a\n"",b\r\n","[[""a\\n"",""b""]]",upstream,QuotedFieldWithLineFeedTest
+csvhelper,3.0.0,,Locking added to the factory for thread safety,n/a,,,,,,,thread safety of CsvHelper's converter factory
+csvhelper,3.0.0,,Mapping a constant and then another property threw,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.0.0,,Reflection calls to ConvertToString use the ITypeConverter method,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,3.0.0,,Locking added in ReflectionHelper.CreateInstance's delegate cache,n/a,,,,,,,thread safety of CsvHelper's caches
+csvhelper,3.0.0,3cb57e4780,IsFieldBad flags an unquoted field holding quotes only when IgnoreQuotes is false,n/a,,,,,,,"the IgnoreQuotes option and bad-data detection, which Bodu does not have"
+csvhelper,3.0.0,,Auto mapping mistook nested references for circular ones,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.0.0,,Private properties could not be set,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.0.0,,Getting a class map did not look up the inheritance tree,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,3.0.0,,Constant did not work with null,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.16.3,,CsvClassMapCollection[type] chose the wrong map in an inheritance tree,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.16.2,,TypeInfo compatibility types made internal,n/a,,,,,,,packaging: type conflicts
+csvhelper,2.16.1,,The UWP release did not work,n/a,,,,,,,platform: UWP
+csvhelper,2.14.3,,The assembly was not a release build,n/a,,,,,,,packaging: build configuration
+csvhelper,2.14.2,,Added a net45 build excluded from CoreFX compatibility,n/a,,,,,,,packaging: target frameworks
+csvhelper,2.14.1,,.NET 2.0 classes were included in the .NET 4.0 build,n/a,,,,,,,packaging: target frameworks
+csvhelper,2.13.5,,ShouldSkipRecord did not work on rows before the header,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,2.13.3,,Reading a multi-character delimiter read the wrong number of characters,n/a,,,,,,,"multi-character delimiters, which Bodu does not have"
+csvhelper,2.13.2,,TryGetField with a named index returned the wrong value,n/a,,,,,,,API: CsvReader.TryGetField
+csvhelper,2.13.1,,DateTimeConverter missing from the default converters,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,2.13,,Portable target for Windows Phone 8.1,n/a,,,,,,,platform: Windows Phone
+csvhelper,2.12,,Exception with empty fields and UseExcelLeadingZerosFormatForNumerics,n/a,,,,,,,"the UseExcelLeadingZerosFormatForNumerics option, which Bodu does not have"
+csvhelper,2.12,dab7ac7ffa,Excel compatibility: an unclosed quote at end of file keeps everything to the end,dialect,,reject,NoHeader=true,"a,b,""c\r\nd,e,f\r\n",DelimitedFormatException,derived,ParseFieldMissingQuoteGoesToEndOfFileTest reads the rest of the file into the field; Bodu documents that an unterminated quoted field throws (parser-policies.md)
+csvhelper,2.12,,Static properties are not auto mapped,applies,,unit,,DelimitedSerializerTests.Serialize_WhenTheRecordTypeHasAStaticProperty_ShouldNotWriteIt,,derived,the fix leaves static properties out; a record type with an instance property A and a static property S serializes with the A column only
+csvhelper,2.12,,Every thrown exception carries Exception.Data[CsvHelper],n/a,,,,,,,exception data of the API
+csvhelper,2.12,3b180fd98f,Inner quotes were not doubled when writing a quoted field,applies,,write,NoHeader=true,"[[""a \\""b\\"" c""]]","""a """"b"""" c""\r\n",upstream,WriteFieldShouldQuoteYesTest
+csvhelper,2.11.1.1,,Writing an array of records,n/a,,,,,,,API: WriteRecords over an array
+csvhelper,2.11,,Anonymous objects were written with the wrong headers,n/a,,,,,,,"anonymous record types, which Bodu's serializer does not write"
+csvhelper,2.9.1,904554678a,The char converter trimmed a single space,applies,,unit,,DelimitedSerializerTests.Deserialize_WhenACharColumnIsASpace_ShouldBindTheSpace,,upstream,"the char converter must keep "" "" (test in commit 9045546); deserializing c\n"" ""\n into a record { char C } binds ' '"
+csvhelper,2.8.4,327d28822b,Restored the non-generic WriteRecords overload changed in 2.8.3,n/a,,,,,,,API: WriteRecords overload signatures
+csvhelper,2.8.3,4f2da53141,No header was written when the record collection is empty,applies,,unit,,DelimitedSerializerTests.Serialize_WhenTheCollectionIsEmpty_ShouldWriteTheHeaderRow,,upstream,"WriteEmptyListTest expects output for an empty list; the delimited guide says Serialize takes the header row from the record type, so an empty List<Trade> gives the header row alone"
+csvhelper,2.8.2,,An exception was always thrown when ThrowOnBadData is on,n/a,,,,,,,"the ThrowOnBadData option, which Bodu does not have"
+csvhelper,2.7.1,,Mappings overwrote an explicitly set index when re-indexing,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.7.1,,Auto mapping ignores IEnumerable properties instead of throwing,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.7,,Dynamic proxy objects always auto mapped,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.7,a7c27dcdd7,Trimming a null field threw,n/a,,,,,,,internal null fields of CsvHelper's parser
+csvhelper,2.7,,Writing a null field value,dialect,,write-reject,NoHeader=true,"[[""a"",null]]",ArgumentNullException,derived,CsvHelper writes null as an empty field; Bodu's Utf8DelimitedWriter.WriteString documents ArgumentNullException for null (its serializer writes a null property as an empty field)
+csvhelper,2.7,,Removed deprecated writer methods,n/a,,,,,,,API: removed writer methods
+csvhelper,2.6.1,,Mapping order when no index is specified,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.6,,Writing failed when a reference map type is a struct,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.5,,ConvertUsing destabilised the runtime for a nullable property,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.4.1,28143c41fa,Delimiter characters were added to the field when the buffer ended inside the delimiter,n/a,,,,,,,"multi-character delimiters, which Bodu does not have (MultipleCharDelimiterWithBufferEndingInMiddleOfDelimiterTest uses |~|)"
+csvhelper,2.4,,NullReferenceException with reference maps and a null reference,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.4,,TryGetField threw MissingFieldException,n/a,,,,,,,API: CsvReader.TryGetField
+csvhelper,2.4,f54de0ce35,A comment on the last line without a line ending was returned as a record,applies,1,parse,NoHeader=true;AllowComments=true,#comment\r\n,[],upstream,LastLineHasCommentTest
+csvhelper,2.4,f54de0ce35,A comment on the last line without a line ending was returned as a record,applies,2,parse,NoHeader=true;AllowComments=true,#c,[],upstream,LastLineHasCommentNoEolTest
+csvhelper,2.4,,NuGet package for Windows Phone 8,n/a,,,,,,,packaging: Windows Phone
+csvhelper,2.4,,WriteHeader methods missing from ICsvWriter,n/a,,,,,,,API: the ICsvWriter interface
+csvhelper,2.3,,Extra exception information was not added when the reading exception callback is used,n/a,,,,,,,"reading callbacks (BadDataFound, MissingFieldFound, ShouldSkipRecord), which Bodu does not have"
+csvhelper,2.3,,Having only reference maps threw,n/a,,,,,,,"class maps and auto mapping (ClassMap, MemberMap), which Bodu does not have"
+csvhelper,2.2.2,be61347a3a,A line did not end when the previous character was NUL,applies,,parse,NoHeader=true,a\0\r\nb\r\n,"[[""a\\u0000""],[""b""]]",derived,"commit be61347: the parser used NUL as its no-previous-character marker, so a NUL before a line ending kept the record open; the input puts a NUL before CRLF"
+csvhelper,2.2.1,dafe6d8677,Trimming fields did not work on one CsvReader path,n/a,,,,,,,API: one of CsvReader's GetField paths
+csvhelper,2.1.1,,An exception was thrown although WillThrowOnMissingField is off,n/a,,,,,,,"the WillThrowOnMissingField option, which Bodu does not have"
+csvhelper,2.0.1,,WinRT Any CPU build,n/a,,,,,,,platform: WinRT
+csvhelper,2.0.0,,Exceptions are no longer wrapped; Exception.Data carries CsvHelper details,n/a,,,,,,,exception wrapping of the API
+csvhelper,2.0.0,,Building the exception message failed when writing without a parser,n/a,,,,,,,exception message text
+csvhelper,2.0.0,,Dynamic invoke of WriteRecords had the wrong parameter count,n/a,,,,,,,"dynamic records, which Bodu does not have"
+csvhelper,2.0.0,,GetField(string) did not return null for a missing header,n/a,,,,,,,API: CsvReader.GetField
+csvhelper,2.0.0,#102,CsvBadDataException when some rows have extra columns,applies,1,parse,MalformedRecordBehavior=SkipRecord,"Column 1,Column 2\r\n1,2\r\n1,2,3\r\n1,2\r\n1\r\n1,2,3,4\r\n1,2\r\n1,2\r\n","[[[""Column 1"",""1""],[""Column 2"",""2""]],[[""Column 1"",""1""],[""Column 2"",""2""]],[[""Column 1"",""1""],[""Column 2"",""2""]],[[""Column 1"",""1""],[""Column 2"",""2""]]]",upstream,InconsistentColumnsMultipleRowsTest (commit fd056ee): each of the three bad rows fails on its own and reading goes on; Bodu's SkipRecord policy skips them and keeps the four good rows
+csvhelper,2.0.0,#102,CsvBadDataException when some rows have extra columns,dialect,2,reject,,"Column 1,Column 2\r\n1,2\r\n1,2,3\r\n1,2\r\n",DelimitedFormatException,derived,under Bodu's documented defaults (Strict and Throw) the first bad row ends the read (parser-policies.md)
+csvhelper,2.0.0,,Raw record corruption,n/a,,,,,,,"API: RawRecord, which Bodu does not have"
+csvhelper,1.17.0,,Writer exception in WinRT,n/a,,,,,,,platform: WinRT
+csvhelper,1.15.0,66fbc9c329,QuoteAllFields did not double inner quotes,n/a,,,,,,,"the QuoteAllFields option, which Bodu does not have; Bodu doubles inner quotes whenever it quotes"
+csvhelper,1.15.0,,WinRT did not build after a pull request merge,n/a,,,,,,,platform: WinRT
+csvhelper,1.14.0,,EnumConverter was not created correctly by the TypeConverterFactory,n/a,,,,,,,"CsvHelper's pluggable type converter API (ITypeConverter, TypeConverterOptions), which Bodu does not have"
+csvhelper,1.14.0,#90,The byte count missed some closing quotes,applies,,unit,,Utf8DelimitedReaderTests.BytesConsumed_WhenRecordsHoldEmptyQuotedFields_ShouldCountEachByteOnce,,upstream,"ByteCountTestWithQuotedFieldsEmptyQuotedField (commit 9247e42): reading 1,"""",2\r\n""3"",4,""5""\r\n (NoHeader), BytesConsumed is 8 after the first record and 19 after the second"
+csvhelper,1.13.0,,The boolean converter returned true for no,n/a,,,,,,,CsvHelper's yes and no boolean values; Bodu's serializer parses only True and False
+csvhelper,1.13.0,,GetMethod in WinRT,n/a,,,,,,,platform: WinRT
+csvhelper,1.12.1,,Reading all records more than once threw,n/a,,,,,,,API: enumerating GetRecords twice
+csvhelper,1.9.2,43193823d6,Skipping empty records,n/a,,,,,,,"the SkipEmptyRecords option (records whose fields are all empty), which Bodu does not have"
+csvhelper,1.9.1,d078259332,Column count change detection,applies,,parse,,"Column 1,Column 2\r\n1,2\r\n","[[[""Column 1"",""1""],[""Column 2"",""2""]]]",upstream,ConsistentColumnsWithDetectColumnChangesTest: consistent rows read without error under detection; Bodu checks counts against the header by default
+csvhelper,1.9.0,ada7dc0ef2,Column count detection bug,applies,,reject,,"1,2,3,4\r\n5,6,7\r\n",DelimitedFormatException,upstream,InconsistentColumnsSmallerTest: a row with fewer columns than the first throws under detection; Bodu's default Strict policy measures against the header row
+csvhelper,1.9.0,#67,The byte count counted the closing quote twice,applies,,unit,,Utf8DelimitedReaderTests.BytesConsumed_WhenRecordsHoldQuotedFields_ShouldCountEachByteOnce,,upstream,"ByteCountTestWithQuotedFields (commit 840544c): reading 1,""2""\r\n""3"",4\r\n (NoHeader), BytesConsumed is 7 after the first record and 14 after the second"
+csvhelper,1.9.0,ffbbadadaf,Parsing was wrong when the last row has no CRLF,applies,,parse,NoHeader=true,a,"[[""a""]]",upstream,ParseLastLineHasNoCrLf
+csvhelper,1.9.0,,Error messages,n/a,,,,,,,exception message text
+csvhelper,1.7.0,,Subclassing fixed by using interfaces in the reader and writer,n/a,,,,,,,API: CsvHelper's interfaces
+csvhelper,1.1.2,,Disposing over a read-only or write-only stream threw,n/a,,,,,,,API: disposing readers and writers over one-directional streams
+csvhelper,1.1.1,,DateTimeConverter returned DateTime.MinValue instead of null for white space,applies,,unit,,DelimitedSerializerTests.Deserialize_WhenANullableDateTimeColumnIsWhiteSpace_ShouldBindNull,,derived,"the fix reads white space in a nullable DateTime column as null, not a value; Bodu maps only the empty string to null today, so d\n"" ""\n into { DateTime? D } is expected to bind null"
+csvhelper,1.0.0,85b9484b6a,Without a final line ending the last field was null instead of empty,applies,,parse,NoHeader=true,"a,b,c,\r\nd,e,f,","[[""a"",""b"",""c"",""""],[""d"",""e"",""f"",""""]]",derived,"the commit's test reads an empty fourth field from both records, the second without a line ending"
+csvhelper,1.0.0,,Configuration references and constructor signatures,n/a,,,,,,,API: configuration constructors
+csvhelper,0.15.0,,Indentation error caused by a new CsvPropertyMap constructor,n/a,,,,,,,API: CsvPropertyMap
+csvhelper,0.14.0,,CurrentCulture was used instead of InvariantCulture,applies,,unit,,DelimitedSerializerTests.Serialize_WhenTheCurrentCultureUsesADecimalComma_ShouldWriteInvariantNumbers,,derived,values must not depend on the current culture; with CurrentCulture de-DE a record { double X = 1.5 } serializes to X\r\n1.5\r\n and reads back as 1.5 (the delimited guide: scalars use InvariantCulture)
+csvhelper,0.12.0,17ca5dd1a9,Spaces in unquoted fields,applies,1,parse,NoHeader=true," one , two three , four \r\n","[["" one "","" two three "","" four ""]]",upstream,the parser test of commit 17ca5dd: spaces around and inside an unquoted field are kept
+csvhelper,0.12.0,17ca5dd1a9,Spaces in unquoted fields,applies,2,parse,NoHeader=true,"  five "" six "" seven  \r\n","[[""  five \\"" six \\"" seven  ""]]",upstream,the same test: quotes inside an unquoted field are kept as text
