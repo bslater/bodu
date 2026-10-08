@@ -4,7 +4,7 @@
 list (or, where the notes are missing or incomplete, its fix commits), turned into a row that states the scenario
 of the fix and what `Bodu.Text.Delimited` must do with it. A row that can run is a parse, reject, write or round-trip
 case against `Utf8DelimitedReader` and `Utf8DelimitedWriter`; a scenario that needs typed code (a record type, a
-stream that returns a few bytes at a time) is a `unit` row naming the test to write; a fix that cannot touch Bodu
+stream that returns a few bytes at a time) is a `unit` row naming the test that covers it; a fix that cannot touch Bodu
 is recorded as `n/a` with the reason. Nothing here is copied from the libraries: each row restates the fix's
 scenario in a few words and, from these permissively licensed projects, at most a short test input, with the test
 named in `reason`.
@@ -61,7 +61,7 @@ decoded field is a byte sequence, read as UTF-8.
 | `write` | writing the records described by `input` produces exactly the bytes of `expected` |
 | `write-reject` | writing the records described by `input` throws the exception named in `expected` |
 | `roundtrip` | reading `input`, writing the records back and reading the result renders the same twice (and the written bytes equal `expected` when it is given) |
-| `unit` | (not run here) `input` names the test to write, `<TestClass>.<Member>_When<Condition>_Should<Result>`, and `reason` describes its model, input and outcome |
+| `unit` | (not run as data) `input` names the test that covers the scenario, `<TestClass>.<Member>_When<Condition>_Should<Result>`, and `reason` describes its model, input and outcome |
 
 `expectation` says where `expected` comes from: `upstream` (the fix's own test), `spec` (RFC 4180), or `derived`
 (worked out, with the working in `reason`).
@@ -111,88 +111,93 @@ same reader options. The two renderings must be equal.
 
 | Library | Fixes | Rows | applies | dialect | n/a | unknown | Runnable | Pass | Fail |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| commons-csv | 116 | 128 | 34 | 5 | 89 | 0 | 34 | 29 | 5 |
-| cpython-csv | 66 | 76 | 16 | 2 | 58 | 0 | 17 | 15 | 2 |
-| go-csv | 12 | 19 | 13 | 4 | 2 | 0 | 13 | 11 | 2 |
-| rust-csv | 34 | 40 | 16 | 3 | 21 | 0 | 14 | 12 | 2 |
-| csvhelper | 208 | 214 | 44 | 4 | 166 | 0 | 26 | 24 | 2 |
-| sylvan-csv | 57 | 71 | 40 | 6 | 25 | 0 | 33 | 31 | 2 |
-| sep | 16 | 20 | 10 | 1 | 9 | 0 | 7 | 6 | 1 |
-| csv-parse | 101 | 108 | 31 | 5 | 72 | 0 | 29 | 20 | 9 |
+| commons-csv | 116 | 128 | 35 | 4 | 89 | 0 | 34 | 34 | 0 |
+| cpython-csv | 66 | 76 | 16 | 2 | 58 | 0 | 17 | 17 | 0 |
+| go-csv | 12 | 19 | 10 | 7 | 2 | 0 | 11 | 11 | 0 |
+| rust-csv | 34 | 40 | 17 | 2 | 21 | 0 | 14 | 14 | 0 |
+| csvhelper | 208 | 214 | 45 | 3 | 166 | 0 | 26 | 26 | 0 |
+| sylvan-csv | 57 | 71 | 40 | 6 | 25 | 0 | 33 | 33 | 0 |
+| sep | 16 | 20 | 10 | 1 | 9 | 0 | 7 | 7 | 0 |
+| csv-parse | 101 | 108 | 30 | 6 | 72 | 0 | 29 | 29 | 0 |
 | papaparse | 106 | 113 | 32 | 4 | 71 | 6 | 31 | 31 | 0 |
-| **Total** | **716** | **789** | **236** | **34** | **513** | **6** | **204** | **179** | **25** |
+| **Total** | **716** | **789** | **235** | **35** | **513** | **6** | **202** | **202** | **0** |
 
-Runnable rows are the `applies` and `dialect` rows of every kind but `unit`; the other 66 `applies` and `dialect`
-rows are `unit` rows, whose tests are still to be written. The counts are those of Bodu at `0e0e990182`. The `n/a`
-rows are dominated by API surface Bodu does not offer (class maps, type converters, data readers, callbacks, network
-and browser streaming), the libraries' languages and platforms (Python 2, JavaScript prototypes, TypeScript
-declarations, Rust memory safety), packaging and performance.
+Runnable rows are the `applies` and `dialect` rows of every kind but `unit`; the other 68 `applies` and `dialect` rows
+are `unit` rows, each naming a test in `Bodu.Text.Delimited.Test`, and every one of those tests passes too. Pass and
+Fail count the runnable rows with the fixes below in place. The `n/a` rows are dominated by API surface Bodu does not
+offer (class maps, type converters, data readers, callbacks, network and browser streaming), the libraries' languages
+and platforms (Python 2, JavaScript prototypes, TypeScript declarations, Rust memory safety), packaging and performance.
 
 ## What the catalogue found
 
-The 25 failing rows have five causes. Each is reported, not reclassified: a failing `applies` row is a scenario the
-fix established that Bodu does not meet, and a failing `dialect` row is one where Bodu does not do what its own
-documentation says.
+The first run, against Bodu at `0e0e990182`, failed 25 runnable rows, and 12 of the 66 `unit` tests failed when they
+were written. Each cause became an issue, fixed test first:
 
-1. **Text after a closing quote starts a new record** (8 rows). `docs/docs/formats/parser-policies.md` (line 29)
-   documents characters after a closing quote as a structural error, subject to `MalformedRecordBehavior`; the reader
-   instead ends the record there and reads the rest of the line as a new one, so `"a"b,c` gives `[a]` and `[b,c]`,
-   and `SkipRecord` never sees the error. Rows: commons-csv CSV-147 case 1 and PR #303 case 1; csv-parse 1.2.2
-   `e28757c351`, 2.1.0 #214, 2.4.0 `40352e8272` case 2 and 4.2.0 `4faa65ef98`; sylvan-csv 0.4.2 cases 1 and 3. With
-   `TrimFields`, white space after a closing quote splits the line into several records, some of them empty.
-2. **A record of one empty field does not survive a round trip** (5 rows). The writer writes it as an empty line,
-   which the reader skips, although the writer's remarks (`Utf8DelimitedWriter.cs` lines 25 and 26) promise that
-   its output round-trips. Rows: commons-csv PR #629, cpython-csv #115712 case 3 and bpo-32255 case 1, rust-csv
-   `920684f32d` case 1, sep PR #17 case 2. Commons CSV, CPython and rust-csv quote the field (`""`) for exactly
-   this reason; Sep instead reads an empty line back as a row of one empty field.
-3. **A value that starts with the comment character is written bare** (3 rows). Read back with `AllowComments`, the
-   record becomes a comment line and disappears. The writer has no comment setting, so it cannot know; the same
-   round-trip promise applies. Rows: commons-csv PR #610 case 2, csvhelper `179c1a853a` case 2, rust-csv #283 case 2.
-4. **Trimming** (7 rows). `TrimFields` is documented as trimming "surrounding whitespace" from unquoted fields
-   (`DelimitedReaderOptions.cs` line 45) but trims only space and tab (`Utf8DelimitedReader.cs` lines 393 to 395),
-   so U+3000, U+00A0 and U+000B stay (csv-parse 7.0.0 #482 cases 1 to 3). A field whose quote follows white space is
-   read as unquoted, so its quotes stay in the value (csvhelper 28.0.0 #1954, csv-parse 2.4.0 `40352e8272` case 1 and
-   `67fd873923`); no document says which reading applies. And the writer does not quote leading or trailing spaces,
-   so a trimming reader loses them on a round trip (commons-csv PR #621 case 2).
-5. **A non-ASCII delimiter or comment character is cast to one byte** (2 rows). `parser-policies.md` (line 22)
-   allows any character for `Delimiter` and `Quote`, but the options are narrowed to a byte without validation, so
-   `U+00A3` matches the second byte of its own UTF-8 encoding and splits it (go-csv 1.10 #19410 cases 2 and 3).
+- **#846. Text after a closing quote.** The reader ended the record at a closing quote and read the rest of the line as
+  a new record, so `"a"b,c` gave `[a]` and `[b,c]` and `SkipRecord` never saw an error, although
+  `docs/docs/formats/parser-policies.md` documents such text as a structural error. Only the delimiter, a line break or
+  the end of the input may now follow a closing quote, after spaces and tabs under `TrimFields`; anything else makes the
+  record malformed. `Throw` reports the offending byte, and `SkipRecord` skips the whole record and goes on with the
+  next line, where `parser-policies.md` had said that it truncates the record. Rows: commons-csv CSV-147 cases 1 and 2
+  and PR #303 case 1, csv-parse 1.2.2 `e28757c351` and 2.1.0 #214, and sylvan-csv 0.4.2 cases 1 and 3.
+- **#847. Fields the writer left bare.** The writer wrote a record of one empty field as an empty line, which the reader
+  skips; a first field that begins with the comment character bare, so that a reader allowing comments skipped the
+  record; and a field with leading or trailing spaces bare, so that a trimming reader trimmed them; yet its remarks
+  promise that its output round-trips. It now quotes all three, and `DelimitedWriterOptions` has a `CommentChar`, `#` by
+  default, which `DelimitedSerializerOptions.CommentChar` sets for the writer and the reader alike. Rows: commons-csv
+  PR #629, PR #610 case 2 and PR #621 case 2, cpython-csv #115712 case 3 and bpo-32255 case 1, rust-csv `920684f32d`
+  case 1 and #283 case 2, csvhelper `179c1a853a` case 2, and sep PR #17 case 2.
+- **#848. Trimming around quotes.** Under `TrimFields` the reader looked for an opening quote before trimming, so
+  `1, 2, "test"` kept the quotes of `"test"`. Spaces and tabs before an opening quote and after a closing one are now
+  skipped, so the field is read as quoted and the text between its quotes is kept whole. Rows: csvhelper 28.0.0 #1954,
+  and csv-parse 2.4.0 `40352e8272` case 1 and `67fd873923`.
+- **#849. Dialect characters.** The reader and the writer took any `char` as the delimiter, quote or comment character
+  and cut it to one byte, so U+00A3 matched the second byte of its own UTF-8 encoding, a line-feed delimiter merged
+  records, and a delimiter equal to the quote or to the comment character misread records. Their constructors, and the
+  serializer and DOM methods that create them, now throw `ArgumentException` unless each of the three is an ASCII
+  character other than CR and LF and no two are the same. Rows: the `unit` tests of cpython-csv #113796, go-csv #22404
+  and go-csv `2cc15b18db`.
+- **#850. Where a record's error is reported.** A field-count error was reported at the line and offset after the
+  record, and a duplicate header name at those after the header row. Both now report where the record starts (csv-parse
+  1.1.1 case 2).
+- **#851 and #852. The streaming deserializer.** `DeserializeAsyncEnumerableAsync` held back a record whose line ending
+  was the last byte read until more input arrived, and counted its errors' positions from the start of each read, or
+  gave none. It now yields a record as soon as its LF or complete CRLF is read (csv-parse 1.1.2), and reports every
+  error at its line and offset in the whole stream (papaparse 4.5.0 PR #509).
+- **#853 to #856. The serializer.** A field of white space binds `null` to a nullable value-type member, as an empty
+  field does (csvhelper 1.1.1, sylvan-csv 0.8.3). `DateTime` and `DateTimeOffset` are written with the round-trip `O`
+  format, and `DateOnly`, `TimeOnly` and `TimeSpan` in invariant round-trip forms, so that every tick and the kind or
+  offset survive (papaparse 5.5.5). An empty collection writes the header row alone in header mode, from every
+  `Serialize` and `SerializeAsync` overload (csvhelper 2.8.3). And a member hidden with `new` maps to one column, its
+  most derived declaration (csvhelper 12.2.2).
+
+The fixes moved eleven rows between classes. Six became `dialect` rows, citing the documents the fixes wrote. go-csv
+1.10 #19410 cases 2 and 3, where Go matches a non-ASCII delimiter or comment character as a whole rune, are now `unit`
+rows naming `Utf8DelimitedReaderTests.Ctor_WhenTheDelimiterOrCommentCharIsNotAscii_ShouldThrowArgumentException`
+(`parser-policies.md` lines 22 and 27). csv-parse 7.0.0 #482 cases 1 to 3, which trim U+3000, U+00A0 and U+000B, assert
+that `TrimFields` keeps them (`DelimitedReaderOptions.cs` line 73 and `parser-policies.md` line 24). And go-csv 1.4
+`6ad2749dcd` case 2, where Go writes a lone empty field as an empty line, expects `""` (`Utf8DelimitedWriter.cs` lines
+28 and 32). Five `dialect` rows became `applies` rows asserting the upstream result, which Bodu now produces: csv-parse
+2.4.0 `40352e8272` case 2 and 4.2.0 `4faa65ef98`, formerly `reject` rows, read the white space after a closing quote as
+trimmed (#846); and commons-csv PR #610 case 1, now with the comment character `;`, csvhelper 3.0.0 `179c1a853a` case 1
+and rust-csv 1.3.0 #283 case 1 expect a first field that begins with the comment character to be quoted (#847).
 
 ### Documentation that disagrees with the behaviour or with itself
 
-- `docs/docs/formats/parser-policies.md` line 29: text after a closing quote is a structural error; the reader ends
-  the record (cause 1).
-- `docs/docs/formats/parser-policies.md` line 20 calls `SkipRecord` "truncate the record at the structural error",
-  while `DelimitedMalformedRecordBehavior.cs` line 20 says "A malformed record is silently skipped".
-- `DelimitedDuplicateHeaderBehavior.cs` line 20: under `TakeFirst` later columns with the name are "unnamed", but
-  they keep it (`a,b,a` reads `[a,1],[b,2],[a,3]`); it is `TakeLast` that blanks the earlier name.
-- `Utf8DelimitedWriter.cs` lines 25 and 26: the output round-trips through the reader, except for causes 2 and 3
-  and the trimming case of 4.
-- `docs/docs/formats/parser-policies.md` line 22: any character for `Delimiter` and `Quote` (cause 5).
-- `DelimitedReaderOptions.cs` line 45: `TrimFields` trims "surrounding whitespace", only space and tab in fact.
-- `docs/guides/formats/delimited.md` line 43: `Serialize` takes the header row "from the record type", but an empty
-  collection writes nothing, not even the header (csvhelper 2.8.3 `unit` row).
+The first run listed seven places where the documentation disagreed with the behaviour or with itself. The fixes above
+corrected six of them; one remains:
 
-Two behaviours the rows rely on are documented only in private XML documentation: a lone CR ends a line
-(`Utf8DelimitedReader.SkipLineEnding`), and blank lines are skipped (`LoadRecord` and `SkipBlankAndCommentLines`,
-`Utf8DelimitedReader.cs` lines 295 and 445), although RFC 4180's grammar reads an empty line as a record of one
-empty field. A third is not documented at all: under `Ragged` an extra field is named by its zero-based index, a
-name that can collide with a real header. The `dialect` rows that rely on them are go-csv 1.10 #22937 case 3 and
-papaparse 4.1.3 (a lone CR), sep 0.2.0 #10 case 3 and sylvan-csv 1.1.16 (blank lines), and csv-parse 4.0.1 (the
-extra field's name).
+- `DelimitedDuplicateHeaderBehavior.cs` line 20: under `TakeFirst` later columns with the name are "unnamed", but they
+  keep it (`a,b,a` reads `[a,1],[b,2],[a,3]`); it is `TakeLast` that blanks the earlier name.
 
-### `unit` rows likely to fail when written
-
-These tests are not run here, but reading Bodu's source suggests they will fail:
-
-- Option validation: cpython-csv #113796 and go-csv #22404 and `2cc15b18db` expect a delimiter equal to the quote,
-  a line break, or a delimiter equal to the comment character to be rejected; Bodu validates none of them.
-- Serializer conversions: white space in a nullable column is not read as null (csvhelper 1.1.1, sylvan-csv 0.8.3);
-  a `DateTime` is written with the invariant general format, which drops fractional seconds and the kind
-  (papaparse 5.5.5); an empty collection writes no header (csvhelper 2.8.3); a property hidden with `new` may map
-  twice (csvhelper 12.2.2).
-- The streaming deserializer parses each read from its own start, so an error after the first 16 KiB may report a
-  line number relative to the read (papaparse 4.5.0 PR #509).
+Three behaviours that `dialect` rows rely on are not in the reader's public documentation. A lone CR ends a line, which
+only the private `Utf8DelimitedReader.SkipLineEnding` documents. Blank lines are skipped, although RFC 4180's grammar
+reads an empty line as a record of one empty field: the reader documents that only in private XML documentation
+(`LoadRecord` and `SkipBlankAndCommentLines`, `Utf8DelimitedReader.cs` lines 348 and 551), and the writer's remarks
+mention it (`Utf8DelimitedWriter.cs` lines 32 and 35). And under `Ragged` an extra field is named by its zero-based
+index, a name that can collide with a real header, which nothing documents. The `dialect` rows that rely on them are
+go-csv 1.10 #22937 case 3 and papaparse 4.1.3 (a lone CR), sep 0.2.0 #10 case 3 and sylvan-csv 1.1.16 (blank lines), and
+csv-parse 4.0.1 (the extra field's name).
 
 ## Ports and shared lineage
 
@@ -202,8 +207,9 @@ these libraries (Papa Parse's Baby Parse, for one) are not catalogued.
 
 ## Validation
 
-Every runnable row was run against Bodu at the commit above with a scratch harness outside the repository, which also
-checks the files themselves (column count, classes, kinds, option names, escapes, case numbering, a reason on every
-row, ASCII only). Its `Renderer.cs` holds the file reader, the escape decoder, the option mapping, the rendering and
-the row runner, depends only on Bodu and the BCL, and is meant to be ported into `Bodu.Text.Delimited.Test`, so that
-the catalogue runs as data-driven tests, each named after its library, version, reference, case and summary.
+The harness is `DelimitedReleaseNoteCorpusTests`, in `Bodu.Text.Delimited/test/Text.Delimited/`, over copies of these
+files embedded from `Bodu.Text.Delimited/test/Fixtures/ReleaseNotes/`. Its governance tests, in the BVT tier, check the
+files themselves (column count, classes, kinds, option names, escapes, case numbering, canonical quoting, a reason on
+every row, ASCII only), pin the counts above, and check that each `unit` row names a test in the test assembly and that
+the copies match these files byte for byte. One Regression test per kind runs the runnable rows, each named after its
+library, version, reference, case and summary, so `test.runsettings` runs them and `bvt.runsettings` does not.
