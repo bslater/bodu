@@ -771,4 +771,60 @@ public partial class TomlSerializerTests
         public new string Value { get; set; } = "derived";
     }
 
+    /// <summary>
+    /// A type with a required member of its own and nested types whose required member a document can leave out.
+    /// </summary>
+    private sealed class RequiredPathRootModel
+    {
+        /// <summary>
+        /// Gets or sets the required identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        [Required]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the nested value one level down.
+        /// </summary>
+        /// <value>The nested value, or <see langword="null" /> when the document leaves it out.</value>
+        public RequiredPathLeafModel? Inner { get; set; }
+
+        /// <summary>
+        /// Gets or sets the nested value that holds another one.
+        /// </summary>
+        /// <value>The nested value, or <see langword="null" /> when the document leaves it out.</value>
+        public RequiredPathMiddleModel? Middle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of nested values.
+        /// </summary>
+        /// <value>The nested values, or <see langword="null" /> when the document leaves them out.</value>
+        public List<RequiredPathLeafModel>? Items { get; set; }
+    }
+
+    /// <summary>
+    /// A nested type that holds a further nested value.
+    /// </summary>
+    private sealed class RequiredPathMiddleModel
+    {
+        /// <summary>
+        /// Gets or sets the nested value.
+        /// </summary>
+        /// <value>The nested value, or <see langword="null" /> when the document leaves it out.</value>
+        public RequiredPathLeafModel? Inner { get; set; }
+    }
+
+    /// <summary>
+    /// A nested type whose only member is required.
+    /// </summary>
+    private sealed class RequiredPathLeafModel
+    {
+        /// <summary>
+        /// Gets or sets the required name.
+        /// </summary>
+        /// <value>The name.</value>
+        [Required]
+        public string Name { get; set; } = string.Empty;
+    }
+
 }

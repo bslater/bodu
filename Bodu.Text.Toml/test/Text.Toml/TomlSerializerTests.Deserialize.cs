@@ -788,6 +788,27 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a missing required member is reported with the dotted path to it, as other binding failures are:
+    /// its name at the root, and its path through nested tables and arrays of tables below it.
+    /// </summary>
+    /// <param name="toml">The document, which leaves out one required member.</param>
+    /// <param name="path">The expected path to the missing member.</param>
+    [TestMethod]
+    [DataRow("other = 1\n", "Id", DisplayName = "at the root")]
+    [DataRow("Id = 1\n[Inner]\n", "Inner.Name", DisplayName = "in a nested table")]
+    [DataRow("Id = 1\n[Middle.Inner]\n", "Middle.Inner.Name", DisplayName = "two tables down")]
+    [DataRow("Id = 1\n[[Items]]\nName = \"a\"\n[[Items]]\n", "Items[1].Name", DisplayName = "in an array of tables")]
+    public void Deserialize_WhenRequiredMemberIsMissing_ShouldReportItsPath(string toml, string path)
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<RequiredPathRootModel>(toml);
+        });
+
+        Assert.AreEqual(path, ex.Path);
+    }
+
+    /// <summary>
     /// A model with a single <see cref="double" /> member.
     /// </summary>
     private sealed class DoubleMemberModel

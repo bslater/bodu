@@ -85,4 +85,25 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual(("text", 1), (model.Value, ((HiddenPropertyBaseModel)model).Value));
     }
+
+    /// <summary>
+    /// Verifies that a missing required member is reported with the dotted path to it, as other binding failures are:
+    /// its name at the root, and its path through nested mappings and sequences below it.
+    /// </summary>
+    /// <param name="yaml">The document, which leaves out one required member.</param>
+    /// <param name="path">The expected path to the missing member.</param>
+    [TestMethod]
+    [DataRow("other: 1\n", "Id", DisplayName = "at the root")]
+    [DataRow("Id: 1\nInner: {}\n", "Inner.Name", DisplayName = "in a nested mapping")]
+    [DataRow("Id: 1\nMiddle:\n  Inner: {}\n", "Middle.Inner.Name", DisplayName = "two mappings down")]
+    [DataRow("Id: 1\nItems:\n  - Name: a\n  - {}\n", "Items[1].Name", DisplayName = "in a sequence")]
+    public void Deserialize_WhenRequiredMemberIsMissing_ShouldReportItsPath(string yaml, string path)
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<RequiredPathRootModel>(yaml);
+        });
+
+        Assert.AreEqual(path, ex.Path);
+    }
 }
