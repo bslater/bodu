@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.ObjectModel;
 using Bodu.Test.Assertions;
 using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
@@ -143,6 +144,55 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> replaces an array member, which is fixed in size
+    /// and cannot be populated.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndArrayMember_ShouldReplaceIt()
+    {
+        PopulateArrayModel model = TomlSerializer.Deserialize<PopulateArrayModel>("Items = [2, 3]\n");
+
+        CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> leaves a get-only array member as it was, since
+    /// the array cannot be populated and the member cannot be replaced.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndGetOnlyArrayMember_ShouldKeepItsValue()
+    {
+        PopulateGetOnlyArrayModel model = TomlSerializer.Deserialize<PopulateGetOnlyArrayModel>("Items = [2, 3]\n");
+
+        CollectionAssert.AreEqual(new[] { 1 }, model.Items);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> replaces a member that holds a read-only
+    /// collection, which cannot be populated.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndReadOnlyCollectionMember_ShouldReplaceIt()
+    {
+        PopulateReadOnlyListModel model = TomlSerializer.Deserialize<PopulateReadOnlyListModel>("Items = [2, 3]\n");
+
+        CollectionAssert.AreEqual(new[] { 2, 3 }, model.Items.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObjectCreationHandling.Populate" /> replaces a member that holds a read-only
+    /// dictionary, which cannot be populated.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPopulateAndReadOnlyDictionaryMember_ShouldReplaceIt()
+    {
+        PopulateReadOnlyDictionaryModel model = TomlSerializer.Deserialize<PopulateReadOnlyDictionaryModel>("[Counts]\nb = 2\n");
+
+        Assert.HasCount(1, model.Counts);
+        Assert.AreEqual(2, model.Counts["b"]);
+    }
+
+    /// <summary>
     /// Verifies that constructing <see cref="ObjectCreationHandlingAttribute" /> with an undefined
     /// <see cref="ObjectCreationHandling" /> value throws <see cref="ArgumentOutOfRangeException" /> with
     /// <c>ParamName</c> <c>handling</c>.
@@ -256,5 +306,62 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <value>The list, or <see langword="null" />.</value>
         public List<int>? Items { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose settable array member, seeded with one element, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateArrayModel
+    {
+        /// <summary>
+        /// Gets or sets the items.
+        /// </summary>
+        /// <value>The items; a single 1 until they are read.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public int[] Items { get; set; } = [1];
+    }
+
+    /// <summary>
+    /// A model whose get-only array member, seeded with one element, is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateGetOnlyArrayModel
+    {
+        /// <summary>
+        /// Gets the items.
+        /// </summary>
+        /// <value>The items; a single 1.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public int[] Items { get; } = [1];
+    }
+
+    /// <summary>
+    /// A model whose settable member holds a read-only collection and is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateReadOnlyListModel
+    {
+        /// <summary>
+        /// Gets or sets the items.
+        /// </summary>
+        /// <value>The items; a read-only collection holding a single 1 until they are read.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public IReadOnlyList<int> Items { get; set; } = new ReadOnlyCollection<int>([1]);
+    }
+
+    /// <summary>
+    /// A model whose settable member holds a read-only dictionary and is marked
+    /// <see cref="ObjectCreationHandling.Populate" />.
+    /// </summary>
+    private sealed class PopulateReadOnlyDictionaryModel
+    {
+        /// <summary>
+        /// Gets or sets the counts.
+        /// </summary>
+        /// <value>The counts; a read-only dictionary mapping <c>a</c> to 1 until they are read.</value>
+        [ObjectCreationHandling(ObjectCreationHandling.Populate)]
+        public IReadOnlyDictionary<string, int> Counts { get; set; } =
+            new ReadOnlyDictionary<string, int>(new Dictionary<string, int>(StringComparer.Ordinal) { ["a"] = 1 });
     }
 }
