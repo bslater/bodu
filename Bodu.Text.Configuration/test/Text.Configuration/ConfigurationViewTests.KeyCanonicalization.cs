@@ -46,12 +46,11 @@ public partial class ConfigurationViewTests
     }
 
     /// <summary>
-    /// Verifies that under the identity mapping - where the stored canonical key keeps its dotted form - a colon-form
-    /// lookup still resolves to the same value. This is the case the previous one-way <c>'.'→':'</c> normalization
-    /// could not reach.
+    /// Verifies that under the identity mapping, which keeps a key as written, a dotted key is found under the name it
+    /// was written with, in any case, while the colon form of that name is another key and finds nothing.
     /// </summary>
     [TestMethod]
-    public void Lookup_WhenIdentityMapping_ShouldResolveColonFormAgainstDottedStoredKey()
+    public void Lookup_WhenIdentityMapping_ShouldFindTheKeyOnlyAsWritten()
     {
         ConfigurationView view = ResolveWithMapping("[*]\nformat.indent.size = 4\n", ConfigurationKeyMapping.Identity);
 
@@ -59,8 +58,9 @@ public partial class ConfigurationViewTests
         Assert.Contains("format.indent.size", view.Keys);
 
         Assert.AreEqual("4", view["format.indent.size"]);
-        Assert.AreEqual("4", view["format:indent:size"]);
-        Assert.IsTrue(view.ContainsKey("format:indent:size"));
+        Assert.AreEqual("4", view["FORMAT.INDENT.SIZE"]);
+        Assert.IsNull(view["format:indent:size"]);
+        Assert.IsFalse(view.ContainsKey("format:indent:size"));
     }
 
     /// <summary>

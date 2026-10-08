@@ -83,13 +83,14 @@ public static class ConfigurationExtensions
         new ConfigurationResolver(options ?? ConfigurationResolveOptions.Bodu).Resolve(document, targetPath);
 
     /// <summary>
-    /// Computes the colon-delimited configuration path for an entry's raw key using the supplied key options. Mirrors
+    /// Computes the configuration path for an entry's raw key using the supplied key options: colon-delimited, or the
+    /// key as written under <see cref="ConfigurationKeyMapping.Identity" />. Mirrors
     /// <see cref="ConfigurationKey.Parse(string, ConfigurationKeyOptions?)" /> and exposes the resulting
     /// <see cref="ConfigurationKey.Path" />.
     /// </summary>
     /// <param name="entry">The entry whose key should be transformed.</param>
     /// <param name="options">The key options, or <see langword="null" /> for the defaults.</param>
-    /// <returns>The colon-delimited configuration path.</returns>
+    /// <returns>The configuration path of the entry's key.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="entry" /> is <see langword="null" />.</exception>
     public static string ConfigurationPath(this IniEntry entry, ConfigurationKeyOptions? options = null)
     {

@@ -41,7 +41,7 @@ public partial class ConfigurationResolverTests
         var doc = ConfigurationDocument.Parse("application.name = Bodu\n");
         ConfigurationView view = doc.Resolve("Foo.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 
-        Assert.IsNull(view["application:name"]);
+        Assert.IsNull(view["application.name"]);
     }
 
     /// <summary>

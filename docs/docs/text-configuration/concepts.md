@@ -105,7 +105,7 @@ handling are free to diverge from the raw-INI dialect.
 | `ApplyPreambleProperties` | Whether preamble (global section) properties contribute to the view. Default `true` (`Bodu`/`Strict`/`Relaxed`); `false` for `EditorConfigCompatible`. |
 | `PathComparison` | The `StringComparison` used when matching target paths against patterns. Default `Ordinal`. |
 | `UnsetValueMode` | TreatAsLiteral (default) / RemoveEffectiveValue (EditorConfig sentinel). |
-| `KeyOptions` | The key options applied when expanding raw keys into the view's keys: colon-delimited under the default mapping, dot-delimited under the `Identity` mapping of the `EditorConfigCompatible` profile. |
+| `KeyOptions` | The key options applied when expanding raw keys into the view's keys: colon-delimited under the default mapping, as written under the `Identity` mapping of the `EditorConfigCompatible` profile. |
 
 > [!IMPORTANT]
 > `MissingPathRootMode` only changes behaviour when **no target path is supplied to `Resolve` at all**. The `Throw`
@@ -126,15 +126,17 @@ A configuration key has three concurrent forms:
 | Form | Example | Where used |
 |---|---|---|
 | **Raw key** | `logging.level.default` | The text as authored in the source file. |
-| **Segments** | `["logging", "level", "default"]` | Split on the configured separators. |
-| **Path** | `logging:level:default` | The canonical colon-delimited form stored in the view. |
+| **Segments** | `["logging", "level", "default"]` | Split on the configured separators; under `Identity`, the whole key is the one segment. |
+| **Path** | `logging:level:default` | The canonical form stored in the view: colon-delimited, or the key as written under `Identity`. |
 
 <xref:Bodu.Text.Configuration.ConfigurationKey> is the read-only struct that holds all three.
 `ConfigurationKey.Parse(rawKey)` is the entry point; `TryParse` is the non-throwing variant.
 
-Lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the colon-delimited form -
-`view["logging.level.default"]` and `view["logging:level:default"]` return the same value. The view stores keys in
-the colon-delimited form to interoperate with `Microsoft.Extensions.Configuration`.
+Under the default mapping, lookups on a <xref:Bodu.Text.Configuration.ConfigurationView> accept either the dotted or the
+colon-delimited form - `view["logging.level.default"]` and `view["logging:level:default"]` return the same value - and
+the view stores keys in the colon-delimited form to interoperate with `Microsoft.Extensions.Configuration`. Under the
+`Identity` mapping, which the `EditorConfigCompatible` profile uses, a key is stored and looked up as written, so
+`logging.level.default` and `logging:level:default` are two keys.
 
 ## Key mapping
 
@@ -145,11 +147,12 @@ mapping:
 |---|---|
 | `DotToColon` (default) | Split on the configured separators; rejoin with `:`. |
 | `Colon` | Split on the configured separators; rejoin with `:`. |
-| `Identity` | Split on the configured separators; rejoin with the *first* configured separator (preserves the original delimiter). |
+| `Identity` | Keep the key exactly as written, apart from the lowercasing `LowercaseKeys` asks for; the key is not split, so its dots and colons stay as they are. |
 
-Splitting always uses the full `SegmentSeparators` set; `Mapping` only decides the join character. `DotToColon` and
-`Colon` therefore produce identical `Path` output under the default separator set - the distinction is naming intent,
-not behaviour. `Identity` is the one mapping that round-trips the original delimiter (joining on `'.'` by default).
+`DotToColon` and `Colon` split on the full `SegmentSeparators` set and join with `:`, so they produce identical `Path`
+output - the distinction is naming intent, not behaviour. `Identity` does not split a key at all: `a:b`, `a.b` and
+`a.b:c` keep their form, so a dotted key and a colon-delimited one are two keys, and neither `SegmentSeparators` nor
+`AllowEmptySegments` applies to it.
 
 `SegmentSeparators` defaults to `{ '.', ':' }`. `CaseSensitive` defaults to `false`, matching
 `Microsoft.Extensions.Configuration`, and is surfaced as a ready-made comparer via
@@ -157,7 +160,7 @@ not behaviour. `Identity` is the one mapping that round-trips the original delim
 `StringComparer.OrdinalIgnoreCase`). `LowercaseKeys` defaults to `false`; when set, as the `EditorConfigCompatible`
 profile sets it, the segments and the path are lowercased with the invariant culture, as EditorConfig lowercases every
 key after parsing, while the raw key keeps its case. `AllowEmptySegments` defaults to `false` - `a..b` is rejected with
-`ArgumentException` unless the property is set explicitly. Keys are constructed through the
+`ArgumentException` unless the property is set explicitly or the mapping is `Identity`. Keys are constructed through the
 <xref:Bodu.Text.Configuration.ConfigurationKey.Parse(System.String)> / `TryParse` factories or the equivalent
 constructor; control characters in a raw key are rejected at construction time. Equality compares the *segment
 sequence* under the configured comparer, so the raw form is informational only - `Logging.Level` and

@@ -32,7 +32,7 @@ string? lvl  = view["level"];            // "Information" - from [*.log], which 
 string? same = view["LEVEL"];            // "Information" - lookups are case-insensitive by default
 ```
 
-`Resolve(targetPath?)` is an extension method on `IniDocumentBase` (so it works on both `ConfigurationDocument` and `IniDocument`) from <xref:Bodu.Text.Configuration.ConfigurationExtensions>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a colon-delimited path via <xref:Bodu.Text.Configuration.ConfigurationKey> (dotted-to-colon by default), and produces a <xref:Bodu.Text.Configuration.ConfigurationView> queryable with either notation.
+`Resolve(targetPath?)` is an extension method on `IniDocumentBase` (so it works on both `ConfigurationDocument` and `IniDocument`) from <xref:Bodu.Text.Configuration.ConfigurationExtensions>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a path via <xref:Bodu.Text.Configuration.ConfigurationKey> (dotted-to-colon by default; the `Identity` mapping keeps a key as written), and produces a <xref:Bodu.Text.Configuration.ConfigurationView> that the default mapping lets you query with either notation.
 
 > [!IMPORTANT]
 > With **no** target path - `document.Resolve()` or `Resolve(null)` - every named section is skipped and the view contains only the preamble. This is the single most common surprise: an INI file whose sections are intended as namespaces will resolve to an empty-but-for-preamble view unless you treat the section names as globs and pass a matching target path, or read the sections directly off the document (`document.Sections[i]["key"]`) instead of resolving.
@@ -122,7 +122,7 @@ foreach (ConfigurationResolvedEntry entry in view.Entries)
     Console.WriteLine($"  {entry.Key} = {entry.Value}  (from {entry.SectionPattern ?? "<preamble>"})");
 ```
 
-`Values` returns the resolved dictionary; `Keys`, `Count`, and `GetEnumerator()` mirror the standard read-only collection contract, and enumeration yields keys in the canonical form of the key mapping: colon-delimited under the default `DotToColon`, dot-delimited under the `Identity` mapping the `EditorConfigCompatible` profile uses, so its dotted keys keep their dots (that profile also lowercases keys, as EditorConfig does). `Entries` exposes the richer <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> view - same keys, same values, but with provenance: `Key`, `Value`, `SectionPattern` (the winning section's glob, or `null` for the preamble), and `SourceLocation`. Fetch a single key's provenance with `view.GetEntry("format:indent:size")`.
+`Values` returns the resolved dictionary; `Keys`, `Count`, and `GetEnumerator()` mirror the standard read-only collection contract, and enumeration yields keys in the canonical form of the key mapping: colon-delimited under the default `DotToColon`, and as written under the `Identity` mapping the `EditorConfigCompatible` profile uses, so its keys keep their dots and colons, and a dotted key and a colon-delimited one are two keys, each looked up under the name it was written with (that profile also lowercases keys, as EditorConfig does). `Entries` exposes the richer <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> view - same keys, same values, but with provenance: `Key`, `Value`, `SectionPattern` (the winning section's glob, or `null` for the preamble), and `SourceLocation`. Fetch a single key's provenance with `view.GetEntry("format:indent:size")`.
 
 > [!NOTE]
 > `ConfigurationView` also implements `IReadOnlyDictionary<string, string?>`, but its indexer deviates from the dictionary contract: `view["absent:key"]` returns `null` rather than throwing `KeyNotFoundException`, matching `Microsoft.Extensions.Configuration`'s null-on-absent convention. Use `view.ContainsKey(key)` to distinguish an absent key from one whose value is `null`.
@@ -170,7 +170,7 @@ When a document is loaded with `ConfigurationDocument.Load(path)`, the full path
 
 ## `ConfigurationKey` and `ConfigurationKeyOptions`
 
-`ConfigurationKey` is the parsed form of a key - both the raw authored shape (`"logging.console.level"`) and the canonical colon-delimited path (`"logging:console:level"`). It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.
+`ConfigurationKey` is the parsed form of a key - both the raw authored shape (`"logging.console.level"`) and the canonical colon-delimited path (`"logging:console:level"`), or, under the `Identity` mapping, the key as written, which is also its one segment. It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.
 
 ```csharp
 using Bodu.Text.Configuration;
@@ -187,11 +187,11 @@ The behaviour is governed by `ConfigurationKeyOptions`:
 
 | Field | Default | Effect |
 |---|---|---|
-| `SegmentSeparators` | `{ '.', ':' }` | Characters recognised as path separators. |
-| `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation). |
+| `SegmentSeparators` | `{ '.', ':' }` | Characters recognised as path separators. `Identity` does not split a key, so it ignores them. |
+| `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation: the key is not split, so it keeps its dots and colons). |
 | `CaseSensitive` | `false` | Case-sensitive comparison (the default `false` matches `Microsoft.Extensions.Configuration`). |
 | `LowercaseKeys` | `false` | Lowercase the segments and the path with the invariant culture, as EditorConfig lowercases keys; the raw key keeps its case. The `EditorConfigCompatible` presets set it. |
-| `AllowEmptySegments` | `false` | Permit empty segments like `a..b`. |
+| `AllowEmptySegments` | `false` | Permit empty segments like `a..b`. `Identity` does not split a key, so it keeps `a..b` as written either way. |
 
 The static `ConfigurationKeyOptions.Default` is the cached default.
 

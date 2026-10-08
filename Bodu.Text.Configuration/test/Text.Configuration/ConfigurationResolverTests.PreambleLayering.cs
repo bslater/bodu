@@ -64,7 +64,7 @@ format.indent.size = 4
 
         ConfigurationView view = doc.Resolve("Foo.cs", ConfigurationResolveOptions.EditorConfigCompatible);
 
-        Assert.IsNull(view["application:name"]);
+        Assert.IsNull(view["application.name"]);
     }
 
     /// <summary>

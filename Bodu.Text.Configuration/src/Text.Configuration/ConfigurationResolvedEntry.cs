@@ -41,7 +41,7 @@ public sealed class ConfigurationResolvedEntry
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationResolvedEntry" /> class.
     /// </summary>
-    /// <param name="key">The canonical configuration key in colon-delimited form.</param>
+    /// <param name="key">The canonical configuration key, in the form the key mapping gives it.</param>
     /// <param name="value">The resolved value, or <see langword="null" /> when the source value was null.</param>
     /// <param name="sourceLocation">The position in the source document that supplied the value.</param>
     /// <param name="sectionPattern">
@@ -64,7 +64,8 @@ public sealed class ConfigurationResolvedEntry
     }
 
     /// <summary>
-    /// Gets the canonical configuration key (colon-delimited).
+    /// Gets the canonical configuration key: colon-delimited under the default mapping, or as written under
+    /// <see cref="ConfigurationKeyMapping.Identity" />.
     /// </summary>
     /// <value>The key as it appears in <see cref="ConfigurationView.Values" />.</value>
     public string Key { get; }

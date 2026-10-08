@@ -205,7 +205,7 @@ Console.WriteLine(document.Sections[0].Name);            // "*.cs"
 Console.WriteLine(document.Sections[1]["indent_size"]);  // "2"
 ```
 
-The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, keeps the dots in keys and lowercases them, and leaves the preamble out of the view. Beyond that it follows the EditorConfig 0.17.2 specification, with the glob differences [Views and resolution](views-and-resolution.md) documents, and it interprets no property: a value such as `indent_style = Tab` is reported as written, not lowercased.
+The `EditorConfigCompatible` profile disables inline comments so a `#` inside a glob (`[file_with_#_in_name.cs]`) is not stripped, enforces strict section-header termination, keeps keys as written, dots and colons included, and lowercases them, and leaves the preamble out of the view. Beyond that it follows the EditorConfig 0.17.2 specification, with the glob differences [Views and resolution](views-and-resolution.md) documents, and it interprets no property: a value such as `indent_style = Tab` is reported as written, not lowercased.
 
 To go from the parsed `ConfigurationDocument` to a resolved typed view - including the EditorConfig glob behaviour where `[*.cs]` matches every `.cs` file - see [Views and resolution](views-and-resolution.md).
 

@@ -7,15 +7,16 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Controls how raw configuration keys are split into segments and mapped to the colon-delimited logical key shape used
-/// by the resolved view and the Microsoft.Extensions.Configuration bridge.
+/// Controls how raw configuration keys are split into segments and mapped to the logical keys used by the resolved view
+/// and the Microsoft.Extensions.Configuration bridge.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Two questions need consistent answers for a configuration host: how are the dotted, colon-delimited, or mixed key
 /// forms in a source document split into segments, and under which comparer are the resulting keys looked up.
 /// <see cref="ConfigurationKeyOptions" /> answers both - <see cref="SegmentSeparators" /> drives splitting,
-/// <see cref="Mapping" /> drives the canonical join, and <see cref="CaseSensitive" /> drives the comparer exposed via
+/// <see cref="Mapping" /> drives the canonical join, or keeps a key whole under
+/// <see cref="ConfigurationKeyMapping.Identity" />, and <see cref="CaseSensitive" /> drives the comparer exposed via
 /// <see cref="KeyComparer" /> and used for equality on every <see cref="ConfigurationKey" /> it produces.
 /// </para>
 /// <para>
@@ -56,8 +57,8 @@ public sealed class ConfigurationKeyOptions
 
     /// <summary>
     /// Gets the key options of the EditorConfig-compatible profile: <see cref="ConfigurationKeyMapping.Identity" />
-    /// mapping, so a key keeps its dots, and keys lowercased as EditorConfig requires, with the default separators and
-    /// case-insensitive comparison.
+    /// mapping, so a key is kept as written, its dots and colons included, and keys lowercased as EditorConfig
+    /// requires, with the default separators and case-insensitive comparison.
     /// </summary>
     /// <value>A cached options instance shared by the profile's parse and resolve presets.</value>
     internal static ConfigurationKeyOptions EditorConfigCompatible { get; } =
@@ -65,12 +66,14 @@ public sealed class ConfigurationKeyOptions
 
     /// <summary>
     /// Gets the segment-separator characters recognised in a raw key when splitting into segments.
+    /// <see cref="ConfigurationKeyMapping.Identity" /> does not split a key, so it ignores them.
     /// </summary>
     /// <value>A non-empty set of separator characters. The default is <c>{ '.', ':' }</c>.</value>
     public IReadOnlyList<char> SegmentSeparators { get; init; } = s_defaultSeparators;
 
     /// <summary>
-    /// Gets the mapping that converts the raw key to a colon-delimited configuration key.
+    /// Gets the mapping that converts the raw key to its configuration key: colon-delimited, or kept as written under
+    /// <see cref="ConfigurationKeyMapping.Identity" />.
     /// </summary>
     /// <value>The selected <see cref="ConfigurationKeyMapping" /> value.</value>
     public ConfigurationKeyMapping Mapping { get; init; } = ConfigurationKeyMapping.DotToColon;
@@ -98,7 +101,8 @@ public sealed class ConfigurationKeyOptions
 
     /// <summary>
     /// Gets a value indicating whether the parser permits empty segments in a raw key (for example <c>a..b</c>). The
-    /// default rejects empty segments.
+    /// default rejects empty segments. <see cref="ConfigurationKeyMapping.Identity" /> does not split a key, so it has
+    /// no segment to reject.
     /// </summary>
     /// <value><see langword="true" /> when empty segments are allowed; otherwise, <see langword="false" />.</value>
     public bool AllowEmptySegments { get; init; }

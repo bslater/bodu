@@ -17,8 +17,8 @@ public sealed partial class ConfigurationResolveOptions
     /// <summary>
     /// Gets the canonical option set for the EditorConfig-compatible profile: preamble properties left out, the
     /// <c>unset</c> sentinel removing a value, a path root or target path required, and the
-    /// <see cref="ConfigurationKeyMapping.Identity" /> key mapping with keys lowercased, so a key keeps its dots and
-    /// reads as EditorConfig lowercases it.
+    /// <see cref="ConfigurationKeyMapping.Identity" /> key mapping with keys lowercased, so a key is kept as written,
+    /// its dots and colons included, and reads as EditorConfig lowercases it.
     /// </summary>
     /// <value>A cached EditorConfig-compatible options instance.</value>
     public static ConfigurationResolveOptions EditorConfigCompatible { get; } =

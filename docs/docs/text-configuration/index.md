@@ -66,7 +66,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Configuration.ConfigurationKey> | Read-only struct with `RawKey`, `Path` (canonical colon-delimited form), `Segments`, and `CaseSensitive`. Static `Parse` / `TryParse` factories. |
+| <xref:Bodu.Text.Configuration.ConfigurationKey> | Read-only struct with `RawKey`, `Path` (canonical form: colon-delimited, or as written under `Identity`), `Segments`, and `CaseSensitive`. Static `Parse` / `TryParse` factories. |
 | <xref:Bodu.Text.Configuration.ConfigurationKeyMapping> | Enum: `DotToColon` (default), `Colon`, `Identity`. |
 
 ### Diagnostics
@@ -154,7 +154,7 @@ extensions:
 2. **Key mapping** projects dotted keys (`logging.level.default`) to colon-delimited configuration keys
    (`logging:level:default`) for direct interoperability with `Microsoft.Extensions.Configuration`. Both forms work as
    lookup inputs on the view; the canonical stored form is the colon-delimited one. The `EditorConfigCompatible`
-   profile keeps the dots instead, and lowercases keys as EditorConfig does.
+   profile keeps every key as written instead, its dots and colons included, and lowercases keys as EditorConfig does.
 
 ## Where to go next
 

@@ -35,11 +35,11 @@ public partial class ConfigurationKeyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" /> mapping reconstructs the raw key
-    /// using the first configured segment separator.
+    /// Verifies that <see cref="ConfigurationKeyMapping.Identity" /> mapping returns a dotted key as written rather
+    /// than splitting it and rejoining the segments.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenMappingIsIdentity_ShouldReconstructUsingFirstSeparator()
+    public void Parse_WhenMappingIsIdentity_ShouldReturnTheDottedKeyAsWritten()
     {
         ConfigurationKeyOptions options = new() { Mapping = ConfigurationKeyMapping.Identity };
         var key = ConfigurationKey.Parse("a.b.c", options);
