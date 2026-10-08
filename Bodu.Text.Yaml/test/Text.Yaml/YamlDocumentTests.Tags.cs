@@ -169,4 +169,65 @@ public partial class YamlDocumentTests
             using var document = YamlDocument.Parse(yaml);
         });
     }
+
+    /// <summary>
+    /// Verifies that the <c>!!str</c> tag keeps a plain scalar's text exactly as written, even when the text would
+    /// otherwise resolve to null, a number, or a boolean.
+    /// </summary>
+    /// <param name="yaml">A document with <c>!!str</c> on plain scalars.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("!!str null", "\"null\"", DisplayName = "null on the root")]
+    [DataRow("- !!str ~\n- !!str NULL\n", """["~","NULL"]""", DisplayName = "null spellings in a sequence")]
+    [DataRow("a: !!str 0x2A\nb: !!str 0o17\n", """{"a":"0x2A","b":"0o17"}""", DisplayName = "radix integers")]
+    [DataRow("- !!str 007\n- !!str -0\n", """["007","-0"]""", DisplayName = "decimal integers")]
+    [DataRow("a: !!str 1.50\nb: !!str 1e3\n", """{"a":"1.50","b":"1e3"}""", DisplayName = "floats")]
+    [DataRow("[ !!str .inf, !!str -.Inf, !!str .nan ]", """[".inf","-.Inf",".nan"]""", DisplayName = "special floats")]
+    [DataRow("{ a: !!str True, b: !!str FALSE }", """{"a":"True","b":"FALSE"}""", DisplayName = "booleans")]
+    public void Parse_WhenStrTagWrapsResolvableText_ShouldKeepTextAsWritten(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that the non-specific <c>!</c> tag makes a plain scalar a string that keeps its text as written.
+    /// </summary>
+    /// <param name="yaml">A document with <c>!</c> on plain scalars.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("! null", "\"null\"", DisplayName = "null on the root")]
+    [DataRow("- ! ~\n- ! 0x2A\n- ! 1.50\n", """["~","0x2A","1.50"]""", DisplayName = "in a sequence")]
+    [DataRow("{ a: ! True, b: ! .inf }", """{"a":"True","b":".inf"}""", DisplayName = "in a flow mapping")]
+    public void Parse_WhenNonSpecificTagOnPlainScalar_ShouldKeepTextAsString(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that the <c>!!float</c> tag accepts every core-schema float, including the infinities, not-a-number,
+    /// and a literal beyond the binary64 range, which reads as an infinity.
+    /// </summary>
+    /// <param name="text">The plain scalar under the tag.</param>
+    /// <param name="expected">The floating-point value expected.</param>
+    [TestMethod]
+    [DataRow(".inf", double.PositiveInfinity)]
+    [DataRow("-.inf", double.NegativeInfinity)]
+    [DataRow("+.Inf", double.PositiveInfinity)]
+    [DataRow(".nan", double.NaN)]
+    [DataRow(".NaN", double.NaN)]
+    [DataRow("1.50", 1.5)]
+    [DataRow("1e309", double.PositiveInfinity)]
+    [DataRow("-1e309", double.NegativeInfinity)]
+    public void Parse_WhenFloatTagHasCoreFloat_ShouldResolveFloat(string text, double expected)
+    {
+        using var document = YamlDocument.Parse($"v: !!float {text}\n");
+
+        YamlElement value = document.RootElement.GetProperty("v");
+        Assert.AreEqual(YamlValueKind.Float, value.ValueKind);
+        Assert.AreEqual(expected, value.GetDouble());
+    }
 }
