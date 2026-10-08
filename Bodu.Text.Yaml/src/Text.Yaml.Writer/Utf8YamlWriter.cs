@@ -19,11 +19,13 @@ namespace Bodu.Text.Yaml.Writer;
 /// <remarks>
 /// <para>
 /// The writer emits block mappings and sequences with configurable indentation, choosing the most compact safe scalar
-/// presentation for each value (plain when unambiguous, otherwise double-quoted). Empty mappings and sequences are
-/// emitted in the flow forms <c>{}</c> and <c>[]</c> so they round-trip as empty collections rather than null. A
-/// mapping key is written as an implicit key (<c>key: value</c>) unless its written form is longer than the 1024
-/// characters an implicit key may hold, in which case it is written as an explicit key (<c>? key</c>), with the value
-/// indicator on the next line.
+/// presentation for each value (plain when unambiguous, otherwise double-quoted). A string is written plain only when
+/// neither a YAML 1.2 nor a YAML 1.1 reader would read it as another value: a number, a boolean, null, a YAML 1.1
+/// sexagesimal number such as <c>1:30</c>, or the merge key <c>&lt;&lt;</c>. Empty mappings and sequences are emitted
+/// in the flow forms <c>{}</c> and <c>[]</c> so they round-trip as empty collections rather than null. A mapping key is
+/// written as an implicit key (<c>key: value</c>) unless its written form is longer than the 1024 characters an
+/// implicit key may hold, in which case it is written as an explicit key (<c>? key</c>), with the value indicator on
+/// the next line.
 /// </para>
 /// <para>
 /// The writer is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda. Its
@@ -459,18 +461,73 @@ public ref struct Utf8YamlWriter
             return false;
         }
 
-        // A plain scalar that would resolve to a non-string type must be quoted to preserve its string value; the
+        // Written plain, the merge key would read back as a merge rather than as the string, as a key or a value alike,
+        // and a YAML 1.1 reader takes a sexagesimal form such as 1:30 for a number, though Bodu's reader does not.
+        if (value == "<<" || IsSexagesimal(value))
+            return false;
+
+        // A plain scalar that would resolve to a non-string type under either specification version must be quoted to
+        // preserve its string value (019 is an integer under YAML 1.2 only, yes a boolean under YAML 1.1 only); the
         // resolver check transcodes into a stack or rented buffer instead of allocating a byte array per scalar.
         int count = Encoding.UTF8.GetByteCount(value);
         byte[]? rented = count > 256 ? ArrayPool<byte>.Shared.Rent(count) : null;
         Span<byte> bytes = rented is null ? stackalloc byte[256] : rented;
         int written = Encoding.UTF8.GetBytes(value, bytes);
-        bool plain = YamlScalarResolver.Resolve(bytes[..written], YamlSpecVersion.V1_1, out _) == YamlValueKind.String;
+        bool plain = YamlScalarResolver.Resolve(bytes[..written], YamlSpecVersion.V1_1, out _) == YamlValueKind.String
+            && YamlScalarResolver.Resolve(bytes[..written], YamlSpecVersion.V1_2, out _) == YamlValueKind.String;
 
         if (rented is not null)
             ArrayPool<byte>.Shared.Return(rented);
 
         return plain;
+    }
+
+    /// <summary>
+    /// Determines whether a string has the form of a YAML 1.1 base-60 (sexagesimal) integer or float, such as
+    /// <c>1:30</c> or <c>190:20:30.15</c>, which a YAML 1.1 reader reads as a number.
+    /// </summary>
+    /// <param name="value">The string value.</param>
+    /// <returns>
+    /// <see langword="true" /> when the string matches <c>[-+]?[0-9][0-9_]*(:[0-5]?[0-9])+(\.[0-9_]*)?</c>; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsSexagesimal(string value)
+    {
+        int i = 0;
+        if (i < value.Length && value[i] is '+' or '-')
+            i++;
+
+        if (i >= value.Length || !char.IsAsciiDigit(value[i]))
+            return false;
+
+        while (i < value.Length && (char.IsAsciiDigit(value[i]) || value[i] == '_'))
+            i++;
+
+        // Each base-60 group is one digit, or two whose first is at most 5.
+        int groups = 0;
+        while (i < value.Length && value[i] == ':')
+        {
+            int start = ++i;
+            while (i < value.Length && i - start < 2 && char.IsAsciiDigit(value[i]))
+                i++;
+
+            if (i == start || (i - start == 2 && value[start] > '5'))
+                return false;
+
+            groups++;
+        }
+
+        if (groups == 0)
+            return false;
+
+        if (i < value.Length && value[i] == '.')
+        {
+            i++;
+            while (i < value.Length && (char.IsAsciiDigit(value[i]) || value[i] == '_'))
+                i++;
+        }
+
+        return i == value.Length;
     }
 
     /// <summary>
