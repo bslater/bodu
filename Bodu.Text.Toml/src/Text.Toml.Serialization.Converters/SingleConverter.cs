@@ -14,6 +14,11 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// Converts a <see cref="float" /> value to and from a TOML floating-point value, widening to and narrowing from
 /// <see cref="double" /> at the format boundary.
 /// </summary>
+/// <remarks>
+/// Widening on write is exact. Narrowing on read rounds to the nearest <see cref="float" />, and a finite TOML float
+/// outside the <see cref="float" /> range throws <see cref="TomlSerializationException" /> rather than reading as an
+/// infinity; TOML's <c>inf</c>, <c>-inf</c>, and <c>nan</c> read as the matching <see cref="float" /> values.
+/// </remarks>
 internal sealed class SingleConverter
     : TomlConverter<float>
 {
@@ -26,7 +31,7 @@ internal sealed class SingleConverter
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedFloat, reader.TokenType));
         }
 
-        return (float)reader.GetDouble();
+        return FloatNarrowing.Narrow<float>(reader.GetDouble());
     }
 
     /// <inheritdoc />

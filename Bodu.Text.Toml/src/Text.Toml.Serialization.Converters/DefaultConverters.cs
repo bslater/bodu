@@ -31,9 +31,10 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// to a defined representation instead: <see cref="decimal" /> writes as a float or lossless string per
 /// <see cref="TomlSerializerOptions.DecimalHandling" /> and reads from a float, integer, or string;
 /// <see cref="System.TimeSpan" /> maps to the invariant constant-format string; <see cref="Half" /> widens exactly to a
-/// float on write and narrows with IEEE 754 saturation on read; <see cref="Int128" /> and <see cref="UInt128" /> are
-/// confined by checked conversion to the signed 64-bit range TOML stores; and byte arrays and memory-of-byte map to an
-/// integer array or Base64 string per <see cref="TomlSerializerOptions.ByteArrayHandling" />.
+/// float on write and narrows on read as <see cref="float" /> does, rejecting a finite float outside its range;
+/// <see cref="Int128" /> and <see cref="UInt128" /> are confined by checked conversion to the signed 64-bit range TOML
+/// stores; and byte arrays and memory-of-byte map to an integer array or Base64 string per
+/// <see cref="TomlSerializerOptions.ByteArrayHandling" />.
 /// </para>
 /// </remarks>
 internal static class DefaultConverters

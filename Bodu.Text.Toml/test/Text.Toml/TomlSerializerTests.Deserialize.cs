@@ -303,15 +303,17 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
-    /// Verifies that reading a finite TOML float outside the <see cref="Half" /> range saturates to infinity rather than
-    /// throwing, matching IEEE 754 narrowing and the behavior of the <see cref="float" /> converter.
+    /// Verifies that reading a finite TOML float far outside the <see cref="Half" /> range throws
+    /// <see cref="TomlSerializationException" /> rather than saturating to infinity: <see cref="Half" /> narrows as
+    /// <see cref="float" /> does.
     /// </summary>
     [TestMethod]
-    public void Deserialize_WhenFloatExceedsHalfRange_ShouldSaturateToInfinity()
+    public void Deserialize_WhenFloatExceedsHalfRange_ShouldThrowTomlSerializationException()
     {
-        Half actual = TomlSerializer.Deserialize<ValueModel<Half>>("Value = 1e10\n").Value;
-
-        Assert.IsTrue(Half.IsPositiveInfinity(actual));
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Half>>("Value = 1e10\n");
+        });
     }
 
     /// <summary>

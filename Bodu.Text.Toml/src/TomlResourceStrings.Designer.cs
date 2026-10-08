@@ -607,6 +607,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The value {0} is outside the range of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_FloatOverflow {
+            get {
+                return ResourceManager.GetString("Op_Invalid_FloatOverflow", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Expected a Boolean but found '{0}'..
         /// </summary>
         internal static string Op_Invalid_ExpectedBoolean {

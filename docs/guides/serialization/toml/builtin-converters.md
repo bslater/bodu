@@ -30,8 +30,8 @@ A user converter, or a converter named by a `[Converter]` attribute, is consulte
 | `Version` | string, the component form (`"1.2.3.4"`) | version string | Leading/trailing whitespace is rejected. |
 | `TimeSpan` | string, invariant constant format (`"1.02:03:04.5670000"`) | `"c"`-format string | The round-trippable constant format. |
 | `double` | float (including `inf` / `-inf` / `nan`) | float | A literal beyond the binary64 range, such as `1e400`, reads as an infinity, and one too small to represent reads as zero: the reader rounds every literal to binary64 as IEEE 754 does. |
-| `float` | float | float | Widens to binary64 on write; narrows on read. |
-| `Half` | float | float | Exact widening on write; **saturating** IEEE 754 narrow on read - an out-of-range finite float reads back as ±infinity. |
+| `float` | float | float | Widens to binary64 on write; narrows on read, rounding to nearest. A finite float outside the `float` range is a serialization error, as an integer overflow is; `inf`, `-inf` and `nan` read as `float`'s own. |
+| `Half` | float | float | Exact widening on write; narrows on read as `float` does, so a finite float outside the `Half` range is a serialization error. |
 | `decimal` | float **or** invariant string, per <xref:Bodu.Text.Toml.TomlDecimalHandling> | float, integer, **or** string | `Float` (default) is native but lossy beyond binary64; `String` round-trips all 28 digits. Read accepts all three forms regardless of the setting. |
 | `sbyte` `byte` `short` `ushort` `int` `uint` `long` `ulong` `nint` `nuint` | integer | integer | Checked conversions; a value outside the target type or TOML's signed 64-bit range is a serialization error. |
 | `Int128` / `UInt128` | integer | integer | Confined by checked conversion to the signed 64-bit range TOML stores; larger values throw on write. |

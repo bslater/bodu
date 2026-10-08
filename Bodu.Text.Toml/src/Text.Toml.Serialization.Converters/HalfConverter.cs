@@ -16,9 +16,9 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// Widening to <see cref="double" /> on write is exact for every finite <see cref="Half" /> and maps the not-a-number
-/// and infinity values to TOML's <c>nan</c>, <c>inf</c>, and <c>-inf</c> forms. Narrowing on read is saturating,
-/// matching IEEE 754 conversion and the behavior of the <see cref="float" /> converter: a finite TOML float outside the
-/// <see cref="Half" /> range reads back as positive or negative infinity rather than throwing.
+/// and infinity values to TOML's <c>nan</c>, <c>inf</c>, and <c>-inf</c> forms. Narrowing on read rounds to the nearest
+/// <see cref="Half" />, as the <see cref="float" /> converter does, and a finite TOML float outside the
+/// <see cref="Half" /> range throws <see cref="TomlSerializationException" /> rather than reading as an infinity.
 /// </remarks>
 internal sealed class HalfConverter
     : TomlConverter<Half>
@@ -32,7 +32,7 @@ internal sealed class HalfConverter
                 string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Op_Invalid_ExpectedFloat, reader.TokenType));
         }
 
-        return (Half)reader.GetDouble();
+        return FloatNarrowing.Narrow<Half>(reader.GetDouble());
     }
 
     /// <inheritdoc />

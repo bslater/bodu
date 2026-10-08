@@ -74,6 +74,7 @@
   <data name="Op_Invalid_ExpectedString" xml:space="preserve"><value>Expected a string but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedFloat" xml:space="preserve"><value>Expected a floating-point value but found '{0}'.</value></data>
+  <data name="Op_Invalid_FloatOverflow" xml:space="preserve"><value>The value {0} is outside the range of type '{1}'.</value></data>
   <data name="Op_Invalid_ExpectedBoolean" xml:space="preserve"><value>Expected a Boolean but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedOffsetDateTime" xml:space="preserve"><value>Expected an offset date-time but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedLocalDateTime" xml:space="preserve"><value>Expected a local date-time but found '{0}'.</value></data>
