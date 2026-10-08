@@ -268,6 +268,78 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that text other than whitespace and a comment after a closing quote throws
+    /// <see cref="DotEnvFormatException" /> at the first byte of that text, rather than being dropped or kept.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text.</param>
+    /// <param name="line">The expected 1-based line number of the text.</param>
+    /// <param name="column">The expected 1-based column number of the text.</param>
+    /// <param name="offset">The expected zero-based byte offset of the text.</param>
+    [TestMethod]
+    [DataRow("text right after a double quote", "KEY=\"value\"junk\n", 1, 12, 11)]
+    [DataRow("a comma right after a single quote", "a='b',c\n", 1, 6, 5)]
+    [DataRow("a third quote after the closing quote", "EV_DNE=\"a\"b\"\n", 1, 11, 10)]
+    [DataRow("a word after whitespace", "TOKEN=\"abc\" oops\n", 1, 13, 12)]
+    [DataRow("a second quoted word after whitespace", "KEY=\"a\" \"b\"\n", 1, 9, 8)]
+    [DataRow("text after a value that spans lines", "KEY=\"a\nb\"junk\n", 2, 3, 9)]
+    [DataRow("text after a single quote on a later line", "A=1\nB='x'y\n", 2, 6, 9)]
+    public void Read_WhenTextFollowsAClosingQuote_ShouldThrowDotEnvFormatExceptionAtTheText(string testName, string source, int line, int column, int offset)
+    {
+        _ = testName;
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(column, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(offset, ex.Offset, "Offset");
+    }
+
+    /// <summary>
+    /// Verifies that whitespace, a comment, a line ending or the end of the input after a closing quote leaves the
+    /// quoted value as it is.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text.</param>
+    [TestMethod]
+    [DataRow("a comment after a space", "KEY=\"value\" # comment\n")]
+    [DataRow("a comment right after the quote", "KEY=\"value\"#comment\n")]
+    [DataRow("a comment after a single quote and a tab", "KEY='value'\t# comment\n")]
+    [DataRow("trailing spaces", "KEY=\"value\"   \n")]
+    [DataRow("a trailing no-break space", "KEY=\"value\" \n")]
+    [DataRow("a CRLF line ending", "KEY='value' \r\n")]
+    [DataRow("the end of the input", "KEY=\"value\"")]
+    public void Read_WhenWhitespaceOrACommentFollowsAClosingQuote_ShouldReadTheQuotedValue(string testName, string source)
+    {
+        _ = testName;
+
+        List<string> tokens = Transcribe(source);
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", "String:value", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that disallowing inline comments, which end unquoted values, still lets a comment follow a closing
+    /// quote.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenInlineCommentsAreDisallowed_ShouldStillAllowACommentAfterAClosingQuote()
+    {
+        List<string> tokens = Transcribe("KEY=\"value\" # comment\n", new DotEnvReaderOptions { DisallowInlineComments = true });
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:KEY", "String:value", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
     /// Verifies that an empty document produces only the framing object tokens.
     /// </summary>
     [TestMethod]
