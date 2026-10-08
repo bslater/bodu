@@ -205,9 +205,18 @@ Fraction&lt;int&gt; back = FractionJsonExtensions.FromJson&lt;int&gt;(text);
 </code></pre>
 <p>These helpers call the reflection-based <code>JsonSerializer</code> and are annotated <code>[RequiresUnreferencedCode]</code> / <code>[RequiresDynamicCode]</code> - using them in a trimmed or native-AOT app produces the standard analyzer warnings. For repeated serialization, build one <code>JsonSerializerOptions</code> with <code>AddNumericsJsonConverters</code> and reuse it.</p>
 <h2 id="trimming-and-aot">Trimming and AOT</h2>
-<p>The converters are reflection-free at the value level: <code>AddNumericsJsonConverters</code> registers the factory set, and you point a source-generated <code>JsonSerializerContext</code> at your DTO so the trimmer can see the closed types. Prefer that path over the <code>ToJson()</code> / <code>FromJson()</code> helpers whenever trimming or AOT is in play.</p>
+<p>The package is marked AOT-compatible, and the converters read and write through <code>Utf8JsonReader</code> and <code>Utf8JsonWriter</code> without reflection. The exception is the factories. <code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, and <code>Complex&lt;T&gt;</code> are open generics, so each factory constructs a closed converter for each component type at run time, which native AOT cannot do without runtime code generation. The factories' constructors are therefore annotated <code>[RequiresDynamicCode]</code>, as is <code>AddNumericsJsonConverters</code>, which creates them, so a native-AOT application gets the standard analyzer warning where it registers them. Trimming needs no extra step: each factory names its converter type statically, so only the <code>ToJson()</code> / <code>FromJson()</code> helpers carry <code>[RequiresUnreferencedCode]</code>.</p>
+<p>Under native AOT, register a closed converter for each type your DTOs use, and point a source-generated <code>JsonSerializerContext</code> at the DTOs:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">var aotOptions = new JsonSerializerOptions();
+aotOptions.Converters.Add(new FractionJsonConverter&lt;int&gt;(NumericsJsonPolicy.Strict));
+aotOptions.Converters.Add(new IntervalJsonConverter&lt;double&gt;(NumericsJsonPolicy.Strict));
+aotOptions.Converters.Add(new IntervalSetJsonConverter&lt;double&gt;(NumericsJsonPolicy.Strict));
+aotOptions.Converters.Add(new BigDecimalJsonConverter(NumericsJsonPolicy.Strict));
+</code></pre>
+<p>Build the context from those options, as <code>new AppJsonContext(aotOptions)</code>, and serialize through its type information. The closed converters are what the factories produce, so the wire shapes are the same.</p>
 <h2 id="how-the-converters-resolve-the-generic-parameter">How the converters resolve the generic parameter</h2>
-<p><code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, and <code>Complex&lt;T&gt;</code> are open generics, so the registered entries are <em>factories</em> that bind the concrete <code>T</code> per request and produce the matching closed converter. You never instantiate the closed converters directly - register the factory (via <code>AddNumericsJsonConverters</code> or by adding it to <code>Converters</code>) and serialize as normal. <code>BigDecimal</code> is non-generic, so it registers as a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a> rather than a factory.</p>
+<p><code>Fraction&lt;T&gt;</code>, <code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>, and <code>Complex&lt;T&gt;</code> are open generics, so the registered entries are <em>factories</em> that bind the concrete <code>T</code> per request and produce the matching closed converter. Ordinarily you do not instantiate the closed converters yourself: register the factory (via <code>AddNumericsJsonConverters</code> or by adding it to <code>Converters</code>) and serialize as normal. Native AOT is the exception, because it cannot construct a closed converter at run time; see <a href="#trimming-and-aot">Trimming and AOT</a>. <code>BigDecimal</code> is non-generic, so it registers as a single <a class="xref" href="../../api/Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter.html">BigDecimalJsonConverter</a> rather than a factory.</p>
 <h2 id="custom-backing-types---fractionbiginteger-without-precision-loss">Custom backing types - <code>Fraction&lt;BigInteger&gt;</code> without precision loss</h2>
 <p>The object-form converter writes each component as a <em>raw</em> JSON number - not through the writer's <code>Int64</code> / <code>decimal</code> primitives - so a <code>BigInteger</code>-backed fraction round-trips at any magnitude:</p>
 <!-- compile -->
@@ -317,7 +326,7 @@ Fraction&lt;BigInteger&gt; back = JsonSerializer.Deserialize&lt;Fraction&lt;BigI
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 95690ae · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0e0e990 · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>
