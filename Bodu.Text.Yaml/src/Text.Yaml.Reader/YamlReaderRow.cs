@@ -58,6 +58,9 @@ internal struct YamlReaderRow
     /// <summary>The nesting depth of the node, with the document root at zero.</summary>
     public int Depth;
 
+    /// <summary>The byte length of a plain scalar's source text, which begins at <see cref="Offset" />, when the scalar resolved to a value other than a string; otherwise zero.</summary>
+    public int SourceLength;
+
     /// <summary>
     /// Gets the high 32 bits of <see cref="ScalarBits" /> as the start offset of a string scalar's source span.
     /// </summary>

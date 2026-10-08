@@ -153,14 +153,7 @@ internal sealed partial class YamlParser
 
     done:
         if (!folded)
-        {
-            ReadOnlySpan<byte> span = _source.AsSpan(firstStart, firstEnd - firstStart);
-            YamlValueKind kind = YamlScalarResolver.Resolve(span, _version, out long bits);
-            if (kind != YamlValueKind.String)
-                return NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null);
-
-            return NewString(Utf8(firstStart, firstEnd - firstStart), YamlScalarStyle.Plain, offset, null, null);
-        }
+            return NewPlainScalar(firstStart, firstEnd, null, null);
 
         return NewString(sb!.ToString(), YamlScalarStyle.Plain, offset, null, null);
     }

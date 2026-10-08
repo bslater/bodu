@@ -694,16 +694,10 @@ internal sealed partial class YamlParser
                 end = _pos;
         }
 
-        string text = Utf8(start, end - start);
         if (anchor is not null)
-        {
-            YamlValueKind kind = YamlScalarResolver.Resolve(_source.AsSpan(start, end - start), _version, out long bits);
-            _ = kind == YamlValueKind.String
-                ? NewString(text, YamlScalarStyle.Plain, offset, anchor, tag)
-                : NewScalar(kind, bits, YamlScalarStyle.Plain, offset, anchor, tag);
-        }
+            _ = NewPlainScalar(start, end, anchor, tag);
 
-        return text;
+        return Utf8(start, end - start);
     }
 
     /// <summary>
@@ -1026,6 +1020,29 @@ internal sealed partial class YamlParser
         };
         _rows.Add(row);
         return _rows.Count - 1;
+    }
+
+    /// <summary>
+    /// Creates a single-line plain scalar row from its source text, resolving the text's implicit type under the active
+    /// schema. A scalar that resolves to a value other than a string keeps the length of its text, so that a tag or a
+    /// mapping key can read it as written.
+    /// </summary>
+    /// <param name="start">The byte offset of the scalar's first content byte, where the scalar begins.</param>
+    /// <param name="end">The byte offset just past the scalar's last content byte.</param>
+    /// <param name="anchor">The anchor name, or <see langword="null" />.</param>
+    /// <param name="tag">The tag, or <see langword="null" />.</param>
+    /// <returns>The row index of the scalar.</returns>
+    private int NewPlainScalar(int start, int end, string? anchor, string? tag)
+    {
+        YamlValueKind kind = YamlScalarResolver.Resolve(_source.AsSpan(start, end - start), _version, out long bits);
+        if (kind == YamlValueKind.String)
+            return NewString(Utf8(start, end - start), YamlScalarStyle.Plain, start, anchor, tag);
+
+        int row = NewScalar(kind, bits, YamlScalarStyle.Plain, start, anchor, tag);
+        YamlReaderRow r = _rows[row];
+        r.SourceLength = end - start;
+        _rows[row] = r;
+        return row;
     }
 
     /// <summary>

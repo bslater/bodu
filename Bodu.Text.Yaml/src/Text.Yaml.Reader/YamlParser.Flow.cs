@@ -330,11 +330,7 @@ internal sealed partial class YamlParser
         if (folded is not null)
             return NewString(folded.ToString(), YamlScalarStyle.Plain, offset, null, null);
 
-        ReadOnlySpan<byte> span = _source.AsSpan(start, end - start);
-        YamlValueKind kind = YamlScalarResolver.Resolve(span, _version, out long bits);
-        return kind != YamlValueKind.String
-            ? NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null)
-            : NewString(Utf8(start, end - start), YamlScalarStyle.Plain, offset, null, null);
+        return NewPlainScalar(start, end, null, null);
     }
 
     /// <summary>

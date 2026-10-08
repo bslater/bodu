@@ -389,8 +389,9 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <remarks>
     /// Handles the verbatim and shorthand spellings of the <c>str</c>, <c>null</c>, <c>bool</c>, <c>int</c>, and
-    /// <c>float</c> core tags. The <c>str</c> tag forces any scalar to a string; the others reinterpret a plain or
-    /// quoted scalar's text under the requested type.
+    /// <c>float</c> core tags. The <c>str</c> tag, like the non-specific tag <c>!</c>, makes the scalar a string that
+    /// keeps its text as written; the <c>null</c> tag makes it null; and the others reinterpret the text as written,
+    /// not its implicitly resolved value, under the requested type.
     /// </remarks>
     private void CoerceTags()
     {
@@ -530,18 +531,15 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Produces the canonical text of a scalar row for tag reinterpretation.
+    /// Reads the text of a scalar row as written, for tag reinterpretation.
     /// </summary>
     /// <param name="r">The scalar row.</param>
-    /// <returns>The scalar's textual form.</returns>
-    private string ScalarText(YamlReaderRow r) => r.ValueKind switch
-    {
-        YamlValueKind.String => _strings[(int)r.ScalarBits],
-        YamlValueKind.Integer => r.AsInt64().ToString(CultureInfo.InvariantCulture),
-        YamlValueKind.Float => r.AsDouble().ToString(CultureInfo.InvariantCulture),
-        YamlValueKind.Boolean => r.AsBoolean() ? "true" : "false",
-        _ => string.Empty,
-    };
+    /// <returns>
+    /// The decoded text of a string scalar, the source text of a plain scalar that resolved to another value, or the
+    /// empty string for an empty node.
+    /// </returns>
+    private string ScalarText(YamlReaderRow r) =>
+        r.ValueKind == YamlValueKind.String ? _strings[(int)r.ScalarBits] : Utf8(r.Offset, r.SourceLength);
 
     /// <summary>
     /// Decodes the <c>%</c>-escaped characters of a tag, each a <c>%</c> and two hexadecimal digits, as UTF-8.
