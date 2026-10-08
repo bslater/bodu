@@ -41,7 +41,7 @@ internal sealed partial class YamlParser
     private int ParseFlowNode()
     {
         SkipFlowWhitespace();
-        string? anchor = TryReadAnchorAndTag(out string? tag);
+        string? anchor = TryReadAnchorAndTag(out string? tag, flow: true);
         SkipFlowWhitespace();
 
         byte c = Peek();

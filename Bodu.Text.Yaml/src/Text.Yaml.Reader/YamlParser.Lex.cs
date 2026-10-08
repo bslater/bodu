@@ -699,8 +699,14 @@ internal sealed partial class YamlParser
     /// The minimum column of a line the properties continue onto, when <paramref name="crossLines" /> is
     /// <see langword="true" />; a less-indented line belongs to an enclosing node.
     /// </param>
+    /// <param name="flow">
+    /// Whether the node is in flow context, where a comma or closing bracket directly after a property ends the node.
+    /// </param>
     /// <returns>The captured anchor name, or <see langword="null" />.</returns>
-    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false, int minIndent = 0)
+    /// <exception cref="YamlFormatException">
+    /// A property is repeated, has an empty name, or is not separated from the content that follows it.
+    /// </exception>
+    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false, int minIndent = 0, bool flow = false)
     {
         string? anchor = null;
         tag = null;
@@ -732,6 +738,7 @@ internal sealed partial class YamlParser
                     throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleAnchors);
 
                 anchor = ReadName(1);
+                RequirePropertySeparation(flow);
                 _lastPropertyLine = _line;
                 continue;
             }
@@ -742,6 +749,7 @@ internal sealed partial class YamlParser
                     throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleTags);
 
                 tag = ReadTag();
+                RequirePropertySeparation(flow);
                 _lastPropertyLine = _line;
                 continue;
             }
@@ -750,6 +758,21 @@ internal sealed partial class YamlParser
         }
 
         return anchor;
+    }
+
+    /// <summary>
+    /// Verifies that a node property just read is followed by white space, a line break, or the end of the input, or in
+    /// flow context by the comma or closing bracket that ends the node.
+    /// </summary>
+    /// <param name="flow">Whether the property is in flow context.</param>
+    /// <exception cref="YamlFormatException">The property is joined to the content that follows it.</exception>
+    private void RequirePropertySeparation(bool flow)
+    {
+        byte c = Peek();
+        if (IsBlankOrBreakOrEnd(c) || (flow && c is (byte)',' or (byte)']' or (byte)'}'))
+            return;
+
+        throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
     }
 
     /// <summary>
@@ -786,14 +809,19 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <param name="skip">The number of indicator bytes to consume before the name.</param>
     /// <returns>The decoded name.</returns>
+    /// <exception cref="YamlFormatException">The name is empty.</exception>
     private string ReadName(int skip)
     {
+        int indicator = _pos;
         for (int i = 0; i < skip; i++)
             Advance();
 
         int start = _pos;
         while (!IsBlankOrBreakOrEnd(Peek()) && Peek() is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             _pos++;
+
+        if (_pos == start)
+            throw ErrorAt(indicator, YamlResourceStrings.Format_Invalid_YamlInvalidAnchorName);
 
         return Utf8(start, _pos - start);
     }
