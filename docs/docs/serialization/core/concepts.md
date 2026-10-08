@@ -59,7 +59,7 @@ Parameters bind to members by **name, case-insensitively** - a `host` parameter 
 
 ## Include, fields, and non-public accessors
 
-By default a property participates when it has a public getter, and is assigned only through a public setter. `[Include]` binds through the declared accessors regardless of visibility, so `{ get; private set; }` and `{ get; init; }` round-trip, and so does a property with no public accessor at all, such as a `private` one, whether the type or one of its base classes declares it. Public fields participate only when `IncludeFields` is on or the field carries `[Include]`; non-public fields are never surfaced.
+By default a property participates when it has a public getter, and is assigned only through a public setter. `[Include]` binds through the declared accessors regardless of visibility, so `{ get; private set; }` and `{ get; init; }` round-trip, and so does a property with no public accessor at all, such as a `private` one, whether the type or one of its base classes declares it. Public fields participate only when `IncludeFields` is on or the field carries `[Include]`; non-public fields are never surfaced. A member that a derived type hides with `new` does not participate: for each name, only the most derived declaration that participates is a member, field or property and whatever its type.
 
 ## Extension data
 

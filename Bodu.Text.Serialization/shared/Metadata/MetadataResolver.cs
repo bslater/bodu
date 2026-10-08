@@ -21,7 +21,8 @@ namespace Bodu.Text.Yaml.Serialization.Metadata;
 /// Builds the <see cref="TypeMetadata" /> for a type by reflecting over its properties (those with a public getter, and
 /// those <see cref="IncludeAttribute" /> opts in whatever their accessors' visibility), its public fields (when
 /// surfaced by <see cref="FormatOptions.IncludeFields" /> or <see cref="IncludeAttribute" />), and its constructors,
-/// applying the serializer's naming policy, attributes, and converter resolution rules.
+/// applying the serializer's naming policy, attributes, and converter resolution rules. A member that a more derived
+/// declaration of the same name hides is not a member of the type.
 /// </summary>
 internal static class MetadataResolver
 {
@@ -45,15 +46,22 @@ internal static class MetadataResolver
         NamingPolicy? namingPolicy = type.GetCustomAttribute<NamingPolicyAttribute>(inherit: false)?.NamingPolicy
             ?? options.PropertyNamingPolicy;
 
+        // Only the members the serializer surfaces take part in hiding: a property that is not an indexer and has a
+        // public getter or carries [Include], and a public field when fields are included or it carries [Include]. A
+        // member the serializer never sees does not hide the base member of the same name.
+        List<PropertyInfo> properties = GetCandidateProperties(type).FindAll(IsSurfaced);
+        List<FieldInfo> fields = [.. type.GetFields(MemberFlags).Where(field => options.IncludeFields || field.IsDefined(typeof(IncludeAttribute), inherit: true))];
+        Dictionary<string, Type> nearestDeclaringTypes = GetNearestDeclaringTypes(properties, fields);
+
         List<Draft> drafts = [];
         PropertyMetadata? extensionData = null;
         int declarationIndex = 0;
-        foreach (PropertyInfo property in GetCandidateProperties(type))
+        foreach (PropertyInfo property in properties)
         {
-            bool included = property.IsDefined(typeof(IncludeAttribute), inherit: true);
-            if (property.GetIndexParameters().Length > 0 || property.GetMethod is null || (!property.GetMethod.IsPublic && !included))
+            if (property.DeclaringType != nearestDeclaringTypes[property.Name])
                 continue;
 
+            bool included = property.IsDefined(typeof(IncludeAttribute), inherit: true);
             IgnoreAttribute? ignore = property.GetCustomAttribute<IgnoreAttribute>(inherit: true);
             if (ignore is not null && ignore.Condition == IgnoreCondition.Always)
                 continue;
@@ -92,12 +100,12 @@ internal static class MetadataResolver
             drafts.Add(new Draft(property, wireName, converter, conditional, creationHandling, order, requiredByAttribute, included, declarationIndex++));
         }
 
-        foreach (FieldInfo field in type.GetFields(MemberFlags))
+        foreach (FieldInfo field in fields)
         {
-            bool included = field.IsDefined(typeof(IncludeAttribute), inherit: true);
-            if (!options.IncludeFields && !included)
+            if (field.DeclaringType != nearestDeclaringTypes[field.Name])
                 continue;
 
+            bool included = field.IsDefined(typeof(IncludeAttribute), inherit: true);
             IgnoreAttribute? ignore = field.GetCustomAttribute<IgnoreAttribute>(inherit: true);
             if (ignore is not null && ignore.Condition == IgnoreCondition.Always)
                 continue;
@@ -275,6 +283,45 @@ internal static class MetadataResolver
         }
 
         return properties;
+    }
+
+    /// <summary>
+    /// Determines whether the serializer surfaces a candidate property: one that is not an indexer and has a public
+    /// getter, or a getter of any visibility when <see cref="IncludeAttribute" /> opts it in.
+    /// </summary>
+    /// <param name="property">The candidate property.</param>
+    /// <returns>
+    /// <see langword="true" /> when the serializer surfaces the property; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool IsSurfaced(PropertyInfo property) =>
+        property.GetIndexParameters().Length == 0
+            && property.GetMethod is not null
+            && (property.GetMethod.IsPublic || property.IsDefined(typeof(IncludeAttribute), inherit: true));
+
+    /// <summary>
+    /// Finds, for each name among the properties and fields the serializer surfaces, the type that declares it nearest
+    /// to the type being resolved.
+    /// </summary>
+    /// <param name="properties">The properties the serializer surfaces.</param>
+    /// <param name="fields">The fields the serializer surfaces.</param>
+    /// <returns>The declaring type of the most derived declaration of each name.</returns>
+    /// <remarks>
+    /// Reflection returns a base type's field that a derived type hides with <see langword="new" />, and a base type's
+    /// property that a derived property of another type hides, alongside the derived declaration. As in C#, only the
+    /// most derived declaration of a name is a member of the type, so the surfaced members of the same name that other
+    /// types declare are skipped, field or property.
+    /// </remarks>
+    private static Dictionary<string, Type> GetNearestDeclaringTypes(List<PropertyInfo> properties, List<FieldInfo> fields)
+    {
+        Dictionary<string, Type> nearest = new(StringComparer.Ordinal);
+        foreach (MemberInfo member in properties.Concat<MemberInfo>(fields))
+        {
+            Type declaringType = member.DeclaringType!;
+            if (!nearest.TryGetValue(member.Name, out Type? current) || declaringType.IsSubclassOf(current))
+                nearest[member.Name] = declaringType;
+        }
+
+        return nearest;
     }
 
     /// <summary>
