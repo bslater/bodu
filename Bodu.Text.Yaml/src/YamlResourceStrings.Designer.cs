@@ -247,6 +247,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A node cannot carry more than one tag..
+        /// </summary>
+        internal static string Format_Invalid_YamlMultipleTags {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlMultipleTags", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The alias '{0}' does not refer to a defined anchor..
         /// </summary>
         internal static string Format_Invalid_YamlUndefinedAlias {

@@ -304,8 +304,11 @@ internal sealed partial class YamlParser
         if (c == (byte)'\'')
             return NewString(ReadSingleQuoted(-1), YamlScalarStyle.SingleQuoted, offset, null, null);
 
-        // A plain scalar in flow context cannot consist of a bare '-' followed by a separator or flow indicator.
-        if (Peek() == (byte)'-' && (IsBlankOrBreakOrEnd(PeekAt(1)) || PeekAt(1) is (byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
+        // An empty node ends where it begins; any other plain scalar cannot begin with an indicator, nor with '-', '?'
+        // or ':' followed by a separator or a flow indicator.
+        bool empty = IsBreakOrEnd(c) || c is (byte)',' or (byte)']' or (byte)'}'
+            || (c == (byte)':' && IsFlowColonStop(PeekAt(1)));
+        if (!empty && !CanBeginPlainScalar(flow: true))
             throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         int start = _pos;

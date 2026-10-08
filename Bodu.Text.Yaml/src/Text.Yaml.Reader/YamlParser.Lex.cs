@@ -725,15 +725,22 @@ internal sealed partial class YamlParser
             if (crossLines && c is (byte)'&' or (byte)'!' && TryDetectBlockMapping(0))
                 break;
 
-            if (c == (byte)'&' && anchor is null)
+            // A node carries at most one anchor and one tag.
+            if (c == (byte)'&')
             {
+                if (anchor is not null)
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleAnchors);
+
                 anchor = ReadName(1);
                 _lastPropertyLine = _line;
                 continue;
             }
 
-            if (c == (byte)'!' && tag is null)
+            if (c == (byte)'!')
             {
+                if (tag is not null)
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleTags);
+
                 tag = ReadTag();
                 _lastPropertyLine = _line;
                 continue;

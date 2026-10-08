@@ -42,6 +42,7 @@
   <data name="Format_Invalid_YamlCommentSpacing" xml:space="preserve"><value>A comment must be preceded by whitespace.</value></data>
   <data name="Format_Invalid_YamlMultilineImplicitKey" xml:space="preserve"><value>An implicit mapping key cannot span multiple lines.</value></data>
   <data name="Format_Invalid_YamlMultipleAnchors" xml:space="preserve"><value>A node cannot carry more than one anchor.</value></data>
+  <data name="Format_Invalid_YamlMultipleTags" xml:space="preserve"><value>A node cannot carry more than one tag.</value></data>
   <data name="Format_Invalid_YamlUndefinedAlias" xml:space="preserve"><value>The alias '{0}' does not refer to a defined anchor.</value></data>
   <data name="Format_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The input contains an unpaired surrogate and is not valid UTF-8 text.</value></data>
   <data name="Format_Invalid_YamlUnterminatedScalar" xml:space="preserve"><value>The quoted scalar is not terminated.</value></data>

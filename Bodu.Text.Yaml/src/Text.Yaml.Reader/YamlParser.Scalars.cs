@@ -29,10 +29,6 @@ internal sealed partial class YamlParser
         int offset = _pos;
         byte c = Peek();
 
-        // A plain scalar cannot begin with a flow-entry comma or a reserved indicator.
-        if (c is (byte)',' or (byte)'%' or (byte)'@' or (byte)'`')
-            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
-
         if (c == (byte)'"')
         {
             int row = NewString(ReadDoubleQuoted(minIndent), YamlScalarStyle.DoubleQuoted, offset, null, null);
@@ -47,7 +43,28 @@ internal sealed partial class YamlParser
             return row;
         }
 
+        if (!CanBeginPlainScalar(flow: false))
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
         return ReadPlainBlock(minIndent, offset);
+    }
+
+    /// <summary>
+    /// Determines whether the byte at the cursor may begin a plain scalar (production 126, <c>ns-plain-first</c>): any
+    /// character but an indicator, or <c>-</c>, <c>?</c> or <c>:</c> followed by a character that may continue a plain
+    /// scalar.
+    /// </summary>
+    /// <param name="flow">Whether the scalar is in flow context, where a flow indicator cannot continue it.</param>
+    /// <returns><see langword="true" /> when a plain scalar may begin at the cursor.</returns>
+    private bool CanBeginPlainScalar(bool flow)
+    {
+        byte c = Peek();
+        if (c is (byte)'-' or (byte)'?' or (byte)':')
+            return flow ? !IsFlowColonStop(PeekAt(1)) : !IsBlankOrBreakOrEnd(PeekAt(1));
+
+        return c is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}' or (byte)'#' or (byte)'&'
+            or (byte)'*' or (byte)'!' or (byte)'|' or (byte)'>' or (byte)'\'' or (byte)'"' or (byte)'%' or (byte)'@'
+            or (byte)'`');
     }
 
     /// <summary>
