@@ -44,7 +44,7 @@ public static partial class DelimitedSerializer
     /// The sequence is never materialized: each record is encoded as it is produced and flushed to
     /// <paramref name="destination" /> in bounded batches, so memory use is independent of the sequence length. The
     /// header row (for a POCO record type, unless <see cref="DelimitedSerializerOptions.NoHeader" /> is set) is emitted
-    /// before the first record.
+    /// before the first record, or on its own when the sequence has no records.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -79,6 +79,10 @@ public static partial class DelimitedSerializer
                 buffer.Clear();
             }
         }
+
+        // The header row comes from the record type, so a sequence without records still writes it.
+        if (headerPending)
+            WriteStreamingHeader(buffer, members, writerOptions);
 
         if (buffer.WrittenCount > 0)
             await destination.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
@@ -199,6 +203,21 @@ public static partial class DelimitedSerializer
         {
             ArrayPool<byte>.Shared.Return(buffer);
         }
+    }
+
+    /// <summary>
+    /// Encodes the header row on its own into the batch buffer, for a sequence that ended without a record.
+    /// </summary>
+    /// <param name="destination">The batch buffer.</param>
+    /// <param name="members">The mapped members of the POCO record type.</param>
+    /// <param name="writerOptions">The writer options.</param>
+    private static void WriteStreamingHeader(IBufferWriter<byte> destination, Member[] members, DelimitedWriterOptions writerOptions)
+    {
+        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true });
+        writer.WriteStartArray();
+        WriteHeaderRow(ref writer, members);
+        writer.WriteEndArray();
+        writer.Flush();
     }
 
     /// <summary>

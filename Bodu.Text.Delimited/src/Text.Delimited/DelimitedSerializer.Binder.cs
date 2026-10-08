@@ -49,6 +49,27 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
+    /// Writes the header row of a record type, the names of its readable members, as a row of its own; a record type
+    /// with no readable member has no header row.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="members">The mapped members.</param>
+    private static void WriteHeaderRow(ref Utf8DelimitedWriter writer, Member[] members)
+    {
+        if (!Array.Exists(members, static member => member.CanRead))
+            return;
+
+        writer.WriteStartArray();
+        foreach (Member member in members)
+        {
+            if (member.CanRead)
+                writer.WriteString(member.Name);
+        }
+
+        writer.WriteEndArray();
+    }
+
+    /// <summary>
     /// Writes a positional <see cref="string" /> array record as a delimited array.
     /// </summary>
     /// <param name="writer">The writer.</param>

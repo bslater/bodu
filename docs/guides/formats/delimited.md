@@ -43,7 +43,7 @@ List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText, options); /
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 ```
 
-Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on); other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`. Temporal values are written in invariant round-trip forms that read back equal:
+The header row comes from the record type, so serializing an empty collection writes the header row alone, through every `Serialize` and `SerializeAsync` overload; with `NoHeader` it writes nothing. Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on); other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`. Temporal values are written in invariant round-trip forms that read back equal:
 
 | Type | Written form | Example |
 |---|---|---|

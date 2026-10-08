@@ -40,6 +40,11 @@ namespace Bodu.Text.Delimited;
 /// earlier versions wrote.
 /// </para>
 /// <para>
+/// In header mode the header row comes from the record type: a collection of POCO records writes the names of the
+/// record type's readable members before the first record, or on their own when the collection has no records. With
+/// <see cref="DelimitedSerializerOptions.NoHeader" /> set, an empty collection writes nothing.
+/// </para>
+/// <para>
 /// The buffered stream overloads mirror the sibling quartet libraries. The
 /// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and
 /// the <see cref="IAsyncEnumerable{T}" /> serialize overload are truly incremental: records are parsed and yielded as
@@ -109,6 +114,7 @@ public static partial class DelimitedSerializer
         {
             bool isStringArray = recordType == typeof(string[]);
             Member[] members = isStringArray ? [] : GetMembers(recordType, effective);
+            bool wroteRecord = false;
 
             foreach (object? record in records)
             {
@@ -119,7 +125,13 @@ public static partial class DelimitedSerializer
                     WriteStringArrayRecord(ref writer, (string[])record);
                 else
                     WriteRecord(ref writer, record, members);
+
+                wroteRecord = true;
             }
+
+            // The header row comes from the record type, so a collection without records still writes it.
+            if (!wroteRecord && !isStringArray && !effective.NoHeader)
+                WriteHeaderRow(ref writer, members);
         }
 
         writer.WriteEndArray();

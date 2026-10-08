@@ -82,6 +82,10 @@ public static partial class DelimitedSerializer
             WriteStringArrayRecord(ref writer, factory.GetFields(record));
         }
 
+        // The header row comes from the factory, so a collection without records still writes it.
+        if (headerPending && factory.Headers.Count > 0)
+            WriteStringArrayRecord(ref writer, [.. factory.Headers]);
+
         writer.WriteEndArray();
         writer.Flush();
     }
