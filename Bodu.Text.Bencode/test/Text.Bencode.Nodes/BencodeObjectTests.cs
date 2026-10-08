@@ -14,7 +14,7 @@ namespace Bodu.Text.Bencode.Nodes;
 /// detachment, the single-parent rule on assignment, enumeration semantics, and canonical key-sorted serialization.
 /// </summary>
 [TestClass]
-public class BencodeObjectTests
+public partial class BencodeObjectTests
 {
     /// <summary>
     /// Verifies that the enumerable constructor copies the supplied entries into the object.

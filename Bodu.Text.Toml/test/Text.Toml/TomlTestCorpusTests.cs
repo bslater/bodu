@@ -178,7 +178,7 @@ public sealed partial class TomlTestCorpusTests
     /// </summary>
     /// <param name="reader">The reader, positioned on the value's first token.</param>
     /// <returns>The comparison model.</returns>
-    private static object BuildValue(ref TomlDocumentReader reader)
+    internal static object BuildValue(ref TomlDocumentReader reader)
     {
         switch (reader.TokenType)
         {
@@ -225,7 +225,7 @@ public sealed partial class TomlTestCorpusTests
     /// <param name="expected">The expectation element.</param>
     /// <param name="actual">The parsed comparison model.</param>
     /// <param name="path">The dotted location within the document, used in failure messages.</param>
-    private static void AssertMatches(JsonElement expected, object actual, string path)
+    internal static void AssertMatches(JsonElement expected, object actual, string path)
     {
         if (expected.ValueKind == JsonValueKind.Object)
         {
@@ -277,7 +277,7 @@ public sealed partial class TomlTestCorpusTests
     /// <param name="type">When the element is a leaf marker, its type tag.</param>
     /// <param name="value">When the element is a leaf marker, its value text.</param>
     /// <returns><see langword="true" /> when the element is a leaf marker; otherwise <see langword="false" />.</returns>
-    private static bool TryGetLeafMarker(JsonElement element, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? type, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? value)
+    internal static bool TryGetLeafMarker(JsonElement element, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? type, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? value)
     {
         type = null;
         value = null;
@@ -370,7 +370,7 @@ public sealed partial class TomlTestCorpusTests
     /// </summary>
     /// <param name="text">The expectation value text.</param>
     /// <returns>The parsed double.</returns>
-    private static double ParseExpectedFloat(string text) =>
+    internal static double ParseExpectedFloat(string text) =>
         text switch
         {
             "inf" or "+inf" => double.PositiveInfinity,
@@ -385,7 +385,7 @@ public sealed partial class TomlTestCorpusTests
     /// </summary>
     /// <param name="text">The date-time expectation text.</param>
     /// <returns>The text with at most seven fractional-second digits.</returns>
-    private static string TruncateFraction(string text)
+    internal static string TruncateFraction(string text)
     {
         int dot = text.IndexOf('.', StringComparison.Ordinal);
         if (dot < 0)
@@ -417,5 +417,5 @@ public sealed partial class TomlTestCorpusTests
     /// </summary>
     /// <param name="Kind">The scalar's token type.</param>
     /// <param name="Value">The decoded scalar value.</param>
-    private sealed record Leaf(TomlTokenType Kind, object Value);
+    internal sealed record Leaf(TomlTokenType Kind, object Value);
 }

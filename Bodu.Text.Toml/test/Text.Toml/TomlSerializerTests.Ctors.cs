@@ -169,6 +169,21 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a positional record, whose only constructor takes its members as parameters, is built through that
+    /// constructor from a document holding a string, a float and a Boolean.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTypeIsPositionalRecord_ShouldUseItsConstructor()
+    {
+        StringFloatBooleanRecord record = TomlSerializer.Deserialize<StringFloatBooleanRecord>(
+            "MyString = \"Hello, world!\"\nMyFloat = 690.42\nMyBool = true\n");
+
+        Assert.AreEqual("Hello, world!", record.MyString);
+        Assert.AreEqual(690.42f, record.MyFloat);
+        Assert.IsTrue(record.MyBool);
+    }
+
+    /// <summary>
     /// An immutable type whose two read-only properties are populated only through its parameterized constructor.
     /// </summary>
     private sealed class ImmutablePerson
@@ -269,6 +284,14 @@ public partial class TomlSerializerTests
     /// <param name="X">The x coordinate.</param>
     /// <param name="Y">The y coordinate.</param>
     private sealed record PointRecord(int X, int Y);
+
+    /// <summary>
+    /// A positional record with a string, a single-precision float and a Boolean, built only through its constructor.
+    /// </summary>
+    /// <param name="MyString">The string.</param>
+    /// <param name="MyFloat">The single-precision float.</param>
+    /// <param name="MyBool">The Boolean.</param>
+    private sealed record StringFloatBooleanRecord(string MyString, float MyFloat, bool MyBool);
 
     /// <summary>
     /// A type with both a parameterless and an attributed parameterized constructor, used to confirm the attributed

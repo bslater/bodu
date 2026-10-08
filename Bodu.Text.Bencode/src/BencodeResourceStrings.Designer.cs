@@ -208,6 +208,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary key '{0}' at offset {1} matches an earlier key when case is ignored, which a case-insensitive BencodeObject cannot hold..
+        /// </summary>
+        internal static string Format_Invalid_BencodeNodeKeyCaseCollision {
+            get {
+                return ResourceManager.GetString("Format_Invalid_BencodeNodeKeyCaseCollision", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected bencode token '{0}' at offset {1}..
         /// </summary>
         internal static string Format_Invalid_BencodeUnexpectedToken {

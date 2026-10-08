@@ -18,7 +18,8 @@ namespace Bodu.Text.Toml.Reader;
 /// The lexer owns lexical validation; this type owns everything structural: dotted-key semantics, table reopening,
 /// implicit-versus-explicit table tracking, arrays of tables, duplicate definitions, inline-table closedness, and the
 /// maximum nesting depth. The split means a structurally invalid document lexes cleanly and is rejected here, with the
-/// error position taken from the offending token.
+/// error position taken from the offending token; an error about a key, such as a redefinition, is reported where the
+/// key starts, although it is detected only once the key's value has been read.
 /// </para>
 /// <para>
 /// TOML cannot be tokenized into tree order in a single forward pass, because out-of-line <c>[table]</c> and
@@ -28,7 +29,7 @@ namespace Bodu.Text.Toml.Reader;
 /// <c>TomlDocument</c> and the depth-first cursor in <see cref="TomlDocumentReader" />.
 /// </para>
 /// </remarks>
-internal sealed class TomlDocumentBuilder
+internal sealed partial class TomlDocumentBuilder
 {
     /// <summary>The child count at which a table switches from a linear sibling scan to a hashed key index.</summary>
     /// <remarks>
@@ -62,6 +63,15 @@ internal sealed class TomlDocumentBuilder
     /// <value>The indexed parents, or <see langword="null" />.</value>
     internal HashSet<int>? IndexedParents => _indexedParents;
 
+    /// <summary>
+    /// Gets where the key that names each row starts, recorded when <see cref="Parse" /> was asked to record it.
+    /// </summary>
+    /// <value>
+    /// The byte offset of each row's key, the first segment of a dotted key, indexed by row and <c>-1</c> for a row no
+    /// key names; or <see langword="null" /> when the offsets were not recorded.
+    /// </value>
+    internal List<int>? KeyOffsets => _keyOffsets;
+
     /// <summary>Per-depth scratch lists reused to collect the segments of a key path without allocating a list per key. Indexed by the current nesting <see cref="_depth" />, so an outer key path is never overwritten by an inner path read while the outer value is being materialized.</summary>
     private readonly List<List<string>> _pathScratch = [];
 
@@ -76,6 +86,9 @@ internal sealed class TomlDocumentBuilder
 
     /// <summary>The row index of the table that bare key/value pairs are currently assigned to.</summary>
     private int _current;
+
+    /// <summary>Where the key that names each row starts, indexed by row, while <see cref="Parse" /> records them; otherwise <see langword="null" />.</summary>
+    private List<int>? _keyOffsets;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TomlDocumentBuilder" /> class.
@@ -97,15 +110,22 @@ internal sealed class TomlDocumentBuilder
     /// Parses the supplied UTF-8 TOML source and returns the flat row store, with the root table at index 0.
     /// </summary>
     /// <param name="source">The UTF-8 TOML source bytes.</param>
+    /// <param name="recordKeyOffsets">
+    /// <see langword="true" /> to record where the key that names each row starts, read back from
+    /// <see cref="KeyOffsets" />.
+    /// </param>
     /// <returns>The flat row store describing the document.</returns>
     /// <exception cref="TomlFormatException">Thrown when the source is not valid TOML.</exception>
     /// <remarks>
     /// The store is returned without copying - the builder's own backing list becomes the document's store - and is
-    /// pre-sized from the source length so it grows without repeated doubling for typical documents.
+    /// pre-sized from the source length so it grows without repeated doubling for typical documents. The rows do not
+    /// hold where their keys start, which only a consumer that reports an error about a key needs, so the offsets are
+    /// recorded apart from them and only on request.
     /// </remarks>
-    internal List<TomlReaderRow> Parse(ReadOnlySpan<byte> source)
+    internal List<TomlReaderRow> Parse(ReadOnlySpan<byte> source, bool recordKeyOffsets = false)
     {
         _rows.EnsureCapacity(EstimateRowCapacity(source.Length));
+        _keyOffsets = recordKeyOffsets ? [] : null;
 
         var lexer = new Utf8TomlReader(source, new TomlReaderOptions { SpecVersion = _specVersion, MaxDepth = _maxDepth });
         while (lexer.Read())
@@ -116,21 +136,17 @@ internal sealed class TomlDocumentBuilder
                     break;
 
                 case TomlTokenType.TableHeader:
-                    DefineStandardTable(ReadHeaderPath(ref lexer), ref lexer);
+                    DefineStandardTable(ReadHeaderPath(ref lexer, out int tableKeyOffset), tableKeyOffset, ref lexer);
                     break;
 
                 case TomlTokenType.ArrayTableHeader:
-                    DefineArrayTable(ReadHeaderPath(ref lexer), ref lexer);
+                    DefineArrayTable(ReadHeaderPath(ref lexer, out int arrayKeyOffset), arrayKeyOffset, ref lexer);
                     break;
 
                 case TomlTokenType.Key:
                 default:
-                {
-                    List<string> path = ReadKeyPath(ref lexer);
-                    int value = ReadValue(ref lexer);
-                    AssignKeyValue(_current, path, value, ref lexer);
+                    ReadKeyValue(_current, ref lexer);
                     break;
-                }
             }
         }
 
@@ -156,10 +172,12 @@ internal sealed class TomlDocumentBuilder
     /// <see cref="TomlTokenType.ArrayTableHeader" /> token is current.
     /// </summary>
     /// <param name="lexer">The lexer to read from.</param>
+    /// <param name="keyOffset">When this method returns, the byte offset at which the header's key starts.</param>
     /// <returns>The key segments in order, held in the depth's reusable scratch list.</returns>
-    private List<string> ReadHeaderPath(ref Utf8TomlReader lexer)
+    private List<string> ReadHeaderPath(ref Utf8TomlReader lexer, out int keyOffset)
     {
         _ = lexer.Read();
+        keyOffset = lexer.TokenStartIndex;
         return ReadKeyPath(ref lexer);
     }
 
@@ -232,7 +250,7 @@ internal sealed class TomlDocumentBuilder
                     if (lexer.TokenType == TomlTokenType.EndArray)
                         break;
 
-                    Link(array, ReadValueAtCurrent(ref lexer), null);
+                    Link(array, ReadValueAtCurrent(ref lexer), null, -1);
                 }
 
                 LeaveDepth();
@@ -251,9 +269,7 @@ internal sealed class TomlDocumentBuilder
                     if (lexer.TokenType == TomlTokenType.EndInlineTable)
                         break;
 
-                    List<string> path = ReadKeyPath(ref lexer);
-                    int value = ReadValue(ref lexer);
-                    AssignKeyValue(table, path, value, ref lexer);
+                    ReadKeyValue(table, ref lexer);
                 }
 
                 AddFlag(table, TomlReaderRowFlags.Inline);
@@ -312,12 +328,13 @@ internal sealed class TomlDocumentBuilder
     /// Defines a standard table at <paramref name="path" /> and makes it the current table.
     /// </summary>
     /// <param name="path">The table key path.</param>
+    /// <param name="keyOffset">The byte offset at which the header's key starts.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void DefineStandardTable(List<string> path, ref Utf8TomlReader lexer)
+    private void DefineStandardTable(List<string> path, int keyOffset, ref Utf8TomlReader lexer)
     {
         int table = 0;
         for (int i = 0; i < path.Count - 1; i++)
-            table = WalkHeaderSegment(table, path[i], ref lexer);
+            table = WalkHeaderSegment(table, path[i], keyOffset, ref lexer);
 
         string key = path[^1];
         int existing = FindChild(table, key);
@@ -337,7 +354,7 @@ internal sealed class TomlDocumentBuilder
         }
 
         int created = CreateChildTable(table, ref lexer);
-        Link(table, created, key);
+        Link(table, created, key, keyOffset);
         AddFlag(created, TomlReaderRowFlags.HeaderDefined);
         _current = created;
     }
@@ -347,12 +364,13 @@ internal sealed class TomlDocumentBuilder
     /// table.
     /// </summary>
     /// <param name="path">The array key path.</param>
+    /// <param name="keyOffset">The byte offset at which the header's key starts.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void DefineArrayTable(List<string> path, ref Utf8TomlReader lexer)
+    private void DefineArrayTable(List<string> path, int keyOffset, ref Utf8TomlReader lexer)
     {
         int table = 0;
         for (int i = 0; i < path.Count - 1; i++)
-            table = WalkHeaderSegment(table, path[i], ref lexer);
+            table = WalkHeaderSegment(table, path[i], keyOffset, ref lexer);
 
         string key = path[^1];
         int array;
@@ -372,11 +390,11 @@ internal sealed class TomlDocumentBuilder
         {
             array = NewArray(lexer.TokenStartIndex);
             AddFlag(array, TomlReaderRowFlags.TableArray);
-            Link(table, array, key);
+            Link(table, array, key, keyOffset);
         }
 
         int element = CreateChildTable(table, ref lexer);
-        Link(array, element, null);
+        Link(array, element, null, -1);
         _current = element;
     }
 
@@ -385,9 +403,10 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="table">The row index of the table to walk from.</param>
     /// <param name="key">The segment key.</param>
+    /// <param name="keyOffset">The byte offset at which the header's key starts.</param>
     /// <param name="lexer">The lexer whose current token supplies error positions.</param>
     /// <returns>The row index of the table for the segment.</returns>
-    private int WalkHeaderSegment(int table, string key, ref Utf8TomlReader lexer)
+    private int WalkHeaderSegment(int table, string key, int keyOffset, ref Utf8TomlReader lexer)
     {
         if (HasFlag(table, TomlReaderRowFlags.Inline))
             throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
@@ -410,7 +429,7 @@ internal sealed class TomlDocumentBuilder
         }
 
         int created = CreateChildTable(table, ref lexer);
-        Link(table, created, key);
+        Link(table, created, key, keyOffset);
         AddFlag(created, TomlReaderRowFlags.ImplicitSuper);
         return created;
     }
@@ -433,23 +452,41 @@ internal sealed class TomlDocumentBuilder
     }
 
     /// <summary>
+    /// Reads a key/value pair and assigns it under <paramref name="target" />.
+    /// </summary>
+    /// <param name="target">The row index of the table receiving the assignment.</param>
+    /// <param name="lexer">The lexer, positioned on the pair's first key token.</param>
+    /// <remarks>
+    /// The key can be assigned only once its value has been read, so its start is recorded first: an error about the
+    /// key is then reported where the key starts, not at the value the lexer has moved on to.
+    /// </remarks>
+    private void ReadKeyValue(int target, ref Utf8TomlReader lexer)
+    {
+        var keyStart = new KeyStart(lexer.LineNumber, lexer.ColumnNumber, lexer.TokenStartIndex);
+        List<string> path = ReadKeyPath(ref lexer);
+        int value = ReadValue(ref lexer);
+        AssignKeyValue(target, path, value, keyStart, ref lexer);
+    }
+
+    /// <summary>
     /// Assigns a key/value pair under <paramref name="target" />, creating intermediate dotted-key tables.
     /// </summary>
     /// <param name="target">The row index of the table receiving the assignment.</param>
     /// <param name="path">The dotted key path.</param>
     /// <param name="value">The row index of the value to assign.</param>
-    /// <param name="lexer">The lexer whose current token supplies error positions.</param>
-    private void AssignKeyValue(int target, List<string> path, int value, ref Utf8TomlReader lexer)
+    /// <param name="keyStart">The position at which the key starts, used for errors about the key.</param>
+    /// <param name="lexer">The lexer whose current token supplies the positions of other errors.</param>
+    private void AssignKeyValue(int target, List<string> path, int value, KeyStart keyStart, ref Utf8TomlReader lexer)
     {
         int table = target;
         for (int i = 0; i < path.Count - 1; i++)
-            table = WalkDottedSegment(table, path[i], ref lexer);
+            table = WalkDottedSegment(table, path[i], keyStart, ref lexer);
 
         string key = path[^1];
         if (FindChild(table, key) >= 0)
-            throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlDuplicateKey);
+            throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlDuplicateKey);
 
-        Link(table, value, key);
+        Link(table, value, key, keyStart.Offset);
     }
 
     /// <summary>
@@ -457,21 +494,22 @@ internal sealed class TomlDocumentBuilder
     /// </summary>
     /// <param name="table">The row index of the table to walk from.</param>
     /// <param name="key">The segment key.</param>
-    /// <param name="lexer">The lexer whose current token supplies error positions.</param>
+    /// <param name="keyStart">The position at which the dotted key starts, used for errors about the key.</param>
+    /// <param name="lexer">The lexer whose current token supplies the positions of other errors.</param>
     /// <returns>The row index of the intermediate table.</returns>
-    private int WalkDottedSegment(int table, string key, ref Utf8TomlReader lexer)
+    private int WalkDottedSegment(int table, string key, KeyStart keyStart, ref Utf8TomlReader lexer)
     {
         int existing = FindChild(table, key);
         if (existing >= 0)
         {
             if (_rows[existing].Kind != TomlReaderNodeKind.Table)
-                throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlKeyOnValue);
+                throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlKeyOnValue);
             if (HasFlag(existing, TomlReaderRowFlags.Inline))
-                throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
+                throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlExtendInlineTable);
 
             // Dotted keys may not extend a table already defined in [table] form (see toml-lang/toml#846).
             if (HasFlag(existing, TomlReaderRowFlags.HeaderDefined))
-                throw lexer.TokenError(TomlResourceStrings.Format_Invalid_TomlDuplicateTable);
+                throw keyStart.Error(TomlResourceStrings.Format_Invalid_TomlDuplicateTable);
 
             // Traversing an implicit super-table with a dotted key defines it via dotted keys: a later [table] header
             // may no longer re-open it, mirroring the rule that headers cannot redefine dotted-key tables.
@@ -483,7 +521,7 @@ internal sealed class TomlDocumentBuilder
 
         int created = CreateChildTable(table, ref lexer);
         AddFlag(created, TomlReaderRowFlags.Dotted);
-        Link(table, created, key);
+        Link(table, created, key, keyStart.Offset);
         return created;
     }
 
@@ -555,8 +593,20 @@ internal sealed class TomlDocumentBuilder
     /// <param name="parent">The row index of the parent container.</param>
     /// <param name="child">The row index of the child to append.</param>
     /// <param name="key">The key for the child within a table, or <see langword="null" /> for an array element.</param>
-    private void Link(int parent, int child, string? key)
+    /// <param name="keyOffset">
+    /// The byte offset at which the key naming the child starts, the first segment of a dotted key, or <c>-1</c> for an
+    /// array element.
+    /// </param>
+    private void Link(int parent, int child, string? key, int keyOffset)
     {
+        if (_keyOffsets is not null)
+        {
+            while (_keyOffsets.Count <= child)
+                _keyOffsets.Add(-1);
+
+            _keyOffsets[child] = keyOffset;
+        }
+
         TomlReaderRow c = _rows[child];
         c.Key = key;
         c.NextSibling = -1;

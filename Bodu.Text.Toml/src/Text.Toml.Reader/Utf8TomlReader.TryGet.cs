@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Text.Toml.Serialization.Converters;
 
 namespace Bodu.Text.Toml.Reader;
 
@@ -259,20 +260,33 @@ public ref partial struct Utf8TomlReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the literal is finite but beyond the <see cref="float" /> range, as <see cref="TryGetSingle" />
+    /// describes.
+    /// </exception>
     public readonly float GetSingle() =>
         TryGetSingle(out float value) ? value : throw new FormatException(TomlResourceStrings.Format_Invalid_TomlReaderValue);
 
     /// <summary>
-    /// Attempts to read the current token as an IEEE 754 binary32 floating-point value.
+    /// Attempts to read the current token as an IEEE 754 binary32 floating-point value, parsed from the raw float
+    /// literal.
     /// </summary>
-    /// <param name="value">When this method returns <see langword="true" />, the single-precision value.</param>
+    /// <param name="value">
+    /// When this method returns <see langword="true" />, the single-precision value; otherwise zero.
+    /// </param>
     /// <returns>
-    /// <see langword="true" /> always; the conversion cannot fail. A magnitude beyond the <see cref="float" /> range
-    /// rounds to an infinity.
+    /// <see langword="true" /> when the value converts; <see langword="false" /> when the literal is finite but beyond
+    /// the <see cref="float" /> range.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
+    /// <remarks>
+    /// The literal is rounded to the nearest <see cref="float" />. A finite literal beyond the <see cref="float" />
+    /// range does not convert, rather than reading as an infinity, as a <see cref="float" /> member of a serialized
+    /// type rejects it; <c>inf</c>, <c>-inf</c> and <c>nan</c> convert to the matching values, and so does a literal
+    /// beyond the binary64 range, which <see cref="GetDouble" /> reads as an infinity.
+    /// </remarks>
     public readonly bool TryGetSingle(out float value)
     {
         double raw = GetDouble();
@@ -286,6 +300,14 @@ public ref partial struct Utf8TomlReader
         Span<char> buffer = literal.Length <= StackallocCharThreshold ? stackalloc char[StackallocCharThreshold] : new char[literal.Length];
         int length = StripNumberUnderscores(literal, buffer);
         value = float.Parse(buffer[..length], NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        // Parsing rounds a literal beyond the float range to an infinity; the shared narrowing rule rejects it instead.
+        if (FloatNarrowing.IsOutOfRange(raw, value))
+        {
+            value = 0;
+            return false;
+        }
+
         return true;
     }
 

@@ -47,6 +47,45 @@ public sealed partial class Utf8TomlReaderTests
         Assert.AreEqual(6, ex.ColumnNumber);
         Assert.AreEqual(11, ex.Offset);
     }
+
+    /// <summary>
+    /// Verifies that a misplaced digit separator is reported at the separator rather than past the end of the number:
+    /// after a radix prefix, leading, trailing or doubled, in binary, octal, hexadecimal and decimal integers and in
+    /// floats.
+    /// </summary>
+    /// <param name="toml">The document, whose last value misplaces a digit separator.</param>
+    /// <param name="line">The expected 1-based line of the separator.</param>
+    /// <param name="column">The expected 1-based column of the separator.</param>
+    /// <param name="offset">The expected zero-based byte offset of the separator.</param>
+    [TestMethod]
+    [DataRow("a = 0b_1\n", 1, 7, 6, DisplayName = "after the binary prefix")]
+    [DataRow("a = 0o_1\n", 1, 7, 6, DisplayName = "after the octal prefix")]
+    [DataRow("a = 0x_1\n", 1, 7, 6, DisplayName = "after the hexadecimal prefix")]
+    [DataRow("a = 0xdead__beef\n", 1, 11, 10, DisplayName = "doubled in a hexadecimal integer")]
+    [DataRow("a = 0b1_\n", 1, 8, 7, DisplayName = "trailing in a binary integer")]
+    [DataRow("a = _1\n", 1, 5, 4, DisplayName = "leading in a decimal integer")]
+    [DataRow("a = -_1\n", 1, 6, 5, DisplayName = "after the sign of a decimal integer")]
+    [DataRow("a = 1__2\n", 1, 6, 5, DisplayName = "doubled in a decimal integer")]
+    [DataRow("a = 1_\n", 1, 6, 5, DisplayName = "trailing in a decimal integer")]
+    [DataRow("a = _1.5\n", 1, 5, 4, DisplayName = "leading in a float")]
+    [DataRow("a = 1_.5\n", 1, 6, 5, DisplayName = "before the decimal point")]
+    [DataRow("a = 1._5\n", 1, 7, 6, DisplayName = "after the decimal point")]
+    [DataRow("a = 1e_2\n", 1, 7, 6, DisplayName = "after the exponent mark")]
+    [DataRow("a = 1.5__1\n", 1, 8, 7, DisplayName = "doubled in a float")]
+    [DataRow("a = 1.5_\n", 1, 8, 7, DisplayName = "trailing in a float")]
+    [DataRow("a = 1\nb = 2__0\n", 2, 6, 11, DisplayName = "on a later line")]
+    public void Read_WhenDigitSeparatorIsMisplaced_ShouldReportTheSeparator(string toml, int line, int column, int offset)
+    {
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            Utf8TomlReader lexer = Create(toml);
+            Drain(ref lexer);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "The line of the separator.");
+        Assert.AreEqual(column, ex.ColumnNumber, "The column of the separator.");
+        Assert.AreEqual(offset, ex.Offset, "The offset of the separator.");
+    }
     /// <summary>
     /// Verifies that a key/value pair lexes as one key segment followed by the value token, in source order.
     /// </summary>

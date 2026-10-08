@@ -168,4 +168,91 @@ public partial class TomlNodeTests
         Assert.IsFalse(root.ContainsKey("name"));
         Assert.IsTrue(root.ContainsKey("Name"));
     }
+
+    /// <summary>
+    /// Verifies that a case-insensitive parse of two keys that differ only in case throws
+    /// <see cref="TomlFormatException" />, the duplicate-key error, because the table they build sees one key twice,
+    /// rather than keeping only one of them.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCaseInsensitiveKeysCollide_ShouldThrowTomlFormatException()
+    {
+        byte[] toml = Encoding.UTF8.GetBytes("a = 1\nA = 2\n");
+
+        _ = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = TomlNode.Parse(toml, new TomlNodeOptions { PropertyNameCaseInsensitive = true });
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a case-insensitive parse throws <see cref="TomlFormatException" /> at the second of two keys that
+    /// differ only in case, rather than keeping one of their values: at the root, in a table, between table headers,
+    /// for dotted keys and in an inline table.
+    /// </summary>
+    /// <param name="toml">The document, whose key <c>A</c> matches an earlier key when case is ignored.</param>
+    /// <param name="line">The expected 1-based line of the second key.</param>
+    [TestMethod]
+    [DataRow("a = 1\nA = 2\n", 2, DisplayName = "at the root")]
+    [DataRow("[t]\na = 1\nA = 2\n", 3, DisplayName = "in a table")]
+    [DataRow("[a]\nx = 1\n[A]\ny = 2\n", 3, DisplayName = "between table headers")]
+    [DataRow("a.x = 1\nA.y = 2\n", 2, DisplayName = "dotted keys")]
+    [DataRow("t = { a = 1, A = 2 }\n", 1, DisplayName = "in an inline table")]
+    public void Parse_WhenCaseInsensitiveKeysCollide_ShouldReportTheSecondKey(string toml, int line)
+    {
+        byte[] utf8 = Encoding.UTF8.GetBytes(toml);
+
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = TomlNode.Parse(utf8, new TomlNodeOptions { PropertyNameCaseInsensitive = true });
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "The line of the second key.");
+        Assert.IsTrue(ex.Message.Contains("'A'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a case-insensitive parse reports the collision where the second key starts, its first segment for
+    /// a dotted key, rather than where its value starts: for keys, dotted keys and inline tables as for table headers
+    /// and arrays of tables.
+    /// </summary>
+    /// <param name="toml">The document, whose key <c>A</c> matches an earlier key when case is ignored.</param>
+    /// <param name="line">The expected 1-based line of the second key.</param>
+    /// <param name="column">The expected 1-based column of the second key.</param>
+    /// <param name="offset">The expected zero-based byte offset of the second key.</param>
+    [TestMethod]
+    [DataRow("a = 1\nA = 2\n", 2, 1, 6, DisplayName = "at the root")]
+    [DataRow("[t]\na = 1\nA = 2\n", 3, 1, 10, DisplayName = "in a table")]
+    [DataRow("[a]\nx = 1\n[A]\ny = 2\n", 3, 2, 11, DisplayName = "between table headers")]
+    [DataRow("[a]\n[A.b]\n", 2, 2, 5, DisplayName = "under a dotted table header")]
+    [DataRow("[[a]]\n[[A]]\n", 2, 3, 8, DisplayName = "between arrays of tables")]
+    [DataRow("a.x = 1\nA.y = 2\n", 2, 1, 8, DisplayName = "dotted keys")]
+    [DataRow("t = { a = 1, A = 2 }\n", 1, 14, 13, DisplayName = "in an inline table")]
+    public void Parse_WhenCaseInsensitiveKeysCollide_ShouldReportWhereTheSecondKeyStarts(string toml, int line, int column, int offset)
+    {
+        byte[] utf8 = Encoding.UTF8.GetBytes(toml);
+
+        TomlFormatException ex = Assert.ThrowsExactly<TomlFormatException>(() =>
+        {
+            _ = TomlNode.Parse(utf8, new TomlNodeOptions { PropertyNameCaseInsensitive = true });
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "The line of the second key.");
+        Assert.AreEqual(column, ex.ColumnNumber, "The column of the second key.");
+        Assert.AreEqual(offset, ex.Offset, "The offset of the second key.");
+    }
+
+    /// <summary>
+    /// Verifies that the default, case-sensitive parse keeps two keys that differ only in case as two entries, as TOML
+    /// requires.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenKeysDifferOnlyInCase_ShouldKeepBothKeys()
+    {
+        byte[] toml = Encoding.UTF8.GetBytes("a = 1\nA = 2\n");
+
+        TomlObject root = TomlNode.Parse(toml)!.AsObject();
+
+        CollectionAssert.AreEqual(new[] { "a", "A" }, root.Select(pair => pair.Key).ToArray());
+    }
 }

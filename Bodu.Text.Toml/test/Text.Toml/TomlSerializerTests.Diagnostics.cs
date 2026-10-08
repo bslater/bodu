@@ -4,6 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+using Bodu.Text.Toml.Reader;
+using Bodu.Text.Toml.Serialization;
+using Bodu.Text.Toml.Writer;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
@@ -151,6 +156,236 @@ public partial class TomlSerializerTests
         });
 
         Assert.AreEqual("Values[1]", ex.Path);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlSerializationException" /> a member's converter throws for a value it rejects
+    /// reaches the caller with the line and the path of that value, and still carries the converter's message.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenConverterRejectsValue_ShouldReportItsPosition()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<OkCodesModel>("k1 = 'asd'\nk2 = 'ok'\nk3 = 'invalid'\nk4 = 'ok'");
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+        Assert.AreEqual("k3", ex.Path);
+        Assert.IsTrue(ex.Message.Contains(OkCodeConverter.RejectionMessage, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a table, or an array of tables, given for a string member is reported with the member's path and
+    /// at the line of the header that opens it, not at the start of the document.
+    /// </summary>
+    /// <param name="toml">The document, whose second line opens a table or an array of tables for the member.</param>
+    [TestMethod]
+    [DataRow("X = 1\n[A]\n", DisplayName = "table")]
+    [DataRow("X = 1\n[[A]]\n", DisplayName = "array of tables")]
+    public void Deserialize_WhenTableIsGivenForStringMember_ShouldReportHeaderPosition(string toml)
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<HeaderTargetModel>(toml);
+        });
+
+        Assert.AreEqual(2, ex.LineNumber);
+        Assert.AreEqual("A", ex.Path);
+    }
+
+    /// <summary>
+    /// Verifies that a string given for an <see cref="int" /> member of a nested table is reported with a path that
+    /// names both the table and the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringIsReadIntoInt32Member_ShouldReportPath()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ServerSectionHostModel>("[server]\npath = \"/my/path\"\nport = \"bad\"\n");
+        });
+
+        Assert.AreEqual("server.port", ex.Path);
+    }
+
+    /// <summary>
+    /// Verifies that a string given for an <see cref="int" /> member of a nested table is reported at the string: its
+    /// line and its column.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringIsReadIntoInt32Member_ShouldReportValuePosition()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ServerSectionHostModel>("[server]\npath = \"/my/path\"\nport = \"bad\"\n");
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+        Assert.AreEqual(8, ex.ColumnNumber);
+    }
+
+    /// <summary>
+    /// Verifies that a table given for an array member is reported with the member's path and at the line of the header
+    /// that opens the table, rather than at the start of the document or at no position.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenArrayMemberIsGivenTable_ShouldReportTablePosition()
+    {
+        const string toml = "\n[package]\nname = \"foo\"\nversion = \"0.1.0\"\nedition = \"2021\"\n[[bench.foo]]\n";
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<PackageManifestModel>(toml);
+        });
+
+        Assert.AreEqual("bench", ex.Path);
+        Assert.AreEqual(6, ex.LineNumber);
+    }
+
+    /// <summary>
+    /// A model with a string member and two code members read by <see cref="OkCodeConverter" />.
+    /// </summary>
+    private sealed class OkCodesModel
+    {
+        /// <summary>
+        /// Gets or sets the string member.
+        /// </summary>
+        /// <value>The string.</value>
+        [PropertyName("k1")]
+        public string K1 { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the first code.
+        /// </summary>
+        /// <value>The code.</value>
+        [PropertyName("k2")]
+        public OkCode K2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the second code.
+        /// </summary>
+        /// <value>The code.</value>
+        [PropertyName("k3")]
+        public OkCode K3 { get; set; }
+    }
+
+    /// <summary>
+    /// A code whose only valid spelling is <c>ok</c>, read and written by <see cref="OkCodeConverter" />.
+    /// </summary>
+    [Converter(typeof(OkCodeConverter))]
+    private enum OkCode
+    {
+        /// <summary>
+        /// The only code.
+        /// </summary>
+        Ok,
+    }
+
+    /// <summary>
+    /// A converter that reads <c>ok</c> as <see cref="OkCode.Ok" /> and rejects every other string with
+    /// <see cref="TomlSerializationException" />.
+    /// </summary>
+    private sealed class OkCodeConverter
+        : TomlConverter<OkCode>
+    {
+        /// <summary>
+        /// The message of the exception the converter throws for a string other than <c>ok</c>.
+        /// </summary>
+        public const string RejectionMessage = "The code is not 'ok'.";
+
+        /// <inheritdoc />
+        public override OkCode Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options) =>
+            reader.GetString() == "ok" ? OkCode.Ok : throw new TomlSerializationException(RejectionMessage);
+
+        /// <inheritdoc />
+        public override void Write(Utf8TomlWriter writer, OkCode value, TomlSerializerOptions options) =>
+            writer.WriteString("ok");
+    }
+
+    /// <summary>
+    /// A model with an integer member and a string member that a document gives a table.
+    /// </summary>
+    private sealed class HeaderTargetModel
+    {
+        /// <summary>
+        /// Gets or sets the integer member.
+        /// </summary>
+        /// <value>The integer.</value>
+        public long X { get; set; }
+
+        /// <summary>
+        /// Gets or sets the string member.
+        /// </summary>
+        /// <value>The string, or <see langword="null" />.</value>
+        public string? A { get; set; }
+    }
+
+    /// <summary>
+    /// A model whose only member is a server table.
+    /// </summary>
+    private sealed class ServerSectionHostModel
+    {
+        /// <summary>
+        /// Gets or sets the server table.
+        /// </summary>
+        /// <value>The server table, or <see langword="null" />.</value>
+        [PropertyName("server")]
+        public ServerSectionModel? Server { get; set; }
+    }
+
+    /// <summary>
+    /// A server table with a string member and an integer member.
+    /// </summary>
+    private sealed class ServerSectionModel
+    {
+        /// <summary>
+        /// Gets or sets the path.
+        /// </summary>
+        /// <value>The path.</value>
+        [PropertyName("path")]
+        public string Path { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the port.
+        /// </summary>
+        /// <value>The port.</value>
+        [PropertyName("port")]
+        public int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A package manifest with a package table and an array of bench tables, both of types with no members.
+    /// </summary>
+    private sealed class PackageManifestModel
+    {
+        /// <summary>
+        /// Gets or sets the package table.
+        /// </summary>
+        /// <value>The package table, or <see langword="null" />.</value>
+        [PropertyName("package")]
+        public EmptyPackageModel? Package { get; set; }
+
+        /// <summary>
+        /// Gets or sets the bench tables.
+        /// </summary>
+        /// <value>The bench tables, or <see langword="null" />.</value>
+        [PropertyName("bench")]
+        public List<EmptyBenchModel>? Bench { get; set; }
+    }
+
+    /// <summary>
+    /// A package table with no members, so every key in it is unmapped.
+    /// </summary>
+    private sealed class EmptyPackageModel
+    {
+    }
+
+    /// <summary>
+    /// A bench table with no members.
+    /// </summary>
+    private sealed class EmptyBenchModel
+    {
     }
 
     /// <summary>

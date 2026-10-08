@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
 using Bodu.Text.Toml.Document;
+using Bodu.Text.Toml.Nodes;
 
 namespace Bodu.Text.Toml;
 
@@ -211,5 +213,32 @@ public partial class TomlDocumentTests
             names.Add(element.GetProperty("name").GetString());
 
         CollectionAssert.AreEqual(new[] { "first", "second" }, names);
+    }
+
+    /// <summary>
+    /// Verifies that the keys of inline tables enumerate in source order at every level, through
+    /// <see cref="TomlElement.EnumerateObject" /> and through the keys of the <see cref="TomlObject" /> the same
+    /// document parses into, for nested single-key inline tables and for an inline table whose keys are not sorted.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateObject_WhenTableIsInline_ShouldFollowSourceOrder()
+    {
+        const string nestedToml = "tbl={a={b=1}}\n";
+        const string unsortedToml = "t = { c = 1, a = 2, b = 3 }\n";
+        using var nested = TomlDocument.Parse(nestedToml);
+        using var unsorted = TomlDocument.Parse(unsortedToml);
+        TomlObject nestedNode = TomlNode.Parse(Encoding.UTF8.GetBytes(nestedToml))!.AsObject();
+        TomlObject unsortedNode = TomlNode.Parse(Encoding.UTF8.GetBytes(unsortedToml))!.AsObject();
+
+        TomlElement tbl = nested.RootElement.GetProperty("tbl");
+        CollectionAssert.AreEqual(new[] { "tbl" }, nested.RootElement.EnumerateObject().Select(property => property.Name).ToArray());
+        CollectionAssert.AreEqual(new[] { "a" }, tbl.EnumerateObject().Select(property => property.Name).ToArray());
+        CollectionAssert.AreEqual(new[] { "b" }, tbl.GetProperty("a").EnumerateObject().Select(property => property.Name).ToArray());
+        CollectionAssert.AreEqual(new[] { "c", "a", "b" }, unsorted.RootElement.GetProperty("t").EnumerateObject().Select(property => property.Name).ToArray());
+
+        CollectionAssert.AreEqual(new[] { "tbl" }, nestedNode.Keys.ToArray());
+        CollectionAssert.AreEqual(new[] { "a" }, nestedNode["tbl"]!.AsObject().Keys.ToArray());
+        CollectionAssert.AreEqual(new[] { "b" }, nestedNode["tbl"]!["a"]!.AsObject().Keys.ToArray());
+        CollectionAssert.AreEqual(new[] { "c", "a", "b" }, unsortedNode["t"]!.AsObject().Keys.ToArray());
     }
 }

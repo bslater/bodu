@@ -229,15 +229,19 @@ public abstract class TomlNode
     /// <param name="options">The node options controlling property-name case sensitivity.</param>
     /// <returns>The root node of the parsed tree, which is always a <see cref="TomlObject" />.</returns>
     /// <exception cref="TomlFormatException">
-    /// Thrown when <paramref name="utf8Toml" /> is not a valid TOML document.
+    /// Thrown when <paramref name="utf8Toml" /> is not a valid TOML document, or when <paramref name="options" />
+    /// selects case-insensitive lookups and a table holds two keys that differ only in case.
     /// </exception>
     /// <remarks>
     /// Every <see cref="TomlObject" /> materialized while parsing adopts the comparison selected by
-    /// <paramref name="options" />, so a case-insensitive parse yields a tree whose table lookups ignore case.
+    /// <paramref name="options" />, so a case-insensitive parse yields a tree whose table lookups ignore case. Such a
+    /// tree cannot hold two keys of one table that differ only in case, which TOML allows, so the parse throws where
+    /// the second of them starts rather than keep only one of their values.
     /// </remarks>
     public static TomlNode? Parse(ReadOnlySpan<byte> utf8Toml, TomlNodeOptions options)
     {
-        var reader = new TomlDocumentReader(utf8Toml);
+        // A case-insensitive parse records where each key starts, so a collision is reported at the second key.
+        var reader = new TomlDocumentReader(utf8Toml, default, recordKeyOffsets: options.PropertyNameCaseInsensitive);
         if (!reader.Read())
             throw new TomlFormatException(TomlResourceStrings.Format_Invalid_TomlExpectedValue);
 
@@ -316,9 +320,17 @@ public abstract class TomlNode
                 var obj = new TomlObject(options);
                 while (reader.Read() && reader.TokenType != TomlTokenType.EndTable)
                 {
+                    // The reader rejects a repeated key, so a key the table already holds differs from the earlier one
+                    // only in case: keeping either value would silently lose the other.
                     string key = reader.GetString();
+                    if (options.PropertyNameCaseInsensitive && obj.ContainsKey(key))
+                    {
+                        throw reader.CreateFormatException(
+                            string.Format(CultureInfo.CurrentCulture, TomlResourceStrings.Format_Invalid_TomlKeyCaseCollision, key));
+                    }
+
                     reader.Read();
-                    obj[key] = ReadFrom(ref reader, options);
+                    obj.Add(key, ReadFrom(ref reader, options));
                 }
 
                 return obj;
@@ -591,10 +603,22 @@ public abstract class TomlNode
     /// </exception>
     internal void AssignParent(TomlNode parent)
     {
+        ThrowIfBelongsToOtherContainer(parent);
+        Parent = parent;
+    }
+
+    /// <summary>
+    /// Enforces the single-parent rule without assigning the parent, so that a container can check a node before it
+    /// commits to holding it.
+    /// </summary>
+    /// <param name="parent">The container that would take ownership of this node.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this node already belongs to a different container.
+    /// </exception>
+    internal void ThrowIfBelongsToOtherContainer(TomlNode parent)
+    {
         if (Parent is not null && !ReferenceEquals(Parent, parent))
             throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_NodeAlreadyHasParent);
-
-        Parent = parent;
     }
 
     /// <summary>

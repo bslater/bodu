@@ -121,10 +121,14 @@ internal sealed partial class ObjectConverter<T>
 
         foreach (PropertyMetadata property in metadata.Properties)
         {
+            // The missing member's name starts the path, so each enclosing member's binder prepends its own.
             if (property.IsRequired && !present[property.SlotIndex])
             {
                 throw new YamlSerializationException(string.Format(
-                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, property.WireName, typeof(T)));
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlMissingRequiredMember, property.WireName, typeof(T)))
+                {
+                    Path = property.WireName,
+                };
             }
         }
 

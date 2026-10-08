@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// detachment, the single-parent rule on assignment, enumeration semantics, and insertion-ordered serialization.
 /// </summary>
 [TestClass]
-public class TomlObjectTests
+public partial class TomlObjectTests
 {
     /// <summary>
     /// Verifies that the enumerable constructor copies the supplied entries into the table.
@@ -62,6 +62,26 @@ public class TomlObjectTests
         {
             _ = new TomlObject([new KeyValuePair<string, TomlNode?>("a", owned)]);
         });
+    }
+
+    /// <summary>
+    /// Verifies that the enumerable constructor throws <see cref="ArgumentException" /> when two entries share a key,
+    /// as <see cref="IDictionary{TKey, TValue}.Add(TKey, TValue)" /> does, and leaves neither value attached to the
+    /// table it was building.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsRepeatAKey_ShouldThrowArgumentException()
+    {
+        var first = TomlValue.Create(1L);
+        var second = TomlValue.Create(2L);
+
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new TomlObject([new KeyValuePair<string, TomlNode?>("a", first), new KeyValuePair<string, TomlNode?>("a", second)]);
+        });
+
+        Assert.IsNull(first.Parent, "The first value's parent.");
+        Assert.IsNull(second.Parent, "The second value's parent.");
     }
 
     /// <summary>

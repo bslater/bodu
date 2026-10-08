@@ -1,0 +1,6 @@
+# library: serde_spanned -- https://github.com/toml-rs/toml (crates/serde_spanned)
+# releases: crates/serde_spanned/CHANGELOG.md at f72038c2508112dfaaedb227a511f91bf9b2015c (SHA-256 874024b27503f7bace09a5a9a1e2611e85bd149aa9dc7ff45526ea604a842531), 0.6.0 to 1.1.2
+# licence: MIT OR Apache-2.0
+# note: catalogued are the Fixes entries (one); features, performance and compatibility notes are not
+library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
+serde_spanned,0.6.8,,Loosen the order in which a deserializer may emit a Spanned's fields,n/a,,,,,,,"API: the serde Spanned wrapper, which Bodu does not offer"

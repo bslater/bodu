@@ -30,7 +30,7 @@ Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and t
 | `Nullable<T>` | underlying type's form | Bencode has no null; a null member is omitted before any converter runs. |
 | arrays, `List<T>`, list interfaces, `Queue<T>` / `Stack<T>` / concurrent collections | list (`l…e`) | A `Stack<T>` round-trip reverses: the writer emits pop order. |
 | dictionaries with `string`, integer, `enum`, `Guid`, `bool`, or `char` keys | dictionary (`d…e`) | Keys are emitted in canonical bytewise order. |
-| plain classes and structs | dictionary | The catch-all object converter, consulted last. |
+| plain classes and structs | dictionary | The catch-all object converter, consulted last. Delegates, reflection types (`Type` and the other `MemberInfo` types) and pointers are not plain objects: without a converter of your own, a member of one fails with `NotSupportedException` naming its type. |
 | `object`-typed members | runtime type's form on write; <xref:Bodu.Text.Bencode.Document.BencodeElement> on read | A bare `new object()` writes an empty dictionary; null members are omitted. |
 | <xref:Bodu.Text.Bencode.Nodes.BencodeNode> family | the node's own kind | Mutable DOM bridge. |
 | <xref:Bodu.Text.Bencode.Document.BencodeElement> | the element's own kind | Read produces an element backed by a non-pooled internal document - the `BencodeElement.Clone` lifetime, no disposal needed. The subtree is re-parsed under the serializer's dictionary-key leniency. |

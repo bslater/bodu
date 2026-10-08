@@ -83,7 +83,7 @@ The four date-time forms are distinct <xref:Bodu.Text.Toml.TomlValueKind> member
 | `LocalTime` | `TimeOnly` | A time of day with no date. |
 
 > [!NOTE]
-> A TOML float is IEEE 754 binary64. `double` round-trips exactly (including `inf` / `-inf` / `nan`); `float` widens on write and narrows on read; `Half` widens exactly but narrows with IEEE 754 *saturation*, so an out-of-range finite float reads back as ±infinity rather than throwing. A TOML integer is signed 64-bit - a value outside that range (or outside the target .NET type) is a serialization error, including the 128-bit integer types whose magnitude exceeds the i64 range.
+> A TOML float is IEEE 754 binary64. `double` round-trips exactly (including `inf` / `-inf` / `nan`); `float` and `Half` widen exactly on write and narrow to the nearest value on read, and a finite float outside the member type's range is a serialization error rather than an infinity, while `inf` / `-inf` / `nan` read as the type's own. A TOML integer is signed 64-bit - a value outside that range (or outside the target .NET type) is a serialization error, including the 128-bit integer types whose magnitude exceeds the i64 range.
 
 ## Errors
 

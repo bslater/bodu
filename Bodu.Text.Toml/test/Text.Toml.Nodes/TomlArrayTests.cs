@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// single-parent rule on assignment, enumeration semantics, and insertion-order serialization.
 /// </summary>
 [TestClass]
-public class TomlArrayTests
+public partial class TomlArrayTests
 {
     /// <summary>
     /// Verifies that the params constructor preserves the supplied items in order.

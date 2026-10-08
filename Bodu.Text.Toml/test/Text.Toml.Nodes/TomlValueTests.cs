@@ -15,7 +15,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// <see cref="TomlValue.ToString" /> and serialization.
 /// </summary>
 [TestClass]
-public class TomlValueTests
+public partial class TomlValueTests
 {
     /// <summary>
     /// Verifies that <see cref="TomlValue.Create(string)" /> produces a string-kind value readable as

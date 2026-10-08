@@ -85,6 +85,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' matches an earlier key in the same table when case is ignored, which a case-insensitive TomlObject cannot hold..
+        /// </summary>
+        internal static string Format_Invalid_TomlKeyCaseCollision {
+            get {
+                return ResourceManager.GetString("Format_Invalid_TomlKeyCaseCollision", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The table is already defined..
         /// </summary>
         internal static string Format_Invalid_TomlDuplicateTable {
@@ -603,6 +612,15 @@ namespace Bodu {
         internal static string Op_Invalid_ExpectedFloat {
             get {
                 return ResourceManager.GetString("Op_Invalid_ExpectedFloat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value {0} is outside the range of type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_FloatOverflow {
+            get {
+                return ResourceManager.GetString("Op_Invalid_FloatOverflow", resourceCulture);
             }
         }
 

@@ -100,6 +100,10 @@ public readonly partial struct TomlElement
     /// <exception cref="InvalidOperationException">
     /// Thrown when this element is not a <see cref="TomlValueKind.Float" />.
     /// </exception>
+    /// <remarks>
+    /// A float literal is rounded to binary64 as IEEE 754 conversion rounds it, so a literal beyond the binary64 range,
+    /// such as <c>1e400</c>, reads as positive or negative infinity, and one too small to represent reads as zero.
+    /// </remarks>
     public double GetDouble() =>
         _document.GetDouble(_index);
 

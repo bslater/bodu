@@ -47,7 +47,7 @@ Formats with no null literal behave as though `WhenWritingNull` were always on -
 
 ## Required members and constructor binding
 
-A member is **required** when it carries `[Required]`, when it is declared with the C# `required` keyword, or when it binds to a constructor parameter that has no default value. On deserialization the structured serializers check every required member for presence *before* the instance is constructed and throw the format's serialization exception naming the missing wire key. (INI and DotEnv honor `[Required]` through their own binders; Delimited does not.)
+A member is **required** when it carries `[Required]`, when it is declared with the C# `required` keyword, or when it binds to a constructor parameter that has no default value. On deserialization the structured serializers check every required member for presence *before* the instance is constructed and throw the format's serialization exception naming the missing wire key; in TOML and YAML its `Path` is the dotted path to the missing member, such as `Inner.Name`. (INI and DotEnv honor `[Required]` through their own binders; Delimited does not.)
 
 Constructor selection follows a fixed ladder:
 
@@ -59,7 +59,7 @@ Parameters bind to members by **name, case-insensitively** - a `host` parameter 
 
 ## Include, fields, and non-public accessors
 
-By default a property participates when it has a public getter, and is assigned only through a public setter. `[Include]` binds through the declared accessors regardless of visibility, so `{ get; private set; }` and `{ get; init; }` round-trip, and so does a property with no public accessor at all, such as a `private` one, whether the type or one of its base classes declares it. Public fields participate only when `IncludeFields` is on or the field carries `[Include]`; non-public fields are never surfaced.
+By default a property participates when it has a public getter, and is assigned only through a public setter. `[Include]` binds through the declared accessors regardless of visibility, so `{ get; private set; }` and `{ get; init; }` round-trip, and so does a property with no public accessor at all, such as a `private` one, whether the type or one of its base classes declares it. Public fields participate only when `IncludeFields` is on or the field carries `[Include]`; non-public fields are never surfaced. A member that a derived type hides with `new` does not participate: for each name, only the most derived declaration that participates is a member, field or property and whatever its type.
 
 ## Extension data
 

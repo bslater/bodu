@@ -156,6 +156,23 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that the snake-case policy binds snake-case keys to Pascal-case members, and that an array of tables
+    /// binds to a list member renamed to its key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenSnakeCasePolicyIsSet_ShouldBindSnakeCaseKeys()
+    {
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+        const string toml = "int_value = 2\ndouble_value = 2.5\n\n[[sub]]\nid = \"a\"\n\n[[sub]]\nid = \"b\"\n";
+
+        SnakeCaseKeysModel model = TomlSerializer.Deserialize<SnakeCaseKeysModel>(toml, options);
+
+        Assert.AreEqual(2, model.IntValue);
+        Assert.AreEqual(2.5, model.DoubleValue);
+        CollectionAssert.AreEqual(new[] { "a", "b" }, model.SubItems.Select(item => item.Id).ToArray());
+    }
+
+    /// <summary>
     /// A model with a single Pascal-case, two-word member used to exercise naming policies.
     /// </summary>
     private sealed class TwoWordModel
@@ -192,5 +209,42 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <value>The value.</value>
         public string FirstName { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A model whose Pascal-case members the snake-case policy names, and whose list member is renamed to <c>sub</c>.
+    /// </summary>
+    private sealed class SnakeCaseKeysModel
+    {
+        /// <summary>
+        /// Gets or sets the integer, written <c>int_value</c> under the snake-case policy.
+        /// </summary>
+        /// <value>The integer.</value>
+        public int IntValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the floating-point value, written <c>double_value</c> under the snake-case policy.
+        /// </summary>
+        /// <value>The floating-point value.</value>
+        public double DoubleValue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sub-items, written under the key <c>sub</c>.
+        /// </summary>
+        /// <value>The sub-items.</value>
+        [PropertyName("sub")]
+        public List<SnakeCaseSubItem> SubItems { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A sub-item of <see cref="SnakeCaseKeysModel" />.
+    /// </summary>
+    private sealed class SnakeCaseSubItem
+    {
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Id { get; set; } = string.Empty;
     }
 }

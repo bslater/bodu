@@ -384,6 +384,22 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that, under the snake-case policy, an enumeration member reads its value from the member's name and is
+    /// written back as that name on the same line.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemberIsEnum_ShouldUseMemberName()
+    {
+        var options = new TomlSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower };
+
+        EnumValueModel model = TomlSerializer.Deserialize<EnumValueModel>("enum_value = \"EnumValue1\"\n", options);
+        string text = TomlSerializer.Serialize(model, options);
+
+        Assert.AreEqual(ReflectedEnum.EnumValue1, model.EnumValue);
+        Assert.AreEqual("enum_value = \"EnumValue1\"\n", text);
+    }
+
+    /// <summary>
     /// An enumeration whose members map to member-name strings by default.
     /// </summary>
     private enum Status
@@ -504,5 +520,33 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <value>The flags.</value>
         public PermissionFlags Flags { get; set; }
+    }
+
+    /// <summary>
+    /// An enumeration read and written by its member names.
+    /// </summary>
+    private enum ReflectedEnum
+    {
+        /// <summary>
+        /// The default member, which no document names.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// The member the document names.
+        /// </summary>
+        EnumValue1,
+    }
+
+    /// <summary>
+    /// A model with an enumeration member, written <c>enum_value</c> under the snake-case policy.
+    /// </summary>
+    private sealed class EnumValueModel
+    {
+        /// <summary>
+        /// Gets or sets the enumeration value.
+        /// </summary>
+        /// <value>The value; <see cref="ReflectedEnum.None" /> until it is read.</value>
+        public ReflectedEnum EnumValue { get; set; }
     }
 }

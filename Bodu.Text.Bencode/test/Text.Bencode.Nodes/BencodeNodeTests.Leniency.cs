@@ -50,4 +50,44 @@ public partial class BencodeNodeTests
         Assert.AreEqual(1, node.AsObject().Count);
         Assert.AreEqual(2L, node["a"]!.GetValue<long>());
     }
+
+    /// <summary>
+    /// Verifies that a key repeated exactly still collapses with the last occurrence winning when duplicate keys are
+    /// allowed and lookups ignore case.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenDuplicateKeysAllowedAndCaseInsensitive_ShouldCollapseLastWins()
+    {
+        byte[] data = "d1:ai1e1:ai2ee"u8.ToArray();
+
+        var node = BencodeNode.Parse(
+            data,
+            new BencodeNodeOptions { PropertyNameCaseInsensitive = true },
+            new BencodeDocumentOptions { AllowDuplicateKeys = true });
+
+        Assert.IsNotNull(node);
+        Assert.AreEqual(1, node.AsObject().Count);
+        Assert.AreEqual(2L, node["a"]!.GetValue<long>());
+    }
+
+    /// <summary>
+    /// Verifies that allowing duplicate keys does not let two different keys that differ only in case collapse under a
+    /// case-insensitive parse: they are not a repeated key, so the parse throws <see cref="BencodeFormatException" />
+    /// at the second.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenDuplicateKeysAllowedAndCaseInsensitiveKeysCollide_ShouldThrowBencodeFormatException()
+    {
+        byte[] data = "d1:Ai1e1:ai2ee"u8.ToArray();
+
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeNode.Parse(
+                data,
+                new BencodeNodeOptions { PropertyNameCaseInsensitive = true },
+                new BencodeDocumentOptions { AllowDuplicateKeys = true });
+        });
+
+        Assert.AreEqual(7, exception.Offset);
+    }
 }

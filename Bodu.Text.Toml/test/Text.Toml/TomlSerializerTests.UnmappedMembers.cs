@@ -127,6 +127,20 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that under the default handling an unmapped table is skipped, as an unmapped key is, and the mapped
+    /// member is still bound.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUnknownKeyIsTable_ShouldSkipIt()
+    {
+        const string toml = "Name = \"n\"\nsome_thing_that_doesnt_exist = true\n\n[object_that_doesnt_exist]\nrequired = true\n";
+
+        PlainNameModel model = TomlSerializer.Deserialize<PlainNameModel>(toml);
+
+        Assert.AreEqual("n", model.Name);
+    }
+
+    /// <summary>
     /// A model with a single member and no special unmapped-member handling.
     /// </summary>
     private sealed class PlainNameModel

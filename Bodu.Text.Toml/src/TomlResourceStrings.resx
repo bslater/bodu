@@ -21,6 +21,7 @@
   <data name="Format_Invalid_TomlArrayTableConflict" xml:space="preserve"><value>The key conflicts with an existing array of tables.</value></data>
   <data name="Format_Invalid_TomlControlCharacter" xml:space="preserve"><value>A control character is not permitted in this context.</value></data>
   <data name="Format_Invalid_TomlDuplicateKey" xml:space="preserve"><value>The key is already defined.</value></data>
+  <data name="Format_Invalid_TomlKeyCaseCollision" xml:space="preserve"><value>The key '{0}' matches an earlier key in the same table when case is ignored, which a case-insensitive TomlObject cannot hold.</value></data>
   <data name="Format_Invalid_TomlDuplicateTable" xml:space="preserve"><value>The table is already defined.</value></data>
   <data name="Format_Invalid_TomlExpectedEquals" xml:space="preserve"><value>Expected an equals sign after the key.</value></data>
   <data name="Format_Invalid_TomlExpectedKey" xml:space="preserve"><value>Expected a key.</value></data>
@@ -74,6 +75,7 @@
   <data name="Op_Invalid_ExpectedString" xml:space="preserve"><value>Expected a string but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedFloat" xml:space="preserve"><value>Expected a floating-point value but found '{0}'.</value></data>
+  <data name="Op_Invalid_FloatOverflow" xml:space="preserve"><value>The value {0} is outside the range of type '{1}'.</value></data>
   <data name="Op_Invalid_ExpectedBoolean" xml:space="preserve"><value>Expected a Boolean but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedOffsetDateTime" xml:space="preserve"><value>Expected an offset date-time but found '{0}'.</value></data>
   <data name="Op_Invalid_ExpectedLocalDateTime" xml:space="preserve"><value>Expected a local date-time but found '{0}'.</value></data>

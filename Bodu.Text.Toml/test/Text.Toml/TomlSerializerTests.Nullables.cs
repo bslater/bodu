@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Toml;
 
 /// <summary>
@@ -119,6 +121,40 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that under <see cref="IgnoreCondition.WhenWritingDefault" /> a nullable member holding zero is written,
+    /// because the member's default is <see langword="null" />, not zero, while a member holding
+    /// <see langword="null" /> is omitted.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenWritingDefaultAndNullableHoldsZero_ShouldWriteIt()
+    {
+        var options = new TomlSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+
+        string zero = TomlSerializer.Serialize(new NullableCountModel { X = 0 }, options);
+        string absent = TomlSerializer.Serialize(new NullableCountModel { X = null }, options);
+
+        Assert.AreEqual("x = 0\n", zero);
+        Assert.AreEqual(string.Empty, absent);
+    }
+
+    /// <summary>
+    /// Verifies that a nullable member holding <see langword="null" /> is not written and one holding a value is
+    /// written as that value, and that the document reads back to the same two values.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMemberIsNullable_ShouldOmitNullAndWriteValue()
+    {
+        var original = new TwoNullableInt32Model { A = null, B = 5 };
+
+        string text = TomlSerializer.Serialize(original);
+        TwoNullableInt32Model roundTripped = TomlSerializer.Deserialize<TwoNullableInt32Model>(text);
+
+        Assert.AreEqual("B = 5\n", text);
+        Assert.IsNull(roundTripped.A);
+        Assert.AreEqual(5, roundTripped.B);
+    }
+
+    /// <summary>
     /// A model whose members are nullable value types, used to verify present-delegation, null-omission, and
     /// absent-as-null behavior.
     /// </summary>
@@ -153,5 +189,36 @@ public partial class TomlSerializerTests
         /// <summary>Gets or sets the absent member.</summary>
         /// <value>The absent value, or <see langword="null" />.</value>
         public string? Absent { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a single nullable integer written under the key <c>x</c>.
+    /// </summary>
+    private sealed class NullableCountModel
+    {
+        /// <summary>
+        /// Gets or sets the count.
+        /// </summary>
+        /// <value>The count, or <see langword="null" />.</value>
+        [PropertyName("x")]
+        public int? X { get; set; }
+    }
+
+    /// <summary>
+    /// A model with two nullable integers.
+    /// </summary>
+    private sealed class TwoNullableInt32Model
+    {
+        /// <summary>
+        /// Gets or sets the first integer.
+        /// </summary>
+        /// <value>The integer, or <see langword="null" />.</value>
+        public int? A { get; set; }
+
+        /// <summary>
+        /// Gets or sets the second integer.
+        /// </summary>
+        /// <value>The integer, or <see langword="null" />.</value>
+        public int? B { get; set; }
     }
 }

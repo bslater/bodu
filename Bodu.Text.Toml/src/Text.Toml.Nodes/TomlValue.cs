@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Text.Toml.Serialization.Converters;
 using Bodu.Text.Toml.Writer;
 
 namespace Bodu.Text.Toml.Nodes;
@@ -165,9 +166,10 @@ public sealed class TomlValue
     /// <remarks>
     /// A string value converts to <see cref="string" />; an integer value converts to any fixed-width integer type
     /// through a checked conversion that fails when the value is out of range; a float value converts to
-    /// <see cref="double" /> or <see cref="float" />; a Boolean value converts to <see cref="bool" />; and each
-    /// date-time kind converts to its matching CLR type. Any other combination of stored kind and requested type yields
-    /// <see langword="false" />.
+    /// <see cref="double" />, and to <see cref="float" /> rounded to the nearest value, except that a finite value
+    /// beyond the <see cref="float" /> range does not convert rather than becoming an infinity; a Boolean value
+    /// converts to <see cref="bool" />; and each date-time kind converts to its matching CLR type. Any other
+    /// combination of stored kind and requested type yields <see langword="false" />.
     /// </remarks>
     public bool TryGetValue<T>(out T value)
     {
@@ -176,8 +178,9 @@ public sealed class TomlValue
 
         if (_kind == TomlValueKind.Float && typeof(T) == typeof(float))
         {
-            value = (T)(object)(float)(double)_value;
-            return true;
+            bool narrowed = FloatNarrowing.TryNarrow((double)_value, out float single);
+            value = (T)(object)single;
+            return narrowed;
         }
 
         if (_value is T typed)

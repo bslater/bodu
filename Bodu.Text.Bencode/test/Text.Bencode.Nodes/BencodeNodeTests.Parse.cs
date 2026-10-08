@@ -199,4 +199,41 @@ public partial class BencodeNodeTests
 
         Assert.AreEqual(keyOffset, exception.Offset);
     }
+
+    /// <summary>
+    /// Verifies that a case-insensitive parse throws <see cref="BencodeFormatException" /> at the second of two keys
+    /// that differ only in case, rather than keeping one of their values: at the root, apart, in a nested dictionary
+    /// and in a dictionary in a list.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="input">The Bencode, whose key <c>a</c> matches an earlier key when case is ignored.</param>
+    /// <param name="keyOffset">The offset of the second key.</param>
+    [TestMethod]
+    [DataRow("at the root", "d1:Ai1e1:ai2ee", 7)]
+    [DataRow("apart", "d1:Ai1e1:Bi2e1:ai3ee", 13)]
+    [DataRow("in a nested dictionary", "d1:dd1:Ai1e1:ai2eee", 11)]
+    [DataRow("in a dictionary in a list", "ld1:Ai1e1:ai2eee", 8)]
+    public void Parse_WhenCaseInsensitiveKeysCollide_ShouldThrowBencodeFormatException(string testName, string input, int keyOffset)
+    {
+        _ = testName;
+        byte[] bytes = Bytes(input);
+
+        BencodeFormatException exception = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeNode.Parse(bytes, new BencodeNodeOptions { PropertyNameCaseInsensitive = true });
+        });
+
+        Assert.AreEqual(keyOffset, exception.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that the default, case-sensitive parse keeps two keys that differ only in case as two entries.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenKeysDifferOnlyInCase_ShouldKeepBothKeys()
+    {
+        BencodeObject root = BencodeNode.Parse("d1:Ai1e1:ai2ee"u8)!.AsObject();
+
+        CollectionAssert.AreEqual(new[] { "A", "a" }, root.Select(pair => pair.Key).ToArray());
+    }
 }

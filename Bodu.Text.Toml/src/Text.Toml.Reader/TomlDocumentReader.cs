@@ -52,6 +52,9 @@ public ref struct TomlDocumentReader
     /// <summary>The UTF-8 source bytes, retained so a string value can be decoded on demand and a token's byte offset mapped to a line and column on a binding failure. Held as a span because the reader is a <see langword="ref struct" /> scoped to a single read.</summary>
     private readonly ReadOnlySpan<byte> _source;
 
+    /// <summary>Where the key that names each row starts, indexed by row with <c>-1</c> for a row no key names, when the reader was asked to record it; otherwise <see langword="null" />.</summary>
+    private readonly List<int>? _keyOffsets;
+
     /// <summary>A lazily created garbage-collected copy of <see cref="_source" />, materialized on the first <see cref="GetOwnedSource" /> so that subtree documents from <c>TomlDocument.ParseValue</c> can retain the source the reader holds only as a span. Every such document from one read shares this single copy.</summary>
     private byte[]? _ownedSource;
 
@@ -103,10 +106,34 @@ public ref struct TomlDocumentReader
     /// effective limit throws <see cref="TomlFormatException" />.
     /// </remarks>
     public TomlDocumentReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
+        : this(utf8Toml, options, recordKeyOffsets: false)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlDocumentReader" /> struct over the supplied bytes using the
+    /// supplied options, recording where each key starts when asked.
+    /// </summary>
+    /// <param name="utf8Toml">The UTF-8 TOML source bytes.</param>
+    /// <param name="options">
+    /// The reader options controlling the specification version and maximum nesting depth.
+    /// </param>
+    /// <param name="recordKeyOffsets">
+    /// <see langword="true" /> to record where the key that names each value starts, for
+    /// <see cref="CreateFormatException" />.
+    /// </param>
+    /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
+    /// <remarks>
+    /// A reader that records key offsets positions an error about a key at the key rather than at its value, at the
+    /// cost of one offset per row; only a consumer that reports such errors asks for them.
+    /// </remarks>
+    internal TomlDocumentReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options, bool recordKeyOffsets)
     {
         int maxDepth = options.MaxDepth <= 0 ? TomlLimits.AbsoluteMaxDepth : Math.Min(options.MaxDepth, TomlLimits.AbsoluteMaxDepth);
 
-        _rows = new TomlDocumentBuilder(options.SpecVersion, maxDepth).Parse(utf8Toml);
+        var builder = new TomlDocumentBuilder(options.SpecVersion, maxDepth);
+        _rows = builder.Parse(utf8Toml, recordKeyOffsets);
+        _keyOffsets = builder.KeyOffsets;
         _source = utf8Toml;
         _stack = new Frame[InitialStackDepth];
         _depth = 0;
@@ -207,8 +234,43 @@ public ref struct TomlDocumentReader
         if (exception.Offset is not null || _tokenType == TomlTokenType.None)
             return;
 
-        int offset = _offset;
+        (int line, int column) = Locate(_offset);
+        exception.Offset = _offset;
+        exception.LineNumber = line;
+        exception.ColumnNumber = column;
+    }
 
+    /// <summary>
+    /// Creates a <see cref="TomlFormatException" /> positioned at the current token, for a document that is valid TOML
+    /// but cannot be read into the form a consumer requires.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// The position is the current token's. For a <see cref="TomlTokenType.PropertyName" /> it is where the key starts,
+    /// the first segment of a dotted key, when the reader recorded key offsets; otherwise it is where the entry's node
+    /// begins, which for a key/value pair is its value.
+    /// </remarks>
+    internal readonly TomlFormatException CreateFormatException(string message)
+    {
+        int offset = _offset;
+        if (_tokenType == TomlTokenType.PropertyName && _keyOffsets is not null && _currentRow < _keyOffsets.Count && _keyOffsets[_currentRow] >= 0)
+            offset = _keyOffsets[_currentRow];
+
+        (int line, int column) = Locate(offset);
+        return new TomlFormatException(message, line, column, offset);
+    }
+
+    /// <summary>
+    /// Computes the line and column of a byte offset in the source.
+    /// </summary>
+    /// <param name="offset">The zero-based byte offset.</param>
+    /// <returns>
+    /// The 1-based line, and the 1-based column within it, which counts UTF-8 bytes, matching
+    /// <see cref="TomlFormatException" />.
+    /// </returns>
+    private readonly (int Line, int Column) Locate(int offset)
+    {
         int line = 1;
         int lineStart = 0;
         int limit = Math.Min(offset, _source.Length);
@@ -221,9 +283,7 @@ public ref struct TomlDocumentReader
             }
         }
 
-        exception.Offset = offset;
-        exception.LineNumber = line;
-        exception.ColumnNumber = offset - lineStart + 1;
+        return (line, offset - lineStart + 1);
     }
 
     /// <summary>
@@ -327,6 +387,10 @@ public ref struct TomlDocumentReader
     /// <exception cref="InvalidOperationException">
     /// Thrown when the current token is not a <see cref="TomlTokenType.Float" />.
     /// </exception>
+    /// <remarks>
+    /// A float literal is rounded to binary64 as IEEE 754 conversion rounds it, so a literal beyond the binary64 range,
+    /// such as <c>1e400</c>, reads as positive or negative infinity, and one too small to represent reads as zero.
+    /// </remarks>
     public readonly double GetDouble() =>
         _tokenType == TomlTokenType.Float
             ? _rows[_currentRow].AsDouble()

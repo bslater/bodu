@@ -167,7 +167,9 @@ public sealed partial class TomlDocumentReaderTests
 
     /// <summary>
     /// Verifies that a float literal whose magnitude exceeds <see cref="double.MaxValue" /> decodes to positive
-    /// infinity rather than failing, matching the binary64 overflow guidance of the TOML specification.
+    /// infinity rather than failing: the specification makes floats IEEE 754 binary64 and says nothing of overflow, so
+    /// the literal is rounded as IEEE 754 conversion rounds it, as <see cref="TomlDocumentReader.GetDouble" />
+    /// documents.
     /// </summary>
     [TestMethod]
     public void Read_WhenFloatOverflowsDouble_ShouldYieldPositiveInfinity()
