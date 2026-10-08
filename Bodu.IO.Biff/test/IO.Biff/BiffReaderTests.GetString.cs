@@ -68,4 +68,28 @@ public sealed partial class BiffReaderTests
         Assert.AreEqual(3, text.Text.Length);
         Assert.AreEqual("a😀", text.Text.GetString());
     }
+
+    /// <summary>
+    /// Verifies that a BIFF8 formula's cached text, an <c>XLUnicodeString</c>, reads only bit 0 of its flags byte and
+    /// ignores the reserved bits, so its characters follow the flags byte directly.
+    /// </summary>
+    /// <param name="flags">The flags byte of the text.</param>
+    [TestMethod]
+    [DataRow((byte)0x04)]
+    [DataRow((byte)0x08)]
+    [DataRow((byte)0x0C)]
+    [DataRow((byte)0xFE)]
+    [DataRow((byte)0xFF)]
+    public void GetString_WhenTextFlagsSetReservedBits_ShouldIgnoreThem(byte flags)
+    {
+        byte[] record = BiffTestRecords.Record(BiffRecordType.String, BiffTestRecords.FlaggedString("abc", flags));
+        BiffReader reader = ReadTo8(record, BiffRecordType.String);
+
+        BiffStringRecord value = reader.GetString();
+
+        Assert.AreEqual("abc", value.Text.GetString());
+        Assert.AreEqual((flags & 0x01) != 0, value.Text.IsHighByte);
+        Assert.IsFalse(value.Text.HasRichRuns);
+        Assert.IsFalse(value.Text.HasExtendedData);
+    }
 }

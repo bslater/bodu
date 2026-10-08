@@ -134,4 +134,29 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual(uint.MaxValue, reader.GetBoundSheet().StreamOffset);
     }
+
+    /// <summary>
+    /// Verifies that a BIFF8 sheet name, a <c>ShortXLUnicodeString</c>, reads only bit 0 of its flags byte and ignores
+    /// the reserved bits, so its characters follow the flags byte directly.
+    /// </summary>
+    /// <param name="flags">The flags byte of the name.</param>
+    [TestMethod]
+    [DataRow((byte)0x04)]
+    [DataRow((byte)0x08)]
+    [DataRow((byte)0x0C)]
+    [DataRow((byte)0xFE)]
+    [DataRow((byte)0xFF)]
+    public void GetBoundSheet_WhenNameFlagsSetReservedBits_ShouldIgnoreThem(byte flags)
+    {
+        byte[] head = [0x40, 0x00, 0x00, 0x00, 0x00, 0x00];
+        byte[] record = BiffTestRecords.Record(BiffRecordType.BoundSheet, [.. head, .. BiffTestRecords.FlaggedString("Data", flags, wideLength: false)]);
+        BiffReader reader = ReadTo8(record, BiffRecordType.BoundSheet);
+
+        BiffBoundSheetRecord sheet = reader.GetBoundSheet();
+
+        Assert.AreEqual("Data", sheet.Name.GetString());
+        Assert.AreEqual((flags & 0x01) != 0, sheet.Name.IsHighByte);
+        Assert.IsFalse(sheet.Name.HasRichRuns);
+        Assert.IsFalse(sheet.Name.HasExtendedData);
+    }
 }

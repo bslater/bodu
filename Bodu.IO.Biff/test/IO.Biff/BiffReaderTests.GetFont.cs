@@ -101,4 +101,28 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual("Θ", reader.GetFont().Name.GetString());
     }
+
+    /// <summary>
+    /// Verifies that a BIFF8 font name, a <c>ShortXLUnicodeString</c>, reads only bit 0 of its flags byte and ignores
+    /// the reserved bits, so its characters follow the flags byte directly.
+    /// </summary>
+    /// <param name="flags">The flags byte of the name.</param>
+    [TestMethod]
+    [DataRow((byte)0x04)]
+    [DataRow((byte)0x08)]
+    [DataRow((byte)0x0C)]
+    [DataRow((byte)0xFE)]
+    [DataRow((byte)0xFF)]
+    public void GetFont_WhenNameFlagsSetReservedBits_ShouldIgnoreThem(byte flags)
+    {
+        byte[] record = BiffTestRecords.Font(200, 0, 0x7FFF, 400, 0, 0, 0, 0, BiffTestRecords.FlaggedString("Arial", flags, wideLength: false));
+        BiffReader reader = ReadTo8(record, BiffRecordType.Font);
+
+        BiffFontRecord font = reader.GetFont();
+
+        Assert.AreEqual("Arial", font.Name.GetString());
+        Assert.AreEqual((flags & 0x01) != 0, font.Name.IsHighByte);
+        Assert.IsFalse(font.Name.HasRichRuns);
+        Assert.IsFalse(font.Name.HasExtendedData);
+    }
 }

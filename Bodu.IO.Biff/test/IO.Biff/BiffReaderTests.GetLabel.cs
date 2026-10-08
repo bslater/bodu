@@ -128,4 +128,29 @@ public sealed partial class BiffReaderTests
         Assert.AreEqual(65535, label.Column);
         Assert.AreEqual(0xFFFF, label.XfIndex);
     }
+
+    /// <summary>
+    /// Verifies that BIFF8 label text, an <c>XLUnicodeString</c>, reads only bit 0 of its flags byte and ignores the
+    /// reserved bits, so its characters follow the flags byte directly.
+    /// </summary>
+    /// <param name="flags">The flags byte of the text.</param>
+    [TestMethod]
+    [DataRow((byte)0x04)]
+    [DataRow((byte)0x08)]
+    [DataRow((byte)0x0C)]
+    [DataRow((byte)0xFE)]
+    [DataRow((byte)0xFF)]
+    public void GetLabel_WhenTextFlagsSetReservedBits_ShouldIgnoreThem(byte flags)
+    {
+        byte[] head = new byte[6];
+        byte[] record = BiffTestRecords.Record(BiffRecordType.Label, [.. head, .. BiffTestRecords.FlaggedString("text", flags)]);
+        BiffReader reader = ReadTo8(record, BiffRecordType.Label);
+
+        BiffLabelRecord label = reader.GetLabel();
+
+        Assert.AreEqual("text", label.Text.GetString());
+        Assert.AreEqual((flags & 0x01) != 0, label.Text.IsHighByte);
+        Assert.IsFalse(label.Text.HasRichRuns);
+        Assert.IsFalse(label.Text.HasExtendedData);
+    }
 }

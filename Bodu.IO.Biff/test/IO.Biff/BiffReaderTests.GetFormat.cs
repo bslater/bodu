@@ -78,4 +78,29 @@ public sealed partial class BiffReaderTests
             _ = reader.GetFormat();
         });
     }
+
+    /// <summary>
+    /// Verifies that a BIFF8 format code, an <c>XLUnicodeString</c>, reads only bit 0 of its flags byte and ignores the
+    /// reserved bits, so its characters follow the flags byte directly.
+    /// </summary>
+    /// <param name="flags">The flags byte of the code.</param>
+    [TestMethod]
+    [DataRow((byte)0x04)]
+    [DataRow((byte)0x08)]
+    [DataRow((byte)0x0C)]
+    [DataRow((byte)0xFE)]
+    [DataRow((byte)0xFF)]
+    public void GetFormat_WhenCodeFlagsSetReservedBits_ShouldIgnoreThem(byte flags)
+    {
+        byte[] record = BiffTestRecords.Record(BiffRecordType.Format, [.. BiffTestRecords.UInt16(164), .. BiffTestRecords.FlaggedString("0.00", flags)]);
+        BiffReader reader = ReadTo8(record, BiffRecordType.Format);
+
+        BiffFormatRecord format = reader.GetFormat();
+
+        Assert.AreEqual(164, format.FormatIndex);
+        Assert.AreEqual("0.00", format.Code.GetString());
+        Assert.AreEqual((flags & 0x01) != 0, format.Code.IsHighByte);
+        Assert.IsFalse(format.Code.HasRichRuns);
+        Assert.IsFalse(format.Code.HasExtendedData);
+    }
 }
