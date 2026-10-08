@@ -84,18 +84,33 @@ public sealed class BencodeObject
     /// </summary>
     /// <param name="items">The initial entries.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="items" /> is <see langword="null" />.
+    /// Thrown when <paramref name="items" /> is <see langword="null" />, or an entry's key is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">Thrown when two entries share a key.</exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when a value already belongs to another container.
     /// </exception>
+    /// <remarks>
+    /// When an entry is rejected, construction fails and every value is left with the parent it had before, so the
+    /// values can be added elsewhere.
+    /// </remarks>
     public BencodeObject(IEnumerable<KeyValuePair<string, BencodeNode?>> items)
     {
         ThrowHelper.ThrowIfNull(items);
 
         _properties = new Dictionary<string, BencodeNode?>(StringComparer.Ordinal);
-        foreach (KeyValuePair<string, BencodeNode?> item in items)
-            Add(item.Key, item.Value);
+        try
+        {
+            foreach (KeyValuePair<string, BencodeNode?> item in items)
+                Add(item.Key, item.Value);
+        }
+        catch
+        {
+            // The object is abandoned, so the values it already holds are released; the value that failed was never
+            // attached.
+            Clear();
+            throw;
+        }
     }
 
     /// <inheritdoc />
@@ -152,11 +167,17 @@ public sealed class BencodeObject
         BencodeValueKind.Object;
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The value is attached only once the key has been accepted, so an add rejected because the key already exists
+    /// leaves the value with the parent it had.
+    /// </remarks>
     public void Add(string key, BencodeNode? value)
     {
         ThrowHelper.ThrowIfNull(key);
-        value?.AssignParent(this);
+        value?.ThrowIfBelongsToOtherContainer(this);
+
         _properties.Add(key, value);
+        value?.AssignParent(this);
     }
 
     /// <inheritdoc />

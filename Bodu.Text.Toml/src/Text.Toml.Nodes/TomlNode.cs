@@ -602,10 +602,22 @@ public abstract class TomlNode
     /// </exception>
     internal void AssignParent(TomlNode parent)
     {
+        ThrowIfBelongsToOtherContainer(parent);
+        Parent = parent;
+    }
+
+    /// <summary>
+    /// Enforces the single-parent rule without assigning the parent, so that a container can check a node before it
+    /// commits to holding it.
+    /// </summary>
+    /// <param name="parent">The container that would take ownership of this node.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when this node already belongs to a different container.
+    /// </exception>
+    internal void ThrowIfBelongsToOtherContainer(TomlNode parent)
+    {
         if (Parent is not null && !ReferenceEquals(Parent, parent))
             throw new InvalidOperationException(TomlResourceStrings.Op_Invalid_NodeAlreadyHasParent);
-
-        Parent = parent;
     }
 
     /// <summary>
