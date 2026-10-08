@@ -16,6 +16,11 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// the declared type cannot be instantiated (the collection and dictionary interfaces are claimed by their factories
 /// earlier in the resolution order and never reach this converter).
 /// </summary>
+/// <remarks>
+/// An abstract delegate or reflection type, such as <see cref="Delegate" /> or <see cref="Type" />, is declined rather
+/// than dispatched to its runtime type, which would map it as an object of its own members, so resolving it fails with
+/// a <see cref="NotSupportedException" /> naming the declared type.
+/// </remarks>
 internal sealed class PolymorphicObjectConverter
     : YamlConverter<object>
 {
@@ -23,7 +28,7 @@ internal sealed class PolymorphicObjectConverter
     public override bool CanConvert(Type typeToConvert)
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
-        return typeToConvert.IsInterface || typeToConvert.IsAbstract;
+        return (typeToConvert.IsInterface || typeToConvert.IsAbstract) && !ObjectConverterFactory.IsUnsupportedObjectType(typeToConvert);
     }
 
     /// <inheritdoc />

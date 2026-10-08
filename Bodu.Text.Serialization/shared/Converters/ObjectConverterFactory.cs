@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
 #elif TOML
@@ -18,11 +20,12 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// </summary>
 /// <remarks>
 /// The factory deliberately declines primitive and special scalar types - <see cref="decimal" />, enumerations,
-/// interfaces, abstract types, and (for a format without native mappings for them) the well-known framework scalar
-/// types - so that an unsupported type surfaces as a missing-converter error rather than being mapped to a keyed
-/// container of its incidental public properties, which would lose data or recurse on self-referential members.
-/// <see cref="object" /> has a dedicated built-in converter earlier in the resolution order, so its rejection here is
-/// unreachable through the default list and guards only against a reordering.
+/// interfaces, abstract types, delegates, reflection types such as <see cref="Type" />, pointers, and (for a format
+/// without native mappings for them) the well-known framework scalar types - so that an unsupported type surfaces as a
+/// missing-converter error rather than being mapped to a keyed container of its incidental public properties, which
+/// would lose data or recurse on self-referential members. <see cref="object" /> has a dedicated built-in converter
+/// earlier in the resolution order, so its rejection here is unreachable through the default list and guards only
+/// against a reordering.
 /// </remarks>
 internal sealed class ObjectConverterFactory
     : FormatConverterFactory
@@ -48,7 +51,7 @@ internal sealed class ObjectConverterFactory
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
 
-        if (typeToConvert.IsPrimitive || typeToConvert.IsEnum || typeToConvert.IsPointer || typeToConvert.IsAbstract || typeToConvert.IsArray)
+        if (typeToConvert.IsPrimitive || typeToConvert.IsEnum || typeToConvert.IsAbstract || typeToConvert.IsArray || IsUnsupportedObjectType(typeToConvert))
             return false;
 
         if (typeToConvert == typeof(decimal) || typeToConvert == typeof(object) || typeToConvert == typeof(string))
@@ -64,6 +67,27 @@ internal sealed class ObjectConverterFactory
 
         return typeToConvert.IsClass || typeToConvert.IsValueType;
     }
+
+    /// <summary>
+    /// Determines whether a type is one that no built-in converter maps: a delegate, a reflection type (a
+    /// <see cref="MemberInfo" />, such as <see cref="Type" />), or a pointer.
+    /// </summary>
+    /// <param name="type">The type to test.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="type" /> is a delegate, reflection, or pointer type; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Such a type is not a plain class or struct. Mapped as an object, a delegate would be written as its target and
+    /// method and a reflection type as its reflection surface, neither of which reads back, so it is declined and
+    /// resolving it fails with a <see cref="NotSupportedException" /> naming the type, unless a converter of the
+    /// caller's own claims it.
+    /// </remarks>
+    internal static bool IsUnsupportedObjectType(Type type) =>
+        type.IsPointer
+            || type.IsFunctionPointer
+            || typeof(Delegate).IsAssignableFrom(type)
+            || typeof(MemberInfo).IsAssignableFrom(type);
 
     /// <inheritdoc />
     public override FormatConverter CreateConverter(Type typeToConvert, FormatOptions options)

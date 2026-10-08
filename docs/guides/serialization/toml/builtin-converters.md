@@ -55,7 +55,7 @@ A user converter, or a converter named by a `[Converter]` attribute, is consulte
 | `Nullable<T>` | underlying type's form | TOML has no null; a null member is omitted before any converter runs. |
 | arrays, `List<T>`, list interfaces, concrete `ICollection<T>`, `Queue<T>` / `Stack<T>` / `ConcurrentQueue<T>` / `ConcurrentStack<T>` / `ConcurrentBag<T>` | array | A `Stack<T>` round-trip reverses: the writer emits pop order. |
 | dictionaries with `string`, integer, `enum`, `Guid`, `bool`, or `char` keys | table | Non-string keys are written in invariant text. The newer scalars (`Version`, `TimeSpan`, `decimal`, `Half`, 128-bit integers) are deliberately not key types. |
-| plain classes and structs | table | The catch-all object converter, consulted last. |
+| plain classes and structs | table | The catch-all object converter, consulted last. Delegates, reflection types (`Type` and the other `MemberInfo` types) and pointers are not plain objects: without a converter of your own, a member of one fails with `NotSupportedException` naming its type. |
 | `object`-typed members | runtime type's form on write; <xref:Bodu.Text.Toml.Document.TomlElement> on read | A bare `new object()` writes an empty table; null members are omitted. |
 | <xref:Bodu.Text.Toml.Nodes.TomlNode> (and `TomlObject` / `TomlArray` / `TomlValue`) | the node's own kind | Mutable DOM bridge. |
 | <xref:Bodu.Text.Toml.Document.TomlElement> | the element's own kind | Read produces an element backed by an internal, garbage-collected document - no disposal needed. |
