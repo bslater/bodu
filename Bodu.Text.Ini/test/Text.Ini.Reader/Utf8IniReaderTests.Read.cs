@@ -137,4 +137,90 @@ public partial class Utf8IniReaderTests
 
         Assert.AreEqual(2, ex.LineNumber);
     }
+
+    /// <summary>
+    /// Verifies that a section name containing <c>]</c> is read whole, up to the first <c>]</c> that only whitespace or
+    /// a comment follows, rather than cut short at its first <c>]</c>.
+    /// </summary>
+    /// <param name="header">The section header line.</param>
+    /// <param name="name">The section name the header holds.</param>
+    [TestMethod]
+    [DataRow("[This One Has A ] In It]", "This One Has A ] In It", DisplayName = "configparser bpo-38741")]
+    [DataRow("[foo]bar]", "foo]bar", DisplayName = "go-ini #46")]
+    [DataRow("[12345]]", "12345]", DisplayName = "iniparser PR #159, bracket at the end")]
+    [DataRow("[123]45]", "123]45", DisplayName = "iniparser PR #159, bracket inside")]
+    [DataRow("[a] b]", "a] b", DisplayName = "space after an inner bracket")]
+    public void Read_WhenSectionNameContainsClosingBracket_ShouldReadTheWholeName(string header, string name)
+    {
+        List<string> tokens = Transcribe(header + "\nk=v\n");
+
+        CollectionAssert.AreEqual(new List<string> { $"Section:{name}", "Name:k", "String:v" }, tokens);
+    }
+
+    /// <summary>
+    /// Verifies that a section header followed by whitespace or a comment is read up to its <c>]</c>, and that the
+    /// comment is skipped rather than reported as a comment token.
+    /// </summary>
+    /// <param name="header">The section header line.</param>
+    /// <param name="name">The section name the header holds.</param>
+    [TestMethod]
+    [DataRow("[comments] ; note", "comments", DisplayName = "semicolon comment")]
+    [DataRow("[s] # note", "s", DisplayName = "hash comment")]
+    [DataRow("[s];note", "s", DisplayName = "comment straight after the bracket")]
+    [DataRow("[a]; b]", "a", DisplayName = "comment holding a bracket")]
+    [DataRow("[b] \t", "b", DisplayName = "trailing whitespace")]
+    public void Read_WhenWhitespaceOrCommentFollowsSectionHeader_ShouldReadTheNameAndSkipTheComment(string header, string name)
+    {
+        List<string> tokens = Transcribe(header + "\nk=v\n");
+
+        CollectionAssert.AreEqual(new List<string> { $"Section:{name}", "Name:k", "String:v" }, tokens);
+    }
+
+    /// <summary>
+    /// Verifies that a section header followed by text that is neither whitespace nor a comment throws
+    /// <see cref="IniFormatException" /> positioned at that text, rather than dropping the text.
+    /// </summary>
+    /// <param name="source">The INI text.</param>
+    /// <param name="offset">The byte offset of the text after the header.</param>
+    [TestMethod]
+    [DataRow("[foo] bar\nk=v\n", 6, DisplayName = "text after the header")]
+    [DataRow("[foo]bar\nk=v\n", 5, DisplayName = "text straight after the bracket")]
+    [DataRow("[a]b]c\nk=v\n", 5, DisplayName = "text after the last bracket")]
+    public void Read_WhenTextFollowsSectionHeader_ShouldThrowIniFormatException(string source, int offset)
+    {
+        IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(1, ex.LineNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that when <c>#</c> comments are disallowed, a <c>#</c> after an inner <c>]</c> is part of the section
+    /// name, because it does not start a comment.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenHashCommentsAreDisallowedAndHashFollowsInnerBracket_ShouldReadItAsPartOfTheName()
+    {
+        List<string> tokens = Transcribe("[a]#b]\nk=v\n", new IniReaderOptions { DisallowHashComments = true });
+
+        CollectionAssert.AreEqual(new List<string> { "Section:a]#b", "Name:k", "String:v" }, tokens);
+    }
+
+    /// <summary>
+    /// Verifies that when <c>#</c> comments are disallowed, a <c>#</c> after a section header is text, which throws
+    /// <see cref="IniFormatException" /> positioned at the <c>#</c>.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenHashCommentsAreDisallowedAndHashFollowsSectionHeader_ShouldThrowIniFormatException()
+    {
+        IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = Transcribe("[s] # note\nk=v\n", new IniReaderOptions { DisallowHashComments = true });
+        });
+
+        Assert.AreEqual(4, ex.Offset);
+    }
 }
