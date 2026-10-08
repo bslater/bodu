@@ -515,9 +515,10 @@ invariant-culture *general* text form in
 > [!NOTE]
 > The `ToJson()` / `FromJson()` helpers use the reflection-based
 > `JsonSerializer` and are annotated `RequiresUnreferencedCode` /
-> `RequiresDynamicCode`. For trimming or AOT, register the converters
-> via `AddNumericsJsonConverters` against a source-generated
-> `JsonSerializerContext` instead.
+> `RequiresDynamicCode`. For trimming or AOT, register
+> `FractionJsonConverter<T>` on the options of a source-generated
+> `JsonSerializerContext` instead; see
+> [Trimming and AOT](json-serialization.md#trimming-and-aot).
 
 ## Equality, hashing, and `Equals(object?)`
 

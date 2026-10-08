@@ -12,7 +12,7 @@ Unfamiliar with terms like *policy*, *factory vs closed converter*, *raw JSON nu
 dotnet add package Bodu.Numerics.Serialization.Json
 ```
 
-Targets `net8.0` and `net10.0`. Depends on `Bodu.Numerics` (and transitively `Bodu.Core`); `System.Text.Json` is part of the shared framework. The package is marked AOT-compatible.
+Targets `net8.0` and `net10.0`. Depends on `Bodu.Numerics` (and transitively `Bodu.Core`); `System.Text.Json` is part of the shared framework. The package is marked AOT-compatible; the converter factories and `AddNumericsJsonConverters` require dynamic code (see [Trimming and AOT](concepts.md#trimming-and-aot)).
 
 ## Minimal samples
 
@@ -127,7 +127,7 @@ intOnly.Converters.Add(new BigDecimalJsonConverter());                          
 
 ### Use with a source-generated context
 
-The converters are reflection-free at the value level; add them to the options a `JsonSerializerContext` is built from so the closed types stay visible to the trimmer:
+A source-generated `JsonSerializerContext` takes its converters from the options it is built from. `AddNumericsJsonConverters` works there under the JIT, but native AOT cannot construct the closed converters at run time, so register the closed converter for each type your DTOs use:
 
 ```csharp
 using System.Text.Json.Serialization;
@@ -143,7 +143,9 @@ sealed class Measurement
     public Interval<double> Range { get; set; }
 }
 
-var contextOptions = new JsonSerializerOptions().AddNumericsJsonConverters();
+var contextOptions = new JsonSerializerOptions();
+contextOptions.Converters.Add(new FractionJsonConverter<int>());
+contextOptions.Converters.Add(new IntervalJsonConverter<double>());
 var context = new AppJsonContext(contextOptions);
 
 string payload = JsonSerializer.Serialize(

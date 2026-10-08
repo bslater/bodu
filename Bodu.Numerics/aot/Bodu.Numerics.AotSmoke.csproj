@@ -4,8 +4,10 @@
     NativeAOT smoke gate for Bodu.Numerics. Fraction<T> detects a bounded backing type through reflection
     (TryGetBounds / ImplementsMinMaxValue / InvokeExtreme), guarded by IL2026/IL3050 suppressions. This tiny
     published-AOT app exercises those paths so CI can prove they survive trimming and native compilation, rather
-    than relying on the suppressions alone. Run under JIT during normal builds; the .github AOT workflow publishes
-    it with PublishAot=true and runs the native binary.
+    than relying on the suppressions alone. It also serializes one value of each type through
+    Bodu.Numerics.Serialization.Json's closed converters and a source-generated context, the path its documentation gives
+    for native AOT. Run under JIT during normal builds; the .github AOT workflow publishes it with PublishAot=true and
+    runs the native binary.
   -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -23,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\Bodu.Numerics.csproj" />
+    <ProjectReference Include="..\..\Bodu.Numerics.Serialization.Json\src\Bodu.Numerics.Serialization.Json.csproj" />
   </ItemGroup>
 
 </Project>
