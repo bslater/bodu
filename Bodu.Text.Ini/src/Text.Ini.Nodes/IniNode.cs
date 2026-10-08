@@ -80,6 +80,8 @@ public abstract class IniNode
         string currentName = string.Empty;
         var pendingComments = new List<string>();
         string? pendingKey = null;
+        int pendingKeyLine = 0;
+        int pendingKeyStart = 0;
 
         while (reader.Read())
         {
@@ -96,7 +98,10 @@ public abstract class IniNode
                     break;
 
                 case IniTokenType.PropertyName:
+                    // A duplicate key is found on the value that follows, but it is reported at the key.
                     pendingKey = reader.GetString();
+                    pendingKeyLine = reader.LineNumber;
+                    pendingKeyStart = reader.TokenStartIndex;
                     break;
 
                 case IniTokenType.String:
@@ -104,7 +109,7 @@ public abstract class IniNode
                     foreach (string comment in pendingComments)
                         value.LeadingComments.Add(comment);
 
-                    ApplyEntry(current, currentName, pendingKey!, value, documentOptions.DuplicateKeyBehavior, ref reader);
+                    ApplyEntry(current, currentName, pendingKey!, value, documentOptions.DuplicateKeyBehavior, pendingKeyLine, pendingKeyStart);
                     pendingComments.Clear();
                     pendingKey = null;
                     break;
@@ -212,7 +217,7 @@ public abstract class IniNode
     /// <param name="name">The section name.</param>
     /// <param name="documentOptions">The document-model duplicate policies.</param>
     /// <param name="pendingComments">The comment lines read since the previous node.</param>
-    /// <param name="reader">The reader, for the source position of a policy violation.</param>
+    /// <param name="reader">The reader, on the section header, at which a policy violation is reported.</param>
     /// <returns>The section object that subsequent entries belong to.</returns>
     /// <exception cref="IniFormatException">
     /// Thrown when the name collides with a global key, or repeats under
@@ -231,16 +236,16 @@ public abstract class IniNode
             {
                 throw new IniFormatException(
                     string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniGlobalKeyCollision, name),
-                    reader.PositionLineNumber,
-                    reader.BytesConsumed);
+                    reader.LineNumber,
+                    reader.TokenStartIndex);
             }
 
             if (documentOptions.DuplicateSectionBehavior == IniDuplicateSectionBehavior.Disallowed)
             {
                 throw new IniFormatException(
                     string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniDuplicateSection, name),
-                    reader.PositionLineNumber,
-                    reader.BytesConsumed);
+                    reader.LineNumber,
+                    reader.TokenStartIndex);
             }
 
             var merged = (IniObject)existing;
@@ -266,7 +271,8 @@ public abstract class IniNode
     /// <param name="key">The entry key.</param>
     /// <param name="value">The parsed value node, already carrying its leading comments.</param>
     /// <param name="behavior">The duplicate-key policy.</param>
-    /// <param name="reader">The reader, for the source position of a policy violation.</param>
+    /// <param name="keyLine">The 1-based line of the entry's key, at which a policy violation is reported.</param>
+    /// <param name="keyStart">The byte offset of the entry's key, at which a policy violation is reported.</param>
     /// <exception cref="IniFormatException">
     /// Thrown when the key is a duplicate and the policy is <see cref="IniDuplicateKeyBehavior.Disallowed" />.
     /// </exception>
@@ -276,7 +282,8 @@ public abstract class IniNode
         string key,
         IniValue value,
         IniDuplicateKeyBehavior behavior,
-        ref Utf8IniReader reader)
+        int keyLine,
+        int keyStart)
     {
         if (target.ContainsKey(key))
         {
@@ -292,8 +299,8 @@ public abstract class IniNode
                 default:
                     throw new IniFormatException(
                         string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniDuplicateKey, targetName, key),
-                        reader.PositionLineNumber,
-                        reader.BytesConsumed);
+                        keyLine,
+                        keyStart);
             }
 
             return;

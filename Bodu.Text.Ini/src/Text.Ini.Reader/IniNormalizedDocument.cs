@@ -62,6 +62,8 @@ internal sealed class IniNormalizedDocument
         var reader = new Utf8IniReader(utf8Ini, readerOptions);
         int currentSection = -1;
         string? pendingKey = null;
+        int pendingKeyLine = 0;
+        int pendingKeyStart = 0;
 
         while (reader.Read())
         {
@@ -75,8 +77,8 @@ internal sealed class IniNormalizedDocument
                         {
                             throw new IniFormatException(
                                 string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniDuplicateSection, name),
-                                reader.PositionLineNumber,
-                                reader.BytesConsumed);
+                                reader.LineNumber,
+                                reader.TokenStartIndex);
                         }
 
                         currentSection = existing;
@@ -92,14 +94,17 @@ internal sealed class IniNormalizedDocument
                     break;
 
                 case IniTokenType.PropertyName:
+                    // A duplicate key is found on the value that follows, but it is reported at the key.
                     pendingKey = reader.GetString();
+                    pendingKeyLine = reader.LineNumber;
+                    pendingKeyStart = reader.TokenStartIndex;
                     break;
 
                 case IniTokenType.String:
                     List<KeyValuePair<string, string>> entries = currentSection < 0 ? document.GlobalEntries : document.Sections[currentSection].Entries;
                     Dictionary<string, int> index = currentSection < 0 ? globalIndex : entryIndexes[currentSection];
                     string sectionName = currentSection < 0 ? string.Empty : document.Sections[currentSection].Name;
-                    AddEntry(entries, index, pendingKey!, reader.GetString(), sectionName, documentOptions.DuplicateKeyBehavior, reader.PositionLineNumber, reader.BytesConsumed);
+                    AddEntry(entries, index, pendingKey!, reader.GetString(), sectionName, documentOptions.DuplicateKeyBehavior, pendingKeyLine, pendingKeyStart);
                     pendingKey = null;
                     break;
 
@@ -129,8 +134,8 @@ internal sealed class IniNormalizedDocument
     /// <param name="value">The entry value.</param>
     /// <param name="sectionName">The owning section name, or an empty string for the global section.</param>
     /// <param name="behavior">The duplicate-key policy.</param>
-    /// <param name="line">The 1-based line number for a policy violation.</param>
-    /// <param name="offset">The byte offset for a policy violation.</param>
+    /// <param name="line">The 1-based line of the entry's key, at which a policy violation is reported.</param>
+    /// <param name="offset">The byte offset of the entry's key, at which a policy violation is reported.</param>
     /// <exception cref="IniFormatException">
     /// Thrown when the key is a duplicate and the policy is <see cref="IniDuplicateKeyBehavior.Disallowed" />.
     /// </exception>

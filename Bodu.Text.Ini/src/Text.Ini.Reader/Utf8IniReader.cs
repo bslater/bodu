@@ -51,6 +51,9 @@ public ref struct Utf8IniReader
     /// <summary>The 1-based line number on which the current token begins.</summary>
     private int _tokenLine;
 
+    /// <summary>The zero-based byte offset at which the current token begins.</summary>
+    private int _tokenStart;
+
     /// <summary>The kind of the current token.</summary>
     private IniTokenType _tokenType;
 
@@ -65,6 +68,9 @@ public ref struct Utf8IniReader
 
     /// <summary>The 1-based line number on which the pending string token begins.</summary>
     private int _pendingLine;
+
+    /// <summary>The zero-based byte offset at which the pending string token begins.</summary>
+    private int _pendingStart;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8IniReader" /> struct over the supplied bytes.
@@ -90,6 +96,7 @@ public ref struct Utf8IniReader
         _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
         _line = 1;
         _tokenLine = 1;
+        _tokenStart = _position;
         _tokenType = IniTokenType.None;
     }
 
@@ -115,14 +122,15 @@ public ref struct Utf8IniReader
     public readonly int LineNumber => _tokenLine;
 
     /// <summary>
-    /// Gets the 1-based line number of the read position, which is past the line ending of the token just read.
+    /// Gets the zero-based byte offset at which the current token begins: the <c>[</c> of a section header, the comment
+    /// marker of a comment, or the first byte of a key or value after the spaces and tabs around it.
     /// </summary>
-    /// <value>The line of the next byte to read.</value>
+    /// <value>The offset of the current token's first byte within the source.</value>
     /// <remarks>
-    /// The document models report a section or key that their duplicate policies reject at this line, beside
-    /// <see cref="BytesConsumed" />, so that the line and the offset of the error describe the same position.
+    /// The document models report a section or key that their duplicate policies reject at this offset, on the line
+    /// <see cref="LineNumber" /> gives.
     /// </remarks>
-    internal readonly int PositionLineNumber => _line;
+    internal readonly int TokenStartIndex => _tokenStart;
 
     /// <summary>
     /// Gets the kind of the current token.
@@ -153,6 +161,7 @@ public ref struct Utf8IniReader
             _current = _pendingValue;
             _tokenType = IniTokenType.String;
             _tokenLine = _pendingLine;
+            _tokenStart = _pendingStart;
             return true;
         }
 
@@ -164,6 +173,7 @@ public ref struct Utf8IniReader
             {
                 _tokenType = IniTokenType.None;
                 _tokenLine = _line;
+                _tokenStart = _position;
                 _current = null;
                 return false;
             }
@@ -215,6 +225,7 @@ public ref struct Utf8IniReader
             _current = Encoding.UTF8.GetString(_data[textStart..end]);
             _tokenType = IniTokenType.Comment;
             _tokenLine = _line;
+            _tokenStart = textStart - 1;
             SkipLineEnding();
             return true;
         }
@@ -237,6 +248,7 @@ public ref struct Utf8IniReader
     private void ReadSectionHeader()
     {
         int headerLine = _line;
+        int headerStart = _position;
         _position++; // consume '['
 
         int start = _position;
@@ -265,6 +277,7 @@ public ref struct Utf8IniReader
         _current = Encoding.UTF8.GetString(_data.Slice(nameStart, nameLength));
         _tokenType = IniTokenType.SectionHeader;
         _tokenLine = headerLine;
+        _tokenStart = headerStart;
     }
 
     /// <summary>
@@ -348,10 +361,12 @@ public ref struct Utf8IniReader
         _current = Encoding.UTF8.GetString(_data.Slice(trimmedKeyStart, keyLength));
         _tokenType = IniTokenType.PropertyName;
         _tokenLine = entryLine;
+        _tokenStart = trimmedKeyStart;
 
         _pendingString = true;
         _pendingValue = Encoding.UTF8.GetString(_data.Slice(trimmedValueStart, valueLength));
         _pendingLine = entryLine;
+        _pendingStart = trimmedValueStart;
     }
 
     /// <summary>
