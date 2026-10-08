@@ -62,8 +62,8 @@ library's first release (Tomlyn 0.1.0), since no earlier release had the defect.
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 716 | The row carries the fix's scenario and runs: Bodu must do what the fix established |
-| `dialect` | 55 | The row runs, asserting Bodu's documented behaviour where it deliberately differs; `reason` cites the Bodu document or the TOML specification section |
+| `applies` | 714 | The row carries the fix's scenario and runs: Bodu must do what the fix established |
+| `dialect` | 57 | The row runs, asserting Bodu's documented behaviour where it deliberately differs; `reason` cites the Bodu document or the TOML specification section |
 | `n/a` | 345 | The fix concerns an API Bodu does not have, the library's language or runtime, a platform, packaging, performance only, or exception message text; `reason` says which |
 | `unknown` | 3 | No scenario could be found; `reason` names what was read |
 
@@ -73,8 +73,8 @@ That is 797 fix listings, 749 distinct fixes, in 1,119 rows.
 |---|---:|---:|---:|---:|---:|---:|
 | tomli | 27 | 61 | 47 | 6 | 8 | 0 |
 | tomllib | 2 | 2 | 0 | 0 | 2 | 0 |
-| toml | 115 | 161 | 119 | 12 | 28 | 2 |
-| toml_edit | 104 | 130 | 70 | 9 | 51 | 0 |
+| toml | 115 | 161 | 118 | 13 | 28 | 2 |
+| toml_edit | 104 | 130 | 69 | 10 | 51 | 0 |
 | toml_datetime | 8 | 18 | 12 | 3 | 3 | 0 |
 | toml_parser | 15 | 19 | 12 | 0 | 7 | 0 |
 | toml_writer | 1 | 2 | 2 | 0 | 0 | 0 |
@@ -85,7 +85,7 @@ That is 797 fix listings, 749 distinct fixes, in 1,119 rows.
 | tomlet | 43 | 54 | 43 | 1 | 10 | 0 |
 | smol-toml | 34 | 64 | 49 | 4 | 11 | 0 |
 | tomlplusplus | 128 | 145 | 47 | 2 | 96 | 0 |
-| **Total** | **797** | **1,119** | **716** | **55** | **345** | **3** |
+| **Total** | **797** | **1,119** | **714** | **57** | **345** | **3** |
 
 Some kinds of fix are classed the same way throughout:
 
@@ -141,8 +141,9 @@ toml-test case), `derived` (worked out, with the working in `reason`) or `oracle
 
 ## How the rows run
 
-The rows are meant to run in the test project through one helper that reads these files. It was built and run as a
-scratch harness while the catalogue was written; it is described here so it can be ported.
+`TomlReleaseNoteCorpusTests` in `Bodu.Text.Toml.Test` runs the rows, in the Regression tier, from copies of these
+files embedded under `Fixtures/ReleaseNotes/`. It pins the counts above and checks that the copies match these files
+and that each `unit` row names a test that exists.
 
 * **`parse`** reads `input` with `TomlDocumentReader`, builds a model of tables, arrays and typed leaves from its
   token stream, and compares it with `expected` semantically, as `TomlTestCorpusTests.AssertMatches` and
@@ -163,32 +164,41 @@ rows run nothing but keep the record.
 
 ## What the catalogue found
 
-**688 of the 690 runnable rows pass.** The two that fail share one cause:
+**All 690 runnable rows pass**, and so do the typed tests the 81 `unit` rows name. The first run against Bodu found
+these defects, each fixed test first:
 
-* **A float literal that overflows binary64 is read as infinity.** toml 0.4.2 (`3322bcd086`, case 2) and toml_edit
-  0.18.0 (`234025daea`) reject `a = 9e99999`; Bodu reads `+inf`, through `TomlDocumentReader`, `TomlDocument` and
-  `TomlNode` alike. The TOML specification does not say what an overflowing float is, and Python's `tomllib` also
-  reads `inf`. Bodu's own test `TomlDocumentReaderTests.Read_WhenFloatOverflowsDouble_ShouldYieldPositiveInfinity`
-  pins the infinity, but no Bodu document states it, so the rows stay `applies` until one does or Bodu rejects such
-  a float.
+- **#826 and #827** (fixed by #830). `[Include]` on a property with no public accessor was ignored (Tomlyn 2.4.0 #121),
+  and `ObjectCreationHandling.Populate` dropped what was read into a get-only object member. The Tomlyn 2.2.1 row
+  (`2ea74fc`, case 2) now writes with get-only populated members.
+- **#831.** A finite float outside the `float` or `Half` range read as an infinity (go-toml v1.8.0, PR #388). It is now
+  a serialization error, as an integer overflow is; `inf`, `-inf` and `nan` read as before.
+- **#832.** An error about a key was reported at its value (go-toml v2.4.0, PR #1069). A redefined key, a dotted key
+  over a value, and a dotted key that extends an inline table or a header's table are now reported where the key
+  starts.
+- **#857.** A type that hides a base field, or a base property of another type, with `new` was rejected as mapping two
+  members to one key (tomlet 1.3.5, `30044159ba`). Only the most derived declaration of a name is now a member, in
+  the Bencode and YAML serializers too.
+- **#858.** A missing required member's `TomlSerializationException.Path` stopped at the member that holds it (Tomlyn
+  1.0.0, `ed08af40e2`). It now names the member, `Name` at the root and `Inner.Name` below it, in YAML too;
+  `BencodeSerializationException` has no `Path`.
+- **#859.** A delegate member was serialized as an object of its own members and failed on `MethodInfo`
+  (BurntSushi/toml v0.4.0, `e9b5b17cf9`). Delegates, reflection types and pointers now fail with
+  `NotSupportedException` naming the member's type, in Bencode and YAML too. The row now names
+  `TomlSerializerTests.Serialize_WhenMemberTypeIsUnsupported_ShouldThrowNotSupportedException`.
+- **#860.** A misplaced digit separator was reported past the end of the number (toml 1.0.2, toml_edit 0.25.2 and
+  toml_parser 1.0.9, `5a7b742018`). It is now reported at the separator, in integers of every radix and in floats.
+- **#861.** A case-insensitive `TomlNode.Parse` kept only the second of two keys that differ only in case (toml 1.1.7,
+  `ee71246d38`, case 1). It now throws `TomlFormatException` at the second; `BencodeNode.Parse` had the same defect
+  and the same fix.
+- **#862.** A `TomlObject` that rejected a duplicate key left the values it was given attached to it (toml 1.1.7,
+  `ee71246d38`, case 2). A failed add or construction now leaves every value with the parent it had, and so does a
+  `BencodeObject`.
+- **#863.** A float literal beyond the binary64 range reads as an infinity, which no Bodu document said. The
+  `GetDouble` remarks and the `double` row of `builtin-converters.md` now say so, and toml 0.4.2 (`3322bcd086`,
+  case 2) and toml_edit 0.18.0 (`234025daea`), which reject `a = 9e99999`, became `dialect` rows that expect `inf`,
+  citing `TomlDocumentReader.cs:330-333`.
 
-Four `unit` scenarios were checked by hand against the current build, because they are likely to fail when their
-tests are written:
-
-* **A float member silently saturates.** go-toml v1.8.0 (PR #388) errors when `f32 = 1e300` is read into a 32-bit
-  float; Bodu's `float` converter returns infinity. `builtin-converters.md` documents saturation for `Half` only.
-* **`[Include]` on a private property is ignored.** Tomlyn 2.4.0 (#121) binds `[TomlInclude] private bool
-  MyProperty`; with Bodu's `[Include]` the property is neither written nor read, although `IncludeAttribute.cs` says
-  the serializer binds through the declared accessors regardless of their visibility.
-* **A key redefinition is reported at the value, not the key.** go-toml v2.4.0 (PR #1069) reports
-  `a = 1\nb = 2\nb = 3\n` at line 3 column 1; Bodu reports line 3 column 5.
-* **`Populate` does nothing for a member that is a plain object.** `TomlSerializerOptions.PreferredObjectCreationHandling`
-  documents Populate for collection and dictionary members only, but `ObjectCreationHandlingAttribute` and
-  `attributes.md` Pattern 10 describe populating the value already held without that limit, and a get-only
-  object-typed member marked Populate silently drops its table. The Tomlyn 2.2.1 row (`2ea74fc`) therefore uses
-  settable members.
-
-Every other row passes, and every other difference from a fix is a documented dialect difference: leap seconds,
-year 0000, offsets beyond 14 hours, the nesting limit of 64, integers outside the signed 64-bit range, the sign of
-`nan`, TOML 1.1.0 syntax under the TOML 1.0.0 default, no integer-to-double conversion in the serializer, and the
-writer's single layout.
+Every other difference from a fix is a documented dialect difference: leap seconds, year 0000, offsets beyond 14
+hours, the nesting limit of 64, integers outside the signed 64-bit range, the sign of `nan`, a float beyond the
+binary64 range, TOML 1.1.0 syntax under the TOML 1.0.0 default, no integer-to-double conversion in the serializer,
+and the writer's single layout.
