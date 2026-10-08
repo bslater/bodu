@@ -170,6 +170,139 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that reading a finite TOML float outside the <see cref="float" /> range throws
+    /// <see cref="TomlSerializationException" /> rather than reading as an infinity, from just beyond the largest
+    /// finite magnitude to far beyond it, positive and negative.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the float outside the range.</param>
+    [TestMethod]
+    [DataRow("Value = 3.4028236e38\n", DisplayName = "just beyond float.MaxValue")]
+    [DataRow("Value = -3.4028236e38\n", DisplayName = "just beyond float.MinValue")]
+    [DataRow("Value = -1e300\n", DisplayName = "far beyond float.MinValue")]
+    public void Deserialize_WhenFloatIsOutsideMemberRange_ForSingle_ShouldThrowTomlSerializationException(string toml)
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<float>>(toml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that reading a finite TOML float outside the <see cref="Half" /> range throws
+    /// <see cref="TomlSerializationException" /> rather than reading as an infinity, from just beyond the largest
+    /// finite magnitude to beyond it, positive and negative.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the float outside the range.</param>
+    [TestMethod]
+    [DataRow("Value = 65520.0\n", DisplayName = "just beyond Half.MaxValue")]
+    [DataRow("Value = -65520.0\n", DisplayName = "just beyond Half.MinValue")]
+    [DataRow("Value = 70000.0\n", DisplayName = "beyond Half.MaxValue")]
+    public void Deserialize_WhenFloatIsOutsideMemberRange_ForHalf_ShouldThrowTomlSerializationException(string toml)
+    {
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<ValueModel<Half>>(toml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a TOML float that rounds to the largest finite <see cref="float" /> magnitude reads as that value:
+    /// narrowing rounds to nearest, and only a value that rounds beyond the range is rejected.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the float just inside the range.</param>
+    /// <param name="expected">The expected value.</param>
+    [TestMethod]
+    [DataRow("Value = 3.4028235e38\n", float.MaxValue, DisplayName = "rounds to float.MaxValue")]
+    [DataRow("Value = -3.4028235e38\n", float.MinValue, DisplayName = "rounds to float.MinValue")]
+    public void Deserialize_WhenFloatRoundsToLargestFiniteValue_ForSingle_ShouldReadThatValue(string toml, float expected)
+    {
+        float actual = TomlSerializer.Deserialize<ValueModel<float>>(toml).Value;
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that a TOML float that rounds to the largest finite <see cref="Half" /> magnitude reads as that value:
+    /// narrowing rounds to nearest, and only a value that rounds beyond the range is rejected.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the float just inside the range.</param>
+    /// <param name="expected">The expected value, widened to <see cref="double" />.</param>
+    [TestMethod]
+    [DataRow("Value = 65504.0\n", 65504.0, DisplayName = "Half.MaxValue")]
+    [DataRow("Value = 65519.0\n", 65504.0, DisplayName = "rounds to Half.MaxValue")]
+    [DataRow("Value = -65519.0\n", -65504.0, DisplayName = "rounds to Half.MinValue")]
+    public void Deserialize_WhenFloatRoundsToLargestFiniteValue_ForHalf_ShouldReadThatValue(string toml, double expected)
+    {
+        Half actual = TomlSerializer.Deserialize<ValueModel<Half>>(toml).Value;
+
+        Assert.AreEqual(expected, (double)actual);
+    }
+
+    /// <summary>
+    /// Verifies that a TOML float too small for <see cref="float" /> reads as zero: underflow towards zero is rounding,
+    /// not a range error.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the float too small to represent.</param>
+    [TestMethod]
+    [DataRow("Value = 1e-50\n", DisplayName = "positive")]
+    [DataRow("Value = -1e-50\n", DisplayName = "negative")]
+    public void Deserialize_WhenFloatUnderflowsMemberType_ForSingle_ShouldReadZero(string toml)
+    {
+        float actual = TomlSerializer.Deserialize<ValueModel<float>>(toml).Value;
+
+        Assert.AreEqual(0f, actual);
+    }
+
+    /// <summary>
+    /// Verifies that a TOML float too small for <see cref="Half" /> reads as zero: underflow towards zero is rounding,
+    /// not a range error.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the float too small to represent.</param>
+    [TestMethod]
+    [DataRow("Value = 1e-10\n", DisplayName = "positive")]
+    [DataRow("Value = -1e-10\n", DisplayName = "negative")]
+    public void Deserialize_WhenFloatUnderflowsMemberType_ForHalf_ShouldReadZero(string toml)
+    {
+        Half actual = TomlSerializer.Deserialize<ValueModel<Half>>(toml).Value;
+
+        Assert.AreEqual(0.0, (double)actual);
+    }
+
+    /// <summary>
+    /// Verifies that TOML's <c>inf</c>, <c>-inf</c>, and <c>nan</c> read as the matching <see cref="float" /> values
+    /// rather than being rejected as outside the range.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the special float.</param>
+    /// <param name="expected">The expected value.</param>
+    [TestMethod]
+    [DataRow("Value = inf\n", float.PositiveInfinity, DisplayName = "inf")]
+    [DataRow("Value = -inf\n", float.NegativeInfinity, DisplayName = "-inf")]
+    [DataRow("Value = nan\n", float.NaN, DisplayName = "nan")]
+    public void Deserialize_WhenFloatIsInfinityOrNaN_ForSingle_ShouldReadMatchingValue(string toml, float expected)
+    {
+        float actual = TomlSerializer.Deserialize<ValueModel<float>>(toml).Value;
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that TOML's <c>inf</c>, <c>-inf</c>, and <c>nan</c> read as the matching <see cref="Half" /> values
+    /// rather than being rejected as outside the range.
+    /// </summary>
+    /// <param name="toml">The TOML document line carrying the special float.</param>
+    /// <param name="expected">The expected value, widened to <see cref="double" />.</param>
+    [TestMethod]
+    [DataRow("Value = inf\n", double.PositiveInfinity, DisplayName = "inf")]
+    [DataRow("Value = -inf\n", double.NegativeInfinity, DisplayName = "-inf")]
+    [DataRow("Value = nan\n", double.NaN, DisplayName = "nan")]
+    public void Deserialize_WhenFloatIsInfinityOrNaN_ForHalf_ShouldReadMatchingValue(string toml, double expected)
+    {
+        Half actual = TomlSerializer.Deserialize<ValueModel<Half>>(toml).Value;
+
+        Assert.AreEqual(expected, (double)actual);
+    }
+
+    /// <summary>
     /// Verifies that reading a finite TOML float outside the <see cref="Half" /> range saturates to infinity rather than
     /// throwing, matching IEEE 754 narrowing and the behavior of the <see cref="float" /> converter.
     /// </summary>
