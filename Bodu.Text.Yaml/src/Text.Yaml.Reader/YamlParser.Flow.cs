@@ -116,7 +116,7 @@ internal sealed partial class YamlParser
             SkipFlowWhitespace();
 
             // A single-pair mapping element: `key: value` inside the sequence.
-            if (Peek() == (byte)':' && IsFlowColonStop(PeekAt(1)))
+            if (AtFlowValueIndicator(element))
             {
                 // An implicit key and its ':' indicator must be on the same line; an explicit key's may follow later.
                 if (!explicitKey && _line != elementLine)
@@ -248,7 +248,7 @@ internal sealed partial class YamlParser
             SkipFlowWhitespace();
 
             int value;
-            if (Peek() == (byte)':')
+            if (AtFlowValueIndicator(keyNode))
             {
                 Advance();
                 SkipFlowWhitespace();
@@ -426,6 +426,30 @@ internal sealed partial class YamlParser
     /// <param name="b">The byte to test.</param>
     /// <returns><see langword="true" /> when the byte begins a line break.</returns>
     private static bool IsLineBreak(byte b) => b is (byte)'\n' or (byte)'\r';
+
+    /// <summary>
+    /// Determines whether the cursor is at the value indicator of a flow mapping entry whose key has been parsed.
+    /// </summary>
+    /// <param name="key">The row index of the parsed key node.</param>
+    /// <returns><see langword="true" /> when a <c>:</c> at the cursor begins the key's value.</returns>
+    /// <remarks>
+    /// After a JSON-like key (a quoted scalar or a flow collection) the <c>:</c> may be followed directly by the value.
+    /// After any other key it must be followed by a separator or a flow indicator, since a <c>:</c> followed by another
+    /// character could continue a plain scalar.
+    /// </remarks>
+    private bool AtFlowValueIndicator(int key)
+    {
+        if (Peek() != (byte)':')
+            return false;
+
+        if (IsFlowColonStop(PeekAt(1)))
+            return true;
+
+        YamlReaderRow row = _rows[key];
+        return row.Kind is YamlReaderNodeKind.Sequence or YamlReaderNodeKind.Mapping
+            || (row.Kind == YamlReaderNodeKind.Scalar
+                && row.ScalarStyle is YamlScalarStyle.DoubleQuoted or YamlScalarStyle.SingleQuoted);
+    }
 
     /// <summary>
     /// Determines whether a byte following a colon terminates a plain scalar in flow context.
