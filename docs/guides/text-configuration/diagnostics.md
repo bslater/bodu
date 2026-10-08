@@ -88,7 +88,6 @@ Stable codes - the values do not change across versions, so consumers can build 
 | Code | Trigger |
 |---|---|
 | `InvalidKeyCharacter` *(8)* | A key contained an illegal character (depends on `KeyOptions`). |
-| `InvalidEscape` *(9)* | A malformed escape sequence (e.g. `\x` followed by non-hex) appeared in a value. |
 | `KeyTooLong` *(11)* | The key exceeded `MaxKeyLength` (default 1024 chars). |
 | `LineTooLong` *(10)* | The line exceeded `MaxLineLength` (default 8192 chars). |
 
@@ -103,6 +102,11 @@ These fire when a section header is compiled as a `ConfigurationPattern`:
 | `NumericRangeTooLarge` *(13)* | A `{n1..n2}` range expanded to more than the parser's expansion cap. |
 | `BraceNestingTooDeep` *(15)* | Brace nesting exceeded the parser's nesting cap. |
 | `PatternTooLong` *(16)* | The compiled glob pattern exceeded the max compilable length. |
+
+### Reserved code
+
+`InvalidEscape` *(9)* - reserved and not raised. The reader decodes no escape sequence: a backslash only keeps the
+character after it from being read as `=`, `#` or `;`, and stays in the text, so no value can hold a malformed one.
 
 ### Default code
 
