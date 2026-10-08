@@ -180,11 +180,11 @@ string globals = IniSerializer.SerializeSection("", server, ServerSection.IniFac
 // …
 ```
 
-`ServerSection.IniFactory.Keys` is `Host, Port, use_tls, Timeout`. A `null` nullable writes as an empty value (`Timeout=`) and an empty value reads back as `null`. Asking for a section the document does not contain raises `IniSerializationException`; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.
+`ServerSection.IniFactory.Keys` is `Host, Port, use_tls, Timeout`. A `null` nullable is left out, as `IniSerializer` leaves it out under its default `WhenWritingNull` condition, and an empty value reads back as `null`. Asking for a section the document does not contain raises `IniSerializationException`; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.
 
 ## Byte parity with the reflection binder
 
-The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through `DelimitedSerializer.Serialize(records)` and `DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)` yields **identical text** - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical `[section]` / `key=value` bytes the reflection binder emits for a section POCO.
+The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through `DelimitedSerializer.Serialize(records)` and `DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)` yields **identical text** - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical `[section]` / `key=value` bytes the reflection binder emits for a section POCO, leaving out the keys the binder leaves out: a member's own `[Ignore]` condition applies, and a member without one takes `WhenWritingNull`, the default. A factory never sees `IniSerializerOptions`, so a `DefaultIgnoreCondition` other than `WhenWritingNull` does not reach it.
 
 <!-- compile -->
 ```csharp

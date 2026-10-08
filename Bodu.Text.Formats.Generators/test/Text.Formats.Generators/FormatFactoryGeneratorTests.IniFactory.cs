@@ -27,7 +27,8 @@ public partial class FormatFactoryGeneratorTests
     }
 
     /// <summary>
-    /// Verifies that a section serializes through the generated factory to canonical INI bytes.
+    /// Verifies that a section serializes through the generated factory to canonical INI bytes, leaving out the
+    /// <see langword="null" /> timeout as the reflection binder does under its default condition.
     /// </summary>
     [TestMethod]
     public void IniFactory_WhenSerialized_ShouldWriteCanonicalSection()
@@ -36,7 +37,7 @@ public partial class FormatFactoryGeneratorTests
 
         string text = IniSerializer.SerializeSection("server", section, GeneratedServerSection.IniFactory);
 
-        Assert.AreEqual("[server]\nHost=db.example.com\nPort=5432\nuse_tls=true\nTimeout=\n", text);
+        Assert.AreEqual("[server]\nHost=db.example.com\nPort=5432\nuse_tls=true\n", text);
     }
 
     /// <summary>

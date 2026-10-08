@@ -13,6 +13,12 @@ namespace Bodu.Text.Formats.Generators;
 /// </summary>
 internal static class FactoryEmitter
 {
+    /// <summary>The numeric value of <c>IgnoreCondition.WhenWritingDefault</c>.</summary>
+    private const int IgnoreConditionWhenWritingDefault = 2;
+
+    /// <summary>The numeric value of <c>IgnoreCondition.WhenWritingNull</c>.</summary>
+    private const int IgnoreConditionWhenWritingNull = 3;
+
     /// <summary>
     /// Emits the complete generated source for the model's factory.
     /// </summary>
@@ -156,11 +162,24 @@ internal static class FactoryEmitter
         AppendLine(builder, indent, "/// <inheritdoc />");
         AppendLine(builder, indent, $"public global::System.Collections.Generic.IEnumerable<{Pair}> GetEntries({model.TypeName} section)");
         AppendLine(builder, indent, "{");
-        AppendLine(builder, indent + 1, $"return new {Pair}[]");
-        AppendLine(builder, indent + 1, "{");
+        AppendLine(builder, indent + 1, $"var entries = new global::System.Collections.Generic.List<{Pair}>({model.Members.Count});");
         foreach (MemberModel member in model.Members)
-            AppendLine(builder, indent + 2, $"new {Pair}(\"{Escape(member.WireName)}\", {BuildToStringExpression(member, "section", model.Kind)}),");
-        AppendLine(builder, indent + 1, "};");
+        {
+            string add = $"entries.Add(new {Pair}(\"{Escape(member.WireName)}\", {BuildToStringExpression(member, "section", model.Kind)}));";
+            string? condition = BuildWriteCondition(member, "section");
+            if (condition is null)
+            {
+                AppendLine(builder, indent + 1, add);
+            }
+            else
+            {
+                AppendLine(builder, indent + 1, $"if ({condition})");
+                AppendLine(builder, indent + 2, add);
+            }
+        }
+
+        AppendLine(builder, indent + 1, string.Empty);
+        AppendLine(builder, indent + 1, "return entries;");
         AppendLine(builder, indent, "}");
         AppendLine(builder, indent, string.Empty);
 
@@ -236,6 +255,46 @@ internal static class FactoryEmitter
         }
 
         AppendLine(builder, indent, "}");
+    }
+
+    /// <summary>
+    /// Builds the condition under which an INI section factory writes a member, mirroring the write-time ignore check
+    /// of INI's reflection binder.
+    /// </summary>
+    /// <param name="member">The member model.</param>
+    /// <param name="receiver">The instance expression.</param>
+    /// <returns>The condition expression text, or <see langword="null" /> when the member is always written.</returns>
+    /// <remarks>
+    /// The member's own <c>[Ignore]</c> condition applies, and a member without one takes <c>WhenWritingNull</c>, the
+    /// default of <c>IniSerializerOptions.DefaultIgnoreCondition</c>: a factory never sees the options, so it cannot
+    /// follow another default. <c>WhenWritingNull</c> leaves out a <see langword="null" /> value, and
+    /// <c>WhenWritingDefault</c> also a value type's default, as the binder does.
+    /// </remarks>
+    private static string? BuildWriteCondition(MemberModel member, string receiver)
+    {
+        string access = $"{receiver}.{member.PropertyName}";
+        int condition = member.IgnoreCondition ?? IgnoreConditionWhenWritingNull;
+
+        if (condition == IgnoreConditionWhenWritingNull)
+        {
+            if (member.IsNullable)
+                return $"{access}.HasValue";
+
+            return member.Scalar == ScalarKind.String ? $"{access} is not null" : null;
+        }
+
+        if (condition == IgnoreConditionWhenWritingDefault)
+        {
+            if (member.Scalar == ScalarKind.String)
+                return $"{access} is not null";
+
+            string comparer = $"global::System.Collections.Generic.EqualityComparer<{member.TypeDisplay}>.Default";
+            return member.IsNullable
+                ? $"{access}.HasValue && !{comparer}.Equals({access}.Value, default({member.TypeDisplay}))"
+                : $"!{comparer}.Equals({access}, default({member.TypeDisplay}))";
+        }
+
+        return null;
     }
 
     /// <summary>

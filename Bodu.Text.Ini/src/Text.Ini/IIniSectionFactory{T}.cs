@@ -30,6 +30,10 @@ public interface IIniSectionFactory<TSection>
     /// </summary>
     /// <param name="section">The section instance.</param>
     /// <returns>The key/value entries.</returns>
+    /// <remarks>
+    /// The entries may leave keys out: a generated factory leaves out the members its ignore conditions omit. The
+    /// serializer writes exactly the entries it is given.
+    /// </remarks>
     IEnumerable<KeyValuePair<string, string>> GetEntries(TSection section);
 
     /// <summary>
