@@ -45,6 +45,50 @@ public partial class YamlSerializerTests
         Assert.AreEqual(8, back.Retries);
     }
 
+    /// <summary>
+    /// Verifies that a property with no public accessor, opted in by <see cref="IncludeAttribute" />, is written and is
+    /// assigned on read through its private accessors.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenPrivatePropertyHasInclude_ShouldRoundTripIt()
+    {
+        string yaml = YamlSerializer.Serialize(new IncludedPrivatePropertyModel());
+        Assert.AreEqual("Count: 3\n", yaml);
+
+        IncludedPrivatePropertyModel model = YamlSerializer.Deserialize<IncludedPrivatePropertyModel>("Count: 8\n")!;
+        Assert.AreEqual(8, model.ReadCount());
+    }
+
+    /// <summary>
+    /// Verifies that a private property declared by a base class and opted in by <see cref="IncludeAttribute" /> is
+    /// written after the derived type's members and is assigned on read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenBaseClassPrivatePropertyHasInclude_ShouldRoundTripIt()
+    {
+        string yaml = YamlSerializer.Serialize(new IncludedDerivedModel());
+        Assert.AreEqual("Visible: 4\nHidden: 3\n", yaml);
+
+        IncludedDerivedModel model = YamlSerializer.Deserialize<IncludedDerivedModel>("Visible: 1\nHidden: 2\n")!;
+        Assert.AreEqual(1, model.Visible);
+        Assert.AreEqual(2, model.ReadHidden());
+    }
+
+    /// <summary>
+    /// Verifies that a private property without <see cref="IncludeAttribute" /> is neither written nor assigned on
+    /// read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenPrivatePropertyHasNoInclude_ShouldIgnoreIt()
+    {
+        string yaml = YamlSerializer.Serialize(new UnincludedPrivatePropertyModel());
+        Assert.AreEqual("Visible: 4\n", yaml);
+
+        UnincludedPrivatePropertyModel model = YamlSerializer.Deserialize<UnincludedPrivatePropertyModel>("Visible: 1\nHidden: 2\n")!;
+        Assert.AreEqual(1, model.Visible);
+        Assert.AreEqual(3, model.ReadHidden());
+    }
+
     /// <summary>A model whose property exposes only a non-public setter, opted in by <see cref="IncludeAttribute" />.</summary>
     private sealed class IncludeSetterModel
     {
@@ -78,5 +122,83 @@ public partial class YamlSerializerTests
         /// <summary>The retry count, surfaced by <see cref="IncludeAttribute" /> despite fields being disabled.</summary>
         [Include]
         public int Retries;
+    }
+
+    /// <summary>
+    /// A model whose only member is a private property opted into serialization through <see cref="IncludeAttribute" />.
+    /// </summary>
+    private sealed class IncludedPrivatePropertyModel
+    {
+        /// <summary>
+        /// Gets or sets the count, through private accessors only.
+        /// </summary>
+        /// <value>The count; 3 until it is read.</value>
+        [Include]
+        private int Count { get; set; } = 3;
+
+        /// <summary>
+        /// Returns the value of the private property.
+        /// </summary>
+        /// <returns>The value of <see cref="Count" />.</returns>
+        public int ReadCount() =>
+            Count;
+    }
+
+    /// <summary>
+    /// A base class whose private property is opted into serialization through <see cref="IncludeAttribute" />.
+    /// </summary>
+    private class IncludedBaseModel
+    {
+        /// <summary>
+        /// Gets or sets the hidden value, through private accessors only.
+        /// </summary>
+        /// <value>The hidden value; 3 until it is read.</value>
+        [Include]
+        private int Hidden { get; set; } = 3;
+
+        /// <summary>
+        /// Returns the value of the private property.
+        /// </summary>
+        /// <returns>The value of <see cref="Hidden" />.</returns>
+        public int ReadHidden() =>
+            Hidden;
+    }
+
+    /// <summary>
+    /// A model that adds a public property to <see cref="IncludedBaseModel" />.
+    /// </summary>
+    private sealed class IncludedDerivedModel
+        : IncludedBaseModel
+    {
+        /// <summary>
+        /// Gets or sets the visible value.
+        /// </summary>
+        /// <value>The visible value; 4 until it is read.</value>
+        public int Visible { get; set; } = 4;
+    }
+
+    /// <summary>
+    /// A model with a public property and a private property that is not opted into serialization.
+    /// </summary>
+    private sealed class UnincludedPrivatePropertyModel
+    {
+        /// <summary>
+        /// Gets or sets the visible value.
+        /// </summary>
+        /// <value>The visible value; 4 until it is read.</value>
+        public int Visible { get; set; } = 4;
+
+        /// <summary>
+        /// Gets or sets the hidden value, through private accessors only.
+        /// </summary>
+        /// <value>The hidden value; always 3, since the serializer does not bind it.</value>
+        private int Hidden { get; set; } = 3;
+
+        /// <summary>
+        /// Returns the value of the private property.
+        /// </summary>
+        /// <returns>The value of <see cref="Hidden" />.</returns>
+        public int ReadHidden() =>
+            Hidden;
     }
 }
