@@ -343,7 +343,7 @@ internal sealed partial class YamlParser
             case (byte)'0': buf.Add(0); break;
             case (byte)'a': buf.Add(0x07); break;
             case (byte)'b': buf.Add(0x08); break;
-            case (byte)'t': buf.Add((byte)'\t'); break;
+            case (byte)'t' or (byte)'\t': buf.Add((byte)'\t'); break;
             case (byte)'n': buf.Add((byte)'\n'); break;
             case (byte)'v': buf.Add(0x0B); break;
             case (byte)'f': buf.Add(0x0C); break;
