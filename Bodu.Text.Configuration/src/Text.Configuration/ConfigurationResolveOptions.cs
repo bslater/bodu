@@ -19,10 +19,11 @@ namespace Bodu.Text.Configuration;
 /// is used for path matching, and how the EditorConfig <c>unset</c> sentinel is handled.
 /// </para>
 /// <para>
-/// <see cref="PathRoot" /> deserves attention when the document was parsed from a string rather than loaded from a
-/// file. With no path on the document and <see cref="PathRoot" /> left <see langword="null" />, the resolver consults
-/// <see cref="MissingPathRootMode" /> to decide whether to use the empty root, throw, or fall back to the target path's
-/// parent - that choice changes which sections match.
+/// <see cref="PathRoot" /> rebases the target path before matching: a target under the root is matched relative to it,
+/// and any other target is matched as given. <see cref="MissingPathRootMode" /> applies only when <c>Resolve</c>
+/// receives no target path and no <see cref="PathRoot" /> is set:
+/// <see cref="ConfigurationMissingPathRootMode.UseEmptyRoot" /> returns the preamble-only view, and
+/// <see cref="ConfigurationMissingPathRootMode.Throw" /> raises <see cref="InvalidOperationException" />.
 /// </para>
 /// <para>
 /// <see cref="KeyOptions" /> should normally be the same instance passed to

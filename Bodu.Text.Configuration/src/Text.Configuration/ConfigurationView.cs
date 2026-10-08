@@ -37,8 +37,8 @@ namespace Bodu.Text.Configuration;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// IniDocument           doc  = ConfigurationDocument.Parse(text);
-/// ConfigurationView view = doc.Resolve("src/Foo.cs");
+/// ConfigurationDocument doc  = ConfigurationDocument.Parse(text);
+/// ConfigurationView     view = doc.Resolve("src/Foo.cs");
 ///
 /// // Indexer lookup - colon and dotted forms are equivalent.
 /// string? level = view["logging:level:default"];

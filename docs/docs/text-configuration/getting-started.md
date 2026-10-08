@@ -133,9 +133,10 @@ ConfigurationDocument fromStream = ConfigurationDocument.Load(fs);
 
 `Load(path)` records the originating directory so anchored glob patterns (e.g. `[src/**]`) can resolve against the
 correct root without an explicit `PathRoot` setting. `Load(Stream)` and `Parse(string)` produce documents with no
-path context, so anchored globs require `ConfigurationResolveOptions.PathRoot` to be set explicitly - or
-`MissingPathRootMode` set to `UseEmptyRoot` (the `Bodu` profile default; the `EditorConfigCompatible` profile selects
-`Throw`).
+path context: an anchored glob is matched against the target path as given, so `[src/*.txt]` matches `src/a.txt`, and
+`ConfigurationResolveOptions.PathRoot` only rebases a target that lies under it. `MissingPathRootMode` matters only when
+`Resolve` gets no target path at all: `UseEmptyRoot` (the `Bodu` profile default) returns the preamble-only view, and
+`Throw` (which the `EditorConfigCompatible` profile selects) raises `InvalidOperationException`.
 
 ### Resolve options - anchor a path root
 
