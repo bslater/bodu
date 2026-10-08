@@ -165,11 +165,16 @@ were written. Each cause became an issue, fixed test first:
   gave none. It now yields a record as soon as its LF or complete CRLF is read (csv-parse 1.1.2), and reports every
   error at its line and offset in the whole stream (papaparse 4.5.0 PR #509).
 - **#853 to #856. The serializer.** A field of white space binds `null` to a nullable value-type member, as an empty
-  field does (csvhelper 1.1.1, sylvan-csv 0.8.3). `DateTime` and `DateTimeOffset` are written with the round-trip `O`
-  format, and `DateOnly`, `TimeOnly` and `TimeSpan` in invariant round-trip forms, so that every tick and the kind or
-  offset survive (papaparse 5.5.5). An empty collection writes the header row alone in header mode, from every
-  `Serialize` and `SerializeAsync` overload (csvhelper 2.8.3). And a member hidden with `new` maps to one column, its
-  most derived declaration (csvhelper 12.2.2).
+  field does, except a `char?` member, which reads a single space as a space (csvhelper 1.1.1, sylvan-csv 0.8.3).
+  `DateTime` and `DateTimeOffset` are written with the round-trip `O` format, and `DateOnly`, `TimeOnly` and `TimeSpan`
+  in invariant round-trip forms, so that every tick and the kind or offset survive (papaparse 5.5.5). An empty
+  collection writes the header row alone in header mode, from every `Serialize` and `SerializeAsync` overload (csvhelper
+  2.8.3). And a member hidden with `new` maps to one column, its most derived declaration (csvhelper 12.2.2).
+
+Fixing these turned up three more defects, each fixed the same way. The streaming deserializer dropped a U+FEFF that
+started a record in a later buffered segment, as if it were a byte-order mark (#912). The source generator's delimited
+factories kept the general temporal forms and the empty-only `null` rule that #853 and #854 had replaced in the
+reflection binder (#913). And the writer's API overview showed LF line endings where the writer writes CRLF (#914).
 
 The fixes moved eleven rows between classes. Six became `dialect` rows, citing the documents the fixes wrote. go-csv
 1.10 #19410 cases 2 and 3, where Go matches a non-ASCII delimiter or comment character as a whole rune, are now `unit`
@@ -185,15 +190,14 @@ and rust-csv 1.3.0 #283 case 1 expect a first field that begins with the comment
 ### Documentation that disagrees with the behaviour or with itself
 
 The first run listed seven places where the documentation disagreed with the behaviour or with itself. The fixes above
-corrected six of them; one remains:
-
-- `DelimitedDuplicateHeaderBehavior.cs` line 20: under `TakeFirst` later columns with the name are "unnamed", but they
-  keep it (`a,b,a` reads `[a,1],[b,2],[a,3]`); it is `TakeLast` that blanks the earlier name.
+corrected six of them, and #911 the seventh: `DelimitedDuplicateHeaderBehavior.TakeFirst` said that later columns with a
+duplicated name are unnamed, though the reader keeps every column's name; it is `TakeLast` that reports the earlier
+columns under an empty name.
 
 Three behaviours that `dialect` rows rely on are not in the reader's public documentation. A lone CR ends a line, which
 only the private `Utf8DelimitedReader.SkipLineEnding` documents. Blank lines are skipped, although RFC 4180's grammar
 reads an empty line as a record of one empty field: the reader documents that only in private XML documentation
-(`LoadRecord` and `SkipBlankAndCommentLines`, `Utf8DelimitedReader.cs` lines 348 and 551), and the writer's remarks
+(`LoadRecord` and `SkipBlankAndCommentLines`, `Utf8DelimitedReader.cs` lines 357 and 560), and the writer's remarks
 mention it (`Utf8DelimitedWriter.cs` lines 32 and 35). And under `Ragged` an extra field is named by its zero-based
 index, a name that can collide with a real header, which nothing documents. The `dialect` rows that rely on them are
 go-csv 1.10 #22937 case 3 and papaparse 4.1.3 (a lone CR), sep 0.2.0 #10 case 3 and sylvan-csv 1.1.16 (blank lines), and
