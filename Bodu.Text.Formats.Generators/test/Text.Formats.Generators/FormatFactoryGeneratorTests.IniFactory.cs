@@ -144,4 +144,34 @@ public partial class FormatFactoryGeneratorTests
 
         Assert.AreEqual(reflection, generated);
     }
+
+    /// <summary>
+    /// Verifies that a value the generated INI factory cannot convert, an unparsable or overflowing integer, date or
+    /// enum value, throws <see cref="IniSerializationException" /> carrying the conversion error, as INI's reflection
+    /// binder does, rather than the raw conversion exception.
+    /// </summary>
+    /// <param name="key">The key that holds the value.</param>
+    /// <param name="value">The value that cannot be converted.</param>
+    [TestMethod]
+    [DataRow("Count", "abc")]
+    [DataRow("Count", "99999999999")]
+    [DataRow("At", "not a date")]
+    [DataRow("Kind", "Wizard")]
+    public void IniFactory_WhenAValueCannotBeConverted_ShouldThrowIniSerializationException(string key, string value)
+    {
+        string text = $"[Schedule]\n{key}={value}\n";
+
+        var reflection = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<ScheduleDocument>(text);
+        });
+        var generated = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.DeserializeSection(text, "Schedule", GeneratedScheduleSection.IniFactory);
+        });
+
+        Assert.IsNotNull(reflection.InnerException);
+        Assert.IsNotNull(generated.InnerException);
+        Assert.AreEqual(reflection.InnerException.GetType(), generated.InnerException.GetType());
+    }
 }

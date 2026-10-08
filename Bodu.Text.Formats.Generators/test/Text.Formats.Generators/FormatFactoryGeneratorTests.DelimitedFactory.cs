@@ -204,6 +204,36 @@ public partial class FormatFactoryGeneratorTests
     }
 
     /// <summary>
+    /// Verifies that a field the generated factory cannot convert, an unparsable or overflowing integer, date or enum
+    /// value, throws <see cref="DelimitedSerializationException" /> carrying the conversion error, as the runtime
+    /// reflection binder does, rather than the raw conversion exception.
+    /// </summary>
+    /// <param name="column">The column that holds the value.</param>
+    /// <param name="value">The value that cannot be converted.</param>
+    [TestMethod]
+    [DataRow("Id", "abc")]
+    [DataRow("Count", "99999999999")]
+    [DataRow("At", "not a date")]
+    [DataRow("Kind", "Wizard")]
+    public void DelimitedFactory_WhenAValueCannotBeConverted_ShouldThrowDelimitedSerializationException(string column, string value)
+    {
+        string text = $"{column}\n{value}\n";
+
+        var reflection = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<GeneratedNullableRecord>(text);
+        });
+        var generated = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize(text, GeneratedNullableRecord.DelimitedFactory);
+        });
+
+        Assert.IsNotNull(reflection.InnerException);
+        Assert.IsNotNull(generated.InnerException);
+        Assert.AreEqual(reflection.InnerException.GetType(), generated.InnerException.GetType());
+    }
+
+    /// <summary>
     /// Creates records whose temporal values have every component a lossy form would drop: seven digits of fractional
     /// seconds, a UTC or unspecified kind, a whole or fractional offset, and a negative or multi-day duration.
     /// </summary>
