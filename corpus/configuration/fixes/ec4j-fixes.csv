@@ -3,7 +3,7 @@
 # licence: Apache-2.0
 # note: only fixes are catalogued; features (the max_line_length property type, programmatic defaults, end-of-line detection, the list of .editorconfig files found, the checkstyle JAR), formatting, CI, test-suite upgrades and dependency updates are not, nor the commit 059481e, which only adds a test for its issue #101
 # note: fixes to ec4j's Resource API for reading source files in a charset, to exception messages and to Windows paths are catalogued as n/a; rows run under the EditorConfigCompatible profile
-# note: ec4j shares the editorconfig-core-test suite with the other cores, so its empty-file and length rows restate the core-test cases the other catalogues hold too
+# note: ec4j shares the editorconfig-core-test suite with the other cores, so its rows for the minimum supported lengths restate the core-test cases the core-c and core-py catalogues hold too
 library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason
 ec4j,1.2.0,f08567693a,Whitespace inside a key ended the key,applies,1,parse,Profile=EditorConfigCompatible;Target=test.txt,[*.txt]\r\nke y1=val1\r\n,"{""ke y1"":""val1""}",upstream,"spaceInTheMiddleKey (EditorConfigParserTest.java, f085676), with core-test spaces_in_middle_key (core-test #51): the key is everything before the first ="
 ec4j,1.2.0,f08567693a,Whitespace inside a key ended the key,applies,2,parse,Profile=EditorConfigCompatible;Target=test.txt,[*.txt]\r\n ke y1 = val1 \r\n,"{""ke y1"":""val1""}",upstream,"spaceInTheMiddleKeyWithLeadingAndTrailingWs: the key and value are trimmed at both ends, keeping the inner space"
