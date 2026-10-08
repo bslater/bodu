@@ -126,4 +126,45 @@ public partial class YamlDocumentTests
 
         Assert.AreEqual(expected, ToJson(document.RootElement));
     }
+
+    /// <summary>
+    /// Verifies that an implicit mapping key, first or later in its mapping, cannot begin with an indicator that cannot
+    /// begin a plain scalar, nor with <c>-</c> followed by a space.
+    /// </summary>
+    /// <param name="yaml">A document with an implicit key that begins with an indicator.</param>
+    [TestMethod]
+    [DataRow(",foo: bar", DisplayName = "a comma, first key")]
+    [DataRow("@foo: bar", DisplayName = "a commercial at, first key")]
+    [DataRow("`foo: bar", DisplayName = "a grave accent, first key")]
+    [DataRow("k: v\n%foo: bar", DisplayName = "a percent sign, later key")]
+    [DataRow("k: v\n|foo: bar", DisplayName = "a vertical bar, later key")]
+    [DataRow("k: v\n>foo: bar", DisplayName = "a greater-than sign, later key")]
+    [DataRow("k: v\n]foo: bar", DisplayName = "a closing bracket, later key")]
+    [DataRow("k: v\n}foo: bar", DisplayName = "a closing brace, later key")]
+    [DataRow("k: v\n- : bar", DisplayName = "a dash and a space, later key")]
+    [DataRow("- k: v\n  @foo: bar", DisplayName = "a commercial at, later key of a nested mapping")]
+    [DataRow("&a @foo: bar", DisplayName = "a commercial at after an anchor")]
+    public void Parse_WhenImplicitKeyStartsWithIndicator_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an implicit key may begin with <c>-</c>, <c>?</c> or <c>:</c> followed by a character that could
+    /// continue a plain scalar, and that a value indicator at the start of an entry is an empty key.
+    /// </summary>
+    /// <param name="yaml">A document with such keys.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("k: v\n-a: 1\n?a: 2\n:a: 3\n", """{"k":"v","-a":1,"?a":2,":a":3}""", DisplayName = "safe characters")]
+    [DataRow("k: v\n: bar\n", """{"k":"v","":"bar"}""", DisplayName = "an empty key")]
+    public void Parse_WhenImplicitKeyStartsWithIndicatorAndSafeCharacter_ShouldReadIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
 }

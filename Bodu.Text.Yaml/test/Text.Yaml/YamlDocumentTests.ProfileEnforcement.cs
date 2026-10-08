@@ -242,4 +242,27 @@ public partial class YamlDocumentTests
             using var doc = YamlDocument.Parse("root: " + deep + "\n");
         });
     }
+
+    /// <summary>
+    /// Verifies that a flow collection in implicit-key position is rejected wherever the key appears, rather than its
+    /// brackets being read as the text of a scalar key.
+    /// </summary>
+    /// <param name="yaml">A document with a flow collection as an implicit key.</param>
+    [TestMethod]
+    [DataRow("1: 2\n\n[3]: 4", DisplayName = "after a blank line")]
+    [DataRow("1: 2\n# c\n[3]: 4", DisplayName = "after a comment line")]
+    [DataRow("?\n[3]: 4", DisplayName = "after an empty explicit key")]
+    [DataRow("k: v\n[a, b]: c\n", DisplayName = "a flow sequence, later key")]
+    [DataRow("k: v\n{a: b}: c\n", DisplayName = "a flow mapping, later key")]
+    [DataRow("- k: v\n  [a]: b", DisplayName = "a later key of a nested mapping")]
+    [DataRow("&a [3]: 4", DisplayName = "an anchored first key")]
+    [DataRow("k: v\n&a [3]: 4", DisplayName = "an anchored later key")]
+    [DataRow("k: v\n!!seq [3]: 4", DisplayName = "a tagged later key")]
+    public void Parse_WhenFlowCollectionIsImplicitKey_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
 }
