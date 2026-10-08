@@ -62,7 +62,7 @@ Annotate a partial record type with `[DelimitedRecord]` and reference the `Bodu.
 
 ## Pattern 4 - TSV and other dialects
 
-The delimiter, quote, and comment characters live on the reader/writer options:
+The delimiter, quote, and comment characters live on the reader/writer options. Each must be an ASCII character other than CR and LF, and no two may be the same; the reader and writer constructors throw `ArgumentException` otherwise (see [Parser policies](../../docs/formats/parser-policies.md)):
 
 ```csharp
 using Bodu.Text.Delimited.Reader;

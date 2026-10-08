@@ -58,6 +58,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Arg_Invalid_DelimitedDialectCharacter" xml:space="preserve">
+    <value>The {0} option is U+{1:X4}, which a delimited reader or writer cannot use: the character must be ASCII and must not be a carriage return or a line feed.</value>
+  </data>
+  <data name="Arg_Invalid_DelimitedDialectCharactersEqual" xml:space="preserve">
+    <value>The {0} and {1} options are both U+{2:X4}, but they must be different characters.</value>
+  </data>
   <data name="Format_Invalid_DelimitedDuplicateHeader" xml:space="preserve">
     <value>The delimited header row contains the duplicate column name '{0}'.</value>
   </data>

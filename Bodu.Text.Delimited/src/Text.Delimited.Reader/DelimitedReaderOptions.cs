@@ -11,9 +11,18 @@ namespace Bodu.Text.Delimited.Reader;
 /// handling, and the field-count and duplicate-header policies.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The options are an immutable value type. Because the default value of a <see cref="char" /> is <c>'\0'</c>, the
 /// delimiter, quote, and comment characters fall back to their RFC 4180 defaults (<c>','</c>, <c>'"'</c>, <c>'#'</c>)
 /// when left unset, and headers are read by default (set <see cref="NoHeader" /> to disable).
+/// </para>
+/// <para>
+/// The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, so each must be
+/// an ASCII character other than a carriage return or a line feed, and no two of them may be the same character. The
+/// comment character must differ from the delimiter and the quote even when <see cref="AllowComments" /> is not set.
+/// The <see cref="Utf8DelimitedReader" /> constructor throws <see cref="ArgumentException" /> for options that break
+/// these rules.
+/// </para>
 /// </remarks>
 public readonly struct DelimitedReaderOptions
 {
@@ -27,12 +36,20 @@ public readonly struct DelimitedReaderOptions
     /// Gets the field delimiter, or <c>'\0'</c> to use the default comma.
     /// </summary>
     /// <value>The delimiter character.</value>
+    /// <remarks>
+    /// The delimiter must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Quote" /> and <see cref="CommentChar" />.
+    /// </remarks>
     public char Delimiter { get; init; }
 
     /// <summary>
     /// Gets the quote character, or <c>'\0'</c> to use the default double quote.
     /// </summary>
     /// <value>The quote character.</value>
+    /// <remarks>
+    /// The quote must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Delimiter" /> and <see cref="CommentChar" />.
+    /// </remarks>
     public char Quote { get; init; }
 
     /// <summary>
@@ -57,6 +74,10 @@ public readonly struct DelimitedReaderOptions
     /// Gets the comment character, or <c>'\0'</c> to use the default <c>'#'</c>.
     /// </summary>
     /// <value>The comment character.</value>
+    /// <remarks>
+    /// The comment character must be an ASCII character other than a carriage return or a line feed, and must differ
+    /// from <see cref="Delimiter" /> and <see cref="Quote" />, even when <see cref="AllowComments" /> is not set.
+    /// </remarks>
     public char CommentChar { get; init; }
 
     /// <summary>

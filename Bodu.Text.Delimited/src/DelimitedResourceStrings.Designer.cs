@@ -57,6 +57,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The {0} option is U+{1:X4}, which a delimited reader or writer cannot use: the character must be ASCII and must not be a carriage return or a line feed..
+        /// </summary>
+        internal static string Arg_Invalid_DelimitedDialectCharacter {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DelimitedDialectCharacter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} and {1} options are both U+{2:X4}, but they must be different characters..
+        /// </summary>
+        internal static string Arg_Invalid_DelimitedDialectCharactersEqual {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DelimitedDialectCharactersEqual", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The delimited header row contains the duplicate column name '{0}'..
         /// </summary>
         internal static string Format_Invalid_DelimitedDuplicateHeader {

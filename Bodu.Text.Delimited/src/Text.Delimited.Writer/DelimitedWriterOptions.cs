@@ -11,8 +11,15 @@ namespace Bodu.Text.Delimited.Writer;
 /// whether a header row is emitted for object records.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The options are an immutable value type; the delimiter and quote fall back to their RFC 4180 defaults (<c>','</c>
 /// and <c>'"'</c>) when left unset.
+/// </para>
+/// <para>
+/// The writer emits the delimiter and quote as single bytes of its UTF-8 output, so each must be an ASCII character
+/// other than a carriage return or a line feed, and the two must differ. The <see cref="Utf8DelimitedWriter" />
+/// constructors throw <see cref="ArgumentException" /> for options that break these rules.
+/// </para>
 /// </remarks>
 public readonly struct DelimitedWriterOptions
 {
@@ -26,12 +33,20 @@ public readonly struct DelimitedWriterOptions
     /// Gets the field delimiter, or <c>'\0'</c> to use the default comma.
     /// </summary>
     /// <value>The delimiter character.</value>
+    /// <remarks>
+    /// The delimiter must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Quote" />.
+    /// </remarks>
     public char Delimiter { get; init; }
 
     /// <summary>
     /// Gets the quote character, or <c>'\0'</c> to use the default double quote.
     /// </summary>
     /// <value>The quote character.</value>
+    /// <remarks>
+    /// The quote must be an ASCII character other than a carriage return or a line feed, and must differ from
+    /// <see cref="Delimiter" />.
+    /// </remarks>
     public char Quote { get; init; }
 
     /// <summary>

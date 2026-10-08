@@ -122,6 +122,11 @@ public sealed class DelimitedSerializerOptions
     /// </summary>
     /// <value>The delimiter character.</value>
     /// <exception cref="InvalidOperationException">Thrown when set after the options have become read-only.</exception>
+    /// <remarks>
+    /// The serializer passes the delimiter to the reader and writer it creates, so it must be a character both accept
+    /// (see <see cref="Reader.DelimitedReaderOptions" /> and <see cref="Writer.DelimitedWriterOptions" />); otherwise
+    /// serializing or deserializing throws <see cref="ArgumentException" />.
+    /// </remarks>
     public char Delimiter
     {
         get => _delimiter;
@@ -137,6 +142,11 @@ public sealed class DelimitedSerializerOptions
     /// </summary>
     /// <value>The quote character.</value>
     /// <exception cref="InvalidOperationException">Thrown when set after the options have become read-only.</exception>
+    /// <remarks>
+    /// The serializer passes the quote to the reader and writer it creates, so it must be a character both accept (see
+    /// <see cref="Reader.DelimitedReaderOptions" /> and <see cref="Writer.DelimitedWriterOptions" />); otherwise
+    /// serializing or deserializing throws <see cref="ArgumentException" />.
+    /// </remarks>
     public char Quote
     {
         get => _quote;

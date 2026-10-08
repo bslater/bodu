@@ -43,7 +43,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
             ("cpython-csv", 66, 16, 2, 58, 0, 17),
             ("csv-parse", 101, 31, 5, 72, 0, 29),
             ("csvhelper", 208, 44, 4, 166, 0, 26),
-            ("go-csv", 12, 13, 4, 2, 0, 13),
+            ("go-csv", 12, 11, 6, 2, 0, 11),
             ("papaparse", 106, 32, 4, 71, 6, 31),
             ("rust-csv", 34, 16, 3, 21, 0, 14),
             ("sep", 16, 10, 1, 9, 0, 7),

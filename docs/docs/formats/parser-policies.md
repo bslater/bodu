@@ -19,10 +19,12 @@ Every reader throws its format's `*FormatException` (`DelimitedFormatException`,
 | `FieldCountBehavior` | `Strict` (every record matches the header's field count) / `Ragged` | `Strict` |
 | `MalformedRecordBehavior` | `Throw` / `SkipRecord` (truncate the record at the structural error) | `Throw` |
 | `DuplicateHeaderBehavior` | `Throw` / `TakeFirst` / `TakeLast` | `Throw` |
-| `Delimiter`, `Quote` | any character | `,` / `"` |
+| `Delimiter`, `Quote` | an ASCII character other than CR and LF; the two must differ | `,` / `"` |
 | `NoHeader` | treat the first record as data (records become positional arrays) | header mode |
 | `TrimFields` | trim unquoted fields | off |
-| `AllowComments`, `CommentChar` | skip comment lines | off / `#` |
+| `AllowComments`, `CommentChar` | skip comment lines; the character follows the `Delimiter` rule and must differ from `Delimiter` and `Quote`, even with comments off | off / `#` |
+
+The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, and the writer emits its delimiter and quote the same way. Each must therefore be an ASCII character other than a carriage return or a line feed, and no two may be the same character; a character outside ASCII would otherwise be cut to one byte and matched inside other characters. The `Utf8DelimitedReader` and `Utf8DelimitedWriter` constructors, and the `DelimitedSerializer` methods that create them, throw `ArgumentException` for `options`, naming the offending option, when the characters break these rules.
 
 Strict field counts are measured against the header row, so they apply in header mode; positional mode accepts any shape unless you enforce one yourself.
 

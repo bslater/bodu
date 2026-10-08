@@ -45,6 +45,10 @@ public static partial class DelimitedSerializer
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <typeparamref name="T" /> is not a collection of records.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
+    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static string Serialize<T>(T value, DelimitedSerializerOptions? options = null)
@@ -67,6 +71,10 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <typeparamref name="T" /> is not a collection of records.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
+    /// <see cref="Writer.DelimitedWriterOptions" />).
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -120,6 +128,10 @@ public static partial class DelimitedSerializer
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <typeparamref name="T" /> is not a collection of records.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
+    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static ValueTask SerializeAsync<T>(Stream destination, T value, DelimitedSerializerOptions? options = null, CancellationToken cancellationToken = default)
@@ -144,6 +156,10 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the text is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
+    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static List<TRecord> Deserialize<TRecord>(string text, DelimitedSerializerOptions? options = null)
@@ -162,6 +178,10 @@ public static partial class DelimitedSerializer
     /// <returns>The list of deserialized records.</returns>
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
+    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static List<TRecord> Deserialize<TRecord>(ReadOnlySpan<byte> utf8Delimited, DelimitedSerializerOptions? options = null)
@@ -199,6 +219,10 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
+    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static List<TRecord> Deserialize<TRecord>(Stream source, DelimitedSerializerOptions? options = null)

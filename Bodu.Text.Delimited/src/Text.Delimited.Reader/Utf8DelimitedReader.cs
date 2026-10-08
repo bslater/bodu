@@ -82,8 +82,15 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     /// <param name="data">The delimited source bytes.</param>
     /// <param name="options">The reader options.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote. The comment character is checked even when comments are not allowed.
+    /// </exception>
     public Utf8DelimitedReader(ReadOnlySpan<byte> data, DelimitedReaderOptions options)
     {
+        DelimitedThrowHelper.ThrowIfUnusableDialect(options);
+
         _data = data;
         _options = options;
         _headers = [];

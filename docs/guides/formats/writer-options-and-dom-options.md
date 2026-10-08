@@ -33,9 +33,11 @@ The line-format structs are `readonly struct`s with `init` accessors and a stati
 
 | Member | Type | Default | Effect |
 |---|---|---|---|
-| `Delimiter` | `char` | `'\0'` → `,` | The field separator. |
-| `Quote` | `char` | `'\0'` → `"` | The quoting character; a field containing the delimiter, the quote, or a line break is wrapped in it, with embedded quotes doubled. |
+| `Delimiter` | `char` | `'\0'` → `,` | The field separator: an ASCII character other than CR and LF, distinct from `Quote`. |
+| `Quote` | `char` | `'\0'` → `"` | The quoting character, an ASCII character other than CR and LF, distinct from `Delimiter`; a field containing the delimiter, the quote, or a line break is wrapped in it, with embedded quotes doubled. |
 | `NoHeader` | `bool` | `false` | Suppress the header row that the first object record would otherwise emit. |
+
+The writer emits both characters as single UTF-8 bytes, so its constructors throw `ArgumentException` for a delimiter or quote outside ASCII, for a carriage return or a line feed, and for a delimiter equal to the quote ([parser policies](../../docs/formats/parser-policies.md) states the rule for the reader too).
 
 Records written as objects (`WriteStartObject` / `WritePropertyName` / `WriteString`) emit a header from the first record's property names unless `NoHeader` is set. A tab-separated, header-less file with single-quote quoting:
 

@@ -82,9 +82,14 @@ public ref struct Utf8DelimitedWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> is not an ASCII character or is a carriage
+    /// return or a line feed, or when the delimiter equals the quote.
+    /// </exception>
     public Utf8DelimitedWriter(IBufferWriter<byte> output, DelimitedWriterOptions options)
     {
         ThrowHelper.ThrowIfNull(output);
+        DelimitedThrowHelper.ThrowIfUnusableDialect(options);
 
         _output = output;
         _stream = null;
@@ -116,9 +121,14 @@ public ref struct Utf8DelimitedWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> is not an ASCII character or is a carriage
+    /// return or a line feed, or when the delimiter equals the quote.
+    /// </exception>
     public Utf8DelimitedWriter(Stream stream, DelimitedWriterOptions options)
     {
         ThrowHelper.ThrowIfNull(stream);
+        DelimitedThrowHelper.ThrowIfUnusableDialect(options);
 
         _scratch = new ArrayBufferWriter<byte>();
         _output = _scratch;

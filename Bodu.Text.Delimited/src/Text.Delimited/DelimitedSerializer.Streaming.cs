@@ -36,6 +36,10 @@ public static partial class DelimitedSerializer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> or <paramref name="records" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the writer (see
+    /// <see cref="Writer.DelimitedWriterOptions" />).
+    /// </exception>
     /// <remarks>
     /// The sequence is never materialized: each record is encoded as it is produced and flushed to
     /// <paramref name="destination" /> in bounded batches, so memory use is independent of the sequence length. The
@@ -52,9 +56,12 @@ public static partial class DelimitedSerializer
         DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
         effective.MakeReadOnly();
 
+        // The per-record writers validate the options too, but an empty sequence creates none, so validate up front.
+        DelimitedWriterOptions writerOptions = effective.ToWriterOptions();
+        DelimitedThrowHelper.ThrowIfUnusableDialect(writerOptions, nameof(options));
+
         bool isStringArray = typeof(TRecord) == typeof(string[]);
         Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
-        DelimitedWriterOptions writerOptions = effective.ToWriterOptions();
 
         var buffer = new ArrayBufferWriter<byte>();
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
@@ -91,6 +98,10 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter or quote of <paramref name="options" /> cannot be used by the reader (see
+    /// <see cref="Reader.DelimitedReaderOptions" />).
+    /// </exception>
     /// <remarks>
     /// The stream is consumed in segments: only the bytes of records not yet terminated remain buffered, so memory use
     /// is bounded by the longest single record rather than the document. A record that ends exactly at the current
@@ -106,7 +117,10 @@ public static partial class DelimitedSerializer
 
         DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
         effective.MakeReadOnly();
+
+        // Validate before the first read, so that unusable options fail without consuming the stream.
         DelimitedReaderOptions readerOptions = effective.ToReaderOptions();
+        DelimitedThrowHelper.ThrowIfUnusableDialect(readerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
         Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
