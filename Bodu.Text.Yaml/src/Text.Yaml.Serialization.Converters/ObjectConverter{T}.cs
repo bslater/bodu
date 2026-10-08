@@ -310,6 +310,10 @@ internal sealed class ObjectConverter<T>
         if (property.GetValue(instance) is not System.Collections.IList existing || bufferedValue is not System.Collections.IEnumerable items || bufferedValue is string)
             return;
 
+        // An array, or any other read-only or fixed-size list, cannot take the read elements, so the member keeps it.
+        if (existing.IsReadOnly || existing.IsFixedSize)
+            return;
+
         foreach (object? item in items)
             existing.Add(item);
     }

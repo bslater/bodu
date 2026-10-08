@@ -13,8 +13,9 @@ namespace Bodu.Text.Serialization;
 /// <remarks>
 /// <see cref="Populate" /> applies to collection and dictionary members: the entries read from the input are added into
 /// the existing instance, so a get-only collection property initialized in the type can round-trip. When the existing
-/// value is <see langword="null" /> or the member is not a populatable collection, the serializer falls back to
-/// replacing the value.
+/// value is <see langword="null" /> or is not a collection that can grow (an array, or a read-only or fixed-size
+/// collection or dictionary, cannot), the serializer falls back to replacing the value, and a member without a setter
+/// keeps its value.
 /// </remarks>
 public enum ObjectCreationHandling
 {

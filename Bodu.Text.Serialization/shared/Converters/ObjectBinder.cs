@@ -120,9 +120,9 @@ internal static class ObjectBinder
     /// </returns>
     /// <remarks>
     /// The existing value must be non-<see langword="null" /> and shaped as a non-generic <see cref="IDictionary" /> or
-    /// <see cref="IList" />, or a closed <c>ICollection&lt;T&gt;</c>, and the buffered value must be enumerable. A
-    /// dictionary copies key/value pairs; a list or collection adds elements in order. Any other shape returns
-    /// <see langword="false" />.
+    /// <see cref="IList" />, or a closed <c>ICollection&lt;T&gt;</c>, that can grow: an array, or any read-only or
+    /// fixed-size collection, cannot take the read entries. The buffered value must be enumerable. A dictionary copies
+    /// key/value pairs; a list or collection adds elements in order. Any other shape returns <see langword="false" />.
     /// </remarks>
     private static bool TryPopulate(PropertyMetadata property, object instance, object? bufferedValue)
     {
@@ -132,6 +132,9 @@ internal static class ObjectBinder
 
         if (existing is IDictionary existingDictionary && bufferedValue is IDictionary bufferedDictionary)
         {
+            if (existingDictionary.IsReadOnly || existingDictionary.IsFixedSize)
+                return false;
+
             foreach (DictionaryEntry pair in bufferedDictionary)
                 existingDictionary[pair.Key] = pair.Value;
 
@@ -143,6 +146,9 @@ internal static class ObjectBinder
 
         if (existing is IList existingList)
         {
+            if (existingList.IsReadOnly || existingList.IsFixedSize)
+                return false;
+
             foreach (object? item in bufferedItems)
                 existingList.Add(item);
 
@@ -159,8 +165,8 @@ internal static class ObjectBinder
     /// <param name="existing">The existing collection instance.</param>
     /// <param name="bufferedItems">The items read for the member.</param>
     /// <returns>
-    /// <see langword="true" /> when an <c>ICollection&lt;T&gt;</c> was found and the items were added; otherwise
-    /// <see langword="false" />.
+    /// <see langword="true" /> when an <c>ICollection&lt;T&gt;</c> that is not read-only was found and the items were
+    /// added; otherwise <see langword="false" />.
     /// </returns>
     private static bool TryPopulateGenericCollection(object existing, IEnumerable bufferedItems)
     {
@@ -168,7 +174,7 @@ internal static class ObjectBinder
             existing.GetType().GetInterfaces(),
             static i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>));
 
-        if (collectionInterface is null)
+        if (collectionInterface is null || collectionInterface.GetProperty("IsReadOnly")?.GetValue(existing) is true)
             return false;
 
         MethodInfo? add = collectionInterface.GetMethod("Add");

@@ -71,7 +71,7 @@ A type may declare at most one `[ExtensionData]` member - two is a metadata erro
 
 ## Object creation handling
 
-<xref:Bodu.Text.Serialization.ObjectCreationHandling> applies to collection and dictionary members. `Replace` (the default) builds a new instance and assigns it; `Populate` adds the entries read from the input into the instance the member already holds, which is how a get-only `List<T>` initialized in the type round-trips. When the existing value is `null` or the member is not a populatable collection the serializer falls back to `Replace`. A member-level attribute beats a type-level one, and both beat `PreferredObjectCreationHandling`.
+<xref:Bodu.Text.Serialization.ObjectCreationHandling> applies to collection and dictionary members. `Replace` (the default) builds a new instance and assigns it; `Populate` adds the entries read from the input into the instance the member already holds, which is how a get-only `List<T>` initialized in the type round-trips. When the existing value is `null` or is not a collection that can grow (an array, or a read-only or fixed-size collection or dictionary, cannot), the serializer falls back to `Replace`, and a member without a setter keeps its value. A member-level attribute beats a type-level one, and both beat `PreferredObjectCreationHandling`.
 
 ## Property order
 
