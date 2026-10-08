@@ -103,4 +103,22 @@ public partial class YamlSerializerTests
         /// <value>The value.</value>
         public new string? Value { get; set; }
     }
+
+    /// <summary>
+    /// Verifies that a mapping key longer than the 1024 characters an implicit key may hold round-trips through
+    /// serialize and deserialize.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenKeyExceeds1024Characters_ShouldRoundTrip()
+    {
+        string key = new('k', 2000);
+        var original = new Dictionary<string, int> { [key] = 1, ["short"] = 2 };
+
+        string yaml = YamlSerializer.Serialize(original);
+        Dictionary<string, int> restored = YamlSerializer.Deserialize<Dictionary<string, int>>(yaml)!;
+
+        Assert.AreEqual(2, restored.Count);
+        Assert.AreEqual(1, restored[key]);
+        Assert.AreEqual(2, restored["short"]);
+    }
 }

@@ -9,8 +9,9 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies how mapping keys are named: a scalar key is named by its text as written in every key form (implicit block
-/// keys, flow mapping keys, explicit keys and flow-sequence pairs), whatever value the schema resolves the text to.
+/// Verifies the mapping key contracts: a scalar key is named by its text as written in every key form (implicit block
+/// keys, flow mapping keys, explicit keys and flow-sequence pairs), whatever value the schema resolves the text to, and
+/// an implicit key holds at most 1024 characters.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -97,5 +98,63 @@ public partial class YamlDocumentTests
         using var document = YamlDocument.Parse(yaml, new YamlDocumentOptions { SpecVersion = version });
 
         Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that an implicit key of 1024 characters, counted with its node properties, its quotes and the spaces
+    /// before its value indicator, is read, in a block mapping and in a flow-sequence pair alike.
+    /// </summary>
+    /// <param name="template">The document, in which <c>{0}</c> stands for the key's run of characters.</param>
+    /// <param name="unit">The character the run repeats.</param>
+    /// <param name="count">The number of characters in the run.</param>
+    [TestMethod]
+    [DataRow("{0}: v\n", "x", 1024, DisplayName = "a plain key")]
+    [DataRow("\"{0}\": v\n", "x", 1022, DisplayName = "a quoted key, with its quotes")]
+    [DataRow("{0} : v\n", "x", 1023, DisplayName = "a plain key, with a space before its indicator")]
+    [DataRow("a: 1\n{0}: v\n", "x", 1024, DisplayName = "a later key")]
+    [DataRow("- {0}: v\n", "x", 1024, DisplayName = "a compact mapping key")]
+    [DataRow("&a {0}: v\n", "x", 1021, DisplayName = "an anchored key, with its anchor")]
+    [DataRow("[ {0}: v ]", "x", 1024, DisplayName = "a flow-sequence pair key")]
+    [DataRow("{0}: v\n", "\u00E9", 1024, DisplayName = "two-byte characters")]
+    [DataRow("{0}: v\n", "\uD83D\uDE00", 1024, DisplayName = "characters outside the Basic Multilingual Plane")]
+    public void Parse_WhenImplicitKeyHas1024Characters_ShouldReadIt(string template, string unit, int count)
+    {
+        string key = string.Concat(Enumerable.Repeat(unit, count));
+        using var document = YamlDocument.Parse(template.Replace("{0}", key, StringComparison.Ordinal));
+
+        YamlElement mapping = document.RootElement.ValueKind == YamlValueKind.Sequence
+            ? document.RootElement[0]
+            : document.RootElement;
+        Assert.AreEqual("v", mapping.GetProperty(key).GetString());
+    }
+
+    /// <summary>
+    /// Verifies that an implicit key longer than 1024 characters, counted with its node properties, its quotes and the
+    /// spaces before its value indicator, is rejected, in a block mapping and in a flow-sequence pair alike.
+    /// </summary>
+    /// <param name="template">The document, in which <c>{0}</c> stands for the key's run of characters.</param>
+    /// <param name="unit">The character the run repeats.</param>
+    /// <param name="count">The number of characters in the run.</param>
+    [TestMethod]
+    [DataRow("{0}: v\n", "x", 1025, DisplayName = "a plain key")]
+    [DataRow("\"{0}\": v\n", "x", 1023, DisplayName = "a quoted key, with its quotes")]
+    [DataRow("{0} : v\n", "x", 1024, DisplayName = "a plain key, with a space before its indicator")]
+    [DataRow("a: 1\n{0}: v\n", "x", 1025, DisplayName = "a later key")]
+    [DataRow("- {0}: v\n", "x", 1025, DisplayName = "a compact mapping key")]
+    [DataRow("&a {0}: v\n", "x", 1022, DisplayName = "an anchored key, with its anchor")]
+    [DataRow("[ {0}: v ]", "x", 1025, DisplayName = "a flow-sequence pair key")]
+    [DataRow("{0}: v\n", "\u00E9", 1025, DisplayName = "two-byte characters")]
+    [DataRow("{0}: v\n", "\uD83D\uDE00", 1025, DisplayName = "characters outside the Basic Multilingual Plane")]
+    public void Parse_WhenImplicitKeyExceeds1024Characters_ShouldThrowYamlFormatException(
+        string template,
+        string unit,
+        int count)
+    {
+        string key = string.Concat(Enumerable.Repeat(unit, count));
+
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(template.Replace("{0}", key, StringComparison.Ordinal));
+        });
     }
 }
