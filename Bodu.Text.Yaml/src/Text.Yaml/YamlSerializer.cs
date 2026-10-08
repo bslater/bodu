@@ -117,7 +117,10 @@ public static partial class YamlSerializer
     private static void SerializeCore(IBufferWriter<byte> destination, object? value, Type inputType, YamlSerializerOptions options)
     {
         options.MakeReadOnly();
-        var writer = new Utf8YamlWriter(destination);
+
+        // The writer enforces the serializer's own depth, so a graph that nests too deep fails at MaxDepth with the
+        // serializer's error rather than at the writer's default with a usage error.
+        var writer = new Utf8YamlWriter(destination, new YamlWriterOptions { MaxDepth = options.EffectiveMaxDepth });
 
         // Attach the serializer write state so the converters report a reference cycle cooperatively and unwind
         // through returns; the single recorded failure is thrown once here at the root boundary.

@@ -238,7 +238,7 @@ new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 32 });
 // → throws ArgumentOutOfRangeException: The writer indentation size must be between 1 and 16. (Parameter 'IndentSize')
 ```
 
-Opening a container past `MaxDepth` throws `InvalidOperationException` (*The maximum write depth of 1 has been exceeded.*) from the writer; the same limit reached through `YamlSerializer` - which uses `YamlSerializerOptions.MaxDepth` and the default writer options - surfaces as `YamlSerializationException`. `YamlSerializer` does not expose the writer options, so serializer output is always two-space, `\n`-terminated YAML; drive `Utf8YamlWriter` directly (or call a node's `WriteTo(writer)`) when you need another layout.
+Opening a container past `MaxDepth` throws `InvalidOperationException` (*The maximum write depth of 1 has been exceeded.*) from the writer; the same limit reached through `YamlSerializer` - whose writer takes `YamlSerializerOptions.MaxDepth` as its depth and the default writer options otherwise - surfaces as `YamlSerializationException`, so a graph may nest exactly `MaxDepth` mappings and sequences, and one more fails. `YamlSerializer` does not expose the writer options, so serializer output is always two-space, `\n`-terminated YAML; drive `Utf8YamlWriter` directly (or call a node's `WriteTo(writer)`) when you need another layout.
 
 ## Pattern 7 - Bencode DOMs: key case and key discipline
 

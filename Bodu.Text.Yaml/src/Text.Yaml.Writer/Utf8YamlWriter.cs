@@ -200,6 +200,15 @@ public ref struct Utf8YamlWriter
         {
             if (_state.Depth >= _maxDepth)
             {
+                // Under the serializer the limit is the serializer's own MaxDepth, which it reports as a binding
+                // failure carrying the path to the value; a writer used directly reports a usage error.
+                if (_state.WriteStack is { } stack)
+                {
+                    stack.SetFailure(string.Format(
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
+                    stack.ThrowIfFailed();
+                }
+
                 throw new InvalidOperationException(string.Format(
                     CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_WriterMaxDepthExceeded, _maxDepth));
             }
