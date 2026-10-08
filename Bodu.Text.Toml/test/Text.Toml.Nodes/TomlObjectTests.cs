@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml.Nodes;
 /// detachment, the single-parent rule on assignment, enumeration semantics, and insertion-ordered serialization.
 /// </summary>
 [TestClass]
-public class TomlObjectTests
+public partial class TomlObjectTests
 {
     /// <summary>
     /// Verifies that the enumerable constructor copies the supplied entries into the table.
