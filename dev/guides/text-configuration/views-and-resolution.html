@@ -109,7 +109,7 @@ string? name = view[&quot;appName&quot;];          // &quot;Bodu.Sample&quot; - 
 string? lvl  = view[&quot;level&quot;];            // &quot;Information&quot; - from [*.log], which matches &quot;app/server.log&quot;
 string? same = view[&quot;LEVEL&quot;];            // &quot;Information&quot; - lookups are case-insensitive by default
 </code></pre>
-<p><code>Resolve(targetPath?)</code> is an extension method on <code>IniDocumentBase</code> (so it works on both <code>ConfigurationDocument</code> and <code>IniDocument</code>) from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationExtensions.html">ConfigurationExtensions</a>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a colon-delimited path via <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> (dotted-to-colon by default), and produces a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> queryable with either notation.</p>
+<p><code>Resolve(targetPath?)</code> is an extension method on <code>IniDocumentBase</code> (so it works on both <code>ConfigurationDocument</code> and <code>IniDocument</code>) from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationExtensions.html">ConfigurationExtensions</a>. It layers the preamble first, then every section whose glob matches the target path in source order, projecting each raw key into a path via <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a> (dotted-to-colon by default; the <code>Identity</code> mapping keeps a key as written), and produces a <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> that the default mapping lets you query with either notation.</p>
 <div class="IMPORTANT">
 <h5>Important</h5>
 <p>With <strong>no</strong> target path - <code>document.Resolve()</code> or <code>Resolve(null)</code> - every named section is skipped and the view contains only the preamble. This is the single most common surprise: an INI file whose sections are intended as namespaces will resolve to an empty-but-for-preamble view unless you treat the section names as globs and pass a matching target path, or read the sections directly off the document (<code>document.Sections[i][&quot;key&quot;]</code>) instead of resolving.</p>
@@ -185,7 +185,7 @@ foreach (KeyValuePair&lt;string, string?&gt; kv in view)
 foreach (ConfigurationResolvedEntry entry in view.Entries)
     Console.WriteLine($&quot;  {entry.Key} = {entry.Value}  (from {entry.SectionPattern ?? &quot;&lt;preamble&gt;&quot;})&quot;);
 </code></pre>
-<p><code>Values</code> returns the resolved dictionary; <code>Keys</code>, <code>Count</code>, and <code>GetEnumerator()</code> mirror the standard read-only collection contract, and enumeration yields keys in canonical colon-delimited form. <code>Entries</code> exposes the richer <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a> view - same keys, same values, but with provenance: <code>Key</code>, <code>Value</code>, <code>SectionPattern</code> (the winning section's glob, or <code>null</code> for the preamble), and <code>SourceLocation</code>. Fetch a single key's provenance with <code>view.GetEntry(&quot;format:indent:size&quot;)</code>.</p>
+<p><code>Values</code> returns the resolved dictionary; <code>Keys</code>, <code>Count</code>, and <code>GetEnumerator()</code> mirror the standard read-only collection contract, and enumeration yields keys in the canonical form of the key mapping: colon-delimited under the default <code>DotToColon</code>, and as written under the <code>Identity</code> mapping the <code>EditorConfigCompatible</code> profile uses, so its keys keep their dots and colons, and a dotted key and a colon-delimited one are two keys, each looked up under the name it was written with (that profile also lowercases keys, as EditorConfig does). <code>Entries</code> exposes the richer <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolvedEntry.html">ConfigurationResolvedEntry</a> view - same keys, same values, but with provenance: <code>Key</code>, <code>Value</code>, <code>SectionPattern</code> (the winning section's glob, or <code>null</code> for the preamble), and <code>SourceLocation</code>. Fetch a single key's provenance with <code>view.GetEntry(&quot;format:indent:size&quot;)</code>.</p>
 <div class="NOTE">
 <h5>Note</h5>
 <p><code>ConfigurationView</code> also implements <code>IReadOnlyDictionary&lt;string, string?&gt;</code>, but its indexer deviates from the dictionary contract: <code>view[&quot;absent:key&quot;]</code> returns <code>null</code> rather than throwing <code>KeyNotFoundException</code>, matching <code>Microsoft.Extensions.Configuration</code>'s null-on-absent convention. Use <code>view.ContainsKey(key)</code> to distinguish an absent key from one whose value is <code>null</code>.</p>
@@ -197,7 +197,7 @@ ConfigurationView view = document.Resolve(
     targetPath: &quot;src/Foo.cs&quot;,
     options: ConfigurationResolveOptions.EditorConfigCompatible);
 </code></pre>
-<p>The default options (<code>ConfigurationResolveOptions.Bodu</code>) treat the global section's properties as participating preamble and the literal value <code>&quot;unset&quot;</code> as a normal string. The <code>EditorConfigCompatible</code> preset switches both - preamble properties are dropped from the resolved view, and <code>&quot;unset&quot;</code> removes the effective value the way EditorConfig requires.</p>
+<p>The default options (<code>ConfigurationResolveOptions.Bodu</code>) treat the global section's properties, except its <code>root</code> pair, as participating preamble and the literal value <code>&quot;unset&quot;</code> as a normal string. The <code>EditorConfigCompatible</code> preset switches both - preamble properties are dropped from the resolved view, and <code>&quot;unset&quot;</code> removes the effective value the way EditorConfig requires.</p>
 <p>Every field of <code>ConfigurationResolveOptions</code>:</p>
 <table>
 <thead>
@@ -216,7 +216,7 @@ ConfigurationView view = document.Resolve(
 <tr>
 <td><code>PathRoot</code></td>
 <td><code>null</code></td>
-<td>Optional anchor that anchored globs are rebased against; <code>null</code> defers to the document's load path.</td>
+<td>Optional root that a target path is rebased against before globs are matched; an explicit value always wins. <code>null</code> defers to the directory of the file a document was loaded from with <code>Load(path)</code>, and a target is matched as given when there is neither.</td>
 </tr>
 <tr>
 <td><code>MissingPathRootMode</code></td>
@@ -226,7 +226,7 @@ ConfigurationView view = document.Resolve(
 <tr>
 <td><code>ApplyPreambleProperties</code></td>
 <td><code>true</code> (Bodu/Strict/Relaxed) / <code>false</code> (EditorConfig)</td>
-<td>Whether the global section contributes to the view.</td>
+<td>Whether the global section contributes to the view. Its <code>root</code> pair never does: it marks the file as the root of its directory tree and stays in the document.</td>
 </tr>
 <tr>
 <td><code>PathComparison</code></td>
@@ -253,9 +253,10 @@ ConfigurationView view = document.Resolve(
 // &quot;/repo/my-app/src/svc/Foo.cs&quot; → relative &quot;src/svc/Foo.cs&quot; → matches [src/**/*.cs]
 ConfigurationView view = document.Resolve(&quot;/repo/my-app/src/svc/Foo.cs&quot;, options);
 </code></pre>
-<p>When a document is loaded with <code>ConfigurationDocument.Load(path)</code>, its originating directory is recorded and used as the implicit <code>PathRoot</code>, so anchored globs resolve against the right base without setting <code>PathRoot</code> explicitly. Documents parsed from a string or stream carry no path context - set <code>PathRoot</code> yourself when your globs are anchored.</p>
+<p>A glob that starts with <code>/</code> is anchored at the root: a target given relative to the root, as written or after rebasing, matches it as if the target began with <code>/</code>. <code>[/src/*.cs]</code> therefore applies to <code>src/Foo.cs</code>, to <code>/src/Foo.cs</code>, and, with <code>PathRoot = &quot;/repo&quot;</code>, to <code>/repo/src/Foo.cs</code>, while <code>lib/src/Foo.cs</code> and <code>/elsewhere/src/Foo.cs</code> stay unmatched, as EditorConfig's core-test <code>leading_slash_relevance</code> expects.</p>
+<p>When a document is loaded with <code>ConfigurationDocument.Load(path)</code>, the full path of its file's directory is recorded and used as the implicit <code>PathRoot</code>, so anchored globs are relative to the file, as EditorConfig defines them, without setting <code>PathRoot</code> explicitly. An explicit <code>PathRoot</code> still wins. The recorded directory is a full path, so pass a full target path for it to rebase; a relative target is matched as given. Documents parsed from a string or loaded from a stream or a text reader carry no path context - set <code>PathRoot</code> yourself when your globs are anchored.</p>
 <h2 id="configurationkey-and-configurationkeyoptions"><code>ConfigurationKey</code> and <code>ConfigurationKeyOptions</code></h2>
-<p><code>ConfigurationKey</code> is the parsed form of a key - both the raw authored shape (<code>&quot;logging.console.level&quot;</code>) and the canonical colon-delimited path (<code>&quot;logging:console:level&quot;</code>). It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.</p>
+<p><code>ConfigurationKey</code> is the parsed form of a key - both the raw authored shape (<code>&quot;logging.console.level&quot;</code>) and the canonical colon-delimited path (<code>&quot;logging:console:level&quot;</code>), or, under the <code>Identity</code> mapping, the key as written with its ends trimmed, which is also its one segment. Whitespace around each segment is trimmed, so <code>a . b</code> and <code>a.b</code> are the same key under the other mappings. It is a readonly struct used internally by the view and exposed for code that needs to manipulate keys explicitly.</p>
 <pre><code class="lang-csharp">using Bodu.Text.Configuration;
 
 ConfigurationKey key = ConfigurationKey.Parse(&quot;logging.console.level&quot;);
@@ -278,12 +279,12 @@ key.CaseSensitive;// false
 <tr>
 <td><code>SegmentSeparators</code></td>
 <td><code>{ '.', ':' }</code></td>
-<td>Characters recognised as path separators.</td>
+<td>Characters recognised as path separators. <code>Identity</code> does not split a key, so it ignores them.</td>
 </tr>
 <tr>
 <td><code>Mapping</code></td>
 <td><code>DotToColon</code></td>
-<td>Raw-to-canonical mapping - <code>DotToColon</code>, <code>Colon</code> (assume already colon-delimited), or <code>Identity</code> (no transformation).</td>
+<td>Raw-to-canonical mapping - <code>DotToColon</code>, <code>Colon</code> (assume already colon-delimited), or <code>Identity</code> (no transformation: the key is not split, so it keeps its dots and colons).</td>
 </tr>
 <tr>
 <td><code>CaseSensitive</code></td>
@@ -291,9 +292,14 @@ key.CaseSensitive;// false
 <td>Case-sensitive comparison (the default <code>false</code> matches <code>Microsoft.Extensions.Configuration</code>).</td>
 </tr>
 <tr>
+<td><code>LowercaseKeys</code></td>
+<td><code>false</code></td>
+<td>Lowercase the segments and the path with the invariant culture, as EditorConfig lowercases keys; the raw key keeps its case. The <code>EditorConfigCompatible</code> presets set it.</td>
+</tr>
+<tr>
 <td><code>AllowEmptySegments</code></td>
 <td><code>false</code></td>
-<td>Permit empty segments like <code>a..b</code>.</td>
+<td>Permit empty segments like <code>a..b</code>; a segment of whitespace alone, as in <code>a. .b</code>, counts as empty. <code>Identity</code> does not split a key, so it keeps <code>a..b</code> as written either way.</td>
 </tr>
 </tbody>
 </table>
@@ -331,15 +337,15 @@ p.IsMatch(&quot;src/Foo.cs&quot;);                   // False
 </tr>
 <tr>
 <td><code>{a,b,c}</code></td>
-<td>Alternation (nesting allowed).</td>
+<td>Alternation (nesting allowed). A group without a top-level comma is not a choice: its braces are literal, so <code>{single}</code> matches only <code>{single}</code> and <code>{}</code> only <code>{}</code>.</td>
 </tr>
 <tr>
 <td><code>{n1..n2}</code></td>
-<td>Inclusive integer range.</td>
+<td>Inclusive integer range. Both bounds must be integers; otherwise the group is literal, so <code>{a..z}</code> matches only <code>{a..z}</code>.</td>
 </tr>
 <tr>
 <td><code>[seq]</code> / <code>[!seq]</code></td>
-<td>Character set or its complement.</td>
+<td>Character set or its complement. A bracket expression that holds a <code>/</code> is literal text, brackets included, since one character cannot match a path separator.</td>
 </tr>
 <tr>
 <td><code>\</code></td>
@@ -347,7 +353,7 @@ p.IsMatch(&quot;src/Foo.cs&quot;);                   // False
 </tr>
 </tbody>
 </table>
-<p>Patterns without <code>/</code> match at any depth. Patterns with <code>/</code> anchor to the start of the path. The grammar is the EditorConfig 0.17.2 specification verbatim, plus a bounded process-wide pattern cache so the same pattern compiled twice does not recompile.</p>
+<p>Patterns without <code>/</code> match at any depth. Patterns with <code>/</code> anchor to the start of the path. The grammar follows the EditorConfig 0.17.2 specification and is held to EditorConfig's core-tests for a bracket expression that holds a <code>/</code> (<code>brackets_slash_inside1</code> to <code>brackets_slash_inside3</code>), a brace group without a comma (<code>braces_single_choice</code>, <code>braces_empty_choice</code>, <code>braces_alpha_range1</code> to <code>braces_alpha_range6</code>) and a leading <code>/</code> (<code>leading_slash_relevance</code>). It departs from the EditorConfig cores in two documented ways: a <code>[</code> or <code>{</code> with no partner is rejected with <code>UnbalancedBracket</code> or <code>UnbalancedBrace</code> (see <a href="diagnostics.html">Diagnostics</a>) where the cores read it as literal text, and a glob longer than 4096 characters is rejected with <code>PatternTooLong</code>. A bounded process-wide pattern cache means the same pattern compiled twice does not recompile.</p>
 <p><code>Compile(pattern, StringComparison)</code> accepts an explicit comparison; the default <code>Ordinal</code> matches the EditorConfig requirement that paths be case-sensitive on case-sensitive file systems.</p>
 <h2 id="when-not-to-use-configurationview">When <em>not</em> to use <code>ConfigurationView</code></h2>
 <ul>
@@ -381,7 +387,7 @@ p.IsMatch(&quot;src/Foo.cs&quot;);                   // False
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3144294 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0f4e55f · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

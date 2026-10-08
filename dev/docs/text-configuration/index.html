@@ -170,7 +170,7 @@ to the right answer for a specific target.</p>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyOptions.html">ConfigurationKeyOptions</a></td>
-<td>Key behaviour: segment separators (default <code>.</code> and <code>:</code>), mapping (<code>DotToColon</code> / <code>Colon</code> / <code>Identity</code>), case sensitivity.</td>
+<td>Key behaviour: segment separators (default <code>.</code> and <code>:</code>), mapping (<code>DotToColon</code> / <code>Colon</code> / <code>Identity</code>), case sensitivity, lowercasing (<code>LowercaseKeys</code>).</td>
 </tr>
 </tbody>
 </table>
@@ -186,7 +186,7 @@ to the right answer for a specific target.</p>
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKey.html">ConfigurationKey</a></td>
-<td>Read-only struct with <code>RawKey</code>, <code>Path</code> (canonical colon-delimited form), <code>Segments</code>, and <code>CaseSensitive</code>. Static <code>Parse</code> / <code>TryParse</code> factories.</td>
+<td>Read-only struct with <code>RawKey</code>, <code>Path</code> (canonical form: colon-delimited, or as written under <code>Identity</code>), <code>Segments</code>, and <code>CaseSensitive</code>. Static <code>Parse</code> / <code>TryParse</code> factories.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationKeyMapping.html">ConfigurationKeyMapping</a></td>
@@ -269,6 +269,7 @@ to the right answer for a specific target.</p>
 <th>Preamble in resolve</th>
 <th>Missing path root</th>
 <th>Unset semantics</th>
+<th>Key mapping</th>
 </tr>
 </thead>
 <tbody>
@@ -281,6 +282,7 @@ to the right answer for a specific target.</p>
 <td>Applied</td>
 <td>UseEmptyRoot</td>
 <td>Literal</td>
+<td>DotToColon</td>
 </tr>
 <tr>
 <td><code>EditorConfigCompatible</code></td>
@@ -291,6 +293,7 @@ to the right answer for a specific target.</p>
 <td>Not applied</td>
 <td>Throw</td>
 <td>Removes value</td>
+<td>Identity, lowercased</td>
 </tr>
 <tr>
 <td><code>Strict</code></td>
@@ -301,6 +304,7 @@ to the right answer for a specific target.</p>
 <td>Applied</td>
 <td>Throw</td>
 <td>Removes value</td>
+<td>DotToColon</td>
 </tr>
 <tr>
 <td><code>Relaxed</code></td>
@@ -311,18 +315,21 @@ to the right answer for a specific target.</p>
 <td>Applied</td>
 <td>UseEmptyRoot</td>
 <td>Literal</td>
+<td>DotToColon</td>
 </tr>
 </tbody>
 </table>
 <p>Profiles split across two option types: the <em>parse</em> columns (inline comments, section headers, duplicate keys,
 diagnostics) come from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationParseOptions.html">ConfigurationParseOptions</a>; the <em>resolve</em> columns (preamble, missing
-path root, unset) come from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a>. Both bags are
+path root, unset) come from <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationResolveOptions.html">ConfigurationResolveOptions</a>, and the key mapping from the
+<code>KeyOptions</code> both carry. Both bags are
 <code>init</code>-only-property classes, so the presets are starting points, not contracts - compose a custom bag and override only
 what needs to differ.</p>
 <div class="NOTE">
 <h5>Note</h5>
-<p>Under <code>EditorConfigCompatible</code>, preamble properties are dropped wholesale during resolve (<code>ApplyPreambleProperties = false</code>). The well-known <code>root</code> key is handled by the <em>reader</em>, not by special-casing it in the resolver, so the
-resolved view simply contains no preamble keys at all.</p>
+<p>Under <code>EditorConfigCompatible</code>, preamble properties are dropped wholesale during resolve (<code>ApplyPreambleProperties = false</code>), the well-known <code>root</code> key included, so the resolved view contains no preamble keys at all. The pairs stay in
+the document's global section; resolution reads one document and searches no parent directory, so acting on
+<code>root = true</code> is left to the caller.</p>
 </div>
 <h2 id="common-scenarios">Common scenarios</h2>
 <table>
@@ -392,13 +399,16 @@ format.indent.size  = 4
 [src/**/*.{cs,csproj}]
 format.indent.size = 2
 </code></pre>
-<p>The grammar matches <strong>EditorConfig</strong> verbatim with two Bodu-specific extensions:</p>
+<p>The grammar follows <strong>EditorConfig</strong>, with the glob differences documented in
+<a href="../../guides/text-configuration/views-and-resolution.html">Views and resolution</a>, and the default <code>Bodu</code> profile adds two
+extensions:</p>
 <ol>
 <li><strong>Inline comments</strong> are recognised when introduced by whitespace (<code>key = value  # comment</code>) under the default <code>Bodu</code>
 profile. Set the profile to <code>EditorConfigCompatible</code> to disable them.</li>
 <li><strong>Key mapping</strong> projects dotted keys (<code>logging.level.default</code>) to colon-delimited configuration keys
 (<code>logging:level:default</code>) for direct interoperability with <code>Microsoft.Extensions.Configuration</code>. Both forms work as
-lookup inputs on the view; the canonical stored form is the colon-delimited one.</li>
+lookup inputs on the view; the canonical stored form is the colon-delimited one. The <code>EditorConfigCompatible</code>
+profile keeps every key as written instead, its dots and colons included, and lowercases keys as EditorConfig does.</li>
 </ol>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
@@ -428,7 +438,7 @@ lookup inputs on the view; the canonical stored form is the colon-delimited one.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3144294 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0f4e55f · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Configuration_ConfigurationPattern" data-uid="Bodu.Text.Configuration.ConfigurationPattern" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ConfigurationPattern Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.Compile.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.Compile.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ConfigurationPattern Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.Compile.cs">ConfigurationPattern.Compile.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.Compile.cs">ConfigurationPattern.Compile.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>A compiled EditorConfig-style glob pattern that matches forward-slash-delimited paths.</p>
@@ -190,13 +190,24 @@ ConfigurationPattern logs   = ConfigurationPattern.Compile("logs/run-{1..99}.log
   <h2 id="Bodu_Text_Configuration_ConfigurationPattern_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Patterns support the EditorConfig glob grammar:
-<ul><li><code>*</code> - matches any character except <code>/</code>.</li><li><code>**</code> - matches any sequence of characters including <code>/</code>.</li><li><code>?</code> - matches a single character except <code>/</code>.</li><li><code>{a,b,c}</code> - matches any of the comma-separated alternatives (nesting permitted).</li><li><code>{n1..n2}</code> - matches any decimal integer in the inclusive range.</li><li>
-<code>[seq]</code> - matches a single character in the set; <code>[!seq]</code> matches any character not in the set.
+<ul><li><code>*</code> - matches any character except <code>/</code>.</li><li><code>**</code> - matches any sequence of characters including <code>/</code>.</li><li><code>?</code> - matches a single character except <code>/</code>.</li><li>
+<code>{a,b,c}</code> - matches any of the comma-separated alternatives (nesting permitted). A brace group without a
+top-level comma is not a choice: its braces are literal text, so <code>{single}</code> matches only <code>{single}</code> and
+<code>{}</code> only <code>{}</code>.
+</li><li>
+<code>{n1..n2}</code> - matches any decimal integer in the inclusive range. Both bounds must be integers; otherwise the
+group is literal text, so <code>{a..z}</code> matches only <code>{a..z}</code>.
+</li><li>
+<code>[seq]</code> - matches a single character in the set; <code>[!seq]</code> matches any character not in the set. A bracket
+expression that holds a <code>/</code> is literal text, brackets included, because a single character cannot match a path
+separator.
 </li><li><code>\</code> - escapes the next character so it is matched literally.</li></ul>
 
 <p>
 Anchoring follows EditorConfig: a pattern with no <code>/</code> matches at any directory depth; a pattern with <code>/</code>
-is anchored to the start of the relative path.
+is anchored to the start of the relative path. A pattern that starts with <code>/</code> is anchored at the root as well,
+and a path given relative to the root matches it as if the path began with <code>/</code>, so <code>/src/*.cs</code> matches
+both <code>src/Foo.cs</code> and <code>/src/Foo.cs</code>, but not <code>lib/src/Foo.cs</code>.
 </p>
 <p>
 Compilation parses the glob once into a culture-invariant <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.regularexpressions.regex">Regex</a>; subsequent
@@ -215,7 +226,7 @@ same glob is matched repeatedly against many paths.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationPattern_Source" data-uid="Bodu.Text.Configuration.ConfigurationPattern.Source">
   Source
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -256,7 +267,7 @@ same glob is matched repeatedly against many paths.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationPattern_Compile_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationPattern.Compile(System.String)">
   Compile(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -308,7 +319,7 @@ same glob is matched repeatedly against many paths.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationPattern_Compile_System_String_System_StringComparison_" data-uid="Bodu.Text.Configuration.ConfigurationPattern.Compile(System.String,System.StringComparison)">
   Compile(string, StringComparison)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -371,11 +382,12 @@ the cache is cleared in bulk.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationPattern_IsMatch_System_String_" data-uid="Bodu.Text.Configuration.ConfigurationPattern.IsMatch(System.String)">
   IsMatch(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationPattern.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Determines whether the supplied relative path matches this pattern.</p>
+  <div class="markdown level1 summary"><p>Determines whether the supplied relative path matches this pattern. When the pattern starts with <code>/</code>, a
+path that does not is matched as if it began with <code>/</code>, because both name the same file under the root.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -442,7 +454,7 @@ the cache is cleared in bulk.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3144294 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0f4e55f · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

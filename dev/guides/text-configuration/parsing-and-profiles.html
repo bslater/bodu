@@ -103,6 +103,7 @@ Level.Microsoft = Warning
 ConfigurationDocument document = ConfigurationDocument.Parse(source);
 </code></pre>
 <p><code>Parse(string)</code> returns a <code>ConfigurationDocument</code> - a first-class type that inherits the library's own read-only <code>IniDocumentBase</code> document model. Use the document directly when you only need read access to sections and entries; use <a href="views-and-resolution.html"><code>Resolve</code></a> when you want path projection and typed lookup.</p>
+<p><code>Parse</code> ignores a single U+FEFF at the very start of the text - the byte order mark a decoder such as <code>Encoding.UTF8.GetString</code> leaves in place, which <code>Load</code> skips when it reads the same bytes - under every profile. A U+FEFF anywhere else is content.</p>
 <p>The default profile is <code>Bodu</code> - inline comments only after whitespace, lenient section headers, last-wins on duplicates, throw on the first error. Override the profile per call via <code>ConfigurationParseOptions</code>:</p>
 <pre><code class="lang-csharp">ConfigurationDocument doc = ConfigurationDocument.Parse(
     source,
@@ -115,7 +116,7 @@ ConfigurationDocument fromFile   = ConfigurationDocument.Load(&quot;appsettings.
 ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen: true);
 ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 </code></pre>
-<p><code>Load(string)</code> reads UTF-8 by default - pass an <code>Encoding</code> explicitly when the file is not UTF-8. <code>Load(Stream)</code> does not dispose the stream when <code>leaveOpen: true</code>. <code>Load(TextReader)</code> is for callers that already control the reader's lifetime.</p>
+<p><code>Load(string)</code> reads UTF-8 by default - pass an <code>Encoding</code> explicitly when the file is not UTF-8. <code>Load(Stream)</code> does not dispose the stream when <code>leaveOpen: true</code>. <code>Load(TextReader)</code> is for callers that already control the reader's lifetime; like <code>Parse</code>, it ignores one U+FEFF that opens the reader's text.</p>
 <h2 id="pattern-3---non-throwing-parse">Pattern 3 - non-throwing parse</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Configuration;
 
@@ -167,7 +168,7 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 </tr>
 <tr>
 <td><code>EditorConfigCompatible</code></td>
-<td>Strict EditorConfig 0.17.2 parity. Use when you are reading <code>.editorconfig</code> files that must round-trip through other tooling.</td>
+<td>EditorConfig 0.17.2 alignment, with the differences noted below. Use when you are reading <code>.editorconfig</code> files that must round-trip through other tooling.</td>
 </tr>
 <tr>
 <td><code>Strict</code></td>
@@ -225,6 +226,20 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 <td><code>Throw</code></td>
 <td><code>Throw</code></td>
 <td><code>Collect</code></td>
+</tr>
+<tr>
+<td><code>KeyOptions.Mapping</code></td>
+<td><code>DotToColon</code></td>
+<td><code>Identity</code></td>
+<td><code>DotToColon</code></td>
+<td><code>DotToColon</code></td>
+</tr>
+<tr>
+<td><code>KeyOptions.LowercaseKeys</code></td>
+<td><code>false</code></td>
+<td><code>true</code></td>
+<td><code>false</code></td>
+<td><code>false</code></td>
 </tr>
 </tbody>
 </table>
@@ -316,7 +331,7 @@ Console.WriteLine(document.Sections.Count);              // 2
 Console.WriteLine(document.Sections[0].Name);            // &quot;*.cs&quot;
 Console.WriteLine(document.Sections[1][&quot;indent_size&quot;]);  // &quot;2&quot;
 </code></pre>
-<p>The <code>EditorConfigCompatible</code> profile disables inline comments so a <code>#</code> inside a glob (<code>[file_with_#_in_name.cs]</code>) is not stripped, enforces strict section-header termination, and otherwise behaves identically to the EditorConfig 0.17.2 specification.</p>
+<p>The <code>EditorConfigCompatible</code> profile disables inline comments so a <code>#</code> inside a glob (<code>[file_with_#_in_name.cs]</code>) is not stripped, enforces strict section-header termination, keeps keys as written, dots and colons included, and lowercases them, and leaves the preamble out of the view. Beyond that it follows the EditorConfig 0.17.2 specification, with the glob differences <a href="views-and-resolution.html">Views and resolution</a> documents, and it interprets no property: a value such as <code>indent_style = Tab</code> is reported as written, not lowercased.</p>
 <p>To go from the parsed <code>ConfigurationDocument</code> to a resolved typed view - including the EditorConfig glob behaviour where <code>[*.cs]</code> matches every <code>.cs</code> file - see <a href="views-and-resolution.html">Views and resolution</a>.</p>
 <h2 id="exceptions">Exceptions</h2>
 <ul>
@@ -418,7 +433,7 @@ instead (see the field-by-field section above).</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3144294 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0f4e55f · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>

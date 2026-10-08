@@ -133781,6 +133781,18 @@ references:
   commentId: Overload:Bodu.Text.Configuration.ConfigurationKeyOptions.KeyComparer
   fullName: Bodu.Text.Configuration.ConfigurationKeyOptions.KeyComparer
   nameWithType: ConfigurationKeyOptions.KeyComparer
+- uid: Bodu.Text.Configuration.ConfigurationKeyOptions.LowercaseKeys
+  name: LowercaseKeys
+  href: api/Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_LowercaseKeys
+  commentId: P:Bodu.Text.Configuration.ConfigurationKeyOptions.LowercaseKeys
+  fullName: Bodu.Text.Configuration.ConfigurationKeyOptions.LowercaseKeys
+  nameWithType: ConfigurationKeyOptions.LowercaseKeys
+- uid: Bodu.Text.Configuration.ConfigurationKeyOptions.LowercaseKeys*
+  name: LowercaseKeys
+  href: api/Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_LowercaseKeys_
+  commentId: Overload:Bodu.Text.Configuration.ConfigurationKeyOptions.LowercaseKeys
+  fullName: Bodu.Text.Configuration.ConfigurationKeyOptions.LowercaseKeys
+  nameWithType: ConfigurationKeyOptions.LowercaseKeys
 - uid: Bodu.Text.Configuration.ConfigurationKeyOptions.Mapping
   name: Mapping
   href: api/Bodu.Text.Configuration.ConfigurationKeyOptions.html#Bodu_Text_Configuration_ConfigurationKeyOptions_Mapping

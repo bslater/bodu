@@ -16417,7 +16417,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationKey",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKey.yml\" sourcestartlinenumber=\"1\">Represents a configuration key in both its raw, file-level form and its colon-delimited logical form used by the\nresolved view and by <code>Microsoft.Extensions.Configuration</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKey.yml\" sourcestartlinenumber=\"1\">Represents a configuration key in both its raw, file-level form and the logical form used by the resolved view,\nwhich is colon-delimited, as <code>Microsoft.Extensions.Configuration</code> expects, under every mapping but\n<xref href=\"Bodu.Text.Configuration.ConfigurationKeyMapping.Identity\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16431,7 +16431,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationKeyMapping",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyMapping.yml\" sourcestartlinenumber=\"1\">Selects how raw configuration keys are mapped to the colon-delimited logical keys used by the resolved view and by\n<code>Microsoft.Extensions.Configuration</code>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyMapping.yml\" sourcestartlinenumber=\"1\">Selects how raw configuration keys are mapped to the logical keys used by the resolved view: colon-delimited, as\n<code>Microsoft.Extensions.Configuration</code> expects, or, under <xref href=\"Bodu.Text.Configuration.ConfigurationKeyMapping.Identity\" data-throw-if-not-resolved=\"false\"></xref>, kept as written.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16445,7 +16445,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationKeyOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyOptions.yml\" sourcestartlinenumber=\"1\">Controls how raw configuration keys are split into segments and mapped to the colon-delimited logical key shape used\nby the resolved view and the Microsoft.Extensions.Configuration bridge.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationKeyOptions.yml\" sourcestartlinenumber=\"1\">Controls how raw configuration keys are split into segments and mapped to the logical keys used by the resolved view\nand the Microsoft.Extensions.Configuration bridge.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -16459,7 +16459,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationMissingPathRootMode",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.yml\" sourcestartlinenumber=\"1\">Selects how <xref href=\"Bodu.Text.Configuration.ConfigurationExtensions.Resolve(Bodu.Text.Configuration.IniDocumentBase%2cSystem.String%2cBodu.Text.Configuration.ConfigurationResolveOptions)\" data-throw-if-not-resolved=\"false\"></xref>\nreacts when the document was parsed from a string and no <xref href=\"Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot\" data-throw-if-not-resolved=\"false\"></xref> was\nsupplied.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationMissingPathRootMode.yml\" sourcestartlinenumber=\"1\">Selects what <xref href=\"Bodu.Text.Configuration.ConfigurationExtensions.Resolve(Bodu.Text.Configuration.IniDocumentBase%2cSystem.String%2cBodu.Text.Configuration.ConfigurationResolveOptions)\" data-throw-if-not-resolved=\"false\"></xref>\ndoes when it receives no target path and no root is known: no <xref href=\"Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot\" data-throw-if-not-resolved=\"false\"></xref>\nwas supplied and the document was not loaded from a file.</p>\n"
     },
     {
       "type": "ManagedReference",

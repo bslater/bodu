@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Configuration_ConfigurationResolveOptions" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ConfigurationResolveOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ ConfigurationResolveOptions Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Configuration.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Configuration">Bodu.Text.Configuration</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs">ConfigurationResolveOptions.Presets.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs">ConfigurationResolveOptions.Presets.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Controls how a <a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is projected into a <a class="xref" href="Bodu.Text.Configuration.ConfigurationView.html">ConfigurationView</a> for a
@@ -187,10 +187,13 @@ layering - which path root anchors anchored globs, whether preamble properties c
 is used for path matching, and how the EditorConfig <code>unset</code> sentinel is handled.
 </p>
 <p>
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> deserves attention when the document was parsed from a string rather than loaded from a
-file. With no path on the document and <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> left <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, the resolver consults
-<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> to decide whether to use the empty root, throw, or fall back to the target path's
-parent - that choice changes which sections match.
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> rebases the target path before matching: a target under the root is matched relative to it,
+and any other target is matched as given. When <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> is not set, a document loaded with
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationDocument.html#Bodu_Text_Configuration_ConfigurationDocument_Load_System_String_Bodu_Text_Configuration_ConfigurationParseOptions_">Load(string, ConfigurationParseOptions?)</a> is rooted at the directory of its
+file, so a section's glob is relative to that file, as EditorConfig defines it; an explicit <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a>
+takes precedence. <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> applies only when <code>Resolve</code> receives no target path and no
+root is known: <a class="xref" href="Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html#Bodu_Text_Configuration_ConfigurationMissingPathRootMode_UseEmptyRoot">UseEmptyRoot</a> returns the preamble-only view, and
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationMissingPathRootMode.html#Bodu_Text_Configuration_ConfigurationMissingPathRootMode_Throw">Throw</a> raises <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>.
 </p>
 <p>
 <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions">KeyOptions</a> should normally be the same instance passed to
@@ -222,7 +225,7 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions__ctor" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.#ctor">
   ConfigurationResolveOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -256,12 +259,14 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_ApplyPreambleProperties" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.ApplyPreambleProperties">
   ApplyPreambleProperties
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
   <div class="markdown level1 summary"><p>Gets a value indicating whether preamble (global) properties contribute to resolution. Defaults to
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for the Bodu profile and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for EditorConfig-compatible.</p>
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for the Bodu profile and <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> for EditorConfig-compatible. The
+preamble's <code>root</code> pair never contributes: it marks the file as the root of its directory tree, and the
+document keeps it in its global section for the caller that collects files up the tree.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -294,7 +299,7 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_Bodu" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Bodu">
   Bodu
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -331,11 +336,14 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_EditorConfigCompatible" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.EditorConfigCompatible">
   EditorConfigCompatible
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile.</p>
+  <div class="markdown level1 summary"><p>Gets the canonical option set for the EditorConfig-compatible profile: preamble properties left out, the
+<code>unset</code> sentinel removing a value, a path root or target path required, and the
+<a class="xref" href="Bodu.Text.Configuration.ConfigurationKeyMapping.html#Bodu_Text_Configuration_ConfigurationKeyMapping_Identity">Identity</a> key mapping with keys lowercased, so a key is kept as written,
+its dots and colons included, and reads as EditorConfig lowercases it.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -368,7 +376,7 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_KeyOptions" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.KeyOptions">
   KeyOptions
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -405,11 +413,12 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.MissingPathRootMode">
   MissingPathRootMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets how the resolver reacts to an absent <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> when the document was parsed from a string.</p>
+  <div class="markdown level1 summary"><p>Gets how a resolve with no target path behaves when no root is known: <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot">PathRoot</a> is not set and the
+document was not loaded from a file.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -442,7 +451,7 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathComparison" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathComparison">
   PathComparison
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -479,12 +488,14 @@ ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.Fo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_PathRoot" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.PathRoot">
   PathRoot
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the optional path root used to evaluate anchored glob patterns. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> the document's
-load path is used; if neither is available, <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> controls behaviour.</p>
+  <div class="markdown level1 summary"><p>Gets the optional path root that a target path is rebased against before glob patterns are matched. When
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, a document loaded from a file is rooted at that file's directory; when neither is
+available, a target path is matched as given, and <a class="xref" href="Bodu.Text.Configuration.ConfigurationResolveOptions.html#Bodu_Text_Configuration_ConfigurationResolveOptions_MissingPathRootMode">MissingPathRootMode</a> governs a resolve with no
+target path.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -517,7 +528,7 @@ load path is used; if neither is available, <a class="xref" href="Bodu.Text.Conf
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_Profile" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.Profile">
   Profile
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -554,7 +565,7 @@ load path is used; if neither is available, <a class="xref" href="Bodu.Text.Conf
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_UnsetValueMode" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.UnsetValueMode">
   UnsetValueMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -595,7 +606,7 @@ load path is used; if neither is available, <a class="xref" href="Bodu.Text.Conf
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Configuration_ConfigurationResolveOptions_For_Bodu_Text_Configuration_ConfigurationProfile_" data-uid="Bodu.Text.Configuration.ConfigurationResolveOptions.For(Bodu.Text.Configuration.ConfigurationProfile)">
   For(ConfigurationProfile)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/314429469bdd3891bee75fd6e4e0a55c80431c4d/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/0f4e55f723ae1eb9f39de81b98224ea2531fd1e0/Bodu.Text.Configuration/src/Text.Configuration/ConfigurationResolveOptions.Presets.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -666,7 +677,7 @@ load path is used; if neither is available, <a class="xref" href="Bodu.Text.Conf
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 3144294 · Built: 2026-10-08 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 0f4e55f · Built: 2026-10-08 (UTC)</span>
         </div>
       </div>
     </footer>
