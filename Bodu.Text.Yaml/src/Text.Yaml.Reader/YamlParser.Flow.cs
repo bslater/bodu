@@ -110,8 +110,10 @@ internal sealed partial class YamlParser
                 SkipFlowWhitespace();
             }
 
-            // An implicit key must lie on its ':' indicator's line, so the line on which the element starts is kept.
+            // An implicit key must lie on its ':' indicator's line and hold at most 1024 characters, so the line and
+            // offset at which the element starts are kept.
             int elementLine = _line;
+            int elementStart = _pos;
             int element = ParseFlowNode();
             SkipFlowWhitespace();
 
@@ -121,6 +123,9 @@ internal sealed partial class YamlParser
                 // An implicit key and its ':' indicator must be on the same line; an explicit key's may follow later.
                 if (!explicitKey && _line != elementLine)
                     throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
+
+                if (!explicitKey)
+                    ThrowIfImplicitKeyTooLong(elementStart);
 
                 Advance();
                 SkipFlowWhitespace();

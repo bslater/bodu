@@ -41,6 +41,7 @@
   <data name="Format_Invalid_YamlUnexpectedContent" xml:space="preserve"><value>Unexpected content was found in this context.</value></data>
   <data name="Format_Invalid_YamlCommentSpacing" xml:space="preserve"><value>A comment must be preceded by whitespace.</value></data>
   <data name="Format_Invalid_YamlMultilineImplicitKey" xml:space="preserve"><value>An implicit mapping key cannot span multiple lines.</value></data>
+  <data name="Format_Invalid_YamlImplicitKeyTooLong" xml:space="preserve"><value>An implicit mapping key cannot be longer than {0} characters; a longer key must be an explicit key.</value></data>
   <data name="Format_Invalid_YamlMultipleAnchors" xml:space="preserve"><value>A node cannot carry more than one anchor.</value></data>
   <data name="Format_Invalid_YamlMultipleTags" xml:space="preserve"><value>A node cannot carry more than one tag.</value></data>
   <data name="Format_Invalid_YamlUndefinedAlias" xml:space="preserve"><value>The alias '{0}' does not refer to a defined anchor.</value></data>

@@ -20,7 +20,10 @@ namespace Bodu.Text.Yaml.Writer;
 /// <para>
 /// The writer emits block mappings and sequences with configurable indentation, choosing the most compact safe scalar
 /// presentation for each value (plain when unambiguous, otherwise double-quoted). Empty mappings and sequences are
-/// emitted in the flow forms <c>{}</c> and <c>[]</c> so they round-trip as empty collections rather than null.
+/// emitted in the flow forms <c>{}</c> and <c>[]</c> so they round-trip as empty collections rather than null. A
+/// mapping key is written as an implicit key (<c>key: value</c>) unless its written form is longer than the 1024
+/// characters an implicit key may hold, in which case it is written as an explicit key (<c>? key</c>), with the value
+/// indicator on the next line.
 /// </para>
 /// <para>
 /// The writer is a <see langword="ref struct" /> and cannot be boxed, stored on the heap, or captured by a lambda. Its
@@ -120,6 +123,11 @@ public ref struct Utf8YamlWriter
     /// Writes a mapping key. The next write supplies its value.
     /// </summary>
     /// <param name="name">The key text.</param>
+    /// <remarks>
+    /// A key whose written form, quotes included, is longer than the 1024 characters an implicit key may hold is
+    /// written as an explicit key (<c>? key</c>), with the value indicator on the next line, so that the document stays
+    /// readable.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
     /// The current container is not a mapping, or a key is already pending.
@@ -245,9 +253,8 @@ public ref struct Utf8YamlWriter
             }
             else if (frame.LeadKey is not null)
             {
-                WriteIndent(frame.LeadIndent);
-                WriteRaw(frame.LeadKey);
-                WriteRaw(": ");
+                WriteKey(frame.LeadIndent, frame.LeadKey);
+                WriteRaw(" ");
                 WriteRaw(empty);
                 WriteNewLine();
             }
@@ -284,9 +291,8 @@ public ref struct Utf8YamlWriter
         {
             string key = frame.PendingKey ?? throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_WriterValueWithoutKey);
             frame.PendingKey = null;
-            WriteIndent(frame.EntryIndent);
-            WriteRaw(key);
-            WriteRaw(": ");
+            WriteKey(frame.EntryIndent, key);
+            WriteRaw(" ");
             WriteRaw(text);
             WriteNewLine();
         }
@@ -315,9 +321,7 @@ public ref struct Utf8YamlWriter
 
         if (frame.LeadKey is not null)
         {
-            WriteIndent(frame.LeadIndent);
-            WriteRaw(frame.LeadKey);
-            WriteRaw(":");
+            WriteKey(frame.LeadIndent, frame.LeadKey);
             WriteNewLine();
         }
         else if (frame.LeadDash)
@@ -326,6 +330,55 @@ public ref struct Utf8YamlWriter
             WriteRaw("-");
             WriteNewLine();
         }
+    }
+
+    /// <summary>
+    /// Writes a mapping key at the given indentation, followed by its value indicator: implicitly (<c>key:</c>), or,
+    /// when the key is longer than an implicit key may be, explicitly (<c>? key</c>), with the indicator on the next
+    /// line.
+    /// </summary>
+    /// <param name="indent">The indentation of the key's mapping entries.</param>
+    /// <param name="key">The formatted key.</param>
+    private void WriteKey(int indent, string key)
+    {
+        WriteIndent(indent);
+        if (FitsImplicitKey(key))
+        {
+            WriteRaw(key);
+            WriteRaw(":");
+            return;
+        }
+
+        WriteRaw("? ");
+        WriteRaw(key);
+        WriteNewLine();
+        WriteIndent(indent);
+        WriteRaw(":");
+    }
+
+    /// <summary>
+    /// Determines whether a formatted key holds at most the characters an implicit key may hold.
+    /// </summary>
+    /// <param name="key">The formatted key, quotes included.</param>
+    /// <returns>
+    /// <see langword="true" /> when the key has at most <see cref="YamlLimits.MaxImplicitKeyLength" /> characters;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    private static bool FitsImplicitKey(string key)
+    {
+        // A character outside the Basic Multilingual Plane takes two UTF-16 code units, so a key of at most the limit
+        // in code units is within it, and a longer one is counted by characters.
+        if (key.Length <= YamlLimits.MaxImplicitKeyLength)
+            return true;
+
+        int characters = 0;
+        foreach (char c in key)
+        {
+            if (!char.IsLowSurrogate(c))
+                characters++;
+        }
+
+        return characters <= YamlLimits.MaxImplicitKeyLength;
     }
 
     /// <summary>

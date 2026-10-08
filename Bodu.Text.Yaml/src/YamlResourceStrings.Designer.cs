@@ -239,6 +239,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to An implicit mapping key cannot be longer than {0} characters; a longer key must be an explicit key..
+        /// </summary>
+        internal static string Format_Invalid_YamlImplicitKeyTooLong {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlImplicitKeyTooLong", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to A node cannot carry more than one anchor..
         /// </summary>
         internal static string Format_Invalid_YamlMultipleAnchors {

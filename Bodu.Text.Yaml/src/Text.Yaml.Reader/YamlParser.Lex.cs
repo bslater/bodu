@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -649,11 +650,12 @@ internal sealed partial class YamlParser
     /// a scalar row outside the tree, which an alias can refer to.
     /// </remarks>
     /// <exception cref="YamlFormatException">
-    /// The key is an alias or a flow collection, or a plain key begins with an indicator that cannot begin a plain
-    /// scalar.
+    /// The key is an alias or a flow collection, a plain key begins with an indicator that cannot begin a plain scalar,
+    /// or the key is longer than an implicit key may be.
     /// </exception>
     private string ReadSimpleKey()
     {
+        int keyStart = _pos;
         string? anchor = null;
         string? tag = null;
         if (Peek() is (byte)'&' or (byte)'!')
@@ -677,6 +679,7 @@ internal sealed partial class YamlParser
             if (_line != startLine)
                 throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
 
+            ThrowIfImplicitKeyTooLong(keyStart);
             if (anchor is not null)
                 _ = NewString(quoted, c == (byte)'"' ? YamlScalarStyle.DoubleQuoted : YamlScalarStyle.SingleQuoted, offset, anchor, tag);
 
@@ -708,10 +711,48 @@ internal sealed partial class YamlParser
                 end = _pos;
         }
 
+        ThrowIfImplicitKeyTooLong(keyStart);
         if (anchor is not null)
             _ = NewPlainScalar(start, end, anchor, tag);
 
         return Utf8(start, end - start);
+    }
+
+    /// <summary>
+    /// Rejects an implicit key that is longer than YAML allows, counting its characters from its first node property or
+    /// content character up to its value indicator.
+    /// </summary>
+    /// <param name="start">The byte offset at which the key, or its first node property, begins.</param>
+    /// <exception cref="YamlFormatException">
+    /// The key, with its properties, its quotes, and the spaces before its value indicator, is longer than
+    /// <see cref="YamlLimits.MaxImplicitKeyLength" /> characters.
+    /// </exception>
+    private void ThrowIfImplicitKeyTooLong(int start)
+    {
+        int indicator = _pos;
+        while (indicator < _length && _source[indicator] is (byte)' ' or (byte)'\t')
+            indicator++;
+
+        // Every character takes at least one byte, so only a key of more bytes than the limit can exceed it. The source
+        // is valid UTF-8, so each character begins with exactly one byte that is not a continuation byte.
+        if (indicator - start <= YamlLimits.MaxImplicitKeyLength)
+            return;
+
+        int characters = 0;
+        for (int i = start; i < indicator; i++)
+        {
+            if ((_source[i] & 0xC0) != 0x80)
+                characters++;
+        }
+
+        if (characters > YamlLimits.MaxImplicitKeyLength)
+        {
+            string message = string.Format(
+                CultureInfo.CurrentCulture,
+                YamlResourceStrings.Format_Invalid_YamlImplicitKeyTooLong,
+                YamlLimits.MaxImplicitKeyLength);
+            throw ErrorAt(start, message);
+        }
     }
 
     /// <summary>
