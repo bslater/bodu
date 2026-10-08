@@ -10,7 +10,8 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies that <see cref="IncludeAttribute" /> forces a member to participate: a property with a non-public setter
-/// is bound, and a public field is surfaced even when <see cref="YamlSerializerOptions.IncludeFields" /> is disabled.
+/// or with no public accessor at all is bound, and a public field is surfaced even when
+/// <see cref="YamlSerializerOptions.IncludeFields" /> is disabled.
 /// </summary>
 public partial class YamlSerializerTests
 {

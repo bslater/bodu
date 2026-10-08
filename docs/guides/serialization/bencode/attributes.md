@@ -72,7 +72,7 @@ public sealed class Counter
 }
 ```
 
-Both members now round-trip - the private setter is assigned on read, and the field participates like a property, following the same naming, ordering, ignore, required, and converter rules.
+Both members now round-trip - the private setter is assigned on read, and the field participates like a property, following the same naming, ordering, ignore, required, and converter rules. The attribute also brings in a property with no public accessor at all, such as `[Include] private int Version { get; set; }`, whether the type or one of its base classes declares it; non-public fields stay out.
 
 ## Pattern 5 - Control write order
 

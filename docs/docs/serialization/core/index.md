@@ -26,7 +26,7 @@ Every attribute derives from the abstract <xref:Bodu.Text.Serialization.Serializ
 |---|---|---|
 | <xref:Bodu.Text.Serialization.PropertyNameAttribute> | property, field | Pins the wire key for one member, overriding the CLR name and any naming policy. |
 | <xref:Bodu.Text.Serialization.IgnoreAttribute> | property, field | Excludes the member - unconditionally (`Condition` defaults to `Always`) or only when writing `null` / the default value. |
-| <xref:Bodu.Text.Serialization.IncludeAttribute> | property, field | Forces a member in: binds non-public accessors (`{ get; private set; }`, `{ get; init; }`) and surfaces a public field even when `IncludeFields` is off. |
+| <xref:Bodu.Text.Serialization.IncludeAttribute> | property, field | Forces a member in: binds non-public accessors (`{ get; private set; }`, `{ get; init; }`, or a `private` property) and surfaces a public field even when `IncludeFields` is off. |
 | <xref:Bodu.Text.Serialization.PropertyOrderAttribute> | property, field | Sets the relative order in which members are presented to the writer (ascending; unannotated members are `0` and keep declaration order). |
 | <xref:Bodu.Text.Serialization.RequiredAttribute> | property, field | Fails deserialization when the key is absent - the same effect as the C# `required` keyword. |
 | <xref:Bodu.Text.Serialization.ConverterAttribute> | property, field, class, struct, enum | Names the converter type for a member (governs that member) or a type (governs every use). |
