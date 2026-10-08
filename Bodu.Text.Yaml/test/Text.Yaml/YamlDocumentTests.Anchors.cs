@@ -9,8 +9,8 @@ using Bodu.Text.Yaml.Document;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies anchor and alias composition: an alias resolves to its anchor's value or subtree, an undefined alias is
-/// rejected, and so is a node with two anchors.
+/// Verifies anchor and alias composition: an alias resolves to its anchor's value or subtree, and an undefined alias,
+/// a node with two anchors, an empty anchor name, and a property glued to its content are rejected.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -72,5 +72,56 @@ public partial class YamlDocumentTests
         {
             using var document = YamlDocument.Parse(yaml);
         });
+    }
+
+    /// <summary>
+    /// Verifies that an anchor with an empty name is rejected, whatever follows the <c>&amp;</c>.
+    /// </summary>
+    /// <param name="yaml">A document with an anchor indicator that has no name.</param>
+    [TestMethod]
+    [DataRow("- & foo", DisplayName = "followed by a space")]
+    [DataRow("- &", DisplayName = "at the end of the input")]
+    [DataRow("a: &\nb: 1\n", DisplayName = "at the end of a line")]
+    [DataRow("[ &, a ]", DisplayName = "followed by a comma")]
+    public void Parse_WhenAnchorNameIsEmpty_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a node property followed directly by a flow collection, with no separating space, is rejected.
+    /// </summary>
+    /// <param name="yaml">A document with a node property glued to a flow collection.</param>
+    [TestMethod]
+    [DataRow("&a{}", DisplayName = "an anchor before a flow mapping")]
+    [DataRow("&a[]", DisplayName = "an anchor before a flow sequence")]
+    [DataRow("!!map{}", DisplayName = "a tag before a flow mapping")]
+    [DataRow("- &a[b]", DisplayName = "an anchor before a flow sequence entry value")]
+    [DataRow("[ &a[b] ]", DisplayName = "an anchor before a nested flow sequence")]
+    public void Parse_WhenPropertyIsNotSeparatedFromContent_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that in a flow collection a node property may be followed directly by the comma or bracket that ends
+    /// the node, which leaves the node empty.
+    /// </summary>
+    /// <param name="yaml">A flow collection holding an anchored empty node.</param>
+    /// <param name="expected">The collection expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("[ &a, b ]", """[null,"b"]""", DisplayName = "followed by a comma")]
+    [DataRow("[ b, &a]", """["b",null]""", DisplayName = "followed by a closing bracket")]
+    public void Parse_WhenFlowPropertyEndsTheNode_ShouldReadEmptyNode(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
     }
 }
