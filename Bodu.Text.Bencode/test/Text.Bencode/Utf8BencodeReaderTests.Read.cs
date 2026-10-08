@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Text;
 using Bodu.Test.Kat;
+using Bodu.Text.Bencode.Document;
 using Bodu.Text.Bencode.Reader;
 
 namespace Bodu.Text.Bencode;
@@ -464,4 +466,29 @@ public partial class Utf8BencodeReaderTests
         Assert.AreEqual(0, reader.CurrentDepth);
     }
 
+    /// <summary>
+    /// Verifies that a byte string of about 100 MB, whose length prefix has eight or nine digits, reads as a single byte
+    /// string of that length through the reader and the document model.
+    /// </summary>
+    /// <param name="length">The byte string's length.</param>
+    [TestMethod]
+    [TestCategory("Stress")]
+    [DataRow(99_999_999)]
+    [DataRow(100_000_000)]
+    public void Read_WhenByteStringLengthHasNineDigits_ShouldReadWholeString(int length)
+    {
+        byte[] prefix = Encoding.ASCII.GetBytes(length.ToString(CultureInfo.InvariantCulture) + ":");
+        byte[] data = new byte[prefix.Length + length];
+        prefix.CopyTo(data, 0);
+        data.AsSpan(prefix.Length).Fill((byte)'_');
+
+        var reader = new Utf8BencodeReader(data);
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(BencodeTokenType.ByteString, reader.TokenType);
+        Assert.AreEqual(length, reader.ValueSpan.Length);
+        Assert.IsFalse(reader.Read());
+
+        using BencodeDocument document = BencodeDocument.Parse(data);
+        Assert.AreEqual(length, document.RootElement.GetBytes().Length);
+    }
 }

@@ -324,4 +324,60 @@ public partial class BencodeSerializerTests
         }, "source");
     }
 
+    /// <summary>
+    /// Verifies that <see cref="BencodeSerializer.Deserialize{T}(Stream, BencodeSerializerOptions?)" /> and
+    /// <see cref="BencodeSerializer.DeserializeAsync{T}(Stream, BencodeSerializerOptions?, CancellationToken)" /> read a
+    /// document from a stream that can neither seek nor report its length.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task Deserialize_WhenStreamIsNotSeekable_ShouldReturnValue()
+    {
+        byte[] data = Encoding.ASCII.GetBytes("d2:Idi7e5:Label1:xe");
+        using var source = new NonSeekableStream(data);
+        using var asyncSource = new NonSeekableStream(data);
+
+        StreamModel model = BencodeSerializer.Deserialize<StreamModel>(source);
+        StreamModel asyncModel = await BencodeSerializer.DeserializeAsync<StreamModel>(asyncSource);
+
+        Assert.AreEqual(7, model.Id);
+        Assert.AreEqual("x", model.Label);
+        Assert.AreEqual(7, asyncModel.Id);
+        Assert.AreEqual("x", asyncModel.Label);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeSerializer.Deserialize{T}(Stream, BencodeSerializerOptions?)" /> reports a
+    /// truncated document read from a stream that can neither seek nor report its length with
+    /// <see cref="BencodeFormatException" />.
+    /// </summary>
+    /// <param name="name">The scenario label.</param>
+    /// <param name="encoded">The truncated document.</param>
+    [TestMethod]
+    [DataRow("a length prefix with no separator", "0")]
+    [DataRow("no value at all", "")]
+    public void Deserialize_WhenNotSeekableStreamIsTruncated_ShouldThrowBencodeFormatException(string name, string encoded)
+    {
+        _ = name;
+        using var source = new NonSeekableStream(Encoding.ASCII.GetBytes(encoded));
+
+        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<StreamModel>(source);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodeSerializer.Deserialize{T}(Stream, BencodeSerializerOptions?)" /> reads a whole
+    /// byte string from a stream that returns at most two bytes per read.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStreamReturnsShortReads_ShouldReturnValue()
+    {
+        using var source = new FixedChunkStream(Encoding.ASCII.GetBytes("d5:Value10:abcdefghije"), 2);
+
+        StringModel model = BencodeSerializer.Deserialize<StringModel>(source);
+
+        Assert.AreEqual("abcdefghij", model.Value);
+    }
 }

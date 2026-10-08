@@ -157,4 +157,31 @@ public partial class BencodeSerializerTests
         /// <value>The flag, or <see langword="null" />.</value>
         public bool? Flag { get; set; }
     }
+
+    /// <summary>
+    /// Verifies that serializing a <see cref="Nullable{T}" /> with no value as the document root throws
+    /// <see cref="BencodeSerializationException" />, because Bencode has no null and an empty output is not a document.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNullableValueIsNull_ShouldThrowBencodeSerializationException()
+    {
+        Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize<int?>(null);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="Nullable{T}" /> member with no value is omitted, under its wire name, while one with a
+    /// value is written.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenOptionalMemberIsNull_ShouldOmitKey()
+    {
+        var model = new OptionalPairModel { A = null, B = 1 };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d1:bi1ee", Encoding.Latin1.GetString(bytes));
+    }
 }

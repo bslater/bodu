@@ -743,4 +743,33 @@ public partial class BencodeSerializerTests
         public string Label { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// A model with a reference-type member that may be <see langword="null" /> and a value-type member.
+    /// </summary>
+    private sealed class NullAndZeroModel
+    {
+        /// <summary>Gets or sets the member left <see langword="null" />.</summary>
+        /// <value>The value, or <see langword="null" />.</value>
+        public string? Empty { get; set; }
+
+        /// <summary>Gets or sets the member holding zero.</summary>
+        /// <value>The value.</value>
+        public int Zero { get; set; }
+    }
+
+    /// <summary>
+    /// A model with two optional integer members, written under the single-letter keys <c>a</c> and <c>b</c>.
+    /// </summary>
+    private sealed class OptionalPairModel
+    {
+        /// <summary>Gets or sets the first member.</summary>
+        /// <value>The value, or <see langword="null" />.</value>
+        [PropertyName("a")]
+        public int? A { get; set; }
+
+        /// <summary>Gets or sets the second member.</summary>
+        /// <value>The value, or <see langword="null" />.</value>
+        [PropertyName("b")]
+        public int? B { get; set; }
+    }
 }

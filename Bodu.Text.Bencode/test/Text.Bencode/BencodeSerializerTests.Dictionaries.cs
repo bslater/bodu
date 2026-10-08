@@ -542,4 +542,19 @@ public partial class BencodeSerializerTests
         public object Deserialize(byte[] bytes) =>
             _deserialize(bytes);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="char" /> dictionary keys are written as the UTF-8 encoding of the character, a non-ASCII
+    /// character included, in bytewise key order.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenDictionaryKeyIsNonAsciiChar_ShouldWriteUtf8Bytes()
+    {
+        var value = new Dictionary<char, int> { ['é'] = 1, ['a'] = 2 };
+        byte[] expected = [.. "d1:ai2e2:"u8, 0xC3, 0xA9, .. "i1ee"u8];
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        CollectionAssert.AreEqual(expected, bytes);
+    }
 }
