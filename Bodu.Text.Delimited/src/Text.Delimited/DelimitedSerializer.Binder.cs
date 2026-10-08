@@ -241,32 +241,63 @@ public static partial class DelimitedSerializer
     /// <param name="type">The record type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <remarks>
+    /// Each member name is mapped once, to its most derived declaration: a property or field hidden with the
+    /// <see langword="new" /> modifier is not mapped, for writing or for reading. When that most derived declaration is
+    /// ignored, the name is not mapped at all.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static Member[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         DelimitedSerializerOptions options)
     {
-        var members = new List<Member>();
-
+        // Reflection returns a member hidden with new beside the member that hides it, so only the most derived
+        // declaration of each name is kept, at the position its name first appeared.
+        var declarations = new List<MemberInfo>();
         foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            if (property.GetIndexParameters().Length != 0 || property.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                continue;
-
-            members.Add(Member.FromProperty(property, options));
+            if (property.GetIndexParameters().Length == 0)
+                KeepMostDerived(declarations, property);
         }
 
         if (options.IncludeFields)
         {
             foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (fieldInfo.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                    continue;
+                KeepMostDerived(declarations, fieldInfo);
+        }
 
-                members.Add(Member.FromField(fieldInfo, options));
-            }
+        var members = new List<Member>(declarations.Count);
+        foreach (MemberInfo declaration in declarations)
+        {
+            if (declaration.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
+                continue;
+
+            members.Add(declaration is PropertyInfo property ? Member.FromProperty(property, options) : Member.FromField((FieldInfo)declaration, options));
         }
 
         return [.. members.OrderBy(static m => m.Order)];
+    }
+
+    /// <summary>
+    /// Adds a member declaration to the list unless the list already holds the same name from a more derived type, and
+    /// replaces, in place, a declaration of the same name that it hides.
+    /// </summary>
+    /// <param name="declarations">The declarations kept so far, one per name.</param>
+    /// <param name="candidate">The declaration to consider.</param>
+    private static void KeepMostDerived(List<MemberInfo> declarations, MemberInfo candidate)
+    {
+        int existing = declarations.FindIndex(declaration => string.Equals(declaration.Name, candidate.Name, StringComparison.Ordinal));
+        if (existing < 0)
+        {
+            declarations.Add(candidate);
+            return;
+        }
+
+        if (candidate.DeclaringType is { } declaringType &&
+            declarations[existing].DeclaringType is { } keptType &&
+            declaringType.IsSubclassOf(keptType))
+        {
+            declarations[existing] = candidate;
+        }
     }
 }
