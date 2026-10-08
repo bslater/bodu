@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -401,7 +402,7 @@ internal sealed partial class YamlParser
             if (r.Tag is null || r.Kind == YamlReaderNodeKind.Alias)
                 continue;
 
-            string expanded = ExpandTagHandle(r.Tag);
+            string expanded = DecodeTagEscapes(ExpandTagHandle(r.Tag), r.Offset);
             string? tag = NormalizeCoreTag(expanded);
 
             if (tag is null)
@@ -541,6 +542,51 @@ internal sealed partial class YamlParser
         YamlValueKind.Boolean => r.AsBoolean() ? "true" : "false",
         _ => string.Empty,
     };
+
+    /// <summary>
+    /// Decodes the <c>%</c>-escaped characters of a tag, each a <c>%</c> and two hexadecimal digits, as UTF-8.
+    /// </summary>
+    /// <param name="tag">The tag, with its handle expanded.</param>
+    /// <param name="offset">The byte offset of the tagged node, for error reporting.</param>
+    /// <returns>The tag with its escapes decoded, or the tag itself when it holds none.</returns>
+    /// <exception cref="YamlFormatException">
+    /// A <c>%</c> is not followed by two hexadecimal digits, or the escaped bytes are not UTF-8.
+    /// </exception>
+    private string DecodeTagEscapes(string tag, int offset)
+    {
+        if (!tag.Contains('%', StringComparison.Ordinal))
+            return tag;
+
+        var bytes = new List<byte>(tag.Length);
+        int run = 0;
+        for (int i = 0; i < tag.Length; i++)
+        {
+            if (tag[i] != '%')
+                continue;
+
+            if (i + 2 >= tag.Length
+                || !byte.TryParse(tag.AsSpan(i + 1, 2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out byte value))
+            {
+                throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
+            }
+
+            bytes.AddRange(Encoding.UTF8.GetBytes(tag, run, i - run));
+            bytes.Add(value);
+            i += 2;
+            run = i + 1;
+        }
+
+        bytes.AddRange(Encoding.UTF8.GetBytes(tag, run, tag.Length - run));
+
+        try
+        {
+            return new UTF8Encoding(false, true).GetString(CollectionsMarshal.AsSpan(bytes));
+        }
+        catch (DecoderFallbackException)
+        {
+            throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
+        }
+    }
 
     /// <summary>
     /// Expands a tag's handle to its full prefix using the active <c>%TAG</c> directive table, resolving secondary (<c>!!</c>)

@@ -940,12 +940,29 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Reads a tag node property (verbatim or shorthand) up to the next separator.
+    /// Reads a tag node property: a verbatim tag to its closing <c>&gt;</c>, or a shorthand tag up to the next
+    /// separator or flow indicator.
     /// </summary>
     /// <returns>The captured tag text.</returns>
+    /// <exception cref="YamlFormatException">A verbatim tag has no closing <c>&gt;</c>.</exception>
     private string ReadTag()
     {
         int start = _pos;
+
+        // A verbatim tag may hold any URI character, commas and brackets included, so only its '>' ends it.
+        if (PeekAt(1) == (byte)'<')
+        {
+            _pos += 2;
+            while (!IsBlankOrBreakOrEnd(Peek()) && Peek() != (byte)'>')
+                _pos++;
+
+            if (Peek() != (byte)'>')
+                throw ErrorAt(start, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
+
+            _pos++;
+            return Utf8(start, _pos - start);
+        }
+
         while (!IsBlankOrBreakOrEnd(Peek()) && Peek() is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             _pos++;
 
