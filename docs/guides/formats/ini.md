@@ -86,7 +86,7 @@ root["metrics"] = metrics;
 File.WriteAllBytes("app.ini", root.ToUtf8Bytes());
 ```
 
-Every comment line from the source survives (`LeadingComments` on sections and values, `TrailingComments` per object). Layout is canonicalized: `key=value` without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps everything after `=` as value content.
+Every comment line from the source survives (`LeadingComments` on sections and values, `TrailingComments` per object). Layout is canonicalized: `key=value` without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps an inline `;` or `#` and the text after it as value content.
 
 ## Pattern 4 - duplicate policies
 
@@ -111,7 +111,7 @@ The defaults merge repeated sections and keep the last duplicate key - the permi
 
 ## Dialect
 
-`=` only (no `:`), values literal to end of line (quotes preserved, inline `;`/`#` kept as content), `;` and `#` full-line comments, BOM skipped, LF/CRLF/CR equivalent. See [Parser policies](../../docs/formats/parser-policies.md).
+`=` only (no `:`), keys and values trimmed of the spaces and tabs around them, values otherwise literal to end of line (quotes preserved, inline `;`/`#` kept as content), `;` and `#` full-line comments, BOM skipped, LF/CRLF/CR equivalent. See [Parser policies](../../docs/formats/parser-policies.md).
 
 A section name runs to the first `]` that only whitespace or a comment follows, so a name may contain `]`: `[foo]bar]` names the section `foo]bar`, and `[server] ; primary` names `server`. A comment after a header is skipped, not reported as a comment token, so the mutable DOM does not keep it; any other text after the header, as in `[server] primary`, throws `IniFormatException`.
 

@@ -11,8 +11,9 @@ namespace Bodu.Text.Ini.Reader;
 /// </summary>
 /// <remarks>
 /// The reader is source-order and does not itself resolve duplicate sections/keys or apply case rules - those are
-/// document-model concerns. Inline comments are deliberately not recognized: a value retains everything after the
-/// assignment to the end of the line, matching the safer <c>configparser</c> dialect and avoiding the classic
+/// document-model concerns. Inline comments are deliberately not recognized: the spaces and tabs around a key and
+/// around a value are trimmed, and everything else in a value, to the end of the line, is literal, an inline <c>;</c>
+/// or <c>#</c> included, matching the safer <c>configparser</c> dialect and avoiding the classic
 /// <c>value ; not-a-comment</c> footgun.
 /// </remarks>
 public readonly struct IniReaderOptions

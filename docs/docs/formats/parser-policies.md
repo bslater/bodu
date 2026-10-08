@@ -42,7 +42,7 @@ The DotEnv dialect follows the mainstream `dotenv` implementations:
 The `Utf8IniReader` dialect is deliberately conservative (the `configparser`-compatible reading):
 
 - `=` is the only key/value delimiter; a `:` line is malformed.
-- A value runs literally to the end of the line - quotes are preserved and an inline `;` or `#` is **content**, not a comment.
+- The spaces and tabs around a key and around a value are trimmed; everything else in a value is literal to the end of the line - quotes are preserved and an inline `;` or `#` is **content**, not a comment.
 - Both `;` and `#` start full-line comments (`IniReaderOptions.DisallowHashComments` restricts to `;`).
 - A section name runs to the first `]` that only whitespace or a comment follows, so `[foo]bar]` names `foo]bar`. A comment after a header is skipped rather than reported as a comment token; any other text after the header is malformed.
 - A leading UTF-8 BOM is skipped; LF, CRLF, and lone-CR line endings are equivalent.

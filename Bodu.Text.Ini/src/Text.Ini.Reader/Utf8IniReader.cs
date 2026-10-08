@@ -23,7 +23,8 @@ namespace Bodu.Text.Ini.Reader;
 /// </para>
 /// <para>
 /// The reader surfaces raw text in source order; it does not resolve duplicate sections/keys, apply case rules, or
-/// strip inline comments. A value retains everything after the assignment to the end of the line.
+/// strip inline comments. The spaces and tabs around a key and around a value are trimmed; everything else in a value,
+/// to the end of the line, is literal, inline comment markers included.
 /// </para>
 /// <para>
 /// A section name runs from the <c>[</c> to the first <c>]</c> on the line that only whitespace or a comment follows,

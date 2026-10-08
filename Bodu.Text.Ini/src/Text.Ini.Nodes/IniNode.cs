@@ -22,8 +22,8 @@ namespace Bodu.Text.Ini.Nodes;
 /// Unlike the other quartet DOMs, this tree deliberately bears comment trivia so that authoring and round-tripping are
 /// faithful: <see cref="LeadingComments" /> holds the comment lines that precede a node, and each
 /// <see cref="IniObject" /> additionally holds the trailing comment block at the end of its scope. Inline comments are
-/// not modeled - the reader dialect keeps everything after the assignment as part of the value, so an emitted inline
-/// comment would be re-read as value text.
+/// not modeled - the reader dialect keeps an inline comment marker and the text after it as part of the value, so an
+/// emitted inline comment would be re-read as value text.
 /// </remarks>
 public abstract class IniNode
 {
