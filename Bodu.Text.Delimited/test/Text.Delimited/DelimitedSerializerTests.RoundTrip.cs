@@ -108,6 +108,105 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="DateTime" /> with seven digits of fractional seconds reads back with the same ticks and
+    /// the same kind, whichever <see cref="DateTimeKind" /> it has.
+    /// </summary>
+    /// <param name="kind">The value's kind.</param>
+    [TestMethod]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    [DataRow(DateTimeKind.Unspecified)]
+    public void SerializeDeserialize_WhenADateTimeHasFractionalSeconds_ShouldRoundTripItsTicksAndKind(DateTimeKind kind)
+    {
+        DateTime value = new DateTime(2021, 2, 6, 1, 2, 3, kind).AddTicks(4567891);
+
+        string text = DelimitedSerializer.Serialize(new List<IdValueRecord<DateTime>> { new() { Id = 1, Value = value } });
+        List<IdValueRecord<DateTime>> restored = DelimitedSerializer.Deserialize<IdValueRecord<DateTime>>(text);
+
+        // The round-trip format shows every tick and the kind, which DateTime equality and its default text do not.
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(
+            value.ToString("O", CultureInfo.InvariantCulture),
+            restored[0].Value.ToString("O", CultureInfo.InvariantCulture),
+            $"The serializer wrote {text.ReplaceLineEndings(@"\r\n")}.");
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateTimeOffset" /> with seven digits of fractional seconds reads back with the same
+    /// ticks and the same offset, for a zero, a positive and a negative offset.
+    /// </summary>
+    /// <param name="offsetMinutes">The value's offset from UTC, in minutes.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(600)]
+    [DataRow(-330)]
+    public void SerializeDeserialize_WhenADateTimeOffsetHasFractionalSeconds_ShouldRoundTripItsTicksAndOffset(int offsetMinutes)
+    {
+        DateTimeOffset value = new DateTimeOffset(2021, 2, 6, 1, 2, 3, TimeSpan.FromMinutes(offsetMinutes)).AddTicks(4567891);
+
+        string text = DelimitedSerializer.Serialize(new List<IdValueRecord<DateTimeOffset>> { new() { Id = 1, Value = value } });
+        List<IdValueRecord<DateTimeOffset>> restored = DelimitedSerializer.Deserialize<IdValueRecord<DateTimeOffset>>(text);
+
+        // DateTimeOffset equality ignores the offset, so the round-trip text, which shows it, is compared instead.
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(
+            value.ToString("O", CultureInfo.InvariantCulture),
+            restored[0].Value.ToString("O", CultureInfo.InvariantCulture),
+            $"The serializer wrote {text.ReplaceLineEndings(@"\r\n")}.");
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateOnly" /> reads back as the same date.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenADateOnlyIsWritten_ShouldRoundTripIt()
+    {
+        var value = new DateOnly(2021, 2, 6);
+
+        string text = DelimitedSerializer.Serialize(new List<IdValueRecord<DateOnly>> { new() { Id = 1, Value = value } });
+        List<IdValueRecord<DateOnly>> restored = DelimitedSerializer.Deserialize<IdValueRecord<DateOnly>>(text);
+
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(value, restored[0].Value, $"The serializer wrote {text.ReplaceLineEndings(@"\r\n")}.");
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TimeOnly" /> with seven digits of fractional seconds reads back as the same time.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenATimeOnlyHasFractionalSeconds_ShouldRoundTripIt()
+    {
+        TimeOnly value = new TimeOnly(1, 2, 3).Add(TimeSpan.FromTicks(4567891));
+
+        string text = DelimitedSerializer.Serialize(new List<IdValueRecord<TimeOnly>> { new() { Id = 1, Value = value } });
+        List<IdValueRecord<TimeOnly>> restored = DelimitedSerializer.Deserialize<IdValueRecord<TimeOnly>>(text);
+
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(value, restored[0].Value, $"The serializer wrote {text.ReplaceLineEndings(@"\r\n")}.");
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TimeSpan" /> of several days with seven digits of fractional seconds reads back as the
+    /// same duration, positive or negative.
+    /// </summary>
+    /// <param name="negative">Whether the duration is negative.</param>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void SerializeDeserialize_WhenATimeSpanHasDaysAndFractionalSeconds_ShouldRoundTripIt(bool negative)
+    {
+        TimeSpan value = new TimeSpan(3, 4, 5, 6).Add(TimeSpan.FromTicks(1234567));
+        if (negative)
+            value = value.Negate();
+
+        string text = DelimitedSerializer.Serialize(new List<IdValueRecord<TimeSpan>> { new() { Id = 1, Value = value } });
+        List<IdValueRecord<TimeSpan>> restored = DelimitedSerializer.Deserialize<IdValueRecord<TimeSpan>>(text);
+
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual(value, restored[0].Value, $"The serializer wrote {text.ReplaceLineEndings(@"\r\n")}.");
+    }
+
+    /// <summary>
     /// Verifies that 10,000 records, enough to pass the incremental writer's flush buffer several times, keep every
     /// value through a write to a stream and a read back, for <see cref="long" />, <see cref="DateTime" />,
     /// <see cref="double" /> and <see cref="Guid" /> values.

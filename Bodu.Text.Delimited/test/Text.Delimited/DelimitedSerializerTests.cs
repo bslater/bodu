@@ -131,6 +131,32 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO with a column of each temporal type the serializer formats.
+    /// </summary>
+    public sealed class TemporalRecord
+    {
+        /// <summary>Gets or sets the date and time.</summary>
+        /// <value>The date and time.</value>
+        public DateTime At { get; set; }
+
+        /// <summary>Gets or sets the date and time with its offset.</summary>
+        /// <value>The date and time with its offset.</value>
+        public DateTimeOffset Moment { get; set; }
+
+        /// <summary>Gets or sets the date.</summary>
+        /// <value>The date.</value>
+        public DateOnly Day { get; set; }
+
+        /// <summary>Gets or sets the time of day.</summary>
+        /// <value>The time of day.</value>
+        public TimeOnly Time { get; set; }
+
+        /// <summary>Gets or sets the duration.</summary>
+        /// <value>The duration.</value>
+        public TimeSpan Span { get; set; }
+    }
+
+    /// <summary>
     /// A record POCO with a <see cref="double" /> column.
     /// </summary>
     public sealed class DoubleRecord

@@ -340,4 +340,29 @@ public partial class DelimitedSerializerTests
         Assert.Contains("CommentChar", ex.Message);
         Assert.Contains("Delimiter", ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that temporal values are written in their invariant round-trip forms: <c>O</c> for
+    /// <see cref="DateTime" /> and <see cref="DateTimeOffset" />, ISO 8601 dates and times for <see cref="DateOnly" />
+    /// and <see cref="TimeOnly" />, and the constant <c>c</c> form for <see cref="TimeSpan" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARecordHoldsTemporalValues_ShouldWriteTheirRoundTripForms()
+    {
+        var record = new TemporalRecord
+        {
+            At = new DateTime(2021, 2, 6, 1, 2, 3, DateTimeKind.Utc).AddTicks(4567891),
+            Moment = new DateTimeOffset(2021, 2, 6, 1, 2, 3, TimeSpan.FromHours(10)).AddTicks(4567891),
+            Day = new DateOnly(2021, 2, 6),
+            Time = new TimeOnly(1, 2, 3).Add(TimeSpan.FromTicks(4567891)),
+            Span = new TimeSpan(1, 2, 3, 4, 567),
+        };
+
+        string text = DelimitedSerializer.Serialize(new List<TemporalRecord> { record });
+
+        Assert.AreEqual(
+            "At,Moment,Day,Time,Span\r\n"
+            + "2021-02-06T01:02:03.4567891Z,2021-02-06T01:02:03.4567891+10:00,2021-02-06,01:02:03.4567891,1.02:03:04.5670000\r\n",
+            text);
+    }
 }

@@ -414,4 +414,22 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(1, records.Count);
         Assert.AreEqual("   ", records[0].Value);
     }
+
+    /// <summary>
+    /// Verifies that temporal columns written in the invariant general forms of earlier versions still parse: a
+    /// <see cref="DateTime" />, a <see cref="DateTimeOffset" />, a <see cref="DateOnly" /> and a <see cref="TimeOnly" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTemporalColumnsHoldTheGeneralForms_ShouldParseThem()
+    {
+        List<TemporalRecord> records = DelimitedSerializer.Deserialize<TemporalRecord>(
+            "At,Moment,Day,Time,Span\n02/06/2021 01:02:03,02/06/2021 01:02:03 +10:00,02/06/2021,01:02,1.02:03:04.5670000\n");
+
+        Assert.AreEqual(1, records.Count);
+        Assert.AreEqual(new DateTime(2021, 2, 6, 1, 2, 3, DateTimeKind.Unspecified), records[0].At);
+        Assert.AreEqual(new DateTimeOffset(2021, 2, 6, 1, 2, 3, TimeSpan.FromHours(10)), records[0].Moment);
+        Assert.AreEqual(new DateOnly(2021, 2, 6), records[0].Day);
+        Assert.AreEqual(new TimeOnly(1, 2), records[0].Time);
+        Assert.AreEqual(new TimeSpan(1, 2, 3, 4, 567), records[0].Span);
+    }
 }
