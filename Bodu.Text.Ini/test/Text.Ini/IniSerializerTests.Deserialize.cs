@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Text.Ini;
 
 /// <summary>
@@ -161,5 +163,27 @@ public partial class IniSerializerTests
             _ = IniSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(
                 "[db]\nhost=x\n[db]\nport=5\n", options);
         });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="float" /> member is parsed from its value with the invariant culture, so that a current
+    /// culture whose decimal separator is a comma, and whose group separator is a period, reads the same value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenMemberIsSingle_ShouldParseTheValue()
+    {
+        CultureInfo original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+
+            RatioConfig config = IniSerializer.Deserialize<RatioConfig>("Ratio=2.5");
+
+            Assert.AreEqual(2.5f, config.Ratio);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
     }
 }

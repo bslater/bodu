@@ -108,4 +108,33 @@ public partial class Utf8IniReaderTests
             _ = Transcribe("[s]\nkeywithoutvalue\n");
         });
     }
+
+    /// <summary>
+    /// Verifies that a malformed line after two lines ended with CRLF is reported on its own line, 3, so that each CRLF
+    /// counts as one line ending rather than two.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenMalformedLineFollowsCrLfLines_ShouldReportItsLineNumber()
+    {
+        IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = Transcribe("a=1\r\nb=2\r\nbad\r\n");
+        });
+
+        Assert.AreEqual(3, ex.LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that a malformed second line is reported with the one-based line number 2.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSecondLineIsMalformed_ShouldReportLineNumberTwo()
+    {
+        IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = Transcribe("\nbad\n");
+        });
+
+        Assert.AreEqual(2, ex.LineNumber);
+    }
 }

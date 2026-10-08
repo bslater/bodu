@@ -23,4 +23,18 @@ public partial class IniObjectTests
         Assert.IsFalse(root.ContainsKey("a"));
         CollectionAssert.AreEqual(new List<string> { "b" }, root.Keys.ToList());
     }
+
+    /// <summary>
+    /// Verifies that removing a section's key a second time returns <see langword="false" />, after the first removal
+    /// returned <see langword="true" /> and took the key out of the section.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenKeyAlreadyRemoved_ShouldReturnFalse()
+    {
+        IniObject section = IniNode.Parse("[Foo Bar]\nfoo=bar\n"u8)["Foo Bar"].AsObject();
+
+        Assert.IsTrue(section.Remove("foo"));
+        Assert.IsFalse(section.ContainsKey("foo"));
+        Assert.IsFalse(section.Remove("foo"));
+    }
 }

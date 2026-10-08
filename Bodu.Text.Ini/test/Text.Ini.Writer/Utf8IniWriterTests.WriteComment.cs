@@ -28,4 +28,20 @@ public partial class Utf8IniWriterTests
 
         Assert.AreEqual("# a note\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
     }
+
+    /// <summary>
+    /// Verifies that a comment holding a line break is written as one comment line per line of its text, each with the
+    /// comment prefix, so that no line of it reads back as anything but a comment.
+    /// </summary>
+    [TestMethod]
+    public void WriteComment_WhenTextContainsLineBreak_ShouldWriteEachLineAsAComment()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8IniWriter(buffer);
+
+        writer.WriteComment("Multiline\nComment");
+        writer.Flush();
+
+        Assert.AreEqual(";Multiline\n;Comment\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
+    }
 }

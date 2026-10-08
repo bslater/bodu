@@ -126,4 +126,30 @@ public partial class IniSerializerTests
             _ = IniSerializer.Serialize(config);
         });
     }
+
+    /// <summary>
+    /// Verifies that only a POCO's public members are written, so that a private property is left out.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTypeHasNonPublicMembers_ShouldWriteOnlyPublicOnes()
+    {
+        var config = new PrivateMemberConfig { Name = "Unknwon" };
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Name=Unknwon\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that an integer member holding zero is written under the default options rather than left out.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenIntMemberIsZero_ShouldWriteTheKey()
+    {
+        var config = new PortConfig { Port = 0 };
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Port=0\n", text);
+    }
 }

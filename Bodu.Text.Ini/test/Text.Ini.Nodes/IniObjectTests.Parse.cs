@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+
 using Bodu.Text.Ini.Reader;
 
 namespace Bodu.Text.Ini.Nodes;
@@ -129,5 +131,22 @@ public partial class IniObjectTests
         CollectionAssert.AreEqual(new List<string> { " lead" }, db.LeadingComments.ToList());
         CollectionAssert.AreEqual(new List<string> { " note" }, db["host"].LeadingComments.ToList());
         CollectionAssert.AreEqual(new List<string> { " tail" }, db.TrailingComments.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that the comment ending the last section is kept as that section's trailing comment, and is written back
+    /// as the document's last line.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCommentEndsTheLastSection_ShouldKeepItAsTrailingComment()
+    {
+        const string source =
+            "\nglobal key = global value\n;comment for section1\n[section1]\n;comment for key1\nkey 1 =      value 1\n" +
+            "key;2 = va:lu;e.5\n[ section 2]\n;comment for myKey1\nmykey1 = value1\n;comment for section2\n";
+
+        IniObject root = IniNode.Parse(Encoding.UTF8.GetBytes(source));
+
+        CollectionAssert.AreEqual(new List<string> { "comment for section2" }, root["section 2"].AsObject().TrailingComments.ToList());
+        Assert.EndsWith(";comment for section2\n", Encoding.UTF8.GetString(root.ToUtf8Bytes()));
     }
 }
