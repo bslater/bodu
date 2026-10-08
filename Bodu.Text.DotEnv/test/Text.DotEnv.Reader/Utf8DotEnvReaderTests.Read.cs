@@ -502,6 +502,38 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that an unterminated quoted value is reported at its opening quote, so that the line, the 1-based byte
+    /// column and the byte offset all describe that one position, wherever the reader found the value unterminated.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text, whose unterminated value opens on line 2.</param>
+    /// <param name="line">The expected 1-based line number of the opening quote.</param>
+    /// <param name="column">The expected 1-based byte column of the opening quote.</param>
+    /// <param name="offset">The expected zero-based byte offset of the opening quote.</param>
+    [TestMethod]
+    [DataRow("double quote at the end of the input", "A=1\nKEY=\"abc", 2, 5, 8)]
+    [DataRow("double quote over the lines after it", "A=1\nKEY=\"abc\ndef\nB=2\n", 2, 5, 8)]
+    [DataRow("double quote ending in a backslash", "A=1\nKEY=\"abc\\", 2, 5, 8)]
+    [DataRow("double quote after export and spaces", "A=1\nexport  KEY = \"abc\n", 2, 15, 18)]
+    [DataRow("double quote after a CR LF line", "A=1\r\nKEY=\"abc", 2, 5, 9)]
+    [DataRow("single quote at a line feed", "A=1\nKEY='abc\nB=2\n", 2, 5, 8)]
+    [DataRow("single quote at a lone CR", "A=1\nKEY='abc\rB=2\r", 2, 5, 8)]
+    [DataRow("single quote at the end of the input", "A=1\nKEY='abc", 2, 5, 8)]
+    public void Read_WhenQuotedValueIsUnterminated_ShouldReportTheOpeningQuote(string testName, string source, int line, int column, int offset)
+    {
+        _ = testName;
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(column, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(offset, ex.Offset, "Offset");
+    }
+
+    /// <summary>
     /// Verifies that a million consecutive comment lines are read without exhausting the stack, whether the reader
     /// reports or skips them, and that the one entry after them is read.
     /// </summary>
