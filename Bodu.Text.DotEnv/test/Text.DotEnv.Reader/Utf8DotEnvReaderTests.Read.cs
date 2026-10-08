@@ -155,4 +155,60 @@ public partial class Utf8DotEnvReaderTests
             _ = Transcribe("K=\"open\n");
         });
     }
+
+    /// <summary>
+    /// Verifies that a million consecutive comment lines are read without exhausting the stack, whether the reader
+    /// reports or skips them, and that the one entry after them is read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="skipComments">Whether the reader skips comment lines instead of reporting them.</param>
+    [TestMethod]
+    [DataRow("comment lines reported", false)]
+    [DataRow("comment lines skipped", true)]
+    public void Read_WhenManyConsecutiveCommentLines_ShouldNotOverflowTheStack(string testName, bool skipComments)
+    {
+        _ = testName;
+        byte[] bytes = Encoding.UTF8.GetBytes(string.Concat(Enumerable.Repeat("# comment\n", 1_000_000)) + "FOO=bar\n");
+        var reader = new Utf8DotEnvReader(bytes, new DotEnvReaderOptions { SkipComments = skipComments });
+        var entries = new List<string>();
+        string? key = null;
+
+        while (reader.Read())
+        {
+            if (reader.TokenType == DotEnvTokenType.PropertyName)
+                key = reader.GetString();
+            else if (reader.TokenType == DotEnvTokenType.String)
+                entries.Add($"{key}={reader.GetString()}");
+        }
+
+        CollectionAssert.AreEqual(new List<string> { "FOO=bar" }, entries);
+    }
+
+    /// <summary>
+    /// Verifies that a quoted value of two million characters, longer than any entry bound the library declares, is
+    /// read whole rather than cut short or dropped.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="quote">The quote character that delimits the value.</param>
+    [TestMethod]
+    [DataRow("double-quoted", "\"")]
+    [DataRow("single-quoted", "'")]
+    public void Read_WhenQuotedValueIsVeryLong_ShouldReturnWholeValue(string testName, string quote)
+    {
+        _ = testName;
+        const int Length = 2_000_000;
+        byte[] bytes = Encoding.UTF8.GetBytes($"KEY={quote}{new string('a', Length)}{quote}\n");
+        var reader = new Utf8DotEnvReader(bytes);
+        string? value = null;
+
+        while (reader.Read())
+        {
+            if (reader.TokenType == DotEnvTokenType.String)
+                value = reader.GetString();
+        }
+
+        Assert.IsNotNull(value);
+        Assert.AreEqual(Length, value.Length);
+        Assert.IsFalse(value.AsSpan().ContainsAnyExcept('a'), "The value holds a character the input does not.");
+    }
 }

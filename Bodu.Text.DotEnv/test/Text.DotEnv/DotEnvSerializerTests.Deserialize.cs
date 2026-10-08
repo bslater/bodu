@@ -106,4 +106,21 @@ public partial class DotEnvSerializerTests
 
         Assert.AreEqual("3", map["A"]);
     }
+
+    /// <summary>
+    /// Verifies that a key defined twice binds the value of its last definition, both into a dictionary and into a POCO
+    /// member mapped under the <see cref="DotEnvSerializerDefaults.Web" /> defaults.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenKeyRepeated_ShouldBindLastValue()
+    {
+        const string Text = "MULTI1=foo\nMULTI1=bar\n";
+        var options = new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web);
+
+        Dictionary<string, string> map = DotEnvSerializer.Deserialize<Dictionary<string, string>>(Text, options);
+        RepeatedKeyConfig config = DotEnvSerializer.Deserialize<RepeatedKeyConfig>(Text, options);
+
+        Assert.AreEqual("bar", map["MULTI1"]);
+        Assert.AreEqual("bar", config.Multi1);
+    }
 }

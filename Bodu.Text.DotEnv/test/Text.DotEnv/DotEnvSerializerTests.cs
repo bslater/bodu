@@ -53,6 +53,16 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO with one member whose key a document may define more than once.
+    /// </summary>
+    public sealed class RepeatedKeyConfig
+    {
+        /// <summary>Gets or sets the value, bound to the <c>MULTI1</c> key under the <c>Web</c> defaults.</summary>
+        /// <value>The value.</value>
+        public string Multi1 { get; set; } = string.Empty;
+    }
+
+    /// <summary>
     /// A POCO that records the serialization callback invocations.
     /// </summary>
     public sealed class CallbackConfig
