@@ -99,4 +99,42 @@ public partial class ConfigurationPatternTests
         Assert.IsTrue(pattern.IsMatch("{b}.x"));
         Assert.IsFalse(pattern.IsMatch("b.x"));
     }
+
+    /// <summary>
+    /// Verifies that a pattern starting with <c>/</c> matches a relative path as if the path began with <c>/</c>, so
+    /// <c>/test1/file.{java,js,rb}</c> matches <c>test1/file.java</c> (EditorConfig core-test
+    /// <c>leading_slash_relevance</c>).
+    /// </summary>
+    [TestMethod]
+    public void IsMatch_WhenPatternStartsWithSlashAndPathIsRelative_ShouldMatchAsIfRooted()
+    {
+        var pattern = ConfigurationPattern.Compile("/test1/file.{java,js,rb}");
+
+        Assert.IsTrue(pattern.IsMatch("test1/file.java"));
+        Assert.IsTrue(pattern.IsMatch("test1/file.rb"));
+    }
+
+    /// <summary>
+    /// Verifies that a pattern starting with <c>/</c> still matches a path that itself starts with <c>/</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsMatch_WhenPatternStartsWithSlashAndPathIsRooted_ShouldMatch()
+    {
+        var pattern = ConfigurationPattern.Compile("/test1/file.{java,js,rb}");
+
+        Assert.IsTrue(pattern.IsMatch("/test1/file.java"));
+    }
+
+    /// <summary>
+    /// Verifies that a pattern starting with <c>/</c> stays anchored at the root, so a path whose matching tail sits in
+    /// another directory does not match, whether or not the path starts with <c>/</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsMatch_WhenPatternStartsWithSlashAndPathIsInAnotherDirectory_ShouldNotMatch()
+    {
+        var pattern = ConfigurationPattern.Compile("/test1/file.{java,js,rb}");
+
+        Assert.IsFalse(pattern.IsMatch("other/test1/file.java"));
+        Assert.IsFalse(pattern.IsMatch("/other/test1/file.java"));
+    }
 }
