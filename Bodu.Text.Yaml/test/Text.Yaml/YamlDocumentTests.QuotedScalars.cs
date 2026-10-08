@@ -128,4 +128,24 @@ public partial class YamlDocumentTests
             using var doc = YamlDocument.Parse("text: \"line1\nline2\"\n");
         });
     }
+
+    /// <summary>
+    /// Verifies that a backslash followed by a literal tab in a double-quoted scalar is the escaped tab, as a backslash
+    /// followed by <c>t</c> is, wherever it falls among the scalar's lines; trailing white space after it still folds.
+    /// </summary>
+    /// <param name="yaml">A document with a backslash and a literal tab inside double quotes.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- \"\\\t\"", """["\t"]""", DisplayName = "alone")]
+    [DataRow("\"2 inline\\\ttab\"\n", "\"2 inline\\ttab\"", DisplayName = "inside a line")]
+    [DataRow("\"2 leading\n    \\\ttab\"\n", "\"2 leading \\ttab\"", DisplayName = "opening a continuation line")]
+    [DataRow("\"5 leading\n    \\\t  tab\"\n", "\"5 leading \\t  tab\"", DisplayName = "before spaces, opening a line")]
+    [DataRow("\"3 trailing\\\t\n    tab\"\n", "\"3 trailing\\t tab\"", DisplayName = "ending a line")]
+    [DataRow("\"4 trailing\\\t  \n    tab\"\n", "\"4 trailing\\t tab\"", DisplayName = "before trailing spaces")]
+    public void Parse_WhenBackslashPrecedesLiteralTab_ShouldDecodeTab(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
 }
