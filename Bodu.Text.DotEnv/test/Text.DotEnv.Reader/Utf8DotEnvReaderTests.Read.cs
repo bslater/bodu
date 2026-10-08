@@ -157,6 +157,40 @@ public partial class Utf8DotEnvReaderTests
     }
 
     /// <summary>
+    /// Verifies that a rejected entry is reported at the line, the 1-based column and the byte offset at which the
+    /// reader detected the error, the column counted in bytes from the start of that byte's line.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="source">The DotEnv source text.</param>
+    /// <param name="line">The expected 1-based line number.</param>
+    /// <param name="column">The expected 1-based column number.</param>
+    /// <param name="offset">The expected zero-based byte offset.</param>
+    [TestMethod]
+    [DataRow("invalid key at the start of the first line", "=abc\n", 1, 1, 0)]
+    [DataRow("missing assignment on the first line", "API KEY=abc\n", 1, 5, 4)]
+    [DataRow("invalid key after the export prefix", "export -KEY=v\n", 1, 8, 7)]
+    [DataRow("indented invalid key on a later line", "A=1\n  1KEY=v\n", 2, 3, 6)]
+    [DataRow("missing assignment on a later line", "A=1\nB=2\nKEY value\n", 3, 5, 12)]
+    [DataRow("missing assignment after a CRLF line ending", "A=1\r\nKEY value\r\n", 2, 5, 9)]
+    [DataRow("missing assignment after a lone CR line ending", "A=1\rKEY value\r", 2, 5, 8)]
+    [DataRow("missing assignment after a byte-order mark", "﻿KEY value\n", 1, 5, 7)]
+    [DataRow("unterminated double quote at the end of the input", "KEY=\"abc", 1, 9, 8)]
+    [DataRow("unterminated single quote on a later line", "A=1\nKEY=  'abc\n", 2, 8, 11)]
+    public void Read_WhenEntryIsMalformed_ShouldReportTheLineColumnAndOffsetOfTheError(string testName, string source, int line, int column, int offset)
+    {
+        _ = testName;
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe(source);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(column, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(offset, ex.Offset, "Offset");
+    }
+
+    /// <summary>
     /// Verifies that a million consecutive comment lines are read without exhausting the stack, whether the reader
     /// reports or skips them, and that the one entry after them is read.
     /// </summary>
