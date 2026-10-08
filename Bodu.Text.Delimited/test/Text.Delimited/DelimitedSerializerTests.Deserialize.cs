@@ -373,4 +373,45 @@ public partial class DelimitedSerializerTests
         Assert.Contains("CommentChar", ex.Message);
         Assert.Contains("Quote", ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a nullable <see cref="decimal" /> column holding only white space, spaces, a tab or both, binds
+    /// <see langword="null" /> as an empty field does, while a value beside them still binds.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenANullableDecimalColumnIsWhiteSpace_ShouldBindNull()
+    {
+        List<IdValueRecord<decimal?>> records = DelimitedSerializer.Deserialize<IdValueRecord<decimal?>>("Id,Value\n1,   \n2,\t\n3,\" \t \"\n4,4.5\n");
+
+        Assert.AreEqual(4, records.Count);
+        Assert.IsNull(records[0].Value);
+        Assert.IsNull(records[1].Value);
+        Assert.IsNull(records[2].Value);
+        Assert.AreEqual(4.5m, records[3].Value);
+    }
+
+    /// <summary>
+    /// Verifies that a non-nullable <see cref="int" /> column holding only white space still throws
+    /// <see cref="DelimitedSerializationException" />, since it has no value to bind.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenANonNullableIntColumnIsWhiteSpace_ShouldThrowDelimitedSerializationException()
+    {
+        Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<IdValueRecord<int>>("Id,Value\n1,   \n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="string" /> column holding only white space keeps the white space as its value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAStringColumnIsWhiteSpace_ShouldKeepTheWhiteSpace()
+    {
+        List<IdValueRecord<string>> records = DelimitedSerializer.Deserialize<IdValueRecord<string>>("Id,Value\n1,   \n");
+
+        Assert.AreEqual(1, records.Count);
+        Assert.AreEqual("   ", records[0].Value);
+    }
 }
