@@ -535,6 +535,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The operation is not valid on a default BencodeProperty that belongs to no document..
+        /// </summary>
+        internal static string Op_Invalid_DefaultProperty {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DefaultProperty", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The node is a '{0}' and cannot be used as a Bencode object..
         /// </summary>
         internal static string Op_Invalid_NodeNotObject {
@@ -621,6 +630,15 @@ namespace Bodu {
         internal static string IO_KeyNotFound_Property {
             get {
                 return ResourceManager.GetString("IO_KeyNotFound_Property", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No property whose key is the bytes {0} was found..
+        /// </summary>
+        internal static string IO_KeyNotFound_PropertyBytes {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_PropertyBytes", resourceCulture);
             }
         }
 

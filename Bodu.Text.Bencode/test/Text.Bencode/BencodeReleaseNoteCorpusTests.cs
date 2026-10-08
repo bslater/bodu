@@ -186,7 +186,7 @@ public sealed partial class BencodeReleaseNoteCorpusTests
     /// <param name="element">The element.</param>
     /// <param name="tokens">The transcript tokens.</param>
     /// <remarks>
-    /// A key is rendered from <see cref="BencodeProperty.Name" /> encoded as UTF-8, and an integer from
+    /// A key is rendered from <see cref="BencodeProperty.GetNameBytes" />, its exact bytes, and an integer from
     /// <see cref="BencodeElement.GetRawBytes" /> without its <c>i</c> and <c>e</c>.
     /// </remarks>
     private static void WalkElement(BencodeElement element, List<string> tokens)
@@ -197,7 +197,7 @@ public sealed partial class BencodeReleaseNoteCorpusTests
                 tokens.Add("{");
                 foreach (BencodeProperty property in element.EnumerateObject())
                 {
-                    tokens.Add("k:" + EncodeToken(Encoding.UTF8.GetBytes(property.Name)));
+                    tokens.Add("k:" + EncodeToken(property.GetNameBytes()));
                     WalkElement(property.Value, tokens);
                 }
 

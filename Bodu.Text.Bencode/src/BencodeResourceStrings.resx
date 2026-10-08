@@ -76,9 +76,11 @@
   <data name="Op_Invalid_MultipleExtensionData" xml:space="preserve"><value>Type '{0}' declares more than one extension-data member.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The members '{1}' and '{2}' of type '{0}' both map to the Bencode key '{3}'.</value></data>
   <data name="IO_KeyNotFound_Property" xml:space="preserve"><value>No property named '{0}' was found.</value></data>
+  <data name="IO_KeyNotFound_PropertyBytes" xml:space="preserve"><value>No property whose key is the bytes {0} was found.</value></data>
   <data name="Op_Invalid_UnmappedMember" xml:space="preserve"><value>The Bencode document contains a key '{0}' that maps to no member of type '{1}'.</value></data>
   <data name="Format_Invalid_BencodeIntegerNegativeUnsigned" xml:space="preserve"><value>The bencoded integer is negative and cannot be read as UInt64.</value></data>
   <data name="Op_Invalid_DictionaryKeyParse" xml:space="preserve"><value>The dictionary key '{0}' cannot be converted to type '{1}'.</value></data>
   <data name="Op_Invalid_DefaultElement" xml:space="preserve"><value>The operation is not valid on a default BencodeElement that belongs to no document.</value></data>
+  <data name="Op_Invalid_DefaultProperty" xml:space="preserve"><value>The operation is not valid on a default BencodeProperty that belongs to no document.</value></data>
   <data name="Op_NotSupported_NullDocument" xml:space="preserve"><value>A null document cannot be written to Bencode.</value></data>
 </root>
