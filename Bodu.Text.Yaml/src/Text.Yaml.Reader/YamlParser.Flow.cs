@@ -99,21 +99,35 @@ internal sealed partial class YamlParser
             if (Peek() == (byte)',')
                 throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidFlow);
 
+            // '?' followed by a separator introduces the explicit key of a single-pair mapping entry, as in a flow
+            // mapping; otherwise it begins a plain scalar.
+            bool explicitKey = Peek() == (byte)'?' && IsFlowColonStop(PeekAt(1));
+            if (explicitKey)
+            {
+                Advance();
+                SkipFlowWhitespace();
+            }
+
             int element = ParseFlowNode();
             int elementLine = _line;
             SkipFlowWhitespace();
 
-            // An implicit single-pair mapping element: `key: value` inside the sequence.
+            // A single-pair mapping element: `key: value` inside the sequence.
             if (Peek() == (byte)':' && IsFlowColonStop(PeekAt(1)))
             {
-                // An implicit key and its ':' indicator must be on the same line.
-                if (_line != elementLine)
+                // An implicit key and its ':' indicator must be on the same line; an explicit key's may follow later.
+                if (!explicitKey && _line != elementLine)
                     throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
 
                 Advance();
                 SkipFlowWhitespace();
-                element = ParseFlowPair(element);
+                element = ParseFlowPair(element, hasValue: true);
                 SkipFlowWhitespace();
+            }
+            else if (explicitKey)
+            {
+                // An explicit key without a ':' value indicator has a null value.
+                element = ParseFlowPair(element, hasValue: false);
             }
 
             AppendChild(sequence, element);
@@ -145,20 +159,24 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses the value of an implicit single-pair mapping entry inside a flow sequence and builds the mapping around
-    /// its already parsed key, counting the mapping toward the nesting depth.
+    /// Builds the single-pair mapping of a flow sequence entry around its already parsed key, parsing the value that
+    /// follows its <c>:</c> value indicator, and counts the mapping toward the nesting depth.
     /// </summary>
     /// <param name="key">The row index of the parsed key node.</param>
+    /// <param name="hasValue">
+    /// Whether a <c>:</c> value indicator was consumed, so that a value may follow; an explicit key without one has a
+    /// null value.
+    /// </param>
     /// <returns>The row index of the single-pair mapping.</returns>
     /// <exception cref="YamlFormatException">The mapping would nest deeper than the maximum depth.</exception>
-    private int ParseFlowPair(int key)
+    private int ParseFlowPair(int key, bool hasValue)
     {
         EnterCollection();
         try
         {
             int pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[key].Offset, null, null);
             string keyText = KeyTextOf(key);
-            int value = Peek() is (byte)',' or (byte)']'
+            int value = !hasValue || Peek() is (byte)',' or (byte)']'
                 ? NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null)
                 : ParseFlowNode();
 
