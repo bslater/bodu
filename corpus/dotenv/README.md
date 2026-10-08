@@ -24,8 +24,8 @@ commit) and a summary, then a class:
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 261 | The row carries the scenario of the fix and runs: Bodu must do what the fix established |
-| `dialect` | 40 | The row runs, asserting Bodu's documented behaviour where it differs from the fix's; `reason` cites the document |
+| `applies` | 254 | The row carries the scenario of the fix and runs: Bodu must do what the fix established |
+| `dialect` | 47 | The row runs, asserting Bodu's documented behaviour where it differs from the fix's; `reason` cites the document |
 | `n/a` | 205 | The fix concerns something Bodu does not have (variable expansion, loading into the process environment, overriding existing variables, file discovery and loading, a CLI), packaging, performance, or the library's language; `reason` says which |
 | `unknown` | 0 | No scenario could be found; `reason` would link what was read |
 
@@ -36,14 +36,14 @@ commit describes, the expectation is `derived`, and `reason` shows the working.
 | Library | Fixes | Rows | applies | dialect | n/a | unknown |
 |---|---:|---:|---:|---:|---:|---:|
 | python-dotenv | 71 | 109 | 53 | 3 | 53 | 0 |
-| dotenv-node | 45 | 67 | 25 | 11 | 31 | 0 |
-| godotenv | 27 | 68 | 51 | 9 | 8 | 0 |
+| dotenv-node | 45 | 67 | 23 | 13 | 31 | 0 |
+| godotenv | 27 | 68 | 48 | 12 | 8 | 0 |
 | dotenvy | 19 | 27 | 13 | 0 | 14 | 0 |
 | dotnetenv | 13 | 37 | 28 | 2 | 7 | 0 |
 | phpdotenv | 56 | 82 | 42 | 4 | 36 | 0 |
 | dotenv-ruby | 59 | 68 | 20 | 1 | 47 | 0 |
-| compose-go | 24 | 48 | 29 | 10 | 9 | 0 |
-| **Total** | **314** | **506** | **261** | **40** | **205** | **0** |
+| compose-go | 24 | 48 | 27 | 12 | 9 | 0 |
+| **Total** | **314** | **506** | **254** | **47** | **205** | **0** |
 
 ### Sources
 
@@ -92,12 +92,12 @@ printable ASCII with LF line endings and RFC 4180 quoting; no field holds a raw 
 
 | Kind | Rows | What runs |
 |---|---:|---|
-| `parse` | 209 | Read `input` with `Utf8DotEnvReader`; the rendering of the entries equals `expected` |
-| `reject` | 63 | Reading `input` throws `DotEnvFormatException` |
+| `parse` | 206 | Read `input` with `Utf8DotEnvReader`; the rendering of the entries equals `expected` |
+| `reject` | 66 | Reading `input` throws `DotEnvFormatException` |
 | `write` | 3 | Write the entries `input` describes with `Utf8DotEnvWriter`; the bytes equal `expected` |
 | `write-reject` | 0 | Writing the entries `input` describes throws the exception `expected` names |
 | `roundtrip` | 19 | Read `input`, write the entries back, and read that again; the two renderings agree, and the written text equals `expected` when it is not empty |
-| `unit` | 7 | A typed test still to be written: `input` names it (`<TestClass>.<Method>`), and `reason` gives the model, the input and the outcome |
+| `unit` | 7 | Not run from the file: `input` names the typed test that covers the scenario (`<TestClass>.<Method>`), and `reason` gives the model, the input and the outcome |
 
 The **rendering** of a reading is a compact JSON array of the entries in source order: `["KEY","value"]`, or
 `["KEY","value","export"]` when the line carried the `export` prefix, with no comments. `export A=1` then `B="x y"`
@@ -109,8 +109,8 @@ between `WriteStartObject` and `WriteEndObject`: each entry with `WritePropertyN
 
 `input` and `expected` are byte strings written with escapes: `\n` LF, `\r` CR, `\t` tab, `\0` NUL, `\\` a backslash,
 `\xHH` the single byte 0xHH, and `\u{H...}` the UTF-8 encoding of the scalar U+H...; any other backslash sequence is an
-error. `expectation` says where `expected` comes from: `upstream` (the fix's own test, 245 rows) or `derived` (worked
-out in `reason`, 56 rows).
+error. `expectation` says where `expected` comes from: `upstream` (the fix's own test, 238 rows) or `derived` (worked
+out in `reason`, 63 rows).
 
 `options` is empty for the defaults, or `Name=Value` pairs separated by `;`. No row needs one today, but the names are
 fixed:
@@ -122,47 +122,59 @@ fixed:
 | `SkipComments` | `DotEnvReaderOptions.SkipComments` | `true` / `false` |
 | `WriteExportPrefix` | `DotEnvWriterOptions.WriteExportPrefix` | `true` / `false` |
 
-No test in the repository reads these files yet. Every runnable row was run against Bodu at `0e0e990182` by a scratch
-harness that renders, writes and decodes exactly as described above, with a ten-second timeout per row; a test that
-runs them should port that renderer.
+`DotEnvReleaseNoteCorpusTests` in `Bodu.Text.DotEnv.Test` runs every runnable row from copies of these files embedded
+under `Fixtures/ReleaseNotes/`, rendering, writing and decoding exactly as described above. Its governance tests pin the
+counts of each class and kind recorded here, and check that every row loads cleanly, that each fix numbers its cases in
+order, that each runnable row holds a well-formed scenario (a `parse` row's `expected` in canonical form), that each
+`unit` row names a test that exists, and that the copies match these files.
 
 ### What the tables found
 
-Of the 294 runnable rows, 269 pass and 25 fail. One cause is a defect against Bodu's own documentation; the other three
-are behaviours no Bodu document states, where the libraries disagree with Bodu and, often, with each other. Each is to
-be fixed or documented test first, the failing rows left as they are until then.
+Before any fix, with the `Bodu.Text.DotEnv` code of `378a6099db`, 25 of the 294 runnable rows failed, from four causes,
+and so did one of the seven `unit` tests. Each cause has an issue and was fixed test first, and all 294 rows and the
+seven `unit` tests now pass on net8.0 and net10.0:
 
-- **`KEY= # comment` reads the comment as the value** (8 rows). `DotEnvReaderOptions.DisallowInlineComments` says
-  that a `#` preceded by whitespace ends an unquoted value as an inline comment (`DotEnvReaderOptions.cs:36`), and the
-  parser policies that unquoted values end at an inline `#` comment (`docs/docs/formats/parser-policies.md:36`), so
-  the value is empty, as python-dotenv 1.2.4 (PR #663, cases 1, 2, 7 and 8), dotenvy 0.10.0 (`057821523f`, case 3),
-  DotNetEnv v3.0.0 (PR #82, case 2) and phpdotenv v2.5.1 (PR #277, case 2) and v2.5.0 (PR #272, case 1) expect.
-  `ReadUnquoted` trims the whitespace after `=` before it looks for the comment, and its scan starts one byte past the
-  value's first character (`Utf8DotEnvReader.cs:571-586`), so a `#` that opens the value is never taken for one.
-- **Text after a closing quote is dropped without an error** (5 rows). `a='b',c` reads as `b` and `EV_DNE="a"b"` as
-  `a`, where python-dotenv 0.10.5 (PR #222, case 2) and DotNetEnv v3.0.0 (PR #82, cases 13 and 14) reject the line, and
-  dotenv-node 18.0.2 (PR #1056, cases 6 and 9) keeps the text in the value (`TOKEN="abc" oops` reads as `"abc" oops`,
-  `KEY="a" "b"` as `a" "b`). Bodu's corpus test pins the drop ("trailing junk after quoted value dropped"), but no
-  document states it. compose-go v2.0.0's `dialect` row (PR #511) also rests on it.
-- **Only space and tab are whitespace** (4 rows). dotenv-node 18.0.2 (PR #1056, cases 3, 4, 5 and 13) treats form
-  feed, vertical tab and U+00A0 around keys, `=` and values as whitespace; Bodu rejects them as key characters or
-  malformed entries. No document says which characters are whitespace.
-- **The escape set is not documented** (8 rows). In double quotes Bodu resolves `\"`, `\\`, `\n`, `\t`, `\r` and `\$`,
-  joins a line ending in a backslash to the next, and keeps any other escape as written. The guide says only that
-  double quotes resolve escape sequences (`docs/guides/formats/dotenv.md:63`). godotenv v1.2.0 (PR #34, cases 1 to 3)
-  drops the backslash of an unknown escape; compose-go v1.6.0 (PR #308, cases 5 and 10 to 13) keeps it, as Bodu does,
-  but resolves the XSI echo escapes `\a`, `\b`, `\f`, `\v` and octal `\0nnn`.
+- **#833.** `KEY= # comment` read the comment as the value (8 rows), because `ReadUnquoted` trimmed the whitespace after
+  `=` before it looked for an inline comment, and began its scan one byte into the value. A `#` preceded by whitespace,
+  including the whitespace that follows `=`, now starts a comment, so the value is empty, as python-dotenv 1.2.4
+  (PR #663, cases 1, 2, 7 and 8), dotenvy 0.10.0 (`057821523f`, case 3), DotNetEnv v3.0.0 (PR #82, case 2) and phpdotenv
+  v2.5.1 (PR #277, case 2) and v2.5.0 (PR #272, case 1) expect, while `KEY=#value` and `URL=http://host/#anchor` keep
+  their `#` (`docs/guides/formats/dotenv.md:65`).
+- **#834.** Text after a closing quote was dropped without an error (5 rows): `a='b',c` read as `b`. Only whitespace and
+  a `#` comment may now follow a closing quote, and any other text throws `DotEnvFormatException` at its first byte
+  (`docs/guides/formats/dotenv.md:68`, `docs/docs/formats/parser-policies.md:39`), as python-dotenv 0.10.5 (PR #222,
+  case 2) and DotNetEnv v3.0.0 (PR #82, cases 13 and 14) expect. The conformance corpus row that pinned the drop
+  ("trailing junk after quoted value dropped") is now a rejection row. dotenv-node 18.0.2 (PR #1056, cases 6 and 9),
+  which keeps such text in the value, became `dialect` `reject` rows on that citation, and compose-go v2.0.0's `dialect`
+  row (PR #511), whose single-quoted `'Let\'s go!'` closes at the second quote and leaves `s go!'` after it, became a
+  `reject` row citing the same text and the literal single quotes (`docs/guides/formats/dotenv.md:64`,
+  `docs/docs/formats/parser-policies.md:36`).
+- **#835.** Only space and tab were whitespace (4 rows), so a form feed, a vertical tab or a no-break space around a
+  key, `=` or a value was rejected as part of a key or as a malformed entry. Whitespace is now any Unicode whitespace
+  character other than CR and LF, wherever the reader skips or trims it (`docs/guides/formats/dotenv.md:67`,
+  `docs/docs/formats/parser-policies.md:38`), as dotenv-node 18.0.2 (PR #1056, cases 3, 4, 5 and 13) expects, and
+  `Utf8DotEnvWriter` quotes a value that such whitespace would otherwise change, so that it still reads back unchanged.
+- **#836.** The escape set was not documented (8 rows). Double quotes now resolve `\\`, `\'`, `\"`, `\a`, `\b`, `\f`,
+  `\n`, `\r`, `\t`, `\v` and `\$`, and a backslash before a line break continues the value; any other escape keeps its
+  backslash, and octal escapes are not supported (`docs/guides/formats/dotenv.md:63`,
+  `docs/docs/formats/parser-policies.md:37`). compose-go v1.6.0's cases 10 to 12 (PR #308), which resolve `\a`, now pass
+  as they stand. godotenv v1.2.0 (PR #34, cases 1 to 3), which drops the backslash of an unknown escape, and compose-go
+  v1.6.0 (PR #308, cases 5 and 13), which resolves the octal escape `\0123`, became `dialect` rows on that citation.
+- **#837.** `DotEnvDocument` returned the first definition of a repeated key, where the mutable DOM (`DotEnvNode`) and
+  `DotEnvSerializer` take the last, so the `unit` test
+  `DotEnvDocumentTests.GetProperty_WhenKeyRepeated_ShouldReturnLastValue` (phpdotenv v3.4.0) failed. `GetProperty` and
+  `TryGetProperty` now return the last definition, as their remarks say, and `EnumerateObject` still yields every entry
+  in source order.
 
-Of the seven `unit` rows, a probe of each scenario suggests that six would pass. The seventh,
-`DotEnvDocumentTests.GetProperty_WhenKeyRepeated_ShouldReturnLastValue` (phpdotenv v3.4.0), would fail:
-`DotEnvDocument` returns the first of two entries with the same key, while `DotEnvNode` and `DotEnvSerializer` take the
-last, and no document says which should win.
+Cataloguing also met two places where the documentation described something the code did not do, and porting the
+catalogue met a message that misnamed what it reported. Each has an issue and is fixed:
 
-Cataloguing also met two places where the documentation describes something the code does not do:
-
-- `DotEnvFormatException.ColumnNumber` is documented as the 1-based column of the error within its line
-  (`DotEnvFormatException.cs:20-21`, `:77`), but every error the reader raises passes column 1
-  (`Utf8DotEnvReader.cs:688`, `:696`, `:704`, `:712`).
-- `DotEnvLimits.MaxEntryLength` is documented as the bound a resumable streaming path applies to an entry
-  (`DotEnvLimits.cs:15-20`), but the reader has no streaming path, nothing reads the constant, and its message
-  (`Format_Invalid_DotEnvEntryTooLong`) is never used.
+- **#838.** `DotEnvFormatException.ColumnNumber` is documented as the 1-based column of the error within its line, but
+  the reader passed column 1 for every error. It now reports the column of the byte that `Offset` gives, counted in
+  bytes from the start of its line, and the table in `docs/guides/formats/error-handling.md` shows the real columns.
+- **#839.** `DotEnvLimits.MaxEntryLength` was documented as the bound a resumable streaming path applies to an entry,
+  but the reader has no streaming path, nothing read the constant, and its message (`Format_Invalid_DotEnvEntryTooLong`)
+  was never used. The class and the message are removed.
+- **#840.** The message for an invalid key named the offending character by casting its first byte to a `char`, so a
+  character outside ASCII came out as the Latin-1 character of its lead byte. It now names the character as written, or
+  a byte that begins no valid UTF-8 sequence in hex, as `0xFF`.
