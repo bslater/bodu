@@ -22,7 +22,9 @@ public sealed partial class ConfigurationWriteOptions
         For(ConfigurationProfile.EditorConfigCompatible);
 
     /// <summary>
-    /// Gets the canonical option set for normalized output: sorted properties, deterministic spacing.
+    /// Gets the canonical option set for normalized output, the one <see cref="For(ConfigurationProfile)" /> gives for
+    /// <see cref="ConfigurationProfile.Strict" />: leading and inline comments dropped, a blank line between sections,
+    /// and deterministic spacing. Sections and properties keep their document order.
     /// </summary>
     /// <value>A cached normalized options instance.</value>
     public static ConfigurationWriteOptions Normalized { get; } = For(ConfigurationProfile.Strict);
