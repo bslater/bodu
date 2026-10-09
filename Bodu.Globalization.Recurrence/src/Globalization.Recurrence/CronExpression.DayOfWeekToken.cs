@@ -36,17 +36,8 @@ public sealed partial class CronExpression
         /// <remarks>
         /// A fifth weekday that a month does not have selects nothing in that month.
         /// </remarks>
-        internal bool Matches(DateTime day)
-        {
-            if (day.DayOfWeek != Day)
-            {
-                return false;
-            }
-
-            return Ordinal == WeekOrdinal.Last
-                ? day.Day + 7 > DateTime.DaysInMonth(day.Year, day.Month)
-                : ((day.Day - 1) / 7) + 1 == (int)Ordinal;
-        }
+        internal bool Matches(DateTime day) =>
+            day.IsNthDateOfWeekInMonth(Day, Ordinal);
 
         /// <summary>
         /// Returns the token's canonical text.

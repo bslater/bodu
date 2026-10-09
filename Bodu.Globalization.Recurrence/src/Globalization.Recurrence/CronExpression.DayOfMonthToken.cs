@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Recurrence;
 
@@ -53,7 +54,12 @@ public sealed partial class CronExpression
                 return day.Day == target;
             }
 
-            return target >= 1 && target <= daysInMonth && day.Day == NearestWeekdayTo(day, target, daysInMonth);
+            if (target < 1 || target > daysInMonth)
+            {
+                return false;
+            }
+
+            return day.Day == new DateOnly(day.Year, day.Month, target).NearestWeekdayInMonth().Day;
         }
 
         /// <summary>
@@ -68,23 +74,5 @@ public sealed partial class CronExpression
                 _ => string.Create(CultureInfo.InvariantCulture, $"{Day}W"),
             };
 
-        /// <summary>
-        /// Returns the weekday nearest a day of a month, without leaving the month.
-        /// </summary>
-        /// <param name="anyDayOfMonth">An instant within the month.</param>
-        /// <param name="target">The day of the month the weekday is nearest.</param>
-        /// <param name="daysInMonth">The number of days in the month.</param>
-        /// <returns>
-        /// The target when it is a weekday; for a Saturday, the Friday before it, or the Monday after it when the
-        /// Saturday is the first; for a Sunday, the Monday after it, or the Friday before it when the Sunday is the
-        /// last.
-        /// </returns>
-        private static int NearestWeekdayTo(DateTime anyDayOfMonth, int target, int daysInMonth) =>
-            new DateTime(anyDayOfMonth.Year, anyDayOfMonth.Month, target).DayOfWeek switch
-            {
-                DayOfWeek.Saturday => target == 1 ? 3 : target - 1,
-                DayOfWeek.Sunday => target == daysInMonth ? target - 2 : target + 1,
-                _ => target,
-            };
     }
 }

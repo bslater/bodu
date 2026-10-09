@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Recurrence;
 
@@ -185,25 +186,25 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         {
             if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
-                candidate = StartOfMonth(candidate).AddMonths(1);
+                candidate = candidate.FirstDateOfMonth().AddMonths(1);
                 continue;
             }
 
             if (!DayMatches(candidate))
             {
-                candidate = StartOfDay(candidate).AddDays(1);
+                candidate = candidate.StartOfDay().AddDays(1);
                 continue;
             }
 
             if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
-                candidate = StartOfHour(candidate).AddHours(1);
+                candidate = candidate.Truncate(DateTimeResolution.Hour).AddHours(1);
                 continue;
             }
 
             if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
-                candidate = StartOfMinute(candidate).AddMinutes(1);
+                candidate = candidate.Truncate(DateTimeResolution.Minute).AddMinutes(1);
                 continue;
             }
 
@@ -256,25 +257,25 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         {
             if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
-                candidate = StartOfMonth(candidate).Subtract(unit);
+                candidate = candidate.FirstDateOfMonth().Subtract(unit);
                 continue;
             }
 
             if (!DayMatches(candidate))
             {
-                candidate = StartOfDay(candidate).Subtract(unit);
+                candidate = candidate.StartOfDay().Subtract(unit);
                 continue;
             }
 
             if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
-                candidate = StartOfHour(candidate).Subtract(unit);
+                candidate = candidate.Truncate(DateTimeResolution.Hour).Subtract(unit);
                 continue;
             }
 
             if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
-                candidate = StartOfMinute(candidate).Subtract(unit);
+                candidate = candidate.Truncate(DateTimeResolution.Minute).Subtract(unit);
                 continue;
             }
 
@@ -305,8 +306,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
     {
         DateTime? next = GetNextOccurrence(DateTime.SpecifyKind(after.DateTime, DateTimeKind.Unspecified), inclusive);
-        return next is { } wallClock && HasUtcInstant(wallClock, after.Offset)
-            ? new DateTimeOffset(wallClock, after.Offset)
+        return next is { } wallClock && wallClock.TryToDateTimeOffset(after.Offset, out DateTimeOffset occurrence)
+            ? occurrence
             : null;
     }
 
@@ -325,8 +326,8 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
     {
         DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
-        return previous is { } wallClock && HasUtcInstant(wallClock, before.Offset)
-            ? new DateTimeOffset(wallClock, before.Offset)
+        return previous is { } wallClock && wallClock.TryToDateTimeOffset(before.Offset, out DateTimeOffset occurrence)
+            ? occurrence
             : null;
     }
 
@@ -551,25 +552,25 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         {
             if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
-                candidate = StartOfMonth(candidate).AddMonths(1);
+                candidate = candidate.FirstDateOfMonth().AddMonths(1);
                 continue;
             }
 
             if (!TokenDayMatches(candidate))
             {
-                candidate = StartOfDay(candidate).AddDays(1);
+                candidate = candidate.StartOfDay().AddDays(1);
                 continue;
             }
 
             if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
-                candidate = StartOfHour(candidate).AddHours(1);
+                candidate = candidate.Truncate(DateTimeResolution.Hour).AddHours(1);
                 continue;
             }
 
             if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
-                candidate = StartOfMinute(candidate).AddMinutes(1);
+                candidate = candidate.Truncate(DateTimeResolution.Minute).AddMinutes(1);
                 continue;
             }
 
@@ -613,25 +614,25 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
         {
             if (!Selects(_searchedMonths.ToUInt64(), candidate.Month - 1))
             {
-                candidate = StartOfMonth(candidate).Subtract(unit);
+                candidate = candidate.FirstDateOfMonth().Subtract(unit);
                 continue;
             }
 
             if (!TokenDayMatches(candidate))
             {
-                candidate = StartOfDay(candidate).Subtract(unit);
+                candidate = candidate.StartOfDay().Subtract(unit);
                 continue;
             }
 
             if (!Selects(_hours.ToUInt64(), candidate.Hour))
             {
-                candidate = StartOfHour(candidate).Subtract(unit);
+                candidate = candidate.Truncate(DateTimeResolution.Hour).Subtract(unit);
                 continue;
             }
 
             if (!Selects(_minutes.ToUInt64(), candidate.Minute))
             {
-                candidate = StartOfMinute(candidate).Subtract(unit);
+                candidate = candidate.Truncate(DateTimeResolution.Minute).Subtract(unit);
                 continue;
             }
 
@@ -697,60 +698,10 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     }
 
     /// <summary>
-    /// Determines whether a wall-clock time in an offset falls at a UTC instant a <see cref="DateTimeOffset" /> can
-    /// hold.
-    /// </summary>
-    /// <param name="wallClock">The wall-clock time.</param>
-    /// <param name="offset">The offset from UTC the wall-clock time is in.</param>
-    /// <returns>
-    /// <see langword="true" /> when the UTC instant lies between <see cref="DateTime.MinValue" /> and
-    /// <see cref="DateTime.MaxValue" />; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool HasUtcInstant(DateTime wallClock, TimeSpan offset)
-    {
-        long utcTicks = wallClock.Ticks - offset.Ticks;
-        return utcTicks >= DateTime.MinValue.Ticks && utcTicks <= DateTime.MaxValue.Ticks;
-    }
-
-    /// <summary>
-    /// Truncates an instant to the expression's resolution.
+    /// Truncates a candidate to the expression's supported resolution, preserving its <see cref="DateTime.Kind" />.
     /// </summary>
     /// <param name="value">The instant to truncate.</param>
-    /// <returns>The instant with sub-resolution components zeroed.</returns>
+    /// <returns>The candidate rounded down to its supported cron field resolution.</returns>
     private DateTime Floor(DateTime value) =>
-        Format == CronFormat.WithSeconds
-            ? new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Kind)
-            : new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
-
-    /// <summary>
-    /// Returns the first instant of the month containing <paramref name="value" />.
-    /// </summary>
-    /// <param name="value">A date within the target month.</param>
-    /// <returns>The first instant of the month.</returns>
-    private static DateTime StartOfMonth(DateTime value) =>
-        new(value.Year, value.Month, 1, 0, 0, 0, value.Kind);
-
-    /// <summary>
-    /// Returns midnight of the day containing <paramref name="value" />.
-    /// </summary>
-    /// <param name="value">A date within the target day.</param>
-    /// <returns>Midnight of the day.</returns>
-    private static DateTime StartOfDay(DateTime value) =>
-        new(value.Year, value.Month, value.Day, 0, 0, 0, value.Kind);
-
-    /// <summary>
-    /// Returns the start of the hour containing <paramref name="value" />.
-    /// </summary>
-    /// <param name="value">An instant within the target hour.</param>
-    /// <returns>The start of the hour.</returns>
-    private static DateTime StartOfHour(DateTime value) =>
-        new(value.Year, value.Month, value.Day, value.Hour, 0, 0, value.Kind);
-
-    /// <summary>
-    /// Returns the start of the minute containing <paramref name="value" />.
-    /// </summary>
-    /// <param name="value">An instant within the target minute.</param>
-    /// <returns>The start of the minute.</returns>
-    private static DateTime StartOfMinute(DateTime value) =>
-        new(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
+        value.Truncate(Format == CronFormat.WithSeconds ? DateTimeResolution.Second : DateTimeResolution.Minute);
 }
