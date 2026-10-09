@@ -67,8 +67,11 @@ public sealed class BoeRateProvider
     /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The inclusive ranges whose data has been loaded.</summary>
-    private readonly List<(DateOnly From, DateOnly To)> _loadedRanges = new();
+    /// <summary>
+    /// The merged inclusive ranges whose data has been loaded; accessed under
+    /// <see cref="WebRateProvider.SyncRoot" />.
+    /// </summary>
+    private readonly DateRangeCoverage _loadedRanges = new();
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, BoeSeriesInfo> _series = new();
@@ -223,7 +226,7 @@ public sealed class BoeRateProvider
     {
         lock (SyncRoot)
         {
-            return IsRangeCovered(startDate, endDate);
+            return _loadedRanges.Contains(startDate, endDate);
         }
     }
 
@@ -300,7 +303,7 @@ public sealed class BoeRateProvider
     {
         lock (SyncRoot)
         {
-            if (IsRangeCovered(startDate, endDate))
+            if (_loadedRanges.Contains(startDate, endDate))
                 return Task.CompletedTask;
         }
 
@@ -322,7 +325,7 @@ public sealed class BoeRateProvider
     {
         lock (SyncRoot)
         {
-            if (IsRangeCovered(startDate, endDate))
+            if (_loadedRanges.Contains(startDate, endDate))
                 return;
         }
 
@@ -358,31 +361,10 @@ public sealed class BoeRateProvider
                 _series[info.Pair] = info;
 
             int count = AddObservations(table.EnumerateRates(), fetchedAt);
-            _loadedRanges.Add((startDate, endDate));
+            _loadedRanges.Add(startDate, endDate);
             RebuildSnapshot();
 
             Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count);
         }
-    }
-
-    /// <summary>
-    /// Determines whether an inclusive range is already contained within a single previously loaded range. The caller
-    /// must hold <see cref="WebRateProvider.SyncRoot" />.
-    /// </summary>
-    /// <param name="startDate">The inclusive start of the range.</param>
-    /// <param name="endDate">The inclusive end of the range.</param>
-    /// <returns>
-    /// <see langword="true" /> when a loaded range fully contains the requested range; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    private bool IsRangeCovered(DateOnly startDate, DateOnly endDate)
-    {
-        foreach ((DateOnly from, DateOnly to) in _loadedRanges)
-        {
-            if (from <= startDate && to >= endDate)
-                return true;
-        }
-
-        return false;
     }
 }
