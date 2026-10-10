@@ -1,57 +1,72 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
-    <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu - BoE Exchange Rates</Title>
-    <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API and in-memory plus on-disk caching. Includes dependency-injection extensions that register the provider on a configured, resilient HttpClient and bind its options.</Description>
-    <PackageTags>$(PackageTags);financial;boe;exchange-rate;forex;fx;sterling;gbp;bank-of-england;dependency-injection;options</PackageTags>
-  </PropertyGroup>
+        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <RootNamespace>Bodu</RootNamespace>
+        <Title>Bodu - BoE Exchange Rates</Title>
+        <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API and in-memory plus on-disk caching. Includes dependency-injection extensions that register the provider on a configured, resilient HttpClient and bind its options.</Description>
+        <PackageTags>$(PackageTags);financial;boe;exchange-rate;forex;fx;sterling;gbp;bank-of-england;dependency-injection;options</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Financial.ExchangeRates.Boe.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- External package dependencies. -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Http" />
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Options" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Financial.ExchangeRates.Boe.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
-  </ItemGroup>
+    <!-- External package dependencies. -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="Financial.ExchangeRates\BoeResourceStrings.resx">
-      <LastGenOutput>BoeResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="Financial.ExchangeRates\BoeResourceStrings.Designer.cs">
-      <DependentUpon>BoeResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+        <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates\src\Bodu.Financial.ExchangeRates.csproj" />
+        <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
+        <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.DependencyInjection\src\Bodu.Financial.ExchangeRates.DependencyInjection.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="Financial.ExchangeRates\BoeResourceStrings.resx">
+            <LastGenOutput>BoeResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="Financial.ExchangeRates\BoeResourceStrings.Designer.cs">
+            <DependentUpon>BoeResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

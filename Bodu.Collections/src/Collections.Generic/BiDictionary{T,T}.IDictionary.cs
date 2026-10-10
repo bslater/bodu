@@ -134,8 +134,8 @@ public sealed partial class BiDictionary<TKey, TValue> :
     /// <remarks>
     /// Duplicate keys follow the strict <see cref="System.Collections.Generic.Dictionary{TKey, TValue}.Add(TKey,
     /// TValue)" /> contract and always throw. A duplicate value is resolved by <see cref="DuplicateValuePolicy" />:
-    /// under <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> the previous binding holding the value is evicted
-    /// - its key is removed - before the new pair is added.
+    /// under <see cref="BiDictionaryDuplicateValuePolicy.Replace" /> the previous binding holding the value is
+    /// evicted - its key is removed - before the new pair is added.
     /// </remarks>
     public void Add(TKey key, TValue value)
     {

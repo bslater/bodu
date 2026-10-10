@@ -9,9 +9,9 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries (<see cref="QueryPoint" />
-/// - all intervals containing a point) and overlap-window queries (<see cref="QueryOverlaps" /> - all intervals
-/// intersecting a window) in O(log n + k).
+/// Represents a collection of closed intervals [low, high] that may freely overlap, answering stabbing queries
+/// (<see cref="QueryPoint" /> - all intervals containing a point) and overlap-window queries
+/// (<see cref="QueryOverlaps" /> - all intervals intersecting a window) in O(log n + k).
 /// </summary>
 /// <typeparam name="T">The type of the interval endpoints. Endpoints must not be <see langword="null" />.</typeparam>
 /// <remarks>

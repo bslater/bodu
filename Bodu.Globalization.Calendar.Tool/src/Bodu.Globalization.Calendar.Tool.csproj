@@ -1,32 +1,47 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Bodu.Globalization.Calendar.Tool</RootNamespace>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>bodu-calendar</ToolCommandName>
-    <Description>Command-line compiler and lint for Bodu notable-date rule packs: validates XML/JSON documents with stable BODU-CAL-* diagnostics and compiles them to sealed .bcal binary packs.</Description>
-  </PropertyGroup>
+        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Bodu.Globalization.Calendar.Tool</RootNamespace>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>bodu-calendar</ToolCommandName>
+        <Description>Command-line compiler and lint for Bodu notable-date rule packs: validates XML/JSON documents with stable BODU-CAL-* diagnostics and compiles them to sealed .bcal binary packs.</Description>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Strongly-typed diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="ToolResourceStrings.resx">
-      <LastGenOutput>ToolResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="ToolResourceStrings.Designer.cs">
-      <DependentUpon>ToolResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="ToolResourceStrings.resx">
+            <LastGenOutput>ToolResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="ToolResourceStrings.Designer.cs">
+            <DependentUpon>ToolResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

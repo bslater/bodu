@@ -13,8 +13,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 #endif
 
 /// <summary>
-/// Produces a <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> for dictionaries with a supported key type
-/// - concrete dictionaries with a public parameterless constructor and the dictionary interfaces that
+/// Produces a <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> for dictionaries with a supported key
+/// type - concrete dictionaries with a public parameterless constructor and the dictionary interfaces that
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> satisfies.
 /// </summary>
 /// <remarks>

@@ -1,68 +1,83 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu - Exchange Rate Cache</Title>
-    <Description>Caching layer for Bodu.Financial exchange-rate providers. Provides CachingRateProvider, a decorator that wraps any IDatedRateProvider and serves fresh rates from a shared on-disk cache (one TOML file per provider and currency pair), plus an AggregatingRateProvider (priority-fallback, averaging, per-pair routing). Includes the dependency-injection registrations (AddCachedRateProvider, AddAggregatedRateProvider) on IFinancialServiceBuilder.</Description>
-    <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;toml;decorator;dependency-injection;options</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <Title>Bodu - Exchange Rate Cache</Title>
+        <Description>Caching layer for Bodu.Financial exchange-rate providers. Provides CachingRateProvider, a decorator that wraps any IDatedRateProvider and serves fresh rates from a shared on-disk cache (one TOML file per provider and currency pair), plus an AggregatingRateProvider (priority-fallback, averaging, per-pair routing). Includes the dependency-injection registrations (AddCachedRateProvider, AddAggregatedRateProvider) on IFinancialServiceBuilder.</Description>
+        <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;cache;toml;decorator;dependency-injection;options</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project and the durable add-on cache packages access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Test</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Sqlite</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Distributed</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- External package dependencies. -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Options" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-  </ItemGroup>
+    <!-- Grant the companion test project and the durable add-on cache packages access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Test</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Sqlite</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Financial.ExchangeRates.Caching.Distributed</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Shared caching infrastructure, linked as source (internal, namespace Bodu.Caching). -->
-  <ItemGroup>
-    <Compile Include="..\..\shared\Caching\RateLimitedWarningGate.cs" Link="Caching\RateLimitedWarningGate.cs" />
-    <Compile Include="..\..\shared\Caching\AtomicFileWriter.cs" Link="Caching\AtomicFileWriter.cs" />
-    <Compile Include="..\..\shared\Caching\CacheFreshness.cs" Link="Caching\CacheFreshness.cs" />
-    <Compile Include="..\..\shared\Caching\StripedLockSet.cs" Link="Caching\StripedLockSet.cs" />
-    <Compile Include="..\..\shared\Caching\InvariantCacheText.cs" Link="Caching\InvariantCacheText.cs" />
-    <Compile Include="..\..\shared\Caching\FileParseMemo{T}.cs" Link="Caching\FileParseMemo{T}.cs" />
-    <Compile Include="..\..\shared\Caching\StripedAsyncLockSet{T}.cs" Link="Caching\StripedAsyncLockSet{T}.cs" />
-  </ItemGroup>
+    <!-- External package dependencies. -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
-    <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Toml\src\Bodu.Text.Toml.csproj" />
-  </ItemGroup>
+    <!-- Shared caching infrastructure, linked as source (internal, namespace Bodu.Caching). -->
+    <ItemGroup>
+        <Compile Include="..\..\shared\Caching\RateLimitedWarningGate.cs" Link="Caching\RateLimitedWarningGate.cs" />
+        <Compile Include="..\..\shared\Caching\AtomicFileWriter.cs" Link="Caching\AtomicFileWriter.cs" />
+        <Compile Include="..\..\shared\Caching\CacheFreshness.cs" Link="Caching\CacheFreshness.cs" />
+        <Compile Include="..\..\shared\Caching\StripedLockSet.cs" Link="Caching\StripedLockSet.cs" />
+        <Compile Include="..\..\shared\Caching\InvariantCacheText.cs" Link="Caching\InvariantCacheText.cs" />
+        <Compile Include="..\..\shared\Caching\FileParseMemo{T}.cs" Link="Caching\FileParseMemo{T}.cs" />
+        <Compile Include="..\..\shared\Caching\StripedAsyncLockSet{T}.cs" Link="Caching\StripedAsyncLockSet{T}.cs" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="Financial.ExchangeRates.Caching\CachingResourceStrings.resx">
-      <LastGenOutput>CachingResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="Financial.ExchangeRates.Caching\CachingResourceStrings.Designer.cs">
-      <DependentUpon>CachingResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.Financial\src\Bodu.Financial.csproj" />
+        <ProjectReference Include="..\..\Bodu.Financial.DependencyInjection\src\Bodu.Financial.DependencyInjection.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Toml\src\Bodu.Text.Toml.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="Financial.ExchangeRates.Caching\CachingResourceStrings.resx">
+            <LastGenOutput>CachingResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="Financial.ExchangeRates.Caching\CachingResourceStrings.Designer.cs">
+            <DependentUpon>CachingResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

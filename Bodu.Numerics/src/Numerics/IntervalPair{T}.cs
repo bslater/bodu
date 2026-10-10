@@ -9,8 +9,8 @@ using System.Numerics;
 namespace Bodu.Numerics;
 
 /// <summary>
-/// Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending order
-/// - the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.
+/// Represents the result of a binary interval set operation as zero, one, or two disjoint intervals in ascending
+/// order - the maximum number of pieces that subtracting or symmetric-differencing two intervals can produce.
 /// </summary>
 /// <typeparam name="T">The numeric type used for the intervals' endpoints.</typeparam>
 /// <remarks>

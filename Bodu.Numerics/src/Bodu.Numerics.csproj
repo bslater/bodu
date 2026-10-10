@@ -1,38 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
-    <Title>Bodu - Numerics</Title>
-    <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;; Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt; with independent open or closed endpoints and full set algebra; BigDecimal, an arbitrary-precision decimal beyond System.Decimal's precision and range; Complex&lt;T&gt;, a generic complex number over any IFloatingPointIeee754&lt;T&gt; (where System.Numerics.Complex is fixed to double); and single-pass statistics aggregates - RunningStatistics&lt;T&gt; (Welford mean/variance), RunningQuantile&lt;T&gt; (P² streaming quantile), and the rolling-window MovingSum&lt;T&gt; / MovingMinMax&lt;T&gt;. Money, currency, and foreign-exchange types ship in the companion Bodu.Financial package.</Description>
-    <PackageTags>$(PackageTags);numerics;fraction;rational;ratio;bigrational;interval;range;math;bigdecimal;decimal;arbitrary-precision;complex;imaginary;phase;statistics;welford;variance;quantile;percentile;rolling-window;moving-average</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+        <Title>Bodu - Numerics</Title>
+        <Description>Numeric value primitives for .NET. Provides Fraction&lt;T&gt;, a generic exact-rational number type backed by any IBinaryInteger&lt;T&gt;; Interval&lt;T&gt;, an immutable bounded interval over any INumber&lt;T&gt; with independent open or closed endpoints and full set algebra; BigDecimal, an arbitrary-precision decimal beyond System.Decimal's precision and range; Complex&lt;T&gt;, a generic complex number over any IFloatingPointIeee754&lt;T&gt; (where System.Numerics.Complex is fixed to double); and single-pass statistics aggregates - RunningStatistics&lt;T&gt; (Welford mean/variance), RunningQuantile&lt;T&gt; (P² streaming quantile), and the rolling-window MovingSum&lt;T&gt; / MovingMinMax&lt;T&gt;. Money, currency, and foreign-exchange types ship in the companion Bodu.Financial package.</Description>
+        <PackageTags>$(PackageTags);numerics;fraction;rational;ratio;bigrational;interval;range;math;bigdecimal;decimal;arbitrary-precision;complex;imaginary;phase;statistics;welford;variance;quantile;percentile;rolling-window;moving-average</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Numerics.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Numerics.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="Numerics\NumericsResourceStrings.resx">
-      <LastGenOutput>NumericsResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="Numerics\NumericsResourceStrings.Designer.cs">
-      <DependentUpon>NumericsResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="Numerics\NumericsResourceStrings.resx">
+            <LastGenOutput>NumericsResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="Numerics\NumericsResourceStrings.Designer.cs">
+            <DependentUpon>NumericsResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

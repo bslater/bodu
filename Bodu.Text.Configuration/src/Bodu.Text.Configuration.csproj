@@ -1,63 +1,78 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu - Configuration</Title>
-    <Description>An EditorConfig-inspired, INI-backed configuration document model for .NET with independent parse, resolve, and write phases. ConfigurationDocument.Parse turns source text into a ConfigurationDocument, .Resolve(targetPath) projects it into a ConfigurationView, and typed view getters read values back. Ships coherent profiles (Bodu, EditorConfigCompatible, Strict, Relaxed) that select matching parse, resolve, and write defaults.</Description>
-    <PackageTags>$(PackageTags);text;configuration;ini;editorconfig;config;settings</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+        <Title>Bodu - Configuration</Title>
+        <Description>An EditorConfig-inspired, INI-backed configuration document model for .NET with independent parse, resolve, and write phases. ConfigurationDocument.Parse turns source text into a ConfigurationDocument, .Resolve(targetPath) projects it into a ConfigurationView, and typed view getters read values back. Ships coherent profiles (Bodu, EditorConfigCompatible, Strict, Relaxed) that select matching parse, resolve, and write defaults.</Description>
+        <PackageTags>$(PackageTags);text;configuration;ini;editorconfig;config;settings</PackageTags>
+    </PropertyGroup>
 
-  <!-- Per-framework compilation symbols. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!--
+    <!-- Per-framework compilation symbols. -->
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
+    </PropertyGroup>
+
+    <!--
     ConfigurationThrowHelper is split into a CallerArgumentExpression variant and a NetStandard variant:
       - ConfigurationThrowHelper.*NetStandard.cs       : compiled for netstandard2.0 / netstandard2.1,
                                                          where CallerArgumentExpressionAttribute is unavailable.
       - ConfigurationThrowHelper.*CallerExpression.cs  : compiled for all other targets (net5.0+),
                                                          where CallerArgumentExpressionAttribute is supported.
   -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-    <Compile Remove="Text.Configuration\ConfigurationThrowHelper.*CallerExpression.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-    <Compile Remove="Text.Configuration\ConfigurationThrowHelper.*NetStandard.cs" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
+        <Compile Remove="Text.Configuration\ConfigurationThrowHelper.*CallerExpression.cs" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
+        <Compile Remove="Text.Configuration\ConfigurationThrowHelper.*NetStandard.cs" />
+    </ItemGroup>
 
-  <!-- Grant internals to the companion test project and the sibling bridge library. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Text.Configuration.Test</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Extensions.Configuration.Text</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Extensions.Configuration.Text.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <!-- Grant internals to the companion test project and the sibling bridge library. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Text.Configuration.Test</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Extensions.Configuration.Text</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Extensions.Configuration.Text.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Include="ConfigurationResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConfigurationResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="ConfigurationResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ConfigurationResourceStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Include="ConfigurationResourceStrings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>ConfigurationResourceStrings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="ConfigurationResourceStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ConfigurationResourceStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 </Project>
