@@ -25275,6 +25275,18 @@ references:
   commentId: Overload:Bodu.Extensions.DateOnlyExtensions.IsLeapYear
   fullName: Bodu.Extensions.DateOnlyExtensions.IsLeapYear
   nameWithType: DateOnlyExtensions.IsLeapYear
+- uid: Bodu.Extensions.DateOnlyExtensions.IsNthDateOfWeekInMonth(System.DateOnly,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)
+  name: IsNthDateOfWeekInMonth(DateOnly, DayOfWeek, WeekOrdinal)
+  href: api/Bodu.Extensions.DateOnlyExtensions.html#Bodu_Extensions_DateOnlyExtensions_IsNthDateOfWeekInMonth_System_DateOnly_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_
+  commentId: M:Bodu.Extensions.DateOnlyExtensions.IsNthDateOfWeekInMonth(System.DateOnly,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)
+  fullName: Bodu.Extensions.DateOnlyExtensions.IsNthDateOfWeekInMonth(System.DateOnly, System.DayOfWeek, Bodu.Extensions.WeekOrdinal)
+  nameWithType: DateOnlyExtensions.IsNthDateOfWeekInMonth(DateOnly, DayOfWeek, WeekOrdinal)
+- uid: Bodu.Extensions.DateOnlyExtensions.IsNthDateOfWeekInMonth*
+  name: IsNthDateOfWeekInMonth
+  href: api/Bodu.Extensions.DateOnlyExtensions.html#Bodu_Extensions_DateOnlyExtensions_IsNthDateOfWeekInMonth_
+  commentId: Overload:Bodu.Extensions.DateOnlyExtensions.IsNthDateOfWeekInMonth
+  fullName: Bodu.Extensions.DateOnlyExtensions.IsNthDateOfWeekInMonth
+  nameWithType: DateOnlyExtensions.IsNthDateOfWeekInMonth
 - uid: Bodu.Extensions.DateOnlyExtensions.IsRestDay(System.DateOnly,Bodu.DayOfWeekSet)
   name: IsRestDay(DateOnly, DayOfWeekSet)
   href: api/Bodu.Extensions.DateOnlyExtensions.html#Bodu_Extensions_DateOnlyExtensions_IsRestDay_System_DateOnly_Bodu_DayOfWeekSet_
@@ -25566,6 +25578,18 @@ references:
   commentId: Overload:Bodu.Extensions.DateOnlyExtensions.NearestDateOfWeek
   fullName: Bodu.Extensions.DateOnlyExtensions.NearestDateOfWeek
   nameWithType: DateOnlyExtensions.NearestDateOfWeek
+- uid: Bodu.Extensions.DateOnlyExtensions.NearestWeekdayInMonth(System.DateOnly)
+  name: NearestWeekdayInMonth(DateOnly)
+  href: api/Bodu.Extensions.DateOnlyExtensions.html#Bodu_Extensions_DateOnlyExtensions_NearestWeekdayInMonth_System_DateOnly_
+  commentId: M:Bodu.Extensions.DateOnlyExtensions.NearestWeekdayInMonth(System.DateOnly)
+  fullName: Bodu.Extensions.DateOnlyExtensions.NearestWeekdayInMonth(System.DateOnly)
+  nameWithType: DateOnlyExtensions.NearestWeekdayInMonth(DateOnly)
+- uid: Bodu.Extensions.DateOnlyExtensions.NearestWeekdayInMonth*
+  name: NearestWeekdayInMonth
+  href: api/Bodu.Extensions.DateOnlyExtensions.html#Bodu_Extensions_DateOnlyExtensions_NearestWeekdayInMonth_
+  commentId: Overload:Bodu.Extensions.DateOnlyExtensions.NearestWeekdayInMonth
+  fullName: Bodu.Extensions.DateOnlyExtensions.NearestWeekdayInMonth
+  nameWithType: DateOnlyExtensions.NearestWeekdayInMonth
 - uid: Bodu.Extensions.DateOnlyExtensions.NextDateOfWeek(System.DateOnly,System.DayOfWeek)
   name: NextDateOfWeek(DateOnly, DayOfWeek)
   href: api/Bodu.Extensions.DateOnlyExtensions.html#Bodu_Extensions_DateOnlyExtensions_NextDateOfWeek_System_DateOnly_System_DayOfWeek_
@@ -26712,6 +26736,21 @@ references:
   commentId: Overload:Bodu.Extensions.DateTimeExtensions.IsLeapYear
   fullName: Bodu.Extensions.DateTimeExtensions.IsLeapYear
   nameWithType: DateTimeExtensions.IsLeapYear
+- uid: Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth(System.DateTime,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)
+  name: IsNthDateOfWeekInMonth(DateTime, DayOfWeek, WeekOrdinal)
+  href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_IsNthDateOfWeekInMonth_System_DateTime_System_DayOfWeek_Bodu_Extensions_WeekOrdinal_
+  commentId: M:Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth(System.DateTime,System.DayOfWeek,Bodu.Extensions.WeekOrdinal)
+  name.vb: IsNthDateOfWeekInMonth(Date, DayOfWeek, WeekOrdinal)
+  fullName: Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth(System.DateTime, System.DayOfWeek, Bodu.Extensions.WeekOrdinal)
+  fullName.vb: Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth(Date, System.DayOfWeek, Bodu.Extensions.WeekOrdinal)
+  nameWithType: DateTimeExtensions.IsNthDateOfWeekInMonth(DateTime, DayOfWeek, WeekOrdinal)
+  nameWithType.vb: DateTimeExtensions.IsNthDateOfWeekInMonth(Date, DayOfWeek, WeekOrdinal)
+- uid: Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth*
+  name: IsNthDateOfWeekInMonth
+  href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_IsNthDateOfWeekInMonth_
+  commentId: Overload:Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth
+  fullName: Bodu.Extensions.DateTimeExtensions.IsNthDateOfWeekInMonth
+  nameWithType: DateTimeExtensions.IsNthDateOfWeekInMonth
 - uid: Bodu.Extensions.DateTimeExtensions.IsRestDay(System.DateTime,Bodu.DayOfWeekSet)
   name: IsRestDay(DateTime, DayOfWeekSet)
   href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_IsRestDay_System_DateTime_Bodu_DayOfWeekSet_
@@ -27123,6 +27162,21 @@ references:
   commentId: Overload:Bodu.Extensions.DateTimeExtensions.NearestDateOfWeek
   fullName: Bodu.Extensions.DateTimeExtensions.NearestDateOfWeek
   nameWithType: DateTimeExtensions.NearestDateOfWeek
+- uid: Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth(System.DateTime)
+  name: NearestWeekdayInMonth(DateTime)
+  href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_NearestWeekdayInMonth_System_DateTime_
+  commentId: M:Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth(System.DateTime)
+  name.vb: NearestWeekdayInMonth(Date)
+  fullName: Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth(System.DateTime)
+  fullName.vb: Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth(Date)
+  nameWithType: DateTimeExtensions.NearestWeekdayInMonth(DateTime)
+  nameWithType.vb: DateTimeExtensions.NearestWeekdayInMonth(Date)
+- uid: Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth*
+  name: NearestWeekdayInMonth
+  href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_NearestWeekdayInMonth_
+  commentId: Overload:Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth
+  fullName: Bodu.Extensions.DateTimeExtensions.NearestWeekdayInMonth
+  nameWithType: DateTimeExtensions.NearestWeekdayInMonth
 - uid: Bodu.Extensions.DateTimeExtensions.NextDateOfWeek(System.DateTime,System.DayOfWeek)
   name: NextDateOfWeek(DateTime, DayOfWeek)
   href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_NextDateOfWeek_System_DateTime_System_DayOfWeek_
@@ -27483,6 +27537,21 @@ references:
   commentId: Overload:Bodu.Extensions.DateTimeExtensions.Truncate
   fullName: Bodu.Extensions.DateTimeExtensions.Truncate
   nameWithType: DateTimeExtensions.Truncate
+- uid: Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset(System.DateTime,System.TimeSpan,System.DateTimeOffset@)
+  name: TryToDateTimeOffset(DateTime, TimeSpan, out DateTimeOffset)
+  href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_TryToDateTimeOffset_System_DateTime_System_TimeSpan_System_DateTimeOffset__
+  commentId: M:Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset(System.DateTime,System.TimeSpan,System.DateTimeOffset@)
+  name.vb: TryToDateTimeOffset(Date, TimeSpan, DateTimeOffset)
+  fullName: Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset(System.DateTime, System.TimeSpan, out System.DateTimeOffset)
+  fullName.vb: Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset(Date, System.TimeSpan, System.DateTimeOffset)
+  nameWithType: DateTimeExtensions.TryToDateTimeOffset(DateTime, TimeSpan, out DateTimeOffset)
+  nameWithType.vb: DateTimeExtensions.TryToDateTimeOffset(Date, TimeSpan, DateTimeOffset)
+- uid: Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset*
+  name: TryToDateTimeOffset
+  href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_TryToDateTimeOffset_
+  commentId: Overload:Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset
+  fullName: Bodu.Extensions.DateTimeExtensions.TryToDateTimeOffset
+  nameWithType: DateTimeExtensions.TryToDateTimeOffset
 - uid: Bodu.Extensions.DateTimeExtensions.WeekOfMonth(System.DateTime)
   name: WeekOfMonth(DateTime)
   href: api/Bodu.Extensions.DateTimeExtensions.html#Bodu_Extensions_DateTimeExtensions_WeekOfMonth_System_DateTime_
