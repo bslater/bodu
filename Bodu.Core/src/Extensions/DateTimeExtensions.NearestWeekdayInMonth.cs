@@ -13,9 +13,9 @@ public static partial class DateTimeExtensions
     /// </summary>
     /// <param name="dateTime">The date and time to adjust.</param>
     /// <returns>
-    /// The nearest weekday in the same month, preserving the time of day and original <see cref="DateTime.Kind" />.
-    /// On equal-distance weekend ties, Saturday normally moves to Friday and Sunday to Monday, adjusted at
-    /// month boundaries to remain within the month.
+    /// The nearest weekday in the same month, preserving the time of day and original <see cref="DateTime.Kind" />. On
+    /// equal-distance weekend ties, Saturday normally moves to Friday and Sunday to Monday, adjusted at month
+    /// boundaries to remain within the month.
     /// </returns>
     /// <remarks>
     /// Weekdays mean Monday through Friday regardless of culture or locale. This does not account for public holidays.

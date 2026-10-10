@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CorpusTree.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,8 +13,8 @@ namespace Bodu.Test.Corpus;
 /// byte-for-byte copies of their sources there.
 /// </summary>
 /// <remarks>
-/// A catalogue's source of truth is <c>corpus/&lt;area&gt;/fixes/&lt;library&gt;-fixes.csv</c>; the test project embeds a
-/// copy under <c>Fixtures/ReleaseNotes/</c> so its tests run without the repository. The check keeps the two from
+/// A catalogue's source of truth is <c>corpus/&lt;area&gt;/fixes/&lt;library&gt;-fixes.csv</c>; the test project embeds
+/// a copy under <c>Fixtures/ReleaseNotes/</c> so its tests run without the repository. The check keeps the two from
 /// drifting apart. It reports inconclusive, rather than failing, when the tests run outside a checkout.
 /// </remarks>
 public static class CorpusTree

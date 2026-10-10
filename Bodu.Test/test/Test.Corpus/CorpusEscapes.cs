@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CorpusEscapes.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,8 +11,8 @@ using System.Text;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Decodes and encodes the escapes that the release-note fix catalogues under <c>corpus/</c> use in their
-/// <c>input</c>, <c>expected</c> and <c>options</c> fields, which keep every catalogue printable ASCII.
+/// Decodes and encodes the escapes that the release-note fix catalogues under <c>corpus/</c> use in their <c>input</c>,
+/// <c>expected</c> and <c>options</c> fields, which keep every catalogue printable ASCII.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -35,8 +35,12 @@ public static class CorpusEscapes
     /// </summary>
     /// <param name="field">The escaped field, as it appears in the catalogue.</param>
     /// <param name="bytes">When the method returns <see langword="true" />, the decoded bytes; otherwise empty.</param>
-    /// <param name="error">When the method returns <see langword="false" />, a description of the first problem.</param>
-    /// <returns><see langword="true" /> when every character and escape in <paramref name="field" /> is valid.</returns>
+    /// <param name="error">
+    /// When the method returns <see langword="false" />, a description of the first problem.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when every character and escape in <paramref name="field" /> is valid.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="field" /> is <see langword="null" />.</exception>
     public static bool TryDecode(string field, out byte[] bytes, [NotNullWhen(false)] out string? error)
     {
@@ -165,12 +169,12 @@ public static class CorpusEscapes
     /// </summary>
     /// <param name="bytes">The bytes to escape.</param>
     /// <returns>
-    /// The escaped text: printable ASCII stays as it is, a backslash is doubled, a line feed, carriage return, tab and NUL
-    /// use their short escapes, and every other byte is written <c>\xHH</c>.
+    /// The escaped text: printable ASCII stays as it is, a backslash is doubled, a line feed, carriage return, tab and
+    /// NUL use their short escapes, and every other byte is written <c>\xHH</c>.
     /// </returns>
     /// <remarks>
-    /// The result decodes back to <paramref name="bytes" />, which makes it suitable for failure messages and for writing
-    /// new rows. It never uses <c>\u{H...}</c>, so non-ASCII text appears byte by byte.
+    /// The result decodes back to <paramref name="bytes" />, which makes it suitable for failure messages and for
+    /// writing new rows. It never uses <c>\u{H...}</c>, so non-ASCII text appears byte by byte.
     /// </remarks>
     public static string Encode(ReadOnlySpan<byte> bytes)
     {
@@ -219,7 +223,9 @@ public static class CorpusEscapes
     /// <param name="u">The index of the <c>u</c> that follows the backslash.</param>
     /// <param name="scalar">When the method returns <see langword="true" />, the Unicode scalar value.</param>
     /// <param name="close">When the method returns <see langword="true" />, the index of the closing brace.</param>
-    /// <returns><see langword="true" /> when the braces hold one to six hexadecimal digits naming a scalar value.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the braces hold one to six hexadecimal digits naming a scalar value.
+    /// </returns>
     private static bool TryDecodeScalar(string field, int u, out Rune scalar, out int close)
     {
         scalar = default;

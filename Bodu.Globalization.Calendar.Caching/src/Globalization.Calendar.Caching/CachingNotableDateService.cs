@@ -254,8 +254,8 @@ public sealed class CachingNotableDateService
     /// <remarks>
     /// Territories are warmed sequentially - year resolution is a synchronous, CPU-bound computation with no I/O to
     /// overlap. A territory whose resolution fails is logged at
-    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped - the remaining territories still
-    /// warm - and is excluded from the returned count. Later queries for any warmed year are cache hits until the
+    /// <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped - the remaining territories still warm
+    /// - and is excluded from the returned count. Later queries for any warmed year are cache hits until the
     /// time-to-live or a resource-version change expires them.
     /// </remarks>
     public int Warm(IEnumerable<string> territories, int firstYear, int lastYear)

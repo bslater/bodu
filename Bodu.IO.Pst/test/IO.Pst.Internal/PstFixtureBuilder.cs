@@ -11,8 +11,8 @@ namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
 /// Builds small, structurally valid PST files in memory for the container tests: a header, a block B-tree and a node
-/// B-tree over the blocks and nodes the test declares, with every checksum, signature, and content encoding applied
-/// as a real writer would.
+/// B-tree over the blocks and nodes the test declares, with every checksum, signature, and content encoding applied as
+/// a real writer would.
 /// </summary>
 /// <remarks>
 /// <para>

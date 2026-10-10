@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalculatedMoneyJsonConverter.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -13,9 +13,9 @@ namespace Bodu.Financial.Serialization.Json;
 
 /// <summary>
 /// Converts a <see cref="CalculatedMoney" /> to and from JSON using the policy supplied at construction. Because
-/// <see cref="CalculatedMoney" /> is the unrounded, deferred-arithmetic tier, its full <see cref="decimal" />
-/// precision - including trailing zeros - is written verbatim and read back unchanged, so a high-precision unit price
-/// survives a round-trip without settling to the currency's minor units.
+/// <see cref="CalculatedMoney" /> is the unrounded, deferred-arithmetic tier, its full <see cref="decimal" /> precision
+/// - including trailing zeros - is written verbatim and read back unchanged, so a high-precision unit price survives a
+/// round-trip without settling to the currency's minor units.
 /// </summary>
 public sealed class CalculatedMoneyJsonConverter
     : JsonConverter<CalculatedMoney>

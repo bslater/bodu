@@ -44,12 +44,12 @@ namespace Bodu.Collections.Probabilistic;
 /// <para>
 /// <see cref="EstimateCardinality" /> applies the standard HyperLogLog small-range correction (linear counting) while
 /// any register is still zero and the raw estimate is at most <c>2.5·m</c>. The classic large-range correction from the
-/// original paper - which compensates for hash collisions as the true cardinality approaches the size of the hash
-/// space - is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit
-/// comparer hash expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates
-/// progressively underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a
-/// hard asymptote near <c>2³²</c> (about 4.3 billion) - beyond that point additional distinct elements produce no
-/// increase in the estimate.
+/// original paper - which compensates for hash collisions as the true cardinality approaches the size of the hash space
+/// - is not applied. Although the register pipeline is 64-bit, all of its entropy derives from the 32-bit comparer hash
+/// expanded through a bijective mixer, so the effective hash space remains <c>2³²</c>: estimates progressively
+/// underestimate the true cardinality from roughly <c>10⁸</c> distinct elements onward, and approach a hard asymptote
+/// near <c>2³²</c> (about 4.3 billion) - beyond that point additional distinct elements produce no increase in the
+/// estimate.
 /// </para>
 /// <para>
 /// <see cref="MergeWith" /> combines two compatible sketches by register-wise maximum, after which this sketch

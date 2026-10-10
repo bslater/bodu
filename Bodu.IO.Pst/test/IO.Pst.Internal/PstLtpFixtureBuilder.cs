@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PstLtpFixtureBuilder.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -172,8 +172,8 @@ internal sealed class PstLtpFixtureBuilder
     }
 
     /// <summary>
-    /// Adds a property context over the supplied records: the records' tree becomes the heap's client root and the
-    /// heap declares the property-context signature.
+    /// Adds a property context over the supplied records: the records' tree becomes the heap's client root and the heap
+    /// declares the property-context signature.
     /// </summary>
     /// <param name="records">The property records: identifier, wire type, and raw value dword.</param>
     /// <returns>The <c>HID</c> of the context's <c>BTHHEADER</c> item.</returns>
@@ -197,15 +197,17 @@ internal sealed class PstLtpFixtureBuilder
     }
 
     /// <summary>
-    /// Adds a table context: the row-index tree over the supplied index rows, then the <c>TCINFO</c> item as the
-    /// heap's client root under the table-context signature.
+    /// Adds a table context: the row-index tree over the supplied index rows, then the <c>TCINFO</c> item as the heap's
+    /// client root under the table-context signature.
     /// </summary>
     /// <param name="columns">The column descriptors: tag, cell offset, cell width, and existence bit.</param>
     /// <param name="endOffset4">The ending offset of the 8- and 4-byte cell region.</param>
     /// <param name="endOffset2">The ending offset of the 2-byte cell region.</param>
     /// <param name="endOffset1">The ending offset of the 1-byte cell region.</param>
     /// <param name="rowWidth">The full row width including the existence bitmap.</param>
-    /// <param name="rowsHnid">The row matrix's <c>HNID</c>: an item added earlier, a subnode identifier, or zero.</param>
+    /// <param name="rowsHnid">
+    /// The row matrix's <c>HNID</c>: an item added earlier, a subnode identifier, or zero.
+    /// </param>
     /// <param name="indexRows">The row-index records: row identifier and matrix row number.</param>
     /// <returns>The <c>HID</c> of the <c>TCINFO</c> item.</returns>
     internal uint AddTableContext(

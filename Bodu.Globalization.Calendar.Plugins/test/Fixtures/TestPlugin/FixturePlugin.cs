@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixturePlugin.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -30,7 +30,9 @@ public sealed class FixturePlugin
         yield return new KeyValuePair<string, INotableDateAlgorithm>("fixture-day", new FixtureDayAlgorithm());
     }
 
-    /// <summary>The contributed algorithm, resolving 1 July of the requested year.</summary>
+    /// <summary>
+    /// The contributed algorithm, resolving 1 July of the requested year.
+    /// </summary>
     private sealed class FixtureDayAlgorithm
         : INotableDateAlgorithm
     {

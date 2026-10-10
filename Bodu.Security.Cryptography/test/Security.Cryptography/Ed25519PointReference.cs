@@ -8,9 +8,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides the base-point multiplications that the signed-digit fixed-base table and the non-adjacent-form
-/// verification of <see cref="Ed25519Point" /> replaced - unsigned 4-bit windows over a table of 64 rows of 16
-/// extended points, joined with the unified addition - kept as an independent oracle that the tests hold the new
-/// routines to.
+/// verification of <see cref="Ed25519Point" /> replaced - unsigned 4-bit windows over a table of 64 rows of 16 extended
+/// points, joined with the unified addition - kept as an independent oracle that the tests hold the new routines to.
 /// </summary>
 /// <remarks>
 /// The replaced fixed-base routine selected each window's entry with a constant-time scan; this oracle indexes the row
@@ -31,8 +30,8 @@ internal static class Ed25519PointReference
     private static readonly Lazy<Ed25519Point[][]> s_baseTable = new(BuildBaseTable);
 
     /// <summary>
-    /// Multiplies the base point by a 256-bit little-endian scalar with the 1.1.0 fixed-base table: one unified addition
-    /// of the window's entry for each 4-bit window.
+    /// Multiplies the base point by a 256-bit little-endian scalar with the 1.1.0 fixed-base table: one unified
+    /// addition of the window's entry for each 4-bit window.
     /// </summary>
     /// <param name="scalar">The 32-byte little-endian scalar.</param>
     /// <returns>The scalar multiple of the base point.</returns>
@@ -51,8 +50,8 @@ internal static class Ed25519PointReference
     }
 
     /// <summary>
-    /// Computes [<paramref name="baseScalar" />]B + [<paramref name="pointScalar" />]<paramref name="point" /> with
-    /// the 1.1.0 routine: unsigned 4-bit windows for both scalars, sharing four doublings per window.
+    /// Computes [<paramref name="baseScalar" />]B + [<paramref name="pointScalar" />]<paramref name="point" /> with the
+    /// 1.1.0 routine: unsigned 4-bit windows for both scalars, sharing four doublings per window.
     /// </summary>
     /// <param name="baseScalar">The 32-byte little-endian scalar applied to the base point.</param>
     /// <param name="pointScalar">The 32-byte little-endian scalar applied to <paramref name="point" />.</param>

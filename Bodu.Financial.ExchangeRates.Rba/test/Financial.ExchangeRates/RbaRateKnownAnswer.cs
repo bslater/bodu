@@ -18,8 +18,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// Each row asserts that <see cref="RbaRateProvider.GetRate(string, string, DateOnly, RateLookupOptions?)" /> returns
 /// <see cref="ExpectedRate" /> for <c>AUD</c> to <see cref="Currency" /> on <see cref="Date" />, when the workbook
-/// named by <see cref="SourceFileName" /> is loaded. The whole read path - compound file, BIFF8 decode, and RBA
-/// mapping - is exercised against a real published value.
+/// named by <see cref="SourceFileName" /> is loaded. The whole read path - compound file, BIFF8 decode, and RBA mapping
+/// - is exercised against a real published value.
 /// </para>
 /// <para>
 /// <see cref="Type" /> records why the row was chosen for the source workbook (first, last, minimum, maximum, or

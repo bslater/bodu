@@ -73,6 +73,5 @@ public sealed partial class CronExpression
                 (true, true) => Day == 0 ? "LW" : string.Create(CultureInfo.InvariantCulture, $"L-{Day}W"),
                 _ => string.Create(CultureInfo.InvariantCulture, $"{Day}W"),
             };
-
     }
 }

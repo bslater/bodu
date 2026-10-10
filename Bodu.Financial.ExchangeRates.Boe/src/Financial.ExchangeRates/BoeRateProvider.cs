@@ -67,10 +67,7 @@ public sealed class BoeRateProvider
     /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>
-    /// The merged inclusive ranges whose data has been loaded; accessed under
-    /// <see cref="WebRateProvider.SyncRoot" />.
-    /// </summary>
+    /// <summary>The merged inclusive ranges whose data has been loaded; accessed under <see cref="WebRateProvider.SyncRoot" />.</summary>
     private readonly DateRangeCoverage _loadedRanges = new();
 
     /// <summary>The discovered currency series, keyed by pair.</summary>

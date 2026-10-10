@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FixtureDateSource.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency;
 
 /// <summary>
-/// A dependency assembly consumed by the dependent fixture plugin. It carries no plugin attribute, so it also serves
-/// as the missing-attribute fixture for the loader tests.
+/// A dependency assembly consumed by the dependent fixture plugin. It carries no plugin attribute, so it also serves as
+/// the missing-attribute fixture for the loader tests.
 /// </summary>
 public static class FixtureDateSource
 {

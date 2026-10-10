@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LateJoinerNotableDateCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,7 +8,8 @@ namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
 /// An <see cref="INotableDateCache" /> decorator that parks the <em>first</em> reader inside its lookup, after that
-/// lookup has already observed its result, so a test can pin the single-flight late-joiner interleaving deterministically.
+/// lookup has already observed its result, so a test can pin the single-flight late-joiner interleaving
+/// deterministically.
 /// </summary>
 /// <remarks>
 /// <para>

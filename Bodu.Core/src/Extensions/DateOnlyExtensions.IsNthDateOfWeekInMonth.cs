@@ -16,13 +16,13 @@ public static partial class DateOnlyExtensions
     /// <param name="dayOfWeek">The weekday whose occurrence is being tested.</param>
     /// <param name="ordinal">First through fifth occurrence, or <see cref="WeekOrdinal.Last" />.</param>
     /// <returns>
-    /// <see langword="true" /> if the date is the requested weekday occurrence; otherwise <see langword="false" />.
-    /// A fifth occurrence missing from a month returns <see langword="false" /> instead of throwing.
+    /// <see langword="true" /> if the date is the requested weekday occurrence; otherwise <see langword="false" />. A
+    /// fifth occurrence missing from a month returns <see langword="false" /> instead of throwing.
     /// </returns>
     /// <remarks>
-    /// The ordinal describes repeated occurrences of a weekday in the Gregorian month, not culture-defined
-    /// calendar week numbers. Unlike <see cref="NthDateOfWeekInMonth(DateOnly, DayOfWeek, WeekOrdinal)" />,
-    /// this predicate does not throw when a valid ordinal does not occur in the month.
+    /// The ordinal describes repeated occurrences of a weekday in the Gregorian month, not culture-defined calendar
+    /// week numbers. Unlike <see cref="NthDateOfWeekInMonth(DateOnly, DayOfWeek, WeekOrdinal)" />, this predicate does
+    /// not throw when a valid ordinal does not occur in the month.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek" /> or <paramref name="ordinal" /> is not a defined enum value.

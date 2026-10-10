@@ -28,9 +28,9 @@ namespace Bodu.Text.Encoding;
 /// Base85 has no padding character. The <see cref="BaseFormattingOptions.UpperCase" />,
 /// <see cref="BaseFormattingOptions.InsertSpacing" />, <see cref="BaseFormattingOptions.InsertLineBreaks" />, and
 /// <see cref="BaseFormattingOptions.OmitPadding" /> flags are ignored on the encode side.
-/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" />
-/// variant - when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag
-/// is ignored for <see cref="Base85Variant.Z85" />.
+/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" /> variant
+/// - when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag is
+/// ignored for <see cref="Base85Variant.Z85" />.
 /// </para>
 /// <para>
 /// On the decode side, <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input.

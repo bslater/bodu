@@ -17,9 +17,9 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// under <c>kats/</c>.
 /// </summary>
 /// <remarks>
-/// Both files are kept in their upstream form. <c>src/test.c</c> switches version with plain assignments
-/// (<c>version = ARGON2_VERSION_10;</c>), states memory as a power of two, and publishes each tag with its PHC encoding.
-/// A trace file states its variant and version in its banner and lists every input before the final tag.
+/// Both files are kept in their upstream form. <c>src/test.c</c> switches version with plain assignments (<c>version = ARGON2_VERSION_10;</c>),
+/// states memory as a power of two, and publishes each tag with its PHC encoding. A trace file states its variant and
+/// version in its banner and lists every input before the final tag.
 /// </remarks>
 public static partial class Argon2ReferenceKatReader
 {
@@ -34,8 +34,12 @@ public static partial class Argon2ReferenceKatReader
     /// </summary>
     /// <param name="stream">A readable stream over <c>src/test.c</c>.</param>
     /// <param name="citation">The citation recorded as each vector's provenance.</param>
-    /// <returns>The vectors in source order, each carrying the published PHC encoding in <see cref="KdfKnownAnswer.Encoded" />.</returns>
-    /// <exception cref="InvalidDataException">A call cannot be parsed, or no <c>OUT_LEN</c> is defined before it.</exception>
+    /// <returns>
+    /// The vectors in source order, each carrying the published PHC encoding in <see cref="KdfKnownAnswer.Encoded" />.
+    /// </returns>
+    /// <exception cref="InvalidDataException">
+    /// A call cannot be parsed, or no <c>OUT_LEN</c> is defined before it.
+    /// </exception>
     public static IEnumerable<KdfKnownAnswer> ReadHashTests(Stream stream, string citation)
     {
         using var reader = new StreamReader(stream, Encoding.ASCII);
@@ -197,27 +201,38 @@ public static partial class Argon2ReferenceKatReader
         return Hex(line[(colon + 1)..].Replace(" ", string.Empty, StringComparison.Ordinal));
     }
 
-    /// <summary>Matches <c>#define OUT_LEN 32</c>.</summary>
+    /// <summary>
+    /// Matches <c>#define OUT_LEN 32</c>.
+    /// </summary>
     /// <returns>The compiled pattern.</returns>
     [GeneratedRegex(@"^#define\s+OUT_LEN\s+(?<length>\d+)$")]
     private static partial Regex OutputLengthPattern();
 
-    /// <summary>Matches one joined <c>hashtest(...)</c> call.</summary>
+    /// <summary>
+    /// Matches one joined <c>hashtest(...)</c> call.
+    /// </summary>
     /// <returns>The compiled pattern.</returns>
     [GeneratedRegex("""hashtest\(version,\s*(?<t>\d+),\s*(?<m>\d+),\s*(?<p>\d+),\s*"(?<password>[^"]*)",\s*"(?<salt>[^"]*)",\s*"(?<hex>[0-9a-f]+)",\s*(?<encoded>(?:"[^"]*"\s*)+),\s*Argon2_(?<type>id|i|d)\);""")]
     private static partial Regex HashTestPattern();
 
-    /// <summary>Matches one C string literal.</summary>
+    /// <summary>
+    /// Matches one C string literal.
+    /// </summary>
     /// <returns>The compiled pattern.</returns>
     [GeneratedRegex("\"(?<text>[^\"]*)\"")]
     private static partial Regex StringLiteralPattern();
 
-    /// <summary>Matches a trace banner such as <c>Argon2id version number 16</c>.</summary>
+    /// <summary>
+    /// Matches a trace banner such as <c>Argon2id version number 16</c>.
+    /// </summary>
     /// <returns>The compiled pattern.</returns>
     [GeneratedRegex(@"^Argon2(?<variant>id|i|d) version number (?<version>\d+)$")]
     private static partial Regex TraceBannerPattern();
 
-    /// <summary>Matches a trace cost line such as <c>Memory: 32 KiB, Iterations: 3, Parallelism: 4 lanes, Tag length: 32 bytes</c>.</summary>
+    /// <summary>
+    /// Matches a trace cost line such as
+    /// <c>Memory: 32 KiB, Iterations: 3, Parallelism: 4 lanes, Tag length: 32 bytes</c>.
+    /// </summary>
     /// <returns>The compiled pattern.</returns>
     [GeneratedRegex(@"^Memory: (?<memory>\d+) KiB, Iterations: (?<iterations>\d+), Parallelism: (?<lanes>\d+) lanes, Tag length: (?<tag>\d+) bytes$")]
     private static partial Regex TraceCostPattern();

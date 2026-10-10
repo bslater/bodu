@@ -94,9 +94,9 @@ public sealed class Iso7064Mod97_10
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check code.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence evaluates as valid under MOD 97-10; otherwise,
-    /// <see langword="false" /> - including the case where <paramref name="valueIncludingCheck" /> is empty or contains
-    /// any character outside the alphanumeric uppercase alphabet.
+    /// <see langword="true" /> if the sequence evaluates as valid under MOD 97-10; otherwise, <see langword="false" />
+    /// - including the case where <paramref name="valueIncludingCheck" /> is empty or contains any character outside
+    /// the alphanumeric uppercase alphabet.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

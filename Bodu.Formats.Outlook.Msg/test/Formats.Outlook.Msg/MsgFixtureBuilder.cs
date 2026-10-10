@@ -281,8 +281,8 @@ internal sealed class MsgFixtureBuilder
             .AddBinary(MapiPropertyIds.AttachData, CreatePatternedPayload(length)));
 
     /// <summary>
-    /// Creates a payload whose every byte is a deterministic function of its offset, so a streamed copy can be
-    /// checked without holding a second copy.
+    /// Creates a payload whose every byte is a deterministic function of its offset, so a streamed copy can be checked
+    /// without holding a second copy.
     /// </summary>
     /// <param name="length">The payload length.</param>
     /// <returns>The patterned bytes.</returns>

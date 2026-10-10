@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StaticFaultyPlugin.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@
 namespace Bodu.Globalization.Calendar.Plugins.TestPlugin.StaticFaulty;
 
 /// <summary>
-/// A fixture plugin whose type initializer throws, so activation surfaces a
-/// <see cref="TypeInitializationException" /> rather than a constructor-invocation failure.
+/// A fixture plugin whose type initializer throws, so activation surfaces a <see cref="TypeInitializationException" />
+/// rather than a constructor-invocation failure.
 /// </summary>
 public sealed class StaticFaultyPlugin
     : INotableDatePlugin

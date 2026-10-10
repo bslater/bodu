@@ -14,8 +14,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use this to add read-through caching to one rate source. To group several cached sources behind a single entry
-/// point - with priority-fallback, averaging, or per-pair routing - compose them with an
+/// Use this to add read-through caching to one rate source. To group several cached sources behind a single entry point
+/// - with priority-fallback, averaging, or per-pair routing - compose them with an
 /// <see cref="AggregatingRateProvider" />.
 /// </para>
 /// <para>

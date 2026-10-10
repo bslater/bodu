@@ -14,9 +14,9 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Parses the RFC 8439 (<c>ChaCha20 &amp; Poly1305</c>) appendix test vectors. Each appendix section (for example
 /// <c>A.2. ChaCha20 Encryption</c>) contains numbered <c>Test Vector #N</c> blocks whose labelled fields (<c>Key:</c>,
 /// <c>Nonce:</c>, <c>Plaintext:</c>, <c>Ciphertext:</c>, …) are rendered as offset-prefixed hex dumps, interleaved with
-/// scalar lines such as <c>Initial Block Counter = N</c> (Appendix A.2) or <c>Block Counter = N</c> (Appendix A.1). The reader extracts the hex bytes for each field, ignores the
-/// trailing ASCII gutter and the page headers/footers, and yields one <see cref="Rfc8439TestVector" /> per block within
-/// the requested section.
+/// scalar lines such as <c>Initial Block Counter = N</c> (Appendix A.2) or <c>Block Counter = N</c> (Appendix A.1). The
+/// reader extracts the hex bytes for each field, ignores the trailing ASCII gutter and the page headers/footers, and
+/// yields one <see cref="Rfc8439TestVector" /> per block within the requested section.
 /// </summary>
 public static partial class Rfc8439VectorReader
 {

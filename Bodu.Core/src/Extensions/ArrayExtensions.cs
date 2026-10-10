@@ -7,9 +7,9 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Provides allocation-aware operations over <see cref="Array" /> instances - clearing, copying, slicing, and
-/// reversing - that either match the missing primitives on <see cref="Array" /> or supply more ergonomic counterparts
-/// to the BCL helpers.
+/// Provides allocation-aware operations over <see cref="Array" /> instances - clearing, copying, slicing, and reversing
+/// - that either match the missing primitives on <see cref="Array" /> or supply more ergonomic counterparts to the BCL
+/// helpers.
 /// </summary>
 /// <remarks>
 /// <para>

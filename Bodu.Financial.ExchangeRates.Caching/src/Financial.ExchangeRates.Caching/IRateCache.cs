@@ -153,10 +153,9 @@ public interface IRateCache
     /// <para>
     /// The merge follows the same most-recent-per-date rule as <see cref="Store" /> and the same window pruning as
     /// <see cref="RecordCoverage" />. The write is atomic per pair - under the per-pair lock for the in-memory and file
-    /// caches, in one transaction for SQLite, and as one read-modify-write of the per-pair blob for a distributed
-    /// cache - so a reader never observes coverage without its rows. As with the other write paths, a swallowed storage
-    /// error degrades to <see cref="RateCacheWriteStatus.Failed" /> rather than throwing; argument validation still
-    /// throws.
+    /// caches, in one transaction for SQLite, and as one read-modify-write of the per-pair blob for a distributed cache
+    /// - so a reader never observes coverage without its rows. As with the other write paths, a swallowed storage error
+    /// degrades to <see cref="RateCacheWriteStatus.Failed" /> rather than throwing; argument validation still throws.
     /// </para>
     /// </remarks>
     RateCacheWriteStatus StoreFetchedRange(

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AhoCorasickNode{T}.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Collections.Generic.Internal;
 
 /// <summary>
-/// Represents a single state in an Aho-Corasick automaton, holding its goto transitions, failure link, output link,
-/// and - when the state terminates a pattern - the pattern and its associated value.
+/// Represents a single state in an Aho-Corasick automaton, holding its goto transitions, failure link, output link, and
+/// - when the state terminates a pattern - the pattern and its associated value.
 /// </summary>
 /// <typeparam name="TValue">The type of value stored at pattern-terminating states.</typeparam>
 internal sealed class AhoCorasickNode<TValue>

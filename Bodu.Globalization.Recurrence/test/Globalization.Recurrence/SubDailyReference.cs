@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SubDailyReference.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -8,8 +8,8 @@ namespace Bodu.Globalization.Recurrence;
 
 /// <summary>
 /// Provides a literal reading of RFC 5545's sub-daily recurrence rules, kept as the oracle the sub-daily engine is held
-/// to. It visits every period in order and applies each rule part to each candidate instant as the specification
-/// states it, with none of the engine's skips over rejected days, jumps between allowed times of day, or backward walks.
+/// to. It visits every period in order and applies each rule part to each candidate instant as the specification states
+/// it, with none of the engine's skips over rejected days, jumps between allowed times of day, or backward walks.
 /// </summary>
 /// <remarks>
 /// The reading matches the engine's documented choices where RFC 5545 leaves room: the ordinal of a <c>BYDAY</c> value
@@ -156,7 +156,9 @@ internal static class SubDailyReference
     /// </summary>
     /// <param name="rule">The sub-daily rule.</param>
     /// <param name="instant">The candidate instant.</param>
-    /// <returns><see langword="true" /> when no limit rejects the instant; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when no limit rejects the instant; otherwise <see langword="false" />.
+    /// </returns>
     private static bool PassesLimits(RecurrenceRule rule, DateTime instant)
     {
         bool minute = rule.Frequency == RecurrenceFrequency.Hourly
@@ -174,7 +176,9 @@ internal static class SubDailyReference
     /// </summary>
     /// <param name="rule">The sub-daily rule.</param>
     /// <param name="instant">The candidate instant.</param>
-    /// <returns><see langword="true" /> when none of those limits rejects the instant; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when none of those limits rejects the instant; otherwise <see langword="false" />.
+    /// </returns>
     private static bool PassesDateAndHourLimits(RecurrenceRule rule, DateTime instant)
     {
         int daysInMonth = DateTime.DaysInMonth(instant.Year, instant.Month);

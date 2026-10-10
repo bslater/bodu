@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AhoCorasickAutomaton.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Collections.Generic.Trees;
 /// <para>
 /// The automaton is built once from a complete pattern set via <see cref="Build(IEnumerable{string})" /> and is
 /// immutable thereafter: its failure and output links are global invariants defined relative to the whole pattern set,
-/// so a pattern added later would invalidate the links wholesale - rebuild with the new set instead. Matching costs
-/// O(n + m) for text length n and m reported matches, independent of the number of patterns.
+/// so a pattern added later would invalidate the links wholesale - rebuild with the new set instead. Matching costs O(n
+/// + m) for text length n and m reported matches, independent of the number of patterns.
 /// </para>
 /// <para>
 /// Character comparison is ordinal. Matches - including overlapping and nested occurrences - are reported in a

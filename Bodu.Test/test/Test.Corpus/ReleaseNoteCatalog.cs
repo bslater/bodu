@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReleaseNoteCatalog.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,15 +17,15 @@ namespace Bodu.Test.Corpus;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A catalogue is UTF-8 holding only printable ASCII and line feeds, and ends with a line feed. It opens with the header
-/// lines <c># library: &lt;library&gt; -- &lt;repository&gt;</c>, <c># releases: ...</c> and <c># licence: ...</c>, in
-/// that order, then any number of <c># note: ...</c> lines, then <see cref="ColumnLine" />, then one row per line in
-/// RFC 4180 quoting.
+/// A catalogue is UTF-8 holding only printable ASCII and line feeds, and ends with a line feed. It opens with the
+/// header lines <c># library: &lt;library&gt; -- &lt;repository&gt;</c>, <c># releases: ...</c> and
+/// <c># licence: ...</c>, in that order, then any number of <c># note: ...</c> lines, then <see cref="ColumnLine" />,
+/// then one row per line in RFC 4180 quoting.
 /// </para>
 /// <para>
-/// <see cref="Load" /> never throws for a malformed catalogue: it reads what it can and lists every problem it finds
-/// in <see cref="Problems" />, so a governance test can report them all at once. The checks cover the file's bytes,
-/// the header, the columns, and each row's class, kind, case, options, escapes, expectation and reason.
+/// <see cref="Load" /> never throws for a malformed catalogue: it reads what it can and lists every problem it finds in
+/// <see cref="Problems" />, so a governance test can report them all at once. The checks cover the file's bytes, the
+/// header, the columns, and each row's class, kind, case, options, escapes, expectation and reason.
 /// </para>
 /// </remarks>
 public sealed class ReleaseNoteCatalog
@@ -244,7 +244,9 @@ public sealed class ReleaseNoteCatalog
     /// <summary>
     /// Counts the catalogue's rows in each class.
     /// </summary>
-    /// <returns>The number of rows in each of <see cref="Classes" />, in that order; a class with no rows counts zero.</returns>
+    /// <returns>
+    /// The number of rows in each of <see cref="Classes" />, in that order; a class with no rows counts zero.
+    /// </returns>
     public IReadOnlyDictionary<string, int> CountByClass()
     {
         var counts = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -367,7 +369,9 @@ public sealed class ReleaseNoteCatalog
     /// Determines whether an expectation names a known source.
     /// </summary>
     /// <param name="value">The expectation field.</param>
-    /// <returns><see langword="true" /> for <c>upstream</c>, <c>spec</c>, <c>derived</c> and <c>oracle:&lt;tool&gt;</c>.</returns>
+    /// <returns>
+    /// <see langword="true" /> for <c>upstream</c>, <c>spec</c>, <c>derived</c> and <c>oracle:&lt;tool&gt;</c>.
+    /// </returns>
     private static bool IsExpectation(string value) =>
         value is "upstream" or "spec" or "derived"
         || (value.StartsWith("oracle:", StringComparison.Ordinal) && value.Length > "oracle:".Length);
@@ -376,7 +380,9 @@ public sealed class ReleaseNoteCatalog
     /// Determines whether an expected field names an exception type, optionally followed by a code.
     /// </summary>
     /// <param name="value">The expected field.</param>
-    /// <returns><see langword="true" /> for <c>&lt;Name&gt;Exception</c> or <c>&lt;Name&gt;Exception:&lt;code&gt;</c>.</returns>
+    /// <returns>
+    /// <see langword="true" /> for <c>&lt;Name&gt;Exception</c> or <c>&lt;Name&gt;Exception:&lt;code&gt;</c>.
+    /// </returns>
     private static bool IsExceptionName(string value)
     {
         int colon = value.IndexOf(':', StringComparison.Ordinal);
@@ -391,7 +397,9 @@ public sealed class ReleaseNoteCatalog
     /// Determines whether a unit row's input names a test method in the repository's convention.
     /// </summary>
     /// <param name="value">The input field.</param>
-    /// <returns><see langword="true" /> for <c>&lt;TestClass&gt;.&lt;Member&gt;_When&lt;Condition&gt;_Should&lt;Result&gt;</c>.</returns>
+    /// <returns>
+    /// <see langword="true" /> for <c>&lt;TestClass&gt;.&lt;Member&gt;_When&lt;Condition&gt;_Should&lt;Result&gt;</c>.
+    /// </returns>
     private static bool IsTestMethodName(string value)
     {
         int dot = value.IndexOf('.', StringComparison.Ordinal);

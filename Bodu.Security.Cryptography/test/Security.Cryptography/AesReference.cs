@@ -14,22 +14,13 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 internal static class AesReference
 {
-    /// <summary>
-    /// Returns the lengths the long-message cross-checks use: short tails, one to three blocks, one either side of a
-    /// four-block group and of a 4 KiB run, and several runs.
-    /// </summary>
+    /// <summary>Returns the lengths the long-message cross-checks use: short tails, one to three blocks, one either side of a four-block group and of a 4 KiB run, and several runs.</summary>
     internal static readonly int[] MessageLengths = [0, 1, 15, 16, 17, 63, 64, 65, 4095, 4096, 4097, (3 * 4096) + 17, 20000];
 
-    /// <summary>
-    /// Returns the associated-data lengths the long-message cross-checks use: none, a partial block, one past a block,
-    /// four blocks, and an unaligned run past four blocks.
-    /// </summary>
+    /// <summary>Returns the associated-data lengths the long-message cross-checks use: none, a partial block, one past a block, four blocks, and an unaligned run past four blocks.</summary>
     internal static readonly int[] AssociatedDataLengths = [0, 1, 17, 64, 100];
 
-    /// <summary>
-    /// Returns the block-aligned lengths the unauthenticated-mode cross-checks use: one to four blocks, one block
-    /// either side of a 4 KiB run, several runs, and 20,000 bytes.
-    /// </summary>
+    /// <summary>Returns the block-aligned lengths the unauthenticated-mode cross-checks use: one to four blocks, one block either side of a 4 KiB run, several runs, and 20,000 bytes.</summary>
     internal static readonly int[] AlignedLengths = [16, 32, 64, 4080, 4096, 4112, (3 * 4096) + 80, 20000];
 
     /// <summary>

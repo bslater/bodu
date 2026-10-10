@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReleaseNoteFix.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -9,8 +9,8 @@ using Bodu.Test.Kat;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Represents one row of a release-note fix catalogue: a defect fix another library shipped, how it bears on Bodu,
-/// and, for a row that runs, the scenario Bodu must handle.
+/// Represents one row of a release-note fix catalogue: a defect fix another library shipped, how it bears on Bodu, and,
+/// for a row that runs, the scenario Bodu must handle.
 /// </summary>
 /// <param name="FileName">The catalogue the row came from, such as <c>tomli-fixes.csv</c>.</param>
 /// <param name="LineNumber">The one-based line of the row in its catalogue.</param>
@@ -20,11 +20,15 @@ namespace Bodu.Test.Corpus;
 /// <param name="Summary">A short paraphrase of the release-note entry.</param>
 /// <param name="Class">How the fix bears on Bodu: <c>applies</c>, <c>dialect</c>, <c>n/a</c> or <c>unknown</c>.</param>
 /// <param name="Case">The case number when the fix needs several rows, or the empty string.</param>
-/// <param name="Kind">What the row checks: <c>parse</c>, <c>reject</c>, <c>write</c>, <c>write-reject</c>, <c>roundtrip</c> or <c>unit</c>.</param>
+/// <param name="Kind">
+/// What the row checks: <c>parse</c>, <c>reject</c>, <c>write</c>, <c>write-reject</c>, <c>roundtrip</c> or <c>unit</c>.
+/// </param>
 /// <param name="Options">The options the row runs with, written <c>Name=Value;Name=Value</c>.</param>
 /// <param name="Input">The escaped input, or the test method that covers a <c>unit</c> row.</param>
 /// <param name="Expected">The escaped expected result.</param>
-/// <param name="Expectation">Where the expected result comes from: <c>upstream</c>, <c>spec</c>, <c>derived</c> or <c>oracle:&lt;tool&gt;</c>.</param>
+/// <param name="Expectation">
+/// Where the expected result comes from: <c>upstream</c>, <c>spec</c>, <c>derived</c> or <c>oracle:&lt;tool&gt;</c>.
+/// </param>
 /// <param name="Reason">Why the row has its class, citing its source.</param>
 public sealed record ReleaseNoteFix(
     string FileName,

@@ -16,8 +16,8 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// </summary>
 /// <remarks>
 /// Lines starting with <c>#</c> are comments. Each row holds
-/// <c>case|variant|version|memoryKiB|iterations|parallelism|tagLength|password|salt|secret|associatedData|tag</c>,
-/// with the byte fields in hex; an empty secret or associated-data field means none was used.
+/// <c>case|variant|version|memoryKiB|iterations|parallelism|tagLength|password|salt|secret|associatedData|tag</c>, with
+/// the byte fields in hex; an empty secret or associated-data field means none was used.
 /// </remarks>
 public static class Argon2RecordedCorpusReader
 {

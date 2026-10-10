@@ -219,8 +219,8 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool IncludeEmbeddedMessageSubnode { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the attachment table carries an extra row whose identifier references
-    /// no subnode.
+    /// Gets or sets a value indicating whether the attachment table carries an extra row whose identifier references no
+    /// subnode.
     /// </summary>
     /// <value><see langword="false" /> by default.</value>
     internal bool IncludeDanglingAttachmentRow { get; set; }
@@ -284,8 +284,8 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool IncludeNameToIdMap { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the name-to-id map's entry stream is truncated to a length that is not
-    /// a multiple of the eight-byte record size.
+    /// Gets or sets a value indicating whether the name-to-id map's entry stream is truncated to a length that is not a
+    /// multiple of the eight-byte record size.
     /// </summary>
     /// <value><see langword="false" /> by default.</value>
     internal bool TruncateNameMapEntryStream { get; set; }
@@ -297,8 +297,8 @@ internal sealed class PstMessagingFixtureBuilder
     internal byte[]? NameMapStringStreamOverride { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the full message's compressed-RTF payload is truncated below the
-    /// 16-byte MS-OXRTFCP header.
+    /// Gets or sets a value indicating whether the full message's compressed-RTF payload is truncated below the 16-byte
+    /// MS-OXRTFCP header.
     /// </summary>
     /// <value><see langword="false" /> by default.</value>
     internal bool TruncateRtfPayload { get; set; }
@@ -379,8 +379,8 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Builds the <c>PidTagRtfCompressed</c> payload: the raw RTF text behind a <c>MELA</c> (uncompressed) header,
-    /// or a truncated header when the knob is set.
+    /// Builds the <c>PidTagRtfCompressed</c> payload: the raw RTF text behind a <c>MELA</c> (uncompressed) header, or a
+    /// truncated header when the knob is set.
     /// </summary>
     /// <returns>The payload bytes.</returns>
     private byte[] BuildRtfPayload()
@@ -597,7 +597,9 @@ internal sealed class PstMessagingFixtureBuilder
     /// by default, or a large subnode-resident data tree when <see cref="LargeAttachmentXBlocks" /> is set.
     /// </summary>
     /// <param name="file">The container builder.</param>
-    /// <returns>The heap's data-block identifier and the attachment's subnode-tree block identifier (zero when none).</returns>
+    /// <returns>
+    /// The heap's data-block identifier and the attachment's subnode-tree block identifier (zero when none).
+    /// </returns>
     private (ulong DataBlockId, ulong SubnodeBlockId) AddByValueAttachment(PstFixtureBuilder file)
     {
         var ltp = new PstLtpFixtureBuilder();
@@ -647,8 +649,8 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Builds the embedded-message attachment object's property context, its <c>PT_OBJECT</c> value carrying the
-    /// nested message's identifier per MS-PST §2.4.6.3.
+    /// Builds the embedded-message attachment object's property context, its <c>PT_OBJECT</c> value carrying the nested
+    /// message's identifier per MS-PST §2.4.6.3.
     /// </summary>
     /// <param name="file">The container builder.</param>
     /// <returns>The heap's data-block identifier, for the subnode row.</returns>
@@ -670,12 +672,14 @@ internal sealed class PstMessagingFixtureBuilder
 
     /// <summary>
     /// Builds the subnode row of an embedded message that itself nests further embedded messages, to the requested
-    /// depth: below the innermost level each embedded message carries an attachment table with one embedded
-    /// attachment whose subnode tree holds the next message.
+    /// depth: below the innermost level each embedded message carries an attachment table with one embedded attachment
+    /// whose subnode tree holds the next message.
     /// </summary>
     /// <param name="file">The container builder.</param>
     /// <param name="depth">The number of embedded levels to produce, at least one.</param>
-    /// <returns>The subnode row (node identifier, data block, nested subnode block) of the outermost embedded message.</returns>
+    /// <returns>
+    /// The subnode row (node identifier, data block, nested subnode block) of the outermost embedded message.
+    /// </returns>
     private (uint NodeId, ulong DataBlockId, ulong SubnodeBlockId) AddEmbeddedMessageChain(PstFixtureBuilder file, int depth)
     {
         ulong nestedSubnodes = 0;
@@ -718,8 +722,8 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Builds the embedded message's property context; its <c>PT_STRING8</c> body declares no code page, so it
-    /// decodes only under the encoding inherited from the owning message.
+    /// Builds the embedded message's property context; its <c>PT_STRING8</c> body declares no code page, so it decodes
+    /// only under the encoding inherited from the owning message.
     /// </summary>
     /// <param name="file">The container builder.</param>
     /// <returns>The heap's data-block identifier, for the subnode row.</returns>
@@ -741,8 +745,8 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Adds a top-level table-context node whose rows only reference other nodes - the shape of hierarchy and
-    /// contents tables.
+    /// Adds a top-level table-context node whose rows only reference other nodes - the shape of hierarchy and contents
+    /// tables.
     /// </summary>
     /// <param name="file">The container builder.</param>
     /// <param name="tableNodeId">The composed table node identifier.</param>

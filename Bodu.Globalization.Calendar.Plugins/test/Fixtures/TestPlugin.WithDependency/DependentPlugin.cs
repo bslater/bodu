@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DependentPlugin.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,8 +12,8 @@ using Bodu.Globalization.Calendar.Plugins.TestPlugin.Dependency;
 namespace Bodu.Globalization.Calendar.Plugins.TestPlugin.WithDependency;
 
 /// <summary>
-/// A fixture plugin whose contributed algorithm depends on a sibling assembly, so loading it exercises the plugin
-/// load context's dependency resolution.
+/// A fixture plugin whose contributed algorithm depends on a sibling assembly, so loading it exercises the plugin load
+/// context's dependency resolution.
 /// </summary>
 public sealed class DependentPlugin
     : INotableDatePlugin, INotableDateAlgorithmPlugin
@@ -31,7 +31,9 @@ public sealed class DependentPlugin
         yield return new KeyValuePair<string, INotableDateAlgorithm>("dependent-day", new DependentAlgorithm());
     }
 
-    /// <summary>The contributed algorithm, delegating to the dependency assembly.</summary>
+    /// <summary>
+    /// The contributed algorithm, delegating to the dependency assembly.
+    /// </summary>
     private sealed class DependentAlgorithm
         : INotableDateAlgorithm
     {

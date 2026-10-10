@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CronTokenReference.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -46,27 +46,39 @@ internal sealed class CronTokenReference
         DayOfWeekField = dayOfWeek;
     }
 
-    /// <summary>Gets the matching seconds, ascending.</summary>
+    /// <summary>
+    /// Gets the matching seconds, ascending.
+    /// </summary>
     /// <value>The seconds.</value>
     public int[] Seconds { get; }
 
-    /// <summary>Gets the matching minutes, ascending.</summary>
+    /// <summary>
+    /// Gets the matching minutes, ascending.
+    /// </summary>
     /// <value>The minutes.</value>
     public int[] Minutes { get; }
 
-    /// <summary>Gets the matching hours, ascending.</summary>
+    /// <summary>
+    /// Gets the matching hours, ascending.
+    /// </summary>
     /// <value>The hours.</value>
     public int[] Hours { get; }
 
-    /// <summary>Gets the matching months.</summary>
+    /// <summary>
+    /// Gets the matching months.
+    /// </summary>
     /// <value>The months.</value>
     public HashSet<int> Months { get; }
 
-    /// <summary>Gets the day-of-month field text.</summary>
+    /// <summary>
+    /// Gets the day-of-month field text.
+    /// </summary>
     /// <value>The field text.</value>
     public string DayOfMonthField { get; }
 
-    /// <summary>Gets the day-of-week field text.</summary>
+    /// <summary>
+    /// Gets the day-of-week field text.
+    /// </summary>
     /// <value>The field text.</value>
     public string DayOfWeekField { get; }
 
@@ -222,7 +234,9 @@ internal sealed class CronTokenReference
     /// Determines whether a day field is restricted: anything other than <c>*</c> or <c>?</c>.
     /// </summary>
     /// <param name="field">The field text.</param>
-    /// <returns><see langword="true" /> when the field restricts the days; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the field restricts the days; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsRestricted(string field) =>
         field is not ("*" or "?");
 

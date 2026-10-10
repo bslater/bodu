@@ -16,11 +16,11 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="DateTime" /> exposes raw fields and a handful of arithmetic operators but leaves the harder calendar
-/// work - locating the first Monday of a quarter, snapping to the start or end of a day, computing ISO weeks, or
-/// converting between time zones and epochs - to the caller. This class concentrates that work in a single,
-/// allocation-aware extension surface so that scheduling, reporting, and calendar-driven code does not need to drop
-/// down to <see cref="System.Globalization.Calendar" /> or hand-rolled tick math.
+/// <see cref="DateTime" /> exposes raw fields and a handful of arithmetic operators but leaves the harder calendar work
+/// - locating the first Monday of a quarter, snapping to the start or end of a day, computing ISO weeks, or converting
+/// between time zones and epochs - to the caller. This class concentrates that work in a single, allocation-aware
+/// extension surface so that scheduling, reporting, and calendar-driven code does not need to drop down to
+/// <see cref="System.Globalization.Calendar" /> or hand-rolled tick math.
 /// </para>
 /// <para>
 /// The API surface groups into: period anchors (<c>FirstDateOfMonth</c>, <c>FirstDateOfQuarter</c>,

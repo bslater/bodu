@@ -17,9 +17,9 @@ public static partial class DateOnlyExtensions
     /// Monday for Sunday, except at month boundaries where the nearest weekday inside the month is returned.
     /// </returns>
     /// <remarks>
-    /// A Saturday on the first day of a month maps to Monday the third. A Sunday on the last day of a month maps
-    /// to the preceding Friday. Weekdays mean Monday through Friday, independent of culture or locale.
-    /// This operation does not consult local time-zone or holiday calendars.
+    /// A Saturday on the first day of a month maps to Monday the third. A Sunday on the last day of a month maps to the
+    /// preceding Friday. Weekdays mean Monday through Friday, independent of culture or locale. This operation does not
+    /// consult local time-zone or holiday calendars.
     /// </remarks>
     public static DateOnly NearestWeekdayInMonth(this DateOnly date) =>
         date.DayOfWeek switch

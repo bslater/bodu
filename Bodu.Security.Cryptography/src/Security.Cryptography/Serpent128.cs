@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -50,9 +50,9 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Serpent128.</strong> Pick Serpent when a deliberately conservative AES alternative is
-/// wanted - the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of
-/// noticeably lower throughput. For general-purpose encryption with hardware acceleration prefer
+/// <strong>When to choose Serpent128.</strong> Pick Serpent when a deliberately conservative AES alternative is wanted
+/// - the 32-round design has a wider security margin than AES's 14 rounds at 256-bit key, at the cost of noticeably
+/// lower throughput. For general-purpose encryption with hardware acceleration prefer
 /// <see cref="System.Security.Cryptography.Aes" />; for an alternative AES finalist with better software performance
 /// prefer <see cref="Twofish" />. Use <see cref="Camellia" /> when ISO/IEC, CRYPTREC, or NESSIE approval is a
 /// procurement requirement.

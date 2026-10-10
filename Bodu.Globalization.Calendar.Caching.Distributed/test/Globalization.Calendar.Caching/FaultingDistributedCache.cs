@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FaultingDistributedCache.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -32,13 +32,19 @@ internal sealed class FaultingDistributedCache(
     /// </summary>
     public enum Operation
     {
-        /// <summary>Reads fault.</summary>
+        /// <summary>
+        /// Reads fault.
+        /// </summary>
         Get,
 
-        /// <summary>Writes fault.</summary>
+        /// <summary>
+        /// Writes fault.
+        /// </summary>
         Set,
 
-        /// <summary>Removals fault.</summary>
+        /// <summary>
+        /// Removals fault.
+        /// </summary>
         Remove,
     }
 
