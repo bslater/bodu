@@ -369,52 +369,23 @@ public sealed class RbaRateProvider
     /// <param name="era">The era to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the era has been loaded.</returns>
-    private async Task LoadEraCoreAsync(RbaEraWorkbook era, CancellationToken cancellationToken)
-    {
-        lock (SyncRoot)
-        {
-            if (_loadedEras.Contains(era.Label))
-                return;
-        }
+    private Task LoadEraCoreAsync(RbaEraWorkbook era, CancellationToken cancellationToken) =>
+        LoadFileFeedAsync(
+            alreadyLoaded: () => _loadedEras.Contains(era.Label),
+            logStarting: () => Log.EraLoadStarting(_logger, _options.DownloadStartingLogLevel, era.Label),
+            fetchAsync: ct => _source.GetTableAsync(era, ct),
+            logExpectedFailure: ex => Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex),
+            logUnexpectedFailure: ex => Log.EraLoadUnexpectedError(_logger, era.Label, ex),
+            publish: (table, fetchedAt) =>
+            {
+                if (!_loadedEras.Add(era.Label))
+                    return null;
 
-        Log.EraLoadStarting(_logger, _options.DownloadStartingLogLevel, era.Label);
+                foreach (RbaSeriesInfo info in table.GetSeriesInfo())
+                    _series[info.Pair] = info;
 
-        RbaRateTable table;
-        try
-        {
-            table = await _source.GetTableAsync(era, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
-        {
-            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) - are logged as era-load failures.
-            Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex);
-            throw;
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
-            // visible in telemetry without being relabelled as an era failure, then rethrow. Cancellation
-            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
-            Log.EraLoadUnexpectedError(_logger, era.Label, ex);
-            throw;
-        }
-
-        // Capture the load instant immediately after the download completes so it stamps every rate this era produces.
-        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
-
-        lock (SyncRoot)
-        {
-            if (!_loadedEras.Add(era.Label))
-                return;
-
-            foreach (RbaSeriesInfo info in table.GetSeriesInfo())
-                _series[info.Pair] = info;
-
-            int count = AddObservations(table.EnumerateRates(), fetchedAt);
-            RebuildSnapshot();
-
-            Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count);
-        }
-    }
+                return AddObservations(table.EnumerateRates(), fetchedAt);
+            },
+            logCompleted: count => Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count),
+            cancellationToken: cancellationToken);
 }

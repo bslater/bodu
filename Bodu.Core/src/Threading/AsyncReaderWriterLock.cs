@@ -81,7 +81,7 @@ public sealed partial class AsyncReaderWriterLock
     private readonly List<TaskCompletionSource<Releaser>> _waitingReaders = new();
 
     /// <summary>The writers waiting to acquire exclusive access, granted in first-in, first-out order.</summary>
-    private readonly LinkedList<TaskCompletionSource<Releaser>> _waitingWriters = new();
+    private readonly CancellableWaiterQueue<Releaser> _waitingWriters;
 
     /// <summary>The number of readers currently holding shared access.</summary>
     private int _readersActive;
@@ -97,6 +97,7 @@ public sealed partial class AsyncReaderWriterLock
     /// </summary>
     public AsyncReaderWriterLock()
     {
+        _waitingWriters = new CancellableWaiterQueue<Releaser>(_gate);
     }
 
     /// <summary>
@@ -222,7 +223,7 @@ public sealed partial class AsyncReaderWriterLock
             if (cancellationToken.IsCancellationRequested)
                 return ValueTask.FromCanceled<Releaser>(cancellationToken);
 
-            node = _waitingWriters.AddLast(new TaskCompletionSource<Releaser>(TaskCreationOptions.RunContinuationsAsynchronously));
+            node = _waitingWriters.Enqueue();
         }
 
         return AwaitWriterAsync(node, cancellationToken);
@@ -243,9 +244,8 @@ public sealed partial class AsyncReaderWriterLock
             _disposed = true;
 
             toFault = new List<TaskCompletionSource<Releaser>>(_waitingReaders);
-            toFault.AddRange(_waitingWriters);
+            toFault.AddRange(_waitingWriters.Drain());
             _waitingReaders.Clear();
-            _waitingWriters.Clear();
         }
 
         foreach (TaskCompletionSource<Releaser> tcs in toFault)
@@ -302,17 +302,11 @@ public sealed partial class AsyncReaderWriterLock
     /// <returns><see langword="true" /> if a writer was granted; otherwise, <see langword="false" />.</returns>
     private bool GrantNextWriter()
     {
-        while (_waitingWriters.First is { } first)
-        {
-            _waitingWriters.RemoveFirst();
-            if (first.Value.TrySetResult(CreateReleaser(isWriter: true)))
-            {
-                _writerActive = true;
-                return true;
-            }
-        }
+        if (_waitingWriters.Count == 0 || !_waitingWriters.TryGrant(() => CreateReleaser(isWriter: true)))
+            return false;
 
-        return false;
+        _writerActive = true;
+        return true;
     }
 
     /// <summary>
@@ -359,23 +353,8 @@ public sealed partial class AsyncReaderWriterLock
     /// <param name="node">The queued writer to observe.</param>
     /// <param name="cancellationToken">A token used to cancel the pending acquisition.</param>
     /// <returns>A <see cref="ValueTask{TResult}" /> yielding the write releaser.</returns>
-    private async ValueTask<Releaser> AwaitWriterAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
-    {
-        using (cancellationToken.Register(
-            static state =>
-            {
-                (AsyncReaderWriterLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncReaderWriterLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
-                owner.CancelWriter(waiter, token);
-            },
-            (this, node, cancellationToken)))
-        {
-            // The writer's task is completed by a reader/writer release on this same lock, not work scheduled elsewhere,
-            // and the type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
-#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            return await node.Value.Task.ConfigureAwait(false);
-#pragma warning restore VSTHRD003
-        }
-    }
+    private ValueTask<Releaser> AwaitWriterAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken) =>
+        _waitingWriters.AwaitAsync(node, cancellationToken, OnWriterCanceledUnderLock);
 
     /// <summary>
     /// Removes a canceled reader from the wait list and transitions its task to the canceled state.
@@ -393,24 +372,11 @@ public sealed partial class AsyncReaderWriterLock
     }
 
     /// <summary>
-    /// Removes a canceled writer from the queue and transitions its task to the canceled state. If removing the writer
-    /// leaves the lock idle, the next acquisition is granted.
+    /// Re-evaluates writer preference after removing a canceled writer. Called under the common synchronization gate.
     /// </summary>
-    /// <param name="node">The writer to cancel.</param>
-    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
-    private void CancelWriter(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
+    private void OnWriterCanceledUnderLock()
     {
-        lock (_gate)
-        {
-            if (node.List is not null)
-                _waitingWriters.Remove(node);
-
-            // A canceled writer may have been the reason readers were waiting; if the lock is now idle, let the next
-            // eligible acquisition proceed.
-            if (!_writerActive && _readersActive == 0 && !GrantNextWriter())
-                GrantAllReaders();
-        }
-
-        node.Value.TrySetCanceled(cancellationToken);
+        if (!_writerActive && _readersActive == 0 && !GrantNextWriter())
+            GrantAllReaders();
     }
 }

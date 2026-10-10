@@ -57,7 +57,7 @@ public sealed class AsyncAutoResetEvent
     private readonly object _gate = new();
 
     /// <summary>The queue of pending waiters, completed in first-in, first-out order as signals arrive.</summary>
-    private readonly LinkedList<TaskCompletionSource<bool>> _waiters = new();
+    private readonly CancellableWaiterQueue<bool> _waiters;
 
     /// <summary>Indicates whether a signal is latched and available for the next waiter to consume.</summary>
     private bool _signaled;
@@ -79,6 +79,7 @@ public sealed class AsyncAutoResetEvent
     public AsyncAutoResetEvent(bool initialState)
     {
         _signaled = initialState;
+        _waiters = new CancellableWaiterQueue<bool>(_gate);
     }
 
     /// <summary>
@@ -135,7 +136,7 @@ public sealed class AsyncAutoResetEvent
             if (cancellationToken.IsCancellationRequested)
                 return ValueTask.FromCanceled(cancellationToken);
 
-            node = _waiters.AddLast(new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously));
+            node = _waiters.Enqueue();
         }
 
         return AwaitWaiterAsync(node, cancellationToken);
@@ -149,12 +150,8 @@ public sealed class AsyncAutoResetEvent
         lock (_gate)
         {
             // Release the longest-waiting caller, skipping any whose task was already canceled.
-            while (_waiters.First is { } first)
-            {
-                _waiters.RemoveFirst();
-                if (first.Value.TrySetResult(true))
-                    return;
-            }
+            if (_waiters.TryGrant(true))
+                return;
 
             // No waiter was available; latch the signal for the next caller.
             _signaled = true;
@@ -169,35 +166,6 @@ public sealed class AsyncAutoResetEvent
     /// <returns>A <see cref="ValueTask" /> that completes when the signal is received.</returns>
     private async ValueTask AwaitWaiterAsync(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken)
     {
-        using (cancellationToken.Register(
-            static state =>
-            {
-                (AsyncAutoResetEvent? owner, LinkedListNode<TaskCompletionSource<bool>>? waiter, CancellationToken token) = ((AsyncAutoResetEvent Owner, LinkedListNode<TaskCompletionSource<bool>> Node, CancellationToken Token))state!;
-                owner.CancelWaiter(waiter, token);
-            },
-            (this, node, cancellationToken)))
-        {
-            // The waiter's task is completed by Set on this same primitive, not work scheduled elsewhere, and the
-            // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
-#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            await node.Value.Task.ConfigureAwait(false);
-#pragma warning restore VSTHRD003
-        }
-    }
-
-    /// <summary>
-    /// Removes a canceled waiter from the queue and transitions its task to the canceled state.
-    /// </summary>
-    /// <param name="node">The waiter to cancel.</param>
-    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
-    private void CancelWaiter(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken)
-    {
-        lock (_gate)
-        {
-            if (node.List is not null)
-                _waiters.Remove(node);
-        }
-
-        node.Value.TrySetCanceled(cancellationToken);
+        await _waiters.AwaitAsync(node, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -318,50 +318,22 @@ public sealed class BoeRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the range has been loaded.</returns>
-    private async Task LoadRangeCoreAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
-    {
-        lock (SyncRoot)
-        {
-            if (_loadedRanges.Contains(startDate, endDate))
-                return;
-        }
+    private Task LoadRangeCoreAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
+        LoadFileFeedAsync(
+            alreadyLoaded: () => _loadedRanges.Contains(startDate, endDate),
+            logStarting: () => Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, startDate, endDate),
+            fetchAsync: ct => _source.GetTableAsync(startDate, endDate, ct),
+            logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex),
+            logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, startDate, endDate, ex),
+            publish: (table, fetchedAt) =>
+            {
+                foreach (BoeSeriesInfo info in table.GetSeriesInfo())
+                    _series[info.Pair] = info;
 
-        Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, startDate, endDate);
-
-        BoeRateTable table;
-        try
-        {
-            table = await _source.GetTableAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
-        {
-            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) - are logged as feed-load failures.
-            Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex);
-            throw;
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
-            // visible in telemetry without being relabelled as a feed failure, then rethrow. Cancellation
-            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
-            Log.FeedLoadUnexpectedError(_logger, startDate, endDate, ex);
-            throw;
-        }
-
-        // Capture the load instant immediately after the download completes so it stamps every rate this range produces.
-        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
-
-        lock (SyncRoot)
-        {
-            foreach (BoeSeriesInfo info in table.GetSeriesInfo())
-                _series[info.Pair] = info;
-
-            int count = AddObservations(table.EnumerateRates(), fetchedAt);
-            _loadedRanges.Add(startDate, endDate);
-            RebuildSnapshot();
-
-            Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count);
-        }
-    }
+                int count = AddObservations(table.EnumerateRates(), fetchedAt);
+                _loadedRanges.Add(startDate, endDate);
+                return count;
+            },
+            logCompleted: count => Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count),
+            cancellationToken: cancellationToken);
 }

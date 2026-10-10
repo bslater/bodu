@@ -68,4 +68,9 @@
         </Compile>
     </ItemGroup>
 
+  <!-- Shared JSON scalar reader; compiled internally into each rate provider. -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Financial.ExchangeRates\shared\JsonRateValueReader.cs" Link="Shared\JsonRateValueReader.cs" />
+  </ItemGroup>
+
 </Project>

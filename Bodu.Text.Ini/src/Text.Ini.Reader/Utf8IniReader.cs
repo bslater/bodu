@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Utf8IniReader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -6,6 +6,7 @@
 
 using System.Globalization;
 using System.Text;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini.Reader;
 
@@ -397,34 +398,14 @@ public ref struct Utf8IniReader
     /// <summary>
     /// Advances to the end of the current line without consuming the line terminator.
     /// </summary>
-    private void SkipToEndOfLine()
-    {
-        while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
-            _position++;
-    }
+    private void SkipToEndOfLine() =>
+        _position = Utf8LineCursor.EndOfLine(_data, _position);
 
     /// <summary>
-    /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_line" />.
+    /// Consumes the current line ending, updating the reader's logical line number.
     /// </summary>
-    private void SkipLineEnding()
-    {
-        if (_position >= _data.Length)
-            return;
-
-        if (_data[_position] == (byte)'\r')
-        {
-            _position++;
-            if (_position < _data.Length && _data[_position] == (byte)'\n')
-                _position++;
-
-            _line++;
-        }
-        else if (_data[_position] == (byte)'\n')
-        {
-            _position++;
-            _line++;
-        }
-    }
+    private void SkipLineEnding() =>
+        _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
 
     /// <summary>
     /// Creates a parse exception with a source location.

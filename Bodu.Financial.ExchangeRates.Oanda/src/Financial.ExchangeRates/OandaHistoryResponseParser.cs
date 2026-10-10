@@ -132,17 +132,8 @@ internal static class OandaHistoryResponseParser
     /// <param name="element">The timestamp element.</param>
     /// <param name="unixMs">When this method returns <see langword="true" />, the Unix-millisecond timestamp.</param>
     /// <returns><see langword="true" /> when a timestamp was read; otherwise <see langword="false" />.</returns>
-    private static bool TryReadUnixMilliseconds(JsonElement element, out long unixMs)
-    {
-        unixMs = 0;
-
-        return element.ValueKind switch
-        {
-            JsonValueKind.Number => element.TryGetInt64(out unixMs),
-            JsonValueKind.String => long.TryParse(element.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out unixMs),
-            _ => false,
-        };
-    }
+    private static bool TryReadUnixMilliseconds(JsonElement element, out long unixMs) =>
+        JsonRateValueReader.TryReadUnixMilliseconds(element, out unixMs);
 
     /// <summary>
     /// Reads the strictly positive rate from a row element, tolerating a JSON number or numeric string.
@@ -154,14 +145,7 @@ internal static class OandaHistoryResponseParser
     {
         rate = 0m;
 
-        bool parsed = element.ValueKind switch
-        {
-            JsonValueKind.Number => element.TryGetDecimal(out rate),
-            JsonValueKind.String => decimal.TryParse(element.GetString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out rate),
-            _ => false,
-        };
-
-        return parsed && rate > 0m;
+        return JsonRateValueReader.TryReadPositiveDecimal(element, out rate);
     }
 
     /// <summary>

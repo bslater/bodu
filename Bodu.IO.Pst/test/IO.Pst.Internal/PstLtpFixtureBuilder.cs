@@ -100,7 +100,9 @@ internal sealed class PstLtpFixtureBuilder
     /// </summary>
     /// <param name="keySize">The key width in bytes.</param>
     /// <param name="dataSize">The leaf-record data width in bytes.</param>
-    /// <param name="records">The records in key order: the key's little-endian unsigned value and its data bytes.</param>
+    /// <param name="records">
+    /// The records in key order: the key's little-endian unsigned value and its data bytes.
+    /// </param>
     /// <returns>The <c>HID</c> of the <c>BTHHEADER</c> item.</returns>
     internal uint AddBTreeOnHeap(byte keySize, byte dataSize, params (ulong Key, byte[] Data)[] records)
     {

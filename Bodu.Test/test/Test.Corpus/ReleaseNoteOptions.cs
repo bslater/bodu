@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReleaseNoteOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -29,9 +29,12 @@ public static class ReleaseNoteOptions
     /// </summary>
     /// <param name="text">The field, as it appears in the catalogue; empty for a row that uses the defaults.</param>
     /// <param name="options">
-    /// When the method returns <see langword="true" />, the name and decoded value of each option, in the order written.
+    /// When the method returns <see langword="true" />, the name and decoded value of each option, in the order
+    /// written.
     /// </param>
-    /// <param name="error">When the method returns <see langword="false" />, a description of the first problem.</param>
+    /// <param name="error">
+    /// When the method returns <see langword="false" />, a description of the first problem.
+    /// </param>
     /// <returns><see langword="true" /> when the field is well formed.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     public static bool TryParse(

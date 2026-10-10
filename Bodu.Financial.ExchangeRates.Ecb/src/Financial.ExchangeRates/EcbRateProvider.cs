@@ -358,54 +358,25 @@ public sealed class EcbRateProvider
     /// <param name="feed">The feed to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the feed has been loaded.</returns>
-    private async Task LoadFeedCoreAsync(EcbRateFeed feed, CancellationToken cancellationToken)
-    {
-        lock (SyncRoot)
-        {
-            if (_loadedFeeds.Contains(feed.Name))
-                return;
-        }
+    private Task LoadFeedCoreAsync(EcbRateFeed feed, CancellationToken cancellationToken) =>
+        LoadFileFeedAsync(
+            alreadyLoaded: () => _loadedFeeds.Contains(feed.Name),
+            logStarting: () => Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, feed.Name),
+            fetchAsync: ct => _source.GetTableAsync(feed, ct),
+            logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, feed.Name, ex),
+            logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, feed.Name, ex),
+            publish: (table, fetchedAt) =>
+            {
+                if (!_loadedFeeds.Add(feed.Name))
+                    return null;
 
-        Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, feed.Name);
+                foreach (EcbSeriesInfo info in table.GetSeriesInfo())
+                    _series[info.Pair] = info;
 
-        EcbRateTable table;
-        try
-        {
-            table = await _source.GetTableAsync(feed, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
-        {
-            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) - are logged as feed-load failures.
-            Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, feed.Name, ex);
-            throw;
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
-            // visible in telemetry without being relabelled as a feed failure, then rethrow. Cancellation
-            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
-            Log.FeedLoadUnexpectedError(_logger, feed.Name, ex);
-            throw;
-        }
-
-        // Capture the load instant immediately after the download completes so it stamps every rate this feed produces.
-        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
-
-        lock (SyncRoot)
-        {
-            if (!_loadedFeeds.Add(feed.Name))
-                return;
-
-            foreach (EcbSeriesInfo info in table.GetSeriesInfo())
-                _series[info.Pair] = info;
-
-            int count = AddObservations(table.EnumerateRates(), fetchedAt);
-            RebuildSnapshot();
-
-            Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count);
-        }
-    }
+                return AddObservations(table.EnumerateRates(), fetchedAt);
+            },
+            logCompleted: count => Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count),
+            cancellationToken: cancellationToken);
 
     /// <summary>
     /// Selects the feed that covers the start of a requested range, falling back to the widest feed when none reaches

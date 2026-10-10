@@ -28,7 +28,9 @@ public static class CorpusTree
     /// <summary>
     /// Finds the repository root by walking up from a directory to the one that holds the solution file.
     /// </summary>
-    /// <param name="startDirectory">The directory to start from; <see cref="AppContext.BaseDirectory" /> when <see langword="null" />.</param>
+    /// <param name="startDirectory">
+    /// The directory to start from; <see cref="AppContext.BaseDirectory" /> when <see langword="null" />.
+    /// </param>
     /// <returns>The repository root, or <see langword="null" /> when no ancestor holds <c>bodu.slnx</c>.</returns>
     public static string? FindRepositoryRoot(string? startDirectory = null)
     {
@@ -47,11 +49,16 @@ public static class CorpusTree
     /// </summary>
     /// <param name="assembly">The test assembly that embeds the catalogues.</param>
     /// <param name="area">The corpus area, such as <c>toml</c>.</param>
-    /// <param name="repositoryRoot">The repository root; found with <see cref="FindRepositoryRoot" /> when <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="assembly" /> or <paramref name="area" /> is <see langword="null" />.</exception>
+    /// <param name="repositoryRoot">
+    /// The repository root; found with <see cref="FindRepositoryRoot" /> when <see langword="null" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="assembly" /> or <paramref name="area" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="AssertInconclusiveException">The repository root cannot be found.</exception>
     /// <exception cref="AssertFailedException">
-    /// The area's <c>fixes</c> directory does not exist, or a catalogue is missing from one side or differs between them.
+    /// The area's <c>fixes</c> directory does not exist, or a catalogue is missing from one side or differs between
+    /// them.
     /// </exception>
     public static void AssertEmbeddedCopiesMatch(Assembly assembly, string area, string? repositoryRoot = null)
     {

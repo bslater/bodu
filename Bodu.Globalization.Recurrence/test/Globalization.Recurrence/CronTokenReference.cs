@@ -85,7 +85,9 @@ internal sealed class CronTokenReference
     /// <summary>
     /// Returns the days of a month a day-of-month token selects.
     /// </summary>
-    /// <param name="token">The token: <c>L</c>, <c>L-n</c>, <c>LW</c>, <c>L-nW</c> or <c>nW</c>, in either case.</param>
+    /// <param name="token">
+    /// The token: <c>L</c>, <c>L-n</c>, <c>LW</c>, <c>L-nW</c> or <c>nW</c>, in either case.
+    /// </param>
     /// <param name="year">The year.</param>
     /// <param name="month">The month.</param>
     /// <returns>The selected days, which are none when the token names no day of the month.</returns>

@@ -345,52 +345,23 @@ public sealed class ImfRateProvider
     /// <param name="month">The report month to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the month has been loaded.</returns>
-    private async Task LoadMonthCoreAsync(ImfReportMonth month, CancellationToken cancellationToken)
-    {
-        lock (SyncRoot)
-        {
-            if (_loadedMonths.Contains((month.Year, month.Month)))
-                return;
-        }
+    private Task LoadMonthCoreAsync(ImfReportMonth month, CancellationToken cancellationToken) =>
+        LoadFileFeedAsync(
+            alreadyLoaded: () => _loadedMonths.Contains((month.Year, month.Month)),
+            logStarting: () => Log.ReportLoadStarting(_logger, _options.DownloadStartingLogLevel, month.Key),
+            fetchAsync: ct => _source.GetTableAsync(month, ct),
+            logExpectedFailure: ex => Log.ReportLoadFailed(_logger, _options.DownloadFailedLogLevel, month.Key, ex),
+            logUnexpectedFailure: ex => Log.ReportLoadUnexpectedError(_logger, month.Key, ex),
+            publish: (table, fetchedAt) =>
+            {
+                if (!_loadedMonths.Add((month.Year, month.Month)))
+                    return null;
 
-        Log.ReportLoadStarting(_logger, _options.DownloadStartingLogLevel, month.Key);
+                foreach (ImfSeriesInfo info in table.GetSeriesInfo())
+                    _series[info.Pair] = info;
 
-        ImfRateTable table;
-        try
-        {
-            table = await _source.GetTableAsync(month, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
-        {
-            // Only the failures a fetch is expected to produce - transport, stream, and malformed-report errors
-            // (ExchangeRateFormatException derives from FormatException) - are logged as report-load failures.
-            Log.ReportLoadFailed(_logger, _options.DownloadFailedLogLevel, month.Key, ex);
-            throw;
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays visible in
-            // telemetry without being relabelled as a report failure, then rethrow. Cancellation (including HttpClient
-            // timeouts, which surface as TaskCanceledException) is never logged.
-            Log.ReportLoadUnexpectedError(_logger, month.Key, ex);
-            throw;
-        }
-
-        // Capture the load instant immediately after the download completes so it stamps every rate this report produces.
-        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
-
-        lock (SyncRoot)
-        {
-            if (!_loadedMonths.Add((month.Year, month.Month)))
-                return;
-
-            foreach (ImfSeriesInfo info in table.GetSeriesInfo())
-                _series[info.Pair] = info;
-
-            int count = AddObservations(table.EnumerateRates(), fetchedAt);
-            RebuildSnapshot();
-
-            Log.ReportLoaded(_logger, _options.DownloadCompletedLogLevel, month.Key, count);
-        }
-    }
+                return AddObservations(table.EnumerateRates(), fetchedAt);
+            },
+            logCompleted: count => Log.ReportLoaded(_logger, _options.DownloadCompletedLogLevel, month.Key, count),
+            cancellationToken: cancellationToken);
 }

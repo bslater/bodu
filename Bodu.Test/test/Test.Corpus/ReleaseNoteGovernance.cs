@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ReleaseNoteGovernance.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -17,13 +17,17 @@ public static class ReleaseNoteGovernance
     /// <summary>
     /// Finds the <c>unit</c> rows whose named test method does not exist.
     /// </summary>
-    /// <param name="rows">The rows to check; rows of other kinds, and <c>n/a</c> and <c>unknown</c> rows, are skipped.</param>
+    /// <param name="rows">
+    /// The rows to check; rows of other kinds, and <c>n/a</c> and <c>unknown</c> rows, are skipped.
+    /// </param>
     /// <param name="testAssembly">The test assembly that should hold the named tests.</param>
     /// <returns>
     /// One message per <c>applies</c> or <c>dialect</c> unit row whose input does not name a method marked
     /// <see cref="TestMethodAttribute" /> on a type of that simple name in <paramref name="testAssembly" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="rows" /> or <paramref name="testAssembly" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="rows" /> or <paramref name="testAssembly" /> is <see langword="null" />.
+    /// </exception>
     public static IReadOnlyList<string> FindMissingUnitTests(IEnumerable<ReleaseNoteFix> rows, Assembly testAssembly)
     {
         ArgumentNullException.ThrowIfNull(rows);
