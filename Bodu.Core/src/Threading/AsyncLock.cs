@@ -60,7 +60,7 @@ public sealed partial class AsyncLock
     private readonly object _gate = new();
 
     /// <summary>The queue of pending acquirers, granted the lock in FIFO order as it is released.</summary>
-    private readonly LinkedList<TaskCompletionSource<Releaser>> _waiters = new();
+    private readonly CancellableWaiterQueue<Releaser> _waiters;
 
     /// <summary>Indicates whether the lock is currently held.</summary>
     private bool _held;
@@ -73,6 +73,7 @@ public sealed partial class AsyncLock
     /// </summary>
     public AsyncLock()
     {
+        _waiters = new CancellableWaiterQueue<Releaser>(_gate);
     }
 
     /// <summary>
@@ -138,7 +139,7 @@ public sealed partial class AsyncLock
             if (cancellationToken.IsCancellationRequested)
                 return ValueTask.FromCanceled<Releaser>(cancellationToken);
 
-            node = _waiters.AddLast(new TaskCompletionSource<Releaser>(TaskCreationOptions.RunContinuationsAsynchronously));
+            node = _waiters.Enqueue();
         }
 
         return AwaitAcquireAsync(node, cancellationToken);
@@ -153,12 +154,8 @@ public sealed partial class AsyncLock
         lock (_gate)
         {
             // Transfer ownership to the longest-waiting caller, skipping any whose task was already canceled.
-            while (_waiters.First is { } first)
-            {
-                _waiters.RemoveFirst();
-                if (first.Value.TrySetResult(new Releaser(this)))
-                    return;
-            }
+            if (_waiters.Count > 0 && _waiters.TryGrant(() => new Releaser(this)))
+                return;
 
             _held = false;
         }
@@ -178,8 +175,7 @@ public sealed partial class AsyncLock
 
             _disposed = true;
 
-            toFault = new List<TaskCompletionSource<Releaser>>(_waiters);
-            _waiters.Clear();
+            toFault = _waiters.Drain();
         }
 
         foreach (TaskCompletionSource<Releaser> tcs in toFault)
@@ -198,37 +194,6 @@ public sealed partial class AsyncLock
     /// "success wins" policy matches <see cref="System.Threading.SemaphoreSlim.WaitAsync(CancellationToken)" /> and is
     /// shared by <see cref="AsyncSemaphore" /> and <see cref="AsyncReaderWriterLock" />.
     /// </remarks>
-    private async ValueTask<Releaser> AwaitAcquireAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
-    {
-        using (cancellationToken.Register(
-            static state =>
-            {
-                (AsyncLock? owner, LinkedListNode<TaskCompletionSource<Releaser>>? waiter, CancellationToken token) = ((AsyncLock Owner, LinkedListNode<TaskCompletionSource<Releaser>> Node, CancellationToken Token))state!;
-                owner.CancelWaiter(waiter, token);
-            },
-            (this, node, cancellationToken)))
-        {
-            // The waiter's task is completed by Release/Dispose on this same lock, not work scheduled elsewhere, and the
-            // type uses no JoinableTaskFactory, so the foreign-task deadlock VSTHRD003 guards against cannot arise.
-#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-            return await node.Value.Task.ConfigureAwait(false);
-#pragma warning restore VSTHRD003
-        }
-    }
-
-    /// <summary>
-    /// Removes a canceled waiter from the queue and transitions its task to the canceled state.
-    /// </summary>
-    /// <param name="node">The waiter to cancel.</param>
-    /// <param name="cancellationToken">The token whose cancellation triggered the removal.</param>
-    private void CancelWaiter(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken)
-    {
-        lock (_gate)
-        {
-            if (node.List is not null)
-                _waiters.Remove(node);
-        }
-
-        node.Value.TrySetCanceled(cancellationToken);
-    }
+    private ValueTask<Releaser> AwaitAcquireAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken) =>
+        _waiters.AwaitAsync(node, cancellationToken);
 }

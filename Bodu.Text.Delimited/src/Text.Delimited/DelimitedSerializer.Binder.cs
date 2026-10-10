@@ -147,71 +147,20 @@ public static partial class DelimitedSerializer
     /// <see cref="TimeOnly" />; and the constant <c>c</c> form for <see cref="TimeSpan" />.
     /// </remarks>
     private static string ValueToString(object? value) =>
-        value switch
-        {
-            null => string.Empty,
-            string s => s,
-            bool b => b ? "true" : "false",
-            DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
-            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
-            DateOnly date => date.ToString("O", CultureInfo.InvariantCulture),
-            TimeOnly time => time.ToString("O", CultureInfo.InvariantCulture),
-            TimeSpan span => span.ToString("c", CultureInfo.InvariantCulture),
-            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-            _ => value.ToString() ?? string.Empty,
-        };
+        InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Delimited);
 
     /// <summary>
-    /// Converts a delimited string value to the specified target type using invariant parsing.
+    /// Converts a string into a scalar while preserving this serializer's exception contract.
     /// </summary>
-    /// <param name="raw">The raw string value.</param>
-    /// <param name="targetType">The target type.</param>
-    /// <param name="column">The column name, used for diagnostics.</param>
-    /// <returns>The converted value.</returns>
-    /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
-    /// <remarks>
-    /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type,
-    /// except that a nullable <see cref="char" /> converts to <see langword="null" /> for an empty value alone and
-    /// reads white space as a <see cref="char" /> does. Every other target converts the text as it is. Temporal values
-    /// parse leniently with the invariant culture, so the round-trip forms written by
-    /// <see cref="ValueToString(object?)" /> read back, and so do the invariant general forms that earlier versions
-    /// wrote.
-    /// </remarks>
+    /// <param name="raw">The raw text.</param>
+    /// <param name="targetType">The CLR type.</param>
+    /// <param name="column">The diagnostic field name.</param>
+    /// <returns>The converted scalar.</returns>
     private static object? ConvertFromString(string raw, Type targetType, string column)
     {
-        Type? nullableUnderlying = Nullable.GetUnderlyingType(targetType);
-        Type underlying = nullableUnderlying ?? targetType;
-
-        // A blank cell is often padded with spaces, so white space holds no value either; but one space is a character,
-        // so a char? holds no value only when the text is empty.
-        bool holdsNoValue = raw.Length == 0 || (underlying != typeof(char) && string.IsNullOrWhiteSpace(raw));
-        if (nullableUnderlying is not null && holdsNoValue)
-            return null;
-
         try
         {
-            if (underlying == typeof(string))
-                return raw;
-            if (underlying == typeof(bool))
-                return bool.Parse(raw);
-            if (underlying.IsEnum)
-                return Enum.Parse(underlying, raw, ignoreCase: true);
-            if (underlying == typeof(Guid))
-                return Guid.Parse(raw);
-            if (underlying == typeof(DateTime))
-                return DateTime.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-            if (underlying == typeof(DateTimeOffset))
-                return DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-            if (underlying == typeof(DateOnly))
-                return DateOnly.Parse(raw, CultureInfo.InvariantCulture);
-            if (underlying == typeof(TimeOnly))
-                return TimeOnly.Parse(raw, CultureInfo.InvariantCulture);
-            if (underlying == typeof(TimeSpan))
-                return TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
-            if (underlying == typeof(Uri))
-                return new Uri(raw, UriKind.RelativeOrAbsolute);
-
-            return Convert.ChangeType(raw, underlying, CultureInfo.InvariantCulture);
+            return InvariantScalarCodec.Parse(raw, targetType, InvariantScalarCodec.Policy.Delimited);
         }
         catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
         {

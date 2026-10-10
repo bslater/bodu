@@ -104,12 +104,7 @@ internal static class OfxSpotRateHistoryResponseParser
         if (!point.TryGetProperty("PointInTime", out JsonElement element))
             return false;
 
-        return element.ValueKind switch
-        {
-            JsonValueKind.Number => element.TryGetInt64(out unixMs),
-            JsonValueKind.String => long.TryParse(element.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out unixMs),
-            _ => false,
-        };
+        return JsonRateValueReader.TryReadUnixMilliseconds(element, out unixMs);
     }
 
     /// <summary>
@@ -125,14 +120,7 @@ internal static class OfxSpotRateHistoryResponseParser
         if (!point.TryGetProperty("InterbankRate", out JsonElement element))
             return false;
 
-        bool parsed = element.ValueKind switch
-        {
-            JsonValueKind.Number => element.TryGetDecimal(out rate),
-            JsonValueKind.String => decimal.TryParse(element.GetString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out rate),
-            _ => false,
-        };
-
-        return parsed && rate > 0m;
+        return JsonRateValueReader.TryReadPositiveDecimal(element, out rate);
     }
 
     /// <summary>

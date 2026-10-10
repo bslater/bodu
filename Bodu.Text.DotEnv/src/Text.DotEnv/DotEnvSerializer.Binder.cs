@@ -228,50 +228,20 @@ public static partial class DotEnvSerializer
     /// <param name="value">The value to convert.</param>
     /// <returns>The string representation.</returns>
     private static string ValueToString(object? value) =>
-        value switch
-        {
-            null => string.Empty,
-            string s => s,
-            bool b => b ? "true" : "false",
-            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
-            _ => value.ToString() ?? string.Empty,
-        };
+        InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
 
     /// <summary>
-    /// Converts a DotEnv string value to the specified target type using invariant parsing.
+    /// Converts a string into a scalar while preserving this serializer's exception contract.
     /// </summary>
-    /// <param name="raw">The raw string value.</param>
-    /// <param name="targetType">The target type.</param>
-    /// <param name="key">The key, used for diagnostics.</param>
-    /// <returns>The converted value.</returns>
-    /// <exception cref="DotEnvSerializationException">Thrown when the value cannot be converted.</exception>
+    /// <param name="raw">The raw text.</param>
+    /// <param name="targetType">The CLR type.</param>
+    /// <param name="key">The diagnostic field name.</param>
+    /// <returns>The converted scalar.</returns>
     private static object? ConvertFromString(string raw, Type targetType, string key)
     {
-        Type underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
-
-        if (underlying != typeof(string) && Nullable.GetUnderlyingType(targetType) is not null && raw.Length == 0)
-            return null;
-
         try
         {
-            if (underlying == typeof(string))
-                return raw;
-            if (underlying == typeof(bool))
-                return bool.Parse(raw);
-            if (underlying.IsEnum)
-                return Enum.Parse(underlying, raw, ignoreCase: true);
-            if (underlying == typeof(Guid))
-                return Guid.Parse(raw);
-            if (underlying == typeof(DateTime))
-                return DateTime.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-            if (underlying == typeof(DateTimeOffset))
-                return DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-            if (underlying == typeof(TimeSpan))
-                return TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
-            if (underlying == typeof(Uri))
-                return new Uri(raw, UriKind.RelativeOrAbsolute);
-
-            return Convert.ChangeType(raw, underlying, CultureInfo.InvariantCulture);
+            return InvariantScalarCodec.Parse(raw, targetType, InvariantScalarCodec.Policy.Configuration);
         }
         catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
         {
@@ -327,29 +297,10 @@ public static partial class DotEnvSerializer
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static IEnumerable<Member> GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
-        DotEnvSerializerOptions options)
-    {
-        var members = new List<Member>();
-
-        foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-        {
-            if (property.GetIndexParameters().Length != 0 || property.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                continue;
-
-            members.Add(Member.FromProperty(property, options));
-        }
-
-        if (options.IncludeFields)
-        {
-            foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if (fieldInfo.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                    continue;
-
-                members.Add(Member.FromField(fieldInfo, options));
-            }
-        }
-
-        return members.OrderBy(static m => m.Order);
-    }
+        DotEnvSerializerOptions options) =>
+        FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
+            .Select(member => member is PropertyInfo property
+                ? Member.FromProperty(property, options)
+                : Member.FromField((FieldInfo)member, options))
+            .OrderBy(static member => member.Order);
 }

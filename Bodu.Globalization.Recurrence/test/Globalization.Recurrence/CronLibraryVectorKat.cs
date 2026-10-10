@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CronLibraryVectorKat.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -15,8 +15,8 @@ namespace Bodu.Globalization.Recurrence;
 /// <param name="Name">The label that identifies the row in failure diagnostics.</param>
 /// <param name="Kind">
 /// The assertion the row makes: <c>next</c>, <c>next-inclusive</c>, <c>previous</c>, <c>previous-inclusive</c>,
-/// <c>next-sequence</c>, <c>previous-sequence</c>, <c>unreachable-next</c>, <c>unreachable-previous</c>,
-/// <c>invalid</c>, <c>valid</c>, <c>equal</c>, <c>not-equal</c>, or <c>to-string</c>.
+/// <c>next-sequence</c>, <c>previous-sequence</c>, <c>unreachable-next</c>, <c>unreachable-previous</c>, <c>invalid</c>,
+/// <c>valid</c>, <c>equal</c>, <c>not-equal</c>, or <c>to-string</c>.
 /// </param>
 /// <param name="Format">The field layout the expression is parsed with.</param>
 /// <param name="Expression">The cron text under test, in Bodu's dialect.</param>

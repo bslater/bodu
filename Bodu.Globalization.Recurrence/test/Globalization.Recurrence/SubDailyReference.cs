@@ -26,8 +26,8 @@ internal static class SubDailyReference
     /// <param name="maximum">The number of occurrences after which the enumeration stops.</param>
     /// <param name="complete">
     /// The latest instant up to which the result is the whole stream: <paramref name="horizon" />, the last occurrence
-    /// when <paramref name="maximum" /> stops the enumeration first, or <see cref="DateTime.MaxValue" /> when the rule has
-    /// no further occurrences.
+    /// when <paramref name="maximum" /> stops the enumeration first, or <see cref="DateTime.MaxValue" /> when the rule
+    /// has no further occurrences.
     /// </param>
     /// <returns>The ascending occurrences no later than <paramref name="complete" />.</returns>
     public static List<DateTime> Enumerate(

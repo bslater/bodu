@@ -21,7 +21,9 @@ public static class WycheproofAeadKatReader
     /// <param name="anchor">A type in the assembly that embeds the fixture.</param>
     /// <param name="resourceName">The fixture's logical resource name.</param>
     /// <param name="sourceFile">The Wycheproof file the fixture was curated from, for the rows' provenance.</param>
-    /// <param name="valid"><see langword="true" /> to read the valid rows; <see langword="false" /> for the invalid ones.</param>
+    /// <param name="valid">
+    /// <see langword="true" /> to read the valid rows; <see langword="false" /> for the invalid ones.
+    /// </param>
     /// <returns>One row per vector, with the tag detached from the ciphertext.</returns>
     /// <exception cref="InvalidOperationException">The fixture is not embedded in the assembly.</exception>
     public static IEnumerable<AeadKnownAnswer> Read(Type anchor, string resourceName, string sourceFile, bool valid)

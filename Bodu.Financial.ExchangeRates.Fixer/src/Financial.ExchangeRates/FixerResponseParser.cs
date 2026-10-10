@@ -149,14 +149,7 @@ internal static class FixerResponseParser
     {
         rate = 0m;
 
-        bool parsed = element.ValueKind switch
-        {
-            JsonValueKind.Number => element.TryGetDecimal(out rate),
-            JsonValueKind.String => decimal.TryParse(element.GetString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out rate),
-            _ => false,
-        };
-
-        return parsed && rate > 0m;
+        return JsonRateValueReader.TryReadPositiveDecimal(element, out rate);
     }
 
     /// <summary>

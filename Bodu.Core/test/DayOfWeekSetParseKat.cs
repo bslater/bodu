@@ -16,8 +16,8 @@ namespace Bodu;
 /// <param name="Input">The text supplied to the parser.</param>
 /// <param name="Format">The optional format specifier; <see langword="null" /> selects auto-detect.</param>
 /// <param name="Expected">
-/// The expected set, as a seven-bit mask written Sunday first, most significant bit first, the way the binary text
-/// form reads.
+/// The expected set, as a seven-bit mask written Sunday first, most significant bit first, the way the binary text form
+/// reads.
 /// </param>
 public sealed record DayOfWeekSetParseKat(
     string Name,

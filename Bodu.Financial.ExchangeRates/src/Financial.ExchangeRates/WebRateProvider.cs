@@ -405,6 +405,90 @@ public abstract class WebRateProvider
     protected abstract bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate);
 
     /// <summary>
+    /// Runs the common download, exception-classification, timestamp and atomic-publication lifecycle for a file feed.
+    /// Feed-specific coverage, logging, metadata and observation conversion remain with the caller.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The initial coverage check and the publication callback execute under <see cref="SyncRoot" />. The fetch and
+    /// download-start logging execute outside the lock. Only failures from the asynchronous fetch are classified; a
+    /// failure while publishing is propagated unchanged, as in the original file-feed providers.
+    /// </para>
+    /// <para>
+    /// Returning <see langword="null" /> from <paramref name="publish" /> suppresses the snapshot rebuild and
+    /// completion log (the loaded key was already committed by another operation). The timestamp is captured
+    /// immediately after fetching, before entering the publication lock.
+    /// </para>
+    /// </remarks>
+    /// <typeparam name="TTable">The provider's parsed feed-table type.</typeparam>
+    /// <param name="alreadyLoaded">Coverage predicate, called while holding the shared lock.</param>
+    /// <param name="logStarting">Provider-specific download-start logging.</param>
+    /// <param name="fetchAsync">Provider-specific asynchronous source retrieval.</param>
+    /// <param name="logExpectedFailure">Provider-specific logging for transport/stream/format errors.</param>
+    /// <param name="logUnexpectedFailure">
+    /// Provider-specific logging for all other non-cancellation fetch errors.
+    /// </param>
+    /// <param name="publish">Provider-specific atomic commit, returning observation count or null to skip.</param>
+    /// <param name="logCompleted">Provider-specific successful download logging.</param>
+    /// <param name="cancellationToken">The token used by the shared fetch.</param>
+    /// <returns>A task that completes when the feed has been published or was already loaded.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when a required delegate argument is null.</exception>
+    protected async Task LoadFileFeedAsync<TTable>(
+        Func<bool> alreadyLoaded,
+        Action logStarting,
+        Func<CancellationToken, ValueTask<TTable>> fetchAsync,
+        Action<Exception> logExpectedFailure,
+        Action<Exception> logUnexpectedFailure,
+        Func<TTable, DateTimeOffset, int?> publish,
+        Action<int> logCompleted,
+        CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(alreadyLoaded);
+        ThrowHelper.ThrowIfNull(logStarting);
+        ThrowHelper.ThrowIfNull(fetchAsync);
+        ThrowHelper.ThrowIfNull(logExpectedFailure);
+        ThrowHelper.ThrowIfNull(logUnexpectedFailure);
+        ThrowHelper.ThrowIfNull(publish);
+        ThrowHelper.ThrowIfNull(logCompleted);
+
+        lock (SyncRoot)
+        {
+            if (alreadyLoaded())
+                return;
+        }
+
+        logStarting();
+
+        TTable table;
+        try
+        {
+            table = await fetchAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
+        {
+            logExpectedFailure(ex);
+            throw;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logUnexpectedFailure(ex);
+            throw;
+        }
+
+        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
+
+        lock (SyncRoot)
+        {
+            int? count = publish(table, fetchedAt);
+            if (count is not int publishedCount)
+                return;
+
+            RebuildSnapshot();
+            logCompleted(publishedCount);
+        }
+    }
+
+    /// <summary>
     /// Runs <paramref name="load" /> for <paramref name="key" />, or joins the load already in flight for that key, so
     /// concurrent callers requesting the same endpoint window share a single fetch rather than each issuing a duplicate
     /// request. Derived types call this from
