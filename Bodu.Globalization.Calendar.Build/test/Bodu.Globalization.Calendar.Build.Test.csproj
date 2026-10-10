@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\test\Bodu.Core.Test.csproj" />
     <ProjectReference Include="..\..\Bodu.Test\test\Bodu.Test.csproj" />
     <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Build.csproj" ReferenceOutputAssembly="false" Private="false" />

@@ -1,51 +1,66 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
-    <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu - PST</Title>
-    <Description>A low-level, read-only container library for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files - the header, the node and block B-trees, block data with the format's permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees - and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</Description>
-    <PackageTags>$(PackageTags);pst;outlook;mailbox;ndb;ltp;container;reader</PackageTags>
-  </PropertyGroup>
+        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <RootNamespace>Bodu</RootNamespace>
+        <Title>Bodu - PST</Title>
+        <Description>A low-level, read-only container library for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files - the header, the node and block B-trees, block data with the format's permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees - and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</Description>
+        <PackageTags>$(PackageTags);pst;outlook;mailbox;ndb;ltp;container;reader</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.IO.Pst.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Namespace selector for the shared CRC core source. -->
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);PST</DefineConstants>
-  </PropertyGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.IO.Pst.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+    <!-- Namespace selector for the shared CRC core source. -->
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);PST</DefineConstants>
+    </PropertyGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.Collections\src\Bodu.Collections.csproj" />
-  </ItemGroup>
+    <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="IO.Pst\PstResourceStrings.resx">
-      <LastGenOutput>PstResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="IO.Pst\PstResourceStrings.Designer.cs">
-      <DependentUpon>PstResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.Collections\src\Bodu.Collections.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="IO.Pst\PstResourceStrings.resx">
+            <LastGenOutput>PstResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="IO.Pst\PstResourceStrings.Designer.cs">
+            <DependentUpon>PstResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

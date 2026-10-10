@@ -1,52 +1,67 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <RootNamespace>Bodu</RootNamespace>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+        <RootNamespace>Bodu</RootNamespace>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+        <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
 
-    <!--
+        <!--
       Argon2's memory matrix and scrypt's V live in native memory (Argon2Matrix and ScryptCore.Workspace, reused
       through NativeBufferPool), so neither reaches the collected heap; the pointer code is confined to those three
       types. Unsafe code also enables [SkipLocalsInit] on the Argon2 and scrypt cores, whose scratch buffers are all
       written before they are read.
     -->
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Title>Bodu - Cryptography</Title>
-    <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, the RFC 6962 Merkle tree with inclusion and consistency proofs, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only - see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
-    <PackageTags>$(PackageTags);cryptography;crypto;cipher;aead;hash;mac;merkle-tree;rfc6962;ed25519;ml-kem;ml-dsa</PackageTags>
-  </PropertyGroup>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Title>Bodu - Cryptography</Title>
+        <Description>Managed implementations of modern and legacy cryptographic primitives for .NET (block ciphers, AEAD modes, hashes/MACs, padding, transforms, the RFC 6962 Merkle tree with inclusion and consistency proofs, and asymmetric algorithms: X25519, Ed25519, and the post-quantum ML-KEM / ML-DSA). NOT independently audited, NOT FIPS-validated, and side-channel resistance is best-effort only - see the package README. Use the platform System.Security.Cryptography types where they cover your needs.</Description>
+        <PackageTags>$(PackageTags);cryptography;crypto;cipher;aead;hash;mac;merkle-tree;rfc6962;ed25519;ml-kem;ml-dsa</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Security.Cryptography.Test</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Security.Cryptography.Simd.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Security.Cryptography.Test</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Security.Cryptography.Simd.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Include="CryptoResourceStrings.resx">
-      <LastGenOutput>CryptoResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="CryptoResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CryptoResourceStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Include="CryptoResourceStrings.resx">
+            <LastGenOutput>CryptoResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="CryptoResourceStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CryptoResourceStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 
 </Project>

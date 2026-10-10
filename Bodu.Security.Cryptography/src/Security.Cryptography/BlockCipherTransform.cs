@@ -16,8 +16,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Block-aligned streaming data is processed via <see cref="TransformBlock" />, and the final potentially partial block
-/// - including padding application or removal - is handled by <see cref="TransformFinalBlock" />.
+/// Block-aligned streaming data is processed via <see cref="TransformBlock" />, and the final potentially partial
+/// block - including padding application or removal - is handled by <see cref="TransformFinalBlock" />.
 /// </para>
 /// <para>
 /// When decrypting with a strippable padding mode, such as <see cref="PaddingMode.PKCS7" />, the last complete block of

@@ -31,8 +31,8 @@ namespace Bodu.Financial;
 /// exact fraction before settlement), use the exact-rational escape hatches on the strongly typed form -
 /// <see cref="Money{TCurrency}.FromFraction(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" />
 /// and
-/// <see cref="Money{TCurrency}.MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" />
-/// - which compute in <see cref="Bodu.Numerics.Fraction{T}" /> and round once at the settlement boundary. In short:
+/// <see cref="Money{TCurrency}.MultiplyExact(Bodu.Numerics.Fraction{System.Numerics.BigInteger}, MidpointRounding)" /> -
+/// which compute in <see cref="Bodu.Numerics.Fraction{T}" /> and round once at the settlement boundary. In short:
 /// <see cref="Money" />/<see cref="Money{TCurrency}" /> are rounded settlement values, <see cref="CalculatedMoney" />
 /// is deferred-rounding decimal, and the <c>Fraction</c> APIs are exact rational.
 /// </para>

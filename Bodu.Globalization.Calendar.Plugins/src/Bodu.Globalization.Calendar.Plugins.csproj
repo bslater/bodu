@@ -1,42 +1,57 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu.Globalization.Calendar.Plugins</RootNamespace>
-    <Title>Bodu - Calendar Plugins</Title>
-    <Description>External plugin model for Bodu.Globalization.Calendar: trust-gated loading of assemblies that contribute custom INotableDateAlgorithm implementations.</Description>
-    <PackageTags>$(PackageTags);calendar;notable-dates;plugins;extensibility</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu.Globalization.Calendar.Plugins</RootNamespace>
+        <Title>Bodu - Calendar Plugins</Title>
+        <Description>External plugin model for Bodu.Globalization.Calendar: trust-gated loading of assemblies that contribute custom INotableDateAlgorithm implementations.</Description>
+        <PackageTags>$(PackageTags);calendar;notable-dates;plugins;extensibility</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Globalization.Calendar.Plugins.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- External package dependencies. -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Globalization.Calendar.Plugins.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
-  </ItemGroup>
+    <!-- External package dependencies. -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="PluginsResourceStrings.resx">
-      <LastGenOutput>PluginsResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="PluginsResourceStrings.Designer.cs">
-      <DependentUpon>PluginsResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="PluginsResourceStrings.resx">
+            <LastGenOutput>PluginsResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="PluginsResourceStrings.Designer.cs">
+            <DependentUpon>PluginsResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

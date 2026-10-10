@@ -19,9 +19,9 @@ namespace Bodu.Text.Toml.Nodes;
 /// <para>
 /// A node tree is editable in place: containers expose the standard collection surfaces, scalar values can be replaced,
 /// and any node can be re-serialized to normalized TOML through <see cref="WriteTo" /> or <see cref="ToUtf8Bytes" />.
-/// TOML defines eight scalar value kinds - a string, a 64-bit integer, a float, a Boolean, and the four date-time kinds
-/// - and has no null token, so the model defines no null node; a tree that still contains a <see langword="null" />
-/// entry cannot be written.
+/// TOML defines eight scalar value kinds - a string, a 64-bit integer, a float, a Boolean, and the four date-time
+/// kinds - and has no null token, so the model defines no null node; a tree that still contains a
+/// <see langword="null" /> entry cannot be written.
 /// </para>
 /// <para>
 /// A TOML document's root is always a table, so a document cannot be a bare scalar or array.

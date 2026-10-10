@@ -186,9 +186,9 @@ public sealed class AesBlockCipher
     /// </exception>
     /// <remarks>
     /// Moves the run through the cached ECB encryptor in chunks of up to 4 KiB, one platform call per chunk. The cached
-    /// transform keeps its key schedule, whereas the BCL's one-shot ECB methods rebuild a cipher context on every call
-    /// - which costs about as much as encrypting a kilobyte, so a counter mode handing over a few kilobytes at a time
-    /// would spend most of its time there. <paramref name="output" /> may be the same memory as
+    /// transform keeps its key schedule, whereas the BCL's one-shot ECB methods rebuild a cipher context on every
+    /// call - which costs about as much as encrypting a kilobyte, so a counter mode handing over a few kilobytes at a
+    /// time would spend most of its time there. <paramref name="output" /> may be the same memory as
     /// <paramref name="input" />.
     /// </remarks>
     public void EncryptBlocks(ReadOnlySpan<byte> input, Span<byte> output)

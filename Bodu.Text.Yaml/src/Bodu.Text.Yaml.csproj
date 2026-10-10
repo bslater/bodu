@@ -1,61 +1,76 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu - YAML</Title>
-    <Description>A self-contained YAML library for .NET 8 and .NET 10, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the YamlSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the ref-struct Utf8YamlReader/Utf8YamlWriter token surface, a mutable YamlNode DOM, and a read-only YamlDocument DOM. Implements the Bodu YAML Core Tree Profile, a YAML 1.2 core-schema, JSON-compatible tree model (defaults to the 1.2 core schema with no implicit yes/no booleans; opt-in 1.1 typing): mapping keys resolve to unique scalar strings, anchors are unique and acyclic, and tabs are rejected as indentation. Supports block and flow collections, quoted and block scalars, comments, anchors and aliases, opt-in YAML 1.1 merge keys, core tags, and multi-document streams. The reader is buffered (it parses into an in-memory node store), not a single-pass streaming scanner.</Description>
-    <PackageTags>$(PackageTags);text;yaml;configuration;serialization;serializer</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+        <Title>Bodu - YAML</Title>
+        <Description>A self-contained YAML library for .NET 8 and .NET 10, shaped after System.Text.Json and matching the sibling Bodu.Text.Toml surface: the YamlSerializer POCO mapper (converters, the full attribute family, naming policies, callbacks), the ref-struct Utf8YamlReader/Utf8YamlWriter token surface, a mutable YamlNode DOM, and a read-only YamlDocument DOM. Implements the Bodu YAML Core Tree Profile, a YAML 1.2 core-schema, JSON-compatible tree model (defaults to the 1.2 core schema with no implicit yes/no booleans; opt-in 1.1 typing): mapping keys resolve to unique scalar strings, anchors are unique and acyclic, and tabs are rejected as indentation. Supports block and flow collections, quoted and block scalars, comments, anchors and aliases, opt-in YAML 1.1 merge keys, core tags, and multi-document streams. The reader is buffered (it parses into an in-memory node store), not a single-pass streaming scanner.</Description>
+        <PackageTags>$(PackageTags);text;yaml;configuration;serialization;serializer</PackageTags>
+    </PropertyGroup>
 
-  <!-- Per-framework compilation symbols. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Format selector for the shared serializer source compiled in below. -->
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);YAML</DefineConstants>
-  </PropertyGroup>
+    <!-- Per-framework compilation symbols. -->
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
+    </PropertyGroup>
 
-  <!-- Shared serializer source (engine-neutral metadata, the structural converter factories, and the DOM node
+    <!-- Format selector for the shared serializer source compiled in below. -->
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);YAML</DefineConstants>
+    </PropertyGroup>
+
+    <!-- Shared serializer source (engine-neutral metadata, the structural converter factories, and the DOM node
        bridge), compiled into this assembly under the YAML symbol. The excluded files are the token-strict
        scalar/enum/nullable converters and their throw helper, which YAML replaces with format-local coercing
        converters that preserve its implicit typing (see Text.Yaml.Serialization.Converters), and the
        SerializerEngine seam, kept local because YAML's null-root write and empty-document read semantics differ
        from the token-strict formats. -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs"
-             Exclude="..\..\Bodu.Text.Serialization\shared\SerializerEngine.cs;..\..\Bodu.Text.Serialization\shared\SerializationThrowHelper.cs;..\..\Bodu.Text.Serialization\shared\Converters\StringConverter.cs;..\..\Bodu.Text.Serialization\shared\Converters\IntegerConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\IntegerConverterFactory.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumNumberConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumConverterFactory.cs;..\..\Bodu.Text.Serialization\shared\Converters\NullableConverter{T}.cs"
-             Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs"
+                 Exclude="..\..\Bodu.Text.Serialization\shared\SerializerEngine.cs;..\..\Bodu.Text.Serialization\shared\SerializationThrowHelper.cs;..\..\Bodu.Text.Serialization\shared\Converters\StringConverter.cs;..\..\Bodu.Text.Serialization\shared\Converters\IntegerConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\IntegerConverterFactory.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumNumberConverter{T}.cs;..\..\Bodu.Text.Serialization\shared\Converters\EnumConverterFactory.cs;..\..\Bodu.Text.Serialization\shared\Converters\NullableConverter{T}.cs"
+                 Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Text.Yaml.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Text.Yaml.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Serialization\src\Bodu.Text.Serialization.csproj" />
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Serialization\src\Bodu.Text.Serialization.csproj" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Include="YamlResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>YamlResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="YamlResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>YamlResourceStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Include="YamlResourceStrings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>YamlResourceStrings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="YamlResourceStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>YamlResourceStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 </Project>

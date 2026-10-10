@@ -1,38 +1,53 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
-    <Title>Bodu - Numerics JSON Serialization</Title>
-    <Description>System.Text.Json integration for Bodu.Numerics. Provides converters, a shared serialization policy, and the AddNumericsJsonConverters() registration helper for Fraction&lt;T&gt;, BigDecimal, Complex&lt;T&gt;, Interval&lt;T&gt;, DiscreteInterval&lt;T&gt;, and IntervalSet&lt;T&gt;. The IntervalPair&lt;T&gt; and DiscreteIntervalPair&lt;T&gt; result types are transient and are not serialized; convert them with ToIntervalSet() first. Keeping JSON support in this companion package leaves the core Bodu.Numerics library serialization-agnostic.</Description>
-    <PackageTags>$(PackageTags);numerics;json;serialization;system.text.json;fraction;interval</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+        <Title>Bodu - Numerics JSON Serialization</Title>
+        <Description>System.Text.Json integration for Bodu.Numerics. Provides converters, a shared serialization policy, and the AddNumericsJsonConverters() registration helper for Fraction&lt;T&gt;, BigDecimal, Complex&lt;T&gt;, Interval&lt;T&gt;, DiscreteInterval&lt;T&gt;, and IntervalSet&lt;T&gt;. The IntervalPair&lt;T&gt; and DiscreteIntervalPair&lt;T&gt; result types are transient and are not serialized; convert them with ToIntervalSet() first. Keeping JSON support in this companion package leaves the core Bodu.Numerics library serialization-agnostic.</Description>
+        <PackageTags>$(PackageTags);numerics;json;serialization;system.text.json;fraction;interval</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Numerics.Serialization.Json.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Numerics\src\Bodu.Numerics.csproj" />
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Numerics.Serialization.Json.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="Numerics.Serialization.Json\NumericsJsonResourceStrings.resx">
-      <LastGenOutput>NumericsJsonResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="Numerics.Serialization.Json\NumericsJsonResourceStrings.Designer.cs">
-      <DependentUpon>NumericsJsonResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Numerics\src\Bodu.Numerics.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="Numerics.Serialization.Json\NumericsJsonResourceStrings.resx">
+            <LastGenOutput>NumericsJsonResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="Numerics.Serialization.Json\NumericsJsonResourceStrings.Designer.cs">
+            <DependentUpon>NumericsJsonResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

@@ -1,47 +1,62 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
-    <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu - Outlook Msg</Title>
-    <Description>A read-only reader for the Outlook message format (.msg / MS-OXMSG) over the Bodu.IO.Compound OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies - without any MAPI session emulation or message authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
-    <PackageTags>$(PackageTags);outlook;msg;mapi;email;message;reader</PackageTags>
-  </PropertyGroup>
+        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <RootNamespace>Bodu</RootNamespace>
+        <Title>Bodu - Outlook Msg</Title>
+        <Description>A read-only reader for the Outlook message format (.msg / MS-OXMSG) over the Bodu.IO.Compound OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies - without any MAPI session emulation or message authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
+        <PackageTags>$(PackageTags);outlook;msg;mapi;email;message;reader</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Formats.Outlook.Msg.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Namespace selector for the shared CRC core source. -->
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);MSG</DefineConstants>
-  </PropertyGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Formats.Outlook.Msg.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+    <!-- Namespace selector for the shared CRC core source. -->
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);MSG</DefineConstants>
+    </PropertyGroup>
 
-  <!-- Shared Outlook decode layer (value decoder, encoding resolver, compressed RTF), source-compiled from the value-model package. -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Formats.Outlook\shared\**\*.cs" Link="shared\Formats.Outlook\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+    <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.IO.Compound\src\Bodu.IO.Compound.csproj" />
-    <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
-  </ItemGroup>
+    <!-- Shared Outlook decode layer (value decoder, encoding resolver, compressed RTF), source-compiled from the value-model package. -->
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.Formats.Outlook\shared\**\*.cs" Link="shared\Formats.Outlook\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-  <!--
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.IO.Compound\src\Bodu.IO.Compound.csproj" />
+        <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
+    </ItemGroup>
+
+    <!--
     System.Text.Encoding.CodePages is deliberately NOT referenced. CodePagesEncodingProvider ships in
     the shared framework for every target framework here - Microsoft.NETCore.App.Ref carries
     System.Text.Encoding.CodePages.dll for net8.0 as well as net10.0 - so an explicit PackageReference
@@ -49,17 +64,17 @@
     (docfx with warnings promoted to errors) treats as fatal.
   -->
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Update="Formats.Outlook\OutlookMsgResourceStrings.resx">
-      <LastGenOutput>OutlookMsgResourceStrings.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <Compile Update="Formats.Outlook\OutlookMsgResourceStrings.Designer.cs">
-      <DependentUpon>OutlookMsgResourceStrings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Update="Formats.Outlook\OutlookMsgResourceStrings.resx">
+            <LastGenOutput>OutlookMsgResourceStrings.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <Compile Update="Formats.Outlook\OutlookMsgResourceStrings.Designer.cs">
+            <DependentUpon>OutlookMsgResourceStrings.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+    </ItemGroup>
 
 </Project>

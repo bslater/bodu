@@ -1,57 +1,72 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <Title>Bodu - Configuration Provider</Title>
-    <Description>The EditorConfig-compatible Microsoft.Extensions.Configuration provider. Bridges Bodu.Text.Configuration into the standard IConfiguration / IOptions&lt;T&gt; pipeline so a .boduconfig or bodu.config file registers with the same AddTextConfiguration(...) shape used for the JSON, INI, and XML providers - with file, stream, and programmatic-document overloads, reload-on-change, and colon-delimited section binding. Also ships the read-only TOML (AddTomlFile / AddTomlStream) and Bencode (AddBencodeFile / AddBencodeStream) sources.</Description>
-    <PackageTags>$(PackageTags);configuration;editorconfig;microsoft-extensions-configuration;ioptions;config;settings;toml;bencode;bep3</PackageTags>
-  </PropertyGroup>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+        <Title>Bodu - Configuration Provider</Title>
+        <Description>The EditorConfig-compatible Microsoft.Extensions.Configuration provider. Bridges Bodu.Text.Configuration into the standard IConfiguration / IOptions&lt;T&gt; pipeline so a .boduconfig or bodu.config file registers with the same AddTextConfiguration(...) shape used for the JSON, INI, and XML providers - with file, stream, and programmatic-document overloads, reload-on-change, and colon-delimited section binding. Also ships the read-only TOML (AddTomlFile / AddTomlStream) and Bencode (AddBencodeFile / AddBencodeStream) sources.</Description>
+        <PackageTags>$(PackageTags);configuration;editorconfig;microsoft-extensions-configuration;ioptions;config;settings;toml;bencode;bep3</PackageTags>
+    </PropertyGroup>
 
-  <!-- Per-framework compilation symbols. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Extensions.Configuration.Text.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <!-- Per-framework compilation symbols. -->
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
+    </PropertyGroup>
 
-  <!-- External package dependencies. -->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" />
-  </ItemGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Extensions.Configuration.Text.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Bencode\src\Bodu.Text.Bencode.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Configuration\src\Bodu.Text.Configuration.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Toml\src\Bodu.Text.Toml.csproj" />
-  </ItemGroup>
+    <!-- External package dependencies. -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+        <PackageReference Include="Microsoft.Extensions.Primitives" />
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Include="ConfigurationTextResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConfigurationTextResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="ConfigurationTextResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ConfigurationTextResourceStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Bencode\src\Bodu.Text.Bencode.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Configuration\src\Bodu.Text.Configuration.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Toml\src\Bodu.Text.Toml.csproj" />
+    </ItemGroup>
+
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Include="ConfigurationTextResourceStrings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>ConfigurationTextResourceStrings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="ConfigurationTextResourceStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ConfigurationTextResourceStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 </Project>

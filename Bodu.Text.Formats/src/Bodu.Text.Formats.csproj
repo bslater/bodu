@@ -1,25 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
+    <!--
     Umbrella meta-package: Bodu.Text.Formats carries no code of its own. It references the three
     standalone line-format libraries so existing package references keep working; the formats
     themselves live in Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini.
   -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
-    <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu - Text Formats</Title>
-    <Description>Umbrella package for the Bodu line-oriented text formats on .NET 8 and .NET 10 - delimited text (RFC 4180 CSV/TSV), DotEnv, and INI. References Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini, each a System.Text.Json-shaped library with a ref-struct Utf8 reader/writer pair, a serializer, a mutable node DOM, and a read-only document DOM.</Description>
-    <PackageTags>$(PackageTags);text;formats;csv;tsv;delimited;rfc4180;dotenv;ini</PackageTags>
-    <NoWarn>$(NoWarn);CA1014</NoWarn>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+        <RootNamespace>Bodu</RootNamespace>
+        <Title>Bodu - Text Formats</Title>
+        <Description>Umbrella package for the Bodu line-oriented text formats on .NET 8 and .NET 10 - delimited text (RFC 4180 CSV/TSV), DotEnv, and INI. References Bodu.Text.Delimited, Bodu.Text.DotEnv, and Bodu.Text.Ini, each a System.Text.Json-shaped library with a ref-struct Utf8 reader/writer pair, a serializer, a mutable node DOM, and a read-only document DOM.</Description>
+        <PackageTags>$(PackageTags);text;formats;csv;tsv;delimited;rfc4180;dotenv;ini</PackageTags>
+        <NoWarn>$(NoWarn);CA1014</NoWarn>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <!-- The three line-format libraries this umbrella re-exports. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.DotEnv\src\Bodu.Text.DotEnv.csproj" />
-    <ProjectReference Include="..\..\Bodu.Text.Ini\src\Bodu.Text.Ini.csproj" />
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <!-- The three line-format libraries this umbrella re-exports. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Text.Delimited\src\Bodu.Text.Delimited.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.DotEnv\src\Bodu.Text.DotEnv.csproj" />
+        <ProjectReference Include="..\..\Bodu.Text.Ini\src\Bodu.Text.Ini.csproj" />
+    </ItemGroup>
 
 </Project>

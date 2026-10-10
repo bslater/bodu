@@ -1,32 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <RootNamespace>Bodu</RootNamespace>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-    <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
-    <Title>Bodu - Core</Title>
-    <Description>Foundational building blocks for .NET 8 and .NET 10: ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, spans, and enumerables, async threading primitives, text-encoding utilities, the calendar value sets (days of the week, months, days of the month, hours, minutes and seconds), and the ThrowHelper argument-validation catalogue the rest of the solution validates against. The specialized generic collection catalogue (circular buffer, deque, evicting dictionary, graphs, tries, and more) ships separately as Bodu.Collections.</Description>
-    <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;day-of-week-set;calendar-sets</PackageTags>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
-    <WarningLevel>8</WarningLevel>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
-    <WarningLevel>8</WarningLevel>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-  </PropertyGroup>
+        <RootNamespace>Bodu</RootNamespace>
+        <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+        <IsAotCompatible Condition="'$(BoduTfmIsNetCore)' == 'true'">true</IsAotCompatible>
+        <Title>Bodu - Core</Title>
+        <Description>Foundational building blocks for .NET 8 and .NET 10: ArrayPool-backed buffer builders, a broad extension-method surface over strings, dates, numerics, spans, and enumerables, async threading primitives, text-encoding utilities, the calendar value sets (days of the week, months, days of the month, hours, minutes and seconds), and the ThrowHelper argument-validation catalogue the rest of the solution validates against. The specialized generic collection catalogue (circular buffer, deque, evicting dictionary, graphs, tries, and more) ships separately as Bodu.Collections.</Description>
+        <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;day-of-week-set;calendar-sets</PackageTags>
+    </PropertyGroup>
 
-  <!--
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <!--
     InternalsVisibleTo grants - every entry below was audited and is currently in use:
       - Bodu.Core.Test               : test project (ConcurrentHashSet internal ctor, ClampDefaultConcurrencyLevel,
                                        XorShiftRandom ScaleToUnitInterval / BoundedNextUInt32 helpers, etc.).
@@ -38,41 +39,41 @@
       - Bodu.IO.Hashing              : ResourceStrings, RotateBitsRightUnchecked.
     Drop an entry only after a fresh `dotnet build` of the corresponding sibling confirms no internal use.
   -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Core.Test</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Globalization.Calendar</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Security.Cryptography</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.IO.Hashing</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Core.Test</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Globalization.Calendar</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Security.Cryptography</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.IO.Hashing</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
-  <ItemGroup>
-    <EmbeddedResource Include="ResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="ResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ResourceStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- Strongly-typed exception and diagnostic strings (ResX + generated accessor). -->
+    <ItemGroup>
+        <EmbeddedResource Include="ResourceStrings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="ResourceStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ResourceStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <!--
+    <!--
     Wire the in-repo XML-doc analyzer and code-fix as a Roslyn analyzer reference scoped to this project.
     Used to exercise BODU1405 (<code> must begin with CDATA flush against ///) against Bodu.Core in isolation.
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.CodeFixes\src\Bodu.CodeStyle.XmlDocumentation.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\Bodu.CodeStyle\Bodu.CodeStyle.XmlDocumentation.CodeFixes\src\Bodu.CodeStyle.XmlDocumentation.CodeFixes.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    </ItemGroup>
 
 </Project>

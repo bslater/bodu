@@ -1,47 +1,62 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Build configuration and NuGet package metadata. -->
-  <PropertyGroup>
-    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <!-- Build configuration and NuGet package metadata. -->
+    <PropertyGroup>
+        <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-    <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-    <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
-    <RootNamespace>Bodu</RootNamespace>
-    <Title>Bodu - Outlook Pst</Title>
-    <Description>A read-only reader for the Outlook personal-folders format (.pst / MS-PST, Unicode and ANSI formats) over the Bodu.IO.Pst node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, named-property resolution, and the text, HTML, and compressed-RTF bodies - without any MAPI session emulation or store authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
-    <PackageTags>$(PackageTags);outlook;pst;mapi;email;mailbox;archive;reader</PackageTags>
-  </PropertyGroup>
+        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
+        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <RootNamespace>Bodu</RootNamespace>
+        <Title>Bodu - Outlook Pst</Title>
+        <Description>A read-only reader for the Outlook personal-folders format (.pst / MS-PST, Unicode and ANSI formats) over the Bodu.IO.Pst node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, named-property resolution, and the text, HTML, and compressed-RTF bodies - without any MAPI session emulation or store authoring. Shares the Bodu.Formats.Outlook MAPI value model.</Description>
+        <PackageTags>$(PackageTags);outlook;pst;mapi;email;mailbox;archive;reader</PackageTags>
+    </PropertyGroup>
 
-  <!-- Grant the companion test project access to internal members. -->
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Bodu.Formats.Outlook.Pst.Test</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
+        <WarningLevel>8</WarningLevel>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-  <!-- Namespace selector for the shared CRC core and Outlook decode-layer source. -->
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);OUTLOOK_PST</DefineConstants>
-  </PropertyGroup>
+    <!-- Grant the companion test project access to internal members. -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Formats.Outlook.Pst.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 
-  <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+    <!-- Namespace selector for the shared CRC core and Outlook decode-layer source. -->
+    <PropertyGroup>
+        <DefineConstants>$(DefineConstants);OUTLOOK_PST</DefineConstants>
+    </PropertyGroup>
 
-  <!-- Shared Outlook decode layer (value decoder, encoding resolver, compressed RTF), source-compiled from the value-model package. -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Formats.Outlook\shared\**\*.cs" Link="shared\Formats.Outlook\%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+    <!-- Shared CRC core, source-compiled from Bodu.IO.Hashing (no package dependency). -->
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.IO.Hashing\shared\**\*.cs" Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-  <!-- Bodu project dependencies. -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-    <ProjectReference Include="..\..\Bodu.IO.Pst\src\Bodu.IO.Pst.csproj" />
-    <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
-  </ItemGroup>
+    <!-- Shared Outlook decode layer (value decoder, encoding resolver, compressed RTF), source-compiled from the value-model package. -->
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.Formats.Outlook\shared\**\*.cs" Link="shared\Formats.Outlook\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-  <!--
+    <!-- Bodu project dependencies. -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
+        <ProjectReference Include="..\..\Bodu.IO.Pst\src\Bodu.IO.Pst.csproj" />
+        <ProjectReference Include="..\..\Bodu.Formats.Outlook\src\Bodu.Formats.Outlook.csproj" />
+    </ItemGroup>
+
+    <!--
     System.Text.Encoding.CodePages is deliberately NOT referenced. CodePagesEncodingProvider ships in
     the shared framework for every target framework here - Microsoft.NETCore.App.Ref carries
     System.Text.Encoding.CodePages.dll for net8.0 as well as net10.0 - so an explicit PackageReference
@@ -49,17 +64,17 @@
     (docfx with warnings promoted to errors) treats as fatal.
   -->
 
-  <!-- Strongly-typed resource strings. -->
-  <ItemGroup>
-    <EmbeddedResource Update="Formats.Outlook\OutlookPstResourceStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>OutlookPstResourceStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="Formats.Outlook\OutlookPstResourceStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>OutlookPstResourceStrings.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <!-- Strongly-typed resource strings. -->
+    <ItemGroup>
+        <EmbeddedResource Update="Formats.Outlook\OutlookPstResourceStrings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>OutlookPstResourceStrings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="Formats.Outlook\OutlookPstResourceStrings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>OutlookPstResourceStrings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
 </Project>
