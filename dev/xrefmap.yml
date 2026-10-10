@@ -57333,6 +57333,21 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync
   fullName: Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync
   nameWithType: WebRateProvider.LoadCoalescedAsync
+- uid: Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync*
+  name: LoadFileFeedAsync
+  href: api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadFileFeedAsync_
+  commentId: Overload:Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync
+  fullName: Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync
+  nameWithType: WebRateProvider.LoadFileFeedAsync
+- uid: Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync``1(System.Func{System.Boolean},System.Action,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.ValueTask{``0}},System.Action{System.Exception},System.Action{System.Exception},System.Func{``0,System.DateTimeOffset,System.Nullable{System.Int32}},System.Action{System.Int32},System.Threading.CancellationToken)
+  name: LoadFileFeedAsync<TTable>(Func<bool>, Action, Func<CancellationToken, ValueTask<TTable>>, Action<Exception>, Action<Exception>, Func<TTable, DateTimeOffset, int?>, Action<int>, CancellationToken)
+  href: api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadFileFeedAsync__1_System_Func_System_Boolean__System_Action_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Action_System_Exception__System_Action_System_Exception__System_Func___0_System_DateTimeOffset_System_Nullable_System_Int32___System_Action_System_Int32__System_Threading_CancellationToken_
+  commentId: M:Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync``1(System.Func{System.Boolean},System.Action,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.ValueTask{``0}},System.Action{System.Exception},System.Action{System.Exception},System.Func{``0,System.DateTimeOffset,System.Nullable{System.Int32}},System.Action{System.Int32},System.Threading.CancellationToken)
+  name.vb: LoadFileFeedAsync(Of TTable)(Func(Of Boolean), Action, Func(Of CancellationToken, ValueTask(Of TTable)), Action(Of Exception), Action(Of Exception), Func(Of TTable, DateTimeOffset, Integer?), Action(Of Integer), CancellationToken)
+  fullName: Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync<TTable>(System.Func<bool>, System.Action, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.ValueTask<TTable>>, System.Action<System.Exception>, System.Action<System.Exception>, System.Func<TTable, System.DateTimeOffset, int?>, System.Action<int>, System.Threading.CancellationToken)
+  fullName.vb: Bodu.Financial.ExchangeRates.WebRateProvider.LoadFileFeedAsync(Of TTable)(System.Func(Of Boolean), System.Action, System.Func(Of System.Threading.CancellationToken, System.Threading.Tasks.ValueTask(Of TTable)), System.Action(Of System.Exception), System.Action(Of System.Exception), System.Func(Of TTable, System.DateTimeOffset, Integer?), System.Action(Of Integer), System.Threading.CancellationToken)
+  nameWithType: WebRateProvider.LoadFileFeedAsync<TTable>(Func<bool>, Action, Func<CancellationToken, ValueTask<TTable>>, Action<Exception>, Action<Exception>, Func<TTable, DateTimeOffset, int?>, Action<int>, CancellationToken)
+  nameWithType.vb: WebRateProvider.LoadFileFeedAsync(Of TTable)(Func(Of Boolean), Action, Func(Of CancellationToken, ValueTask(Of TTable)), Action(Of Exception), Action(Of Exception), Func(Of TTable, DateTimeOffset, Integer?), Action(Of Integer), CancellationToken)
 - uid: Bodu.Financial.ExchangeRates.WebRateProvider.LoadPairAsync(System.String,System.String,System.DateOnly,System.DateOnly,System.Threading.CancellationToken)
   name: LoadPairAsync(string, string, DateOnly, DateOnly, CancellationToken)
   href: api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadPairAsync_System_String_System_String_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_
