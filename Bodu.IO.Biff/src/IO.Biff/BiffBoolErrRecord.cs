@@ -10,8 +10,15 @@ namespace Bodu.IO.Biff;
 /// Represents a decoded <c>BOOLERR</c> record: a cell holding either a boolean or an error code.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The record identifier is <see cref="BiffRecordType.BoolErr" />. The payload is eight bytes in both versions: the
 /// cell prefix, the value byte, and a kind byte that is zero for a boolean and non-zero for an error code.
+/// </para>
+/// <para>
+/// A payload of exactly nine bytes is read in the layout OpenOffice.org wrote: the value as a 16-bit integer at offset
+/// 6, whose low byte is <paramref name="RawValue" />, and the kind byte at offset 8. A payload of any other length of
+/// at least eight bytes is read in the eight-byte layout.
+/// </para>
 /// </remarks>
 /// <param name="Row">The zero-based row index.</param>
 /// <param name="Column">The zero-based column index.</param>
@@ -25,6 +32,9 @@ public readonly record struct BiffBoolErrRecord(int Row, int Column, ushort XfIn
 {
     /// <summary>The payload length of the record.</summary>
     internal const int Length = 8;
+
+    /// <summary>The payload length of the layout OpenOffice.org wrote, whose value is a 16-bit integer.</summary>
+    internal const int OpenOfficeLength = 9;
 
     /// <summary>
     /// Gets a value indicating whether the cell holds <see langword="true" />.
@@ -51,16 +61,21 @@ public readonly record struct BiffBoolErrRecord(int Row, int Column, ushort XfIn
     /// <param name="payload">The record payload.</param>
     /// <returns>The decoded record.</returns>
     /// <exception cref="BiffFormatException">Thrown when the payload is shorter than eight bytes.</exception>
+    /// <remarks>
+    /// A nine-byte payload is the OpenOffice.org layout, whose value is a 16-bit integer: its low byte, at offset 6, is
+    /// the value, and the kind byte follows the integer at offset 8.
+    /// </remarks>
     internal static BiffBoolErrRecord Read(ReadOnlySpan<byte> payload)
     {
         const BiffRecordType type = BiffRecordType.BoolErr;
         BiffPayload.RequireLength(payload, Length, type);
 
+        int kindOffset = payload.Length == OpenOfficeLength ? 8 : 7;
         return new BiffBoolErrRecord(
             BiffPayload.ReadUInt16(payload, 0, type),
             BiffPayload.ReadUInt16(payload, 2, type),
             BiffPayload.ReadUInt16(payload, 4, type),
             payload[6],
-            payload[7] != 0);
+            payload[kindOffset] != 0);
     }
 }
