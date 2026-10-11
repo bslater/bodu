@@ -20,7 +20,9 @@ namespace Bodu.IO.Compound;
 /// 4096 bytes from the mini stream, the cutoff [MS-CFB] fixes, whatever cutoff the header declares. Below
 /// <see cref="Strict" />, a directory entry whose name length is odd or above 64, or whose object type [MS-CFB] does
 /// not define, is malformed and skipped, while a name that lacks its terminating null is read up to its declared
-/// length.
+/// length, and the header's Number of FAT Sectors and Number of DIFAT Sectors are ignored in favour of the DIFAT
+/// itself. At every level a Number of DIFAT Sectors of zero means there is no DIFAT chain, whatever the First DIFAT
+/// Sector Location holds.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -50,11 +52,12 @@ public enum CompoundValidationLevel
     /// the directory chain counted in version 4, and a mini stream cutoff of 4096.
     /// </para>
     /// <para>
-    /// The allocation tables are checked whole, not only where a chain the reader follows needs them: every FAT and
-    /// DIFAT sector must be marked as one in the FAT and the DIFAT chain must end in ENDOFCHAIN (<see cref="CompoundFileError.InvalidDifat" />),
-    /// every FAT entry for a sector past the end of the file must be free (<see cref="CompoundFileError.SectorOutOfRange" />),
-    /// and no sector may belong to two chains (<see cref="CompoundFileError.FatCycle" />, or
-    /// <see cref="CompoundFileError.InvalidMiniFat" /> for a mini sector). The other levels read a DIFAT chain that
+    /// The allocation tables are checked whole, not only where a chain the reader follows needs them: the header's
+    /// Number of FAT Sectors and Number of DIFAT Sectors must count the FAT sectors the DIFAT lists and the sectors of
+    /// the DIFAT chain, every FAT and DIFAT sector must be marked as one in the FAT and the DIFAT chain must end in
+    /// ENDOFCHAIN (<see cref="CompoundFileError.InvalidDifat" />), every FAT entry for a sector past the end of the
+    /// file must be free (<see cref="CompoundFileError.SectorOutOfRange" />), and no sector may belong to two chains (<see cref="CompoundFileError.FatCycle" />,
+    /// or <see cref="CompoundFileError.InvalidMiniFat" /> for a mini sector). The other levels read a DIFAT chain that
     /// ends in FREESECT or DIFSECT as ending there.
     /// </para>
     /// <para>

@@ -47,7 +47,8 @@ public enum CompoundFileError
 
     /// <summary>
     /// The double-indirect file-allocation table (DIFAT) is malformed; at <see cref="CompoundValidationLevel.Strict" />,
-    /// also a FAT or DIFAT sector that the FAT does not mark as one, or a DIFAT chain that does not end in ENDOFCHAIN.
+    /// also a header FAT or DIFAT sector count that disagrees with the tables, a FAT or DIFAT sector that the FAT does
+    /// not mark as one, or a DIFAT chain that does not end in ENDOFCHAIN.
     /// </summary>
     InvalidDifat,
 

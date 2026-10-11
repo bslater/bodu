@@ -554,7 +554,8 @@ internal sealed class CfbSectorReader
             }
         }
 
-        uint difatSector = _header.FirstDifatSector;
+        // A Number of DIFAT Sectors of zero means there is no DIFAT chain, whatever the First DIFAT Sector Location holds.
+        uint difatSector = _header.DifatSectorCount == 0 ? CfbHeader.EndOfChain : _header.FirstDifatSector;
         int perSector = _header.EntriesPerSector;
         int guard = 0;
         Span<byte> scratch = stackalloc byte[_header.SectorSize];
@@ -600,11 +601,11 @@ internal sealed class CfbSectorReader
     /// </summary>
     /// <param name="directory">The parsed directory, whose stream entries own the chains walked.</param>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown with <see cref="CompoundFileError.InvalidDifat" /> when a FAT or DIFAT sector is not marked as one in the
-    /// FAT or the DIFAT chain does not end in ENDOFCHAIN; with <see cref="CompoundFileError.SectorOutOfRange" /> when
-    /// the FAT allocates a sector past the end of the file; with <see cref="CompoundFileError.FatCycle" /> when two
-    /// chains share a sector; and with <see cref="CompoundFileError.InvalidMiniFat" /> when two mini chains share a
-    /// mini sector.
+    /// Thrown with <see cref="CompoundFileError.InvalidDifat" /> when the header's Number of FAT Sectors or Number of
+    /// DIFAT Sectors disagrees with the tables, a FAT or DIFAT sector is not marked as one in the FAT, or the DIFAT
+    /// chain does not end in ENDOFCHAIN; with <see cref="CompoundFileError.SectorOutOfRange" /> when the FAT allocates
+    /// a sector past the end of the file; with <see cref="CompoundFileError.FatCycle" /> when two chains share a
+    /// sector; and with <see cref="CompoundFileError.InvalidMiniFat" /> when two mini chains share a mini sector.
     /// </exception>
     /// <remarks>
     /// Every chain is walked once, the directory, the mini FAT, the mini stream and each stream's own, with one set of
@@ -612,6 +613,11 @@ internal sealed class CfbSectorReader
     /// </remarks>
     internal void ValidateAllocation(CfbDirectory directory)
     {
+        CompoundThrowHelper.ThrowFormatIf(
+            _fatSectorIds.Count != _header.FatSectorCount || _difatSectorIds.Count != _header.DifatSectorCount,
+            CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+            CompoundFileError.InvalidDifat);
+
         foreach (uint id in _fatSectorIds)
             ThrowIfNotMarked(id, CfbHeader.FatSector);
 

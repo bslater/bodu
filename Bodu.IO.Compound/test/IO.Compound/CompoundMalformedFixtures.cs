@@ -75,7 +75,6 @@ internal static class CompoundMalformedFixtures
         new("invalid/strange_mini_sector_size.dat", CompoundFileError.InvalidSectorSize, MinimalCategory: CompoundFileError.InvalidSectorSize),
         new("invalid/invalid_truncated.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
         new("invalid/invalid_master_eof.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
-        new("invalid/invalid_master_ext_eof.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
         new("invalid/invalid_mini_eof.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
         new("invalid/invalid_root_type.dat", CompoundFileError.InvalidRootStorage, MinimalCategory: CompoundFileError.InvalidRootStorage),
 
@@ -100,6 +99,10 @@ internal static class CompoundMalformedFixtures
         new("invalid/invalid_fat_types.dat", null),
         new("invalid/invalid_header_misc.dat", null),
         new("invalid/invalid_master_ext_count.dat", null),
+
+        // The header counts no DIFAT sectors, so its First DIFAT Sector Location, past the end of the file, names no
+        // chain; compoundfiles warns and reads it as example.dat.
+        new("invalid/invalid_master_ext_eof.dat", null),
         new("invalid/invalid_master_ext_free.dat", null),
         new("invalid/invalid_master_overrun.dat", null),
         new("invalid/invalid_master_special.dat", null),
