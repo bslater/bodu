@@ -78,7 +78,7 @@ internal static partial class CompoundContainerLayout
         var writer = new SectorWriter(destination, plan.SectorSize);
 
         EmitHeader(writer, plan);
-        EmitDirectory(writer, plan.Entries);
+        EmitDirectory(writer, plan);
         if (plan.MiniFatSectors > 0)
             EmitMiniFat(writer, plan);
 
@@ -359,21 +359,44 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Emits the directory sectors, encoding each entry and padding the final sector with zero.
+    /// Emits the directory sectors, encoding each entry and filling the rest of the final sector with free entries.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="entries">The directory entries, in stream-identifier order.</param>
-    private static void EmitDirectory(SectorWriter writer, List<Entry> entries)
+    /// <param name="plan">The emission plan, whose entries are in stream-identifier order.</param>
+    private static void EmitDirectory(SectorWriter writer, EmissionPlan plan)
     {
         Span<byte> record = stackalloc byte[DirectoryEntrySize];
-        foreach (Entry entry in entries)
+        foreach (Entry entry in plan.Entries)
         {
             record.Clear();
             entry.Encode(record);
             writer.WriteBytes(record);
         }
 
-        writer.PadToSector();
+        EncodeFreeEntry(record);
+        for (long slot = plan.Entries.Count; slot < DirectorySlots(plan); slot++)
+            writer.WriteBytes(record);
+    }
+
+    /// <summary>
+    /// Returns the number of entry slots the directory sectors hold.
+    /// </summary>
+    /// <param name="plan">The emission plan.</param>
+    /// <returns>The directory sector count times the entries a sector holds.</returns>
+    private static long DirectorySlots(EmissionPlan plan) =>
+        plan.DirectorySectors * (plan.SectorSize / DirectoryEntrySize);
+
+    /// <summary>
+    /// Encodes a free directory entry, which [MS-CFB] 2.6.3 defines as all zeroes except the left sibling, right
+    /// sibling and child links, which are NOSTREAM.
+    /// </summary>
+    /// <param name="record">The 128-byte entry to fill.</param>
+    private static void EncodeFreeEntry(Span<byte> record)
+    {
+        record.Clear();
+        BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(68), CfbHeader.NoStream);
+        BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(72), CfbHeader.NoStream);
+        BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(76), CfbHeader.NoStream);
     }
 
     /// <summary>

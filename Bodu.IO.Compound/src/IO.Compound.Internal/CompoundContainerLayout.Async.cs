@@ -36,7 +36,7 @@ internal static partial class CompoundContainerLayout
         var writer = new SectorWriter(destination, plan.SectorSize);
 
         await EmitHeaderAsync(writer, plan, cancellationToken).ConfigureAwait(false);
-        await EmitDirectoryAsync(writer, plan.Entries, cancellationToken).ConfigureAwait(false);
+        await EmitDirectoryAsync(writer, plan, cancellationToken).ConfigureAwait(false);
         if (plan.MiniFatSectors > 0)
             await EmitMiniFatAsync(writer, plan, cancellationToken).ConfigureAwait(false);
 
@@ -84,25 +84,28 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Asynchronously emits the directory sectors, encoding each entry and padding the final sector with zero.
+    /// Asynchronously emits the directory sectors, encoding each entry and filling the rest of the final sector with
+    /// free entries.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="entries">The directory entries, in stream-identifier order.</param>
+    /// <param name="plan">The emission plan, whose entries are in stream-identifier order.</param>
     /// <param name="cancellationToken">A token that cancels the write.</param>
     /// <returns>A task that completes when the directory has been emitted.</returns>
-    private static async Task EmitDirectoryAsync(SectorWriter writer, List<Entry> entries, CancellationToken cancellationToken)
+    private static async Task EmitDirectoryAsync(SectorWriter writer, EmissionPlan plan, CancellationToken cancellationToken)
     {
         byte[] rented = ArrayPool<byte>.Shared.Rent(DirectoryEntrySize);
         try
         {
-            foreach (Entry entry in entries)
+            foreach (Entry entry in plan.Entries)
             {
                 Array.Clear(rented, 0, DirectoryEntrySize);
                 entry.Encode(rented.AsSpan(0, DirectoryEntrySize));
                 await writer.WriteBytesAsync(rented.AsMemory(0, DirectoryEntrySize), cancellationToken).ConfigureAwait(false);
             }
 
-            await writer.PadToSectorAsync(cancellationToken).ConfigureAwait(false);
+            EncodeFreeEntry(rented.AsSpan(0, DirectoryEntrySize));
+            for (long slot = plan.Entries.Count; slot < DirectorySlots(plan); slot++)
+                await writer.WriteBytesAsync(rented.AsMemory(0, DirectoryEntrySize), cancellationToken).ConfigureAwait(false);
         }
         finally
         {
