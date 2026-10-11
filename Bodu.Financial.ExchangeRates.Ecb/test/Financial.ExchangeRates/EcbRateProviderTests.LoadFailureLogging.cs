@@ -102,4 +102,19 @@ public partial class EcbRateProviderTests
 
         Assert.IsFalse(logger.Entries.Any(entry => entry.EventId.Id is FeedLoadFailedEventId or FeedLoadUnexpectedErrorEventId));
     }
+
+    /// <summary>
+    /// Verifies that an <see cref="IOException" /> from the source is logged as an expected feed-load failure, at
+    /// warning level under the provider's own event id, and rethrown unchanged.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenSourceThrowsIOException_ShouldLogExpectedFailureAndRethrow()
+    {
+        (EcbRateProvider provider, CapturingLogger logger) = CreateThrowing(new IOException("simulated stream failure"));
+
+        await Assert.ThrowsExactlyAsync<IOException>(async () =>
+            await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31)));
+
+        Assert.AreEqual(1, logger.Entries.Count(entry => entry.EventId.Id == FeedLoadFailedEventId && entry.Level == LogLevel.Warning));
+    }
 }

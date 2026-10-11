@@ -91,4 +91,23 @@ public sealed partial class AsyncSemaphoreTests
         sut.Release();
         await live;
     }
+
+    /// <summary>
+    /// Verifies that a wait granted a permit before its token is canceled completes, and that the permit is not
+    /// returned to the semaphore.
+    /// </summary>
+    [TestMethod]
+    public async Task WaitAsync_WhenReleasePrecedesCancellation_ShouldCompleteSuccessfully()
+    {
+        var sut = new AsyncSemaphore(0);
+        using var cts = new CancellationTokenSource();
+        ValueTask pending = sut.WaitAsync(cts.Token);
+
+        sut.Release();
+        cts.Cancel();
+
+        await pending;
+        Assert.AreEqual(0, sut.WaiterCount);
+        Assert.AreEqual(0, sut.CurrentCount);
+    }
 }

@@ -74,4 +74,26 @@ public sealed partial class AsyncReaderWriterLockTests
             _ = sut.WriterAsync().AsTask();
         });
     }
+
+    /// <summary>
+    /// Verifies that a writer granted the lock before its token is canceled keeps it, and that a reader acquires the
+    /// lock once the writer releases it.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenGrantPrecedesCancellation_ShouldReturnWriter()
+    {
+        var sut = new AsyncReaderWriterLock();
+        using var cts = new CancellationTokenSource();
+        AsyncReaderWriterLock.Releaser active = await sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> waiting = sut.WriterAsync(cts.Token);
+
+        active.Dispose();
+        cts.Cancel();
+
+        (await waiting).Dispose();
+        Assert.AreEqual(0, sut.WaitingWriterCount);
+        using (await sut.ReaderAsync())
+        {
+        }
+    }
 }

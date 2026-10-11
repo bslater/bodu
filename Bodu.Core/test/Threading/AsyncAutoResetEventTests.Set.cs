@@ -107,4 +107,23 @@ public sealed partial class AsyncAutoResetEventTests
         sut.Set();
         await live;
     }
+
+    /// <summary>
+    /// Verifies that when the waiter at the front of the queue is canceled, the next signal releases the waiter queued
+    /// behind it.
+    /// </summary>
+    [TestMethod]
+    public async Task Set_WhenFrontWaiterCancels_ShouldReleaseNextWaiter()
+    {
+        var sut = new AsyncAutoResetEvent();
+        using var cts = new CancellationTokenSource();
+        ValueTask canceled = sut.WaitAsync(cts.Token);
+        ValueTask live = sut.WaitAsync();
+
+        cts.Cancel();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);
+        sut.Set();
+        await live;
+        Assert.AreEqual(0, sut.WaiterCount);
+    }
 }
