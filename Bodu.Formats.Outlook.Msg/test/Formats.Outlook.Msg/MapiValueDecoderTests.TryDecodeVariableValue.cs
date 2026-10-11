@@ -49,4 +49,38 @@ public partial class MapiValueDecoderTests
         Assert.IsTrue(MapiValueDecoder.TryDecodeVariableValue(MapiPropertyType.String8, payload, utf8, strict: false, out object? value));
         Assert.AreEqual("ab", value);
     }
+
+    /// <summary>
+    /// Verifies that a <c>Unicode</c> or <c>String8</c> payload ends at its first NUL terminator, as MS-OXCDATA 2.11.1
+    /// defines both types: the terminator and the bytes after it are not part of the text, at either strictness.
+    /// </summary>
+    /// <param name="testName">The strictness, by name.</param>
+    /// <param name="strict">Whether the payload is decoded strictly.</param>
+    [TestMethod]
+    [DataRow("Tolerant", false)]
+    [DataRow("Strict", true)]
+    public void TryDecodeVariableValue_WhenStringHoldsBytesAfterItsTerminator_ShouldEndAtTheTerminator(string testName, bool strict)
+    {
+        byte[] unicode = Encoding.Unicode.GetBytes("Hello\0junk");
+        byte[] ansi = Encoding.ASCII.GetBytes("Hello\0junk");
+        Encoding windows1252 = MapiEncodingResolver.GetEncoding(1252, null);
+
+        Assert.IsTrue(MapiValueDecoder.TryDecodeVariableValue(MapiPropertyType.Unicode, unicode, Encoding.Unicode, strict, out object? text), testName);
+        Assert.AreEqual("Hello", text, testName);
+        Assert.IsTrue(MapiValueDecoder.TryDecodeVariableValue(MapiPropertyType.String8, ansi, windows1252, strict, out object? ansiText), testName);
+        Assert.AreEqual("Hello", ansiText, testName);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>Unicode</c> payload is cut only at a NUL code unit: zero bytes inside nonzero code units, such
+    /// as those of U+0100 and U+4100, are text.
+    /// </summary>
+    [TestMethod]
+    public void TryDecodeVariableValue_WhenUnicodeCodeUnitsHoldZeroBytes_ShouldKeepThem()
+    {
+        byte[] payload = Encoding.Unicode.GetBytes("\u0100\u4100x");
+
+        Assert.IsTrue(MapiValueDecoder.TryDecodeVariableValue(MapiPropertyType.Unicode, payload, Encoding.Unicode, strict: true, out object? value));
+        Assert.AreEqual("\u0100\u4100x", value);
+    }
 }

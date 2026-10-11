@@ -184,4 +184,27 @@ public partial class OutlookMessageTests
             .AddFixedEntry(0x80000003, 7)
             .AddStorage(MsgStreamNames.NameIdStorageName, nameId);
     }
+
+    /// <summary>
+    /// Verifies that a string name stored with its NUL terminator (<c>Keywords</c> and NUL) ends at the terminator, so
+    /// the name resolves in both directions as <c>Keywords</c>.
+    /// </summary>
+    [TestMethod]
+    public void TryGetNamedPropertyId_WhenStringNameHoldsItsTerminator_ShouldResolveTheNameBeforeIt()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x80000003, 7)
+            .WithNameId(
+                Array.Empty<byte>(),
+                MsgFixtureBuilder.NameIdEntry(0, 2, isString: true, 0),
+                MsgFixtureBuilder.NameIdString("Keywords\0"))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.IsTrue(message.TryGetPropertyName(new MapiPropertyTag(0x80000003u), out MapiNamedProperty name));
+        Assert.AreEqual("Keywords", name.Name);
+        Assert.IsTrue(message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, "Keywords"), out ushort id));
+        Assert.AreEqual((ushort)0x8000, id);
+    }
 }

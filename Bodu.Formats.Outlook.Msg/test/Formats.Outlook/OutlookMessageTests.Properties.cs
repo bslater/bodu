@@ -132,4 +132,48 @@ public partial class OutlookMessageTests
         Assert.AreEqual(2, message.Properties.Count);
         Assert.IsTrue(message.Properties.Contains(new MapiPropertyTag(0u)));
     }
+
+    /// <summary>
+    /// Verifies that a string property whose value stream holds bytes after its NUL terminator ends at the terminator,
+    /// at every validation level: a <c>Unicode</c> subject and a <c>String8</c> normalized subject, each stored as
+    /// <c>Hello</c>, NUL, <c>junk</c> under a record size that matches its stream, both read as <c>Hello</c>.
+    /// </summary>
+    /// <param name="level">The validation level the message is read at.</param>
+    [TestMethod]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Strict)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void Properties_WhenStringHoldsBytesAfterItsTerminator_ShouldEndAtTheTerminator(CompoundValidationLevel level)
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddEntryWithoutStream(0x0037001F, 20)
+            .AddRawStream(MsgStreamNames.GetSubstgStreamName(0x0037001F), System.Text.Encoding.Unicode.GetBytes("Hello\0junk"))
+            .AddEntryWithoutStream(0x0E1D001E, 10)
+            .AddRawStream(MsgStreamNames.GetSubstgStreamName(0x0E1D001E), "Hello\0junk"u8.ToArray())
+            .Build();
+
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { ValidationLevel = level });
+
+        Assert.AreEqual("Hello", message.Properties.GetString(MapiPropertyIds.Subject));
+        Assert.AreEqual("Hello", message.Properties.GetString(0x0E1D));
+    }
+
+    /// <summary>
+    /// Verifies that each element of a multi-valued string property ends at its NUL terminator.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenMultiValuedStringElementHoldsBytesAfterItsTerminator_ShouldEndAtTheTerminator()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddMultiValueUnicode(0x6844, "Alpha\0junk", "Beta")
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        string[]? values = message.Properties.GetStringArray(0x6844);
+        Assert.IsNotNull(values);
+        Assert.AreEqual(2, values.Length);
+        Assert.AreEqual("Alpha", values[0]);
+        Assert.AreEqual("Beta", values[1]);
+    }
 }

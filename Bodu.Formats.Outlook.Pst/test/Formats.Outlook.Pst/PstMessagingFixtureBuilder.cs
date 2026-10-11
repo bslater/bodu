@@ -310,6 +310,12 @@ internal sealed class PstMessagingFixtureBuilder
     internal byte[]? RtfPayloadOverride { get; set; }
 
     /// <summary>
+    /// Gets or sets a replacement for the full message's binary <c>PidTagHtml</c> payload.
+    /// </summary>
+    /// <value><see langword="null" /> to emit <see cref="HtmlBodyText" /> in the message code page.</value>
+    internal byte[]? HtmlPayloadOverride { get; set; }
+
+    /// <summary>
     /// Assembles the synthetic mail store and returns it as a seekable stream positioned at its start.
     /// </summary>
     /// <returns>The container stream.</returns>
@@ -484,7 +490,7 @@ internal sealed class PstMessagingFixtureBuilder
         uint emailHid = ltp.AddItem(Encoding.Unicode.GetBytes(SenderEmailAddress));
         uint classHid = ltp.AddItem(Encoding.Unicode.GetBytes("IPM.Note"));
         uint bodyHid = ltp.AddItem(GetCodePageBytes(BodyText));
-        uint htmlHid = ltp.AddItem(GetCodePageBytes(HtmlBodyText));
+        uint htmlHid = ltp.AddItem(HtmlPayloadOverride ?? GetCodePageBytes(HtmlBodyText));
         uint rtfHid = ltp.AddItem(BuildRtfPayload());
         uint mvUnicodeHid = ltp.AddItem(BuildMvUnicodePayload(MvUnicodeValues));
         uint mvInt32Hid = ltp.AddItem(BuildMvInt32Payload(MvInt32Values));

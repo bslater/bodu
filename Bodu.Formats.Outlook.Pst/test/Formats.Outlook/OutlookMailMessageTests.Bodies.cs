@@ -145,4 +145,19 @@ public partial class OutlookMailMessageTests
 
         Assert.AreEqual(CompressedRtfTests.HelloWorldRtfText, GetFullMessage(store).BodyRtf, testName);
     }
+
+    /// <summary>
+    /// Verifies that a binary HTML body stored with a NUL terminator decodes to the text before it, while the property
+    /// keeps the bytes as stored.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenBinaryPayloadHoldsATerminator_ShouldEndAtTheTerminator()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b => b.HtmlPayloadOverride = [.. "<p>x</p>"u8, 0x00]);
+
+        OutlookMailMessage message = GetFullMessage(store);
+
+        Assert.AreEqual("<p>x</p>", message.BodyHtml);
+        Assert.AreEqual(9, message.Properties.GetBinary(MapiPropertyIds.Html)!.Value.Length);
+    }
 }
