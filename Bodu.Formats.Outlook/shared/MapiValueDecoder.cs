@@ -260,6 +260,7 @@ internal static class MapiValueDecoder
             MapiPropertyType.Int32 => 4,
             MapiPropertyType.Float => 4,
             MapiPropertyType.Double => 8,
+            MapiPropertyType.AppTime => 8,
             MapiPropertyType.Currency => 8,
             MapiPropertyType.Int64 => 8,
             MapiPropertyType.SystemTime => 8,
@@ -292,6 +293,8 @@ internal static class MapiValueDecoder
                 value = floats;
                 return true;
             case MapiPropertyType.Double:
+            case MapiPropertyType.AppTime:
+                // An AppTime element is an OLE Automation date, a double, decoded exactly as a single AppTime is.
                 var doubles = new double[count];
                 for (int i = 0; i < count; i++)
                     doubles[i] = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReadInt64LittleEndian(bytes.Slice(i * 8)));
