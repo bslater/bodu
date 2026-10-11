@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_Text_Yaml_YamlSpecVersion" data-uid="Bodu.Text.Yaml.YamlSpecVersion" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 YamlSpecVersion Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c815e20b17ae9dcb108a09995a0c3859a6ff7aa1/Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/715fbcad938064ed11a1de93fcd527d58ebd3f62/Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -105,7 +105,7 @@ YamlSpecVersion Enum
   <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/c815e20b17ae9dcb108a09995a0c3859a6ff7aa1/Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs">YamlSpecVersion.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/715fbcad938064ed11a1de93fcd527d58ebd3f62/Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs">YamlSpecVersion.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Identifies the version of the YAML specification whose implicit type resolution the reader applies. The version
@@ -182,9 +182,9 @@ to type tokens such as <code>yes</code> or <code>off</code>.</p>
     <dt id="Bodu_Text_Yaml_YamlSpecVersion_V1_1" data-bodu-frameworks="net8.0 net10.0"><code>V1_1 = 1</code></dt>
   
   <dd><p>The YAML 1.1 schema. Additionally resolves <code>yes</code>/<code>no</code>, <code>on</code>/<code>off</code>, and <code>y</code>/<code>n</code> as
-booleans, and accepts leading-zero octal integers, binary integers, and underscore digit grouping. Base-60
-(&quot;sexagesimal&quot;) numbers are deliberately not resolved; a colon-separated scalar such as <code>22:22</code> stays a
-string.</p>
+booleans, and accepts the YAML 1.1 integer forms (leading-zero octal, binary, and hexadecimal, each with an
+optional sign) and underscore digit grouping after the first digit. Base-60 (&quot;sexagesimal&quot;) numbers are
+deliberately not resolved; a colon-separated scalar such as <code>22:22</code> stays a string.</p>
 </dd>
   </dl>
 
@@ -197,12 +197,22 @@ silently converts unquoted tokens such as <code>no</code>, <code>yes</code>, <co
 </p>
 <p>
 Selecting <a class="xref" href="Bodu.Text.Yaml.YamlSpecVersion.html#Bodu_Text_Yaml_YamlSpecVersion_V1_1">V1_1</a> opts in to the broader YAML 1.1 implicit typing rules, including the additional
-boolean spellings (<code>yes</code>/<code>no</code>, <code>on</code>/<code>off</code>, <code>y</code>/<code>n</code>), leading-zero octal integers (<code>0NNN</code>),
-binary integers (<code>0bNNN</code>), and underscore digit grouping. The base-60 ("sexagesimal") numeric form of the
+boolean spellings (<code>yes</code>/<code>no</code>, <code>on</code>/<code>off</code>, <code>y</code>/<code>n</code>) and the YAML 1.1 int type's
+integer forms: binary (<code>0b1010</code>), leading-zero octal (<code>0755</code>), decimal, and hexadecimal (<code>0x1F</code>).
+Each integer form may carry a sign, so <code>-0755</code> is -493 and <code>-0x1F</code> is -31, and may group its digits with
+underscores after the first digit, so <code>1_000</code> is 1000 while <code>_123</code> remains a string. The core schema's
+<code>0o</code> octal form is also resolved, in the core schema's form, without a sign or digit groups. Floating-point
+values group their digits with underscores too, but cannot begin with one or put one directly after a leading
+decimal point, so <code>_1.5</code> and <code>._5</code> remain strings. The base-60 ("sexagesimal") numeric form of the
 historical 1.1 schema is deliberately not resolved under either version: a colon-separated plain scalar such as
 <code>22:22</code> remains a string, avoiding the well-known footgun in which time-, port-, or address-like values were
 silently reinterpreted as large numbers. The version affects only how plain scalars are typed; structural parsing of
 anchors, aliases, tags, and collections is identical for both versions.
+</p>
+<p>
+Under either version, a floating-point literal beyond the range of a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>, such as <code>1e309</code> or
+<code>-1e309</code>, resolves to an infinity, as IEEE 754 conversion rounds it, rather than remaining a string; an
+explicit <code>!!float</code> tag reads it the same way.
 </p>
 </div>
 
@@ -232,7 +242,7 @@ anchors, aliases, tags, and collections is identical for both versions.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c815e20 · Built: 2026-10-11 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 715fbca · Built: 2026-10-11 (UTC)</span>
         </div>
       </div>
     </footer>
