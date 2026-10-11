@@ -347,6 +347,23 @@ public partial class ExcelWorksheetReaderTests
     }
 
     /// <summary>
+    /// Verifies that a number whose XF record selects an index in a built-in date range that a FORMAT record defines
+    /// with a number code, as Gnumeric writes its formats from index 50, is not date formatted.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormatRecordDefinesBuiltInDateIndex_ShouldClassifyByItsCode()
+    {
+        ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
+        var formats = new BiffFormatTable([50], new Dictionary<ushort, string> { [50] = "0.00" }, detectDateFormats: true);
+        byte[] substream = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 1.5));
+        using var reader = new ExcelWorksheetReader(info, substream, [], formats, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(50, cell.FormatIndex);
+        Assert.IsFalse(cell.IsDateFormatted);
+    }
+
+    /// <summary>
     /// Opens a streaming reader over a BIFF5 worksheet substream written through a BIFF5 writer.
     /// </summary>
     /// <param name="codePage">The code page the writer encodes text in and the reader decodes with.</param>

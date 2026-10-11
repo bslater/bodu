@@ -70,6 +70,19 @@ internal static class Biff8TestWorkbook
     public static byte[] FilePass() =>
         Record(0x002F, new byte[6]);
 
+    /// <summary>Builds a FORMAT record.</summary>
+    /// <param name="formatIndex">The number-format index the record defines.</param>
+    /// <param name="code">The format code.</param>
+    /// <returns>The framed record.</returns>
+    public static byte[] Format(ushort formatIndex, string code) =>
+        Emit((ref BiffWriter w) => w.WriteFormat(formatIndex, code));
+
+    /// <summary>Builds an XF record that selects a number format.</summary>
+    /// <param name="formatIndex">The number-format index.</param>
+    /// <returns>The framed record.</returns>
+    public static byte[] Xf(ushort formatIndex) =>
+        Emit((ref BiffWriter w) => w.WriteXf(new BiffXfRecord(0, formatIndex, 0)));
+
     /// <summary>Builds a NUMBER cell.</summary>
     /// <param name="row">The row.</param>
     /// <param name="column">The column.</param>
