@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Formats.Outlook.Msg;
+using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Outlook;
 
@@ -118,5 +119,69 @@ public partial class OutlookMessageTests
         using var message = OutlookMessage.OpenRead(container);
 
         Assert.IsFalse(message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, "keywords"), out _));
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="CompoundValidationLevel.Strict" /> a named-property mapping storage that lacks one
+    /// of the three streams MS-OXMSG 2.2.3.1 requires throws <see cref="OutlookMsgFormatException" /> when the mapping is
+    /// first used, even though the streams that remain hold a well-formed numeric entry.
+    /// </summary>
+    /// <param name="missingStream">The name of the stream the storage lacks.</param>
+    [TestMethod]
+    [DataRow("__substg1.0_00020102")]
+    [DataRow("__substg1.0_00030102")]
+    [DataRow("__substg1.0_00040102")]
+    public void TryGetNamedPropertyId_WhenNameIdStreamIsMissingUnderStrict_ShouldThrowOutlookMsgFormatException(string missingStream)
+    {
+        using MemoryStream container = CreateWithNameIdStreamMissing(missingStream).Build();
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { ValidationLevel = CompoundValidationLevel.Strict });
+
+        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, 0x8501u), out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that under the tolerant levels a named-property mapping storage without its entry stream is read as
+    /// mapping nothing, and the message's properties still read.
+    /// </summary>
+    /// <param name="level">The tolerant validation level.</param>
+    [TestMethod]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void TryGetNamedPropertyId_WhenNameIdStreamIsMissingUnderTolerantLevels_ShouldReturnFalse(CompoundValidationLevel level)
+    {
+        using MemoryStream container = CreateWithNameIdStreamMissing("__substg1.0_00030102").Build();
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { ValidationLevel = level });
+
+        Assert.IsFalse(message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, 0x8501u), out _));
+        Assert.AreEqual(7, message.Properties.GetInt32(0x8000));
+    }
+
+    /// <summary>
+    /// Builds a message whose named-property mapping storage holds a numeric entry for LID <c>0x8501</c> in
+    /// <c>PS_PUBLIC_STRINGS</c>, mapped to the Int32 property <c>0x80000003</c>, but lacks one of its three streams.
+    /// </summary>
+    /// <param name="missingStream">The name of the stream to leave out.</param>
+    /// <returns>The fixture builder.</returns>
+    private static MsgFixtureBuilder CreateWithNameIdStreamMissing(string missingStream)
+    {
+        var nameId = new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment).OmitPropertiesStream();
+        (string Name, byte[] Content)[] streams =
+        [
+            (MsgStreamNames.GetSubstgStreamName(0x00020102), []),
+            (MsgStreamNames.GetSubstgStreamName(0x00030102), MsgFixtureBuilder.NameIdEntry(0x8501, 2, isString: false, 0)),
+            (MsgStreamNames.GetSubstgStreamName(0x00040102), []),
+        ];
+        foreach ((string name, byte[] content) in streams)
+        {
+            if (name != missingStream)
+                nameId.AddRawStream(name, content);
+        }
+
+        return new MsgFixtureBuilder()
+            .AddFixedEntry(0x80000003, 7)
+            .AddStorage(MsgStreamNames.NameIdStorageName, nameId);
     }
 }
