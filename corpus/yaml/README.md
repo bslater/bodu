@@ -55,8 +55,8 @@ Several of these libraries descend from one another, so a fix that appears in tw
   (2008).
 - eemeli/yaml and yaml-cpp are independent implementations.
 
-So a scenario that fails in several catalogues is one finding, not several (yaml-test-suite EB22 fails under libyaml,
-YamlDotNet and SnakeYAML Engine), and the findings below are counted by root cause, not by row.
+So a scenario that fails in several catalogues is one finding, not several (yaml-test-suite EB22 failed under
+libyaml, YamlDotNet and SnakeYAML Engine), and the findings below are counted by root cause, not by row.
 
 ## One schema
 
@@ -89,23 +89,23 @@ is a byte sequence, and Bodu reads it as UTF-8.
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 890 | The row carries the scenario of the fix and runs: Bodu must do what the fix established |
-| `dialect` | 85 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix's; `reason` names the document |
+| `applies` | 889 | The row carries the scenario of the fix and runs: Bodu must do what the fix established |
+| `dialect` | 86 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix's; `reason` names the document |
 | `n/a` | 526 | The fix concerns an API or feature Bodu does not have, the library's language or runtime, its platform, packaging, or performance only; `reason` says which |
 | `unknown` | 4 | No scenario could be found; `reason` links what was read |
 
 A row is `dialect` only when a Bodu document (the package README, the guides under `docs/`, the XML documentation) or
-the YAML specification states Bodu's behaviour. `YamlTestCorpusReader.UnsupportedFeatureRejectedIds`, the corpus
-tests' list of valid suite cases that Bodu rejects, is cited beside such a document but is never enough on its own:
-where it lists a case whose features the documents support (P2AD, R4YG, A2M4, 2SXE, NJ66, UT92, and the escaped-tab
-cases KH5V/01, 3RLN/01, 3RLN/04, DE56/02 and DE56/03), the row stays `applies`, and its failure is a finding. The
-deliberate differences are: the YAML 1.2 core schema where a library resolves YAML 1.1 or a JSON-like schema; the
-profile's rejections (complex and alias keys, duplicate keys under the default `Throw`, anchor override, cyclic
-aliases, non-core tags, unsupported directives, tabs in a line's leading whitespace, non-printable characters, and
-nesting beyond `MaxDepth`); `SpecVersion.V1_1` changing scalar typing only, never structure; and a few places where
-Bodu follows the specification and the fix did not (a top-level block scalar's indentation indicator counts from a
-parent indentation of -1, so `|1` means no indentation; `\L` and `\P` are escapes; anchor names may hold `.` and
-`/`; and a flow collection may not hold an empty entry).
+the YAML specification states Bodu's behaviour. `YamlTestCorpusReader.UnsupportedFeatureRejectedIds`, the corpus tests'
+list of valid suite cases that Bodu rejects, is cited beside such a document but is never enough on its own: where it
+listed a case whose features the documents support (P2AD, R4YG, A2M4, 2SXE, NJ66, UT92, and the escaped-tab cases
+KH5V/01, 3RLN/01, 3RLN/04, DE56/02 and DE56/03), the row stayed `applies`, and its failure was a finding (each case now
+passes and has left the list). The deliberate differences are: the YAML 1.2 core schema where a library resolves YAML
+1.1 or a JSON-like schema; the profile's rejections (complex and alias keys, duplicate keys under the default `Throw`,
+anchor override, cyclic aliases, non-core tags, unsupported directives, tabs in a line's leading whitespace,
+non-printable characters, and nesting beyond `MaxDepth`); `SpecVersion.V1_1` changing scalar typing only, never
+structure; and a few places where Bodu follows the specification and the fix did not (a top-level block scalar's
+indentation indicator counts from a parent indentation of -1, so `|1` means no indentation; `\L` and `\P` are escapes;
+anchor names may hold `.` and `/`; and a flow collection may not hold an empty entry).
 
 The common `n/a` reasons are that Bodu's DOM keeps values only (no comments, scalar styles, anchors or positions), that
 its writer emits block collections with plain or double-quoted scalars and no tags, anchors or aliases, that it has no
@@ -122,11 +122,11 @@ types) have no counterpart. A serializer fix with a `System.Text.Json`-shaped co
 | `write` | 31 | The JSON value in `input`, written through `Utf8YamlWriter`, produces exactly `expected` |
 | `write-reject` | 0 | Writing `input` throws the exception `expected` names |
 | `roundtrip` | 99 | Read `input`, write each document back, and read again: both readings render the same, and a non-empty `expected` is the exact written text |
-| `unit` | 35 | A typed scenario (a `YamlSerializer` model, a converter, a callback): `input` names the test to write, `<TestClass>.<Member>_When<Condition>_Should<Result>`, and `reason` describes the model, input and outcome |
+| `unit` | 35 | A typed scenario (a `YamlSerializer` model, a converter, a callback): `input` names its test in `Bodu.Text.Yaml/test`, `<TestClass>.<Member>_When<Condition>_Should<Result>`, and `reason` describes the model, input and outcome |
 
 Every input is read with `ParseAllDocuments`, so single- and multi-document inputs take one path. The corpus tests use
-`YamlDocument.Parse` instead, which differs in one way the rows show: it rejects content left over after a complete
-document, where `ParseAllDocuments` starts another (below).
+`YamlDocument.Parse` instead, which differed in one way the rows showed: it rejected content left over after a
+complete document, where `ParseAllDocuments` started another; since #875 both apply the same document-end rules.
 
 ### Rendering
 
@@ -174,9 +174,10 @@ trip shows that the value reads back unchanged, and exact text is pinned only wh
 | `MaxDepth` | `YamlDocumentOptions.MaxDepth` | An integer; zero or less selects the default of 64 | 1 |
 
 A fix whose answer depends on YAML 1.1 versus 1.2 has one row per version where the answers differ. Rows that expect
-the YAML 1.1 reading, and every merge-key row, set `SpecVersion=V1_1`: the merge key is a YAML 1.1 feature, and every
-Bodu document agrees that `MergeKeyBehavior.Expand` applies under `V1_1`, whereas they disagree about the default
-`V1_2` (below). No row needs another `MergeKeyBehavior`, so it is not an option.
+the YAML 1.1 reading, and every merge-key row, set `SpecVersion=V1_1`: the merge key is a YAML 1.1 feature. Bodu
+expands it under either version while `MergeKeyBehavior` is `Expand`, the default, as its documents say since #901,
+and the rows keep `V1_1` so that they read the same where a reader gates merge keys on it. No row needs another
+`MergeKeyBehavior`, so it is not an option.
 
 ## Counts
 
@@ -186,95 +187,147 @@ Bodu document agrees that `MergeKeyBehavior.Expand` applies under `V1_1`, wherea
 | pyyaml | 64 | 72 | 22 | 6 | 44 | 0 |
 | yamldotnet | 142 | 230 | 148 | 14 | 66 | 2 |
 | eemeli-yaml | 200 | 325 | 212 | 11 | 102 | 0 |
-| js-yaml | 120 | 179 | 116 | 13 | 49 | 1 |
+| js-yaml | 120 | 179 | 115 | 14 | 49 | 1 |
 | go-yaml | 114 | 152 | 79 | 12 | 61 | 0 |
 | snakeyaml-engine | 51 | 185 | 160 | 14 | 11 | 0 |
 | yaml-cpp | 54 | 79 | 48 | 4 | 27 | 0 |
 | ruamel-yaml | 212 | 235 | 81 | 8 | 145 | 1 |
-| **Total** | **994** | **1,505** | **890** | **85** | **526** | **4** |
+| **Total** | **994** | **1,505** | **889** | **86** | **526** | **4** |
 
 SnakeYAML Engine has many rows per fix because its 2.4, 3.1 and 3.2 entries each made a batch of yaml-test-suite
 cases pass, and each case is a row.
 
 ## What the catalogue found
 
-Of the 975 `applies` and `dialect` rows, 35 are `unit` rows whose tests are still to be written. Of the other 940,
-run against `Bodu.Text.Yaml` at c7b500d66a, 845 pass and 95 fail: 92 `applies` rows, and 3 `dialect` rows whose
-stated behaviour (the README's, or the specification's) Bodu does not deliver. The failures are recorded, not fixed;
-each is to be fixed test first, and no row is weakened to pass. By root cause, reading:
+Of the 975 `applies` and `dialect` rows, 35 are `unit` rows, each naming a test in `Bodu.Text.Yaml/test`, and 940 run
+as data. Run against `Bodu.Text.Yaml` at c7b500d66a, 845 of the 940 passed and 95 failed: 92 `applies` rows, and 3
+`dialect` rows whose stated behaviour (the README's, or the specification's) Bodu did not deliver. Five of the unit
+tests failed too, for four more defects. Each defect was filed as an issue in `bslater/bodu` and fixed test first, no
+row was weakened to pass, and one row became `dialect` (below). All 940 data rows now pass on net8.0 and net10.0, and
+so do the 35 unit tests, the last of them (YamlDotNet 16.1.0 PR #960,
+`YamlSerializerTests.SerializeDeserialize_WhenDerivedTypeHidesBaseProperty_ShouldUseDerivedProperty`) through the fix
+for #857 to the shared serialization source, which master carries.
 
-- `ParseAllDocuments` starts a new document at any content left after a complete root node, and ignores text after
+By root cause, what failed and the issue that fixed it, reading:
+
+- `ParseAllDocuments` started a new document at any content left after a complete root node, and ignored text after
   `...` on its line, where `Parse` rejects both (`[ 42 ]\nhello`, `---\nkey: value\n... invalid`, EB22, 3HFZ): 16
-  rows.
-- A block scalar that is a block-sequence entry takes the entry's content column as its parent indentation, so
-  `- |1\n  x` reads `x\n`, not ` x\n` (P2AD, R4YG): 4 rows, and part of 3 of the rows above.
-- In a flow sequence, `?` is read as text: `[ ? ]` gives `["?"]`: 5 rows.
-- An explicit key with no value is rejected (`? a\n? b`), and so is a compact sequence after an explicit `:`
-  (`? a\n: - b`, A2M4), while `? "foo"\n : "bar"`, its `:` one column in, is accepted: 7 rows.
-- Node properties: a second tag or anchor on one node is read as text (`! ! a`); an anchor or tag before a flow
-  collection that holds `: ` misreads it (`- &a { x: 1 }`); empty anchor names are accepted (`- &`, `&] value`); an
-  anchor name ending in `:` at the start of a document or entry is misread (2SXE); `&a{}` is accepted without a
-  separating space; a tab after the properties of a root node or an entry is taken for indentation; a tag on a
-  null-like plain scalar loses its text (`!!str null` gives `""`); tag URI escapes are not decoded (`!!%73tr`); and a
-  verbatim tag holding a comma is rejected (`!<tag:yaml.org,2002:str>`): 18 rows.
-- Keys and plain scalars: implicit keys beginning with `,`, `@` or a backquote are accepted, as are `]` and `}` as
-  plain scalars and implicit keys over 1,024 characters; a flow collection used as a later implicit key is coerced to
-  its text (`a: 1\n[3]: 4`); a multi-line plain key in a flow mapping is rejected (NJ66, UT92); and so is an adjacent
-  value after a JSON-like key in a flow-sequence pair (`[ "a":b ]`): 12 rows.
-- Flow collections: empty entries are accepted (`{ , }`, `{foo, bar,, baz}`); after a plain key, a `:1` that starts a
-  later line is taken for the value indicator (`{a\n#c\n:1}`); a closing bracket less indented than its parent block
-  is accepted; and the depth limit counts nodes rather than containers, so 64 nested flow sequences exceed the default
-  of 64: 6 rows.
+  rows. #875 applies `Parse`'s document-end rules to every document of a stream.
+- A block scalar that is a block-sequence entry took the entry's content column as its parent indentation, so
+  `- |1\n  x` read `x\n`, not ` x\n` (P2AD, R4YG): 4 rows, and part of 3 of the rows above. #876 counts it from the
+  dash. #918, found while fixing #876, does the same for one on the line after the dash, which reads `-\n  |1\n   x`
+  as `"  x\n"` as PyYAML and libyaml do, and lets an entry's content reach the column right after the dash (AB8U,
+  57H4), with only spaces indenting a plain scalar's continuation line.
+- In a flow sequence, `?` was read as text: `[ ? ]` gave `["?"]`: 5 rows. #877 reads it as an explicit-key pair.
+- An explicit key with no value was rejected (`? a\n? b`), and so was a compact sequence after an explicit `:`
+  (`? a\n: - b`, A2M4), while `? "foo"\n : "bar"`, its `:` one column in, was accepted: 7 rows. #878 makes the value
+  line optional, allows a compact collection after the `:`, and requires the `:` at the key's column.
+- Node properties: a second tag or anchor on one node was read as text (`! ! a`); an anchor or tag before a flow
+  collection that holds `: ` misread it (`- &a { x: 1 }`); empty anchor names were accepted (`- &`, `&] value`); an
+  anchor name ending in `:` at the start of a document or entry was misread (2SXE); `&a{}` was accepted without a
+  separating space; a tab after the properties of a root node or an entry was taken for indentation; a tag on a
+  null-like plain scalar lost its text (`!!str null` gave `""`); tag URI escapes were not decoded (`!!%73tr`); and a
+  verbatim tag holding a comma was rejected (`!<tag:yaml.org,2002:str>`): 18 rows. #879 rejects a second property, #880
+  decides a property's owner from the token after it, #881 rejects empty names and glued properties, #882 accepts a tab
+  after properties, #883 resolves a tagged scalar from its text as written, and #884 decodes tag escapes and reads a
+  verbatim tag to its closing bracket. #917, found by the YamlDotNet 11.0.1 PR #596 row once #880 let it run, names
+  flow, flow-pair and explicit keys by their text as #883 does tags, where `{ x: 1, y: 2 }` under `V1_1` named `y`
+  `"true"`.
+- Keys and plain scalars: implicit keys beginning with `,`, `@` or a backquote were accepted, as were `]` and `}` as
+  plain scalars and implicit keys over 1,024 characters; a flow collection used as a later implicit key was coerced to
+  its text (`a: 1\n[3]: 4`); a multi-line plain key in a flow mapping was rejected (NJ66, UT92); and so was an adjacent
+  value after a JSON-like key in a flow-sequence pair (`[ "a":b ]`): 12 rows. #879 applies the plain-first rule to
+  scalars and #885 to implicit keys, #885 also rejects a flow collection as an implicit key at any position (moving
+  the suite case 6BFJ from the parse-only list to the profile-rejected one), #886 limits an implicit key to 1,024
+  characters, #887 folds plain scalars across lines in flow collections, and #888 applies the JSON-like key rules to
+  the flow `:`.
+- Flow collections: empty entries were accepted (`{ , }`, `{foo, bar,, baz}`); after a plain key, a `:1` that starts a
+  later line was taken for the value indicator (`{a\n#c\n:1}`); a closing bracket less indented than its parent block
+  was accepted; and the depth limit counted nodes rather than containers, so 64 nested flow sequences exceeded the
+  default of 64: 6 rows. #889 rejects empty entries and brackets left of their key, #888 the misplaced `:`, and #890
+  counts only sequences and mappings toward `MaxDepth`.
 - Escapes: the escaped tab (a backslash and a literal tab, YAML 1.2.2 production ns-esc-horizontal-tab) and a
-  JSON-style surrogate pair (`"\uD83D\uDC4D"`) are rejected: 7 rows.
-- `-\ta: b` is accepted, a tab indenting a compact mapping: 1 row.
-- A byte order mark at the start of a later document is rejected: 1 row.
-- Merge keys: an invalid merge value (a scalar, a null, or a sequence holding one) is silently dropped; a quoted
-  `"<<"` key is merged; and under `UseLast` a repeated `<<` keeps only the last merge: 5 rows.
-- YAML 1.1 resolution: a signed leading-zero octal reads as decimal (`-02472256`, `+071_352`), signed binary is not
-  resolved (`-0b111` stays a string), and leading underscores resolve as numbers (`_123`): 4 rows.
-- A float out of range (`1e309`) reads as infinity where the fix keeps a string, while Bodu itself rejects
-  `!!float 1e309`: 1 row.
+  JSON-style surrogate pair (`"\uD83D\uDC4D"`) were rejected: 7 rows. #891 and #892.
+- `-\ta: b` was accepted, a tab indenting a compact mapping: 1 row. #882.
+- A byte order mark at the start of a later document was rejected: 1 row. #893.
+- Merge keys: an invalid merge value (a scalar, a null, or a sequence holding one) was silently dropped; a quoted
+  `"<<"` key was merged; and under `UseLast` a repeated `<<` kept only the last merge: 5 rows. #894 validates merge
+  values, takes only the plain, untagged `<<` for a merge key, and rejects a second one whatever the duplicate-key
+  policy.
+- YAML 1.1 resolution: a signed leading-zero octal read as decimal (`-02472256`, `+071_352`), signed binary was not
+  resolved (`-0b111` stayed a string), and leading underscores resolved as numbers (`_123`): 4 rows. #895 matches the
+  YAML 1.1 int patterns before removing digit separators.
+- A float out of range (`1e309`) reads as infinity where the fix keeps a string, while Bodu itself rejected
+  `!!float 1e309`: 1 row. #883 reads `!!float 1e309` as infinity too, and #901 documents the rule, so the row is now
+  `dialect` (below).
 
 And writing:
 
-- A `<<` key is written plain, so it reads back as a merge: 1 row.
-- Strings that read back as other values are written plain: `1:1` (sexagesimal to a YAML 1.1 reader), and decimal
-  strings with a leading zero and an 8 or a 9 (`019`, `08`; `007` is quoted), which Bodu's own reader then reads as
-  integers: 3 rows.
-- Implicit keys over 1,024 characters are written implicitly, which a YAML 1.2 reader must reject: 4 rows.
+- A `<<` key was written plain, so it read back as a merge: 1 row. #896.
+- Strings that read back as other values were written plain: `1:1` (sexagesimal to a YAML 1.1 reader), and decimal
+  strings with a leading zero and an 8 or a 9 (`019`, `08`; `007` was quoted), which Bodu's own reader then read as
+  integers: 3 rows. #896 quotes a string that a YAML 1.2 or 1.1 reader would read as another value.
+- Implicit keys over 1,024 characters were written implicitly, which a YAML 1.2 reader must reject: 4 rows. #886
+  writes them as explicit keys.
 
-### Where Bodu's documents and behaviour disagree
+The unit tests found:
 
-- Merge keys. `README.md` (Conformance profile) calls the merge key opt-in, and the guide's Pattern 8
-  (`docs/guides/serialization/yaml/using.md`) says it is gated on `SpecVersion = V1_1`, a `<<` key being ordinary under
-  the default `V1_2`; `docs/docs/serialization/yaml/index.md` and using.md's Pattern 7 say `V1_1` enables it. Bodu
-  expands `<<` under `V1_2` too, as the README's compliance matrix, the `YamlMergeKeyBehavior` XML documentation and
-  `docs/guides/formats/writer-options-and-dom-options.md` (Pattern 9) say: `Expand` is the default.
-- Sexagesimal numbers. The README, index.md and using.md say `V1_1` resolves them; the `YamlSpecVersion` XML
-  documentation says they are deliberately not resolved, and Bodu keeps `1:20` a string.
-- Depth. The XML documentation of `YamlReaderOptions.MaxDepth` and `YamlDocumentOptions.MaxDepth` says "container
-  nesting", but Bodu counts nodes: `MaxDepth = 1` rejects `[1]` and `- 1` but accepts `a: 1`. Pattern 9 says "node
-  nesting", which matches.
-- Complex keys. The README says a sequence or mapping used as a key is rejected, not coerced, but a flow collection
-  used as a later implicit key is coerced to its text. It also names only sequences and mappings, while Bodu rejects
-  alias keys as well (its complex-key message names them).
-- Tabs. The README rejects tabs used as indentation and keeps them legal as separation, but Bodu rejects a tab used
-  as separation after node properties (`--- !!str\ta`) and accepts `-\ta: b`, where a tab indents a compact mapping. It
-  also treats any tab in a line's leading whitespace as indentation, after the indentation spaces (DK95/00) or inside
-  a top-level flow collection (6CA3, Q5MG); the catalogue takes that as documented, but the README does not spell it
-  out.
-- Escapes. The README and using.md reject invalid escapes, but Bodu also rejects the valid escaped tab.
+- An undefined alias reported no position, and a duplicate key was reported after its value rather than where it
+  starts (#897).
+- A binding error carried no position, and its `Path` named the member rather than the key as the document spells it
+  (#898).
+- A graph nested deeper than `MaxDepth` surfaced as the writer's `InvalidOperationException`, and one level past a
+  configured depth was accepted (#899).
+- A property hiding a base property with `new` was rejected as a second member with its name (#857).
+
+Issue #900, found while fixing TOML's #831, was fixed alongside: a finite value outside the `float` range bound to a
+`float` member became an infinity, and now throws `YamlSerializationException`.
+
+The fixes also moved 26 valid yaml-test-suite cases that Bodu had rejected into those it reads to their `in.json` (P2AD,
+R4YG, 4QFQ, 735Y, D83L and W42U by #876; JTV5, ZWK4, A2M4, 5WE3 and 7W2P by #878; UT92, CT4Q, NJ66, 8UDB and 8KB6
+by #887; 2SXE and HMQ5 by #880; KH5V/01, DE56/02, DE56/03, 3RLN/01 and 3RLN/04 by #891; AB8U, 57H4 and M6YH by #918),
+and 6BFJ, whose key is a flow sequence, from the parse-only cases to the profile-rejected ones (#885). Of the 402 cases,
+`YamlTestCorpusReader` now pins 255 that pass, 12 parsed without a value comparison, 94 rejected as the suite expects,
+and 41 rejected by the profile, from 229, 13, 94 and 66.
+
+### The row that became `dialect`
+
+js-yaml 4.2.0 #737 keeps an out-of-range float such as `1e309`, and `61e9540`, as a string; Bodu reads it as an
+infinity, as IEEE 754 conversion gives. #901 states that rule in `Bodu.Text.Yaml/README.md:24` and the `YamlSpecVersion`
+XML documentation (`Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs:32-36`), which the row's reason cites, and the row
+now expects Bodu's reading. js-yaml's counts moved from 116 `applies` and 13 `dialect` to 115 and 14.
+
+### Where Bodu's documents and behaviour disagreed
+
+- Merge keys. `README.md` called the merge key opt-in, and the guide's Pattern 8
+  (`docs/guides/serialization/yaml/using.md`) said it is gated on `SpecVersion = V1_1`, while Bodu expands `<<` under
+  `V1_2` too. #901 corrected the README, its compliance matrix, `docs/docs/serialization/yaml/index.md`, Patterns 7 and
+  8, and the `YamlMergeKeyBehavior` remarks: merge keys expand by default under either version.
+- Sexagesimal numbers. The README, index.md and using.md said `V1_1` resolves them; Bodu keeps `1:20` a string, as the
+  `YamlSpecVersion` XML documentation says. #901 corrected the three.
+- Depth. The `MaxDepth` XML documentation says "container nesting", but Bodu counted nodes; #890 made it count
+  sequences and mappings.
+- Complex keys. The README says a sequence or mapping used as a key is rejected, not coerced, but a flow collection used
+  as a later implicit key was coerced to its text; #885 rejects it. The README still names only sequences and
+  mappings, while Bodu also rejects an alias as a key (its complex-key message names aliases).
+- Tabs. The README rejects tabs used as indentation and keeps them legal as separation, but Bodu rejected a tab used as
+  separation after node properties (`--- !!str\ta`) and accepted `-\ta: b`; #882 fixed both, and #918 stopped a tab
+  counting toward a plain scalar's continuation indentation, which the README now states. Bodu still treats any tab
+  in the leading whitespace of a line that begins a node as indentation, after the indentation spaces (DK95/00) or
+  inside a top-level flow collection (6CA3, Q5MG); the catalogue takes that as documented, but the README does not
+  spell it out.
+- Escapes. The README and using.md reject invalid escapes, but Bodu also rejected the valid escaped tab; #891 fixed
+  it.
 - Writer quoting. Pattern 9 of using.md says the writer quotes a string whose plain form would resolve as a
-  non-string, but it writes the strings `019` and `08` plain, which Bodu reads back as integers, and a `<<` key plain,
-  which Bodu reads back as a merge.
+  non-string, but it wrote `019` and `08` plain, and a `<<` key; #896 fixed it, and the guide now names the forms.
 
 ## Running the rows
 
-The rows are not yet run by the test project. Every row that runs was checked with a scratch console harness outside
-the repository, built for `net10.0` against `Bodu.Text.Yaml` at c7b500d66a, which also checks the files themselves:
-column count, known classes, kinds, expectations and option names, a reason on every row, valid escapes, and printable
-ASCII only. Its `Renderer.cs` holds the CSV reader and file checks, the escape decoder, the option mapping, the JSON
-rendering and comparison, the write notation and the round trip; it depends only on `Bodu.Text.Yaml` and the BCL
-(`System.Text.Json` included), and is written to be ported into `Bodu.Text.Yaml/test`, where a test per row would run
-the catalogue, as `RecurrenceCorpusTests` does for cron, and hold each file's count in each class.
+`YamlReleaseNoteCorpusTests` runs every `applies` and `dialect` row of the nine files, embedded byte for byte under
+`Bodu.Text.Yaml/test/Fixtures/ReleaseNotes`, as a Regression test per row by kind (`parse`, `reject`, `write`,
+`roundtrip`), named `<library> fix <version> <reference>: <summary> (case <n>)`, and compares through the
+yaml-test-suite `CorpusCompare` with the two refinements above. BVT governance tests pin each library's count in each
+class and check the files, the options, the scenarios, that every `unit` row names a test in the assembly, and that the
+two copies of each file are identical. A scratch console harness outside the repository, built against `Bodu.Text.Yaml`
+at c7b500d66a, checked the rows before they were ported: column count, known classes, kinds, expectations and option
+names, a reason on every row, valid escapes, and printable ASCII only.
