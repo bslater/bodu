@@ -199,4 +199,22 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual(expected, holder.A);
     }
+
+    /// <summary>
+    /// Verifies that a hexadecimal or octal literal beyond the signed 64-bit range does not bind to a
+    /// <see cref="long" /> member as the integer it wraps to, but throws <see cref="YamlSerializationException" />, as
+    /// an out-of-range decimal does.
+    /// </summary>
+    /// <param name="text">The out-of-range literal.</param>
+    [TestMethod]
+    [DataRow("0x12000000000000000", DisplayName = "hexadecimal")]
+    [DataRow("0o2777777777777777777777", DisplayName = "octal")]
+    [DataRow("99999999999999999999", DisplayName = "decimal")]
+    public void Deserialize_WhenRadixIntegerExceedsInt64Range_ShouldThrowYamlSerializationException(string text)
+    {
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<MemberHolder<long>>($"A: {text}\n");
+        });
+    }
 }
