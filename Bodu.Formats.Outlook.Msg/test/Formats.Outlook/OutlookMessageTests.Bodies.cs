@@ -165,4 +165,20 @@ public partial class OutlookMessageTests
         Assert.AreEqual("<p>x</p>", message.BodyHtml);
         Assert.AreEqual(9, message.Properties.GetBinary(MapiPropertyIds.Html)!.Value.Length);
     }
+
+    /// <summary>
+    /// Verifies that a binary HTML body whose message declares internet code page 65000 decodes as UTF-7 (RFC 2152).
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenInternetCodePageIsUtf7_ShouldDecodeUtf7()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FDE0003, 65000)
+            .AddBinary(MapiPropertyIds.Html, "<p>Gr+APYA3w-e</p>"u8.ToArray())
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("<p>Größe</p>", message.BodyHtml);
+    }
 }

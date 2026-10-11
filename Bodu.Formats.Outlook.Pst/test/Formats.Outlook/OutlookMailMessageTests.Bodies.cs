@@ -160,4 +160,20 @@ public partial class OutlookMailMessageTests
         Assert.AreEqual("<p>x</p>", message.BodyHtml);
         Assert.AreEqual(9, message.Properties.GetBinary(MapiPropertyIds.Html)!.Value.Length);
     }
+
+    /// <summary>
+    /// Verifies that a message declaring code page 65000 decodes its <c>PT_STRING8</c> body as UTF-7 (RFC 2152):
+    /// <c>Caf+AOk-</c> reads as <c>Café</c> rather than as its Windows-1252 characters.
+    /// </summary>
+    [TestMethod]
+    public void BodyText_WhenMessageCodePageIsUtf7_ShouldDecodeUtf7()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.MessageCodePageOverride = 65000;
+            b.BodyPayloadOverride = "Caf+AOk-"u8.ToArray();
+        });
+
+        Assert.AreEqual("Café", GetFullMessage(store).BodyText);
+    }
 }

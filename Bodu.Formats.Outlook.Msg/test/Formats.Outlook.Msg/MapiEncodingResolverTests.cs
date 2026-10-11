@@ -79,4 +79,18 @@ public partial class MapiEncodingResolverTests
         Assert.AreEqual(1251, MapiEncodingResolver.GetHtmlEncoding(null, 1251).CodePage);
         Assert.AreEqual(1252, MapiEncodingResolver.GetHtmlEncoding(null, null).CodePage);
     }
+
+    /// <summary>
+    /// Verifies that code page 65000 resolves to UTF-7 (RFC 2152) wherever it is declared, for code-page strings and
+    /// HTML bodies alike, so <c>Gr+APYA3w-e</c> decodes to <c>Größe</c> rather than through the Windows-1252 fallback.
+    /// </summary>
+    [TestMethod]
+    public void GetEncoding_WhenCodePageIsUtf7_ShouldDecodeUtf7()
+    {
+        byte[] encoded = "Gr+APYA3w-e"u8.ToArray();
+
+        Assert.AreEqual("Größe", MapiEncodingResolver.GetEncoding(65000, null).GetString(encoded));
+        Assert.AreEqual("Größe", MapiEncodingResolver.GetEncoding(null, 65000).GetString(encoded));
+        Assert.AreEqual("Größe", MapiEncodingResolver.GetHtmlEncoding(65000, null).GetString(encoded));
+    }
 }

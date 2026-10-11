@@ -201,4 +201,21 @@ public partial class OutlookMessageTests
         Assert.IsTrue(message.Properties.TryGetValue(new MapiPropertyTag(0x60021007u), out MapiProperty? property));
         CollectionAssert.AreEqual(new[] { 45000.5, -1.25 }, (double[])property.Value!);
     }
+
+    /// <summary>
+    /// Verifies that a message declaring code page 65000 decodes its <c>String8</c> properties as UTF-7 (RFC 2152): a
+    /// subject stored as <c>Gr+APYA3w-e</c> reads as <c>Größe</c> rather than as its Windows-1252 characters.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenMessageCodePageIsUtf7_ShouldDecodeString8AsUtf7()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FFD0003, 65000)
+            .AddString8(MapiPropertyIds.Subject, "Gr+APYA3w-e", 1252)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("Größe", message.Properties.GetString(MapiPropertyIds.Subject));
+    }
 }

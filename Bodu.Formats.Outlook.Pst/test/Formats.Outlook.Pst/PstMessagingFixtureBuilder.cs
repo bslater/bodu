@@ -250,6 +250,19 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool MessageDeclaresCodePage { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets the code page the full message declares through <c>PidTagMessageCodepage</c> in place of
+    /// <see cref="MessageCodePage" />, which still encodes the fixture's own code-page text.
+    /// </summary>
+    /// <value><see langword="null" /> to declare <see cref="MessageCodePage" />.</value>
+    internal int? MessageCodePageOverride { get; set; }
+
+    /// <summary>
+    /// Gets or sets a replacement for the full message's <c>PT_STRING8</c> <c>PidTagBody</c> payload.
+    /// </summary>
+    /// <value><see langword="null" /> to emit <see cref="BodyText" /> in the message code page.</value>
+    internal byte[]? BodyPayloadOverride { get; set; }
+
+    /// <summary>
     /// Gets or sets a replacement for the by-value attachment's declared <c>PidTagAttachMethod</c>.
     /// </summary>
     /// <value><see langword="null" /> to declare <see cref="OutlookAttachmentMethod.ByValue" />.</value>
@@ -502,7 +515,7 @@ internal sealed class PstMessagingFixtureBuilder
         uint senderHid = ltp.AddItem(Encoding.Unicode.GetBytes(SenderName));
         uint emailHid = ltp.AddItem(Encoding.Unicode.GetBytes(SenderEmailAddress));
         uint classHid = ltp.AddItem(Encoding.Unicode.GetBytes("IPM.Note"));
-        uint bodyHid = ltp.AddItem(GetCodePageBytes(BodyText));
+        uint bodyHid = ltp.AddItem(BodyPayloadOverride ?? GetCodePageBytes(BodyText));
         uint htmlHid = ltp.AddItem(HtmlPayloadOverride ?? GetCodePageBytes(HtmlBodyText));
         uint rtfHid = ltp.AddItem(BuildRtfPayload());
         uint mvUnicodeHid = ltp.AddItem(BuildMvUnicodePayload(MvUnicodeValues));
@@ -522,7 +535,10 @@ internal sealed class PstMessagingFixtureBuilder
             (MvInt32PropertyId, MvInt32Type, mvInt32Hid),
         };
         if (MessageDeclaresCodePage)
-            records.Add((MapiPropertyIds.MessageCodepage, Int32Type, MessageCodePage));
+        {
+            uint codePage = (uint)(MessageCodePageOverride ?? MessageCodePage);
+            records.Add((MapiPropertyIds.MessageCodepage, Int32Type, codePage));
+        }
 
         if (MvAppTimeValues is not null)
             records.Add((MvAppTimePropertyId, MvAppTimeType, ltp.AddItem(BuildMvDoublePayload(MvAppTimeValues))));
