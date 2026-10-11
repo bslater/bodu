@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Builders;
+
 namespace Bodu.IO.Compound;
 
 public partial class CompoundFileTests
@@ -478,5 +480,116 @@ public partial class CompoundFileTests
             stream.Position = offset;
             Assert.AreEqual((int)CompoundContainerBytes.PatternByte(offset), stream.ReadByte(), $"offset {offset}");
         }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> rejects a header whose fixed fields break [MS-CFB]
+    /// 2.2, with <see cref="CompoundFileError.InvalidHeader" />.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <param name="version">The version of the container patched.</param>
+    /// <param name="offset">The header offset of the bytes replaced.</param>
+    /// <param name="hex">The replacement bytes, in hexadecimal.</param>
+    [TestMethod]
+    [DataRow("HeaderClassIdNotZero", CompoundFileVersion.V3, 0x08, "0609020000000000C000000000000046")]
+    [DataRow("MajorVersion5", CompoundFileVersion.V3, 0x1A, "0500")]
+    [DataRow("MajorVersion4WithShift9", CompoundFileVersion.V3, 0x1A, "0400")]
+    [DataRow("MajorVersion3WithShift12", CompoundFileVersion.V4, 0x1A, "0300")]
+    [DataRow("ReservedNotZero", CompoundFileVersion.V3, 0x22, "000000000001")]
+    [DataRow("Version3DirectorySectorsNotZero", CompoundFileVersion.V3, 0x28, "01000000")]
+    [DataRow("Version4DirectorySectorsZero", CompoundFileVersion.V4, 0x28, "00000000")]
+    [DataRow("Version4DirectorySectorsTooMany", CompoundFileVersion.V4, 0x28, "02000000")]
+    [DataRow("MiniStreamCutoffZero", CompoundFileVersion.V3, 0x38, "00000000")]
+    [DataRow("MiniStreamCutoff8192", CompoundFileVersion.V3, 0x38, "00200000")]
+    public void Open_WhenHeaderBreaksAFixedFieldAtStrict_ShouldThrowInvalidHeader(string testName, CompoundFileVersion version, int offset, string hex)
+    {
+        byte[] container = PatchHeader(version, offset, hex);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+        }, testName);
+
+        Assert.AreEqual(CompoundFileError.InvalidHeader, ex.Category, testName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Compatible" /> and <see cref="CompoundValidationLevel.Minimal" />
+    /// read every stream of a container whose header breaks a fixed field of [MS-CFB] 2.2, taking the mini stream cutoff
+    /// as 4096 whatever the header declares.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <param name="version">The version of the container patched.</param>
+    /// <param name="offset">The header offset of the bytes replaced.</param>
+    /// <param name="hex">The replacement bytes, in hexadecimal.</param>
+    [TestMethod]
+    [DataRow("HeaderClassIdNotZero", CompoundFileVersion.V3, 0x08, "0609020000000000C000000000000046")]
+    [DataRow("MajorVersion5", CompoundFileVersion.V3, 0x1A, "0500")]
+    [DataRow("MajorVersion4WithShift9", CompoundFileVersion.V3, 0x1A, "0400")]
+    [DataRow("MajorVersion3WithShift12", CompoundFileVersion.V4, 0x1A, "0300")]
+    [DataRow("ReservedNotZero", CompoundFileVersion.V3, 0x22, "000000000001")]
+    [DataRow("Version3DirectorySectorsNotZero", CompoundFileVersion.V3, 0x28, "01000000")]
+    [DataRow("Version4DirectorySectorsZero", CompoundFileVersion.V4, 0x28, "00000000")]
+    [DataRow("Version4DirectorySectorsTooMany", CompoundFileVersion.V4, 0x28, "02000000")]
+    [DataRow("MiniStreamCutoffZero", CompoundFileVersion.V3, 0x38, "00000000")]
+    [DataRow("MiniStreamCutoff8192", CompoundFileVersion.V3, 0x38, "00200000")]
+    public void Open_WhenHeaderBreaksAFixedFieldAtTolerantLevels_ShouldReadEveryStream(string testName, CompoundFileVersion version, int offset, string hex)
+    {
+        byte[] container = PatchHeader(version, offset, hex);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Compatible, CompoundValidationLevel.Minimal })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+            using CompoundStream small = file.RootStorage.OpenStream("Small");
+            using CompoundStream large = file.RootStorage.OpenStream("Large");
+
+            CollectionAssert.AreEqual(CompoundContainerBytes.Pattern(100), small.ReadAllBytes(), $"{testName} at {level}");
+            CollectionAssert.AreEqual(CompoundContainerBytes.Pattern(5000, 100), large.ReadAllBytes(), $"{testName} at {level}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> reads a container whose header is conformant,
+    /// including a version-4 header that counts a directory of several sectors.
+    /// </summary>
+    /// <param name="version">The version of the container.</param>
+    /// <param name="streamCount">The number of streams in the root storage.</param>
+    [TestMethod]
+    [DataRow(CompoundFileVersion.V3, 2)]
+    [DataRow(CompoundFileVersion.V4, 2)]
+    [DataRow(CompoundFileVersion.V4, 40)]
+    public void Open_WhenHeaderIsConformantAtStrict_ShouldReadEveryStream(CompoundFileVersion version, int streamCount)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        for (int i = 0; i < streamCount; i++)
+            _ = builder.AddStream($"Stream{i}", CompoundContainerBytes.Pattern(100 * (i + 1)));
+
+        byte[] container = builder.ToArray(new CompoundBuildOptions { Version = version });
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+
+        using var file = CompoundFile.Open(new MemoryStream(container), options);
+
+        Assert.HasCount(streamCount, file.RootStorage.EnumerateStreams());
+    }
+
+    /// <summary>
+    /// Builds a container holding a 100-byte stream in the mini stream and a 5000-byte stream in regular sectors, and
+    /// replaces bytes of its header.
+    /// </summary>
+    /// <param name="version">The version of the container.</param>
+    /// <param name="offset">The header offset of the bytes replaced.</param>
+    /// <param name="hex">The replacement bytes, in hexadecimal.</param>
+    /// <returns>The patched container.</returns>
+    private static byte[] PatchHeader(CompoundFileVersion version, int offset, string hex)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("Small", CompoundContainerBytes.Pattern(100));
+        _ = builder.AddStream("Large", CompoundContainerBytes.Pattern(5000, 100));
+        byte[] container = builder.ToArray(new CompoundBuildOptions { Version = version });
+
+        Convert.FromHexString(hex).CopyTo(container, offset);
+        return container;
     }
 }
