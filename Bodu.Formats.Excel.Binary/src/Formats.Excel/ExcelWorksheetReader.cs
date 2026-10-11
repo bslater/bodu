@@ -270,11 +270,14 @@ public sealed class ExcelWorksheetReader
     }
 
     /// <summary>
-    /// Maps a formula cell, consuming a following <c>STRING</c> record when the cached result is text.
+    /// Maps a formula cell, consuming a following <c>STRING</c> record, and any <c>CONTINUE</c> records that carry the
+    /// rest of its text, when the cached result is text.
     /// </summary>
     /// <param name="formula">The decoded formula record.</param>
     /// <returns>The cell carrying the cached result.</returns>
-    /// <exception cref="BiffFormatException">Thrown when the string record is malformed.</exception>
+    /// <exception cref="BiffFormatException">
+    /// Thrown when the string record or its continuation is malformed.
+    /// </exception>
     private ExcelCell ReadFormula(in BiffFormulaRecord formula)
     {
         ExcelCell cell = ExcelCellMapper.FromFormula(formula, _formats, out bool expectsString);
@@ -285,7 +288,7 @@ public sealed class ExcelWorksheetReader
         var probe = new BiffReader(_data.AsSpan(_position), isFinalBlock: true, _state);
         if (probe.Read() && probe.RecordType == BiffRecordType.String)
         {
-            string text = probe.GetString().Text.GetString();
+            string text = BiffStringRecord.ReadContinuedText(ref probe);
             _position += probe.BytesConsumed;
             _state = probe.CurrentState;
             return ExcelCell.Text(cell.RowIndex, cell.ColumnIndex, text, cell.FormatIndex);

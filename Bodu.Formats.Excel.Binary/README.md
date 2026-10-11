@@ -58,12 +58,12 @@ using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(stream, new ExcelB
 
 ## Records handled
 
-`BOF` / `EOF` (substream boundaries), `BOUNDSHEET8` (sheet directory, with `lbPlyPos`
-offset, sheet type, and hidden state), `SST` (+ `CONTINUE` for split strings), `LABELSST`,
-`LABEL`, `NUMBER`, `RK`, `MULRK`, `BOOLERR`, `FORMULA` (cached result, with a trailing
-`STRING` record for a string result), `XF` / `FORMAT` (number formats), `DATEMODE`, and
-`DIMENSIONS`. `BLANK` / `MULBLANK` and unrecognized records are skipped. Malformed records
-fail with `ExcelBinaryFormatException`.
+`BOF` / `EOF` (substream boundaries), `BOUNDSHEET8` (sheet directory, with `lbPlyPos` offset,
+sheet type, and hidden state), `SST` (+ `CONTINUE` for split strings), `LABELSST`, `LABEL`,
+`NUMBER`, `RK`, `MULRK`, `BOOLERR`, `FORMULA` (cached result, with a trailing `STRING` record,
+and the `CONTINUE` records of a long text, for a string result), `XF` / `FORMAT` (number
+formats), `DATEMODE`, and `DIMENSIONS`. `BLANK` / `MULBLANK` and unrecognized records are
+skipped. Malformed records fail with `ExcelBinaryFormatException`.
 
 ## Runnable samples
 

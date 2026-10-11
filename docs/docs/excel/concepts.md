@@ -41,7 +41,7 @@ A populated cell is surfaced as an immutable <xref:Bodu.Formats.Excel.ExcelCell>
 | `String` | `LABELSST`, `LABEL` | `LABELSST` references the shared string table by index; `LABEL` carries an inline string. |
 | `Number` | `NUMBER`, `RK`, `MULRK` | `RK` is a compact encoding for integers and short decimals; `MULRK` packs a run of adjacent numeric cells into one record, which the reader expands to one cell per value. |
 | `Boolean` / `Error` | `BOOLERR` | A single record type carries either a boolean or an error, distinguished by a flag. |
-| `Number` / `String` / `Boolean` / `Error` | `FORMULA` (+ trailing `STRING`) | A formula cell is surfaced as whichever kind its cached result holds; see below. |
+| `Number` / `String` / `Boolean` / `Error` | `FORMULA` (+ trailing `STRING`, and the `CONTINUE` records of a long text) | A formula cell is surfaced as whichever kind its cached result holds; see below. |
 
 Every cell also carries a <xref:Bodu.Formats.Excel.ExcelCell.FormatIndex> - the number-format index referenced by its record (`0`, the General format, when none is recorded) - and an <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> flag described under [Number format and serial dates](#number-format-and-serial-dates).
 
