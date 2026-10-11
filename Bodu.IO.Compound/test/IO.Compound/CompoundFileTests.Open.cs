@@ -12,6 +12,9 @@ namespace Bodu.IO.Compound;
 
 public partial class CompoundFileTests
 {
+    /// <summary>The number of bytes before the container in the tests that open a stream from a position.</summary>
+    private const int PrefixLength = 8;
+
     /// <summary>
     /// Verifies that opening a <see langword="null" /> stream throws <see cref="ArgumentNullException" />.
     /// </summary>
@@ -482,6 +485,91 @@ public partial class CompoundFileTests
             stream.Position = offset;
             Assert.AreEqual((int)CompoundContainerBytes.PatternByte(offset), stream.ReadByte(), $"offset {offset}");
         }
+    }
+
+    /// <summary>
+    /// Verifies that opening a stream positioned after a prefix reads the container from that position, whatever the
+    /// stream type and read strategy.
+    /// </summary>
+    /// <param name="source">The stream opened: a <c>MemoryStream</c>, or a <c>BufferedStream</c> over one.</param>
+    /// <param name="strategy">The read strategy.</param>
+    [TestMethod]
+    [DataRow("MemoryStream", CompoundReadStrategy.Buffered)]
+    [DataRow("MemoryStream", CompoundReadStrategy.Streaming)]
+    [DataRow("BufferedStream", CompoundReadStrategy.Buffered)]
+    [DataRow("BufferedStream", CompoundReadStrategy.Streaming)]
+    public void Open_WhenStreamIsPositionedAfterAPrefix_ShouldReadTheContainerFromThePosition(string source, CompoundReadStrategy strategy)
+    {
+        byte[] small = CompoundContainerBytes.Pattern(100);
+        byte[] large = CompoundContainerBytes.Pattern(5000, 100);
+        using var memory = new MemoryStream(Prefixed(CreateContainer(("Small", small), ("Large", large)).ToArray()));
+        using Stream stream = source == "MemoryStream" ? memory : new BufferedStream(memory);
+        stream.Position = PrefixLength;
+
+        using var file = CompoundFile.Open(stream, new CompoundFileOptions { ReadStrategy = strategy }, leaveOpen: true);
+
+        using CompoundStream first = file.RootStorage.OpenStream("Small");
+        CollectionAssert.AreEqual(small, first.ReadAllBytes(), source);
+        using CompoundStream second = file.RootStorage.OpenStream("Large");
+        CollectionAssert.AreEqual(large, second.ReadAllBytes(), source);
+    }
+
+    /// <summary>
+    /// Verifies that a stream read asynchronously from a file opened for streaming over a source positioned after a
+    /// prefix reads from the container, not from the start of the source.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task Open_WhenStreamingFromAPosition_ShouldReadAsynchronouslyFromThePosition()
+    {
+        byte[] large = CompoundContainerBytes.Pattern(5000, 100);
+        using var memory = new MemoryStream(Prefixed(CreateContainer(("Large", large)).ToArray()));
+        memory.Position = PrefixLength;
+
+        using var file = CompoundFile.Open(memory, leaveOpen: true, buffered: false);
+        using CompoundStream stream = file.RootStorage.OpenStream("Large");
+        byte[] read = new byte[large.Length];
+        await stream.ReadExactlyAsync(read);
+
+        CollectionAssert.AreEqual(large, read);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundReadStrategy.Auto" /> measures the container from the stream's position: a
+    /// container exactly <see cref="CompoundFileOptions.MaxBufferedBytes" /> long is buffered although the prefix makes
+    /// the stream longer.
+    /// </summary>
+    /// <remarks>
+    /// The test clears the source's copy of the stream after the open; a buffered file still reads the original bytes.
+    /// </remarks>
+    [TestMethod]
+    public void Open_WhenAutoStrategyMeasuresAContainerAfterAPrefix_ShouldCountOnlyTheBytesFromThePosition()
+    {
+        byte[] large = CompoundContainerBytes.Pattern(5000, 100);
+        byte[] container = CreateContainer(("Large", large)).ToArray();
+        byte[] prefixed = Prefixed(container);
+        using var memory = new MemoryStream(prefixed);
+        memory.Position = PrefixLength;
+        var options = new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Auto, MaxBufferedBytes = container.Length };
+
+        using var file = CompoundFile.Open(memory, options, leaveOpen: true);
+        Array.Clear(prefixed, PrefixLength + 512, container.Length - 512);
+        using CompoundStream stream = file.RootStorage.OpenStream("Large");
+
+        CollectionAssert.AreEqual(large, stream.ReadAllBytes());
+    }
+
+    /// <summary>
+    /// Returns a container's bytes after a prefix of <see cref="PrefixLength" /> bytes that are not part of it.
+    /// </summary>
+    /// <param name="container">The bytes of the container.</param>
+    /// <returns>The prefix followed by the container.</returns>
+    private static byte[] Prefixed(byte[] container)
+    {
+        byte[] prefixed = new byte[PrefixLength + container.Length];
+        prefixed.AsSpan(0, PrefixLength).Fill(0xEE);
+        container.CopyTo(prefixed, PrefixLength);
+        return prefixed;
     }
 
     /// <summary>
