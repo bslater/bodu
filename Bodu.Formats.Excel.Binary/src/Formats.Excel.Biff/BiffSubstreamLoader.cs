@@ -9,28 +9,42 @@ using Bodu.IO.Biff;
 namespace Bodu.Formats.Excel.Biff;
 
 /// <summary>
-/// Reads a single BIFF substream - the records from a beginning-of-file marker up to and including the matching
-/// end-of-file marker - from a workbook stream into a contiguous buffer.
+/// Reads a single BIFF substream - the records from a beginning-of-file record up to and including the end-of-file
+/// record that matches it - from a workbook stream into a contiguous buffer.
 /// </summary>
 /// <remarks>
+/// <para>
+/// A substream can hold whole substreams of its own: a chart embedded in a worksheet is a chart substream, from its
+/// beginning-of-file record to its end-of-file record, after the chart's <c>OBJ</c> record ([MS-XLS] 2.1.7.20.6). The
+/// two records are therefore counted in pairs, and only the end-of-file record that matches the opening
+/// beginning-of-file record ends the substream.
+/// </para>
+/// <para>
 /// Reading a bounded substream keeps memory proportional to one sheet (or the workbook globals) rather than the whole
 /// workbook. The caller positions the source stream at the substream's start (for a sheet, the <c>lbPlyPos</c> offset
 /// of its bound-sheet record) before calling <see cref="ReadSubstream(System.IO.Stream)" />.
+/// </para>
 /// </remarks>
 internal static class BiffSubstreamLoader
 {
     /// <summary>
-    /// Reads the substream beginning at the stream's current position, stopping after the first end-of-file record.
+    /// Reads the substream beginning at the stream's current position, stopping after the end-of-file record that
+    /// matches its beginning-of-file record.
     /// </summary>
     /// <param name="stream">The workbook stream, positioned at the substream's first record.</param>
-    /// <returns>The substream bytes, from its beginning-of-file record through its end-of-file record.</returns>
+    /// <returns>
+    /// The substream bytes, from its beginning-of-file record through the end-of-file record that matches it, with
+    /// every substream nested in it.
+    /// </returns>
     /// <exception cref="ExcelBinaryFormatException">
-    /// Thrown when the stream ends before a complete record header or payload, or before an end-of-file record.
+    /// Thrown when the stream ends before a complete record header or payload, or before the matching end-of-file
+    /// record.
     /// </exception>
     public static byte[] ReadSubstream(Stream stream)
     {
         using MemoryStream buffer = new();
         Span<byte> header = stackalloc byte[BiffLimits.RecordHeaderSize];
+        int depth = 0;
 
         while (true)
         {
@@ -40,8 +54,18 @@ internal static class BiffSubstreamLoader
             _ = BiffRecordHeader.TryParse(header, out BiffRecordHeader record);
             CopyExactly(stream, buffer, record.Length);
 
-            if (record.Type == BiffRecordType.Eof)
-                break;
+            // Each BOF opens a substream and each EOF closes the innermost one open, so the EOF that closes the opening
+            // BOF ends this substream. A substream that does not open with a BOF ends at its first EOF.
+            if (record.Type == BiffRecordType.Bof)
+            {
+                depth++;
+            }
+            else if (record.Type == BiffRecordType.Eof)
+            {
+                depth--;
+                if (depth <= 0)
+                    break;
+            }
         }
 
         return buffer.ToArray();

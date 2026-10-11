@@ -30,6 +30,8 @@ Because the globals are parsed up front, a single sheet can then be read on dema
 
 Each sheet is its own **substream** - a `BOF` record, an optional `DIMENSIONS` record, the cell records, and an `EOF`. <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet(System.Int32)> seeks to the substream and returns a reader over it; the whole workbook is never materialized at once.
 
+A worksheet's substream can hold whole substreams of its own: a chart embedded in the worksheet is a chart substream, `BOF` to `EOF`, after the chart's `OBJ` record ([MS-XLS] 2.1.7.20.6). The `BOF` and `EOF` records are counted in pairs, so a sheet ends at the `EOF` that matches its own `BOF`, and a nested substream is skipped from its `BOF` to the `EOF` that matches it: its `NUMBER` and `LABEL` records are the chart's data cache ([MS-XLS] 2.2.3.2), not cells, and the worksheet's cells after it are read as usual.
+
 ## Cell and cell kind
 
 A populated cell is surfaced as an immutable <xref:Bodu.Formats.Excel.ExcelCell> carrying its zero-based row and column and a <xref:Bodu.Formats.Excel.ExcelCellKind> - `String`, `Number`, `Boolean`, or `Error`. The matching value is read from the projection that fits the kind (`StringValue`, `NumberValue`, `BooleanValue`, `ErrorValue`); the others are `null`. **Blank cells are not returned at all**, so both reader surfaces are sparse. `ExcelCellKind` also defines `Blank` for completeness, but a blank cell is never emitted - the value is informational rather than something a reader returns.

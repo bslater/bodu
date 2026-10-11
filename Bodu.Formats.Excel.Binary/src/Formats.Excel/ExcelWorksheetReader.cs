@@ -26,7 +26,10 @@ namespace Bodu.Formats.Excel;
 /// Only a sheet whose <see cref="ExcelWorksheetInfo.Type" /> is <see cref="ExcelSheetType.Worksheet" /> yields cells. A
 /// chart, macro sheet, Visual Basic module or sheet of unknown type yields none, as <see cref="ExcelSheetType" />
 /// states: the <c>NUMBER</c> and <c>LABEL</c> records of a chart substream are its data cache ([MS-XLS] 2.2.3.2), not
-/// cells.
+/// cells. For the same reason, a substream nested in the worksheet, such as a chart embedded after its <c>OBJ</c>
+/// record ([MS-XLS] 2.1.7.20.6), is skipped from its <c>BOF</c> record to the <c>EOF</c> record that matches it, and
+/// the worksheet's cells after it are read as usual. Only the <c>EOF</c> record that matches the worksheet's own
+/// <c>BOF</c> record ends the worksheet.
 /// </para>
 /// <para>
 /// For random access by position, materialize the worksheet instead with
@@ -78,6 +81,9 @@ public sealed class ExcelWorksheetReader
 
     /// <summary>The codec state carried between reads: the version and code page of the stream.</summary>
     private BiffReaderState _state;
+
+    /// <summary>The number of substreams open at the current position, the worksheet's own included.</summary>
+    private int _depth;
 
     /// <summary>Whether no cells remain: the end-of-file record was reached, or the sheet is not a worksheet.</summary>
     private bool _ended;
@@ -224,12 +230,27 @@ public sealed class ExcelWorksheetReader
             _position += reader.BytesConsumed;
             _state = reader.CurrentState;
 
+            // Each BOF opens a substream and each EOF closes the innermost one open. The records of a substream nested
+            // in the worksheet, such as an embedded chart's data cache, are not cells, and only the EOF that matches
+            // the worksheet's own BOF ends it.
+            if (reader.RecordType == BiffRecordType.Bof)
+            {
+                _depth++;
+                continue;
+            }
+
+            if (reader.RecordType == BiffRecordType.Eof)
+            {
+                _depth--;
+                _ended = _depth <= 0;
+                continue;
+            }
+
+            if (_depth > 1)
+                continue;
+
             switch (reader.RecordType)
             {
-                case BiffRecordType.Eof:
-                    _ended = true;
-                    break;
-
                 case BiffRecordType.LabelSst:
                     cell = ExcelCellMapper.FromLabelSst(reader.GetLabelSst(), _sharedStrings, _formats);
                     return true;
