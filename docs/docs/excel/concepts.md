@@ -129,7 +129,7 @@ The workbook's authored metadata is flattened into <xref:Bodu.Formats.Excel.Exce
 The first three open-time failures all derive from familiar base types, so a caller can catch them by base where convenient: `ExcelBinaryFormatException` is a <xref:System.FormatException>, `ExcelBinaryWorkbookStreamNotFoundException` a <xref:System.Collections.Generic.KeyNotFoundException>, and both `ExcelBinaryUnsupportedException` and `ExcelBinaryEncryptedWorkbookException` are <xref:System.NotSupportedException>. Addressing a sheet by an unknown name throws a plain <xref:System.Collections.Generic.KeyNotFoundException>; an out-of-range index throws <xref:System.ArgumentOutOfRangeException>. Using a workbook or reader after disposal throws <xref:System.ObjectDisposedException>.
 
 > [!NOTE]
-> `ExcelBinaryFormatException` is raised *during reading* rather than at open - a record can be found malformed only when the reader reaches it - and so is `ExcelBinaryUnsupportedException` when a sheet's own `BOF` record declares a version the reader does not support. The other failures are detected while parsing the globals at open time.
+> `ExcelBinaryFormatException` is raised where the reader meets the malformed record. The workbook globals, the shared string table, the `FORMAT` and `XF` records and the sheet directory among them, are parsed at open, so a malformed record there fails the open; one in a sheet fails only when that sheet is opened or read. `ExcelBinaryUnsupportedException` is likewise raised at open for the workbook's own version, and when a sheet is read for a sheet whose own `BOF` record declares a version the reader does not support. The other failures are detected while parsing the globals at open time.
 
 ## Where to go next
 

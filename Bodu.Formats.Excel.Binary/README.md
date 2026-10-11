@@ -62,11 +62,12 @@ using ExcelBinaryWorkbook workbook = ExcelBinaryWorkbook.Open(stream, new ExcelB
 its own `BOF`, or, without one, where the next sheet's substream begins, and a chart substream
 nested in a worksheet is skipped, so its data cache is never read as cells), `BOUNDSHEET8`
 (sheet directory, with `lbPlyPos` offset, sheet type, and hidden state), `SST` (+ `CONTINUE`
-for split strings), `LABELSST`, `LABEL`, `NUMBER`, `RK`, `MULRK`, `BOOLERR`, `FORMULA` (cached
-result, with a trailing `STRING` record, and the `CONTINUE` records of a long text, for a
-string result), `XF` / `FORMAT` (number formats), `DATEMODE`, and `DIMENSIONS`. `BLANK` /
-`MULBLANK` and unrecognized records are skipped. Malformed records fail with
-`ExcelBinaryFormatException`.
+for split strings), `LABELSST`, `LABEL`, `RSTRING` (rich text, read as a text cell), `NUMBER`,
+`RK`, `MULRK`, `BOOLERR`, `FORMULA` (cached result, with a trailing `STRING` record, and the
+`CONTINUE` records of a long text, for a string result), `XF` / `FORMAT` (number formats),
+`DATEMODE`, and `DIMENSIONS`. `BLANK` / `MULBLANK` and unrecognized records are skipped.
+Malformed records fail with `ExcelBinaryFormatException`: in the workbook globals when the
+workbook is opened, in a sheet when that sheet is opened or read.
 
 ## Runnable samples
 

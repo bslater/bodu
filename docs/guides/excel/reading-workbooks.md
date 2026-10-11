@@ -116,7 +116,7 @@ Console.WriteLine(props.LastSaved);
 | <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException> | A valid compound file with no `Workbook` (or legacy `Book`) stream - not a spreadsheet. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version other than BIFF8 or BIFF5, at open, or a sheet's own `BOF` record does, when the sheet is read. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException> | The workbook is password-protected (a `FILEPASS` record is present). |
-| <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed - raised while reading, not at open. |
+| <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed. One in the workbook globals (the shared string table, the `FORMAT` and `XF` records, the sheet directory) fails the open, since the globals are parsed then; one in a sheet fails when that sheet is opened or read. |
 
 ## Where to go next
 
