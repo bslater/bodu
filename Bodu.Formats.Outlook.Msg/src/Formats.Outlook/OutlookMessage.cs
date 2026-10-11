@@ -224,7 +224,7 @@ public sealed partial class OutlookMessage
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OutlookMsgFormatException">
-    /// The stream is not a compound file or not a valid message.
+    /// The stream is not a compound file, the container is malformed, or the message is not valid.
     /// </exception>
     public static OutlookMessage OpenRead(Stream stream, bool leaveOpen = false) =>
         Open(stream, OutlookMessageReaderOptions.Default, leaveOpen);
@@ -254,7 +254,13 @@ public sealed partial class OutlookMessage
         }
         catch (CompoundFileException ex)
         {
-            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgNotCompound, ex);
+            // A source too short for the compound-file header, or one without the signature, is not a compound file at
+            // all; anything else the container rejects is a compound file that is malformed.
+            CompoundFileError? category = (ex as CompoundFileFormatException)?.Category;
+            string message = category is CompoundFileError.InvalidSignature or CompoundFileError.TruncatedFile
+                ? OutlookMsgResourceStrings.Format_Invalid_MsgNotCompound
+                : OutlookMsgResourceStrings.Format_Invalid_MsgCompoundMalformed;
+            throw new OutlookMsgFormatException(message, ex);
         }
 
         try

@@ -61,6 +61,9 @@
   <data name="Format_Invalid_MsgNotCompound" xml:space="preserve">
     <value>The source is not an OLE2 compound file and cannot be an Outlook message.</value>
   </data>
+  <data name="Format_Invalid_MsgCompoundMalformed" xml:space="preserve">
+    <value>The Outlook message's compound-file container is malformed.</value>
+  </data>
   <data name="Format_Invalid_MsgContainer" xml:space="preserve">
     <value>The storage does not contain the '__properties_version1.0' property stream required by the Outlook message format.</value>
   </data>
