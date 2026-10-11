@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Compound.Builders;
+using Bodu.IO.Compound.Internal;
 
 namespace Bodu.IO.Compound;
 
@@ -590,6 +591,117 @@ public partial class CompoundFileTests
         byte[] container = builder.ToArray(new CompoundBuildOptions { Version = version });
 
         Convert.FromHexString(hex).CopyTo(container, offset);
+        return container;
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> rejects allocation tables that break [MS-CFB] even
+    /// where no chain the reader follows needs the broken entry, with the category the issue names for each defect.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the defect.</param>
+    /// <param name="category">The category the rejection reports.</param>
+    [TestMethod]
+    [DataRow("FatSectorNotMarkedFatSect", CompoundFileError.InvalidDifat)]
+    [DataRow("DifatSectorNotMarkedDifSect", CompoundFileError.InvalidDifat)]
+    [DataRow("DifatChainEndsInFreeSect", CompoundFileError.InvalidDifat)]
+    [DataRow("DifatChainEndsInDifSect", CompoundFileError.InvalidDifat)]
+    [DataRow("FatEntryPastEndOfFileNotFree", CompoundFileError.SectorOutOfRange)]
+    [DataRow("FatEntryPastEndOfFileMarkedFatSect", CompoundFileError.SectorOutOfRange)]
+    [DataRow("RegularSectorInTwoChains", CompoundFileError.FatCycle)]
+    [DataRow("MiniSectorInTwoChains", CompoundFileError.InvalidMiniFat)]
+    public void Open_WhenAllocationTablesBreakMsCfbAtStrict_ShouldThrow(string testName, CompoundFileError category)
+    {
+        byte[] container = BuildAllocationCase(testName, out _);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+        }, testName);
+
+        Assert.AreEqual(category, ex.Category, testName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Compatible" /> and <see cref="CompoundValidationLevel.Minimal" />
+    /// open containers whose allocation tables break [MS-CFB] only where no chain they follow needs the broken entry,
+    /// including a DIFAT chain that ends in DIFSECT, and read the first stream.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the defect.</param>
+    [TestMethod]
+    [DataRow("FatSectorNotMarkedFatSect")]
+    [DataRow("DifatSectorNotMarkedDifSect")]
+    [DataRow("DifatChainEndsInFreeSect")]
+    [DataRow("DifatChainEndsInDifSect")]
+    [DataRow("FatEntryPastEndOfFileNotFree")]
+    [DataRow("FatEntryPastEndOfFileMarkedFatSect")]
+    [DataRow("RegularSectorInTwoChains")]
+    [DataRow("MiniSectorInTwoChains")]
+    public void Open_WhenAllocationTablesBreakMsCfbAtTolerantLevels_ShouldReadTheFirstStream(string testName)
+    {
+        byte[] container = BuildAllocationCase(testName, out byte[] first);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Compatible, CompoundValidationLevel.Minimal })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+            using CompoundStream stream = file.RootStorage.OpenStream("A");
+
+            CollectionAssert.AreEqual(first, stream.ReadAllBytes(), $"{testName} at {level}");
+        }
+    }
+
+    /// <summary>
+    /// Builds a container whose allocation tables break [MS-CFB] in the way a case names.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <param name="first">Receives the content of the container's first stream, <c>A</c>.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildAllocationCase(string testName, out byte[] first)
+    {
+        // A 7 MiB stream needs 113 FAT sectors, so the writer lists four of them in a DIFAT sector.
+        bool needsDifat = testName.StartsWith("Difat", StringComparison.Ordinal);
+        int firstLength = needsDifat ? 7340032 : testName.StartsWith("Mini", StringComparison.Ordinal) ? 100 : 5000;
+        first = CompoundContainerBytes.Pattern(firstLength);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", first);
+        _ = builder.AddStream("B", CompoundContainerBytes.Pattern(firstLength == 100 ? 100 : 5000, 7));
+        byte[] container = builder.ToArray();
+
+        var header = CfbHeader.Parse(container);
+        uint sectorsInFile = (uint)((container.Length / header.SectorSize) - 1);
+        switch (testName)
+        {
+            case "FatSectorNotMarkedFatSect":
+                CompoundContainerBytes.SetFatEntry(container, CompoundContainerBytes.FatSectorIds(container)[0], CfbHeader.EndOfChain);
+                break;
+
+            case "DifatSectorNotMarkedDifSect":
+                CompoundContainerBytes.SetFatEntry(container, CompoundContainerBytes.DifatSectorIds(container)[0], CfbHeader.EndOfChain);
+                break;
+
+            case "DifatChainEndsInFreeSect":
+            case "DifatChainEndsInDifSect":
+                uint last = CompoundContainerBytes.DifatSectorIds(container)[^1];
+                int next = (int)(CompoundContainerBytes.SectorOffset(header, last) + header.SectorSize - 4);
+                CompoundContainerBytes.WriteUInt32(container, next, testName.EndsWith("FreeSect", StringComparison.Ordinal) ? CfbHeader.FreeSector : CfbHeader.DifatSector);
+                break;
+
+            case "FatEntryPastEndOfFileNotFree":
+                CompoundContainerBytes.SetFatEntry(container, sectorsInFile, 0x1E555E69);
+                break;
+
+            case "FatEntryPastEndOfFileMarkedFatSect":
+                CompoundContainerBytes.SetFatEntry(container, sectorsInFile, CfbHeader.FatSector);
+                break;
+
+            default:
+                int a = CompoundContainerBytes.FindEntryOffset(container, "A");
+                int b = CompoundContainerBytes.FindEntryOffset(container, "B");
+                container.AsSpan(a + CompoundContainerBytes.StartSectorOffset, 4).CopyTo(container.AsSpan(b + CompoundContainerBytes.StartSectorOffset));
+                break;
+        }
+
         return container;
     }
 }

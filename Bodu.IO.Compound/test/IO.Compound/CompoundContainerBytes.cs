@@ -15,9 +15,9 @@ namespace Bodu.IO.Compound;
 /// file, so that a test can inspect or patch what the writer produced.
 /// </summary>
 /// <remarks>
-/// The FAT is read through the header's DIFAT array only, which serves containers of up to 109 FAT sectors. A FAT
-/// sector that lies past the end of the bytes reads as free entries, so the directory of a container whose write
-/// stopped after the directory can still be found.
+/// The FAT is located through the header's DIFAT array and the DIFAT chain. A FAT sector that lies past the end of the
+/// bytes reads as free entries, so the directory of a container whose write stopped after the directory can still be
+/// found.
 /// </remarks>
 internal static class CompoundContainerBytes
 {
@@ -90,21 +90,70 @@ internal static class CompoundContainerBytes
         ((long)sector + 1) * header.SectorSize;
 
     /// <summary>
-    /// Reads the FAT sectors that the header's DIFAT array lists.
+    /// Returns the sectors of the DIFAT chain.
     /// </summary>
     /// <param name="container">The bytes of the container.</param>
-    /// <returns>The FAT entries, with the entries of a sector past the end of the bytes read as free.</returns>
+    /// <returns>The DIFAT sectors in chain order; empty when the header counts none.</returns>
+    internal static List<uint> DifatSectorIds(byte[] container)
+    {
+        var header = CfbHeader.Parse(container);
+        List<uint> sectors = [];
+        uint sector = header.FirstDifatSector;
+        while (sectors.Count < header.DifatSectorCount && sector < CfbHeader.DifatSector)
+        {
+            sectors.Add(sector);
+            long next = SectorOffset(header, sector) + header.SectorSize - 4;
+            sector = next + 4 <= container.Length ? BinaryPrimitives.ReadUInt32LittleEndian(container.AsSpan((int)next)) : CfbHeader.EndOfChain;
+        }
+
+        return sectors;
+    }
+
+    /// <summary>
+    /// Returns the sectors that hold the FAT, from the header's DIFAT array and then the DIFAT chain.
+    /// </summary>
+    /// <param name="container">The bytes of the container.</param>
+    /// <returns>The FAT sectors in FAT order.</returns>
+    internal static List<uint> FatSectorIds(byte[] container)
+    {
+        var header = CfbHeader.Parse(container);
+        List<uint> sectors = [];
+        foreach (uint sector in header.Difat)
+        {
+            if (sectors.Count < header.FatSectorCount && sector < CfbHeader.DifatSector)
+                sectors.Add(sector);
+        }
+
+        foreach (uint difat in DifatSectorIds(container))
+        {
+            long offset = SectorOffset(header, difat);
+            for (int i = 0; i < header.EntriesPerSector - 1 && sectors.Count < header.FatSectorCount; i++)
+            {
+                uint sector = BinaryPrimitives.ReadUInt32LittleEndian(container.AsSpan((int)offset + (i * 4)));
+                if (sector < CfbHeader.DifatSector)
+                    sectors.Add(sector);
+            }
+        }
+
+        return sectors;
+    }
+
+    /// <summary>
+    /// Reads the FAT.
+    /// </summary>
+    /// <param name="container">The bytes of the container.</param>
+    /// <returns>The FAT entries, with the entries of a FAT sector past the end of the bytes read as free.</returns>
     internal static uint[] ReadFat(byte[] container)
     {
         var header = CfbHeader.Parse(container);
         int perSector = header.EntriesPerSector;
-        int listed = (int)Math.Min(header.FatSectorCount, CfbHeader.HeaderDifatCount);
-        uint[] fat = new uint[listed * perSector];
+        List<uint> fatSectors = FatSectorIds(container);
+        uint[] fat = new uint[fatSectors.Count * perSector];
         fat.AsSpan().Fill(CfbHeader.FreeSector);
 
-        for (int i = 0; i < listed; i++)
+        for (int i = 0; i < fatSectors.Count; i++)
         {
-            long offset = SectorOffset(header, header.Difat[i]);
+            long offset = SectorOffset(header, fatSectors[i]);
             if (offset + header.SectorSize > container.Length)
                 continue;
 
@@ -113,6 +162,20 @@ internal static class CompoundContainerBytes
         }
 
         return fat;
+    }
+
+    /// <summary>
+    /// Writes the FAT entry of a sector.
+    /// </summary>
+    /// <param name="container">The bytes of the container.</param>
+    /// <param name="sector">The sector whose entry is written.</param>
+    /// <param name="value">The value to write.</param>
+    internal static void SetFatEntry(byte[] container, uint sector, uint value)
+    {
+        var header = CfbHeader.Parse(container);
+        uint fatSector = FatSectorIds(container)[(int)(sector / (uint)header.EntriesPerSector)];
+        long offset = SectorOffset(header, fatSector) + ((sector % (uint)header.EntriesPerSector) * 4);
+        WriteUInt32(container, (int)offset, value);
     }
 
     /// <summary>
