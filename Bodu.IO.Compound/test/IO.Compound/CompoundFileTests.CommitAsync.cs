@@ -197,4 +197,21 @@ public partial class CompoundFileTests
             base.Dispose(disposing);
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> writes the directory slots it leaves unused as free entries,
+    /// as the synchronous commit does.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenDirectoryHasUnusedSlots_ShouldWriteThemAsFreeEntries()
+    {
+        var destination = new MemoryStream();
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
+        file.RootStorage.CreateStream("A", CompoundContainerBytes.Pattern(100));
+
+        await file.CommitAsync();
+
+        AssertFreeEntries(destination.ToArray(), expectedFree: 2);
+    }
 }

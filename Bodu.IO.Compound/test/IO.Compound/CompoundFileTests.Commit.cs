@@ -6,6 +6,7 @@
 
 using System.Buffers.Binary;
 using System.Text;
+using Bodu.IO.Compound.Builders;
 
 namespace Bodu.IO.Compound;
 
@@ -166,5 +167,67 @@ public partial class CompoundFileTests
         {
             file.Commit();
         });
+    }
+
+    /// <summary>
+    /// Verifies that the directory slots a commit leaves unused are written as free entries, all zeroes except the left
+    /// sibling, right sibling and child links, which are NOSTREAM, for a created file and for one committed again after
+    /// an edit, with 512-byte and 4096-byte sectors.
+    /// </summary>
+    /// <param name="version">The version the file is created with.</param>
+    [TestMethod]
+    [DataRow(CompoundFileVersion.V3)]
+    [DataRow(CompoundFileVersion.V4)]
+    public void Commit_WhenDirectoryHasUnusedSlots_ShouldWriteThemAsFreeEntries(CompoundFileVersion version)
+    {
+        var destination = new MemoryStream();
+        using var file = CompoundFile.Create(destination, leaveOpen: true, new CompoundBuildOptions { Version = version });
+        file.RootStorage.CreateStream("A", CompoundContainerBytes.Pattern(100));
+
+        file.Commit();
+        AssertFreeEntries(destination.ToArray(), expectedFree: version == CompoundFileVersion.V3 ? 2 : 30);
+
+        file.RootStorage.CreateStream("B", CompoundContainerBytes.Pattern(100));
+        file.Commit();
+        AssertFreeEntries(destination.ToArray(), expectedFree: version == CompoundFileVersion.V3 ? 1 : 29);
+    }
+
+    /// <summary>
+    /// Verifies that a commit in update mode writes the directory slots it leaves unused as free entries.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenUpdatedDirectoryHasUnusedSlots_ShouldWriteThemAsFreeEntries()
+    {
+        MemoryStream destination = CreateContainer(("A", CompoundContainerBytes.Pattern(100)), ("B", CompoundContainerBytes.Pattern(100)));
+
+        using (var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true))
+        {
+            Assert.IsTrue(file.RootStorage.Delete("B"));
+            file.Commit();
+        }
+
+        AssertFreeEntries(destination.ToArray(), expectedFree: 2);
+    }
+
+    /// <summary>
+    /// Asserts that every unallocated slot of a container's directory is a free entry as [MS-CFB] 2.6.3 defines it.
+    /// </summary>
+    /// <param name="container">The committed container.</param>
+    /// <param name="expectedFree">The number of unallocated slots the directory is expected to hold.</param>
+    private static void AssertFreeEntries(byte[] container, int expectedFree)
+    {
+        byte[] free = new byte[CompoundContainerBytes.DirectoryEntrySize];
+        free.AsSpan(CompoundContainerBytes.LeftSiblingOffset, 12).Fill(0xFF);
+        int found = 0;
+        foreach (int slot in CompoundContainerBytes.DirectoryEntryOffsets(container))
+        {
+            if (container[slot + CompoundContainerBytes.TypeOffset] != 0)
+                continue;
+
+            found++;
+            CollectionAssert.AreEqual(free, container.AsSpan(slot, free.Length).ToArray(), $"slot at {slot}");
+        }
+
+        Assert.AreEqual(expectedFree, found);
     }
 }
