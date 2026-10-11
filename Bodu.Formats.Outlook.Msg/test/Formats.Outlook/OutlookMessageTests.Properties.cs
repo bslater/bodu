@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Formats.Outlook.Msg;
+using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Outlook;
 
@@ -87,5 +88,48 @@ public partial class OutlookMessageTests
         using var message = OutlookMessage.OpenRead(container);
 
         Assert.AreEqual("IPM.Note", message.MessageClass);
+    }
+
+    /// <summary>
+    /// Verifies that a property record whose 16 bytes are all zero is padding: at every validation level it is skipped,
+    /// and the properties hold only the subject recorded before it.
+    /// </summary>
+    /// <param name="level">The validation level the message is read at.</param>
+    [TestMethod]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Strict)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void Properties_WhenRecordIsAllZero_ShouldSkipIt(CompoundValidationLevel level)
+    {
+        MsgFixtureBuilder builder = new MsgFixtureBuilder().AddUnicode(MapiPropertyIds.Subject, "Short");
+        byte[] properties = [.. builder.BuildPropertiesPayload(), .. new byte[16]];
+        using MemoryStream container = builder
+            .OmitPropertiesStream()
+            .AddRawStream(MsgStreamNames.PropertiesStreamName, properties)
+            .Build();
+
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { ValidationLevel = level });
+
+        Assert.AreEqual(1, message.Properties.Count);
+        Assert.AreEqual("Short", message.Subject);
+        Assert.IsFalse(message.Properties.Contains(new MapiPropertyTag(0u)));
+    }
+
+    /// <summary>
+    /// Verifies that a record with tag 0 and nonzero flags is not padding: it is surfaced as property
+    /// <c>0x00000000</c>, as before.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenTagIsZeroAndFlagsAreNot_ShouldKeepTheRecord()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddUnicode(MapiPropertyIds.Subject, "Short")
+            .AddFixedEntry(0x00000000, 0)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual(2, message.Properties.Count);
+        Assert.IsTrue(message.Properties.Contains(new MapiPropertyTag(0u)));
     }
 }
