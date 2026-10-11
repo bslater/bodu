@@ -202,8 +202,8 @@ internal static class MapiValueDecoder
                 if (encoding.CodePage == Utf8CodePage && bytes.StartsWith(Utf8ByteOrderMark))
                     bytes = bytes.Slice(Utf8ByteOrderMark.Length);
 
-                // In the single-byte and multibyte code pages a code-page string is written in, and in UTF-8, no byte
-                // of a character other than NUL is zero, so the first zero byte is the terminator.
+                // In the single-byte and multibyte code pages a code-page string is written in, and in UTF-8 and UTF-7,
+                // no byte of a character other than NUL is zero, so the first zero byte is the terminator.
                 int terminator = bytes.IndexOf((byte)0);
                 value = encoding.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator));
                 return true;

@@ -21,8 +21,10 @@ namespace Bodu.Formats.Outlook.Pst;
 /// real-world messages (Windows-1252, Shift-JIS, and the rest) resolve on all platforms. Resolution prefers the message
 /// code page, then the internet code page, then falls back to Windows-1252 - the historical default for messages that
 /// declare nothing (Latin-1 when the code-page provider is unavailable). The UTF-16 code pages (1200 and 1201) are not
-/// usable for <c>PT_STRING8</c> payloads and fall through to the next candidate; resolved encodings are cached per code
-/// page. Every method always returns an encoding and never throws. This file lives in
+/// usable for <c>PT_STRING8</c> payloads and fall through to the next candidate. Code page 65000 is UTF-7, as RFC 2152
+/// defines it, which <see cref="Encoding.GetEncoding(int)" /> serves only behind an opt-in switch, so the resolver
+/// constructs it directly rather than letting the declared text fall back to Windows-1252. Resolved encodings are
+/// cached per code page. Every method always returns an encoding and never throws. This file lives in
 /// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader - the same code-page
 /// properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a PST property context; the consuming
 /// project selects the namespace via its <c>DefineConstants</c>.
@@ -41,11 +43,19 @@ internal static class MapiEncodingResolver
     /// <summary>The UTF-16 big-endian code page, which cannot describe a code-page string.</summary>
     private const int Utf16BigEndianCodePage = 1201;
 
+    /// <summary>The UTF-7 code page (RFC 2152), served by an instance the resolver constructs itself.</summary>
+    private const int Utf7CodePage = 65000;
+
     /// <summary>The resolved encoding per code page, or <see langword="null" /> for a code page that does not resolve.</summary>
     private static readonly ConcurrentDictionary<int, Encoding?> s_cache = new();
 
     /// <summary>The UTF-8 encoding without a preamble.</summary>
     private static readonly Encoding s_utf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+
+#pragma warning disable SYSLIB0001 // UTF-7 is unsafe to produce; decoding text a message declares as UTF-7 gives callers the real text to sanitize.
+    /// <summary>The UTF-7 encoding, which the BCL serves only behind an opt-in switch.</summary>
+    private static readonly Encoding s_utf7 = new UTF7Encoding();
+#pragma warning restore SYSLIB0001
 
     /// <summary>The encoding served when nothing declared resolves.</summary>
     private static readonly Encoding s_fallback;
@@ -122,6 +132,9 @@ internal static class MapiEncodingResolver
 
         if (value == Utf8CodePage)
             return s_utf8;
+
+        if (value == Utf7CodePage)
+            return s_utf7;
 
         return s_cache.GetOrAdd(value, static key =>
         {
