@@ -117,6 +117,9 @@ internal sealed class PstMessagingFixtureBuilder
     /// <summary>The property identifier the multi-valued Int32 fixture value uses.</summary>
     internal const ushort MvInt32PropertyId = 0x6001;
 
+    /// <summary>The property identifier the optional multi-valued AppTime fixture value uses.</summary>
+    internal const ushort MvAppTimePropertyId = 0x6002;
+
     /// <summary>The first recipient's display name.</summary>
     internal const string RecipientOneName = "Robin Osei";
 
@@ -173,6 +176,9 @@ internal sealed class PstMessagingFixtureBuilder
 
     /// <summary>The <c>PT_MV_LONG</c> wire type.</summary>
     private const ushort MvInt32Type = 0x1003;
+
+    /// <summary>The <c>PT_MV_APPTIME</c> wire type.</summary>
+    private const ushort MvAppTimeType = 0x1007;
 
     /// <summary>The <c>PT_MV_UNICODE</c> wire type.</summary>
     private const ushort MvUnicodeType = 0x101F;
@@ -314,6 +320,13 @@ internal sealed class PstMessagingFixtureBuilder
     /// </summary>
     /// <value><see langword="null" /> to emit <see cref="HtmlBodyText" /> in the message code page.</value>
     internal byte[]? HtmlPayloadOverride { get; set; }
+
+    /// <summary>
+    /// Gets or sets the OLE Automation dates of a packed multi-valued <c>AppTime</c> property the full message carries
+    /// under <see cref="MvAppTimePropertyId" />.
+    /// </summary>
+    /// <value><see langword="null" /> to omit the property.</value>
+    internal double[]? MvAppTimeValues { get; set; }
 
     /// <summary>
     /// Assembles the synthetic mail store and returns it as a seekable stream positioned at its start.
@@ -510,6 +523,9 @@ internal sealed class PstMessagingFixtureBuilder
         };
         if (MessageDeclaresCodePage)
             records.Add((MapiPropertyIds.MessageCodepage, Int32Type, MessageCodePage));
+
+        if (MvAppTimeValues is not null)
+            records.Add((MvAppTimePropertyId, MvAppTimeType, ltp.AddItem(BuildMvDoublePayload(MvAppTimeValues))));
 
         _ = ltp.AddPropertyContext([.. records]);
         _ = ltp.AddHeapNode(file, MessageNodeId, subnodeBlockId);
@@ -876,6 +892,20 @@ internal sealed class PstMessagingFixtureBuilder
         var payload = new byte[values.Length * 4];
         for (int i = 0; i < values.Length; i++)
             BinaryPrimitives.WriteInt32LittleEndian(payload.AsSpan(i * 4), values[i]);
+
+        return payload;
+    }
+
+    /// <summary>
+    /// Builds a packed multi-value payload of 64-bit floating-point elements.
+    /// </summary>
+    /// <param name="values">The element values.</param>
+    /// <returns>The payload bytes.</returns>
+    private static byte[] BuildMvDoublePayload(double[] values)
+    {
+        var payload = new byte[values.Length * 8];
+        for (int i = 0; i < values.Length; i++)
+            BinaryPrimitives.WriteDoubleLittleEndian(payload.AsSpan(i * 8), values[i]);
 
         return payload;
     }

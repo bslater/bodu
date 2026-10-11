@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using Bodu.Formats.Outlook.Msg;
 using Bodu.IO.Compound;
 
@@ -175,5 +176,29 @@ public partial class OutlookMessageTests
         Assert.AreEqual(2, values.Length);
         Assert.AreEqual("Alpha", values[0]);
         Assert.AreEqual("Beta", values[1]);
+    }
+
+    /// <summary>
+    /// Verifies that a multi-valued <c>AppTime</c> property (<c>PtypMultipleFloatingTime</c>) decodes to an array of its
+    /// OLE Automation dates at every validation level, as a single-valued <c>AppTime</c> decodes to its value.
+    /// </summary>
+    /// <param name="level">The validation level the message is read at.</param>
+    [TestMethod]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Strict)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void Properties_WhenMultiValuedAppTime_ShouldDecodeEveryElement(CompoundValidationLevel level)
+    {
+        var packed = new byte[16];
+        BinaryPrimitives.WriteDoubleLittleEndian(packed, 45000.5);
+        BinaryPrimitives.WriteDoubleLittleEndian(packed.AsSpan(8), -1.25);
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddPackedMultiValue(0x6002, MapiPropertyType.AppTime, packed)
+            .Build();
+
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { ValidationLevel = level });
+
+        Assert.IsTrue(message.Properties.TryGetValue(new MapiPropertyTag(0x60021007u), out MapiProperty? property));
+        CollectionAssert.AreEqual(new[] { 45000.5, -1.25 }, (double[])property.Value!);
     }
 }

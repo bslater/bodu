@@ -64,4 +64,24 @@ public partial class OutlookMailMessageTests
         Assert.IsTrue(GetFullMessage(store).Properties.TryGetValue(tag, out MapiProperty? property));
         CollectionAssert.AreEqual(PstMessagingFixtureBuilder.MvInt32Values, (int[])property.Value!);
     }
+
+    /// <summary>
+    /// Verifies that a packed multi-valued <c>AppTime</c> property (<c>PtypMultipleFloatingTime</c>) decodes into its
+    /// OLE Automation dates at every validation level, as a single-valued <c>AppTime</c> decodes to its value.
+    /// </summary>
+    /// <param name="testName">The validation level, by name.</param>
+    /// <param name="level">The validation level the store is opened at.</param>
+    [TestMethod]
+    [DataRow("Compatible", PstValidationLevel.Compatible)]
+    [DataRow("Strict", PstValidationLevel.Strict)]
+    [DataRow("Minimal", PstValidationLevel.Minimal)]
+    public void Properties_WhenMultiValuedAppTime_ShouldDecodeElements(string testName, PstValidationLevel level)
+    {
+        double[] dates = [45000.5, -1.25];
+        using OutlookMailStore store = OpenSynthetic(b => b.MvAppTimeValues = dates, level);
+
+        var tag = new MapiPropertyTag(((uint)PstMessagingFixtureBuilder.MvAppTimePropertyId << 16) | 0x1007);
+        Assert.IsTrue(GetFullMessage(store).Properties.TryGetValue(tag, out MapiProperty? property), testName);
+        CollectionAssert.AreEqual(dates, (double[])property.Value!, testName);
+    }
 }
