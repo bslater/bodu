@@ -298,6 +298,41 @@ internal static class Biff8TestWorkbook
         return workbook.ToArray();
     }
 
+    /// <summary>
+    /// Builds a workbook stream from sheet substreams written exactly as given, so a substream may lack its BOF or EOF
+    /// record, with a sheet directory whose order may differ from the order of the substreams.
+    /// </summary>
+    /// <param name="substreams">The substreams, in stream order.</param>
+    /// <param name="directory">
+    /// The name of each worksheet and the index of the substream its BOUNDSHEET record points at, in directory order.
+    /// </param>
+    /// <returns>The workbook stream bytes.</returns>
+    public static byte[] BuildRawWorkbookStream(IReadOnlyList<byte[]> substreams, params (string Name, int Substream)[] directory)
+    {
+        int globalsLength = Bof(BofGlobals).Length + Eof().Length;
+        foreach ((string name, _) in directory)
+            globalsLength += BoundSheet(0, 0, 0, name).Length;
+
+        long[] offsets = new long[substreams.Count];
+        long offset = globalsLength;
+        for (int i = 0; i < substreams.Count; i++)
+        {
+            offsets[i] = offset;
+            offset += substreams[i].Length;
+        }
+
+        using MemoryStream workbook = new();
+        workbook.Write(Bof(BofGlobals));
+        foreach ((string name, int substream) in directory)
+            workbook.Write(BoundSheet(offsets[substream], 0, 0, name));
+
+        workbook.Write(Eof());
+        foreach (byte[] substream in substreams)
+            workbook.Write(substream);
+
+        return workbook.ToArray();
+    }
+
     /// <summary>Builds a BOUNDSHEET record.</summary>
     /// <param name="streamOffset">The sheet's substream offset.</param>
     /// <param name="sheetType">The sheet type byte.</param>

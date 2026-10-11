@@ -187,4 +187,87 @@ public partial class ExcelBinaryWorkbookTests
         Assert.AreEqual("0,0,Number,1;1,0,Number,2;2,0,Number,3", string.Join(";", first.Cells.Select(DescribeCell)));
         Assert.AreEqual("0,0,Number,4", string.Join(";", second.Cells.Select(DescribeCell)));
     }
+
+    /// <summary>
+    /// Verifies that a worksheet whose substream has no EOF record ends where the next sheet's substream begins, at that
+    /// sheet's BOUNDSHEET offset, so it reads its own cells, those after an embedded chart's BOF included, and no
+    /// others, and that the next sheet reads its own cell.
+    /// </summary>
+    /// <param name="embedsChart">Whether the worksheet without an EOF record holds an embedded chart.</param>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void ReadWorksheet_WhenWorksheetLacksEof_ShouldEndWhereTheNextSheetBegins(bool embedsChart)
+    {
+        List<byte[]> records = [Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet), Biff8TestWorkbook.Number(0, 0, 1.0)];
+        if (embedsChart)
+            records.Add(Biff8TestWorkbook.EmbeddedChart(1, 10.0, 20.0));
+
+        records.Add(Biff8TestWorkbook.Number(1, 0, 2.0));
+        byte[] stream = Biff8TestWorkbook.BuildRawWorkbookStream(
+            [Biff8TestWorkbook.Concat([.. records]), Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 3.0))],
+            ("Sheet1", 0),
+            ("Sheet2", 1));
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(stream, "Workbook");
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        ExcelWorksheet first = workbook.ReadWorksheet(0);
+        ExcelWorksheet second = workbook.ReadWorksheet(1);
+
+        Assert.AreEqual("0,0,Number,1;1,0,Number,2", string.Join(";", first.Cells.Select(DescribeCell)));
+        Assert.AreEqual("0,0,Number,3", string.Join(";", second.Cells.Select(DescribeCell)));
+    }
+
+    /// <summary>
+    /// Verifies that a worksheet whose substream has no EOF record ends at the nearest substream that begins after it,
+    /// whatever the order of the sheet directory, which here lists the substreams last to first.
+    /// </summary>
+    [TestMethod]
+    public void ReadWorksheet_WhenSheetDirectoryIsOutOfStreamOrder_ShouldEndAtTheNearestLaterSheet()
+    {
+        byte[] stream = Biff8TestWorkbook.BuildRawWorkbookStream(
+            [
+                Biff8TestWorkbook.Concat(Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet), Biff8TestWorkbook.Number(0, 0, 1.0)),
+                Biff8TestWorkbook.Concat(Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet), Biff8TestWorkbook.Number(0, 0, 2.0)),
+                Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 3.0)),
+            ],
+            ("Last", 2),
+            ("Middle", 1),
+            ("First", 0));
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(stream, "Workbook");
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        ExcelWorksheet first = workbook.ReadWorksheet("First");
+        ExcelWorksheet middle = workbook.ReadWorksheet("Middle");
+        ExcelWorksheet last = workbook.ReadWorksheet("Last");
+
+        Assert.AreEqual("0,0,Number,1", string.Join(";", first.Cells.Select(DescribeCell)));
+        Assert.AreEqual("0,0,Number,2", string.Join(";", middle.Cells.Select(DescribeCell)));
+        Assert.AreEqual("0,0,Number,3", string.Join(";", last.Cells.Select(DescribeCell)));
+    }
+
+    /// <summary>
+    /// Verifies that the last substream in the workbook stream, when it has no EOF record, ends at the end of the
+    /// stream, and its worksheet reads its cells.
+    /// </summary>
+    [TestMethod]
+    public void ReadWorksheet_WhenLastSheetLacksEof_ShouldEndAtTheEndOfTheStream()
+    {
+        byte[] stream = Biff8TestWorkbook.BuildRawWorkbookStream(
+            [
+                Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 1.0)),
+                Biff8TestWorkbook.Concat(
+                    Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet),
+                    Biff8TestWorkbook.Number(0, 0, 2.0),
+                    Biff8TestWorkbook.Number(1, 0, 3.0)),
+            ],
+            ("Sheet1", 0),
+            ("Sheet2", 1));
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(stream, "Workbook");
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        ExcelWorksheet last = workbook.ReadWorksheet(1);
+
+        Assert.AreEqual("0,0,Number,2;1,0,Number,3", string.Join(";", last.Cells.Select(DescribeCell)));
+    }
 }
