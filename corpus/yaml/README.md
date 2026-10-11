@@ -283,6 +283,23 @@ The unit tests found:
 Issue #900, found while fixing TOML's #831, was fixed alongside: a finite value outside the `float` range bound to a
 `float` member became an infinity, and now throws `YamlSerializationException`.
 
+Fixing these turned up six more defects, each filed and fixed test first in the same way:
+
+- Hexadecimal and octal literals beyond the 64-bit range could wrap to a wrong integer (`0x12000000000000000` read as
+  2^61), where an out-of-range decimal stays a string (#970).
+- A repeated anchor, and the alias that closes a cycle, carried no position (#971).
+- A merge source written after the mapping that merges it, as a merge value written in place is, was merged as written,
+  with a literal `<<` key and without the keys its own merge supplies (#972).
+- A root value that could not convert escaped `YamlSerializer.Deserialize` as the converter's raw `FormatException`
+  (#973).
+- Under `V1_1`, a float whose digits begin with an underscore (`_1.5`) resolved, where #895 keeps such an integer a
+  string (#974).
+- An alias used as a block key reported the generic unexpected-content message rather than the complex-key one, and the
+  README named neither alias keys nor the rule that a tab in the leading whitespace of a line that begins a node is
+  indentation (#975).
+
+Every catalogue row passed before these six fixes and still does; none depended on them.
+
 The fixes also moved 26 valid yaml-test-suite cases that Bodu had rejected into those it reads to their `in.json` (P2AD,
 R4YG, 4QFQ, 735Y, D83L and W42U by #876; JTV5, ZWK4, A2M4, 5WE3 and 7W2P by #878; UT92, CT4Q, NJ66, 8UDB and 8KB6
 by #887; 2SXE and HMQ5 by #880; KH5V/01, DE56/02, DE56/03, 3RLN/01 and 3RLN/04 by #891; AB8U, 57H4 and M6YH by #918),
@@ -308,14 +325,14 @@ now expects Bodu's reading. js-yaml's counts moved from 116 `applies` and 13 `di
 - Depth. The `MaxDepth` XML documentation says "container nesting", but Bodu counted nodes; #890 made it count
   sequences and mappings.
 - Complex keys. The README says a sequence or mapping used as a key is rejected, not coerced, but a flow collection used
-  as a later implicit key was coerced to its text; #885 rejects it. The README still names only sequences and
-  mappings, while Bodu also rejects an alias as a key (its complex-key message names aliases).
+  as a later implicit key was coerced to its text; #885 rejects it. The README named only sequences and mappings, while
+  Bodu also rejects an alias as a key (its complex-key message names aliases); #975 names aliases there, and reports an
+  alias used as a block key with that message.
 - Tabs. The README rejects tabs used as indentation and keeps them legal as separation, but Bodu rejected a tab used as
   separation after node properties (`--- !!str\ta`) and accepted `-\ta: b`; #882 fixed both, and #918 stopped a tab
-  counting toward a plain scalar's continuation indentation, which the README now states. Bodu still treats any tab
-  in the leading whitespace of a line that begins a node as indentation, after the indentation spaces (DK95/00) or
-  inside a top-level flow collection (6CA3, Q5MG); the catalogue takes that as documented, but the README does not
-  spell it out.
+  counting toward a plain scalar's continuation indentation, which the README now states. Bodu treats any tab in the
+  leading whitespace of a line that begins a node as indentation, after the indentation spaces (DK95/00) or before a
+  top-level flow collection (6CA3, Q5MG); the catalogue took that as documented, and #975 spells it out in the README.
 - Escapes. The README and using.md reject invalid escapes, but Bodu also rejected the valid escaped tab; #891 fixed
   it.
 - Writer quoting. Pattern 9 of using.md says the writer quotes a string whose plain form would resolve as a
