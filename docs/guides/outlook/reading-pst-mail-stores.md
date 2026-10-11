@@ -48,7 +48,7 @@ using var store = OutlookMailStore.Open(stream, options, leaveOpen: true);
 Console.WriteLine(store.DisplayName);
 ```
 
-`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant: Unicode and ANSI files then open, while the 4 KiB-page OST variant is rejected by the container with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant: Unicode and ANSI files then open, while an OST file (client magic `SO`, whatever its version) and the 4 KiB-page variant are rejected by the container with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 
 ## Pattern 1 - inventory a store
 

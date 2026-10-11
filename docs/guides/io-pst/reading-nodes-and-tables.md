@@ -21,7 +21,7 @@ Console.WriteLine($"{file.Format} format, block data: {file.CryptMethod}");
 // Unicode format, block data: Permute
 ```
 
-`OpenRead(path)` owns the file it opens. `OpenRead(stream, leaveOpen)` and `Open(stream, options, leaveOpen)` read a stream that must be readable and seekable (<xref:System.ArgumentException> otherwise); the container starts at the stream's *current position*, so a PST embedded in a larger stream opens without copying. Opening parses the header only - a wrong magic, an undeclared version, or (under `Strict`) a bad header CRC throws <xref:Bodu.IO.Pst.PstFileFormatException> here, and the 4 KiB-page OST variant throws <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+`OpenRead(path)` owns the file it opens. `OpenRead(stream, leaveOpen)` and `Open(stream, options, leaveOpen)` read a stream that must be readable and seekable (<xref:System.ArgumentException> otherwise); the container starts at the stream's *current position*, so a PST embedded in a larger stream opens without copying. Opening parses the header only - a wrong magic, an undeclared version, or (under `Strict`) a bad header CRC throws <xref:Bodu.IO.Pst.PstFileFormatException> here, and an OST file (client magic `SO`, whatever its version) or the 4 KiB-page variant throws <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 
 <xref:Bodu.IO.Pst.PstFile.Format> reports the variant (`Unicode`, 64-bit structures, or `Ansi`, 32-bit); every public type behaves identically over either. <xref:Bodu.IO.Pst.PstFile.CryptMethod> is the header's content encoding - `None`, `Permute`, or `Cyclic` - which the reader undoes transparently on every block read; you never see encoded bytes.
 

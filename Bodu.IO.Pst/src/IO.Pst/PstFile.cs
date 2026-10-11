@@ -170,10 +170,13 @@ public sealed class PstFile
     }
 
     /// <summary>
-    /// Determines whether a stream begins with the PST magics; its position is restored before returning.
+    /// Determines whether a stream begins with the <c>!BDN</c> magic; its position is restored before returning.
     /// </summary>
     /// <param name="stream">The readable, seekable stream to sniff.</param>
-    /// <returns><see langword="true" /> when the stream looks like a PST file of any variant.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the stream begins with the magic every PST variant shares, the OST included,
+    /// whether or not this reader opens it.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
@@ -187,9 +190,9 @@ public sealed class PstFile
         long position = stream.Position;
         try
         {
-            var magic = new byte[12];
+            var magic = new byte[PstHeader.MagicSize];
             int read = stream.ReadAtLeast(magic, magic.Length, throwOnEndOfStream: false);
-            return read == magic.Length && PstHeader.IsPstHeader(magic);
+            return read == magic.Length && PstHeader.HasMagic(magic);
         }
         finally
         {

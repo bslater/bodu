@@ -251,10 +251,13 @@ public sealed partial class OutlookMailStore
     }
 
     /// <summary>
-    /// Determines whether a stream begins with the PST magics; its position is restored before returning.
+    /// Determines whether a stream begins with the <c>!BDN</c> magic; its position is restored before returning.
     /// </summary>
     /// <param name="stream">The readable, seekable stream to sniff.</param>
-    /// <returns><see langword="true" /> when the stream looks like a PST file of any variant.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the stream begins with the magic every PST variant shares, the OST included,
+    /// whether or not this reader opens it.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>

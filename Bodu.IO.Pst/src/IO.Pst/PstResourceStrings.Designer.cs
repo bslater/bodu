@@ -196,6 +196,14 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The file is an Outlook offline storage table (OST); only PST files in the Unicode and ANSI formats are supported..
+        /// </summary>
+        internal static string Op_NotSupported_PstOst {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_PstOst", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The file uses an unsupported content encoding method (0x{0:X2})..
         /// </summary>
         internal static string Op_NotSupported_PstCryptMethod {
