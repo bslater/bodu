@@ -47,8 +47,8 @@ Every file is UTF-8 with LF line endings and no byte order mark, and every chara
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 212 | The row runs, and Bodu must do what the fix established |
-| `dialect` | 39 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document (a validation level, a documented limit, the code-page rules) |
+| `applies` | 210 | The row runs, and Bodu must do what the fix established |
+| `dialect` | 41 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document (a validation level, a documented limit, the code-page rules) |
 | `n/a` | 308 | The fix concerns something Bodu does not have (a tool's output, a C API, recurrence decoding, S/MIME, the 4 KiB-page OST), memory management, a platform, the build or packaging; `reason` says which |
 | `unknown` | 21 | The notes, commit and issue name no scenario; `reason` links what was read |
 
@@ -142,22 +142,24 @@ Text inside a rendering is escaped the same way everywhere: `\` as `\\`, LF, CR,
 
 | Library | Fixes | Rows | applies | dialect | n/a | unknown |
 |---|---:|---:|---:|---:|---:|---:|
-| libpff | 266 | 297 | 104 | 22 | 160 | 11 |
+| libpff | 266 | 297 | 103 | 23 | 160 | 11 |
 | java-libpst | 66 | 79 | 49 | 8 | 20 | 2 |
-| libpst | 172 | 187 | 54 | 9 | 116 | 8 |
+| libpst | 172 | 187 | 53 | 10 | 116 | 8 |
 | xstreader | 17 | 17 | 5 | 0 | 12 | 0 |
-| **Total** | **521** | **580** | **212** | **39** | **308** | **21** |
+| **Total** | **521** | **580** | **210** | **41** | **308** | **21** |
 
 Of the 251 `applies` and `dialect` rows, 247 are runnable and 4 are `unit` rows.
 
 ### Status
 
-The rows were run with a harness outside the repository that implements the renderings, options and generators above over `Bodu.IO.Pst` and `Bodu.Formats.Outlook.Pst`: 236 runnable rows pass and 11 fail. They have not yet been ported into the test projects, and Bodu has not been changed. The failures, by apparent cause:
+`PstReleaseNoteCorpusTests` in `Bodu.Formats.Outlook.Pst.Test` runs every runnable row from copies of these files embedded under `Fixtures/ReleaseNotes/`, on both surfaces: that project already references `Bodu.IO.Pst.Test` for the container fixture builders the generators write through. Its generators, renderings and options are the ones defined above. It pins the counts above, and checks that every row's options and scenario are well formed, that each `unit` row names a test that exists (in that project or in `Bodu.IO.Pst.Test`), and that the copies match these files. 244 of the 247 runnable rows pass, and the four `unit` tests pass.
 
-- **Container exceptions where the mail store documents tolerance.** A property whose value reference does not resolve (libpff 20100504) or whose fixed-size value is short (libpst 0.6.63 case 1) throws `PstFileFormatException` under `Compatible`, where `docs/guides/outlook/reading-pst-mail-stores.md` says a malformed property is omitted; an attachment whose data subnode is missing throws `PstFileFormatException`, where the same guide lists a missing by-value payload under `OutlookPstFormatException` (java-libpst PR #82 case 3).
-- **OST client magic.** A header with wMagicClient `SO` is rejected as an invalid header (`PstFileFormatException`), at version 23 and at 36, where the guides say an OST file throws `PstUnsupportedFormatException` (libpff 792a60b797 cases 2 and 3).
-- **Header version.** wVer 24 is rejected, though MS-PST 2.2.2.6 makes any version of 23 or more a Unicode file (libpff 20100429 case 1); Bodu documents accepting only the versions it knows.
-- **A B-tree page reachable twice** is read twice, so its nodes are listed twice (libpff 0ba671e045).
-- **A page map whose first allocation starts at offset 0**, inside the heap header, is not detected and the value reads the header bytes (libpff 20090616).
-- **Trailing zeros** are kept in a name-to-id string (libpff 20100429) and in a binary HTML body (libpff 20091204).
-- **UTF-7** (code page 65000) is not decoded (libpff 20090807 case 2).
+The first run against Bodu failed 11 rows. Five issues, each fixed test first, settled eight of them:
+
+- **#988.** A B-tree page reachable twice was read twice, so its nodes were listed twice (libpff 0ba671e045). Both B-trees now hold every page to the key range its parent entry gives it, from that entry's key up to the next entry's, and reject a page outside it as `InvalidPage` at every level.
+- **#989.** A heap page map whose first allocation started at offset 0, inside the heap header, served the header's bytes as the value (libpff 20090616). A page map must now place its allocations, in order, between its page's header (`HNHDR`, `HNPAGEHDR` or `HNBITMAPHDR`) and the page map itself, or the heap is `InvalidHeap`.
+- **#986.** A header with the OST client magic `SO` was rejected as an invalid header, and `IsPstFile` answered `false` for it (libpff 792a60b797 cases 2 and 3). `SO` is now `PstUnsupportedFormatException` whatever the version, and `IsPstFile` checks only `!BDN`, as the guides say.
+- **#987.** Only `wVer` 23 opened as Unicode (libpff 20100429 case 1, version 24). Every version of 23 or more but 36 is now Unicode, as MS-PST 2.2.2.6 defines it, so a version-37 file from an Outlook that supports Windows Information Protection opens; 36 stays the unsupported 4 KiB-page OST, and `bCryptMethod` 0x10 stays unsupported at every version.
+- **#990.** The docs contradicted the reader in seven places, among them what the tolerant levels omit. Clarifying them changed no behaviour, and three rows became `dialect` rows expecting `PstFileFormatException`, citing the clarified lines. A heap reference that does not resolve (libpff 20100504) and a fixed-width value shorter than its type (libpst 0.6.63 `e5f18f0f58` case 1) are container corruption, `InvalidHeap` and `InvalidPropertyContext`, at every validation level (`docs/guides/io-pst/streaming-and-validation.md:280-281`, `docs/guides/outlook/reading-pst-mail-stores.md:364` and `:400`). A by-value payload whose data property names a missing subnode is `InvalidSubnodeTree` (java-libpst PR #82 case 3; `streaming-and-validation.md:279`, `reading-pst-mail-stores.md:364`), and the `OutlookPstFormatException` for a missing payload means an attachment with no data property (`docs/guides/outlook/reader-options-and-limits.md:107`).
+
+Three rows still fail, in the MAPI decoding the `.msg` and `.pst` readers share (`Bodu.Formats.Outlook/shared/`), which #978 and #980 fix there: trailing zeros are kept in a name-to-id string (libpff 20100429) and in a binary HTML body (libpff 20091204), and UTF-7 (code page 65000) is not decoded (libpff 20090807 case 2).
