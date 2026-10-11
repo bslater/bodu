@@ -149,4 +149,77 @@ public partial class PropertySetReaderTests
         Assert.IsFalse(parsed.TryGetValue(2, out _));
         Assert.AreEqual(7, parsed[3]!.AsInt32());
     }
+
+    /// <summary>
+    /// Verifies that a <c>VT_LPWSTR</c> whose writer aligned the string to the next four-byte boundary is read from
+    /// there when the length at the expected place frames a string that is not null-terminated.
+    /// </summary>
+    /// <remarks>
+    /// The layout is that of <see cref="Parse_WhenUnicodeStringBeginsOnTheNextBoundary_ShouldReadIt" />, but a blob of
+    /// 200,000 bytes follows, so the 0x00030000 characters read from the expected place lie within the stream; the
+    /// string they frame ends in the blob's bytes rather than a null.
+    /// </remarks>
+    [TestMethod]
+    public void Parse_WhenUnicodeStringOnTheNextBoundaryFramesAnUnterminatedString_ShouldReadIt()
+    {
+        byte[] codePage = [.. PropertySetBytes.CodePage(1252), 0, 0];
+        byte[] text = PropertySetBytes.Typed(0x001F, [0, 0], PropertySetBytes.UInt32(3), PropertySetBytes.Utf16("ab\0"), [0, 0]);
+        byte[] blob = new byte[200_000];
+        blob.AsSpan().Fill(0x41);
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, codePage),
+            (2, text),
+            (3, PropertySetBytes.Typed(0x0041, PropertySetBytes.UInt32((uint)blob.Length), blob)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.AreEqual("ab", parsed[2]?.AsString());
+        Assert.HasCount(200_000, parsed[3]!.AsBytes()!);
+    }
+
+    /// <summary>
+    /// Verifies that a well-formed <c>VT_LPWSTR</c> that begins two bytes past a four-byte boundary is read from the place
+    /// [MS-OLEPS] gives its length, null-terminated or not.
+    /// </summary>
+    /// <param name="text">The characters of the string, with its null when it has one.</param>
+    /// <param name="expected">The string expected.</param>
+    [TestMethod]
+    [DataRow("ab\0", "ab")]
+    [DataRow("abc", "abc")]
+    public void Parse_WhenWellFormedUnicodeStringBeginsOffABoundary_ShouldReadItInPlace(string text, string expected)
+    {
+        byte[] codePage = [.. PropertySetBytes.CodePage(1252), 0, 0];
+        byte[] value = PropertySetBytes.Typed(0x001F, PropertySetBytes.UInt32((uint)text.Length), PropertySetBytes.Utf16(text), [0, 0]);
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, codePage),
+            (2, value),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.AreEqual(expected, parsed[2]?.AsString());
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
+
+    /// <summary>
+    /// Verifies that a <c>VT_LPWSTR</c> on a four-byte boundary whose length is not at the expected place is dropped:
+    /// only a property that begins two bytes past a boundary is read again from the next one.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMisplacedUnicodeStringBeginsOnABoundary_ShouldDropIt()
+    {
+        byte[] text = PropertySetBytes.Typed(0x001F, [0, 0], PropertySetBytes.UInt32(3), PropertySetBytes.Utf16("ab\0"), [0, 0]);
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, text),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsFalse(parsed.TryGetValue(2, out _));
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
 }
