@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Biff;
+
 namespace Bodu.Formats.Excel;
 
 public partial class ExcelBinaryWorkbookTests
@@ -84,5 +86,30 @@ public partial class ExcelBinaryWorkbookTests
         {
             _ = workbook.ReadWorksheet(99);
         });
+    }
+
+    /// <summary>
+    /// Verifies that reading a sheet whose BOF declares BIFF4 (version <c>0x0400</c>) in a BIFF8 workbook throws
+    /// <see cref="ExcelBinaryUnsupportedException" />, with the codec's exception as its inner exception, as the open does
+    /// for the workbook globals.
+    /// </summary>
+    [TestMethod]
+    public void ReadWorksheet_WhenSheetBofDeclaresUnsupportedVersion_ShouldThrowExcelBinaryUnsupportedException()
+    {
+        byte[] sheet = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Record(0x0809, [0x00, 0x04, 0x10, 0x00, 0xBB, 0x0D, 0xCC, 0x07]),
+            Biff8TestWorkbook.Number(0, 0, 9),
+            Biff8TestWorkbook.Eof());
+        byte[] globals = Biff8TestWorkbook.Concat(Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofGlobals), Biff8TestWorkbook.BoundSheet(0, 0, 0, "Odd"), Biff8TestWorkbook.Eof());
+        System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(globals.AsSpan(20 + 4), (uint)globals.Length);
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile([.. globals, .. sheet], "Workbook");
+
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        var ex = Assert.ThrowsExactly<ExcelBinaryUnsupportedException>(() =>
+        {
+            _ = workbook.ReadWorksheet(0);
+        });
+
+        Assert.IsInstanceOfType<BiffUnsupportedVersionException>(ex.InnerException);
     }
 }

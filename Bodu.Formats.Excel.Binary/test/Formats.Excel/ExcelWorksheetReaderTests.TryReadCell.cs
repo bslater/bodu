@@ -342,4 +342,23 @@ public partial class ExcelWorksheetReaderTests
         ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
         return new ExcelWorksheetReader(info, output.WrittenSpan.ToArray(), [], BiffFormatTable.Empty, new BiffReaderOptions { Version = BiffVersion.Biff5, CodePage = codePage });
     }
+
+    /// <summary>
+    /// Verifies that a worksheet whose BOF declares a BIFF version other than BIFF5 or BIFF8 is reported as
+    /// <see cref="ExcelBinaryUnsupportedException" />, with the codec's exception, carrying the raw version, as its inner
+    /// exception.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenSheetBofDeclaresUnsupportedVersion_ShouldThrowExcelBinaryUnsupportedException()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReaderRaw(Biff4Substream());
+
+        var ex = Assert.ThrowsExactly<ExcelBinaryUnsupportedException>(() =>
+        {
+            _ = reader.TryReadCell(out _);
+        });
+
+        Assert.IsInstanceOfType<BiffUnsupportedVersionException>(ex.InnerException);
+        Assert.AreEqual((ushort)0x0400, ((BiffUnsupportedVersionException)ex.InnerException).RawVersion);
+    }
 }

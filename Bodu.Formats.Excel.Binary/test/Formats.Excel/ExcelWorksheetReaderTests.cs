@@ -35,4 +35,15 @@ public partial class ExcelWorksheetReaderTests
 
         return grid;
     }
+
+    /// <summary>
+    /// Builds a worksheet substream that opens with a BIFF4 beginning-of-file record (version <c>0x0400</c>) and holds
+    /// the number 9 in A1.
+    /// </summary>
+    /// <returns>The substream bytes.</returns>
+    private static byte[] Biff4Substream() =>
+        Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Record(0x0809, [0x00, 0x04, 0x10, 0x00, 0xBB, 0x0D, 0xCC, 0x07]),
+            Biff8TestWorkbook.Number(0, 0, 9),
+            Biff8TestWorkbook.Eof());
 }
