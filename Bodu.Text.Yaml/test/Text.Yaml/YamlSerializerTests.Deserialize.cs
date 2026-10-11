@@ -4,13 +4,15 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies <see cref="YamlSerializer.Deserialize{TValue}(string, YamlSerializerOptions)" />: dictionary binding,
-/// loosely-typed object binding, case-insensitive property matching, and the kind of a bound timestamp.
+/// loosely-typed object binding, case-insensitive property matching, the kind of a bound timestamp, and the binding
+/// failure a root value that cannot convert to the target type reports.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -122,6 +124,84 @@ public partial class YamlSerializerTests
 
         Assert.AreEqual(DateTimeKind.Utc, record.MomentOfBirth.Kind);
         Assert.AreEqual(new DateTime(1983, 4, 21, 20, 21, 3, DateTimeKind.Utc).AddTicks(41_599), record.MomentOfBirth);
+    }
+
+    /// <summary>
+    /// Verifies that a root scalar that cannot convert to the target type throws
+    /// <see cref="YamlSerializationException" />, as the same value one level down does, at the root value, line 1,
+    /// column 1, offset 0, with the root's path, which no key names and so is <see langword="null" />, and the
+    /// converter's <see cref="FormatException" /> as its inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRootScalarCannotConvert_ShouldThrowYamlSerializationExceptionAtRoot()
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<int>("x");
+        });
+
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(1, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(0, ex.Offset, "Offset");
+        Assert.IsNull(ex.Path, "Path");
+        Assert.IsNotNull(ex.InnerException);
+        Assert.AreEqual(typeof(FormatException), ex.InnerException.GetType());
+    }
+
+    /// <summary>
+    /// Verifies that a root scalar that a built-in converter cannot parse as the target type throws
+    /// <see cref="YamlSerializationException" /> at the root value, wrapping the parse failure, for each type whose
+    /// converter parses the scalar's text.
+    /// </summary>
+    /// <param name="type">The target type.</param>
+    /// <param name="yaml">A document whose root scalar does not parse as the target type.</param>
+    [TestMethod]
+    [DataRow(typeof(int), "x", DisplayName = "int")]
+    [DataRow(typeof(decimal), "x", DisplayName = "decimal")]
+    [DataRow(typeof(double), "x", DisplayName = "double")]
+    [DataRow(typeof(float), "x", DisplayName = "float")]
+    [DataRow(typeof(Guid), "x", DisplayName = "Guid")]
+    [DataRow(typeof(DateTime), "x", DisplayName = "DateTime")]
+    [DataRow(typeof(DateTimeOffset), "x", DisplayName = "DateTimeOffset")]
+    [DataRow(typeof(TimeSpan), "x", DisplayName = "TimeSpan")]
+    public void Deserialize_WhenRootScalarCannotParse_ForBuiltInType_ShouldWrapParseFailure(Type type, string yaml)
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize(Encoding.UTF8.GetBytes(yaml), type);
+        });
+
+        Assert.AreEqual(0, ex.Offset, "Offset");
+        Assert.IsInstanceOfType<FormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlSerializationException" /> that a root value's converter throws itself passes
+    /// through as thrown, taking the root value's position, rather than being wrapped in another.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRootConverterThrowsYamlSerializationException_ShouldNotWrapIt()
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<long>("99999999999999999999");
+        });
+
+        Assert.AreEqual(0, ex.Offset, "Offset");
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a document that is not valid YAML throws <see cref="YamlFormatException" />, unwrapped, whatever
+    /// the root's target type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenDocumentIsMalformed_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<int>("[1, 2");
+        });
     }
 
     /// <summary>A model holding a timestamp.</summary>
