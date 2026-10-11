@@ -112,4 +112,46 @@ public partial class ExcelBinaryWorkbookTests
 
         Assert.IsInstanceOfType<BiffUnsupportedVersionException>(ex.InnerException);
     }
+
+    /// <summary>
+    /// Verifies that reading a chart sheet yields no cells, though its substream holds the chart's data cache in NUMBER
+    /// and LABEL records ([MS-XLS] 2.2.3.2), and that the worksheet after it still reads its own cell.
+    /// </summary>
+    [TestMethod]
+    public void ReadWorksheet_WhenSheetIsAChart_ShouldYieldNoCells()
+    {
+        byte[] chart = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(0x0020),
+            Biff8TestWorkbook.Record(0x1001, [0x00, 0x00]),
+            Biff8TestWorkbook.Record(0x1009, new byte[20]),
+            Biff8TestWorkbook.Dimensions(0, 2, 0, 1),
+            Biff8TestWorkbook.Record(0x1065, [0x01, 0x00]),
+            Biff8TestWorkbook.Number(0, 0, 40.0),
+            Biff8TestWorkbook.Number(1, 0, 50.0),
+            Biff8TestWorkbook.Record(0x1065, [0x02, 0x00]),
+            Biff8TestWorkbook.Label(0, 0, "Q1"),
+            Biff8TestWorkbook.Label(1, 0, "Q2"),
+            Biff8TestWorkbook.Record(0x1065, [0x03, 0x00]),
+            Biff8TestWorkbook.Eof());
+        byte[] sheet = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 1.0));
+        int globalsLength = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofGlobals),
+            Biff8TestWorkbook.BoundSheet(0, 2, 0, "Chart1"),
+            Biff8TestWorkbook.BoundSheet(0, 0, 0, "Sheet1"),
+            Biff8TestWorkbook.Eof()).Length;
+        byte[] globals = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofGlobals),
+            Biff8TestWorkbook.BoundSheet(globalsLength, 2, 0, "Chart1"),
+            Biff8TestWorkbook.BoundSheet(globalsLength + chart.Length, 0, 0, "Sheet1"),
+            Biff8TestWorkbook.Eof());
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile([.. globals, .. chart, .. sheet], "Workbook");
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        ExcelWorksheet chartSheet = workbook.ReadWorksheet(0);
+        ExcelWorksheet dataSheet = workbook.ReadWorksheet(1);
+
+        Assert.AreEqual(ExcelSheetType.Chart, workbook.Worksheets[0].Type);
+        Assert.IsEmpty(chartSheet.Cells);
+        Assert.AreEqual(1.0, dataSheet.Cells.Single().NumberValue);
+    }
 }

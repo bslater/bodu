@@ -484,4 +484,24 @@ public partial class ExcelWorksheetReaderTests
         Assert.AreEqual("abc", cell.StringValue);
         Assert.IsFalse(reader.TryReadCell(out _));
     }
+
+    /// <summary>
+    /// Verifies that a sheet whose type is not <see cref="ExcelSheetType.Worksheet" /> yields no cells, even when its
+    /// substream holds NUMBER and LABEL records, as a chart's data cache does.
+    /// </summary>
+    /// <param name="type">The sheet type.</param>
+    [TestMethod]
+    [DataRow(ExcelSheetType.MacroSheet)]
+    [DataRow(ExcelSheetType.Chart)]
+    [DataRow(ExcelSheetType.VbaModule)]
+    [DataRow(ExcelSheetType.Unknown)]
+    public void TryReadCell_WhenSheetIsNotAWorksheet_ShouldReturnFalse(ExcelSheetType type)
+    {
+        ExcelWorksheetInfo info = new("Chart1", 0, ExcelSheetVisibility.Visible, type, default);
+        byte[] substream = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 40.0), Biff8TestWorkbook.Label(1, 0, "Q1"));
+        using var reader = new ExcelWorksheetReader(info, substream, [], BiffFormatTable.Empty, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+
+        Assert.IsFalse(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(default, cell);
+    }
 }
