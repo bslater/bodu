@@ -129,13 +129,13 @@ internal sealed partial class YamlParser
 
                 Advance();
                 SkipFlowWhitespace();
-                element = ParseFlowPair(element, hasValue: true);
+                element = ParseFlowPair(element, elementStart, hasValue: true);
                 SkipFlowWhitespace();
             }
             else if (explicitKey)
             {
                 // An explicit key without a ':' value indicator has a null value.
-                element = ParseFlowPair(element, hasValue: false);
+                element = ParseFlowPair(element, elementStart, hasValue: false);
             }
 
             AppendChild(sequence, element);
@@ -171,19 +171,20 @@ internal sealed partial class YamlParser
     /// follows its <c>:</c> value indicator, and counts the mapping toward the nesting depth.
     /// </summary>
     /// <param name="key">The row index of the parsed key node.</param>
+    /// <param name="keyOffset">The byte offset at which the key, or its first node property, begins.</param>
     /// <param name="hasValue">
     /// Whether a <c>:</c> value indicator was consumed, so that a value may follow; an explicit key without one has a
     /// null value.
     /// </param>
     /// <returns>The row index of the single-pair mapping.</returns>
     /// <exception cref="YamlFormatException">The mapping would nest deeper than the maximum depth.</exception>
-    private int ParseFlowPair(int key, bool hasValue)
+    private int ParseFlowPair(int key, int keyOffset, bool hasValue)
     {
         EnterCollection();
         try
         {
             int pair = NewContainer(YamlReaderNodeKind.Mapping, _rows[key].Offset, null, null);
-            string keyText = KeyTextOf(key);
+            string keyText = KeyTextOf(key, keyOffset);
             int value = !hasValue || Peek() is (byte)',' or (byte)']'
                 ? NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null)
                 : ParseFlowNode();
@@ -253,7 +254,7 @@ internal sealed partial class YamlParser
 
             int keyOffset = _pos;
             int keyNode = ParseFlowNode();
-            string key = KeyTextOf(keyNode);
+            string key = KeyTextOf(keyNode, keyOffset);
             SkipFlowWhitespace();
 
             int value;

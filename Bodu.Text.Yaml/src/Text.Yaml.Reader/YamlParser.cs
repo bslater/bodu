@@ -455,11 +455,12 @@ internal sealed partial class YamlParser
             Advance();
             SkipSpaces();
 
-            // A key on the indicator's line begins at the cursor; one on a later line begins at its node.
-            int keyStart = IsBreakOrEnd(Peek()) || Peek() == (byte)'#' ? -1 : _pos;
+            // The key begins at its first node property or its content, on the indicator's line or after the blank and
+            // comment lines that follow it, which the key's own parse would otherwise skip.
+            SkipBlankCommentLines();
+            keyOffset = _pos;
             int keyNode = ParseBlockNode(indent + 1);
-            keyOffset = keyStart >= 0 ? keyStart : _rows[keyNode].Offset;
-            keyText = KeyTextOf(keyNode);
+            keyText = KeyTextOf(keyNode, keyOffset);
             mergeKey = IsMergeKeyNode(keyNode);
             SkipBlankCommentLines();
             return keyNode;
@@ -703,11 +704,14 @@ internal sealed partial class YamlParser
     /// Reads the text that names a mapping key, for a key node parsed as a node (a flow, flow-pair, or explicit key).
     /// </summary>
     /// <param name="row">The row index of the key node.</param>
+    /// <param name="keyOffset">The byte offset at which the key, or its first node property, begins.</param>
     /// <returns>
     /// The scalar's text as written, after quoting and escapes are processed, as an implicit block key is named.
     /// </returns>
-    /// <exception cref="YamlFormatException">The key is a sequence, a mapping, or an alias.</exception>
-    private string KeyTextOf(int row)
+    /// <exception cref="YamlFormatException">
+    /// The key is a sequence, a mapping, or an alias; the error is reported where the key begins.
+    /// </exception>
+    private string KeyTextOf(int row, int keyOffset)
     {
         YamlReaderRow r = _rows[row];
 
@@ -716,8 +720,9 @@ internal sealed partial class YamlParser
         if (r.Kind == YamlReaderNodeKind.Scalar)
             return ScalarText(r);
 
-        // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
-        throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+        // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile. The
+        // cursor has moved past the key by now, so the error is placed where the key begins.
+        throw ErrorAt(keyOffset, YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
     }
 
     /// <summary>
