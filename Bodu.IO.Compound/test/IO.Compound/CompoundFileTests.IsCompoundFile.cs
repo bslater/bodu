@@ -54,6 +54,24 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="CompoundFile.IsCompoundFile(Stream)" /> restores the position of a stream shorter than
+    /// the signature, so that the bytes it read can be read again.
+    /// </summary>
+    [TestMethod]
+    public void IsCompoundFile_WhenStreamShorterThanSignature_ShouldRestorePosition()
+    {
+        using MemoryStream stream = new(new byte[] { 0x01, 0x02, 0x03 });
+
+        bool result = CompoundFile.IsCompoundFile(stream);
+
+        Assert.IsFalse(result);
+        Assert.AreEqual(0, stream.Position);
+        byte[] reread = new byte[4];
+        Assert.AreEqual(3, stream.Read(reread, 0, reread.Length));
+        CollectionAssert.AreEqual(new byte[] { 0x01, 0x02, 0x03, 0x00 }, reread);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="CompoundFile.IsCompoundFile(Stream)" /> throws <see cref="ArgumentException" /> for a
     /// non-seekable stream.
     /// </summary>

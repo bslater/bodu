@@ -91,6 +91,69 @@ public class PropertySetReaderHardeningTests
     }
 
     /// <summary>
+    /// Verifies that a <c>VT_LPWSTR</c> whose character count, 0x40000001, doubles past <see cref="int.MaxValue" />
+    /// bytes is dropped as malformed while the property after it still reads, rather than failing the whole set.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenUnicodeStringLengthOverflows_ShouldDropOnlyThatProperty()
+    {
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, PropertySetBytes.Typed(0x001F, PropertySetBytes.UInt32(0x40000001))),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsFalse(parsed.TryGetValue(2, out _));
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary entry whose length, 0xFFFFFFFF, exceeds <see cref="int.MaxValue" /> leaves the section
+    /// without names, while its properties still read, rather than failing the whole set.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenDictionaryEntryLengthExceedsInt32_ShouldDropTheDictionary()
+    {
+        byte[] dictionary = [.. PropertySetBytes.UInt32(1), .. PropertySetBytes.UInt32(5), .. PropertySetBytes.UInt32(0xFFFFFFFF)];
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.UserDefinedProperties,
+            (0, dictionary),
+            (1, PropertySetBytes.CodePage(1252)),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsEmpty(parsed.Sections[0].GetNamedProperties());
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
+
+    /// <summary>
+    /// Verifies that a <c>VT_VECTOR | VT_I4</c> declaring 0x7FFFFFF0 elements and holding two is dropped, without
+    /// allocating the declared count, while the property after it still reads.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenVectorCountExceedsData_ShouldDropOnlyThatProperty()
+    {
+        byte[] vector = PropertySetBytes.Typed(
+            (ushort)(VectorFlag | VtInt32),
+            PropertySetBytes.UInt32(0x7FFFFFF0),
+            PropertySetBytes.UInt32(1),
+            PropertySetBytes.UInt32(2));
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, vector),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsFalse(parsed.TryGetValue(2, out _));
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
+
+    /// <summary>
     /// Builds a property set with a single section whose header declares the supplied size and property count,
     /// followed by <paramref name="extraSectionBytes" /> of zero padding.
     /// </summary>

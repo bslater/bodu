@@ -50,4 +50,23 @@ public partial class PropertySetWriterTests
         Assert.AreEqual("First Custom", parsed.PropertyNames[2]);
         Assert.AreEqual("Odd", parsed.PropertyNames[3]);
     }
+
+    /// <summary>
+    /// Verifies that a name set on the first section of a set, which is not the user-defined section, is written as that
+    /// section's dictionary, property 0, and reads back.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenAnySectionHasNames_ShouldWriteItsDictionary()
+    {
+        var section = new OlePropertySection(TestFormatId, 1252);
+        section.Set(2, OlePropertyValue.Create(7));
+        section.SetName(2, "Seven");
+        var set = new OlePropertySet(TestFormatId, Guid.Empty, 1252);
+        set.AddSection(section);
+
+        byte[] bytes = set.ToArray();
+
+        Assert.IsTrue(FindPropertyOffsets(bytes, 0).ContainsKey(0));
+        Assert.AreEqual("Seven", OlePropertySet.Parse(bytes).Sections[0].PropertyNames[2]);
+    }
 }

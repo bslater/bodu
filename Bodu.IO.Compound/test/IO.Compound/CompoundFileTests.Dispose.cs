@@ -32,4 +32,21 @@ public partial class CompoundFileTests
 
         _ = Assert.ThrowsExactly<ObjectDisposedException>(() => file.RootStorage.OpenStream(name));
     }
+
+    /// <summary>
+    /// Verifies that disposing a buffered file opened without <c>leaveOpen</c> disposes its source stream.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenLeaveOpenIsFalse_ShouldDisposeSourceStream()
+    {
+        var source = new MemoryStream(CreateContainer(("A", CompoundContainerBytes.Pattern(100))).ToArray());
+        CompoundFile file = CompoundFile.Open(source);
+
+        file.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = source.ReadByte();
+        });
+    }
 }

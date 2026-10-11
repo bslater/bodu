@@ -351,4 +351,132 @@ public partial class CompoundFileTests
 
         Assert.IsEmpty(file.RootStorage.EnumerateEntries());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.OpenRead(string)" /> reports the <see cref="IOException" /> of a file that
+    /// another handle has locked.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenFileIsLocked_ShouldThrowIOException()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-locked-{Guid.NewGuid():N}.cfb");
+        try
+        {
+            File.WriteAllBytes(path, CreateContainer(("A", CompoundContainerBytes.Pattern(100))).ToArray());
+            using var locker = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+            Assert.ThrowsExactly<IOException>(() =>
+            {
+                using var file = CompoundFile.OpenRead(path);
+            });
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a buffered open reads every stream from a non-seekable source whose reads return one byte at a
+    /// time.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenBufferedSourceReturnsShortReads_ShouldReadEveryStream()
+    {
+        byte[] small = CompoundContainerBytes.Pattern(100);
+        byte[] large = CompoundContainerBytes.Pattern(5000, 100);
+        byte[] container = CreateContainer(("Small", small), ("Large", large)).ToArray();
+
+        using var file = CompoundFile.Open(new TrickleStream(container, bytesPerRead: 1));
+
+        using CompoundStream first = file.RootStorage.OpenStream("Small");
+        CollectionAssert.AreEqual(small, first.ReadAllBytes());
+        using CompoundStream second = file.RootStorage.OpenStream("Large");
+        CollectionAssert.AreEqual(large, second.ReadAllBytes());
+    }
+
+    /// <summary>
+    /// Verifies that a malformed container opened with <c>leaveOpen</c> set leaves the source stream open when the open
+    /// fails.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenContainerIsMalformedAndLeaveOpenIsTrue_ShouldLeaveSourceOpen()
+    {
+        byte[] container = CreateContainer(("A", CompoundContainerBytes.Pattern(5000))).ToArray();
+        CompoundContainerBytes.WriteUInt32(container, 0x4C, 0x00100000);
+        using var source = new MemoryStream(container);
+
+        Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var file = CompoundFile.Open(source, leaveOpen: true);
+        });
+
+        Assert.IsTrue(source.CanRead);
+        Assert.IsTrue(source.CanSeek);
+        source.Position = 0;
+        Assert.AreEqual(0xD0, source.ReadByte());
+    }
+
+    /// <summary>
+    /// Verifies that a buffered open reads every stream from a non-seekable source whose length is a whole number of
+    /// sectors.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenSourceIsNotSeekable_ShouldBufferEveryStream()
+    {
+        byte[] small = CompoundContainerBytes.Pattern(100);
+        byte[] large = CompoundContainerBytes.Pattern(5000, 100);
+        byte[] container = CreateContainer(("Small", small), ("Large", large)).ToArray();
+        Assert.AreEqual(7680, container.Length);
+
+        using var file = CompoundFile.Open(new Bodu.Test.IO.NonSeekableStream(container));
+
+        using CompoundStream first = file.RootStorage.OpenStream("Small");
+        CollectionAssert.AreEqual(small, first.ReadAllBytes());
+        using CompoundStream second = file.RootStorage.OpenStream("Large");
+        CollectionAssert.AreEqual(large, second.ReadAllBytes());
+    }
+
+    /// <summary>
+    /// Verifies that a streaming open reads every stream from a source whose reads return at most seven bytes.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenStreamingSourceReturnsShortReads_ShouldReadEveryStream()
+    {
+        byte[] small = CompoundContainerBytes.Pattern(100);
+        byte[] large = CompoundContainerBytes.Pattern(5000, 100);
+        byte[] container = CreateContainer(("Small", small), ("Large", large)).ToArray();
+        var options = new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Streaming };
+
+        using var file = CompoundFile.Open(new Bodu.Test.IO.FixedChunkStream(container, chunkSize: 7), options);
+
+        using CompoundStream first = file.RootStorage.OpenStream("Small");
+        CollectionAssert.AreEqual(small, first.ReadAllBytes());
+        using CompoundStream second = file.RootStorage.OpenStream("Large");
+        CollectionAssert.AreEqual(large, second.ReadAllBytes());
+    }
+
+    /// <summary>
+    /// Verifies that a streaming open reads a version-4 stream of more than 2 GB on both sides of the 2 GB offset.
+    /// </summary>
+    /// <remarks>
+    /// The container is a <see cref="SyntheticVersion4ContainerStream" />, whose bytes are computed as they are read, so
+    /// the test neither allocates nor writes the 3 GB stream.
+    /// </remarks>
+    [TestMethod]
+    public void Open_WhenVersion4StreamExceedsTwoGigabytes_ShouldReadAcrossTheBoundary()
+    {
+        const long length = 3_000_000_000;
+        var options = new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Streaming };
+
+        using var file = CompoundFile.Open(new SyntheticVersion4ContainerStream("Big", length), options);
+        using CompoundStream stream = file.RootStorage.OpenStream("Big");
+
+        Assert.AreEqual(length, stream.Length);
+        foreach (long offset in new[] { 0L, 2147483647L, 2147483648L, length - 1 })
+        {
+            stream.Position = offset;
+            Assert.AreEqual((int)CompoundContainerBytes.PatternByte(offset), stream.ReadByte(), $"offset {offset}");
+        }
+    }
 }
