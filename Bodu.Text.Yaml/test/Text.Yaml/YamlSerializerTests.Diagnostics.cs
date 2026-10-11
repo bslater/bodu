@@ -4,11 +4,17 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Yaml.Writer;
+
 namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies that <see cref="YamlSerializer" /> binding failures carry the dotted member path to the offending value and
-/// its line and column, so deserialization diagnostics are actionable for configuration documents.
+/// its line and column, so deserialization diagnostics are actionable for configuration documents, and that a
+/// <see cref="YamlFormatException" /> a converter throws passes through as it was thrown.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -126,6 +132,68 @@ public partial class YamlSerializerTests
         Assert.AreEqual("inner.port", ex.Path);
     }
 
+    /// <summary>
+    /// Verifies that a value that is not a boolean, bound to a <see cref="bool" />, throws
+    /// <see cref="YamlSerializationException" /> at the value, with its line, column, offset and path, at the root, as
+    /// a member, as a dictionary value and as a sequence element, rather than the reader's
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="yaml">A document with a value that is not a boolean where a boolean is bound.</param>
+    /// <param name="type">The type the document binds to.</param>
+    /// <param name="line">The line of the value.</param>
+    /// <param name="column">The column of the value.</param>
+    /// <param name="offset">The byte offset of the value.</param>
+    /// <param name="path">The path expected, or <see langword="null" /> for the root, which no key names.</param>
+    [TestMethod]
+    [DataRow("x", typeof(bool), 1, 1, 0, null, DisplayName = "a string at the root")]
+    [DataRow("A: x\n", typeof(MemberHolder<bool>), 1, 4, 3, "A", DisplayName = "a string member")]
+    [DataRow("A: 1\n", typeof(Dictionary<string, bool>), 1, 4, 3, "A", DisplayName = "an integer dictionary value")]
+    [DataRow("[1]", typeof(List<bool>), 1, 2, 1, "[0]", DisplayName = "an integer sequence element")]
+    [DataRow("- 1.5\n", typeof(List<bool>), 1, 3, 2, "[0]", DisplayName = "a float block sequence element")]
+    [DataRow("A: [1]\n", typeof(MemberHolder<bool>), 1, 4, 3, "A", DisplayName = "a sequence member")]
+    [DataRow("A: x\n", typeof(MemberHolder<bool?>), 1, 4, 3, "A", DisplayName = "a string nullable member")]
+    public void Deserialize_WhenValueIsNotBoolean_ForBoolTarget_ShouldReportValuePositionAndPath(
+        string yaml,
+        Type type,
+        int line,
+        int column,
+        int offset,
+        string? path)
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize(Encoding.UTF8.GetBytes(yaml), type);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(column, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(offset, ex.Offset, "Offset");
+        Assert.AreEqual(path, ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlFormatException" /> that a converter throws while reading a member, a dictionary
+    /// value or a sequence element passes through as it was thrown, as it does at the root, rather than being wrapped
+    /// in a <see cref="YamlSerializationException" />.
+    /// </summary>
+    /// <param name="yaml">A document whose value the converter reads.</param>
+    /// <param name="type">The type the document binds to.</param>
+    [TestMethod]
+    [DataRow("A: 1\n", typeof(MemberHolder<int>), DisplayName = "a member")]
+    [DataRow("A: 1\n", typeof(Dictionary<string, int>), DisplayName = "a dictionary value")]
+    [DataRow("[1]", typeof(List<int>), DisplayName = "a sequence element")]
+    [DataRow("1", typeof(int), DisplayName = "the root")]
+    public void Deserialize_WhenConverterThrowsYamlFormatException_ShouldNotWrapIt(string yaml, Type type)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new MalformedYamlInt32Converter());
+
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            _ = YamlSerializer.Deserialize(Encoding.UTF8.GetBytes(yaml), type, options);
+        });
+    }
+
     /// <summary>A target whose members bind a root scalar, a nested object and a sequence.</summary>
     private sealed class BindingTarget
     {
@@ -151,6 +219,20 @@ public partial class YamlSerializerTests
     {
         /// <summary>Gets or sets the port number.</summary>
         public int Port { get; set; }
+    }
+
+    /// <summary>A converter whose read reports malformed YAML, as one parsing YAML embedded in a scalar may.</summary>
+    private sealed class MalformedYamlInt32Converter
+        : YamlConverter<int>
+    {
+        /// <inheritdoc />
+        /// <exception cref="YamlFormatException">Always.</exception>
+        public override int Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
+            throw new YamlFormatException("The embedded YAML is malformed.");
+
+        /// <inheritdoc />
+        public override void Write(Utf8YamlWriter writer, int value, YamlSerializerOptions options) =>
+            writer.WriteInteger(value);
     }
 
     /// <summary>A target with a single integer member, bound from a key whose case differs.</summary>
