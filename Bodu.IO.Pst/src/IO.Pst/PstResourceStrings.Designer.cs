@@ -84,6 +84,14 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The index page at offset {0} holds a key outside the range its parent entry gives it..
+        /// </summary>
+        internal static string Format_Invalid_PstPageKeyRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstPageKeyRange", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The index page at offset {0} failed its trailer validation..
         /// </summary>
         internal static string Format_Invalid_PstPageTrailer {

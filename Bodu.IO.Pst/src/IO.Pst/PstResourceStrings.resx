@@ -67,6 +67,9 @@
   <data name="Format_Invalid_PstPage" xml:space="preserve">
     <value>The index page at offset {0} is malformed.</value>
   </data>
+  <data name="Format_Invalid_PstPageKeyRange" xml:space="preserve">
+    <value>The index page at offset {0} holds a key outside the range its parent entry gives it.</value>
+  </data>
   <data name="Format_Invalid_PstPageTrailer" xml:space="preserve">
     <value>The index page at offset {0} failed its trailer validation.</value>
   </data>
