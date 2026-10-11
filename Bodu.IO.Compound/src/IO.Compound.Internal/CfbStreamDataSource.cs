@@ -10,10 +10,12 @@ namespace Bodu.IO.Compound.Internal;
 /// A <see cref="CfbDataSource" /> backed by a seekable stream, reading the requested ranges on demand.
 /// </summary>
 /// <remarks>
-/// Reads are serialized by a semaphore because they move the shared stream position, so a streaming compound file
-/// supports concurrent access but not parallel reads. The same gate guards the synchronous and asynchronous read paths
-/// (a monitor lock cannot span an <c>await</c>). The source does not own the stream; the owning
-/// <see cref="CompoundFile" /> disposes it according to its <c>leaveOpen</c> contract.
+/// The container begins at the stream's position when the source is created: every offset is relative to it, and the
+/// container's length is the bytes from it to the end of the stream. Reads are serialized by a semaphore because they
+/// move the shared stream position, so a streaming compound file supports concurrent access but not parallel reads. The
+/// same gate guards the synchronous and asynchronous read paths (a monitor lock cannot span an <c>await</c>). The
+/// source does not own the stream; the owning <see cref="CompoundFile" /> disposes it according to its <c>leaveOpen</c>
+/// contract.
 /// </remarks>
 internal sealed class CfbStreamDataSource
     : CfbDataSource
@@ -21,7 +23,10 @@ internal sealed class CfbStreamDataSource
     /// <summary>The backing seekable stream.</summary>
     private readonly Stream _stream;
 
-    /// <summary>The captured stream length.</summary>
+    /// <summary>The position of the stream at which the container begins.</summary>
+    private readonly long _origin;
+
+    /// <summary>The captured length of the container, from <see cref="_origin" /> to the end of the stream.</summary>
     private readonly long _length;
 
     /// <summary>Serializes seek-and-read against the shared stream position across the sync and async paths.</summary>
@@ -30,11 +35,12 @@ internal sealed class CfbStreamDataSource
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbStreamDataSource" /> class.
     /// </summary>
-    /// <param name="stream">The seekable stream containing the compound file.</param>
+    /// <param name="stream">The seekable stream containing the compound file from its current position.</param>
     public CfbStreamDataSource(Stream stream)
     {
         _stream = stream;
-        _length = stream.Length;
+        _origin = stream.Position;
+        _length = Math.Max(0, stream.Length - _origin);
     }
 
     /// <inheritdoc />
@@ -53,7 +59,7 @@ internal sealed class CfbStreamDataSource
         _gate.Wait();
         try
         {
-            _stream.Seek(offset, SeekOrigin.Begin);
+            _stream.Seek(_origin + offset, SeekOrigin.Begin);
             _stream.ReadExactly(destination);
         }
         finally
@@ -68,7 +74,7 @@ internal sealed class CfbStreamDataSource
         await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            _stream.Seek(offset, SeekOrigin.Begin);
+            _stream.Seek(_origin + offset, SeekOrigin.Begin);
             await _stream.ReadExactlyAsync(destination, cancellationToken).ConfigureAwait(false);
         }
         finally

@@ -33,7 +33,8 @@ public sealed class CompoundFileOptions
     public CompoundReadStrategy ReadStrategy { get; set; } = CompoundReadStrategy.Buffered;
 
     /// <summary>
-    /// Gets or sets the size threshold, in bytes, above which a seekable source is read on demand.
+    /// Gets or sets the size threshold, in bytes, above which a container in a seekable source, measured from the
+    /// source's position to its end, is read on demand.
     /// </summary>
     /// <value>Only consulted when <see cref="ReadStrategy" /> is <see cref="CompoundReadStrategy.Auto" />.</value>
     public long MaxBufferedBytes { get; set; } = DefaultMaxBufferedBytes;
@@ -58,7 +59,7 @@ public sealed class CompoundFileOptions
         ReadStrategy switch
         {
             CompoundReadStrategy.Streaming => false,
-            CompoundReadStrategy.Auto => !(stream.CanSeek && stream.Length > MaxBufferedBytes),
+            CompoundReadStrategy.Auto => !(stream.CanSeek && stream.Length - stream.Position > MaxBufferedBytes),
             _ => true,
         };
 }

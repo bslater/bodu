@@ -25,7 +25,7 @@ CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 byte[] bytes = workbook.ReadAllBytes();
 ```
 
-`CompoundFile.Open` reads the source from its current position to the end. The returned instance is <xref:System.IDisposable> - the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
+`CompoundFile.Open` reads the source from its current position to the end, buffered or streaming: the container begins at that position. The returned instance is <xref:System.IDisposable> - the `using` declaration disposes it and closes the source unless `leaveOpen: true` was passed.
 
 ## Probe before opening
 

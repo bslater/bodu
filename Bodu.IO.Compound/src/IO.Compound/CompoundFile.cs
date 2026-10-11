@@ -968,14 +968,20 @@ public sealed class CompoundFile
     }
 
     /// <summary>
-    /// Reads the full content of a stream into a byte array.
+    /// Reads the content of a stream from its current position to the end into a byte array.
     /// </summary>
     /// <param name="stream">The stream to read from its current position to the end.</param>
     /// <returns>The buffered bytes.</returns>
     private static byte[] ReadAllBytes(Stream stream)
     {
+        // A memory stream knows its remaining length, so it is read into an array of that length at once; like any
+        // other stream, it is read from its position, not from the start of its buffer.
         if (stream is MemoryStream existing)
-            return existing.ToArray();
+        {
+            byte[] remaining = new byte[Math.Max(0, existing.Length - existing.Position)];
+            existing.ReadExactly(remaining);
+            return remaining;
+        }
 
         using MemoryStream buffer = new();
         stream.CopyTo(buffer);

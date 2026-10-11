@@ -19,7 +19,7 @@ CompoundStream workbook = file.RootStorage.OpenStream("Workbook");
 byte[] bytes = workbook.ReadAllBytes();
 ```
 
-`Open` reads the stream from its current position to the end. The returned `CompoundFile` is <xref:System.IDisposable> - the `using` declaration disposes it, which also closes the source stream unless `leaveOpen: true` was passed. `OpenStream` resolves a direct child of `RootStorage` by name and throws <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> when no such stream exists.
+`Open` reads the stream from its current position to the end, whatever the stream type and read strategy: the container begins at that position. The returned `CompoundFile` is <xref:System.IDisposable> - the `using` declaration disposes it, which also closes the source stream unless `leaveOpen: true` was passed. `OpenStream` resolves a direct child of `RootStorage` by name and throws <xref:Bodu.IO.Compound.CompoundStreamNotFoundException> when no such stream exists.
 
 ## Pattern 2 - probe before opening
 

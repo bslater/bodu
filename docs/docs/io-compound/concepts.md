@@ -58,7 +58,7 @@ A compound file can be held two ways, chosen by the `buffered` flag on `Compound
 
 - **Buffered** (<xref:Bodu.IO.Compound.CompoundReadStrategy.Buffered>, the default) reads the whole source into memory at open time. Access never touches the original source afterward, the instance is read-only and safe to share across threads, and the source can be closed immediately.
 - **Streaming** (<xref:Bodu.IO.Compound.CompoundReadStrategy.Streaming>, `buffered: false`) reads sectors on demand from a seekable source, bounding memory for large files. The source must stay open and unmodified for the instance's lifetime, and reads are serialised against the shared source position - concurrent, but not parallel.
-- **Auto** (<xref:Bodu.IO.Compound.CompoundReadStrategy.Auto>) buffers a small seekable source and streams a large one, comparing the source length against <xref:Bodu.IO.Compound.CompoundFileOptions.MaxBufferedBytes> (64 MiB by default). It is only reachable through the options overload.
+- **Auto** (<xref:Bodu.IO.Compound.CompoundReadStrategy.Auto>) buffers a small seekable source and streams a large one, comparing the length of the container, from the source's position to its end, against <xref:Bodu.IO.Compound.CompoundFileOptions.MaxBufferedBytes> (64 MiB by default). It is only reachable through the options overload.
 
 The choice is invisible to a <xref:Bodu.IO.Compound.CompoundStream> cursor's callers: the same `Read` / `Seek` behaviour applies either way, only the memory profile differs. Note that even under a streaming file, a stream *below the mini-stream cutoff* is materialised whole rather than walked, because its bytes live in the in-memory mini-stream.
 
