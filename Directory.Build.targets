@@ -161,6 +161,16 @@
   </PropertyGroup>
 
   <!--
+    Compiler warning level 8 for every .NET target, so the net8.0 and net10.0 legs compile with the same
+    warning waves. Left alone, the SDK raises the level with the target framework's major version, to 10
+    for net10.0, which adds waves 9 and 10 to that leg alone. The SDK applies its default after this file
+    and only when no level is set, so a project that sets its own WarningLevel keeps it.
+  -->
+  <PropertyGroup Condition="'$(WarningLevel)' == '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <WarningLevel>8</WarningLevel>
+  </PropertyGroup>
+
+  <!--
     Centralised analyser package references. Directory.Build.targets is processed after each
     project file, so $(IsTestProject), $(GenerateDocumentationFile), and any project-specific
     opt-out properties are resolved by the time these ItemGroups are evaluated.

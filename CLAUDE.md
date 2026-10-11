@@ -180,7 +180,9 @@ and the first two have bitten:
   reason. A local Release build fails on the same compiler and analyzer warnings, because
   `Directory.Build.targets` sets `TreatWarningsAsErrors` for every Release build (restore excepted, so
   NuGet's warnings stay warnings); a Debug build only reports them. The `Bodu.CodeStyle` solution opts
-  out with `BoduReleaseWarningsAsErrors=false` and keeps its own policy. To match CI:
+  out with `BoduReleaseWarningsAsErrors=false` and keeps its own policy. The same file holds every .NET
+  target at compiler warning level 8, so the `net8.0` and `net10.0` legs report the same warning waves;
+  the SDK would otherwise raise `net10.0` to level 10. To match CI:
   `dotnet build <project> -c Release`, and for the release's pack,
   `dotnet pack bodu.slnx -c Release -p:BoduShipping=true -p:TreatWarningsAsErrors=true`, whose `-p:`
   also promotes NuGet's restore and pack warnings. A deliberate finding is suppressed at its site with
