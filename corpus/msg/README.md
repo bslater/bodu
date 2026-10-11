@@ -236,93 +236,94 @@ DEL are `\xHH`, an unpaired surrogate is `\uHHHH`, and inside a list element a c
 
 | Library | Fixes | Rows | applies | dialect | n/a | unknown | unit | Runnable | Pass | Fail |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| msgreader | 89 | 95 | 36 | 14 | 44 | 1 | 0 | 50 | 46 | 4 |
-| extract-msg | 276 | 287 | 69 | 11 | 202 | 5 | 8 | 72 | 71 | 1 |
-| kenjiuno-msgreader | 27 | 30 | 17 | 2 | 11 | 0 | 1 | 18 | 16 | 2 |
-| compressed_rtf | 7 | 8 | 0 | 1 | 7 | 0 | 0 | 1 | 0 | 1 |
+| msgreader | 89 | 95 | 36 | 14 | 44 | 1 | 0 | 50 | 50 | 0 |
+| extract-msg | 276 | 287 | 69 | 11 | 202 | 5 | 8 | 72 | 72 | 0 |
+| kenjiuno-msgreader | 27 | 30 | 17 | 2 | 11 | 0 | 1 | 18 | 18 | 0 |
+| compressed_rtf | 7 | 8 | 0 | 1 | 7 | 0 | 0 | 1 | 1 | 0 |
 | poi-hsmf | 19 | 27 | 17 | 3 | 6 | 1 | 0 | 20 | 20 | 0 |
-| **Total** | **418** | **447** | **139** | **31** | **270** | **7** | **9** | **161** | **153** | **8** |
+| **Total** | **418** | **447** | **139** | **31** | **270** | **7** | **9** | **161** | **161** | **0** |
 
 Runnable rows are the `applies` and `dialect` rows that are not `unit` rows. The nine `unit` rows (`unit` counts the
-`applies` and `dialect` rows of that kind) were each checked against Bodu by a scratch test of the scenario their
-`reason` describes, and all nine pass. The `n/a` rows are dominated by what Bodu does not offer: saving messages and
+`applies` and `dialect` rows of that kind) name tests in `Bodu.Formats.Outlook.Msg.Test`, which the governance tests
+require to exist, and all nine pass. The `n/a` rows are dominated by what Bodu does not offer: saving messages and
 attachments as files (text, HTML, PDF), parsed transport headers, typed contact, calendar, task and journal items,
 command lines, writing messages, S/MIME and RTF de-encapsulation; the rest are the libraries' languages, packaging,
-exception wording and performance. The counts are against Bodu at `b6fa6972e8`, and were the same at `8401d1bf23`.
+exception wording and performance. The Pass and Fail columns are the runner's results on net8.0 and net10.0 with the
+fixes below; when the catalogue was written, against `b6fa6972e8`, 153 runnable rows passed and eight failed.
 
 ## What the catalogue found
 
-Eight runnable rows fail, for five causes.
+When the catalogue was written, eight runnable rows failed, for five causes. Each became an issue, each is fixed with
+its regression test committed first, and every runnable row now passes.
 
-**Compressed RTF: an uncompressed (`MELA`) payload's CRC and sizes are checked** (four rows). MS-OXRTFCP 2.2.3.1 says
-that for COMPTYPE UNCOMPRESSED the reader SHOULD read every byte to the end of the stream whatever RAWSIZE says, or MAY
-read RAWSIZE bytes, and MUST NOT validate the CRC field. `CompressedRtf.Decompress`
-(`Bodu.Formats.Outlook/shared/CompressedRtf.cs:99-108`) rejects a `MELA` payload whose CRC is not zero ("failed its
-checksum") and one whose RAWSIZE exceeds the bytes COMPSIZE leaves after the header ("declared sizes are
-inconsistent"). Rows: msgreader 1.9.15 #33 (a non-zero CRC), compressed_rtf 1.0.7 #9 case 2 (CRC `0x12345678`),
-msgreader 6.0.7 PR #492 (RAWSIZE equal to COMPSIZE, 12 more than the data) and msgreader 4.5.4 `2af8c434d6` (COMPSIZE
-equal to RAWSIZE, both the data length, the shape of the upstream's `MELA.bin`). A Bodu defect.
+**Compressed RTF: an uncompressed (`MELA`) payload's CRC and sizes were checked** (four rows, #976). MS-OXRTFCP 2.2.3.1
+says that for COMPTYPE UNCOMPRESSED the reader SHOULD read every byte to the end of the stream whatever RAWSIZE says, or
+MAY read RAWSIZE bytes, and MUST NOT validate the CRC field. `CompressedRtf.Decompress` rejected a `MELA` payload whose
+CRC was not zero ("failed its checksum") and one whose RAWSIZE exceeded the bytes COMPSIZE left after the header
+("declared sizes are inconsistent"). Rows: msgreader 1.9.15 #33 (a non-zero CRC), compressed_rtf 1.0.7 #9 case 2 (CRC
+`0x12345678`), msgreader 6.0.7 PR #492 (RAWSIZE equal to COMPSIZE, 12 more than the data) and msgreader 4.5.4
+`2af8c434d6` (COMPSIZE equal to RAWSIZE, both the data length). Both readers now take every byte after an uncompressed
+header, whatever its CRC and declared sizes say, holding only its length to the caller's ceiling
+(`docs/guides/outlook/reader-options-and-limits.md:38`, `docs/docs/outlook/concepts.md:107`).
 
-**Strict accepts a named-property storage without its entry stream** (extract-msg v0.48.0 case 2). Under `Strict`, a
-`__nameid_version1.0` storage holding only the GUID and string streams opens, and the named property stays unmapped.
-MS-OXMSG 2.2.3.1 says the three streams MUST be present; `docs/guides/outlook/reader-options-and-limits.md:95` lists a
-malformed entry stream among the `Strict` failures but not a missing one. Likely a Bodu defect, or at least a gap in
-that list.
+**Strict accepted a named-property storage without its entry stream** (extract-msg v0.48.0 case 2, #977). MS-OXMSG
+2.2.3.1 says the GUID, entry and string streams MUST be present. Under `Strict` a `__nameid_version1.0` storage missing
+any of them now throws `OutlookMsgFormatException`, and `docs/guides/outlook/reader-options-and-limits.md:95` lists it
+among the `Strict` failures.
 
-**A string is not cut at its terminator** (kenjiuno-msgreader 1.23.0-beta1 #56 case 3). A `PtypString` stream holding
-`Hello`, a UTF-16 NUL and `junk`, whose record says 12 bytes, renders as `Hello\0junk`: Bodu takes the whole stream and
-strips trailing NULs only. MS-OXCDATA 2.11.1 ends a `PtypString` at its terminating NUL, and MS-OXMSG 2.4.2.2 makes the
-record's Size 2 plus the stream size, which this stream breaks. Unsure: the input is malformed, and cutting at the
-first NUL, trusting the Size field, or rejecting under `Strict` are all defensible; today the bytes after the
-terminator reach the caller.
+**A string was not cut at its terminator** (kenjiuno-msgreader 1.23.0-beta1 #56 case 3, #978). A `PtypString` stream
+holding `Hello`, a UTF-16 NUL and `junk` rendered as `Hello\0junk`. A `PtypString` or `PtypString8` now ends at its
+first NUL (MS-OXCDATA 2.11.1) at every level in both readers: single and multi-valued values, the string names of both
+named-property maps, and the text `BodyHtml` decodes from a binary `PidTagHtml`. The row runs at the default level.
+Under `Strict` its input still throws, because its record's Size of 12 disagrees with the 20-byte stream (MS-OXMSG
+2.4.2.2), a check the fix leaves as it was.
 
-**A record of zeros is reported as a property** (kenjiuno-msgreader 1.7.3-alpha.1 #15 case 2). A 16-byte record of
-zeros after the subject renders as `message 00000000 Unspecified null`. Tag `0x00000000` is property 0 of type
-`PtypUnspecified`, which MS-OXCDATA 2.11.1 reserves for requests, so no object stores it; readers treat such a record
-as padding. Likely a minor Bodu defect: skip it, or reject it under `Strict`.
+**A record of zeros was reported as a property** (kenjiuno-msgreader 1.7.3-alpha.1 #15 case 2, #979). Tag `0x00000000`
+is property 0 of type `PtypUnspecified`, which no object stores. A 16-byte record of zeros is now padding, skipped at
+every level.
 
-**UTF-7 is not decoded** (msgreader 3.6.2 `2e085b219d`). A `String8` HTML body with `PidTagInternetCodepage` 65000
-renders as its Windows-1252 reading, `<p>Gr+APYA3w-e</p>`. .NET does not supply UTF-7 through
-`Encoding.GetEncoding` by default (SYSLIB0001), so the resolver falls through to Windows-1252 as its internal
-documentation says (`Bodu.Formats.Outlook/shared/MapiEncodingResolver.cs:72-73`), while
-`docs/docs/outlook/concepts.md:97` says nothing about a declared code page that does not resolve. Unsure: a platform
-limit; Bodu could decode RFC 2152 itself, or document the fallback.
+**UTF-7 was not decoded** (msgreader 3.6.2 `2e085b219d`, #980). A `String8` HTML body with `PidTagInternetCodepage`
+65000 rendered as its Windows-1252 reading, `<p>Gr+APYA3w-e</p>`, because .NET serves code page 65000 only behind an
+opt-in switch. A declared code page of 65000 now decodes as UTF-7 (RFC 2152) in both readers, through a `UTF7Encoding`
+the shared resolver constructs itself with SYSLIB0001 suppressed at that one site, and
+`docs/docs/outlook/concepts.md:97` says so.
 
-### Documentation that disagrees with the behaviour
+### Documentation that disagreed with the behaviour
 
-- `docs/guides/outlook/reader-options-and-limits.md:87` says the tolerant levels omit what they cannot decode and
-  continue, and line 97 names only the root among the storages whose missing `__properties_version1.0` stream throws
-  at every level; a recipient or attachment storage without one throws `OutlookMsgFormatException` when the
-  recipients or attachments are read, under `Compatible` and `Minimal` too (extract-msg v0.41.0 #357, a `reject` row
-  that pins today's behaviour, and the `Dispose_WhenAttachmentsFailToLoad_ShouldReleaseTheFile` unit row).
-- `Bodu.Formats.Outlook.Msg/README.md:31-33` says every value stream is read, multi-valued ones included, and
-  `docs/docs/outlook/concepts.md:54` that a multi-valued property decodes to an array of its element type; a
-  `PtypMultipleFloatingTime` (`0x1007`) property, one of the fixed-length multi-valued types of MS-OXMSG 2.1.4.1, is
-  left out under `Compatible` and rejected under `Strict` as having inconsistent streams, while every other type in
-  that list decodes. No catalogued fix covers it; it was found while writing the generators.
-- `OutlookMessage.OpenRead(string)` documents `ArgumentNullException` and `OutlookMsgFormatException`
-  (`Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookMessage.cs:197-200`); an empty path throws
-  `ArgumentException`, and a missing or locked file the `File.OpenRead` exceptions (the
-  `OpenRead_WhenPathIsEmpty_ShouldThrowArgumentException` unit row).
+All three are fixed.
 
-Smaller observations: `OutlookAttachmentMethod` has no member for `afByWebReference` (7, MS-OXCMSG 2.2.2.9), so such
-an attachment reports `None`, which `OutlookAttachment.Method`'s documentation
-(`Bodu.Formats.Outlook.Msg/src/Formats.Outlook/OutlookAttachment.cs:76-78`) gives for an attachment with no method
-and no content; a compound file whose sector chains are broken is reported as "not an OLE2 compound file", with the
-`CompoundFileFormatException` that says why as its `InnerException`; and, outside this area, `Bodu.IO.Compound`
-fills the unused directory entries it writes with zero bytes
-(`Bodu.IO.Compound/src/IO.Compound.Internal/CompoundContainerLayout.cs:362`), where MS-CFB 2.6.3 asks for
-`0xFFFFFFFF` in their left, right and child fields.
+- A recipient or attachment storage without a `__properties_version1.0` stream threw at every level, against
+  `docs/guides/outlook/reader-options-and-limits.md:87` (#981). `Compatible` and `Minimal` now omit that recipient or
+  attachment and read the rest of the message, `Strict` still throws, and line 94 of that guide lists the condition. The
+  extract-msg v0.41.0 #357 row keeps its `reject` expectation, now under `ValidationLevel=Strict` and citing that line,
+  and the test of the `Dispose_WhenAttachmentsFailToLoad_ShouldReleaseTheFile` unit row now fails the load with a
+  three-byte attachment property stream, malformed at every level.
+- A `PtypMultipleFloatingTime` (`0x1007`) property, one of the fixed-length multi-valued types of MS-OXMSG 2.1.4.1, was
+  left out under `Compatible` and rejected under `Strict`, against `Bodu.Formats.Outlook.Msg/README.md:31-33` and
+  `docs/docs/outlook/concepts.md:54` (#982). It now decodes to a `double[]` in both readers, as a single `AppTime`
+  decodes to a `double`.
+- `OutlookMessage.OpenRead(string)` documented only `ArgumentNullException` and `OutlookMsgFormatException` (#991). It
+  now documents the `ArgumentException` for an empty path and the exceptions `File.OpenRead` lets through. The same
+  issue added the skipped UTF-16 code pages (1200 and 1201) to `docs/docs/outlook/concepts.md:97`, and corrected
+  `MsgNamedPropertyMap`'s remarks, which gave a named identifier as `0x8000` plus the entry's position rather than
+  `0x8000 + wPropIdx`.
+
+Smaller observations, also fixed: `OutlookAttachmentMethod` gains `ByWebReference = 7` for `afByWebReference` (MS-OXCMSG
+2.2.2.9), which both readers report and `Strict` accepts, and whose content accessors throw `NotSupportedException`
+(#983); and a compound file whose sector chains are broken is reported as a malformed container rather than as "not an
+OLE2 compound file", with the `CompoundFileFormatException` that says why still its `InnerException` (#984). Outside
+this area, `Bodu.IO.Compound` still fills the unused directory entries it writes with zero bytes, where MS-CFB 2.6.3
+asks for `0xFFFFFFFF` in their left, right and child fields (#985).
 
 ### Documented behaviour that departs from the specification
 
-Two `dialect` rows pass because Bodu documents a behaviour the specification does not share; they are kept as
-`dialect` rows, and listed here for review.
+Two `dialect` rows pass because Bodu documents a behaviour the specification does not share; they are kept as `dialect`
+rows, and listed here for review.
 
 - A `String8` `PidTagBody` decodes with `PidTagMessageCodepage` first (`docs/docs/outlook/concepts.md:97`), where
   MS-OXCMSG 2.2.1.58.6 names `PidTagInternetCodepage` as the code page of `PidTagBody` (poi-hsmf PR #149 case 4).
 - The `LZFu` decoder stops at the declared size, and returns what it has when the body ends at a token boundary
-  (`Bodu.Formats.Outlook/shared/CompressedRtf.cs:40-43` and `:153-155`, internal documentation), where MS-OXRTFCP
+  (`Bodu.Formats.Outlook/shared/CompressedRtf.cs:42-46` and `:154-156`, internal documentation), where MS-OXRTFCP
   2.2.3.2 decodes to the end reference and treats input that ends first as corrupt (poi-hsmf PR #1071 case 2).
 
 ## Ports and shared lineage
@@ -336,10 +337,10 @@ compressed_rtf, but its changelog does not repeat compressed_rtf's fixes, so not
 
 ## Validation
 
-The rows were checked with a scratch harness, not committed, written to be ported into
-`Bodu.Formats.Outlook.Msg.Test`: one file with the rendering, the option mapping, the escape decoder and the CSV
-reader, depending only on Bodu and the BCL; the `gen:` builder above over the linked `MsgFixtureBuilder`, with the
-whole-file transforms in a file of their own; and a runner that reads every catalogue, checks each file (header lines,
-column count, classes, kinds and option names, a reason on every row, valid escapes, printable ASCII) with its own
-reader and with the shared `ReleaseNoteCatalog` reader in `Bodu.Test`, and runs every runnable row with a 10-second
-timeout. Each `unit` row's scenario was run the same way, as a check written from its `reason`.
+The catalogue runs in `Bodu.Formats.Outlook.Msg.Test` as `MsgReleaseNoteCorpusTests`, over byte-identical copies of
+`fixes/*.csv` embedded in the test assembly. Every runnable row is a test of its own in the Regression tier, named after
+the row, and renders its input as described above. The governance tests run in every build: each file loads cleanly
+(header lines, columns, classes, kinds, escapes, printable ASCII, a reason on every row), each library holds the row
+counts per class pinned in the table above, every row's options are known and its input can be built, every `unit` row
+names an existing test, and the embedded copies match this directory byte for byte. The runner was ported from the
+scratch harness the rows were first checked with, which also checked each `unit` row's scenario from its `reason`.
