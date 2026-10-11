@@ -33,6 +33,9 @@ internal sealed class PstHeader
     /// <summary>The offset of the <c>wMagicClient</c> field.</summary>
     private const int MagicClientOffset = 8;
 
+    /// <summary>The <c>wVer</c> of the 4 KiB-page OST variant, which this reader recognizes but does not read.</summary>
+    private const ushort Ost4KVersion = 36;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstHeader" /> class.
     /// </summary>
@@ -113,7 +116,8 @@ internal sealed class PstHeader
     /// format, or fails its checksum.
     /// </exception>
     /// <exception cref="PstUnsupportedFormatException">
-    /// The file is an OST (client magic <c>SO</c>), is a 4 KiB-page OST, or uses an unknown content encoding.
+    /// The file is an OST (client magic <c>SO</c>) or the 4 KiB-page OST variant (version 36), or uses an unknown
+    /// content encoding.
     /// </exception>
     /// <remarks>
     /// The client magic at offset 8 tells a PST (<c>SM</c>) from an OST (<c>SO</c>), and an OST is rejected as
@@ -133,18 +137,17 @@ internal sealed class PstHeader
         if (magicClient != MagicClient || data.Length < 12)
             throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
+        // 14 and 15 are ANSI and every other version of 23 or more Unicode (MS-PST 2.2.2.6), but for 36, the 4 KiB-page
+        // OST; a Unicode file's WIP encryption is the crypt method's to reject, not the version's.
         ushort version = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(10));
-        PstLayout? layout = PstLayout.FromVersion(version);
-        if (layout is null)
+        if (version == Ost4KVersion)
         {
-            if (version >= 36)
-            {
-                throw new PstUnsupportedFormatException(string.Format(
-                    CultureInfo.CurrentCulture, PstResourceStrings.Op_NotSupported_PstFormat, PstFileFormat.Ost4K));
-            }
-
-            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
+            throw new PstUnsupportedFormatException(string.Format(
+                CultureInfo.CurrentCulture, PstResourceStrings.Op_NotSupported_PstFormat, PstFileFormat.Ost4K));
         }
+
+        PstLayout layout = PstLayout.FromVersion(version)
+            ?? throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
         if (data.Length < layout.HeaderSize)
             throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);

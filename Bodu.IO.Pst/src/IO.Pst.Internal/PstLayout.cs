@@ -9,8 +9,8 @@ using System.Buffers.Binary;
 namespace Bodu.IO.Pst.Internal;
 
 /// <summary>
-/// Describes the on-disk widths and offsets of one PST format variant: the Unicode layout (<c>wVer</c> 23, 64-bit block
-/// identifiers and offsets) or the ANSI layout (<c>wVer</c> 14 and 15, 32-bit identifiers and offsets).
+/// Describes the on-disk widths and offsets of one PST format variant: the Unicode layout (<c>wVer</c> 23 and later,
+/// 64-bit block identifiers and offsets) or the ANSI layout (<c>wVer</c> 14 and 15, 32-bit identifiers and offsets).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -83,7 +83,7 @@ internal sealed class PstLayout
     }
 
     /// <summary>
-    /// Gets the Unicode layout (<c>wVer</c> 23).
+    /// Gets the Unicode layout (<c>wVer</c> 23 and every later version but 36).
     /// </summary>
     internal static PstLayout Unicode { get; } = new(
         PstFileFormat.Unicode,
@@ -286,11 +286,17 @@ internal sealed class PstLayout
     /// </summary>
     /// <param name="version">The header's <c>wVer</c>.</param>
     /// <returns>The layout, or <see langword="null" /> when the version is neither Unicode nor ANSI.</returns>
+    /// <remarks>
+    /// MS-PST 2.2.2.6 makes 14 and 15 the ANSI versions and any version of 23 or more a Unicode one; 37 marks a file
+    /// written by an Outlook that supports Windows Information Protection. Version 36 is the 4 KiB-page OST, which has
+    /// neither layout.
+    /// </remarks>
     internal static PstLayout? FromVersion(ushort version) =>
         version switch
         {
             14 or 15 => Ansi,
-            23 => Unicode,
+            36 => null,
+            >= 23 => Unicode,
             _ => null,
         };
 

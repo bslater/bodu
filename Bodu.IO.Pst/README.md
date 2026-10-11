@@ -41,9 +41,10 @@ if (properties.TryGetValue(0x3001 /* display name */, out PstPropertyValue name)
 
 - **Header** - format discrimination (`wVer`), the content-encoding method
   (`bCryptMethod`), and the B-tree roots, with the header checksum verified.
-- **Both PST formats** - the Unicode format (`wVer` 23, 64-bit structures) and
-  the legacy ANSI format (`wVer` 14/15, 32-bit identifiers and offsets) are read
-  through the same surface; an internal layout descriptor is selected per file.
+- **Both PST formats** - the Unicode format (`wVer` 23 and later, except 36;
+  64-bit structures) and the legacy ANSI format (`wVer` 14/15, 32-bit
+  identifiers and offsets) are read through the same surface; an internal
+  layout descriptor is selected per file.
 - **Node B-tree (NBT)** - every node's identifier, parent, data-block and
   subnode-block references; enumerated in identifier order or looked up by id.
 - **Block B-tree (BBT)** - block resolution with trailer validation and, under
@@ -73,7 +74,8 @@ and signature), and `Minimal` (salvage reads of damaged files).
 
 ## Out of scope
 
-- The 4 KiB-page **OST** variant (`wVer` ≥ 36) - recognized and rejected with
+- **OST** files (client magic `SO`, whatever their version) and the 4 KiB-page
+  variant (`wVer` 36) - recognized and rejected with
   `PstUnsupportedFormatException`, not read.
 - **MAPI and messaging semantics** - folders, messages, recipients, attachments,
   named-property resolution, and multi-valued/object payload decoding (surfaced
