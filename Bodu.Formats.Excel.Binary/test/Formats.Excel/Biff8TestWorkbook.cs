@@ -14,7 +14,7 @@ namespace Bodu.Formats.Excel;
 
 /// <summary>
 /// Builds synthetic BIFF8 record streams, worksheet substreams, and complete <c>.xls</c> compound files for tests,
-/// covering producer variations the real-world sample fixture does not exercise. Each record is emitted through
+/// covering producer variations the sample workbook does not exercise. Each record is emitted through
 /// <see cref="BiffWriter" /> so the Excel reader is exercised against the codec's own output.
 /// </summary>
 internal static class Biff8TestWorkbook

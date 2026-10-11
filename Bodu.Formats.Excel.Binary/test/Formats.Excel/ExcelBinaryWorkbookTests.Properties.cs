@@ -9,7 +9,7 @@ namespace Bodu.Formats.Excel;
 public partial class ExcelBinaryWorkbookTests
 {
     /// <summary>
-    /// Verifies that opening the sample workbook exposes a document-properties view.
+    /// Verifies that opening the sample workbook exposes a document-properties view holding its summary information.
     /// </summary>
     [TestMethod]
     public void Properties_WhenSampleWorkbook_ShouldExposePropertiesView()
@@ -17,6 +17,7 @@ public partial class ExcelBinaryWorkbookTests
         using ExcelBinaryWorkbook workbook = OpenSample();
 
         Assert.IsNotNull(workbook.Properties);
+        Assert.AreEqual(ExcelBinaryFixtures.Title, workbook.Properties.Title);
     }
 
     /// <summary>
@@ -26,7 +27,7 @@ public partial class ExcelBinaryWorkbookTests
     public void Properties_WhenReadDocumentPropertiesDisabled_ShouldReturnEmptyView()
     {
         using var workbook = ExcelBinaryWorkbook.Open(
-            ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8),
+            ExcelBinaryFixtures.OpenSample(),
             new ExcelBinaryReaderOptions { ReadDocumentProperties = false });
 
         Assert.IsNotNull(workbook.Properties);

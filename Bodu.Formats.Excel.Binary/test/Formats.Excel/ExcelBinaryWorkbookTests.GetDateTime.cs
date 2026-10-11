@@ -20,7 +20,7 @@ public partial class ExcelBinaryWorkbookTests
         DateTime? converted = workbook.GetDateTime(grid[(11, 0)]);
 
         Assert.IsNotNull(converted);
-        Assert.AreEqual(new DateTime(2023, 1, 3), converted.Value.Date);
+        Assert.AreEqual(new DateTime(2024, 1, 1), converted.Value.Date);
     }
 
     /// <summary>

@@ -50,14 +50,14 @@ public class ExcelWorksheetInfoTests
     [TestMethod]
     public void Dimensions_WhenSampleDataSheet_ShouldReportDeclaredUsedRange()
     {
-        using var workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenSample());
 
         ExcelWorksheetDimensions dimensions = workbook.Worksheets[0].Dimensions;
 
         Assert.AreEqual(0, dimensions.FirstRowIndex);
-        Assert.AreEqual(2186, dimensions.RowCount);
+        Assert.AreEqual(111, dimensions.RowCount);
         Assert.AreEqual(0, dimensions.FirstColumnIndex);
-        Assert.AreEqual(68, dimensions.ColumnCount);
+        Assert.AreEqual(5, dimensions.ColumnCount);
     }
 
     /// <summary>
@@ -66,13 +66,13 @@ public class ExcelWorksheetInfoTests
     [TestMethod]
     public void Dimensions_WhenSampleNotesSheet_ShouldReportDeclaredUsedRange()
     {
-        using var workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenSample());
 
         ExcelWorksheetDimensions dimensions = workbook.Worksheets[1].Dimensions;
 
         Assert.AreEqual(0, dimensions.FirstRowIndex);
-        Assert.AreEqual(28, dimensions.RowCount);
+        Assert.AreEqual(3, dimensions.RowCount);
         Assert.AreEqual(0, dimensions.FirstColumnIndex);
-        Assert.AreEqual(12, dimensions.ColumnCount);
+        Assert.AreEqual(2, dimensions.ColumnCount);
     }
 }

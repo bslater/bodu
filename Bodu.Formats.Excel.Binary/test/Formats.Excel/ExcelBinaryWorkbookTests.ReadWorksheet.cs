@@ -19,7 +19,7 @@ public partial class ExcelBinaryWorkbookTests
         ExcelWorksheet sheet = workbook.ReadWorksheet("Data");
 
         Assert.IsTrue(sheet.TryGetCell(10, 1, out ExcelCell seriesId));
-        Assert.AreEqual("FXRUSD", seriesId.StringValue);
+        Assert.AreEqual("SER-A", seriesId.StringValue);
         Assert.IsFalse(sheet.TryGetCell(100000, 100000, out _));
     }
 
@@ -35,7 +35,7 @@ public partial class ExcelBinaryWorkbookTests
 
         Assert.AreEqual("Data", sheet.Name);
         Assert.AreEqual(0, sheet.Index);
-        Assert.AreEqual(2186, sheet.Dimensions.RowCount);
+        Assert.AreEqual(111, sheet.Dimensions.RowCount);
     }
 
     /// <summary>
