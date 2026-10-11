@@ -11,7 +11,9 @@ namespace Bodu.IO.Compound.Builders;
 /// </summary>
 /// <remarks>
 /// The default value (<see langword="default" />) selects version 3 (512-byte sectors) and the default maximum nesting
-/// depth, producing the most widely compatible output.
+/// depth, producing the most widely compatible output. A <see cref="Version" /> that is neither the default nor a
+/// defined <see cref="CompoundFileVersion" /> is rejected with <see cref="ArgumentOutOfRangeException" /> by every
+/// serializer and by <see cref="CompoundFile.Create(Stream, bool, CompoundBuildOptions)" />.
 /// </remarks>
 public struct CompoundBuildOptions
 {
@@ -24,6 +26,11 @@ public struct CompoundBuildOptions
     /// <value>
     /// The target <see cref="CompoundFileVersion" />; <see cref="CompoundFileVersion.V3" /> when left at its default.
     /// </value>
+    /// <remarks>
+    /// Only the default and the defined <see cref="CompoundFileVersion" /> members are accepted; any other value makes
+    /// the serializers and <see cref="CompoundFile.Create(Stream, bool, CompoundBuildOptions)" /> throw
+    /// <see cref="ArgumentOutOfRangeException" /> naming the options parameter, before anything is written.
+    /// </remarks>
     public CompoundFileVersion Version { get; set; }
 
     /// <summary>

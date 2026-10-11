@@ -372,6 +372,10 @@ public sealed class CompoundFile
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />.
+    /// </exception>
     /// <remarks>
     /// Edits made through <see cref="RootStorage" /> are staged in memory; nothing is written to
     /// <paramref name="destination" /> until <see cref="Commit" /> is called. Disposing the file without committing
@@ -391,6 +395,7 @@ public sealed class CompoundFile
     public static CompoundFile Create(Stream destination, bool leaveOpen = false, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(destination);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         return CreateCore(destination, leaveOpen, FileAccess.ReadWrite, options);
     }
@@ -405,6 +410,10 @@ public sealed class CompoundFile
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />; the file is not created.
+    /// </exception>
     /// <remarks>
     /// The returned instance owns the created file and closes it when disposed. Edits are staged in memory until
     /// <see cref="Commit" /> is called; disposing without committing leaves the file empty.
@@ -412,6 +421,7 @@ public sealed class CompoundFile
     public static CompoundFile Create(string path, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(path);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         FileStream stream = File.Create(path);
         try

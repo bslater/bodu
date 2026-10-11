@@ -7,6 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using Bodu.IO.Compound.Builders;
 
 namespace Bodu.IO.Compound;
 
@@ -58,5 +59,24 @@ internal static class CompoundThrowHelper
     {
         if (taken)
             throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Arg_Invalid_CompoundChildNameTaken, name), paramName);
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> when build options hold a version that is neither the
+    /// default, which selects version 3, nor a defined <see cref="CompoundFileVersion" />.
+    /// </summary>
+    /// <param name="options">The build options to validate.</param>
+    /// <param name="paramName">
+    /// The name of the parameter that holds <paramref name="options" />. Supplied automatically by the compiler.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfVersionUndefined(CompoundBuildOptions options, [CallerArgumentExpression(nameof(options))] string? paramName = null)
+    {
+        if (options.Version != default)
+            ThrowHelper.ThrowIfEnumValueIsUndefined(options.Version, paramName);
     }
 }
