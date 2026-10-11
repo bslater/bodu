@@ -185,6 +185,10 @@ internal static class PropertySetReader
     /// <summary>
     /// Parses a typed property value (a scalar or vector PROPVARIANT) at the specified offset.
     /// </summary>
+    /// <remarks>
+    /// A vector's string, blob and variant elements read whether they are padded to a multiple of four bytes or follow
+    /// one another unpadded; see <see cref="SkipPadding" />.
+    /// </remarks>
     /// <param name="data">The property-set bytes.</param>
     /// <param name="offset">The byte offset of the typed value.</param>
     /// <param name="encoding">The encoding used to decode ANSI strings.</param>
@@ -221,7 +225,7 @@ internal static class PropertySetReader
             (object? value, int consumed) = ReadScalar(data, cursor, type, encoding, 0);
             CompoundThrowHelper.ThrowFormatIf(consumed <= 0, CompoundResourceStrings.Format_Invalid_CompoundPropertySet, CompoundFileError.InvalidPropertySet);
             items[i] = value;
-            cursor += Align4(consumed);
+            cursor = HasVariableLength(type) ? SkipPadding(data, cursor, consumed) : cursor + Align4(consumed);
         }
 
         return new OlePropertyValue { Type = type, IsVector = true, Value = items };
@@ -465,6 +469,47 @@ internal static class PropertySetReader
         {
             return null;
         }
+    }
+
+    /// <summary>
+    /// Determines whether the values of a type vary in length, and so may be padded to a multiple of four bytes.
+    /// </summary>
+    /// <param name="type">The base type of a vector's elements.</param>
+    /// <returns>
+    /// <see langword="true" /> for strings, blobs, clipboard data and variants; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool HasVariableLength(OlePropertyType type) =>
+        type is OlePropertyType.AnsiString
+            or OlePropertyType.BinaryString
+            or OlePropertyType.UnicodeString
+            or OlePropertyType.Blob
+            or OlePropertyType.ClipboardData
+            or OlePropertyType.Variant;
+
+    /// <summary>
+    /// Returns the offset of the vector element that follows a variable-length element and the padding, if any, after
+    /// it.
+    /// </summary>
+    /// <param name="data">The property-set bytes.</param>
+    /// <param name="offset">The byte offset of the element.</param>
+    /// <param name="consumed">The number of bytes the element's value occupies.</param>
+    /// <returns>
+    /// The offset past the element and as many of the bytes up to its next four-byte boundary as are zero.
+    /// </returns>
+    /// <remarks>
+    /// [MS-OLEPS] pads every string to a multiple of four bytes, but [MS-OSHARED] stores the strings of a document
+    /// summary's document parts (2.3.3.1.9) and heading pairs (2.3.3.1.12) with no padding, so the next element can
+    /// begin at once. Padding is zero, and neither a string's length nor a variant's type begins with a zero byte in
+    /// the vectors Office writes, so the padding is skipped only while its bytes are zero, as Apache POI does.
+    /// </remarks>
+    private static int SkipPadding(ReadOnlySpan<byte> data, int offset, int consumed)
+    {
+        int next = offset + consumed;
+        int boundary = Math.Min(offset + Align4(consumed), data.Length);
+        while (next < boundary && data[next] == 0)
+            next++;
+
+        return next;
     }
 
     /// <summary>

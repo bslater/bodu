@@ -177,6 +177,14 @@ public sealed class OlePropertySet
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the data is not a well-formed property set.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The strings, blobs and variants of a vector read whether each is padded to a multiple of four bytes, as
+    /// [MS-OLEPS] specifies, or follows the one before it unpadded, as [MS-OSHARED] stores the strings of a document
+    /// summary's document parts and heading pairs: the reader skips the bytes up to an element's next four-byte
+    /// boundary only while they are zero.
+    /// </para>
+    /// </remarks>
     public static OlePropertySet Parse(ReadOnlyMemory<byte> data) =>
         PropertySetReader.Read(data.Span);
 
@@ -191,6 +199,9 @@ public sealed class OlePropertySet
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the data is not a well-formed property set.
     /// </exception>
+    /// <remarks>
+    /// The bytes are parsed as <see cref="Parse(ReadOnlyMemory{byte})" /> parses them.
+    /// </remarks>
     public static OlePropertySet Read(Stream stream)
     {
         ThrowHelper.ThrowIfNull(stream);

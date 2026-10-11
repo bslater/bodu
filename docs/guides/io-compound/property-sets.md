@@ -43,6 +43,8 @@ if (file.TryGetDocumentSummaryInformation(out DocumentSummaryInformation? docSum
 
 <xref:Bodu.IO.Compound.PropertySets.DocumentSummaryInformation> reads the second standard stream, with the presentation- and document-oriented fields: `Category`, `PresentationTarget`, `Bytes`, `LineCount`, `ParagraphCount`, `SlideCount`, `NoteCount`, `HiddenCount`, `MultimediaClipCount`, `ScaleCrop`, and more.
 
+The heading pairs (property 12) and the document parts (property 13) have no typed accessor; read them from `PropertySet` (Pattern 3) as vectors, whose `Value` is an `object[]`. [MS-OSHARED] stores their strings with no padding between them, where [MS-OLEPS] pads every string to a multiple of four bytes; the reader takes both forms, skipping the bytes up to an element's next four-byte boundary only while they are zero.
+
 ## Pattern 3 - the raw property set
 
 ```csharp
