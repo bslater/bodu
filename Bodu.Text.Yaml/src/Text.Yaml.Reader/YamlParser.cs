@@ -291,6 +291,13 @@ internal sealed partial class YamlParser
                 throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
             int alias = ParseAlias();
+
+            // An alias followed on its line by a value indicator is the implicit key of a mapping that begins here,
+            // which the profile rejects, at the alias, as it does a sequence or mapping key.
+            SkipSpaces();
+            if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
+                throw ErrorAt(_rows[alias].Offset, YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+
             SkipLineTrailing();
             return Finish(alias, anchor);
         }

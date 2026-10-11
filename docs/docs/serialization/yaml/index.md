@@ -10,7 +10,7 @@ title: Bodu.Text.Yaml - Introduction
 
 ## The format in one paragraph
 
-YAML is a text format built around indentation rather than brackets: a mapping is a block of `key: value` lines, a sequence is a block of `- item` lines, and nesting is expressed by indenting. It also offers a flow form (`{a: 1}`, `[1, 2]`), quoted and block scalars, comments (`#`), reusable anchors (`&a`) and aliases (`*a`), document directives (`%YAML`, `%TAG`), and multi-document streams delimited by `---` and `...`. Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree where mapping keys resolve to unique scalar strings, anchors are unique and acyclic (resolved transparently on read), and tabs are rejected as indentation.
+YAML is a text format built around indentation rather than brackets: a mapping is a block of `key: value` lines, a sequence is a block of `- item` lines, and nesting is expressed by indenting. It also offers a flow form (`{a: 1}`, `[1, 2]`), quoted and block scalars, comments (`#`), reusable anchors (`&a`) and aliases (`*a`), document directives (`%YAML`, `%TAG`), and multi-document streams delimited by `---` and `...`. Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree where mapping keys resolve to unique scalar strings (a sequence, mapping, or alias used as a key is rejected), anchors are unique and acyclic (resolved transparently on read), and tabs are rejected as indentation, which includes a tab anywhere in the leading whitespace of a line that begins a node.
 
 ## The node and value model
 

@@ -685,9 +685,9 @@ internal sealed partial class YamlParser
         int offset = _pos;
         byte c = Peek();
 
-        // An alias cannot serve as an implicit mapping key.
+        // An alias cannot serve as a mapping key: the profile rejects it, at the alias, as it does a collection key.
         if (c == (byte)'*')
-            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+            throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
         if (c == (byte)'"' || c == (byte)'\'')
         {
             int startLine = _line;

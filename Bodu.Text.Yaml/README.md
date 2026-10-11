@@ -28,12 +28,12 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 
 **Rejected** (each throws `YamlFormatException`)
 
-- **Complex (non-scalar) mapping keys** - keys must resolve to scalar strings. A sequence or mapping used as a key is rejected, not coerced.
+- **Complex (non-scalar) and alias mapping keys** - keys must resolve to scalar strings. A sequence, a mapping, or an alias (even an alias of a scalar) used as a key is rejected, not coerced.
 - **Duplicate mapping keys** - by default (configurable via `YamlDuplicateKeyBehavior`). A scalar key is named, and compared with the other keys, by its text as written in every key form (block, flow, explicit, and flow-pair keys), so `0x10` and `16`, or `y` and `yes` under YAML 1.1, are distinct keys.
 - **Implicit keys longer than 1024 characters**, the specification's limit, counted with the key's node properties, its quotes, and the spaces before its `:`. A longer key must be an explicit key (`? key`), which is how `Utf8YamlWriter` writes one.
 - **Invalid merge keys**, while merge keys are expanded: a merge value that is not a mapping, an alias of one, or a sequence of them, and a second merge key in one mapping, whatever the duplicate-key policy (several mappings merge through one `<<` whose value is a sequence). Only the plain, untagged `<<` is a merge key; a quoted or tagged `"<<"` is an ordinary key.
 - **Duplicate / overriding anchors and cyclic aliases.** A repeated anchor name is rejected: anchor override is a YAML representation-graph feature outside this tree profile.
-- **Tabs used as indentation**, including a tab between a `-` entry indicator or an explicit `:` and the compact sequence or mapping that follows it on the line, and a tab in place of the spaces that indent a plain scalar's continuation line (tabs remain legal as separation whitespace, after a node property or a continuation line's indentation included).
+- **Tabs used as indentation**, including a tab between a `-` entry indicator or an explicit `:` and the compact sequence or mapping that follows it on the line, a tab in place of the spaces that indent a plain scalar's continuation line, and a tab anywhere in the leading whitespace of a line that begins a node, which counts as indentation even after the indentation spaces or before a top-level flow collection (tabs remain legal as separation whitespace, after a node property or a continuation line's indentation included).
 - **Invalid UTF-8, unpaired surrogates, invalid Unicode escapes, and non-printable control characters.** A surrogate escape is valid only as a high surrogate followed directly by a low one, the escaped pair JSON writes for a character outside the Basic Multilingual Plane, which decodes to that one character; a lone or reversed surrogate escape is rejected.
 - **Malformed or unsupported directives** and **unknown non-core tags**.
 
@@ -50,7 +50,7 @@ This profile aligns with the Bodu TOML / Bencode and `System.Text.Json` architec
 | Merge key `<<` | Supported | Expanded by default under either spec version; `YamlMergeKeyBehavior` can disable it. |
 | Core tags + `%TAG` | Supported | Expanded and validated; invalid tagged content rejected. |
 | Multi-document streams | Supported | `YamlDocument.ParseAllDocuments`. |
-| Complex (non-scalar) keys | Rejected | `YamlFormatException`. |
+| Complex (non-scalar) and alias keys | Rejected | `YamlFormatException`. |
 | Duplicate mapping keys | Rejected by default | Configurable via `YamlDuplicateKeyBehavior`. |
 | Anchor override, cyclic graphs | Rejected | Outside the tree profile. |
 | Unknown / non-core tags | Rejected | Outside the core schema. |
