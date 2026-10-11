@@ -181,4 +181,38 @@ public partial class PropertySetReaderTests
 
         CollectionAssert.AreEqual(new object[] { "ab", "abc" }, (object?[]?)parsed[13]?.Value);
     }
+
+    /// <summary>
+    /// Verifies that a vector of 1- or 2-byte values, whose elements [MS-OLEPS] 2.15 packs one after another with
+    /// padding only after the last, reads element by element, and that the property after it still reads.
+    /// </summary>
+    /// <param name="typeName">The name of the element type: <c>Int16</c>, <c>UInt16</c>, <c>Boolean</c>, <c>Int8</c> or <c>UInt8</c>.</param>
+    [TestMethod]
+    [DataRow("Int16")]
+    [DataRow("UInt16")]
+    [DataRow("Boolean")]
+    [DataRow("Int8")]
+    [DataRow("UInt8")]
+    public void Parse_WhenSmallScalarVectorIsPacked_ShouldReadEachElement(string typeName)
+    {
+        (ushort type, byte[] elements, object[] expected) = typeName switch
+        {
+            "Int16" => ((ushort)0x0002, new byte[] { 0x01, 0x00, 0xFE, 0xFF, 0x03, 0x00, 0x00, 0x00 }, new object[] { (short)1, (short)-2, (short)3 }),
+            "UInt16" => ((ushort)0x0012, new byte[] { 0x01, 0x00, 0x02, 0x00, 0xFF, 0xFF, 0x00, 0x00 }, new object[] { (ushort)1, (ushort)2, (ushort)65535 }),
+            "Boolean" => ((ushort)0x000B, new byte[] { 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00 }, new object[] { true, false, true }),
+            "Int8" => ((ushort)0x0010, new byte[] { 0xFF, 0x02, 0xFD, 0x00 }, new object[] { (sbyte)-1, (sbyte)2, (sbyte)-3 }),
+            _ => ((ushort)0x0011, new byte[] { 0x00, 0x80, 0xFF, 0x00 }, new object[] { (byte)0, (byte)128, (byte)255 }),
+        };
+        byte[] vector = PropertySetBytes.Typed((ushort)(type | 0x1000), PropertySetBytes.UInt32(3), elements);
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, vector),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        CollectionAssert.AreEqual(expected, (object?[]?)parsed[2]?.Value, typeName);
+        Assert.AreEqual(7, parsed[3]!.AsInt32(), typeName);
+    }
 }
