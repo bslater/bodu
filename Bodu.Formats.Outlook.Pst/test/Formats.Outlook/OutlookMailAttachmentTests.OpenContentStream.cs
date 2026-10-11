@@ -125,4 +125,21 @@ public partial class OutlookMailAttachmentTests
         Assert.IsTrue(maxDelta < CeilingBytes,
             $"Reading a {builder.LargeAttachmentLength / (1024 * 1024)} MB attachment peaked {maxDelta / (1024 * 1024)} MB above baseline - the payload is being materialized.");
     }
+
+    /// <summary>
+    /// Verifies that content access on an <c>afByWebReference</c> attachment throws <see cref="NotSupportedException" />:
+    /// the content is held by a web service, so a by-value payload the attachment object also carries is not served.
+    /// </summary>
+    [TestMethod]
+    public void OpenContentStream_WhenByWebReferenceAttachment_ShouldThrowNotSupportedException()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(static b => b.AttachMethodOverride = 7);
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = attachment.OpenContentStream();
+        });
+    }
 }

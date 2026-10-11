@@ -155,4 +155,21 @@ public partial class OutlookAttachmentTests
             Assert.AreEqual($"Level {level}", current.Subject);
         }
     }
+
+    /// <summary>
+    /// Verifies that opening the message of an <c>afByWebReference</c> attachment throws
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void OpenMessage_WhenByWebReference_ShouldThrowNotSupportedException()
+    {
+        using MemoryStream container = CreateWithWebReferenceAttachment(withPayload: false);
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = message.Attachments[0].OpenMessage();
+        });
+    }
 }

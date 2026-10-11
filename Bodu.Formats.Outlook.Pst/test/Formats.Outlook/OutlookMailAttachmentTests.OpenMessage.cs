@@ -119,4 +119,21 @@ public partial class OutlookMailAttachmentTests
 
         Assert.AreEqual(0, current.Attachments.Count, "The innermost message carries no further attachments.");
     }
+
+    /// <summary>
+    /// Verifies that opening the message of an <c>afByWebReference</c> attachment throws
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void OpenMessage_WhenByWebReferenceAttachment_ShouldThrowNotSupportedException()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(static b => b.AttachMethodOverride = 7);
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = attachment.OpenMessage();
+        });
+    }
 }

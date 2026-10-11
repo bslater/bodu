@@ -135,4 +135,21 @@ public partial class OutlookAttachmentTests
             Assert.IsTrue(maxDelta < CeilingBytes, $"Streaming the attachment peaked {maxDelta / 1024} KB above baseline - the payload is being materialized.");
         }
     }
+
+    /// <summary>
+    /// Verifies that content access on an <c>afByWebReference</c> attachment throws <see cref="NotSupportedException" />:
+    /// the content is held by a web service, so a by-value stream the writer left beside the reference is not served.
+    /// </summary>
+    [TestMethod]
+    public void OpenContentStream_WhenByWebReference_ShouldThrowNotSupportedException()
+    {
+        using MemoryStream container = CreateWithWebReferenceAttachment(withPayload: true);
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = message.Attachments[0].OpenContentStream();
+        });
+    }
 }
