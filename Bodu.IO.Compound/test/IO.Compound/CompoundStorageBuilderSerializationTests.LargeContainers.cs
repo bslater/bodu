@@ -186,6 +186,59 @@ public partial class CompoundStorageBuilderSerializationTests
     }
 
     /// <summary>
+    /// Verifies that the FAT of a version-4 container that passes 2 GB marks the range lock sector (0x7FFFE) ENDOFCHAIN
+    /// and that no chain passes through it: the stream whose sectors would cover it links the sector before it to the
+    /// sector after it.
+    /// </summary>
+    /// <param name="asynchronous">Whether the tables are written by the asynchronous emitter.</param>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task WriteTo_WhenVersion4StreamWouldCoverRangeLockSector_ShouldLinkItsChainPastTheSector(bool asynchronous)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", StopWrite, 1_200_000_000);
+        _ = builder.AddStream("B", StopWrite, 1_200_000_000);
+        _ = builder.AddStream("C", StopWrite, 4096);
+
+        (uint[] fat, _, _, _) = await ReadAllocationTablesAsync(builder, asynchronous);
+
+        Assert.AreEqual(RangeLockSector + 1, fat[RangeLockSector - 1]);
+        Assert.AreEqual(CfbHeader.EndOfChain, fat[RangeLockSector]);
+        Assert.AreEqual(RangeLockSector + 2, fat[RangeLockSector + 1]);
+        CollectionAssert.DoesNotContain(fat, RangeLockSector);
+    }
+
+    /// <summary>
+    /// Verifies that a version-4 container whose FAT would take the range lock sector (0x7FFFE) writes that sector as
+    /// zeros between two FAT sectors and marks it ENDOFCHAIN, and that neither the FAT nor the DIFAT points to it.
+    /// </summary>
+    /// <param name="asynchronous">Whether the tables are written by the asynchronous emitter.</param>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task WriteTo_WhenVersion4FatWouldTakeRangeLockSector_ShouldWriteTheSectorAsZeros(bool asynchronous)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", StopWrite, 524_280L * 4096);
+
+        (uint[] fat, List<uint> fatSectors, byte[] tables, uint firstSector) = await ReadAllocationTablesAsync(builder, asynchronous);
+
+        Assert.AreEqual(524_281u, firstSector);
+        Assert.AreEqual((513 + 1 + 1) * 4096, tables.Length);
+        CollectionAssert.AreEqual(new byte[4096], tables.AsSpan((int)(RangeLockSector - firstSector) * 4096, 4096).ToArray());
+        Assert.HasCount(513, fatSectors);
+        CollectionAssert.DoesNotContain(fatSectors, RangeLockSector);
+        Assert.AreEqual(CfbHeader.FatSector, fat[RangeLockSector - 1]);
+        Assert.AreEqual(CfbHeader.EndOfChain, fat[RangeLockSector]);
+        Assert.AreEqual(CfbHeader.FatSector, fat[RangeLockSector + 1]);
+        Assert.AreEqual(CfbHeader.DifatSector, fat[524_795]);
+        CollectionAssert.DoesNotContain(fat, RangeLockSector);
+    }
+
+    /// <summary>
     /// Verifies that a version-4 stream of more than 2 GB is written with its full 64-bit size.
     /// </summary>
     [TestMethod]
@@ -227,6 +280,62 @@ public partial class CompoundStorageBuilderSerializationTests
 
         Assert.AreEqual(StopWriteMessage, ex.Message);
         return destination.ToArray();
+    }
+
+    /// <summary>
+    /// Reads the FAT a version-4 tree's container ends with, from the header written before the tree's first stream is
+    /// opened and the allocation tables written through <see cref="CompoundContainerLayout.WriteAllocationTables" />.
+    /// </summary>
+    /// <param name="builder">The tree, whose streams are opened by <see cref="StopWrite" />.</param>
+    /// <param name="asynchronous">Whether the tables are written by the asynchronous emitter.</param>
+    /// <returns>
+    /// The FAT entries, the sectors that hold the FAT, the bytes of the tables and the sector of the file they start at.
+    /// </returns>
+    private static async Task<(uint[] Fat, List<uint> FatSectors, byte[] Tables, uint FirstSector)> ReadAllocationTablesAsync(CompoundStorageBuilder builder, bool asynchronous)
+    {
+        var options = new CompoundBuildOptions { Version = CompoundFileVersion.V4 };
+        using var destination = new MemoryStream();
+        var header = CfbHeader.Parse(WriteUntilStopped(builder, destination, CompoundFileVersion.V4));
+        using var output = new MemoryStream();
+        if (asynchronous)
+            await CompoundContainerLayout.WriteAllocationTablesAsync(output, builder, options, CancellationToken.None);
+        else
+            CompoundContainerLayout.WriteAllocationTables(output, builder, options);
+
+        byte[] tables = output.ToArray();
+        (uint[] fat, List<uint> fatSectors) = ParseAllocationTables(header, tables);
+        return (fat, fatSectors, tables, header.Difat[0]);
+    }
+
+    /// <summary>
+    /// Reads the FAT from a container's header and the allocation tables that end it.
+    /// </summary>
+    /// <param name="header">The container's header.</param>
+    /// <param name="tables">The container's sectors from its first FAT sector to its end.</param>
+    /// <returns>The FAT entries and the sectors that hold them.</returns>
+    private static (uint[] Fat, List<uint> FatSectors) ParseAllocationTables(CfbHeader header, byte[] tables)
+    {
+        int sectorSize = header.SectorSize;
+        uint firstSector = header.Difat[0];
+        List<uint> fatSectors = [.. header.Difat.Take((int)Math.Min(header.FatSectorCount, (uint)header.Difat.Length))];
+        uint difatSector = header.DifatSectorCount == 0 ? CfbHeader.EndOfChain : header.FirstDifatSector;
+        while (difatSector != CfbHeader.EndOfChain)
+        {
+            int offset = (int)(difatSector - firstSector) * sectorSize;
+            for (int i = 0; i < header.EntriesPerSector - 1 && fatSectors.Count < header.FatSectorCount; i++)
+                fatSectors.Add(BinaryPrimitives.ReadUInt32LittleEndian(tables.AsSpan(offset + (i * 4))));
+
+            difatSector = BinaryPrimitives.ReadUInt32LittleEndian(tables.AsSpan(offset + sectorSize - 4));
+        }
+
+        uint[] fat = new uint[fatSectors.Count * header.EntriesPerSector];
+        for (int i = 0; i < fat.Length; i++)
+        {
+            int offset = ((int)(fatSectors[i / header.EntriesPerSector] - firstSector) * sectorSize) + (i % header.EntriesPerSector * 4);
+            fat[i] = BinaryPrimitives.ReadUInt32LittleEndian(tables.AsSpan(offset));
+        }
+
+        return (fat, fatSectors);
     }
 
     /// <summary>

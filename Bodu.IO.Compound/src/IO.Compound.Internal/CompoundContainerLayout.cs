@@ -27,6 +27,11 @@ namespace Bodu.IO.Compound.Internal;
 /// red-black tree per storage, and the FAT/DIFAT sector counts are resolved to a fixed point. The result is
 /// byte-compatible with the reader and with other conforming parsers.
 /// </para>
+/// <para>
+/// A version-4 file that passes 2 GB reaches the range lock sector [MS-CFB] 2.8 reserves (sector 0x7FFFE). The sector
+/// is written as zeros and marked ENDOFCHAIN in the FAT, and every sector the plan lays out at or past it moves one
+/// sector on, so no chain passes through it.
+/// </para>
 /// </remarks>
 internal static partial class CompoundContainerLayout
 {
@@ -54,6 +59,12 @@ internal static partial class CompoundContainerLayout
     /// <summary>The largest version-3 file, in bytes: [MS-CFB] 2.9 limits a file of 512-byte sectors to 2 GB.</summary>
     private const long MaxVersion3FileSize = 0x80000000;
 
+    /// <summary>The sector of a file of 4096-byte sectors that covers file offsets 0x7FFFFF00-0x7FFFFFFF, which [MS-CFB] 2.8 reserves as the range lock sector.</summary>
+    private const long RangeLockSector = 0x7FFFE;
+
+    /// <summary>The sector the header occupies, one before sector 0.</summary>
+    private const long HeaderSector = -1;
+
     /// <summary>
     /// Serializes the supplied root storage into a compound-file byte array.
     /// </summary>
@@ -78,7 +89,7 @@ internal static partial class CompoundContainerLayout
     internal static void WriteTo(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options)
     {
         EmissionPlan plan = PreparePlan(root, options);
-        var writer = new SectorWriter(destination, plan.SectorSize);
+        var writer = new SectorWriter(destination, plan, HeaderSector);
 
         EmitHeader(writer, plan);
         EmitDirectory(writer, plan);
@@ -102,6 +113,27 @@ internal static partial class CompoundContainerLayout
 
         EmitFat(writer, plan);
 
+        if (plan.DifatSectors > 0)
+            EmitDifat(writer, plan);
+    }
+
+    /// <summary>
+    /// Writes the allocation tables a tree's container ends with, from its first FAT sector to the end of the file,
+    /// without writing the header, the directory or any stream.
+    /// </summary>
+    /// <param name="destination">The stream that receives the FAT and DIFAT sectors.</param>
+    /// <param name="root">The root storage whose container is planned.</param>
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <remarks>
+    /// A seam for tests: it shows the tables of a container too large to write in a test.
+    /// </remarks>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
+    internal static void WriteAllocationTables(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options)
+    {
+        EmissionPlan plan = PreparePlan(root, options);
+        var writer = new SectorWriter(destination, plan, plan.ToFileSector(plan.FatStart));
+
+        EmitFat(writer, plan);
         if (plan.DifatSectors > 0)
             EmitDifat(writer, plan);
     }
@@ -169,11 +201,12 @@ internal static partial class CompoundContainerLayout
         rootEntry.StartSector = miniStreamStart;
         rootEntry.Size = miniStreamBytes;
 
-        // Resolve the FAT/DIFAT counts to a fixed point (the FAT describes its own and the DIFAT's sectors).
-        ResolveFatCounts(dataSectorCount, entriesPerSector, out long fatSectors, out long difatSectors);
+        // Resolve the FAT/DIFAT counts to a fixed point (the FAT describes its own and the DIFAT's sectors, and the
+        // range lock sector when the file reaches it).
+        ResolveFatCounts(dataSectorCount, entriesPerSector, isVersion4, out long fatSectors, out long difatSectors, out bool reservesRangeLock);
         long fatStart = dataSectorCount;
         long difatStart = dataSectorCount + fatSectors;
-        long totalSectors = dataSectorCount + fatSectors + difatSectors;
+        long totalSectors = dataSectorCount + fatSectors + difatSectors + (reservesRangeLock ? 1 : 0);
         if (totalSectors >= CfbHeader.DifatSector)
             throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundBuilderTooLarge);
 
@@ -197,7 +230,8 @@ internal static partial class CompoundContainerLayout
             fatStart,
             fatSectors,
             difatStart,
-            difatSectors);
+            difatSectors,
+            reservesRangeLock);
     }
 
     /// <summary>
@@ -294,19 +328,29 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Resolves the FAT and DIFAT sector counts to a fixed point.
+    /// Resolves the FAT and DIFAT sector counts to a fixed point, with whether the file reaches the range lock sector.
     /// </summary>
     /// <param name="dataSectorCount">The number of non-FAT, non-DIFAT sectors.</param>
     /// <param name="entriesPerSector">The number of 32-bit entries per regular sector.</param>
+    /// <param name="hasRangeLockSector">
+    /// Whether the file has 4096-byte sectors, the only ones [MS-CFB] 2.8 gives a range lock sector.
+    /// </param>
     /// <param name="fatSectors">The resolved FAT sector count.</param>
     /// <param name="difatSectors">The resolved DIFAT sector count.</param>
-    private static void ResolveFatCounts(long dataSectorCount, int entriesPerSector, out long fatSectors, out long difatSectors)
+    /// <param name="reservesRangeLock">
+    /// Whether the sectors would reach the range lock sector, which is then reserved and counted among them.
+    /// </param>
+    private static void ResolveFatCounts(long dataSectorCount, int entriesPerSector, bool hasRangeLockSector, out long fatSectors, out long difatSectors, out bool reservesRangeLock)
     {
         fatSectors = 0;
         difatSectors = 0;
         while (true)
         {
-            long total = dataSectorCount + fatSectors + difatSectors;
+            // The sectors are laid out one after another; once they would reach the range lock sector, it is skipped,
+            // and so takes one more entry of the FAT.
+            long sequential = dataSectorCount + fatSectors + difatSectors;
+            reservesRangeLock = hasRangeLockSector && sequential > RangeLockSector;
+            long total = sequential + (reservesRangeLock ? 1 : 0);
             long newFat = CeilDiv(total, entriesPerSector);
             long newDifat = newFat <= CfbHeader.HeaderDifatCount
                 ? 0
@@ -336,17 +380,17 @@ internal static partial class CompoundContainerLayout
         BinaryPrimitives.WriteUInt16LittleEndian(h.Slice(32), 6);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(40), plan.IsVersion4 ? (uint)plan.DirectorySectors : 0);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(44), (uint)plan.FatSectors);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(48), (uint)plan.DirectoryStart);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(48), plan.ToFileSector(plan.DirectoryStart));
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(56), MiniStreamCutoff);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(60), plan.MiniFatSectors > 0 ? plan.MiniFatStart : CfbHeader.EndOfChain);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(60), plan.MiniFatSectors > 0 ? plan.ToFileSector(plan.MiniFatStart) : CfbHeader.EndOfChain);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(64), (uint)plan.MiniFatSectors);
-        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), plan.DifatSectors > 0 ? (uint)plan.DifatStart : CfbHeader.EndOfChain);
+        BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(68), plan.DifatSectors > 0 ? plan.ToFileSector(plan.DifatStart) : CfbHeader.EndOfChain);
         BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(72), (uint)plan.DifatSectors);
 
         long inlineCount = Math.Min(plan.FatSectors, CfbHeader.HeaderDifatCount);
         for (int i = 0; i < CfbHeader.HeaderDifatCount; i++)
         {
-            uint value = i < inlineCount ? (uint)(plan.FatStart + i) : CfbHeader.FreeSector;
+            uint value = i < inlineCount ? plan.ToFileSector(plan.FatStart + i) : CfbHeader.FreeSector;
             BinaryPrimitives.WriteUInt32LittleEndian(h.Slice(76 + (i * 4)), value);
         }
     }
@@ -376,7 +420,7 @@ internal static partial class CompoundContainerLayout
         foreach (Entry entry in plan.Entries)
         {
             record.Clear();
-            entry.Encode(record);
+            entry.Encode(record, plan);
             writer.WriteBytes(record);
         }
 
@@ -440,34 +484,15 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Emits the FAT sectors, chaining every sector run, marking the FAT and DIFAT sectors, and padding with free
-    /// markers.
+    /// Emits the FAT sectors, chaining every sector run, marking the FAT and DIFAT sectors and any range lock sector,
+    /// and padding with free markers.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
     /// <param name="plan">The emission plan.</param>
     private static void EmitFat(SectorWriter writer, EmissionPlan plan)
     {
-        WriteChain(writer, (uint)plan.DirectoryStart, plan.DirectorySectors);
-        if (plan.MiniFatSectors > 0)
-            WriteChain(writer, plan.MiniFatStart, plan.MiniFatSectors);
-
-        if (plan.MiniStreamSectors > 0)
-            WriteChain(writer, plan.MiniStreamStart, plan.MiniStreamSectors);
-
-        foreach (Entry entry in plan.Entries)
-        {
-            if (entry.IsRegularStream)
-                WriteChain(writer, entry.StartSector, CeilDiv(entry.Size, plan.SectorSize));
-        }
-
-        for (long i = 0; i < plan.FatSectors; i++)
-            writer.WriteUInt32(CfbHeader.FatSector);
-
-        for (long i = 0; i < plan.DifatSectors; i++)
-            writer.WriteUInt32(CfbHeader.DifatSector);
-
-        long totalSectors = plan.DataSectorCount + plan.FatSectors + plan.DifatSectors;
-        WriteFree(writer, (plan.FatSectors * plan.EntriesPerSector) - totalSectors);
+        foreach (uint entry in EnumerateFat(plan))
+            writer.WriteUInt32(entry);
     }
 
     /// <summary>
@@ -477,26 +502,104 @@ internal static partial class CompoundContainerLayout
     /// <param name="plan">The emission plan.</param>
     private static void EmitDifat(SectorWriter writer, EmissionPlan plan)
     {
+        foreach (uint entry in EnumerateDifat(plan))
+            writer.WriteUInt32(entry);
+    }
+
+    /// <summary>
+    /// Returns the entries of the FAT sectors in the order of the file's sectors.
+    /// </summary>
+    /// <param name="plan">The emission plan.</param>
+    /// <returns>
+    /// The entry of each sector of the file, with the range lock sector marked ENDOFCHAIN when the plan reserves it,
+    /// followed by the free markers that fill the last FAT sector.
+    /// </returns>
+    private static IEnumerable<uint> EnumerateFat(EmissionPlan plan)
+    {
+        long sector = 0;
+        foreach (uint entry in EnumerateSequentialFat(plan))
+        {
+            // [MS-CFB] 2.8: the range lock sector is allocated and marked ENDOFCHAIN, but no chain reaches it.
+            if (plan.ReservesRangeLock && sector == RangeLockSector)
+            {
+                yield return CfbHeader.EndOfChain;
+                sector++;
+            }
+
+            yield return entry;
+            sector++;
+        }
+
+        for (; sector < plan.FatSectors * plan.EntriesPerSector; sector++)
+            yield return CfbHeader.FreeSector;
+    }
+
+    /// <summary>
+    /// Returns the FAT entries of the sectors in the order the plan lays them out, the range lock sector aside.
+    /// </summary>
+    /// <param name="plan">The emission plan.</param>
+    /// <returns>
+    /// The entry of each directory, mini FAT, mini stream and stream sector, linking it to the next sector of its run,
+    /// placed past the range lock sector, or ending its chain, then the markers of the FAT and DIFAT sectors.
+    /// </returns>
+    private static IEnumerable<uint> EnumerateSequentialFat(EmissionPlan plan)
+    {
+        List<(long Start, long Count)> runs = [(plan.DirectoryStart, plan.DirectorySectors)];
+        if (plan.MiniFatSectors > 0)
+            runs.Add((plan.MiniFatStart, plan.MiniFatSectors));
+
+        if (plan.MiniStreamSectors > 0)
+            runs.Add((plan.MiniStreamStart, plan.MiniStreamSectors));
+
+        foreach (Entry entry in plan.Entries)
+        {
+            if (entry.IsRegularStream)
+                runs.Add((entry.StartSector, CeilDiv(entry.Size, plan.SectorSize)));
+        }
+
+        foreach ((long start, long count) in runs)
+        {
+            for (long i = 0; i < count; i++)
+                yield return i == count - 1 ? CfbHeader.EndOfChain : plan.ToFileSector(start + i + 1);
+        }
+
+        for (long i = 0; i < plan.FatSectors; i++)
+            yield return CfbHeader.FatSector;
+
+        for (long i = 0; i < plan.DifatSectors; i++)
+            yield return CfbHeader.DifatSector;
+    }
+
+    /// <summary>
+    /// Returns the entries of the extended DIFAT sectors.
+    /// </summary>
+    /// <param name="plan">The emission plan.</param>
+    /// <returns>
+    /// The FAT sectors the header's DIFAT array does not hold, padded with free markers, with each DIFAT sector's last
+    /// entry pointing to the next or ending the chain.
+    /// </returns>
+    private static IEnumerable<uint> EnumerateDifat(EmissionPlan plan)
+    {
         int slotsPerSector = plan.EntriesPerSector - 1;
         long fatIndex = CfbHeader.HeaderDifatCount;
         for (long s = 0; s < plan.DifatSectors; s++)
         {
             for (int j = 0; j < slotsPerSector; j++)
             {
-                writer.WriteUInt32(fatIndex < plan.FatSectors ? (uint)(plan.FatStart + fatIndex) : CfbHeader.FreeSector);
+                yield return fatIndex < plan.FatSectors ? plan.ToFileSector(plan.FatStart + fatIndex) : CfbHeader.FreeSector;
                 fatIndex++;
             }
 
-            writer.WriteUInt32(s == plan.DifatSectors - 1 ? CfbHeader.EndOfChain : (uint)(plan.DifatStart + s + 1));
+            yield return s == plan.DifatSectors - 1 ? CfbHeader.EndOfChain : plan.ToFileSector(plan.DifatStart + s + 1);
         }
     }
 
     /// <summary>
-    /// Writes a sequential sector chain to the FAT, terminating with the end-of-chain marker.
+    /// Writes a sequential mini sector chain to the mini FAT, terminating with the end-of-chain marker.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="start">The first sector of the run.</param>
-    /// <param name="count">The number of sectors in the run.</param>
+    /// <param name="start">The first mini sector of the run.</param>
+    /// <param name="count">The number of mini sectors in the run.</param>
     private static void WriteChain(SectorWriter writer, uint start, long count)
     {
         for (long i = 0; i < count; i++)
@@ -566,7 +669,8 @@ internal static partial class CompoundContainerLayout
         value <= 0 ? 0 : (value + divisor - 1) / divisor;
 
     /// <summary>
-    /// Buffers output one sector at a time and flushes whole sectors to a destination stream.
+    /// Buffers output one sector at a time and flushes whole sectors to a destination stream, writing the range lock
+    /// sector as zeros when the plan reserves it.
     /// </summary>
     private sealed partial class SectorWriter
     {
@@ -576,18 +680,29 @@ internal static partial class CompoundContainerLayout
         /// <summary>The reusable single-sector buffer.</summary>
         private readonly byte[] _buffer;
 
+        /// <summary>Whether the range lock sector is reserved, and so written as zeros when the output reaches it.</summary>
+        private readonly bool _reservesRangeLock;
+
         /// <summary>The number of bytes currently buffered in the active sector.</summary>
         private int _position;
+
+        /// <summary>The sector of the file the active sector is flushed to.</summary>
+        private long _sector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SectorWriter" /> class.
         /// </summary>
         /// <param name="destination">The destination stream.</param>
-        /// <param name="sectorSize">The sector size, in bytes.</param>
-        public SectorWriter(Stream destination, int sectorSize)
+        /// <param name="plan">
+        /// The emission plan, which gives the sector size and whether the range lock sector is reserved.
+        /// </param>
+        /// <param name="firstSector">The sector of the file the first sector written occupies.</param>
+        public SectorWriter(Stream destination, EmissionPlan plan, long firstSector)
         {
             _destination = destination;
-            _buffer = new byte[sectorSize];
+            _buffer = new byte[plan.SectorSize];
+            _reservesRangeLock = plan.ReservesRangeLock;
+            _sector = firstSector;
         }
 
         /// <summary>
@@ -649,12 +764,34 @@ internal static partial class CompoundContainerLayout
         }
 
         /// <summary>
-        /// Writes the active sector buffer to the destination and resets the position.
+        /// Writes the active sector buffer to the destination and resets the position, writing the range lock sector
+        /// first when the active sector would take its place.
         /// </summary>
         private void FlushSector()
         {
+            if (TakeRangeLockSector())
+                _destination.Write(new byte[_buffer.Length], 0, _buffer.Length);
+
             _destination.Write(_buffer, 0, _buffer.Length);
             _position = 0;
+            _sector++;
+        }
+
+        /// <summary>
+        /// Determines whether the active sector would be flushed to the reserved range lock sector, and if so moves it
+        /// to the sector after.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true" /> when the caller must write the range lock sector, as zeros, before the active
+        /// sector; otherwise <see langword="false" />.
+        /// </returns>
+        private bool TakeRangeLockSector()
+        {
+            if (!_reservesRangeLock || _sector != RangeLockSector)
+                return false;
+
+            _sector++;
+            return true;
         }
     }
 
@@ -771,8 +908,14 @@ internal static partial class CompoundContainerLayout
         /// Encodes this entry into a 128-byte directory record.
         /// </summary>
         /// <param name="record">The 128-byte destination span.</param>
-        public void Encode(Span<byte> record)
+        /// <param name="plan">The emission plan, which places a regular sector past the range lock sector.</param>
+        public void Encode(Span<byte> record, EmissionPlan plan)
         {
+            // A regular stream and the root's mini stream start in a regular sector; a small stream, in a mini sector.
+            uint startSector = IsRegularStream || (Type == CompoundEntryType.RootStorage && Size > 0)
+                ? plan.ToFileSector(StartSector)
+                : StartSector;
+
             int charCount = Name.Length;
             Encoding.Unicode.GetBytes(Name, record.Slice(0, charCount * 2));
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(64), (ushort)((charCount + 1) * 2));
@@ -785,7 +928,7 @@ internal static partial class CompoundContainerLayout
             BinaryPrimitives.WriteInt32LittleEndian(record.Slice(96), StateBits);
             BinaryPrimitives.WriteInt64LittleEndian(record.Slice(100), CreationFileTime);
             BinaryPrimitives.WriteInt64LittleEndian(record.Slice(108), ModifiedFileTime);
-            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(116), Type == CompoundEntryType.Storage ? 0 : StartSector);
+            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(116), Type == CompoundEntryType.Storage ? 0 : startSector);
             BinaryPrimitives.WriteUInt64LittleEndian(record.Slice(120), Type == CompoundEntryType.Storage ? 0 : (ulong)Size);
         }
 

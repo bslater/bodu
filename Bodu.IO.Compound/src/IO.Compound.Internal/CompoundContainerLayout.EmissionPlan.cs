@@ -31,6 +31,13 @@ internal static partial class CompoundContainerLayout
     /// <param name="FatSectors">The number of FAT sectors.</param>
     /// <param name="DifatStart">The index of the first extended-DIFAT sector.</param>
     /// <param name="DifatSectors">The number of extended-DIFAT sectors.</param>
+    /// <param name="ReservesRangeLock">
+    /// Whether the file reaches the range lock sector, which then holds no data and moves every later sector one on.
+    /// </param>
+    /// <remarks>
+    /// The indices are those of the sectors laid out one after another. The file places them where
+    /// <see cref="ToFileSector" /> says, which differs only for a version-4 file that reaches the range lock sector.
+    /// </remarks>
     private sealed record EmissionPlan(
         List<Entry> Entries,
         int SectorSize,
@@ -47,5 +54,18 @@ internal static partial class CompoundContainerLayout
         long FatStart,
         long FatSectors,
         long DifatStart,
-        long DifatSectors);
+        long DifatSectors,
+        bool ReservesRangeLock)
+    {
+        /// <summary>
+        /// Returns the sector of the file that a sector of the sequential layout occupies.
+        /// </summary>
+        /// <param name="sector">The index of the sector in the sequential layout.</param>
+        /// <returns>
+        /// <paramref name="sector" />, or the sector after it when the range lock sector is reserved and
+        /// <paramref name="sector" /> is at or past it.
+        /// </returns>
+        public uint ToFileSector(long sector) =>
+            (uint)(ReservesRangeLock && sector >= RangeLockSector ? sector + 1 : sector);
+    }
 }
