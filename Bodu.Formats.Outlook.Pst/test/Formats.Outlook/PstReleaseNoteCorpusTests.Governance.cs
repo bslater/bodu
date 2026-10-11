@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.IO.Pst;
+using Bodu.IO.Pst.Internal;
 using Bodu.Test.Corpus;
 
 namespace Bodu.Formats.Outlook;
@@ -113,6 +114,22 @@ public sealed partial class PstReleaseNoteCorpusTests
         }
 
         Assert.AreEqual(0, problems.Count, string.Join(Environment.NewLine, problems));
+    }
+
+    /// <summary>
+    /// Verifies that every <c>unit</c> row names a test method that exists in this assembly or in the container test
+    /// assembly, whose fixture builders this assembly references.
+    /// </summary>
+    [TestMethod]
+    public void FixCatalogues_WhenUnitRowsAreRead_ShouldNameExistingTests()
+    {
+        // A row is a problem only when neither assembly holds the test it names: the container's tests live beside its
+        // own fixtures, in Bodu.IO.Pst.Test.
+        IReadOnlyList<string> missingHere = ReleaseNoteGovernance.FindMissingUnitTests(AllRows, typeof(PstReleaseNoteCorpusTests).Assembly);
+        IReadOnlyList<string> missingThere = ReleaseNoteGovernance.FindMissingUnitTests(AllRows, typeof(PstFixtureBuilder).Assembly);
+        string[] problems = [.. missingHere.Intersect(missingThere, StringComparer.Ordinal)];
+
+        Assert.AreEqual(0, problems.Length, string.Join(Environment.NewLine, problems));
     }
 
     /// <summary>
