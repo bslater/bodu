@@ -27,6 +27,9 @@ internal sealed class CfbDirectory
     /// <summary>The stream identifier of the root storage entry.</summary>
     private const int RootSid = 0;
 
+    /// <summary>The name [MS-CFB] requires of the root storage entry.</summary>
+    private const string RootEntryName = "Root Entry";
+
     /// <summary>The parsed entries indexed by stream identifier; unallocated slots are <see langword="null" />.</summary>
     private readonly CfbDirectoryEntry?[] _entries;
 
@@ -90,7 +93,8 @@ internal sealed class CfbDirectory
     /// </param>
     /// <returns>The parsed entries indexed by stream identifier.</returns>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type.
+    /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type,
+    /// or breaks another requirement [MS-CFB] 2.6 places on a single entry.
     /// </exception>
     private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level)
     {
@@ -108,7 +112,8 @@ internal sealed class CfbDirectory
             if (nameLength == 0)
                 continue;
 
-            if (nameLength > 64)
+            // MS-CFB 2.6.1: the length counts the bytes of the name and its terminator, so it is even and at most 64.
+            if (nameLength > 64 || nameLength % 2 != 0)
             {
                 CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
                 continue;
@@ -145,6 +150,7 @@ internal sealed class CfbDirectory
                 // MS-CFB §2.6.1: the color flag is 0 (red) or 1 (black), and a storage object's stream size is zero.
                 CompoundThrowHelper.ThrowFormatIf(record[67] > (byte)CompoundEntryColor.Black, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
                 CompoundThrowHelper.ThrowFormatIf(type == CompoundEntryType.Storage && size != 0, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                ValidateEntry(record, sid, name, type, classId, creationFileTime, modifiedFileTime, startSector);
             }
 
             entries[sid] = new CfbDirectoryEntry(
@@ -152,6 +158,41 @@ internal sealed class CfbDirectory
         }
 
         return entries;
+    }
+
+    /// <summary>
+    /// Verifies the requirements [MS-CFB] 2.6 places on a single directory entry beyond its name length, type, color
+    /// and storage size.
+    /// </summary>
+    /// <param name="record">The entry's 128 bytes.</param>
+    /// <param name="sid">The entry's stream identifier.</param>
+    /// <param name="name">The entry's name, without its terminator.</param>
+    /// <param name="type">The entry's object type.</param>
+    /// <param name="classId">The entry's class identifier.</param>
+    /// <param name="creationFileTime">The entry's creation time.</param>
+    /// <param name="modifiedFileTime">The entry's modified time.</param>
+    /// <param name="startSector">The entry's starting sector.</param>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the name lacks its terminating null, the root is not named <c>Root Entry</c> or records a creation
+    /// time, a stream records a class identifier or a time, or a storage records a starting sector.
+    /// </exception>
+    private static void ValidateEntry(
+        ReadOnlySpan<byte> record,
+        int sid,
+        string name,
+        CompoundEntryType type,
+        Guid classId,
+        long creationFileTime,
+        long modifiedFileTime,
+        uint startSector)
+    {
+        int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(64));
+        bool conformant = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(nameLength - 2)) == 0
+            && (sid != RootSid || (name == RootEntryName && creationFileTime == 0))
+            && (type != CompoundEntryType.Stream || (classId == Guid.Empty && creationFileTime == 0 && modifiedFileTime == 0))
+            && (type != CompoundEntryType.Storage || startSector == 0);
+
+        CompoundThrowHelper.ThrowFormatIf(!conformant, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
     }
 
     /// <summary>
@@ -190,7 +231,10 @@ internal sealed class CfbDirectory
             CollectChildren(storage.ChildId, storage.Children, visited);
 
             if (_level == CompoundValidationLevel.Strict)
+            {
                 ValidateSiblingOrder(storage.Children);
+                ValidateColors(storage.Children);
+            }
 
             // Walk backwards so a pruned entry does not shift the indices still to be examined.
             for (int i = storage.Children.Count - 1; i >= 0; i--)
@@ -238,6 +282,35 @@ internal sealed class CfbDirectory
                 CompoundFileError.InvalidDirectory);
         }
     }
+
+    /// <summary>
+    /// Verifies that no red node of a storage's child tree has a red sibling link, as [MS-CFB] 2.6.4 requires: two
+    /// consecutive nodes must not both be red.
+    /// </summary>
+    /// <param name="children">
+    /// The child stream identifiers of a single storage, every one of them a node of its tree.
+    /// </param>
+    /// <exception cref="CompoundFileFormatException">Thrown when a red node links to a red node.</exception>
+    private void ValidateColors(List<int> children)
+    {
+        foreach (int sid in children)
+        {
+            CfbDirectoryEntry node = _entries[sid]!;
+            bool redPair = node.Color == CompoundEntryColor.Red
+                && (IsRed(node.LeftSiblingId) || IsRed(node.RightSiblingId));
+            CompoundThrowHelper.ThrowFormatIf(redPair, CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree, CompoundFileError.InvalidDirectory);
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a sibling link reaches a red entry.
+    /// </summary>
+    /// <param name="sid">The stream identifier the link holds, or <see cref="CfbHeader.NoStream" />.</param>
+    /// <returns>
+    /// <see langword="true" /> when the link reaches an allocated red entry; otherwise <see langword="false" />.
+    /// </returns>
+    private bool IsRed(uint sid) =>
+        sid < (uint)_entries.Length && _entries[sid] is { Color: CompoundEntryColor.Red };
 
     /// <summary>
     /// Performs an in-order traversal of a child red-black tree, appending each node's stream identifier to

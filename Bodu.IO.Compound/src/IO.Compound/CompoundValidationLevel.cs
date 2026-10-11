@@ -14,7 +14,9 @@ namespace Bodu.IO.Compound;
 /// byte-order marker, sector sizes, file truncation, allocation-table bounds, and the presence of a root storage are
 /// always validated. The level controls only how the reader responds to the remaining, recoverable inconsistencies.
 /// Every level reads a stream smaller than 4096 bytes from the mini stream, the cutoff [MS-CFB] fixes, whatever cutoff
-/// the header declares.
+/// the header declares. Below <see cref="Strict" />, a directory entry whose name length is odd or above 64, or whose
+/// object type [MS-CFB] does not define, is malformed and skipped, while a name that lacks its terminating null is read
+/// up to its declared length.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -50,6 +52,12 @@ public enum CompoundValidationLevel
     /// and no sector may belong to two chains (<see cref="CompoundFileError.FatCycle" />, or
     /// <see cref="CompoundFileError.InvalidMiniFat" /> for a mini sector). The other levels read a DIFAT chain that
     /// ends in FREESECT or DIFSECT as ending there.
+    /// </para>
+    /// <para>
+    /// Each directory entry must meet [MS-CFB] 2.6, or the file is rejected with
+    /// <see cref="CompoundFileError.InvalidDirectory" />: its name length is even and counts a terminating null that is
+    /// present, the root is named <c>Root Entry</c> and records no creation time, a stream records no class identifier
+    /// and no times, a storage records no starting sector, and no red node of a sibling tree links to another red node.
     /// </para>
     /// </remarks>
     Strict,
