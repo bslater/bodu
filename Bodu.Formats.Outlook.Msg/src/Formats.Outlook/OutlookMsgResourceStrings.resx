@@ -88,6 +88,9 @@
   <data name="Format_Invalid_MsgNameId" xml:space="preserve">
     <value>The named-property mapping storage is malformed.</value>
   </data>
+  <data name="Format_Invalid_MsgNameIdStreamMissing" xml:space="preserve">
+    <value>The named-property mapping storage does not contain the required '{0}' stream.</value>
+  </data>
   <data name="IO_KeyNotFound_MsgAttachmentContent" xml:space="preserve">
     <value>The attachment does not contain the expected content '{0}'.</value>
   </data>

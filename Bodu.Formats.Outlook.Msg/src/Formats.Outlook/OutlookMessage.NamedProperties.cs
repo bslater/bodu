@@ -33,6 +33,10 @@ public sealed partial class OutlookMessage
     /// </param>
     /// <returns><see langword="true" /> when the message maps the name.</returns>
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// Under <see cref="Bodu.IO.Compound.CompoundValidationLevel.Strict" />, the named-property mapping storage lacks
+    /// one of its GUID, entry and string streams, or its entry stream is malformed.
+    /// </exception>
     public bool TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)
     {
         ThrowIfDisposed();
@@ -47,6 +51,10 @@ public sealed partial class OutlookMessage
     /// <param name="name">When this method returns <see langword="true" />, the identity.</param>
     /// <returns><see langword="true" /> when the message maps the tag's identifier.</returns>
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// Under <see cref="Bodu.IO.Compound.CompoundValidationLevel.Strict" />, the named-property mapping storage lacks
+    /// one of its GUID, entry and string streams, or its entry stream is malformed.
+    /// </exception>
     public bool TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)
     {
         ThrowIfDisposed();

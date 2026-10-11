@@ -151,6 +151,15 @@ namespace Bodu.Formats.Outlook {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The named-property mapping storage does not contain the required &apos;{0}&apos; stream..
+        /// </summary>
+        internal static string Format_Invalid_MsgNameIdStreamMissing {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgNameIdStreamMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The attachment does not contain the expected content &apos;{0}&apos;..
         /// </summary>
         internal static string IO_KeyNotFound_MsgAttachmentContent {
