@@ -14,7 +14,8 @@ This is the substrate a message-level reader builds on - the same layering as
 [`Bodu.IO.Compound`](../Bodu.IO.Compound) beneath the `.msg` reader. The library
 speaks node identifiers, 16-bit property ids, and raw wire-typed payloads; folder,
 message, recipient, and attachment semantics (the messaging layer of MS-PST) belong
-to a future `Bodu.Formats.Outlook.Pst` package over the shared
+to the [`Bodu.Formats.Outlook.Pst`](../Bodu.Formats.Outlook.Pst) mail-store reader,
+which builds on this package and the shared
 [`Bodu.Formats.Outlook`](../Bodu.Formats.Outlook) value model.
 
 ```csharp
@@ -79,7 +80,8 @@ and signature), and `Minimal` (salvage reads of damaged files).
   `PstUnsupportedFormatException`, not read.
 - **MAPI and messaging semantics** - folders, messages, recipients, attachments,
   named-property resolution, and multi-valued/object payload decoding (surfaced
-  raw). These belong to the future `Bodu.Formats.Outlook.Pst` reader.
+  raw). The [`Bodu.Formats.Outlook.Pst`](../Bodu.Formats.Outlook.Pst) mail-store
+  reader provides them over this package.
 - Writing, repair, and password handling (the format's password is advisory only).
 
 [MS-PST]: https://learn.microsoft.com/en-us/openspecs/office_file_formats/ms-pst/

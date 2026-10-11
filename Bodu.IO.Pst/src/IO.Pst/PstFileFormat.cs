@@ -23,8 +23,8 @@ public enum PstFileFormat
     Ansi = 1,
 
     /// <summary>
-    /// The 4&#160;KiB-page OST variant (<c>wVer</c> 36). Read with 32-bit block identifiers and offsets; strings are
-    /// typically code-page (<c>PT_STRING8</c>) values.
+    /// The 4&#160;KiB-page OST variant (<c>wVer</c> 36), which is recognized but not read: opening such a file throws
+    /// <see cref="PstUnsupportedFormatException" />, so an open file never reports it.
     /// </summary>
     Ost4K = 2,
 }

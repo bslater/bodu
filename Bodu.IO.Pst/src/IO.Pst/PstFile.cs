@@ -133,7 +133,7 @@ public sealed class PstFile
     /// <summary>
     /// Opens a PST file from a stream with default options.
     /// </summary>
-    /// <param name="stream">The readable, seekable stream positioned at the file start.</param>
+    /// <param name="stream">The readable, seekable stream; the file is read from its current position.</param>
     /// <param name="leaveOpen"><see langword="true" /> to leave the stream open when the session is disposed.</param>
     /// <returns>The open session.</returns>
     /// <exception cref="ArgumentNullException">
@@ -148,7 +148,7 @@ public sealed class PstFile
     /// <summary>
     /// Opens a PST file from a stream with explicit options.
     /// </summary>
-    /// <param name="stream">The readable, seekable stream positioned at the file start.</param>
+    /// <param name="stream">The readable, seekable stream; the file is read from its current position.</param>
     /// <param name="options">The reader options.</param>
     /// <param name="leaveOpen"><see langword="true" /> to leave the stream open when the session is disposed.</param>
     /// <returns>The open session.</returns>
