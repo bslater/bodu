@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Formats.Outlook.Msg;
+using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Outlook;
 
@@ -64,4 +65,55 @@ public partial class OutlookMessageTests
 
         Assert.AreSame(message.Recipients, message.Recipients);
     }
+
+    /// <summary>
+    /// Verifies that under the tolerant levels a recipient storage with no <c>__properties_version1.0</c> stream is
+    /// omitted, as the <c>.pst</c> reader skips a row it cannot resolve, while the rest of the message reads normally.
+    /// </summary>
+    /// <param name="level">The tolerant validation level the message is read at.</param>
+    [TestMethod]
+    [DataRow(CompoundValidationLevel.Compatible)]
+    [DataRow(CompoundValidationLevel.Minimal)]
+    public void Recipients_WhenAStorageHasNoPropertyStream_ShouldOmitIt(CompoundValidationLevel level)
+    {
+        using MemoryStream container = CreateWithRecipientMissingItsPropertyStream();
+
+        using var message = OutlookMessage.Open(container, new OutlookMessageReaderOptions { ValidationLevel = level });
+
+        CollectionAssert.AreEqual(
+            new[] { "Alex Doe", "Casey Poe" },
+            message.Recipients.Select(static recipient => recipient.DisplayName).ToArray());
+        Assert.AreEqual("Test subject", message.Subject);
+        Assert.AreEqual("Test body", message.BodyText);
+        Assert.AreEqual(1, message.Attachments.Count);
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="CompoundValidationLevel.Strict" /> a recipient storage with no
+    /// <c>__properties_version1.0</c> stream throws <see cref="OutlookMsgFormatException" /> when the recipients are read.
+    /// </summary>
+    [TestMethod]
+    public void Recipients_WhenAStorageHasNoPropertyStream_ForStrict_ShouldThrowOutlookMsgFormatException()
+    {
+        using MemoryStream container = CreateWithRecipientMissingItsPropertyStream();
+        using var message = OutlookMessage.Open(
+            container, new OutlookMessageReaderOptions { ValidationLevel = CompoundValidationLevel.Strict });
+
+        _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = message.Recipients;
+        });
+    }
+
+    /// <summary>
+    /// Builds a minimal message with three recipient storages, the second without a property stream, and one attachment.
+    /// </summary>
+    /// <returns>The container stream.</returns>
+    private static MemoryStream CreateWithRecipientMissingItsPropertyStream() =>
+        MsgFixtureBuilder.CreateMinimal()
+            .AddRecipient(static recipient => recipient.AddUnicode(MapiPropertyIds.DisplayName, "Alex Doe"))
+            .AddRecipient(static recipient => recipient.OmitPropertiesStream())
+            .AddRecipient(static recipient => recipient.AddUnicode(MapiPropertyIds.DisplayName, "Casey Poe"))
+            .AddAttachment(static attachment => attachment.AddUnicode(MapiPropertyIds.AttachLongFilename, "kept.bin"))
+            .Build();
 }
