@@ -11,8 +11,8 @@ namespace Bodu.Formats.Excel;
 public partial class ExcelBinaryWorkbookTests
 {
     /// <summary>
-    /// Verifies that a workbook opened over a seekable stream whose every read returns at most one byte yields the same
-    /// cells as the same workbook opened over a <see cref="MemoryStream" />.
+    /// Verifies that a workbook opened over a seekable, read-only stream whose every read returns at most one byte
+    /// yields the same cells as the same workbook opened over a read-only <see cref="MemoryStream" />.
     /// </summary>
     [TestMethod]
     public void Open_WhenStreamReturnsOneByteAtATime_ShouldReadEveryCell()
@@ -28,8 +28,12 @@ public partial class ExcelBinaryWorkbookTests
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, body));
         byte[] file = xls.ToArray();
 
+        var oneByteAtATime = new FixedChunkStream(file, chunkSize: 1, writable: false);
+        Assert.IsTrue(oneByteAtATime.CanSeek);
+        Assert.IsFalse(oneByteAtATime.CanWrite);
+
         string expected = ReadFirstSheet(new MemoryStream(file, writable: false));
-        string actual = ReadFirstSheet(new FixedChunkStream(file, chunkSize: 1));
+        string actual = ReadFirstSheet(oneByteAtATime);
 
         Assert.AreEqual("0,0,String,abc;0,1,Number,1.5;1,0,String,def", expected);
         Assert.AreEqual(expected, actual);
