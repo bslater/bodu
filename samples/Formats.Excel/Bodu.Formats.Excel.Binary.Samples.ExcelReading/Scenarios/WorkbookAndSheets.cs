@@ -17,13 +17,14 @@ namespace Bodu.Formats.Excel.Binary.Samples.ExcelReading.Scenarios;
 public static class WorkbookAndSheets
 {
     /// <summary>
-    /// Opens <c>Data/sample-biff8.xls</c> and reports its sheets and metadata.
+    /// Opens the sample workbook and reports its sheets and metadata.
     /// </summary>
-    public static void Run()
+    /// <param name="path">The path of the sample workbook.</param>
+    public static void Run(string path)
     {
         SampleConsole.Scenario(
             "Opening a workbook - sheets, visibility, and used ranges",
-            what: "Opens a committed .xls file, lists its sheets with their visibility, type and declared "
+            what: "Opens an .xls file, lists its sheets with their visibility, type and declared "
                 + "dimensions, and reads the flattened document properties.",
             why: "The Excel 97-2003 binary format is a record stream inside a compound-file container, and this "
                 + "reader deliberately stops at raw values - no formula evaluation, no styling, no "
@@ -37,7 +38,7 @@ public static class WorkbookAndSheets
                 + "skipped - a consumer decides what to do with them, since 'hidden' is a presentation flag, not "
                 + "a privacy one.");
 
-        using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(path);
 
         // The workbook declares its serial-date epoch (1900 vs the legacy Mac 1904 system); every
         // date-formatted number in the file must be decoded against this system.

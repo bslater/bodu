@@ -20,7 +20,8 @@ public static class CellKindsAndDates
     /// <summary>
     /// Surveys cell kinds across all sheets and decodes the date-formatted numbers.
     /// </summary>
-    public static void Run()
+    /// <param name="path">The path of the sample workbook.</param>
+    public static void Run(string path)
     {
         SampleConsole.Scenario(
             "Cell kinds, spreadsheet errors, and serial dates",
@@ -36,7 +37,7 @@ public static class CellKindsAndDates
                 + "code, which is a value and not a failure. The same serial number yields dates four years "
                 + "apart under the two epochs - which is why the workbook's own flag has to be consulted.");
 
-        using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(path);
 
         // Survey every sheet for the kinds it contains.
         // There is no "formula" kind: a formula cell surfaces as the kind of its cached result

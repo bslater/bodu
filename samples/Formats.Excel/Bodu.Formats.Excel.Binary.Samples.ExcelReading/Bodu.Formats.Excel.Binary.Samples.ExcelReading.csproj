@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Bodu.Formats.Excel.Binary\src\Bodu.Formats.Excel.Binary.csproj" />
   </ItemGroup>
 

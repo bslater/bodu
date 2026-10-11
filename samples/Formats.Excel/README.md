@@ -7,12 +7,13 @@ Excel 97-2003 (BIFF8 / `.xls`) workbook reader. Run it with:
 dotnet run --project samples/Formats.Excel/Bodu.Formats.Excel.Binary.Samples.ExcelReading
 ```
 
-The sample is offline and deterministic: every scenario reads the committed
-`Data/sample-biff8.xls` fixture (464 KB - a genuine two-sheet exchange-rates workbook with
-~18,000 cells, copied from the library's test fixtures).
+The sample is offline and deterministic: every scenario reads a workbook the sample writes
+first - a two-sheet BIFF8 workbook of synthetic daily readings, about 2,400 cells, built with
+the codec's `BiffWriter` and the container's `CompoundStorageBuilder` - so it carries no data
+file.
 
 ## Sample → pattern → package matrix
 
 | Sample | Demonstrates | Packages |
 |---|---|---|
-| `Bodu.Formats.Excel.Binary.Samples.ExcelReading` | The `ExcelBinaryWorkbook` session (sheet directory, document properties, date system), the forward-only `ExcelWorksheetReader` streaming ~18k cells in constant memory, the materialized `ExcelWorksheet` convenience surface with coordinate lookup and LINQ, and cell-kind decoding including BIFF8's format-classified serial dates via `ExcelSerialDate`/`ExcelDateSystem` | `Bodu.Formats.Excel.Binary` |
+| `Bodu.Formats.Excel.Binary.Samples.ExcelReading` | The `ExcelBinaryWorkbook` session (sheet directory, document properties, date system), the forward-only `ExcelWorksheetReader` streaming every cell in constant memory, the materialized `ExcelWorksheet` convenience surface with coordinate lookup and LINQ, and cell-kind decoding including BIFF8's format-classified serial dates via `ExcelSerialDate`/`ExcelDateSystem` | `Bodu.Formats.Excel.Binary` |

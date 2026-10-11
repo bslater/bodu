@@ -68,9 +68,8 @@ fail with `ExcelBinaryFormatException`.
 ## Runnable samples
 
 The repository ships an offline, `dotnet run`-able sample for this package - the workbook
-session and sheet directory, forward-only streaming over ~18,000 cells, the materialized
-worksheet surface, and format-classified serial-date decoding against a real committed
-fixture - under
+session and sheet directory, forward-only streaming, the materialized worksheet surface, and
+format-classified serial-date decoding against a workbook the sample generates - under
 [`samples/Formats.Excel/`](https://github.com/bslater/bodu/tree/master/samples/Formats.Excel).
 
 ## Out of scope

@@ -7,9 +7,10 @@ title: Runnable samples
 The repository ships a runnable, self-contained sample project for
 `Bodu.Formats.Excel.Binary` under
 [`samples/Formats.Excel/`](https://github.com/bslater/bodu/tree/master/samples/Formats.Excel).
-It is **offline and deterministic** - every scenario reads the committed
-`Data/sample-biff8.xls` fixture (464 KB, a genuine two-sheet exchange-rates workbook with
-~18,000 cells) - and is a member of `bodu.slnx`, built and executed by CI. The README
+It is **offline and deterministic** - every scenario reads a workbook the sample writes first, a
+two-sheet BIFF8 workbook of synthetic daily readings (about 2,400 cells) built with the codec's
+`BiffWriter` and the container's `CompoundStorageBuilder` - and is a member of `bodu.slnx`, built
+and executed by CI. The README
 documents every scenario individually: its intent, what the code does, the output to expect,
 and the APIs demonstrated.
 
@@ -31,7 +32,7 @@ The read-only BIFF5 and BIFF8 (`.xls`) workbook reader, layer by layer:
   declared <xref:Bodu.Formats.Excel.ExcelDateSystem>.
 - **ForwardOnlyReader** - the primary surface:
   <xref:Bodu.Formats.Excel.ExcelWorksheetReader> streams cells forward-only with constant
-  memory (17,937 cells counted and classified without buffering), plus `ReadRows` grouping
+  memory (2,417 cells counted and classified without buffering), plus `ReadRows` grouping
   for row-shaped import pipelines.
 - **MaterializedWorksheet** - the convenience surface:
   <xref:Bodu.Formats.Excel.ExcelWorksheet> with coordinate lookup (`TryGetCell`), LINQ
@@ -39,7 +40,7 @@ The read-only BIFF5 and BIFF8 (`.xls`) workbook reader, layer by layer:
 - **CellKindsAndDates** - the five <xref:Bodu.Formats.Excel.ExcelCellKind>s and BIFF's
   classic importer trap: dates are `Number` cells classified by *format*.
   `ExcelCell.IsDateFormatted` plus <xref:Bodu.Formats.Excel.ExcelSerialDate> and the
-  workbook's date system decode 887 serial dates; error cells surface as
+  workbook's date system decode 400 serial dates; error cells surface as
   <xref:Bodu.Formats.Excel.ExcelErrorCode> values rather than exceptions.
 
 Scope: Excel **binary** (`.xls` - BIFF8 from Excel 97-2003, BIFF5 from Excel 5.0/95) only, read-only; formula cells expose their cached

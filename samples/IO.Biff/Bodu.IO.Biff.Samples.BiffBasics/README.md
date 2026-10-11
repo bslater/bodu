@@ -8,38 +8,40 @@ Run it from the repository root:
 dotnet run --project samples/IO.Biff/Bodu.IO.Biff.Samples.BiffBasics
 ```
 
-Everything runs offline against the committed `Data/sample-biff8.xls` (the
-BIFF8 fixture the Excel reader's tests use). The codec has no compound-file
-dependency, so the sample extracts the `Workbook` stream with
-`Bodu.IO.Compound` before handing the bytes to `BiffReader`; point
-`Program.SamplePath` at any other `.xls` - BIFF5 (`Book` stream) or BIFF8
-(`Workbook` stream) - to explore your own file.
+Everything runs offline against a workbook the sample writes first, to a
+temporary file it deletes once the record stream is read: `SampleWorkbook`
+builds a two-sheet BIFF8 workbook of synthetic daily readings with
+`BiffWriter` and `Bodu.IO.Compound`'s `CompoundStorageBuilder`, so the sample
+carries no data file. The codec has no compound-file dependency, so the sample
+extracts the `Workbook` stream with `Bodu.IO.Compound` before handing the bytes
+to `BiffReader`; pass `Program.ReadWorkbookStream` any other `.xls` - BIFF5
+(`Book` stream) or BIFF8 (`Workbook` stream) - to explore your own file.
 
 ## Scenario 1 - RecordCensus
 
 **Intent.** The codec's defining property is that an unrecognised record is not an error - a real `.xls` holds records from decades of writers, most of which no consumer cares about.
 
-**What it does.** Walks every record in the workbook stream, counting them by identifier and reporting the version and code page the stream established.
+**What it does.** Walks every record in the workbook stream, counting them by identifier and reporting the version and code page the stream established. The sample workbook's globals include three records Excel writes that the codec does not name (`0x013D`, `0x009C` and `0x0161`); they are framed and counted like the rest, once each, below the eight most frequent.
 
 **What to expect.**
 
 ```text
 --- A record census over a BIFF stream ---
 
-  BOF at       0: Biff8 WorkbookGlobals (build 20314, year 1997)
-  BOF at   56082: Biff8 Worksheet (build 20314, year 1997)
-  BOF at  458860: Biff8 Worksheet (build 20314, year 1997)
-  26912 records, 461504 bytes, version Biff8, code page 1200
+  BOF at       0: Biff8 WorkbookGlobals (build 0, year 0)
+  BOF at   24324: Biff8 Worksheet (build 0, year 0)
+  BOF at   49436: Biff8 Worksheet (build 0, year 0)
+  1248 records, 49672 bytes, version Biff8, code page 1200
 
   Most frequent record types:
-    0x0203 Number                     9236
-    0x027E Rk                         4578
-    0x0201 Blank                      3314
-    0x00BE MulBlank                   3069
-    0x0208 Row                        2214
-    0x00BD MulRk                      1855
-    0x005A (not named by the codec)   1787
-    0x00FD LabelSst                    215
+    0x00FD LabelSst                    412
+    0x00BD MulRk                       400
+    0x027E Rk                          400
+    0x0204 Label                        10
+    0x000A Eof                           3
+    0x00E0 Xf                            3
+    0x0809 Bof                           3
+    0x003C Continue                      2
 ```
 
 ## Scenario 2 - CellsAndSharedStrings
@@ -53,23 +55,23 @@ dependency, so the sample extracts the `Workbook` stream with
 ```text
 --- Cells and the shared string table ---
 
-  SST: 151 unique / 215 references; 0 straddled a CONTINUE boundary
-  2 sheets; 151 shared strings
-    'Data' at offset 56082
-    'Notes' at offset 458860
-    R0C0 LABELSST "F11.1  EXCHANGE RATES " (index 61)
-    R1C0 LABELSST "Title" (index 28)
-    R1C1 LABELSST "A$1=USD" (index 62)
-    R1C2 LABELSST "Trade-weighted Index May 1970 = 100" (index 29)
-    R1C3 LABELSST "A$1=CNY" (index 63)
-    R1C4 LABELSST "A$1=JPY" (index 64)
-    R1C5 LABELSST "A$1=EUR" (index 65)
-    R1C6 LABELSST "A$1=KRW" (index 66)
-    R1C7 LABELSST "A$1=GBP" (index 67)
-    R1C8 LABELSST "A$1=SGD" (index 68)
-    R1C9 LABELSST "A$1=INR" (index 69)
-    R1C10 LABELSST "A$1=THB" (index 70)
-  15821 value-bearing cell records in 'Data' (first 12 shown)
+  SST: 412 unique / 412 references; 2 straddled a CONTINUE boundary
+  2 sheets; 412 shared strings
+    'Data' at offset 24324
+    'Notes' at offset 49436
+    R0C0 LABEL    "Daily readings, four stations"
+    R1C0 LABELSST "Station" (index 0)
+    R1C1 LABELSST "North" (index 4)
+    R1C2 LABELSST "South" (index 5)
+    R1C3 LABELSST "East" (index 6)
+    R1C4 LABELSST "West" (index 7)
+    R2C0 LABELSST "Units" (index 1)
+    R2C1 LABEL    "mm"
+    R2C2 LABEL    "mm"
+    R2C3 LABEL    "mm"
+    R2C4 LABEL    "mm"
+    R3C0 LABELSST "Series ID" (index 2)
+  1217 value-bearing cell records in 'Data' (first 12 shown)
 ```
 
 ## Scenario 3 - WriteAndReadBack
@@ -109,21 +111,21 @@ dependency, so the sample extracts the `Workbook` stream with
 ```text
 --- Malformed input ---
 
-  truncated header          : format error at offset 36 - The BIFF stream ends with 3 trailing byte(s), too few to form a record header.
-  payload overruns buffer   : format error at offset 36 - The record 0x005C at offset 36 declares a 112-byte payload that runs past the end of the data.
+  truncated header          : format error at offset 52 - The BIFF stream ends with 3 trailing byte(s), too few to form a record header.
+  payload overruns buffer   : format error at offset 52 - The record 0x0031 at offset 52 declares a 21-byte payload that runs past the end of the data.
   truncated NUMBER payload  : format error at offset n/a - The Number record payload is too short or malformed.
   BIFF4 stream              : unsupported version (marker 0x0409)
   unknown record            : ok, 1 record(s)
-  chunked read: 4 complete record(s), 36 bytes consumed, waiting for more data
+  chunked read: 6 complete record(s), 52 bytes consumed, waiting for more data
 ```
 
 ## Layout
 
 ```text
 Bodu.IO.Biff.Samples.BiffBasics/
-  Program.cs                          # runs the scenarios in order
+  Program.cs                          # writes the workbook, extracts its stream, runs the scenarios
   SampleConsole.cs                    # the What / Why / Expect scenario banner
-  Data/sample-biff8.xls               # the committed BIFF8 fixture
+  SampleWorkbook.cs                   # builds the BIFF8 workbook the scenarios read
   Scenarios/RecordCensus.cs
   Scenarios/CellsAndSharedStrings.cs
   Scenarios/WriteAndReadBack.cs

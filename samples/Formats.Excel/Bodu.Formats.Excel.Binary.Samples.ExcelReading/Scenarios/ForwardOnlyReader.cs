@@ -18,7 +18,8 @@ public static class ForwardOnlyReader
     /// <summary>
     /// Streams the first worksheet's cells and aggregates without materializing anything.
     /// </summary>
-    public static void Run()
+    /// <param name="path">The path of the sample workbook.</param>
+    public static void Run(string path)
     {
         SampleConsole.Scenario(
             "The forward-only worksheet reader",
@@ -32,7 +33,7 @@ public static class ForwardOnlyReader
             expect: "Cells arrive in order with their references and kinds, and nothing larger than the current "
                 + "row is held - so the cost of reading a sheet does not grow with the part of it you skip.");
 
-        using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(path);
         using var reader = workbook.OpenWorksheet(0);
 
         Console.WriteLine($"  streaming '{reader.Worksheet.Name}'...");

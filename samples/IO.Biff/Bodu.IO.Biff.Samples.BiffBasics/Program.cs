@@ -11,20 +11,13 @@ namespace Bodu.IO.Biff.Samples.BiffBasics;
 
 /// <summary>
 /// Entry point for the BIFF sample: the record codec beneath the Excel reader via <c>Bodu.IO.Biff</c> - a record
-/// census over a real workbook stream, decoding cells and the shared string table, authoring a BIFF8 workbook
-/// stream with <c>BiffWriter</c> and reading it back, and the codec's handling of malformed input. Everything runs
-/// offline against the committed <c>Data/sample-biff8.xls</c> fixture (the same file the Excel reader's tests use),
-/// whose <c>Workbook</c> stream is extracted with <c>Bodu.IO.Compound</c> - the codec itself has no container
-/// dependency.
+/// census over a workbook stream, decoding cells and the shared string table, authoring a BIFF8 workbook stream
+/// with <c>BiffWriter</c> and reading it back, and the codec's handling of malformed input. Everything runs offline
+/// against a workbook the sample writes first (<see cref="SampleWorkbook" />), whose values are synthetic and whose
+/// <c>Workbook</c> stream is extracted with <c>Bodu.IO.Compound</c> - the codec itself has no container dependency.
 /// </summary>
 public static class Program
 {
-    /// <summary>
-    /// Gets the path of the committed BIFF8 sample workbook.
-    /// </summary>
-    internal static string SamplePath { get; } =
-        Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls");
-
     /// <summary>
     /// Runs every scenario in order.
     /// </summary>
@@ -34,7 +27,19 @@ public static class Program
         Console.WriteLine("===============================");
         Console.WriteLine();
 
-        byte[] workbookStream = ReadWorkbookStream(SamplePath);
+        // The sample reads an .xls file from disk, as an application would, so it writes its workbook to a temporary
+        // file first and deletes it once the record stream is extracted.
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-biff-sample-{Guid.NewGuid():N}.xls");
+        SampleWorkbook.Write(path);
+        byte[] workbookStream;
+        try
+        {
+            workbookStream = ReadWorkbookStream(path);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
 
         RecordCensus.Run(workbookStream);
         CellsAndSharedStrings.Run(workbookStream);
