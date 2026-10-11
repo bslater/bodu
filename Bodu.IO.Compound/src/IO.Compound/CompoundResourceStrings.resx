@@ -136,4 +136,7 @@
   <data name="IO_KeyNotFound_CompoundChild" xml:space="preserve">
     <value>The storage contains no child named '{0}'.</value>
   </data>
+  <data name="Op_Invalid_CompoundV3FileTooLarge" xml:space="preserve">
+    <value>The compound file would exceed the 2 GB maximum size of a version-3 file; write a version-4 file instead.</value>
+  </data>
 </root>

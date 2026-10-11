@@ -51,6 +51,9 @@ internal static partial class CompoundContainerLayout
     /// <summary>The maximum stream size, in bytes, that a version-3 compound file can represent.</summary>
     private const long MaxVersion3StreamSize = 0x80000000;
 
+    /// <summary>The largest version-3 file, in bytes: [MS-CFB] 2.9 limits a file of 512-byte sectors to 2 GB.</summary>
+    private const long MaxVersion3FileSize = 0x80000000;
+
     /// <summary>
     /// Serializes the supplied root storage into a compound-file byte array.
     /// </summary>
@@ -173,6 +176,10 @@ internal static partial class CompoundContainerLayout
         long totalSectors = dataSectorCount + fatSectors + difatSectors;
         if (totalSectors >= CfbHeader.DifatSector)
             throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundBuilderTooLarge);
+
+        // MS-CFB 2.9: a file of 512-byte sectors, the header sector included, is no greater than 2 GB.
+        if (!isVersion4 && (totalSectors + 1) * sectorSize > MaxVersion3FileSize)
+            throw new CompoundFileSerializationException(CompoundResourceStrings.Op_Invalid_CompoundV3FileTooLarge);
 
         return new EmissionPlan(
             entries,

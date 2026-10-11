@@ -329,7 +329,7 @@ Console.WriteLine(new FileInfo("report-rebuilt.doc").Length);
 | Destination | The same file or stream, rewritten by `Commit` | Wherever `Save` / `WriteTo` / `ToArray` points |
 | Memory | The whole file is loaded at open | `FromFile(file, lazy: true)` defers payloads until serialization; deferred sources never load |
 | Undo | `Revert` to the open-time baseline | Discard the builder |
-| Sector version | The `CompoundBuildOptions` default (V3) | Any `CompoundBuildOptions` per call |
+| Sector version | The `CompoundBuildOptions` default (V3), so at most 2 GB | Any `CompoundBuildOptions` per call |
 
 Reach for in-place editing when you want `Stream` semantics over the bytes or a single file handle from open to commit. Reach for the builder when the output goes somewhere else, payloads are too large to buffer, or you want to choose the sector version.
 

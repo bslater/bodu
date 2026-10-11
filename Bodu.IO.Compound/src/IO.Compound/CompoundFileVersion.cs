@@ -14,6 +14,10 @@ public enum CompoundFileVersion
     /// <summary>
     /// Version 3, using 512-byte sectors. This is the most widely compatible layout and the default.
     /// </summary>
+    /// <remarks>
+    /// [MS-CFB] 2.9 limits a version-3 file to 2 GB, so writing a tree whose container would be larger throws
+    /// <see cref="CompoundFileSerializationException" /> before any byte is written.
+    /// </remarks>
     V3 = 3,
 
     /// <summary>
