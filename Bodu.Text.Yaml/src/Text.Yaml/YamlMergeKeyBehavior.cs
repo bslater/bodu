@@ -20,7 +20,8 @@ public enum YamlMergeKeyBehavior
     /// <summary>
     /// Expand a <c>&lt;&lt;</c> entry by merging the referenced mapping's keys, with existing keys taking precedence.
     /// This is the default. Only the plain, untagged key <c>&lt;&lt;</c> is a merge key; its value must be a mapping or
-    /// a sequence of mappings, and a mapping may hold only one merge key.
+    /// a sequence of mappings, and a mapping may hold only one merge key. A merged mapping that has a merge key of its
+    /// own is expanded first, so it contributes the keys its own merge supplies.
     /// </summary>
     Expand = 0,
 

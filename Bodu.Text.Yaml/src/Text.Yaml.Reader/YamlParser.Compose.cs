@@ -231,8 +231,16 @@ internal sealed partial class YamlParser
     /// <returns>
     /// <see langword="true" /> when at least one alias row was injected; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// A merged mapping that has a merge key of its own is expanded before it is merged, so that it contributes the
+    /// keys its own merge supplies and no <c>&lt;&lt;</c> key, whether it is written before the mapping that merges it
+    /// or after it, as a merge value written in place is. The walk is depth-first over an explicit stack, as the cycle
+    /// detection's is, and the alias graph is acyclic by then, so each mapping is expanded once, after every mapping it
+    /// merges.
+    /// </remarks>
     /// <exception cref="YamlFormatException">
-    /// Injection would grow the row store past <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.
+    /// A merge key's value is not a mapping, an alias of one, or a sequence of them, or injection would grow the row
+    /// store past <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.
     /// </exception>
     private bool ExpandMergeKeys()
     {
@@ -240,51 +248,66 @@ internal sealed partial class YamlParser
             return false;
 
         int count = _rows.Count;
+        var state = new AliasVisitState[count];
+        var sources = new Dictionary<int, List<int>>();
+        var pending = new Stack<int>();
+
         for (int i = 0; i < count; i++)
         {
-            if (_rows[i].Kind == YamlReaderNodeKind.Mapping)
-                ExpandMappingMerge(i);
+            if (_rows[i].Kind != YamlReaderNodeKind.Mapping || state[i] != AliasVisitState.Unvisited)
+                continue;
+
+            pending.Push(i);
+            while (pending.Count > 0)
+            {
+                int mapping = pending.Peek();
+                if (state[mapping] == AliasVisitState.Unvisited)
+                {
+                    // The mapping stays on the stack, below the mappings it merges, until they have been expanded.
+                    state[mapping] = AliasVisitState.Visiting;
+                    if (CollectMergeSources(mapping) is { } merged)
+                    {
+                        sources.Add(mapping, merged);
+                        foreach (int source in merged)
+                        {
+                            if (state[source] == AliasVisitState.Unvisited)
+                                pending.Push(source);
+                        }
+                    }
+
+                    continue;
+                }
+
+                // A mapping merged more than once can be pushed again before its first visit expands it.
+                pending.Pop();
+                if (state[mapping] == AliasVisitState.Visiting)
+                {
+                    if (sources.Remove(mapping, out List<int>? merged))
+                        MergeSources(mapping, merged);
+
+                    state[mapping] = AliasVisitState.Visited;
+                }
+            }
         }
 
         return _rows.Count > count;
     }
 
     /// <summary>
-    /// Expands a single mapping's merge key, preserving explicit-key and earlier-source precedence.
+    /// Resolves the mappings that a mapping's merge key merges, in the order they are merged.
     /// </summary>
     /// <param name="mapping">The mapping row index.</param>
+    /// <returns>
+    /// The row indices of the merged mappings, or <see langword="null" /> when the mapping has no merge key.
+    /// </returns>
     /// <exception cref="YamlFormatException">
     /// The merge key's value is not a mapping, an alias of one, or a sequence of them.
     /// </exception>
-    private void ExpandMappingMerge(int mapping)
+    private List<int>? CollectMergeSources(int mapping)
     {
-        var keys = new HashSet<string>(StringComparer.Ordinal);
-        int mergeChild = -1;
-        int mergePrev = -1;
-        int prev = -1;
-        int child = _rows[mapping].FirstChild;
-
-        while (child >= 0)
-        {
-            string? key = _rows[child].Key;
-            if ((_rows[child].Flags & YamlReaderRowFlags.MergeKey) != 0 && mergeChild < 0)
-            {
-                mergeChild = child;
-                mergePrev = prev;
-            }
-            else if (key is not null)
-            {
-                keys.Add(key);
-            }
-
-            prev = child;
-            child = _rows[child].NextSibling;
-        }
-
+        int mergeChild = FindMergeChild(mapping, out _);
         if (mergeChild < 0)
-            return;
-
-        UnlinkChild(mapping, mergeChild, mergePrev);
+            return null;
 
         // Only a mapping, or a sequence of mappings, can be merged; anything else is reported where the merge value is
         // written, or, within a sequence written in place, at the offending item.
@@ -315,6 +338,56 @@ internal sealed partial class YamlParser
         else
         {
             throw ErrorAt(_rows[mergeChild].Offset, YamlResourceStrings.Format_Invalid_YamlMergeKeyTarget);
+        }
+
+        return sources;
+    }
+
+    /// <summary>
+    /// Finds the value of a mapping's merge key among its children.
+    /// </summary>
+    /// <param name="mapping">The mapping row index.</param>
+    /// <param name="previous">
+    /// When the method returns, the row index of the child before the merge key's value, or <c>-1</c> when it is the
+    /// first child or the mapping has no merge key.
+    /// </param>
+    /// <returns>The row index of the merge key's value, or <c>-1</c> when the mapping has no merge key.</returns>
+    private int FindMergeChild(int mapping, out int previous)
+    {
+        previous = -1;
+        int child = _rows[mapping].FirstChild;
+        while (child >= 0)
+        {
+            if ((_rows[child].Flags & YamlReaderRowFlags.MergeKey) != 0)
+                return child;
+
+            previous = child;
+            child = _rows[child].NextSibling;
+        }
+
+        previous = -1;
+        return -1;
+    }
+
+    /// <summary>
+    /// Replaces a mapping's merge key with the keys of the mappings it merges, preserving explicit-key and
+    /// earlier-source precedence.
+    /// </summary>
+    /// <param name="mapping">The mapping row index.</param>
+    /// <param name="sources">The merged mappings, in merge order, each with its own merge expanded.</param>
+    /// <exception cref="YamlFormatException">
+    /// Injection would grow the row store past <see cref="YamlLimits.AbsoluteMaxExpandedNodes" />.
+    /// </exception>
+    private void MergeSources(int mapping, List<int> sources)
+    {
+        int mergeChild = FindMergeChild(mapping, out int mergePrevious);
+        UnlinkChild(mapping, mergeChild, mergePrevious);
+
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        for (int child = _rows[mapping].FirstChild; child >= 0; child = _rows[child].NextSibling)
+        {
+            if (_rows[child].Key is { } key)
+                keys.Add(key);
         }
 
         foreach (int source in sources)
@@ -676,7 +749,8 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Tracks a node's state during the cycle-detection depth-first walk.
+    /// Tracks a node's state during a depth-first walk: the cycle detection, and the merge expansion, which expands
+    /// each merged mapping before the mappings that merge it.
     /// </summary>
     private enum AliasVisitState
     {
