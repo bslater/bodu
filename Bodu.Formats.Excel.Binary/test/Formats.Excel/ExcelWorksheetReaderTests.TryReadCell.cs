@@ -361,4 +361,83 @@ public partial class ExcelWorksheetReaderTests
         Assert.IsInstanceOfType<BiffUnsupportedVersionException>(ex.InnerException);
         Assert.AreEqual((ushort)0x0400, ((BiffUnsupportedVersionException)ex.InnerException).RawVersion);
     }
+
+    /// <summary>
+    /// Verifies that a formula's text result whose STRING record is continued in a CONTINUE record is read whole, and
+    /// that the cell after it is still read.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringContinues_ShouldReadTheWholeText()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x06, 0x00, 0x00, (byte)'a', (byte)'b', (byte)'c']),
+            Biff8TestWorkbook.Record(0x003C, [0x00, (byte)'d', (byte)'e', (byte)'f']),
+            Biff8TestWorkbook.Number(1, 0, 5.0));
+
+        List<ExcelCell> cells = reader.ReadCells().ToList();
+
+        Assert.HasCount(2, cells);
+        Assert.AreEqual("abcdef", cells[0].StringValue);
+        Assert.AreEqual(5.0, cells[1].NumberValue);
+    }
+
+    /// <summary>
+    /// Verifies that each continued segment of a formula's text result is decoded by its own flags byte, so a
+    /// compressed first part and a 16-bit second part, or the reverse, read as one text.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringContinuationChangesWidth_ShouldDecodeEachSegmentByItsFlags()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x06, 0x00, 0x00, (byte)'a', (byte)'b', (byte)'c']),
+            Biff8TestWorkbook.Record(0x003C, [0x01, (byte)'d', 0x00, 0xE9, 0x00, (byte)'f', 0x00]),
+            Biff8TestWorkbook.Formula(1, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x03, 0x00, 0x01, 0xE5, 0x65]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, (byte)'x', (byte)'y']));
+
+        List<ExcelCell> cells = reader.ReadCells().ToList();
+
+        Assert.HasCount(2, cells);
+        Assert.AreEqual("abcdéf", cells[0].StringValue);
+        Assert.AreEqual("日xy", cells[1].StringValue);
+    }
+
+    /// <summary>
+    /// Verifies that a CONTINUE record holding only the flags byte of a formula's continued text contributes no
+    /// characters, and the text goes on in the next CONTINUE record.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringContinuationHoldsOnlyItsFlags_ShouldContinueInTheNextRecord()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x04, 0x00, 0x00, (byte)'a', (byte)'b']),
+            Biff8TestWorkbook.Record(0x003C, [0x01]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, (byte)'c', (byte)'d']));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual("abcd", cell.StringValue);
+        Assert.IsFalse(reader.TryReadCell(out _));
+    }
+
+    /// <summary>
+    /// Verifies that a formula's text result longer than one record holds, 10,000 compressed characters split over the
+    /// STRING record and two CONTINUE records, is read whole.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringSpansSeveralRecords_ShouldReadTheWholeText()
+    {
+        string text = string.Concat(Enumerable.Range(0, 10_000).Select(i => (char)('a' + (i % 26))));
+        byte[] characters = [.. text.Select(c => (byte)c)];
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x10, 0x27, 0x00, .. characters.AsSpan(0, 4_000)]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, .. characters.AsSpan(4_000, 4_000)]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, .. characters.AsSpan(8_000)]));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(text, cell.StringValue);
+    }
 }
