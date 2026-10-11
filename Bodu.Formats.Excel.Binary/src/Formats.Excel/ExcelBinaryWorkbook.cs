@@ -467,10 +467,7 @@ public sealed class ExcelBinaryWorkbook
     private static byte[] ReadGlobalsSubstream(CompoundStorage root, string streamName)
     {
         using CompoundStream stream = root.OpenStream(streamName);
-
-        // Where the sheets' substreams begin is known only once the globals are parsed, so the globals end only at
-        // their own EOF record.
-        return BiffSubstreamLoader.ReadSubstream(stream, long.MaxValue);
+        return BiffSubstreamLoader.ReadGlobalsSubstream(stream);
     }
 
     /// <summary>

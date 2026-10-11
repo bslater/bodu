@@ -114,7 +114,7 @@ public partial class BiffSubstreamLoaderTests
 
     /// <summary>
     /// Verifies that a substream without an EOF record is rejected when the limit is <see cref="long.MaxValue" />,
-    /// which requires the matching EOF record, as the workbook globals do.
+    /// which requires the matching EOF record.
     /// </summary>
     [TestMethod]
     public void ReadSubstream_WhenLimitIsMaxValueAndEofIsMissing_ShouldThrowExcelBinaryFormatException()

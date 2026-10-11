@@ -24,6 +24,8 @@ The records before the first sheet form the **workbook globals**, parsed once wh
 - the **number-format table** (`FORMAT` / `XF`), used to resolve each cell's format and to classify date formatting;
 - the **sheet directory** (`BOUNDSHEET`), naming each sheet, recording its type and visibility, and pointing at the byte offset of its substream.
 
+The globals end at their own `EOF` record. They never hold a nested substream, so when a producer has left that record out they end where the first sheet's `BOF` record begins, and the sheets open as usual.
+
 Because the globals are parsed up front, a single sheet can then be read on demand by seeking to its recorded offset, without parsing the others.
 
 ## Worksheet substream
