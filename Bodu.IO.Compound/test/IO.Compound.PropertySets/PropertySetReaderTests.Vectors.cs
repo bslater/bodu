@@ -95,4 +95,90 @@ public partial class PropertySetReaderTests
         CollectionAssert.AreEqual(new object[] { "ab", "abcde" }, (object?[]?)parsed[2]?.Value);
         Assert.AreEqual(7, parsed[3]!.AsInt32());
     }
+
+    /// <summary>
+    /// Verifies that heading pairs holding several pairs, each string unpadded as [MS-OSHARED] stores it, read element
+    /// by element.
+    /// </summary>
+    /// <remarks>
+    /// The vector holds the pairs <c>Worksheets</c>, 2 and <c>Named Ranges</c>, 1, the shape Excel writes: each
+    /// <c>VT_LPSTR</c> is followed at once by the <c>VT_I4</c> after it, and only the vector is padded.
+    /// </remarks>
+    [TestMethod]
+    public void Parse_WhenHeadingPairsHoldSeveralUnalignedPairs_ShouldReadEachElement()
+    {
+        byte[] pairs = PropertySetBytes.Typed(
+            0x100C,
+            PropertySetBytes.UInt32(4),
+            PropertySetBytes.Typed(0x001E, PropertySetBytes.UInt32(11), PropertySetBytes.Latin1("Worksheets\0")),
+            PropertySetBytes.Int32(2),
+            PropertySetBytes.Typed(0x001E, PropertySetBytes.UInt32(13), PropertySetBytes.Latin1("Named Ranges\0")),
+            PropertySetBytes.Int32(1),
+            [0, 0]);
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.DocumentSummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (12, pairs));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        CollectionAssert.AreEqual(new object[] { "Worksheets", 2, "Named Ranges", 1 }, (object?[]?)parsed[12]?.Value);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>VT_VECTOR | VT_LPSTR</c> whose first string is padded with zeros to a multiple of four bytes
+    /// and whose second is not reads every element.
+    /// </summary>
+    /// <remarks>
+    /// <c>ab</c> and its null take three bytes and one zero byte pads them; <c>Sheet1</c> and its null take seven bytes
+    /// and are followed at once by the length of <c>x</c>, whose first byte is not zero.
+    /// </remarks>
+    [TestMethod]
+    public void Parse_WhenVectorMixesPaddedAndUnpaddedStrings_ShouldReadEachElement()
+    {
+        byte[] strings = PropertySetBytes.Typed(
+            0x101E,
+            PropertySetBytes.UInt32(3),
+            PropertySetBytes.UInt32(3),
+            PropertySetBytes.Latin1("ab\0"),
+            [0],
+            PropertySetBytes.UInt32(7),
+            PropertySetBytes.Latin1("Sheet1\0"),
+            PropertySetBytes.UInt32(2),
+            PropertySetBytes.Latin1("x\0"),
+            [0, 0]);
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.DocumentSummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (13, strings));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        CollectionAssert.AreEqual(new object[] { "ab", "Sheet1", "x" }, (object?[]?)parsed[13]?.Value);
+    }
+
+    /// <summary>
+    /// Verifies that the strings of a <c>VT_VECTOR | VT_LPWSTR</c>, each padded with zeros to a multiple of four bytes as
+    /// [MS-OLEPS] requires, read element by element.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenUnicodeVectorStringsArePadded_ShouldReadEachElement()
+    {
+        byte[] strings = PropertySetBytes.Typed(
+            0x101F,
+            PropertySetBytes.UInt32(2),
+            PropertySetBytes.UInt32(3),
+            PropertySetBytes.Utf16("ab\0"),
+            [0, 0],
+            PropertySetBytes.UInt32(4),
+            PropertySetBytes.Utf16("abc\0"));
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.DocumentSummaryInformation,
+            (1, PropertySetBytes.CodePage(1200)),
+            (13, strings));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        CollectionAssert.AreEqual(new object[] { "ab", "abc" }, (object?[]?)parsed[13]?.Value);
+    }
 }
