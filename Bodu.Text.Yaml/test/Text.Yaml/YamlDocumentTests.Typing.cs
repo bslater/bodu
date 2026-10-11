@@ -464,8 +464,26 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a float with no integer part whose decimal point is followed directly by an underscore stays a
+    /// string under YAML 1.1, whose float type requires a digit right after such a point, with or without a sign.
+    /// </summary>
+    /// <param name="scalar">The plain scalar.</param>
+    [TestMethod]
+    [DataRow("._5")]
+    [DataRow("+._5")]
+    [DataRow("-._5")]
+    public void Parse_WhenUnderscoreFollowsLeadingPoint_ForV11_ShouldStayString(string scalar)
+    {
+        var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", options);
+
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
     /// Verifies that under YAML 1.1 a float whose digits are grouped with underscores after its first digit still
-    /// resolves, with or without a sign.
+    /// resolves, with or without a sign, and with or without an integer part.
     /// </summary>
     /// <param name="scalar">The plain scalar.</param>
     /// <param name="expected">The value the scalar resolves to.</param>
@@ -473,6 +491,8 @@ public partial class YamlDocumentTests
     [DataRow("1_000.5", 1000.5)]
     [DataRow("-1_0.5", -10.5)]
     [DataRow("+1_0.25", 10.25)]
+    [DataRow(".5_0", 0.5)]
+    [DataRow("1.5_0", 1.5)]
     public void Parse_WhenUnderscoreFollowsFirstFloatDigit_ForV11_ShouldResolveFloat(string scalar, double expected)
     {
         var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
