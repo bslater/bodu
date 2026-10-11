@@ -93,13 +93,13 @@ public sealed partial class BiffSstReaderTests
     }
 
     /// <summary>
-    /// Verifies that a continuation carrying only its flags byte, with no characters, is rejected rather than
-    /// looping.
+    /// Verifies that a string whose remaining continuations each carry only a flags byte, with no characters, is
+    /// rejected once they run out rather than looping.
     /// </summary>
     [TestMethod]
-    public void Read_WhenContinuationCarriesOnlyFlagsByte_ShouldThrowBiffFormatException()
+    public void Read_WhenContinuationsCarryOnlyFlagsBytes_ShouldThrowBiffFormatException()
     {
-        byte[] stream = Table(BiffTestRecords.Sst(1, 1, [0x02, 0x00, Compressed, (byte)'A']), BiffTestRecords.Continue(Compressed), BiffTestRecords.Continue(Compressed, (byte)'B'));
+        byte[] stream = Table(BiffTestRecords.Sst(1, 1, [0x02, 0x00, Compressed, (byte)'A']), BiffTestRecords.Continue(Compressed), BiffTestRecords.Continue(Wide));
 
         _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
     }

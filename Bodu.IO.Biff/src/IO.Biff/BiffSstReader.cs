@@ -21,7 +21,8 @@ namespace Bodu.IO.Biff;
 /// <see cref="BiffReader.Read" /> resumes after the table. A <see langword="ref struct" /> cannot hold a reference to
 /// another, which is why the parent is supplied per call rather than captured. It follows the BIFF continuation rules
 /// for strings: a string's header never straddles a boundary, character data may, and a continued run restarts with its
-/// own option-flags byte selecting 8-bit or 16-bit characters.
+/// own option-flags byte selecting 8-bit or 16-bit characters. A continuation record that holds only that flags byte
+/// contributes no characters, and the string goes on in the next continuation record, whose own flags byte applies.
 /// </para>
 /// <para>
 /// A string whose characters lie within one record is exposed as a span-backed <see cref="Current" /> view. A string
@@ -223,8 +224,13 @@ public ref struct BiffSstReader
     /// </returns>
     /// <exception cref="BiffFormatException">
     /// Thrown when the table ends before the declared strings do, a string header or its characters are truncated, or a
-    /// continuation record is empty where character data was expected.
+    /// continuation record is empty (holds no bytes, not even a flags byte) where character data was expected.
     /// </exception>
+    /// <remarks>
+    /// A string's characters may continue across several <c>CONTINUE</c> records, each opening with a flags byte that
+    /// selects the width of the characters it holds. A continuation record that holds only that flags byte contributes
+    /// no characters, and the string goes on in the next one.
+    /// </remarks>
     public bool Read(scoped ref BiffReader reader)
     {
         if (_read >= _header.UniqueCount)
@@ -423,8 +429,12 @@ public ref struct BiffSstReader
     /// <param name="length">The number of characters to decode.</param>
     /// <param name="highByte">Whether the first segment uses 16-bit characters.</param>
     /// <exception cref="BiffFormatException">
-    /// Thrown when the data runs out, or a continued segment is empty.
+    /// Thrown when the data runs out, a continuation record is empty, or a 16-bit segment holds half a code unit.
     /// </exception>
+    /// <remarks>
+    /// A continuation record that holds only its flags byte is a segment of no characters: the loop moves on to the
+    /// next continuation record.
+    /// </remarks>
     private void ReadFragmentedCharacters(scoped ref BiffReader reader, int length, bool highByte)
     {
         if (_scratch is null || _scratch.Length < length)
@@ -438,13 +448,15 @@ public ref struct BiffSstReader
         {
             if (_offset >= _block.Length)
             {
-                // A continued run restarts with its own flags byte; an empty continuation cannot carry one.
+                // A continued run restarts with its own flags byte; an empty continuation cannot carry one. A
+                // continuation holding only the flags byte carries no characters, so the loop moves on to the next.
                 NextBlock(ref reader);
                 if (_block.IsEmpty)
                     throw Malformed();
 
                 high = (_block[0] & 0x01) != 0;
                 _offset = 1;
+                continue;
             }
 
             int remaining = length - written;

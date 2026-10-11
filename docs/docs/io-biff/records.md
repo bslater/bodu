@@ -84,7 +84,7 @@ The BIFF8 `SST` record is the canonical continued structure. <xref:Bodu.IO.Biff.
 
 - A string's header - length, flags, and any run count or extended size - never straddles a record boundary; when fewer than three bytes remain, the header opens the next `CONTINUE` record.
 - A string's characters may straddle a boundary, but only at a character boundary - a 16-bit code unit is never split.
-- Each continued run of characters restarts with its own flags byte, which may change the character width mid-string.
+- Each continued run of characters restarts with its own flags byte, which may change the character width mid-string. A `CONTINUE` record that holds only the flags byte contributes no characters, and the string goes on in the next `CONTINUE` record; one that holds no bytes at all is malformed.
 - Rich-run and extended-data trailers may straddle a boundary without a flags byte; the reader skips them and reports them as empty when they do.
 
 A string that lies within one record is exposed as a span-backed <xref:Bodu.IO.Biff.BiffSstReader.Current> view; one that straddles a boundary has <xref:Bodu.IO.Biff.BiffSstReader.IsFragmented> set and is served through <xref:Bodu.IO.Biff.BiffSstReader.GetString> and <xref:Bodu.IO.Biff.BiffSstReader.CopyTo*> from a reusable scratch buffer.
