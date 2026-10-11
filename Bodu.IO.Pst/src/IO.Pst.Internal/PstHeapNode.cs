@@ -17,7 +17,9 @@ namespace Bodu.IO.Pst.Internal;
 /// An <c>HID</c> addresses an individual data block by index, so the heap is parsed over the node's ordered block
 /// segments rather than its flattened payload. Every geometric fact - header extents, the page map, allocation
 /// monotonicity, and item bounds - is validated at parse time at every validation level, so item reads slice
-/// already-verified ranges.
+/// already-verified ranges. Each block's allocations lie between its header (the <c>HNHDR</c> of block 0, the
+/// <c>HNBITMAPHDR</c> of block 8 and every 128th block after it, and the <c>HNPAGEHDR</c> of every other block) and its
+/// page map (MS-PST 2.3.1.5), so no item is read from a header or from the page map.
 /// </remarks>
 internal sealed class PstHeapNode
 {
@@ -32,6 +34,15 @@ internal sealed class PstHeapNode
 
     /// <summary>The client signature (<c>bClientSig</c>) of a bare BTree-on-heap.</summary>
     internal const byte BTreeOnHeapSignature = 0xB5;
+
+    /// <summary>The size of the <c>HNHDR</c> that opens a heap's first block.</summary>
+    private const int HeapHeaderSize = 12;
+
+    /// <summary>The size of the <c>HNPAGEHDR</c> that opens every later block but the bitmap blocks.</summary>
+    private const int PageHeaderSize = 2;
+
+    /// <summary>The size of the <c>HNBITMAPHDR</c> that opens block 8 and every 128th block after it.</summary>
+    private const int BitmapHeaderSize = 66;
 
     /// <summary>The node's ordered data-block segments.</summary>
     private readonly List<byte[]> _segments;
@@ -105,7 +116,7 @@ internal sealed class PstHeapNode
         // HNHDR: ibHnpm(2) bSig(1) bClientSig(1) hidUserRoot(4) rgbFillLevel(4). Later blocks carry HNPAGEHDR or
         // HNBITMAPHDR, whose only field this reader needs - ibHnpm - sits at offset 0 in all three shapes.
         byte[] first = segments[0];
-        if (first.Length < 12 || first[2] != HeapSignature)
+        if (first.Length < HeapHeaderSize || first[2] != HeapSignature)
             throw MalformedHeap(entry.NodeId);
 
         byte clientSignature = first[3];
@@ -113,7 +124,7 @@ internal sealed class PstHeapNode
 
         var allocations = new ushort[segments.Count][];
         for (int i = 0; i < segments.Count; i++)
-            allocations[i] = ParsePageMap(segments[i], entry.NodeId);
+            allocations[i] = ParsePageMap(segments[i], HeaderSize(i), entry.NodeId);
 
         return new PstHeapNode(entry.NodeId, clientSignature, userRootHid, segments, allocations);
     }
@@ -164,33 +175,51 @@ internal sealed class PstHeapNode
     }
 
     /// <summary>
+    /// Gets the size of the header that opens a heap block.
+    /// </summary>
+    /// <param name="blockIndex">The block's zero-based index in the heap.</param>
+    /// <returns>
+    /// The size of the <c>HNHDR</c> for block 0, of the <c>HNBITMAPHDR</c> for block 8 and every 128th block after it,
+    /// and of the <c>HNPAGEHDR</c> otherwise.
+    /// </returns>
+    private static int HeaderSize(int blockIndex) =>
+        blockIndex == 0 ? HeapHeaderSize : blockIndex % 128 == 8 ? BitmapHeaderSize : PageHeaderSize;
+
+    /// <summary>
     /// Parses and validates one block's <c>HNPAGEMAP</c>: the allocation-offset table addressed by the block's
     /// <c>ibHnpm</c> field.
     /// </summary>
     /// <param name="block">The block payload.</param>
+    /// <param name="headerSize">The size of the header that opens the block.</param>
     /// <param name="nodeId">The owning node identifier, for diagnostics.</param>
-    /// <returns>The allocation offsets, monotonically non-decreasing and within the block.</returns>
-    /// <exception cref="PstFileFormatException">The page map is out of bounds or its offsets regress.</exception>
-    private static ushort[] ParsePageMap(byte[] block, uint nodeId)
+    /// <returns>
+    /// The allocation offsets, monotonically non-decreasing, from the end of the header to the start of the page map.
+    /// </returns>
+    /// <exception cref="PstFileFormatException">
+    /// The page map lies inside the header or out of bounds, or an offset lies inside the header, regresses, or runs
+    /// past the page map.
+    /// </exception>
+    private static ushort[] ParsePageMap(byte[] block, int headerSize, uint nodeId)
     {
         if (block.Length < 2)
             throw MalformedHeap(nodeId);
 
         int mapOffset = BinaryPrimitives.ReadUInt16LittleEndian(block);
-        if (mapOffset + 4 > block.Length)
+        if (mapOffset < headerSize || mapOffset + 4 > block.Length)
             throw MalformedHeap(nodeId);
 
         int count = BinaryPrimitives.ReadUInt16LittleEndian(block.AsSpan(mapOffset));
         if (mapOffset + 4 + ((count + 1) * 2) > block.Length)
             throw MalformedHeap(nodeId);
 
-        // Monotonicity and bounds are enforced here so every later item read slices a verified range.
+        // The allocations run in order from the end of the header to the page map, so every later item read slices a
+        // verified range of item bytes and never the header or the map itself.
         var allocations = new ushort[count + 1];
-        ushort previous = 0;
+        int previous = headerSize;
         for (int i = 0; i <= count; i++)
         {
             ushort offset = BinaryPrimitives.ReadUInt16LittleEndian(block.AsSpan(mapOffset + 4 + (i * 2)));
-            if (offset < previous || offset > block.Length)
+            if (offset < previous || offset > mapOffset)
                 throw MalformedHeap(nodeId);
 
             allocations[i] = offset;
