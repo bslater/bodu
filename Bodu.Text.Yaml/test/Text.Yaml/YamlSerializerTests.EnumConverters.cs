@@ -413,6 +413,153 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that an integer outside the range of an enumeration's underlying type is rejected with
+    /// <see cref="YamlSerializationException" /> at the integer, with its line, column, offset and path, through the
+    /// by-name default and the number converter alike, rather than bound as the value it truncates to.
+    /// </summary>
+    /// <param name="member">The member, named for its enumeration's underlying type.</param>
+    /// <param name="literal">The integer, one step outside the underlying type's range.</param>
+    /// <param name="numberConverter">
+    /// Whether the member reads through <see cref="YamlNumberEnumConverter{TEnum}" />.
+    /// </param>
+    [TestMethod]
+    [DataRow("SByte", "128", false, DisplayName = "sbyte, one above the range, by name")]
+    [DataRow("SByte", "-129", false, DisplayName = "sbyte, one below the range, by name")]
+    [DataRow("Byte", "256", false, DisplayName = "byte, one above the range, by name")]
+    [DataRow("Byte", "-1", false, DisplayName = "byte, one below the range, by name")]
+    [DataRow("Int16", "32768", false, DisplayName = "short, one above the range, by name")]
+    [DataRow("Int16", "-32769", false, DisplayName = "short, one below the range, by name")]
+    [DataRow("Int32", "2147483648", false, DisplayName = "int, one above the range, by name")]
+    [DataRow("Int32", "-2147483649", false, DisplayName = "int, one below the range, by name")]
+    [DataRow("Int64", "9223372036854775808", false, DisplayName = "long, one above the range, by name")]
+    [DataRow("Int64", "-9223372036854775809", false, DisplayName = "long, one below the range, by name")]
+    [DataRow("UInt64", "18446744073709551616", false, DisplayName = "ulong, one above the range, by name")]
+    [DataRow("UInt64", "-1", false, DisplayName = "ulong, one below the range, by name")]
+    [DataRow("SByte", "128", true, DisplayName = "sbyte, one above the range, number converter")]
+    [DataRow("SByte", "-129", true, DisplayName = "sbyte, one below the range, number converter")]
+    [DataRow("Byte", "256", true, DisplayName = "byte, one above the range, number converter")]
+    [DataRow("Byte", "-1", true, DisplayName = "byte, one below the range, number converter")]
+    [DataRow("Int16", "32768", true, DisplayName = "short, one above the range, number converter")]
+    [DataRow("Int16", "-32769", true, DisplayName = "short, one below the range, number converter")]
+    [DataRow("Int32", "2147483648", true, DisplayName = "int, one above the range, number converter")]
+    [DataRow("Int32", "-2147483649", true, DisplayName = "int, one below the range, number converter")]
+    [DataRow("UInt64", "-1", true, DisplayName = "ulong, one below the range, number converter")]
+    public void Deserialize_WhenIntegerIsOutsideEnumUnderlyingRange_ShouldThrowYamlSerializationException(
+        string member,
+        string literal,
+        bool numberConverter)
+    {
+        string document = $"{member}: {literal}\n";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = DeserializeRangeModel(document, numberConverter);
+        });
+
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(member.Length + 3, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(member.Length + 2, ex.Offset, "Offset");
+        Assert.AreEqual(member, ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that an integer at either end of the range of an enumeration's underlying type binds as that value,
+    /// through the by-name default and the number converter alike.
+    /// </summary>
+    /// <param name="member">The member, named for its enumeration's underlying type.</param>
+    /// <param name="literal">
+    /// The integer, at one end of the underlying type's range, or for <see cref="ulong" /> through the number converter
+    /// the largest integer token.
+    /// </param>
+    /// <param name="numberConverter">
+    /// Whether the member reads through <see cref="YamlNumberEnumConverter{TEnum}" />.
+    /// </param>
+    [TestMethod]
+    [DataRow("SByte", "127", false, DisplayName = "sbyte, the maximum, by name")]
+    [DataRow("SByte", "-128", false, DisplayName = "sbyte, the minimum, by name")]
+    [DataRow("Byte", "255", false, DisplayName = "byte, the maximum, by name")]
+    [DataRow("Byte", "0", false, DisplayName = "byte, the minimum, by name")]
+    [DataRow("Int16", "32767", false, DisplayName = "short, the maximum, by name")]
+    [DataRow("Int16", "-32768", false, DisplayName = "short, the minimum, by name")]
+    [DataRow("Int32", "2147483647", false, DisplayName = "int, the maximum, by name")]
+    [DataRow("Int32", "-2147483648", false, DisplayName = "int, the minimum, by name")]
+    [DataRow("Int64", "9223372036854775807", false, DisplayName = "long, the maximum, by name")]
+    [DataRow("Int64", "-9223372036854775808", false, DisplayName = "long, the minimum, by name")]
+    [DataRow("UInt64", "18446744073709551615", false, DisplayName = "ulong, the maximum, by name")]
+    [DataRow("UInt64", "0", false, DisplayName = "ulong, the minimum, by name")]
+    [DataRow("SByte", "127", true, DisplayName = "sbyte, the maximum, number converter")]
+    [DataRow("SByte", "-128", true, DisplayName = "sbyte, the minimum, number converter")]
+    [DataRow("Byte", "255", true, DisplayName = "byte, the maximum, number converter")]
+    [DataRow("Byte", "0", true, DisplayName = "byte, the minimum, number converter")]
+    [DataRow("Int16", "32767", true, DisplayName = "short, the maximum, number converter")]
+    [DataRow("Int16", "-32768", true, DisplayName = "short, the minimum, number converter")]
+    [DataRow("Int32", "2147483647", true, DisplayName = "int, the maximum, number converter")]
+    [DataRow("Int32", "-2147483648", true, DisplayName = "int, the minimum, number converter")]
+    [DataRow("Int64", "9223372036854775807", true, DisplayName = "long, the maximum, number converter")]
+    [DataRow("Int64", "-9223372036854775808", true, DisplayName = "long, the minimum, number converter")]
+    [DataRow("UInt64", "9223372036854775807", true, DisplayName = "ulong, the format's maximum, number converter")]
+    [DataRow("UInt64", "0", true, DisplayName = "ulong, the minimum, number converter")]
+    public void Deserialize_WhenIntegerIsAtEnumUnderlyingRangeLimit_ShouldBindIt(
+        string member,
+        string literal,
+        bool numberConverter)
+    {
+        object model = DeserializeRangeModel($"{member}: {literal}\n", numberConverter);
+
+        Assert.AreEqual(literal, UnderlyingText(model, member));
+    }
+
+    /// <summary>
+    /// Verifies that an integer inside the range of an enumeration's underlying type that names no member binds as that
+    /// undefined value, through the by-name default and the number converter alike.
+    /// </summary>
+    /// <param name="member">The member, named for its enumeration's underlying type.</param>
+    /// <param name="literal">The integer, inside the underlying type's range and naming no member.</param>
+    /// <param name="numberConverter">
+    /// Whether the member reads through <see cref="YamlNumberEnumConverter{TEnum}" />.
+    /// </param>
+    [TestMethod]
+    [DataRow("Byte", "99", false, DisplayName = "byte, by name")]
+    [DataRow("SByte", "-5", false, DisplayName = "sbyte, by name")]
+    [DataRow("Int64", "-123456789012", false, DisplayName = "long, by name")]
+    [DataRow("UInt64", "7", false, DisplayName = "ulong, by name")]
+    [DataRow("Byte", "99", true, DisplayName = "byte, number converter")]
+    [DataRow("SByte", "-5", true, DisplayName = "sbyte, number converter")]
+    [DataRow("Int64", "-123456789012", true, DisplayName = "long, number converter")]
+    [DataRow("UInt64", "7", true, DisplayName = "ulong, number converter")]
+    public void Deserialize_WhenIntegerInRangeNamesNoMember_ShouldBindUndefinedValue(
+        string member,
+        string literal,
+        bool numberConverter)
+    {
+        object model = DeserializeRangeModel($"{member}: {literal}\n", numberConverter);
+
+        Assert.AreEqual(literal, UnderlyingText(model, member));
+    }
+
+    /// <summary>
+    /// Deserializes a range model, through the by-name default or the number converter.
+    /// </summary>
+    /// <param name="document">The document.</param>
+    /// <param name="numberConverter">
+    /// Whether the members read through <see cref="YamlNumberEnumConverter{TEnum}" />.
+    /// </param>
+    /// <returns>The bound model.</returns>
+    private static object DeserializeRangeModel(string document, bool numberConverter) =>
+        numberConverter
+            ? YamlSerializer.Deserialize<NumberUnderlyingRangeModel>(document)!
+            : YamlSerializer.Deserialize<UnderlyingRangeModel>(document)!;
+
+    /// <summary>
+    /// Reads a member of a range model as the decimal text of its underlying integer.
+    /// </summary>
+    /// <param name="model">The bound model.</param>
+    /// <param name="member">The member's name.</param>
+    /// <returns>The member's value as the decimal text of its underlying integer.</returns>
+    private static string UnderlyingText(object model, string member) =>
+        ((Enum)model.GetType().GetProperty(member)!.GetValue(model)!).ToString("D");
+
+    /// <summary>
     /// An enumeration whose members map to member-name scalars by default.
     /// </summary>
     private enum Status
@@ -566,5 +713,191 @@ public partial class YamlSerializerTests
         /// The on-hold state.
         /// </summary>
         OnHold = 1,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="sbyte" />.
+    /// </summary>
+    private enum SByteBasedLevel : sbyte
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="byte" />.
+    /// </summary>
+    private enum ByteBasedLevel : byte
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="short" />.
+    /// </summary>
+    private enum Int16BasedLevel : short
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="int" />.
+    /// </summary>
+    private enum Int32BasedLevel : int
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="long" />.
+    /// </summary>
+    private enum Int64BasedLevel : long
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// An enumeration whose underlying type is <see cref="ulong" />.
+    /// </summary>
+    private enum UInt64BasedLevel : ulong
+    {
+        /// <summary>
+        /// The low level, with underlying value <c>1</c>.
+        /// </summary>
+        Low = 1,
+
+        /// <summary>
+        /// The high level, with underlying value <c>2</c>.
+        /// </summary>
+        High = 2,
+    }
+
+    /// <summary>
+    /// A model with a member of each enumeration, read by name with integers accepted, as the default does.
+    /// </summary>
+    private sealed class UnderlyingRangeModel
+    {
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="sbyte" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public SByteBasedLevel SByte { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="byte" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public ByteBasedLevel Byte { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="short" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public Int16BasedLevel Int16 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="int" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public Int32BasedLevel Int32 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="long" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public Int64BasedLevel Int64 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="ulong" />.
+        /// </summary>
+        /// <value>The value.</value>
+        public UInt64BasedLevel UInt64 { get; set; }
+    }
+
+    /// <summary>
+    /// A model with a member of each enumeration, each read through <see cref="YamlNumberEnumConverter{TEnum}" />.
+    /// </summary>
+    private sealed class NumberUnderlyingRangeModel
+    {
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="sbyte" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<SByteBasedLevel>))]
+        public SByteBasedLevel SByte { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="byte" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<ByteBasedLevel>))]
+        public ByteBasedLevel Byte { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="short" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<Int16BasedLevel>))]
+        public Int16BasedLevel Int16 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="int" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<Int32BasedLevel>))]
+        public Int32BasedLevel Int32 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="long" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<Int64BasedLevel>))]
+        public Int64BasedLevel Int64 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member whose enumeration is based on <see cref="ulong" />.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<UInt64BasedLevel>))]
+        public UInt64BasedLevel UInt64 { get; set; }
     }
 }
