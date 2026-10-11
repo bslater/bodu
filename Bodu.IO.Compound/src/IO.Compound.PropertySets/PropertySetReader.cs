@@ -187,7 +187,8 @@ internal static class PropertySetReader
     /// </summary>
     /// <remarks>
     /// A vector's string, blob and variant elements read whether they are padded to a multiple of four bytes or follow
-    /// one another unpadded; see <see cref="SkipPadding" />.
+    /// one another unpadded; see <see cref="SkipPadding" />. Its elements of a fixed size follow one another with no
+    /// padding, as [MS-OLEPS] 2.15 packs them.
     /// </remarks>
     /// <param name="data">The property-set bytes.</param>
     /// <param name="offset">The byte offset of the typed value.</param>
@@ -225,7 +226,10 @@ internal static class PropertySetReader
             (object? value, int consumed) = ReadScalar(data, cursor, type, encoding, 0);
             CompoundThrowHelper.ThrowFormatIf(consumed <= 0, CompoundResourceStrings.Format_Invalid_CompoundPropertySet, CompoundFileError.InvalidPropertySet);
             items[i] = value;
-            cursor = HasVariableLength(type) ? SkipPadding(data, cursor, consumed) : cursor + Align4(consumed);
+
+            // [MS-OLEPS] 2.15 packs the elements of a fixed size, 1- and 2-byte values included, and pads only the end
+            // of the vector.
+            cursor = HasVariableLength(type) ? SkipPadding(data, cursor, consumed) : cursor + consumed;
         }
 
         return new OlePropertyValue { Type = type, IsVector = true, Value = items };
@@ -478,7 +482,7 @@ internal static class PropertySetReader
     /// <returns>
     /// <see langword="true" /> for strings, blobs, clipboard data and variants; otherwise <see langword="false" />.
     /// </returns>
-    private static bool HasVariableLength(OlePropertyType type) =>
+    internal static bool HasVariableLength(OlePropertyType type) =>
         type is OlePropertyType.AnsiString
             or OlePropertyType.BinaryString
             or OlePropertyType.UnicodeString

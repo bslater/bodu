@@ -175,8 +175,9 @@ internal static class PropertySetWriter
         };
 
     /// <summary>
-    /// Encodes a <c>VT_VECTOR</c>-flagged value: the vector type word, a four-byte element count, then each element's
-    /// scalar body padded to a four-byte boundary - the exact inverse of the reader's vector loop.
+    /// Encodes a <c>VT_VECTOR</c>-flagged value: the vector type word, a four-byte element count, then the elements,
+    /// each string, blob or variant padded to a four-byte boundary and the elements of a fixed size packed, as
+    /// [MS-OLEPS] 2.15 lays them out, then zero padding to a four-byte boundary.
     /// </summary>
     /// <param name="value">The vector value; its <see cref="OlePropertyValue.Value" /> must be an object array.</param>
     /// <param name="encoding">The encoding for ANSI strings.</param>
@@ -219,12 +220,25 @@ internal static class PropertySetWriter
             byte[] body = EncodeScalarBody(value.Type, item, encoding);
             buffer.Write(body);
 
-            // The reader advances by Align4(consumed) per element, so each element body is zero-padded in place.
-            for (int padding = Align4(body.Length) - body.Length; padding > 0; padding--)
-                buffer.WriteByte(0);
+            // A string, blob or variant is padded to a four-byte boundary; the 1- and 2-byte values are packed, and
+            // the larger fixed-size values need no padding.
+            if (PropertySetReader.HasVariableLength(value.Type))
+                WritePadding(buffer, body.Length);
         }
 
+        WritePadding(buffer, (int)buffer.Length);
         return buffer.ToArray();
+    }
+
+    /// <summary>
+    /// Writes the zero bytes that pad a run of bytes to a four-byte boundary.
+    /// </summary>
+    /// <param name="buffer">The buffer that receives the padding.</param>
+    /// <param name="length">The length of the run, in bytes.</param>
+    private static void WritePadding(MemoryStream buffer, int length)
+    {
+        for (int padding = Align4(length) - length; padding > 0; padding--)
+            buffer.WriteByte(0);
     }
 
     /// <summary>

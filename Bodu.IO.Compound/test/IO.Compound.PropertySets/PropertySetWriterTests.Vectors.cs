@@ -25,7 +25,7 @@ public partial class PropertySetWriterTests
     }
 
     /// <summary>
-    /// Verifies that a vector of 16-bit integers round-trips, exercising per-element alignment padding.
+    /// Verifies that a vector of 16-bit integers, whose elements are packed, round-trips.
     /// </summary>
     [TestMethod]
     public void Write_WhenVectorOfInt16_ShouldRoundTrip() =>
@@ -60,8 +60,7 @@ public partial class PropertySetWriterTests
         AssertVectorRoundTrip(OlePropertyType.UInt64, [0UL, ulong.MaxValue]);
 
     /// <summary>
-    /// Verifies that a vector of signed 8-bit integers round-trips, exercising one-byte elements padded to
-    /// four-byte boundaries.
+    /// Verifies that a vector of signed 8-bit integers, whose one-byte elements are packed, round-trips.
     /// </summary>
     [TestMethod]
     public void Write_WhenVectorOfInt8_ShouldRoundTrip() =>

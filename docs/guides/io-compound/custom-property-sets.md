@@ -278,7 +278,7 @@ Console.WriteLine(root.ToArray().Length);
 | `Variant` | 12 | `VARIANT` | element type inferred from the CLR value (vectors only) | - |
 | `Empty` / `Null` | 0 / 1 | `EMPTY` / `NULL` | `null` | - |
 
-A **vector** (`VT_VECTOR`) is an `OlePropertyValue` with `IsVector = true` and an `object?[]` of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <xref:Bodu.IO.Compound.CompoundFileSerializationException>:
+A **vector** (`VT_VECTOR`) is an `OlePropertyValue` with `IsVector = true` and an `object?[]` of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <xref:Bodu.IO.Compound.CompoundFileSerializationException>. As [MS-OLEPS] 2.15 lays a vector out, its strings, blobs and variants are each padded to a multiple of four bytes, while its elements of a fixed size, the 1- and 2-byte values among them, are packed one after another, with padding only after the last; the reader and the writer both use that layout:
 
 ```csharp
 using Bodu.IO.Compound;
