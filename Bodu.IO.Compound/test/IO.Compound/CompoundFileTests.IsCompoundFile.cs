@@ -15,7 +15,7 @@ public partial class CompoundFileTests
     [TestMethod]
     public void IsCompoundFile_WhenStreamIsCompoundFile_ShouldReturnTrueAndRestorePosition()
     {
-        using MemoryStream stream = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound);
+        using MemoryStream stream = CompoundFixtures.OpenSample();
 
         bool result = CompoundFile.IsCompoundFile(stream);
 
@@ -78,7 +78,7 @@ public partial class CompoundFileTests
     [TestMethod]
     public void IsCompoundFile_WhenStreamIsNotSeekable_ShouldThrowArgumentException()
     {
-        using Stream stream = new NonSeekableStream(CompoundFixtures.ReadBytes(CompoundFixtures.SampleCompound));
+        using Stream stream = new NonSeekableStream(CompoundFixtures.BuildSample());
 
         _ = Assert.ThrowsExactly<ArgumentException>(() => CompoundFile.IsCompoundFile(stream));
     }

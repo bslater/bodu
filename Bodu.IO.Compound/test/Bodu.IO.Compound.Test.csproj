@@ -14,9 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Fixtures\*.xls">
-      <LogicalName>Bodu.IO.Compound.Fixtures.%(Filename)%(Extension)</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="Fixtures\Reference\valid\*">
       <LogicalName>Bodu.IO.Compound.Fixtures.Reference.valid.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>

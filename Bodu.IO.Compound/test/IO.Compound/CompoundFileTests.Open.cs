@@ -69,7 +69,7 @@ public partial class CompoundFileTests
     [TestMethod]
     public void Open_WhenModeIsUnsupported_ShouldThrowNotSupportedException()
     {
-        using MemoryStream stream = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound);
+        using MemoryStream stream = CompoundFixtures.OpenSample();
 
         _ = Assert.ThrowsExactly<NotSupportedException>(() =>
         {
@@ -96,7 +96,7 @@ public partial class CompoundFileTests
     [TestMethod]
     public void Open_WhenLeaveOpenIsTrue_ShouldNotDisposeSourceStream()
     {
-        using MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound);
+        using MemoryStream source = CompoundFixtures.OpenSample();
 
         using (var file = CompoundFile.Open(source, leaveOpen: true))
         {
@@ -115,7 +115,7 @@ public partial class CompoundFileTests
         string path = Path.Combine(Path.GetTempPath(), $"bodu-openread-{Guid.NewGuid():N}.cfb");
         try
         {
-            using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
+            using (MemoryStream source = CompoundFixtures.OpenSample())
                 File.WriteAllBytes(path, source.ToArray());
 
             using var file = CompoundFile.OpenRead(path);
@@ -149,7 +149,7 @@ public partial class CompoundFileTests
         string path = Path.Combine(Path.GetTempPath(), $"bodu-openpath-{Guid.NewGuid():N}.cfb");
         try
         {
-            using (MemoryStream source = CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound))
+            using (MemoryStream source = CompoundFixtures.OpenSample())
                 File.WriteAllBytes(path, source.ToArray());
 
             using var file = CompoundFile.Open(path, FileMode.Open, FileAccess.Read);

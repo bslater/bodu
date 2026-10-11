@@ -9,17 +9,17 @@ using Bodu.Test;
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Verifies the behavior of <see cref="CompoundFile" /> against real-world and reference compound files.
+/// Verifies the behavior of <see cref="CompoundFile" /> against built and reference compound files.
 /// </summary>
 [TestClass]
 public partial class CompoundFileTests
 {
     /// <summary>
-    /// Opens the embedded sample compound file.
+    /// Opens the sample compound file the tests build.
     /// </summary>
-    /// <returns>An open <see cref="CompoundFile" /> over the sample fixture.</returns>
+    /// <returns>An open <see cref="CompoundFile" /> over the sample.</returns>
     private static CompoundFile OpenSample() =>
-        CompoundFile.Open(CompoundFixtures.OpenStream(CompoundFixtures.SampleCompound));
+        CompoundFile.Open(CompoundFixtures.OpenSample());
 
     /// <summary>
     /// Verifies that opening a valid compound file yields a readable instance whose root storage exposes entries.
