@@ -24,6 +24,45 @@ public partial class ExcelNumberFormatTests
     }
 
     /// <summary>
+    /// Verifies that a Thai built-in date or time format index, 71 to 81, is recognized as a date format without a code.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number-format index.</param>
+    [TestMethod]
+    [DataRow((ushort)71)]
+    [DataRow((ushort)72)]
+    [DataRow((ushort)73)]
+    [DataRow((ushort)74)]
+    [DataRow((ushort)75)]
+    [DataRow((ushort)76)]
+    [DataRow((ushort)77)]
+    [DataRow((ushort)78)]
+    [DataRow((ushort)79)]
+    [DataRow((ushort)80)]
+    [DataRow((ushort)81)]
+    public void IsDateFormat_WhenThaiBuiltInDateIndex_ShouldReturnTrue(ushort formatIndex)
+    {
+        Assert.IsTrue(ExcelNumberFormat.IsDateFormat(formatIndex, null));
+    }
+
+    /// <summary>
+    /// Verifies that a Thai built-in number format index, 59 to 62 or 67 to 70, is not recognized as a date format.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number-format index.</param>
+    [TestMethod]
+    [DataRow((ushort)59)]
+    [DataRow((ushort)60)]
+    [DataRow((ushort)61)]
+    [DataRow((ushort)62)]
+    [DataRow((ushort)67)]
+    [DataRow((ushort)68)]
+    [DataRow((ushort)69)]
+    [DataRow((ushort)70)]
+    public void IsDateFormat_WhenThaiBuiltInNumberIndex_ShouldReturnFalse(ushort formatIndex)
+    {
+        Assert.IsFalse(ExcelNumberFormat.IsDateFormat(formatIndex, null));
+    }
+
+    /// <summary>
     /// Verifies that a built-in numeric format index is not recognized as a date format.
     /// </summary>
     /// <param name="formatIndex">The built-in number-format index.</param>

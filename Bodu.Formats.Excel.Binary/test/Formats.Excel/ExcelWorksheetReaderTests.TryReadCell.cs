@@ -326,6 +326,27 @@ public partial class ExcelWorksheetReaderTests
     }
 
     /// <summary>
+    /// Verifies that a number whose XF record selects a Thai built-in date or time format, which no FORMAT record
+    /// defines, is date formatted.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number-format index.</param>
+    [TestMethod]
+    [DataRow((ushort)71)]
+    [DataRow((ushort)79)]
+    [DataRow((ushort)81)]
+    public void TryReadCell_WhenXfSelectsAThaiBuiltInDateFormat_ShouldReportDateFormatted(ushort formatIndex)
+    {
+        ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
+        var formats = new BiffFormatTable([formatIndex], new Dictionary<ushort, string>(), detectDateFormats: true);
+        byte[] substream = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 44211.0));
+        using var reader = new ExcelWorksheetReader(info, substream, [], formats, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(formatIndex, cell.FormatIndex);
+        Assert.IsTrue(cell.IsDateFormatted);
+    }
+
+    /// <summary>
     /// Opens a streaming reader over a BIFF5 worksheet substream written through a BIFF5 writer.
     /// </summary>
     /// <param name="codePage">The code page the writer encodes text in and the reader decodes with.</param>
