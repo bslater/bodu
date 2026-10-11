@@ -10,21 +10,6 @@
         <PackageTags>$(PackageTags);text;dotenv;env;configuration;serialization;serializer</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
-        <WarningLevel>8</WarningLevel>
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
-        <WarningLevel>8</WarningLevel>
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    </PropertyGroup>
-
     <!-- Per-framework compilation symbols. -->
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
@@ -56,12 +41,12 @@
         </Compile>
     </ItemGroup>
 
-  <!-- Shared-source scalar and flat-member primitives: remain internal in each serializer assembly. -->
-  <ItemGroup>
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDescriptor.cs" Link="Shared\FlatMemberDescriptor.cs" />
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDiscovery.cs" Link="Shared\FlatMemberDiscovery.cs" />
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\Utf8LineCursor.cs" Link="Shared\Utf8LineCursor.cs" />
-  </ItemGroup>
+    <!-- Shared-source scalar and flat-member primitives: remain internal in each serializer assembly. -->
+    <ItemGroup>
+        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
+        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDescriptor.cs" Link="Shared\FlatMemberDescriptor.cs" />
+        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDiscovery.cs" Link="Shared\FlatMemberDiscovery.cs" />
+        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\Utf8LineCursor.cs" Link="Shared\Utf8LineCursor.cs" />
+    </ItemGroup>
 
 </Project>

@@ -1,0 +1,36 @@
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="FlatMemberDiscoveryTests.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Text.Serialization;
+
+/// <summary>
+/// Provides tests for the shared <see cref="FlatMemberDiscovery" /> as the DotEnv serializer compiles it.
+/// </summary>
+[TestClass]
+public sealed partial class FlatMemberDiscoveryTests
+{
+    /// <summary>
+    /// A record with a renamed required property, an ignored property and a public field.
+    /// </summary>
+    private sealed class MemberSample
+    {
+        /// <summary>
+        /// Gets or sets a required property written under another name.
+        /// </summary>
+        [Required]
+        [PropertyName("CUSTOM_KEY")]
+        public int Count { get; set; }
+
+        /// <summary>
+        /// Gets or sets a property that discovery skips.
+        /// </summary>
+        [Ignore]
+        public string? NotIncluded { get; set; }
+
+        /// <summary>A public field, discovered only when fields are included.</summary>
+        public int PublicField = 42;
+    }
+}

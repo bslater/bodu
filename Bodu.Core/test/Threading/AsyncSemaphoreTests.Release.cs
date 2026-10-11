@@ -145,4 +145,26 @@ public sealed partial class AsyncSemaphoreTests
             "releaseCount",
             Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => sut.Release(0)).ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a canceled waiter queued between two live ones consumes no permit, so releasing two permits
+    /// completes both live waits.
+    /// </summary>
+    [TestMethod]
+    public async Task Release_WhenCanceledWaiterBetweenLiveWaiters_ShouldGrantTwoPermits()
+    {
+        var sut = new AsyncSemaphore(0, 2);
+        using var cts = new CancellationTokenSource();
+        ValueTask first = sut.WaitAsync();
+        ValueTask cancelled = sut.WaitAsync(cts.Token);
+        ValueTask last = sut.WaitAsync();
+
+        cts.Cancel();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await cancelled);
+        sut.Release(2);
+        await first;
+        await last;
+        Assert.AreEqual(0, sut.CurrentCount);
+        Assert.AreEqual(0, sut.WaiterCount);
+    }
 }

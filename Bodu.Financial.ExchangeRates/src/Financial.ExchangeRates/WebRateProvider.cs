@@ -411,8 +411,8 @@ public abstract class WebRateProvider
     /// <remarks>
     /// <para>
     /// The initial coverage check and the publication callback execute under <see cref="SyncRoot" />. The fetch and
-    /// download-start logging execute outside the lock. Only failures from the asynchronous fetch are classified; a
-    /// failure while publishing is propagated unchanged, as in the original file-feed providers.
+    /// download-start logging execute outside the lock. Only failures from the asynchronous fetch are classified and
+    /// logged; a failure while publishing propagates unchanged and unlogged.
     /// </para>
     /// <para>
     /// Returning <see langword="null" /> from <paramref name="publish" /> suppresses the snapshot rebuild and

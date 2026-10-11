@@ -85,4 +85,26 @@ public sealed partial class AsyncAutoResetEventTests
         sut.Set();
         await live;
     }
+
+    /// <summary>
+    /// Verifies that a signal handed to a queued waiter wins over a cancellation that follows it: the wait completes
+    /// and the signal is consumed, so the next wait stays pending.
+    /// </summary>
+    [TestMethod]
+    public async Task WaitAsync_WhenSetPrecedesCancellation_ShouldConsumeSignal()
+    {
+        var sut = new AsyncAutoResetEvent();
+        using var cts = new CancellationTokenSource();
+        ValueTask pending = sut.WaitAsync(cts.Token);
+
+        sut.Set();
+        cts.Cancel();
+
+        await pending;
+        Assert.AreEqual(0, sut.WaiterCount);
+        ValueTask unsignaled = sut.WaitAsync();
+        Assert.IsFalse(unsignaled.IsCompleted);
+        sut.Set();
+        await unsignaled;
+    }
 }

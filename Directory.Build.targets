@@ -141,6 +141,36 @@
   </PropertyGroup>
 
   <!--
+    Warnings are errors in a Release build, as they are in CI, which builds Release with
+    -p:TreatWarningsAsErrors=true: a local Release build fails on the compiler and analyzer warnings
+    a pull request would fail on, while a Debug build still only reports them. The line sits here,
+    once, rather than in each project, and names no target framework or platform.
+
+    The SDK has already defaulted TreatWarningsAsErrors to false by this point, so the line assigns
+    true outright. A command-line -p:TreatWarningsAsErrors still decides, since a global property
+    cannot be reassigned. A project or tree opts out with BoduReleaseWarningsAsErrors=false, as the
+    Bodu.CodeStyle solution does to keep its own policy.
+
+    Restore is left alone (MSBuildIsRestoring is true only while NuGet evaluates the project for a
+    restore), so NuGet's own warnings, a newly published package advisory among them, stay warnings
+    and cannot fail an unrelated build. release.yml still promotes them through its own
+    -p:TreatWarningsAsErrors=true.
+  -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(MSBuildIsRestoring)' != 'true' and '$(BoduReleaseWarningsAsErrors)' != 'false'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!--
+    Compiler warning level 8 for every .NET target, so the net8.0 and net10.0 legs compile with the same
+    warning waves. Left alone, the SDK raises the level with the target framework's major version, to 10
+    for net10.0, which adds waves 9 and 10 to that leg alone. The SDK applies its default after this file
+    and only when no level is set, so a project that sets its own WarningLevel keeps it.
+  -->
+  <PropertyGroup Condition="'$(WarningLevel)' == '' and '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <WarningLevel>8</WarningLevel>
+  </PropertyGroup>
+
+  <!--
     Centralised analyser package references. Directory.Build.targets is processed after each
     project file, so $(IsTestProject), $(GenerateDocumentationFile), and any project-specific
     opt-out properties are resolved by the time these ItemGroups are evaluated.

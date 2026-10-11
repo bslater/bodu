@@ -12,21 +12,6 @@
         <PackageTags>$(PackageTags);buffers;extensions;threading;async;throwhelper;day-of-week-set;calendar-sets</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
-        <WarningLevel>8</WarningLevel>
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
-        <WarningLevel>8</WarningLevel>
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
-        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    </PropertyGroup>
-
     <!--
     InternalsVisibleTo grants - every entry below was audited and is currently in use:
       - Bodu.Core.Test               : test project (ConcurrentHashSet internal ctor, ClampDefaultConcurrencyLevel,

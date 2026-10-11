@@ -156,6 +156,15 @@ public static partial class DelimitedSerializer
     /// <param name="targetType">The CLR type.</param>
     /// <param name="column">The diagnostic field name.</param>
     /// <returns>The converted scalar.</returns>
+    /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
+    /// <remarks>
+    /// An empty value, or one of white space only, converts to <see langword="null" /> for a nullable value type,
+    /// except that a nullable <see cref="char" /> converts to <see langword="null" /> for an empty value alone and
+    /// reads white space as a <see cref="char" /> does. Every other target converts the text as it is. Temporal values
+    /// parse leniently with the invariant culture, so the round-trip forms written by
+    /// <see cref="ValueToString(object?)" /> read back, and so do the invariant general forms that earlier versions
+    /// wrote.
+    /// </remarks>
     private static object? ConvertFromString(string raw, Type targetType, string column)
     {
         try

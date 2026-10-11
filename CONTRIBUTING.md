@@ -62,8 +62,9 @@ root selects a set of them:
 A local run is a weaker signal than CI unless it matches CI. To match it:
 
 - **Run `test.runsettings`, not `bvt.runsettings`.** CI includes the Regression tier.
-- **Build with warnings as errors.** CI fails on any compiler or analyzer warning:
-  `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`.
+- **Build in Release.** CI fails on any compiler or analyzer warning, and so does a local Release
+  build, which treats warnings as errors: `dotnet build <project> -c Release`. A Debug build only
+  reports them.
 - **Install both runtimes** (see *Setting up*), and leave `DOTNET_ROLL_FORWARD` unset.
 - **Use the pinned SDK.** A different SDK ships different analyzers and can disagree with CI in either
   direction. `dotnet --version` at the repository root names the one in use.
