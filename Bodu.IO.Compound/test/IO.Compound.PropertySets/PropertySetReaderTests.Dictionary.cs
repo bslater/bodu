@@ -66,4 +66,42 @@ public partial class PropertySetReaderTests
         Assert.AreEqual("Ab", parsed.Sections[0].PropertyNames[2]);
         Assert.AreEqual("Cde", parsed.Sections[0].PropertyNames[3]);
     }
+
+    /// <summary>
+    /// Verifies that a dictionary whose entry count, 0xFFFFFFFF, does not fit in an <see cref="int" /> leaves the section
+    /// without names, while its properties still read.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenDictionaryCountExceedsInt32_ShouldDropTheDictionary()
+    {
+        byte[] dictionary = [.. PropertySetBytes.UInt32(0xFFFFFFFF), .. PropertySetBytes.UInt32(2), .. PropertySetBytes.UInt32(4), .. PropertySetBytes.Latin1("One\0")];
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.UserDefinedProperties,
+            (0, dictionary),
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsEmpty(parsed.Sections[0].GetNamedProperties());
+        Assert.AreEqual(7, parsed[2]!.AsInt32());
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary entry naming a property identifier at or above 0x80000000 names that property.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenDictionaryNamesAPropertyIdAtOrAbove0x80000000_ShouldNameIt()
+    {
+        byte[] dictionary = [.. PropertySetBytes.UInt32(1), .. PropertySetBytes.UInt32(0x80000005), .. PropertySetBytes.UInt32(7), .. PropertySetBytes.Latin1("Custom\0"), 0];
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.UserDefinedProperties,
+            (0, dictionary),
+            (1, PropertySetBytes.CodePage(1252)),
+            (unchecked((int)0x80000005), PropertySetBytes.Int32(9)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.AreEqual(9, parsed.Sections[0].GetNamedProperties()["Custom"].AsInt32());
+    }
 }

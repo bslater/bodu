@@ -125,4 +125,28 @@ public partial class PropertySetReaderTests
         Assert.AreEqual(string.Empty, parsed[2]!.AsString());
         Assert.AreEqual(7, parsed[3]!.AsInt32());
     }
+
+    /// <summary>
+    /// Verifies that a string or blob whose length does not fit in an <see cref="int" /> is dropped as malformed while
+    /// the property after it still reads.
+    /// </summary>
+    /// <param name="type">The property type: <c>VT_LPSTR</c>, <c>VT_LPWSTR</c> or <c>VT_BLOB</c>.</param>
+    /// <param name="length">The length field: a byte count, or for <c>VT_LPWSTR</c> a character count.</param>
+    [TestMethod]
+    [DataRow((ushort)0x001E, 0xFFFFFFFFu)]
+    [DataRow((ushort)0x001F, 0x80000000u)]
+    [DataRow((ushort)0x0041, 0x80000000u)]
+    public void Parse_WhenStringOrBlobLengthExceedsInt32_ShouldDropOnlyThatProperty(ushort type, uint length)
+    {
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, PropertySetBytes.Typed(type, PropertySetBytes.UInt32(length))),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsFalse(parsed.TryGetValue(2, out _));
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
 }
