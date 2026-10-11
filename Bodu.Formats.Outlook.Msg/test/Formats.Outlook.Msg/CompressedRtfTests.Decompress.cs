@@ -68,4 +68,21 @@ public partial class CompressedRtfTests
         uint recorded = BitConverter.ToUInt32(example, 12);
         Assert.AreEqual(recorded, CompressedRtf.ComputeCrc(example.AsSpan(16)));
     }
+
+    /// <summary>
+    /// Verifies that an uncompressed (<c>MELA</c>) payload decodes to every byte after its 16-byte header whatever its
+    /// CRC, <c>RAWSIZE</c> and <c>COMPSIZE</c> say, as MS-OXRTFCP 2.2.3.1 requires.
+    /// </summary>
+    /// <param name="kat">The uncompressed-payload row.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(UncompressedHeaderKats),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Decompress_WhenUncompressedHeaderDisagreesWithData_ShouldReturnEveryByteAfterTheHeader(ValidKat<string, string> kat)
+    {
+        byte[] rtf = CompressedRtf.Decompress(Convert.FromHexString(kat.Input));
+
+        Assert.AreEqual(kat.Expected, System.Text.Encoding.Latin1.GetString(rtf));
+    }
 }

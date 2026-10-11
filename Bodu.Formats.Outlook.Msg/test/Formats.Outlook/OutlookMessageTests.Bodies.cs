@@ -125,4 +125,26 @@ public partial class OutlookMessageTests
             _ = message.BodyRtf;
         });
     }
+
+    /// <summary>
+    /// Verifies that an uncompressed (<c>MELA</c>) RTF body returns every byte after its 16-byte header whatever its CRC
+    /// and declared sizes say, as MS-OXRTFCP 2.2.3.1 requires.
+    /// </summary>
+    /// <param name="testName">The fault in the header.</param>
+    /// <param name="headerHex">The 16-byte header, in hexadecimal, that precedes the 20 bytes of RTF text.</param>
+    [TestMethod]
+    [DataRow("NonZeroCrc", "20000000140000004d454c41f1c5c7a7")]
+    [DataRow("RawSizeAboveData", "20000000200000004d454c4100000000")]
+    [DataRow("CompressedSizeBelowData", "14000000140000004d454c4100000000")]
+    public void BodyRtf_WhenUncompressedHeaderDisagreesWithData_ShouldReturnEveryByteAfterTheHeader(string testName, string headerHex)
+    {
+        byte[] payload = Convert.FromHexString(headerHex + CompressedRtfTests.HelloWorldRtfHex);
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddBinary(MapiPropertyIds.RtfCompressed, payload)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual(CompressedRtfTests.HelloWorldRtfText, message.BodyRtf, testName);
+    }
 }

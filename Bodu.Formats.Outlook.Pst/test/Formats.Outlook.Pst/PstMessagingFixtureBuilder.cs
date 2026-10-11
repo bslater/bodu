@@ -304,6 +304,12 @@ internal sealed class PstMessagingFixtureBuilder
     internal bool TruncateRtfPayload { get; set; }
 
     /// <summary>
+    /// Gets or sets a replacement for the full message's <c>PidTagRtfCompressed</c> payload.
+    /// </summary>
+    /// <value><see langword="null" /> to emit the <c>MELA</c> payload of <see cref="RtfBodyText" />.</value>
+    internal byte[]? RtfPayloadOverride { get; set; }
+
+    /// <summary>
     /// Assembles the synthetic mail store and returns it as a seekable stream positioned at its start.
     /// </summary>
     /// <returns>The container stream.</returns>
@@ -379,12 +385,15 @@ internal sealed class PstMessagingFixtureBuilder
     }
 
     /// <summary>
-    /// Builds the <c>PidTagRtfCompressed</c> payload: the raw RTF text behind a <c>MELA</c> (uncompressed) header, or a
-    /// truncated header when the knob is set.
+    /// Builds the <c>PidTagRtfCompressed</c> payload: the replacement when one is set, otherwise the raw RTF text behind
+    /// a <c>MELA</c> (uncompressed) header, or a truncated header when the knob is set.
     /// </summary>
     /// <returns>The payload bytes.</returns>
     private byte[] BuildRtfPayload()
     {
+        if (RtfPayloadOverride is not null)
+            return RtfPayloadOverride;
+
         byte[] rtf = Encoding.ASCII.GetBytes(RtfBodyText);
         var payload = new byte[16 + rtf.Length];
         BinaryPrimitives.WriteUInt32LittleEndian(payload, (uint)(rtf.Length + 12));
