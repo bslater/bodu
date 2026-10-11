@@ -193,4 +193,52 @@ public partial class PropertySetReaderTests
         Assert.IsNull(value.Value);
         Assert.AreEqual(7, parsed[3]!.AsInt32());
     }
+
+    /// <summary>
+    /// Verifies that a property whose type word carries a modifier other than <c>VT_VECTOR</c> (<c>VT_ARRAY</c> 0x2000,
+    /// <c>VT_BYREF</c> 0x4000 or <c>VT_RESERVED</c> 0x8000), alone or with <c>VT_VECTOR</c>, is dropped like any type the
+    /// reader does not implement, while the property after it still reads.
+    /// </summary>
+    /// <param name="type">The type word of the dropped property.</param>
+    [TestMethod]
+    [DataRow((ushort)0x4003)]
+    [DataRow((ushort)0x8003)]
+    [DataRow((ushort)0x3003)]
+    [DataRow((ushort)0x6003)]
+    public void Parse_WhenTypeCarriesAnUnsupportedModifier_ShouldDropOnlyThatProperty(ushort type)
+    {
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, PropertySetBytes.Typed(type, PropertySetBytes.UInt32(1), PropertySetBytes.UInt32(10), PropertySetBytes.UInt32(20))),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsFalse(parsed.TryGetValue(2, out _));
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
+
+    /// <summary>
+    /// Verifies that a <c>VT_VECTOR | VT_VARIANT</c> whose element declares <c>VT_ARRAY | VT_I4</c> is dropped like an
+    /// unsupported type, rather than read as a <c>VT_I4</c>, while the property after it still reads.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenVariantElementIsArray_ShouldDropOnlyThatProperty()
+    {
+        byte[] variants = PropertySetBytes.Typed(
+            0x100C,
+            PropertySetBytes.UInt32(1),
+            PropertySetBytes.Typed(0x2003, PropertySetBytes.UInt32(3), PropertySetBytes.UInt32(1), PropertySetBytes.UInt32(1), PropertySetBytes.UInt32(0), PropertySetBytes.UInt32(10)));
+        byte[] bytes = PropertySetBytes.Single(
+            PropertySetBytes.SummaryInformation,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, variants),
+            (3, PropertySetBytes.Int32(7)));
+
+        OlePropertySet parsed = OlePropertySet.Parse(bytes);
+
+        Assert.IsFalse(parsed.TryGetValue(2, out _));
+        Assert.AreEqual(7, parsed[3]!.AsInt32());
+    }
 }
