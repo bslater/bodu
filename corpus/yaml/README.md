@@ -283,7 +283,7 @@ The unit tests found:
 Issue #900, found while fixing TOML's #831, was fixed alongside: a finite value outside the `float` range bound to a
 `float` member became an infinity, and now throws `YamlSerializationException`.
 
-Fixing these turned up six more defects, each filed and fixed test first in the same way:
+Fixing these turned up six more defects, and fixing those three more, each filed and fixed test first in the same way:
 
 - Hexadecimal and octal literals beyond the 64-bit range could wrap to a wrong integer (`0x12000000000000000` read as
   2^61), where an out-of-range decimal stays a string (#970).
@@ -297,8 +297,15 @@ Fixing these turned up six more defects, each filed and fixed test first in the 
 - An alias used as a block key reported the generic unexpected-content message rather than the complex-key one, and the
   README named neither alias keys nor the rule that a tab in the leading whitespace of a line that begins a node is
   indentation (#975).
+- A string, number, sequence or mapping bound to a `bool` escaped as the reader's raw `InvalidOperationException`, the
+  only kind mismatch an audit of every built-in converter found to escape a binding; with it, a `YamlFormatException`
+  that a member's converter throws now passes through as it does at the root (#993).
+- Under `V1_1`, `._5` and `+._5` resolved, where a float with no integer part needs a digit right after its point
+  (#994).
+- The complex-key error for a flow, flow-pair or explicit key was reported after the key rather than where it begins
+  (#995).
 
-Every catalogue row passed before these six fixes and still does; none depended on them.
+Every catalogue row passed before these nine fixes and still does; none depended on them.
 
 The fixes also moved 26 valid yaml-test-suite cases that Bodu had rejected into those it reads to their `in.json` (P2AD,
 R4YG, 4QFQ, 735Y, D83L and W42U by #876; JTV5, ZWK4, A2M4, 5WE3 and 7W2P by #878; UT92, CT4Q, NJ66, 8UDB and 8KB6
@@ -335,6 +342,11 @@ now expects Bodu's reading. js-yaml's counts moved from 116 `applies` and 13 `di
   top-level flow collection (6CA3, Q5MG); the catalogue took that as documented, and #975 spells it out in the README.
 - Escapes. The README and using.md reject invalid escapes, but Bodu also rejected the valid escaped tab; #891 fixed
   it.
+- Error positions. index.md says failures point at the offending location, but a repeated anchor and a cyclic alias
+  carried no position (#971), and a complex flow or explicit key was reported after the key (#995).
+- Binding errors. using.md says a document that parses but cannot bind raises `YamlSerializationException`, but a root
+  value that could not convert raised a raw `FormatException` (#973), and a value bound to a `bool` that is not a
+  boolean raised the reader's `InvalidOperationException` (#993).
 - Writer quoting. Pattern 9 of using.md says the writer quotes a string whose plain form would resolve as a
   non-string, but it wrote `019` and `08` plain, and a `<<` key; #896 fixed it, and the guide now names the forms.
 
