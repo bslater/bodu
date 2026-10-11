@@ -791,7 +791,8 @@ internal sealed partial class YamlParser
     /// </param>
     /// <returns>The captured anchor name, or <see langword="null" />.</returns>
     /// <exception cref="YamlFormatException">
-    /// A property is repeated, has an empty name, or is not separated from the content that follows it.
+    /// A property is repeated, has an empty name, or is not separated from the content that follows it, or an anchor
+    /// names an anchor the document has already defined.
     /// </exception>
     private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false, int minIndent = 0, bool flow = false)
     {
@@ -828,8 +829,18 @@ internal sealed partial class YamlParser
                 if (anchor is not null)
                     throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleAnchors);
 
+                int anchorOffset = _pos;
                 anchor = ReadName(1);
                 RequirePropertySeparation(flow);
+
+                // A repeated name is reported here, where the anchor is written, since a node's row keeps the position
+                // of its content rather than of its properties.
+                if (!(_anchorNames ??= new HashSet<string>(StringComparer.Ordinal)).Add(anchor))
+                {
+                    throw ErrorAt(anchorOffset, string.Format(
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlDuplicateAnchor, anchor));
+                }
+
                 _lastPropertyLine = _line;
                 continue;
             }

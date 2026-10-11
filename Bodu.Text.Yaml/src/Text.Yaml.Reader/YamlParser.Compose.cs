@@ -126,7 +126,7 @@ internal sealed partial class YamlParser
     /// Walks the resolved node graph and rejects any alias cycle, which the tree profile cannot represent and which
     /// would otherwise cause unbounded recursion during traversal or binding.
     /// </summary>
-    /// <exception cref="YamlFormatException">An alias forms a cycle.</exception>
+    /// <exception cref="YamlFormatException">An alias forms a cycle; the error is reported at that alias.</exception>
     private void DetectAliasCycles()
     {
         if (_rows.Count == 0)
@@ -146,7 +146,9 @@ internal sealed partial class YamlParser
     /// exhaust the call stack on a crafted document before the cycle (or its absence) is ever established.
     /// </remarks>
     /// <param name="state">The per-row visit state.</param>
-    /// <exception cref="YamlFormatException">A cycle is detected.</exception>
+    /// <exception cref="YamlFormatException">
+    /// A cycle is detected; the error is reported at the alias that closes it.
+    /// </exception>
     private void VisitForCycles(AliasVisitState[] state)
     {
         var nodes = new Stack<int>();
@@ -174,8 +176,10 @@ internal sealed partial class YamlParser
             int resolved = Resolve(child);
             if (state[resolved] == AliasVisitState.Visiting)
             {
+                // Only an alias can lead back to a node still being visited, so the child is the alias that closes the
+                // cycle, and its row's offset is where the alias is written.
                 string anchor = _rows[resolved].Anchor ?? string.Empty;
-                throw new YamlFormatException(string.Format(
+                throw ErrorAt(_rows[child].Offset, string.Format(
                     CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlCyclicAlias, anchor));
             }
 
@@ -189,24 +193,22 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Resolves each alias row to the anchor of the same name defined earlier in the document. Anchor names must be
-    /// unique within a document: the tree profile rejects redefinition (where the YAML specification would rebind later
-    /// aliases to the most recent definition) so that every alias has a single unambiguous target.
+    /// Resolves each alias row to the anchor of the same name defined earlier in the document. Anchor names are unique
+    /// within a document: the tree profile rejects a redefinition (where the YAML specification would rebind later
+    /// aliases to the most recent definition) as the parser reads it, so that every alias has a single unambiguous
+    /// target.
     /// </summary>
-    /// <exception cref="YamlFormatException">
-    /// An alias refers to an anchor that was never defined, or an anchor name is defined more than once.
-    /// </exception>
+    /// <exception cref="YamlFormatException">An alias refers to an anchor that was never defined.</exception>
     private void ResolveAliases()
     {
         var anchors = new Dictionary<string, int>(StringComparer.Ordinal);
         for (int i = 0; i < _rows.Count; i++)
         {
             YamlReaderRow r = _rows[i];
-            if (r.Anchor is not null && !anchors.TryAdd(r.Anchor, i))
-            {
-                throw new YamlFormatException(string.Format(
-                    CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlDuplicateAnchor, r.Anchor));
-            }
+
+            // The parser rejects a repeated anchor name where it is written, so each name here belongs to one row.
+            if (r.Anchor is not null)
+                anchors[r.Anchor] = i;
 
             if (r.Kind == YamlReaderNodeKind.Alias && r.Tag is not null)
             {

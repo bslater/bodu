@@ -64,6 +64,9 @@ internal sealed partial class YamlParser
     /// <summary>The line on which the most recent anchor or tag property was read, or <c>-1</c> when none has been.</summary>
     private int _lastPropertyLine = -1;
 
+    /// <summary>The anchor names the current document has defined, or <see langword="null" /> until a document defines one.</summary>
+    private HashSet<string>? _anchorNames;
+
     /// <summary>Indicates whether a leading <c>---</c> document-start marker has already been consumed.</summary>
     private bool _documentStartConsumed;
 
@@ -174,6 +177,9 @@ internal sealed partial class YamlParser
     private void ParseDocumentBody()
     {
         _depth = 0;
+
+        // An anchor is scoped to its document, so a later document may define a name an earlier one did.
+        _anchorNames?.Clear();
 
         if (AtStreamEnd() || AtDocumentBoundary())
         {
