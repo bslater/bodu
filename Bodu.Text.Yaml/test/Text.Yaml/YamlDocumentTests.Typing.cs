@@ -444,6 +444,45 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a float-shaped scalar whose digits begin with an underscore stays a string under YAML 1.1, whose
+    /// float type begins every form, after any sign, with a digit or the decimal point, as an integer whose digits
+    /// begin with an underscore does.
+    /// </summary>
+    /// <param name="scalar">The plain scalar.</param>
+    [TestMethod]
+    [DataRow("_1.5")]
+    [DataRow("-_1.5")]
+    [DataRow("+_.5")]
+    [DataRow("_.5")]
+    public void Parse_WhenUnderscoreBeginsFloatDigits_ForV11_ShouldStayString(string scalar)
+    {
+        var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", options);
+
+        Assert.AreEqual(YamlValueKind.String, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(scalar, doc.RootElement.GetProperty("v").GetString());
+    }
+
+    /// <summary>
+    /// Verifies that under YAML 1.1 a float whose digits are grouped with underscores after its first digit still
+    /// resolves, with or without a sign.
+    /// </summary>
+    /// <param name="scalar">The plain scalar.</param>
+    /// <param name="expected">The value the scalar resolves to.</param>
+    [TestMethod]
+    [DataRow("1_000.5", 1000.5)]
+    [DataRow("-1_0.5", -10.5)]
+    [DataRow("+1_0.25", 10.25)]
+    public void Parse_WhenUnderscoreFollowsFirstFloatDigit_ForV11_ShouldResolveFloat(string scalar, double expected)
+    {
+        var options = new YamlDocumentOptions { SpecVersion = YamlSpecVersion.V1_1 };
+        using var doc = YamlDocument.Parse($"v: {scalar}\n", options);
+
+        Assert.AreEqual(YamlValueKind.Float, doc.RootElement.GetProperty("v").ValueKind);
+        Assert.AreEqual(expected, doc.RootElement.GetProperty("v").GetDouble());
+    }
+
+    /// <summary>
     /// Verifies that the YAML 1.2 core schema still gives a binary or hexadecimal form no sign and reads a signed
     /// leading-zero integer as decimal, so the YAML 1.1 forms leave the default version unchanged.
     /// </summary>
