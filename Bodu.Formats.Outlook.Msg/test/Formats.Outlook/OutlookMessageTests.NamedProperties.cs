@@ -74,4 +74,49 @@ public partial class OutlookMessageTests
         Assert.IsTrue(nested.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, "Keywords"), out ushort id));
         Assert.AreEqual((ushort)0x8000, id);
     }
+
+    /// <summary>
+    /// Verifies that a numeric and a string name mapped in the same property set each resolve to the identifier of their
+    /// own entry: <c>0x8000</c> for the first entry (LID <c>0x8501</c>) and <c>0x8001</c> for the second
+    /// (<c>Keywords</c>).
+    /// </summary>
+    [TestMethod]
+    public void TryGetNamedPropertyId_WhenNameIsMapped_ShouldReturnItsId()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x80000003, 1)
+            .AddFixedEntry(0x80010003, 2)
+            .WithNameId(
+                Array.Empty<byte>(),
+                [.. MsgFixtureBuilder.NameIdEntry(0x8501, 2, isString: false, 0), .. MsgFixtureBuilder.NameIdEntry(0, 2, isString: true, 1)],
+                MsgFixtureBuilder.NameIdString("Keywords"))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.IsTrue(message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, "Keywords"), out ushort byName));
+        Assert.AreEqual((ushort)0x8001, byName);
+        Assert.IsTrue(message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, 0x8501u), out ushort byLid));
+        Assert.AreEqual((ushort)0x8000, byLid);
+    }
+
+    /// <summary>
+    /// Verifies that a string name is matched ordinally: <c>keywords</c> does not resolve a property mapped as
+    /// <c>Keywords</c>.
+    /// </summary>
+    [TestMethod]
+    public void TryGetNamedPropertyId_WhenNameDiffersInCase_ShouldReturnFalse()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x80000003, 1)
+            .WithNameId(
+                Array.Empty<byte>(),
+                MsgFixtureBuilder.NameIdEntry(0, 2, isString: true, 0),
+                MsgFixtureBuilder.NameIdString("Keywords"))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.IsFalse(message.TryGetNamedPropertyId(new MapiNamedProperty(s_publicStrings, "keywords"), out _));
+    }
 }
