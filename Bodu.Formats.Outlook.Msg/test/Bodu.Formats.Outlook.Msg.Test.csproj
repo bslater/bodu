@@ -26,6 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Byte-identical copies of corpus/msg/fixes/*-fixes.csv, the release-note fix catalogue the corpus tests run. -->
+    <EmbeddedResource Include="Fixtures\ReleaseNotes\*-fixes.csv">
+      <LogicalName>Bodu.Formats.Outlook.Msg.Fixtures.ReleaseNotes.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
 
