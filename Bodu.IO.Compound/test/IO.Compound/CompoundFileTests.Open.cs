@@ -1160,4 +1160,107 @@ public partial class CompoundFileTests
                 return container[..1000];
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Compatible" /> prunes a sibling link to a directory entry it
+    /// skipped as malformed, and reads the other entries, as <see cref="CompoundValidationLevel.Minimal" /> does.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the malformed entry.</param>
+    [TestMethod]
+    [DataRow("UnknownType")]
+    [DataRow("NameLengthAbove64")]
+    [DataRow("NameLengthOdd")]
+    [DataRow("WorkbookWithMalformedThumbnail")]
+    public void Open_WhenSiblingLinkReachesASkippedEntry_ShouldPruneTheLink(string testName)
+    {
+        byte[] container = BuildSkippedEntryCase(testName, out string[] kept);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Compatible, CompoundValidationLevel.Minimal })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+
+            CollectionAssert.AreEqual(kept, file.RootStorage.EnumerateEntries().Select(static e => e.Name).ToArray(), $"{testName} at {level}");
+            foreach (string name in kept)
+            {
+                using CompoundStream stream = file.RootStorage.OpenStream(name);
+                Assert.AreEqual(10, stream.ReadAllBytes().Length, $"{testName} at {level}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Compatible" /> still rejects, as
+    /// <see cref="CompoundFileError.DirectoryCycle" />, a sibling link that leaves the directory, reaches a free slot or
+    /// reaches an entry already in the tree.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the link.</param>
+    [TestMethod]
+    [DataRow("LinkOutOfRange")]
+    [DataRow("LinkToAFreeSlot")]
+    [DataRow("LinkToAnEntryInTheTree")]
+    public void Open_WhenSiblingLinkIsInvalidAtCompatible_ShouldThrowDirectoryCycle(string testName)
+    {
+        byte[] container = BuildSkippedEntryCase(testName, out _);
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var file = CompoundFile.Open(new MemoryStream(container));
+        }, testName);
+
+        Assert.AreEqual(CompoundFileError.DirectoryCycle, ex.Category, testName);
+    }
+
+    /// <summary>
+    /// Builds a container whose root holds the 10-byte streams <c>A</c>, <c>B</c>, <c>C</c> and <c>D</c>, or a
+    /// workbook's <c>Workbook</c> and <c>Thumbnail</c>, and breaks one entry or link in the way a case names.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <param name="kept">Receives the names a level that prunes the broken link lists, in directory order.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildSkippedEntryCase(string testName, out string[] kept)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        bool workbook = testName == "WorkbookWithMalformedThumbnail";
+        string[] names = workbook ? ["Workbook", "Thumbnail"] : ["A", "B", "C", "D"];
+        foreach (string name in names)
+            _ = builder.AddStream(name, CompoundContainerBytes.Pattern(10));
+
+        byte[] container = builder.ToArray();
+
+        // The writer roots A..D at B, with A to its left and C to its right, and D to the right of C; it roots the
+        // workbook's two streams at Workbook, the shorter name, with Thumbnail to its right.
+        int c = CompoundContainerBytes.FindEntryOffset(container, workbook ? "Thumbnail" : "C");
+        int b = workbook ? 0 : CompoundContainerBytes.FindEntryOffset(container, "B");
+        kept = workbook ? ["Workbook"] : ["A", "B"];
+        switch (testName)
+        {
+            case "UnknownType":
+                container[c + CompoundContainerBytes.TypeOffset] = 3;
+                break;
+
+            case "NameLengthAbove64":
+            case "WorkbookWithMalformedThumbnail":
+                BinaryPrimitives.WriteUInt16LittleEndian(container.AsSpan(c + CompoundContainerBytes.NameLengthOffset), 200);
+                break;
+
+            case "NameLengthOdd":
+                BinaryPrimitives.WriteUInt16LittleEndian(container.AsSpan(c + CompoundContainerBytes.NameLengthOffset), 3);
+                break;
+
+            case "LinkOutOfRange":
+                CompoundContainerBytes.WriteUInt32(container, b + CompoundContainerBytes.RightSiblingOffset, 1000);
+                break;
+
+            case "LinkToAFreeSlot":
+                CompoundContainerBytes.WriteUInt32(container, b + CompoundContainerBytes.RightSiblingOffset, 6);
+                break;
+
+            default:
+                CompoundContainerBytes.WriteUInt32(container, b + CompoundContainerBytes.RightSiblingOffset, CompoundContainerBytes.FindStreamId(container, "A"));
+                break;
+        }
+
+        return container;
+    }
 }
