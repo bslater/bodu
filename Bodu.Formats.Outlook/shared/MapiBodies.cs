@@ -18,10 +18,10 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </summary>
 /// <remarks>
 /// The HTML body is <c>PidTagHtml</c>: a byte payload decoded through the internet code page (falling back to the
-/// message code page), or the value verbatim when the writer stored it as a string. The RTF body is
-/// <c>PidTagRtfCompressed</c>, decompressed per MS-OXRTFCP under the caller's output ceiling. This file lives in
-/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader; the consuming project
-/// selects the namespace via its <c>DefineConstants</c>.
+/// message code page), or the string value when the writer stored it as a string; either way the text ends at its first
+/// NUL. The RTF body is <c>PidTagRtfCompressed</c>, decompressed per MS-OXRTFCP under the caller's output ceiling. This
+/// file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader; the
+/// consuming project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
 internal static class MapiBodies
 {
@@ -29,7 +29,9 @@ internal static class MapiBodies
     /// Decodes the HTML body.
     /// </summary>
     /// <param name="properties">The message's decoded properties.</param>
-    /// <returns>The HTML text, or <see langword="null" /> when the property is absent.</returns>
+    /// <returns>
+    /// The HTML text, which ends at its first NUL, or <see langword="null" /> when the property is absent.
+    /// </returns>
     internal static string? DecodeHtml(MapiPropertyCollection properties)
     {
         if (properties.GetBinary(MapiPropertyIds.Html) is ReadOnlyMemory<byte> payload)
@@ -37,7 +39,12 @@ internal static class MapiBodies
             Encoding encoding = MapiEncodingResolver.GetHtmlEncoding(
                 properties.GetInt32(MapiPropertyIds.InternetCodepage),
                 properties.GetInt32(MapiPropertyIds.MessageCodepage));
-            return encoding.GetString(payload.Span);
+            string text = encoding.GetString(payload.Span);
+
+            // A writer may store the body with a terminating NUL. The text is cut at its first NUL character rather
+            // than at a zero byte, because whether a zero byte is a NUL depends on the code page.
+            int terminator = text.AsSpan().IndexOf('\0');
+            return terminator < 0 ? text : text[..terminator];
         }
 
         return properties.GetString(MapiPropertyIds.Html);

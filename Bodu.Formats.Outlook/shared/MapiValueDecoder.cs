@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 using System.Text;
 
 #if MSG
@@ -166,8 +167,12 @@ internal static class MapiValueDecoder
     /// Unicode payload.
     /// </returns>
     /// <remarks>
-    /// Trailing NUL terminators are trimmed at the byte level before the string is materialized, and a UTF-8 code-page
-    /// payload that begins with a byte order mark has the mark removed; both are encoding artifacts, not property text.
+    /// A string ends at its first NUL terminator, as MS-OXCDATA 2.11.1 defines both string types: a
+    /// <see cref="MapiPropertyType.Unicode" /> payload is cut at its first zero code unit and a
+    /// <see cref="MapiPropertyType.String8" /> payload at its first zero byte, before the string is materialized, so
+    /// the terminator and any bytes after it are dropped at every strictness. A UTF-8 code-page payload that begins
+    /// with a byte order mark has the mark removed first. The odd-length check applies to the whole payload, before the
+    /// cut.
     /// </remarks>
     internal static bool TryDecodeVariableValue(MapiPropertyType type, ReadOnlySpan<byte> bytes, Encoding encoding, bool strict, out object? value)
     {
@@ -191,19 +196,16 @@ internal static class MapiValueDecoder
                     bytes = bytes.Slice(0, bytes.Length - 1);
                 }
 
-                while (bytes.Length >= 2 && bytes[^1] == 0 && bytes[^2] == 0)
-                    bytes = bytes.Slice(0, bytes.Length - 2);
-
-                value = Encoding.Unicode.GetString(bytes);
+                value = DecodeUnicodeText(bytes);
                 return true;
             case MapiPropertyType.String8:
                 if (encoding.CodePage == Utf8CodePage && bytes.StartsWith(Utf8ByteOrderMark))
                     bytes = bytes.Slice(Utf8ByteOrderMark.Length);
 
-                while (bytes.Length >= 1 && bytes[^1] == 0)
-                    bytes = bytes.Slice(0, bytes.Length - 1);
-
-                value = encoding.GetString(bytes);
+                // In the single-byte and multibyte code pages a code-page string is written in, and in UTF-8, no byte
+                // of a character other than NUL is zero, so the first zero byte is the terminator.
+                int terminator = bytes.IndexOf((byte)0);
+                value = encoding.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator));
                 return true;
             case MapiPropertyType.Binary:
                 value = bytes.ToArray();
@@ -221,6 +223,22 @@ internal static class MapiValueDecoder
                 value = null;
                 return false;
         }
+    }
+
+    /// <summary>
+    /// Decodes UTF-16LE text up to its first NUL code unit.
+    /// </summary>
+    /// <param name="bytes">The UTF-16LE payload, of even length.</param>
+    /// <returns>The text before the first NUL code unit, or the whole payload's text when it holds none.</returns>
+    /// <remarks>
+    /// A NUL code unit is two zero bytes in either byte order, so the search reads the payload as code units whatever
+    /// the platform's endianness. The named-property maps decode their string names through the same rule.
+    /// </remarks>
+    internal static string DecodeUnicodeText(ReadOnlySpan<byte> bytes)
+    {
+        int terminator = MemoryMarshal.Cast<byte, char>(bytes).IndexOf('\0');
+
+        return Encoding.Unicode.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator * 2));
     }
 
     /// <summary>
