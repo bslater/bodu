@@ -37,10 +37,20 @@ public enum CompoundValidationLevel
     /// that more lenient levels silently skip.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The header must hold the values [MS-CFB] fixes, or the file is rejected with
     /// <see cref="CompoundFileError.InvalidHeader" />: a zero class identifier and zero reserved bytes, major version 3
     /// with 512-byte sectors or 4 with 4096-byte sectors, no directory sectors counted in version 3 and the length of
     /// the directory chain counted in version 4, and a mini stream cutoff of 4096.
+    /// </para>
+    /// <para>
+    /// The allocation tables are checked whole, not only where a chain the reader follows needs them: every FAT and
+    /// DIFAT sector must be marked as one in the FAT and the DIFAT chain must end in ENDOFCHAIN (<see cref="CompoundFileError.InvalidDifat" />),
+    /// every FAT entry for a sector past the end of the file must be free (<see cref="CompoundFileError.SectorOutOfRange" />),
+    /// and no sector may belong to two chains (<see cref="CompoundFileError.FatCycle" />, or
+    /// <see cref="CompoundFileError.InvalidMiniFat" /> for a mini sector). The other levels read a DIFAT chain that
+    /// ends in FREESECT or DIFSECT as ending there.
+    /// </para>
     /// </remarks>
     Strict,
 

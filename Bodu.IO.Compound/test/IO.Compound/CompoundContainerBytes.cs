@@ -127,6 +127,9 @@ internal static class CompoundContainerBytes
         foreach (uint difat in DifatSectorIds(container))
         {
             long offset = SectorOffset(header, difat);
+            if (offset + header.SectorSize > container.Length)
+                break;
+
             for (int i = 0; i < header.EntriesPerSector - 1 && sectors.Count < header.FatSectorCount; i++)
             {
                 uint sector = BinaryPrimitives.ReadUInt32LittleEndian(container.AsSpan((int)offset + (i * 4)));

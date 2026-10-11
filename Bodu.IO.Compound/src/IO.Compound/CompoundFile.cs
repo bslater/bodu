@@ -144,6 +144,9 @@ public sealed class CompoundFile
         if (_directory.Root.Size > 0)
             _sectors.InitializeMiniStream(_directory.Root.StartSector, _directory.Root.Size);
 
+        if (level == CompoundValidationLevel.Strict)
+            _sectors.ValidateAllocation(_directory);
+
         RootStorage = new CompoundStorage(this, _directory.Root, null);
     }
 

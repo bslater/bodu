@@ -34,11 +34,20 @@ internal sealed class CfbSectorReader
     /// <summary>The validation level governing how recoverable chain anomalies are handled.</summary>
     private readonly CompoundValidationLevel _level;
 
+    /// <summary>The sectors the DIFAT names as FAT sectors, in FAT order.</summary>
+    private readonly List<uint> _fatSectorIds = new();
+
+    /// <summary>The DIFAT sectors read, in chain order.</summary>
+    private readonly List<uint> _difatSectorIds = new();
+
     /// <summary>The materialized mini-FAT, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" /> runs.</summary>
     private uint[]? _miniFat;
 
     /// <summary>The materialized mini stream, or <see langword="null" /> until <see cref="InitializeMiniStream(uint, long)" /> runs.</summary>
     private byte[]? _miniStream;
+
+    /// <summary>The value that ended the DIFAT chain: its last sector's next-sector field.</summary>
+    private uint _difatTerminator = CfbHeader.EndOfChain;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbSectorReader" /> class and builds the regular FAT.
@@ -395,6 +404,7 @@ internal sealed class CfbSectorReader
                 return false;
 
             fatSectors.Add(id);
+            _fatSectorIds.Add(id);
             return true;
         }
 
@@ -412,12 +422,15 @@ internal sealed class CfbSectorReader
         int guard = 0;
         Span<byte> scratch = stackalloc byte[_header.SectorSize];
 
-        while (!stop && difatSector != CfbHeader.EndOfChain && difatSector != CfbHeader.FreeSector)
+        // [MS-CFB] ends the chain with ENDOFCHAIN; FREESECT and DIFSECT in its place are read as its end too, and
+        // ValidateAllocation rejects them at Strict.
+        while (!stop && IsRegularSector(difatSector))
         {
             if (StopOrThrow(guard++ > (_source.Length / _header.SectorSize) + 1, CompoundFileError.InvalidDifat))
                 break;
 
             ReadOnlySpan<byte> sector = ReadSector(difatSector, scratch);
+            _difatSectorIds.Add(difatSector);
             for (int i = 0; i < perSector - 1; i++)
             {
                 uint id = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice(i * sizeof(uint)));
@@ -431,6 +444,7 @@ internal sealed class CfbSectorReader
             difatSector = BinaryPrimitives.ReadUInt32LittleEndian(sector.Slice((perSector - 1) * sizeof(uint)));
         }
 
+        _difatTerminator = difatSector;
         uint[] fat = new uint[fatSectors.Count * perSector];
         int index = 0;
         foreach (uint fatSector in fatSectors)
@@ -441,6 +455,95 @@ internal sealed class CfbSectorReader
         }
 
         return fat;
+    }
+
+    /// <summary>
+    /// Verifies the allocation tables against [MS-CFB] as <see cref="CompoundValidationLevel.Strict" /> requires,
+    /// beyond what the chains the reader follows need.
+    /// </summary>
+    /// <param name="directory">The parsed directory, whose stream entries own the chains walked.</param>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown with <see cref="CompoundFileError.InvalidDifat" /> when a FAT or DIFAT sector is not marked as one in the
+    /// FAT or the DIFAT chain does not end in ENDOFCHAIN; with <see cref="CompoundFileError.SectorOutOfRange" /> when
+    /// the FAT allocates a sector past the end of the file; with <see cref="CompoundFileError.FatCycle" /> when two
+    /// chains share a sector; and with <see cref="CompoundFileError.InvalidMiniFat" /> when two mini chains share a
+    /// mini sector.
+    /// </exception>
+    /// <remarks>
+    /// Every chain is walked once, the directory, the mini FAT, the mini stream and each stream's own, with one set of
+    /// used sectors per allocation table, so the cost is linear in the size of the file.
+    /// </remarks>
+    internal void ValidateAllocation(CfbDirectory directory)
+    {
+        foreach (uint id in _fatSectorIds)
+            ThrowIfNotMarked(id, CfbHeader.FatSector);
+
+        foreach (uint id in _difatSectorIds)
+            ThrowIfNotMarked(id, CfbHeader.DifatSector);
+
+        CompoundThrowHelper.ThrowFormatIf(
+            _difatSectorIds.Count > 0 && _difatTerminator != CfbHeader.EndOfChain,
+            CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+            CompoundFileError.InvalidDifat);
+
+        // A sector whose first byte lies at or past the end of the file must be free.
+        long sectorsInFile = Math.Max(0, ((_source.Length + _header.SectorSize - 1) / _header.SectorSize) - 1);
+        for (long sector = sectorsInFile; sector < _fat.Length; sector++)
+        {
+            CompoundThrowHelper.ThrowFormatIf(
+                _fat[sector] != CfbHeader.FreeSector,
+                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+                CompoundFileError.SectorOutOfRange);
+        }
+
+        bool[] used = new bool[_fat.Length];
+        MarkChain(_header.FirstDirectorySector, _fat, used, CompoundFileError.FatCycle);
+        MarkChain(_header.FirstMiniFatSector, _fat, used, CompoundFileError.FatCycle);
+        if (directory.Root.Size > 0)
+            MarkChain(directory.Root.StartSector, _fat, used, CompoundFileError.FatCycle);
+
+        bool[] miniUsed = new bool[_miniFat?.Length ?? 0];
+        foreach (CfbDirectoryEntry entry in directory.AllocatedEntries)
+        {
+            if (entry.Type != CompoundEntryType.Stream || entry.Size == 0)
+                continue;
+
+            if (entry.Size >= CfbHeader.MiniStreamCutoff)
+                MarkChain(entry.StartSector, _fat, used, CompoundFileError.FatCycle);
+            else if (_miniFat is not null)
+                MarkChain(entry.StartSector, _miniFat, miniUsed, CompoundFileError.InvalidMiniFat);
+        }
+    }
+
+    /// <summary>
+    /// Throws when the FAT does not mark a sector with the expected special value.
+    /// </summary>
+    /// <param name="sector">The sector.</param>
+    /// <param name="mark">The value the FAT must hold for it.</param>
+    /// <exception cref="CompoundFileFormatException">Thrown when the FAT holds another value.</exception>
+    private void ThrowIfNotMarked(uint sector, uint mark) =>
+        CompoundThrowHelper.ThrowFormatIf(
+            sector >= (uint)_fat.Length || _fat[sector] != mark,
+            CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
+            CompoundFileError.InvalidDifat);
+
+    /// <summary>
+    /// Walks a chain and marks its sectors used, rejecting a sector another chain has already used.
+    /// </summary>
+    /// <param name="startSector">The first sector of the chain.</param>
+    /// <param name="table">The allocation table that links the chain.</param>
+    /// <param name="used">The sectors of the table that earlier chains used.</param>
+    /// <param name="category">The failure category of a cycle or a shared sector.</param>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the chain is cyclic, leaves the table, or reaches a sector another chain used.
+    /// </exception>
+    private void MarkChain(uint startSector, uint[] table, bool[] used, CompoundFileError category)
+    {
+        foreach (uint sector in WalkChain(startSector, table, category))
+        {
+            CompoundThrowHelper.ThrowFormatIf(used[sector], CompoundResourceStrings.Format_Invalid_CompoundSectorChain, category);
+            used[sector] = true;
+        }
     }
 
     /// <summary>

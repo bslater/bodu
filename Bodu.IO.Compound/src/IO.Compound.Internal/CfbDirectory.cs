@@ -64,6 +64,12 @@ internal sealed class CfbDirectory
     internal CfbDirectoryEntry Root { get; }
 
     /// <summary>
+    /// Gets the allocated entries, in stream identifier order.
+    /// </summary>
+    /// <value>Every entry the parser read, whether or not the storage hierarchy reaches it.</value>
+    internal IEnumerable<CfbDirectoryEntry> AllocatedEntries => _entries.OfType<CfbDirectoryEntry>();
+
+    /// <summary>
     /// Gets the entry with the specified stream identifier.
     /// </summary>
     /// <param name="sid">The stream identifier to resolve.</param>
