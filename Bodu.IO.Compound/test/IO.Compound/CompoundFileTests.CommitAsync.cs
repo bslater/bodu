@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -233,5 +235,37 @@ public partial class CompoundFileTests
         {
             await file.CommitAsync();
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> of a version-4 container that passes 2 GB keeps the range
+    /// lock sector (0x7FFFE) out of every chain: the stream whose sectors would cover it continues after it, so the
+    /// stream written next starts one sector later.
+    /// </summary>
+    /// <remarks>
+    /// The two large streams are <see cref="UnbackedMemoryManager" /> payloads, so the commit fails when it copies the
+    /// first of them, after it has written the header and the directory.
+    /// </remarks>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenVersion4ContainerExceedsTwoGigabytes_ShouldReserveRangeLockSector()
+    {
+        var destination = new MemoryStream();
+        using var file = CompoundFile.Create(destination, leaveOpen: true, new CompoundBuildOptions { Version = CompoundFileVersion.V4 });
+        using var first = new UnbackedMemoryManager(1_200_000_000);
+        using var second = new UnbackedMemoryManager(1_200_000_000);
+        file.RootStorage.CreateStream("A", first.Memory);
+        file.RootStorage.CreateStream("B", second.Memory);
+        file.RootStorage.CreateStream("C", CompoundContainerBytes.Pattern(4096));
+
+        await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        byte[] written = destination.ToArray();
+        int entry = CompoundContainerBytes.FindEntryOffset(written, "C");
+        uint start = BinaryPrimitives.ReadUInt32LittleEndian(written.AsSpan(entry + CompoundContainerBytes.StartSectorOffset));
+        Assert.AreEqual(1u + 292_969u + 292_969u + 1u, start);
     }
 }

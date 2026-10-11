@@ -7,6 +7,7 @@
 using System.Buffers;
 using System.Buffers.Binary;
 using Bodu.IO.Compound.Builders;
+using Bodu.IO.Compound.Internal;
 
 namespace Bodu.IO.Compound;
 
@@ -26,6 +27,12 @@ public partial class CompoundStorageBuilderSerializationTests
 
     /// <summary>The number of 4096-byte sectors a 1,200,000,000-byte stream occupies.</summary>
     private const long SectorsOfLargeStream = 292969;
+
+    /// <summary>
+    /// The sector of a file of 4096-byte sectors that covers file offsets 0x7FFFFF00-0x7FFFFFFF, which [MS-CFB] 2.8
+    /// reserves as the range lock sector.
+    /// </summary>
+    private const uint RangeLockSector = 0x7FFFE;
 
     /// <summary>
     /// Verifies that writing a version-3 container larger than the 2 GB [MS-CFB] allows a file of 512-byte sectors
@@ -125,6 +132,57 @@ public partial class CompoundStorageBuilderSerializationTests
         Assert.AreEqual(1 + SectorsOfLargeStream, b);
         Assert.IsLessThan(b + SectorsOfLargeStream, 0x7FFFEL);
         Assert.AreEqual(b + SectorsOfLargeStream + 1, c);
+    }
+
+    /// <summary>
+    /// Verifies that a version-4 container whose FAT would take the range lock sector (0x7FFFE) places that FAT sector,
+    /// and every sector after it, one sector later, so the header's DIFAT array and first DIFAT sector skip it.
+    /// </summary>
+    /// <remarks>
+    /// The stream fills sectors 1 to 524,280 and the FAT's 513 sectors follow it, so its sixth sector would be the
+    /// range lock sector.
+    /// </remarks>
+    [TestMethod]
+    public void WriteTo_WhenVersion4FatWouldTakeRangeLockSector_ShouldPlaceItAfterTheSector()
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", StopWrite, 524_280L * 4096);
+        using var destination = new MemoryStream();
+
+        byte[] written = WriteUntilStopped(builder, destination, CompoundFileVersion.V4);
+
+        var header = CfbHeader.Parse(written);
+        List<uint> fatSectors = CompoundContainerBytes.FatSectorIds(written);
+        Assert.AreEqual(513u, header.FatSectorCount);
+        Assert.AreEqual(RangeLockSector - 1, fatSectors[4]);
+        Assert.AreEqual(RangeLockSector + 1, fatSectors[5]);
+        CollectionAssert.DoesNotContain(fatSectors, RangeLockSector);
+        Assert.AreEqual(524_795u, header.FirstDifatSector);
+    }
+
+    /// <summary>
+    /// Verifies that a version-4 container whose last sector is the one before the range lock sector (0x7FFFE) is
+    /// written without reserving it: the file ends before the sector, so its layout is unchanged.
+    /// </summary>
+    /// <remarks>
+    /// The stream fills sectors 1 to 523,772, the FAT's 512 sectors follow it, and the DIFAT sector is sector 0x7FFFD.
+    /// </remarks>
+    [TestMethod]
+    public void WriteTo_WhenVersion4ContainerEndsBeforeRangeLockSector_ShouldNotReserveIt()
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", StopWrite, 523_772L * 4096);
+        using var destination = new MemoryStream();
+
+        byte[] written = WriteUntilStopped(builder, destination, CompoundFileVersion.V4);
+
+        var header = CfbHeader.Parse(written);
+        List<uint> fatSectors = CompoundContainerBytes.FatSectorIds(written);
+        Assert.AreEqual(512u, header.FatSectorCount);
+        for (int i = 0; i < fatSectors.Count; i++)
+            Assert.AreEqual(523_773u + (uint)i, fatSectors[i]);
+
+        Assert.AreEqual(RangeLockSector - 1, header.FirstDifatSector);
     }
 
     /// <summary>
