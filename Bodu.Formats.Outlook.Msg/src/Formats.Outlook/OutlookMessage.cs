@@ -197,7 +197,16 @@ public sealed partial class OutlookMessage
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="path" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="OutlookMsgFormatException">The file is not a compound file or not a valid message.</exception>
+    /// <exception cref="ArgumentException"><paramref name="path" /> is empty or is not a valid path.</exception>
+    /// <exception cref="FileNotFoundException">No file exists at <paramref name="path" />.</exception>
+    /// <exception cref="DirectoryNotFoundException">A directory in <paramref name="path" /> does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">The caller does not have permission to read the file.</exception>
+    /// <exception cref="IOException">
+    /// The file cannot be opened, for example because another process has it locked.
+    /// </exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The file is not a compound file, the container is malformed, or the message is not valid.
+    /// </exception>
     public static OutlookMessage OpenRead(string path)
     {
         ThrowHelper.ThrowIfNull(path);
