@@ -12,8 +12,9 @@ namespace Bodu.Formats.Excel.Biff;
 /// </summary>
 /// <remarks>
 /// The workbook globals declare XF records in sequence (their position is the XF index) and FORMAT records keyed by
-/// format index. Built-in formats have no FORMAT record; their codes and date classification come from
-/// <see cref="ExcelNumberFormat" />.
+/// format index. A FORMAT record decides its index's code and date classification, built-in index or not, and of
+/// several records for one index the last applies. An index that no FORMAT record defines takes its code and date
+/// classification from the built-in formats of <see cref="ExcelNumberFormat" />.
 /// </remarks>
 internal sealed class BiffFormatTable
 {

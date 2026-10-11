@@ -162,6 +162,7 @@ internal sealed class BiffWorkbookGlobals
                     xfFormatIndex.Add(reader.GetXf().FormatIndex);
                     break;
 
+                // A later FORMAT record for an index replaces an earlier one: the last record applies.
                 case BiffRecordType.Format:
                     BiffFormatRecord format = reader.GetFormat();
                     formatCodes[format.FormatIndex] = format.Code.GetString();

@@ -12,8 +12,10 @@ namespace Bodu.Formats.Excel;
 /// </summary>
 /// <remarks>
 /// Detection mirrors the approach used by mainstream spreadsheet readers: a format is treated as a date or time when
-/// its index is one of the built-in date or time formats, or when its format code contains date or time field
-/// characters outside of quoted literals, escapes, and bracketed conditions.
+/// its format code contains date or time field characters outside of quoted literals, escapes, and bracketed
+/// conditions. A code that a <c>FORMAT</c> record defines decides the classification of its index, built-in index or
+/// not; an index that no <c>FORMAT</c> record defines is a date or time format when it is one of the built-in date or
+/// time formats.
 /// </remarks>
 internal static class ExcelNumberFormat
 {
@@ -70,16 +72,25 @@ internal static class ExcelNumberFormat
     /// Determines whether a format index and its optional code denote a date or time format.
     /// </summary>
     /// <param name="formatIndex">The number-format index.</param>
-    /// <param name="formatCode">The custom format code for the index, when one is defined.</param>
+    /// <param name="formatCode">
+    /// The format code a <c>FORMAT</c> record defines for the index, or <see langword="null" /> when none does.
+    /// </param>
     /// <returns>
     /// <see langword="true" /> when the format renders a value as a date or time; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// A defined code alone decides, whatever the index, so a number code at an index in a built-in date or time range
+    /// is not a date format. Only an index without a defined code is classified by the built-in ranges and codes.
+    /// </remarks>
     public static bool IsDateFormat(ushort formatIndex, string? formatCode)
     {
+        if (formatCode is not null)
+            return CodeContainsDateField(formatCode);
+
         if (IsBuiltInDateFormatIndex(formatIndex))
             return true;
 
-        string? code = formatCode ?? GetBuiltInFormatCode(formatIndex);
+        string? code = GetBuiltInFormatCode(formatIndex);
         return code is not null && CodeContainsDateField(code);
     }
 

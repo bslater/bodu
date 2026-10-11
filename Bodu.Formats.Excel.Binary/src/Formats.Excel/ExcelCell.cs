@@ -105,8 +105,14 @@ public readonly record struct ExcelCell
     /// <remarks>
     /// <para>
     /// A format is a date or time format when its code holds a date or time field outside quoted literals, escapes and
-    /// bracketed conditions, or when its index is a built-in date or time format: 14-22, 27-36, 45-47, 50-58 or the
-    /// Thai date and time formats 71-81. The Thai built-in formats 59-62 and 67-70 are number formats.
+    /// bracketed conditions. The code of a <c>FORMAT</c> record decides for its index, built-in index or not, so a
+    /// number code that a workbook defines at an index in a built-in date range is not a date format; when the workbook
+    /// defines an index more than once, the last record applies.
+    /// </para>
+    /// <para>
+    /// An index that no <c>FORMAT</c> record defines is a date or time format when it is a built-in date or time
+    /// format: 14-22, 27-36, 45-47, 50-58 or the Thai date and time formats 71-81. The Thai built-in formats 59-62 and
+    /// 67-70 are number formats.
     /// </para>
     /// <para>
     /// Use <see cref="ExcelSerialDate" /> with the workbook's date system to convert a date-formatted number to a

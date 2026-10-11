@@ -361,6 +361,11 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="formatIndex">The number-format index, as carried by <see cref="ExcelCell.FormatIndex" />.</param>
     /// <returns>The format code, or <see langword="null" /> when none is known for the index.</returns>
+    /// <remarks>
+    /// A <c>FORMAT</c> record in the workbook decides its index's code, built-in index or not, and when the workbook
+    /// defines an index more than once, the last record applies. The built-in codes apply only to the indexes that no
+    /// <c>FORMAT</c> record defines. The same code decides <see cref="ExcelCell.IsDateFormatted" />.
+    /// </remarks>
     public string? GetNumberFormatCode(ushort formatIndex) =>
         _globals.Formats.GetFormatCode(formatIndex);
 
