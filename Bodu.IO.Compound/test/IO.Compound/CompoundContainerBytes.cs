@@ -265,4 +265,50 @@ internal static class CompoundContainerBytes
     /// <param name="value">The value to write.</param>
     internal static void WriteInt64(byte[] container, int offset, long value) =>
         BinaryPrimitives.WriteInt64LittleEndian(container.AsSpan(offset), value);
+
+    /// <summary>
+    /// Returns the sectors of a chain.
+    /// </summary>
+    /// <param name="container">The bytes of the container.</param>
+    /// <param name="start">The first sector of the chain.</param>
+    /// <returns>The sectors in chain order.</returns>
+    internal static List<uint> Chain(byte[] container, uint start)
+    {
+        uint[] fat = ReadFat(container);
+        List<uint> chain = [];
+        for (uint sector = start; sector < fat.Length && chain.Count <= fat.Length; sector = fat[sector])
+            chain.Add(sector);
+
+        return chain;
+    }
+
+    /// <summary>
+    /// Moves the last sector of a chain to a new sector after the end of the container, as a writer that appended it
+    /// last would have placed it, and relinks the chain.
+    /// </summary>
+    /// <param name="container">The bytes of the container, as the writer wrote them.</param>
+    /// <param name="startFieldOffset">The offset of the field that holds the chain's first sector.</param>
+    /// <returns>The container, one sector longer.</returns>
+    /// <remarks>
+    /// The new sector is the one that begins at the old end of the container, so it must fall within the FAT as written.
+    /// </remarks>
+    internal static byte[] MoveLastSector(byte[] container, int startFieldOffset)
+    {
+        var header = CfbHeader.Parse(container);
+        List<uint> chain = Chain(container, BinaryPrimitives.ReadUInt32LittleEndian(container.AsSpan(startFieldOffset)));
+        uint last = chain[^1];
+        uint moved = (uint)((container.Length / header.SectorSize) - 1);
+        byte[] result = new byte[container.Length + header.SectorSize];
+        container.CopyTo(result, 0);
+        container.AsSpan((int)SectorOffset(header, last), header.SectorSize).CopyTo(result.AsSpan((int)SectorOffset(header, moved)));
+
+        if (chain.Count >= 2)
+            SetFatEntry(result, chain[^2], moved);
+        else
+            WriteUInt32(result, startFieldOffset, moved);
+
+        SetFatEntry(result, moved, CfbHeader.EndOfChain);
+        SetFatEntry(result, last, CfbHeader.FreeSector);
+        return result;
+    }
 }

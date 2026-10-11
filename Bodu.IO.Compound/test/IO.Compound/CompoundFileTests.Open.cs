@@ -850,4 +850,151 @@ public partial class CompoundFileTests
 
         return container;
     }
+
+    /// <summary>
+    /// Verifies that every level and read strategy reads a container whose final sector the file cuts short after the
+    /// last byte any structure declares, as [MS-CFB] 2.3 allows.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the structure in the final sector.</param>
+    [TestMethod]
+    [DataRow("RegularStream")]
+    [DataRow("MiniStream")]
+    [DataRow("DirectoryCutInAFreeEntry")]
+    [DataRow("Version4RegularStream")]
+    public void Open_WhenFinalSectorIsShortButHoldsEveryDeclaredByte_ShouldReadEveryStream(string testName)
+    {
+        byte[] container = BuildShortSectorCase(testName, missingBytes: 0, out byte[] a, out byte[] b);
+
+        foreach (CompoundValidationLevel level in Enum.GetValues<CompoundValidationLevel>())
+        {
+            foreach (CompoundReadStrategy strategy in new[] { CompoundReadStrategy.Buffered, CompoundReadStrategy.Streaming })
+            {
+                var options = new CompoundFileOptions { ValidationLevel = level, ReadStrategy = strategy };
+                using var file = CompoundFile.Open(new MemoryStream(container), options);
+                using CompoundStream first = file.RootStorage.OpenStream("A");
+                using CompoundStream second = file.RootStorage.OpenStream("B");
+
+                CollectionAssert.AreEqual(a, first.ReadAllBytes(), $"{testName} at {level} {strategy}");
+                CollectionAssert.AreEqual(b, second.ReadAllBytes(), $"{testName} at {level} {strategy}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> and <see cref="CompoundValidationLevel.Compatible" />
+    /// report <see cref="CompoundFileError.TruncatedFile" /> when the file cuts its final sector short before a byte a
+    /// structure declares, through either read strategy.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the structure in the final sector.</param>
+    [TestMethod]
+    [DataRow("RegularStream")]
+    [DataRow("MiniStream")]
+    [DataRow("DirectoryCutInAReachedEntry")]
+    [DataRow("FatSector")]
+    [DataRow("Version4RegularStream")]
+    public void Open_WhenFinalSectorIsShortOfADeclaredByte_ShouldThrowTruncatedFile(string testName)
+    {
+        byte[] container = BuildShortSectorCase(testName, missingBytes: 1, out _, out _);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Strict, CompoundValidationLevel.Compatible })
+        {
+            foreach (CompoundReadStrategy strategy in new[] { CompoundReadStrategy.Buffered, CompoundReadStrategy.Streaming })
+            {
+                var options = new CompoundFileOptions { ValidationLevel = level, ReadStrategy = strategy };
+
+                CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+                {
+                    using var file = CompoundFile.Open(new MemoryStream(container), options);
+                    using CompoundStream first = file.RootStorage.OpenStream("A");
+                    using CompoundStream second = file.RootStorage.OpenStream("B");
+                    _ = first.ReadAllBytes();
+                    _ = second.ReadAllBytes();
+                }, $"{testName} at {level} {strategy}");
+
+                Assert.AreEqual(CompoundFileError.TruncatedFile, ex.Category, $"{testName} at {level} {strategy}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Minimal" /> reads a declared byte that the file cuts from its
+    /// final sector as zero, through either read strategy.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the structure in the final sector.</param>
+    [TestMethod]
+    [DataRow("RegularStream")]
+    [DataRow("MiniStream")]
+    [DataRow("FatSector")]
+    [DataRow("Version4RegularStream")]
+    public void Open_WhenFinalSectorIsShortOfADeclaredByteAtMinimal_ShouldReadItAsZero(string testName)
+    {
+        byte[] container = BuildShortSectorCase(testName, missingBytes: 1, out byte[] a, out byte[] b);
+
+        // The cut removes the last byte of A's data, or of B's in the mini stream; a FAT sector's missing entries read
+        // as free, and no chain needs them.
+        if (testName == "MiniStream")
+            b[^1] = 0;
+        else if (testName != "FatSector")
+            a[^1] = 0;
+
+        foreach (CompoundReadStrategy strategy in new[] { CompoundReadStrategy.Buffered, CompoundReadStrategy.Streaming })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal, ReadStrategy = strategy };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+            using CompoundStream first = file.RootStorage.OpenStream("A");
+            using CompoundStream second = file.RootStorage.OpenStream("B");
+
+            CollectionAssert.AreEqual(a, first.ReadAllBytes(), $"{testName} {strategy}");
+            CollectionAssert.AreEqual(b, second.ReadAllBytes(), $"{testName} {strategy}");
+        }
+    }
+
+    /// <summary>
+    /// Builds a container whose final sector the file cuts short: the last sector of a structure is moved to the end of
+    /// the file and cut after the bytes the structure declares, less the bytes a case leaves missing.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <param name="missingBytes">The number of declared bytes the cut removes.</param>
+    /// <param name="a">Receives the content of stream <c>A</c>, the stream the cut reaches in the stream cases.</param>
+    /// <param name="b">Receives the content of stream <c>B</c>.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildShortSectorCase(string testName, int missingBytes, out byte[] a, out byte[] b)
+    {
+        bool mini = testName == "MiniStream" || testName.StartsWith("Directory", StringComparison.Ordinal);
+        a = CompoundContainerBytes.Pattern(mini ? 100 : 5000);
+        b = CompoundContainerBytes.Pattern(testName == "MiniStream" ? 128 : 100, 5000);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", a);
+        _ = builder.AddStream("B", b);
+        CompoundFileVersion version = testName.StartsWith("Version4", StringComparison.Ordinal) ? CompoundFileVersion.V4 : CompoundFileVersion.V3;
+        byte[] container = builder.ToArray(new CompoundBuildOptions { Version = version });
+        var header = CfbHeader.Parse(container);
+
+        // The writer lays out the directory, the mini FAT, the mini stream and the regular streams, and then the FAT.
+        switch (testName)
+        {
+            case "RegularStream":
+            case "Version4RegularStream":
+                int entry = CompoundContainerBytes.FindEntryOffset(container, "A");
+                byte[] moved = CompoundContainerBytes.MoveLastSector(container, entry + CompoundContainerBytes.StartSectorOffset);
+                return moved[..(container.Length + (a.Length % header.SectorSize) - missingBytes)];
+
+            case "MiniStream":
+                // A's 100 bytes take two mini sectors and B's 128 the next two, so the mini stream declares 256 bytes,
+                // the last of them B's.
+                int root = CompoundContainerBytes.FindEntryOffset(container, "Root Entry");
+                byte[] movedMini = CompoundContainerBytes.MoveLastSector(container, root + CompoundContainerBytes.StartSectorOffset);
+                return movedMini[..(container.Length + 256 - missingBytes)];
+
+            case "DirectoryCutInAFreeEntry":
+            case "DirectoryCutInAReachedEntry":
+                // The directory holds the root, A and B, then a free entry; the cut falls in the free entry, or in B.
+                byte[] movedDirectory = CompoundContainerBytes.MoveLastSector(container, 0x30);
+                return movedDirectory[..(container.Length + (testName.EndsWith("FreeEntry", StringComparison.Ordinal) ? 444 : 300))];
+
+            default:
+                // The FAT is the last sector the writer emits; every byte of it is declared.
+                return container[..^missingBytes];
+        }
+    }
 }
