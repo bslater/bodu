@@ -278,15 +278,32 @@ public sealed class ExcelWorksheetReader
     /// <exception cref="BiffFormatException">
     /// Thrown when the string record or its continuation is malformed.
     /// </exception>
+    /// <remarks>
+    /// [MS-XLS] 2.1.7.20.6 puts the <c>ARRAY</c>, <c>TABLE</c> or <c>SHRFMLA</c> record of an array, table or shared
+    /// formula between the <c>FORMULA</c> record and its <c>STRING</c> record, so one such record, with any
+    /// <c>CONTINUE</c> records of its own, is passed over before the <c>STRING</c> record is looked for. No other
+    /// record is passed over: when the record that follows is not the <c>STRING</c> record, nothing is consumed and the
+    /// cell holds the empty string.
+    /// </remarks>
     private ExcelCell ReadFormula(in BiffFormulaRecord formula)
     {
         ExcelCell cell = ExcelCellMapper.FromFormula(formula, _formats, out bool expectsString);
         if (!expectsString)
             return cell;
 
-        // Peek at the next record; consume it only when it is the expected STRING result.
+        // Peek ahead; consume the records only when the expected STRING result is found.
         var probe = new BiffReader(_data.AsSpan(_position), isFinalBlock: true, _state);
-        if (probe.Read() && probe.RecordType == BiffRecordType.String)
+        if (!probe.Read())
+            return cell;
+
+        if (probe.RecordType is BiffRecordType.Array or BiffRecordType.Table or BiffRecordType.ShrFmla)
+        {
+            SkipContinuations(ref probe);
+            if (!probe.Read())
+                return cell;
+        }
+
+        if (probe.RecordType == BiffRecordType.String)
         {
             string text = BiffStringRecord.ReadContinuedText(ref probe);
             _position += probe.BytesConsumed;
@@ -295,5 +312,19 @@ public sealed class ExcelWorksheetReader
         }
 
         return cell;
+    }
+
+    /// <summary>
+    /// Consumes the <c>CONTINUE</c> records that follow a reader's current record.
+    /// </summary>
+    /// <param name="reader">The reader, positioned on the record whose continuations are passed over.</param>
+    /// <exception cref="BiffFormatException">
+    /// Thrown when a continuation record runs past the end of the data.
+    /// </exception>
+    private static void SkipContinuations(ref BiffReader reader)
+    {
+        bool consumed = reader.TryReadContinuation(out _);
+        while (consumed)
+            consumed = reader.TryReadContinuation(out _);
     }
 }

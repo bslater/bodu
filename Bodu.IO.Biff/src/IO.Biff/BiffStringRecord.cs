@@ -17,8 +17,10 @@ namespace Bodu.IO.Biff;
 /// <remarks>
 /// <para>
 /// The record identifier is <see cref="BiffRecordType.String" />. The payload is the string structure alone. The record
-/// has no position of its own: it belongs to the <see cref="BiffFormulaRecord" /> immediately before it, whose
-/// <see cref="BiffFormulaRecord.CachedResultKind" /> is <see cref="BiffCachedResultKind.String" />.
+/// has no position of its own: it belongs to the <see cref="BiffFormulaRecord" /> before it, whose
+/// <see cref="BiffFormulaRecord.CachedResultKind" /> is <see cref="BiffCachedResultKind.String" />, and follows it
+/// directly or, for an array, table or shared formula, after its <c>ARRAY</c>, <c>TABLE</c> or <c>SHRFMLA</c> record
+/// ([MS-XLS] 2.1.7.20.6).
 /// </para>
 /// <para>
 /// A long text continues in <c>CONTINUE</c> records after the <c>STRING</c> record ([MS-XLS] 2.1.7.20.6), each

@@ -15,7 +15,8 @@ namespace Bodu.IO.Biff;
 /// <remarks>
 /// The eight-byte result field holds a double unless its last two bytes are <c>0xFFFF</c>, in which case its first byte
 /// selects the kind (<see cref="CachedResultKind" />) and a string result is carried by the <c>STRING</c> record that
-/// immediately follows. The layout is identical in BIFF5 and BIFF8.
+/// follows, directly or after the <c>ARRAY</c>, <c>TABLE</c> or <c>SHRFMLA</c> record of an array, table or shared
+/// formula. The layout is identical in BIFF5 and BIFF8.
 /// </remarks>
 /// <seealso cref="BiffReader.GetFormula" />
 /// <seealso cref="BiffWriter.WriteFormula(int, int, ushort, double, ReadOnlySpan{byte}, ushort)" />

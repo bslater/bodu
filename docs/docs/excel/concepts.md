@@ -47,7 +47,7 @@ Every cell also carries a <xref:Bodu.Formats.Excel.ExcelCell.FormatIndex> - the 
 
 ## Formula cached result
 
-The reader does **not** evaluate formulas. A `FORMULA` record carries the **cached result** Excel last computed and stored - a number, boolean, error, or string - and that cached value is what the matching <xref:Bodu.Formats.Excel.ExcelCell> exposes. There is no separate "formula" cell kind: a formula cell is indistinguishable from a literal cell of the same kind, by design. A string-valued formula result is encoded as a `FORMULA` record immediately followed by a `STRING` record holding the text; the reader consumes both transparently and emits a single `String` cell.
+The reader does **not** evaluate formulas. A `FORMULA` record carries the **cached result** Excel last computed and stored - a number, boolean, error, or string - and that cached value is what the matching <xref:Bodu.Formats.Excel.ExcelCell> exposes. There is no separate "formula" cell kind: a formula cell is indistinguishable from a literal cell of the same kind, by design. A string-valued formula result is encoded as a `FORMULA` record followed by a `STRING` record holding the text - for an array, table or shared formula, after its `ARRAY`, `TABLE` or `SHRFMLA` record - and a long text continues in `CONTINUE` records; the reader consumes them transparently and emits a single `String` cell.
 
 > [!IMPORTANT]
 > The cached result is the value Excel stored at its last save, not a recomputation. If a workbook was edited by a tool that did not refresh cached results, the value read here can be stale relative to the formula. The reader has no formula engine and cannot detect or correct this.
