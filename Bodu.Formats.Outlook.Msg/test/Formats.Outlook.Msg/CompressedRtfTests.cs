@@ -62,6 +62,8 @@ public partial class CompressedRtfTests
                 "53000000630000004c5a467549003cc501000420546865207175a069636b206203607703a081021078206a756d700640646f7604"
                 + "9020740d710b607ac07920646f672e0d5f0e624c61670b7111606e64116e2e027d1320",
                 "{\\rtf1 The quick brown fox jumps over the lazy dog. The quick brown fox again and again and again.}"),
+            new("UncompressedNonZeroCrc", "1c000000080000004d454c41010000007b5c727466317d0d0a", "{\\rtf1}\r\n"),
+            new("UncompressedRawSizeEscapesPayload", "1c000000ff0000004d454c41000000007b5c727466317d0d0a", "{\\rtf1}\r\n"),
         }.Select(kat => new object[] { kat });
 
     /// <summary>
@@ -96,7 +98,5 @@ public partial class CompressedRtfTests
                 "CrcMismatch",
                 "2d0000002b0000004c5a4675f1c5c7a803000a007263706731323542320af32068656c090020627705b06c647d0a800fa0",
                 typeof(ExpectedFormatException)),
-            new("UncompressedNonZeroCrc", "1c000000080000004d454c41010000007b5c727466317d0d0a", typeof(ExpectedFormatException)),
-            new("UncompressedRawSizeEscapesPayload", "1c000000ff0000004d454c41000000007b5c727466317d0d0a", typeof(ExpectedFormatException)),
         }.Select(kat => new object[] { kat });
 }

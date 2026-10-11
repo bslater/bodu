@@ -18,7 +18,9 @@ namespace Bodu.Formats.Outlook.Pst;
 /// <remarks>
 /// <para>
 /// The payload starts with a 16-byte header: the compressed size (excluding its own field), the uncompressed size, the
-/// format magic (<c>LZFu</c> compressed, <c>MELA</c> raw), and a CRC over the bytes that follow the header. The
+/// format magic (<c>LZFu</c> compressed, <c>MELA</c> raw), and a CRC over the bytes that follow the header. A raw body
+/// is every byte after the header: MS-OXRTFCP 2.2.3.1 has the reader take the input to its end whatever the
+/// uncompressed size says and never validate the CRC, so a <c>MELA</c> payload's sizes and CRC are not consulted. The
 /// compressed body is an LZ77 variant over a 4096-byte circular dictionary preseeded with a 207-byte RTF prologue:
 /// control bytes are consumed bit by bit from the least significant bit, a clear bit copies a literal, and a set bit
 /// reads a big-endian 16-bit reference - a 12-bit dictionary offset and a 4-bit length stored as length − 2. A
@@ -37,10 +39,11 @@ namespace Bodu.Formats.Outlook.Pst;
 /// <c>DefineConstants</c> (<c>MSG</c> or <c>OUTLOOK_PST</c>).
 /// </para>
 /// <para>
-/// The declared uncompressed size sits outside the checksum, so it is bounded rather than trusted: a value above what
-/// the body can physically expand to (eight times the payload plus the dictionary) is malformed, a value above the
-/// caller's ceiling is rejected before any allocation, decoding writes into a pre-sized buffer and stops at the
-/// declared size, and a token cut short by the end of the body is malformed rather than a silent partial result.
+/// The declared uncompressed size of a compressed body sits outside the checksum, so it is bounded rather than trusted:
+/// a value above what the body can physically expand to (eight times the payload plus the dictionary) is malformed, a
+/// value above the caller's ceiling is rejected before any allocation, decoding writes into a pre-sized buffer and
+/// stops at the declared size, and a token cut short by the end of the body is malformed rather than a silent partial
+/// result. A raw body longer than the caller's ceiling is rejected as well.
 /// </para>
 /// </remarks>
 internal static class CompressedRtf
@@ -68,14 +71,14 @@ internal static class CompressedRtf
     /// </summary>
     /// <param name="data">The complete <c>PidTagRtfCompressed</c> payload, including the 16-byte header.</param>
     /// <param name="maxOutputBytes">
-    /// The largest decompressed size the caller accepts; a payload whose declared or produced size exceeds it is
-    /// rejected as malformed.
+    /// The largest decompressed size the caller accepts; a compressed payload whose declared or produced size exceeds
+    /// it, or a raw payload whose bytes after the header do, is rejected as malformed.
     /// </param>
     /// <returns>The RTF text bytes.</returns>
     /// <exception cref="OutlookFormatException">
-    /// The header is truncated or carries an unknown magic, the declared sizes escape the payload, or the checksum does
-    /// not match. The concrete type is the consuming format's exception (<c>OutlookMsgFormatException</c> or
-    /// <c>OutlookPstFormatException</c>).
+    /// The header is truncated or carries an unknown magic, a compressed body's declared sizes escape the payload or
+    /// its checksum does not match, or the output would exceed <paramref name="maxOutputBytes" />. The concrete type is
+    /// the consuming format's exception (<c>OutlookMsgFormatException</c> or <c>OutlookPstFormatException</c>).
     /// </exception>
     internal static byte[] Decompress(ReadOnlySpan<byte> data, int maxOutputBytes)
     {
@@ -83,31 +86,29 @@ internal static class CompressedRtf
         if (data.Length < 16)
             throw MalformedHeader();
 
-        uint compressedSize = BinaryPrimitives.ReadUInt32LittleEndian(data);
-        uint rawSize = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(4));
         uint magic = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(8));
-        uint crc = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(12));
-
         if (magic is not (CompressedMagic or UncompressedMagic))
             throw MalformedHeader();
 
+        if (magic == UncompressedMagic)
+        {
+            // MS-OXRTFCP 2.2.3.1: the reader takes every byte to the end of the input whatever RAWSIZE says, and MUST
+            // NOT validate the CRC. COMPSIZE describes the same bytes, so none of the three is consulted; the output is
+            // the input itself, so only its length is held to the caller's ceiling.
+            ReadOnlySpan<byte> raw = data[16..];
+            if (raw.Length > maxOutputBytes)
+                throw TooLarge();
+
+            return raw.ToArray();
+        }
+
+        uint compressedSize = BinaryPrimitives.ReadUInt32LittleEndian(data);
+        uint rawSize = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(4));
+        uint crc = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(12));
         if (compressedSize < 12 || compressedSize - 12 > (uint)(data.Length - 16))
             throw MalformedData();
 
         ReadOnlySpan<byte> payload = data.Slice(16, (int)(compressedSize - 12));
-
-        if (magic == UncompressedMagic)
-        {
-            if (crc != 0)
-                throw ChecksumMismatch();
-            if (rawSize > (uint)payload.Length)
-                throw MalformedData();
-            if (rawSize > (uint)maxOutputBytes)
-                throw TooLarge();
-
-            return payload.Slice(0, (int)rawSize).ToArray();
-        }
-
         if (ComputeCrc(payload) != crc)
             throw ChecksumMismatch();
 
