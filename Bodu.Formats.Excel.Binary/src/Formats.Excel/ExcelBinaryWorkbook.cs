@@ -317,6 +317,9 @@ public sealed class ExcelBinaryWorkbook
     /// Thrown when <paramref name="worksheetIndex" /> is out of range.
     /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the sheet substream is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the sheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
     /// <example>
     /// <code language="csharp">
@@ -345,6 +348,10 @@ public sealed class ExcelBinaryWorkbook
     /// Thrown when <paramref name="worksheetName" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown when no sheet with the given name exists.</exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the sheet substream is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the sheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
     public ExcelWorksheet ReadWorksheet(string worksheetName) =>
         ReadWorksheet(IndexOf(worksheetName));

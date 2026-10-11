@@ -115,13 +115,13 @@ The workbook's authored metadata is flattened into <xref:Bodu.Formats.Excel.Exce
 |---|---|
 | <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed - a truncated record, an inconsistent length, trailing bytes, or an out-of-range shared-string index. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException> | The compound file has no `Workbook` (or legacy `Book`) stream - it is a valid container but not a spreadsheet. |
-| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version this reader does not support (it targets BIFF8 and BIFF5). |
+| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version this reader does not support (it targets BIFF8 and BIFF5); a sheet whose own `BOF` record declares one raises it when the sheet is read. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException> | The workbook is password-protected (a `FILEPASS` record is present); this reader does not decrypt. |
 
 The first three open-time failures all derive from familiar base types, so a caller can catch them by base where convenient: `ExcelBinaryFormatException` is a <xref:System.FormatException>, `ExcelBinaryWorkbookStreamNotFoundException` a <xref:System.Collections.Generic.KeyNotFoundException>, and both `ExcelBinaryUnsupportedException` and `ExcelBinaryEncryptedWorkbookException` are <xref:System.NotSupportedException>. Addressing a sheet by an unknown name throws a plain <xref:System.Collections.Generic.KeyNotFoundException>; an out-of-range index throws <xref:System.ArgumentOutOfRangeException>. Using a workbook or reader after disposal throws <xref:System.ObjectDisposedException>.
 
 > [!NOTE]
-> `ExcelBinaryFormatException` is the only one of these raised *during reading* rather than at open - a record can be found malformed only when the reader reaches it. The other three are detected while parsing the globals at open time.
+> `ExcelBinaryFormatException` is raised *during reading* rather than at open - a record can be found malformed only when the reader reaches it - and so is `ExcelBinaryUnsupportedException` when a sheet's own `BOF` record declares a version the reader does not support. The other failures are detected while parsing the globals at open time.
 
 ## Where to go next
 

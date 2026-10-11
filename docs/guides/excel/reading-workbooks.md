@@ -114,7 +114,7 @@ Console.WriteLine(props.LastSaved);
 | <xref:System.ArgumentNullException> | The path or stream passed to `OpenRead` / `Open` is `null`. |
 | <xref:Bodu.IO.Compound.CompoundFileFormatException> | The content is not a well-formed compound file. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException> | A valid compound file with no `Workbook` (or legacy `Book`) stream - not a spreadsheet. |
-| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version other than BIFF8 or BIFF5. |
+| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version other than BIFF8 or BIFF5, at open, or a sheet's own `BOF` record does, when the sheet is read. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException> | The workbook is password-protected (a `FILEPASS` record is present). |
 | <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed - raised while reading, not at open. |
 

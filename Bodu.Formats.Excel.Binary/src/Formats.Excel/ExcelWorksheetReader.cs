@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Bodu.Formats.Excel.Biff;
 using Bodu.IO.Biff;
 
@@ -110,6 +112,9 @@ public sealed class ExcelWorksheetReader
     /// <see langword="true" /> when a cell was read; <see langword="false" /> at the end of the worksheet.
     /// </returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the worksheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     public bool TryReadCell(out ExcelCell cell)
     {
@@ -125,6 +130,12 @@ public sealed class ExcelWorksheetReader
         {
             return TryReadCellCore(out cell);
         }
+        catch (BiffUnsupportedVersionException ex)
+        {
+            throw new ExcelBinaryUnsupportedException(
+                string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Op_NotSupported_Biff8Version, ex.RawVersion ?? 0),
+                ex);
+        }
         catch (BiffFormatException ex)
         {
             throw new ExcelBinaryFormatException(ex.Message, ex);
@@ -136,6 +147,9 @@ public sealed class ExcelWorksheetReader
     /// </summary>
     /// <returns>A lazy sequence of the worksheet's populated cells.</returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the worksheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     public IEnumerable<ExcelCell> ReadCells()
     {
@@ -148,6 +162,9 @@ public sealed class ExcelWorksheetReader
     /// </summary>
     /// <returns>A lazy sequence of the worksheet's populated rows, in the order their cells appear.</returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the worksheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     /// <remarks>
     /// Cells are grouped into a row while their row index does not change; a new row is started when the row index
