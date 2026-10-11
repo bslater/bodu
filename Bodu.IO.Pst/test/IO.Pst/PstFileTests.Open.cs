@@ -105,6 +105,47 @@ public partial class PstFileTests
     }
 
     /// <summary>
+    /// Verifies that a header whose client magic is <c>SO</c>, an OST file, is refused as unsupported whatever its
+    /// version, with a message that names the OST, rather than as a malformed header.
+    /// </summary>
+    /// <param name="testName">The scenario name.</param>
+    /// <param name="version">The header's <c>wVer</c>.</param>
+    [TestMethod]
+    [DataRow("version 23", 23)]
+    [DataRow("version 36", 36)]
+    [DataRow("version 14", 14)]
+    [DataRow("version 0", 0)]
+    public void Open_WhenClientMagicIsOst_ShouldThrowPstUnsupportedFormatException(string testName, int version)
+    {
+        Assert.IsNotNull(testName);
+        byte[] bytes = BuildWithClientMagic(0x4F53, (ushort)version);
+
+        var ex = Assert.ThrowsExactly<PstUnsupportedFormatException>(() =>
+        {
+            _ = PstFile.Open(new MemoryStream(bytes, writable: false), new PstFileOptions());
+        });
+
+        Assert.AreEqual(PstFileError.UnsupportedFormat, ex.Error);
+        StringAssert.Contains(ex.Message, "OST", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Verifies that a header whose client magic is neither <c>SM</c> nor <c>SO</c> is refused as a malformed header.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenClientMagicIsUnknown_ShouldThrowPstFileFormatException()
+    {
+        byte[] bytes = BuildWithClientMagic(0x0000, 23);
+
+        var ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        {
+            _ = PstFile.Open(new MemoryStream(bytes, writable: false), new PstFileOptions());
+        });
+
+        Assert.AreEqual(PstFileError.InvalidHeader, ex.Error);
+    }
+
+    /// <summary>
     /// Verifies that a header declaring a file length beyond the stream's actual length is refused under strict
     /// validation - the declared length is the one header fact the reader can cross-check - while the tolerant
     /// levels still open the file.
