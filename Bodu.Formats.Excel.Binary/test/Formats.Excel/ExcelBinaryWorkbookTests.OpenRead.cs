@@ -264,6 +264,32 @@ public partial class ExcelBinaryWorkbookTests
     }
 
     /// <summary>
+    /// Verifies that a workbook whose globals have lost their EOF record opens, the globals ending where the first
+    /// sheet's substream begins, and that both sheets read their own cells.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenGlobalsLackEof_ShouldEndThemAtTheFirstSheet()
+    {
+        byte[] first = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 1.0));
+        byte[] second = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 2.0));
+        int globalsLength = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofGlobals),
+            Biff8TestWorkbook.BoundSheet(0, 0, 0, "Sheet1"),
+            Biff8TestWorkbook.BoundSheet(0, 0, 0, "Sheet2")).Length;
+        byte[] globals = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofGlobals),
+            Biff8TestWorkbook.BoundSheet(globalsLength, 0, 0, "Sheet1"),
+            Biff8TestWorkbook.BoundSheet(globalsLength + first.Length, 0, 0, "Sheet2"));
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile([.. globals, .. first, .. second], "Workbook");
+
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        CollectionAssert.AreEqual(new[] { "Sheet1", "Sheet2" }, workbook.Worksheets.Select(sheet => sheet.Name).ToArray());
+        Assert.AreEqual("0,0,Number,1", string.Join(";", workbook.ReadWorksheet(0).Cells.Select(DescribeCell)));
+        Assert.AreEqual("0,0,Number,2", string.Join(";", workbook.ReadWorksheet(1).Cells.Select(DescribeCell)));
+    }
+
+    /// <summary>
     /// Verifies that a sheet substream that the end of the stream cuts inside a record, in the EOF record's header or in
     /// the payload of the record before it, is rejected when the sheet is opened.
     /// </summary>
