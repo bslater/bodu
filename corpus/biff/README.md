@@ -221,35 +221,52 @@ line `#sst<TAB><index><TAB><text>` per string, read with `BiffSstReader` across 
 
 ### Status
 
-Every runnable row was run against Bodu at 378a6099db (the master this branch starts from) by a harness outside the
-repository built on the definitions above: 373 pass and 22 fail. A failing row stays `applies` (or `dialect`) and is
-listed here; none is changed to match Bodu. Grouped by apparent cause:
+The catalogue runs in `Bodu.Formats.Excel.Binary.Test` as `ExcelBinaryReleaseNoteCorpusTests`, with the same results on
+net8.0 and net10.0: of the 395 runnable rows, 390 pass and 5 fail, and the tests the 18 `unit` rows name all pass.
+Before the fixes below, a harness outside the repository found 373 passing and 22 failing at 378a6099db. A failing row
+stays as it is and is listed here; a row changed class only where the decision on its issue said so, as recorded below.
 
-- **Chart substreams read as cells.** The chart data cache of a chart sheet (spreadsheet-parseexcel 0.51 RT #44009) and
-  of a chart embedded in a worksheet (0.47 RT #13365) comes out as cells, where `ExcelSheetType` and
-  `docs/docs/excel/concepts.md` say a chart sheet yields none and [MS-XLS] 2.2.3.2 makes the records a cache.
-  `ExcelWorksheetReader` maps every cell record of the substream, and `BiffSubstreamLoader` stops a worksheet at the
-  first EOF, the embedded chart's.
-- **A STRING record continued in CONTINUE records** is rejected (xlrd 0.7.4 5a75bb5224 cases 1 and 2,
-  exceldatareader 3.0.0-develop00086 c0218db807), where [MS-XLS] 2.1.7.20.6 allows `String *Continue`.
-- **A STRING after an ARRAY record** is not taken as the formula's text (xlrd 0.6.0a2): the cell reads as an empty
-  string, though the ABNF puts ARRAY between FORMULA and STRING.
-- **Built-in date formats.** The Thai built-in indexes 71 to 81 are not dates (xlrd 0.7.2 a1cc4aaada case 1,
-  exceldatareader 3.9.0 PR #736 cases 2-4); a FORMAT record that defines index 50 keeps the built-in date flag although
-  its own code is reported (xlrd 0.5.2a3); a FORMAT record for index 1 replaces the built-in code (calamine 0.27.0
-  PR #479 case 2); of two FORMAT records for one index the last wins where ExcelDataReader keeps the first
-  (exceldatareader 3.7.0 PR #419).
-- **Substream boundaries.** A worksheet whose EOF is missing takes the next sheet's cells (exceldatareader 3.4.1 #321).
-- **String flags.** A BOUNDSHEET name whose flags byte sets a reserved bit is rejected (calamine 0.18.0 #195 case 3),
-  where [MS-XLS] 2.5.240 says the other bits are ignored.
-- **Shared string table.** A CONTINUE holding only the flags byte of a continued string is rejected (exceldatareader
-  3.7.0-develop00310 #477 case 1).
-- **Compound file tolerance.** A DIFAT chain ending in DIFSECT (xlrd 1.0.0 #85) and a header whose first DIFAT sector is
-  0 with a count of 0 (xlrd 0.7.2 7404fa2117 case 1) are rejected; a leaf directory entry with a name length of 200 is
-  rejected as a cyclic link although `CompoundValidationLevel.Compatible` documents skipping such an entry
-  (exceldatareader 3.4.0 #312 case 1); a stream that declares 1,000,000 bytes in a small file is not rejected (xlrd
-  0.9.0 14b25cb1d7).
-- **Exception translation.** A sheet whose BOF declares BIFF4 throws `BiffUnsupportedVersionException` from
-  `ExcelWorksheetReader` instead of `ExcelBinaryUnsupportedException` (apache-poi 3.11-beta1 Bug 53984).
-- **BOOLERR as OpenOffice.org wrote it** (a two-byte value before the error flag) reads an error as `TRUE` (apache-poi
-  3.5-final Bug 47479 case 2).
+Fixed, each after a commit of its regression tests:
+
+- **String flags (#934).** BOUNDSHEET and FONT names (ShortXLUnicodeString) and LABEL, FORMAT and STRING text
+  (XLUnicodeString) read only bit 0 of their flags byte and ignore the reserved bits, as [MS-XLS] 2.5.240 and 2.5.294
+  require (calamine 0.18.0 #195 case 3).
+- **Shared string table, a flags-only CONTINUE (#935).** A CONTINUE holding only a continued string's flags byte
+  contributes no characters, and the string goes on in the next one (exceldatareader 3.7.0-develop00310 #477 case 1).
+- **BOOLERR as OpenOffice.org wrote it (#936).** A nine-byte BOOLERR is read in that layout, so an error no longer reads
+  as `TRUE` (apache-poi 3.5-final Bug 47479 case 2).
+- **Shared string table, the declared count (#937).** The table ends where its records end, even when `cstUnique`
+  declares more strings. As decided, apache-poi 5.2.4 Bug 65543, apache-poi 3.12-beta1 Bug 57456, calamine 0.30.1 #548
+  and exceldatareader 3.7.0-develop00310 #477 case 4 moved from `dialect` (reject) to `applies` (parse), citing
+  docs/docs/io-biff/records.md:89 and BiffSstReader.cs:243.
+- **Exception translation (#933).** A sheet whose BOF declares BIFF4 raises `ExcelBinaryUnsupportedException`, with the
+  codec's exception inside (apache-poi 3.11-beta1 Bug 53984).
+- **A STRING record continued in CONTINUE records (#929)** is read whole (xlrd 0.7.4 5a75bb5224 cases 1 and 2,
+  exceldatareader 3.0.0-develop00086 c0218db807).
+- **A STRING after an ARRAY, TABLE or SHRFMLA record (#930)** is taken as the formula's text (xlrd 0.6.0a2).
+- **Chart sheets (#926).** A sheet that is not a worksheet yields no cells (spreadsheet-parseexcel 0.51 RT #44009).
+- **Embedded charts (#927).** A worksheet ends at the EOF that matches its own BOF, and a chart substream nested in it
+  is skipped, so the chart's data cache is not read as cells (spreadsheet-parseexcel 0.47 RT #13365).
+- **A missing EOF (#928).** A sheet without its EOF ends where the next sheet's substream begins, at the nearest
+  BOUNDSHEET offset past its own, or at the end of the stream (exceldatareader 3.4.1 #321).
+- **Thai built-in date formats (#931).** Indexes 71 to 81 are dates, and 59 to 62 and 67 to 70 stay numbers (xlrd 0.7.2
+  a1cc4aaada case 1, exceldatareader 3.9.0 PR #736 cases 2 to 4).
+- **FORMAT records (#932).** A FORMAT record decides its index's code and its date classification, built-in index or
+  not, and of several records for one index the last applies (xlrd 0.5.2a3). As decided, calamine 0.27.0 PR #479 case 2
+  (index 1 keeps its built-in code) and exceldatareader 3.7.0 PR #419 (the first record wins) are now `dialect`, citing
+  docs/docs/excel/concepts.md:63 and ExcelBinaryWorkbook.cs:365, with `expected` set to what Bodu produces.
+- **Documentation (#938).** The guides say that a malformed record in the workbook globals fails the open and one in a
+  sheet fails when the sheet is read, and the package README lists RSTRING.
+
+Still failing:
+
+- **Compound file tolerance, pending.** xlrd 1.0.0 #85 (a DIFAT chain ending in DIFSECT), xlrd 0.7.2 7404fa2117 case 1
+  (a header whose first DIFAT sector is 0 with a count of 0), exceldatareader 3.4.0 #312 case 1 (a leaf directory entry
+  with a name length of 200, rejected as a cyclic link although `CompoundValidationLevel.Compatible` documents skipping
+  such an entry) and xlrd 0.9.0 14b25cb1d7 (a stream that declares 1,000,000 bytes in a small file is not rejected) fail
+  in `Bodu.IO.Compound`. The compound branch fixes them under #944, #947, #950 and #951, and they pass once it merges.
+- **A declared SST count beyond 16,777,216, awaiting a decision.** libxls 1.5.0 #22 case 2 expects an SST that declares
+  16,777,217 strings and holds one to be rejected, citing the rule #937 replaced; Bodu now reads the one string, and
+  never sets aside more than 1,024 entries for a declared count. The row stays `applies` (reject), and fails, until its
+  class is decided: `dialect` (parse, A1 holding the string `a`) citing docs/docs/io-biff/records.md:89 would record
+  what Bodu does.
