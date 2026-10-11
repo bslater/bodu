@@ -440,4 +440,48 @@ public partial class ExcelWorksheetReaderTests
         Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
         Assert.AreEqual(text, cell.StringValue);
     }
+
+    /// <summary>
+    /// Verifies that a formula's text result is read from the STRING record that follows the ARRAY, TABLE or SHRFMLA
+    /// record [MS-XLS] 2.1.7.20.6 puts between the FORMULA record and its STRING record, and that the cell after them is
+    /// still read.
+    /// </summary>
+    /// <param name="recordId">The identifier of the record between the FORMULA and STRING records.</param>
+    /// <param name="length">The payload length of that record.</param>
+    [TestMethod]
+    [DataRow((ushort)0x0221, 14)]
+    [DataRow((ushort)0x0236, 16)]
+    [DataRow((ushort)0x04BC, 10)]
+    public void TryReadCell_WhenArrayTableOrSharedFormulaRecordPrecedesTheString_ShouldReadTheText(ushort recordId, int length)
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(recordId, new byte[length]),
+            Biff8TestWorkbook.CompressedString("abc"),
+            Biff8TestWorkbook.Number(1, 0, 5.0));
+
+        List<ExcelCell> cells = reader.ReadCells().ToList();
+
+        Assert.HasCount(2, cells);
+        Assert.AreEqual("abc", cells[0].StringValue);
+        Assert.AreEqual(5.0, cells[1].NumberValue);
+    }
+
+    /// <summary>
+    /// Verifies that the CONTINUE records of an ARRAY record between a formula and its STRING record are passed over
+    /// with it, so the text is still read from the STRING record.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenRecordBeforeTheStringContinues_ShouldSkipItsContinuation()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0221, new byte[14]),
+            Biff8TestWorkbook.Record(0x003C, new byte[4]),
+            Biff8TestWorkbook.CompressedString("abc"));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual("abc", cell.StringValue);
+        Assert.IsFalse(reader.TryReadCell(out _));
+    }
 }
