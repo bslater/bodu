@@ -23,6 +23,12 @@ namespace Bodu.Formats.Excel;
 /// in record order.
 /// </para>
 /// <para>
+/// Only a sheet whose <see cref="ExcelWorksheetInfo.Type" /> is <see cref="ExcelSheetType.Worksheet" /> yields cells. A
+/// chart, macro sheet, Visual Basic module or sheet of unknown type yields none, as <see cref="ExcelSheetType" />
+/// states: the <c>NUMBER</c> and <c>LABEL</c> records of a chart substream are its data cache ([MS-XLS] 2.2.3.2), not
+/// cells.
+/// </para>
+/// <para>
 /// For random access by position, materialize the worksheet instead with
 /// <see cref="ExcelBinaryWorkbook.ReadWorksheet(int)" />.
 /// </para>
@@ -73,7 +79,7 @@ public sealed class ExcelWorksheetReader
     /// <summary>The codec state carried between reads: the version and code page of the stream.</summary>
     private BiffReaderState _state;
 
-    /// <summary>Whether the reader has reached the worksheet's end-of-file record.</summary>
+    /// <summary>Whether no cells remain: the end-of-file record was reached, or the sheet is not a worksheet.</summary>
     private bool _ended;
 
     /// <summary>Whether this reader has been disposed.</summary>
@@ -96,6 +102,9 @@ public sealed class ExcelWorksheetReader
         _sharedStrings = sharedStrings;
         _formats = formats;
         _state = new BiffReaderState(options);
+
+        // Only a worksheet carries cells; the cell records of any other sheet, such as a chart's data cache, are not.
+        _ended = worksheet.Type != ExcelSheetType.Worksheet;
     }
 
     /// <summary>
@@ -109,7 +118,8 @@ public sealed class ExcelWorksheetReader
     /// </summary>
     /// <param name="cell">When this method returns, the next populated cell when one is available.</param>
     /// <returns>
-    /// <see langword="true" /> when a cell was read; <see langword="false" /> at the end of the worksheet.
+    /// <see langword="true" /> when a cell was read; <see langword="false" /> at the end of the worksheet, and at once
+    /// for a sheet that is not a worksheet.
     /// </returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
     /// <exception cref="ExcelBinaryUnsupportedException">
