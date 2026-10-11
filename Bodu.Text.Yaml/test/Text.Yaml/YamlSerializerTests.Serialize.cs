@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Serialization;
 using Bodu.Text.Yaml.Writer;
@@ -13,7 +14,8 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies <see cref="YamlSerializer.Serialize{TValue}(TValue, YamlSerializerOptions)" />: block emission, naming
-/// policy and attributes, null omission, and custom converters.
+/// policy and attributes, null omission, custom converters and their precedence over the built-in ones, and the runtime
+/// type of a member declared as a base type.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -173,6 +175,41 @@ public partial class YamlSerializerTests
         Assert.IsTrue(ex.Message.Contains(typeof(Type).ToString(), StringComparison.Ordinal), ex.Message);
     }
 
+    /// <summary>
+    /// Verifies that a converter for <see cref="int" /> registered in <see cref="YamlSerializerOptions.Converters" />
+    /// takes precedence over the built-in integer converter, so every <see cref="int" />, at the root and as a member,
+    /// is written in its form.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenOptionsConverterTargetsBuiltInType_ShouldUseCustomConverter()
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new MarkerInt32Converter());
+
+        string root = YamlSerializer.Serialize(5, options);
+        string member = YamlSerializer.Serialize(new Person { Name = "Ada", Age = 36, Active = true }, options);
+
+        Assert.AreEqual("custom\n", root);
+        Assert.AreEqual("Name: Ada\nAge: custom\nActive: true\n", member);
+    }
+
+    /// <summary>
+    /// Verifies that a member declared as a base type but holding a derived instance is written with the members of
+    /// the runtime type, the member only the derived type declares included.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenDeclaredTypeIsBase_ShouldWriteRuntimeTypeMembers()
+    {
+        var holder = new DeclaredBaseHolder { Item = new RuntimeDerivedModel { Name = "Ada", Extra = 2 } };
+
+        string yaml = YamlSerializer.Serialize(holder);
+
+        using var document = YamlDocument.Parse(yaml);
+        YamlElement item = document.RootElement.GetProperty("Item");
+        Assert.AreEqual("Ada", item.GetProperty("Name").GetString(), yaml);
+        Assert.AreEqual(2L, item.GetProperty("Extra").GetInt64(), yaml);
+    }
+
     /// <summary>A custom converter that reads and writes a value as an uppercase string.</summary>
     private sealed class UpperConverter
         : YamlConverter<string>
@@ -182,5 +219,44 @@ public partial class YamlSerializerTests
 
         public override void Write(Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
             writer.WriteString(value.ToUpperInvariant());
+    }
+
+    /// <summary>A custom converter that writes every <see cref="int" /> as the plain scalar <c>custom</c>.</summary>
+    private sealed class MarkerInt32Converter
+        : YamlConverter<int>
+    {
+        /// <inheritdoc />
+        /// <exception cref="NotSupportedException">Always; the tests only write through this converter.</exception>
+        public override int Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
+            throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public override void Write(Utf8YamlWriter writer, int value, YamlSerializerOptions options) =>
+            writer.WriteString("custom");
+    }
+
+    /// <summary>A base model declared as the type of a member.</summary>
+    private class DeclaredBaseModel
+    {
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+    }
+
+    /// <summary>A model derived from <see cref="DeclaredBaseModel" /> with a member of its own.</summary>
+    private sealed class RuntimeDerivedModel
+        : DeclaredBaseModel
+    {
+        /// <summary>Gets or sets the member only the derived type declares.</summary>
+        /// <value>The extra value.</value>
+        public int Extra { get; set; }
+    }
+
+    /// <summary>A model whose member is declared as <see cref="DeclaredBaseModel" />.</summary>
+    private sealed class DeclaredBaseHolder
+    {
+        /// <summary>Gets or sets the item, declared as the base type.</summary>
+        /// <value>The item.</value>
+        public DeclaredBaseModel? Item { get; set; }
     }
 }

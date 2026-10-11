@@ -131,6 +131,54 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that a tab after a node property, separating it from what follows on the same line, is separation and
+    /// is accepted.
+    /// </summary>
+    /// <param name="yaml">A document with a tab after a node property.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- !!str\ta", """["a"]""", DisplayName = "after a tag in a sequence entry")]
+    [DataRow("%TAG\t!e!\ttag:yaml.org,2002:\n--- !e!str\ta", "\"a\"", DisplayName = "after a %TAG-expanded tag")]
+    [DataRow("a: !!str\t1", """{"a":"1"}""", DisplayName = "after a tag on a mapping value")]
+    [DataRow("&x\ta", "\"a\"", DisplayName = "after an anchor on the root")]
+    [DataRow("- &x\t!!str\ta", """["a"]""", DisplayName = "between two properties and after them")]
+    public void Parse_WhenTabFollowsNodeProperty_ShouldAccept(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a tab between a sequence entry's dash and a compact mapping or sequence on its line is rejected,
+    /// since the tab would indent the nested collection.
+    /// </summary>
+    /// <param name="yaml">A sequence entry whose compact collection follows a tab.</param>
+    [TestMethod]
+    [DataRow("-\ta: b", DisplayName = "a compact mapping")]
+    [DataRow("-\t- a", DisplayName = "a compact sequence")]
+    [DataRow("- \t\"a\": b", DisplayName = "a compact mapping with a quoted key")]
+    [DataRow("-\t? a", DisplayName = "a compact mapping with an explicit key")]
+    public void Parse_WhenTabIndentsCompactCollectionAfterDash_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a tab between a sequence entry's dash and a scalar on its line is separation and is accepted.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTabSeparatesDashFromScalar_ShouldAccept()
+    {
+        using var document = YamlDocument.Parse("-\ta\n-\t\"b c\"\n");
+
+        Assert.AreEqual("""["a","b c"]""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
     /// Verifies that invalid UTF-8 input is rejected with <see cref="YamlFormatException" />.
     /// </summary>
     [TestMethod]
@@ -192,6 +240,29 @@ public partial class YamlDocumentTests
         Assert.ThrowsExactly<YamlFormatException>(() =>
         {
             using var doc = YamlDocument.Parse("root: " + deep + "\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a flow collection in implicit-key position is rejected wherever the key appears, rather than its
+    /// brackets being read as the text of a scalar key.
+    /// </summary>
+    /// <param name="yaml">A document with a flow collection as an implicit key.</param>
+    [TestMethod]
+    [DataRow("1: 2\n\n[3]: 4", DisplayName = "after a blank line")]
+    [DataRow("1: 2\n# c\n[3]: 4", DisplayName = "after a comment line")]
+    [DataRow("?\n[3]: 4", DisplayName = "after an empty explicit key")]
+    [DataRow("k: v\n[a, b]: c\n", DisplayName = "a flow sequence, later key")]
+    [DataRow("k: v\n{a: b}: c\n", DisplayName = "a flow mapping, later key")]
+    [DataRow("- k: v\n  [a]: b", DisplayName = "a later key of a nested mapping")]
+    [DataRow("&a [3]: 4", DisplayName = "an anchored first key")]
+    [DataRow("k: v\n&a [3]: 4", DisplayName = "an anchored later key")]
+    [DataRow("k: v\n!!seq [3]: 4", DisplayName = "a tagged later key")]
+    public void Parse_WhenFlowCollectionIsImplicitKey_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
         });
     }
 }

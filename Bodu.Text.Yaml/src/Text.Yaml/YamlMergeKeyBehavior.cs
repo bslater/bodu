@@ -10,15 +10,18 @@ namespace Bodu.Text.Yaml;
 /// Specifies how the reader treats the YAML merge key (<c>&lt;&lt;</c>).
 /// </summary>
 /// <remarks>
-/// The merge key is a YAML 1.1 working-draft feature and is not part of the YAML 1.2 core schema. It is supported as an
-/// opt-in compatibility convenience; the default is <see cref="Expand" /> to match common configuration usage, but it
-/// can be disabled so that <c>&lt;&lt;</c> is treated as an ordinary key.
+/// The merge key is a YAML 1.1 working-draft feature and is not part of the YAML 1.2 core schema. It is supported as a
+/// compatibility convenience, expanded by default under either specification version to match common configuration
+/// usage (the default is <see cref="Expand" />), and it can be disabled so that <c>&lt;&lt;</c> is treated as an
+/// ordinary key.
 /// </remarks>
 public enum YamlMergeKeyBehavior
 {
     /// <summary>
     /// Expand a <c>&lt;&lt;</c> entry by merging the referenced mapping's keys, with existing keys taking precedence.
-    /// This is the default.
+    /// This is the default. Only the plain, untagged key <c>&lt;&lt;</c> is a merge key; its value must be a mapping or
+    /// a sequence of mappings, and a mapping may hold only one merge key. A merged mapping that has a merge key of its
+    /// own is expanded first, so it contributes the keys its own merge supplies.
     /// </summary>
     Expand = 0,
 

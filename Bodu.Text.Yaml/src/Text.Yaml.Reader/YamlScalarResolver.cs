@@ -47,19 +47,31 @@ internal static class YamlScalarResolver
             return YamlValueKind.Boolean;
         }
 
-        // The integer and float attempts share one transcode (with 1.1 underscores stripped): a scalar carrying a
-        // non-ASCII byte cannot be numeric, so resolution short-circuits to a string without allocating.
+        // The integer and float attempts share one transcode: a scalar carrying a non-ASCII byte cannot be numeric, so
+        // resolution short-circuits to a string without allocating.
         Span<char> buffer = text.Length <= StackallocCharThreshold ? stackalloc char[StackallocCharThreshold] : new char[text.Length];
-        int length = TranscodeNumericCandidate(text, version, buffer);
+        int length = TranscodeNumericCandidate(text, buffer);
         if (length < 0)
             return YamlValueKind.String;
 
-        ReadOnlySpan<char> candidate = buffer[..length];
+        Span<char> candidate = buffer[..length];
 
         if (TryResolveInteger(candidate, version, out long longValue))
         {
             bits = longValue;
             return YamlValueKind.Integer;
+        }
+
+        // The integer forms are matched with their underscores in place, because YAML 1.1 groups digits only after the
+        // first one; the float attempt reads the 1.1 schema's digit groups with the separators removed, once it has
+        // ruled out a separator where no 1.1 float form has one: every form begins, after any sign, with a digit or the
+        // decimal point, and a form with no integer part has a digit right after its point.
+        if (version == YamlSpecVersion.V1_1)
+        {
+            if (HasMisplacedDigitSeparator(candidate))
+                return YamlValueKind.String;
+
+            candidate = candidate[..RemoveDigitSeparators(candidate)];
         }
 
         if (TryResolveFloat(candidate, out double doubleValue))
@@ -123,28 +135,57 @@ internal static class YamlScalarResolver
     }
 
     /// <summary>
-    /// Transcodes a scalar's bytes into the numeric-candidate characters both numeric attempts parse, removing the 1.1
-    /// schema's underscore digit-group separators.
+    /// Transcodes a scalar's bytes into the numeric-candidate characters both numeric attempts parse.
     /// </summary>
     /// <param name="text">The raw UTF-8 bytes of the scalar.</param>
-    /// <param name="version">The specification version, which controls underscore stripping.</param>
     /// <param name="destination">The buffer that receives the characters; at least the scalar's length.</param>
     /// <returns>
     /// The number of characters written, or <c>-1</c> when a non-ASCII byte makes the scalar non-numeric.
     /// </returns>
-    private static int TranscodeNumericCandidate(ReadOnlySpan<byte> text, YamlSpecVersion version, Span<char> destination)
+    private static int TranscodeNumericCandidate(ReadOnlySpan<byte> text, Span<char> destination)
     {
-        bool stripUnderscores = version == YamlSpecVersion.V1_1;
         int n = 0;
         foreach (byte b in text)
         {
             if (b >= 0x80)
                 return -1;
 
-            if (stripUnderscores && b == (byte)'_')
-                continue;
-
             destination[n++] = (char)b;
+        }
+
+        return n;
+    }
+
+    /// <summary>
+    /// Determines whether a numeric candidate has an underscore where no YAML 1.1 numeric form allows one: first after
+    /// any sign, or directly after a decimal point that no digit precedes.
+    /// </summary>
+    /// <param name="candidate">The candidate characters.</param>
+    /// <returns>
+    /// <see langword="true" /> when the first character after any sign is an underscore, or is a decimal point followed
+    /// by one; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool HasMisplacedDigitSeparator(ReadOnlySpan<char> candidate)
+    {
+        ReadOnlySpan<char> body = candidate.Length > 0 && candidate[0] is '+' or '-' ? candidate[1..] : candidate;
+        if (body.Length > 0 && body[0] == '_')
+            return true;
+
+        return body.Length > 1 && body[0] == '.' && body[1] == '_';
+    }
+
+    /// <summary>
+    /// Removes the YAML 1.1 schema's underscore digit-group separators from a numeric candidate in place.
+    /// </summary>
+    /// <param name="candidate">The candidate characters, compacted in place.</param>
+    /// <returns>The number of characters that remain at the start of <paramref name="candidate" />.</returns>
+    private static int RemoveDigitSeparators(Span<char> candidate)
+    {
+        int n = 0;
+        for (int i = 0; i < candidate.Length; i++)
+        {
+            if (candidate[i] != '_')
+                candidate[n++] = candidate[i];
         }
 
         return n;
@@ -179,28 +220,93 @@ internal static class YamlScalarResolver
                 return false;
         }
 
-        // Non-decimal radix forms carry no sign in either schema; a signed radix literal is not an integer and falls
-        // through to remain a string.
-        if (!hasSign && body.StartsWith("0x", StringComparison.Ordinal))
-            return TryParseRadix(body[2..], 16, negative, out value);
-
-        if (!hasSign && version == YamlSpecVersion.V1_1 && body.StartsWith("0b", StringComparison.Ordinal))
-            return TryParseRadix(body[2..], 2, negative, out value);
-
+        // The core schema's 0o octal takes no sign or digit groups, and YAML 1.1 keeps it in that form; a signed or
+        // grouped 0o literal is not an integer and remains a string.
         if (!hasSign && body.StartsWith("0o", StringComparison.Ordinal))
-            return TryParseRadix(body[2..], 8, negative, out value);
+            return TryParseRadix(body[2..], 8, negative, grouped: false, out value);
 
-        // YAML 1.1 octal uses a leading zero (0NNN), so a leading-zero token is octal-only: one containing a
-        // non-octal digit (for example 083 or 09) matches no 1.1 integer production and therefore remains a string,
-        // rather than being read as a decimal integer. The 1.2 core schema has no octal-by-leading-zero rule and
-        // reads such tokens as ordinary decimals.
-        if (!hasSign && version == YamlSpecVersion.V1_1 && body.Length > 1 && body[0] == '0')
-            return IsAllDigits(body, 8) && TryParseRadix(body[1..], 8, negative, out value);
+        if (version == YamlSpecVersion.V1_1)
+            return TryResolveYaml11Integer(body, negative, out value);
+
+        // The core schema's 0x hexadecimal takes no sign either, so a signed hexadecimal literal remains a string.
+        if (!hasSign && body.StartsWith("0x", StringComparison.Ordinal))
+            return TryParseRadix(body[2..], 16, negative, grouped: false, out value);
 
         if (!IsAllDigits(body, 10))
             return false;
 
         return long.TryParse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value);
+    }
+
+    /// <summary>
+    /// Attempts to resolve an unsigned candidate body as one of the YAML 1.1 int type's forms: binary (<c>0b</c>),
+    /// hexadecimal (<c>0x</c>), leading-zero octal, or decimal.
+    /// </summary>
+    /// <param name="body">The candidate characters after any sign, with their underscores in place.</param>
+    /// <param name="negative">Whether the candidate carried a minus sign.</param>
+    /// <param name="value">When the method returns <see langword="true" />, the resolved integer.</param>
+    /// <returns>
+    /// <see langword="true" /> when the body matches a YAML 1.1 integer form and fits in a 64-bit signed integer;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Every form may follow a sign, and groups its digits with underscores only after its first digit, so a body that
+    /// begins with an underscore matches none of them. A leading zero makes the rest octal, so a token such as
+    /// <c>083</c> or <c>09</c> matches no 1.1 form and remains a string rather than being read as a decimal; the 1.2
+    /// core schema has no octal-by-leading-zero rule and reads such tokens as decimals.
+    /// </remarks>
+    private static bool TryResolveYaml11Integer(ReadOnlySpan<char> body, bool negative, out long value)
+    {
+        value = 0;
+
+        if (body[0] is < '0' or > '9')
+            return false;
+
+        if (body.StartsWith("0b", StringComparison.Ordinal))
+            return TryParseRadix(body[2..], 2, negative, grouped: true, out value);
+
+        if (body.StartsWith("0x", StringComparison.Ordinal))
+            return TryParseRadix(body[2..], 16, negative, grouped: true, out value);
+
+        if (body.Length > 1 && body[0] == '0')
+            return TryParseRadix(body, 8, negative, grouped: true, out value);
+
+        return TryParseGroupedDecimal(body, negative, out value);
+    }
+
+    /// <summary>
+    /// Attempts to parse a YAML 1.1 decimal integer whose digits may be grouped with underscores.
+    /// </summary>
+    /// <param name="digits">The digits after any sign, beginning with a digit.</param>
+    /// <param name="negative">Whether the literal carried a minus sign.</param>
+    /// <param name="value">When the method returns <see langword="true" />, the signed result.</param>
+    /// <returns>
+    /// <see langword="true" /> when the digits form a decimal integer that fits in a 64-bit signed integer; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool TryParseGroupedDecimal(ReadOnlySpan<char> digits, bool negative, out long value)
+    {
+        value = 0;
+
+        // A decimal form has no leading zeros, so a run longer than the 19 digits of the 64-bit range cannot fit and
+        // needs no parse; the buffer holds the sign and at most those 19 digits.
+        Span<char> buffer = stackalloc char[20];
+        int n = 0;
+        if (negative)
+            buffer[n++] = '-';
+
+        foreach (char c in digits)
+        {
+            if (c == '_')
+                continue;
+
+            if (c is < '0' or > '9' || n == buffer.Length)
+                return false;
+
+            buffer[n++] = c;
+        }
+
+        return long.TryParse(buffer[..n], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value);
     }
 
     /// <summary>
@@ -275,29 +381,38 @@ internal static class YamlScalarResolver
     /// <param name="digits">The digits to parse, without prefix or sign.</param>
     /// <param name="radix">The numeric base, one of 2, 8, or 16.</param>
     /// <param name="negative">Whether the original literal carried a minus sign.</param>
+    /// <param name="grouped">Whether underscores between the digits are YAML 1.1 digit-group separators.</param>
     /// <param name="value">When the method returns <see langword="true" />, the signed result.</param>
     /// <returns>
-    /// <see langword="true" /> when the digits parse without overflow; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the digits hold at least one digit and parse without overflow; otherwise
+    /// <see langword="false" />.
     /// </returns>
-    private static bool TryParseRadix(ReadOnlySpan<char> digits, int radix, bool negative, out long value)
+    private static bool TryParseRadix(ReadOnlySpan<char> digits, int radix, bool negative, bool grouped, out long value)
     {
         value = 0;
-        if (digits.Length == 0)
-            return false;
 
+        bool hasDigit = false;
         ulong acc = 0;
         foreach (char c in digits)
         {
+            if (grouped && c == '_')
+                continue;
+
             int d = DigitValue(c);
             if (d < 0 || d >= radix)
                 return false;
 
-            ulong next = (acc * (ulong)radix) + (ulong)d;
-            if (next < acc)
+            // The bound is tested before multiplying: a wrapped product can land above the accumulator, so a test of
+            // the result would let a literal beyond the 64-bit range resolve as the integer it wraps to.
+            if (acc > (ulong.MaxValue - (ulong)d) / (ulong)radix)
                 return false;
 
-            acc = next;
+            acc = (acc * (ulong)radix) + (ulong)d;
+            hasDigit = true;
         }
+
+        if (!hasDigit)
+            return false;
 
         if (negative)
         {

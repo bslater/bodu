@@ -98,9 +98,11 @@ internal sealed partial class ObjectConverter<T>
             {
                 // A member populated under ObjectCreationHandling.Populate is read without being constructed,
                 // because the instance it holds can be reached only once this object exists.
+                // A failure's path names the key as the document spells it, which a case-insensitive match can differ
+                // from the member's own name.
                 values[property.SlotIndex] = reader.TokenType == YamlTokenType.StartMapping && ObjectBinder.PopulatesObject(metadata, property, options)
-                    ? ChildBinder.ReadPopulation(ref reader, (IPopulatingConverter)property.Converter, property.PropertyType, options, property.WireName)
-                    : ChildBinder.Read(ref reader, property.Converter, property.PropertyType, options, property.WireName);
+                    ? ChildBinder.ReadPopulation(ref reader, (IPopulatingConverter)property.Converter, property.PropertyType, options, name)
+                    : ChildBinder.Read(ref reader, property.Converter, property.PropertyType, options, name);
                 present[property.SlotIndex] = true;
             }
             else if (metadata.ExtensionData is not null)

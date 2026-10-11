@@ -39,6 +39,11 @@ public struct YamlDocumentOptions
     /// The maximum depth. A value of zero or less selects the default of 64. Larger values are clamped to the
     /// implementation ceiling.
     /// </value>
+    /// <remarks>
+    /// Only sequences and mappings count toward the depth, in flow and block style alike, so a maximum depth of N
+    /// admits N nested collections with a scalar at the deepest level. Input nested deeper throws
+    /// <see cref="YamlFormatException" />.
+    /// </remarks>
     public int MaxDepth
     {
         readonly get => _maxDepth;

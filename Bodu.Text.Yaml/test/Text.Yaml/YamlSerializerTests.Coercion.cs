@@ -7,8 +7,10 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies that <see cref="YamlSerializer" /> applies strict numeric and scalar coercions, rejecting lossy
-/// conversions and round-tripping <see cref="decimal" /> and large <see cref="ulong" /> values without corruption.
+/// Verifies that <see cref="YamlSerializer" /> applies strict numeric and scalar coercions: integer and integral float
+/// scalars bind across the numeric kinds, lossy and out-of-range conversions are rejected, a <see cref="float" /> widens
+/// to <see cref="double" /> on write, and <see cref="decimal" /> and large <see cref="ulong" /> values round-trip without
+/// corruption.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -100,5 +102,119 @@ public partial class YamlSerializerTests
         char value = YamlSerializer.Deserialize<char>("a\n");
 
         Assert.AreEqual('a', value);
+    }
+
+    /// <summary>
+    /// Verifies that an integer scalar binds to a <see cref="double" /> member and an integral float scalar binds to an
+    /// <see cref="int" /> or a <see cref="uint" /> member, converting across the numeric kinds as the default
+    /// <see cref="YamlNumberHandling.Strict" /> handling documents.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerScalarTargetsDoubleOrIntegralFloatTargetsInt_ShouldConvert()
+    {
+        MemberHolder<double> asDouble = YamlSerializer.Deserialize<MemberHolder<double>>("A: 1\n")!;
+        MemberHolder<int> asInt = YamlSerializer.Deserialize<MemberHolder<int>>("A: 1.0\n")!;
+        MemberHolder<uint> asUInt = YamlSerializer.Deserialize<MemberHolder<uint>>("A: 1.0\n")!;
+
+        Assert.AreEqual(1.0, asDouble.A);
+        Assert.AreEqual(1, asInt.A);
+        Assert.AreEqual(1u, asUInt.A);
+    }
+
+    /// <summary>
+    /// Verifies that a negative integer bound to an unsigned target, <see cref="uint" />, <see cref="ushort" /> or
+    /// <see cref="ulong" />, throws <see cref="YamlSerializationException" /> rather than wrapping around.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerTargetsUnsignedType_ShouldThrowYamlSerializationException()
+    {
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<uint>("-1");
+        });
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<ushort>("-1");
+        });
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<ulong>("-1");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="float" /> member holding <c>0.1f</c> is written as the text of the
+    /// <see cref="double" /> it widens to, <c>0.10000000149011612</c>, and narrows back to <c>0.1f</c> on read, as the
+    /// built-in converter catalog documents.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenSingleMemberIsOneTenth_ShouldRoundTripThroughWidenedText()
+    {
+        var original = new MemberHolder<float> { A = 0.1f };
+
+        string yaml = YamlSerializer.Serialize(original);
+        MemberHolder<float> restored = YamlSerializer.Deserialize<MemberHolder<float>>(yaml)!;
+
+        Assert.AreEqual("A: 0.10000000149011612\n", yaml);
+        Assert.AreEqual(0.1f, restored.A);
+    }
+
+    /// <summary>
+    /// Verifies that a finite scalar outside the range of <see cref="float" /> throws
+    /// <see cref="YamlSerializationException" /> when bound to a <see cref="float" /> member, rather than narrowing to
+    /// an infinity.
+    /// </summary>
+    /// <param name="text">The scalar.</param>
+    [TestMethod]
+    [DataRow("1e300", DisplayName = "a positive overflow")]
+    [DataRow("-1e300", DisplayName = "a negative overflow")]
+    [DataRow("3.5e38", DisplayName = "just past the boundary")]
+    [DataRow("\"1e300\"", DisplayName = "a quoted overflow")]
+    public void Deserialize_WhenFiniteFloatExceedsSingleRange_ShouldThrowYamlSerializationException(string text)
+    {
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<MemberHolder<float>>($"A: {text}\n");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a scalar at the boundary of <see cref="float" />, one that underflows, and the special values bind
+    /// to a <see cref="float" /> member, rounding and underflow being accepted.
+    /// </summary>
+    /// <param name="text">The scalar.</param>
+    /// <param name="expected">The value expected.</param>
+    [TestMethod]
+    [DataRow("3.4028235e38", float.MaxValue, DisplayName = "the largest value")]
+    [DataRow("-3.4028235e38", float.MinValue, DisplayName = "the smallest value")]
+    [DataRow("1e-50", 0f, DisplayName = "an underflow")]
+    [DataRow(".inf", float.PositiveInfinity, DisplayName = "positive infinity")]
+    [DataRow("-.inf", float.NegativeInfinity, DisplayName = "negative infinity")]
+    [DataRow(".nan", float.NaN, DisplayName = "not a number")]
+    public void Deserialize_WhenFloatIsWithinSingleRangeOrSpecial_ShouldBindIt(string text, float expected)
+    {
+        MemberHolder<float> holder = YamlSerializer.Deserialize<MemberHolder<float>>($"A: {text}\n")!;
+
+        Assert.AreEqual(expected, holder.A);
+    }
+
+    /// <summary>
+    /// Verifies that a hexadecimal or octal literal beyond the signed 64-bit range does not bind to a
+    /// <see cref="long" /> member as the integer it wraps to, but throws <see cref="YamlSerializationException" />, as
+    /// an out-of-range decimal does.
+    /// </summary>
+    /// <param name="text">The out-of-range literal.</param>
+    [TestMethod]
+    [DataRow("0x12000000000000000", DisplayName = "hexadecimal")]
+    [DataRow("0o2777777777777777777777", DisplayName = "octal")]
+    [DataRow("99999999999999999999", DisplayName = "decimal")]
+    public void Deserialize_WhenRadixIntegerExceedsInt64Range_ShouldThrowYamlSerializationException(string text)
+    {
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<MemberHolder<long>>($"A: {text}\n");
+        });
     }
 }

@@ -11,8 +11,15 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Reads a child value on behalf of a container converter, attaching the child's path segment to any binding failure so
-/// the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key.
+/// the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key, and the
+/// position of the token the failure occurred on when the failure carries none.
 /// </summary>
+/// <remarks>
+/// A conversion failure, a <see cref="FormatException" />, <see cref="OverflowException" />,
+/// <see cref="InvalidCastException" />, or <see cref="ArgumentException" />, is wrapped in a
+/// <see cref="YamlSerializationException" />. A <see cref="YamlFormatException" />, which reports malformed YAML rather
+/// than a value that cannot convert, passes through as it was thrown, as it does from the document's root value.
+/// </remarks>
 internal static class ChildBinder
 {
     /// <summary>
@@ -33,16 +40,13 @@ internal static class ChildBinder
         }
         catch (YamlSerializationException ex)
         {
+            reader.StampPosition(ex);
             ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
             throw;
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
         {
-            throw new YamlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
-            {
-                Path = segment,
-            };
+            throw Wrap(ref reader, type, ex, segment);
         }
     }
 
@@ -66,16 +70,13 @@ internal static class ChildBinder
         }
         catch (YamlSerializationException ex)
         {
+            reader.StampPosition(ex);
             ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
             throw;
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
         {
-            throw new YamlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
-            {
-                Path = segment,
-            };
+            throw Wrap(ref reader, type, ex, segment);
         }
     }
 
@@ -98,17 +99,37 @@ internal static class ChildBinder
         }
         catch (YamlSerializationException ex)
         {
+            reader.StampPosition(ex);
             ex.Path = YamlSerializationException.CombinePath(IndexSegment(index), ex.Path);
             throw;
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
         {
-            throw new YamlSerializationException(
-                string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), ex)
-            {
-                Path = IndexSegment(index),
-            };
+            throw Wrap(ref reader, type, ex, IndexSegment(index));
         }
+    }
+
+    /// <summary>
+    /// Wraps a conversion failure of a value in a binding failure carrying the value's path segment and the position of
+    /// the token the failure occurred on.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the token the failure occurred on.</param>
+    /// <param name="type">The value's declared type.</param>
+    /// <param name="inner">The conversion failure.</param>
+    /// <param name="segment">
+    /// The path segment for a child value, or <see langword="null" /> for the document's root value, which no key
+    /// names.
+    /// </param>
+    /// <returns>The binding failure to throw.</returns>
+    internal static YamlSerializationException Wrap(ref Utf8YamlReader reader, Type type, Exception inner, string? segment)
+    {
+        var exception = new YamlSerializationException(
+            string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), inner)
+        {
+            Path = segment,
+        };
+        reader.StampPosition(exception);
+        return exception;
     }
 
     /// <summary>

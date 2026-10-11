@@ -7,11 +7,14 @@
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Defines hard, non-configurable limits that bound resource use while parsing and writing YAML, independent of any
-/// caller-supplied option.
+/// Defines hard, non-configurable limits that the reader and writer apply independent of any caller-supplied option:
+/// bounds on resource use, and the YAML specification's own limit on implicit keys.
 /// </summary>
 internal static class YamlLimits
 {
+    /// <summary>The most characters an implicit mapping key may hold, counted with its node properties, its quotes, and the spaces before its value indicator (YAML 1.2.2 productions 154 and 155).</summary>
+    internal const int MaxImplicitKeyLength = 1024;
+
     /// <summary>The default container nesting depth bound applied when a caller does not configure one.</summary>
     internal const int DefaultMaxDepth = 64;
 

@@ -9,8 +9,9 @@ using System.Collections;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Verifies that <see cref="YamlSerializer" /> rejects dictionaries whose keys collapse to the same YAML key, so the
-/// serializer never emits a document its own parser would reject as a duplicate key.
+/// Verifies the dictionary surface of <see cref="YamlSerializer" />: dictionaries whose keys collapse to the same YAML
+/// key are rejected, so the serializer never emits a document its own parser would reject as a duplicate key, and a
+/// dictionary whose keys are not strings round-trips, its keys parsed back.
 /// </summary>
 public partial class YamlSerializerTests
 {
@@ -41,5 +42,37 @@ public partial class YamlSerializerTests
         string yaml = YamlSerializer.Serialize(value);
 
         Assert.AreEqual("a: 1\nb: 2\n", yaml);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary member with <see cref="int" /> keys and struct values round-trips: each key is written
+    /// as a mapping key and parsed back to the integer, and each struct value is restored.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenDictionaryHasIntegerKeysAndStructValues_ShouldRoundTrip()
+    {
+        var original = new NestedDictionaryModel();
+        original.Lookups[1] = new NestedDictionaryModel.Payload { I = 1 };
+
+        string yaml = YamlSerializer.Serialize(original);
+        NestedDictionaryModel restored = YamlSerializer.Deserialize<NestedDictionaryModel>(yaml)!;
+
+        Assert.AreEqual(1, restored.Lookups[1].I, yaml);
+    }
+
+    /// <summary>A model holding a dictionary with integer keys and struct values.</summary>
+    private sealed class NestedDictionaryModel
+    {
+        /// <summary>Gets or sets the payloads, keyed by an integer.</summary>
+        /// <value>The payloads.</value>
+        public Dictionary<int, Payload> Lookups { get; set; } = new();
+
+        /// <summary>A struct value the dictionary holds.</summary>
+        public struct Payload
+        {
+            /// <summary>Gets or sets the payload value.</summary>
+            /// <value>The payload value.</value>
+            public int I { get; set; }
+        }
     }
 }

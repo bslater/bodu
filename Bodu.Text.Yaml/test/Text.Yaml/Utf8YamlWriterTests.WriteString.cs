@@ -115,4 +115,32 @@ public partial class Utf8YamlWriterTests
         Assert.AreEqual("c: \"a\\x01b\"\n", yaml);
     }
 
+    /// <summary>
+    /// Verifies that a string that a YAML 1.2 or YAML 1.1 reader would read as another value when written plain is
+    /// written quoted: a leading-zero decimal (an integer under YAML 1.2), a YAML 1.1 sexagesimal number, and the merge
+    /// key <c>&lt;&lt;</c>.
+    /// </summary>
+    /// <param name="value">The string to write.</param>
+    [TestMethod]
+    [DataRow("019", DisplayName = "019")]
+    [DataRow("08", DisplayName = "08")]
+    [DataRow("0019", DisplayName = "0019")]
+    [DataRow("-09", DisplayName = "-09")]
+    [DataRow("1:1", DisplayName = "1:1")]
+    [DataRow("190:20:30", DisplayName = "190:20:30")]
+    [DataRow("-1:30", DisplayName = "-1:30")]
+    [DataRow("1:30.5", DisplayName = "1:30.5")]
+    [DataRow("<<", DisplayName = "<<")]
+    public void WriteString_WhenPlainTextReadsAsAnotherValue_ShouldQuote(string value)
+    {
+        string yaml = Write((Utf8YamlWriter w) =>
+        {
+            w.WriteStartMapping();
+            w.WritePropertyName("a");
+            w.WriteString(value);
+            w.WriteEndMapping();
+        });
+
+        Assert.AreEqual("a: \"" + value + "\"\n", yaml);
+    }
 }

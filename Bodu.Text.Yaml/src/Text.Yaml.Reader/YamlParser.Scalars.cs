@@ -29,10 +29,6 @@ internal sealed partial class YamlParser
         int offset = _pos;
         byte c = Peek();
 
-        // A plain scalar cannot begin with a flow-entry comma or a reserved indicator.
-        if (c is (byte)',' or (byte)'%' or (byte)'@' or (byte)'`')
-            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
-
         if (c == (byte)'"')
         {
             int row = NewString(ReadDoubleQuoted(minIndent), YamlScalarStyle.DoubleQuoted, offset, null, null);
@@ -47,7 +43,28 @@ internal sealed partial class YamlParser
             return row;
         }
 
+        if (!CanBeginPlainScalar(flow: false))
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+
         return ReadPlainBlock(minIndent, offset);
+    }
+
+    /// <summary>
+    /// Determines whether the byte at the cursor may begin a plain scalar (production 126, <c>ns-plain-first</c>): any
+    /// character but an indicator, or <c>-</c>, <c>?</c> or <c>:</c> followed by a character that may continue a plain
+    /// scalar.
+    /// </summary>
+    /// <param name="flow">Whether the scalar is in flow context, where a flow indicator cannot continue it.</param>
+    /// <returns><see langword="true" /> when a plain scalar may begin at the cursor.</returns>
+    private bool CanBeginPlainScalar(bool flow)
+    {
+        byte c = Peek();
+        if (c is (byte)'-' or (byte)'?' or (byte)':')
+            return flow ? !IsFlowColonStop(PeekAt(1)) : !IsBlankOrBreakOrEnd(PeekAt(1));
+
+        return c is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}' or (byte)'#' or (byte)'&'
+            or (byte)'*' or (byte)'!' or (byte)'|' or (byte)'>' or (byte)'\'' or (byte)'"' or (byte)'%' or (byte)'@'
+            or (byte)'`');
     }
 
     /// <summary>
@@ -79,8 +96,14 @@ internal sealed partial class YamlParser
             int blanks = 0;
             while (true)
             {
+                // Only spaces indent a continuation line; a tab after them is separation, so a line indented by too
+                // few spaces before a tab ends the scalar.
                 int lineStart = _pos;
                 int p = _pos;
+                while (p < _length && _source[p] == (byte)' ')
+                    p++;
+
+                int indentation = p - lineStart;
                 while (p < _length && _source[p] is (byte)' ' or (byte)'\t')
                     p++;
 
@@ -99,10 +122,9 @@ internal sealed partial class YamlParser
                     continue;
                 }
 
-                int col = p - lineStart;
                 _pos = p;
 
-                if (col < minIndent || AtDocumentBoundary() || _source[p] == (byte)'#')
+                if (indentation < minIndent || AtDocumentBoundary() || _source[p] == (byte)'#')
                 {
                     _pos = savePos;
                     _line = saveLine;
@@ -136,14 +158,7 @@ internal sealed partial class YamlParser
 
     done:
         if (!folded)
-        {
-            ReadOnlySpan<byte> span = _source.AsSpan(firstStart, firstEnd - firstStart);
-            YamlValueKind kind = YamlScalarResolver.Resolve(span, _version, out long bits);
-            if (kind != YamlValueKind.String)
-                return NewScalar(kind, bits, YamlScalarStyle.Plain, offset, null, null);
-
-            return NewString(Utf8(firstStart, firstEnd - firstStart), YamlScalarStyle.Plain, offset, null, null);
-        }
+            return NewPlainScalar(firstStart, firstEnd, null, null);
 
         return NewString(sb!.ToString(), YamlScalarStyle.Plain, offset, null, null);
     }
@@ -326,7 +341,7 @@ internal sealed partial class YamlParser
             case (byte)'0': buf.Add(0); break;
             case (byte)'a': buf.Add(0x07); break;
             case (byte)'b': buf.Add(0x08); break;
-            case (byte)'t': buf.Add((byte)'\t'); break;
+            case (byte)'t' or (byte)'\t': buf.Add((byte)'\t'); break;
             case (byte)'n': buf.Add((byte)'\n'); break;
             case (byte)'v': buf.Add(0x0B); break;
             case (byte)'f': buf.Add(0x0C); break;
@@ -341,7 +356,7 @@ internal sealed partial class YamlParser
             case (byte)'L': AppendRune(buf, 0x2028); break;
             case (byte)'P': AppendRune(buf, 0x2029); break;
             case (byte)'x': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(2))); break;
-            case (byte)'u': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(4))); break;
+            case (byte)'u': AppendRune(buf, ReadUtf16Escape()); break;
             case (byte)'U': AppendRune(buf, ValidateEscapeCodePoint(ReadHex(8))); break;
             default: throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
         }
@@ -375,6 +390,32 @@ internal sealed partial class YamlParser
         }
 
         return value;
+    }
+
+    /// <summary>
+    /// Reads the four hexadecimal digits of a 16-bit Unicode escape, combining a high surrogate with the low-surrogate
+    /// escape that must follow it directly, as JSON writes a character outside the Basic Multilingual Plane.
+    /// </summary>
+    /// <returns>The decoded code point.</returns>
+    /// <exception cref="YamlFormatException">
+    /// The escape is a lone low surrogate, or a high surrogate not followed directly by a low-surrogate escape.
+    /// </exception>
+    private int ReadUtf16Escape()
+    {
+        int unit = ReadHex(4);
+        if (unit is < 0xD800 or > 0xDBFF)
+            return ValidateEscapeCodePoint(unit);
+
+        if (Peek() != (byte)'\\' || PeekAt(1) != (byte)'u')
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
+
+        Advance();
+        Advance();
+        int low = ReadHex(4);
+        if (low is < 0xDC00 or > 0xDFFF)
+            throw Error(YamlResourceStrings.Format_Invalid_YamlInvalidEscape);
+
+        return 0x10000 + ((unit - 0xD800) << 10) + (low - 0xDC00);
     }
 
     /// <summary>

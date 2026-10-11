@@ -64,6 +64,9 @@ internal sealed partial class YamlParser
     /// <summary>The line on which the most recent anchor or tag property was read, or <c>-1</c> when none has been.</summary>
     private int _lastPropertyLine = -1;
 
+    /// <summary>The anchor names the current document has defined, or <see langword="null" /> until a document defines one.</summary>
+    private HashSet<string>? _anchorNames;
+
     /// <summary>Indicates whether a leading <c>---</c> document-start marker has already been consumed.</summary>
     private bool _documentStartConsumed;
 
@@ -107,28 +110,13 @@ internal sealed partial class YamlParser
     internal List<YamlReaderRow> Parse()
     {
         ValidateSource();
-        SkipByteOrderMark();
+        SkipDocumentPrefix();
         SkipDirectivesAndDocumentStart();
 
-        SkipBlankCommentLines();
+        SkipDocumentPrefix();
 
         ParseDocumentBody();
-
-        // Trailing content after the first document (other than a document boundary) is not permitted here.
-        SkipBlankCommentLines();
-        if (!AtStreamEnd() && !AtDocumentBoundary())
-            throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
-
-        // A document-end marker line may carry only a trailing comment.
-        if (!AtStreamEnd() && Peek() == (byte)'.')
-        {
-            Advance();
-            Advance();
-            Advance();
-            SkipSpaces();
-            if (!IsBreakOrEnd(Peek()) && Peek() != (byte)'#')
-                throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
-        }
+        ParseDocumentEnd();
 
         Compose();
         return _rows;
@@ -144,24 +132,19 @@ internal sealed partial class YamlParser
     {
         var documents = new List<(List<YamlReaderRow>, string[])>();
         ValidateSource();
-        SkipByteOrderMark();
 
         while (true)
         {
+            // Each document may begin with a byte-order mark, before its directives, its '---', or its content.
+            SkipDocumentPrefix();
             SkipDirectivesAndDocumentStart();
-            SkipBlankCommentLines();
+            SkipDocumentPrefix();
 
             // An empty region with no explicit '---' start and no content is not a document.
             if (!_documentStartConsumed && (AtStreamEnd() || (CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())))
             {
                 if (!AtEnd && Peek() == (byte)'.')
-                {
-                    while (!IsBreakOrEnd(Peek()))
-                        _pos++;
-
-                    if (!AtEnd)
-                        Advance();
-                }
+                    SkipDocumentEndMarker();
 
                 SkipBlankCommentLines();
                 if (AtStreamEnd())
@@ -173,21 +156,12 @@ internal sealed partial class YamlParser
             _rows = [];
             _strings = [];
 
+            // Each document obeys the rules Parse applies to the first: it ends at a document boundary or the end
+            // of the stream, so content after its root node cannot begin another document without a marker.
             ParseDocumentBody();
+            ParseDocumentEnd();
             Compose();
             documents.Add((_rows, _strings.ToArray()));
-
-            SkipBlankCommentLines();
-
-            // Consume a document-end marker ('...') line so the next iteration starts cleanly.
-            if (!AtEnd && CurrentColumn() == 0 && Peek() == (byte)'.' && AtDocumentBoundary())
-            {
-                while (!IsBreakOrEnd(Peek()))
-                    _pos++;
-
-                if (!AtEnd)
-                    Advance();
-            }
 
             SkipBlankCommentLines();
             if (AtStreamEnd())
@@ -204,6 +178,9 @@ internal sealed partial class YamlParser
     {
         _depth = 0;
 
+        // An anchor is scoped to its document, so a later document may define a name an earlier one did.
+        _anchorNames?.Clear();
+
         if (AtStreamEnd() || AtDocumentBoundary())
         {
             // An empty document resolves to a single null root node at index zero.
@@ -217,37 +194,65 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
+    /// Verifies that the document just parsed ends at a document boundary or the end of the stream, and consumes the
+    /// <c>...</c> document-end marker line that ends it, if any.
+    /// </summary>
+    /// <remarks>
+    /// A document ends only at a <c>---</c> or <c>...</c> marker or at the end of the stream. Content after the root
+    /// node, including a directive, therefore cannot follow without a marker: a directive must come after a <c>...</c>
+    /// or at the start of the stream.
+    /// </remarks>
+    /// <exception cref="YamlFormatException">
+    /// Content follows the root node without a document marker, or text other than a comment follows the <c>...</c>
+    /// marker on its line.
+    /// </exception>
+    private void ParseDocumentEnd()
+    {
+        SkipBlankCommentLines();
+        if (!AtStreamEnd() && !AtDocumentBoundary())
+            throw Error(YamlResourceStrings.Format_Invalid_YamlContentAfterDocumentEnd);
+
+        if (!AtStreamEnd() && Peek() == (byte)'.')
+            SkipDocumentEndMarker();
+    }
+
+    /// <summary>
+    /// Consumes a <c>...</c> document-end marker line at the cursor, which may carry only a trailing comment.
+    /// </summary>
+    /// <exception cref="YamlFormatException">Text other than a comment follows the marker on its line.</exception>
+    private void SkipDocumentEndMarker()
+    {
+        Advance();
+        Advance();
+        Advance();
+        SkipLineTrailing();
+    }
+
+    /// <summary>
     /// Parses a block-context node: a block mapping, a block sequence, or a scalar, after consuming any node properties
     /// (anchor and tag).
     /// </summary>
     /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
     /// <returns>The row index of the parsed node.</returns>
-    private int ParseBlockNode(int minIndent)
-    {
-        if (++_depth > _maxDepth)
-            throw Error(string.Format(System.Globalization.CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
-
-        try
-        {
-            return ParseBlockNodeCore(minIndent);
-        }
-        finally
-        {
-            _depth--;
-        }
-    }
+    private int ParseBlockNode(int minIndent) =>
+        ParseBlockNode(minIndent, minIndent - 1);
 
     /// <summary>
-    /// Parses a block-context node after the depth guard has been applied.
+    /// Parses a block-context node: a block mapping, a block sequence, or a scalar, after consuming any node properties
+    /// (anchor and tag), with an explicit parent indentation for a block scalar.
     /// </summary>
     /// <param name="minIndent">The minimum column at which the node's content must appear.</param>
+    /// <param name="blockScalarParentIndent">
+    /// The indentation of the node's parent, from which a block scalar's content indentation is counted.
+    /// </param>
     /// <returns>The row index of the parsed node.</returns>
-    private int ParseBlockNodeCore(int minIndent)
+    private int ParseBlockNode(int minIndent, int blockScalarParentIndent)
     {
         SkipBlankCommentLines();
 
-        // In block context the anchor and tag node properties may be spread across line breaks before the node.
-        string? anchor = TryReadAnchorAndTag(out string? tag, crossLines: true);
+        // In block context the anchor and tag node properties may be spread across line breaks before the node, on lines
+        // indented at least as far as the node's content.
+        string? anchor = TryReadAnchorAndTag(out string? tag, crossLines: true, minIndent);
 
         SkipBlankCommentLines();
 
@@ -286,18 +291,34 @@ internal sealed partial class YamlParser
                 throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
             int alias = ParseAlias();
+
+            // An alias followed on its line by a value indicator is the implicit key of a mapping that begins here,
+            // which the profile rejects, at the alias, as it does a sequence or mapping key.
+            SkipSpaces();
+            if (Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1)))
+                throw ErrorAt(_rows[alias].Offset, YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+
             SkipLineTrailing();
             return Finish(alias, anchor);
         }
 
-        // A block scalar (literal or folded). The floor is the parent node's indentation (one less than the column at
-        // which this node's content must appear), so a less-indented following line ends the scalar.
+        // A block scalar (literal or folded). The floor is the parent node's indentation, so a less-indented following
+        // line ends the scalar.
         if (c == (byte)'|' || c == (byte)'>')
-            return Finish(ParseBlockScalar(minIndent - 1, anchor, tag), anchor);
+            return Finish(ParseBlockScalar(blockScalarParentIndent, anchor, tag), anchor);
 
         // Otherwise the node is either a block mapping or a single scalar. Decide by probing for a key indicator.
         if (TryDetectBlockMapping(col))
+        {
+            // An explicit key cannot begin on the same line as the mapping's own anchor or tag.
+            if (c == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)) && (anchor is not null || tag is not null)
+                && _line == _lastPropertyLine)
+            {
+                throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+            }
+
             return Finish(ParseBlockMapping(col, anchor, tag), anchor);
+        }
 
         int scalar = ParseBlockScalarPlainOrQuoted(minIndent);
         ApplyProperties(scalar, anchor, tag);
@@ -350,13 +371,34 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a block mapping whose entries begin at the given indentation.
+    /// Parses a block mapping whose entries begin at the given indentation, counting it toward the nesting depth.
     /// </summary>
     /// <param name="indent">The column at which each key begins.</param>
     /// <param name="anchor">The anchor captured for the mapping node, or <see langword="null" />.</param>
     /// <param name="tag">The tag captured for the mapping node, or <see langword="null" />.</param>
     /// <returns>The row index of the mapping.</returns>
+    /// <exception cref="YamlFormatException">The mapping would nest deeper than the maximum depth.</exception>
     private int ParseBlockMapping(int indent, string? anchor, string? tag)
+    {
+        EnterCollection();
+        try
+        {
+            return ParseBlockMappingCore(indent, anchor, tag);
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a block mapping whose entries begin at the given indentation, after the depth guard has been applied.
+    /// </summary>
+    /// <param name="indent">The column at which each key begins.</param>
+    /// <param name="anchor">The anchor captured for the mapping node, or <see langword="null" />.</param>
+    /// <param name="tag">The tag captured for the mapping node, or <see langword="null" />.</param>
+    /// <returns>The row index of the mapping.</returns>
+    private int ParseBlockMappingCore(int indent, string? anchor, string? tag)
     {
         int mapping = NewContainer(YamlReaderNodeKind.Mapping, _pos, anchor, tag);
         var keyIndex = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -370,16 +412,22 @@ internal sealed partial class YamlParser
             if (CurrentColumn() != indent)
                 break;
 
-            // Explicit key indicator '? key' / ': value'. Handle the common explicit-key form.
-            int keyRow = ParseMappingKey(indent, out string? keyText);
+            // An implicit key is always followed by its ':' value indicator; the ': value' line of an explicit '? key'
+            // is optional.
+            int keyRow = ParseMappingKey(indent, out string? keyText, out int keyOffset, out bool mergeKey);
 
-            ExpectValueIndicator();
+            int valueRow;
+            if (keyRow >= 0)
+            {
+                valueRow = ParseExplicitMappingValue(indent);
+            }
+            else
+            {
+                ExpectValueIndicator();
+                valueRow = ParseMappingValue(indent);
+            }
 
-            int valueRow = ParseMappingValue(indent);
-
-            AddMappingChild(mapping, valueRow, keyText, keyIndex);
-
-            _ = keyRow;
+            AddMappingChild(mapping, valueRow, keyText, keyOffset, mergeKey, keyIndex);
         }
 
         return mapping;
@@ -391,23 +439,91 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <param name="indent">The mapping indentation, used for explicit keys that span the value indicator.</param>
     /// <param name="keyText">When the method returns, the decoded key text.</param>
+    /// <param name="keyOffset">
+    /// When the method returns, the byte offset at which the key, or its first node property, begins.
+    /// </param>
+    /// <param name="mergeKey">
+    /// When the method returns, whether the key is the plain, untagged scalar <c>&lt;&lt;</c>.
+    /// </param>
     /// <returns>
-    /// The row index of the parsed key node (retained for completeness; simple keys decode to text only).
+    /// The row index of an explicit key's node, or <c>-1</c> for a simple key, which decodes to text only.
     /// </returns>
-    private int ParseMappingKey(int indent, out string keyText)
+    private int ParseMappingKey(int indent, out string keyText, out int keyOffset, out bool mergeKey)
     {
         if (Peek() == (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
         {
             Advance();
             SkipSpaces();
+
+            // The key begins at its first node property or its content, on the indicator's line or after the blank and
+            // comment lines that follow it, which the key's own parse would otherwise skip.
+            SkipBlankCommentLines();
+            keyOffset = _pos;
             int keyNode = ParseBlockNode(indent + 1);
-            keyText = KeyTextOf(keyNode);
+            keyText = KeyTextOf(keyNode, keyOffset);
+            mergeKey = IsMergeKeyNode(keyNode);
             SkipBlankCommentLines();
             return keyNode;
         }
 
-        keyText = ReadSimpleKey();
+        keyOffset = _pos;
+        keyText = ReadSimpleKey(out mergeKey);
         return -1;
+    }
+
+    /// <summary>
+    /// Parses the optional value of an explicit-key mapping entry: a <c>:</c> value indicator at the mapping's
+    /// indentation, then the value, which may begin on the indicator's line as a compact sequence or mapping.
+    /// </summary>
+    /// <param name="indent">The mapping indentation, at which the value indicator must appear.</param>
+    /// <returns>The row index of the value node, or of a null scalar when the entry has no value line.</returns>
+    /// <exception cref="YamlFormatException">
+    /// A tab separates the value indicator from a compact sequence or mapping.
+    /// </exception>
+    private int ParseExplicitMappingValue(int indent)
+    {
+        // Without a value indicator at the mapping's indentation the key's value is null. A ':' at another column is
+        // not this entry's indicator, so the content it begins is left to end the mapping.
+        if (AtStreamEnd() || AtDocumentBoundary() || CurrentColumn() != indent
+            || Peek() != (byte)':' || !IsBlankOrBreakOrEnd(PeekAt(1)))
+        {
+            return NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
+        }
+
+        Advance(); // ':'
+        int separation = _pos;
+        SkipSpaces();
+
+        if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
+            return ParseMappingValue(indent);
+
+        // A compact sequence or mapping on the indicator's line is indented by the spaces before it, which a tab cannot
+        // provide.
+        if (_source.AsSpan(separation, _pos - separation).Contains((byte)'\t') && AtCompactCollectionStart())
+            throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
+
+        // Otherwise the value is a block node in its own right, so it may be a compact collection at its own column.
+        return ParseBlockNode(indent + 1);
+    }
+
+    /// <summary>
+    /// Determines whether the content at the cursor begins a compact block collection on the current line: a block
+    /// sequence entry, or a mapping entry whose simple key is followed by a value indicator.
+    /// </summary>
+    /// <returns><see langword="true" /> when a compact sequence or mapping begins at the cursor.</returns>
+    private bool AtCompactCollectionStart()
+    {
+        byte c = Peek();
+        if (c == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            return true;
+
+        // Node properties begin a compact mapping when an implicit key follows them on the line.
+        if (c is (byte)'&' or (byte)'!')
+            return PropertiesPrecedeImplicitKey();
+
+        // Flow collections, aliases, and block scalars begin other nodes, even when a ':' follows later on the line.
+        return c is not ((byte)'[' or (byte)'{' or (byte)'*' or (byte)'|' or (byte)'>')
+            && TryDetectBlockMapping(CurrentColumn());
     }
 
     /// <summary>
@@ -504,13 +620,34 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Parses a block sequence whose entries begin at the given indentation.
+    /// Parses a block sequence whose entries begin at the given indentation, counting it toward the nesting depth.
     /// </summary>
     /// <param name="indent">The column at which each <c>-</c> entry marker appears.</param>
     /// <param name="anchor">The anchor captured for the sequence node, or <see langword="null" />.</param>
     /// <param name="tag">The tag captured for the sequence node, or <see langword="null" />.</param>
     /// <returns>The row index of the sequence.</returns>
+    /// <exception cref="YamlFormatException">The sequence would nest deeper than the maximum depth.</exception>
     private int ParseBlockSequence(int indent, string? anchor, string? tag)
+    {
+        EnterCollection();
+        try
+        {
+            return ParseBlockSequenceCore(indent, anchor, tag);
+        }
+        finally
+        {
+            _depth--;
+        }
+    }
+
+    /// <summary>
+    /// Parses a block sequence whose entries begin at the given indentation, after the depth guard has been applied.
+    /// </summary>
+    /// <param name="indent">The column at which each <c>-</c> entry marker appears.</param>
+    /// <param name="anchor">The anchor captured for the sequence node, or <see langword="null" />.</param>
+    /// <param name="tag">The tag captured for the sequence node, or <see langword="null" />.</param>
+    /// <returns>The row index of the sequence.</returns>
+    private int ParseBlockSequenceCore(int indent, string? anchor, string? tag)
     {
         int sequence = NewContainer(YamlReaderNodeKind.Sequence, _pos, anchor, tag);
 
@@ -524,7 +661,6 @@ internal sealed partial class YamlParser
                 break;
 
             Advance(); // consume '-'
-            int entryColumn = CurrentColumn();
 
             bool separationHasTab = false;
             while (Peek() is (byte)' ' or (byte)'\t')
@@ -535,24 +671,27 @@ internal sealed partial class YamlParser
                 _pos++;
             }
 
-            // A tab cannot indent a nested block sequence entry that begins on the dash's line.
-            if (separationHasTab && Peek() == (byte)'-' && IsBlankOrBreakOrEnd(PeekAt(1)))
+            // A tab cannot indent a compact sequence or mapping that begins on the dash's line.
+            if (separationHasTab && AtCompactCollectionStart())
                 throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlTabIndentation);
 
+            // The entry's node is indented from the dash (YAML 1.2.2 section 8.2.1), whether it begins on the dash's
+            // line or a later one: its content, and any line it continues onto, reaches at least the column after the
+            // dash, and a block scalar counts its indentation from the dash's column. A compact collection on the dash's
+            // line keeps its entries at its own column.
             int element;
             if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
             {
                 SkipLineTrailing();
                 SkipBlankCommentLines();
-                if (!AtStreamEnd() && !AtDocumentBoundary() && CurrentColumn() > entryColumn)
-                    element = ParseBlockNode(entryColumn + 1);
+                if (!AtStreamEnd() && !AtDocumentBoundary() && CurrentColumn() > indent)
+                    element = ParseBlockNode(indent + 1, indent);
                 else
                     element = NewScalar(YamlValueKind.Null, 0, YamlScalarStyle.Plain, _pos, null, null);
             }
             else
             {
-                // Content on the same line as the dash; its effective indent is the column after the dash.
-                element = ParseBlockNode(entryColumn + 1);
+                element = ParseBlockNode(indent + 1, indent);
             }
 
             AppendChild(sequence, element);
@@ -562,30 +701,28 @@ internal sealed partial class YamlParser
     }
 
     /// <summary>
-    /// Reads the textual form of a node that is used as a mapping key, decoding scalar keys to text.
+    /// Reads the text that names a mapping key, for a key node parsed as a node (a flow, flow-pair, or explicit key).
     /// </summary>
     /// <param name="row">The row index of the key node.</param>
-    /// <returns>The decoded key text, or a synthesized representation for non-scalar keys.</returns>
-    private string KeyTextOf(int row)
+    /// <param name="keyOffset">The byte offset at which the key, or its first node property, begins.</param>
+    /// <returns>
+    /// The scalar's text as written, after quoting and escapes are processed, as an implicit block key is named.
+    /// </returns>
+    /// <exception cref="YamlFormatException">
+    /// The key is a sequence, a mapping, or an alias; the error is reported where the key begins.
+    /// </exception>
+    private string KeyTextOf(int row, int keyOffset)
     {
         YamlReaderRow r = _rows[row];
-        if (r.Kind == YamlReaderNodeKind.Scalar && r.ValueKind == YamlValueKind.String)
-            return MaterializeString(r);
 
+        // A key is named by its text, never by the value the schema resolves the text to, so that 0x10 and 16, or y and
+        // yes under YAML 1.1, stay distinct keys in every key form.
         if (r.Kind == YamlReaderNodeKind.Scalar)
-        {
-            return r.ValueKind switch
-            {
-                YamlValueKind.Null => string.Empty,
-                YamlValueKind.Boolean => r.AsBoolean() ? "true" : "false",
-                YamlValueKind.Integer => r.AsInt64().ToString(CultureInfo.InvariantCulture),
-                YamlValueKind.Float => r.AsDouble().ToString(CultureInfo.InvariantCulture),
-                _ => string.Empty,
-            };
-        }
+            return ScalarText(r);
 
-        // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile.
-        throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+        // A sequence, mapping, or alias used as a key cannot be represented in the JSON-compatible tree profile. The
+        // cursor has moved past the key by now, so the error is placed where the key begins.
+        throw ErrorAt(keyOffset, YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
     }
 
     /// <summary>
@@ -594,16 +731,42 @@ internal sealed partial class YamlParser
     /// <param name="mapping">The mapping row index.</param>
     /// <param name="valueRow">The row index of the entry's value node.</param>
     /// <param name="keyText">The decoded key text.</param>
+    /// <param name="keyOffset">The byte offset at which the key begins, where a duplicate key is reported.</param>
+    /// <param name="mergeKey">Whether the key is the plain, untagged scalar <c>&lt;&lt;</c>.</param>
     /// <param name="index">The key-to-child index tracking the mapping's existing keys.</param>
     /// <exception cref="YamlFormatException">
-    /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />.
+    /// The key duplicates an existing key and the policy is <see cref="YamlDuplicateKeyBehavior.Throw" />, or, while
+    /// merge keys are expanded, the key is a second merge key in the mapping, whatever the policy.
     /// </exception>
-    private void AddMappingChild(int mapping, int valueRow, string keyText, Dictionary<string, int> index)
+    private void AddMappingChild(
+        int mapping,
+        int valueRow,
+        string keyText,
+        int keyOffset,
+        bool mergeKey,
+        Dictionary<string, int> index)
     {
         YamlReaderRow v = _rows[valueRow];
         v.Key = keyText;
-        _rows[valueRow] = v;
 
+        // While merge keys are expanded, the merge key is not the string "<<": it never collides with a quoted "<<",
+        // and a mapping holds at most one, whatever the duplicate-key policy, since several merges are written as one
+        // merge key whose value is a sequence.
+        if (mergeKey && _mergeKeyBehavior == YamlMergeKeyBehavior.Expand)
+        {
+            YamlReaderRow m = _rows[mapping];
+            if ((m.Flags & YamlReaderRowFlags.HasMergeKey) != 0)
+                throw ErrorAt(keyOffset, YamlResourceStrings.Format_Invalid_YamlDuplicateMergeKey);
+
+            m.Flags |= YamlReaderRowFlags.HasMergeKey;
+            _rows[mapping] = m;
+            v.Flags |= YamlReaderRowFlags.MergeKey;
+            _rows[valueRow] = v;
+            AppendChild(mapping, valueRow);
+            return;
+        }
+
+        _rows[valueRow] = v;
         if (index.TryGetValue(keyText, out int existing))
         {
             switch (_duplicateKeyBehavior)
@@ -616,12 +779,27 @@ internal sealed partial class YamlParser
                     break;
 
                 default:
-                    throw Error(YamlResourceStrings.Format_Invalid_YamlDuplicateKey);
+                    throw ErrorAt(keyOffset, YamlResourceStrings.Format_Invalid_YamlDuplicateKey);
             }
         }
 
         AppendChild(mapping, valueRow);
         index[keyText] = valueRow;
+    }
+
+    /// <summary>
+    /// Determines whether a key node is the merge key: the plain, untagged scalar <c>&lt;&lt;</c>.
+    /// </summary>
+    /// <param name="row">The row index of the key node.</param>
+    /// <returns>
+    /// <see langword="true" /> when the key is the plain, untagged scalar <c>&lt;&lt;</c>; otherwise
+    /// <see langword="false" />, including for a quoted or tagged <c>&lt;&lt;</c>, which is an ordinary key.
+    /// </returns>
+    private bool IsMergeKeyNode(int row)
+    {
+        YamlReaderRow r = _rows[row];
+        return r.Kind == YamlReaderNodeKind.Scalar && r.ScalarStyle == YamlScalarStyle.Plain && r.Tag is null
+            && r.ValueKind == YamlValueKind.String && _strings[(int)r.ScalarBits] == "<<";
     }
 
     /// <summary>
@@ -644,6 +822,17 @@ internal sealed partial class YamlParser
 
         if (previous >= 0)
             UnlinkChild(parent, child, previous);
+    }
+
+    /// <summary>
+    /// Enters a sequence or mapping, counting it toward the nesting depth. Only collections count, so a maximum depth
+    /// of N admits N nested collections whatever scalar sits at the deepest level.
+    /// </summary>
+    /// <exception cref="YamlFormatException">The collection would nest deeper than the maximum depth.</exception>
+    private void EnterCollection()
+    {
+        if (++_depth > _maxDepth)
+            throw Error(string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlNestingTooDeep, _maxDepth));
     }
 
     /// <summary>

@@ -199,6 +199,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A mapping cannot hold more than one merge key; merge several mappings through one merge key whose value is a sequence..
+        /// </summary>
+        internal static string Format_Invalid_YamlDuplicateMergeKey {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlDuplicateMergeKey", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to YAML node nesting exceeds the maximum permitted depth of {0}..
         /// </summary>
         internal static string Format_Invalid_YamlNestingTooDeep {
@@ -239,11 +247,27 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to An implicit mapping key cannot be longer than {0} characters; a longer key must be an explicit key..
+        /// </summary>
+        internal static string Format_Invalid_YamlImplicitKeyTooLong {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlImplicitKeyTooLong", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to A node cannot carry more than one anchor..
         /// </summary>
         internal static string Format_Invalid_YamlMultipleAnchors {
             get {
                 return ResourceManager.GetString("Format_Invalid_YamlMultipleAnchors", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to A node cannot carry more than one tag..
+        /// </summary>
+        internal static string Format_Invalid_YamlMultipleTags {
+            get {
+                return ResourceManager.GetString("Format_Invalid_YamlMultipleTags", resourceCulture);
             }
         }
         /// <summary>

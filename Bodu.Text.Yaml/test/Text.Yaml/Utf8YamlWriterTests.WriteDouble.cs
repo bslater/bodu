@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Text.Yaml.Document;
 using Bodu.Text.Yaml.Writer;
 
@@ -85,5 +86,41 @@ public partial class Utf8YamlWriterTests
         string yaml = Write((Utf8YamlWriter w) => w.WriteDouble(value));
 
         Assert.AreEqual(expected + "\n", yaml);
+    }
+
+    /// <summary>
+    /// Verifies that the text a sequence of doubles and an integer is written as does not follow a current culture that
+    /// uses a decimal comma, and that it reads back to the same numbers under that culture.
+    /// </summary>
+    [TestMethod]
+    public void WriteDouble_WhenCurrentCultureUsesDecimalComma_ShouldWriteInvariantText()
+    {
+        CultureInfo original = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+
+            string yaml = Write((Utf8YamlWriter w) =>
+            {
+                w.WriteStartSequence();
+                w.WriteDouble(1.5);
+                w.WriteDouble(2.25);
+                w.WriteDouble(3.125);
+                w.WriteInteger(123456789);
+                w.WriteEndSequence();
+            });
+
+            Assert.AreEqual("- 1.5\n- 2.25\n- 3.125\n- 123456789\n", yaml);
+
+            using var document = YamlDocument.Parse(yaml);
+            Assert.AreEqual(1.5, document.RootElement[0].GetDouble());
+            Assert.AreEqual(2.25, document.RootElement[1].GetDouble());
+            Assert.AreEqual(3.125, document.RootElement[2].GetDouble());
+            Assert.AreEqual(123456789L, document.RootElement[3].GetInt64());
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies block structural parsing and document markers: mixed mapping/sequence nesting, multi-key mapping
-/// entries, and the <c>---</c> / <c>...</c> document markers.
+/// entries, explicit <c>?</c> keys and their <c>:</c> values, and the <c>---</c> / <c>...</c> document markers.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -256,5 +256,169 @@ public partial class YamlDocumentTests
         });
 
         Assert.AreEqual(3, ex.LineNumber);
+    }
+
+    /// <summary>
+    /// Verifies that an explicit key with no <c>:</c> value line reads with a null value, whatever follows it: the end
+    /// of the stream, another explicit key, an implicit key, or a less-indented line.
+    /// </summary>
+    /// <param name="yaml">A mapping with an explicit key that has no value line.</param>
+    /// <param name="expected">The mapping expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("?", """{"":null}""", DisplayName = "an empty explicit key alone")]
+    [DataRow("?\n? a", """{"":null,"a":null}""", DisplayName = "an empty explicit key, then another")]
+    [DataRow("? a\n? b\n", """{"a":null,"b":null}""", DisplayName = "two explicit keys")]
+    [DataRow("? a\nb: 1\n", """{"a":null,"b":1}""", DisplayName = "an explicit key, then an implicit key")]
+    [DataRow("c:\n  ? a\nd: 2\n", """{"c":{"a":null},"d":2}""", DisplayName = "nested explicit key, outer key")]
+    public void Parse_WhenExplicitKeyHasNoValue_ShouldReadNullValue(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a compact sequence or mapping may begin on the line of an explicit key's <c>:</c>, indented by
+    /// its own column.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit value is a compact collection.</param>
+    /// <param name="expected">The mapping expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("? a\n: -\tb", """{"a":["b"]}""", DisplayName = "a compact sequence, separated by a tab")]
+    [DataRow("? a\n: - b\n  - c\n", """{"a":["b","c"]}""", DisplayName = "a compact sequence of two entries")]
+    [DataRow("? a\n: -\tb\n  -  -\tc\n     - d\n", """{"a":["b",["c","d"]]}""", DisplayName = "nested compact")]
+    [DataRow("? a\n: b: c\n  d: e\n", """{"a":{"b":"c","d":"e"}}""", DisplayName = "a compact mapping")]
+    public void Parse_WhenExplicitValueIsCompactCollection_ShouldReadIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that an explicit key's <c>:</c> indented past the column of its <c>?</c> is rejected, since the value
+    /// line must begin at the mapping's indentation.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit value indicator is indented past its key.</param>
+    [TestMethod]
+    [DataRow("? \"foo\"\n : \"bar\"\n", DisplayName = "a quoted key, then a value indicator one column in")]
+    [DataRow("? a\n  : b\n", DisplayName = "a plain key, then a value indicator two columns in")]
+    public void Parse_WhenExplicitValueIndicatorIsIndentedPastKey_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an anchor or tag before an explicit key's <c>?</c> on the same line is rejected, since a block
+    /// mapping cannot begin on the line of its own node properties.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit key follows node properties on its line.</param>
+    [TestMethod]
+    [DataRow("&a ? A", DisplayName = "an anchor, then a key with no value")]
+    [DataRow("&a ? A\n: B\n", DisplayName = "an anchor, then a key and its value")]
+    [DataRow("!!map ? A\n: B\n", DisplayName = "a tag, then a key and its value")]
+    public void Parse_WhenPropertiesPrecedeExplicitKeyOnItsLine_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a node property below an explicit key's <c>?</c> and not indented past it is not read as part of
+    /// the key, so the line it begins is rejected.
+    /// </summary>
+    /// <param name="yaml">A mapping with a node property at the explicit key's column on the line after it.</param>
+    [TestMethod]
+    [DataRow("?\n!!null", DisplayName = "a tag below an empty key")]
+    [DataRow("? &a\n!!str b\n", DisplayName = "a tag below a key's anchor")]
+    public void Parse_WhenPropertyBelowExplicitKeyIsNotIndented_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a tab between an explicit key's <c>:</c> and a compact sequence or mapping on the same line is
+    /// rejected, since it would indent the collection.
+    /// </summary>
+    /// <param name="yaml">A mapping whose explicit value is a compact collection after a tab.</param>
+    [TestMethod]
+    [DataRow("? a\n:\t- b\n", DisplayName = "a compact sequence")]
+    [DataRow("? a\n:\tb: c\n", DisplayName = "a compact mapping")]
+    public void Parse_WhenTabPrecedesCompactExplicitValue_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a tab between an explicit key's <c>:</c> and a scalar on the same line is separation, and the
+    /// scalar is read as the value.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTabPrecedesScalarExplicitValue_ShouldReadScalar()
+    {
+        using var document = YamlDocument.Parse("? a\n:\tb\n");
+
+        Assert.AreEqual("""{"a":"b"}""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a sequence entry's content may continue, or begin, on lines indented one column past the dash, as
+    /// YAML 1.2.2 section 8.2.1 allows, whether the content starts on the dash's line or the next.
+    /// </summary>
+    /// <param name="yaml">A sequence whose entry content reaches one column past the dash.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- single\n - entry\n", """["single - entry"]""", DisplayName = "a dash on the continuation line")]
+    [DataRow("- a\n b\n", """["a b"]""", DisplayName = "a plain scalar continued")]
+    [DataRow("-\n  a\n b\n", """["a b"]""", DisplayName = "a plain scalar on the next line, continued")]
+    [DataRow("-\n a\n", """["a"]""", DisplayName = "a plain scalar on the next line")]
+    [DataRow("- \"a\n b\"\n", """["a b"]""", DisplayName = "a double-quoted scalar continued")]
+    [DataRow("- - a\n   b\n", """[["a b"]]""", DisplayName = "a nested entry's plain scalar continued")]
+    [DataRow("- !!seq\n - nested\n", """[["nested"]]""", DisplayName = "a tagged sequence on the next line")]
+    [DataRow("- !!map\n a: 1\n", """[{"a":1}]""", DisplayName = "a tagged mapping on the next line")]
+    [DataRow("-\n a: 1\n", """[{"a":1}]""", DisplayName = "a mapping on the next line")]
+    [DataRow("-   a: 1\n    b: 2\n", """[{"a":1,"b":2}]""", DisplayName = "a compact mapping after spaces")]
+    public void Parse_WhenSequenceEntryContentIsOneColumnPastDash_ShouldReadIt(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that YAML specification example 8.22 (block collection nodes), whose tagged sequence entry holds a
+    /// sequence indented one column past the dash, reads as the specification gives.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSpecificationExample8Point22_ShouldReadNestedCollections()
+    {
+        using var document = YamlDocument.Parse(
+            "sequence: !!seq\n- entry\n- !!seq\n - nested\nmapping: !!map\n foo: bar\n");
+
+        Assert.AreEqual("""{"sequence":["entry",["nested"]],"mapping":{"foo":"bar"}}""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a compact mapping after a sequence entry's dash keeps its entries at its own column, so an entry
+    /// indented less than the first is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCompactMappingEntryIsIndentedLessThanFirst_ShouldThrowYamlFormatException()
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse("-   a: 1\n  b: 2\n");
+        });
     }
 }

@@ -128,4 +128,62 @@ public partial class YamlDocumentTests
             using var doc = YamlDocument.Parse("text: \"line1\nline2\"\n");
         });
     }
+
+    /// <summary>
+    /// Verifies that a backslash followed by a literal tab in a double-quoted scalar is the escaped tab, as a backslash
+    /// followed by <c>t</c> is, wherever it falls among the scalar's lines; trailing white space after it still folds.
+    /// </summary>
+    /// <param name="yaml">A document with a backslash and a literal tab inside double quotes.</param>
+    /// <param name="expected">The document expected, as JSON.</param>
+    [TestMethod]
+    [DataRow("- \"\\\t\"", """["\t"]""", DisplayName = "alone")]
+    [DataRow("\"2 inline\\\ttab\"\n", "\"2 inline\\ttab\"", DisplayName = "inside a line")]
+    [DataRow("\"2 leading\n    \\\ttab\"\n", "\"2 leading \\ttab\"", DisplayName = "opening a continuation line")]
+    [DataRow("\"5 leading\n    \\\t  tab\"\n", "\"5 leading \\t  tab\"", DisplayName = "before spaces, opening a line")]
+    [DataRow("\"3 trailing\\\t\n    tab\"\n", "\"3 trailing\\t tab\"", DisplayName = "ending a line")]
+    [DataRow("\"4 trailing\\\t  \n    tab\"\n", "\"4 trailing\\t tab\"", DisplayName = "before trailing spaces")]
+    public void Parse_WhenBackslashPrecedesLiteralTab_ShouldDecodeTab(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        Assert.AreEqual(expected, ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that a high-surrogate escape followed directly by a low-surrogate escape, as JSON writes a character
+    /// outside the Basic Multilingual Plane, decodes to that one character.
+    /// </summary>
+    /// <param name="yaml">A document with an escaped surrogate pair in double quotes.</param>
+    /// <param name="prefix">The text expected before the character.</param>
+    [TestMethod]
+    [DataRow("\"\\uD83D\\uDC4D\"", "", DisplayName = "alone")]
+    [DataRow("Test: \"x\\uD83D\\uDC4D\"\n", "x", DisplayName = "as a mapping value, after text")]
+    public void Parse_WhenEscapedSurrogatePair_ShouldDecodeOneCharacter(string yaml, string prefix)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        YamlElement value = document.RootElement.ValueKind == YamlValueKind.Mapping
+            ? document.RootElement.GetProperty("Test")
+            : document.RootElement;
+        Assert.AreEqual(prefix + char.ConvertFromUtf32(0x1F44D), value.GetString());
+    }
+
+    /// <summary>
+    /// Verifies that a surrogate escape that is not a high surrogate followed directly by a low surrogate is rejected.
+    /// </summary>
+    /// <param name="yaml">A document with an unpaired surrogate escape.</param>
+    [TestMethod]
+    [DataRow("\"\\uD83D\"", DisplayName = "a lone high surrogate")]
+    [DataRow("\"\\uDC4D\"", DisplayName = "a lone low surrogate")]
+    [DataRow("\"\\uDC4D\\uD83D\"", DisplayName = "a reversed pair")]
+    [DataRow("\"\\uD83Dabc\"", DisplayName = "a high surrogate followed by text")]
+    [DataRow("\"\\uD83D\\u0041\"", DisplayName = "a high surrogate followed by another escape")]
+    [DataRow("\"\\uD83D\\uD83D\"", DisplayName = "two high surrogates")]
+    public void Parse_WhenSurrogateEscapeIsUnpaired_ShouldThrowYamlFormatException(string yaml)
+    {
+        Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+    }
 }

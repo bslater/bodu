@@ -10,7 +10,7 @@ title: Bodu.Text.Yaml - Introduction
 
 ## The format in one paragraph
 
-YAML is a text format built around indentation rather than brackets: a mapping is a block of `key: value` lines, a sequence is a block of `- item` lines, and nesting is expressed by indenting. It also offers a flow form (`{a: 1}`, `[1, 2]`), quoted and block scalars, comments (`#`), reusable anchors (`&a`) and aliases (`*a`), document directives (`%YAML`, `%TAG`), and multi-document streams delimited by `---` and `...`. Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree where mapping keys resolve to unique scalar strings, anchors are unique and acyclic (resolved transparently on read), and tabs are rejected as indentation.
+YAML is a text format built around indentation rather than brackets: a mapping is a block of `key: value` lines, a sequence is a block of `- item` lines, and nesting is expressed by indenting. It also offers a flow form (`{a: 1}`, `[1, 2]`), quoted and block scalars, comments (`#`), reusable anchors (`&a`) and aliases (`*a`), document directives (`%YAML`, `%TAG`), and multi-document streams delimited by `---` and `...`. Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-schema, JSON-compatible tree where mapping keys resolve to unique scalar strings (a sequence, mapping, or alias used as a key is rejected), anchors are unique and acyclic (resolved transparently on read), and tabs are rejected as indentation, which includes a tab anywhere in the leading whitespace of a line that begins a node.
 
 ## The node and value model
 
@@ -38,15 +38,15 @@ YAML carries presentation information a JSON-style tree does not. Bodu.Text.Yaml
 
 ## Spec versions: 1.2 core, opt-in 1.1
 
-Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` are Booleans - this sidesteps the well-known "Norway problem", in which YAML 1.1 silently reads unquoted `no` as `false`. Setting <xref:Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion> to <xref:Bodu.Text.Yaml.YamlSpecVersion.V1_1> additionally accepts the `yes` / `no` / `on` / `off` / `y` / `n` Boolean spellings, leading-zero octal integers, and sexagesimal (base-60) numbers, and enables YAML 1.1 **merge keys** (`<<`) through <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>. The version controls only *implicit scalar typing*; anchors, aliases, and the hex (`0x`) and `0o`-octal integer forms are recognised under both. A `%YAML` directive overrides the typing per document.
+Parsing defaults to the strict **1.2 core schema**, where only `true` / `false` are Booleans - this sidesteps the well-known "Norway problem", in which YAML 1.1 silently reads unquoted `no` as `false`. Setting <xref:Bodu.Text.Yaml.YamlSerializerOptions.SpecVersion> to <xref:Bodu.Text.Yaml.YamlSpecVersion.V1_1> additionally accepts the `yes` / `no` / `on` / `off` / `y` / `n` Boolean spellings and the YAML 1.1 integer forms (leading-zero octal, binary, signed radix forms, and underscore digit grouping); sexagesimal (base-60) numbers such as `1:30` are not resolved under either version and stay strings. YAML 1.1 **merge keys** (`<<`) expand by default under either version, governed by <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior>. The version controls only *implicit scalar typing*; anchors, aliases, and the hex (`0x`) and `0o`-octal integer forms are recognised under both, and a float beyond the binary64 range, such as `1e309`, reads as an infinity under both. A `%YAML` directive overrides the typing per document.
 
 ## Multi-document streams
 
-A single YAML stream can hold several documents separated by `---` (and optionally terminated by `...`). <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> returns every document as an `IReadOnlyList<YamlDocument>`; the single-document `Parse` and the serializer's `Deserialize<T>` read the first.
+A single YAML stream can hold several documents separated by `---` (and optionally terminated by `...`, which may share its line only with a comment). A document's `%YAML` and `%TAG` directives go before its `---`, at the start of the stream or after a `...`. <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> returns every document as an `IReadOnlyList<YamlDocument>`, and throws <xref:Bodu.Text.Yaml.YamlFormatException> when content follows a document without one of those markers before it; the single-document `Parse` and the serializer's `Deserialize<T>` read the first.
 
 ## Diagnostics with positions
 
-YAML is edited by hand, so failures point at the offending location. A malformed document raises <xref:Bodu.Text.Yaml.YamlFormatException> carrying the **line, column, and byte offset**; a document that parses but cannot bind to your type raises <xref:Bodu.Text.Yaml.YamlSerializationException>, which carries the offset and a dotted member `Path`.
+YAML is edited by hand, so failures point at the offending location. A malformed document raises <xref:Bodu.Text.Yaml.YamlFormatException> carrying the **line, column, and byte offset**; a document that parses but cannot bind to your type raises <xref:Bodu.Text.Yaml.YamlSerializationException>, which carries the line, column, and byte offset of the value that failed and a dotted `Path` of the document's keys.
 
 ## Headline types
 

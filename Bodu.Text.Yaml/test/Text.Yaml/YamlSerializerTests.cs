@@ -212,4 +212,13 @@ public partial class YamlSerializerTests
         /// <value>The value.</value>
         public T? Value { get; set; }
     }
+
+    /// <summary>A POCO with one member of the type a test reads or writes as a member value.</summary>
+    /// <typeparam name="T">The member type.</typeparam>
+    private sealed class MemberHolder<T>
+    {
+        /// <summary>Gets or sets the member value.</summary>
+        /// <value>The member value.</value>
+        public T A { get; set; } = default!;
+    }
 }

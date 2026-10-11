@@ -39,6 +39,9 @@ public ref struct Utf8YamlReader
     /// <summary>The decoded-string side table referenced by string scalar rows.</summary>
     private readonly string[] _strings;
 
+    /// <summary>The UTF-8 source the rows were parsed from, whose offsets give a binding failure its position.</summary>
+    private readonly byte[] _source;
+
     /// <summary>The container traversal stack; one frame per open mapping or sequence.</summary>
     private Frame[] _stack;
 
@@ -79,6 +82,7 @@ public ref struct Utf8YamlReader
         var parser = new YamlParser(buffer, buffer.Length, options.SpecVersion, options.EffectiveMaxDepth, options.DuplicateKeyBehavior, options.MergeKeyBehavior);
         _rows = parser.Parse();
         _strings = parser.Strings.ToArray();
+        _source = buffer;
         _stack = new Frame[8];
         _depth = 0;
         _started = false;
@@ -116,6 +120,27 @@ public ref struct Utf8YamlReader
     /// </summary>
     /// <value>The current row index, or <c>-1</c> when the reader has not produced a token.</value>
     internal readonly int CurrentRow => _currentRow;
+
+    /// <summary>
+    /// Records the source position of the current token on a binding failure that carries none.
+    /// </summary>
+    /// <param name="exception">The binding failure.</param>
+    /// <remarks>
+    /// The guard on an existing offset ensures the innermost converter, the one closest to the offending value,
+    /// supplies the position as the failure unwinds through the enclosing container converters. The column counts UTF-8
+    /// bytes, matching <see cref="YamlFormatException" />.
+    /// </remarks>
+    internal readonly void StampPosition(YamlSerializationException exception)
+    {
+        if (exception.Offset is not null || _source is null || _currentRow < 0)
+            return;
+
+        int offset = _rows[_currentRow].Offset;
+        (int line, int column) = YamlParser.GetLineAndColumn(_source, _source.Length, offset);
+        exception.Offset = offset;
+        exception.LineNumber = line;
+        exception.ColumnNumber = column;
+    }
 
     /// <summary>
     /// Advances the reader to the next token.

@@ -238,7 +238,7 @@ new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 32 });
 // → throws ArgumentOutOfRangeException: The writer indentation size must be between 1 and 16. (Parameter 'IndentSize')
 ```
 
-Opening a container past `MaxDepth` throws `InvalidOperationException` (*The maximum write depth of 1 has been exceeded.*) from the writer; the same limit reached through `YamlSerializer` - which uses `YamlSerializerOptions.MaxDepth` and the default writer options - surfaces as `YamlSerializationException`. `YamlSerializer` does not expose the writer options, so serializer output is always two-space, `\n`-terminated YAML; drive `Utf8YamlWriter` directly (or call a node's `WriteTo(writer)`) when you need another layout.
+Opening a container past `MaxDepth` throws `InvalidOperationException` (*The maximum write depth of 1 has been exceeded.*) from the writer; the same limit reached through `YamlSerializer` - whose writer takes `YamlSerializerOptions.MaxDepth` as its depth and the default writer options otherwise - surfaces as `YamlSerializationException`, so a graph may nest exactly `MaxDepth` mappings and sequences, and one more fails. `YamlSerializer` does not expose the writer options, so serializer output is always two-space, `\n`-terminated YAML; drive `Utf8YamlWriter` directly (or call a node's `WriteTo(writer)`) when you need another layout.
 
 ## Pattern 7 - Bencode DOMs: key case and key discipline
 
@@ -315,7 +315,7 @@ long inner = d.RootElement.GetProperty("x").GetProperty("a").GetInt64();   // 1
 | `DuplicateKeyBehavior` | `Throw` | `Throw` · `UseFirst` · `UseLast` | What a repeated mapping key means. |
 | `MergeKeyBehavior` | `Expand` | `Expand` · `Disabled` · `PreserveAsNormalKey` | Whether `<<: *alias` merges the referenced mapping (existing keys win) or is retained as an ordinary key named `<<`. `Disabled` and `PreserveAsNormalKey` produce the same tree; the second spells out the intent. |
 | `SpecVersion` | `V1_2` | `V1_2` · `V1_1` | The core schema: under 1.2 only `true` / `false` are booleans; 1.1 restores `yes` / `no` / `on` / `off`. |
-| `MaxDepth` | `0` → 64 | | Deepest node nesting the parser accepts; exceeding it throws `YamlFormatException`. |
+| `MaxDepth` | `0` → 64 | | Deepest nesting of sequences and mappings the parser accepts, flow or block; a scalar at the deepest level does not count. Exceeding it throws `YamlFormatException`. |
 
 <!-- compile -->
 ```csharp

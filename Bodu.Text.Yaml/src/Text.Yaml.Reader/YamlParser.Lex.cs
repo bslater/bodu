@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Text.Yaml.Reader;
@@ -246,18 +247,32 @@ internal sealed partial class YamlParser
     /// <returns>The exception to throw.</returns>
     private YamlFormatException ErrorAt(int offset, string message)
     {
+        (int line, int column) = GetLineAndColumn(_source, _length, offset);
+        return new YamlFormatException(message, line, column, offset);
+    }
+
+    /// <summary>
+    /// Computes the 1-based line and column of a byte offset in a source, counting a line feed, a carriage return and
+    /// line feed pair, or a lone carriage return as one line break.
+    /// </summary>
+    /// <param name="source">The UTF-8 source.</param>
+    /// <param name="length">The number of bytes of <paramref name="source" /> that hold the source.</param>
+    /// <param name="offset">The zero-based byte offset.</param>
+    /// <returns>The 1-based line, and the 1-based column counted in UTF-8 bytes from the start of the line.</returns>
+    internal static (int Line, int Column) GetLineAndColumn(byte[] source, int length, int offset)
+    {
         int line = 0;
         int lineStart = 0;
-        int limit = Math.Min(offset, _length);
+        int limit = Math.Min(offset, length);
         for (int i = 0; i < limit; i++)
         {
-            byte b = _source[i];
+            byte b = source[i];
             if (b == (byte)'\n')
             {
                 line++;
                 lineStart = i + 1;
             }
-            else if (b == (byte)'\r' && (i + 1 >= _length || _source[i + 1] != (byte)'\n'))
+            else if (b == (byte)'\r' && (i + 1 >= length || source[i + 1] != (byte)'\n'))
             {
                 // A lone CR is a line break (Advance collapses CRLF, so only count the CR when no LF follows).
                 line++;
@@ -265,7 +280,7 @@ internal sealed partial class YamlParser
             }
         }
 
-        return new YamlFormatException(message, line + 1, offset - lineStart + 1, offset);
+        return (line + 1, offset - lineStart + 1);
     }
 
     /// <summary>
@@ -275,29 +290,105 @@ internal sealed partial class YamlParser
     private bool AtStreamEnd() => AtEnd;
 
     /// <summary>
-    /// Determines whether the cursor is at a document-boundary marker (<c>---</c> or <c>...</c>) at column zero.
+    /// Determines whether the cursor is at a document-boundary marker (<c>---</c> or <c>...</c>) at column zero, or at
+    /// a byte-order mark at column zero that opens the prefix of a following document.
     /// </summary>
-    /// <returns><see langword="true" /> when a document marker begins at the cursor.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a document marker, or the prefix of the next document, begins at the cursor.
+    /// </returns>
     private bool AtDocumentBoundary()
     {
         if (CurrentColumn() != 0)
             return false;
 
-        return Marker((byte)'-') || Marker((byte)'.');
-
-        bool Marker(byte b) =>
-            Peek() == b && PeekAt(1) == b && PeekAt(2) == b && IsBlankOrBreakOrEnd(PeekAt(3));
+        return IsMarkerAt(_pos, (byte)'-') || IsMarkerAt(_pos, (byte)'.') || AtByteOrderMarkBeforeDocumentStart();
     }
 
     /// <summary>
-    /// Skips a UTF-8 byte-order mark when present at the start of the source.
+    /// Determines whether a three-character document marker (<c>---</c> or <c>...</c>) followed by a separator begins
+    /// at a byte offset.
     /// </summary>
-    private void SkipByteOrderMark()
+    /// <param name="offset">The byte offset to test.</param>
+    /// <param name="marker">The marker character, <c>-</c> or <c>.</c>.</param>
+    /// <returns><see langword="true" /> when the marker begins at <paramref name="offset" />.</returns>
+    private bool IsMarkerAt(int offset, byte marker) =>
+        ByteAt(offset) == marker && ByteAt(offset + 1) == marker && ByteAt(offset + 2) == marker
+        && IsBlankOrBreakOrEnd(ByteAt(offset + 3));
+
+    /// <summary>
+    /// Returns the byte at an absolute offset, or zero when the offset is past the end of the source.
+    /// </summary>
+    /// <param name="offset">The byte offset.</param>
+    /// <returns>The byte at the offset, or zero.</returns>
+    private byte ByteAt(int offset) => offset < _length ? _source[offset] : (byte)0;
+
+    /// <summary>
+    /// Determines whether a UTF-8 byte-order mark begins at a byte offset.
+    /// </summary>
+    /// <param name="offset">The byte offset to test.</param>
+    /// <returns><see langword="true" /> when the three bytes at <paramref name="offset" /> encode U+FEFF.</returns>
+    private bool IsByteOrderMarkAt(int offset) =>
+        ByteAt(offset) == 0xEF && ByteAt(offset + 1) == 0xBB && ByteAt(offset + 2) == 0xBF;
+
+    /// <summary>
+    /// Determines whether a byte-order mark at the cursor opens the prefix of a following document: after it come only
+    /// blank lines, comment lines, and further byte-order marks at the start of a line, and then a <c>---</c> marker.
+    /// </summary>
+    /// <returns><see langword="true" /> when the byte-order mark belongs to the next document.</returns>
+    /// <remarks>
+    /// A byte-order mark may begin any document in a stream but cannot appear inside one, so a mark at the start of a
+    /// line ends the current document when the next document's <c>---</c> follows it.
+    /// </remarks>
+    private bool AtByteOrderMarkBeforeDocumentStart()
     {
-        if (_length >= 3 && _source[0] == 0xEF && _source[1] == 0xBB && _source[2] == 0xBF)
+        if (!IsByteOrderMarkAt(_pos))
+            return false;
+
+        int p = _pos;
+        while (true)
         {
-            _pos = 3;
-            _lineStart = 3;
+            // Here p is at the start of a line; marks there are part of the prefix, and the marker may follow them.
+            while (IsByteOrderMarkAt(p))
+                p += 3;
+
+            if (IsMarkerAt(p, (byte)'-'))
+                return true;
+
+            while (ByteAt(p) is (byte)' ' or (byte)'\t')
+                p++;
+
+            if (ByteAt(p) == (byte)'#')
+            {
+                while (!IsBreakOrEnd(ByteAt(p)))
+                    p++;
+            }
+
+            if (p >= _length || ByteAt(p) is not ((byte)'\n' or (byte)'\r'))
+                return false;
+
+            p += ByteAt(p) == (byte)'\r' && ByteAt(p + 1) == (byte)'\n' ? 2 : 1;
+        }
+    }
+
+    /// <summary>
+    /// Advances past the prefix that may precede a document: blank lines, comment lines, and a byte-order mark at the
+    /// start of any of them, leaving the cursor at the document's first directive, marker, or content byte.
+    /// </summary>
+    /// <remarks>
+    /// A byte-order mark may begin any document in a stream, not only the first, and may also begin the first content
+    /// line after a document's <c>---</c>. Columns on the rest of the mark's line count from after the mark, so a
+    /// marker or key that follows it is at column zero.
+    /// </remarks>
+    private void SkipDocumentPrefix()
+    {
+        while (true)
+        {
+            SkipBlankCommentLines();
+            if (CurrentColumn() != 0 || !IsByteOrderMarkAt(_pos))
+                return;
+
+            _pos += 3;
+            _lineStart = _pos;
         }
     }
 
@@ -567,21 +658,36 @@ internal sealed partial class YamlParser
     /// <summary>
     /// Reads a simple mapping key (plain or single-line quoted), leaving the cursor at the value indicator.
     /// </summary>
+    /// <param name="mergeKey">
+    /// When the method returns, whether the key is the plain, untagged scalar <c>&lt;&lt;</c>.
+    /// </param>
     /// <returns>The decoded key text.</returns>
-    private string ReadSimpleKey()
+    /// <remarks>
+    /// A key decodes to text only, so a key's node properties are not kept with it; an anchored key is instead kept as
+    /// a scalar row outside the tree, which an alias can refer to.
+    /// </remarks>
+    /// <exception cref="YamlFormatException">
+    /// The key is an alias or a flow collection, a plain key begins with an indicator that cannot begin a plain scalar,
+    /// or the key is longer than an implicit key may be.
+    /// </exception>
+    private string ReadSimpleKey(out bool mergeKey)
     {
-        // A simple key may carry leading anchor and tag node properties; they are consumed so the key text is clean.
+        mergeKey = false;
+        int keyStart = _pos;
+        string? anchor = null;
+        string? tag = null;
         if (Peek() is (byte)'&' or (byte)'!')
         {
-            TryReadAnchorAndTag(out _);
+            anchor = TryReadAnchorAndTag(out tag);
             SkipSpaces();
         }
 
+        int offset = _pos;
         byte c = Peek();
 
-        // An alias cannot serve as an implicit mapping key.
+        // An alias cannot serve as a mapping key: the profile rejects it, at the alias, as it does a collection key.
         if (c == (byte)'*')
-            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
+            throw ErrorAt(offset, YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
         if (c == (byte)'"' || c == (byte)'\'')
         {
             int startLine = _line;
@@ -591,8 +697,22 @@ internal sealed partial class YamlParser
             if (_line != startLine)
                 throw Error(YamlResourceStrings.Format_Invalid_YamlMultilineImplicitKey);
 
+            ThrowIfImplicitKeyTooLong(keyStart);
+            if (anchor is not null)
+                _ = NewString(quoted, c == (byte)'"' ? YamlScalarStyle.DoubleQuoted : YamlScalarStyle.SingleQuoted, offset, anchor, tag);
+
             return quoted;
         }
+
+        // A flow collection in implicit-key position is a sequence or mapping key, which the profile rejects rather than
+        // reading its brackets as the text of a scalar key.
+        if (c is (byte)'[' or (byte)'{')
+            throw Error(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported);
+
+        // A plain key is a plain scalar, so it cannot begin with an indicator (production 126, ns-plain-first); a value
+        // indicator at the start of the entry is an empty key instead.
+        if (!(c == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1))) && !CanBeginPlainScalar(flow: false))
+            throw Error(YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
 
         int start = _pos;
         int end = _pos;
@@ -609,7 +729,50 @@ internal sealed partial class YamlParser
                 end = _pos;
         }
 
-        return Utf8(start, end - start);
+        ThrowIfImplicitKeyTooLong(keyStart);
+        if (anchor is not null)
+            _ = NewPlainScalar(start, end, anchor, tag);
+
+        string text = Utf8(start, end - start);
+        mergeKey = tag is null && text == "<<";
+        return text;
+    }
+
+    /// <summary>
+    /// Rejects an implicit key that is longer than YAML allows, counting its characters from its first node property or
+    /// content character up to its value indicator.
+    /// </summary>
+    /// <param name="start">The byte offset at which the key, or its first node property, begins.</param>
+    /// <exception cref="YamlFormatException">
+    /// The key, with its properties, its quotes, and the spaces before its value indicator, is longer than
+    /// <see cref="YamlLimits.MaxImplicitKeyLength" /> characters.
+    /// </exception>
+    private void ThrowIfImplicitKeyTooLong(int start)
+    {
+        int indicator = _pos;
+        while (indicator < _length && _source[indicator] is (byte)' ' or (byte)'\t')
+            indicator++;
+
+        // Every character takes at least one byte, so only a key of more bytes than the limit can exceed it. The source
+        // is valid UTF-8, so each character begins with exactly one byte that is not a continuation byte.
+        if (indicator - start <= YamlLimits.MaxImplicitKeyLength)
+            return;
+
+        int characters = 0;
+        for (int i = start; i < indicator; i++)
+        {
+            if ((_source[i] & 0xC0) != 0x80)
+                characters++;
+        }
+
+        if (characters > YamlLimits.MaxImplicitKeyLength)
+        {
+            string message = string.Format(
+                CultureInfo.CurrentCulture,
+                YamlResourceStrings.Format_Invalid_YamlImplicitKeyTooLong,
+                YamlLimits.MaxImplicitKeyLength);
+            throw ErrorAt(start, message);
+        }
     }
 
     /// <summary>
@@ -619,8 +782,19 @@ internal sealed partial class YamlParser
     /// <param name="crossLines">
     /// Whether the node properties may be separated from each other and the node by line breaks (block context).
     /// </param>
+    /// <param name="minIndent">
+    /// The minimum column of a line the properties continue onto, when <paramref name="crossLines" /> is
+    /// <see langword="true" />; a less-indented line belongs to an enclosing node.
+    /// </param>
+    /// <param name="flow">
+    /// Whether the node is in flow context, where a comma or closing bracket directly after a property ends the node.
+    /// </param>
     /// <returns>The captured anchor name, or <see langword="null" />.</returns>
-    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false)
+    /// <exception cref="YamlFormatException">
+    /// A property is repeated, has an empty name, or is not separated from the content that follows it, or an anchor
+    /// names an anchor the document has already defined.
+    /// </exception>
+    private string? TryReadAnchorAndTag(out string? tag, bool crossLines = false, int minIndent = 0, bool flow = false)
     {
         string? anchor = null;
         tag = null;
@@ -628,27 +802,56 @@ internal sealed partial class YamlParser
         while (true)
         {
             if (crossLines)
-                SkipBlankCommentLines();
-            else
+            {
+                // Separation on the current line may hold tabs; only a following line's indentation may not.
                 SkipSpaces();
+                if (IsBreakOrEnd(Peek()) || Peek() == (byte)'#')
+                    SkipBlankCommentLines();
+
+                if (CurrentColumn() < minIndent)
+                    break;
+            }
+            else
+            {
+                SkipSpaces();
+            }
 
             byte c = Peek();
 
-            // In block context, an anchor or tag that begins a mapping-entry line is the entry key's property, not a
-            // property of the node being read.
-            if (crossLines && c is (byte)'&' or (byte)'!' && TryDetectBlockMapping(0))
+            // In block context, properties followed on their line by an implicit key are the key's properties, not
+            // those of the node being read.
+            if (crossLines && c is (byte)'&' or (byte)'!' && PropertiesPrecedeImplicitKey())
                 break;
 
-            if (c == (byte)'&' && anchor is null)
+            // A node carries at most one anchor and one tag.
+            if (c == (byte)'&')
             {
+                if (anchor is not null)
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleAnchors);
+
+                int anchorOffset = _pos;
                 anchor = ReadName(1);
+                RequirePropertySeparation(flow);
+
+                // A repeated name is reported here, where the anchor is written, since a node's row keeps the position
+                // of its content rather than of its properties.
+                if (!(_anchorNames ??= new HashSet<string>(StringComparer.Ordinal)).Add(anchor))
+                {
+                    throw ErrorAt(anchorOffset, string.Format(
+                        CultureInfo.CurrentCulture, YamlResourceStrings.Format_Invalid_YamlDuplicateAnchor, anchor));
+                }
+
                 _lastPropertyLine = _line;
                 continue;
             }
 
-            if (c == (byte)'!' && tag is null)
+            if (c == (byte)'!')
             {
+                if (tag is not null)
+                    throw Error(YamlResourceStrings.Format_Invalid_YamlMultipleTags);
+
                 tag = ReadTag();
+                RequirePropertySeparation(flow);
                 _lastPropertyLine = _line;
                 continue;
             }
@@ -657,6 +860,112 @@ internal sealed partial class YamlParser
         }
 
         return anchor;
+    }
+
+    /// <summary>
+    /// Determines whether the node properties at the cursor are followed on their line by an implicit mapping key,
+    /// which makes them the key's properties rather than those of the node being read.
+    /// </summary>
+    /// <returns><see langword="true" /> when an implicit key follows the properties on their line.</returns>
+    /// <remarks>
+    /// The properties are skipped token by token, so an anchor name that ends in <c>:</c> keeps its colon, and only the
+    /// token after them decides. A <c>: </c> inside a flow collection there does not make the line a mapping entry; a
+    /// value indicator after the whole collection, on the same line, makes the collection an implicit key. An alias or
+    /// a block scalar there is the node the properties apply to.
+    /// </remarks>
+    private bool PropertiesPrecedeImplicitKey()
+    {
+        int savePos = _pos;
+        int saveLine = _line;
+        int saveLineStart = _lineStart;
+        try
+        {
+            while (Peek() is (byte)'&' or (byte)'!')
+            {
+                if (Peek() == (byte)'&')
+                    _ = ReadName(1);
+                else
+                    _ = ReadTag();
+
+                SkipSpaces();
+            }
+
+            byte c = Peek();
+            if (c is (byte)'[' or (byte)'{')
+            {
+                if (!SkipFlowCollectionOnLine())
+                    return false;
+
+                SkipSpaces();
+                return Peek() == (byte)':' && IsBlankOrBreakOrEnd(PeekAt(1));
+            }
+
+            if (IsBreakOrEnd(c) || c is (byte)'#' or (byte)'*' or (byte)'|' or (byte)'>')
+                return false;
+
+            // A block sequence entry or an explicit key indicator is not an implicit key.
+            if (c is (byte)'-' or (byte)'?' && IsBlankOrBreakOrEnd(PeekAt(1)))
+                return false;
+
+            return ScanSimpleKeyHasColon();
+        }
+        finally
+        {
+            _pos = savePos;
+            _line = saveLine;
+            _lineStart = saveLineStart;
+        }
+    }
+
+    /// <summary>
+    /// Advances past a flow collection that opens at the cursor and closes on the same line, skipping its nested
+    /// collections and quoted scalars, for probing.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> when the collection closes on the line, with the cursor after its closing bracket;
+    /// <see langword="false" /> when the line ends first.
+    /// </returns>
+    private bool SkipFlowCollectionOnLine()
+    {
+        int depth = 0;
+        while (!IsBreakOrEnd(Peek()))
+        {
+            byte b = Peek();
+            if (b is (byte)'"' or (byte)'\'')
+            {
+                if (!SkipQuotedOnLine(b))
+                    return false;
+
+                continue;
+            }
+
+            _pos++;
+            if (b is (byte)'[' or (byte)'{')
+            {
+                depth++;
+            }
+            else if (b is (byte)']' or (byte)'}' && --depth == 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Verifies that a node property just read is followed by white space, a line break, or the end of the input, or in
+    /// flow context by the comma or closing bracket that ends the node.
+    /// </summary>
+    /// <param name="flow">Whether the property is in flow context.</param>
+    /// <exception cref="YamlFormatException">The property is joined to the content that follows it.</exception>
+    private void RequirePropertySeparation(bool flow)
+    {
+        byte c = Peek();
+        if (IsBlankOrBreakOrEnd(c) || (flow && c is (byte)',' or (byte)']' or (byte)'}'))
+            return;
+
+        throw ErrorAt(_pos, YamlResourceStrings.Format_Invalid_YamlUnexpectedContent);
     }
 
     /// <summary>
@@ -693,8 +1002,10 @@ internal sealed partial class YamlParser
     /// </summary>
     /// <param name="skip">The number of indicator bytes to consume before the name.</param>
     /// <returns>The decoded name.</returns>
+    /// <exception cref="YamlFormatException">The name is empty.</exception>
     private string ReadName(int skip)
     {
+        int indicator = _pos;
         for (int i = 0; i < skip; i++)
             Advance();
 
@@ -702,16 +1013,36 @@ internal sealed partial class YamlParser
         while (!IsBlankOrBreakOrEnd(Peek()) && Peek() is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             _pos++;
 
+        if (_pos == start)
+            throw ErrorAt(indicator, YamlResourceStrings.Format_Invalid_YamlInvalidAnchorName);
+
         return Utf8(start, _pos - start);
     }
 
     /// <summary>
-    /// Reads a tag node property (verbatim or shorthand) up to the next separator.
+    /// Reads a tag node property: a verbatim tag to its closing <c>&gt;</c>, or a shorthand tag up to the next
+    /// separator or flow indicator.
     /// </summary>
     /// <returns>The captured tag text.</returns>
+    /// <exception cref="YamlFormatException">A verbatim tag has no closing <c>&gt;</c>.</exception>
     private string ReadTag()
     {
         int start = _pos;
+
+        // A verbatim tag may hold any URI character, commas and brackets included, so only its '>' ends it.
+        if (PeekAt(1) == (byte)'<')
+        {
+            _pos += 2;
+            while (!IsBlankOrBreakOrEnd(Peek()) && Peek() != (byte)'>')
+                _pos++;
+
+            if (Peek() != (byte)'>')
+                throw ErrorAt(start, YamlResourceStrings.Format_Invalid_YamlInvalidTag);
+
+            _pos++;
+            return Utf8(start, _pos - start);
+        }
+
         while (!IsBlankOrBreakOrEnd(Peek()) && Peek() is not ((byte)',' or (byte)'[' or (byte)']' or (byte)'{' or (byte)'}'))
             _pos++;
 
@@ -775,6 +1106,29 @@ internal sealed partial class YamlParser
         };
         _rows.Add(row);
         return _rows.Count - 1;
+    }
+
+    /// <summary>
+    /// Creates a single-line plain scalar row from its source text, resolving the text's implicit type under the active
+    /// schema. A scalar that resolves to a value other than a string keeps the length of its text, so that a tag or a
+    /// mapping key can read it as written.
+    /// </summary>
+    /// <param name="start">The byte offset of the scalar's first content byte, where the scalar begins.</param>
+    /// <param name="end">The byte offset just past the scalar's last content byte.</param>
+    /// <param name="anchor">The anchor name, or <see langword="null" />.</param>
+    /// <param name="tag">The tag, or <see langword="null" />.</param>
+    /// <returns>The row index of the scalar.</returns>
+    private int NewPlainScalar(int start, int end, string? anchor, string? tag)
+    {
+        YamlValueKind kind = YamlScalarResolver.Resolve(_source.AsSpan(start, end - start), _version, out long bits);
+        if (kind == YamlValueKind.String)
+            return NewString(Utf8(start, end - start), YamlScalarStyle.Plain, start, anchor, tag);
+
+        int row = NewScalar(kind, bits, YamlScalarStyle.Plain, start, anchor, tag);
+        YamlReaderRow r = _rows[row];
+        r.SourceLength = end - start;
+        _rows[row] = r;
+        return row;
     }
 
     /// <summary>
