@@ -14,6 +14,12 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// the reported <see cref="YamlSerializationException.Path" /> identifies the offending member, index, or key, and the
 /// position of the token the failure occurred on when the failure carries none.
 /// </summary>
+/// <remarks>
+/// A conversion failure, a <see cref="FormatException" />, <see cref="OverflowException" />,
+/// <see cref="InvalidCastException" />, or <see cref="ArgumentException" />, is wrapped in a
+/// <see cref="YamlSerializationException" />. A <see cref="YamlFormatException" />, which reports malformed YAML rather
+/// than a value that cannot convert, passes through as it was thrown, as it does from the document's root value.
+/// </remarks>
 internal static class ChildBinder
 {
     /// <summary>
@@ -38,7 +44,7 @@ internal static class ChildBinder
             ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
             throw;
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
         {
             throw Wrap(ref reader, type, ex, segment);
         }
@@ -68,7 +74,7 @@ internal static class ChildBinder
             ex.Path = YamlSerializationException.CombinePath(segment, ex.Path);
             throw;
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
         {
             throw Wrap(ref reader, type, ex, segment);
         }
@@ -97,7 +103,7 @@ internal static class ChildBinder
             ex.Path = YamlSerializationException.CombinePath(IndexSegment(index), ex.Path);
             throw;
         }
-        catch (Exception ex) when (ex is FormatException or OverflowException or InvalidCastException or ArgumentException)
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
         {
             throw Wrap(ref reader, type, ex, IndexSegment(index));
         }
