@@ -19,12 +19,13 @@ internal static class InvariantScalarCodec
     internal enum Policy
     {
         /// <summary>
-        /// Original DotEnv/INI invariant text and empty-only nullable semantics.
+        /// The DotEnv and INI rules: invariant text, and only empty text is a missing nullable value.
         /// </summary>
         Configuration,
 
         /// <summary>
-        /// Delimited round-trip temporal text and blank-cell nullable semantics.
+        /// The delimited rules: round-trip text for temporal values, and a blank cell, empty or white space, is a
+        /// missing nullable value, except that one space is a value for a nullable <see cref="char" />.
         /// </summary>
         Delimited,
     }
@@ -51,8 +52,8 @@ internal static class InvariantScalarCodec
         };
 
     /// <summary>
-    /// Converts a scalar. May throw the underlying parsing exception, which the format-specific caller must wrap to
-    /// preserve its existing public error type and message.
+    /// Converts a scalar. A malformed value throws the underlying parsing exception, which each serializer wraps in its
+    /// own serialization exception.
     /// </summary>
     /// <param name="raw">The text to convert.</param>
     /// <param name="targetType">The desired result type, including nullable wrappers.</param>

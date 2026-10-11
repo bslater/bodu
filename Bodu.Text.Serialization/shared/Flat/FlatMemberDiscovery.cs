@@ -10,7 +10,8 @@ using System.Reflection;
 namespace Bodu.Text.Serialization;
 
 /// <summary>
-/// Enumerates directly declared visible POCO members using DotEnv/INI member selection rules.
+/// Enumerates the public instance properties and fields, inherited ones included, that the DotEnv and INI serializers
+/// map.
 /// </summary>
 internal static class FlatMemberDiscovery
 {

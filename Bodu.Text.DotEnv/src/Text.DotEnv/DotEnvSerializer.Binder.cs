@@ -237,6 +237,7 @@ public static partial class DotEnvSerializer
     /// <param name="targetType">The CLR type.</param>
     /// <param name="key">The diagnostic field name.</param>
     /// <returns>The converted scalar.</returns>
+    /// <exception cref="DotEnvSerializationException">Thrown when the value cannot be converted.</exception>
     private static object? ConvertFromString(string raw, Type targetType, string key)
     {
         try
