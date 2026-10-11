@@ -80,7 +80,7 @@ Where the mapping lives differs by format. A `.msg` file keeps it in the root's 
 |---|---|---|
 | `ByValue` | The bytes are stored in the file (`PidTagAttachDataBinary`). | `OpenContentStream()` |
 | `EmbeddedMessage` | The attachment is another message. | `OpenMessage()` |
-| `ByReference` / `ByReferenceResolve` / `ByReferenceOnly` | The file holds a path to the content, not the content. | Neither - no payload in the file |
+| `ByReference` / `ByReferenceResolve` / `ByReferenceOnly` / `ByWebReference` | The file holds a path to the content, or for `ByWebReference` a URL to a web service that holds it, not the content. | Neither - no payload in the file |
 | `Ole` | An OLE object. | Neither |
 | `None` | No content declared. | Neither |
 

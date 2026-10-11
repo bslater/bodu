@@ -31,7 +31,7 @@ Both readers open a disposable **session** that owns the container, decode every
 - <xref:Bodu.Formats.Outlook.MapiNamedProperty> - the durable identity behind a named identifier: a property-set GUID with either a numeric `Id` or a string `Name`.
 - <xref:Bodu.Formats.Outlook.MapiPropertyIds> - the curated `PidTag*` identifiers the conveniences use (`Subject`, `SenderName`, `ClientSubmitTime`, `Body`, `Html`, `RtfCompressed`, `AttachMethod`, `AttachLongFilename`, `MessageCodepage`, `ContainerClass`, …); any property is reachable by raw identifier regardless.
 - <xref:Bodu.Formats.Outlook.OutlookRecipient> - one recipient: `RecipientType`, `DisplayName`, `EmailAddress`, `AddressType`, and its `Properties`. <xref:Bodu.Formats.Outlook.OutlookRecipientType> - `Originator` / `To` / `Cc` / `Bcc`.
-- <xref:Bodu.Formats.Outlook.OutlookAttachmentMethod> - `None` / `ByValue` / `ByReference` / `ByReferenceResolve` / `ByReferenceOnly` / `EmbeddedMessage` / `Ole`.
+- <xref:Bodu.Formats.Outlook.OutlookAttachmentMethod> - `None` / `ByValue` / `ByReference` / `ByReferenceResolve` / `ByReferenceOnly` / `EmbeddedMessage` / `Ole` / `ByWebReference`.
 
 **Message session - `Bodu.Formats.Outlook.Msg`**
 

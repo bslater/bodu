@@ -79,7 +79,7 @@ public sealed class OutlookAttachment
     /// </value>
     public OutlookAttachmentMethod Method =>
         Properties.GetInt32(MapiPropertyIds.AttachMethod) is int value
-            && value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.Ole
+            && value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.ByWebReference
             ? (OutlookAttachmentMethod)value
             : _contentLength is not null ? OutlookAttachmentMethod.ByValue : OutlookAttachmentMethod.None;
 
@@ -127,7 +127,7 @@ public sealed class OutlookAttachment
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="NotSupportedException">
     /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.ByValue" /> - a referenced,
-    /// embedded, or OLE attachment carries no byte payload in the message.
+    /// web-referenced, embedded, or OLE attachment carries no byte payload in the message.
     /// </exception>
     /// <exception cref="OutlookMsgFormatException">
     /// The by-value content stream is missing, or the container is malformed.
