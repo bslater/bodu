@@ -10,7 +10,8 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies the YAML 1.1 merge key (<c>&lt;&lt;</c>) compatibility feature: importing keys without overriding
-/// explicit ones, sequence-of-mappings precedence, and explicit-key precedence over merged defaults.
+/// explicit ones, sequence-of-mappings precedence, explicit-key precedence over merged defaults, and the merging of a
+/// source that has a merge key of its own.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -134,5 +135,48 @@ public partial class YamlDocumentTests
         {
             using var document = YamlDocument.Parse(yaml, options);
         });
+    }
+
+    /// <summary>
+    /// Verifies that a merge source with a merge key of its own contributes the keys that merge supplies, and no merge
+    /// key, wherever the source is written, so the explicit keys of each mapping still win over its merged ones and an
+    /// earlier source in a sequence still wins over a later one.
+    /// </summary>
+    /// <param name="yaml">A document whose mapping <c>outer</c> merges a source that merges in turn.</param>
+    /// <param name="expected">The entries of <c>outer</c>, sorted by key, each value in its JSON form.</param>
+    [TestMethod]
+    [DataRow(
+        "outer:\n  <<: &inner\n    <<: {x: 1}\n    y: 2\n  z: 3\n",
+        "x=1,y=2,z=3",
+        DisplayName = "a source written inside the mapping that merges it")]
+    [DataRow(
+        "outer:\n  <<: [ {<<: {x: 1}, y: 2}, {<<: {w: 0}, z: 3} ]\n",
+        "w=0,x=1,y=2,z=3",
+        DisplayName = "a sequence of sources that each merge")]
+    [DataRow(
+        "outer:\n  <<: &m\n    <<: &n\n      <<: {x: 1}\n      y: 2\n    z: 3\n  w: 4\n",
+        "w=4,x=1,y=2,z=3",
+        DisplayName = "three levels of merges")]
+    [DataRow(
+        "outer:\n  <<:\n    <<: {a: merged, b: merged}\n    b: source\n  a: explicit\n",
+        "a=\"explicit\",b=\"source\"",
+        DisplayName = "explicit keys winning at each level")]
+    [DataRow(
+        "outer:\n  <<: [ {<<: {k: first}}, {k: second} ]\n",
+        "k=\"first\"",
+        DisplayName = "an earlier source winning with a key its own merge supplies")]
+    [DataRow(
+        "base: &b {<<: {x: 1}, y: 2}\nouter:\n  <<: *b\n  z: 3\n",
+        "x=1,y=2,z=3",
+        DisplayName = "an aliased source written earlier in the document")]
+    public void Parse_WhenMergeSourceHasMergeKey_ShouldMergeItsMergedKeys(string yaml, string expected)
+    {
+        using var document = YamlDocument.Parse(yaml);
+
+        YamlElement outer = document.RootElement.GetProperty("outer");
+        string entries = string.Join(
+            ",",
+            outer.EnumerateMapping().Select(property => property.Name + "=" + ToJson(property.Value)).Order(StringComparer.Ordinal));
+        Assert.AreEqual(expected, entries);
     }
 }
