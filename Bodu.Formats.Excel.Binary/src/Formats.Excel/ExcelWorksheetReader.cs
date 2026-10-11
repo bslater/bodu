@@ -29,7 +29,7 @@ namespace Bodu.Formats.Excel;
 /// cells. For the same reason, a substream nested in the worksheet, such as a chart embedded after its <c>OBJ</c>
 /// record ([MS-XLS] 2.1.7.20.6), is skipped from its <c>BOF</c> record to the <c>EOF</c> record that matches it, and
 /// the worksheet's cells after it are read as usual. Only the <c>EOF</c> record that matches the worksheet's own
-/// <c>BOF</c> record ends the worksheet.
+/// <c>BOF</c> record ends the worksheet; a worksheet without one ends where the next sheet's substream begins.
 /// </para>
 /// <para>
 /// For random access by position, materialize the worksheet instead with
@@ -61,7 +61,7 @@ namespace Bodu.Formats.Excel;
 public sealed class ExcelWorksheetReader
     : IDisposable
 {
-    /// <summary>The worksheet substream bytes, from its BOF record through its EOF record.</summary>
+    /// <summary>The worksheet substream bytes, from its BOF record to its end.</summary>
     private readonly byte[] _data;
 
     /// <summary>The workbook shared string table.</summary>
@@ -95,7 +95,7 @@ public sealed class ExcelWorksheetReader
     /// Initializes a new instance of the <see cref="ExcelWorksheetReader" /> class.
     /// </summary>
     /// <param name="worksheet">The descriptor of the worksheet being read.</param>
-    /// <param name="substream">The worksheet substream bytes, from its BOF record through its EOF record.</param>
+    /// <param name="substream">The worksheet substream bytes, from its BOF record to its end.</param>
     /// <param name="sharedStrings">The workbook shared string table.</param>
     /// <param name="formats">The workbook format table.</param>
     /// <param name="options">

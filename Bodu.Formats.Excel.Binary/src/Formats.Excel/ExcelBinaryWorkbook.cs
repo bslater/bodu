@@ -462,7 +462,10 @@ public sealed class ExcelBinaryWorkbook
     private static byte[] ReadGlobalsSubstream(CompoundStorage root, string streamName)
     {
         using CompoundStream stream = root.OpenStream(streamName);
-        return BiffSubstreamLoader.ReadSubstream(stream);
+
+        // Where the sheets' substreams begin is known only once the globals are parsed, so the globals end only at
+        // their own EOF record.
+        return BiffSubstreamLoader.ReadSubstream(stream, long.MaxValue);
     }
 
     /// <summary>
@@ -542,14 +545,38 @@ public sealed class ExcelBinaryWorkbook
     /// Reads the substream of the sheet at the specified index from the workbook stream.
     /// </summary>
     /// <param name="worksheetIndex">The zero-based sheet index.</param>
-    /// <returns>The sheet substream bytes, from its BOF record through its EOF record.</returns>
+    /// <returns>
+    /// The sheet substream bytes, from its BOF record through the EOF record that matches it or, when it has none, up
+    /// to where another sheet's substream begins.
+    /// </returns>
     private byte[] ReadSheetSubstream(int worksheetIndex)
     {
         long offset = _globals.Sheets[worksheetIndex].StreamOffset;
         using CompoundStream stream = _root.OpenStream(_streamName);
+        long limit = FindSubstreamLimit(offset, stream.Length);
         stream.Seek(offset, SeekOrigin.Begin);
 
-        return BiffSubstreamLoader.ReadSubstream(stream);
+        return BiffSubstreamLoader.ReadSubstream(stream, limit);
+    }
+
+    /// <summary>
+    /// Finds where the sheet substream that begins at the specified offset ends when it has no EOF record of its own:
+    /// at the nearest offset after it at which another sheet's substream begins, or at the end of the workbook stream.
+    /// </summary>
+    /// <param name="offset">The offset at which the sheet's substream begins.</param>
+    /// <param name="streamLength">The length of the workbook stream.</param>
+    /// <returns>The offset at which the sheet's substream ends at the latest.</returns>
+    private long FindSubstreamLimit(long offset, long streamLength)
+    {
+        // The sheet directory need not list the substreams in stream order, so every entry is considered.
+        long limit = streamLength;
+        foreach (BiffSheetDirectoryEntry entry in _globals.Sheets)
+        {
+            if (entry.StreamOffset > offset && entry.StreamOffset < limit)
+                limit = entry.StreamOffset;
+        }
+
+        return limit;
     }
 
     /// <summary>

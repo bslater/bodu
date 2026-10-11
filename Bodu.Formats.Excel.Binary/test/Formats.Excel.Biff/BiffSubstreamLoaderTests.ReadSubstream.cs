@@ -30,7 +30,7 @@ public partial class BiffSubstreamLoaderTests
         byte[] next = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 3.0));
         using MemoryStream stream = new([.. sheet, .. next]);
 
-        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream);
+        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream, stream.Length);
 
         CollectionAssert.AreEqual(sheet, substream);
         Assert.AreEqual(sheet.Length, stream.Position);
@@ -51,9 +51,113 @@ public partial class BiffSubstreamLoaderTests
         byte[] next = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 3.0));
         using MemoryStream stream = new([.. sheet, .. next]);
 
-        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream);
+        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream, stream.Length);
 
         CollectionAssert.AreEqual(sheet, substream);
         Assert.AreEqual(sheet.Length, stream.Position);
+    }
+
+    /// <summary>
+    /// Verifies that a substream without an EOF record ends at the limit, where the next substream begins, and leaves
+    /// the stream there.
+    /// </summary>
+    [TestMethod]
+    public void ReadSubstream_WhenSubstreamLacksEof_ShouldStopAtTheLimit()
+    {
+        byte[] sheet = Biff8TestWorkbook.Concat(Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet), Biff8TestWorkbook.Number(0, 0, 1.0));
+        byte[] next = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 2.0));
+        using MemoryStream stream = new([.. sheet, .. next]);
+
+        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream, sheet.Length);
+
+        CollectionAssert.AreEqual(sheet, substream);
+        Assert.AreEqual(sheet.Length, stream.Position);
+    }
+
+    /// <summary>
+    /// Verifies that a substream without an EOF record that holds an embedded chart ends at the limit, not at the
+    /// chart's BOF or EOF.
+    /// </summary>
+    [TestMethod]
+    public void ReadSubstream_WhenSubstreamLacksEofAndNestsAChart_ShouldStopAtTheLimit()
+    {
+        byte[] sheet = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet),
+            Biff8TestWorkbook.Number(0, 0, 1.0),
+            Biff8TestWorkbook.EmbeddedChart(1, 10.0),
+            Biff8TestWorkbook.Number(1, 0, 2.0));
+        byte[] next = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 3.0));
+        using MemoryStream stream = new([.. sheet, .. next]);
+
+        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream, sheet.Length);
+
+        CollectionAssert.AreEqual(sheet, substream);
+    }
+
+    /// <summary>
+    /// Verifies that the last substream in the stream, without an EOF record, ends at the end of the stream when the
+    /// limit is the stream's length.
+    /// </summary>
+    [TestMethod]
+    public void ReadSubstream_WhenLimitIsTheStreamLength_ShouldReadToTheEndOfTheStream()
+    {
+        byte[] sheet = Biff8TestWorkbook.Concat(
+            Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet),
+            Biff8TestWorkbook.Number(0, 0, 1.0),
+            Biff8TestWorkbook.Number(1, 0, 2.0));
+        using MemoryStream stream = new(sheet);
+
+        byte[] substream = BiffSubstreamLoader.ReadSubstream(stream, stream.Length);
+
+        CollectionAssert.AreEqual(sheet, substream);
+    }
+
+    /// <summary>
+    /// Verifies that a substream without an EOF record is rejected when the limit is <see cref="long.MaxValue" />,
+    /// which requires the matching EOF record, as the workbook globals do.
+    /// </summary>
+    [TestMethod]
+    public void ReadSubstream_WhenLimitIsMaxValueAndEofIsMissing_ShouldThrowExcelBinaryFormatException()
+    {
+        using MemoryStream stream = new(Biff8TestWorkbook.Concat(Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofGlobals), Biff8TestWorkbook.DateMode(true)));
+
+        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
+        {
+            _ = BiffSubstreamLoader.ReadSubstream(stream, long.MaxValue);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a substream that the end of the stream cuts inside a record, in its header or its payload, is
+    /// rejected even when the limit is the stream's length.
+    /// </summary>
+    /// <param name="cut">The number of bytes removed from the end of the substream.</param>
+    [TestMethod]
+    [DataRow(2)]
+    [DataRow(7)]
+    public void ReadSubstream_WhenStreamEndsInsideARecord_ShouldThrowExcelBinaryFormatException(int cut)
+    {
+        byte[] sheet = Biff8TestWorkbook.Concat(Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet), Biff8TestWorkbook.Number(0, 0, 1.0));
+        using MemoryStream stream = new(sheet.AsSpan(0, sheet.Length - cut).ToArray());
+
+        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
+        {
+            _ = BiffSubstreamLoader.ReadSubstream(stream, stream.Length);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a substream that begins at the end of the stream is rejected rather than read as empty.
+    /// </summary>
+    [TestMethod]
+    public void ReadSubstream_WhenSubstreamBeginsAtTheEndOfTheStream_ShouldThrowExcelBinaryFormatException()
+    {
+        using MemoryStream stream = new(Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 1.0)));
+        stream.Seek(0, SeekOrigin.End);
+
+        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
+        {
+            _ = BiffSubstreamLoader.ReadSubstream(stream, stream.Length);
+        });
     }
 }

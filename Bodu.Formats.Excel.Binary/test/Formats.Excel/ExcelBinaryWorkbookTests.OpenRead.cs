@@ -264,15 +264,19 @@ public partial class ExcelBinaryWorkbookTests
     }
 
     /// <summary>
-    /// Verifies that a sheet substream that ends before its EOF is rejected when the sheet is opened.
+    /// Verifies that a sheet substream that the end of the stream cuts inside a record, in the EOF record's header or in
+    /// the payload of the record before it, is rejected when the sheet is opened.
     /// </summary>
+    /// <param name="cut">The number of bytes removed from the end of the stream.</param>
     [TestMethod]
-    public void OpenWorksheet_WhenSheetTruncatedBeforeEof_ShouldThrowFormatException()
+    [DataRow(2)]
+    [DataRow(11)]
+    public void OpenWorksheet_WhenSheetTruncatedInsideARecord_ShouldThrowFormatException(int cut)
     {
         byte[] stream = Biff8TestWorkbook.BuildWorkbookStream(
             [],
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Number(0, 0, 1.0)]));
-        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(stream.AsSpan(0, stream.Length - 4).ToArray(), "Workbook");
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(stream.AsSpan(0, stream.Length - cut).ToArray(), "Workbook");
 
         using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
         _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>

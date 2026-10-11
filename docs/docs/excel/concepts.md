@@ -32,6 +32,8 @@ Each sheet is its own **substream** - a `BOF` record, an optional `DIMENSIONS` r
 
 A worksheet's substream can hold whole substreams of its own: a chart embedded in the worksheet is a chart substream, `BOF` to `EOF`, after the chart's `OBJ` record ([MS-XLS] 2.1.7.20.6). The `BOF` and `EOF` records are counted in pairs, so a sheet ends at the `EOF` that matches its own `BOF`, and a nested substream is skipped from its `BOF` to the `EOF` that matches it: its `NUMBER` and `LABEL` records are the chart's data cache ([MS-XLS] 2.2.3.2), not cells, and the worksheet's cells after it are read as usual.
 
+A sheet whose substream has no `EOF` record of its own ends where another sheet's substream begins, at the nearest `BOUNDSHEET` offset after its own, whatever the order of the sheet directory, or at the end of the workbook stream when no sheet's substream follows it. A record that the end of the stream cuts short is still malformed.
+
 ## Cell and cell kind
 
 A populated cell is surfaced as an immutable <xref:Bodu.Formats.Excel.ExcelCell> carrying its zero-based row and column and a <xref:Bodu.Formats.Excel.ExcelCellKind> - `String`, `Number`, `Boolean`, or `Error`. The matching value is read from the projection that fits the kind (`StringValue`, `NumberValue`, `BooleanValue`, `ErrorValue`); the others are `null`. **Blank cells are not returned at all**, so both reader surfaces are sparse. `ExcelCellKind` also defines `Blank` for completeness, but a blank cell is never emitted - the value is informational rather than something a reader returns.
