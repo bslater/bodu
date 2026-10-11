@@ -41,7 +41,7 @@ public partial class IniSerializerTests
         public string Name { get; set; } = string.Empty;
         [Bodu.Text.Serialization.Ignore]
         public int Hidden { get; set; }
-        public int PublicField;
+        public int PublicField = 42;
         public string this[int index] => index.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 }

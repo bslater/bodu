@@ -37,7 +37,7 @@ public partial class DotEnvSerializerTests
         [Bodu.Text.Serialization.Ignore]
         public string? NotIncluded { get; set; }
 
-        public int PublicField;
+        public int PublicField = 42;
     }
 
     [TestMethod]
