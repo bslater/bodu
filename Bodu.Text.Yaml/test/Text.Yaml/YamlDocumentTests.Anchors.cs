@@ -10,7 +10,8 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies anchor and alias composition: an alias resolves to its anchor's value or subtree, and an undefined alias,
-/// a node with two anchors, an empty anchor name, and a property glued to its content are rejected.
+/// a node with two anchors, an empty anchor name, a property glued to its content, and an alias used as a mapping key
+/// are rejected.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -169,5 +170,32 @@ public partial class YamlDocumentTests
         using var document = YamlDocument.Parse("&k key: v\nother: *k\n");
 
         Assert.AreEqual("""{"key":"v","other":"key"}""", ToJson(document.RootElement));
+    }
+
+    /// <summary>
+    /// Verifies that an alias used as an implicit key of a block mapping, even an alias of a scalar, is rejected with
+    /// the profile's complex-key message, which names alias keys, at the alias, with its line, column and offset,
+    /// whether the alias follows another key or begins the mapping.
+    /// </summary>
+    /// <param name="yaml">A document with an alias used as an implicit key.</param>
+    /// <param name="line">The line of the alias.</param>
+    /// <param name="column">The column of the alias.</param>
+    /// <param name="offset">The byte offset of the alias.</param>
+    [TestMethod]
+    [DataRow("a: &k key\n*k : v\n", 2, 1, 10, DisplayName = "after another key")]
+    [DataRow("a: &k key\nb:\n  c: 1\n  *k : v\n", 4, 3, 22, DisplayName = "after another key of a nested mapping")]
+    [DataRow("a: &k key\nb:\n  *k : v\n", 3, 3, 15, DisplayName = "the first key of a nested mapping")]
+    [DataRow("- &k key\n- *k : v\n", 2, 3, 11, DisplayName = "the first key of a compact mapping in a sequence entry")]
+    public void Parse_WhenAliasIsImplicitBlockKey_ShouldRejectAsComplexKeyAtAlias(string yaml, int line, int column, int offset)
+    {
+        YamlFormatException ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+
+        Assert.AreEqual(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported, ex.Message);
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(column, ex.ColumnNumber);
+        Assert.AreEqual(offset, ex.Offset);
     }
 }
