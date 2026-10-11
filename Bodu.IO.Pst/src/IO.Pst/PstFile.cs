@@ -105,6 +105,13 @@ public sealed class PstFile
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="path" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="path" /> is empty.</exception>
+    /// <exception cref="FileNotFoundException">No file exists at <paramref name="path" />.</exception>
+    /// <exception cref="DirectoryNotFoundException">A directory in <paramref name="path" /> does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">
+    /// <paramref name="path" /> names a directory, or the caller does not have permission to read the file.
+    /// </exception>
+    /// <exception cref="IOException">The file could not be opened.</exception>
     /// <exception cref="PstFileFormatException">The file is not a structurally valid PST file.</exception>
     /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
     public static PstFile OpenRead(string path)

@@ -7,10 +7,10 @@ types, decoded property values with a tag-addressed collection, named-property
 identities, recipient and attachment enumerations, and the shared exception hierarchy.
 
 This package is deliberately **container-free** - it knows nothing about `.msg` or
-`.pst` files. The [`Bodu.Formats.Outlook.Msg`](../Bodu.Formats.Outlook.Msg) reader (and
-a future `.pst` reader over `Bodu.IO.Pst`) build on this model rather than owning it,
-the same shared-value-model convention as `Bodu.Formats.Excel` and
-`Bodu.Financial.ExchangeRates`.
+`.pst` files. The [`Bodu.Formats.Outlook.Msg`](../Bodu.Formats.Outlook.Msg) reader and
+the [`Bodu.Formats.Outlook.Pst`](../Bodu.Formats.Outlook.Pst) reader over `Bodu.IO.Pst`
+build on this model rather than owning it, the same shared-value-model convention as
+`Bodu.Formats.Excel` and `Bodu.Financial.ExchangeRates`.
 
 ```csharp
 using Bodu.Formats.Outlook;

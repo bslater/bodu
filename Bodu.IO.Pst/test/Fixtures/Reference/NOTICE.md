@@ -6,8 +6,12 @@ These binary fixtures are third-party PST files acquired ahead of the
 [`../../../docs/pst-container-exploration.md`](../../../docs/pst-container-exploration.md)
 and anchor the future P0 spike. They are redistributed here under their
 original permissive license, whose full text is carried alongside in
-[`LICENSE.Apache-2.0.txt`](LICENSE.Apache-2.0.txt). No test project
-consumes them yet; the P0 spike wires them.
+[`LICENSE.Apache-2.0.txt`](LICENSE.Apache-2.0.txt).
+`Bodu.IO.Pst.Test` embeds them with `manifest.seed.json` and reads them
+through `PstReferenceFixtures`: the reference, LTP and malformed-input
+corpus tests, and the header, checksum, file and node tests.
+`Bodu.Formats.Outlook.Pst.Test` reads them through that project for the
+mail-store corpus, folder and store tests.
 
 ## Provenance
 

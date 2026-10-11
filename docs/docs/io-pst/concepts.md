@@ -16,7 +16,7 @@ The format comes in two variants: **Unicode** (`wVer` 23 or any later version ex
 
 ## Header
 
-The header is the preamble anchoring the file (564 bytes in the Unicode format, 512 in ANSI): the `!BDN` magic, a CRC over the following 471 bytes (the MS-PST §5.3 checksum), the client magic `SM`, the format version, the file size, the root references of the two B-trees, the sentinel byte, and the content-encoding method. Under <xref:Bodu.IO.Pst.PstValidationLevel.Strict> the header CRC is enforced; a wrong magic, an undeclared version, or a truncated header is rejected as malformed.
+The header is the preamble anchoring the file (564 bytes in the Unicode format, 512 in ANSI): the `!BDN` magic, a CRC over the following 471 bytes (the MS-PST §5.3 checksum), the client magic `SM`, the format version, the file size, the root references of the two B-trees, the sentinel byte, and the content-encoding method. The header CRC is verified under <xref:Bodu.IO.Pst.PstValidationLevel.Compatible> and <xref:Bodu.IO.Pst.PstValidationLevel.Strict> and skipped only under <xref:Bodu.IO.Pst.PstValidationLevel.Minimal>; a wrong magic, an undeclared version, or a truncated header is rejected as malformed.
 
 ## Node identifier (NID)
 
