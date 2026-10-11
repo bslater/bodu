@@ -36,6 +36,9 @@ internal sealed class CfbDirectory
     /// <summary>The validation level governing how malformed entries and cyclic links are handled.</summary>
     private readonly CompoundValidationLevel _level;
 
+    /// <summary>The slots left empty because the file, cut short inside its final sector, does not hold all of them.</summary>
+    private readonly bool[] _truncated;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbDirectory" /> class by parsing the directory bytes and building
     /// the storage hierarchy.
@@ -43,14 +46,41 @@ internal sealed class CfbDirectory
     /// <param name="directory">The full byte content of the directory chain.</param>
     /// <param name="header">The parsed compound-file header.</param>
     /// <param name="level">The validation level governing malformed entries and cyclic links.</param>
+    /// <param name="missingStart">
+    /// The offset, in <paramref name="directory" />, of the bytes the file does not hold because it ends inside the
+    /// directory's final sector.
+    /// </param>
+    /// <param name="missingLength">
+    /// The number of those bytes, which read as zero; zero when the file holds them all.
+    /// </param>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the directory is malformed, lacks a root storage, or contains cyclic or out-of-range tree links.
+    /// Thrown when the directory is malformed, lacks a root storage, or contains cyclic or out-of-range tree links, or,
+    /// at a level stricter than <see cref="CompoundValidationLevel.Minimal" />, when the tree reaches an entry the file
+    /// does not hold whole.
     /// </exception>
-    internal CfbDirectory(byte[] directory, CfbHeader header, CompoundValidationLevel level)
+    /// <remarks>
+    /// An entry the file does not hold whole is ignored unless a link reaches it. At
+    /// <see cref="CompoundValidationLevel.Minimal" /> its missing bytes read as zero instead.
+    /// </remarks>
+    internal CfbDirectory(byte[] directory, CfbHeader header, CompoundValidationLevel level, long missingStart = 0, int missingLength = 0)
     {
         _level = level;
-        _entries = ParseEntries(directory, header, level);
+        _truncated = new bool[directory.Length / DirectoryEntrySize];
+        if (missingLength > 0 && level != CompoundValidationLevel.Minimal)
+        {
+            for (long sid = missingStart / DirectoryEntrySize; sid < _truncated.Length; sid++)
+            {
+                if (sid * DirectoryEntrySize < missingStart + missingLength)
+                    _truncated[sid] = true;
+            }
+        }
 
+        _entries = ParseEntries(directory, header, level, _truncated);
+
+        CompoundThrowHelper.ThrowFormatIf(
+            _truncated.Length > 0 && _truncated[RootSid],
+            CompoundResourceStrings.Format_Invalid_CompoundTruncated,
+            CompoundFileError.TruncatedFile);
         CompoundThrowHelper.ThrowFormatIf(
             _entries.Length == 0 || _entries[RootSid] is not { Type: CompoundEntryType.RootStorage },
             CompoundResourceStrings.Format_Invalid_CompoundDirectory,
@@ -91,12 +121,13 @@ internal sealed class CfbDirectory
     /// The validation level; <see cref="CompoundValidationLevel.Strict" /> rejects malformed entries that other levels
     /// skip.
     /// </param>
+    /// <param name="truncated">The slots the file does not hold whole, which are left empty.</param>
     /// <returns>The parsed entries indexed by stream identifier.</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type,
     /// or breaks another requirement [MS-CFB] 2.6 places on a single entry.
     /// </exception>
-    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level)
+    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level, bool[] truncated)
     {
         int count = directory.Length / DirectoryEntrySize;
         var entries = new CfbDirectoryEntry?[count];
@@ -104,6 +135,9 @@ internal sealed class CfbDirectory
 
         for (int sid = 0; sid < count; sid++)
         {
+            if (truncated[sid])
+                continue;
+
             ReadOnlySpan<byte> record = directory.AsSpan(sid * DirectoryEntrySize, DirectoryEntrySize);
 
             int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(64));
@@ -337,6 +371,12 @@ internal sealed class CfbDirectory
             // Descend the left spine, pushing each node so it can be emitted in order on the way back up.
             while (current != CfbHeader.NoStream)
             {
+                // A link to an entry the file does not hold whole needs bytes the file lacks.
+                CompoundThrowHelper.ThrowFormatIf(
+                    current < (uint)_truncated.Length && _truncated[current],
+                    CompoundResourceStrings.Format_Invalid_CompoundTruncated,
+                    CompoundFileError.TruncatedFile);
+
                 if (current >= (uint)_entries.Length || _entries[current] is null || visited[current])
                 {
                     // A tolerant level prunes the offending subtree instead of rejecting the whole directory.

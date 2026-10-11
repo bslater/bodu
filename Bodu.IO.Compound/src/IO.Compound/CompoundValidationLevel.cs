@@ -11,12 +11,16 @@ namespace Bodu.IO.Compound;
 /// </summary>
 /// <remarks>
 /// All levels enforce the memory-safety invariants required to parse a file without faulting - the signature,
-/// byte-order marker, sector sizes, file truncation, allocation-table bounds, and the presence of a root storage are
-/// always validated. The level controls only how the reader responds to the remaining, recoverable inconsistencies.
-/// Every level reads a stream smaller than 4096 bytes from the mini stream, the cutoff [MS-CFB] fixes, whatever cutoff
-/// the header declares. Below <see cref="Strict" />, a directory entry whose name length is odd or above 64, or whose
-/// object type [MS-CFB] does not define, is malformed and skipped, while a name that lacks its terminating null is read
-/// up to its declared length.
+/// byte-order marker, sector sizes, allocation-table bounds, and the presence of a root storage are always validated,
+/// and a sector that begins at or past the end of the file is <see cref="CompoundFileError.SectorOutOfRange" />. The
+/// level controls only how the reader responds to the remaining, recoverable inconsistencies. A file may end inside its
+/// final sector, as [MS-CFB] 2.3 allows, when it holds every byte a structure there declares; a declared byte it lacks
+/// is <see cref="CompoundFileError.TruncatedFile" /> at <see cref="Strict" /> and <see cref="Compatible" />, and reads
+/// as zero at <see cref="Minimal" />, or, in an allocation table, as FREESECT. Every level reads a stream smaller than
+/// 4096 bytes from the mini stream, the cutoff [MS-CFB] fixes, whatever cutoff the header declares. Below
+/// <see cref="Strict" />, a directory entry whose name length is odd or above 64, or whose object type [MS-CFB] does
+/// not define, is malformed and skipped, while a name that lacks its terminating null is read up to its declared
+/// length.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

@@ -135,11 +135,11 @@ public sealed class CompoundFile
         _header = CfbHeader.Parse(head.Slice(0, headLength), level);
         _sectors = new CfbSectorReader(dataSource, _header, level);
 
-        byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
+        byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector, out long missingStart, out int missingLength);
         if (level == CompoundValidationLevel.Strict)
             _header.ValidateDirectorySectorCount(_sectors.GetSectorChain(_header.FirstDirectorySector).Length);
 
-        _directory = new CfbDirectory(directoryBytes, _header, level);
+        _directory = new CfbDirectory(directoryBytes, _header, level, missingStart, missingLength);
 
         if (_directory.Root.Size > 0)
             _sectors.InitializeMiniStream(_directory.Root.StartSector, _directory.Root.Size);

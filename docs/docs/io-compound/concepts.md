@@ -74,7 +74,7 @@ A **property set** is an OLE metadata stream that maps integer property IDs to t
 
 ## Validation level
 
-How strictly a malformed container is rejected is governed by <xref:Bodu.IO.Compound.CompoundValidationLevel>, set through <xref:Bodu.IO.Compound.CompoundFileOptions.ValidationLevel>. Every level enforces the memory-safety invariants needed to parse without faulting - the signature, byte-order marker, sector sizes, file length, allocation-table bounds, and the presence of a root storage are *always* validated. The level controls only how the reader responds to the remaining, recoverable inconsistencies:
+How strictly a malformed container is rejected is governed by <xref:Bodu.IO.Compound.CompoundValidationLevel>, set through <xref:Bodu.IO.Compound.CompoundFileOptions.ValidationLevel>. Every level enforces the memory-safety invariants needed to parse without faulting - the signature, byte-order marker, sector sizes, allocation-table bounds, and the presence of a root storage are *always* validated, and a sector that begins at or past the end of the file is `SectorOutOfRange`. A file may end inside its final sector, as [MS-CFB] 2.3 allows, when it holds every byte a structure there declares: a stream's bytes up to its size, the directory entries its tree reaches, and every byte of a FAT, DIFAT or mini FAT sector. A declared byte the file lacks is `TruncatedFile` at `Strict` and `Compatible`, and reads as zero at `Minimal` (an allocation-table entry as FREESECT). The level controls only how the reader responds to the remaining, recoverable inconsistencies:
 
 | Level | Behaviour |
 |---|---|

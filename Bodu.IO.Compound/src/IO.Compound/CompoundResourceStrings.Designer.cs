@@ -266,5 +266,14 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("Op_Invalid_CompoundBuilderTooLarge", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file ends before the end of a structure it declares..
+        /// </summary>
+        internal static string Format_Invalid_CompoundTruncated {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CompoundTruncated", resourceCulture);
+            }
+        }
     }
 }
