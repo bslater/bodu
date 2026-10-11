@@ -997,4 +997,99 @@ public partial class CompoundFileTests
                 return container[..^missingBytes];
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> rejects a header whose Number of FAT Sectors or
+    /// Number of DIFAT Sectors disagrees with the tables, with <see cref="CompoundFileError.InvalidDifat" />.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the count and its value.</param>
+    [TestMethod]
+    [DataRow("FatSectorCountTooHigh")]
+    [DataRow("FatSectorCountTooLow")]
+    [DataRow("DifatSectorCountZeroWithAChain")]
+    [DataRow("DifatSectorCountTooHigh")]
+    [DataRow("DifatSectorCountWithoutAChain")]
+    public void Open_WhenHeaderCountsDisagreeWithTheTablesAtStrict_ShouldThrowInvalidDifat(string testName)
+    {
+        byte[] container = BuildCountCase(testName, out _);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+        }, testName);
+
+        Assert.AreEqual(CompoundFileError.InvalidDifat, ex.Category, testName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Compatible" /> and <see cref="CompoundValidationLevel.Minimal" />
+    /// ignore the header's Number of FAT Sectors and Number of DIFAT Sectors and follow the DIFAT, except that a count of
+    /// zero DIFAT sectors means there is no DIFAT chain, whatever the First DIFAT Sector Location holds.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the count and its value.</param>
+    [TestMethod]
+    [DataRow("FatSectorCountTooHigh")]
+    [DataRow("FatSectorCountTooLow")]
+    [DataRow("DifatSectorCountTooHigh")]
+    [DataRow("DifatSectorCountWithoutAChain")]
+    [DataRow("DifatSectorCountZeroWithFirstDifatSectorPastTheEnd")]
+    public void Open_WhenHeaderCountsDisagreeWithTheTablesAtTolerantLevels_ShouldReadTheFirstStream(string testName)
+    {
+        byte[] container = BuildCountCase(testName, out byte[] first);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Compatible, CompoundValidationLevel.Minimal })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+            using CompoundStream stream = file.RootStorage.OpenStream("A");
+
+            CollectionAssert.AreEqual(first, stream.ReadAllBytes(), $"{testName} at {level}");
+        }
+    }
+
+    /// <summary>
+    /// Builds a container whose header counts disagree with its tables in the way a case names.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <param name="first">Receives the content of the container's stream <c>A</c>.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildCountCase(string testName, out byte[] first)
+    {
+        // A 7 MiB stream needs 113 FAT sectors, four of them listed in the one DIFAT sector.
+        bool needsDifat = testName is "DifatSectorCountZeroWithAChain" or "DifatSectorCountTooHigh";
+        first = CompoundContainerBytes.Pattern(needsDifat ? 7340032 : 100);
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", first);
+        byte[] container = builder.ToArray();
+
+        switch (testName)
+        {
+            case "FatSectorCountTooHigh":
+                CompoundContainerBytes.WriteUInt32(container, 0x2C, 0x20202001);
+                break;
+
+            case "FatSectorCountTooLow":
+                CompoundContainerBytes.WriteUInt32(container, 0x2C, 0);
+                break;
+
+            case "DifatSectorCountZeroWithAChain":
+                CompoundContainerBytes.WriteUInt32(container, 0x48, 0);
+                break;
+
+            case "DifatSectorCountTooHigh":
+                CompoundContainerBytes.WriteUInt32(container, 0x48, 2);
+                break;
+
+            case "DifatSectorCountWithoutAChain":
+                CompoundContainerBytes.WriteUInt32(container, 0x48, 1);
+                break;
+
+            default:
+                CompoundContainerBytes.WriteUInt32(container, 0x44, 0x00100000);
+                break;
+        }
+
+        return container;
+    }
 }
