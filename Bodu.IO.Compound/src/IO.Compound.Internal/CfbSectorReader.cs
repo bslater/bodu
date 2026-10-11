@@ -56,13 +56,17 @@ internal sealed class CfbSectorReader
     /// <param name="header">The parsed compound-file header.</param>
     /// <param name="level">The validation level governing recoverable chain anomalies.</param>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the FAT cannot be assembled from the declared layout.
+    /// Thrown when the FAT cannot be assembled from the declared layout, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, when the data is shorter than the header sector.
     /// </exception>
     internal CfbSectorReader(CfbDataSource source, CfbHeader header, CompoundValidationLevel level)
     {
         _source = source;
         _header = header;
         _level = level;
+
+        // The header sector declares every one of its bytes: 512 in version 3, 4096 in version 4.
+        _ = MissingDeclaredBytes(source.Length < header.SectorSize);
         _fat = BuildFat();
     }
 
@@ -144,6 +148,10 @@ internal sealed class CfbSectorReader
     /// The value of a byte that a tolerant level supplies for a byte the chain does not hold: zero for a payload, and
     /// <c>0xFF</c> for an allocation table, whose missing entries then read as FREESECT.
     /// </param>
+    /// <param name="rangeError">
+    /// The category of a chain that leaves the FAT: <see cref="CompoundFileError.SectorOutOfRange" /> for a stream, and
+    /// <see cref="CompoundFileError.InvalidMiniFat" /> for the chain that holds the mini FAT.
+    /// </param>
     /// <returns>The materialized payload, exactly <paramref name="size" /> bytes long.</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the chain is circular, references an out-of-range sector, or is shorter than
@@ -157,7 +165,7 @@ internal sealed class CfbSectorReader
     /// <see cref="CompoundFileError.TruncatedFile" />, read as <paramref name="fill" /> at
     /// <see cref="CompoundValidationLevel.Minimal" />.
     /// </remarks>
-    internal byte[] ReadChain(uint startSector, long size, byte fill = 0)
+    internal byte[] ReadChain(uint startSector, long size, byte fill = 0, CompoundFileError rangeError = CompoundFileError.SectorOutOfRange)
     {
         if (size <= 0 || startSector == CfbHeader.EndOfChain)
             return [];
@@ -173,7 +181,7 @@ internal sealed class CfbSectorReader
 
         byte[] scratch = new byte[_header.SectorSize];
         long filled = 0;
-        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle, rangeError))
         {
             if (filled >= size)
                 continue;
@@ -207,7 +215,7 @@ internal sealed class CfbSectorReader
 
         List<uint> chain = new();
 
-        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle, CompoundFileError.SectorOutOfRange))
             chain.Add(sector);
 
         return chain.ToArray();
@@ -219,6 +227,7 @@ internal sealed class CfbSectorReader
     /// <param name="startSector">The first sector of the chain.</param>
     /// <param name="fat">The allocation table (regular FAT or mini-FAT) that links the chain.</param>
     /// <param name="cycleError">The failure category reported when a sector is revisited.</param>
+    /// <param name="rangeError">The failure category reported when the chain leaves the table.</param>
     /// <returns>The chain's sector identifiers in order, each appearing at most once.</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the chain references an out-of-range sector, or revisits a sector, at a validation level stricter
@@ -230,7 +239,7 @@ internal sealed class CfbSectorReader
     /// caller's accumulated allocation far beyond the container size - the amplification is capped regardless of
     /// validation level, because the visited set is consulted before any sector is yielded.
     /// </remarks>
-    private IEnumerable<uint> WalkChain(uint startSector, uint[] fat, CompoundFileError cycleError)
+    private IEnumerable<uint> WalkChain(uint startSector, uint[] fat, CompoundFileError cycleError, CompoundFileError rangeError)
     {
         // An empty chain needs no guard: the loop below tests the same sentinel before its first iteration.
         HashSet<uint> visited = new();
@@ -238,7 +247,7 @@ internal sealed class CfbSectorReader
 
         while (sector != CfbHeader.EndOfChain)
         {
-            if (StopOrThrow(sector >= (uint)fat.Length, CompoundFileError.SectorOutOfRange))
+            if (StopOrThrow(sector >= (uint)fat.Length, rangeError))
                 yield break;
             if (StopOrThrow(!visited.Add(sector), cycleError))
                 yield break;
@@ -339,7 +348,11 @@ internal sealed class CfbSectorReader
     {
         _miniStream = ReadChain(rootStartSector, rootStreamSize);
 
-        byte[] miniFatBytes = ReadChain(_header.FirstMiniFatSector, (long)_header.MiniFatSectorCount * _header.SectorSize, fill: 0xFF);
+        byte[] miniFatBytes = ReadChain(
+            _header.FirstMiniFatSector,
+            (long)_header.MiniFatSectorCount * _header.SectorSize,
+            fill: 0xFF,
+            rangeError: CompoundFileError.InvalidMiniFat);
         uint[] miniFat = new uint[miniFatBytes.Length / sizeof(uint)];
         for (int i = 0; i < miniFat.Length; i++)
             miniFat[i] = BinaryPrimitives.ReadUInt32LittleEndian(miniFatBytes.AsSpan(i * sizeof(uint)));
@@ -390,7 +403,7 @@ internal sealed class CfbSectorReader
         using MemoryStream buffer = new();
         Span<byte> scratch = stackalloc byte[_header.SectorSize];
 
-        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle))
+        foreach (uint sector in WalkChain(startSector, _fat, CompoundFileError.FatCycle, CompoundFileError.SectorOutOfRange))
         {
             ReadOnlySpan<byte> bytes = ReadSector(sector, scratch);
             buffer.Write(bytes);
@@ -432,7 +445,7 @@ internal sealed class CfbSectorReader
 
         using MemoryStream buffer = new();
 
-        foreach (uint sector in WalkChain(startMiniSector, _miniFat!, CompoundFileError.InvalidMiniFat))
+        foreach (uint sector in WalkChain(startMiniSector, _miniFat!, CompoundFileError.InvalidMiniFat, CompoundFileError.InvalidMiniFat))
         {
             // Compute the mini-stream offset in a wider type so a large (corrupt) sector id cannot overflow the
             // int arithmetic before the bounds check runs.
@@ -640,10 +653,10 @@ internal sealed class CfbSectorReader
         }
 
         bool[] used = new bool[_fat.Length];
-        MarkChain(_header.FirstDirectorySector, _fat, used, CompoundFileError.FatCycle);
-        MarkChain(_header.FirstMiniFatSector, _fat, used, CompoundFileError.FatCycle);
+        MarkChain(_header.FirstDirectorySector, _fat, used, CompoundFileError.FatCycle, CompoundFileError.SectorOutOfRange, CompoundFileError.FatCycle);
+        MarkChain(_header.FirstMiniFatSector, _fat, used, CompoundFileError.FatCycle, CompoundFileError.InvalidMiniFat, CompoundFileError.FatCycle);
         if (directory.Root.Size > 0)
-            MarkChain(directory.Root.StartSector, _fat, used, CompoundFileError.FatCycle);
+            MarkChain(directory.Root.StartSector, _fat, used, CompoundFileError.FatCycle, CompoundFileError.SectorOutOfRange, CompoundFileError.FatCycle);
 
         bool[] miniUsed = new bool[_miniFat?.Length ?? 0];
         foreach (CfbDirectoryEntry entry in directory.AllocatedEntries)
@@ -652,9 +665,9 @@ internal sealed class CfbSectorReader
                 continue;
 
             if (entry.Size >= CfbHeader.MiniStreamCutoff)
-                MarkChain(entry.StartSector, _fat, used, CompoundFileError.FatCycle);
+                MarkChain(entry.StartSector, _fat, used, CompoundFileError.FatCycle, CompoundFileError.SectorOutOfRange, CompoundFileError.FatCycle);
             else if (_miniFat is not null)
-                MarkChain(entry.StartSector, _miniFat, miniUsed, CompoundFileError.InvalidMiniFat);
+                MarkChain(entry.StartSector, _miniFat, miniUsed, CompoundFileError.InvalidMiniFat, CompoundFileError.InvalidMiniFat, CompoundFileError.InvalidMiniFat);
         }
     }
 
@@ -676,15 +689,17 @@ internal sealed class CfbSectorReader
     /// <param name="startSector">The first sector of the chain.</param>
     /// <param name="table">The allocation table that links the chain.</param>
     /// <param name="used">The sectors of the table that earlier chains used.</param>
-    /// <param name="category">The failure category of a cycle or a shared sector.</param>
+    /// <param name="cycleError">The failure category of a cycle in the chain.</param>
+    /// <param name="rangeError">The failure category of a chain that leaves the table.</param>
+    /// <param name="sharedError">The failure category of a sector another chain used.</param>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the chain is cyclic, leaves the table, or reaches a sector another chain used.
     /// </exception>
-    private void MarkChain(uint startSector, uint[] table, bool[] used, CompoundFileError category)
+    private void MarkChain(uint startSector, uint[] table, bool[] used, CompoundFileError cycleError, CompoundFileError rangeError, CompoundFileError sharedError)
     {
-        foreach (uint sector in WalkChain(startSector, table, category))
+        foreach (uint sector in WalkChain(startSector, table, cycleError, rangeError))
         {
-            CompoundThrowHelper.ThrowFormatIf(used[sector], CompoundResourceStrings.Format_Invalid_CompoundSectorChain, category);
+            CompoundThrowHelper.ThrowFormatIf(used[sector], CompoundResourceStrings.Format_Invalid_CompoundSectorChain, sharedError);
             used[sector] = true;
         }
     }

@@ -81,7 +81,7 @@ internal static class CompoundMalformedFixtures
         // Rejected at the default level, recovered at Minimal: the defect is a chain or tree the reader can prune.
         new("invalid/invalid_fat_loop.dat", CompoundFileError.FatCycle),
         new("invalid/invalid_master_loop.dat", CompoundFileError.InvalidDifat),
-        new("invalid/invalid_mini_free.dat", CompoundFileError.SectorOutOfRange),
+        new("invalid/invalid_mini_free.dat", CompoundFileError.InvalidMiniFat),
         new("invalid/invalid_dir_loop.dat", CompoundFileError.DirectoryCycle),
         new("invalid/invalid_dir_indexes2.dat", CompoundFileError.DirectoryCycle),
         new("invalid/invalid_dir_indexes3.dat", CompoundFileError.DirectoryCycle),
