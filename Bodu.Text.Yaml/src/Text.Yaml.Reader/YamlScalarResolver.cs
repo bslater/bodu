@@ -63,9 +63,16 @@ internal static class YamlScalarResolver
         }
 
         // The integer forms are matched with their underscores in place, because YAML 1.1 groups digits only after the
-        // first one; the float attempt reads the 1.1 schema's digit groups with the separators removed.
+        // first one; the float attempt reads the 1.1 schema's digit groups with the separators removed, once it has
+        // ruled out digits that begin with one, since every 1.1 float form begins, after any sign, with a digit or the
+        // decimal point.
         if (version == YamlSpecVersion.V1_1)
+        {
+            if (BeginsWithDigitSeparator(candidate))
+                return YamlValueKind.String;
+
             candidate = candidate[..RemoveDigitSeparators(candidate)];
+        }
 
         if (TryResolveFloat(candidate, out double doubleValue))
         {
@@ -147,6 +154,21 @@ internal static class YamlScalarResolver
         }
 
         return n;
+    }
+
+    /// <summary>
+    /// Determines whether a numeric candidate's digits, after any sign, begin with an underscore, which no YAML 1.1
+    /// numeric form allows.
+    /// </summary>
+    /// <param name="candidate">The candidate characters.</param>
+    /// <returns>
+    /// <see langword="true" /> when the first character after any sign is an underscore; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool BeginsWithDigitSeparator(ReadOnlySpan<char> candidate)
+    {
+        ReadOnlySpan<char> body = candidate.Length > 0 && candidate[0] is '+' or '-' ? candidate[1..] : candidate;
+        return body.Length > 0 && body[0] == '_';
     }
 
     /// <summary>

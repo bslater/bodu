@@ -294,7 +294,7 @@ and 41 rejected by the profile, from 229, 13, 94 and 66.
 
 js-yaml 4.2.0 #737 keeps an out-of-range float such as `1e309`, and `61e9540`, as a string; Bodu reads it as an
 infinity, as IEEE 754 conversion gives. #901 states that rule in `Bodu.Text.Yaml/README.md:24` and the `YamlSpecVersion`
-XML documentation (`Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs:32-36`), which the row's reason cites, and the row
+XML documentation (`Bodu.Text.Yaml/src/Text.Yaml/YamlSpecVersion.cs:33-37`), which the row's reason cites, and the row
 now expects Bodu's reading. js-yaml's counts moved from 116 `applies` and 13 `dialect` to 115 and 14.
 
 ### Where Bodu's documents and behaviour disagreed

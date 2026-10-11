@@ -23,11 +23,12 @@ namespace Bodu.Text.Yaml;
 /// Each integer form may carry a sign, so <c>-0755</c> is -493 and <c>-0x1F</c> is -31, and may group its digits with
 /// underscores after the first digit, so <c>1_000</c> is 1000 while <c>_123</c> remains a string. The core schema's
 /// <c>0o</c> octal form is also resolved, in the core schema's form, without a sign or digit groups. Floating-point
-/// values group their digits with underscores too. The base-60 ("sexagesimal") numeric form of the historical 1.1
-/// schema is deliberately not resolved under either version: a colon-separated plain scalar such as <c>22:22</c>
-/// remains a string, avoiding the well-known footgun in which time-, port-, or address-like values were silently
-/// reinterpreted as large numbers. The version affects only how plain scalars are typed; structural parsing of anchors,
-/// aliases, tags, and collections is identical for both versions.
+/// values group their digits with underscores too, but cannot begin with one, so <c>_1.5</c> remains a string. The
+/// base-60 ("sexagesimal") numeric form of the historical 1.1 schema is deliberately not resolved under either version:
+/// a colon-separated plain scalar such as <c>22:22</c> remains a string, avoiding the well-known footgun in which
+/// time-, port-, or address-like values were silently reinterpreted as large numbers. The version affects only how
+/// plain scalars are typed; structural parsing of anchors, aliases, tags, and collections is identical for both
+/// versions.
 /// </para>
 /// <para>
 /// Under either version, a floating-point literal beyond the range of a <see cref="double" />, such as <c>1e309</c> or
