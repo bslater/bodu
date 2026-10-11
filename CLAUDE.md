@@ -177,10 +177,14 @@ and the first two have bitten:
   stops a release. The release's pack step goes further and also fails on
   NuGet restore and pack warnings, so a newly published advisory for a dependency stops a release until
   the dependency is updated or that advisory is suppressed with a `NuGetAuditSuppress` item giving the
-  reason. A local build still reports all of these as warnings. To match CI:
-  `dotnet build <project> -c Release -p:TreatWarningsAsErrors=true`, and for the release's pack,
-  `dotnet pack bodu.slnx -c Release -p:BoduShipping=true -p:TreatWarningsAsErrors=true`. A deliberate
-  finding is suppressed at its site with a `Justification`, as the existing suppressions are.
+  reason. A local Release build fails on the same compiler and analyzer warnings, because
+  `Directory.Build.targets` sets `TreatWarningsAsErrors` for every Release build (restore excepted, so
+  NuGet's warnings stay warnings); a Debug build only reports them. The `Bodu.CodeStyle` solution opts
+  out with `BoduReleaseWarningsAsErrors=false` and keeps its own policy. To match CI:
+  `dotnet build <project> -c Release`, and for the release's pack,
+  `dotnet pack bodu.slnx -c Release -p:BoduShipping=true -p:TreatWarningsAsErrors=true`, whose `-p:`
+  also promotes NuGet's restore and pack warnings. A deliberate finding is suppressed at its site with
+  a `Justification`, as the existing suppressions are.
 - **CI builds with the SDK that `global.json` pins.** Every workflow except `Bodu.CodeStyle`'s,
   which builds against that solution's own `global.json`, installs exactly the pinned version, so
   CI's analyzers change only when the pin does. Dependabot (`.github/dependabot.yml`) proposes each
