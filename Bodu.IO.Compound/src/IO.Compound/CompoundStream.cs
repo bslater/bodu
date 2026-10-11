@@ -261,7 +261,11 @@ public sealed class CompoundStream
         if (_write is not null)
             return _write.GetBuffer().AsMemory(0, (int)_write.Length);
 
-        return _buffer ?? (_length == 0 ? ReadOnlyMemory<byte>.Empty : _sectors!.ReadChain(_chain![0], _length));
+        if (_buffer is not null)
+            return _buffer;
+
+        // A chain that holds nothing, which only Minimal opens, reads as zeros.
+        return _length == 0 ? ReadOnlyMemory<byte>.Empty : _chain!.Length == 0 ? new byte[_length] : _sectors!.ReadChain(_chain[0], _length);
     }
 
     /// <summary>
@@ -315,18 +319,16 @@ public sealed class CompoundStream
         while (want > 0)
         {
             int sectorIndex = (int)(_position / _sectorSize);
-
-            // A crafted directory can declare a stream size larger than its actual sector chain covers. Guard
-            // the chain index so an over-declared size surfaces as a catchable CompoundFileFormatException rather
-            // than an IndexOutOfRangeException escaping the Stream.Read contract.
-            CompoundThrowHelper.ThrowFormatIf(
-                (uint)sectorIndex >= (uint)_chain!.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.StreamChainTooShort);
-
             int within = (int)(_position % _sectorSize);
             int n = Math.Min(want, _sectorSize - within);
-            _sectors!.ReadWithinSector(_chain[sectorIndex], within, buffer.Slice(total, n));
+
+            // A stream whose chain holds less than its declared size opens only at Minimal, and reads as zeros past
+            // the end of its chain.
+            if ((uint)sectorIndex < (uint)_chain!.Length)
+                _sectors!.ReadWithinSector(_chain[sectorIndex], within, buffer.Slice(total, n));
+            else
+                buffer.Slice(total, n).Clear();
+
             want -= n;
             total += n;
             _position += n;
@@ -376,7 +378,8 @@ public sealed class CompoundStream
     /// <returns>The number of bytes read.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the declared size outruns the sector chain.
+    /// Thrown, at a level stricter than <see cref="CompoundValidationLevel.Minimal" />, when a sector of the chain lies
+    /// past the end of the file.
     /// </exception>
     private async ValueTask<int> ReadStreamingAsync(Memory<byte> buffer, CancellationToken cancellationToken)
     {
@@ -391,18 +394,16 @@ public sealed class CompoundStream
         while (want > 0)
         {
             int sectorIndex = (int)(_position / _sectorSize);
-
-            // A crafted directory can declare a stream size larger than its actual sector chain covers. Guard
-            // the chain index so an over-declared size surfaces as a catchable CompoundFileFormatException rather
-            // than an IndexOutOfRangeException escaping the Stream.Read contract.
-            CompoundThrowHelper.ThrowFormatIf(
-                (uint)sectorIndex >= (uint)_chain!.Length,
-                CompoundResourceStrings.Format_Invalid_CompoundSectorChain,
-                CompoundFileError.StreamChainTooShort);
-
             int within = (int)(_position % _sectorSize);
             int n = Math.Min(want, _sectorSize - within);
-            await _sectors!.ReadWithinSectorAsync(_chain[sectorIndex], within, buffer.Slice(total, n), cancellationToken).ConfigureAwait(false);
+
+            // A stream whose chain holds less than its declared size opens only at Minimal, and reads as zeros past
+            // the end of its chain.
+            if ((uint)sectorIndex < (uint)_chain!.Length)
+                await _sectors!.ReadWithinSectorAsync(_chain[sectorIndex], within, buffer.Slice(total, n), cancellationToken).ConfigureAwait(false);
+            else
+                buffer.Span.Slice(total, n).Clear();
+
             want -= n;
             total += n;
             _position += n;

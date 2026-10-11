@@ -917,7 +917,10 @@ public sealed class CompoundFile
     /// <param name="parent">The storage that owns the returned cursor.</param>
     /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
-    /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the stream's sector chain is malformed, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
+    /// </exception>
     internal CompoundStream OpenStream(CfbDirectoryEntry entry, CompoundStorage parent)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -926,7 +929,7 @@ public sealed class CompoundFile
         if (!_streaming || entry.Size < CfbHeader.MiniStreamCutoff)
             return new CompoundStream(info, Materialize(entry), parent);
 
-        uint[] chain = _sectors.GetSectorChain(entry.StartSector);
+        uint[] chain = _sectors.GetStreamChain(entry.StartSector, entry.Size);
         return new CompoundStream(info, _sectors, chain, entry.Size, _header.SectorSize, parent);
     }
 

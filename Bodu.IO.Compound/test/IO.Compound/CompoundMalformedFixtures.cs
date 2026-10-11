@@ -59,10 +59,11 @@ internal static class CompoundMalformedFixtures
     /// <summary>The complete malformed-fixture catalogue.</summary>
     /// <remarks>
     /// The header defects are unconditional - a container whose signature, byte order or sector size cannot be
-    /// interpreted has no recoverable reading, so every level rejects them alike. The same holds for a sector
-    /// identifier that points outside the file and for a root entry that is not a root storage: those are checked
-    /// before the validation level is consulted. Everything else is a judgement call the level decides, which is why
-    /// the chain-cycle and directory-cycle fixtures recover at Minimal and the header ones do not.
+    /// interpreted has no recoverable reading, so every level rejects them alike. The same holds for a root entry that
+    /// is not a root storage: it is checked before the validation level is consulted. Everything else is a judgement
+    /// call the level decides, which is why the chain-cycle and directory-cycle fixtures recover at Minimal and the
+    /// header ones do not, and why a sector past the end of the file, rejected by the stricter levels, reads as zeros
+    /// at Minimal.
     /// </remarks>
     private static readonly CompoundMalformedKat[] s_all =
     [
@@ -73,12 +74,13 @@ internal static class CompoundMalformedFixtures
         new("invalid/invalid_sector_size.dat", CompoundFileError.InvalidSectorSize, MinimalCategory: CompoundFileError.InvalidSectorSize),
         new("invalid/strange_sector_size_v3.dat", CompoundFileError.InvalidSectorSize, MinimalCategory: CompoundFileError.InvalidSectorSize),
         new("invalid/strange_mini_sector_size.dat", CompoundFileError.InvalidSectorSize, MinimalCategory: CompoundFileError.InvalidSectorSize),
-        new("invalid/invalid_truncated.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
-        new("invalid/invalid_master_eof.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
-        new("invalid/invalid_mini_eof.dat", CompoundFileError.SectorOutOfRange, MinimalCategory: CompoundFileError.SectorOutOfRange),
         new("invalid/invalid_root_type.dat", CompoundFileError.InvalidRootStorage, MinimalCategory: CompoundFileError.InvalidRootStorage),
 
-        // Rejected at the default level, recovered at Minimal: the defect is a chain or tree the reader can prune.
+        // Rejected at the default level, recovered at Minimal: the defect is a chain or tree the reader can prune, or a
+        // sector past the end of the file, which Minimal reads as zeros.
+        new("invalid/invalid_truncated.dat", CompoundFileError.SectorOutOfRange),
+        new("invalid/invalid_master_eof.dat", CompoundFileError.SectorOutOfRange),
+        new("invalid/invalid_mini_eof.dat", CompoundFileError.SectorOutOfRange),
         new("invalid/invalid_fat_loop.dat", CompoundFileError.FatCycle),
         new("invalid/invalid_master_loop.dat", CompoundFileError.InvalidDifat),
         new("invalid/invalid_mini_free.dat", CompoundFileError.InvalidMiniFat),

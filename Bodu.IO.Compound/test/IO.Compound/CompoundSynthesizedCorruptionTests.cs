@@ -107,9 +107,9 @@ public class CompoundSynthesizedCorruptionTests
     }
 
     /// <summary>
-    /// Verifies that a streaming (unbuffered) cursor whose declared size exceeds its sector chain is rejected with
-    /// <see cref="CompoundFileError.StreamChainTooShort" /> rather than an <see cref="IndexOutOfRangeException" />
-    /// escaping the <see cref="System.IO.Stream" /> read contract.
+    /// Verifies that a streaming (unbuffered) cursor whose declared size exceeds its sector chain is rejected when it is
+    /// opened, with <see cref="CompoundFileError.StreamChainTooShort" />, rather than an
+    /// <see cref="IndexOutOfRangeException" /> escaping the <see cref="System.IO.Stream" /> read contract.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
@@ -123,11 +123,13 @@ public class CompoundSynthesizedCorruptionTests
 
         // buffered: false walks the sector chain on demand, indexing the chain by the current read position.
         using var file = CompoundFile.Open(new MemoryStream(bytes), leaveOpen: false, buffered: false);
-        using var stream = file.RootStorage.OpenStream("Big");
         byte[] destination = new byte[200_000];
 
-        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(
-            () => stream.ReadExactly(destination));
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var stream = file.RootStorage.OpenStream("Big");
+            stream.ReadExactly(destination);
+        });
 
         Assert.AreEqual(CompoundFileError.StreamChainTooShort, ex.Category);
     }
