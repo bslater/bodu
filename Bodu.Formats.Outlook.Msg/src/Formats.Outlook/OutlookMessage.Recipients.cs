@@ -20,8 +20,13 @@ public sealed partial class OutlookMessage
     /// <value>The recipient list; empty when the message declares no recipients.</value>
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>
     /// <exception cref="OutlookMsgFormatException">
-    /// Thrown under strict validation when the recipient storages are inconsistent with the declared count.
+    /// Thrown under strict validation when the recipient storages are inconsistent with the declared count, or a
+    /// recipient storage has no property stream.
     /// </exception>
+    /// <remarks>
+    /// Under the tolerant validation levels a recipient storage with no <c>__properties_version1.0</c> stream is
+    /// omitted from the list.
+    /// </remarks>
     public IReadOnlyList<OutlookRecipient> Recipients
     {
         get

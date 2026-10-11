@@ -91,7 +91,7 @@ Under the tolerant levels (`Compatible`, `Minimal`) each reader recovers from a 
 - A variable-length property whose value stream (`__substg1.0_XXXXYYYY`) or multi-value element stream is missing.
 - A `Unicode` (`0x001F`) payload with an odd byte length.
 - A malformed multi-valued property.
-- A recipient or attachment child storage whose name suffix is not eight hexadecimal digits, indices that are not contiguous from zero, or a count that disagrees with the property stream's declared count.
+- A recipient or attachment child storage whose name suffix is not eight hexadecimal digits or that has no `__properties_version1.0` stream (the tolerant levels omit that recipient or attachment), indices that are not contiguous from zero, or a count that disagrees with the property stream's declared count.
 - A `__nameid_version1.0` storage that lacks its GUID, entry or string stream (`__substg1.0_00020102`, `__substg1.0_00030102`, `__substg1.0_00040102`), or a malformed entry stream (wrong record size, a GUID index that does not resolve, a string offset that does not resolve).
 
 At *every* level the reader still throws for a container that is not a compound file (the <xref:Bodu.IO.Compound.CompoundFileFormatException> becomes the `InnerException`), a root without a `__properties_version1.0` stream, a property stream that is not a whole number of 16-byte records, a missing by-value content stream or embedded-message storage, and the depth and RTF limits above.

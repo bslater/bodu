@@ -95,7 +95,8 @@ public partial class OutlookMessageTests
 
     /// <summary>
     /// Verifies that disposing a message opened from a path, after reading its attachments failed because the
-    /// attachment storage has no <c>__properties_version1.0</c>, leaves the file unlocked.
+    /// attachment storage's <c>__properties_version1.0</c> stream is too short to hold its header (a failure at every
+    /// validation level), leaves the file unlocked.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenAttachmentsFailToLoad_ShouldReleaseTheFile()
@@ -104,7 +105,9 @@ public partial class OutlookMessageTests
             .AddUnicode(MapiPropertyIds.Subject, "Hello")
             .AddStorage(
                 MsgStreamNames.AttachmentStoragePrefix + "00000000",
-                new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment).OmitPropertiesStream())
+                new MsgFixtureBuilder(MsgPropertyStreamKind.RecipientOrAttachment)
+                    .OmitPropertiesStream()
+                    .AddRawStream(MsgStreamNames.PropertiesStreamName, [1, 2, 3]))
             .Build();
         string path = WriteTemporaryMessage(container);
 

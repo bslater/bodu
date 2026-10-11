@@ -15,9 +15,11 @@ namespace Bodu.Formats.Outlook.Msg;
 /// </summary>
 /// <remarks>
 /// Under <see cref="CompoundValidationLevel.Strict" /> the series must be dense (indexes <c>0..n-1</c> without gaps or
-/// duplicates) and its length must match the count the property-stream header declares; under the tolerant levels
-/// storages with unparsable suffixes are skipped, a repeated index keeps its first storage in directory order, and the
-/// found series is returned as-is.
+/// duplicates) and its length must match the count the property-stream header declares; a storage with no
+/// <c>__properties_version1.0</c> stream stays in the series, and the caller's decoding rejects it. Under the tolerant
+/// levels a storage with an unparsable suffix or no property stream is skipped, as the <c>.pst</c> reader skips a table
+/// row it cannot resolve, a repeated index keeps its first storage in directory order, and the found series is returned
+/// as-is.
 /// </remarks>
 internal static class MsgStorageWalker
 {
@@ -28,7 +30,9 @@ internal static class MsgStorageWalker
     /// <param name="prefix">The storage-name prefix, including the <c>#</c>.</param>
     /// <param name="declaredCount">The count declared by the property-stream header.</param>
     /// <param name="validationLevel">The validation level governing malformed-structure handling.</param>
-    /// <returns>The matching storages in ascending index order.</returns>
+    /// <returns>
+    /// The matching storages in ascending index order; under the tolerant levels, only those holding a property stream.
+    /// </returns>
     /// <exception cref="OutlookMsgFormatException">
     /// The container is malformed, or - under <see cref="CompoundValidationLevel.Strict" /> - a suffix is malformed,
     /// the series has gaps or duplicates, or its length differs from <paramref name="declaredCount" />.
@@ -58,6 +62,11 @@ internal static class MsgStorageWalker
 
                 continue;
             }
+
+            // A storage with no property stream cannot be decoded. The tolerant levels omit it; under Strict it stays
+            // in the series, so the count and density checks see it and the caller's decoding rejects it.
+            if (!strict && !MsgContainer.TryGetStreamLength(child, MsgStreamNames.PropertiesStreamName, out _))
+                continue;
 
             found.Add((index, child));
         }
