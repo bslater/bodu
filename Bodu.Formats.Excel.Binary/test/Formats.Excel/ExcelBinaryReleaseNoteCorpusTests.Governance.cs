@@ -38,7 +38,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
             ("apache-poi", 107, 10, 287, 6),
             ("calamine", 42, 5, 8, 0),
             ("exceldatareader", 63, 14, 10, 1),
-            ("libxls", 38, 4, 16, 0),
+            ("libxls", 37, 5, 16, 0),
             ("spreadsheet-parseexcel", 51, 1, 65, 3),
             ("xlrd", 69, 9, 57, 1),
         ];

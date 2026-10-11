@@ -75,8 +75,8 @@ Anything else in `input` and `expected` is written with an escape: `\n`, `\r`, `
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 370 | The row runs, and Bodu must do what the fix established |
-| `dialect` | 43 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix (Bodu does not decrypt, reads BIFF5, compares sheet names ordinally, rejects an out-of-range shared-string index, lets the last FORMAT record for an index decide it, built-in index or not); `reason` names the document or section |
+| `applies` | 369 | The row runs, and Bodu must do what the fix established |
+| `dialect` | 44 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix (Bodu does not decrypt, reads BIFF5, compares sheet names ordinally, rejects an out-of-range shared-string index, reads the strings an SST holds whatever count it declares, lets the last FORMAT record for an index decide it, built-in index or not); `reason` names the document or section |
 | `n/a` | 443 | The fix concerns something Bodu does not have (editing, styles, formula parsing and evaluation, drawings, text formatting, xlsx), memory safety, a platform, the library's language, logging or performance; `reason` says which |
 | `unknown` | 11 | No scenario could be found; `reason` says what was read |
 
@@ -214,15 +214,15 @@ line `#sst<TAB><index><TAB><text>` per string, read with `BiffSstReader` across 
 | xlrd | 124 | 136 | 69 | 9 | 57 | 1 | 1 | 77 |
 | exceldatareader | 70 | 88 | 63 | 14 | 10 | 1 | 3 | 74 |
 | calamine | 47 | 55 | 42 | 5 | 8 | 0 | 3 | 44 |
-| libxls | 52 | 58 | 38 | 4 | 16 | 0 | 2 | 40 |
+| libxls | 52 | 58 | 37 | 5 | 16 | 0 | 2 | 40 |
 | spreadsheet-parseexcel | 110 | 120 | 51 | 1 | 65 | 3 | 3 | 49 |
 | apache-poi | 404 | 410 | 107 | 10 | 287 | 6 | 6 | 111 |
-| **Total** | **807** | **867** | **370** | **43** | **443** | **11** | **18** | **395** |
+| **Total** | **807** | **867** | **369** | **44** | **443** | **11** | **18** | **395** |
 
 ### Status
 
 The catalogue runs in `Bodu.Formats.Excel.Binary.Test` as `ExcelBinaryReleaseNoteCorpusTests`, with the same results on
-net8.0 and net10.0: of the 395 runnable rows, 390 pass and 5 fail, and the tests the 18 `unit` rows name all pass.
+net8.0 and net10.0: of the 395 runnable rows, 391 pass and 4 fail, and the tests the 18 `unit` rows name all pass.
 Before the fixes below, a harness outside the repository found 373 passing and 22 failing at 378a6099db. A failing row
 stays as it is and is listed here; a row changed class only where the decision on its issue said so, as recorded below.
 
@@ -238,7 +238,9 @@ Fixed, each after a commit of its regression tests:
 - **Shared string table, the declared count (#937).** The table ends where its records end, even when `cstUnique`
   declares more strings. As decided, apache-poi 5.2.4 Bug 65543, apache-poi 3.12-beta1 Bug 57456, calamine 0.30.1 #548
   and exceldatareader 3.7.0-develop00310 #477 case 4 moved from `dialect` (reject) to `applies` (parse), citing
-  docs/docs/io-biff/records.md:89 and BiffSstReader.cs:243.
+  docs/docs/io-biff/records.md:89 and BiffSstReader.cs:243, and libxls 1.5.0 #22 case 2, which expected an SST declaring
+  16,777,217 strings to be rejected, moved from `applies` (reject) to `dialect` (parse, A1 reading the one string it
+  holds), citing docs/docs/io-biff/records.md:89.
 - **Exception translation (#933).** A sheet whose BOF declares BIFF4 raises `ExcelBinaryUnsupportedException`, with the
   codec's exception inside (apache-poi 3.11-beta1 Bug 53984).
 - **A STRING record continued in CONTINUE records (#929)** is read whole (xlrd 0.7.4 5a75bb5224 cases 1 and 2,
@@ -265,8 +267,3 @@ Still failing:
   with a name length of 200, rejected as a cyclic link although `CompoundValidationLevel.Compatible` documents skipping
   such an entry) and xlrd 0.9.0 14b25cb1d7 (a stream that declares 1,000,000 bytes in a small file is not rejected) fail
   in `Bodu.IO.Compound`. The compound branch fixes them under #944, #947, #950 and #951, and they pass once it merges.
-- **A declared SST count beyond 16,777,216, awaiting a decision.** libxls 1.5.0 #22 case 2 expects an SST that declares
-  16,777,217 strings and holds one to be rejected, citing the rule #937 replaced; Bodu now reads the one string, and
-  never sets aside more than 1,024 entries for a declared count. The row stays `applies` (reject), and fails, until its
-  class is decided: `dialect` (parse, A1 holding the string `a`) citing docs/docs/io-biff/records.md:89 would record
-  what Bodu does.
