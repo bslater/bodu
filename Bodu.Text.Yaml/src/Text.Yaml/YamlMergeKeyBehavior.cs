@@ -10,9 +10,10 @@ namespace Bodu.Text.Yaml;
 /// Specifies how the reader treats the YAML merge key (<c>&lt;&lt;</c>).
 /// </summary>
 /// <remarks>
-/// The merge key is a YAML 1.1 working-draft feature and is not part of the YAML 1.2 core schema. It is supported as an
-/// opt-in compatibility convenience; the default is <see cref="Expand" /> to match common configuration usage, but it
-/// can be disabled so that <c>&lt;&lt;</c> is treated as an ordinary key.
+/// The merge key is a YAML 1.1 working-draft feature and is not part of the YAML 1.2 core schema. It is supported as a
+/// compatibility convenience, expanded by default under either specification version to match common configuration
+/// usage (the default is <see cref="Expand" />), and it can be disabled so that <c>&lt;&lt;</c> is treated as an
+/// ordinary key.
 /// </remarks>
 public enum YamlMergeKeyBehavior
 {

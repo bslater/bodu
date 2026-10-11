@@ -39,7 +39,7 @@ public sealed partial class YamlReleaseNoteCorpusTests
         [
             ("eemeli-yaml", 212, 11, 102, 0),
             ("go-yaml", 79, 12, 61, 0),
-            ("js-yaml", 116, 13, 49, 1),
+            ("js-yaml", 115, 14, 49, 1),
             ("libyaml", 24, 3, 21, 0),
             ("pyyaml", 22, 6, 44, 0),
             ("ruamel-yaml", 81, 8, 145, 1),

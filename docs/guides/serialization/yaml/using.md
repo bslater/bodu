@@ -176,7 +176,7 @@ var options = new YamlSerializerOptions { SpecVersion = YamlSpecVersion.V1_1 };
 var config = YamlSerializer.Deserialize<ServerConfig>(text, options);
 ```
 
-The default is the strict **1.2 core schema**, where only `true` / `false` are Booleans. Opting in to **1.1** additionally accepts the `yes` / `no` / `on` / `off` Boolean spellings and sexagesimal numbers, and enables merge keys (Pattern 8). A `%YAML` directive in the document overrides the typing per document.
+The default is the strict **1.2 core schema**, where only `true` / `false` are Booleans. Opting in to **1.1** additionally accepts the `yes` / `no` / `on` / `off` / `y` / `n` Boolean spellings and the YAML 1.1 integer forms; sexagesimal numbers such as `1:30` are not resolved under either version and stay strings, and merge keys (Pattern 8) expand under either version by default. A float beyond the binary64 range, such as `1e309`, reads as an infinity under either version. A `%YAML` directive in the document overrides the typing per document.
 
 ## Pattern 8 - Anchors, aliases, and merge keys on the read path
 
@@ -202,7 +202,7 @@ using YamlDocument doc = YamlDocument.Parse(Encoding.UTF8.GetBytes(text));
 // With Expand, production resolves to { retries: 3, timeout: 60 }.
 ```
 
-`Expand` (default) merges the referenced mapping in place, with **keys already present in the target taking precedence** over the merged ones - so `production`'s explicit `timeout: 60` overrides the merged `timeout: 30`. `Disabled` and `PreserveAsNormalKey` both retain `<<` as an ordinary mapping key without expanding it; the two are equivalent in the produced tree and differ only in expressed intent. Merge keys are gated on `SpecVersion = V1_1`: they are not part of the 1.2 core schema, so under the default `V1_2` a `<<` key is an ordinary key regardless of `MergeKeyBehavior`.
+`Expand` (default) merges the referenced mapping in place, with **keys already present in the target taking precedence** over the merged ones - so `production`'s explicit `timeout: 60` overrides the merged `timeout: 30`. `Disabled` and `PreserveAsNormalKey` both retain `<<` as an ordinary mapping key without expanding it; the two are equivalent in the produced tree and differ only in expressed intent. Merge keys are not part of the 1.2 core schema, but they are not gated on `SpecVersion`: under either version a `<<` key expands while `MergeKeyBehavior` is `Expand`, the default.
 
 Anchors and aliases work under either spec version - they are structural, not implicit-typing, features. The reader composes the tree before any token surfaces, so an alias presents the same resolved value as its anchor; a cyclic anchor or an alias that names no anchor is rejected as a <xref:Bodu.Text.Yaml.YamlFormatException>. Duplicate mapping keys are governed separately by <xref:Bodu.Text.Yaml.YamlDuplicateKeyBehavior> (`Throw` by default - the only specification-conformant mode - or the lenient `UseFirst` / `UseLast`). The duplicate-key and merge-key policies apply equally to the serializer, both DOMs, and the raw reader, because all four parse through the same <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions>.
 

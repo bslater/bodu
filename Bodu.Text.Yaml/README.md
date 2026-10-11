@@ -21,10 +21,10 @@ Bodu.Text.Yaml implements the **Bodu YAML Core Tree Profile**: a YAML 1.2 core-s
 - Block and flow sequences and mappings.
 - Plain, single-quoted, double-quoted, literal (`|`), and folded (`>`) scalars, with chomping and indentation indicators.
 - Comments, the `---` / `...` document markers, and multi-document streams, in which any document may begin with a byte-order mark.
-- Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans - no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, sexagesimal numbers). A document's `%YAML` directive is honored for scalar resolution, overriding the configured `SpecVersion` for that document.
+- Implicit typing under the YAML 1.2 core schema by default (only `true`/`false` are booleans - no "Norway problem"), with opt-in YAML 1.1 typing via `SpecVersion` (`yes`/`no`, `on`/`off`, `y`/`n`, and the YAML 1.1 integer forms). Base-60 ("sexagesimal") numbers such as `1:30` are not resolved under either version and stay strings. A float beyond the binary64 range, such as `1e309`, reads as an infinity, as IEEE 754 conversion gives, under either version. A document's `%YAML` directive is honored for scalar resolution, overriding the configured `SpecVersion` for that document.
 - Anchors and aliases, subject to **acyclic** tree resolution.
 - The core tags (`!!str`, `!!null`, `!!bool`, `!!int`, `!!float`), written as shorthands or verbatim (`!<tag:yaml.org,2002:str>`) with any `%`-escaped characters decoded, and `%TAG` handle expansion. A tagged scalar is resolved from its text as written, so `!!str null` is the string `null` and `!!float .inf` is an infinity, and the non-specific tag `!` makes a scalar a string. An explicit core tag whose content is invalid for the tag (for example `!!int abc`) is rejected, not silently degraded.
-- The YAML 1.1 merge key (`<<`) as an **opt-in** compatibility feature (`YamlMergeKeyBehavior`, on the reader, document, and serializer options).
+- The YAML 1.1 merge key (`<<`) as a compatibility feature, expanded by default under either spec version; `YamlMergeKeyBehavior`, on the reader, document, and serializer options, can disable it so that `<<` is an ordinary key.
 
 **Rejected** (each throws `YamlFormatException`)
 
@@ -47,7 +47,7 @@ This profile aligns with the Bodu TOML / Bencode and `System.Text.Json` architec
 | Scalar styles (plain, quoted, literal, folded) | Supported | Decoded with chomping and indentation indicators. |
 | Core-schema typing (`null`/`bool`/`int`/`float`/`str`) | Supported | YAML 1.2 core by default; YAML 1.1 via `SpecVersion` or a `%YAML 1.1` directive. |
 | Anchors / aliases | Supported (acyclic) | Resolved into tree nodes; cycles and anchor override rejected. |
-| Merge key `<<` | Opt-in | Controlled by `YamlMergeKeyBehavior` (expand by default). |
+| Merge key `<<` | Supported | Expanded by default under either spec version; `YamlMergeKeyBehavior` can disable it. |
 | Core tags + `%TAG` | Supported | Expanded and validated; invalid tagged content rejected. |
 | Multi-document streams | Supported | `YamlDocument.ParseAllDocuments`. |
 | Complex (non-scalar) keys | Rejected | `YamlFormatException`. |

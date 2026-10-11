@@ -29,6 +29,11 @@ namespace Bodu.Text.Yaml;
 /// reinterpreted as large numbers. The version affects only how plain scalars are typed; structural parsing of anchors,
 /// aliases, tags, and collections is identical for both versions.
 /// </para>
+/// <para>
+/// Under either version, a floating-point literal beyond the range of a <see cref="double" />, such as <c>1e309</c> or
+/// <c>-1e309</c>, resolves to an infinity, as IEEE 754 conversion rounds it, rather than remaining a string; an
+/// explicit <c>!!float</c> tag reads it the same way.
+/// </para>
 /// </remarks>
 public enum YamlSpecVersion
 {
