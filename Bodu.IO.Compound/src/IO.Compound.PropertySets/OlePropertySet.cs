@@ -185,6 +185,11 @@ public sealed class OlePropertySet
     /// boundary only while they are zero.
     /// </para>
     /// <para>
+    /// A property whose type the reader does not implement is dropped, as is one whose type word carries
+    /// <c>VT_ARRAY</c>, <c>VT_BYREF</c> or <c>VT_RESERVED</c>, rather than being read as a value of its base type; the
+    /// section's other properties still read.
+    /// </para>
+    /// <para>
     /// Every 32-bit field is read unsigned. A property identifier keeps all 32 bits (see
     /// <see cref="OlePropertySection" />). A length, offset or count that exceeds the bytes present, one too large for
     /// an <see cref="int" /> included, is malformed: the property that holds it is dropped, a dictionary that holds it

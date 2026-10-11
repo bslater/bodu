@@ -45,6 +45,9 @@ internal static class PropertySetReader
     /// <summary>The mask isolating the base type from the type-and-modifier word.</summary>
     private const ushort TypeMask = 0x0FFF;
 
+    /// <summary>The bits of the type word that carry <c>VT_ARRAY</c>, <c>VT_BYREF</c> and <c>VT_RESERVED</c>, none of which the reader implements.</summary>
+    private const ushort UnsupportedModifierMask = 0xE000;
+
     /// <summary>The maximum nesting depth permitted for self-describing <c>VT_VARIANT</c> values.</summary>
     /// <remarks>
     /// A property value of type <see cref="OlePropertyType.Variant" /> can itself hold a variant, and a crafted
@@ -203,6 +206,7 @@ internal static class PropertySetReader
     {
         Ensure(data, offset, 4);
         ushort rawType = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(offset));
+        ThrowIfUnsupportedModifier(rawType);
         bool isVector = (rawType & VectorFlag) != 0;
         var type = (OlePropertyType)(rawType & TypeMask);
         int valueOffset = offset + 4;
@@ -356,7 +360,9 @@ internal static class PropertySetReader
             CompoundFileError.InvalidPropertySet);
 
         Ensure(data, offset, 4);
-        var innerType = (OlePropertyType)(BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(offset)) & TypeMask);
+        ushort rawInnerType = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(offset));
+        ThrowIfUnsupportedModifier(rawInnerType);
+        var innerType = (OlePropertyType)(rawInnerType & TypeMask);
         (object? value, int consumed) = ReadScalar(data, offset + 4, innerType, encoding, depth + 1);
         return (value, 4 + consumed);
     }
@@ -524,6 +530,21 @@ internal static class PropertySetReader
     /// <returns>The aligned byte count.</returns>
     private static int Align4(int value) =>
         (value + 3) & ~3;
+
+    /// <summary>
+    /// Throws when a type word carries a modifier the reader does not implement, so that a <c>VT_ARRAY</c>,
+    /// <c>VT_BYREF</c> or <c>VT_RESERVED</c> value is dropped like any unsupported type rather than read as a value of
+    /// its base type.
+    /// </summary>
+    /// <param name="rawType">The type word.</param>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when <paramref name="rawType" /> has a bit of <see cref="UnsupportedModifierMask" /> set.
+    /// </exception>
+    private static void ThrowIfUnsupportedModifier(ushort rawType) =>
+        CompoundThrowHelper.ThrowFormatIf(
+            (rawType & UnsupportedModifierMask) != 0,
+            CompoundResourceStrings.Format_Invalid_CompoundPropertySet,
+            CompoundFileError.InvalidPropertySet);
 
     /// <summary>
     /// Narrows a length, offset or count read from the data, throwing when it exceeds what is available.
