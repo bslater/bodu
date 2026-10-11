@@ -275,5 +275,23 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("Format_Invalid_CompoundTruncated", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage already contains a child named '{0}'..
+        /// </summary>
+        internal static string Arg_Invalid_CompoundChildNameTaken {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CompoundChildNameTaken", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage contains no child named '{0}'..
+        /// </summary>
+        internal static string IO_KeyNotFound_CompoundChild {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_CompoundChild", resourceCulture);
+            }
+        }
     }
 }

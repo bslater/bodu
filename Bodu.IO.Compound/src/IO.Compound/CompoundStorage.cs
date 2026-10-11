@@ -454,8 +454,9 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(name);
         RequireWritable();
+        CompoundThrowHelper.ThrowIfNameTaken(_node!.ContainsName(name), name);
 
-        CompoundStorageBuilder child = _node!.AddStorage(name);
+        CompoundStorageBuilder child = _node.AddStorage(name);
         _file.MarkDirty();
         return new CompoundStorage(_file, child, this);
     }
@@ -469,12 +470,14 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
     public CompoundStream CreateStream(string name)
     {
         ThrowHelper.ThrowIfNull(name);
         RequireWritable();
+        CompoundThrowHelper.ThrowIfNameTaken(_node!.ContainsName(name), name);
 
-        return OpenStream(name, FileMode.Create, FileAccess.ReadWrite);
+        return OpenStream(name, FileMode.CreateNew, FileAccess.ReadWrite);
     }
 
     /// <summary>
@@ -491,8 +494,9 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(name);
         RequireWritable();
+        CompoundThrowHelper.ThrowIfNameTaken(_node!.ContainsName(name), name);
 
-        _node!.AddStream(name, content);
+        _node.AddStream(name, content);
         _file.MarkDirty();
     }
 
@@ -539,8 +543,10 @@ public sealed class CompoundStorage
         ThrowHelper.ThrowIfNull(oldName);
         ThrowHelper.ThrowIfNull(newName);
         RequireWritable();
+        if (!_node!.TryGetValue(oldName, out CompoundEntryBuilder? child)) throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.IO_KeyNotFound_CompoundChild, oldName));
+        CompoundThrowHelper.ThrowIfNameTaken(_node.TryGetValue(newName, out CompoundEntryBuilder? holder) && !ReferenceEquals(holder, child), newName);
 
-        _node!.Rename(oldName, newName);
+        _node.Rename(oldName, newName);
         _file.MarkDirty();
     }
 

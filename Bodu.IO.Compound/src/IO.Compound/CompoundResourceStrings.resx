@@ -130,4 +130,10 @@
   <data name="Format_Invalid_CompoundTruncated" xml:space="preserve">
     <value>The compound file ends before the end of a structure it declares.</value>
   </data>
+  <data name="Arg_Invalid_CompoundChildNameTaken" xml:space="preserve">
+    <value>The storage already contains a child named '{0}'.</value>
+  </data>
+  <data name="IO_KeyNotFound_CompoundChild" xml:space="preserve">
+    <value>The storage contains no child named '{0}'.</value>
+  </data>
 </root>

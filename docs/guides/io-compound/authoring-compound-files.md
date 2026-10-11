@@ -58,7 +58,7 @@ root.Save("out.cfb");
 
 ## Pattern 3 - create and mutate a file in place
 
-<xref:Bodu.IO.Compound.CompoundFile.Create*> returns a writable <xref:Bodu.IO.Compound.CompoundFile>. Its `RootStorage.CreateStream` returns a writable <xref:Bodu.IO.Compound.CompoundStream> - a real read-write `Stream` (`CanWrite` is `true`) - and `CreateStorage` adds a nested storage. Edits are staged in memory and persisted by `Commit`.
+<xref:Bodu.IO.Compound.CompoundFile.Create*> returns a writable <xref:Bodu.IO.Compound.CompoundFile>. Its `RootStorage.CreateStream` returns a writable <xref:Bodu.IO.Compound.CompoundStream> - a real read-write `Stream` (`CanWrite` is `true`) - and `CreateStorage` adds a nested storage. Both throw <xref:System.ArgumentException> at the call when the storage already holds a child of that name, compared case-insensitively. Edits are staged in memory and persisted by `Commit`.
 
 ```csharp
 using Bodu.IO.Compound;
@@ -144,7 +144,7 @@ if (file.TryGetSummaryInformation(out SummaryInformation? read))
 
 - **Sector version.** <xref:Bodu.IO.Compound.Builders.CompoundBuildOptions> selects the on-disk version: `V3` (512-byte sectors) is the most compatible default; `V4` (4096-byte sectors) suits larger containers. Pass it to any serializer, e.g. `root.Save("out.cfb", new CompoundBuildOptions { Version = CompoundFileVersion.V4 })`.
 - **Nesting depth.** `CompoundBuildOptions.MaxDepth` bounds storage nesting (default 64); exceeding it throws <xref:Bodu.IO.Compound.CompoundFileSerializationException>.
-- **Names.** An entry name is at most 31 UTF-16 code units, non-empty, and must not contain `/` or null characters. Names are compared case-insensitively by default (per the CFB format); set `NameComparisonCaseSensitive` on <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions> via `CreateRoot(options)` to change that. Duplicate or invalid names throw <xref:Bodu.IO.Compound.CompoundFileSerializationException>.
+- **Names.** An entry name is at most 31 UTF-16 code units, non-empty, and must not contain `/` or null characters. Names are compared case-insensitively by default (per the CFB format); set `NameComparisonCaseSensitive` on <xref:Bodu.IO.Compound.Builders.CompoundStorageBuilderOptions> via `CreateRoot(options)` to change that. A builder (<xref:Bodu.IO.Compound.Builders.CompoundStorageBuilder>) throws <xref:Bodu.IO.Compound.CompoundFileSerializationException> for a duplicate name, and for a missing one in `Rename`; a writable <xref:Bodu.IO.Compound.CompoundFile>'s storages throw <xref:System.ArgumentException> for a duplicate name at the call (`CreateStream`, `CreateStorage`, and the new name in `Rename`) and <xref:System.Collections.Generic.KeyNotFoundException> when `Rename` finds no child of the old name. An invalid name throws <xref:Bodu.IO.Compound.CompoundFileSerializationException> from either.
 - **Errors.** Authoring failures surface through <xref:Bodu.IO.Compound.CompoundFileSerializationException>; a malformed container encountered while loading one to edit surfaces through <xref:Bodu.IO.Compound.CompoundFileFormatException>.
 
 ## Where to go next

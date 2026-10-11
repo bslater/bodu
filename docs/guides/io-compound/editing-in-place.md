@@ -66,7 +66,7 @@ foreach (CompoundEntryInfo entry in check.RootStorage.EnumerateEntries())
 //   Stream \x05DocumentSummaryInformation (4096 bytes)
 ```
 
-`CreateStream(name, ReadOnlyMemory<byte>)` stages a complete payload in one call and throws <xref:System.ArgumentException> when a child of that name already exists; `CreateStream(name)` instead returns an empty writable cursor. `CreateStorage(name)` adds a nested storage. Word ignores streams it does not recognize, so a private stream beside `WordDocument` is the conventional way to carry application metadata in a document you do not otherwise change.
+`CreateStream(name, ReadOnlyMemory<byte>)` stages a complete payload in one call and throws <xref:System.ArgumentException> when a child of that name already exists; `CreateStream(name)` instead returns an empty writable cursor, and throws the same exception for a taken name rather than truncating the existing stream (open it with `OpenStream(name, FileMode.Create, FileAccess.ReadWrite)` to replace its content). `CreateStorage(name)` adds a nested storage. Word ignores streams it does not recognize, so a private stream beside `WordDocument` is the conventional way to carry application metadata in a document you do not otherwise change.
 
 The same session over a stream you own:
 
