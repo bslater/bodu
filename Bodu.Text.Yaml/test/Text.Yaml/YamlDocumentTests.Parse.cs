@@ -222,6 +222,60 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that an anchor name a document defines a second time is reported at the repeated anchor, with its
+    /// line, column and offset, wherever the anchored node stands.
+    /// </summary>
+    /// <param name="yaml">A document that defines one anchor name twice.</param>
+    /// <param name="line">The line of the repeated anchor.</param>
+    /// <param name="column">The column of the repeated anchor.</param>
+    /// <param name="offset">The byte offset of the repeated anchor.</param>
+    [TestMethod]
+    [DataRow("a: &x 1\nb: &x 2\n", 2, 4, 11, DisplayName = "a block mapping value")]
+    [DataRow("a: &x 1\nb: !!str &x 2\n", 2, 10, 17, DisplayName = "an anchor after a tag")]
+    [DataRow("a: &x 1\nb: &x\n  c: 2\n", 2, 4, 11, DisplayName = "an anchor before a block mapping")]
+    [DataRow("a: &x 1\n&x b: 2\n", 2, 1, 8, DisplayName = "an implicit key")]
+    [DataRow("- &x [1, &x 2]\n", 1, 10, 9, DisplayName = "a flow sequence entry")]
+    [DataRow("{&x a: 1, &x b: 2}\n", 1, 11, 10, DisplayName = "a flow mapping key")]
+    public void Parse_WhenAnchorIsRepeated_ShouldReportRepeatedAnchorPosition(string yaml, int line, int column, int offset)
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(column, ex.ColumnNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
+    /// Verifies that an alias that closes a cycle, naming an anchor whose node contains it, is reported at that alias,
+    /// with its line, column and offset, in block and flow collections.
+    /// </summary>
+    /// <param name="yaml">A document with an alias inside the node its anchor names.</param>
+    /// <param name="line">The line of the alias.</param>
+    /// <param name="column">The column of the alias.</param>
+    /// <param name="offset">The byte offset of the alias.</param>
+    [TestMethod]
+    [DataRow("a: &x [1, *x]\n", 1, 11, 10, DisplayName = "a flow sequence entry")]
+    [DataRow("&a [*a]\n", 1, 5, 4, DisplayName = "the root's only entry")]
+    [DataRow("&a {b: [*a]}\n", 1, 9, 8, DisplayName = "an entry two collections down")]
+    [DataRow("{a: &x {b: *x}}\n", 1, 12, 11, DisplayName = "a flow mapping value")]
+    [DataRow("a: &x\n  b: *x\n", 2, 6, 11, DisplayName = "a block mapping value")]
+    [DataRow("- &x\n  - *x\n", 2, 5, 9, DisplayName = "a block sequence entry")]
+    public void Parse_WhenAliasClosesCycle_ShouldReportAliasPosition(string yaml, int line, int column, int offset)
+    {
+        var ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(column, ex.ColumnNumber);
+        Assert.AreEqual(offset, ex.Offset);
+    }
+
+    /// <summary>
     /// Verifies that a key a mapping repeats is reported where the repeated key starts, with its line, column and
     /// offset, in block and flow mappings.
     /// </summary>

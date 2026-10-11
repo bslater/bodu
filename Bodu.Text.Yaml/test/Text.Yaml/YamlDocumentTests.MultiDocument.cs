@@ -247,6 +247,20 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
+    /// Verifies that each document of a stream may define the same anchor name, an anchor being scoped to its
+    /// document, and that an alias in the later document names the later anchor.
+    /// </summary>
+    [TestMethod]
+    public void ParseAllDocuments_WhenEachDocumentDefinesSameAnchor_ShouldParseEveryDocument()
+    {
+        IReadOnlyList<YamlDocument> documents = YamlDocument.ParseAllDocuments("--- &x 1\n--- [&x 2, *x]\n");
+
+        Assert.AreEqual(2, documents.Count);
+        Assert.AreEqual(1L, documents[0].RootElement.GetInt64());
+        Assert.AreEqual(2L, documents[1].RootElement[1].GetInt64());
+    }
+
+    /// <summary>
     /// Lists the keys of each document's root mapping, comma-separated, with any byte-order mark shown as
     /// <c>&lt;BOM&gt;</c> so that a failure names it.
     /// </summary>
