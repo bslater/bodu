@@ -17,7 +17,10 @@ namespace Bodu.IO.Biff;
 ///  /> reads the strings.
 /// </remarks>
 /// <param name="TotalCount">The number of <c>LABELSST</c> references across the workbook (<c>cstTotal</c>).</param>
-/// <param name="UniqueCount">The number of strings in the table (<c>cstUnique</c>).</param>
+/// <param name="UniqueCount">
+/// The number of unique strings the table declares (<c>cstUnique</c>). Some producers declare more strings than the
+/// table holds; <see cref="BiffSstReader" /> reads the strings the table's records hold and stops where they end.
+/// </param>
 /// <seealso cref="BiffReader.GetSstHeader" /> <seealso cref="BiffSstReader" />
 /// <seealso cref="BiffWriter.WriteSst(ReadOnlySpan{string}, uint)" />
 public readonly record struct BiffSstHeader(uint TotalCount, uint UniqueCount)

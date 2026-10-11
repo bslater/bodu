@@ -9,25 +9,27 @@ namespace Bodu.IO.Biff;
 public sealed partial class BiffSstReaderTests
 {
     /// <summary>
-    /// Verifies that a table whose strings run out before the declared count is rejected rather than read past.
+    /// Verifies that a table whose strings run out before the declared count stops at its last string rather than
+    /// reading past its records.
     /// </summary>
     [TestMethod]
-    public void Read_WhenStringsRunOutBeforeDeclaredCount_ShouldThrowBiffFormatException()
+    public void Read_WhenStringsRunOutBeforeDeclaredCount_ShouldStopAtTheLastString()
     {
         byte[] stream = Table(BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("only-one")));
 
-        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
+        CollectionAssert.AreEqual(new[] { "only-one" }, ReadAll(stream, out _));
     }
 
     /// <summary>
-    /// Verifies that a hostile unique count with no string data fails on the first read without allocating.
+    /// Verifies that a hostile unique count with no string data reads no strings: the first read finds the table's
+    /// records exhausted.
     /// </summary>
     [TestMethod]
-    public void Read_WhenUniqueCountIsHostile_ShouldThrowBiffFormatException()
+    public void Read_WhenUniqueCountIsHostile_ShouldReadNoStrings()
     {
         byte[] stream = Table(BiffTestRecords.Sst(uint.MaxValue, uint.MaxValue));
 
-        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
+        Assert.IsEmpty(ReadAll(stream, out _));
     }
 
     /// <summary>
@@ -130,14 +132,19 @@ public sealed partial class BiffSstReaderTests
     }
 
     /// <summary>
-    /// Verifies that a table whose next string header begins in a record that is not a continuation is rejected.
+    /// Verifies that a table followed by a record that is not a continuation ends at its last string, leaving that
+    /// record unconsumed even though it holds bytes that would read as another string.
     /// </summary>
     [TestMethod]
-    public void Read_WhenNextRecordIsNotContinue_ShouldThrowBiffFormatException()
+    public void Read_WhenNextRecordIsNotContinue_ShouldStopWithoutConsumingIt()
     {
-        byte[] stream = Table(BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("one")), BiffTestRecords.Record(0x0FFE, BiffTestRecords.UnicodeString("two")));
+        byte[] sst = BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("one"));
+        byte[] stream = Table(sst, BiffTestRecords.Record(0x0FFE, BiffTestRecords.UnicodeString("two")));
 
-        _ = Assert.ThrowsExactly<BiffFormatException>(() => ReadAll(stream, out _));
+        List<string> strings = ReadAll(stream, out int consumed);
+
+        CollectionAssert.AreEqual(new[] { "one" }, strings);
+        Assert.AreEqual(BiffTestRecords.Bof8().Length + sst.Length, consumed);
     }
 
     /// <summary>
@@ -147,7 +154,7 @@ public sealed partial class BiffSstReaderTests
     [TestMethod]
     public void Read_WhenTableIsMalformed_ShouldLeaveParentAtConsumedRecord()
     {
-        byte[] stream = Table(BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("only")));
+        byte[] stream = Table(BiffTestRecords.Sst(2, 2, BiffTestRecords.UnicodeString("only"), [0x05]));
         var reader = new BiffReader(stream);
         while (reader.Read() && reader.RecordType != BiffRecordType.Sst)
         {

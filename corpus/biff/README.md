@@ -75,8 +75,8 @@ Anything else in `input` and `expected` is written with an escape: `\n`, `\r`, `
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 368 | The row runs, and Bodu must do what the fix established |
-| `dialect` | 45 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix (Bodu does not decrypt, reads BIFF5, compares sheet names ordinally, rejects a shared string table shorter than it declares); `reason` names the document or section |
+| `applies` | 372 | The row runs, and Bodu must do what the fix established |
+| `dialect` | 41 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix (Bodu does not decrypt, reads BIFF5, compares sheet names ordinally, rejects an out-of-range shared-string index); `reason` names the document or section |
 | `n/a` | 443 | The fix concerns something Bodu does not have (editing, styles, formula parsing and evaluation, drawings, text formatting, xlsx), memory safety, a platform, the library's language, logging or performance; `reason` says which |
 | `unknown` | 11 | No scenario could be found; `reason` says what was read |
 
@@ -212,12 +212,12 @@ line `#sst<TAB><index><TAB><text>` per string, read with `BiffSstReader` across 
 | Library | Fixes | Rows | applies | dialect | n/a | unknown | unit | runnable |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | xlrd | 124 | 136 | 69 | 9 | 57 | 1 | 1 | 77 |
-| exceldatareader | 70 | 88 | 63 | 14 | 10 | 1 | 3 | 74 |
-| calamine | 47 | 55 | 42 | 5 | 8 | 0 | 3 | 44 |
+| exceldatareader | 70 | 88 | 64 | 13 | 10 | 1 | 3 | 74 |
+| calamine | 47 | 55 | 43 | 4 | 8 | 0 | 3 | 44 |
 | libxls | 52 | 58 | 38 | 4 | 16 | 0 | 2 | 40 |
 | spreadsheet-parseexcel | 110 | 120 | 51 | 1 | 65 | 3 | 3 | 49 |
-| apache-poi | 404 | 410 | 105 | 12 | 287 | 6 | 6 | 111 |
-| **Total** | **807** | **867** | **368** | **45** | **443** | **11** | **18** | **395** |
+| apache-poi | 404 | 410 | 107 | 10 | 287 | 6 | 6 | 111 |
+| **Total** | **807** | **867** | **372** | **41** | **443** | **11** | **18** | **395** |
 
 ### Status
 

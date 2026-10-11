@@ -20,7 +20,7 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 The records before the first sheet form the **workbook globals**, parsed once when the workbook is opened:
 
 - the **date system** (1900 or 1904), from the `DATEMODE` record;
-- the **shared string table** (SST), the deduplicated pool of strings that text cells reference by index;
+- the **shared string table** (SST), the deduplicated pool of strings that text cells reference by index, read as the strings its records hold even when it declares more, so that a cell referencing past them is an out-of-range shared-string index;
 - the **number-format table** (`FORMAT` / `XF`), used to resolve each cell's format and to classify date formatting;
 - the **sheet directory** (`BOUNDSHEET`), naming each sheet, recording its type and visibility, and pointing at the byte offset of its substream.
 

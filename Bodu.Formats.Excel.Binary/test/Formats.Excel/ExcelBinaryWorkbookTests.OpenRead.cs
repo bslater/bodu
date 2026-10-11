@@ -418,7 +418,7 @@ public partial class ExcelBinaryWorkbookTests
     public void OpenRead_WhenSharedStringTableIsMalformed_ShouldThrowFormatException()
     {
         using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
-            [Biff8TestWorkbook.Record(0x00FC, [2, 0, 0, 0, 2, 0, 0, 0, 0x01, 0x00, 0x00, (byte)'a'])],
+            [Biff8TestWorkbook.Record(0x00FC, [1, 0, 0, 0, 1, 0, 0, 0, 0x05, 0x00, 0x00, (byte)'a'])],
             new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Dimensions(0, 1, 0, 1)]));
 
         var ex = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>

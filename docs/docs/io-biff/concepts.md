@@ -47,7 +47,7 @@ BIFF8 stores text as a **Unicode string**: a length prefix (8-bit in `BOUNDSHEET
 
 ## Shared string table
 
-BIFF8 pools cell text in the workbook globals: the `SST` record declares a total reference count and a unique string count, then the strings; each `LABELSST` cell carries an index into it. The table routinely exceeds one record, so it is the canonical continued structure. <xref:Bodu.IO.Biff.BiffSstReader> reads it one string at a time: a string that lies within one record is exposed as a span-backed `Current` view; a string whose characters straddle a `CONTINUE` boundary is stitched into a scratch buffer and served through `GetString()` - the only allocation forward traversal ever makes.
+BIFF8 pools cell text in the workbook globals: the `SST` record declares a total reference count and a unique string count, then the strings; each `LABELSST` cell carries an index into it. The table ends where its records end: some producers declare more unique strings than they write, and the reader stops at the last string the table holds. The table routinely exceeds one record, so it is the canonical continued structure. <xref:Bodu.IO.Biff.BiffSstReader> reads it one string at a time: a string that lies within one record is exposed as a span-backed `Current` view; a string whose characters straddle a `CONTINUE` boundary is stitched into a scratch buffer and served through `GetString()` - the only allocation forward traversal ever makes.
 
 ## Cell records
 
