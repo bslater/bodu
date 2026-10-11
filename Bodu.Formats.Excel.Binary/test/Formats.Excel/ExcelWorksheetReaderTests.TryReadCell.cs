@@ -504,4 +504,50 @@ public partial class ExcelWorksheetReaderTests
         Assert.IsFalse(reader.TryReadCell(out ExcelCell cell));
         Assert.AreEqual(default, cell);
     }
+
+    /// <summary>
+    /// Verifies that the records of each chart substream nested in the worksheet, from its BOF to its matching EOF,
+    /// are not read as cells, and that the cells after the charts are.
+    /// </summary>
+    /// <param name="charts">The number of embedded charts between the two cells.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    public void TryReadCell_WhenWorksheetEmbedsCharts_ShouldSkipTheirSubstreams(int charts)
+    {
+        List<byte[]> body = [Biff8TestWorkbook.Number(0, 0, 1.0)];
+        for (int i = 1; i <= charts; i++)
+            body.Add(Biff8TestWorkbook.EmbeddedChart((ushort)i, 10.0 * i, 20.0 * i));
+
+        body.Add(Biff8TestWorkbook.Number(1, 0, 2.0));
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader([.. body]);
+
+        List<double?> values = [];
+        while (reader.TryReadCell(out ExcelCell cell))
+            values.Add(cell.NumberValue);
+
+        CollectionAssert.AreEqual(new double?[] { 1.0, 2.0 }, values);
+    }
+
+    /// <summary>
+    /// Verifies that a substream nested in a nested substream ends at its own EOF and leaves the outer one open, so the
+    /// worksheet's cells resume only after the outer substream's matching EOF.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenNestedSubstreamNestsAnother_ShouldSkipToItsMatchingEof()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Number(0, 0, 1.0),
+            Biff8TestWorkbook.Bof((ushort)BiffSubstreamType.Chart),
+            Biff8TestWorkbook.EmbeddedChart(1, 10.0),
+            Biff8TestWorkbook.Number(1, 0, 20.0),
+            Biff8TestWorkbook.Eof(),
+            Biff8TestWorkbook.Number(1, 0, 2.0));
+
+        List<double?> values = [];
+        while (reader.TryReadCell(out ExcelCell cell))
+            values.Add(cell.NumberValue);
+
+        CollectionAssert.AreEqual(new double?[] { 1.0, 2.0 }, values);
+    }
 }

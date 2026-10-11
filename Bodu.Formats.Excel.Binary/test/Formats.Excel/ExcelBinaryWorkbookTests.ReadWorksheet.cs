@@ -154,4 +154,37 @@ public partial class ExcelBinaryWorkbookTests
         Assert.IsEmpty(chartSheet.Cells);
         Assert.AreEqual(1.0, dataSheet.Cells.Single().NumberValue);
     }
+
+    /// <summary>
+    /// Verifies that a worksheet holding embedded charts, each a chart substream nested after its OBJ record ([MS-XLS]
+    /// 2.1.7.20.6), reads its own cells, those after the charts included, and none of the charts' data cache, and that
+    /// the sheet after it reads its own cell.
+    /// </summary>
+    [TestMethod]
+    public void ReadWorksheet_WhenWorksheetEmbedsCharts_ShouldReadOnlyItsOwnCells()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [],
+            new Biff8TestWorkbook.SheetSpec(
+                "Sheet1",
+                0,
+                0,
+                [
+                    Biff8TestWorkbook.Dimensions(0, 3, 0, 1),
+                    Biff8TestWorkbook.Number(0, 0, 1.0),
+                    Biff8TestWorkbook.Number(1, 0, 2.0),
+                    Biff8TestWorkbook.EmbeddedChart(1, 10.0, 20.0, 30.0),
+                    Biff8TestWorkbook.EmbeddedChart(2, 40.0, 50.0),
+                    Biff8TestWorkbook.Number(2, 0, 3.0),
+                    Biff8TestWorkbook.Record((ushort)BiffRecordType.Window2, new byte[18]),
+                ]),
+            new Biff8TestWorkbook.SheetSpec("Sheet2", 0, 0, [Biff8TestWorkbook.Number(0, 0, 4.0)]));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        ExcelWorksheet first = workbook.ReadWorksheet(0);
+        ExcelWorksheet second = workbook.ReadWorksheet(1);
+
+        Assert.AreEqual("0,0,Number,1;1,0,Number,2;2,0,Number,3", string.Join(";", first.Cells.Select(DescribeCell)));
+        Assert.AreEqual("0,0,Number,4", string.Join(";", second.Cells.Select(DescribeCell)));
+    }
 }

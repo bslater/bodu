@@ -159,6 +159,39 @@ internal static class Biff8TestWorkbook
     public static byte[] Dimensions(int firstRow, int rowMac, int firstColumn, int columnMac) =>
         Emit((ref BiffWriter w) => w.WriteDimensions(new BiffDimensionsRecord(firstRow, rowMac, firstColumn, columnMac)));
 
+    /// <summary>
+    /// Builds a chart embedded in a worksheet: its OBJ record, then a whole chart substream, BOF to EOF, whose NUMBER
+    /// records are the chart's data cache ([MS-XLS] 2.1.7.20.6 and 2.2.3.2).
+    /// </summary>
+    /// <param name="objectId">The object identifier of the chart.</param>
+    /// <param name="cache">The values of the data cache, one NUMBER record each, in column A from row 1.</param>
+    /// <returns>The concatenated records.</returns>
+    public static byte[] EmbeddedChart(ushort objectId, params double[] cache)
+    {
+        // FtCmo (ft, cb, ot = 5 for a chart, id, flags, 12 reserved bytes), then FtEnd.
+        byte[] obj = new byte[26];
+        BinaryPrimitives.WriteUInt16LittleEndian(obj, 0x0015);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(2), 18);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(4), 5);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(6), objectId);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(8), 0x6011);
+
+        List<byte[]> records =
+        [
+            Record((ushort)BiffRecordType.Obj, obj),
+            Bof((ushort)BiffSubstreamType.Chart),
+            Record(0x1001, [0x00, 0x00]),
+            Dimensions(0, cache.Length, 0, 1),
+            Record(0x1065, [0x01, 0x00]),
+        ];
+        for (int row = 0; row < cache.Length; row++)
+            records.Add(Number(row, 0, cache[row]));
+
+        records.Add(Record(0x1065, [0x02, 0x00]));
+        records.Add(Eof());
+        return Concat([.. records]);
+    }
+
     /// <summary>Builds a shared string table from the given strings.</summary>
     /// <param name="strings">The unique strings.</param>
     /// <returns>The framed SST record followed by any continuation records.</returns>
