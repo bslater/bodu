@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
 using Bodu.IO.Compound.Builders;
 using Bodu.IO.Compound.Internal;
 
@@ -699,6 +700,151 @@ public partial class CompoundFileTests
                 int a = CompoundContainerBytes.FindEntryOffset(container, "A");
                 int b = CompoundContainerBytes.FindEntryOffset(container, "B");
                 container.AsSpan(a + CompoundContainerBytes.StartSectorOffset, 4).CopyTo(container.AsSpan(b + CompoundContainerBytes.StartSectorOffset));
+                break;
+        }
+
+        return container;
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> rejects a directory entry that breaks [MS-CFB] 2.6
+    /// with <see cref="CompoundFileError.InvalidDirectory" />.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the defect.</param>
+    [TestMethod]
+    [DataRow("RootNotNamedRootEntry")]
+    [DataRow("StreamClassIdNotZero")]
+    [DataRow("StreamCreationTimeNotZero")]
+    [DataRow("StreamModifiedTimeNotZero")]
+    [DataRow("RootCreationTimeNotZero")]
+    [DataRow("StorageStartSectorNotZero")]
+    [DataRow("NameLengthOdd")]
+    [DataRow("NameWithoutTerminator")]
+    [DataRow("RedNodeWithRedSibling")]
+    public void Open_WhenDirectoryEntryBreaksMsCfbAtStrict_ShouldThrowInvalidDirectory(string testName)
+    {
+        byte[] container = BuildDirectoryCase(testName);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Strict };
+
+        CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+        {
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+        }, testName);
+
+        Assert.AreEqual(CompoundFileError.InvalidDirectory, ex.Category, testName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Compatible" /> and <see cref="CompoundValidationLevel.Minimal" />
+    /// read a directory entry whose fields break [MS-CFB] 2.6 without making its name unreadable, a name without its
+    /// terminator included.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the defect.</param>
+    [TestMethod]
+    [DataRow("RootNotNamedRootEntry")]
+    [DataRow("StreamClassIdNotZero")]
+    [DataRow("StreamCreationTimeNotZero")]
+    [DataRow("StreamModifiedTimeNotZero")]
+    [DataRow("RootCreationTimeNotZero")]
+    [DataRow("StorageStartSectorNotZero")]
+    [DataRow("NameWithoutTerminator")]
+    [DataRow("RedNodeWithRedSibling")]
+    public void Open_WhenDirectoryEntryBreaksMsCfbAtTolerantLevels_ShouldReadTheEntry(string testName)
+    {
+        byte[] container = BuildDirectoryCase(testName);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Compatible, CompoundValidationLevel.Minimal })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+            using CompoundStream stream = file.RootStorage.OpenStream("A");
+
+            CollectionAssert.AreEqual(CompoundContainerBytes.Pattern(100), stream.ReadAllBytes(), $"{testName} at {level}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Minimal" /> skips a directory entry whose name length is odd,
+    /// as it skips an entry of unknown type, instead of reading a name cut short.
+    /// </summary>
+    /// <param name="nameLength">The odd name length written over the entry's own length of 8.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(3)]
+    [DataRow(5)]
+    [DataRow(7)]
+    public void Open_WhenNameLengthIsOddAtMinimal_ShouldSkipTheEntry(int nameLength)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("ABC", CompoundContainerBytes.Pattern(100));
+        _ = builder.AddStream("D", CompoundContainerBytes.Pattern(100));
+        byte[] container = builder.ToArray();
+        int entry = CompoundContainerBytes.FindEntryOffset(container, "ABC");
+        BinaryPrimitives.WriteUInt16LittleEndian(container.AsSpan(entry + CompoundContainerBytes.NameLengthOffset), (ushort)nameLength);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal };
+
+        using var file = CompoundFile.Open(new MemoryStream(container), options);
+
+        CollectionAssert.AreEqual(new[] { "D" }, file.RootStorage.EnumerateEntries().Select(static e => e.Name).ToArray());
+    }
+
+    /// <summary>
+    /// Builds a container whose directory breaks [MS-CFB] 2.6 in the way a case names: its root holds a 100-byte stream
+    /// <c>A</c>, a 100-byte stream <c>B</c> and a storage <c>S</c> holding a 100-byte stream <c>C</c>.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildDirectoryCase(string testName)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", CompoundContainerBytes.Pattern(100));
+        _ = builder.AddStream("B", CompoundContainerBytes.Pattern(100, 7));
+        _ = builder.AddStorage("S").AddStream("C", CompoundContainerBytes.Pattern(100, 9));
+        byte[] container = builder.ToArray();
+
+        int root = CompoundContainerBytes.FindEntryOffset(container, "Root Entry");
+        int a = CompoundContainerBytes.FindEntryOffset(container, "A");
+        switch (testName)
+        {
+            case "RootNotNamedRootEntry":
+                container.AsSpan(root, 64).Clear();
+                System.Text.Encoding.Unicode.GetBytes("foo").CopyTo(container, root);
+                BinaryPrimitives.WriteUInt16LittleEndian(container.AsSpan(root + CompoundContainerBytes.NameLengthOffset), 8);
+                break;
+
+            case "StreamClassIdNotZero":
+                new Guid("00020906-0000-0000-C000-000000000046").TryWriteBytes(container.AsSpan(a + CompoundContainerBytes.ClassIdOffset));
+                break;
+
+            case "StreamCreationTimeNotZero":
+                CompoundContainerBytes.WriteInt64(container, a + CompoundContainerBytes.CreationTimeOffset, 0x01D0000000000000);
+                break;
+
+            case "StreamModifiedTimeNotZero":
+                CompoundContainerBytes.WriteInt64(container, a + CompoundContainerBytes.ModifiedTimeOffset, 0x01D0000000000000);
+                break;
+
+            case "RootCreationTimeNotZero":
+                CompoundContainerBytes.WriteInt64(container, root + CompoundContainerBytes.CreationTimeOffset, 0x01D0000000000000);
+                break;
+
+            case "StorageStartSectorNotZero":
+                CompoundContainerBytes.WriteUInt32(container, CompoundContainerBytes.FindEntryOffset(container, "S") + CompoundContainerBytes.StartSectorOffset, 7);
+                break;
+
+            case "NameLengthOdd":
+                BinaryPrimitives.WriteUInt16LittleEndian(container.AsSpan(a + CompoundContainerBytes.NameLengthOffset), 5);
+                break;
+
+            case "NameWithoutTerminator":
+                BinaryPrimitives.WriteUInt16LittleEndian(container.AsSpan(a + 2), 0x42);
+                break;
+
+            default:
+                // The root's children sort A, B, S, so the writer roots their tree at B with A and S as its siblings.
+                int b = CompoundContainerBytes.FindEntryOffset(container, "B");
+                container[a + CompoundContainerBytes.ColorOffset] = (byte)CompoundEntryColor.Red;
+                container[b + CompoundContainerBytes.ColorOffset] = (byte)CompoundEntryColor.Red;
                 break;
         }
 
