@@ -13,9 +13,16 @@ namespace Bodu.IO.Compound.PropertySets;
 /// identifier (PID).
 /// </summary>
 /// <remarks>
+/// <para>
 /// A property set contains one or two sections. The first carries the well-known properties (such as summary
 /// information); an optional second, user-defined section carries custom properties whose human-readable names are held
 /// in the section's <see cref="PropertyNames" /> dictionary.
+/// </para>
+/// <para>
+/// [MS-OLEPS] defines a property identifier as an unsigned 32-bit value. An identifier at or above 0x80000000, such as
+/// the PID_LOCALE (0x80000000) and PID_BEHAVIOR (0x80000003) Office writes in a user-defined section, is keyed by its
+/// unchecked <see cref="int" /> value, <c>unchecked((int)0x80000000)</c>, and is written back as the same 32 bits.
+/// </para>
 /// </remarks>
 public sealed class OlePropertySection
 {

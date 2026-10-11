@@ -184,6 +184,12 @@ public sealed class OlePropertySet
     /// summary's document parts and heading pairs: the reader skips the bytes up to an element's next four-byte
     /// boundary only while they are zero.
     /// </para>
+    /// <para>
+    /// Every 32-bit field is read unsigned. A property identifier keeps all 32 bits (see
+    /// <see cref="OlePropertySection" />). A length, offset or count that exceeds the bytes present, one too large for
+    /// an <see cref="int" /> included, is malformed: the property that holds it is dropped, a dictionary that holds it
+    /// names no further properties, and a section header or locator that holds it fails the set.
+    /// </para>
     /// </remarks>
     public static OlePropertySet Parse(ReadOnlyMemory<byte> data) =>
         PropertySetReader.Read(data.Span);

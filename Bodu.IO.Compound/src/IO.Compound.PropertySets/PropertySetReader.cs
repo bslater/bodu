@@ -15,7 +15,9 @@ namespace Bodu.IO.Compound.PropertySets;
 /// <remarks>
 /// The reader validates the property-set header, walks the section locators, and decodes each section's typed property
 /// values, honoring the per-section code page for ANSI strings and the special dictionary property used by user-defined
-/// sections. All structural failures are reported as <see cref="CompoundFileFormatException" />.
+/// sections. All structural failures are reported as <see cref="CompoundFileFormatException" />. Every 32-bit field is
+/// read unsigned: a property identifier keeps all 32 bits, and a length, offset or count is compared with the bytes
+/// present before it is narrowed, so a value that cannot be represented is malformed like any other out-of-range value.
 /// </remarks>
 internal static class PropertySetReader
 {
@@ -82,7 +84,7 @@ internal static class PropertySetReader
         {
             Ensure(data, locatorCursor, LocatorSize);
             var formatId = new Guid(data.Slice(locatorCursor, 16));
-            int sectionOffset = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(locatorCursor + 16)));
+            int sectionOffset = Bounded(BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(locatorCursor + 16)), data.Length);
             locatorCursor += LocatorSize;
 
             if (i == 0)
@@ -105,10 +107,10 @@ internal static class PropertySetReader
     /// <exception cref="CompoundFileFormatException">Thrown when the section is malformed.</exception>
     private static OlePropertySection ParseSection(ReadOnlySpan<byte> data, int sectionOffset, Guid formatId)
     {
+        // The declared size must fit in the data, though a value stored past it is still read from its own offset.
         Ensure(data, sectionOffset, 8);
-        int sectionSize = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(sectionOffset)));
+        _ = Bounded(BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(sectionOffset)), data.Length - sectionOffset);
         uint rawPropertyCount = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(sectionOffset + 4));
-        Ensure(data, sectionOffset, sectionSize);
 
         // Each property contributes an 8-byte (pid, offset) pair immediately after the section header. Bound the
         // declared count against the bytes actually present before allocating, so a crafted count cannot drive a
@@ -119,13 +121,15 @@ internal static class PropertySetReader
             CompoundFileError.InvalidPropertySet);
         int propertyCount = (int)rawPropertyCount;
 
-        (int Pid, int Offset)[] pairs = new (int, int)[propertyCount];
+        // A property identifier is an unsigned 32-bit value; one at or above 0x80000000, such as PID_LOCALE, is keyed by
+        // its unchecked Int32 value. An offset is checked against the section when its property is read.
+        (int Pid, uint Offset)[] pairs = new (int, uint)[propertyCount];
         int pairCursor = sectionOffset + 8;
         for (int i = 0; i < propertyCount; i++)
         {
             Ensure(data, pairCursor, 8);
-            int pid = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(pairCursor)));
-            int offset = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(pairCursor + 4)));
+            int pid = unchecked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(pairCursor)));
+            uint offset = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(pairCursor + 4));
             pairs[i] = (pid, offset);
             pairCursor += 8;
         }
@@ -136,14 +140,14 @@ internal static class PropertySetReader
         Dictionary<int, OlePropertyValue> properties = new(propertyCount);
         Dictionary<int, string> propertyNames = new();
 
-        foreach ((int pid, int offset) in pairs)
+        foreach ((int pid, uint offset) in pairs)
         {
-            int valueOffset = sectionOffset + offset;
-
-            // Decode each property independently: an unsupported or malformed individual value is skipped so the
-            // remaining well-formed properties of the section are still surfaced.
+            // Decode each property independently: an unsupported or malformed individual value, an offset past the end
+            // of the data included, is skipped so the remaining well-formed properties of the section are still
+            // surfaced.
             try
             {
+                int valueOffset = sectionOffset + Bounded(offset, data.Length - sectionOffset);
                 if (pid == DictionaryPropertyId)
                     ParseDictionary(data, valueOffset, encoding, propertyNames);
                 else
@@ -165,14 +169,14 @@ internal static class PropertySetReader
     /// <param name="sectionOffset">The byte offset of the section.</param>
     /// <param name="pairs">The parsed property identifier/offset pairs.</param>
     /// <returns>The resolved code page.</returns>
-    private static int ResolveCodePage(ReadOnlySpan<byte> data, int sectionOffset, (int Pid, int Offset)[] pairs)
+    private static int ResolveCodePage(ReadOnlySpan<byte> data, int sectionOffset, (int Pid, uint Offset)[] pairs)
     {
-        foreach ((int pid, int offset) in pairs)
+        foreach ((int pid, uint offset) in pairs)
         {
             if (pid != CodePagePropertyId)
                 continue;
 
-            int valueOffset = sectionOffset + offset;
+            int valueOffset = sectionOffset + Bounded(offset, data.Length - sectionOffset);
             Ensure(data, valueOffset, 6);
 
             // The code page is a VT_I2 whose value is interpreted as an unsigned 16-bit code-page number.
@@ -367,8 +371,7 @@ internal static class PropertySetReader
     private static (object? Value, int Consumed) ReadCodePageString(ReadOnlySpan<byte> data, int offset, Encoding encoding)
     {
         Ensure(data, offset, 4);
-        int length = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)));
-        Ensure(data, offset + 4, length);
+        int length = Bounded(BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)), data.Length - (offset + 4));
 
         string text = encoding.GetString(data.Slice(offset + 4, length)).TrimEnd('\0');
         return (text, 4 + length);
@@ -383,9 +386,7 @@ internal static class PropertySetReader
     private static (object? Value, int Consumed) ReadUnicodeString(ReadOnlySpan<byte> data, int offset)
     {
         Ensure(data, offset, 4);
-        int characters = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)));
-        int bytes = checked(characters * 2);
-        Ensure(data, offset + 4, bytes);
+        int bytes = Bounded((ulong)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)) * 2, data.Length - (offset + 4));
 
         string text = Encoding.Unicode.GetString(data.Slice(offset + 4, bytes)).TrimEnd('\0');
         return (text, 4 + bytes);
@@ -400,8 +401,7 @@ internal static class PropertySetReader
     private static (object? Value, int Consumed) ReadBlob(ReadOnlySpan<byte> data, int offset)
     {
         Ensure(data, offset, 4);
-        int length = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)));
-        Ensure(data, offset + 4, length);
+        int length = Bounded(BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)), data.Length - (offset + 4));
 
         return (data.Slice(offset + 4, length).ToArray(), 4 + length);
     }
@@ -416,30 +416,31 @@ internal static class PropertySetReader
     /// <exception cref="CompoundFileFormatException">Thrown when the dictionary is malformed.</exception>
     private static void ParseDictionary(ReadOnlySpan<byte> data, int offset, Encoding encoding, Dictionary<int, string> names)
     {
+        // Every entry holds at least an identifier and a length, so a count of more entries than that fills the rest of
+        // the data is malformed before any entry is read.
         Ensure(data, offset, 4);
-        int entryCount = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)));
+        int entryCount = Bounded(BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)), (data.Length - (offset + 4)) / 8);
         int cursor = offset + 4;
 
         bool unicode = ReferenceEquals(encoding, Encoding.Unicode);
         for (int i = 0; i < entryCount; i++)
         {
             Ensure(data, cursor, 8);
-            int pid = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(cursor)));
-            int length = checked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(cursor + 4)));
+            int pid = unchecked((int)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(cursor)));
+            uint length = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(cursor + 4));
             cursor += 8;
 
             if (unicode)
             {
-                int bytes = checked(length * 2);
-                Ensure(data, cursor, bytes);
+                int bytes = Bounded((ulong)length * 2, data.Length - cursor);
                 names[pid] = Encoding.Unicode.GetString(data.Slice(cursor, bytes)).TrimEnd('\0');
                 cursor += Align4(bytes);
             }
             else
             {
-                Ensure(data, cursor, length);
-                names[pid] = encoding.GetString(data.Slice(cursor, length)).TrimEnd('\0');
-                cursor += length;
+                int bytes = Bounded(length, data.Length - cursor);
+                names[pid] = encoding.GetString(data.Slice(cursor, bytes)).TrimEnd('\0');
+                cursor += bytes;
             }
         }
     }
@@ -523,6 +524,25 @@ internal static class PropertySetReader
     /// <returns>The aligned byte count.</returns>
     private static int Align4(int value) =>
         (value + 3) & ~3;
+
+    /// <summary>
+    /// Narrows a length, offset or count read from the data, throwing when it exceeds what is available.
+    /// </summary>
+    /// <param name="value">The value read.</param>
+    /// <param name="available">The largest value the data can hold at that point.</param>
+    /// <returns>The value as an <see cref="int" />.</returns>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when <paramref name="value" /> exceeds <paramref name="available" />.
+    /// </exception>
+    private static int Bounded(ulong value, int available)
+    {
+        CompoundThrowHelper.ThrowFormatIf(
+            available < 0 || value > (ulong)available,
+            CompoundResourceStrings.Format_Invalid_CompoundPropertySet,
+            CompoundFileError.InvalidPropertySet);
+
+        return (int)value;
+    }
 
     /// <summary>
     /// Validates that a region lies within the data, throwing when it does not.
