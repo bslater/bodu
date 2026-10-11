@@ -1092,4 +1092,72 @@ public partial class CompoundFileTests
 
         return container;
     }
+
+    /// <summary>
+    /// Verifies that a malformed container is rejected under the <see cref="CompoundFileError" /> category that
+    /// documents its defect, at <see cref="CompoundValidationLevel.Strict" /> and
+    /// <see cref="CompoundValidationLevel.Compatible" /> and through either read strategy.
+    /// </summary>
+    /// <param name="testName">The name of the case, which selects the defect.</param>
+    /// <param name="category">The category that documents the defect.</param>
+    [TestMethod]
+    [DataRow("MiniStreamStartsPastTheMiniFat", CompoundFileError.InvalidMiniFat)]
+    [DataRow("MiniChainLeavesTheMiniFat", CompoundFileError.InvalidMiniFat)]
+    [DataRow("FirstMiniFatSectorIsFree", CompoundFileError.InvalidMiniFat)]
+    [DataRow("Version4ShorterThanItsHeaderSector", CompoundFileError.TruncatedFile)]
+    public void Open_WhenContainerIsMalformed_ShouldReportTheDocumentedCategory(string testName, CompoundFileError category)
+    {
+        byte[] container = BuildCategoryCase(testName);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Strict, CompoundValidationLevel.Compatible })
+        {
+            foreach (CompoundReadStrategy strategy in new[] { CompoundReadStrategy.Buffered, CompoundReadStrategy.Streaming })
+            {
+                var options = new CompoundFileOptions { ValidationLevel = level, ReadStrategy = strategy };
+
+                CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+                {
+                    using var file = CompoundFile.Open(new MemoryStream(container), options);
+                    using CompoundStream stream = file.RootStorage.OpenStream("A");
+                    _ = stream.ReadAllBytes();
+                }, $"{testName} at {level} {strategy}");
+
+                Assert.AreEqual(category, ex.Category, $"{testName} at {level} {strategy}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Builds a container malformed in the way a case names; its root holds an 80-byte stream <c>A</c>, the first in the
+    /// mini stream.
+    /// </summary>
+    /// <param name="testName">The name of the case.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildCategoryCase(string testName)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", CompoundContainerBytes.Pattern(80));
+        CompoundFileVersion version = testName.StartsWith("Version4", StringComparison.Ordinal) ? CompoundFileVersion.V4 : CompoundFileVersion.V3;
+        byte[] container = builder.ToArray(new CompoundBuildOptions { Version = version });
+        var header = CfbHeader.Parse(container);
+
+        switch (testName)
+        {
+            case "MiniStreamStartsPastTheMiniFat":
+                CompoundContainerBytes.WriteUInt32(container, CompoundContainerBytes.FindEntryOffset(container, "A") + CompoundContainerBytes.StartSectorOffset, 123456789);
+                return container;
+
+            case "MiniChainLeavesTheMiniFat":
+                // A's first mini sector is mini sector 0, whose mini FAT entry names a mini sector past the mini FAT.
+                CompoundContainerBytes.WriteUInt32(container, (int)CompoundContainerBytes.SectorOffset(header, header.FirstMiniFatSector), 0x00FFFFFF);
+                return container;
+
+            case "FirstMiniFatSectorIsFree":
+                CompoundContainerBytes.WriteUInt32(container, 0x3C, CfbHeader.FreeSector);
+                return container;
+
+            default:
+                return container[..1000];
+        }
+    }
 }
