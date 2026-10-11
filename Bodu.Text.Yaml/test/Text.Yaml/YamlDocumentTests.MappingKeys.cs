@@ -10,8 +10,8 @@ namespace Bodu.Text.Yaml;
 
 /// <summary>
 /// Verifies the mapping key contracts: a scalar key is named by its text as written in every key form (implicit block
-/// keys, flow mapping keys, explicit keys and flow-sequence pairs), whatever value the schema resolves the text to, and
-/// an implicit key holds at most 1024 characters.
+/// keys, flow mapping keys, explicit keys and flow-sequence pairs), whatever value the schema resolves the text to, an
+/// implicit key holds at most 1024 characters, and a key that is not a scalar is rejected where it begins.
 /// </summary>
 public partial class YamlDocumentTests
 {
@@ -156,5 +156,38 @@ public partial class YamlDocumentTests
         {
             using var document = YamlDocument.Parse(template.Replace("{0}", key, StringComparison.Ordinal));
         });
+    }
+
+    /// <summary>
+    /// Verifies that a sequence, mapping, or alias used as a flow mapping key, a flow-pair key or an explicit key is
+    /// rejected with the complex-key message where the key begins, at its first node property when it has one, with its
+    /// line, column and offset, rather than after the key.
+    /// </summary>
+    /// <param name="yaml">A document with a key that is not a scalar.</param>
+    /// <param name="line">The line on which the key begins.</param>
+    /// <param name="column">The column at which the key begins.</param>
+    /// <param name="offset">The byte offset at which the key begins.</param>
+    [TestMethod]
+    [DataRow("a: &k key\nb: {*k : v}\n", 2, 5, 14, DisplayName = "an alias as a flow mapping key")]
+    [DataRow("a: &k key\nb: {\"q\" : v, *k : w}\n", 2, 14, 23, DisplayName = "an alias as a later flow mapping key")]
+    [DataRow("{[1] : v}\n", 1, 2, 1, DisplayName = "a flow sequence as a flow mapping key")]
+    [DataRow("a: &k key\n? *k\n: v\n", 2, 3, 12, DisplayName = "an alias as an explicit key")]
+    [DataRow("a: &k key\nb: [*k : v]\n", 2, 5, 14, DisplayName = "an alias as a flow-pair key")]
+    [DataRow("a: &k key\nb: {? *k : v}\n", 2, 7, 16, DisplayName = "an alias as an explicit flow mapping key")]
+    [DataRow("{&a [1] : v}\n", 1, 2, 1, DisplayName = "an anchored flow sequence as a flow mapping key")]
+    [DataRow("[&a {x: 1} : v]\n", 1, 2, 1, DisplayName = "an anchored flow mapping as a flow-pair key")]
+    [DataRow("? &a [1]\n: v\n", 1, 3, 2, DisplayName = "an anchored flow sequence as an explicit key")]
+    [DataRow("?\n  &a [1]\n: v\n", 2, 3, 4, DisplayName = "an explicit key on the line after its indicator")]
+    public void Parse_WhenKeyIsNotScalar_ShouldReportComplexKeyWhereKeyBegins(string yaml, int line, int column, int offset)
+    {
+        YamlFormatException ex = Assert.ThrowsExactly<YamlFormatException>(() =>
+        {
+            using var document = YamlDocument.Parse(yaml);
+        });
+
+        Assert.AreEqual(YamlResourceStrings.Format_Invalid_YamlComplexKeyUnsupported, ex.Message);
+        Assert.AreEqual(line, ex.LineNumber);
+        Assert.AreEqual(column, ex.ColumnNumber);
+        Assert.AreEqual(offset, ex.Offset);
     }
 }
