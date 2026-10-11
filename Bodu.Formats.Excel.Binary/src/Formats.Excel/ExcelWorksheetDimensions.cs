@@ -17,7 +17,8 @@ namespace Bodu.Formats.Excel;
 /// larger than the region that actually holds values, so this range is an upper bound rather than a tight fit.
 /// </para>
 /// <para>
-/// A worksheet with no <c>DIMENSIONS</c> record yields the default value, whose counts are zero.
+/// A worksheet with no <c>DIMENSIONS</c> record of its own yields the default value, whose counts are zero; the record
+/// of a chart embedded in the worksheet, or of another sheet's substream, is not the worksheet's.
 /// </para>
 /// </remarks>
 public readonly record struct ExcelWorksheetDimensions

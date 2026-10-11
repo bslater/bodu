@@ -488,8 +488,9 @@ public sealed class ExcelBinaryWorkbook
         for (int i = 0; i < entries.Count; i++)
         {
             BiffSheetDirectoryEntry entry = entries[i];
+            long limit = globals.GetSubstreamLimit(i, stream.Length);
             ExcelWorksheetDimensions dimensions = entry.Type == ExcelSheetType.Worksheet
-                ? BiffDimensionsScanner.Read(stream, entry.StreamOffset, globals.Version)
+                ? BiffDimensionsScanner.Read(stream, entry.StreamOffset, limit, globals.Version)
                 : default;
 
             worksheets[i] = new ExcelWorksheetInfo(entry.Name, i, entry.Visibility, entry.Type, dimensions);
@@ -555,30 +556,10 @@ public sealed class ExcelBinaryWorkbook
     {
         long offset = _globals.Sheets[worksheetIndex].StreamOffset;
         using CompoundStream stream = _root.OpenStream(_streamName);
-        long limit = FindSubstreamLimit(offset, stream.Length);
+        long limit = _globals.GetSubstreamLimit(worksheetIndex, stream.Length);
         stream.Seek(offset, SeekOrigin.Begin);
 
         return BiffSubstreamLoader.ReadSubstream(stream, limit);
-    }
-
-    /// <summary>
-    /// Finds where the sheet substream that begins at the specified offset ends when it has no EOF record of its own:
-    /// at the nearest offset after it at which another sheet's substream begins, or at the end of the workbook stream.
-    /// </summary>
-    /// <param name="offset">The offset at which the sheet's substream begins.</param>
-    /// <param name="streamLength">The length of the workbook stream.</param>
-    /// <returns>The offset at which the sheet's substream ends at the latest.</returns>
-    private long FindSubstreamLimit(long offset, long streamLength)
-    {
-        // The sheet directory need not list the substreams in stream order, so every entry is considered.
-        long limit = streamLength;
-        foreach (BiffSheetDirectoryEntry entry in _globals.Sheets)
-        {
-            if (entry.StreamOffset > offset && entry.StreamOffset < limit)
-                limit = entry.StreamOffset;
-        }
-
-        return limit;
     }
 
     /// <summary>
