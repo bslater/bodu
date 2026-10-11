@@ -103,8 +103,15 @@ public readonly record struct ExcelCell
     /// a date or time format; otherwise <see langword="false" />.
     /// </value>
     /// <remarks>
+    /// <para>
+    /// A format is a date or time format when its code holds a date or time field outside quoted literals, escapes and
+    /// bracketed conditions, or when its index is a built-in date or time format: 14-22, 27-36, 45-47, 50-58 or the
+    /// Thai date and time formats 71-81. The Thai built-in formats 59-62 and 67-70 are number formats.
+    /// </para>
+    /// <para>
     /// Use <see cref="ExcelSerialDate" /> with the workbook's date system to convert a date-formatted number to a
     /// calendar value.
+    /// </para>
     /// </remarks>
     public bool IsDateFormatted { get; }
 

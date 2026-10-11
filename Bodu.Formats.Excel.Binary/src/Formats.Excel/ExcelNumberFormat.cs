@@ -84,12 +84,16 @@ internal static class ExcelNumberFormat
     }
 
     /// <summary>
-    /// Determines whether a format index falls within the built-in date or time ranges.
+    /// Determines whether a format index falls within the built-in date or time ranges: 14-22, 27-36, 45-47, 50-58 and
+    /// the Thai date and time formats 71-81.
     /// </summary>
     /// <param name="formatIndex">The number-format index.</param>
     /// <returns><see langword="true" /> when the index is a built-in date or time format.</returns>
+    /// <remarks>
+    /// The Thai built-in formats 59-62 and 67-70 are number formats, and are not among the ranges.
+    /// </remarks>
     private static bool IsBuiltInDateFormatIndex(ushort formatIndex) =>
-        formatIndex is >= 14 and <= 22 or >= 27 and <= 36 or >= 45 and <= 47 or >= 50 and <= 58;
+        formatIndex is >= 14 and <= 22 or >= 27 and <= 36 or >= 45 and <= 47 or >= 50 and <= 58 or >= 71 and <= 81;
 
     /// <summary>
     /// Determines whether the first section of a format code contains a date or time field character, ignoring quoted

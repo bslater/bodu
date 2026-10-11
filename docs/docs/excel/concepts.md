@@ -60,6 +60,8 @@ The reader does **not** evaluate formulas. A `FORMULA` record carries the **cach
 
 Excel stores dates and times as floating-point **serial numbers**, so a date cell is just a `Number` cell whose *format* renders it as a date. The integer part is the day count from the date system's epoch; the fractional part is the time of day. The reader never assumes a number is a date, but it inspects each numeric cell's number format and sets <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> when the format is a date or time format (unless `DetectDateFormats` is cleared, which leaves the flag always `false`). <xref:Bodu.Formats.Excel.ExcelSerialDate> converts a serial number to a <xref:System.DateOnly> or <xref:System.DateTime> using a <xref:Bodu.Formats.Excel.ExcelDateSystem>.
 
+A number format is a date or time format when its code holds a date or time field (`y`, `m`, `d`, `h` or `s`, or an elapsed-time token such as `[h]`) outside quoted literals, escapes and bracketed conditions, or when its index is a built-in date or time format: 14-22, 27-36, 45-47, 50-58 (27-36 and 50-58 are the East Asian date formats), or the Thai date and time formats 71-81. The Thai built-in formats 59-62 and 67-70 are number formats.
+
 A <xref:Bodu.Formats.Excel.ExcelDateSystem> names the epoch a serial number is measured from:
 
 | Date system | Epoch | Origin |
