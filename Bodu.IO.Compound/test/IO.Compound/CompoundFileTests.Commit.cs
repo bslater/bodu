@@ -144,6 +144,25 @@ public partial class CompoundFileTests
     }
 
     /// <summary>
+    /// Verifies that a commit of a created version-3 file throws <see cref="CompoundFileSerializationException" /> when
+    /// the container would exceed the 2 GB that [MS-CFB] allows a file of 512-byte sectors.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenCreatedContainerWouldExceedTwoGigabytes_ShouldThrowCompoundFileSerializationException()
+    {
+        using var file = CompoundFile.Create(new MemoryStream());
+        using var first = new UnbackedMemoryManager(1_100_000_000);
+        using var second = new UnbackedMemoryManager(1_100_000_000);
+        file.RootStorage.CreateStream("Large1", first.Memory);
+        file.RootStorage.CreateStream("Large2", second.Memory);
+
+        Assert.ThrowsExactly<CompoundFileSerializationException>(() =>
+        {
+            file.Commit();
+        });
+    }
+
+    /// <summary>
     /// Verifies that a commit in update mode, which always writes version 3, throws
     /// <see cref="CompoundFileSerializationException" /> when the container would exceed the 2 GB that [MS-CFB] allows a
     /// file of 512-byte sectors.

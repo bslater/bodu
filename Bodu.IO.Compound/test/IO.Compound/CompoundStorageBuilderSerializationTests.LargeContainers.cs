@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Buffers.Binary;
 using Bodu.IO.Compound.Builders;
 
@@ -42,6 +43,64 @@ public partial class CompoundStorageBuilderSerializationTests
         {
             builder.WriteTo(Stream.Null, options);
         });
+    }
+
+    /// <summary>
+    /// Verifies that every serializer of a version-3 tree whose container would exceed 2 GB throws
+    /// <see cref="CompoundFileSerializationException" /> before it writes any byte or opens any stream.
+    /// </summary>
+    /// <param name="entryPoint">The serializer called.</param>
+    [TestMethod]
+    [DataRow("WriteToStream")]
+    [DataRow("WriteToBufferWriter")]
+    [DataRow("ToArray")]
+    public void WriteTo_WhenVersion3ContainerWouldExceedTwoGigabytes_ShouldThrowBeforeWritingAnyByte(string entryPoint)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", StopWrite, 1_100_000_000);
+        _ = builder.AddStream("B", StopWrite, 1_100_000_000);
+        var options = new CompoundBuildOptions { Version = CompoundFileVersion.V3 };
+        using var destination = new MemoryStream();
+        var output = new ArrayBufferWriter<byte>();
+
+        Assert.ThrowsExactly<CompoundFileSerializationException>(() =>
+        {
+            switch (entryPoint)
+            {
+                case "WriteToStream":
+                    builder.WriteTo(destination, options);
+                    break;
+
+                case "WriteToBufferWriter":
+                    builder.WriteTo(output, options);
+                    break;
+
+                default:
+                    _ = builder.ToArray(options);
+                    break;
+            }
+        }, entryPoint);
+
+        Assert.AreEqual(0, destination.Length, entryPoint);
+        Assert.AreEqual(0, output.WrittenCount, entryPoint);
+    }
+
+    /// <summary>
+    /// Verifies that a version-3 tree whose container fits in 2 GB is written: the writer reaches the content of its
+    /// first stream.
+    /// </summary>
+    [TestMethod]
+    public void WriteTo_WhenVersion3ContainerFitsInTwoGigabytes_ShouldStartWriting()
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", StopWrite, 1_000_000_000);
+        _ = builder.AddStream("B", StopWrite, 1_000_000_000);
+        using var destination = new MemoryStream();
+
+        byte[] written = WriteUntilStopped(builder, destination, CompoundFileVersion.V3);
+
+        Assert.AreEqual(3, BinaryPrimitives.ReadUInt16LittleEndian(written.AsSpan(0x1A)));
+        Assert.AreEqual(1_000_000_000UL, BinaryPrimitives.ReadUInt64LittleEndian(written.AsSpan(CompoundContainerBytes.FindEntryOffset(written, "B") + CompoundContainerBytes.SizeOffset)));
     }
 
     /// <summary>

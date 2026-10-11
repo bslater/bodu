@@ -214,4 +214,24 @@ public partial class CompoundFileTests
 
         AssertFreeEntries(destination.ToArray(), expectedFree: 2);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> throws <see cref="CompoundFileSerializationException" />
+    /// when a version-3 container would exceed the 2 GB that [MS-CFB] allows a file of 512-byte sectors.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenVersion3ContainerWouldExceedTwoGigabytes_ShouldThrowCompoundFileSerializationException()
+    {
+        using var file = CompoundFile.Create(new MemoryStream());
+        using var first = new UnbackedMemoryManager(1_100_000_000);
+        using var second = new UnbackedMemoryManager(1_100_000_000);
+        file.RootStorage.CreateStream("Large1", first.Memory);
+        file.RootStorage.CreateStream("Large2", second.Memory);
+
+        await Assert.ThrowsExactlyAsync<CompoundFileSerializationException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+    }
 }
