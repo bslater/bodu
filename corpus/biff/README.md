@@ -248,15 +248,20 @@ Fixed, each after a commit of its regression tests:
 - **A STRING after an ARRAY, TABLE or SHRFMLA record (#930)** is taken as the formula's text (xlrd 0.6.0a2).
 - **Chart sheets (#926).** A sheet that is not a worksheet yields no cells (spreadsheet-parseexcel 0.51 RT #44009).
 - **Embedded charts (#927).** A worksheet ends at the EOF that matches its own BOF, and a chart substream nested in it
-  is skipped, so the chart's data cache is not read as cells (spreadsheet-parseexcel 0.47 RT #13365).
+  is skipped, so the chart's data cache is not read as cells (spreadsheet-parseexcel 0.47 RT #13365). The globals, which
+  never nest a substream, end at their EOF or, when they have lost it, before the first sheet's BOF, so such a workbook
+  opens as it did before.
 - **A missing EOF (#928).** A sheet without its EOF ends where the next sheet's substream begins, at the nearest
   BOUNDSHEET offset past its own, or at the end of the stream (exceldatareader 3.4.1 #321).
+- **Used ranges (#992, found while fixing #927 and #928).** A worksheet's DIMENSIONS is found by the same bounds: an
+  embedded chart's DIMENSIONS, or the next sheet's when the worksheet has lost its EOF, is not the worksheet's. No
+  catalogue row covers it.
 - **Thai built-in date formats (#931).** Indexes 71 to 81 are dates, and 59 to 62 and 67 to 70 stay numbers (xlrd 0.7.2
   a1cc4aaada case 1, exceldatareader 3.9.0 PR #736 cases 2 to 4).
 - **FORMAT records (#932).** A FORMAT record decides its index's code and its date classification, built-in index or
   not, and of several records for one index the last applies (xlrd 0.5.2a3). As decided, calamine 0.27.0 PR #479 case 2
   (index 1 keeps its built-in code) and exceldatareader 3.7.0 PR #419 (the first record wins) are now `dialect`, citing
-  docs/docs/excel/concepts.md:63 and ExcelBinaryWorkbook.cs:365, with `expected` set to what Bodu produces.
+  docs/docs/excel/concepts.md:65 and ExcelBinaryWorkbook.cs:365, with `expected` set to what Bodu produces.
 - **Documentation (#938).** The guides say that a malformed record in the workbook globals fails the open and one in a
   sheet fails when the sheet is read, and the package README lists RSTRING.
 
