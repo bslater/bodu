@@ -127,7 +127,14 @@ jobs:
       - name: Cache NuGet packages
         uses: actions/cache@v6
         with:
-          path: ~/.nuget/packages
+          # The in-repo XML-documentation analyzer is packed from source in the next step, always at
+          # version 1.0.0, and NuGet never re-extracts a package version it already holds. Kept in the
+          # cache, an old extraction would outlive every analyzer change and report against stale
+          # rules (#966), so it stays out; bld/pack-codestyle-analyzer.ps1 evicts it locally for the
+          # same reason.
+          path: |
+            ~/.nuget/packages
+            !~/.nuget/packages/bodu.codestyle.xmldocumentation
           key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
           restore-keys: nuget-${{ runner.os }}-
 
