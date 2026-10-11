@@ -51,7 +51,7 @@ using CompoundFile file = CompoundFile.Open(source, options, leaveOpen: true);
 <xref:Bodu.IO.Compound.CompoundReadStrategy.Auto> compares a seekable source's length against <xref:Bodu.IO.Compound.CompoundFileOptions.MaxBufferedBytes> (64 MiB by default): small files are buffered, large ones streamed. A non-seekable source can only be buffered, so `Auto` and `Buffered` both read it whole, while `Streaming` over a non-seekable source throws <xref:System.ArgumentException>.
 
 > [!NOTE]
-> Even under a streaming file, a stream whose size is below the **mini-stream cutoff** (typically 4096 bytes) is materialised whole rather than walked sector by sector - its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the *large* streams; the small ones are already resident.
+> Even under a streaming file, a stream whose size is below the **mini-stream cutoff** (4096 bytes) is materialised whole rather than walked sector by sector - its bytes live in the in-memory mini-stream that the reader builds at open time. Streaming bounds memory for the *large* streams; the small ones are already resident.
 
 ## The CompoundStream cursor
 

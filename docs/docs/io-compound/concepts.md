@@ -16,7 +16,7 @@ The format comes in two versions, distinguished by sector size: **version 3** us
 
 ## Header
 
-The header is the 512-byte preamble that fixes the layout constants the rest of the reader depends on. It carries the signature, a little-endian byte-order marker (`FFFE`), the sector and mini-sector shifts (`9` ⇒ 512, `12` ⇒ 4096; the mini-sector shift is always `6` ⇒ 64), the **mini-stream cutoff** (the size below which a stream lives in the mini-stream), the first sector of the directory chain, the first mini-FAT sector, and the start of the **DIFAT** (double-indirect FAT) - including its first 109 entries stored inline. Every field is read at its specification offset; a wrong byte-order marker, an unsupported sector shift, or a file shorter than 512 bytes is rejected as a malformed header.
+The header is the 512-byte preamble that fixes the layout constants the rest of the reader depends on. It carries the signature, a little-endian byte-order marker (`FFFE`), the sector and mini-sector shifts (`9` ⇒ 512, `12` ⇒ 4096; the mini-sector shift is always `6` ⇒ 64), the **mini-stream cutoff** (the size below which a stream lives in the mini-stream), the first sector of the directory chain, the first mini-FAT sector, and the start of the **DIFAT** (double-indirect FAT) - including its first 109 entries stored inline. Every field is read at its specification offset; a wrong byte-order marker, an unsupported sector shift, or a file shorter than 512 bytes is rejected as a malformed header. The reader takes the mini-stream cutoff as 4096 bytes, the only value [MS-CFB] permits, whatever the header declares; only the `Strict` [validation level](#validation-level) rejects a header that declares another value, or that breaks one of the other fixed fields.
 
 ## Storage and stream
 
@@ -42,7 +42,7 @@ A stream's payload is not stored contiguously; it is split into fixed-size **sec
 
 The FAT can outgrow what the header holds inline. The **DIFAT** (double-indirect FAT) is the index of FAT sectors: the header stores the first 109 entries, and any overflow is chained through dedicated DIFAT sectors. The reader assembles the complete FAT from the inline entries plus the DIFAT chain when it opens the file.
 
-Streams smaller than the **mini-stream cutoff** (typically 4096 bytes) are not given full sectors. Instead they live inside a single **mini-stream** - a regular-sector chain owned by the root storage - subdivided into 64-byte **mini sectors** and chained by a separate **mini-FAT**. This keeps a file full of tiny streams from wasting a full sector each. The split is an implementation detail the public API hides - you read bytes, not sectors - but it is why <xref:Bodu.IO.Compound.CompoundStream> materialises a small stream whole even under a streaming file, while a large stream is walked sector by sector.
+Streams smaller than the **mini-stream cutoff** (4096 bytes) are not given full sectors. Instead they live inside a single **mini-stream** - a regular-sector chain owned by the root storage - subdivided into 64-byte **mini sectors** and chained by a separate **mini-FAT**. This keeps a file full of tiny streams from wasting a full sector each. The split is an implementation detail the public API hides - you read bytes, not sectors - but it is why <xref:Bodu.IO.Compound.CompoundStream> materialises a small stream whole even under a streaming file, while a large stream is walked sector by sector.
 
 ## Directory
 
@@ -78,7 +78,7 @@ How strictly a malformed container is rejected is governed by <xref:Bodu.IO.Comp
 
 | Level | Behaviour |
 |---|---|
-| <xref:Bodu.IO.Compound.CompoundValidationLevel.Strict> | Rejects every non-conformant condition, including individually malformed directory entries (bad name length or entry type), an out-of-range colour byte, a non-zero size on a storage, and unsorted or duplicated siblings. |
+| <xref:Bodu.IO.Compound.CompoundValidationLevel.Strict> | Rejects every non-conformant condition, including a header field that breaks a value [MS-CFB] fixes (a non-zero class id or reserved byte, a major version other than 3 with 512-byte sectors or 4 with 4096-byte sectors, a directory sector count other than zero in version 3 or the directory's length in version 4, a mini-stream cutoff other than 4096), individually malformed directory entries (bad name length or entry type), an out-of-range colour byte, a non-zero size on a storage, and unsorted or duplicated siblings. |
 | <xref:Bodu.IO.Compound.CompoundValidationLevel.Compatible> | The default. Rejects structural corruption - allocation-table cycles, out-of-range or short sector chains, cyclic directory links - but tolerates an individually malformed directory entry by skipping it. |
 | <xref:Bodu.IO.Compound.CompoundValidationLevel.Minimal> | Recovers where it can: a cyclic, out-of-range, or short chain stops and yields the data collected so far; a cyclic directory link prunes the offending subtree; a short chain is zero-padded to the declared size - none of these throw. |
 

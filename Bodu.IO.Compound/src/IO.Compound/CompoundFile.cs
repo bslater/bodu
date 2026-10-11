@@ -132,10 +132,13 @@ public sealed class CompoundFile
         int headLength = (int)Math.Min(HeaderLength, dataSource.Length);
         Span<byte> head = stackalloc byte[HeaderLength];
         dataSource.Read(0, head.Slice(0, headLength));
-        _header = CfbHeader.Parse(head.Slice(0, headLength));
+        _header = CfbHeader.Parse(head.Slice(0, headLength), level);
         _sectors = new CfbSectorReader(dataSource, _header, level);
 
         byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
+        if (level == CompoundValidationLevel.Strict)
+            _header.ValidateDirectorySectorCount(_sectors.GetSectorChain(_header.FirstDirectorySector).Length);
+
         _directory = new CfbDirectory(directoryBytes, _header, level);
 
         if (_directory.Root.Size > 0)
@@ -917,7 +920,7 @@ public sealed class CompoundFile
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         CompoundEntryInfo info = entry.ToEntryInfo();
-        if (!_streaming || entry.Size < _header.MiniStreamCutoff)
+        if (!_streaming || entry.Size < CfbHeader.MiniStreamCutoff)
             return new CompoundStream(info, Materialize(entry), parent);
 
         uint[] chain = _sectors.GetSectorChain(entry.StartSector);
@@ -943,7 +946,7 @@ public sealed class CompoundFile
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        return entry.Size < _header.MiniStreamCutoff
+        return entry.Size < CfbHeader.MiniStreamCutoff
             ? _sectors.ReadMiniChain(entry.StartSector, entry.Size)
             : _sectors.ReadChain(entry.StartSector, entry.Size);
     }
