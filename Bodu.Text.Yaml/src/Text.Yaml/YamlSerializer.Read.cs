@@ -7,6 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization.Converters;
 
 namespace Bodu.Text.Yaml;
 
@@ -30,6 +31,9 @@ public static partial class YamlSerializer
     /// <returns>The deserialized value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="yaml" /> is <see langword="null" />.</exception>
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
+    /// <exception cref="YamlSerializationException">
+    /// The source is valid YAML, but cannot be bound to <typeparamref name="T" />.
+    /// </exception>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     public static T? Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string yaml, YamlSerializerOptions? options = null)
     {
@@ -45,6 +49,9 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The deserialized value.</returns>
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
+    /// <exception cref="YamlSerializationException">
+    /// The source is valid YAML, but cannot be bound to <typeparamref name="T" />.
+    /// </exception>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     public static T? Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(ReadOnlySpan<byte> utf8Yaml, YamlSerializerOptions? options = null) =>
         (T?)Deserialize(utf8Yaml, typeof(T), options);
@@ -58,6 +65,9 @@ public static partial class YamlSerializer
     /// <returns>The deserialized value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="returnType" /> is <see langword="null" />.</exception>
     /// <exception cref="YamlFormatException">The source is not valid YAML.</exception>
+    /// <exception cref="YamlSerializationException">
+    /// The source is valid YAML, but cannot be bound to <paramref name="returnType" />.
+    /// </exception>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     public static object? Deserialize(
         ReadOnlySpan<byte> utf8Yaml,
@@ -91,6 +101,12 @@ public static partial class YamlSerializer
             reader.StampPosition(ex);
             throw;
         }
+        catch (Exception ex) when (ex is (FormatException and not YamlFormatException) or OverflowException or InvalidCastException or ArgumentException)
+        {
+            // A conversion failure of the root value is a binding failure, as it is one level down, but at the root,
+            // which no key names, so it carries no path.
+            throw ChildBinder.Wrap(ref reader, returnType, ex, segment: null);
+        }
     }
 
     /// <summary>
@@ -109,6 +125,9 @@ public static partial class YamlSerializer
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
     /// <exception cref="YamlFormatException">The stream contents are not valid YAML.</exception>
+    /// <exception cref="YamlSerializationException">
+    /// The stream contents are valid YAML, but cannot be bound to <typeparamref name="T" />.
+    /// </exception>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     public static T? Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Stream source, YamlSerializerOptions? options = null)
     {
@@ -139,6 +158,9 @@ public static partial class YamlSerializer
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="source" /> does not support reading.</exception>
     /// <exception cref="YamlFormatException">The stream contents are not valid YAML.</exception>
+    /// <exception cref="YamlSerializationException">
+    /// The stream contents are valid YAML, but cannot be bound to <typeparamref name="T" />.
+    /// </exception>
     [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
     public static async ValueTask<T?> DeserializeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Stream source, YamlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {

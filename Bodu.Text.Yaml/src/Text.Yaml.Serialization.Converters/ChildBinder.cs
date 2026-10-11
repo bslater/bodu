@@ -104,15 +104,18 @@ internal static class ChildBinder
     }
 
     /// <summary>
-    /// Wraps a conversion failure of a child value in a binding failure carrying the child's path segment and the
-    /// position of the token the failure occurred on.
+    /// Wraps a conversion failure of a value in a binding failure carrying the value's path segment and the position of
+    /// the token the failure occurred on.
     /// </summary>
     /// <param name="reader">The reader positioned on the token the failure occurred on.</param>
-    /// <param name="type">The child's declared type.</param>
+    /// <param name="type">The value's declared type.</param>
     /// <param name="inner">The conversion failure.</param>
-    /// <param name="segment">The path segment for the child.</param>
+    /// <param name="segment">
+    /// The path segment for a child value, or <see langword="null" /> for the document's root value, which no key
+    /// names.
+    /// </param>
     /// <returns>The binding failure to throw.</returns>
-    private static YamlSerializationException Wrap(ref Utf8YamlReader reader, Type type, Exception inner, string segment)
+    internal static YamlSerializationException Wrap(ref Utf8YamlReader reader, Type type, Exception inner, string? segment)
     {
         var exception = new YamlSerializationException(
             string.Format(CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlValueConversion, type), inner)
