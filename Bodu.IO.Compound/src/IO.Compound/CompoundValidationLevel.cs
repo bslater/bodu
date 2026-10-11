@@ -71,7 +71,8 @@ public enum CompoundValidationLevel
 
     /// <summary>
     /// The default: rejects structural corruption (allocation-table cycles, out-of-range or short sector chains, and
-    /// cyclic directory links) while tolerating individually malformed directory entries by skipping them.
+    /// cyclic directory links) while tolerating individually malformed directory entries by skipping them, and pruning
+    /// the link that reaches one, with the entries beneath it.
     /// </summary>
     Compatible,
 

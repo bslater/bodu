@@ -39,6 +39,9 @@ internal sealed class CfbDirectory
     /// <summary>The slots left empty because the file, cut short inside its final sector, does not hold all of them.</summary>
     private readonly bool[] _truncated;
 
+    /// <summary>The slots left empty because their entry is malformed, so a link that reaches one is pruned.</summary>
+    private readonly bool[] _skipped;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbDirectory" /> class by parsing the directory bytes and building
     /// the storage hierarchy.
@@ -75,7 +78,8 @@ internal sealed class CfbDirectory
             }
         }
 
-        _entries = ParseEntries(directory, header, level, _truncated);
+        _skipped = new bool[_truncated.Length];
+        _entries = ParseEntries(directory, header, level, _truncated, _skipped);
 
         CompoundThrowHelper.ThrowFormatIf(
             _truncated.Length > 0 && _truncated[RootSid],
@@ -122,12 +126,13 @@ internal sealed class CfbDirectory
     /// skip.
     /// </param>
     /// <param name="truncated">The slots the file does not hold whole, which are left empty.</param>
+    /// <param name="skipped">Receives the slots left empty because their entry is malformed.</param>
     /// <returns>The parsed entries indexed by stream identifier.</returns>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type,
     /// or breaks another requirement [MS-CFB] 2.6 places on a single entry.
     /// </exception>
-    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level, bool[] truncated)
+    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level, bool[] truncated, bool[] skipped)
     {
         int count = directory.Length / DirectoryEntrySize;
         var entries = new CfbDirectoryEntry?[count];
@@ -150,6 +155,7 @@ internal sealed class CfbDirectory
             if (nameLength > 64 || nameLength % 2 != 0)
             {
                 CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                skipped[sid] = true;
                 continue;
             }
 
@@ -159,6 +165,7 @@ internal sealed class CfbDirectory
                 and not CompoundEntryType.RootStorage)
             {
                 CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                skipped[sid] = true;
                 continue;
             }
 
@@ -356,6 +363,10 @@ internal sealed class CfbDirectory
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when a link is out of range, references an unallocated entry, or revisits an entry.
     /// </exception>
+    /// <remarks>
+    /// A link to an entry the parser skipped as malformed is pruned, with the subtree beneath it, at every level that
+    /// skips such an entry; <see cref="CompoundValidationLevel.Minimal" /> prunes every offending link.
+    /// </remarks>
     private void CollectChildren(uint sid, List<int> children, bool[] visited)
     {
         // Iterative in-order traversal with an explicit stack. A crafted directory can chain sibling links
@@ -379,8 +390,9 @@ internal sealed class CfbDirectory
 
                 if (current >= (uint)_entries.Length || _entries[current] is null || visited[current])
                 {
-                    // A tolerant level prunes the offending subtree instead of rejecting the whole directory.
-                    if (_level == CompoundValidationLevel.Minimal)
+                    // A tolerant level prunes the offending subtree instead of rejecting the whole directory: Minimal
+                    // any offending link, and Compatible a link to an entry it skipped as malformed.
+                    if (_level == CompoundValidationLevel.Minimal || (current < (uint)_skipped.Length && _skipped[current]))
                     {
                         current = CfbHeader.NoStream;
                         break;
