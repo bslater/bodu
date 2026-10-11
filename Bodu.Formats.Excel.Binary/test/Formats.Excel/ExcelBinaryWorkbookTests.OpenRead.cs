@@ -574,6 +574,43 @@ public partial class ExcelBinaryWorkbookTests
     }
 
     /// <summary>
+    /// Verifies that a workbook whose shared string table declares more strings than its records hold opens, and that its
+    /// cells read the strings the table holds.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenSharedStringTableHoldsFewerStringsThanDeclared_ShouldReadTheStringsItHolds()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [ShortSharedStringTable()],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.LabelSst(0, 0, 0), Biff8TestWorkbook.LabelSst(0, 1, 1)]));
+
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+        Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Sheet1");
+
+        Assert.AreEqual("a", grid[(0, 0)].StringValue);
+        Assert.AreEqual("b", grid[(0, 1)].StringValue);
+    }
+
+    /// <summary>
+    /// Verifies that a cell referencing past the strings a short shared string table holds is an out-of-range
+    /// shared-string index, reported as <see cref="ExcelBinaryFormatException" /> when the cell is read, not at open.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenCellReferencesPastAShortSharedStringTable_ShouldThrowFormatExceptionWhenRead()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [ShortSharedStringTable()],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.LabelSst(0, 0, 2)]));
+
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        _ = Assert.ThrowsExactly<ExcelBinaryFormatException>(() =>
+        {
+            _ = ReadCellGrid(workbook, "Sheet1");
+        });
+    }
+
+    /// <summary>
     /// Builds a workbook whose sheet holds A1 <c>a</c> and A2 <c>c</c> from its string table <c>a</c>, <c>b</c>,
     /// <c>c</c>, B1 1.5 and B2 the RK number 30.
     /// </summary>
@@ -629,4 +666,11 @@ public partial class ExcelBinaryWorkbookTests
 
         return string.Join(";", reader.ReadCells().Select(DescribeCell));
     }
+
+    /// <summary>
+    /// Builds a shared string table that declares four strings and holds two, <c>a</c> and <c>b</c>.
+    /// </summary>
+    /// <returns>The framed SST record.</returns>
+    private static byte[] ShortSharedStringTable() =>
+        Biff8TestWorkbook.Record(0x00FC, [4, 0, 0, 0, 4, 0, 0, 0, 0x01, 0x00, 0x00, (byte)'a', 0x01, 0x00, 0x00, (byte)'b']);
 }

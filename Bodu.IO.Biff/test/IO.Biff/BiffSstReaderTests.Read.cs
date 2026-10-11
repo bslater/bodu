@@ -405,4 +405,44 @@ public sealed partial class BiffSstReaderTests
 
         CollectionAssert.AreEqual(new[] { "xy" }, ReadAll(stream, out _));
     }
+
+    /// <summary>
+    /// Verifies that a table whose records end at a string boundary before the declared number of strings is read as the
+    /// strings it holds: <c>Read</c> returns <see langword="false" /> once its last record is exhausted, and the parent
+    /// reader is left on that record, so its next record is read normally.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTableEndsBeforeTheDeclaredCount_ShouldStopAtItsLastString()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(4, 4, BiffTestRecords.UnicodeString("a"), BiffTestRecords.UnicodeString("b")));
+
+        List<string> strings = ReadAll(stream, out int consumed);
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, strings);
+        Assert.AreEqual(stream.Length - BiffTestRecords.Eof().Length, consumed);
+    }
+
+    /// <summary>
+    /// Verifies that a table continued in CONTINUE records whose records end before the declared number of strings is
+    /// read as every string its SST and CONTINUE records hold.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenContinuedTableEndsBeforeTheDeclaredCount_ShouldReadEveryStringItHolds()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(5, 5, BiffTestRecords.UnicodeString("a")), BiffTestRecords.Continue(BiffTestRecords.UnicodeString("b")));
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a table whose total count is zero and whose unique count holds an arbitrary number, as some files
+    /// written by Excel leave it, reads no strings.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTableHoldsNoStringsButDeclaresSome_ShouldReadNone()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(0, 1742));
+
+        Assert.IsEmpty(ReadAll(stream, out _));
+    }
 }
