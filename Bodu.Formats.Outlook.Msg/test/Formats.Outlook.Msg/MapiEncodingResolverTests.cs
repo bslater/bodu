@@ -93,4 +93,20 @@ public partial class MapiEncodingResolverTests
         Assert.AreEqual("Größe", MapiEncodingResolver.GetEncoding(null, 65000).GetString(encoded));
         Assert.AreEqual("Größe", MapiEncodingResolver.GetHtmlEncoding(65000, null).GetString(encoded));
     }
+
+    /// <summary>
+    /// Verifies that an HTML body's internet code page resolves to the encoding it names even when that is a UTF-16 or
+    /// UTF-32 code page, which a code-page string cannot use: an HTML body is bytes in whatever character set the code
+    /// page names, so the message code page is not consulted.
+    /// </summary>
+    /// <param name="internetCodePage">The declared internet code page.</param>
+    [TestMethod]
+    [DataRow(1200)]
+    [DataRow(1201)]
+    [DataRow(12000)]
+    [DataRow(12001)]
+    public void GetHtmlEncoding_WhenInternetCodePageIsUnicode_ShouldResolveIt(int internetCodePage)
+    {
+        Assert.AreEqual(internetCodePage, MapiEncodingResolver.GetHtmlEncoding(internetCodePage, 1251).CodePage);
+    }
 }

@@ -257,6 +257,12 @@ internal sealed class PstMessagingFixtureBuilder
     internal int? MessageCodePageOverride { get; set; }
 
     /// <summary>
+    /// Gets or sets the code page the full message declares through <c>PidTagInternetCodepage</c>.
+    /// </summary>
+    /// <value><see langword="null" /> (no declaration) by default.</value>
+    internal int? InternetCodePage { get; set; }
+
+    /// <summary>
     /// Gets or sets a replacement for the full message's <c>PT_STRING8</c> <c>PidTagBody</c> payload.
     /// </summary>
     /// <value><see langword="null" /> to emit <see cref="BodyText" /> in the message code page.</value>
@@ -539,6 +545,9 @@ internal sealed class PstMessagingFixtureBuilder
             uint codePage = (uint)(MessageCodePageOverride ?? MessageCodePage);
             records.Add((MapiPropertyIds.MessageCodepage, Int32Type, codePage));
         }
+
+        if (InternetCodePage is int internetCodePage)
+            records.Add((MapiPropertyIds.InternetCodepage, Int32Type, (uint)internetCodePage));
 
         if (MvAppTimeValues is not null)
             records.Add((MvAppTimePropertyId, MvAppTimeType, ltp.AddItem(BuildMvDoublePayload(MvAppTimeValues))));

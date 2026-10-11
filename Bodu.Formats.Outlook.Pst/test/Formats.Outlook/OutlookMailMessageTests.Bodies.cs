@@ -176,4 +176,36 @@ public partial class OutlookMailMessageTests
 
         Assert.AreEqual("Café", GetFullMessage(store).BodyText);
     }
+
+    /// <summary>
+    /// Verifies that a binary HTML body whose internet code page is a UTF-16 or UTF-32 code page decodes through that
+    /// encoding, with or without a terminating NUL code unit, rather than through the message code page or
+    /// Windows-1252.
+    /// </summary>
+    /// <param name="testName">The body's encoding and termination, by name.</param>
+    /// <param name="codePage">The declared internet code page.</param>
+    /// <param name="terminated">Whether the body ends with a NUL code unit.</param>
+    [TestMethod]
+    [DataRow("Utf16LE", 1200, false)]
+    [DataRow("Utf16LETerminated", 1200, true)]
+    [DataRow("Utf16BE", 1201, false)]
+    [DataRow("Utf16BETerminated", 1201, true)]
+    [DataRow("Utf32LE", 12000, false)]
+    [DataRow("Utf32LETerminated", 12000, true)]
+    [DataRow("Utf32BE", 12001, false)]
+    [DataRow("Utf32BETerminated", 12001, true)]
+    public void BodyHtml_WhenInternetCodePageIsUnicode_ShouldDecodeTheBody(
+        string testName,
+        int codePage,
+        bool terminated)
+    {
+        byte[] html = System.Text.Encoding.GetEncoding(codePage).GetBytes(terminated ? "<p>x</p>\0" : "<p>x</p>");
+        using OutlookMailStore store = OpenSynthetic(b =>
+        {
+            b.InternetCodePage = codePage;
+            b.HtmlPayloadOverride = html;
+        });
+
+        Assert.AreEqual("<p>x</p>", GetFullMessage(store).BodyHtml, testName);
+    }
 }
