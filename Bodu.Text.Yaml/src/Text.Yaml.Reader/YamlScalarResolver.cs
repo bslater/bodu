@@ -377,11 +377,12 @@ internal static class YamlScalarResolver
             if (d < 0 || d >= radix)
                 return false;
 
-            ulong next = (acc * (ulong)radix) + (ulong)d;
-            if (next < acc)
+            // The bound is tested before multiplying: a wrapped product can land above the accumulator, so a test of
+            // the result would let a literal beyond the 64-bit range resolve as the integer it wraps to.
+            if (acc > (ulong.MaxValue - (ulong)d) / (ulong)radix)
                 return false;
 
-            acc = next;
+            acc = (acc * (ulong)radix) + (ulong)d;
             hasDigit = true;
         }
 
