@@ -29,7 +29,11 @@ public enum MoneyParseMode
     LenientImport = 2,
 
     /// <summary>
-    /// Accept only the invariant round-trip form produced by the <c>"R"</c> format specifier.
+    /// Accept only the invariant round-trip form produced by the <c>"R"</c> format specifier: the uppercase ISO code,
+    /// one space, and the amount in invariant fixed-point notation (an optional leading minus sign, digits, and an
+    /// optional decimal point followed by digits), with no surrounding white space.
+    /// <see cref="MoneyParseOptions.FormatProvider" /> is ignored, and a scale finer than the currency's registered
+    /// minor units is kept, so the parsed value equals the value that was formatted.
     /// </summary>
     RoundTripOnly = 3,
 }

@@ -143,15 +143,26 @@ public readonly partial struct Money
         if (!decimal.TryParse(numericPart, NumberStyles.Number | NumberStyles.AllowLeadingSign, effective, out decimal amount))
             return false;
 
+        result = FromParsedAmount(amount, code);
+        return true;
+    }
+
+    /// <summary>
+    /// Constructs the value for a parsed amount, keeping a scale finer than the currency's registered minor units.
+    /// </summary>
+    /// <param name="amount">The parsed amount, whose scale is the printed fractional-digit count.</param>
+    /// <param name="code">The parsed currency.</param>
+    /// <returns>The constructed value.</returns>
+    private static Money FromParsedAmount(decimal amount, CurrencyCode code)
+    {
         // The parsed decimal preserves the printed fractional-digit count as its scale. When the text carries more
         // fractional digits than the currency's registered minor units - a unit price such as "USD 12.345678" - the
         // value is constructed at that finer scale so parsing is the inverse of the round-trip ("R") format; the
         // ordinary registry-precision path would silently round the sub-minor-unit digits away. Text at or below the
         // registered precision keeps the historical behaviour and reports the registry precision.
-        result = amount.Scale > CurrencyInfo.FromCurrencyCode(code).MinorUnits
+        return amount.Scale > CurrencyInfo.FromCurrencyCode(code).MinorUnits
             ? FromExplicitScale(amount, code, amount.Scale)
             : new Money(amount, code);
-        return true;
     }
 
     /// <summary>

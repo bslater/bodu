@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MoneyParseOptions.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -44,8 +44,8 @@ public sealed record MoneyParseOptions
     public MoneyParseMode Mode { get; init; } = MoneyParseMode.StrictIso;
 
     /// <summary>
-    /// Gets the culture used to interpret the numeric component, or <see langword="null" /> to select the mode's
-    /// default (current culture, or invariant culture for <see cref="MoneyParseMode.RoundTripOnly" />).
+    /// Gets the culture used to interpret the numeric component, or <see langword="null" /> to use the current culture.
+    /// <see cref="MoneyParseMode.RoundTripOnly" /> ignores it and always reads the invariant round-trip notation.
     /// </summary>
     /// <value>The configured format provider, or <see langword="null" />.</value>
     public IFormatProvider? FormatProvider { get; init; }
