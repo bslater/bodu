@@ -1,6 +1,6 @@
 # Bodu: Multi-Solution Architecture Recommendations
 
-**Status:** Proposed architecture and implementation requirements; steps 2-4 of the adoption sequence (section 9) implemented, with step 1's measurements, as section 10 records; steps 5-7 open  
+**Status:** Proposed architecture and implementation requirements; steps 2-4 of the adoption sequence (section 9) implemented, and the guidance half of step 6, as section 10 records; steps 1 (partly), 5 and 7 open  
 **Scope:** Repository solution organisation, project selection, build configuration invariants, build/test orchestration  
 **Primary constraint:** An `.slnx` file ONLY selects projects. No build behaviour or policy may depend on the solution in which a project is included.
 
@@ -125,12 +125,12 @@ Do not run parallel CI jobs that write to the same checkout's `obj` / `bin` path
 - [x] Domain solutions contain the intended project families and required references.
 - [ ] No `.slnx` adds or changes MSBuild properties, target frameworks, configurations or package versions. *Met by the views; `bodu.slnx`'s fifteen Debug exclusions are configuration and remain until step 5.*
 - [x] `Directory.Build.props`, `Directory.Build.targets`, `bld/` modules and package management remain the single shared policy.
-- [ ] The same project produces equivalent evaluated build settings from each containing solution under identical invocation inputs.
-- [ ] Tests are validated under both .NET 8 and .NET 10; additional applicable framework targets remain supported.
+- [x] The same project produces equivalent evaluated build settings from each containing solution under identical invocation inputs. *The check rejects any MSBuild file that reads a solution property, and `Bodu.Core` rebuilt through three solutions is byte-identical (section 10.4).*
+- [x] Tests are validated under both .NET 8 and .NET 10; additional applicable framework targets remain supported. *The views change no framework; `dotnet test` through two views ran both legs (section 10.4), and CI's per-project matrix is unchanged.*
 - [x] The generator is deterministic; CI fails if regenerated solution files differ from committed files.
 - [ ] Existing master-solution Debug build exclusions are resolved or intentionally segregated without hidden overrides. *Segregated: no view carries them, and the master's are recorded exactly in `legacyMasterBuildExclusions`; not yet removed (section 10.5).*
 - [x] Full regression, samples, tools, documentation and package validation remain assigned to appropriate CI/release workflows.
-- [ ] Build and test timing is recorded before and after migration, with no unsupported speedup claims.
+- [x] Build and test timing is recorded before and after migration, with no unsupported speedup claims. *Section 10.4, for local builds; CI is unchanged, so no CI speedup is claimed.*
 
 ## 9. Suggested adoption sequence
 
@@ -194,11 +194,32 @@ The master lists 213 projects: 58 libraries, 58 tests, 3 tooling, 3 tooling test
 
 ### 10.4 Measurements
 
-Pending: the cold and incremental build timings, the per-view Debug builds and the output-parity check are being recorded and land in a follow-up commit.
+Measured once each, at commit `3d6c11f`, in the Claude Code cloud container the views were built in: 4 vCPUs, 16 GB, Linux, the pinned SDK 10.0.401 with the .NET 8.0.31 runtime, NuGet cache warm. A cold build starts with no `obj` or `bin` (`git clean -fdX`) and no build servers running. Single runs, so the figures are indicative; they are not a CI baseline, and CI is unchanged.
+
+**Cold Debug builds.** A domain view restores and compiles only its own projects and their references, each library for both frameworks.
+
+| Solution | Projects | Cold Debug build |
+|---|---:|---:|
+| `bodu.slnx` (198 built; 15 excluded from Debug) | 213 | 497 s |
+| `bodu.core.slnx` | 7 | 128 s |
+| `bodu.security.slnx` | 7 | 170 s |
+| `bodu.formats.slnx` | 17 | 145 s |
+| `bodu.text.slnx` | 26 | 164 s |
+
+**Every view builds in Debug.** Over the master's Debug outputs, each of the eleven views built with 0 warnings and 0 errors. That includes the first Debug build of all fifteen projects the master excludes from Debug: the eight excluded benchmarks (`bodu.benchmarks.slnx`), the calendar tool and MSBuild task, their tests and the AOT smoke app (`bodu.tooling.slnx`), and the three calendar samples (`bodu.samples.slnx`), among them `RulePackToolchain`, which runs the task it builds. Builds with nothing to compile took 9-45 s per view (`bodu.security.slnx` 9 s, `bodu.tests.slnx` 45 s).
+
+Any commit changes every project's `AssemblyInformationalVersion`, because Source Link appends the commit SHA, so the first build after a commit recompiles every project, whichever solution builds it. Commits landed during the tooling and samples builds, and their times (97 s and 335 s) include that recompilation, so they say nothing about the views.
+
+**Tests through a view.** `dotnet test bodu.core.slnx --settings bvt.runsettings` ran both frameworks in 33 s, all passing (`Bodu.Core.Test` 24,340 on net8.0 and 24,336 on net10.0, one skipped on each; `Bodu.Collections.Test` 3,599; `Bodu.Collections.Concurrent.Test` 912; `Bodu.Test` 130). `dotnet test bodu.globalization.slnx --settings bvt.runsettings` passed on both frameworks in 38 s, among them the 58 plugin-loader tests, which load the fixtures the view builds. The MiddleEast data pack's tests and the MSBuild task's tests are all in the Regression tier, so the BVT filter selected none of them.
+
+**Output parity.** `Bodu.Core` rebuilt in Release through `bodu.slnx`, `bodu.core.slnx` and `bodu.libraries.slnx` (`-t:Rebuild` on its solution target) produced byte-identical assemblies: SHA-256 `802e6e34…` for net8.0 and `2da4c10c…` for net10.0 from all three. With `Deterministic` builds, identical bytes mean identical compiler inputs.
+
+**Not measured.** Release builds of every view, the full `test.runsettings` tier through a view, ARM64, and Visual Studio's behaviour with each view open (the closure rule is what makes that work, and the check enforces it). Baselines by test category and framework (step 1) were not recorded.
 
 ### 10.5 What remains
 
-- **Step 5.** Remove the master's fifteen Debug exclusions. The measurements above show each excluded project builds in Debug through a view; what is left to confirm is Visual Studio's behaviour with the whole master loaded (the exclusions were made to keep the benchmarks and the toolchain out of ordinary Debug builds), then delete the `<Build>` elements and the `legacyMasterBuildExclusions` list together. Making the master itself selection-only (no folders or solution items) is a further, separate decision.
+- **Step 1.** Section 10.4 records local build timings; baselines by test category and framework are still to be taken.
+- **Step 5.** Remove the master's fifteen Debug exclusions. Section 10.4 shows each excluded project builds in Debug through a view; what is left to confirm is Visual Studio's behaviour with the whole master loaded (the exclusions were made to keep the benchmarks and the toolchain out of ordinary Debug builds), then delete the `<Build>` elements and the `legacyMasterBuildExclusions` list together. Making the master itself selection-only (no folders or solution items) is a further, separate decision.
 - **Step 6.** `CLAUDE.md` and `CONTRIBUTING.md` now name the views for day-to-day work; CI's build, test, coverage and release gates are unchanged and still derive their project lists from `bodu.slnx`.
 - **Step 7.** CI partitioning is not changed. The views give it ready-made partitions, but splitting the test run across jobs that share no `obj`/`bin` would rebuild the shared libraries in each, so any change should follow measured job times.
 

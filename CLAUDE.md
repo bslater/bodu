@@ -226,6 +226,11 @@ task assembly under `Bodu.Globalization.Calendar.Build/src/bin/Debug` never exis
 project fails with `MSB4062`, in Visual Studio and in `dotnet build bodu.slnx` alike. That is why the
 `RulePackToolchain` sample is one of the three samples excluded.
 
+The generated solution views (see **Solution views** above) carry none of these exclusions, so every
+project in a view builds, and restores, in Debug as in Release: `bodu.tooling.slnx` builds the toolchain
+and `bodu.samples.slnx` builds `RulePackToolchain` in Debug. The master's exclusions are recorded in
+`tools/solutions/solutions.json`, and the check fails if `bodu.slnx` gains another.
+
 **After the target-framework list changes, restore before building.** Every
 `obj/project.assets.json` records the frameworks it was restored for. Change a project's
 `TargetFrameworks` - or pull a change that does, as the `net8.0` → `net8.0;net10.0` retarget did -
