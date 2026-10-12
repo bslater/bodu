@@ -97,7 +97,7 @@ public async Task WriteAsync(Entry entry, CancellationToken cancellationToken)
 }   // releaser disposes → lock released, next waiter resumes
 ```
 
-`AsyncSemaphore`, `AsyncReaderWriterLock`, the async reset/countdown events, `AsyncLazy<T>`, `AsyncDebouncer`, and `RateGate` follow the same awaitable, cancellation-aware shape.
+`AsyncSemaphore`, `AsyncReaderWriterLock`, the async reset/countdown events, `AsyncLazy<T>`, and `AsyncDebouncer` follow the same awaitable, cancellation-aware shape; `RateGate` is a synchronous gate whose `TryInvoke` admits at most one call per interval.
 
 ### Date arithmetic (`DateTimeExtensions`)
 

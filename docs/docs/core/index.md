@@ -49,7 +49,7 @@ Functional helpers and railway primitives. See the [Memoization](../../guides/co
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and multi-argument). |
+| <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and two-argument). |
 | <xref:Bodu.Functional.Option`1> | An optional value - `Some(value)` or `None` - with `Map` / `Bind` / `Filter` / `Match` combinators; `default` equals `None`. |
 | <xref:Bodu.Functional.Result>, <xref:Bodu.Functional.Result`1> | Success-or-failure outcomes carrying a value or a <xref:Bodu.Functional.ResultError>; `default` is a failure with an empty error. |
 | <xref:Bodu.Functional.ResultError> | The failure descriptor - optional code, never-null message, optional captured exception. |
@@ -125,7 +125,7 @@ The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this pack
 | Base16 / Base32 / Base58 / Base64 / Base85 encoding | The [Bodu.Text.Encoding](../text-encoding/index.md) package |
 | Centralized argument validation in your own code | <xref:Bodu.ThrowHelper> |
 | Fixed-capacity, evicting, navigable, graph, trie, and sketch collections | The [Bodu.Collections](../collections/index.md) package |
-| Thread-safe FIFO ring and unique set | The [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package |
+| Thread-safe ring, set, and bounded caches | The [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package |
 
 ## Design principles
 

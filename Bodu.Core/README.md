@@ -27,7 +27,7 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
   bytes (`ISpanParsable`, `IUtf8SpanParsable`, `ISpanFormattable`, `IUtf8SpanFormattable`)
 - `Result<T>` (Bodu.Functional) - explicit success/failure type
 - `XorShiftRandom` - high-performance xorshift128 PRNG (non-cryptographic)
-- `SequenceGenerator` (Bodu.Sequences) - lazy sequence factories (Range, Repeat, Fibonacci, etc.)
+- `SequenceGenerator` (Bodu.Sequences) - lazy sequence factories (Range, NextWhile, Factory, Fibonacci, etc.)
 
 ## Extensions
 
@@ -37,7 +37,9 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
 | `DateOnly` | Quarter queries, working-day checks | `Bodu.Extensions` |
 | `DateTime` | Unix epoch conversions, formatting | `Bodu.Extensions` |
 | `string` | Line splitting, case conversion | `Bodu.Extensions` |
-| `span<T>` / `IEnumerable` | Collection and sequence helpers | `Bodu.Collections.Extensions` |
+| `IEnumerable<T>`, `IList<T>`, `IDictionary<TKey,TValue>` | Sequence operators: batching, caching, recursive selection, shuffling | `Bodu.Collections.Generic.Extensions` |
+| `IEnumerable` (non-generic) | `CountOrDefault`, `RecursiveSelect` | `Bodu.Collections.Extensions` |
+| `Span<T>`, `ReadOnlySpan<T>` | `AsReadOnly`, `ToReversed` | `Bodu.Extensions` |
 
 ## Buffers
 

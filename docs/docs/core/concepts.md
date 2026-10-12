@@ -65,9 +65,9 @@ The `Bodu.Threading` namespace provides the **async-friendly peers of the BCL sy
 
 - **Mutual exclusion and gating** - <xref:Bodu.Threading.AsyncLock> (an awaitable mutex whose `LockAsync` result releases on dispose), <xref:Bodu.Threading.AsyncSemaphore> (bounded concurrency), and <xref:Bodu.Threading.AsyncReaderWriterLock> (many readers / one writer).
 - **Signalling** - <xref:Bodu.Threading.AsyncManualResetEvent>, <xref:Bodu.Threading.AsyncAutoResetEvent>, and <xref:Bodu.Threading.AsyncCountdownEvent> re-express the BCL event types as awaitables.
-- **Flow shaping** - <xref:Bodu.Threading.AsyncLazy`1> (one-time async initialization with a single shared invocation), <xref:Bodu.Threading.AsyncDebouncer> (trailing-edge coalescing of bursts), and <xref:Bodu.Threading.RateGate> (N-operations-per-window rate limiting).
+- **Flow shaping** - <xref:Bodu.Threading.AsyncLazy`1> (one-time async initialization with a single shared invocation), <xref:Bodu.Threading.AsyncDebouncer> (trailing-edge coalescing of bursts), and <xref:Bodu.Threading.RateGate> (a synchronous gate whose `TryInvoke` admits at most one call per interval).
 
-The common contract: waiting never blocks a thread, cancellation is honoured through `CancellationToken` parameters, and lock releases are scoped by `IDisposable` so a `using` guarantees the release path. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide.
+The common contract: waiting never blocks a thread, cancellation is honoured through `CancellationToken` parameters, and lock releases are scoped by `IDisposable` so a `using` guarantees the release path. `RateGate` is the exception: it never waits, so it has no awaitable and no token. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide.
 
 ## ThrowHelper
 
@@ -82,9 +82,9 @@ public static double Average(IReadOnlyList<int> values)
 }
 ```
 
-The helpers are partitioned by concern across partial files: `Null`, `Numeric`, `Comparison`, `Equality`, `Array`, `Collection`, `Span`, `Type`, `String`, `Ascii`. Each helper accepts a `[CallerArgumentExpression(nameof(value))] string? paramName = null` parameter, so the call site does not need to repeat the argument name. Two parallel partial-class sets target the modern (.NET 8) and netstandard runtimes; the public surface is identical across both.
+The helpers are partitioned by concern across partial files: `Null`, `Numeric`, `Comparison`, `Equality`, `Array`, `Collection`, `Span`, `Stream`, `Type`, `String`, `Ascii`. Each helper accepts a `[CallerArgumentExpression(nameof(value))] string? paramName = null` parameter, so the call site does not need to repeat the argument name. The same surface ships for `net8.0` and `net10.0`.
 
-Centralising the guards means the exception messages, parameter-name capture, and `[StackTraceHidden]` behaviour stay consistent across every Bodu library - and `ThrowHelper` is the primary dependency the other Bodu packages take on `Bodu.Core`.
+Centralising the guards means the exception messages and parameter-name capture stay consistent across every Bodu library - and `ThrowHelper` is the primary dependency the other Bodu packages take on `Bodu.Core`.
 
 ## Random generator abstraction
 

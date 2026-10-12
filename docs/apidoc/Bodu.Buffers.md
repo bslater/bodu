@@ -15,6 +15,7 @@ uid: Bodu.Buffers
 ## Example
 
 ```csharp
+using System.Buffers.Binary;
 using Bodu.Buffers;
 
 using var builder = new PooledBufferBuilder<byte>(initialCapacity: 256);
