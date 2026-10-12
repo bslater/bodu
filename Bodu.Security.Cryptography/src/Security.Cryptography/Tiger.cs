@@ -119,16 +119,21 @@ public sealed partial class Tiger
     }
 
     /// <summary>
-    /// Gets the fully qualified algorithm name, including the variant and hash output size.
+    /// Gets the algorithm name, including the hash output size.
     /// </summary>
     /// <value>
     /// A string in the form <c>Tiger/x</c>, where <c>x</c> is the number of bits in the final hash output.
     /// </value>
     /// <remarks>
     /// <para>
-    /// The name follows the convention <c>Tiger/x</c>, where <c>x</c> is the number of output bits-typically 128, 160,
+    /// The name follows the convention <c>Tiger/x</c>, where <c>x</c> is the number of output bits, typically 128, 160,
     /// or 192. These correspond to the standard Tiger variants: <c>Tiger/128</c>, <c>Tiger/160</c>, and
     /// <c>Tiger/192</c>.
+    /// </para>
+    /// <para>
+    /// The name does not include the padding <see cref="Variant" />: a <see cref="TigerHashingVariant.Tiger2" />
+    /// instance reports the same name as a <see cref="TigerHashingVariant.Tiger" /> instance of the same size. Read
+    /// <see cref="Variant" /> to tell them apart.
     /// </para>
     /// <para>
     /// The full 192-bit internal state is always computed. If a shorter output length is selected, the result is
