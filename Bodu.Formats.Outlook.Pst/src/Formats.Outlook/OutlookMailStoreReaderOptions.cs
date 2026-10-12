@@ -96,9 +96,10 @@ public sealed class OutlookMailStoreReaderOptions
     public Action<OutlookOmittedValue>? ValueOmittedCallback { get; init; }
 
     /// <summary>
-    /// Gets the decoded page/block cache budget of the underlying container session, in entries.
+    /// Gets the entry budget of each of the underlying container session's two caches, one of decoded pages and one of
+    /// decoded block payloads.
     /// </summary>
-    /// <value>The cache entry budget; <c>256</c> by default. <c>0</c> disables caching entirely.</value>
+    /// <value>The entry budget of each cache; <c>256</c> by default. <c>0</c> disables caching entirely.</value>
     /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
     public int BlockCacheSize
     {

@@ -65,10 +65,10 @@ Console.WriteLine(store.DisplayName);
 
 | Property | Type | Default | Effect | When it trips |
 |---|---|---|---|---|
-| `ValidationLevel` | <xref:Bodu.IO.Pst.PstValidationLevel> | `Compatible` | Forwarded to the container **and** used by the MAPI decoder. `Compatible` checks structure plus the header CRC; `Strict` additionally verifies every page and block checksum and signature and makes messaging-level problems throw; `Minimal` skips every checksum for salvage reads and behaves as `Compatible` in the decoder. | `Strict` only - see [What `Strict` changes](#what-strict-changes). |
+| `ValidationLevel` | <xref:Bodu.IO.Pst.PstValidationLevel> | `Compatible` | Forwarded to the container **and** used by the MAPI decoder. `Compatible` checks structure plus the header CRC; `Strict` additionally verifies every page and block checksum and signature and makes messaging-level problems throw; `Minimal` also skips the header CRC, its only difference from `Compatible`, and behaves as `Compatible` in the decoder; for salvage reads, set `OmitUnresolvableValues`. | `Strict` only - see [What `Strict` changes](#what-strict-changes). |
 | `OmitUnresolvableValues` | `bool` | `false` | Forwarded to the container as <xref:Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues>: a property value or recipient cell whose reference does not resolve is left out of its object instead of failing it - see [Salvaging a damaged store](#salvaging-a-damaged-store). Independent of `ValidationLevel`. | Not a limit. |
 | `ValueOmittedCallback` | `Action<OutlookOmittedValue>?` | `null` | Receives an <xref:Bodu.Formats.Outlook.OutlookOmittedValue> for every value the reader omits from an object it decodes - one whose reference does not resolve, or one it cannot decode as its MAPI type under the tolerant levels - naming the node, the row for a recipient cell, the property, and the <xref:Bodu.Formats.Outlook.OutlookOmittedValueReason>. Invoked synchronously when the object is decoded. | Not a limit. |
-| `BlockCacheSize` | `int` | `256` | The container's least-recently-used cache of decoded pages and block payloads, in entries (each at most 8 KiB, so roughly 2 MB by default). `0` disables caching. Negative values throw. | Not a limit. |
+| `BlockCacheSize` | `int` | `256` | The entries in each of the container's two least-recently-used caches, one of decoded pages (512 bytes each) and one of decoded block payloads (at most 8 KiB each), so roughly 2.2 MB by default. `0` disables caching. Negative values throw. | Not a limit. |
 | `DecompressRtf` | `bool` | `true` | As for `.msg`: `false` makes `BodyRtf` return `null`; the compressed payload stays in `Properties`. | Not a limit. |
 | `MaxNodeDataLength` | `long` | 256 MiB | Forwarded to the container as <xref:Bodu.IO.Pst.PstFileOptions.MaxNodeDataLength>: the largest node payload materialized at once - the ceiling on any single property value, attachment payload, or table the store decodes whole. Streaming reads (`OpenContentStream()` on a deferred payload) are unbounded by design. | The **container** refuses the read with <xref:Bodu.IO.Pst.PstFileFormatException> and `Error == PstFileError.LimitExceeded`, at every validation level. It propagates unwrapped. |
 | `MaxEmbeddedMessageDepth` | `int` | `16` | As for `.msg`: a folder-level message is depth 0. | `OpenMessage()` past the limit throws <xref:Bodu.Formats.Outlook.OutlookPstFormatException> at every validation level. |
@@ -122,7 +122,7 @@ using Bodu.IO.Pst;
 var omitted = new List<OutlookOmittedValue>();
 var options = new OutlookMailStoreReaderOptions
 {
-    ValidationLevel = PstValidationLevel.Minimal,   // follow checksum-failed pages as far as their geometry allows
+    ValidationLevel = PstValidationLevel.Minimal,   // skip the header CRC too, in case the header is damaged
     OmitUnresolvableValues = true,                  // leave out a value whose reference does not resolve
     ValueOmittedCallback = omitted.Add,             // and record it
 };

@@ -82,6 +82,13 @@ public sealed partial class OutlookMailStore
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
     /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// Under strict validation, a property value cannot be decoded.
+    /// </exception>
+    /// <remarks>
+    /// An exception thrown by <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the properties
+    /// are decoded propagates from this access.
+    /// </remarks>
     public MapiPropertyCollection Properties
     {
         get

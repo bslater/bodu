@@ -327,7 +327,7 @@ The whole property surface - typed accessors, tags, wire types, multi-valued pro
 
 ## ANSI and Unicode stores
 
-The mail store opens both PST formats through the same call, and nothing on its surface changes between them. What differs is beneath: an ANSI file (`wVer` 14/15) uses 32-bit structures and typically stores strings as code-page (`String8`) values rather than UTF-16, so the reader decodes them through the object's resolved code page - `PidTagMessageCodepage`, then `PidTagInternetCodepage`, then the inherited encoding, then Windows-1252. The session does not expose the format itself; when you need it, ask the container.
+The mail store opens both PST formats through the same call, and nothing on its surface changes between them. What differs is beneath: an ANSI file (`wVer` 14/15) uses 32-bit structures and typically stores strings as code-page (`String8`) values rather than UTF-16, so the reader decodes them through the object's resolved code page - its own `PidTagMessageCodepage`, then `PidTagInternetCodepage`, then Windows-1252; an object that declares neither inherits its parent's encoding. The session does not expose the format itself; when you need it, ask the container.
 
 ```csharp
 using Bodu.Formats.Outlook;
@@ -362,9 +362,9 @@ The `.pst` reader reports failures through two unrelated exception hierarchies, 
 | Exception | Raised for | Where |
 |---|---|---|
 | <xref:Bodu.IO.Pst.PstFileFormatException> | The stream is not structurally a PST file, or a page, block, tree, heap, or context is malformed, at every validation level - including a property whose heap reference does not resolve (`InvalidHeap`), whose fixed-width value is shorter than its type (`InvalidPropertyContext`), or whose value names a subnode the node does not contain (`InvalidSubnodeTree`), unless `OmitUnresolvableValues` omits that value; `Error` carries the <xref:Bodu.IO.Pst.PstFileError> category. Also `LimitExceeded` when a node payload exceeds `MaxNodeDataLength`. | `Open`, and any property, folder, message, or attachment read. |
-| <xref:Bodu.IO.Pst.PstUnsupportedFormatException> | The 4 KiB-page OST variant, or Windows Information Protection encryption. | `Open`. |
+| <xref:Bodu.IO.Pst.PstUnsupportedFormatException> | An OST file of any version (the 4 KiB-page variant among them), or a content encoding other than none, permute, or cyclic (Windows Information Protection, `0x10`, among them). | `Open`. |
 | <xref:Bodu.IO.Pst.PstFileException> (base) | Catch-all for the container family. | Everywhere the two above apply. |
-| <xref:Bodu.Formats.Outlook.OutlookPstFormatException> | A messaging-level violation of MS-PST: under strict validation a hierarchy, contents, recipient, or attachment row that references no valid node, an undecodable property value, an undefined attachment method, or a malformed name-to-id map; at every level a missing by-value payload (a by-value attachment with no `PidTagAttachDataBinary` property) or embedded-message subnode, a tripped embedded-message depth, or a malformed / oversized compressed-RTF body. | Folder and message enumeration, `Properties`, `Method`, `OpenContentStream`, `OpenMessage`, `BodyRtf`. |
+| <xref:Bodu.Formats.Outlook.OutlookPstFormatException> | A messaging-level violation of MS-PST: under strict validation a hierarchy, contents, or attachment row that references no valid node, an undecodable property value or recipient cell, an undefined attachment method, or a malformed name-to-id map; at every level a missing by-value payload (a by-value attachment with no `PidTagAttachDataBinary` property) or embedded-message subnode, a tripped embedded-message depth, or a malformed / oversized compressed-RTF body. | Folder and message enumeration, `Properties`, `Recipients`, `Method`, `OpenContentStream`, `OpenMessage`, `BodyRtf`. |
 | <xref:System.NotSupportedException> | A content accessor that does not match the attachment's `Method`. | `OpenContentStream`, `OpenMessage`. |
 | <xref:System.ObjectDisposedException> | Any member after the session is disposed. | Everywhere. |
 | <xref:System.ArgumentException> | The stream is not readable and seekable. | `Open` / `OpenRead(stream)`. |
@@ -381,7 +381,7 @@ try
 }
 catch (PstUnsupportedFormatException)
 {
-    Console.WriteLine("A recognized but unsupported PST variant (the 4 KiB-page OST).");
+    Console.WriteLine("A recognized but unsupported variant (an OST file, or an unsupported content encoding).");
 }
 catch (PstFileException ex)
 {

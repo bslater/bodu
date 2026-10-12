@@ -68,7 +68,7 @@ foreach (OutlookAttachment attachment in message.Attachments)
 }
 ```
 
-A nested message shares the root session's container and named-property mapping: disposing it is a no-op, and it becomes unusable for container-backed reads once the root session is disposed.
+A nested message shares the root session's container and named-property mapping: disposing it is a no-op, and once the root session is disposed every member of the nested message, its decoded properties included, throws <xref:System.ObjectDisposedException>.
 
 ## Bodies
 
