@@ -538,6 +538,74 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a plain integer above <see cref="long.MaxValue" />, which YAML resolves as a string, binds an
+    /// enumeration based on <see cref="ulong" /> through <see cref="YamlNumberEnumConverter{TEnum}" />, as a
+    /// <see cref="ulong" /> member reads it.
+    /// </summary>
+    /// <param name="literal">The plain integer, above <see cref="long.MaxValue" />.</param>
+    [TestMethod]
+    [DataRow("9223372036854775808", DisplayName = "long.MaxValue + 1")]
+    [DataRow("18446744073709551615", DisplayName = "ulong.MaxValue")]
+    public void Deserialize_WhenPlainIntegerExceedsInt64_ForUInt64BasedNumberEnum_ShouldBindIt(string literal)
+    {
+        object model = DeserializeRangeModel($"UInt64: {literal}\n", numberConverter: true);
+
+        Assert.AreEqual(literal, UnderlyingText(model, "UInt64"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="YamlNumberEnumConverter{TEnum}" /> rejects a scalar that is not a plain, untagged
+    /// integer with <see cref="YamlSerializationException" />, even for an enumeration based on <see cref="ulong" />
+    /// and digits above <see cref="long.MaxValue" />: a quoted string, a string tagged as one, or a plain string that
+    /// is not an integer.
+    /// </summary>
+    /// <param name="scalar">The scalar, as the document spells it.</param>
+    [TestMethod]
+    [DataRow("\"18446744073709551615\"", DisplayName = "double-quoted digits")]
+    [DataRow("'18446744073709551615'", DisplayName = "single-quoted digits")]
+    [DataRow("!!str 18446744073709551615", DisplayName = "digits tagged as a string")]
+    [DataRow("18446744073709551615x", DisplayName = "plain, not an integer")]
+    public void Deserialize_WhenScalarIsNotPlainInteger_ForUInt64BasedNumberEnum_ShouldThrowYamlSerializationException(
+        string scalar)
+    {
+        string document = $"UInt64: {scalar}\n";
+
+        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = DeserializeRangeModel(document, numberConverter: true);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="YamlNumberEnumConverter{TEnum}" /> rejects a plain integer above
+    /// <see cref="long.MaxValue" /> that is outside the range of the enumeration's underlying type with
+    /// <see cref="YamlSerializationException" /> at the scalar, with its line, column, offset and path: one above
+    /// <see cref="ulong.MaxValue" /> for an enumeration based on <see cref="ulong" />, and one above
+    /// <see cref="long.MaxValue" /> for one based on <see cref="long" />.
+    /// </summary>
+    /// <param name="member">The member, named for its enumeration's underlying type.</param>
+    /// <param name="literal">The plain integer, outside the underlying type's range.</param>
+    [TestMethod]
+    [DataRow("UInt64", "18446744073709551616", DisplayName = "ulong, one above the range")]
+    [DataRow("Int64", "9223372036854775808", DisplayName = "long, one above the range")]
+    public void Deserialize_WhenPlainIntegerExceedsUnderlyingRange_ForNumberEnum_ShouldThrowYamlSerializationException(
+        string member,
+        string literal)
+    {
+        string document = $"{member}: {literal}\n";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = DeserializeRangeModel(document, numberConverter: true);
+        });
+
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(member.Length + 3, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(member.Length + 2, ex.Offset, "Offset");
+        Assert.AreEqual(member, ex.Path, "Path");
+    }
+
+    /// <summary>
     /// Deserializes a range model, through the by-name default or the number converter.
     /// </summary>
     /// <param name="document">The document.</param>
