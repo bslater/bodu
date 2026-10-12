@@ -606,6 +606,86 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a value of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> is
+    /// written as its plain invariant text, as a <see cref="ulong" /> member writes one, through
+    /// <see cref="YamlNumberEnumConverter{TEnum}" /> and through the default handling with
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off.
+    /// </summary>
+    /// <param name="value">The underlying value, above <see cref="long.MaxValue" />.</param>
+    /// <param name="digits">The value's decimal digits.</param>
+    /// <param name="numberConverter">
+    /// Whether the member writes through <see cref="YamlNumberEnumConverter{TEnum}" /> rather than the default.
+    /// </param>
+    [TestMethod]
+    [DataRow(9_223_372_036_854_775_808UL, "9223372036854775808", false, DisplayName = "long.MaxValue + 1, default")]
+    [DataRow(ulong.MaxValue, "18446744073709551615", false, DisplayName = "ulong.MaxValue, default")]
+    [DataRow(9_223_372_036_854_775_808UL, "9223372036854775808", true, DisplayName = "long.MaxValue + 1, number")]
+    [DataRow(ulong.MaxValue, "18446744073709551615", true, DisplayName = "ulong.MaxValue, number")]
+    public void Serialize_WhenUInt64BasedValueExceedsInt64_ShouldWritePlainInvariantText(
+        ulong value,
+        string digits,
+        bool numberConverter)
+    {
+        string text = SerializeUnsignedValue((UInt64BasedLevel)value, numberConverter);
+
+        Assert.AreEqual("Value: " + digits + "\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a value of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" />
+    /// round-trips through <see cref="YamlNumberEnumConverter{TEnum}" /> and through the default handling with
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off.
+    /// </summary>
+    /// <param name="value">The underlying value, above <see cref="long.MaxValue" />.</param>
+    /// <param name="numberConverter">
+    /// Whether the member reads and writes through <see cref="YamlNumberEnumConverter{TEnum}" /> rather than the
+    /// default.
+    /// </param>
+    [TestMethod]
+    [DataRow(9_223_372_036_854_775_808UL, false, DisplayName = "long.MaxValue + 1, default")]
+    [DataRow(ulong.MaxValue, false, DisplayName = "ulong.MaxValue, default")]
+    [DataRow(9_223_372_036_854_775_808UL, true, DisplayName = "long.MaxValue + 1, number")]
+    [DataRow(ulong.MaxValue, true, DisplayName = "ulong.MaxValue, number")]
+    public void SerializeDeserialize_WhenUInt64BasedValueExceedsInt64_ShouldRoundTrip(ulong value, bool numberConverter)
+    {
+        string text = SerializeUnsignedValue((UInt64BasedLevel)value, numberConverter);
+
+        Assert.AreEqual((UInt64BasedLevel)value, DeserializeUnsignedValue(text, numberConverter));
+    }
+
+    /// <summary>
+    /// Serializes a value of the enumeration based on <see cref="ulong" /> as a member, through the number converter or
+    /// through the default handling with <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="numberConverter">
+    /// Whether the member writes through <see cref="YamlNumberEnumConverter{TEnum}" /> rather than the default.
+    /// </param>
+    /// <returns>The YAML text.</returns>
+    private static string SerializeUnsignedValue(UInt64BasedLevel value, bool numberConverter) =>
+        numberConverter
+            ? YamlSerializer.Serialize(new NumberUnsignedValueModel { Value = value })
+            : YamlSerializer.Serialize(
+                new UnsignedValueModel { Value = value },
+                new YamlSerializerOptions { WriteEnumsAsStrings = false });
+
+    /// <summary>
+    /// Deserializes a member of the enumeration based on <see cref="ulong" />, through the number converter or through
+    /// the default handling with <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off.
+    /// </summary>
+    /// <param name="text">The YAML text.</param>
+    /// <param name="numberConverter">
+    /// Whether the member reads through <see cref="YamlNumberEnumConverter{TEnum}" /> rather than the default.
+    /// </param>
+    /// <returns>The member's value.</returns>
+    private static UInt64BasedLevel DeserializeUnsignedValue(string text, bool numberConverter) =>
+        numberConverter
+            ? YamlSerializer.Deserialize<NumberUnsignedValueModel>(text)!.Value
+            : YamlSerializer.Deserialize<UnsignedValueModel>(
+                text,
+                new YamlSerializerOptions { WriteEnumsAsStrings = false })!.Value;
+
+    /// <summary>
     /// Deserializes a range model, through the by-name default or the number converter.
     /// </summary>
     /// <param name="document">The document.</param>
@@ -967,5 +1047,31 @@ public partial class YamlSerializerTests
         /// <value>The value.</value>
         [Converter(typeof(YamlNumberEnumConverter<UInt64BasedLevel>))]
         public UInt64BasedLevel UInt64 { get; set; }
+    }
+
+    /// <summary>
+    /// A model with one member of the enumeration based on <see cref="ulong" />, under the default handling.
+    /// </summary>
+    private sealed class UnsignedValueModel
+    {
+        /// <summary>
+        /// Gets or sets the member.
+        /// </summary>
+        /// <value>The value.</value>
+        public UInt64BasedLevel Value { get; set; }
+    }
+
+    /// <summary>
+    /// A model with one member of the enumeration based on <see cref="ulong" />, read and written through
+    /// <see cref="YamlNumberEnumConverter{TEnum}" />.
+    /// </summary>
+    private sealed class NumberUnsignedValueModel
+    {
+        /// <summary>
+        /// Gets or sets the member.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(YamlNumberEnumConverter<UInt64BasedLevel>))]
+        public UInt64BasedLevel Value { get; set; }
     }
 }

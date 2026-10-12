@@ -507,6 +507,44 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BencodeNumberEnumConverter{TEnum}" /> writes a value of an enumeration based on
+    /// <see cref="ulong" /> above <see cref="long.MaxValue" /> as the unsigned Bencode integer it is.
+    /// </summary>
+    /// <param name="value">The underlying value, above <see cref="long.MaxValue" />.</param>
+    /// <param name="digits">The value's decimal digits.</param>
+    [TestMethod]
+    [DataRow(9_223_372_036_854_775_808UL, "9223372036854775808", DisplayName = "long.MaxValue + 1")]
+    [DataRow(ulong.MaxValue, "18446744073709551615", DisplayName = "ulong.MaxValue")]
+    public void Serialize_WhenUInt64BasedValueExceedsInt64_ForNumberConverter_ShouldWriteUnsignedInteger(
+        ulong value,
+        string digits)
+    {
+        var model = new UnsignedNumberModel { Value = (UInt64BasedLevel)value };
+
+        byte[] bytes = BencodeSerializer.Serialize(model);
+
+        Assert.AreEqual("d5:Valuei" + digits + "ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that a value of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" />
+    /// round-trips through <see cref="BencodeNumberEnumConverter{TEnum}" />.
+    /// </summary>
+    /// <param name="value">The underlying value, above <see cref="long.MaxValue" />.</param>
+    [TestMethod]
+    [DataRow(9_223_372_036_854_775_808UL, DisplayName = "long.MaxValue + 1")]
+    [DataRow(ulong.MaxValue, DisplayName = "ulong.MaxValue")]
+    public void SerializeDeserialize_WhenUInt64BasedValueExceedsInt64_ForNumberConverter_ShouldRoundTrip(ulong value)
+    {
+        var model = new UnsignedNumberModel { Value = (UInt64BasedLevel)value };
+
+        UnsignedNumberModel roundTripped = BencodeSerializer.Deserialize<UnsignedNumberModel>(
+            BencodeSerializer.Serialize(model));
+
+        Assert.AreEqual((UInt64BasedLevel)value, roundTripped.Value);
+    }
+
+    /// <summary>
     /// Deserializes a range model, through the by-name default or the number converter.
     /// </summary>
     /// <param name="document">The document.</param>
@@ -838,5 +876,19 @@ public class BencodeEnumConverterTests
         /// <value>The value.</value>
         [Converter(typeof(BencodeNumberEnumConverter<UInt64BasedLevel>))]
         public UInt64BasedLevel UInt64 { get; set; }
+    }
+
+    /// <summary>
+    /// A model with one member of the enumeration based on <see cref="ulong" />, read and written through
+    /// <see cref="BencodeNumberEnumConverter{TEnum}" />.
+    /// </summary>
+    private sealed class UnsignedNumberModel
+    {
+        /// <summary>
+        /// Gets or sets the member.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(BencodeNumberEnumConverter<UInt64BasedLevel>))]
+        public UInt64BasedLevel Value { get; set; }
     }
 }

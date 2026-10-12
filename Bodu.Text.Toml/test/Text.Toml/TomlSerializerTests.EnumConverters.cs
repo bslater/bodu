@@ -521,6 +521,30 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="TomlNumberEnumConverter{TEnum}" /> rejects a value of an enumeration based on
+    /// <see cref="ulong" /> above <see cref="long.MaxValue" />, which no TOML integer holds, with
+    /// <see cref="TomlSerializationException" /> carrying the <see cref="OverflowException" />, as it rejects such a
+    /// <see cref="ulong" /> member.
+    /// </summary>
+    /// <param name="value">The underlying value, above <see cref="long.MaxValue" />.</param>
+    [TestMethod]
+    [DataRow(9_223_372_036_854_775_808UL, DisplayName = "long.MaxValue + 1")]
+    [DataRow(ulong.MaxValue, DisplayName = "ulong.MaxValue")]
+    public void Serialize_WhenUInt64BasedValueExceedsInt64_ForNumberConverter_ShouldThrowTomlSerializationException(
+        ulong value)
+    {
+        var model = new UnsignedNumberModel { Value = (UInt64BasedLevel)value };
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
     /// Deserializes a range model, through the by-name default or the number converter.
     /// </summary>
     /// <param name="document">The document.</param>
@@ -877,5 +901,19 @@ public partial class TomlSerializerTests
         /// <value>The value.</value>
         [Converter(typeof(TomlNumberEnumConverter<UInt64BasedLevel>))]
         public UInt64BasedLevel UInt64 { get; set; }
+    }
+
+    /// <summary>
+    /// A model with one member of the enumeration based on <see cref="ulong" />, read and written through
+    /// <see cref="TomlNumberEnumConverter{TEnum}" />.
+    /// </summary>
+    private sealed class UnsignedNumberModel
+    {
+        /// <summary>
+        /// Gets or sets the member.
+        /// </summary>
+        /// <value>The value.</value>
+        [Converter(typeof(TomlNumberEnumConverter<UInt64BasedLevel>))]
+        public UInt64BasedLevel Value { get; set; }
     }
 }
