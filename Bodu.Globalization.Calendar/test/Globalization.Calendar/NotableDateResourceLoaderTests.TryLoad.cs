@@ -100,6 +100,29 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
+    /// Verifies that a custom algorithm registry admits its keys through the JSON collect-mode overload, matching the
+    /// XML overload.
+    /// </summary>
+    [TestMethod]
+    public void TryLoadJson_WhenCustomRegistryDeclaresKey_ShouldReturnTrue()
+    {
+        const string json =
+            """
+            { "schemaVersion": "1.0", "resourceId": "test.trylad.algorithm-json",
+              "notableDates": [ { "id": "mystery-day", "displayName": "Mystery Day", "category": "Observance",
+                "rules": [ { "id": "x", "strategy": { "algorithm": { "key": "no-such-algorithm" } } } ] } ] }
+            """;
+
+        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+            .Register("no-such-algorithm", new StubTryLoadAlgorithm());
+
+        bool loaded = NotableDateResourceLoader.TryLoadJson(json, _ => null, registry, out NotableDateResource? resource, out _);
+
+        Assert.IsTrue(loaded);
+        Assert.IsNotNull(resource);
+    }
+
+    /// <summary>
     /// Verifies that malformed XML is reported as a <c>BODU-CAL-SYNTAX</c> error diagnostic rather than an exception.
     /// </summary>
     [TestMethod]

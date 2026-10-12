@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Globalization.Calendar.Algorithms;
+
 namespace Bodu.Globalization.Calendar;
 
 public sealed partial class ParserValidationTests
@@ -140,5 +142,30 @@ public sealed partial class ParserValidationTests
         });
 
         Assert.Contains(d => d.Code == "BODU-CAL-YEARS", ex.Diagnostics, "BODU-CAL-YEARS");
+    }
+
+    /// <summary>
+    /// Verifies that the JSON path accepts a custom algorithm key declared by the supplied registry, matching the XML
+    /// overload that takes a registry, and that the loaded rule resolves through the registered algorithm.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenCustomRegistryDeclaresKey_ShouldLoadAndResolve()
+    {
+        const string json =
+            """
+            { "schemaVersion": "1.0", "resourceId": "test.custom-json",
+              "notableDates": [ { "id": "pi-day", "displayName": "Pi Day", "category": "Observance",
+                "rules": [ { "id": "r", "strategy": { "algorithm": { "key": "pi-day" } } } ] } ] }
+            """;
+
+        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+            .Register("pi-day", new DelegateNotableDateAlgorithm(year => new DateOnly(year, 3, 14)));
+
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(json, _ => null, registry);
+        NotableDateService service = new(resource, new NotableDateServiceOptions { Algorithms = registry });
+
+        Assert.AreEqual(
+            new DateOnly(2026, 3, 14),
+            service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
     }
 }
