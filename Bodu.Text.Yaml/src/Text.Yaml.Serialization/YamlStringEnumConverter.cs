@@ -93,7 +93,10 @@ public sealed class YamlStringEnumConverter
     {
         ThrowHelper.ThrowIfNull(typeToConvert);
 
+        // The last argument makes the produced converter write names whatever WriteEnumsAsStrings says.
         Type converterType = typeof(EnumConverter<>).MakeGenericType(typeToConvert);
-        return (YamlConverter)Activator.CreateInstance(converterType, new object?[] { _namingPolicy, _allowIntegerValues })!;
+        return (YamlConverter)Activator.CreateInstance(
+            converterType,
+            new object?[] { _namingPolicy, _allowIntegerValues, true })!;
     }
 }

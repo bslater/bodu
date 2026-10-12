@@ -8,7 +8,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Produces an <see cref="EnumConverter{T}" /> for any enumeration type, configured with the built-in default behavior:
-/// no naming policy and integer scalars accepted on read.
+/// no naming policy, integer scalars accepted on read, and names or integers written as
+/// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says.
 /// </summary>
 internal sealed class EnumConverterFactory
     : YamlConverterFactory
@@ -26,6 +27,6 @@ internal sealed class EnumConverterFactory
         ThrowHelper.ThrowIfNull(typeToConvert);
 
         Type converterType = typeof(EnumConverter<>).MakeGenericType(typeToConvert);
-        return (YamlConverter)Activator.CreateInstance(converterType, new object?[] { null, true })!;
+        return (YamlConverter)Activator.CreateInstance(converterType, new object?[] { null, true, false })!;
     }
 }

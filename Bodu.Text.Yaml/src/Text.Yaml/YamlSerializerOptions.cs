@@ -163,6 +163,11 @@ public sealed partial class YamlSerializerOptions
     /// <see langword="true" /> to write enum names; <see langword="false" /> to write their numeric values. The default
     /// is <see langword="true" />.
     /// </value>
+    /// <remarks>
+    /// The option governs the default enum handling. The enum converters ignore it: a converter that
+    /// <see cref="YamlStringEnumConverter" /> or <see cref="YamlStringEnumConverter{TEnum}" /> produces writes names,
+    /// and <see cref="YamlNumberEnumConverter{TEnum}" /> writes numeric values, whatever it says.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
     public bool WriteEnumsAsStrings
     {

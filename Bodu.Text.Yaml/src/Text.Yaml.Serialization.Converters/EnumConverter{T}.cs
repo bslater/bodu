@@ -15,8 +15,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <summary>
 /// Converts an enumeration to and from a YAML scalar, honoring a naming policy and any per-member
 /// <see cref="StringEnumMemberNameAttribute" />: names are matched case-insensitively, integer scalars map through the
-/// enumeration's underlying value, and writing emits the mapped member name or the numeric value per
-/// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />. A null scalar reads as the type default.
+/// enumeration's underlying value, and writing emits the mapped member name or, for the default enum handling, the
+/// numeric value per <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />. A null scalar reads as the type default.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>
@@ -24,13 +24,15 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// On write a defined value is emitted as its mapped wire name; a value that does not correspond to a single defined
 /// member - an undefined value or a combination of flags - falls back to the runtime's string form of the value, its
 /// comma-separated member names for a combination of defined flags and its decimal text otherwise. With
-/// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off the underlying value is written instead, through
-/// <see cref="EnumIntegerConversion.WriteInteger{T}(ref Utf8YamlWriter, T)" />, which writes a value of an enumeration
-/// based on <see cref="ulong" /> above <see cref="long.MaxValue" /> as its plain invariant text, as a
-/// <see cref="ulong" /> member is written. On read a scalar is matched case-insensitively against the wire names and
-/// then, as a fallback, parsed by the runtime, so combined-flag strings, and numeric strings when integers are allowed,
-/// are accepted. An integer scalar maps through the underlying value, by way of
-/// <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so one outside the range of the
+/// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off, the default enum handling writes the underlying value
+/// instead, through <see cref="EnumIntegerConversion.WriteInteger{T}(ref Utf8YamlWriter, T)" />, which writes a value
+/// of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> as its plain invariant text, as a
+/// <see cref="ulong" /> member is written. A converter that <see cref="YamlStringEnumConverter" /> or
+/// <see cref="YamlStringEnumConverter{TEnum}" /> produces sets <see cref="_alwaysWriteNames" /> and writes names
+/// whatever the option says, as System.Text.Json's <c>JsonStringEnumConverter</c> does. On read a scalar is matched
+/// case-insensitively against the wire names and then, as a fallback, parsed by the runtime, so combined-flag strings,
+/// and numeric strings when integers are allowed, are accepted. An integer scalar maps through the underlying value, by
+/// way of <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so one outside the range of the
 /// enumeration's underlying type throws <see cref="YamlSerializationException" /> rather than being narrowed into that
 /// type.
 /// </para>
@@ -56,8 +58,11 @@ internal sealed class EnumConverter<T>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether integer values are allowed: read from an integer scalar or a scalar whose text holds one, and written by name as the decimal text of a value with no name.</summary>
+    /// <summary>Whether integer values are allowed: read from an integer scalar or a scalar whose text holds one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
+
+    /// <summary>Whether a value is written by name whatever <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says, as the string enum converters write it.</summary>
+    private readonly bool _alwaysWriteNames;
 
     /// <summary>Maps each wire name to its enumeration value, matched case-insensitively.</summary>
     private readonly Dictionary<string, T> _nameToValue = new(StringComparer.OrdinalIgnoreCase);
@@ -66,11 +71,12 @@ internal sealed class EnumConverter<T>
     private readonly Dictionary<T, string> _valueToName = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EnumConverter{T}" /> class that applies no naming policy and
-    /// accepts integer scalars on read.
+    /// Initializes a new instance of the <see cref="EnumConverter{T}" /> class that applies no naming policy, accepts
+    /// integer scalars on read, and writes names or integers as
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says, as the default enum handling does.
     /// </summary>
     public EnumConverter()
-        : this(namingPolicy: null, allowIntegerValues: true)
+        : this(namingPolicy: null, allowIntegerValues: true, alwaysWriteNames: false)
     {
     }
 
@@ -81,18 +87,24 @@ internal sealed class EnumConverter<T>
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
     /// <param name="allowIntegerValues">
-    /// Whether integer values are allowed: read from an integer scalar or a scalar whose text holds one, and written by
-    /// name as the decimal text of a value that is neither a member nor a combination of flags.
+    /// Whether integer values are allowed: read from an integer scalar or a scalar whose text holds one, and written as
+    /// the decimal text of a value that is neither a member nor a combination of flags.
+    /// </param>
+    /// <param name="alwaysWriteNames">
+    /// Whether values are written by name whatever <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says, as
+    /// the converters the string enum converter factories produce write them; <see langword="false" /> for the default
+    /// enum handling, which writes integers when that option is off.
     /// </param>
     /// <remarks>
     /// The name maps are built once at construction by reflecting over the public, static fields of
     /// <typeparamref name="T" />, resolving each member's wire name from its
     /// <see cref="StringEnumMemberNameAttribute" />, then the naming policy, and finally the CLR field name.
     /// </remarks>
-    public EnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
+    public EnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues, bool alwaysWriteNames)
     {
         _namingPolicy = namingPolicy;
         _allowIntegerValues = allowIntegerValues;
+        _alwaysWriteNames = alwaysWriteNames;
 
         foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
         {
@@ -142,7 +154,7 @@ internal sealed class EnumConverter<T>
     /// <inheritdoc />
     public override void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options)
     {
-        if (!options.WriteEnumsAsStrings)
+        if (!_alwaysWriteNames && !options.WriteEnumsAsStrings)
         {
             EnumIntegerConversion.WriteInteger(ref writer, value);
             return;

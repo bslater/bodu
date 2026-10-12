@@ -19,9 +19,10 @@ namespace Bodu.Text.Yaml.Serialization;
 /// <para>
 /// Unlike the non-generic <see cref="YamlStringEnumConverter" />, this strongly typed factory can be referenced from a
 /// <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
-/// parameterless constructor and applies to a single enumeration type. An integer accepted on read must lie within the
-/// range of the underlying type of <typeparamref name="TEnum" />; one outside it throws
-/// <see cref="YamlSerializationException" /> rather than being narrowed into that type.
+/// parameterless constructor and applies to a single enumeration type. Like the non-generic factory's, the produced
+/// converter writes the member name regardless of <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />. An integer
+/// accepted on read must lie within the range of the underlying type of <typeparamref name="TEnum" />; one outside it
+/// throws <see cref="YamlSerializationException" /> rather than being narrowed into that type.
 /// </para>
 /// <para>
 /// A converter that does not allow integers throws <see cref="YamlSerializationException" /> on an integer scalar, and
@@ -90,5 +91,5 @@ public sealed class YamlStringEnumConverter<TEnum>
 
     /// <inheritdoc />
     public override YamlConverter CreateConverter(Type typeToConvert, YamlSerializerOptions options) =>
-        new EnumConverter<TEnum>(_namingPolicy, _allowIntegerValues);
+        new EnumConverter<TEnum>(_namingPolicy, _allowIntegerValues, alwaysWriteNames: true);
 }
