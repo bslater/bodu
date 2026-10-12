@@ -19,7 +19,7 @@ A <xref:Bodu.Security.Cryptography.HpkeSuite> fixes the KEM, the KDF, and the AE
 |---|---|---|---|
 | <xref:Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_Aes128Gcm> | AES-128-GCM | 16 B | Hardware-accelerated default on x86/ARM. |
 | <xref:Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_Aes256Gcm> | AES-256-GCM | 32 B | 256-bit key margin. |
-| <xref:Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_ChaCha20Poly1305> | ChaCha20Poly1305 | 32 B | Fast in software / constant-time without AES-NI. |
+| <xref:Bodu.Security.Cryptography.HpkeSuite.X25519_HkdfSha256_ChaCha20Poly1305> | ChaCha20Poly1305 | 32 B | Fast in software / constant-time without AES-NI. Uses the platform's `ChaCha20Poly1305`: where `ChaCha20Poly1305.IsSupported` is false, sealing or opening throws `PlatformNotSupportedException`. |
 
 The KEM always uses `DHKEM(X25519, HKDF-SHA256)` - 32-byte public keys and a 32-byte encapsulated key. The suite's *KDF* is independent of the KEM's internal HKDF and selects the key schedule's hash: `HpkeKdf.HkdfSha256` (the default in all three pre-configured suites), `HkdfSha384`, or `HkdfSha512`. Constructing a suite with any other KEM, KDF, or AEAD value throws <xref:System.ArgumentOutOfRangeException>.
 

@@ -25,6 +25,12 @@ namespace Bodu.Security.Cryptography;
 /// lifetime; public keys are passed as raw 32-byte spans, which is their on-the-wire form.
 /// </para>
 /// <para>
+/// The AES-GCM suites seal with the library's own <see cref="GcmModeTransform" />, but the ChaCha20Poly1305 suite uses
+/// the platform's <see cref="System.Security.Cryptography.ChaCha20Poly1305" />. Where
+/// <see cref="System.Security.Cryptography.ChaCha20Poly1305.IsSupported" /> is <see langword="false" />, sealing or
+/// opening with that suite throws <see cref="PlatformNotSupportedException" />.
+/// </para>
+/// <para>
 /// Like the rest of the library, this implementation offers best-effort side-channel resistance and has not been
 /// independently audited.
 /// </para>

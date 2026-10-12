@@ -77,7 +77,7 @@ using var imported = new Ed25519();
 imported.ImportFromPem(privatePem);                              // dispatches on the PEM label
 ```
 
-The lattice types expose **only** their raw FIPS encodings; the ASN.1 container members retain their base throwing behaviour, so persist the raw bytes from the `Export*` method directly. The seed-bearing lattice types (`ImportPrivateSeed`) let you store the compact seed - 32 bytes for ML-DSA, 64 for ML-KEM - instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.
+The lattice types expose **only** their raw FIPS encodings; the ASN.1 container members are overridden to throw `NotSupportedException`, so persist the raw bytes from the `Export*` method directly. The seed-bearing lattice types (`ImportPrivateSeed`) let you store the compact seed - 32 bytes for ML-DSA, 64 for ML-KEM - instead of the full multi-kilobyte private key, and regenerate the whole key pair on import. The curve algorithms re-derive the public key from the 32-byte private seed the same way.
 
 ## Which key half is present
 
