@@ -154,7 +154,7 @@ RateLookupResult lookup = provider.GetRate(
     RateLookupOptions.NearestWithin(7));
 
 Console.WriteLine($"Used {lookup.Rate.Date} from {lookup.Rate.Provider}");
-Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate()}");
+Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate}");
 ```
 
 The lookup result is a `readonly record struct` carrying the resolved

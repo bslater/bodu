@@ -78,7 +78,7 @@ hand off to `Fraction<BigInteger>` for exact-arithmetic chains via
 
 <div class="bodu-card">
   <h3><a href="exchange-rate-providers.md">Built-in exchange-rate providers</a></h3>
-  <p>The eleven live-feed packages - BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF - with construction, warming, the shared lookup surface, dependency injection, and snapshot export.</p>
+  <p>The eleven live-feed packages - BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF, of which all but XE and OANDA are published to nuget.org - with construction, warming, the shared lookup surface, dependency injection, and snapshot export.</p>
 </div>
 
 <div class="bodu-card">

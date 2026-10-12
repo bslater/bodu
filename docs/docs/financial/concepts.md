@@ -36,7 +36,7 @@ Money<EUR> c = a;                  // CS0029 - cannot implicitly convert
 bool eq = (a == new Money<JPY>(0m)); // CS0019 - comparison disallowed
 ```
 
-Cross-currency conversion is available only through the explicit `Money<T>.Convert<TTarget>(decimal, MidpointRounding)` call, which forces the caller to supply the rate and the destination currency together.
+Cross-currency conversion is available only through explicit calls that make the caller supply the rate and the destination currency together: `Money<T>.Convert<TTarget>(decimal, MidpointRounding)` with a decimal rate, `Money<T>.Convert<TQuote>(ExchangeRate<T, TQuote>, MidpointRounding)` with a typed rate, or the dated-provider `ConvertTo` / `ConvertToWithRate` extensions.
 
 ## ISO 4217
 
@@ -56,13 +56,13 @@ Construction of <xref:Bodu.Financial.Money`1> rounds to this precision; `Money<T
 
 ## Cash rounding increment
 
-A coin-or-note-aligned coarser denomination some currencies use for physical cash totals. CHF rounds to five rappen (`0.05m`), AUD and CAD cash totals round to five cents (`0.05m`), SEK / NOK / ISK round to the whole krona. <xref:Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement> exposes the value; `Money<T>.RoundToCash()` snaps to it.
+A coin-or-note-aligned coarser denomination some currencies use for physical cash totals. CHF rounds to five rappen (`0.05m`), AUD and CAD cash totals round to five cents (`0.05m`), NZD to ten cents (`0.10m`), and SEK / NOK to the whole krona. <xref:Bodu.Financial.Currencies.ICurrency.CashRoundingIncrement> exposes the value; `Money<T>.RoundToCash()` snaps to it.
 
 Cash rounding is a presentation choice for physical payments, not a storage rule. Electronic transactions retain full minor-unit precision; call `RoundToCash()` only at the point a total becomes a cash payment. The default of `0m` means "no special cash rounding", and `RoundToCash()` is a no-op for those currencies.
 
 ## Banker's rounding
 
-Construction and arithmetic default to <xref:System.MidpointRounding.ToEven> - midpoint values round toward the nearer even final digit. `new Money<USD>(1.225m)` stores as `1.22m`; `new Money<USD>(1.235m)` stores as `1.24m`. This matches the .NET `decimal` and IEEE 754 default and avoids the upward statistical bias of `AwayFromZero`. Every API that rounds accepts a `MidpointRounding` argument so callers can opt into a different rule when a regulator or accounting policy demands one.
+Construction and arithmetic default to <xref:System.MidpointRounding.ToEven> - midpoint values round toward the nearer even final digit. `new Money<USD>(1.225m)` stores as `1.22m`; `new Money<USD>(1.235m)` stores as `1.24m`. This matches the .NET `decimal` and IEEE 754 default and avoids the upward statistical bias of `AwayFromZero`. Construction, the named `Multiply` / `Divide` / `Convert` methods, `RoundToCash`, and `CalculatedMoney.RoundToMoney` accept a `MidpointRounding` argument (or a `MonetaryContext`) so callers can opt into a different rule when a regulator or accounting policy demands one; the operators, `MoneyBag.Add` / `Subtract`, `MoneyBag.ConvertTo` / `ConvertToWithAudit`, and the parsers always use banker's rounding.
 
 ## Sub-minor-unit precision
 
@@ -76,7 +76,7 @@ Construction and arithmetic default to <xref:System.MidpointRounding.ToEven> - m
 
 ## `MonetaryContext`
 
-<xref:Bodu.Financial.MonetaryContext> bundles the rounding strategy (<xref:Bodu.Financial.IRoundingStrategy>), the <xref:Bodu.Financial.ScalePolicy>, the <xref:Bodu.Financial.CashRoundingPolicy>, the <xref:Bodu.Financial.AllocationPolicy>, and the <xref:Bodu.Financial.ConversionRoundingPolicy> into one immutable record, so a settlement regime can be configured once and carried by name through the DI container. It governs *operation* boundaries - multiplication, division, conversion, and `CalculatedMoney.RoundToMoney()` - not allocation residual distribution, which is fixed. `MonetaryContext.Default` is banker's rounding at currency minor-unit scale.
+<xref:Bodu.Financial.MonetaryContext> bundles the rounding strategy (<xref:Bodu.Financial.IRoundingStrategy>), the <xref:Bodu.Financial.ScalePolicy>, the <xref:Bodu.Financial.CashRoundingPolicy>, the <xref:Bodu.Financial.AllocationPolicy>, and the <xref:Bodu.Financial.ConversionRoundingPolicy> into one immutable record, so a settlement regime can be configured once and carried by name through the DI container. It applies where an operation accepts one - `Money<T>.Multiply(decimal, MonetaryContext)`, the runtime `Money.Convert` / `ConvertWithResult` over an `ExchangeRate`, and `CalculatedMoney.RoundToMoney()` - and no division or allocation member takes one. The allocation and conversion-rounding policies are validated but reserved: allocation always uses the largest-remainder method and conversions always round at the target. `MonetaryContext.Default` is banker's rounding at currency minor-unit scale.
 
 ## Fair allocation
 
@@ -169,7 +169,7 @@ Strategies are expressed through `IRateAggregationStrategy` (PriorityFallback / 
 
 ## `MoneyConversionResult<TSource, TTarget>`
 
-<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertTo<TTarget>(IDatedRateProvider, …)` extension methods on `Money<T>`, `Money`, and `MoneyBag`. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRates.RateLookupResult> that produced it - so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
+<xref:Bodu.Financial.MoneyConversionResult`2> is the audit record returned by the `ConvertToWithRate<TSource, TTarget>(IDatedRateProvider, …)` extension on `Money<TSource>`; the `ConvertTo` extensions return the converted money alone, the runtime `Money.ConvertToWithRate` returns a `(Money Target, RateLookupResult Rate)` tuple, and `MoneyBag.ConvertToWithAudit` returns a <xref:Bodu.Financial.MoneyBagConversionAudit`1>. It bundles the original source amount, the rounded target amount, and the full <xref:Bodu.Financial.ExchangeRates.RateLookupResult> that produced it - so the consumer sees both the answer and the provenance of the rate in a single value, without a second lookup.
 
 ## `MoneyBag`
 

@@ -22,7 +22,7 @@ The package depends on `Bodu.Numerics` so `Money<TCurrency>` can round-trip thro
 | <xref:Bodu.Financial.Money> | Runtime-tagged sister type - currency carried as a <xref:Bodu.Financial.Currencies.CurrencyCode>. The fallback when the currency is data rather than type, e.g. deserialisation or generic invoicing. |
 | <xref:Bodu.Financial.MoneyBag> | Immutable mixed-currency portfolio. Aggregates per-ISO balances, prunes zero balances, enumerates in lexicographic ISO order. |
 | <xref:Bodu.Financial.CurrencyDisplay> | Currency symbol / display-name formatting for presenting an amount's currency. |
-| <xref:Bodu.Financial.MoneyConversionResult`2> | Audit record returned by extension methods that convert through a dated provider - pairs source and target amount with the full lookup result. |
+| <xref:Bodu.Financial.MoneyConversionResult`2> | Audit record returned by `ConvertToWithRate<TSource, TTarget>`, which converts a `Money<TSource>` through a dated provider - pairs source and target amount with the full lookup result. |
 
 ### `Bodu.Financial.Currencies`
 
@@ -60,7 +60,7 @@ The same namespace is also where the separate **`Bodu.Financial.ExchangeRates`**
 
 ## Exchange-rate providers and caching
 
-The exchange-rate core (`IRateProvider` / `IDatedRateProvider`, `ExchangeRate`, the in-memory tables) lives in the `Bodu.Financial.ExchangeRates` namespace, shipped in the core `Bodu.Financial` package. The web/HTTP machinery - the abstract `WebRateProvider` and `PairWebRateProvider<TSeries>` bases, `WebRateProviderOptions`, and the single-flight and response-cache plumbing - is factored into the separate **`Bodu.Financial.ExchangeRates`** package, so the core package carries no HTTP machinery (and no logging dependency). Live feeds ship as per-source packages over that base, each isolating one feed's HTTP and parsing dependencies (a named `HttpClient` plus Polly resilience, registered through the generic `AddWebRateProvider` machinery). Every provider type and its DI registration extension share the single flattened `Bodu.Financial.ExchangeRates` namespace.
+The exchange-rate core (`IRateProvider` / `IDatedRateProvider`, `ExchangeRate`, the in-memory tables) lives in the `Bodu.Financial.ExchangeRates` namespace, shipped in the core `Bodu.Financial` package. The web/HTTP machinery - the abstract `WebRateProvider` and `PairWebRateProvider<TSeries>` bases, `WebRateProviderOptions`, and the single-flight and response-cache plumbing - is factored into the separate **`Bodu.Financial.ExchangeRates`** package, so the core package carries no HTTP machinery (and no logging dependency). Live feeds come as per-source packages over that base (all published to nuget.org except XE and OANDA, which are withheld - see the [package matrix](../package-matrix.md#not-published-to-nugetorg)), each isolating one feed's HTTP and parsing dependencies (a named `HttpClient` plus Polly resilience, registered through the generic `AddWebRateProvider` machinery). Every provider type and its DI registration extension share the single flattened `Bodu.Financial.ExchangeRates` namespace.
 
 | Source (package) | Provider type | Coverage | DI registration |
 |---|---|---|---|
@@ -69,8 +69,8 @@ The exchange-rate core (`IRateProvider` / `IDatedRateProvider`, `ExchangeRate`, 
 | Bank of England (`…ExchangeRates.Boe`) | <xref:Bodu.Financial.ExchangeRates.BoeRateProvider> | base GBP, reference | `AddBoeExchangeRates()` |
 | Yahoo (`…ExchangeRates.Yahoo`) | <xref:Bodu.Financial.ExchangeRates.YahooRateProvider> | any pair | `AddYahooExchangeRates()` |
 | OFX (`…ExchangeRates.Ofx`) | <xref:Bodu.Financial.ExchangeRates.OfxRateProvider> | any pair | `AddOfxExchangeRates()` |
-| XE (`…ExchangeRates.Xe`) | <xref:Bodu.Financial.ExchangeRates.XeRateProvider> | any pair | `AddXeExchangeRates()` |
-| OANDA (`…ExchangeRates.Oanda`) | <xref:Bodu.Financial.ExchangeRates.OandaRateProvider> | any pair, rolling ~180 days | `AddOandaExchangeRates()` |
+| XE (`…ExchangeRates.Xe`, not published to nuget.org) | <xref:Bodu.Financial.ExchangeRates.XeRateProvider> | any pair | `AddXeExchangeRates()` |
+| OANDA (`…ExchangeRates.Oanda`, not published to nuget.org) | <xref:Bodu.Financial.ExchangeRates.OandaRateProvider> | any pair, rolling ~180 days | `AddOandaExchangeRates()` |
 | Fixer (`…ExchangeRates.Fixer`) | <xref:Bodu.Financial.ExchangeRates.FixerRateProvider> | any pair, `access_key` | `AddFixerExchangeRates()` |
 | exchangerate.host (`…ExchangeRates.ExchangeRateHost`) | <xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider> | any pair, `access_key` | `AddExchangeRateHostExchangeRates()` |
 | FRED (`…ExchangeRates.Fred`) | <xref:Bodu.Financial.ExchangeRates.FredRateProvider> | mapped pairs, `api_key` | `AddFredExchangeRates()` |
@@ -163,7 +163,7 @@ The companion **`Bodu.Financial.DependencyInjection`** package - a separate, Sta
 dotnet add package Bodu.Financial.DependencyInjection
 ```
 
-The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.Currencies.ICurrency> lookup and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> from a configuration section (default `"Financial"`). Financial JSON registration (`services.AddFinancialJson(policy)`) ships in the companion `Bodu.Financial.Serialization.Json` package.
+The entry point is `AddFinancialService(...)`, an `IServiceCollection` extension method in the `Bodu.Financial` namespace. Both overloads register the default <xref:Bodu.Financial.Currencies.ICurrencyLookup> and return a fluent <xref:Bodu.Financial.IFinancialServiceBuilder> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an `IConfiguration` additionally binds <xref:Bodu.Financial.FinancialOptions> from a configuration section (default `"Financial"`). Financial JSON registration (`services.AddFinancialJson(policy)`) ships in the companion `Bodu.Financial.Serialization.Json` package.
 
 ```csharp
 using Bodu.Financial;
