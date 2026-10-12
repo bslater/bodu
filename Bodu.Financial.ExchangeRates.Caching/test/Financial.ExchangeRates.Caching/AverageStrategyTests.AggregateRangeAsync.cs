@@ -48,4 +48,24 @@ public sealed partial class AverageStrategyTests
         Assert.HasCount(1, rates);
         Assert.AreEqual(1.09m, rates[0].Rate);
     }
+
+    /// <summary>
+    /// Verifies that the range overload leaves out a candidate that returns no observations and averages the
+    /// candidates that resolve, rather than returning an empty result.
+    /// </summary>
+    [TestMethod]
+    public async Task AggregateRangeAsync_WhenOneCandidateIsEmpty_ShouldAverageTheOthers()
+    {
+        IReadOnlyList<NamedDatedRateProvider> candidates = new[]
+        {
+            Named("Empty"),
+            Named("A", ("AUD", "USD", D1, 0.50m)),
+            Named("B", ("AUD", "USD", D1, 0.54m)),
+        };
+
+        IReadOnlyList<ExchangeRate> rates = await new AverageStrategy().AggregateRangeAsync("AUD", "USD", D1, D1, candidates, default);
+
+        Assert.HasCount(1, rates);
+        Assert.AreEqual(0.52m, rates[0].Rate);
+    }
 }
