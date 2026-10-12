@@ -87,7 +87,7 @@ The remaining shaping is on <xref:Bodu.Text.Yaml.YamlSerializerOptions>:
 | Flag | Effect |
 |---|---|
 | `DefaultIgnoreCondition` | <xref:Bodu.Text.Serialization.IgnoreCondition> - `Never` (default) writes every member; `WhenWritingNull` omits null members; `WhenWritingDefault` also omits type-default values. |
-| `WriteEnumsAsStrings` | `true` (default) writes enums as member-name strings; `false` writes the underlying integer. |
+| `WriteEnumsAsStrings` | `true` (default) writes enums as member-name strings; `false` writes the underlying integer. It governs the default enum handling only: a string-enum converter always writes names, and a number-enum converter integers. |
 | `PropertyNameCaseInsensitive` | Matches mapping keys to members case-insensitively on read. |
 | `IncludeFields` | Includes public fields alongside properties. |
 | `UnmappedMemberHandling` | <xref:Bodu.Text.Serialization.UnmappedMemberHandling> - `Skip` (default) ignores keys that map to no member; `Disallow` raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |

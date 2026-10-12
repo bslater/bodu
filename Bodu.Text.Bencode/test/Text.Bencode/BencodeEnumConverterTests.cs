@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using System.Globalization;
 using System.Text;
 using Bodu.Test.Assertions;
 using Bodu.Text.Bencode.Serialization;
@@ -223,6 +224,98 @@ public class BencodeEnumConverterTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="BencodeSerializationException" /> at the byte string when the byte string holds an integer, alone or
+    /// as one of its comma-separated parts, rather than binding the integer it holds.
+    /// </summary>
+    /// <param name="text">The byte string's text.</param>
+    [TestMethod]
+    [DataRow("2", DisplayName = "the digits of a defined value")]
+    [DataRow("99", DisplayName = "the digits of an undefined value")]
+    [DataRow(" +2 ", DisplayName = "a signed integer between spaces")]
+    [DataRow("-1", DisplayName = "a negative integer")]
+    [DataRow("2\0", DisplayName = "an integer followed by a null character")]
+    [DataRow("1, 2", DisplayName = "a list of integers")]
+    [DataRow("Read, 2", DisplayName = "a member name and an integer")]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndTextHoldsInteger_ShouldThrowBencodeSerializationException(
+        string text)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        byte[] bytes = Encoding.Latin1.GetBytes($"d5:Flags{text.Length}:{text}e");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<FlagsModel>(bytes, options);
+        });
+
+        // The byte string begins after the dictionary's 'd' and the key's length-prefixed byte string.
+        Assert.AreEqual(1 + "5:Flags".Length, ex.BytesOffset, "BytesOffset");
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter{TEnum}" /> configured to reject integer values throws
+    /// <see cref="BencodeSerializationException" /> when the byte string holds an integer, as the converter the
+    /// non-generic factory produces does.
+    /// </summary>
+    /// <param name="text">The byte string's text.</param>
+    [TestMethod]
+    [DataRow("2", DisplayName = "the digits of a defined value")]
+    [DataRow("Read, 2", DisplayName = "a member name and an integer")]
+    public void Deserialize_WhenGenericStringEnumConverterDisallowsIntegersAndTextHoldsInteger_ShouldThrowBencodeSerializationException(
+        string text)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter<FlagsEnum>(namingPolicy: null, allowIntegerValues: false));
+        byte[] bytes = Encoding.Latin1.GetBytes($"d5:Flags{text.Length}:{text}e");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<FlagsModel>(bytes, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to reject integer values still binds a byte
+    /// string that is a member's wire name when that name is an integer's text, because the wire names are matched
+    /// before the text is checked for an integer.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndWireNameIsInteger_ShouldBindMember()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        MedalModel model = BencodeSerializer.Deserialize<MedalModel>(Encoding.Latin1.GetBytes("d5:Medal1:1e"), options);
+
+        Assert.AreEqual(Medal.Gold, model.Medal);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to allow integer values binds a byte string
+    /// that holds an integer as the value it holds, as the default handling does.
+    /// </summary>
+    /// <param name="text">The byte string's text.</param>
+    /// <param name="expected">The underlying value the text holds.</param>
+    [TestMethod]
+    [DataRow("2", 2, DisplayName = "the digits of a defined value")]
+    [DataRow("99", 99, DisplayName = "the digits of an undefined value")]
+    [DataRow(" +2 ", 2, DisplayName = "a signed integer between spaces")]
+    public void Deserialize_WhenStringEnumConverterAllowsIntegersAndTextHoldsInteger_ShouldBindValue(string text, int expected)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: true));
+        byte[] bytes = Encoding.Latin1.GetBytes($"d5:Flags{text.Length}:{text}e");
+
+        FlagsModel model = BencodeSerializer.Deserialize<FlagsModel>(bytes, options);
+
+        Assert.AreEqual((FlagsEnum)expected, model.Flags);
+    }
+
+    /// <summary>
     /// Verifies that the generic <see cref="BencodeStringEnumConverter{TEnum}" /> registered with a camel-case naming
     /// policy on the options writes a Pascal-case member as its camel-cased name and round-trips.
     /// </summary>
@@ -324,6 +417,92 @@ public class BencodeEnumConverterTests
 
         FlagsModel roundTripped = BencodeSerializer.Deserialize<FlagsModel>(bytes);
         Assert.AreEqual(FlagsEnum.Write, roundTripped.Flags);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="BencodeSerializationException" />, naming the value and the enumeration, when it writes a value that
+    /// is not a member, rather than writing the value's decimal text, which it would reject on read.
+    /// </summary>
+    /// <param name="value">The underlying value, which no member of <see cref="Status" /> has.</param>
+    [TestMethod]
+    [DataRow(99, DisplayName = "an undefined value")]
+    [DataRow(-1, DisplayName = "a negative undefined value")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndValueIsUndefined_ShouldThrowBencodeSerializationException(
+        int value)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        var model = new StatusModel { Status = (Status)value };
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(Status).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="BencodeSerializationException" />, naming the value and the enumeration, when it writes a flags value
+    /// with a bit that no member defines, which is not a combination of defined flags.
+    /// </summary>
+    /// <param name="value">The underlying value, with a bit that no member of <see cref="FlagsEnum" /> defines.</param>
+    [TestMethod]
+    [DataRow(4, DisplayName = "an undefined flag")]
+    [DataRow(7, DisplayName = "defined flags with an undefined flag")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndFlagIsUndefined_ShouldThrowBencodeSerializationException(
+        int value)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter<FlagsEnum>(namingPolicy: null, allowIntegerValues: false));
+        var model = new FlagsModel { Flags = (FlagsEnum)value };
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(FlagsEnum).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to reject integer values still writes a
+    /// combination of defined flags as its comma-separated member list, and the zero-valued member as its name.
+    /// </summary>
+    /// <param name="value">The underlying value, a combination of defined flags.</param>
+    /// <param name="expected">The expected Bencode document.</param>
+    [TestMethod]
+    [DataRow(3, "d5:Flags11:Read, Writee", DisplayName = "two defined flags")]
+    [DataRow(0, "d5:Flags4:Nonee", DisplayName = "the zero-valued member")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndFlagsAreDefined_ShouldWriteNames(int value, string expected)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        byte[] bytes = BencodeSerializer.Serialize(new FlagsModel { Flags = (FlagsEnum)value }, options);
+
+        Assert.AreEqual(expected, Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="BencodeStringEnumConverter" /> configured to allow integer values writes a value that
+    /// is not a member as its decimal text, as the default handling does.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterAllowsIntegersAndValueIsUndefined_ShouldWriteDecimalText()
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: true));
+
+        byte[] bytes = BencodeSerializer.Serialize(new StatusModel { Status = (Status)99 }, options);
+
+        Assert.AreEqual("d6:Status2:99e", Encoding.Latin1.GetString(bytes));
     }
 
     /// <summary>
@@ -690,6 +869,35 @@ public class BencodeEnumConverterTests
         /// </summary>
         /// <value>The flags.</value>
         public FlagsEnum Flags { get; set; }
+    }
+
+    /// <summary>
+    /// An enumeration one of whose members is written under a name that is an integer's text.
+    /// </summary>
+    private enum Medal
+    {
+        /// <summary>
+        /// The gold medal, written under the name <c>1</c>, with underlying value <c>5</c>.
+        /// </summary>
+        [StringEnumMemberName("1")]
+        Gold = 5,
+
+        /// <summary>
+        /// The silver medal, with underlying value <c>6</c>.
+        /// </summary>
+        Silver = 6,
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="Medal" /> value.
+    /// </summary>
+    private sealed class MedalModel
+    {
+        /// <summary>
+        /// Gets or sets the medal.
+        /// </summary>
+        /// <value>The medal.</value>
+        public Medal Medal { get; set; }
     }
 
     /// <summary>

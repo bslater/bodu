@@ -16,11 +16,22 @@ namespace Bodu.Text.Toml.Serialization;
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
+/// <para>
 /// Unlike the non-generic <see cref="TomlStringEnumConverter" />, this strongly typed factory can be referenced from a
 /// <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
 /// parameterless constructor and applies to a single enumeration type. An integer accepted on read must lie within the
 /// range of the underlying type of <typeparamref name="TEnum" />; one outside it throws
 /// <see cref="TomlSerializationException" /> rather than being narrowed into that type.
+/// </para>
+/// <para>
+/// A converter that does not allow integers throws <see cref="TomlSerializationException" /> on a TOML integer, and at
+/// a string that is not a member's wire name and has an integer in any of its comma-separated parts, such as <c>"2"</c>
+/// or <c>"Read, 2"</c>, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects such a string from .NET 9. A
+/// member whose wire name is an integer's text still reads, because the wire names are matched first. Such a converter
+/// also refuses to write a value that is neither a member nor a combination of defined flags, such as an undefined
+/// value or a flags value with an undefined bit, and throws <see cref="TomlSerializationException" /> rather than
+/// writing the decimal text it would reject on read.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -43,7 +54,7 @@ public sealed class TomlStringEnumConverter<TEnum>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a TOML integer is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether integer values are allowed: read from a TOML integer or a string that holds one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>
@@ -62,7 +73,10 @@ public sealed class TomlStringEnumConverter<TEnum>
     /// <param name="namingPolicy">
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
-    /// <param name="allowIntegerValues">Whether a TOML integer is accepted as an enumeration value on read.</param>
+    /// <param name="allowIntegerValues">
+    /// Whether integer values are allowed: read from a TOML integer or a string that holds one, and written as the
+    /// decimal text of a value that is neither a member nor a combination of flags.
+    /// </param>
     public TomlStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {
         _namingPolicy = namingPolicy;

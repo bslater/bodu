@@ -13,7 +13,7 @@ uid: Bodu.Text.Yaml.Serialization
 - <xref:Bodu.Text.Yaml.Serialization.YamlConverter> - the non-generic root (`CanConvert`) that `YamlSerializerOptions.Converters` holds.
 - <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> - the per-type base: implement `Read` and `Write` for `T`.
 - <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> - the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
-- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter`1> - enums as member-name strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and integer fallback.
+- <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter`1> - enums as member-name strings whatever <xref:Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings> says, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and an integer fallback that, turned off, also rejects a scalar whose text holds an integer and refuses to write a value that is neither a member nor a combination of flags.
 - <xref:Bodu.Text.Yaml.Serialization.YamlNumberEnumConverter`1> - enums as their underlying integer.
 
 ## Example

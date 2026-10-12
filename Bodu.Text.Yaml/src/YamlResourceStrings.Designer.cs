@@ -399,6 +399,22 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to '{0}' cannot be read because integer values are not allowed for enumeration '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_EnumIntegerNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumIntegerNotAllowed", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The value {0} is neither a member nor a combination of flags of enumeration '{1}', and cannot be written because integer values are not allowed..
+        /// </summary>
+        internal static string Op_Invalid_EnumValueNotWritable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumValueNotWritable", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to Expected an integer but found '{0}'..
         /// </summary>
         internal static string Op_Invalid_ExpectedInteger {

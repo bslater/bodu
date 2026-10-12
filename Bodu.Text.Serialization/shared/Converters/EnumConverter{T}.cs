@@ -21,12 +21,25 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <remarks>
 /// <para>
 /// On write a defined value is emitted as its mapped member name; a value that does not correspond to a single defined
-/// member - an undefined value or a combination of flags - falls back to the value's decimal or comma-separated string
-/// form. On read a string is matched case-insensitively against the member names and then, as a fallback, parsed by the
-/// runtime so numeric and combined-flag strings are accepted. When <see cref="_allowIntegerValues" /> is
-/// <see langword="true" /> an integer token is also accepted and converted to the underlying enumeration value, through
+/// member - an undefined value or a combination of flags - falls back to the runtime's string form of the value, its
+/// comma-separated member names for a combination of defined flags and its decimal text otherwise. On read a string is
+/// matched case-insensitively against the member names and then, as a fallback, parsed by the runtime, so combined-flag
+/// strings are accepted. When <see cref="_allowIntegerValues" /> is <see langword="true" /> the runtime also accepts a
+/// numeric string, and an integer token is accepted and converted to the underlying enumeration value, through
 /// <see cref="EnumIntegerConversion.ReadInteger{T}(ref FormatReader)" />: an integer outside the range of the
 /// enumeration's underlying type throws the format's serialization exception rather than being narrowed into that type.
+/// </para>
+/// <para>
+/// When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer token throws, and so does a string
+/// that is not a wire name and holds an integer in any of its comma-separated parts, such as <c>2</c>, <c> +2 </c> or
+/// <c>Read, 2</c>, as <see cref="EnumIntegerConversion.ContainsIntegerText(ReadOnlySpan{char})" /> determines: the
+/// format's serialization exception reports it at the string, before the runtime could read the integer, as
+/// System.Text.Json's <c>JsonStringEnumConverter</c> rejects such a string from .NET 9. A wire name that is an
+/// integer's text, given through <see cref="StringEnumMemberNameAttribute" />, still binds its member, because the wire
+/// names are matched first. Nor is a value written as its decimal text, which the converter would then reject on read:
+/// a value that is neither a member nor a combination of defined flags, such as an undefined value or a flags value
+/// with an undefined bit, throws the format's serialization exception on write, as <c>JsonStringEnumConverter</c>
+/// refuses to write it when integers are not allowed.
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
@@ -36,7 +49,7 @@ internal sealed class EnumConverter<T>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether an integer token is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether integer values are allowed: read from an integer token or a string that holds one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>Maps each wire name to its enumeration value, matched case-insensitively.</summary>
@@ -51,7 +64,10 @@ internal sealed class EnumConverter<T>
     /// <param name="namingPolicy">
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
-    /// <param name="allowIntegerValues">Whether an integer token is accepted as an enumeration value on read.</param>
+    /// <param name="allowIntegerValues">
+    /// Whether integer values are allowed: read from an integer token or a string that holds one, and written as the
+    /// decimal text of a value that is neither a member nor a combination of flags.
+    /// </param>
     /// <remarks>
     /// The name maps are built once at construction by reflecting over the public, static fields of
     /// <typeparamref name="T" />, resolving each member's wire name from its
@@ -84,6 +100,9 @@ internal sealed class EnumConverter<T>
             if (_nameToValue.TryGetValue(text, out T mapped))
                 return mapped;
 
+            if (!_allowIntegerValues && EnumIntegerConversion.ContainsIntegerText(text))
+                throw SerializationThrowHelper.EnumIntegerNotAllowed(ref reader, text, typeof(T));
+
             return Enum.TryParse(text, ignoreCase: true, out T parsed)
                 ? parsed
                 : throw SerializationThrowHelper.EnumValueNotFound(ref reader, text, typeof(T));
@@ -96,6 +115,20 @@ internal sealed class EnumConverter<T>
     }
 
     /// <inheritdoc />
-    public override void Write(FormatWriter writer, T value, FormatOptions options) =>
-        writer.WriteString(_valueToName.TryGetValue(value, out string? name) ? name : value.ToString());
+    public override void Write(FormatWriter writer, T value, FormatOptions options)
+    {
+        if (_valueToName.TryGetValue(value, out string? name))
+        {
+            writer.WriteString(name);
+            return;
+        }
+
+        // The runtime formats a value that is neither a member nor a combination of defined flags as its decimal text,
+        // which this converter would reject on read when it does not allow integer values.
+        string text = value.ToString();
+        if (!_allowIntegerValues && EnumIntegerConversion.ContainsIntegerText(text))
+            throw SerializationThrowHelper.EnumValueNotWritable(text, typeof(T));
+
+        writer.WriteString(text);
+    }
 }

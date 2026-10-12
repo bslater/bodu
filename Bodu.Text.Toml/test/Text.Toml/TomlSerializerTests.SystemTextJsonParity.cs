@@ -188,6 +188,35 @@ public partial class TomlSerializerTests
         Assert.IsTrue(toml.Contains("Value = 5", StringComparison.Ordinal), "TomlSerializer should write the boxed integer through its runtime type.");
     }
 
+#if NET9_0_OR_GREATER
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to reject integer values rejects a string that
+    /// holds an integer, as <see cref="JsonStringEnumConverter" /> configured the same way does from .NET 9.
+    /// </summary>
+    /// <param name="text">The string's text.</param>
+    [TestMethod]
+    [DataRow("2", DisplayName = "the digits of a defined value")]
+    [DataRow(" +2 ", DisplayName = "a signed integer between spaces")]
+    [DataRow("-1", DisplayName = "a negative integer")]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndTextHoldsInteger_ShouldRejectLikeSystemTextJson(
+        string text)
+    {
+        var jsonOptions = new JsonSerializerOptions();
+        jsonOptions.Converters.Add(new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        var tomlOptions = new TomlSerializerOptions();
+        tomlOptions.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<StatusModel>($"{{\"Status\":\"{text}\"}}", jsonOptions);
+        });
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<StatusModel>($"Status = \"{text}\"\n", tomlOptions);
+        });
+    }
+#endif
+
     /// <summary>
     /// A model with two Pascal-cased members used to compare naming-policy output across serializers.
     /// </summary>

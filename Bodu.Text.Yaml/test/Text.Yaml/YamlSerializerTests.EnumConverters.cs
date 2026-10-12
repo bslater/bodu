@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Test.Assertions;
 using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Serialization;
@@ -51,6 +52,79 @@ public partial class YamlSerializerTests
 
         StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
         Assert.AreEqual(Status.Archived, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> or <see cref="YamlStringEnumConverter{TEnum}" />
+    /// registered on the options writes the member name when <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />
+    /// is disabled, because the converter it produces writes names whatever that option says.
+    /// </summary>
+    /// <param name="generic">Whether the generic factory is registered rather than the non-generic one.</param>
+    [TestMethod]
+    [DataRow(false, DisplayName = "non-generic factory")]
+    [DataRow(true, DisplayName = "generic factory")]
+    public void Serialize_WhenStringEnumConverterRegisteredAndWriteEnumsAsStringsDisabled_ShouldWriteMemberName(bool generic)
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+        options.Converters.Add(generic ? new YamlStringEnumConverter<Status>() : new YamlStringEnumConverter());
+
+        string text = YamlSerializer.Serialize(new StatusModel { Status = Status.Active }, options);
+
+        Assert.AreEqual("Status: Active\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
+    /// <see cref="YamlStringEnumConverter{TEnum}" /> writes the member name when
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> is disabled.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterAttributeAndWriteEnumsAsStringsDisabled_ShouldWriteMemberName()
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+
+        string text = YamlSerializer.Serialize(new StringEnumModel { Status = Status.Pending }, options);
+
+        Assert.AreEqual("Status: Pending\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values writes the member
+    /// name when <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> is disabled, and reads it back, rather than
+    /// writing an integer that it rejects on read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStringEnumConverterDisallowsIntegersAndWriteEnumsAsStringsDisabled_ShouldRoundTripName()
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        string text = YamlSerializer.Serialize(new StatusModel { Status = Status.Archived }, options);
+
+        Assert.AreEqual("Status: Archived\n", text);
+
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
+        Assert.AreEqual(Status.Archived, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="YamlSerializationException" /> when it writes a value that is not a member with
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> disabled, rather than writing the integer.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndWriteEnumsAsStringsDisabledAndValueIsUndefined_ShouldThrowYamlSerializationException()
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        var model = new StatusModel { Status = (Status)99 };
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
     }
 
     /// <summary>
@@ -134,7 +208,9 @@ public partial class YamlSerializerTests
 
     /// <summary>
     /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
-    /// <see cref="YamlSerializationException" /> when it reads a YAML integer scalar for the enumeration.
+    /// <see cref="YamlSerializationException" /> at a YAML integer scalar, with its line, column, offset and path, and a
+    /// message saying that integer values are not allowed, rather than one calling the integer an undefined value, which
+    /// 2, the value of a defined member, is not.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenStringEnumConverterDisallowsIntegers_ShouldThrowYamlSerializationException()
@@ -142,10 +218,18 @@ public partial class YamlSerializerTests
         var options = new YamlSerializerOptions();
         options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
 
-        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
         {
             _ = YamlSerializer.Deserialize<StatusModel>("Status: 2\n", options);
         });
+
+        // The integer begins after "Status: ", at the zero-based offset 8 and the one-based column 9.
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(9, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(8, ex.Offset, "Offset");
+        Assert.AreEqual("Status", ex.Path, "Path");
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsFalse(ex.Message.Contains("is not a defined value", StringComparison.Ordinal), ex.Message);
     }
 
     /// <summary>
@@ -224,6 +308,128 @@ public partial class YamlSerializerTests
         StatusModel model = YamlSerializer.Deserialize<StatusModel>("Status: \"2\"\n")!;
 
         Assert.AreEqual(Status.Archived, model.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="YamlSerializationException" /> at the scalar, with its line, column, offset and path, when the scalar
+    /// is not an integer but its text holds one, alone or as one of its comma-separated parts, rather than binding the
+    /// integer it holds.
+    /// </summary>
+    /// <param name="scalar">The scalar, as the document spells it.</param>
+    /// <param name="offset">
+    /// The zero-based offset of the scalar on its line, which is also its offset in the document: after
+    /// <c>Flags: </c>, and after the tag of a tagged scalar.
+    /// </param>
+    [TestMethod]
+    [DataRow("\"2\"", 7, DisplayName = "the double-quoted digits of a defined value")]
+    [DataRow("'99'", 7, DisplayName = "the single-quoted digits of an undefined value")]
+    [DataRow("!!str 2", 13, DisplayName = "digits tagged as a string")]
+    [DataRow("\" +2 \"", 7, DisplayName = "a signed integer between spaces")]
+    [DataRow("\"-1\"", 7, DisplayName = "a negative integer")]
+    [DataRow("\"2\\0\"", 7, DisplayName = "an integer followed by a null character")]
+    [DataRow("1, 2", 7, DisplayName = "a list of integers")]
+    [DataRow("Read, 2", 7, DisplayName = "a member name and an integer")]
+    [DataRow("18446744073709551616", 7, DisplayName = "a plain integer beyond 64 bits")]
+    [DataRow("2.0", 7, DisplayName = "an integral float")]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndScalarHoldsInteger_ShouldThrowYamlSerializationException(
+        string scalar,
+        int offset)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        string document = $"Flags: {scalar}\n";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<FlagsModel>(document, options);
+        });
+
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(offset + 1, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(offset, ex.Offset, "Offset");
+        Assert.AreEqual("Flags", ex.Path, "Path");
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter{TEnum}" /> configured to reject integer values throws
+    /// <see cref="YamlSerializationException" /> when the scalar's text holds an integer, as the converter the
+    /// non-generic factory produces does.
+    /// </summary>
+    /// <param name="scalar">The scalar, as the document spells it.</param>
+    [TestMethod]
+    [DataRow("\"2\"", DisplayName = "the double-quoted digits of a defined value")]
+    [DataRow("Read, 2", DisplayName = "a member name and an integer")]
+    public void Deserialize_WhenGenericStringEnumConverterDisallowsIntegersAndScalarHoldsInteger_ShouldThrowYamlSerializationException(
+        string scalar)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter<PermissionFlags>(namingPolicy: null, allowIntegerValues: false));
+        string document = $"Flags: {scalar}\n";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<FlagsModel>(document, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values still binds a string
+    /// scalar that is a member's wire name when that name is an integer's text, because the wire names are matched
+    /// before the text is checked for an integer.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndWireNameIsInteger_ShouldBindMember()
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        MedalModel model = YamlSerializer.Deserialize<MedalModel>("Medal: '1'\n", options)!;
+
+        Assert.AreEqual(Medal.Gold, model.Medal);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values writes a member whose
+    /// wire name is an integer's text as a quoted string scalar, which reads back as that member rather than as an
+    /// integer.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStringEnumConverterDisallowsIntegersAndWireNameIsInteger_ShouldRoundTripMember()
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        string text = YamlSerializer.Serialize(new MedalModel { Medal = Medal.Gold }, options);
+
+        Assert.AreEqual("Medal: \"1\"\n", text);
+
+        MedalModel roundTripped = YamlSerializer.Deserialize<MedalModel>(text, options)!;
+        Assert.AreEqual(Medal.Gold, roundTripped.Medal);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to allow integer values binds a scalar whose
+    /// text holds an integer as the value it holds, as the default handling does.
+    /// </summary>
+    /// <param name="scalar">The scalar, as the document spells it.</param>
+    /// <param name="expected">The underlying value the scalar holds.</param>
+    [TestMethod]
+    [DataRow("\"2\"", 2, DisplayName = "the double-quoted digits of a defined value")]
+    [DataRow("'99'", 99, DisplayName = "the single-quoted digits of an undefined value")]
+    [DataRow("\" +2 \"", 2, DisplayName = "a signed integer between spaces")]
+    [DataRow("2.0", 2, DisplayName = "an integral float")]
+    public void Deserialize_WhenStringEnumConverterAllowsIntegersAndScalarHoldsInteger_ShouldBindValue(string scalar, int expected)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: true));
+
+        FlagsModel model = YamlSerializer.Deserialize<FlagsModel>($"Flags: {scalar}\n", options)!;
+
+        Assert.AreEqual((PermissionFlags)expected, model.Flags);
     }
 
     /// <summary>
@@ -338,6 +544,94 @@ public partial class YamlSerializerTests
 
         FlagsModel roundTripped = YamlSerializer.Deserialize<FlagsModel>(text)!;
         Assert.AreEqual(PermissionFlags.Write, roundTripped.Flags);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="YamlSerializationException" />, naming the value and the enumeration, when it writes a value that is
+    /// not a member, rather than writing the value's decimal text, which it would reject on read.
+    /// </summary>
+    /// <param name="value">The underlying value, which no member of <see cref="Status" /> has.</param>
+    [TestMethod]
+    [DataRow(99, DisplayName = "an undefined value")]
+    [DataRow(-1, DisplayName = "a negative undefined value")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndValueIsUndefined_ShouldThrowYamlSerializationException(
+        int value)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        var model = new StatusModel { Status = (Status)value };
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(Status).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="YamlSerializationException" />, naming the value and the enumeration, when it writes a flags value
+    /// with a bit that no member defines, which is not a combination of defined flags.
+    /// </summary>
+    /// <param name="value">
+    /// The underlying value, with a bit that no member of <see cref="PermissionFlags" /> defines.
+    /// </param>
+    [TestMethod]
+    [DataRow(4, DisplayName = "an undefined flag")]
+    [DataRow(7, DisplayName = "defined flags with an undefined flag")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndFlagIsUndefined_ShouldThrowYamlSerializationException(
+        int value)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter<PermissionFlags>(namingPolicy: null, allowIntegerValues: false));
+        var model = new FlagsModel { Flags = (PermissionFlags)value };
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(PermissionFlags).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values still writes a
+    /// combination of defined flags as its comma-separated member list, and the zero-valued member as its name.
+    /// </summary>
+    /// <param name="value">The underlying value, a combination of defined flags.</param>
+    /// <param name="expected">The expected YAML document.</param>
+    [TestMethod]
+    [DataRow(3, "Flags: Read, Write\n", DisplayName = "two defined flags")]
+    [DataRow(0, "Flags: None\n", DisplayName = "the zero-valued member")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndFlagsAreDefined_ShouldWriteNames(int value, string expected)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        string text = YamlSerializer.Serialize(new FlagsModel { Flags = (PermissionFlags)value }, options);
+
+        Assert.AreEqual(expected, text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to allow integer values writes a value that is
+    /// not a member as its quoted decimal text, as the default handling does.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterAllowsIntegersAndValueIsUndefined_ShouldWriteDecimalText()
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: true));
+
+        string text = YamlSerializer.Serialize(new StatusModel { Status = (Status)99 }, options);
+
+        Assert.AreEqual("Status: \"99\"\n", text);
     }
 
     /// <summary>
@@ -828,6 +1122,35 @@ public partial class YamlSerializerTests
         /// </summary>
         /// <value>The flags.</value>
         public PermissionFlags Flags { get; set; }
+    }
+
+    /// <summary>
+    /// An enumeration one of whose members is written under a name that is an integer's text.
+    /// </summary>
+    private enum Medal
+    {
+        /// <summary>
+        /// The gold medal, written under the name <c>1</c>, with underlying value <c>5</c>.
+        /// </summary>
+        [StringEnumMemberName("1")]
+        Gold = 5,
+
+        /// <summary>
+        /// The silver medal, with underlying value <c>6</c>.
+        /// </summary>
+        Silver = 6,
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="Medal" /> value.
+    /// </summary>
+    private sealed class MedalModel
+    {
+        /// <summary>
+        /// Gets or sets the medal.
+        /// </summary>
+        /// <value>The medal.</value>
+        public Medal Medal { get; set; }
     }
 
     /// <summary>
