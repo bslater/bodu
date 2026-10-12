@@ -7,78 +7,75 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Loads embedded RBA fixtures used by the <c>Bodu.Financial.ExchangeRates.Rba</c> test suite.
+/// Serves the synthetic workbook of each RBA era, which <see cref="RbaTestWorkbook" /> generates the first time a test
+/// asks for it, to the <c>Bodu.Financial.ExchangeRates.Rba</c> test suite.
 /// </summary>
+/// <remarks>
+/// Each workbook is named, as the RBA names its own, by <see cref="RbaEraWorkbook.FileName" />, and is built once and
+/// shared. <see cref="GetSheet" /> returns the content it was built from, from which a test computes what the provider
+/// should read.
+/// </remarks>
 internal static class RbaFixtures
 {
-    /// <summary>The prefix under which fixtures are embedded.</summary>
-    private const string ResourcePrefix = "Bodu.Financial.ExchangeRates.Rba.Fixtures.";
-
-    /// <summary>The file name of the real-world sample RBA workbook (the 2023-to-current era). The fixture is embedded under the RBA's own file name so it matches both <see cref="RbaEraWorkbook.FileName" /> and a known-answer row's source file.</summary>
+    /// <summary>The file name of the sample workbook, the open-ended 2023-to-current era's.</summary>
     public const string Sample = "2023-current.xls";
 
-    /// <summary>The file name of the embedded known-answer data set.</summary>
-    public const string KnownAnswerData = "rba-known-answers.json";
+    /// <summary>
+    /// The content and bytes of each era's workbook, keyed by the era's file name and built on first use.
+    /// </summary>
+    private static readonly Dictionary<string, Lazy<(RbaTestSheet Sheet, byte[] Bytes)>> s_workbooks =
+        RbaEraWorkbook.Default.ToDictionary(
+            static era => era.FileName,
+            static era => new Lazy<(RbaTestSheet Sheet, byte[] Bytes)>(() =>
+            {
+                RbaTestSheet sheet = RbaTestWorkbook.CreateSheet(era);
+                return (sheet, RbaTestWorkbook.Build(sheet));
+            }),
+            StringComparer.Ordinal);
 
     /// <summary>
-    /// Reads the raw bytes of an embedded fixture.
+    /// Returns the content an era's workbook was built from.
     /// </summary>
-    /// <param name="fileName">The fixture file name, for example <c>2023-current.xls</c>.</param>
-    /// <returns>The fixture content.</returns>
+    /// <param name="fileName">The workbook file name, for example <c>2023-current.xls</c>.</param>
+    /// <returns>The content of the workbook.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the fixture is not embedded in the test assembly.
+    /// Thrown when no era of <see cref="RbaEraWorkbook.Default" /> has the file name.
     /// </exception>
-    public static byte[] ReadBytes(string fileName)
-    {
-        using Stream stream = OpenResource(fileName);
-        using MemoryStream buffer = new();
-        stream.CopyTo(buffer);
-
-        return buffer.ToArray();
-    }
+    public static RbaTestSheet GetSheet(string fileName) =>
+        GetWorkbook(fileName).Sheet;
 
     /// <summary>
-    /// Opens an embedded fixture as a seekable, read-only stream.
+    /// Reads the bytes of an era's workbook.
     /// </summary>
-    /// <param name="fileName">The fixture file name, for example <c>2023-current.xls</c>.</param>
-    /// <returns>A <see cref="MemoryStream" /> positioned at the start of the fixture content.</returns>
+    /// <param name="fileName">The workbook file name, for example <c>2023-current.xls</c>.</param>
+    /// <returns>A copy of the workbook's bytes, which the caller may keep or change.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when no era of <see cref="RbaEraWorkbook.Default" /> has the file name.
+    /// </exception>
+    public static byte[] ReadBytes(string fileName) =>
+        [.. GetWorkbook(fileName).Bytes];
+
+    /// <summary>
+    /// Opens an era's workbook as a seekable, read-only stream.
+    /// </summary>
+    /// <param name="fileName">The workbook file name, for example <c>2023-current.xls</c>.</param>
+    /// <returns>A <see cref="MemoryStream" /> positioned at the start of the workbook.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when no era of <see cref="RbaEraWorkbook.Default" /> has the file name.
+    /// </exception>
     public static MemoryStream OpenStream(string fileName) =>
-        new(ReadBytes(fileName), writable: false);
+        new(GetWorkbook(fileName).Bytes, writable: false);
 
     /// <summary>
-    /// Reads the text of an embedded fixture, stripping any byte-order mark.
+    /// Returns the content and bytes of an era's workbook, building them on first use.
     /// </summary>
-    /// <param name="fileName">The fixture file name, for example <c>rba-known-answers.json</c>.</param>
-    /// <returns>The fixture text.</returns>
+    /// <param name="fileName">The workbook file name.</param>
+    /// <returns>The content and bytes of the workbook.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the fixture is not embedded in the test assembly.
+    /// Thrown when no era of <see cref="RbaEraWorkbook.Default" /> has the file name.
     /// </exception>
-    public static string ReadText(string fileName)
-    {
-        using Stream stream = OpenResource(fileName);
-        using StreamReader reader = new(stream);
-
-        return reader.ReadToEnd();
-    }
-
-    /// <summary>
-    /// Lists the workbook (<c>.xls</c>) fixtures currently embedded in the test assembly.
-    /// </summary>
-    /// <returns>The set of embedded workbook file names, compared without case sensitivity.</returns>
-    public static IReadOnlySet<string> EmbeddedWorkbookFileNames() =>
-        typeof(RbaFixtures).Assembly.GetManifestResourceNames()
-            .Where(name => name.StartsWith(ResourcePrefix, StringComparison.Ordinal)
-                && name.EndsWith(".xls", StringComparison.OrdinalIgnoreCase))
-            .Select(name => name[ResourcePrefix.Length..])
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>
-    /// Opens the embedded resource for a fixture file name.
-    /// </summary>
-    /// <param name="fileName">The fixture file name.</param>
-    /// <returns>The resource stream.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the fixture is not embedded.</exception>
-    private static Stream OpenResource(string fileName) =>
-        typeof(RbaFixtures).Assembly.GetManifestResourceStream(ResourcePrefix + fileName)
-            ?? throw new InvalidOperationException($"Missing embedded fixture '{ResourcePrefix + fileName}'.");
+    private static (RbaTestSheet Sheet, byte[] Bytes) GetWorkbook(string fileName) =>
+        s_workbooks.TryGetValue(fileName, out Lazy<(RbaTestSheet Sheet, byte[] Bytes)>? workbook)
+            ? workbook.Value
+            : throw new InvalidOperationException($"No RBA era has the workbook '{fileName}'.");
 }

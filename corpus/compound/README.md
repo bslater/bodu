@@ -292,8 +292,8 @@ pass on net8.0 and net10.0. The fixes, by issue:
 - **#959** The documentation says names match case-insensitively, as [MS-CFB] 2.6.4 compares them, and names only the
   `olefile` cross-check the tests run.
 - **#960** The Reserve Bank of Australia workbook committed as the compound tests' sample, the Excel binary tests'
-  sample and the two samples' data is replaced by containers and workbooks they build; the RBA provider's own fixture is
-  left to a separate decision.
+  sample and the two samples' data is replaced by containers and workbooks they build. The RBA provider's own fixtures,
+  left to a separate decision here, were replaced in #1008 by workbooks the provider's tests generate.
 - **#961** Property identifiers read as unsigned 32-bit values (PID_LOCALE and PID_BEHAVIOR included), and a length,
   offset or count past the data is malformed rather than an `OverflowException`.
 - **#962** A property whose type carries `VT_ARRAY`, `VT_BYREF` or `VT_RESERVED` is dropped.

@@ -23,7 +23,7 @@ public class RbaXlsRateTableSourceTests
     public async Task GetTableAsync_ShouldDownloadAndParse()
     {
         RbaRateProviderOptions options = new();
-        StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
+        StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(s_immutableEra.FileName));
         using HttpClient client = new(handler);
         RbaXlsRateTableSource source = new(client, options, NullByteCache<RbaEraWorkbook>.Instance);
 
@@ -37,13 +37,13 @@ public class RbaXlsRateTableSourceTests
     /// Verifies that a cached immutable era is served from disk on the second request without re-downloading.
     /// </summary>
     [TestMethod]
-    public async Task GetTableAsync_Whens_immutableEraCached_ShouldNotRefetch()
+    public async Task GetTableAsync_WhenImmutableEraCached_ShouldNotRefetch()
     {
         string directory = Path.Combine(Path.GetTempPath(), "bodu-rba-src-" + Guid.NewGuid().ToString("N"));
         try
         {
             RbaRateProviderOptions options = new();
-            StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(RbaFixtures.Sample));
+            StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(s_immutableEra.FileName));
             using HttpClient client = new(handler);
             RbaXlsRateTableSource source = new(client, options, new FileSystemRbaWorkbookCache(directory));
 

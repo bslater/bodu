@@ -26,7 +26,7 @@ public partial class FileSystemRbaWorkbookCacheTests
     /// Verifies that the open-ended current era expires once its cached copy is older than the refresh interval.
     /// </summary>
     [TestMethod]
-    public void TryGet_Whens_currentEraOlderThanRefreshInterval_ShouldReturnMiss()
+    public void TryGet_WhenCurrentEraOlderThanRefreshInterval_ShouldReturnMiss()
     {
         FileSystemRbaWorkbookCache cache = new(_directory);
         cache.Store(s_currentEra, new byte[] { 1, 2, 3 });
@@ -43,7 +43,7 @@ public partial class FileSystemRbaWorkbookCacheTests
     /// Verifies that an immutable era is served from the cache regardless of age.
     /// </summary>
     [TestMethod]
-    public void TryGet_Whens_immutableEraIsOld_ShouldStillReturnHit()
+    public void TryGet_WhenImmutableEraIsOld_ShouldStillReturnHit()
     {
         FileSystemRbaWorkbookCache cache = new(_directory);
         cache.Store(s_immutableEra, new byte[] { 9 });

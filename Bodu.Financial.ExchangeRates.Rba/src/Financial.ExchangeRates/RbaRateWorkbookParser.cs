@@ -22,8 +22,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// Header rows are located by their label rather than a fixed position so the parser tolerates the minor layout
-/// differences between RBA era files. A workbook that does not match the expected shape raises
-/// <see cref="ExchangeRateFormatException" />.
+/// differences between RBA era files, and the <c>Data</c> sheet by its name compared without regard to case. A data row
+/// is a row whose first cell holds a serial that names a date; a row whose first cell holds any other number (NaN, an
+/// infinity, or a serial outside the range of OLE Automation dates) is skipped. A workbook that does not match the
+/// expected shape, or has no data row, raises <see cref="ExchangeRateFormatException" />.
 /// </para>
 /// </remarks>
 internal static class RbaRateWorkbookParser
@@ -63,10 +65,10 @@ internal static class RbaRateWorkbookParser
         ThrowHelper.ThrowIfNull(workbook);
         ThrowHelper.ThrowIfNull(options);
 
-        if (!HasDataSheet(workbook))
-            throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaDataSheetMissing);
+        ExcelWorksheetInfo dataSheet = FindDataSheet(workbook)
+            ?? throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaDataSheetMissing);
 
-        Dictionary<(int Row, int Column), ExcelCell> grid = BuildGrid(workbook);
+        Dictionary<(int Row, int Column), ExcelCell> grid = BuildGrid(workbook, dataSheet);
 
         int unitsRow = FindLabelRow(grid, UnitsLabel);
         int seriesIdRow = FindLabelRow(grid, SeriesIdLabel);
@@ -76,7 +78,7 @@ internal static class RbaRateWorkbookParser
         if (unitsRow < 0 && titleRow < 0)
             throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaHeaderRows);
 
-        List<int> dataRows = FindDataRows(grid);
+        List<(int Row, DateOnly Date)> dataRows = FindDataRows(grid);
         if (dataRows.Count == 0)
             throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaNoDataRows);
 
@@ -87,30 +89,33 @@ internal static class RbaRateWorkbookParser
     }
 
     /// <summary>
-    /// Reports whether the workbook contains a sheet named <c>Data</c>.
+    /// Finds the workbook's <c>Data</c> sheet, comparing sheet names without regard to case.
     /// </summary>
     /// <param name="workbook">The workbook to inspect.</param>
-    /// <returns><see langword="true" /> when a <c>Data</c> sheet exists; otherwise <see langword="false" />.</returns>
-    private static bool HasDataSheet(ExcelBinaryWorkbook workbook)
+    /// <returns>The first sheet named <c>Data</c> in any case, or <see langword="null" /> when there is none.</returns>
+    private static ExcelWorksheetInfo? FindDataSheet(ExcelBinaryWorkbook workbook)
     {
         foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
         {
             if (string.Equals(sheet.Name, DataSheetName, StringComparison.OrdinalIgnoreCase))
-                return true;
+                return sheet;
         }
 
-        return false;
+        return null;
     }
 
     /// <summary>
     /// Reads the <c>Data</c> sheet into a position-keyed cell grid.
     /// </summary>
     /// <param name="workbook">The workbook to read.</param>
+    /// <param name="dataSheet">The sheet <see cref="FindDataSheet" /> matched, opened by its index.</param>
     /// <returns>A dictionary mapping each populated cell's (row, column) to its value.</returns>
-    private static Dictionary<(int Row, int Column), ExcelCell> BuildGrid(ExcelBinaryWorkbook workbook)
+    private static Dictionary<(int Row, int Column), ExcelCell> BuildGrid(
+        ExcelBinaryWorkbook workbook,
+        ExcelWorksheetInfo dataSheet)
     {
         Dictionary<(int Row, int Column), ExcelCell> grid = new();
-        using ExcelWorksheetReader reader = workbook.OpenWorksheet(DataSheetName);
+        using ExcelWorksheetReader reader = workbook.OpenWorksheet(dataSheet.Index);
         while (reader.TryReadCell(out ExcelCell cell))
             grid[(cell.RowIndex, cell.ColumnIndex)] = cell;
 
@@ -139,21 +144,54 @@ internal static class RbaRateWorkbookParser
     }
 
     /// <summary>
-    /// Finds the rows whose first column holds a number, which mark the data (date) rows.
+    /// Finds the data rows: the rows whose first column holds a serial that names a date.
     /// </summary>
     /// <param name="grid">The cell grid.</param>
-    /// <returns>The data row indices in ascending order.</returns>
-    private static List<int> FindDataRows(Dictionary<(int Row, int Column), ExcelCell> grid)
+    /// <returns>The data rows' indices and dates, in ascending row order.</returns>
+    private static List<(int Row, DateOnly Date)> FindDataRows(Dictionary<(int Row, int Column), ExcelCell> grid)
     {
-        List<int> rows = new();
+        List<(int Row, DateOnly Date)> rows = new();
         foreach (KeyValuePair<(int Row, int Column), ExcelCell> entry in grid)
         {
-            if (entry.Key.Column == 0 && entry.Value.Kind == ExcelCellKind.Number)
-                rows.Add(entry.Key.Row);
+            if (entry.Key.Column == 0 &&
+                entry.Value.Kind == ExcelCellKind.Number &&
+                TryGetDate(entry.Value.NumberValue!.Value, out DateOnly date))
+            {
+                rows.Add((entry.Key.Row, date));
+            }
         }
 
-        rows.Sort();
+        rows.Sort(static (left, right) => left.Row.CompareTo(right.Row));
         return rows;
+    }
+
+    /// <summary>
+    /// Attempts to read the serial in a row's first cell as the row's date.
+    /// </summary>
+    /// <param name="serial">The serial the first cell holds.</param>
+    /// <param name="date">
+    /// When this method returns <see langword="true" />, the date <paramref name="serial" /> names; otherwise the
+    /// default date.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="serial" /> names a date; <see langword="false" /> when it is NaN,
+    /// an infinity, or outside the range of OLE Automation dates.
+    /// </returns>
+    private static bool TryGetDate(double serial, out DateOnly date)
+    {
+        try
+        {
+            date = ExcelSerialDate.FromSerialDate(serial);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            // FromSerialDate documents ArgumentException for a serial outside the range of OLE Automation dates, the
+            // range DateTime.FromOADate checks, which NaN and the infinities fail too: such a cell holds a number but
+            // names no date.
+            date = default;
+            return false;
+        }
     }
 
     /// <summary>
@@ -208,22 +246,17 @@ internal static class RbaRateWorkbookParser
     /// Builds the dated rows, reading each series' cell as a recovered decimal rate.
     /// </summary>
     /// <param name="grid">The cell grid.</param>
-    /// <param name="dataRows">The data row indices in ascending order.</param>
+    /// <param name="dataRows">The data rows' indices and dates, in ascending row order.</param>
     /// <param name="series">The currency series.</param>
     /// <returns>The dated rows, aligned to <paramref name="series" />.</returns>
     private static List<RbaRateRow> BuildRows(
         Dictionary<(int Row, int Column), ExcelCell> grid,
-        List<int> dataRows,
+        List<(int Row, DateOnly Date)> dataRows,
         List<RbaRateSeries> series)
     {
         List<RbaRateRow> rows = new(dataRows.Count);
-        foreach (int row in dataRows)
+        foreach ((int row, DateOnly date) in dataRows)
         {
-            double serial = grid[(row, 0)].NumberValue!.Value;
-            if (!double.IsFinite(serial))
-                continue;
-
-            DateOnly date = ExcelSerialDate.FromSerialDate(serial);
             decimal?[] values = new decimal?[series.Count];
             for (int i = 0; i < series.Count; i++)
             {
