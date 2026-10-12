@@ -43,6 +43,39 @@ public sealed partial class EncodingExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="EncodingExtensions.WithExceptionFallbacks(System.Text.Encoding)" /> returns a clone
+    /// of the supplied instance, keeping its settings: a <see cref="System.Text.UTF8Encoding" /> constructed without a
+    /// byte order mark still emits none.
+    /// </summary>
+    [TestMethod]
+    public void WithExceptionFallbacks_WhenEncodingOmitsByteOrderMark_ShouldReturnCloneThatOmitsIt()
+    {
+        var source = new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+
+        System.Text.Encoding strict = source.WithExceptionFallbacks();
+
+        Assert.IsInstanceOfType<System.Text.UTF8Encoding>(strict);
+        Assert.AreEqual(0, strict.GetPreamble().Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EncodingExtensions.WithExceptionFallbacks(System.Text.Encoding)" /> returns a clone
+    /// of a custom <see cref="System.Text.Encoding" /> subclass rather than looking its code page up in the registry.
+    /// </summary>
+    [TestMethod]
+    public void WithExceptionFallbacks_WhenEncodingIsCustomSubclass_ShouldReturnCloneOfSameType()
+    {
+        var source = new NonUtfNonAsciiTestEncoding();
+
+        System.Text.Encoding strict = source.WithExceptionFallbacks();
+
+        Assert.IsInstanceOfType<NonUtfNonAsciiTestEncoding>(strict);
+        Assert.AreNotSame(source, strict);
+        Assert.IsInstanceOfType<System.Text.EncoderExceptionFallback>(strict.EncoderFallback);
+        Assert.IsInstanceOfType<System.Text.DecoderExceptionFallback>(strict.DecoderFallback);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="EncodingExtensions.WithExceptionFallbacks(System.Text.Encoding)" /> throws
     /// <see cref="ArgumentNullException" /> when <c>encoding</c> is <see langword="null" />.
     /// </summary>
@@ -69,6 +102,40 @@ public sealed partial class EncodingExtensionsTests
         byte[] encoded = replacing.GetBytes("aéb");
 
         Assert.AreEqual("a?b", System.Text.Encoding.ASCII.GetString(encoded));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EncodingExtensions.WithReplacementFallbacks(System.Text.Encoding, string, string)" />
+    /// returns a clone of the supplied instance, keeping its settings: a <see cref="System.Text.UTF8Encoding" />
+    /// constructed without a byte order mark still emits none.
+    /// </summary>
+    [TestMethod]
+    public void WithReplacementFallbacks_WhenEncodingOmitsByteOrderMark_ShouldReturnCloneThatOmitsIt()
+    {
+        var source = new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+
+        System.Text.Encoding replacing = source.WithReplacementFallbacks();
+
+        Assert.IsInstanceOfType<System.Text.UTF8Encoding>(replacing);
+        Assert.AreEqual(0, replacing.GetPreamble().Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EncodingExtensions.WithReplacementFallbacks(System.Text.Encoding, string, string)" />
+    /// returns a clone of a custom <see cref="System.Text.Encoding" /> subclass rather than looking its code page up
+    /// in the registry.
+    /// </summary>
+    [TestMethod]
+    public void WithReplacementFallbacks_WhenEncodingIsCustomSubclass_ShouldReturnCloneOfSameType()
+    {
+        var source = new NonUtfNonAsciiTestEncoding();
+
+        System.Text.Encoding replacing = source.WithReplacementFallbacks();
+
+        Assert.IsInstanceOfType<NonUtfNonAsciiTestEncoding>(replacing);
+        Assert.AreNotSame(source, replacing);
+        Assert.IsInstanceOfType<System.Text.EncoderReplacementFallback>(replacing.EncoderFallback);
+        Assert.IsInstanceOfType<System.Text.DecoderReplacementFallback>(replacing.DecoderFallback);
     }
 
     /// <summary>
