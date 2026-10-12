@@ -141,10 +141,11 @@ flows. Three explicit shapes distinguish caller intent:
 - `Upsert(date, rate)` - insert-or-replace; the right shape for merge
   semantics.
 
-Each has a `Try`-prefixed `bool` sibling. Bulk import uses `AddRange`
-(rejects duplicates outright) and `UpsertRange` (replaces existing
-dates; rejects in-batch duplicates). Both apply atomic rollback: a
-mid-batch validation failure leaves the builder unchanged.
+`Add` and `Set` each have a `Try`-prefixed `bool` sibling (`TryAdd`,
+`TrySet`). Bulk import uses `AddRange` (rejects duplicates outright)
+and `UpsertRange` (replaces existing dates; rejects in-batch
+duplicates). Both apply atomic rollback: a mid-batch validation
+failure leaves the builder unchanged.
 
 <!-- compile -->
 ```csharp

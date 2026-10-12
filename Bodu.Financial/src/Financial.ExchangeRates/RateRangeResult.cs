@@ -117,7 +117,7 @@ public sealed class RateRangeResult
     /// Gets the observation at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index.</param>
-    /// <returns>The observation at <paramref name="index" />.</returns>
+    /// <value>The observation at <paramref name="index" />.</value>
     public ExchangeRate this[int index] => Rates[index];
 
     /// <summary>

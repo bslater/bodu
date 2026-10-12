@@ -35,7 +35,7 @@ public sealed class DateRangeCoverage
     /// <summary>
     /// Gets the recorded intervals in ascending order.
     /// </summary>
-    /// <returns>The disjoint inclusive intervals that make up the coverage, ordered by start date.</returns>
+    /// <value>The disjoint inclusive intervals that make up the coverage, ordered by start date.</value>
     public IReadOnlyList<(DateOnly Start, DateOnly End)> Intervals => _intervals.AsReadOnly();
 
     /// <summary>

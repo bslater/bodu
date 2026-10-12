@@ -30,7 +30,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// // Construct directly from a handful of observations (one provider per pair).
 /// var provider = new FixedDatedRateProvider(new[]
@@ -86,10 +87,11 @@ public sealed class FixedDatedRateProvider
     /// series for the pair wins; providers absent from the list are unreachable through this provider.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="book" /> or <paramref name="providerPriority" /> is <see langword="null" />.
+    /// Thrown if <paramref name="book" /> or <paramref name="providerPriority" /> is <see langword="null" />, or if
+    /// <paramref name="providerPriority" /> contains a <see langword="null" /> entry.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="providerPriority" /> is empty or contains a null/whitespace entry.
+    /// Thrown if <paramref name="providerPriority" /> is empty or contains an empty or white-space entry.
     /// </exception>
     public FixedDatedRateProvider(RateBook book, IEnumerable<string> providerPriority)
     {

@@ -31,7 +31,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// var series = new RateSeries(
 ///     new CurrencyPair(CurrencyCode.USD, CurrencyCode.EUR),
@@ -70,8 +71,8 @@ public sealed class RateSeries
     /// Thrown if <paramref name="provider" /> or <paramref name="rates" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space, if <paramref name="rates" /> is empty, or if it
-    /// contains duplicate dates.
+    /// Thrown if <paramref name="pair" /> is the default-struct value, if <paramref name="provider" /> is empty or
+    /// white-space, if <paramref name="rates" /> is empty, or if it contains duplicate dates.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if any rate in <paramref name="rates" /> is zero or negative.
@@ -109,8 +110,8 @@ public sealed class RateSeries
     /// Thrown if <paramref name="provider" /> or <paramref name="observations" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="provider" /> is empty or white-space, if <paramref name="observations" /> is empty, or
-    /// if it contains duplicate dates.
+    /// Thrown if <paramref name="pair" /> is the default-struct value, if <paramref name="provider" /> is empty or
+    /// white-space, if <paramref name="observations" /> is empty, or if it contains duplicate dates.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if any rate in <paramref name="observations" /> is zero or negative.
@@ -226,11 +227,14 @@ public sealed class RateSeries
     public IEnumerable<RateObservation> GetObservations() => _storage.Enumerate();
 
     /// <summary>
-    /// Returns a new series with the observation for <paramref name="date" /> upserted to <paramref name="rate" />.
+    /// Returns a series with the observation for <paramref name="date" /> upserted to <paramref name="rate" />.
     /// </summary>
     /// <param name="date">The observation date to insert or update.</param>
     /// <param name="rate">The rate to record on <paramref name="date" />.</param>
-    /// <returns>A new <see cref="RateSeries" /> reflecting the updated observation.</returns>
+    /// <returns>
+    /// A new <see cref="RateSeries" /> reflecting the updated observation, or this instance when
+    /// <paramref name="date" /> already carries an equal rate.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
@@ -253,10 +257,13 @@ public sealed class RateSeries
     }
 
     /// <summary>
-    /// Returns a new series with the observation for <paramref name="date" /> removed if present.
+    /// Returns a series with the observation for <paramref name="date" /> removed if present.
     /// </summary>
     /// <param name="date">The observation date to remove.</param>
-    /// <returns>A new <see cref="RateSeries" /> reflecting the removal.</returns>
+    /// <returns>
+    /// A new <see cref="RateSeries" /> reflecting the removal, or this instance when the series has no observation on
+    /// <paramref name="date" />.
+    /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown if removing the observation would leave the series empty.
     /// </exception>

@@ -24,8 +24,9 @@ public readonly record struct RateSeriesKey
     /// <param name="pair">The currency pair the series describes.</param>
     /// <param name="provider">The non-empty identifier of the publishing source.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="pair" /> is the default-struct value (and therefore carries null ISO codes), or if
-    /// <paramref name="provider" /> is empty or white-space.
+    /// Thrown if <paramref name="pair" /> is the default-struct value (and therefore carries
+    /// <see cref="Currencies.CurrencyCode.None" /> on both sides), or if <paramref name="provider" /> is empty or
+    /// white-space.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.

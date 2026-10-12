@@ -75,7 +75,10 @@ public sealed class RateTableBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     public RateSeriesBuilder GetOrAddSeries(CurrencyPair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);
@@ -106,7 +109,10 @@ public sealed class RateTableBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
@@ -133,7 +139,10 @@ public sealed class RateTableBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     public bool Remove(CurrencyPair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);
@@ -151,7 +160,10 @@ public sealed class RateTableBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     public bool ContainsSeries(CurrencyPair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);
@@ -172,7 +184,10 @@ public sealed class RateTableBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     public bool TryGetBuilder(CurrencyPair pair, string provider, out RateSeriesBuilder? builder)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);
@@ -196,7 +211,10 @@ public sealed class RateTableBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     public bool TryGetSeries(CurrencyPair pair, string provider, out RateSeries? series)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);

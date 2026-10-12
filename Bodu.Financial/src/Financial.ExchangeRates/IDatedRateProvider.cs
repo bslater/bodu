@@ -33,7 +33,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// IDatedRateProvider provider = new FixedDatedRateProvider(new[]
 /// {
@@ -66,8 +67,9 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="options" /> is
-    /// invalid.
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>), or if <paramref name="options" /> is invalid.
     /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown if no rate is available for the request.</exception>
     RateLookupResult GetRate(
@@ -91,8 +93,10 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="options" /> is
-    /// invalid (for example, <see cref="RateDateResolution.Exact" /> with non-zero tolerance).
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>), or if <paramref name="options" /> is invalid (for example,
+    /// <see cref="RateDateResolution.Exact" /> with non-zero tolerance).
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="options" /> contains a negative tolerance or an undefined enum value.
@@ -127,8 +131,9 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="options" /> is
-    /// invalid.
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>, rather than returning <see langword="false" />), or if <paramref name="options" /> is invalid.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="options" /> contains a negative tolerance or an undefined enum value.
@@ -156,8 +161,9 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="endDate" />
-    /// precedes <paramref name="startDate" />.
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>), or if <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
     /// <remarks>
     /// The lookup is range-based and does not apply a date-resolution policy: it returns the observations that exist
@@ -185,8 +191,9 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="options" /> is
-    /// invalid.
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>), or if <paramref name="options" /> is invalid.
     /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown if no rate is available for the request.</exception>
     ValueTask<RateLookupResult> GetRateAsync(
@@ -212,8 +219,9 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="options" /> is
-    /// invalid.
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>), or if <paramref name="options" /> is invalid.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="options" /> contains a negative tolerance or an undefined enum value.
@@ -246,8 +254,9 @@ public interface IDatedRateProvider
     /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if either ISO code is not a three-character uppercase ASCII code, or if <paramref name="endDate" />
-    /// precedes <paramref name="startDate" />.
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member (the in-box providers report the latter with the parameter name
+    /// <c>isoCode</c>), or if <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
     /// <remarks>
     /// The lookup is range-based and does not apply a date-resolution policy: it returns the observations that exist

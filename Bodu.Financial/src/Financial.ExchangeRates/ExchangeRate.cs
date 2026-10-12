@@ -22,7 +22,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// // A single USD -> EUR observation published by "ECB" on a given day.
 /// var rate = new ExchangeRate(
