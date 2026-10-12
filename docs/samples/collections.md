@@ -6,7 +6,7 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for `Bodu.Collections` under
 [`samples/Collections/`](https://github.com/bslater/bodu/tree/master/samples/Collections). All
-three samples are **offline and deterministic** - string-keyed scenarios supply a stable ordinal
+four samples are **offline and deterministic** - string-keyed scenarios supply a stable ordinal
 comparer so that per-process string-hash randomization cannot vary the output - and are members
 of `bodu.slnx`, built and executed by CI, so the code they show cannot drift from the current
 API. Each sample's README documents every scenario individually: its intent, what the code does,
@@ -24,11 +24,13 @@ dotnet run --project samples/Collections/<SampleName>
 
 The general-purpose collections: <xref:Bodu.Collections.Generic.CircularBuffer`1> (overwrite on
 full) and <xref:Bodu.Collections.Generic.Deque`1> with its overflow policy, the
-<xref:Bodu.Collections.Generic.EvictingDictionary`2> bounded cache with its eviction policies
-and `ItemEvicted` order, the `MultiValueDictionary` / `Multiset` / `OrderedSet` / `IndexedSet`
-family, the `BiDictionary` forward/inverse map, the `NavigableSet` / `NavigableDictionary`
-floor/ceiling/lower/higher navigation, and `SequencedDictionary` plus the update-priority
-`IndexedPriorityQueue`. *Package: `Bodu.Collections`.*
+<xref:Bodu.Collections.Generic.EvictingDictionary`2> bounded cache with its eviction policies,
+`ItemEvicted` order, and absolute and sliding TTL expiry, the `MultiValueDictionary` /
+`Multiset` / `OrderedSet` / `IndexedSet` family, the `BiDictionary` forward/inverse map, the
+`NavigableSet` / `NavigableDictionary` floor/ceiling/lower/higher navigation,
+`SequencedDictionary` plus the update-priority `IndexedPriorityQueue`, the `LayeredDictionary`
+and `DefaultingDictionary` decorators, and the sparse two-key `Table` with the append-only
+`SegmentedBuffer`. *Package: `Bodu.Collections`.*
 
 ### Bodu.Collections.Samples.RangesGraphsTrees
 
@@ -45,6 +47,13 @@ comparer so the observed error is reproducible: `BloomFilter<T>` (no false negat
 added set, with one demonstrated false positive), `CountMinSketch<T>` (estimates never fall
 below the true count), and `HyperLogLog<T>` (a distinct-count estimate reported against the true
 cardinality and the ~1.04/√m standard error). *Package: `Bodu.Collections`.*
+
+### Bodu.Collections.Samples.BitSets
+
+<xref:Bodu.Collections.Specialized.BitSet>, the sole member of `Bodu.Collections.Specialized`:
+bit addressing and half-open range mutation, the three size properties that routinely disagree
+(`Cardinality` / `Length` / `Capacity`), the `NextSetBit` / `NextClearBit` scan primitives, and
+the bulk set algebra with content-based equality. *Package: `Bodu.Collections`.*
 
 ## Related
 

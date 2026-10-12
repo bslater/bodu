@@ -124,7 +124,7 @@ The trie family trades on the same idea at two scales:
 
 A **multi-** prefix in this library means *duplicate-aware*:
 
-- <xref:Bodu.Collections.Generic.MultiValueDictionary`2> - sometimes called a multimap. A single key maps to zero or more values; values for the same key are retained in insertion order. `Count` is the total number of key-value entries; `KeyCount` is the number of distinct keys. The indexer returns a live read-only view that reflects later mutations to the same key, and an empty list (not `null`) when the key is absent.
+- <xref:Bodu.Collections.Generic.MultiValueDictionary`2> - sometimes called a multimap. A single key maps to zero or more values; values for the same key are retained in insertion order. `Count` is the total number of key-value entries; `KeyCount` is the number of distinct keys. For a present key the indexer returns a live read-only view that reflects later mutations to that key until the key is removed; for an absent key it returns an empty list (not `null`) that never reflects later adds.
 - <xref:Bodu.Collections.Generic.Multiset`1> - a set that tracks the *multiplicity* of each element. `Count` includes multiplicity (`{a, a, b}` has count 3); `DistinctCount` does not. Set-theoretic operations (`Union`, `Intersect`, `Except`, `Sum`) return new multisets and follow multiset algebra - `Union` is element-wise `max(a, b)`, `Intersect` is `min(a, b)`, `Except` is `max(0, a − b)`, and `Sum` is `a + b`.
 
 Both types are not thread-safe and require external synchronisation under concurrent mutation.
@@ -146,7 +146,7 @@ Both use binary search across the start endpoints for O(log n) lookup. The const
 
 An **index-aware** collection exposes positional access alongside its primary semantic. Two types in `Bodu.Collections.Generic` carry the prefix:
 
-- <xref:Bodu.Collections.Generic.IndexedSet`1> - an insertion-ordered set that implements the full `IList<T>` contract. Duplicates are rejected on add (`Add` returns `false`), positional mutation works through `Insert`, `RemoveAt`, `Move`, and the indexer setter. Backed by a contiguous element array plus an open-addressing hash table, giving O(1) `Contains`, `IndexOf`, and indexed read. <xref:Bodu.Collections.Generic.OrderedSet`1> is the conceptually-a-set sibling that shares the same engine but exposes indices only as a read-only view.
+- <xref:Bodu.Collections.Generic.IndexedSet`1> - an insertion-ordered set that implements the full `IList<T>` contract. Duplicates are rejected on add (`Add` returns `false`), positional mutation works through `Insert`, `RemoveAt`, `Move`, and the indexer setter. Backed by a contiguous element array plus a chained hash table, giving O(1) `Contains`, `IndexOf`, and indexed read. <xref:Bodu.Collections.Generic.OrderedSet`1> is the conceptually-a-set sibling that shares the same engine but exposes indices only as a read-only view.
 - <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> - a binary min-heap that maintains an element-to-slot map alongside the heap. The map turns `Contains`, `TryGetPriority`, `Update`, `Remove`, and `EnqueueOrUpdate` into O(1) lookup plus O(log n) heap repair - the operations Dijkstra's algorithm, Prim's algorithm, and A* require. Elements are unique; `Enqueue` of an existing element throws.
 
 ## Where to go next
