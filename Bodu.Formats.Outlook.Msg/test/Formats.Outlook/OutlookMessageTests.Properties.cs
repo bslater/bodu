@@ -242,4 +242,38 @@ public partial class OutlookMessageTests
 
         Assert.AreEqual("Hi", message.Properties.GetString(MapiPropertyIds.Subject), testName);
     }
+
+    /// <summary>
+    /// Verifies that a <c>String8</c> value under message code page 65000 that begins with the UTF-7 signature
+    /// (<c>+/v8-</c>, a leading U+FEFF once decoded) reads without it.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenUtf7String8BeginsWithTheSignature_ShouldDropIt()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FFD0003, 65000)
+            .AddString8(MapiPropertyIds.Subject, "+/v8-Hi", 1252)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("Hi", message.Properties.GetString(MapiPropertyIds.Subject));
+    }
+
+    /// <summary>
+    /// Verifies that a UTF-7 <c>String8</c> value that does not begin with the signature is unchanged: a U+FEFF after
+    /// the first character (<c>Hi+/v8-</c>) is text, not a signature, and stays.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenUtf7String8DoesNotBeginWithTheSignature_ShouldKeepItsText()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FFD0003, 65000)
+            .AddString8(MapiPropertyIds.Subject, "Hi+/v8-", 1252)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("Hi\uFEFF", message.Properties.GetString(MapiPropertyIds.Subject));
+    }
 }

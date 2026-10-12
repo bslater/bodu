@@ -274,4 +274,52 @@ public partial class OutlookMailMessageTests
 
         Assert.AreEqual("\u00EF\u00BB\u00BF<p>x</p>", GetFullMessage(store).BodyHtml);
     }
+
+    /// <summary>
+    /// Verifies that a binary HTML body under internet code page 65000 that begins with the UTF-7 signature
+    /// (<c>+/v8-</c>, a leading U+FEFF once decoded) reads without it.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenUtf7BodyBeginsWithTheSignature_ShouldDropIt()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.InternetCodePage = 65000;
+            b.HtmlPayloadOverride = "+/v8-<p>x</p>"u8.ToArray();
+        });
+
+        Assert.AreEqual("<p>x</p>", GetFullMessage(store).BodyHtml);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>PT_STRING8</c> body of a message declaring code page 65000 that begins with the UTF-7
+    /// signature (<c>+/v8-</c>, a leading U+FEFF once decoded) reads without it.
+    /// </summary>
+    [TestMethod]
+    public void BodyText_WhenUtf7BodyBeginsWithTheSignature_ShouldDropIt()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.MessageCodePageOverride = 65000;
+            b.BodyPayloadOverride = "+/v8-Hi"u8.ToArray();
+        });
+
+        Assert.AreEqual("Hi", GetFullMessage(store).BodyText);
+    }
+
+    /// <summary>
+    /// Verifies that a UTF-7 <c>PT_STRING8</c> body that does not begin with the signature is unchanged: a U+FEFF after
+    /// the first character (<c>Hi+/v8-</c>) is text, not a signature, and stays.
+    /// </summary>
+    [TestMethod]
+    public void BodyText_WhenUtf7BodyDoesNotBeginWithTheSignature_ShouldKeepItsText()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.MessageCodePageOverride = 65000;
+            b.BodyPayloadOverride = "Hi+/v8-"u8.ToArray();
+        });
+
+        Assert.AreEqual("Hi\uFEFF", GetFullMessage(store).BodyText);
+    }
 }

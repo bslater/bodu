@@ -261,4 +261,21 @@ public partial class OutlookMessageTests
 
         Assert.AreEqual("\u00EF\u00BB\u00BF<p>x</p>", message.BodyHtml);
     }
+
+    /// <summary>
+    /// Verifies that a binary HTML body under internet code page 65000 that begins with the UTF-7 signature
+    /// (<c>+/v8-</c>, a leading U+FEFF once decoded) reads without it.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenUtf7BodyBeginsWithTheSignature_ShouldDropIt()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FDE0003, 65000)
+            .AddBinary(MapiPropertyIds.Html, "+/v8-<p>x</p>"u8.ToArray())
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("<p>x</p>", message.BodyHtml);
+    }
 }
