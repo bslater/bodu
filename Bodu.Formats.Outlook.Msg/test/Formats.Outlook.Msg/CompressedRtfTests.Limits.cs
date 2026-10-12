@@ -118,4 +118,22 @@ public partial class CompressedRtfTests
             _ = CompressedRtf.Decompress(payload, maxOutputBytes: 0);
         });
     }
+
+    /// <summary>
+    /// Verifies that the caller's output ceiling bounds an uncompressed (<c>MELA</c>) payload by the bytes after its
+    /// header, which the decoder returns whatever <c>RAWSIZE</c> declares: 20 bytes declared as 5 are rejected under a
+    /// ceiling of 10 and returned in full under a ceiling of 20.
+    /// </summary>
+    [TestMethod]
+    public void Decompress_WhenUncompressedDataExceedsMaxOutputBytes_ShouldThrowFormatException()
+    {
+        byte[] payload = Convert.FromHexString("20000000050000004d454c4100000000" + HelloWorldRtfHex);
+
+        _ = Assert.ThrowsExactly<ExpectedFormatException>(() =>
+        {
+            _ = CompressedRtf.Decompress(payload, maxOutputBytes: 10);
+        });
+
+        Assert.AreEqual(20, CompressedRtf.Decompress(payload, maxOutputBytes: 20).Length);
+    }
 }

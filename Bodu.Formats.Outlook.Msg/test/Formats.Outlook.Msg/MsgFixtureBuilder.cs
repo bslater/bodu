@@ -374,6 +374,59 @@ internal sealed class MsgFixtureBuilder
     }
 
     /// <summary>
+    /// Breaks the sector chain of a stream in a built container: the FAT entry after the stream's first sector is
+    /// pointed at a sector past the end of the file, so reading the stream beyond that sector fails.
+    /// </summary>
+    /// <param name="file">The container bytes, changed in place.</param>
+    /// <param name="streamName">The name of the stream, which must be stored in regular sectors.</param>
+    /// <remarks>
+    /// The first stream with the name, in directory order, is broken. The header gives the sector shift (offset 30),
+    /// the first directory sector (offset 48) and the FAT sectors (the DIFAT at offset 76), and sector <c>n</c> starts
+    /// at <c>(n + 1)</c> times the sector size (MS-CFB 2.2); a directory entry gives its name length at offset 64, its
+    /// object type at 66 and its starting sector at 116 (MS-CFB 2.6.1).
+    /// </remarks>
+    internal static void BreakStreamChain(byte[] file, string streamName)
+    {
+        const uint EndOfChain = 0xFFFFFFFE;
+        const int EntrySize = 128;
+        int sectorSize = 1 << BinaryPrimitives.ReadUInt16LittleEndian(file.AsSpan(30));
+
+        for (uint sector = ReadUInt32(48); sector != EndOfChain; sector = ReadUInt32(FatEntryOffset(sector)))
+        {
+            int first = SectorOffset(sector);
+            for (int entry = first; entry < first + sectorSize; entry += EntrySize)
+            {
+                int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(file.AsSpan(entry + 64));
+                if (file[entry + 66] != 2 || nameLength < 2)
+                    continue;
+
+                string name = System.Text.Encoding.Unicode.GetString(file, entry, nameLength - 2);
+                if (!string.Equals(name, streamName, StringComparison.Ordinal))
+                    continue;
+
+                uint start = ReadUInt32(entry + 116);
+                BinaryPrimitives.WriteUInt32LittleEndian(file.AsSpan(FatEntryOffset(start)), 0x00FFFFF0);
+                return;
+            }
+        }
+
+        throw new ArgumentException($"The container has no stream named {streamName}.", nameof(streamName));
+
+        uint ReadUInt32(int offset) =>
+            BinaryPrimitives.ReadUInt32LittleEndian(file.AsSpan(offset));
+
+        int SectorOffset(uint sector) =>
+            checked(((int)sector + 1) * sectorSize);
+
+        int FatEntryOffset(uint sector)
+        {
+            int entriesPerFatSector = sectorSize / 4;
+            uint fatSector = ReadUInt32(76 + (checked((int)sector / entriesPerFatSector) * 4));
+            return SectorOffset(fatSector) + (checked((int)sector % entriesPerFatSector) * 4);
+        }
+    }
+
+    /// <summary>
     /// Counts the child storages already added with a name prefix.
     /// </summary>
     /// <param name="prefix">The storage-name prefix.</param>

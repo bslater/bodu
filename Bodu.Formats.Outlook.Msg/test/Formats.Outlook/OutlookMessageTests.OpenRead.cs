@@ -133,4 +133,78 @@ public partial class OutlookMessageTests
             _ = OutlookMessage.OpenRead(container, leaveOpen: true);
         });
     }
+
+    /// <summary>
+    /// Verifies that an empty path throws <see cref="ArgumentException" /> naming the <c>path</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPathIsEmpty_ShouldThrowArgumentException()
+    {
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentException>(
+            () =>
+            {
+                _ = OutlookMessage.OpenRead(string.Empty);
+            },
+            "path");
+    }
+
+    /// <summary>
+    /// Verifies that opening a path whose compound file is not a message (its root holds a <c>WordDocument</c> stream
+    /// and no <c>__properties_version1.0</c>) throws <see cref="OutlookMsgFormatException" /> and leaves the file
+    /// unlocked, because the method disposes the file stream it opened.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenFileIsNotAMessage_ShouldReleaseTheFile()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .OmitPropertiesStream()
+            .AddRawStream("WordDocument", "abc"u8.ToArray())
+            .Build();
+        string path = WriteTemporaryMessage(container);
+
+        try
+        {
+            _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+            {
+                _ = OutlookMessage.OpenRead(path);
+            });
+
+            AssertFileIsReleased(path);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that opening a path whose root property stream is malformed (the 32-byte header, one record and 7
+    /// trailing bytes, which are not a whole record) throws <see cref="OutlookMsgFormatException" /> and leaves the file
+    /// unlocked.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenPropertyStreamIsMalformed_ShouldReleaseTheFile()
+    {
+        MsgFixtureBuilder builder = new MsgFixtureBuilder().AddUnicode(MapiPropertyIds.MessageClass, "IPM.Note");
+        byte[] properties = [.. builder.BuildPropertiesPayload(), .. new byte[7]];
+        using MemoryStream container = builder
+            .OmitPropertiesStream()
+            .AddRawStream(MsgStreamNames.PropertiesStreamName, properties)
+            .Build();
+        string path = WriteTemporaryMessage(container);
+
+        try
+        {
+            _ = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+            {
+                _ = OutlookMessage.OpenRead(path);
+            });
+
+            AssertFileIsReleased(path);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
 }

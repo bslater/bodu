@@ -20,8 +20,13 @@ public sealed partial class OutlookMessage
     /// <value>The attachment list; empty when the message declares no attachments.</value>
     /// <exception cref="ObjectDisposedException">The message has been disposed.</exception>
     /// <exception cref="OutlookMsgFormatException">
-    /// Thrown under strict validation when the attachment storages are inconsistent with the declared count.
+    /// Thrown under strict validation when the attachment storages are inconsistent with the declared count, or an
+    /// attachment storage has no property stream.
     /// </exception>
+    /// <remarks>
+    /// Under the tolerant validation levels an attachment storage with no <c>__properties_version1.0</c> stream is
+    /// omitted from the list.
+    /// </remarks>
     public IReadOnlyList<OutlookAttachment> Attachments
     {
         get

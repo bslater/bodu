@@ -34,8 +34,8 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <value>
     /// The <c>PidTagHtml</c> payload decoded through the message's internet code page (falling back to the message code
-    /// page), or the value verbatim when the writer stored it as a string; <see langword="null" /> when absent. The
-    /// body is decoded once and the same instance returned thereafter.
+    /// page), or the string value when the writer stored it as a string, ending at its first NUL;
+    /// <see langword="null" /> when absent. The body is decoded once and the same instance returned thereafter.
     /// </value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     public string? BodyHtml

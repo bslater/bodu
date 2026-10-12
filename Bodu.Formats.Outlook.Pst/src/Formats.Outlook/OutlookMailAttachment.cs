@@ -106,7 +106,7 @@ public sealed class OutlookMailAttachment
         {
             if (Properties.GetInt32(MapiPropertyIds.AttachMethod) is int value)
             {
-                if (value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.Ole)
+                if (value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.ByWebReference)
                     return (OutlookAttachmentMethod)value;
 
                 if (_store.Strict)
@@ -166,7 +166,8 @@ public sealed class OutlookMailAttachment
     /// <returns>The content stream; dispose it when reading is complete.</returns>
     /// <exception cref="NotSupportedException">
     /// The attachment's <see cref="Method" /> is <see cref="OutlookAttachmentMethod.EmbeddedMessage" /> or
-    /// <see cref="OutlookAttachmentMethod.Ole" /> - the payload is an object, not a byte stream.
+    /// <see cref="OutlookAttachmentMethod.Ole" /> - the payload is an object, not a byte stream - or
+    /// <see cref="OutlookAttachmentMethod.ByWebReference" />, whose content a web service holds.
     /// </exception>
     /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
     /// <remarks>
@@ -176,7 +177,8 @@ public sealed class OutlookMailAttachment
     /// </remarks>
     public Stream OpenContentStream()
     {
-        if (Method is OutlookAttachmentMethod.EmbeddedMessage or OutlookAttachmentMethod.Ole)
+        if (Method is OutlookAttachmentMethod.EmbeddedMessage or OutlookAttachmentMethod.Ole
+            or OutlookAttachmentMethod.ByWebReference)
         {
             throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture, OutlookPstResourceStrings.Op_NotSupported_PstAttachmentContent, Method));

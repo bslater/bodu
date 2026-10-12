@@ -24,7 +24,10 @@ internal static class MsgPropertyStreamReader
     /// <param name="data">The complete stream payload.</param>
     /// <param name="kind">The storage kind, which determines the header size.</param>
     /// <param name="header">When this method returns, the decoded header fields (zeros for kinds without them).</param>
-    /// <returns>The property records in stream order.</returns>
+    /// <returns>
+    /// The property records in stream order. A record whose 16 bytes are all zero is padding, not a property (tag 0
+    /// names none), and is skipped at every validation level.
+    /// </returns>
     /// <exception cref="OutlookMsgFormatException">
     /// The payload is shorter than the header for <paramref name="kind" />, or the bytes after the header are not a
     /// whole number of 16-byte records.
@@ -46,11 +49,24 @@ internal static class MsgPropertyStreamReader
                 BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(16)),
                 BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(20)));
 
-        var entries = new MsgPropertyEntry[(data.Length - headerSize) / EntrySize];
-        for (int i = 0; i < entries.Length; i++)
+        ReadOnlySpan<byte> records = data.Slice(headerSize);
+        int count = records.Length / EntrySize;
+        int padding = 0;
+        for (int i = 0; i < count; i++)
         {
-            ReadOnlySpan<byte> record = data.Slice(headerSize + (i * EntrySize), EntrySize);
-            entries[i] = new MsgPropertyEntry(
+            if (IsPadding(records.Slice(i * EntrySize, EntrySize)))
+                padding++;
+        }
+
+        var entries = new MsgPropertyEntry[count - padding];
+        int next = 0;
+        for (int i = 0; i < count; i++)
+        {
+            ReadOnlySpan<byte> record = records.Slice(i * EntrySize, EntrySize);
+            if (IsPadding(record))
+                continue;
+
+            entries[next++] = new MsgPropertyEntry(
                 BinaryPrimitives.ReadUInt32LittleEndian(record),
                 BinaryPrimitives.ReadUInt32LittleEndian(record.Slice(4)),
                 BinaryPrimitives.ReadUInt64LittleEndian(record.Slice(8)));
@@ -58,6 +74,17 @@ internal static class MsgPropertyStreamReader
 
         return entries;
     }
+
+    /// <summary>
+    /// Determines whether a property record is padding.
+    /// </summary>
+    /// <param name="record">The 16-byte record.</param>
+    /// <returns>
+    /// <see langword="true" /> when every byte is zero: tag 0 names no property, so a record of zeros carries none. A
+    /// tag-0 record with nonzero flags or value is decoded like any other record.
+    /// </returns>
+    private static bool IsPadding(ReadOnlySpan<byte> record) =>
+        !record.ContainsAnyExcept((byte)0);
 
     /// <summary>
     /// Returns the header size for a storage kind.

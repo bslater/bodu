@@ -88,6 +88,15 @@ namespace Bodu.Formats.Outlook {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The Outlook message&apos;s compound-file container is malformed..
+        /// </summary>
+        internal static string Format_Invalid_MsgCompoundMalformed {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgCompoundMalformed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The property entry {0} is malformed or uses an unsupported property type..
         /// </summary>
         internal static string Format_Invalid_MsgPropertyEntry {
@@ -147,6 +156,15 @@ namespace Bodu.Formats.Outlook {
         internal static string Format_Invalid_MsgNameId {
             get {
                 return ResourceManager.GetString("Format_Invalid_MsgNameId", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The named-property mapping storage does not contain the required &apos;{0}&apos; stream..
+        /// </summary>
+        internal static string Format_Invalid_MsgNameIdStreamMissing {
+            get {
+                return ResourceManager.GetString("Format_Invalid_MsgNameIdStreamMissing", resourceCulture);
             }
         }
 

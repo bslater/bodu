@@ -40,4 +40,24 @@ public partial class OutlookMailAttachmentTests
             _ = attachment.Method;
         });
     }
+
+    /// <summary>
+    /// Verifies that a declared <c>afByWebReference</c> (7) method reports as <c>ByWebReference</c> at every validation
+    /// level: it is a defined value, so the tolerant levels do not infer a method from the payload and strict
+    /// validation accepts it.
+    /// </summary>
+    /// <param name="testName">The validation level, by name.</param>
+    /// <param name="level">The validation level the store is opened at.</param>
+    [TestMethod]
+    [DataRow("Compatible", PstValidationLevel.Compatible)]
+    [DataRow("Strict", PstValidationLevel.Strict)]
+    [DataRow("Minimal", PstValidationLevel.Minimal)]
+    public void Method_WhenDeclaredByWebReference_ShouldReportByWebReference(string testName, PstValidationLevel level)
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(
+            static b => b.AttachMethodOverride = 7,
+            level);
+
+        Assert.AreEqual("ByWebReference", GetAttachments(store)[0].Method.ToString(), testName);
+    }
 }

@@ -183,4 +183,36 @@ public partial class OutlookMailStoreTests
 
         Assert.IsTrue(anyStringNamed, "The fixture's populated string stream implies at least one string named entry.");
     }
+
+    /// <summary>
+    /// Verifies that a string name stored with its NUL terminator (<c>Keywords</c> and NUL) ends at the terminator, so
+    /// the name resolves in both directions as <c>Keywords</c>.
+    /// </summary>
+    [TestMethod]
+    public void TryGetPropertyName_WhenStringNameHoldsItsTerminator_ShouldResolveTheNameBeforeIt()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(
+            static b => b.NameMapStringStreamOverride = BuildNameStream("Keywords\0"));
+
+        Assert.IsTrue(store.TryGetPropertyName(
+            new MapiPropertyTag(PstMessagingFixtureBuilder.NamedStringPropertyId, MapiPropertyType.Unicode), out MapiNamedProperty name));
+        Assert.AreEqual("Keywords", name.Name);
+        Assert.IsTrue(store.TryGetNamedPropertyId(
+            new MapiNamedProperty(PstMessagingFixtureBuilder.PublicStringsPropertySetId, "Keywords"), out ushort id));
+        Assert.AreEqual(PstMessagingFixtureBuilder.NamedStringPropertyId, id);
+    }
+
+    /// <summary>
+    /// Builds a name-map string stream holding one length-prefixed UTF-16LE name at offset zero.
+    /// </summary>
+    /// <param name="name">The name, written as given.</param>
+    /// <returns>The stream bytes.</returns>
+    private static byte[] BuildNameStream(string name)
+    {
+        byte[] text = System.Text.Encoding.Unicode.GetBytes(name);
+        var stream = new byte[4 + text.Length];
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(stream, text.Length);
+        text.CopyTo(stream, 4);
+        return stream;
+    }
 }

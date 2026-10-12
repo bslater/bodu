@@ -127,4 +127,199 @@ public partial class OutlookMailMessageTests
             _ = message.BodyRtf;
         });
     }
+
+    /// <summary>
+    /// Verifies that an uncompressed (<c>MELA</c>) RTF body returns every byte after its 16-byte header whatever its CRC
+    /// and declared sizes say, as MS-OXRTFCP 2.2.3.1 requires.
+    /// </summary>
+    /// <param name="testName">The fault in the header.</param>
+    /// <param name="headerHex">The 16-byte header, in hexadecimal, that precedes the 20 bytes of RTF text.</param>
+    [TestMethod]
+    [DataRow("NonZeroCrc", "20000000140000004d454c41f1c5c7a7")]
+    [DataRow("RawSizeAboveData", "20000000200000004d454c4100000000")]
+    [DataRow("CompressedSizeBelowData", "14000000140000004d454c4100000000")]
+    public void BodyRtf_WhenUncompressedHeaderDisagreesWithData_ShouldReturnEveryByteAfterTheHeader(string testName, string headerHex)
+    {
+        byte[] payload = Convert.FromHexString(headerHex + CompressedRtfTests.HelloWorldRtfHex);
+        using OutlookMailStore store = OpenSynthetic(b => b.RtfPayloadOverride = payload);
+
+        Assert.AreEqual(CompressedRtfTests.HelloWorldRtfText, GetFullMessage(store).BodyRtf, testName);
+    }
+
+    /// <summary>
+    /// Verifies that a binary HTML body stored with a NUL terminator decodes to the text before it, while the property
+    /// keeps the bytes as stored.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenBinaryPayloadHoldsATerminator_ShouldEndAtTheTerminator()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b => b.HtmlPayloadOverride = [.. "<p>x</p>"u8, 0x00]);
+
+        OutlookMailMessage message = GetFullMessage(store);
+
+        Assert.AreEqual("<p>x</p>", message.BodyHtml);
+        Assert.AreEqual(9, message.Properties.GetBinary(MapiPropertyIds.Html)!.Value.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a message declaring code page 65000 decodes its <c>PT_STRING8</c> body as UTF-7 (RFC 2152):
+    /// <c>Caf+AOk-</c> reads as <c>Café</c> rather than as its Windows-1252 characters.
+    /// </summary>
+    [TestMethod]
+    public void BodyText_WhenMessageCodePageIsUtf7_ShouldDecodeUtf7()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.MessageCodePageOverride = 65000;
+            b.BodyPayloadOverride = "Caf+AOk-"u8.ToArray();
+        });
+
+        Assert.AreEqual("Café", GetFullMessage(store).BodyText);
+    }
+
+    /// <summary>
+    /// Verifies that a binary HTML body whose internet code page is a UTF-16 or UTF-32 code page decodes through that
+    /// encoding, with or without a terminating NUL code unit, rather than through the message code page or
+    /// Windows-1252.
+    /// </summary>
+    /// <param name="testName">The body's encoding and termination, by name.</param>
+    /// <param name="codePage">The declared internet code page.</param>
+    /// <param name="terminated">Whether the body ends with a NUL code unit.</param>
+    [TestMethod]
+    [DataRow("Utf16LE", 1200, false)]
+    [DataRow("Utf16LETerminated", 1200, true)]
+    [DataRow("Utf16BE", 1201, false)]
+    [DataRow("Utf16BETerminated", 1201, true)]
+    [DataRow("Utf32LE", 12000, false)]
+    [DataRow("Utf32LETerminated", 12000, true)]
+    [DataRow("Utf32BE", 12001, false)]
+    [DataRow("Utf32BETerminated", 12001, true)]
+    public void BodyHtml_WhenInternetCodePageIsUnicode_ShouldDecodeTheBody(
+        string testName,
+        int codePage,
+        bool terminated)
+    {
+        byte[] html = System.Text.Encoding.GetEncoding(codePage).GetBytes(terminated ? "<p>x</p>\0" : "<p>x</p>");
+        using OutlookMailStore store = OpenSynthetic(b =>
+        {
+            b.InternetCodePage = codePage;
+            b.HtmlPayloadOverride = html;
+        });
+
+        Assert.AreEqual("<p>x</p>", GetFullMessage(store).BodyHtml, testName);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>PT_STRING8</c> body of a message declaring a UTF-32 code page, which cannot describe a
+    /// code-page string, decodes through the Windows-1252 fallback: the bytes <c>48 69</c> read as <c>Hi</c> rather
+    /// than as a replacement character.
+    /// </summary>
+    /// <param name="testName">The declared code page, by name.</param>
+    /// <param name="codePage">The declared message code page.</param>
+    [TestMethod]
+    [DataRow("Utf32LE", 12000)]
+    [DataRow("Utf32BE", 12001)]
+    public void BodyText_WhenMessageCodePageIsUtf32_ShouldDecodeThroughTheFallback(string testName, int codePage)
+    {
+        using OutlookMailStore store = OpenSynthetic(b =>
+        {
+            b.MessageCodePageOverride = codePage;
+            b.BodyPayloadOverride = "Hi"u8.ToArray();
+        });
+
+        Assert.AreEqual("Hi", GetFullMessage(store).BodyText, testName);
+    }
+
+    /// <summary>
+    /// Verifies that a binary HTML body that begins with the byte order mark of the code page it decodes through has
+    /// the mark dropped, so the text does not begin with U+FEFF.
+    /// </summary>
+    /// <param name="testName">The encoding, by name.</param>
+    /// <param name="codePage">The declared internet code page.</param>
+    /// <param name="mark">The encoding's byte order mark, in hexadecimal.</param>
+    [TestMethod]
+    [DataRow("Utf8", 65001, "EFBBBF")]
+    [DataRow("Utf16LE", 1200, "FFFE")]
+    [DataRow("Utf16BE", 1201, "FEFF")]
+    [DataRow("Utf32LE", 12000, "FFFE0000")]
+    [DataRow("Utf32BE", 12001, "0000FEFF")]
+    public void BodyHtml_WhenBodyBeginsWithItsByteOrderMark_ShouldDropTheMark(
+        string testName,
+        int codePage,
+        string mark)
+    {
+        byte[] text = System.Text.Encoding.GetEncoding(codePage).GetBytes("<p>x</p>");
+        byte[] html = [.. Convert.FromHexString(mark), .. text];
+        using OutlookMailStore store = OpenSynthetic(b =>
+        {
+            b.InternetCodePage = codePage;
+            b.HtmlPayloadOverride = html;
+        });
+
+        Assert.AreEqual("<p>x</p>", GetFullMessage(store).BodyHtml, testName);
+    }
+
+    /// <summary>
+    /// Verifies that a byte order mark that does not belong to the body's code page is left to the encoding: a UTF-8
+    /// mark under code page 1252 reads as the three Windows-1252 characters it encodes there.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenByteOrderMarkDoesNotMatchTheCodePage_ShouldDecodeTheMark()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.InternetCodePage = 1252;
+            b.HtmlPayloadOverride = [0xEF, 0xBB, 0xBF, .. "<p>x</p>"u8];
+        });
+
+        Assert.AreEqual("\u00EF\u00BB\u00BF<p>x</p>", GetFullMessage(store).BodyHtml);
+    }
+
+    /// <summary>
+    /// Verifies that a binary HTML body under internet code page 65000 that begins with the UTF-7 signature
+    /// (<c>+/v8-</c>, a leading U+FEFF once decoded) reads without it.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenUtf7BodyBeginsWithTheSignature_ShouldDropIt()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.InternetCodePage = 65000;
+            b.HtmlPayloadOverride = "+/v8-<p>x</p>"u8.ToArray();
+        });
+
+        Assert.AreEqual("<p>x</p>", GetFullMessage(store).BodyHtml);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>PT_STRING8</c> body of a message declaring code page 65000 that begins with the UTF-7
+    /// signature (<c>+/v8-</c>, a leading U+FEFF once decoded) reads without it.
+    /// </summary>
+    [TestMethod]
+    public void BodyText_WhenUtf7BodyBeginsWithTheSignature_ShouldDropIt()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.MessageCodePageOverride = 65000;
+            b.BodyPayloadOverride = "+/v8-Hi"u8.ToArray();
+        });
+
+        Assert.AreEqual("Hi", GetFullMessage(store).BodyText);
+    }
+
+    /// <summary>
+    /// Verifies that a UTF-7 <c>PT_STRING8</c> body that does not begin with the signature is unchanged: a U+FEFF after
+    /// the first character (<c>Hi+/v8-</c>) is text, not a signature, and stays.
+    /// </summary>
+    [TestMethod]
+    public void BodyText_WhenUtf7BodyDoesNotBeginWithTheSignature_ShouldKeepItsText()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b =>
+        {
+            b.MessageCodePageOverride = 65000;
+            b.BodyPayloadOverride = "Hi+/v8-"u8.ToArray();
+        });
+
+        Assert.AreEqual("Hi\uFEFF", GetFullMessage(store).BodyText);
+    }
 }

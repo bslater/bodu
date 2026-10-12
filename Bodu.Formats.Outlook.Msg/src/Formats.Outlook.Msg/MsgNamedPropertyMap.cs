@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Bodu.IO.Compound;
 
 namespace Bodu.Formats.Outlook.Msg;
@@ -12,10 +14,11 @@ namespace Bodu.Formats.Outlook.Msg;
 /// Provides the bidirectional named-property mapping parsed from a message's <c>__nameid_version1.0</c> storage.
 /// </summary>
 /// <remarks>
-/// The mapping is file-specific: entry <c>i</c> of the entry stream defines the property identifier <c>0x8000 + i</c>.
-/// Each 8-byte entry carries a name identifier or string-stream offset, a kind bit, and a GUID index - <c>1</c> for
-/// <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream.
-/// The per-bucket hash streams the format also stores are write-time acceleration and are ignored on read.
+/// The mapping is file-specific: each 8-byte entry of the entry stream carries a name identifier or string-stream
+/// offset, a kind bit, a GUID index - <c>1</c> for <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and
+/// <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream - and a property index <c>wPropIdx</c>, and defines the
+/// property identifier <c>0x8000 + wPropIdx</c> (MS-OXMSG 2.2.3.1.2). The per-bucket hash streams the format also
+/// stores are write-time acceleration and are ignored on read.
 /// </remarks>
 internal sealed class MsgNamedPropertyMap
 {
@@ -49,8 +52,8 @@ internal sealed class MsgNamedPropertyMap
     /// <param name="validationLevel">The validation level governing malformed-content handling.</param>
     /// <returns>The parsed mapping, or <see cref="Empty" /> when the storage is absent.</returns>
     /// <exception cref="OutlookMsgFormatException">
-    /// The container is malformed, or the mapping streams are malformed under
-    /// <see cref="CompoundValidationLevel.Strict" />.
+    /// The container is malformed, or, under <see cref="CompoundValidationLevel.Strict" />, the storage lacks one of
+    /// the GUID, entry and string streams MS-OXMSG 2.2.3.1 requires, or its streams are malformed.
     /// </exception>
     internal static MsgNamedPropertyMap Load(CompoundStorage root, CompoundValidationLevel validationLevel)
     {
@@ -58,9 +61,9 @@ internal sealed class MsgNamedPropertyMap
             return Empty;
 
         bool strict = validationLevel == CompoundValidationLevel.Strict;
-        byte[] guids = ReadStreamOrEmpty(storage, MsgStreamNames.GetSubstgStreamName(0x00020102));
-        byte[] entries = ReadStreamOrEmpty(storage, MsgStreamNames.GetSubstgStreamName(0x00030102));
-        byte[] strings = ReadStreamOrEmpty(storage, MsgStreamNames.GetSubstgStreamName(0x00040102));
+        byte[] guids = ReadRequiredStream(storage, MsgStreamNames.GetSubstgStreamName(0x00020102), strict);
+        byte[] entries = ReadRequiredStream(storage, MsgStreamNames.GetSubstgStreamName(0x00030102), strict);
+        byte[] strings = ReadRequiredStream(storage, MsgStreamNames.GetSubstgStreamName(0x00040102), strict);
 
         var byId = new Dictionary<ushort, MapiNamedProperty>();
         var byName = new Dictionary<MapiNamedProperty, ushort>();
@@ -88,11 +91,28 @@ internal sealed class MsgNamedPropertyMap
         _byId.TryGetValue(id, out name);
 
     /// <summary>
-    /// Reads a mapping stream, or returns an empty payload when it is absent.
+    /// Reads one of the mapping streams MS-OXMSG 2.2.3.1 requires.
     /// </summary>
     /// <param name="storage">The named-property storage.</param>
     /// <param name="name">The stream name.</param>
-    /// <returns>The stream payload, or an empty array.</returns>
-    private static byte[] ReadStreamOrEmpty(CompoundStorage storage, string name) =>
-        MsgContainer.TryReadStream(storage, name, out byte[]? bytes) ? bytes : [];
+    /// <param name="strict">Whether a missing stream throws instead of reading as empty.</param>
+    /// <returns>
+    /// The stream payload, or an empty array when the stream is absent and <paramref name="strict" /> is not set.
+    /// </returns>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The stream is absent and <paramref name="strict" /> is set.
+    /// </exception>
+    private static byte[] ReadRequiredStream(CompoundStorage storage, string name, bool strict)
+    {
+        if (MsgContainer.TryReadStream(storage, name, out byte[]? bytes))
+            return bytes;
+
+        if (strict)
+        {
+            throw new OutlookMsgFormatException(string.Format(
+                CultureInfo.CurrentCulture, OutlookMsgResourceStrings.Format_Invalid_MsgNameIdStreamMissing, name));
+        }
+
+        return [];
+    }
 }

@@ -21,15 +21,17 @@ namespace Bodu.Formats.Outlook.Pst;
 /// Entry <c>i</c> of the entry stream defines the property identifier <c>0x8000 + wPropIdx</c>. Each 8-byte record
 /// carries a numeric name identifier or a string-stream offset, a kind bit, and a GUID index - <c>1</c> for
 /// <c>PS_MAPI</c>, <c>2</c> for <c>PS_PUBLIC_STRINGS</c>, and <c>3 + n</c> for the <c>n</c>-th GUID of the GUID stream.
-/// A string name is a 4-byte byte length followed by UTF-16LE text.
+/// A string name is a 4-byte byte length followed by UTF-16LE text, which ends at its first NUL code unit when it holds
+/// one: a writer that counts the terminator, or bytes after it, in the length does not change the name.
 /// </para>
 /// <para>
 /// A record is malformed when its GUID index does not resolve, its string offset or length leaves the string stream,
-/// its string name is empty or whitespace, or its property index would place the identifier outside the named range.
-/// Under strict parsing a malformed record throws the consuming format's exception; otherwise it is skipped. This file
-/// lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader - the record
-/// layout is identical in a <c>.msg</c> <c>__nameid_version1.0</c> storage and a PST name-to-id map node - and the
-/// consuming project selects the namespace and exception type via its <c>DefineConstants</c>.
+/// its string name is empty or whitespace before its first NUL, or its property index would place the identifier
+/// outside the named range. Under strict parsing a malformed record throws the consuming format's exception; otherwise
+/// it is skipped. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook
+/// format reader - the record layout is identical in a <c>.msg</c> <c>__nameid_version1.0</c> storage and a PST
+/// name-to-id map node - and the consuming project selects the namespace and exception type via its
+/// <c>DefineConstants</c>.
 /// </para>
 /// </remarks>
 internal static class MapiNamedPropertyRecords
@@ -161,7 +163,7 @@ internal static class MapiNamedPropertyRecords
     /// </summary>
     /// <param name="strings">The string-stream payload.</param>
     /// <param name="offset">The byte offset of the length-prefixed UTF-16LE name.</param>
-    /// <param name="name">When this method returns <see langword="true" />, the name text.</param>
+    /// <param name="name">When this method returns <see langword="true" />, the name text before its first NUL.</param>
     /// <returns>
     /// <see langword="true" /> when the offset and length are within the stream and the text can name a property.
     /// </returns>
@@ -179,10 +181,12 @@ internal static class MapiNamedPropertyRecords
         if (length == 0 || (length & 1) != 0 || start + 4 + length > strings.Length)
             return false;
 
-        string text = System.Text.Encoding.Unicode.GetString(strings.Slice((int)start + 4, (int)length));
+        // A name ends at its first NUL code unit, as a string value does, so a writer that counts the terminator in the
+        // length still names the property it means.
+        string text = MapiValueDecoder.DecodeUnicodeText(strings.Slice((int)start + 4, (int)length));
 
-        // A whitespace-only name cannot identify a property; treat it as malformed content rather than letting the
-        // identity constructor's argument validation escape the reader's exception discipline.
+        // An empty or whitespace-only name cannot identify a property; treat it as malformed content rather than
+        // letting the identity constructor's argument validation escape the reader's exception discipline.
         if (string.IsNullOrWhiteSpace(text))
             return false;
 

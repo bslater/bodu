@@ -197,7 +197,16 @@ public sealed partial class OutlookMessage
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="path" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="OutlookMsgFormatException">The file is not a compound file or not a valid message.</exception>
+    /// <exception cref="ArgumentException"><paramref name="path" /> is empty or is not a valid path.</exception>
+    /// <exception cref="FileNotFoundException">No file exists at <paramref name="path" />.</exception>
+    /// <exception cref="DirectoryNotFoundException">A directory in <paramref name="path" /> does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">The caller does not have permission to read the file.</exception>
+    /// <exception cref="IOException">
+    /// The file cannot be opened, for example because another process has it locked.
+    /// </exception>
+    /// <exception cref="OutlookMsgFormatException">
+    /// The file is not a compound file, the container is malformed, or the message is not valid.
+    /// </exception>
     public static OutlookMessage OpenRead(string path)
     {
         ThrowHelper.ThrowIfNull(path);
@@ -224,7 +233,7 @@ public sealed partial class OutlookMessage
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OutlookMsgFormatException">
-    /// The stream is not a compound file or not a valid message.
+    /// The stream is not a compound file, the container is malformed, or the message is not valid.
     /// </exception>
     public static OutlookMessage OpenRead(Stream stream, bool leaveOpen = false) =>
         Open(stream, OutlookMessageReaderOptions.Default, leaveOpen);
@@ -254,7 +263,13 @@ public sealed partial class OutlookMessage
         }
         catch (CompoundFileException ex)
         {
-            throw new OutlookMsgFormatException(OutlookMsgResourceStrings.Format_Invalid_MsgNotCompound, ex);
+            // A source too short for the compound-file header, or one without the signature, is not a compound file at
+            // all; anything else the container rejects is a compound file that is malformed.
+            CompoundFileError? category = (ex as CompoundFileFormatException)?.Category;
+            string message = category is CompoundFileError.InvalidSignature or CompoundFileError.TruncatedFile
+                ? OutlookMsgResourceStrings.Format_Invalid_MsgNotCompound
+                : OutlookMsgResourceStrings.Format_Invalid_MsgCompoundMalformed;
+            throw new OutlookMsgFormatException(message, ex);
         }
 
         try

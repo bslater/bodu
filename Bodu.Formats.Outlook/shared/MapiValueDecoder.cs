@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 using System.Text;
 
 #if MSG
@@ -36,6 +37,9 @@ internal static class MapiValueDecoder
 {
     /// <summary>The UTF-8 code page, whose payloads may carry a byte order mark.</summary>
     private const int Utf8CodePage = 65001;
+
+    /// <summary>The UTF-7 code page, whose signature is a leading U+FEFF in the decoded text.</summary>
+    private const int Utf7CodePage = 65000;
 
     /// <summary>
     /// Gets the UTF-8 byte order mark.
@@ -166,8 +170,13 @@ internal static class MapiValueDecoder
     /// Unicode payload.
     /// </returns>
     /// <remarks>
-    /// Trailing NUL terminators are trimmed at the byte level before the string is materialized, and a UTF-8 code-page
-    /// payload that begins with a byte order mark has the mark removed; both are encoding artifacts, not property text.
+    /// A string ends at its first NUL terminator, as MS-OXCDATA 2.11.1 defines both string types: a
+    /// <see cref="MapiPropertyType.Unicode" /> payload is cut at its first zero code unit and a
+    /// <see cref="MapiPropertyType.String8" /> payload at its first zero byte, before the string is materialized, so
+    /// the terminator and any bytes after it are dropped at every strictness. A UTF-8 code-page payload that begins
+    /// with a byte order mark has the mark removed first, and a UTF-7 one whose decoded text begins with U+FEFF, the
+    /// UTF-7 signature, has that character removed (see <see cref="RemoveUtf7Signature" />). The odd-length check
+    /// applies to the whole payload, before the cut.
     /// </remarks>
     internal static bool TryDecodeVariableValue(MapiPropertyType type, ReadOnlySpan<byte> bytes, Encoding encoding, bool strict, out object? value)
     {
@@ -191,19 +200,17 @@ internal static class MapiValueDecoder
                     bytes = bytes.Slice(0, bytes.Length - 1);
                 }
 
-                while (bytes.Length >= 2 && bytes[^1] == 0 && bytes[^2] == 0)
-                    bytes = bytes.Slice(0, bytes.Length - 2);
-
-                value = Encoding.Unicode.GetString(bytes);
+                value = DecodeUnicodeText(bytes);
                 return true;
             case MapiPropertyType.String8:
                 if (encoding.CodePage == Utf8CodePage && bytes.StartsWith(Utf8ByteOrderMark))
                     bytes = bytes.Slice(Utf8ByteOrderMark.Length);
 
-                while (bytes.Length >= 1 && bytes[^1] == 0)
-                    bytes = bytes.Slice(0, bytes.Length - 1);
-
-                value = encoding.GetString(bytes);
+                // In the single-byte and multibyte code pages a code-page string is written in, and in UTF-8 and UTF-7,
+                // no byte of a character other than NUL is zero, so the first zero byte is the terminator.
+                int terminator = bytes.IndexOf((byte)0);
+                string text = encoding.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator));
+                value = RemoveUtf7Signature(encoding, text);
                 return true;
             case MapiPropertyType.Binary:
                 value = bytes.ToArray();
@@ -221,6 +228,38 @@ internal static class MapiValueDecoder
                 value = null;
                 return false;
         }
+    }
+
+    /// <summary>
+    /// Removes the UTF-7 signature from text decoded through an encoding.
+    /// </summary>
+    /// <param name="encoding">The encoding the text was decoded through.</param>
+    /// <param name="text">The decoded text.</param>
+    /// <returns>
+    /// The text without its leading U+FEFF when <paramref name="encoding" /> is UTF-7; otherwise the text as given.
+    /// </returns>
+    /// <remarks>
+    /// UTF-7's signature is not a fixed byte sequence: RFC 2152 writes U+FEFF as <c>+/v8</c>, <c>+/v9</c>, <c>+/v+</c>
+    /// or <c>+/v/</c>, the last character depending on what follows, so it is recognized in the decoded text rather
+    /// than in the bytes. A U+FEFF anywhere but at the start is text, and stays.
+    /// </remarks>
+    internal static string RemoveUtf7Signature(Encoding encoding, string text) =>
+        encoding.CodePage == Utf7CodePage && text.StartsWith('\uFEFF') ? text[1..] : text;
+
+    /// <summary>
+    /// Decodes UTF-16LE text up to its first NUL code unit.
+    /// </summary>
+    /// <param name="bytes">The UTF-16LE payload, of even length.</param>
+    /// <returns>The text before the first NUL code unit, or the whole payload's text when it holds none.</returns>
+    /// <remarks>
+    /// A NUL code unit is two zero bytes in either byte order, so the search reads the payload as code units whatever
+    /// the platform's endianness. The named-property maps decode their string names through the same rule.
+    /// </remarks>
+    internal static string DecodeUnicodeText(ReadOnlySpan<byte> bytes)
+    {
+        int terminator = MemoryMarshal.Cast<byte, char>(bytes).IndexOf('\0');
+
+        return Encoding.Unicode.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator * 2));
     }
 
     /// <summary>
@@ -242,6 +281,7 @@ internal static class MapiValueDecoder
             MapiPropertyType.Int32 => 4,
             MapiPropertyType.Float => 4,
             MapiPropertyType.Double => 8,
+            MapiPropertyType.AppTime => 8,
             MapiPropertyType.Currency => 8,
             MapiPropertyType.Int64 => 8,
             MapiPropertyType.SystemTime => 8,
@@ -274,6 +314,8 @@ internal static class MapiValueDecoder
                 value = floats;
                 return true;
             case MapiPropertyType.Double:
+            case MapiPropertyType.AppTime:
+                // An AppTime element is an OLE Automation date, a double, decoded exactly as a single AppTime is.
                 var doubles = new double[count];
                 for (int i = 0; i < count; i++)
                     doubles[i] = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReadInt64LittleEndian(bytes.Slice(i * 8)));

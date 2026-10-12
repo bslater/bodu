@@ -110,7 +110,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 | <xref:Bodu.Formats.Outlook.MapiNamedProperty> | A property-set GUID with either a numeric `Id` or a string `Name`. |
 | <xref:Bodu.Formats.Outlook.MapiPropertyIds> | Curated `PidTag*` identifiers (`Subject`, `SenderName`, `Body`, `Html`, `RtfCompressed`, `AttachMethod`, …). |
 | <xref:Bodu.Formats.Outlook.OutlookRecipient> | One recipient: `RecipientType`, `DisplayName`, `EmailAddress`, `AddressType`, and its `Properties`. |
-| <xref:Bodu.Formats.Outlook.OutlookRecipientType> / <xref:Bodu.Formats.Outlook.OutlookAttachmentMethod> | `Originator` / `To` / `Cc` / `Bcc`; `None` / `ByValue` / `ByReference` / `ByReferenceResolve` / `ByReferenceOnly` / `EmbeddedMessage` / `Ole`. |
+| <xref:Bodu.Formats.Outlook.OutlookRecipientType> / <xref:Bodu.Formats.Outlook.OutlookAttachmentMethod> | `Originator` / `To` / `Cc` / `Bcc`; `None` / `ByValue` / `ByReference` / `ByReferenceResolve` / `ByReferenceOnly` / `EmbeddedMessage` / `Ole` / `ByWebReference`. |
 | <xref:Bodu.Formats.Outlook.OutlookFormatException> | The base of the reader exception family. |
 
 **Message reader - `Bodu.Formats.Outlook.Msg`**

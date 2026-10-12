@@ -45,4 +45,9 @@ public enum OutlookAttachmentMethod
     /// The content is an embedded OLE object (<c>afStorage</c>).
     /// </summary>
     Ole = 6,
+
+    /// <summary>
+    /// The content is held by a web service and referenced by a URL (<c>afByWebReference</c>).
+    /// </summary>
+    ByWebReference = 7,
 }

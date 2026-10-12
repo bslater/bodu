@@ -116,6 +116,22 @@ public partial class MsgPropertyDecoderTests
     }
 
     /// <summary>
+    /// Verifies that OLE Automation date elements (<c>PtypMultipleFloatingTime</c>) decode from their eight-byte bit
+    /// patterns into the <see cref="double" /> values a single-valued <c>AppTime</c> decodes to.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenMultiValuedAppTime_ShouldDecodeBitPatterns()
+    {
+        byte[] packed = Pack(
+            BitConverter.GetBytes(45000.5d),
+            BitConverter.GetBytes(-1.25d));
+
+        CollectionAssert.AreEqual(
+            new[] { 45000.5d, -1.25d },
+            (double[])DecodePacked(0x1234, MapiPropertyType.AppTime, packed)!);
+    }
+
+    /// <summary>
     /// Verifies that currency elements are scaled by the fixed 10,000 divisor MAPI defines, rather than surfacing as
     /// raw integers.
     /// </summary>
