@@ -86,7 +86,7 @@ internal static class PropertySetWriter
     /// <returns>The section body bytes.</returns>
     private static byte[] EncodeSection(OlePropertySection section)
     {
-        Encoding encoding = ResolveEncoding(section.CodePage);
+        Encoding encoding = PropertySetReader.ResolveEncoding(section.CodePage);
 
         // Collect the properties to emit: the code page (PID 1), the optional dictionary (PID 0), and the values.
         List<(int Pid, byte[] Bytes)> emitted = new()
@@ -421,20 +421,6 @@ internal static class PropertySetWriter
 
         return buffer.ToArray();
     }
-
-    /// <summary>
-    /// Resolves a code-page number to an encoding, matching the reader.
-    /// </summary>
-    /// <param name="codePage">The code-page number.</param>
-    /// <returns>The resolved encoding.</returns>
-    private static Encoding ResolveEncoding(int codePage) =>
-        codePage switch
-        {
-            1200 => Encoding.Unicode,
-            1201 => Encoding.BigEndianUnicode,
-            65001 => Encoding.UTF8,
-            _ => Encoding.Latin1,
-        };
 
     /// <summary>
     /// Encodes a 16-bit value to little-endian bytes.
