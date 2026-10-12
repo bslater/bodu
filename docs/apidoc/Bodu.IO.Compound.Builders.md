@@ -44,8 +44,8 @@ root.AddStream(SummaryInformation.StreamName, new SummaryInformationBuilder { Ti
 root.AddStreamFromFile("Workbook", "workbook.bin");                // read only at serialization time
 
 CompoundStorageBuilder pictures = root.AddStorage("Pictures");
-CompoundStreamBuilder logo = pictures.AddStream("Logo", File.ReadAllBytes("logo.png"));
-logo.ModifiedTime = DateTimeOffset.UtcNow;
+pictures.AddStream("Logo", File.ReadAllBytes("logo.png"));
+pictures.ModifiedTime = DateTimeOffset.UtcNow;                     // storage metadata; a stream's is never written
 
 // The dictionary surface: same tree, IDictionary-shaped access.
 if (root.TryGetStream("Workbook", out CompoundStreamBuilder? workbook))
@@ -77,6 +77,6 @@ byte[] original = snapshot.ToArray();
 
 - **Staged, not streamed.** The tree is an ordinary object graph until serialization; there is nothing to commit or revert, and nothing touches the destination until `Save` / `WriteTo` / `ToArray`. Serialization order is determined by the builder, not by insertion order.
 - **Deferred payloads.** `AddStream(name, openRead, length)`, `AddStreamFromFile`, `CompoundStreamBuilder.Create(name, openRead, length)`, `CreateFromFile`, and `FromFile(file, lazy: true)` create nodes whose bytes are read only while serializing; `Length` is known without opening the source, and reading `Content` materializes it once. Keep a lazily mirrored `CompoundFile` open for as long as the tree - or any clone of its nodes - is read or serialized.
-- **Names and errors.** An entry name is at most 31 UTF-16 code units, non-empty, and free of `/` and null characters; comparison is case-insensitive unless `NameComparisonCaseSensitive` is set on the root. A duplicate or invalid name - from `AddStorage`, `AddStream`, `Add`, the indexer, or `Rename` - and a tree that cannot be represented (nesting past `MaxDepth`) throw <xref:Bodu.IO.Compound.CompoundFileSerializationException>; a malformed source given to `Load` throws <xref:Bodu.IO.Compound.CompoundFileFormatException>.
-- **Metadata round-trips.** `ClassId`, `CreationTime`, `ModifiedTime`, and `StateBits` are written into the directory entry and are the same fields <xref:Bodu.IO.Compound.CompoundEntryInfo> reports on read.
+- **Names and errors.** An entry name is at most 31 UTF-16 code units, non-empty, and free of `/`, `\`, `:`, and `!`; comparison is case-insensitive unless `NameComparisonCaseSensitive` is set on the root. A duplicate or invalid name - from `AddStorage`, `AddStream`, `Add`, the indexer, or `Rename` - and a tree that cannot be represented (nesting past `MaxDepth`) throw <xref:Bodu.IO.Compound.CompoundFileSerializationException>; a malformed source given to `Load` throws <xref:Bodu.IO.Compound.CompoundFileFormatException>.
+- **Metadata round-trips for storages.** `ClassId`, `CreationTime`, `ModifiedTime`, and `StateBits` are written into the directory entry of a storage or the root and are the same fields <xref:Bodu.IO.Compound.CompoundEntryInfo> reports on read. Per MS-CFB, a stream entry is always written with a zero CLSID, zero times, and zero state bits, so values set on a <xref:Bodu.IO.Compound.Builders.CompoundStreamBuilder> are not written.
 - **See also:** the [authoring guide](~/guides/io-compound/authoring-compound-files.md), the container namespace <xref:Bodu.IO.Compound>, and the property-set authoring types in <xref:Bodu.IO.Compound.PropertySets>.

@@ -128,10 +128,10 @@ There is no `OpenAsync`: opening a buffered file is a single contiguous read the
 - Dispose the `CompoundFile` when finished; it releases the source according to the `leaveOpen` contract.
 - Under streaming, keep the source stream open and do not seek or write it yourself until the `CompoundFile` is disposed.
 - Dispose each `CompoundStream` cursor when done with it.
-- Reading from a `CompoundStream` after its owning `CompoundFile` is disposed throws <xref:System.ObjectDisposedException>.
+- A cursor that reads on demand (a stream of 4,096 bytes or more, opened from a streaming file) throws <xref:System.ObjectDisposedException> once its owning `CompoundFile` is disposed; a buffered or writable cursor holds its own bytes and keeps serving them.
 
 ## Where to go next
 
-- [Reading compound files](reading-compound-files.md) - opening, navigating, and the `Open` vs `ReadAllBytes` choice.
+- [Reading compound files](reading-compound-files.md) - opening, navigating, and the cursor vs `ReadAllBytes` choice.
 - [Reading property sets](property-sets.md) - the metadata streams.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound).

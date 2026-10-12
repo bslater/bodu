@@ -86,6 +86,7 @@ Walk(file.RootStorage);
 ## Read a large stream incrementally
 
 ```csharp
+using System.Text;
 using Bodu.IO.Compound;
 
 // Open the file in streaming mode so large payloads are read on demand.

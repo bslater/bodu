@@ -6,7 +6,7 @@ title: Bodu.IO.Compound guides
 
 Recipe-style walk-throughs for **Bodu.IO.Compound**, the reader and writer for the OLE2 / Compound File Binary (CFB) container format - the structured-storage envelope used by legacy Microsoft Office files (`.xls`, `.doc`, `.ppt`, `.msg`) and other technologies.
 
-The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is built directly on top of it.
+The library has no application-format knowledge: it exposes the embedded storage hierarchy and the raw byte payload of each named stream, and leaves interpretation to the caller. The narrow BIFF5 / BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is built directly on top of it.
 
 If you are new to the library, start with the [introduction](../../docs/io-compound/index.md), the [Core concepts](../../docs/io-compound/concepts.md) glossary, and the [getting-started page](../../docs/io-compound/getting-started.md). The guides below assume you know the vocabulary (compound file, storage, stream, sector chain, property set).
 
@@ -81,5 +81,5 @@ By default the whole source is buffered into memory at open time, so the file is
 
 - [Runnable samples](../../samples/io-compound.md) - the offline CompoundBasics sample under `samples/IO.Compound/`: builder authoring + read-back, property sets, detection and the v3/v4 knob, a real `.doc`'s tree.
 - [Bodu.IO.Compound API reference](xref:Bodu.IO.Compound) - every type and member, including the [Bodu.IO.Compound.Builders](xref:Bodu.IO.Compound.Builders) authoring types.
-- [Bodu.Formats.Excel.Binary](../excel/index.md) - the BIFF8 `.xls` reader built on this package.
+- [Bodu.Formats.Excel.Binary](../excel/index.md) - the BIFF5 / BIFF8 `.xls` reader built on this package.
 - [Package matrix](../../docs/package-matrix.md) - where Bodu.IO.Compound sits in the suite and its dependency stack.

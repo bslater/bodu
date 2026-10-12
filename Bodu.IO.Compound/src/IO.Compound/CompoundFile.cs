@@ -270,6 +270,10 @@ public sealed class CompoundFile
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the read strategy of <paramref name="options" /> resolves to reading on demand and
+    /// <paramref name="stream" /> is not seekable.
+    /// </exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.
     /// </exception>
@@ -310,6 +314,10 @@ public sealed class CompoundFile
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// Thrown when the combination of <paramref name="mode" /> and <paramref name="access" /> is not supported.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="stream" /> is not seekable and the file is opened for reading with
+    /// <paramref name="buffered" /> set to <see langword="false" />, or loads existing content for editing.
     /// </exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream content is not a well-formed compound file.

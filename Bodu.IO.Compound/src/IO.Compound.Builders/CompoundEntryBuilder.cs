@@ -68,24 +68,44 @@ public abstract class CompoundEntryBuilder
     /// Gets or sets the class identifier (CLSID) associated with the entry.
     /// </summary>
     /// <value>The entry's class identifier; <see cref="Guid.Empty" /> when none is assigned.</value>
+    /// <remarks>
+    /// Written only for a storage or root entry. MS-CFB requires a stream entry's class identifier and times to be
+    /// zero, so a stream entry is always serialized with a zero class identifier, zero times, and zero state bits, and
+    /// a value set on a <see cref="CompoundStreamBuilder" /> is not written.
+    /// </remarks>
     public Guid ClassId { get; set; }
 
     /// <summary>
     /// Gets or sets the creation time recorded for the entry.
     /// </summary>
     /// <value>The creation time, or <see langword="null" /> when none is recorded.</value>
+    /// <remarks>
+    /// Written only for a storage or root entry. MS-CFB requires a stream entry's class identifier and times to be
+    /// zero, so a stream entry is always serialized with a zero class identifier, zero times, and zero state bits, and
+    /// a value set on a <see cref="CompoundStreamBuilder" /> is not written.
+    /// </remarks>
     public DateTimeOffset? CreationTime { get; set; }
 
     /// <summary>
     /// Gets or sets the last-modified time recorded for the entry.
     /// </summary>
     /// <value>The last-modified time, or <see langword="null" /> when none is recorded.</value>
+    /// <remarks>
+    /// Written only for a storage or root entry. MS-CFB requires a stream entry's class identifier and times to be
+    /// zero, so a stream entry is always serialized with a zero class identifier, zero times, and zero state bits, and
+    /// a value set on a <see cref="CompoundStreamBuilder" /> is not written.
+    /// </remarks>
     public DateTimeOffset? ModifiedTime { get; set; }
 
     /// <summary>
     /// Gets or sets the user-defined state bits recorded for the entry.
     /// </summary>
     /// <value>The raw state-bit flags.</value>
+    /// <remarks>
+    /// Written only for a storage or root entry. MS-CFB requires a stream entry's class identifier and times to be
+    /// zero, so a stream entry is always serialized with a zero class identifier, zero times, and zero state bits, and
+    /// a value set on a <see cref="CompoundStreamBuilder" /> is not written.
+    /// </remarks>
     public int StateBits { get; set; }
 
     /// <summary>

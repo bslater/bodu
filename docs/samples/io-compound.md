@@ -56,4 +56,4 @@ project (Regression tier).
 
 - [IO.Compound guides](../guides/io-compound/index.md) - reading, authoring, property sets,
   and streaming/buffering.
-- [Excel samples](excel.md) - the BIFF8 `.xls` reader built on this container format.
+- [Excel samples](excel.md) - the BIFF5 / BIFF8 `.xls` reader built on this container format.
