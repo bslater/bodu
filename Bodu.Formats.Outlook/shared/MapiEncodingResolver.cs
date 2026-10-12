@@ -21,16 +21,16 @@ namespace Bodu.Formats.Outlook.Pst;
 /// real-world messages (Windows-1252, Shift-JIS, and the rest) resolve on all platforms. Resolution prefers the message
 /// code page, then the internet code page, then falls back to Windows-1252 - the historical default for messages that
 /// declare nothing (Latin-1 when the code-page provider is unavailable). A code-page string is 8-bit text, so the
-/// UTF-16 code pages (1200 and 1201), which cannot describe one, fall through to the next candidate. An HTML body
-/// stored as bytes is in whatever character set its code page names, so <see cref="GetHtmlEncoding" /> accepts every
-/// code page <see cref="Encoding.GetEncoding(int)" /> serves, the UTF-16 and UTF-32 code pages included, and tries the
-/// internet code page first. Code page 65000 is UTF-7, as RFC 2152 defines it, which
-/// <see cref="Encoding.GetEncoding(int)" /> serves only behind an opt-in switch, so the resolver constructs it directly
-/// rather than letting the declared text fall back to Windows-1252. Resolved encodings are cached per code page. Every
-/// method always returns an encoding and never throws. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is
-/// source-compiled into each Outlook format reader - the same code-page properties govern <c>PT_STRING8</c> decoding in
-/// a <c>.msg</c> container and a PST property context; the consuming project selects the namespace via its
-/// <c>DefineConstants</c>.
+/// UTF-16 and UTF-32 code pages (1200, 1201, 12000 and 12001), which cannot describe one, fall through to the next
+/// candidate. An HTML body stored as bytes is in whatever character set its code page names, so
+/// <see cref="GetHtmlEncoding" /> accepts every code page <see cref="Encoding.GetEncoding(int)" /> serves, the UTF-16
+/// and UTF-32 code pages included, and tries the internet code page first. Code page 65000 is UTF-7, as RFC 2152
+/// defines it, which <see cref="Encoding.GetEncoding(int)" /> serves only behind an opt-in switch, so the resolver
+/// constructs it directly rather than letting the declared text fall back to Windows-1252. Resolved encodings are
+/// cached per code page. Every method always returns an encoding and never throws. This file lives in
+/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader - the same code-page
+/// properties govern <c>PT_STRING8</c> decoding in a <c>.msg</c> container and a PST property context; the consuming
+/// project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
 internal static class MapiEncodingResolver
 {
@@ -45,6 +45,12 @@ internal static class MapiEncodingResolver
 
     /// <summary>The UTF-16 big-endian code page, which cannot describe a code-page string.</summary>
     private const int Utf16BigEndianCodePage = 1201;
+
+    /// <summary>The UTF-32 little-endian code page, which cannot describe a code-page string.</summary>
+    private const int Utf32CodePage = 12000;
+
+    /// <summary>The UTF-32 big-endian code page, which cannot describe a code-page string.</summary>
+    private const int Utf32BigEndianCodePage = 12001;
 
     /// <summary>The UTF-7 code page (RFC 2152), served by an instance the resolver constructs itself.</summary>
     private const int Utf7CodePage = 65000;
@@ -130,10 +136,11 @@ internal static class MapiEncodingResolver
     /// </summary>
     /// <param name="codePage">The code page, when declared.</param>
     /// <returns>
-    /// The encoding, or <see langword="null" /> when undeclared, out of range, unknown, or a UTF-16 code page.
+    /// The encoding, or <see langword="null" /> when undeclared, out of range, unknown, or a UTF-16 or UTF-32 code
+    /// page.
     /// </returns>
     private static Encoding? TryGetStringEncoding(int? codePage) =>
-        codePage is Utf16CodePage or Utf16BigEndianCodePage
+        codePage is Utf16CodePage or Utf16BigEndianCodePage or Utf32CodePage or Utf32BigEndianCodePage
             ? null
             : TryGetEncoding(codePage);
 
