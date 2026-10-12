@@ -120,6 +120,21 @@ public partial class Utf8DelimitedWriterTests
     }
 
     /// <summary>
+    /// Verifies that the document's first field beginning with U+FEFF is quoted, so the reader, which skips a byte order
+    /// mark at the start of the input, reads the character back, while a U+FEFF that begins any later field stays bare.
+    /// </summary>
+    [TestMethod]
+    public void WriteString_WhenTheDocumentsFirstFieldBeginsWithAByteOrderMark_ShouldQuoteItSoItReadsBack()
+    {
+        string[][] records = [["\uFEFFa", "\uFEFFb"], ["\uFEFFc", "d"]];
+
+        string text = WritePositionalRecords(DelimitedWriterOptions.Default, records);
+
+        Assert.AreEqual("\"\uFEFFa\",\uFEFFb\r\n\uFEFFc,d\r\n", text);
+        AssertReadBack(records, text, new DelimitedReaderOptions { NoHeader = true });
+    }
+
+    /// <summary>
     /// Writes positional records and returns the text written.
     /// </summary>
     /// <param name="options">The writer options.</param>
