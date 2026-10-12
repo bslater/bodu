@@ -186,12 +186,12 @@
 <tr>
 <td><code>0x001E</code></td>
 <td><code>String8</code></td>
-<td><code>string</code>, decoded through the object's code page</td>
+<td><code>string</code>, decoded through the object's code page and ending at its first zero byte</td>
 </tr>
 <tr>
 <td><code>0x001F</code></td>
 <td><code>Unicode</code></td>
-<td><code>string</code> (UTF-16)</td>
+<td><code>string</code> (UTF-16), ending at its first zero code unit</td>
 </tr>
 <tr>
 <td><code>0x0040</code></td>
@@ -225,7 +225,7 @@
 <li><code>TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)</code> - the file-specific identifier a name maps to; combine it with the expected <code>MapiPropertyType</code> to address a property collection.</li>
 <li><code>TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)</code> - the identity behind a named tag.</li>
 </ul>
-<p>Where the mapping lives differs by format. A <code>.msg</code> file keeps it in the root's <code>__nameid_version1.0</code> storage, parsed lazily and shared by every nested attached message (per MS-OXMSG). A <code>.pst</code> file keeps one <strong>name-to-id map node</strong> per store (MS-PST §2.4.7), so <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> resolves store-wide and one resolution applies to every message and attachment of the session. In both, entry <em>i</em> of the entry stream defines identifier <code>0x8000 + i</code>; a malformed entry throws the format's exception under strict validation and is skipped otherwise.</p>
+<p>Where the mapping lives differs by format. A <code>.msg</code> file keeps it in the root's <code>__nameid_version1.0</code> storage, parsed lazily and shared by every nested attached message (per MS-OXMSG). A <code>.pst</code> file keeps one <strong>name-to-id map node</strong> per store (MS-PST §2.4.7), so <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMailStore.html">OutlookMailStore</a> resolves store-wide and one resolution applies to every message and attachment of the session. In both, an entry of the entry stream defines identifier <code>0x8000 + wPropIdx</code>, the property index its <code>NAMEID</code> records (MS-PST §2.4.7.1), not its position in the stream; a malformed entry throws the format's exception under strict validation and is skipped otherwise.</p>
 <h2 id="recipient">Recipient</h2>
 <p><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipient.html">OutlookRecipient</a> is a container-free view over one recipient's property collection: <code>RecipientType</code> (an <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookRecipientType.html">OutlookRecipientType</a> - <code>Originator</code>, <code>To</code>, <code>Cc</code>, or <code>Bcc</code>; <code>null</code> when the property is absent), <code>DisplayName</code>, <code>EmailAddress</code>, and <code>AddressType</code>. A <code>.msg</code> message lists recipients in storage-index order (its <code>__recip_version1.0_#</code> child storages); a <code>.pst</code> message lists them in recipient-table order, each row decoding directly into the recipient's collection. Both readers hand out the same type, so recipient-handling code is shared.</p>
 <h2 id="attachment-and-attachment-method">Attachment and attachment method</h2>
@@ -303,7 +303,7 @@
 </tr>
 </tbody>
 </table>
-<p>Under the tolerant levels a malformed property is omitted and decoding continues, a table row that references no valid node is skipped, and an undefined attachment method is inferred - the tolerance real-world files need. Under <code>Strict</code>, structural problems throw the format's exception: a missing <code>.msg</code> value stream or recipient/attachment count mismatch raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>; a <code>.pst</code> hierarchy, contents, recipient, or attachment row that does not reference a valid node - or a malformed name-to-id map - raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a>. The level also flows down to the container, which enforces its own checksums and signatures under <code>Strict</code>.</p>
+<p>Under the tolerant levels a property value the MAPI decoding rejects is omitted and decoding continues (in a <code>.pst</code> file, a fault in the property context itself - a heap reference that does not resolve, a fixed-width value shorter than its type, a missing value subnode - is container corruption and fails at every level), a table row that references no valid node is skipped, and an undefined attachment method is inferred - the tolerance real-world files need. Under <code>Strict</code>, structural problems throw the format's exception: a missing <code>.msg</code> value stream or recipient/attachment count mismatch raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookMsgFormatException.html">OutlookMsgFormatException</a>; a <code>.pst</code> hierarchy, contents, recipient, or attachment row that does not reference a valid node - or a malformed name-to-id map - raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a>. The level also flows down to the container, which enforces its own checksums and signatures under <code>Strict</code>.</p>
 <h2 id="resource-limits">Resource limits</h2>
 <p>Both option types carry hardening limits that a crafted file cannot talk its way past. They are <code>init</code>-only, validated at construction (zero or negative values throw <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a>), and - except where noted - enforced at every validation level.</p>
 <table>
@@ -387,7 +387,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f683583 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 37a7d79 · Built: 2026-10-12 (UTC)</span>
         </div>
       </div>
     </footer>
