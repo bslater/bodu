@@ -17411,7 +17411,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.DotEnv.Reader.Utf8DotEnvReader",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.yml\" sourcestartlinenumber=\"1\">Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a\n<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref\">ref</a> to thread it through a converter.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.DotEnv.Reader.Utf8DotEnvReader.yml\" sourcestartlinenumber=\"1\">Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a\n<code>ref struct</code>, so it lives on the stack and cannot be boxed or captured; pass it by\n<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/ref\">ref</a> to share its position with a helper method.</p>\n"
     },
     {
       "type": "ManagedReference",
