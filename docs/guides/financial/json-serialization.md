@@ -12,7 +12,7 @@ The core `Bodu.Financial` library is deliberately **serialization-agnostic** - t
 dotnet add package Bodu.Financial.Serialization.Json
 ```
 
-This guide consolidates the JSON material that was previously spread across the [money](money.md#json-wire-shape), [monetary precision](monetary-precision.md#json-wire-shapes), [dependency injection](dependency-injection.md#consuming-the-financial-json-options), and package landing pages; those sections remain as short pointers.
+This guide consolidates the JSON material that was previously spread across the [money](money.md#json), [monetary precision](monetary-precision.md#json-wire-shapes), [dependency injection](dependency-injection.md#consuming-the-financial-json-options), and package landing pages; those sections remain as short pointers.
 
 ## Registration
 
