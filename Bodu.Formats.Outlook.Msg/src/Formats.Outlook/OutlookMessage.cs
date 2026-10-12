@@ -248,6 +248,10 @@ public sealed partial class OutlookMessage
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the <see cref="OutlookMessageReaderOptions.ReadStrategy" /> of <paramref name="options" /> resolves to
+    /// reading on demand and <paramref name="stream" /> is not seekable.
+    /// </exception>
     /// <exception cref="OutlookMsgFormatException">
     /// The stream is not a compound file, the container is malformed, or the message is not valid.
     /// </exception>

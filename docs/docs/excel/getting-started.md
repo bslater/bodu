@@ -104,7 +104,7 @@ while (reader.TryReadCell(out ExcelCell cell))
 }
 ```
 
-The reader never assumes a number is a date, but it flags numeric cells whose format is a date or time format via <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted>. <xref:Bodu.Formats.Excel.ExcelSerialDate> converts the serial number using the workbook's <xref:Bodu.Formats.Excel.ExcelDateSystem>. The workbook also offers `GetDateTime(cell)` as a shortcut that returns `null` for non-date cells.
+The reader never assumes a number is a date, but it flags numeric cells whose format is a date or time format via <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted>. <xref:Bodu.Formats.Excel.ExcelSerialDate> converts the serial number using the workbook's <xref:Bodu.Formats.Excel.ExcelDateSystem>. The workbook also offers `GetDateTime(cell)` as a shortcut: it converts every numeric cell, counts and amounts included, and returns `null` only for a non-numeric one, so check `IsDateFormatted` first.
 
 ## Read document metadata, or skip it for throughput
 

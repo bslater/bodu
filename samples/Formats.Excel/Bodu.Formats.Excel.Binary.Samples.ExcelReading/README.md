@@ -48,8 +48,9 @@ cell, which is why it is the sheet's claim rather than a promise:
 ## Scenario 2 - ForwardOnlyReader
 
 **Intent.** Show the primary surface: `ExcelWorksheetReader` streams cells forward-only in
-file order - constant memory regardless of sheet size, the right shape for import pipelines
-that transform data as it arrives rather than loading every cell to look at each once.
+file order from the sheet's records, buffered once, without materializing a cell map - the
+right shape for import pipelines that transform data as it arrives rather than loading every
+cell to look at each once.
 
 **What it does.** Drives the lowest-level `TryReadCell` loop over the `Data` sheet, counting
 and classifying every cell without buffering any; then reopens the sheet and uses `ReadRows`
