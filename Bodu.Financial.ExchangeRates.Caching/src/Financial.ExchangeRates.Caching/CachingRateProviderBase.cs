@@ -497,7 +497,7 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// Attempts to resolve a single-date request from the fresh cached rows (and their inverse, when inversion is
-    /// permitted) by delegating to a <see cref="FixedDatedRateProvider" /> built from them.
+    /// permitted) directly, under the same resolution rules as <see cref="FixedDatedRateProvider" />.
     /// </summary>
     /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>

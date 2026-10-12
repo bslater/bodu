@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures a <see cref="CachingRateProvider" />: the on-disk cache location, the default time a cached rate stays
-/// fresh, and per-provider overrides of that default.
+/// Configures a <see cref="CachingRateProvider" />: the default time a cached rate stays fresh, per-provider overrides
+/// of that default, and the on-disk location of the default cache the dependency-injection registration builds.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -48,7 +48,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class CachingRateOptions
 {
     /// <summary>
-    /// Gets or sets the directory used by the on-disk cache.
+    /// Gets or sets the directory of the default TOML file cache that the dependency-injection registration builds when
+    /// no cache factory is supplied. A <see cref="CachingRateProvider" /> constructed directly does not read it.
     /// </summary>
     /// <value>
     /// The cache directory, or <see langword="null" /> to use a <c>bodu-exchange-rates</c> folder under the system
@@ -230,9 +231,10 @@ public sealed class CachingRateOptions
     /// </summary>
     /// <exception cref="ArgumentException">
     /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive,
-    /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when
-    /// any <c>Cache*LogLevel</c>, <see cref="HistoryClampLogLevel" />, or <see cref="RateProvenanceLogLevel" /> is not
-    /// a defined <see cref="LogLevel" />.
+    /// when <see cref="ExpiryJitter" /> or <see cref="RefreshAheadFraction" /> is outside <c>[0, 1)</c> or not a
+    /// number, when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or
+    /// when any <c>Cache*LogLevel</c>, <see cref="HistoryClampLogLevel" />, or <see cref="RateProvenanceLogLevel" /> is
+    /// not a defined <see cref="LogLevel" />.
     /// </exception>
     /// <remarks>
     /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
@@ -291,8 +293,9 @@ public sealed class CachingRateOptions
     /// </param>
     /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
     /// <remarks>
-    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
-    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// This method checks the same invariants as the throwing <see cref="Validate" /> method, and the
+    /// dependency-injection registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at
+    /// application startup.
     /// </remarks>
     public bool TryValidate(out string? error)
     {

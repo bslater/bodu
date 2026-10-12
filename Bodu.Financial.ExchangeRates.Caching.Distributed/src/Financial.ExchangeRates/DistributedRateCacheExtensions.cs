@@ -161,7 +161,7 @@ public static class DistributedRateCacheExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService()
-    ///         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
+    ///         .AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
     ///]]>
     /// </code>
     /// </example>
