@@ -17,6 +17,21 @@ public partial class DateTimeExtensionsTests
     [DataRow(2020)] // 53 weeks
     [DataRow(2026)] // 53 weeks
     public void GetDayOfWeekForJanuary1_For53WeekYear_ShouldMatchIsoWeeksInYearPredicate(int year) => Assert.AreEqual(53, DateTimeExtensions.GetIsoWeeksInYear(year));
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetDayOfWeekForJanuary1" /> returns the weekday of 1 January of the
+    /// supplied year, as <see cref="DateTime.DayOfWeek" /> reports it.
+    /// </summary>
+    /// <param name="year">The year to evaluate.</param>
+    [TestMethod]
+    [DataRow(1)]      // Monday
+    [DataRow(2003)]   // Wednesday
+    [DataRow(2004)]   // Thursday
+    [DataRow(2100)]   // Friday
+    [DataRow(9999)]   // Friday
+    public void GetDayOfWeekForJanuary1_WhenComparedWithDateTime_ShouldReturnSameDayOfWeek(int year) =>
+        Assert.AreEqual(new DateTime(year, 1, 1).DayOfWeek, DateTimeExtensions.GetDayOfWeekForJanuary1(year));
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetDayOfWeekForJanuary1" /> returns a defined
     /// <see cref="DayOfWeek" /> value for representative years and is deterministic across repeated calls.
