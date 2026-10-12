@@ -166,7 +166,7 @@ internal static class EnumIntegerConversion
         while (true)
         {
             int separator = text.IndexOf(',');
-            if (IsIntegerText(separator < 0 ? text : text[..separator]))
+            if (IsIntegerPart(separator < 0 ? text : text[..separator]))
                 return true;
 
             if (separator < 0)
@@ -177,6 +177,24 @@ internal static class EnumIntegerConversion
     }
 
     /// <summary>
+    /// Determines whether the whole text of an enumeration value is an integer, which a by-name converter that allows
+    /// integer values reads as the value it holds.
+    /// </summary>
+    /// <param name="text">The text, as a string token carries it.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="text" />, trimmed of white space, is an optional <c>+</c> or
+    /// <c>-</c> sign followed by one or more of the digits <c>0</c> to <c>9</c>; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// Unlike <see cref="ContainsIntegerText(ReadOnlySpan{char})" />, which decides what a converter that does not
+    /// allow integer values turns away, this method does not trim null characters and does not look inside a list:
+    /// System.Text.Json's <c>JsonStringEnumConverter</c> reads an integer only as the whole text, and rejects
+    /// <c>1\0</c> and <c>1, 4</c>.
+    /// </remarks>
+    internal static bool IsIntegerText(ReadOnlySpan<char> text) =>
+        IsSignedDigits(text.Trim());
+
+    /// <summary>
     /// Determines whether one comma-separated part of an enumeration value's text is an integer.
     /// </summary>
     /// <param name="part">The part, as it stands between commas.</param>
@@ -185,7 +203,7 @@ internal static class EnumIntegerConversion
     /// optional <c>+</c> or <c>-</c> sign followed by one or more of the digits <c>0</c> to <c>9</c>; otherwise,
     /// <see langword="false" />.
     /// </returns>
-    private static bool IsIntegerText(ReadOnlySpan<char> part)
+    private static bool IsIntegerPart(ReadOnlySpan<char> part)
     {
         int start = 0;
         int end = part.Length;
@@ -195,11 +213,23 @@ internal static class EnumIntegerConversion
         while (end > start && (char.IsWhiteSpace(part[end - 1]) || part[end - 1] == '\0'))
             end--;
 
-        ReadOnlySpan<char> digits = part[start..end];
-        if (!digits.IsEmpty && digits[0] is '+' or '-')
-            digits = digits[1..];
+        return IsSignedDigits(part[start..end]);
+    }
 
-        return !digits.IsEmpty && !digits.ContainsAnyExceptInRange('0', '9');
+    /// <summary>
+    /// Determines whether text is an optional sign followed by one or more decimal digits.
+    /// </summary>
+    /// <param name="text">The text, already trimmed.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="text" /> is an optional <c>+</c> or <c>-</c> sign followed by one
+    /// or more of the digits <c>0</c> to <c>9</c>; otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool IsSignedDigits(ReadOnlySpan<char> text)
+    {
+        if (!text.IsEmpty && text[0] is '+' or '-')
+            text = text[1..];
+
+        return !text.IsEmpty && !text.ContainsAnyExceptInRange('0', '9');
     }
 
     /// <summary>

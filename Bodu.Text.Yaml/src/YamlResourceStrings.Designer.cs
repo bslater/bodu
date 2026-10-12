@@ -399,6 +399,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to A float cannot be read as a value of enumeration '{0}', which is read from a member name or an integer..
+        /// </summary>
+        internal static string Op_Invalid_EnumFloatNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumFloatNotAllowed", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to '{0}' cannot be read because integer values are not allowed for enumeration '{1}'..
         /// </summary>
         internal static string Op_Invalid_EnumIntegerNotAllowed {
