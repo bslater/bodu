@@ -111,4 +111,26 @@ public partial class OutlookMessageTests
                 .AddBinary(MapiPropertyIds.AttachData, [3]))
             .AddRecipient(static recipient => recipient.AddUnicode(MapiPropertyIds.DisplayName, "Alex Doe"))
             .Build();
+
+    /// <summary>
+    /// Verifies that a container fault met after the message is open, while the attachment storages it lists are read
+    /// and one's by-value stream has a sector chain that points past the end of the file, is reported as a malformed
+    /// container with the container's exception as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Attachments_WhenAnAttachmentStreamMeetsABrokenSectorChain_ShouldReportAMalformedContainer()
+    {
+        using MemoryStream built = MsgFixtureBuilder.CreateMinimal().AddLargeAttachment(8192).Build();
+        byte[] file = built.ToArray();
+        MsgFixtureBuilder.BreakStreamChain(file, MsgStreamNames.GetSubstgStreamName(0x37010102));
+        using var message = OutlookMessage.OpenRead(new MemoryStream(file));
+
+        var ex = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = message.Attachments;
+        });
+
+        Assert.AreEqual(OutlookMsgResourceStrings.Format_Invalid_MsgCompoundMalformed, ex.Message);
+        Assert.IsInstanceOfType<CompoundFileException>(ex.InnerException);
+    }
 }

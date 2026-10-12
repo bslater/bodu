@@ -100,4 +100,22 @@ public partial class OutlookMessageTests
 
         return file;
     }
+
+    /// <summary>
+    /// Verifies that a compound file whose root has no <c>__properties_version1.0</c> stream is reported as missing
+    /// that stream, the one case the missing-stream message describes, with no inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenRootHasNoPropertyStream_ShouldReportTheMissingStream()
+    {
+        using MemoryStream container = new MsgFixtureBuilder().OmitPropertiesStream().Build();
+
+        var ex = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            _ = OutlookMessage.Open(container, new OutlookMessageReaderOptions());
+        });
+
+        Assert.AreEqual(OutlookMsgResourceStrings.Format_Invalid_MsgContainer, ex.Message);
+        Assert.IsNull(ex.InnerException);
+    }
 }

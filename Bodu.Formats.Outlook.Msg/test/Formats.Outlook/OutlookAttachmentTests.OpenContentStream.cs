@@ -152,4 +152,33 @@ public partial class OutlookAttachmentTests
             _ = message.Attachments[0].OpenContentStream();
         });
     }
+
+    /// <summary>
+    /// Verifies that a container fault met after the message is open, while a payload above the inline threshold is
+    /// streamed under <see cref="Bodu.IO.Compound.CompoundReadStrategy.Streaming" /> and its sector chain points past
+    /// the end of the file, is reported as a malformed container with the container's exception as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void OpenContentStream_WhenAStreamedPayloadMeetsABrokenSectorChain_ShouldReportAMalformedContainer()
+    {
+        using MemoryStream built = MsgFixtureBuilder.CreateMinimal().AddLargeAttachment(8192).Build();
+        byte[] file = built.ToArray();
+        MsgFixtureBuilder.BreakStreamChain(file, MsgStreamNames.GetSubstgStreamName(0x37010102));
+        var options = new OutlookMessageReaderOptions
+        {
+            ReadStrategy = Bodu.IO.Compound.CompoundReadStrategy.Streaming,
+            MaxInlineAttachmentBytes = 1024,
+        };
+        using var message = OutlookMessage.Open(new MemoryStream(file), options);
+        OutlookAttachment attachment = message.Attachments[0];
+
+        var ex = Assert.ThrowsExactly<OutlookMsgFormatException>(() =>
+        {
+            using Stream content = attachment.OpenContentStream();
+            content.CopyTo(Stream.Null);
+        });
+
+        Assert.AreEqual(OutlookMsgResourceStrings.Format_Invalid_MsgCompoundMalformed, ex.Message);
+        Assert.IsInstanceOfType<Bodu.IO.Compound.CompoundFileException>(ex.InnerException);
+    }
 }
