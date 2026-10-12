@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Writer;
 
@@ -27,6 +28,16 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// duplicate key. An entry whose value is <see langword="null" /> writes the YAML null scalar - YAML, unlike its
 /// sibling formats, has a native null form.
 /// </para>
+/// <para>
+/// An enumeration key is read and written as System.Text.Json reads and writes an enumeration used as a property name,
+/// through <see cref="IEnumKeyConverter{T}" />. When the options resolve a <see cref="YamlStringEnumConverter" /> for
+/// the key type, keys follow its names, its naming policy and its rule for integer values; otherwise keys use the
+/// members' names, honoring <see cref="StringEnumMemberNameAttribute" />, with no naming policy, and integer text
+/// binds. A key is written by name whatever <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says: a member by
+/// its name, a combination of flags by its flags' names joined by <c>", "</c>, and any other value as its decimal text.
+/// A name binds as written, and the name of a member that <see cref="StringEnumMemberNameAttribute" /> does not rename
+/// also binds in any case. A key that names no value throws <see cref="YamlSerializationException" />.
+/// </para>
 /// </remarks>
 internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     : YamlConverter<TDictionary>
@@ -42,22 +53,32 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     /// <summary>Indicates whether the declared type is a concrete dictionary that must be instantiated and populated.</summary>
     private readonly bool _concrete;
 
+    /// <summary>Reads and writes an enumeration key, or <see langword="null" /> when <typeparamref name="TKey" /> is not an enumeration.</summary>
+    private readonly IEnumKeyConverter<TKey>? _enumKeys;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> class.
     /// </summary>
     /// <param name="valueConverter">The converter for the value type.</param>
     /// <param name="keyKind">The kind of key conversion to apply.</param>
     /// <param name="concrete">Whether the declared type is a concrete dictionary.</param>
+    /// <param name="enumKeys">
+    /// The converter that reads and writes an enumeration key, or <see langword="null" /> when
+    /// <typeparamref name="TKey" /> is not an enumeration.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="valueConverter" /> is <see langword="null" />.
+    /// Thrown when <paramref name="valueConverter" /> is <see langword="null" />, or when <paramref name="keyKind" />
+    /// is <see cref="DictionaryKeyKind.Enum" /> and <paramref name="enumKeys" /> is <see langword="null" />.
     /// </exception>
-    public DictionaryConverter(YamlConverter valueConverter, DictionaryKeyKind keyKind, bool concrete)
+    public DictionaryConverter(YamlConverter valueConverter, DictionaryKeyKind keyKind, bool concrete, IEnumKeyConverter<TKey>? enumKeys)
     {
         ThrowHelper.ThrowIfNull(valueConverter);
+        if (keyKind == DictionaryKeyKind.Enum) ThrowHelper.ThrowIfNull(enumKeys);
 
         _valueConverter = valueConverter;
         _keyKind = keyKind;
         _concrete = concrete;
+        _enumKeys = enumKeys;
     }
 
     /// <inheritdoc />
@@ -102,7 +123,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
                 if (state is { HasFailure: true })
                     break;
 
-                string keyText = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
+                string keyText = FormatKey(entry.Key);
                 if (!seen.Add(keyText))
                 {
                     throw new YamlSerializationException(string.Format(
@@ -128,17 +149,32 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     }
 
     /// <summary>
-    /// Parses a mapping key back to <typeparamref name="TKey" />, mirroring the coercions of the former binding walker:
-    /// strings pass through, enumeration names match case-insensitively, and every other supported kind converts from
-    /// its invariant text.
+    /// Converts a dictionary key to its mapping-key text.
+    /// </summary>
+    /// <param name="key">The key to convert.</param>
+    /// <returns>The key's name for an enumeration key; otherwise its invariant-culture text.</returns>
+    private string FormatKey(TKey key) =>
+        _keyKind == DictionaryKeyKind.Enum
+            ? _enumKeys!.WriteKey(key)
+            : Convert.ToString(key, CultureInfo.InvariantCulture) ?? string.Empty;
+
+    /// <summary>
+    /// Parses a mapping key back to <typeparamref name="TKey" />: strings pass through, enumeration keys are read by
+    /// name, and every other supported kind converts from its invariant text.
     /// </summary>
     /// <param name="text">The key text read from the document.</param>
     /// <returns>The parsed key.</returns>
+    /// <exception cref="YamlSerializationException">
+    /// Thrown when <typeparamref name="TKey" /> is an enumeration and <paramref name="text" /> names no value of it.
+    /// </exception>
     private TKey ParseKey(string text) =>
         _keyKind switch
         {
             DictionaryKeyKind.String => (TKey)(object)text,
-            DictionaryKeyKind.Enum => (TKey)Enum.Parse(typeof(TKey), text, ignoreCase: true),
+            DictionaryKeyKind.Enum => _enumKeys!.TryReadKey(text, out TKey parsedEnum)
+                ? parsedEnum
+                : throw new YamlSerializationException(string.Format(
+                    CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_YamlDictionaryKeyParse, text, typeof(TKey))),
             _ => (TKey)Convert.ChangeType(text, typeof(TKey), CultureInfo.InvariantCulture),
         };
 

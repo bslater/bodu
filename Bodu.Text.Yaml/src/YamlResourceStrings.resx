@@ -90,6 +90,7 @@
   <data name="Arg_Invalid_YamlInvalidUtf8" xml:space="preserve"><value>The supplied bytes are not valid UTF-8.</value></data>
   <data name="Arg_Invalid_YamlUnpairedSurrogate" xml:space="preserve"><value>The value contains an unpaired surrogate and cannot be encoded as UTF-8 YAML.</value></data>
   <data name="Op_Invalid_YamlDuplicateDictionaryKey" xml:space="preserve"><value>The dictionary maps more than one entry to the YAML key '{0}'.</value></data>
+  <data name="Op_Invalid_YamlDictionaryKeyParse" xml:space="preserve"><value>The dictionary key '{0}' cannot be converted to type '{1}'.</value></data>
   <data name="Arg_OutOfRange_YamlWriterIndentSize" xml:space="preserve"><value>The writer indentation size must be between 1 and 16.</value></data>
   <data name="Arg_Invalid_YamlWriterNewLine" xml:space="preserve"><value>The writer newline must be null, a line feed, or a carriage-return line feed.</value></data>
   <data name="Op_Invalid_YamlValueKind" xml:space="preserve"><value>The YAML value is not of the expected kind for this operation.</value></data>

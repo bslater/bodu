@@ -38,7 +38,7 @@ The <xref:Bodu.Text.Yaml.YamlNumberHandling> option governs the integer/float bo
 | .NET type | YAML representation | Notes |
 |---|---|---|
 | arrays, `List<T>`, `IEnumerable<T>` and its interfaces, sets, and concrete collections with a parameterless constructor and `Add` | sequence | Block-style on write; an empty collection writes as flow `[]`. On read the elements are bound into a `List<T>` and copied into the requested concrete type. |
-| `IDictionary<TKey,TValue>` / `IReadOnlyDictionary<TKey,TValue>` and concrete dictionaries | mapping | Written in insertion order. Keys are stringified through `Convert.ToString`; on read a non-`string` key type is parsed back (enums by name, other keys via `Convert.ChangeType`). Mapping keys resolve to unique scalar strings (the Bodu YAML Core Tree Profile) - a duplicate stringified key on write raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
+| `IDictionary<TKey,TValue>` / `IReadOnlyDictionary<TKey,TValue>` and concrete dictionaries | mapping | Written in insertion order. Keys are stringified in invariant text, and enum keys by name, as described under [Enums](#enums); on read a non-`string` key type is parsed back (enum keys by name, other keys via `Convert.ChangeType`). Mapping keys resolve to unique scalar strings (the Bodu YAML Core Tree Profile) - a duplicate stringified key on write raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 | plain classes and structs | mapping | The catch-all object converter, consulted last; properties first (reflection order), then public fields when `IncludeFields` is set. Read requires a public parameterless constructor and sets each writable member. Delegates, reflection types (`Type` and the other `MemberInfo` types) and pointers are not plain objects: without a converter of your own, a member of one fails with `NotSupportedException` naming its type. |
 | `object`-typed members | the runtime type's form on write | On **read**, an `object` target binds to a loosely-typed graph: a `Dictionary<string, object?>` for a mapping, a `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars - **not** a <xref:Bodu.Text.Yaml.Document.YamlElement>. |
 | `Nullable<T>` | the underlying value, or the null scalar | A null scalar binds to `null`; otherwise the value binds as `T`. |
@@ -95,6 +95,8 @@ options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, 
 
 // Status.OnHold now serializes as on_hold everywhere.
 ```
+
+An enum used as a dictionary key follows the same names, as System.Text.Json's enum converter reads and writes a property name. A key is written by its wire name, a combination of flags by its flags' wire names, and any other value as its decimal text, whatever the rule for integer values and whatever `WriteEnumsAsStrings` says, so with `[StringEnumMemberName("on")]` on `Enabled` a `Dictionary<Toggle, int>` writes the key `on`, reads it back, and rejects `Enabled` with <xref:Bodu.Text.Yaml.YamlSerializationException>. Where a `YamlStringEnumConverter` handles the key type, keys also follow its naming policy and its rule for integer values, so with `allowIntegerValues: false` the key `1` is rejected. Otherwise, under the default handling or `YamlNumberEnumConverter<TEnum>`, keys are written by name with no naming policy, and integer text binds.
 
 ## What YAML does not need a decision for
 

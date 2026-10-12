@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Bodu.Text.Toml.Serialization;
@@ -302,6 +303,174 @@ public partial class TomlSerializerTests
             _ = TomlSerializer.Deserialize<EnumParityModel>($"{member} = \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true));
         });
     }
+
+    /// <summary>
+    /// Verifies that an enumeration used as a dictionary key is written with the key text
+    /// <see cref="System.Text.Json.JsonSerializer" /> writes for it: a renamed member's configured name, a combination
+    /// of flags as its members' names, an undefined value as its decimal text, and, under a string enum converter with a
+    /// naming policy, the policy's names.
+    /// </summary>
+    /// <param name="mode">The enumeration handling, as <see cref="EnumKeyOptions(string)" /> names it.</param>
+    [TestMethod]
+    [DataRow("default", DisplayName = "default enumeration handling")]
+    [DataRow("snake", DisplayName = "a string enum converter with a naming policy")]
+    [DataRow("noint", DisplayName = "a string enum converter that disallows integer values")]
+    public void Serialize_WhenEnumKeyedDictionary_ShouldWriteKeysLikeSystemTextJson(string mode)
+    {
+        (JsonSerializerOptions jsonOptions, TomlSerializerOptions tomlOptions) = EnumKeyOptions(mode);
+        var toggles = new Dictionary<ParityToggle, int> { [ParityToggle.Enabled] = 1, [ParityToggle.Disabled] = 2 };
+        var access = new Dictionary<ParityAccessFlags, int>
+        {
+            [ParityAccessFlags.CanRead | ParityAccessFlags.CanExecute] = 1,
+            [ParityAccessFlags.CanReadWrite] = 2,
+            [(ParityAccessFlags)64] = 3,
+        };
+
+        CollectionAssert.AreEqual(JsonKeys(toggles, jsonOptions), TomlKeys(toggles, tomlOptions));
+        CollectionAssert.AreEqual(JsonKeys(access, jsonOptions), TomlKeys(access, tomlOptions));
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary key <see cref="System.Text.Json.JsonSerializer" /> binds to an enumeration binds to
+    /// the same value through the <see cref="TomlSerializer" /> under the same enumeration handling.
+    /// </summary>
+    /// <param name="mode">The enumeration handling, as <see cref="EnumKeyOptions(string)" /> names it.</param>
+    /// <param name="type">The key enumeration, <see cref="ParityToggle" /> or <see cref="ParityAccessFlags" />.</param>
+    /// <param name="key">The key's text.</param>
+    [TestMethod]
+    [DataRow("default", nameof(ParityToggle), "on", DisplayName = "a renamed member's configured name")]
+    [DataRow("default", nameof(ParityToggle), "Disabled", DisplayName = "an unrenamed member's CLR name")]
+    [DataRow("default", nameof(ParityToggle), "disabled", DisplayName = "an unrenamed member's CLR name in lower case")]
+    [DataRow("default", nameof(ParityToggle), "1", DisplayName = "integer text")]
+    [DataRow("default", nameof(ParityAccessFlags), "CanExecute, CanRead", DisplayName = "two CLR names in descending order")]
+    [DataRow("default", nameof(ParityAccessFlags), "64", DisplayName = "an undefined value's decimal text")]
+    [DataRow("snake", nameof(ParityToggle), "on", DisplayName = "a configured name under a naming policy")]
+    [DataRow("snake", nameof(ParityAccessFlags), "can_read, can_execute", DisplayName = "two policy names")]
+    [DataRow("snake", nameof(ParityAccessFlags), "can_read_write", DisplayName = "a composite member's policy name")]
+    [DataRow("snake", nameof(ParityAccessFlags), "CanRead", DisplayName = "an unrenamed member's CLR name under a naming policy")]
+    public void Deserialize_WhenSystemTextJsonBindsEnumKey_ShouldBindSameKey(string mode, string type, string key)
+    {
+        (JsonSerializerOptions jsonOptions, TomlSerializerOptions tomlOptions) = EnumKeyOptions(mode);
+
+        long json = type == nameof(ParityToggle)
+            ? JsonKeyValue<ParityToggle>(key, jsonOptions)
+            : JsonKeyValue<ParityAccessFlags>(key, jsonOptions);
+        long toml = type == nameof(ParityToggle)
+            ? TomlKeyValue<ParityToggle>(key, tomlOptions)
+            : TomlKeyValue<ParityAccessFlags>(key, tomlOptions);
+
+        Assert.AreEqual(json, toml);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary key <see cref="System.Text.Json.JsonSerializer" /> rejects for an enumeration is
+    /// rejected by the <see cref="TomlSerializer" /> under the same enumeration handling.
+    /// </summary>
+    /// <param name="mode">The enumeration handling, as <see cref="EnumKeyOptions(string)" /> names it.</param>
+    /// <param name="type">The key enumeration, <see cref="ParityToggle" /> or <see cref="ParityAccessFlags" />.</param>
+    /// <param name="key">The key's text.</param>
+    [TestMethod]
+    [DataRow("default", nameof(ParityToggle), "Enabled", DisplayName = "a renamed member's CLR name")]
+    [DataRow("default", nameof(ParityToggle), "ON", DisplayName = "a configured name in another case")]
+    [DataRow("default", nameof(ParityToggle), "Purple", DisplayName = "a name no member has")]
+    [DataRow("snake", nameof(ParityAccessFlags), "CAN_READ", DisplayName = "a policy name in another case")]
+    [DataRow("noint", nameof(ParityToggle), "1", DisplayName = "integer text when integer values are not allowed")]
+    public void Deserialize_WhenSystemTextJsonRejectsEnumKey_ShouldRejectLikeSystemTextJson(string mode, string type, string key)
+    {
+        (JsonSerializerOptions jsonOptions, TomlSerializerOptions tomlOptions) = EnumKeyOptions(mode);
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = type == nameof(ParityToggle)
+                ? JsonKeyValue<ParityToggle>(key, jsonOptions)
+                : JsonKeyValue<ParityAccessFlags>(key, jsonOptions);
+        });
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = type == nameof(ParityToggle)
+                ? TomlKeyValue<ParityToggle>(key, tomlOptions)
+                : TomlKeyValue<ParityAccessFlags>(key, tomlOptions);
+        });
+    }
+
+    /// <summary>
+    /// Creates the matching options of the two serializers for an enumeration handling.
+    /// </summary>
+    /// <param name="mode">
+    /// <c>default</c> for no enumeration converter, <c>snake</c> for a string enum converter with the lower snake-case
+    /// naming policy that allows integer values, or <c>noint</c> for a string enum converter without a naming policy that
+    /// disallows them.
+    /// </param>
+    /// <returns>The System.Text.Json and TOML options.</returns>
+    private static (JsonSerializerOptions Json, TomlSerializerOptions Toml) EnumKeyOptions(string mode)
+    {
+        var json = new JsonSerializerOptions();
+        var toml = new TomlSerializerOptions();
+        if (mode == "snake")
+        {
+            json.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower, allowIntegerValues: true));
+            toml.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues: true));
+        }
+        else if (mode == "noint")
+        {
+            json.Converters.Add(new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+            toml.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        }
+
+        return (json, toml);
+    }
+
+    /// <summary>
+    /// Returns the keys <see cref="System.Text.Json.JsonSerializer" /> writes for a dictionary, in order.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="dictionary">The dictionary.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>The written keys.</returns>
+    private static string[] JsonKeys<TKey>(Dictionary<TKey, int> dictionary, JsonSerializerOptions options)
+        where TKey : notnull
+    {
+        using JsonDocument document = JsonDocument.Parse(JsonSerializer.Serialize(dictionary, options));
+        return document.RootElement.EnumerateObject().Select(static property => property.Name).ToArray();
+    }
+
+    /// <summary>
+    /// Returns the table keys the <see cref="TomlSerializer" /> writes for a dictionary, in order.
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <param name="dictionary">The dictionary.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>The written keys.</returns>
+    private static string[] TomlKeys<TKey>(Dictionary<TKey, int> dictionary, TomlSerializerOptions options)
+        where TKey : notnull =>
+        TomlSerializer.Deserialize<Dictionary<string, int>>(TomlSerializer.Serialize(dictionary, options)).Keys.ToArray();
+
+    /// <summary>
+    /// Reads a one-entry object through <see cref="System.Text.Json.JsonSerializer" /> and returns its key's underlying
+    /// value.
+    /// </summary>
+    /// <typeparam name="TEnum">The key enumeration.</typeparam>
+    /// <param name="key">The key's text.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>The bound key's underlying value.</returns>
+    private static long JsonKeyValue<TEnum>(string key, JsonSerializerOptions options)
+        where TEnum : struct, Enum =>
+        Convert.ToInt64(
+            JsonSerializer.Deserialize<Dictionary<TEnum, int>>($"{{{JsonSerializer.Serialize(key)}:1}}", options)!.Keys.Single(),
+            CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Reads a one-entry table through the <see cref="TomlSerializer" /> and returns its key's underlying value.
+    /// </summary>
+    /// <typeparam name="TEnum">The key enumeration.</typeparam>
+    /// <param name="key">The key's text, written as a quoted key.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>The bound key's underlying value.</returns>
+    private static long TomlKeyValue<TEnum>(string key, TomlSerializerOptions options)
+        where TEnum : struct, Enum =>
+        Convert.ToInt64(
+            TomlSerializer.Deserialize<Dictionary<TEnum, int>>($"\"{key}\" = 1\n", options).Keys.Single(),
+            CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Creates options that convert enumerations by name through a <see cref="JsonStringEnumConverter" /> with the lower

@@ -623,6 +623,14 @@ namespace Bodu {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary key '{0}' cannot be converted to type '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_YamlDictionaryKeyParse {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlDictionaryKeyParse", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition..
         /// </summary>
         internal static string Arg_OutOfRange_DefaultIgnoreConditionAlways {
