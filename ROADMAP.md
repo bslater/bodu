@@ -1231,9 +1231,9 @@ member ordering, a CLI and a VSIX as deferred milestones.
 - **Document each analyzer code** under `docs/codestyle/` (rule,
   rationale, examples, suppression guidance).
 - **Add code-fix coverage** for every rule that currently only diagnoses.
-- **Publish a JSON-schema** for `bodu.xmldocstyle.json`, whose `$schema`
-  already names a `Bodu.CodeStyle/schema/bodu.xmldocstyle.schema.json`
-  that does not exist in the tree.
+- **Publish a JSON-schema** for `bodu.xmldocstyle.json`, and name it in
+  the file's `$schema`, which was removed while no schema existed
+  (#1027).
 
 ### `bc-csharp` *(local reference, git-ignored)*
 

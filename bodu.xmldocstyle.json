@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/bodu/bodu/master/Bodu.CodeStyle/schema/bodu.xmldocstyle.schema.json",
   "profile": "Bodu",
 
   "_": "Source of truth for the Bodu XML documentation formatter / analyzers (BODU1001-BODU1018 per tag, BODU1040 cross-cutting).",
