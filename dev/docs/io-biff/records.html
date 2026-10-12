@@ -282,7 +282,7 @@
 <tr>
 <td><code>BOOLERR</code></td>
 <td><code>0x0205</code></td>
-<td>A value byte and a kind byte (8 bytes total): kind zero is a boolean, non-zero an error code.</td>
+<td>A value byte and a kind byte (8 bytes total): kind zero is a boolean, non-zero an error code. A 9-byte payload is the layout OpenOffice.org wrote, read as such: the value as a 16-bit integer (its low byte is the value), then the kind byte.</td>
 <td><a class="xref" href="../../api/Bodu.IO.Biff.BiffBoolErrRecord.html">BiffBoolErrRecord</a></td>
 <td><a class="xref" href="../../api/Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_GetBoolErr">GetBoolErr()</a></td>
 <td><a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_WriteBoolean_">WriteBoolean</a>, <a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_WriteError_">WriteError</a>, <a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_WriteBoolErr_">WriteBoolErr</a></td>
@@ -322,7 +322,7 @@
 <tr>
 <td><code>STRING</code></td>
 <td><code>0x0207</code></td>
-<td>No prefix: a 16-bit-length string holding the cached text of the <code>FORMULA</code> immediately before it.</td>
+<td>No prefix: a 16-bit-length string holding the cached text of the <code>FORMULA</code> before it, which it follows directly or after the <code>ARRAY</code>, <code>TABLE</code> or <code>SHRFMLA</code> record of an array, table or shared formula. A long text continues in <code>CONTINUE</code> records ([MS-XLS] 2.1.7.20.6), each opening with its own flags byte as in the shared string table, and its runs are decoded as one, so a surrogate pair split between two records keeps its character; <code>GetString</code> decodes the <code>STRING</code> record alone.</td>
 <td><a class="xref" href="../../api/Bodu.IO.Biff.BiffStringRecord.html">BiffStringRecord</a></td>
 <td><a class="xref" href="../../api/Bodu.IO.Biff.BiffReader.html#Bodu_IO_Biff_BiffReader_GetString">GetString()</a></td>
 <td><a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_WriteString_">WriteString</a></td>
@@ -381,7 +381,7 @@
 </tr>
 <tr>
 <td>Flags byte</td>
-<td>Follows the length: bit 0 selects 16-bit code units over compressed 8-bit characters, bit 2 announces extended (phonetic) data, bit 3 announces rich-text runs.</td>
+<td>Follows the length: bit 0 selects 16-bit code units over compressed 8-bit characters. In the shared string table, bit 2 announces extended (phonetic) data and bit 3 rich-text runs; in <code>BOUNDSHEET</code>, <code>FONT</code>, <code>FORMAT</code>, <code>LABEL</code> and <code>STRING</code> the other seven bits are reserved and ignored ([MS-XLS] 2.5.240 and 2.5.294), so the characters follow the flags byte directly.</td>
 <td>None.</td>
 </tr>
 <tr>
@@ -391,7 +391,7 @@
 </tr>
 <tr>
 <td>Trailers</td>
-<td>A 16-bit run count before the characters and four bytes per run after them; a 32-bit extended size before the characters and that many bytes after the runs.</td>
+<td>Shared strings only: a 16-bit run count before the characters and four bytes per run after them; a 32-bit extended size before the characters and that many bytes after the runs.</td>
 <td>None; <code>RSTRING</code> carries its own run table after the string.</td>
 </tr>
 <tr>
@@ -405,9 +405,10 @@
 <p>The BIFF8 <code>SST</code> record is the canonical continued structure. <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a> reads it by these rules, and <a class="xref" href="../../api/Bodu.IO.Biff.BiffWriter.html#Bodu_IO_Biff_BiffWriter_WriteSst_">WriteSst</a> writes it by the same:</p>
 <ul>
 <li>A string's header - length, flags, and any run count or extended size - never straddles a record boundary; when fewer than three bytes remain, the header opens the next <code>CONTINUE</code> record.</li>
-<li>A string's characters may straddle a boundary, but only at a character boundary - a 16-bit code unit is never split.</li>
-<li>Each continued run of characters restarts with its own flags byte, which may change the character width mid-string.</li>
+<li>A string's characters may straddle a boundary, but only at a character boundary - a 16-bit code unit is never split. The boundary may fall between the two code units of a surrogate pair: the reader gathers the code units of every run before decoding them, so the pair decodes to its character, and a surrogate without its partner decodes to U+FFFD, exactly as the same code units in one record do.</li>
+<li>Each continued run of characters restarts with its own flags byte, which may change the character width mid-string. A <code>CONTINUE</code> record that holds only the flags byte contributes no characters, and the string goes on in the next <code>CONTINUE</code> record; one that holds no bytes at all is malformed.</li>
 <li>Rich-run and extended-data trailers may straddle a boundary without a flags byte; the reader skips them and reports them as empty when they do.</li>
+<li>The table ends where its records end. Some producers declare more unique strings (<code>cstUnique</code>) than the table holds, so when the <code>SST</code> record, or the last <code>CONTINUE</code> record after it, is exhausted between two strings and the next record is not a <code>CONTINUE</code>, <code>Read</code> returns <code>false</code> even before <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstHeader.html#Bodu_IO_Biff_BiffSstHeader_UniqueCount">UniqueCount</a> strings have been read. A string cut off inside its header or its characters is malformed.</li>
 </ul>
 <p>A string that lies within one record is exposed as a span-backed <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html#Bodu_IO_Biff_BiffSstReader_Current">Current</a> view; one that straddles a boundary has <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html#Bodu_IO_Biff_BiffSstReader_IsFragmented">IsFragmented</a> set and is served through <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html#Bodu_IO_Biff_BiffSstReader_GetString">GetString()</a> and <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html#Bodu_IO_Biff_BiffSstReader_CopyTo_">CopyTo</a> from a reusable scratch buffer.</p>
 <h2 id="what-the-version-changes">What the version changes</h2>
@@ -463,7 +464,7 @@
 <tr>
 <td>Rich text</td>
 <td><code>RSTRING</code> cells</td>
-<td>Runs inside the Unicode string</td>
+<td>Runs inside the shared string</td>
 </tr>
 <tr>
 <td>Compound-file stream name</td>
@@ -559,7 +560,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7f0e041 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 49455c2 · Built: 2026-10-12 (UTC)</span>
         </div>
       </div>
     </footer>
