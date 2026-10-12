@@ -4,6 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+
+using Bodu.Test.Kat;
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.DotEnv;
@@ -85,5 +90,74 @@ public partial class DotEnvSerializerTests
 
         /// <inheritdoc />
         public void OnDeserialized() => DeserializedCalled = true;
+    }
+
+    /// <summary>
+    /// Gets scalar root values, each of which serialization must reject with <see cref="DotEnvSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named scalar value and the exception it raises.</value>
+    public static IEnumerable<object[]> ScalarRootValues =>
+    [
+        [new InvalidKat<object>("decimal", 1.5m, typeof(DotEnvSerializationException), MessageContains: "System.Decimal")],
+        [new InvalidKat<object>("DateTime", new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc), typeof(DotEnvSerializationException), MessageContains: "System.DateTime")],
+        [new InvalidKat<object>("DateTimeOffset", DateTimeOffset.UnixEpoch, typeof(DotEnvSerializationException), MessageContains: "System.DateTimeOffset")],
+        [new InvalidKat<object>("TimeSpan", TimeSpan.FromHours(1), typeof(DotEnvSerializationException), MessageContains: "System.TimeSpan")],
+        [new InvalidKat<object>("Guid", Guid.Empty, typeof(DotEnvSerializationException), MessageContains: "System.Guid")],
+        [new InvalidKat<object>("Uri", new Uri("https://example.com/"), typeof(DotEnvSerializationException), MessageContains: "System.Uri")],
+        [new InvalidKat<object>("DateOnly", new DateOnly(2026, 1, 2), typeof(DotEnvSerializationException), MessageContains: "System.DateOnly")],
+        [new InvalidKat<object>("TimeOnly", new TimeOnly(1, 2), typeof(DotEnvSerializationException), MessageContains: "System.TimeOnly")],
+        [new InvalidKat<object>("Int128", (Int128)5, typeof(DotEnvSerializationException), MessageContains: "System.Int128")],
+        [new InvalidKat<object>("UInt128", (UInt128)5, typeof(DotEnvSerializationException), MessageContains: "System.UInt128")],
+        [new InvalidKat<object>("Half", (Half)1, typeof(DotEnvSerializationException), MessageContains: "System.Half")],
+        [new InvalidKat<object>("BigInteger", new BigInteger(7), typeof(DotEnvSerializationException), MessageContains: "System.Numerics.BigInteger")],
+        [new InvalidKat<object>("char", 'c', typeof(DotEnvSerializationException), MessageContains: "System.Char")],
+    ];
+
+    /// <summary>
+    /// Gets scalar root types, including nullable forms, each of which deserialization must reject with
+    /// <see cref="DotEnvSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named scalar type and the exception it raises.</value>
+    public static IEnumerable<object[]> ScalarRootTypes =>
+    [
+        [new InvalidKat<Type>("decimal", typeof(decimal), typeof(DotEnvSerializationException), MessageContains: "System.Decimal")],
+        [new InvalidKat<Type>("DateTime", typeof(DateTime), typeof(DotEnvSerializationException), MessageContains: "System.DateTime")],
+        [new InvalidKat<Type>("DateTimeOffset", typeof(DateTimeOffset), typeof(DotEnvSerializationException), MessageContains: "System.DateTimeOffset")],
+        [new InvalidKat<Type>("TimeSpan", typeof(TimeSpan), typeof(DotEnvSerializationException), MessageContains: "System.TimeSpan")],
+        [new InvalidKat<Type>("Guid", typeof(Guid), typeof(DotEnvSerializationException), MessageContains: "System.Guid")],
+        [new InvalidKat<Type>("Uri", typeof(Uri), typeof(DotEnvSerializationException), MessageContains: "System.Uri")],
+        [new InvalidKat<Type>("DateOnly", typeof(DateOnly), typeof(DotEnvSerializationException), MessageContains: "System.DateOnly")],
+        [new InvalidKat<Type>("TimeOnly", typeof(TimeOnly), typeof(DotEnvSerializationException), MessageContains: "System.TimeOnly")],
+        [new InvalidKat<Type>("Int128", typeof(Int128), typeof(DotEnvSerializationException), MessageContains: "System.Int128")],
+        [new InvalidKat<Type>("UInt128", typeof(UInt128), typeof(DotEnvSerializationException), MessageContains: "System.UInt128")],
+        [new InvalidKat<Type>("Half", typeof(Half), typeof(DotEnvSerializationException), MessageContains: "System.Half")],
+        [new InvalidKat<Type>("BigInteger", typeof(BigInteger), typeof(DotEnvSerializationException), MessageContains: "System.Numerics.BigInteger")],
+        [new InvalidKat<Type>("int?", typeof(int?), typeof(DotEnvSerializationException), MessageContains: "System.Nullable")],
+        [new InvalidKat<Type>("Guid?", typeof(Guid?), typeof(DotEnvSerializationException), MessageContains: "System.Nullable")],
+        [new InvalidKat<Type>("DateOnly?", typeof(DateOnly?), typeof(DotEnvSerializationException), MessageContains: "System.Nullable")],
+    ];
+
+    /// <summary>
+    /// Deserializes text into a root of a type known only at run time, through
+    /// <see cref="DotEnvSerializer.Deserialize{T}(string, DotEnvSerializerOptions?)" />, rethrowing the serializer's own exception.
+    /// </summary>
+    /// <param name="rootType">The root type.</param>
+    /// <param name="text">The text to deserialize.</param>
+    /// <returns>The deserialized root.</returns>
+    private static object? DeserializeAs(Type rootType, string text)
+    {
+        MethodInfo method = typeof(DotEnvSerializer)
+            .GetMethod(nameof(DotEnvSerializer.Deserialize), [typeof(string), typeof(DotEnvSerializerOptions)])!
+            .MakeGenericMethod(rootType);
+
+        try
+        {
+            return method.Invoke(null, [text, null]);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            throw;
+        }
     }
 }

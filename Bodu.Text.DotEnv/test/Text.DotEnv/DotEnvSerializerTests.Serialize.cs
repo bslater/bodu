@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.DotEnv;
 
 /// <summary>
@@ -60,5 +62,26 @@ public partial class DotEnvSerializerTests
         _ = DotEnvSerializer.Serialize(config);
 
         Assert.IsTrue(config.SerializingCalled);
+    }
+
+    /// <summary>
+    /// Verifies that a scalar root, such as a <see cref="decimal" />, a <see cref="DateTime" /> or a
+    /// <see cref="DateOnly" />, throws <see cref="DotEnvSerializationException" /> naming its type rather than being written through
+    /// its public properties.
+    /// </summary>
+    /// <param name="kat">The scalar root and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ScalarRootValues),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenRootIsAScalar_ShouldThrowDotEnvSerializationException(InvalidKat<object> kat)
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(kat.Input);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
 }
