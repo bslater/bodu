@@ -77,7 +77,7 @@ if (Hotp.VerifyCode(secret, userInput, stored, lookAhead: 3, out long matched))
 }
 ```
 
-The look-ahead scans `[counter, counter + lookAhead]` and reports the matching counter. Keep the window small and throttle failed attempts - a wide look-ahead admits more candidate codes at once. Per RFC 4226 §7.4, resynchronization should be combined with rate limiting.
+The look-ahead scans `[counter, counter + lookAhead]` and reports the matching counter. Keep the window small and throttle failed attempts - a wide look-ahead admits more candidate codes at once. Per RFC 4226 §7.4, resynchronization should be combined with rate limiting. The look-ahead, like TOTP's `window`, is capped at 1024: every admitted counter costs an HMAC, so a larger value throws `ArgumentOutOfRangeException` rather than let a request demand unbounded work.
 
 ## Constant-time verification
 

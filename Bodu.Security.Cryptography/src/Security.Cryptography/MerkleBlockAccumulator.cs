@@ -21,11 +21,11 @@ namespace Bodu.Security.Cryptography;
 /// <c>MerkleTree.ComputeRootOfBlocks</c> computes over the same bytes at the same block size.
 /// </para>
 /// <para>
-/// Memory is one block plus one pending hash per tree level - logarithmic in the leaf count - unless
-/// <see cref="RetainsLeafHashes" /> was requested, in which case every leaf hash is kept so
-/// <see cref="FinishComputation" /> can hand back a <see cref="MerkleBlockComputation" /> for building authentication
-/// paths. A final short block is hashed at its actual length, never padded, and an input that ends exactly on a block
-/// boundary produces no empty leaf. An empty input folds to the empty tree's root, <c>H()</c>.
+/// Memory is one block plus up to <c>fanOut - 1</c> pending hashes per tree level (one at the default fan-out of two) -
+/// logarithmic in the leaf count - unless <see cref="RetainsLeafHashes" /> was requested, in which case every leaf hash
+/// is kept so <see cref="FinishComputation" /> can hand back a <see cref="MerkleBlockComputation" /> for building
+/// authentication paths. A final short block is hashed at its actual length, never padded, and an input that ends
+/// exactly on a block boundary produces no empty leaf. An empty input folds to the empty tree's root, <c>H()</c>.
 /// </para>
 /// <para>
 /// <strong>Lifecycle.</strong> Append until the input ends, then call one of the <c>Finish</c> members - any number of
@@ -267,8 +267,10 @@ public sealed class MerkleBlockAccumulator
 
     /// <inheritdoc />
     /// <remarks>
-    /// Disposes the owned <see cref="HashAlgorithm" /> and clears the block buffer. Every other member then throws
-    /// <see cref="ObjectDisposedException" />; disposing again does nothing.
+    /// Disposes the owned <see cref="HashAlgorithm" /> and clears the block buffer. <see cref="Append" />,
+    /// <see cref="Finish" />, <see cref="FinishBound" />, <see cref="FinishComputation" />, and <see cref="Reset" />
+    /// then throw <see cref="ObjectDisposedException" />; the properties do not check for disposal. Disposing again
+    /// does nothing.
     /// </remarks>
     public void Dispose()
     {

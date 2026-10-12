@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 ///<![CDATA[
 /// byte[] secret = Base32.Decode("JBSWY3DPEHPK3PXP");  // from an otpauth:// URI
 ///
-/// string code = Hotp.GenerateCode(secret, counter: 0);          // "996554" (6 digits, SHA-1)
+/// string code = Hotp.GenerateCode(secret, counter: 0);          // "282760" (6 digits, SHA-1)
 /// bool ok = Hotp.VerifyCode(secret, userInput, counter: 0);
 ///]]>
 /// </code>
