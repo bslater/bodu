@@ -27,7 +27,10 @@ namespace Bodu.Text.Bencode.Serialization;
 /// Like System.Text.Json's <c>JsonStringEnumConverter</c> from .NET 9, a converter that does not allow integers throws
 /// <see cref="BencodeSerializationException" /> on a Bencode integer, and at a byte string that is not a member's wire
 /// name and has an integer in any of its comma-separated parts, such as <c>2</c> or <c>Read, 2</c>. A member whose wire
-/// name is an integer's text still reads, because the wire names are matched first.
+/// name is an integer's text still reads, because the wire names are matched first. Such a converter also refuses to
+/// write a value that is neither a member nor a combination of defined flags, such as an undefined value or a flags
+/// value with an undefined bit, and throws <see cref="BencodeSerializationException" /> rather than writing the decimal
+/// text it would reject on read.
 /// </para>
 /// </remarks>
 /// <example>
@@ -51,7 +54,7 @@ public sealed class BencodeStringEnumConverter<TEnum>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a Bencode integer, or a byte string that holds an integer, is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether integer values are allowed: read from a Bencode integer or a byte string that holds one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>
@@ -71,7 +74,8 @@ public sealed class BencodeStringEnumConverter<TEnum>
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
     /// <param name="allowIntegerValues">
-    /// Whether a Bencode integer, or a byte string that holds an integer, is accepted as an enumeration value on read.
+    /// Whether integer values are allowed: read from a Bencode integer or a byte string that holds one, and written as
+    /// the decimal text of a value that is neither a member nor a combination of flags.
     /// </param>
     public BencodeStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {

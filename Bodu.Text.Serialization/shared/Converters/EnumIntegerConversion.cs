@@ -34,7 +34,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// a value.
 /// </para>
 /// <para>
-/// A by-name converter that does not allow integer values also turns away a string that holds one, which
+/// A by-name converter that does not allow integer values also turns away a string that holds one on read, and a value
+/// it could write only as its decimal text on write, both of which
 /// <see cref="ContainsIntegerText(ReadOnlySpan{char})" /> recognizes.
 /// </para>
 /// </remarks>
@@ -144,7 +145,7 @@ internal static class EnumIntegerConversion
     /// <summary>
     /// Determines whether the text of an enumeration value holds an integer in any of its comma-separated parts.
     /// </summary>
-    /// <param name="text">The text, as a string token carries it.</param>
+    /// <param name="text">The text, as a string token carries it or as the runtime formats a value.</param>
     /// <returns>
     /// <see langword="true" /> when a comma-separated part of <paramref name="text" />, once trimmed, is an optional
     /// <c>+</c> or <c>-</c> sign followed by one or more of the digits <c>0</c> to <c>9</c>; otherwise,
@@ -156,7 +157,9 @@ internal static class EnumIntegerConversion
     /// it holds. A converter that does not allow integer values asks this method between the two, and rejects text that
     /// holds an integer, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects it from .NET 9. Each part is
     /// trimmed of white space and of null characters, which the runtime's integer parsing ignores after the digits, so
-    /// no text that the runtime would read as an integer passes.
+    /// no text that the runtime would read as an integer passes. On write the same converter asks it of the text the
+    /// runtime formats a value as, which is the value's decimal text exactly when the value is neither a member nor a
+    /// combination of defined flags, and refuses to write such a value.
     /// </remarks>
     internal static bool ContainsIntegerText(ReadOnlySpan<char> text)
     {

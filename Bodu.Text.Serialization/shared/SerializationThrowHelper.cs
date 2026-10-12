@@ -16,8 +16,9 @@ namespace Bodu.Text.Toml.Serialization;
 /// <summary>
 /// Creates the serialization exceptions thrown by the shared serializer source. The factory surface is format-neutral;
 /// the format-specific branches preserve each format's pinned diagnostics contract - Bencode stamps the offending
-/// token's start offset into every exception, whereas TOML carries the message only because the enclosing converter
-/// stamps the source position and member path during unwind.
+/// token's start offset into every exception raised on read, whereas TOML carries the message only because the
+/// enclosing converter stamps the source position and member path during unwind. An exception raised on write, where
+/// there is no token, carries the message only in both formats.
 /// </summary>
 internal static class SerializationThrowHelper
 {
@@ -97,6 +98,22 @@ internal static class SerializationThrowHelper
                 text,
                 enumType));
 #endif
+
+    /// <summary>
+    /// Creates the exception reporting that an enumeration value is neither a member nor a combination of flags, which
+    /// a converter that does not allow integer values cannot write.
+    /// </summary>
+    /// <param name="text">The decimal text the runtime formats the value as.</param>
+    /// <param name="enumType">The enumeration type.</param>
+    /// <returns>The exception to throw.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static FormatSerializationException EnumValueNotWritable(string text, Type enumType) =>
+        new(
+            string.Format(
+                CultureInfo.CurrentCulture,
+                FormatResourceStrings.Op_Invalid_EnumValueNotWritable,
+                text,
+                enumType));
 
     /// <summary>
     /// Creates the exception reporting that the integer token holds a value outside the range of the target type, an

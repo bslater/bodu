@@ -13,7 +13,7 @@ uid: Bodu.Text.Bencode.Serialization
 - <xref:Bodu.Text.Bencode.Serialization.BencodeConverter> - the non-generic root (`CanConvert`) that `BencodeSerializerOptions.Converters` holds.
 - <xref:Bodu.Text.Bencode.Serialization.BencodeConverter`1> - the per-type base: implement `Read` and `Write` for `T`.
 - <xref:Bodu.Text.Bencode.Serialization.BencodeConverterFactory> - the base for converter families: `CanConvert` plus `CreateConverter` for a closed type.
-- <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter`1> - enums as member-name byte strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and an integer fallback that, turned off, also rejects a byte string holding an integer.
+- <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter`1> - enums as member-name byte strings, with an optional <xref:Bodu.Text.Serialization.NamingPolicy> and an integer fallback that, turned off, also rejects a byte string holding an integer and refuses to write a value that is neither a member nor a combination of flags.
 - <xref:Bodu.Text.Bencode.Serialization.BencodeNumberEnumConverter`1> - enums as their underlying integer.
 
 ## Example

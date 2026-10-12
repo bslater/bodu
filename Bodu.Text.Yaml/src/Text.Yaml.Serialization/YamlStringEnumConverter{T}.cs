@@ -28,7 +28,10 @@ namespace Bodu.Text.Yaml.Serialization;
 /// at any other scalar that is not a member's wire name and whose text has an integer in any of its comma-separated
 /// parts, such as a quoted <c>"2"</c>, <c>!!str 2</c>, an integral float such as <c>2.0</c>, or <c>Read, 2</c>, as
 /// System.Text.Json's <c>JsonStringEnumConverter</c> rejects a numeric string from .NET 9. A member whose wire name is
-/// an integer's text still reads from a string scalar, because the wire names are matched first.
+/// an integer's text still reads from a string scalar, because the wire names are matched first. Such a converter also
+/// refuses to write a value that is neither a member nor a combination of defined flags, such as an undefined value or
+/// a flags value with an undefined bit, and throws <see cref="YamlSerializationException" /> rather than writing the
+/// decimal text it would reject on read.
 /// </para>
 /// </remarks>
 /// <example>
@@ -52,7 +55,7 @@ public sealed class YamlStringEnumConverter<TEnum>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a YAML integer scalar, or a scalar whose text holds an integer, is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether integer values are allowed: read from a YAML integer scalar or a scalar whose text holds one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>
@@ -72,8 +75,8 @@ public sealed class YamlStringEnumConverter<TEnum>
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
     /// <param name="allowIntegerValues">
-    /// Whether a YAML integer scalar, or a scalar whose text holds an integer, is accepted as an enumeration value on
-    /// read.
+    /// Whether integer values are allowed: read from a YAML integer scalar or a scalar whose text holds one, and
+    /// written as the decimal text of a value that is neither a member nor a combination of flags.
     /// </param>
     public YamlStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {

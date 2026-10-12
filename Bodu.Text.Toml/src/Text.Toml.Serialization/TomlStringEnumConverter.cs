@@ -27,7 +27,10 @@ namespace Bodu.Text.Toml.Serialization;
 /// a string that holds one: a string that is not a member's wire name and has an integer in any of its comma-separated
 /// parts, such as <c>"2"</c>, <c>" +2 "</c> or <c>"Read, 2"</c>, is rejected rather than bound as the integer, as
 /// System.Text.Json's <c>JsonStringEnumConverter</c> rejects such a string from .NET 9. The wire names are matched
-/// first, so a member named <c>1</c> through <see cref="StringEnumMemberNameAttribute" /> still reads.
+/// first, so a member named <c>1</c> through <see cref="StringEnumMemberNameAttribute" /> still reads. Such a converter
+/// also refuses to write a value that is neither a member nor a combination of defined flags, such as an undefined
+/// value or a flags value with an undefined bit, and throws <see cref="TomlSerializationException" /> rather than
+/// writing the decimal text it would reject on read.
 /// </para>
 /// </remarks>
 /// <example>
@@ -46,7 +49,7 @@ public sealed class TomlStringEnumConverter
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a TOML integer, or a string that holds an integer, is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether integer values are allowed: read from a TOML integer or a string that holds one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>
@@ -66,7 +69,8 @@ public sealed class TomlStringEnumConverter
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
     /// <param name="allowIntegerValues">
-    /// Whether a TOML integer, or a string that holds an integer, is accepted as an enumeration value on read.
+    /// Whether integer values are allowed: read from a TOML integer or a string that holds one, and written as the
+    /// decimal text of a value that is neither a member nor a combination of flags.
     /// </param>
     public TomlStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {
