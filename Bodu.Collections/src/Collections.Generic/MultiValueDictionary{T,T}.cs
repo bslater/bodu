@@ -39,9 +39,11 @@ namespace Bodu.Collections.Generic;
 /// should be handled without throwing.
 /// </para>
 /// <para>
-/// Values returned by the indexer, <see cref="GetValues" />, <see cref="TryGetValues" />, and enumeration are live
-/// read-only views. They reflect later dictionary changes for the same key, but they do not expose the mutable backing
-/// <see cref="List{T}" /> used internally.
+/// A list returned for a present key by the indexer, <see cref="GetValues" />, <see cref="TryGetValues" />, or
+/// enumeration is a live read-only view: it reflects later changes for that key until the key is removed (by removing
+/// its last value, <see cref="RemoveAll" />, or <see cref="Clear" />), after which it stays empty even if the key is
+/// added again. The empty list returned for an absent key is a static snapshot that never reflects later adds. Neither
+/// exposes the mutable backing <see cref="List{T}" /> used internally.
 /// </para>
 /// <para>
 /// Enumerators are invalidated by structural modification. Adding values, removing values, removing keys, or clearing
@@ -237,16 +239,16 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// Gets the values associated with <paramref name="key" /> as a read-only list.
     /// </summary>
     /// <param name="key">The key whose values are retrieved.</param>
-    /// <returns>
+    /// <value>
     /// A live read-only list of values associated with <paramref name="key" />, or an empty list when the key is
     /// absent.
-    /// </returns>
+    /// </value>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The returned list reflects later changes made through the dictionary, but it does not expose the mutable backing
-    /// list.
+    /// For a present key, the returned list reflects later changes made through the dictionary until the key is
+    /// removed; the empty list returned for an absent key does not. Neither exposes the mutable backing list.
     /// </remarks>
     public IReadOnlyList<TValue> this[TKey key]
     {

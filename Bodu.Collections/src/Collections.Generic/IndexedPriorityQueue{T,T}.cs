@@ -58,7 +58,7 @@ namespace Bodu.Collections.Generic;
 /// queue.Update("B", 3);                  // B's tentative cost improved
 /// queue.EnqueueOrUpdate("D", 7);         // adds D if absent, updates otherwise
 ///
-/// string next = queue.Dequeue();         // "C" - smallest priority
+/// string next = queue.Dequeue().Key;     // "C" - smallest priority
 /// bool hasD   = queue.TryGetPriority("D", out int priority); // true, priority == 7
 ///]]>
 /// </code>

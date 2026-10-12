@@ -110,7 +110,7 @@ public sealed class SegmentedBuffer<T> :
     /// Gets or sets the element at the specified zero-based index.
     /// </summary>
     /// <param name="index">The zero-based index of the element to retrieve or assign.</param>
-    /// <returns>The element at the specified index.</returns>
+    /// <value>The element at the specified index.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="index" /> is less than 0 or greater than or equal to <see cref="Count" />.
     /// </exception>

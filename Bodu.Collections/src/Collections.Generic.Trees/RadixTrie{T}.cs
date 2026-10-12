@@ -107,7 +107,6 @@ public sealed partial class RadixTrie<TValue>
     /// </summary>
     /// <param name="key">The key whose value is retrieved or assigned.</param>
     /// <value>The value associated with <paramref name="key" />.</value>
-    /// <returns>The value currently mapped to <paramref name="key" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">The key does not exist when read.</exception>
     public TValue this[string key]

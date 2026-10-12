@@ -127,7 +127,7 @@ public sealed partial class RangeSet<T>
     /// Gets the range at the specified sorted index.
     /// </summary>
     /// <param name="index">The zero-based range index.</param>
-    /// <returns>The range at <paramref name="index" />.</returns>
+    /// <value>The range at <paramref name="index" />.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
     /// </exception>

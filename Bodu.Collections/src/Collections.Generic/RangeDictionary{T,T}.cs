@@ -122,7 +122,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// Gets the value associated with the range containing the specified key.
     /// </summary>
     /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
-    /// <returns>The value associated with the containing range.</returns>
+    /// <value>The value associated with the containing range.</value>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">No range contains <paramref name="key" />.</exception>
     public TValue this[TKey key] =>

@@ -67,7 +67,7 @@ namespace Bodu.Collections.Generic;
 ///
 /// Console.WriteLine(histogram.Count);         // 11 - total occurrences
 /// Console.WriteLine(histogram.DistinctCount); // 4  - distinct letters
-/// Console.WriteLine(histogram["s"[0]]);       // 4  - count for 's'
+/// Console.WriteLine(histogram.CountOf('s')); // 4  - count for 's'
 ///
 /// foreach (KeyValuePair<char, int> kv in histogram.Frequencies())
 ///     Console.WriteLine($"{kv.Key}: {kv.Value}");
