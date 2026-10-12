@@ -33,7 +33,7 @@ Money<USD> value = JsonSerializer.Deserialize<Money<USD>>(json, options);
 // → USD 19.99
 ```
 
-`AddFinancialJsonConverters` registers a coherent converter set for all six types from one policy value and returns the same options instance for chaining. Without it, `JsonSerializer` silently falls back to reflection-shaped output for these types - it does not throw - so register before the first use of an options instance.
+`AddFinancialJsonConverters` registers a coherent converter set for all six types from one policy value and returns the same options instance for chaining. Without it, `JsonSerializer` does not throw for most of these types - it silently writes reflection-shaped output and reads money back as zero or currency-less values - and it cannot deserialize a `MoneyBag` at all, so register before the first use of an options instance.
 
 ## Choosing a policy
 
@@ -47,9 +47,9 @@ var compact = new JsonSerializerOptions()
 
 | Policy | Money shape | Bag shape | Use for |
 |---|---|---|---|
-| `Strict` (default) | object `{ "amount": 19.99, "currency": "USD" }` | wrapped `{ "balances": { "USD": 100.00 } }` | Canonical persistence, ledgers, audit. |
+| `Strict` (default) | object `{ "amount": 19.99, "currency": "USD" }` | wrapped `{ "balances": { "USD": 100 } }` | Canonical persistence, ledgers, audit. |
 | `Lenient` | as `Strict`; reads also accept lowercase and padded ISO codes | as `Strict` | Spreadsheet / external-feed ingest. |
-| `Compact` | string `"19.99 USD"` | flat `{ "USD": 100.00 }` | Compact payloads and readable log lines. |
+| `Compact` | string `"19.99 USD"` | flat `{ "USD": 100 }` | Compact payloads and readable log lines. |
 
 Under `Strict` and `Lenient`, property names compare case-insensitively, duplicate properties are rejected, and unknown properties are ignored. `Lenient` writes the same shape as `Strict` - it only differs on *read*, where it normalizes lowercase ISO codes to uppercase and trims surrounding whitespace before validation; it is an *import* convenience, so persist with `Strict` or `Compact`. Compact reads accept either the `"19.99 USD"` or the `"USD 19.99"` arrangement and reuse each type's `TryParse` path under the invariant culture, so payloads are stable regardless of the ambient culture.
 
@@ -89,11 +89,11 @@ The unrounded tier is written **verbatim** - every significant digit and any tra
 ```csharp
 MoneyBag wallet = MoneyBag.Empty.Add(new Money<USD>(100m)).Add(new Money<EUR>(50m));
 
-JsonSerializer.Serialize(wallet, options);   // → {"balances":{"EUR":50.00,"USD":100.00}}
-JsonSerializer.Serialize(wallet, compact);   // → {"EUR":50.00,"USD":100.00}
+JsonSerializer.Serialize(wallet, options);   // → {"balances":{"EUR":50,"USD":100}}
+JsonSerializer.Serialize(wallet, compact);   // → {"EUR":50,"USD":100}
 ```
 
-Balances are written in lexicographic ISO order and read as numbers or numeric strings. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.
+Balances are written in lexicographic ISO order, each amount as the bag stores it (so `100m` writes `100` and `100.00m` writes `100.00`), and read as numbers or numeric strings. Under `Strict` and `Lenient` a repeated `balances` property, or a map that names a currency twice, is rejected; `Lenient` trims and upper-cases each ISO code key first. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.
 
 ### `ExchangeRate`
 
@@ -200,8 +200,9 @@ Malformed payloads surface as `JsonException` on read; the converters never sile
 | `"amount"` that is neither a number nor a numeric string; `"currency"` that is not a string | `Strict`, `Lenient` | `JsonException` reporting the type mismatch. |
 | `"scale"` non-integer, or outside 0-28 | `Strict`, `Lenient` | `JsonException`. |
 | `"rate"` not a number, `"date"` not `yyyy-MM-dd`, `"isInverted"` not a boolean | `Strict`, `Lenient` | `JsonException` naming the property. |
-| Compact string `TryParse` rejects (e.g. `"19.99"`, `"USD/"`, `"USD/JPY/EUR"`) | `Compact` | `JsonException` carrying the offending text. |
+| Compact string `TryParse` rejects (e.g. `"USD/"`, `"USD/JPY/EUR"`, or a bare `"19.99"` for `Money` and `CalculatedMoney`; `Money<TCurrency>` accepts a bare amount) | `Compact` | `JsonException` carrying the offending text. |
 | `"balances"` not an object; a balance neither a number nor a numeric string | `Strict`, `Lenient` | `JsonException`. |
+| A repeated `"balances"` property, or a balances map naming a currency twice | `Strict`, `Lenient` | `JsonException` - duplicates are rejected. |
 | Truncated document | all | `JsonException` - unexpected end. |
 
 Unknown properties are *ignored* (skipped), matching the BCL convention for forward compatibility.

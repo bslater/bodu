@@ -8,7 +8,7 @@ title: Bodu.Financial.Serialization.Json - Introduction
 
 **Bodu.Financial.Serialization.Json** is the `System.Text.Json` companion to [`Bodu.Financial`](../financial/index.md). It ships the six converters that round-trip the monetary and exchange-rate value types - <xref:Bodu.Financial.Money`1>, <xref:Bodu.Financial.Money>, <xref:Bodu.Financial.CalculatedMoney>, <xref:Bodu.Financial.MoneyBag>, <xref:Bodu.Financial.ExchangeRates.ExchangeRate>, and <xref:Bodu.Financial.ExchangeRates.CurrencyPair> - a single <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> that selects one coherent wire shape for all of them, the one-call `AddFinancialJsonConverters` registration, and the `AddFinancialJson` dependency-injection registration. Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topic.
 
-`Bodu.Financial.Serialization.Json` is a **Stable** package. The core library is deliberately serialization-agnostic - its types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json` - so JSON support is opt-in: without this package and a registration call, `JsonSerializer` falls back to reflection-shaped output for these types rather than throwing.
+`Bodu.Financial.Serialization.Json` is a **Stable** package. The core library is deliberately serialization-agnostic - its types carry no `[JsonConverter]` attribute and take no dependency on `System.Text.Json` - so JSON support is opt-in: without this package and a registration call, `JsonSerializer` silently writes reflection-shaped output for these types and reads money back as zero or currency-less values (it cannot deserialize a `MoneyBag` at all).
 
 ## Core mental model
 
@@ -49,7 +49,7 @@ Each converter has a parameterless constructor (defaulting to `Strict`) and a `(
 | <xref:Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverter`1> via <xref:Bodu.Financial.Serialization.Json.MoneyOfTCurrencyJsonConverterFactory> | <xref:Bodu.Financial.Money`1> | `{ "amount": 19.99, "currency": "USD" }` - `currency` must equal `TCurrency.IsoCode` | `"19.99 USD"` |
 | <xref:Bodu.Financial.Serialization.Json.MoneyJsonConverter> | <xref:Bodu.Financial.Money> | `{ "amount": 19.99, "currency": "USD" }`, plus `"scale"` when the value carries an explicit minor-unit scale | `"19.99 USD"` - fractional digits carry the scale |
 | <xref:Bodu.Financial.Serialization.Json.CalculatedMoneyJsonConverter> | <xref:Bodu.Financial.CalculatedMoney> | `{ "amount": 0.0325125, "currency": "USD" }` - the unrounded decimal verbatim | `"0.0325125 USD"` |
-| <xref:Bodu.Financial.Serialization.Json.MoneyBagJsonConverter> | <xref:Bodu.Financial.MoneyBag> | `{ "balances": { "EUR": 50.00, "USD": 100.00 } }` | `{ "EUR": 50.00, "USD": 100.00 }` |
+| <xref:Bodu.Financial.Serialization.Json.MoneyBagJsonConverter> | <xref:Bodu.Financial.MoneyBag> | `{ "balances": { "EUR": 50, "USD": 100 } }` | `{ "EUR": 50, "USD": 100 }` |
 | <xref:Bodu.Financial.Serialization.Json.ExchangeRateJsonConverter> | <xref:Bodu.Financial.ExchangeRates.ExchangeRate> | `{ "from", "to", "date", "rate", "provider", "isInverted" }` (+ `observedRate` when inverted, `fetchedAtUtc` when known) | `{ "pair": "EUR/USD", "date", "rate", "provider" }` (+ the same optional members) |
 | <xref:Bodu.Financial.Serialization.Json.CurrencyPairJsonConverter> | <xref:Bodu.Financial.ExchangeRates.CurrencyPair> | `{ "from": "USD", "to": "JPY" }` | `"USD/JPY"` |
 
@@ -80,7 +80,7 @@ Each converter has a parameterless constructor (defaulting to `Strict`) and a `(
 - **One policy for every type.** `AddFinancialJsonConverters` registers all six converters under the same policy; mixing policies across types on one options instance is not supported, so a payload is always internally consistent.
 - **Currency drift is an error.** `Money<TCurrency>` rejects a `currency` that does not match the type parameter; `Money` accepts any code in the shipped ISO 4217 catalogue and rejects one outside it.
 - **Precision survives the round trip.** All three policies preserve an explicit minor-unit scale on `Money` and write `CalculatedMoney` unrounded; amounts are emitted as JSON numbers, and the reader also accepts numeric strings for systems without arbitrary-precision numbers.
-- **Duplicates are rejected, never last-wins.** A duplicated `amount`, `currency`, or `scale` on a financial payload is a data-integrity hazard and surfaces as `JsonException`.
+- **Duplicates are rejected, never last-wins.** A duplicated `amount`, `currency`, or `scale` on a financial payload, or a currency repeated in a bag's `balances` map, is a data-integrity hazard and surfaces as `JsonException`.
 
 ## Where to go next
 
