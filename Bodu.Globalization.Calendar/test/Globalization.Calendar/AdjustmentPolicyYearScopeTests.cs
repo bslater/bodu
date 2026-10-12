@@ -162,4 +162,42 @@ public sealed class AdjustmentPolicyYearScopeTests
 
         Assert.IsFalse(occurrence.IsObserved);
     }
+
+    /// <summary>
+    /// Verifies that a scope's <c>&lt;Rule notableDateRef="…" ruleRef="…" /&gt;</c> names one concept's rule, so a rule
+    /// with the same identifier in another concept is out of scope. Both concepts use rule id <c>x</c> and fall on a
+    /// Saturday (1 and 8 January 2022); only the scoped New Year's Day is mondayised.
+    /// </summary>
+    [TestMethod]
+    public void Scope_WhenRuleReferenceNamesAnotherConcept_ShouldNotApplySubstitution()
+    {
+        const string xml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.b1-rule-scope">
+          <AdjustmentPolicies>
+            <AdjustmentPolicy id="mondayise">
+              <Scope><Rule notableDateRef="new-year" ruleRef="x" /></Scope>
+              <Trigger type="IfWeekend" />
+              <Action type="MoveToNextWorkingDay" skipWeekends="true" />
+              <Emission mode="ObservedOnly" reason="Substitute" />
+            </AdjustmentPolicy>
+          </AdjustmentPolicies>
+          <NotableDates>
+            <NotableDate id="new-year" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+              <Rules><Rule id="x"><Strategy><Fixed month="January" day="1" /></Strategy><Adjustments><Adjustment policyRef="mondayise" /></Adjustments></Rule></Rules>
+            </NotableDate>
+            <NotableDate id="other-day" displayName="Other Day" category="PublicHoliday" defaultNonWorkingDay="true">
+              <Rules><Rule id="x"><Strategy><Fixed month="January" day="8" /></Strategy><Adjustments><Adjustment policyRef="mondayise" /></Adjustments></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        NotableDateService service = new(NotableDateResourceLoader.Load(xml));
+
+        IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 14)), Territory);
+
+        Assert.AreEqual(
+            (new DateOnly(2022, 1, 3), new DateOnly(2022, 1, 8)),
+            (results.Single(r => r.NotableDateId == "new-year").Date, results.Single(r => r.NotableDateId == "other-day").Date));
+    }
 }
