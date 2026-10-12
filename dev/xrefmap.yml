@@ -66571,6 +66571,18 @@ references:
   commentId: Overload:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxNodeDataLength
   fullName: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.MaxNodeDataLength
   nameWithType: OutlookMailStoreReaderOptions.MaxNodeDataLength
+- uid: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues
+  name: OmitUnresolvableValues
+  href: api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_OmitUnresolvableValues
+  commentId: P:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues
+  fullName: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues
+  nameWithType: OutlookMailStoreReaderOptions.OmitUnresolvableValues
+- uid: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues*
+  name: OmitUnresolvableValues
+  href: api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_OmitUnresolvableValues_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues
+  fullName: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.OmitUnresolvableValues
+  nameWithType: OutlookMailStoreReaderOptions.OmitUnresolvableValues
 - uid: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel
   name: ValidationLevel
   href: api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValidationLevel
@@ -66583,6 +66595,18 @@ references:
   commentId: Overload:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel
   fullName: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel
   nameWithType: OutlookMailStoreReaderOptions.ValidationLevel
+- uid: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback
+  name: ValueOmittedCallback
+  href: api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback
+  commentId: P:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback
+  fullName: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback
+  nameWithType: OutlookMailStoreReaderOptions.ValueOmittedCallback
+- uid: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback*
+  name: ValueOmittedCallback
+  href: api/Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.html#Bodu_Formats_Outlook_OutlookMailStoreReaderOptions_ValueOmittedCallback_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback
+  fullName: Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback
+  nameWithType: OutlookMailStoreReaderOptions.ValueOmittedCallback
 - uid: Bodu.Formats.Outlook.OutlookMessage
   name: OutlookMessage
   href: api/Bodu.Formats.Outlook.OutlookMessage.html
@@ -67000,6 +67024,90 @@ references:
   fullName.vb: Bodu.Formats.Outlook.OutlookMsgFormatException.New
   nameWithType: OutlookMsgFormatException.OutlookMsgFormatException
   nameWithType.vb: OutlookMsgFormatException.New
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue
+  name: OutlookOmittedValue
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html
+  commentId: T:Bodu.Formats.Outlook.OutlookOmittedValue
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue
+  nameWithType: OutlookOmittedValue
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.NodeId
+  name: NodeId
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_NodeId
+  commentId: P:Bodu.Formats.Outlook.OutlookOmittedValue.NodeId
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.NodeId
+  nameWithType: OutlookOmittedValue.NodeId
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.NodeId*
+  name: NodeId
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_NodeId_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookOmittedValue.NodeId
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.NodeId
+  nameWithType: OutlookOmittedValue.NodeId
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.PropertyId
+  name: PropertyId
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_PropertyId
+  commentId: P:Bodu.Formats.Outlook.OutlookOmittedValue.PropertyId
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.PropertyId
+  nameWithType: OutlookOmittedValue.PropertyId
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.PropertyId*
+  name: PropertyId
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_PropertyId_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookOmittedValue.PropertyId
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.PropertyId
+  nameWithType: OutlookOmittedValue.PropertyId
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.Reason
+  name: Reason
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_Reason
+  commentId: P:Bodu.Formats.Outlook.OutlookOmittedValue.Reason
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.Reason
+  nameWithType: OutlookOmittedValue.Reason
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.Reason*
+  name: Reason
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_Reason_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookOmittedValue.Reason
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.Reason
+  nameWithType: OutlookOmittedValue.Reason
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.RowId
+  name: RowId
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_RowId
+  commentId: P:Bodu.Formats.Outlook.OutlookOmittedValue.RowId
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.RowId
+  nameWithType: OutlookOmittedValue.RowId
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.RowId*
+  name: RowId
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_RowId_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookOmittedValue.RowId
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.RowId
+  nameWithType: OutlookOmittedValue.RowId
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.ToString
+  name: ToString()
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_ToString
+  commentId: M:Bodu.Formats.Outlook.OutlookOmittedValue.ToString
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.ToString()
+  nameWithType: OutlookOmittedValue.ToString()
+- uid: Bodu.Formats.Outlook.OutlookOmittedValue.ToString*
+  name: ToString
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValue.html#Bodu_Formats_Outlook_OutlookOmittedValue_ToString_
+  commentId: Overload:Bodu.Formats.Outlook.OutlookOmittedValue.ToString
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValue.ToString
+  nameWithType: OutlookOmittedValue.ToString
+- uid: Bodu.Formats.Outlook.OutlookOmittedValueReason
+  name: OutlookOmittedValueReason
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValueReason.html
+  commentId: T:Bodu.Formats.Outlook.OutlookOmittedValueReason
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValueReason
+  nameWithType: OutlookOmittedValueReason
+- uid: Bodu.Formats.Outlook.OutlookOmittedValueReason.UndecodableValue
+  name: UndecodableValue
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValueReason.html#Bodu_Formats_Outlook_OutlookOmittedValueReason_UndecodableValue
+  commentId: F:Bodu.Formats.Outlook.OutlookOmittedValueReason.UndecodableValue
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValueReason.UndecodableValue
+  nameWithType: OutlookOmittedValueReason.UndecodableValue
+- uid: Bodu.Formats.Outlook.OutlookOmittedValueReason.UnresolvableReference
+  name: UnresolvableReference
+  href: api/Bodu.Formats.Outlook.OutlookOmittedValueReason.html#Bodu_Formats_Outlook_OutlookOmittedValueReason_UnresolvableReference
+  commentId: F:Bodu.Formats.Outlook.OutlookOmittedValueReason.UnresolvableReference
+  fullName: Bodu.Formats.Outlook.OutlookOmittedValueReason.UnresolvableReference
+  nameWithType: OutlookOmittedValueReason.UnresolvableReference
 - uid: Bodu.Formats.Outlook.OutlookPstFormatException
   name: OutlookPstFormatException
   href: api/Bodu.Formats.Outlook.OutlookPstFormatException.html
@@ -101287,6 +101395,18 @@ references:
   commentId: Overload:Bodu.IO.Pst.PstFileOptions.MaxNodeDataLength
   fullName: Bodu.IO.Pst.PstFileOptions.MaxNodeDataLength
   nameWithType: PstFileOptions.MaxNodeDataLength
+- uid: Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues
+  name: OmitUnresolvableValues
+  href: api/Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_OmitUnresolvableValues
+  commentId: P:Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues
+  fullName: Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues
+  nameWithType: PstFileOptions.OmitUnresolvableValues
+- uid: Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues*
+  name: OmitUnresolvableValues
+  href: api/Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_OmitUnresolvableValues_
+  commentId: Overload:Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues
+  fullName: Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues
+  nameWithType: PstFileOptions.OmitUnresolvableValues
 - uid: Bodu.IO.Pst.PstFileOptions.ValidationLevel
   name: ValidationLevel
   href: api/Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_ValidationLevel
@@ -102052,6 +102172,18 @@ references:
   commentId: Overload:Bodu.IO.Pst.PstPropertyContext.GetValue
   fullName: Bodu.IO.Pst.PstPropertyContext.GetValue
   nameWithType: PstPropertyContext.GetValue
+- uid: Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds
+  name: OmittedPropertyIds
+  href: api/Bodu.IO.Pst.PstPropertyContext.html#Bodu_IO_Pst_PstPropertyContext_OmittedPropertyIds
+  commentId: P:Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds
+  fullName: Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds
+  nameWithType: PstPropertyContext.OmittedPropertyIds
+- uid: Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds*
+  name: OmittedPropertyIds
+  href: api/Bodu.IO.Pst.PstPropertyContext.html#Bodu_IO_Pst_PstPropertyContext_OmittedPropertyIds_
+  commentId: Overload:Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds
+  fullName: Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds
+  nameWithType: PstPropertyContext.OmittedPropertyIds
 - uid: Bodu.IO.Pst.PstPropertyContext.System#Collections#IEnumerable#GetEnumerator
   name: IEnumerable.GetEnumerator()
   href: api/Bodu.IO.Pst.PstPropertyContext.html#Bodu_IO_Pst_PstPropertyContext_System_Collections_IEnumerable_GetEnumerator
@@ -102430,6 +102562,18 @@ references:
   commentId: Overload:Bodu.IO.Pst.PstTableRow.EnumerateCells
   fullName: Bodu.IO.Pst.PstTableRow.EnumerateCells
   nameWithType: PstTableRow.EnumerateCells
+- uid: Bodu.IO.Pst.PstTableRow.OmittedPropertyIds
+  name: OmittedPropertyIds
+  href: api/Bodu.IO.Pst.PstTableRow.html#Bodu_IO_Pst_PstTableRow_OmittedPropertyIds
+  commentId: P:Bodu.IO.Pst.PstTableRow.OmittedPropertyIds
+  fullName: Bodu.IO.Pst.PstTableRow.OmittedPropertyIds
+  nameWithType: PstTableRow.OmittedPropertyIds
+- uid: Bodu.IO.Pst.PstTableRow.OmittedPropertyIds*
+  name: OmittedPropertyIds
+  href: api/Bodu.IO.Pst.PstTableRow.html#Bodu_IO_Pst_PstTableRow_OmittedPropertyIds_
+  commentId: Overload:Bodu.IO.Pst.PstTableRow.OmittedPropertyIds
+  fullName: Bodu.IO.Pst.PstTableRow.OmittedPropertyIds
+  nameWithType: PstTableRow.OmittedPropertyIds
 - uid: Bodu.IO.Pst.PstTableRow.RowId
   name: RowId
   href: api/Bodu.IO.Pst.PstTableRow.html#Bodu_IO_Pst_PstTableRow_RowId

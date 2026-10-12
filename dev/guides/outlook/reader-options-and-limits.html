@@ -170,6 +170,8 @@ using Bodu.IO.Pst;
 var options = new OutlookMailStoreReaderOptions
 {
     ValidationLevel = PstValidationLevel.Strict,        // every checksum, signature, and table row enforced
+    OmitUnresolvableValues = false,                     // a value whose reference does not resolve fails its object
+    ValueOmittedCallback = omitted =&gt; Console.WriteLine($&quot;omitted: {omitted}&quot;),
     BlockCacheSize = 512,                               // decoded-block LRU entries (0 disables the cache)
     DecompressRtf = true,
     MaxNodeDataLength = 64L * 1024 * 1024,              // largest node payload materialized at once
@@ -198,6 +200,20 @@ Console.WriteLine(store.DisplayName);
 <td><code>Compatible</code></td>
 <td>Forwarded to the container <strong>and</strong> used by the MAPI decoder. <code>Compatible</code> checks structure plus the header CRC; <code>Strict</code> additionally verifies every page and block checksum and signature and makes messaging-level problems throw; <code>Minimal</code> skips every checksum for salvage reads and behaves as <code>Compatible</code> in the decoder.</td>
 <td><code>Strict</code> only - see <a href="#what-strict-changes">What <code>Strict</code> changes</a>.</td>
+</tr>
+<tr>
+<td><code>OmitUnresolvableValues</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Forwarded to the container as <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_OmitUnresolvableValues">OmitUnresolvableValues</a>: a property value or recipient cell whose reference does not resolve is left out of its object instead of failing it - see <a href="#salvaging-a-damaged-store">Salvaging a damaged store</a>. Independent of <code>ValidationLevel</code>.</td>
+<td>Not a limit.</td>
+</tr>
+<tr>
+<td><code>ValueOmittedCallback</code></td>
+<td><code>Action&lt;OutlookOmittedValue&gt;?</code></td>
+<td><code>null</code></td>
+<td>Receives an <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookOmittedValue.html">OutlookOmittedValue</a> for every value the reader omits from an object it decodes - one whose reference does not resolve, or one it cannot decode as its MAPI type under the tolerant levels - naming the node, the row for a recipient cell, the property, and the <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookOmittedValueReason.html">OutlookOmittedValueReason</a>. Invoked synchronously when the object is decoded.</td>
+<td>Not a limit.</td>
 </tr>
 <tr>
 <td><code>BlockCacheSize</code></td>
@@ -259,6 +275,11 @@ Console.WriteLine(store.DisplayName);
 <td><code>OutlookMailStoreReaderOptions.ValidationLevel</code></td>
 </tr>
 <tr>
+<td><code>OmitUnresolvableValues</code></td>
+<td>Yes</td>
+<td><code>OutlookMailStoreReaderOptions.OmitUnresolvableValues</code></td>
+</tr>
+<tr>
 <td><code>BlockCacheSize</code></td>
 <td>Yes</td>
 <td><code>OutlookMailStoreReaderOptions.BlockCacheSize</code></td>
@@ -295,7 +316,31 @@ Console.WriteLine(store.DisplayName);
 <li>An undefined <code>PidTagAttachMethod</code> value (the tolerant levels infer <code>ByValue</code> / <code>None</code>).</li>
 <li>A malformed name-to-id map.</li>
 </ul>
-<p>At every level the reader throws for a missing by-value payload (a by-value attachment with no <code>PidTagAttachDataBinary</code> property), a missing embedded-message subnode, and the depth and RTF limits. What the tolerant levels omit is a value the MAPI decoding rejects, as listed above; a fault in a property context itself - a heap reference that does not resolve (<code>InvalidHeap</code>), a fixed-width value shorter than its type (<code>InvalidPropertyContext</code>), or a value reference to a subnode the node does not contain (<code>InvalidSubnodeTree</code>) - is container corruption and fails the read at every level. Container corruption is never wrapped: it surfaces as the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family (see <a href="reading-pst-mail-stores.html#errors-two-families-not-one">Reading .pst mail stores</a>), and under <code>Strict</code> the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.</p>
+<p>At every level the reader throws for a missing by-value payload (a by-value attachment with no <code>PidTagAttachDataBinary</code> property), a missing embedded-message subnode, and the depth and RTF limits. What the tolerant levels omit is a value the MAPI decoding rejects, as listed above; a fault in a property context itself - a heap reference that does not resolve (<code>InvalidHeap</code>), a fixed-width value shorter than its type (<code>InvalidPropertyContext</code>), or a value reference to a subnode the node does not contain (<code>InvalidSubnodeTree</code>) - is container corruption and fails the read at every level, unless <code>OmitUnresolvableValues</code> is set (see <a href="#salvaging-a-damaged-store">Salvaging a damaged store</a>). Container corruption is never wrapped: it surfaces as the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family (see <a href="reading-pst-mail-stores.html#errors-two-families-not-one">Reading .pst mail stores</a>), and under <code>Strict</code> the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.</p>
+<h2 id="salvaging-a-damaged-store">Salvaging a damaged store</h2>
+<p>By default one value whose reference into the container does not resolve fails the whole object it belongs to, so a single damaged property hides a message's subject, sender and bodies too. To recover what a damaged store still holds, set <code>OmitUnresolvableValues</code>: the value is left out, the rest of the object decodes, and each omission is reported to <code>ValueOmittedCallback</code>, so the caller can tell a salvaged object from a clean one.</p>
+<pre><code class="lang-csharp">using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+var omitted = new List&lt;OutlookOmittedValue&gt;();
+var options = new OutlookMailStoreReaderOptions
+{
+    ValidationLevel = PstValidationLevel.Minimal,   // follow checksum-failed pages as far as their geometry allows
+    OmitUnresolvableValues = true,                  // leave out a value whose reference does not resolve
+    ValueOmittedCallback = omitted.Add,             // and record it
+};
+
+using var store = OutlookMailStore.Open(File.OpenRead(&quot;damaged.pst&quot;), options);
+foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
+{
+    foreach (OutlookMailMessage message in folder.EnumerateMessages())
+        Console.WriteLine($&quot;{message.Subject} ({message.Recipients.Count} recipients)&quot;);
+}
+
+foreach (OutlookOmittedValue value in omitted)
+    Console.WriteLine($&quot;node {value.NodeId}: property 0x{value.PropertyId:X4} omitted ({value.Reason})&quot;);
+</code></pre>
+<p>The option covers individual values only: a fault in a heap, table or subnode tree still fails the object, and the folder and message lists still skip a row that names no valid node only under the tolerant levels. An omitted <code>PidTagAttachDataBinary</code> leaves a by-value attachment with no data, so its <code>OpenContentStream()</code> raises <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> for a missing payload, as for any by-value attachment without data.</p>
 <h2 id="the-inline-attachment-threshold-in-practice">The inline-attachment threshold in practice</h2>
 <p><code>MaxInlineAttachmentBytes</code> is the one <code>Max*</code> value that never throws. Set it to 1 byte and every by-value attachment is deferred:</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
@@ -500,7 +545,7 @@ catch (ArgumentOutOfRangeException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 39aa67d · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
         </div>
       </div>
     </footer>

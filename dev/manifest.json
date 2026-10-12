@@ -8175,6 +8175,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValue.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.Formats.Outlook.OutlookOmittedValue",
+      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookOmittedValue.yml\" sourcestartlinenumber=\"1\">Describes a property value the mail-store reader omitted from an object it decoded, as reported to\n<xref href=\"Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValueOmittedCallback\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValueReason.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Bodu.Formats.Outlook.OutlookOmittedValueReason.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Bodu.Formats.Outlook.OutlookOmittedValueReason",
+      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookOmittedValueReason.yml\" sourcestartlinenumber=\"1\">Specifies why the mail-store reader omitted a property value from an object it decoded.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Formats.Outlook.OutlookPstFormatException.yml",
       "output": {
         ".html": {
