@@ -156,6 +156,27 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that both <c>SerializeAsync</c> overloads quote only the document's first field when several records begin
+    /// with U+FEFF, as <c>Serialize</c> does, so the incremental overload's per-record writers produce the same text.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenRecordsBeginWithAByteOrderMark_ShouldQuoteOnlyTheDocumentsFirstField()
+    {
+        string[][] records = [["\uFEFFa", "b"], ["\uFEFFc", "d"]];
+        using var buffered = new MemoryStream();
+        using var incremental = new MemoryStream();
+
+        await DelimitedSerializer.SerializeAsync(buffered, records);
+        await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(records));
+
+        const string Expected = "\"\uFEFFa\",b\r\n\uFEFFc,d\r\n";
+        Assert.AreEqual(Expected, DelimitedSerializer.Serialize(records));
+        Assert.AreEqual(Expected, Encoding.UTF8.GetString(buffered.ToArray()));
+        Assert.AreEqual(Expected, Encoding.UTF8.GetString(incremental.ToArray()));
+    }
+
+    /// <summary>
     /// Yields records as an asynchronous sequence whose every step completes asynchronously without resuming on the
     /// caller's <see cref="SynchronizationContext" />, so that only the consumer could bring a deadlock about.
     /// </summary>

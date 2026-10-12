@@ -40,7 +40,7 @@ The line-format structs are `readonly struct`s with `init` accessors and a stati
 
 The writer emits the delimiter and quote as single UTF-8 bytes, so its constructors throw `ArgumentException` for a delimiter, quote, or comment character outside ASCII, for a carriage return or a line feed, and for any two of them that are the same character ([parser policies](../../docs/formats/parser-policies.md) states the rule for the reader too).
 
-A field is quoted when the reader would otherwise read it back differently: when it contains the delimiter, the quote, or a line break; when it begins or ends with a space or a tab, which a reader with `TrimFields` would trim; when it is a record's first field and begins with `CommentChar`, which a reader that allows comments would skip; and when it is the only field of its record and is empty, which would otherwise be an empty line. Every other field is written bare.
+A field is quoted when the reader would otherwise read it back differently: when it contains the delimiter, the quote, or a line break; when it begins or ends with a space or a tab, which a reader with `TrimFields` would trim; when it is a record's first field and begins with `CommentChar`, which a reader that allows comments would skip; when it is the first field the writer writes and begins with U+FEFF, which the reader would skip as a byte order mark; and when it is the only field of its record and is empty, which would otherwise be an empty line. Every other field is written bare.
 
 Records written as objects (`WriteStartObject` / `WritePropertyName` / `WriteString`) emit a header from the first record's property names unless `NoHeader` is set. A tab-separated, header-less file with single-quote quoting:
 

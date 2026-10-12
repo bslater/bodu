@@ -68,13 +68,15 @@ public static partial class DelimitedSerializer
 
         var buffer = new ArrayBufferWriter<byte>();
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
+        bool documentStarted = false;
 
         await foreach (TRecord record in records.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             if (record is null)
                 continue;
 
-            headerPending = WriteStreamingRecord(buffer, record, members, isStringArray, writerOptions, headerPending);
+            headerPending = WriteStreamingRecord(buffer, record, members, isStringArray, writerOptions, headerPending, documentStarted);
+            documentStarted = true;
 
             if (buffer.WrittenCount >= StreamWriteFlushThreshold)
             {
@@ -238,6 +240,7 @@ public static partial class DelimitedSerializer
     /// <param name="isStringArray">Whether the record type is a positional <see cref="string" /> array.</param>
     /// <param name="writerOptions">The writer options.</param>
     /// <param name="headerPending">Whether the header row has not yet been emitted.</param>
+    /// <param name="documentStarted">Whether an earlier record has already been written to the document.</param>
     /// <returns>The new header-pending state.</returns>
     private static bool WriteStreamingRecord(
         IBufferWriter<byte> destination,
@@ -245,10 +248,12 @@ public static partial class DelimitedSerializer
         Member[] members,
         bool isStringArray,
         DelimitedWriterOptions writerOptions,
-        bool headerPending)
+        bool headerPending,
+        bool documentStarted)
     {
-        // Header emission is handled here, so the per-record writer must never emit its own.
-        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true });
+        // Header emission is handled here, so the per-record writer must never emit its own. A later record's writer
+        // continues the document, so it quotes a leading U+FEFF only where the buffered serializer's single writer does.
+        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true }, continuesDocument: documentStarted);
         writer.WriteStartArray();
 
         if (headerPending)
