@@ -159,7 +159,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// Creates an empty dictionary with the specified capacity, using the specified eviction policy, and the default
@@ -201,7 +202,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// The equality comparer to use for keys, or <see langword="null" /> to use the default comparer.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -248,7 +250,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// The time-based expiration configuration, or <see langword="null" /> to disable expiry.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// Creates an empty dictionary with the specified capacity, eviction policy, and expiration configuration, using
@@ -272,7 +275,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// The time-based expiration configuration, or <see langword="null" /> to disable expiry.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -289,6 +293,7 @@ public partial class EvictingDictionary<TKey, TValue>
     public EvictingDictionary(int capacity, EvictingDictionaryPolicy policy, IEqualityComparer<TKey>? comparer, EvictingDictionaryExpiration? expiration)
     {
         ThrowHelper.ThrowIfZeroOrNegative(capacity);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(policy);
 
         Capacity = capacity;
         Policy = policy;
@@ -356,6 +361,9 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="source">The sequence of key/value pairs to copy. Must not be <see langword="null" />.</param>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="policy" /> is not a defined <see cref="EvictingDictionaryPolicy" /> value.
+    /// </exception>
     /// <remarks>
     /// Uses a capacity of <see cref="DefaultCapacity" />, the specified eviction policy, and the default key comparer.
     /// If more elements are provided than the capacity allows, entries are evicted according to the policy.
@@ -374,7 +382,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <param name="policy">The eviction policy used when capacity is exceeded.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// Uses the specified capacity, the specified eviction policy, and the default key comparer. If more elements are
@@ -397,7 +406,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// Uses the specified capacity, the specified eviction policy, and the specified key comparer (or
@@ -425,7 +435,8 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="capacity" /> is less than or equal to zero.
+    /// <paramref name="capacity" /> is less than or equal to zero, or <paramref name="policy" /> is not a defined
+    /// <see cref="EvictingDictionaryPolicy" /> value.
     /// </exception>
     /// <remarks>
     /// Uses the specified capacity, eviction policy, key comparer, and expiration configuration. Copied entries receive
