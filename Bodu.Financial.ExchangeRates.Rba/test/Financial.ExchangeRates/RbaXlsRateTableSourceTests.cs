@@ -37,7 +37,7 @@ public class RbaXlsRateTableSourceTests
     /// Verifies that a cached immutable era is served from disk on the second request without re-downloading.
     /// </summary>
     [TestMethod]
-    public async Task GetTableAsync_Whens_immutableEraCached_ShouldNotRefetch()
+    public async Task GetTableAsync_WhenImmutableEraCached_ShouldNotRefetch()
     {
         string directory = Path.Combine(Path.GetTempPath(), "bodu-rba-src-" + Guid.NewGuid().ToString("N"));
         try
