@@ -93,6 +93,45 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose members are the scalars beyond the common set: <see cref="DateOnly" />, <see cref="TimeOnly" />, the
+    /// 128-bit and half-precision numbers and <see cref="System.Numerics.BigInteger" />, two of them also in nullable form.
+    /// </summary>
+    public sealed class ExtendedScalarRecord
+    {
+        /// <summary>Gets or sets the date.</summary>
+        /// <value>The date.</value>
+        public DateOnly Day { get; set; }
+
+        /// <summary>Gets or sets the time of day.</summary>
+        /// <value>The time of day.</value>
+        public TimeOnly Time { get; set; }
+
+        /// <summary>Gets or sets the signed 128-bit number.</summary>
+        /// <value>The signed 128-bit number.</value>
+        public Int128 Large { get; set; }
+
+        /// <summary>Gets or sets the unsigned 128-bit number.</summary>
+        /// <value>The unsigned 128-bit number.</value>
+        public UInt128 Unsigned { get; set; }
+
+        /// <summary>Gets or sets the half-precision number.</summary>
+        /// <value>The half-precision number.</value>
+        public Half Small { get; set; }
+
+        /// <summary>Gets or sets the arbitrary-precision integer.</summary>
+        /// <value>The arbitrary-precision integer.</value>
+        public System.Numerics.BigInteger Big { get; set; }
+
+        /// <summary>Gets or sets the optional signed 128-bit number.</summary>
+        /// <value>The number, or <see langword="null" />.</value>
+        public Int128? MaybeLarge { get; set; }
+
+        /// <summary>Gets or sets the optional time of day.</summary>
+        /// <value>The time of day, or <see langword="null" />.</value>
+        public TimeOnly? MaybeTime { get; set; }
+    }
+
+    /// <summary>
     /// A POCO with a key <c>HOST</c> and no public parameterless constructor, which deserialization cannot create.
     /// </summary>
     public sealed class ConstructedConfig
