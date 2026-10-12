@@ -107,7 +107,8 @@ Hebrew rules are authored with a stable month *name* (`Tishri`, `Kislev`, `Nisan
 |---|---|
 | `Tishri` | New year (Rosh Hashanah). |
 | `Kislev` | Hanukkah anchor. |
-| `AdarI`, `AdarII` | Exist only in leap years; skip the candidate in a non-leap year. |
+| `AdarI` | Month 6: Adar I in a leap year, Adar in a non-leap year, so it resolves every year. |
+| `AdarII` | Exists only in leap years; skips the candidate in a non-leap year. |
 | `LastAdar` | Always resolves (Adar in a non-leap year, Adar II in a leap year) - preferred for Purim and other "final Adar" observances. |
 | `Nisan` | Passover anchor. |
 | `Sivan` | Shavuot. |

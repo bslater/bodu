@@ -33,7 +33,7 @@ bool isSub = auNsw.IsSubdivision;    // → true
 TerritoryCode gb = (TerritoryCode)"GB-SCT";   // explicit cast - throws on a malformed code
 ```
 
-`TerritoryCode` is a value type with full `==` / `!=` equality, so two codes parsed from `"AU-NSW"` and `"  au-nsw "` compare equal.
+`TerritoryCode` is a value type with full `==` / `!=` equality, so two codes parsed from `"AU-NSW"` and `"au-nsw"` compare equal.
 
 ## Parsing
 
@@ -57,7 +57,7 @@ IReadOnlyList<TerritoryCode> territories =
     TerritoryCode.ParseList("AU-NSW, AU-VIC, NZ");
 ```
 
-The library normalizes whitespace and casing during parsing, so `"  au-nsw  "` and `"AU-NSW"` parse to the same value.
+Parsing normalizes casing, so `"au-nsw"` and `"AU-NSW"` parse to the same value. Surrounding white space is not accepted - `Parse` throws `FormatException` and `TryParse` returns `false` for `"  au-nsw  "` - except that `ParseList` trims each entry.
 
 Because the service and extensions accept plain strings, you rarely need to parse explicitly - pass `"AU-NSW"` directly. Parse when you want to inspect a code's `Country`, `Subdivision`, or `Parent`, or to validate untrusted input before querying.
 
@@ -138,7 +138,7 @@ An `<Import>` with no `<Use>` imports every concept it defines; a local concept 
 
 ## Querying composition
 
-A query passes a single territory string, and the service returns every occurrence whose scope **contains** that code (plus globally-scoped rules). For Australia:
+A query passes a single territory string, and the service returns every occurrence whose scope **contains** that code (plus globally-scoped rules). Within one concept only the most specific matching rule is used, so a subdivision rule shadows the national rule of the same concept; the national rules below are those of concepts the subdivision does not override. For Australia:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -174,7 +174,7 @@ The companion `GetSupportedCalendars()` returns the <xref:Bodu.Globalization.Cal
 The containment relation is the right way to model "national rule + a few regional variations":
 
 - Author the national rule **once** at the country level (`<Territory code="AU" />`).
-- For each subdivision that genuinely differs, author a separate concept or rule scoped to that subdivision (`<Territory code="AU-NT" />`), or suppress the national rule for that subdivision with a `<RemoveRule>` override and add the variant.
+- For each subdivision that genuinely differs, author a rule scoped to that subdivision (`<Territory code="AU-NT" />`) in the same concept: it shadows the national rule for that subdivision, because within one concept only the most specific matching rule is used. Author a separate concept instead when both dates should appear. (A `<RemoveRule>` override removes a rule for every territory, not for one subdivision.)
 
 Listing the same rule under every subdivision of one country produces duplicate occurrences and is rarely correct - scope it to the country instead. When you need a rule at several subdivisions but not the whole country (e.g. an extra holiday in some AU states only), author one rule per state, each scoped to its subdivision. The [holiday patterns guide](holiday-patterns.md) shows worked examples for both shapes.
 

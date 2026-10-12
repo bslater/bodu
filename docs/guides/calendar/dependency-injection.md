@@ -14,7 +14,7 @@ The package is intentionally thin. A resource is an immutable, already-validated
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 ```
 
-The package depends on `Bodu.Globalization.Calendar` and `Microsoft.Extensions.DependencyInjection.Abstractions`.
+The package depends on `Bodu.Globalization.Calendar`, `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Logging.Abstractions`, and `Microsoft.Extensions.Options`.
 
 ## The registration surface
 

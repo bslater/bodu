@@ -48,7 +48,7 @@ Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an ad
 
 ## Resolution strategy
 
-Each rule carries exactly one occurrence source: a `<Strategy>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> producing at most one date per year) or a `<Recurrence>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> producing a frequency-based series). The most common single-date strategies:
+Each rule carries exactly one occurrence source: a `<Strategy>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> producing one date per year, or two when a non-Gregorian fixed date recurs within one Gregorian year) or a `<Recurrence>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> producing a frequency-based series). The most common single-date strategies:
 
 | Strategy element | What it does |
 |---|---|
@@ -113,7 +113,7 @@ When a date cannot be expressed as a calendar formula (Easter Sunday, Vesak, Diw
 </Rule>
 ```
 
-Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) are backed by bundled calculators; unknown keys resolve against a custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
+Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) are backed by bundled calculators; a custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> is consulted first, so it adds new keys and can override a built-in key of the same name. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
 
 ## Resolved notable date
 

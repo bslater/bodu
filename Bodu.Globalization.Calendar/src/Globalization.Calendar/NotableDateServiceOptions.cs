@@ -34,7 +34,8 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateServiceOptions
 {
     /// <summary>
-    /// Gets the custom algorithm registry consulted for keys the built-in catalogue does not recognize.
+    /// Gets the custom algorithm registry consulted before the built-in catalogue, so a key registered here overrides a
+    /// built-in algorithm of the same name.
     /// </summary>
     /// <value>
     /// An <see cref="INotableDateAlgorithmRegistry" />, or <see langword="null" /> for built-in algorithms only.

@@ -116,7 +116,7 @@ For full working-day arithmetic (`IsWorkingDay`, `AddWorkingDays`, `NextWorkingD
 
 ## Pattern 7 - enumerate and walk notable dates from a date
 
-Beyond `Resolve`, the `Bodu.Extensions` surface offers date-anchored convenience methods over `DateOnly` - the same set exists over `DateTime` and `DateTimeOffset` - that fold the year/month boundary calculation and the territory query into a single call:
+Beyond `Resolve`, the `Bodu.Extensions` surface offers date-anchored convenience methods over `DateOnly` that fold the year/month boundary calculation and the territory query into a single call. `DateTime` and `DateTimeOffset` carry subsets of them - the month and year lookups are `DateOnly`-only, and `DateTimeOffset` has no `NextNotableDate` / `PreviousNotableDate`; see [Surface differences](working-days.md#surface-differences):
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -134,7 +134,7 @@ NotableDate? next = anchor.NextNotableDate(service, "AU-NSW",
     NotableDateFilter.ForCategory(NotableDateCategory.PublicHoliday));
 NotableDate? prev = anchor.PreviousNotableDate(service, "AU-NSW");
 
-// Lazy enumeration across an arbitrary span (deferred - materialise with ToList where needed):
+// Every notable date across an arbitrary span, resolved eagerly into a list:
 foreach (NotableDate d in anchor.EnumerateNotableDates(new DateOnly(2026, 12, 31), service, "AU-NSW"))
     Console.WriteLine($"{d.Date:d MMM}  {d.DisplayName}");
 ```

@@ -27,8 +27,8 @@ A holiday on the same month and day every year uses `<Fixed>`. No adjustment is 
 <NotableDate id="christmas-day" displayName="Christmas Day" category="PublicHoliday" defaultNonWorkingDay="true">
   <Rules>
     <Rule id="default">
-      <Tags><Tag value="christian" /></Tags>
       <Strategy><Fixed month="December" day="25" /></Strategy>
+      <Tags><Tag value="christian" /></Tags>
     </Rule>
   </Rules>
 </NotableDate>
@@ -305,7 +305,7 @@ NotableDate vicLabour = service.Resolve(2026, "AU-VIC").Single(d => d.NotableDat
 Console.WriteLine($"{vicLabour.Date}  {vicLabour.DisplayName} (Victoria)");
 ```
 
-A rule scoped to a country (`<Territory code="AU" />`) also resolves for every subdivision query, so national and regional rules compose: a national rule plus a subdivision-specific shadow rule both surface for the subdivision under the resource's collision policy. See [Territories and regional composition](territories.md).
+A rule scoped to a country (`<Territory code="AU" />`) also resolves for every subdivision query, but within one concept only the most specific matching rule is used: a subdivision rule shadows the national rule of the same concept for that subdivision, so only one of them surfaces. Author separate concepts when both should appear. See [Territories and regional composition](territories.md).
 
 ### Year-bounded subdivision variant
 
@@ -352,7 +352,7 @@ IReadOnlyList<NotableDate> in2027 = service.Resolve(2027, "AU");   // off-cycle 
 
 ## An offset from an algorithmic anchor
 
-Movable feasts that hang off Easter at a longer offset use the same `<OffsetFromRule>` shape as Good Friday - the anchor is computed once by its `<Algorithm>` rule and every dependant tracks it. Corpus Christi is Easter Sunday + 60 days:
+Movable feasts that hang off Easter at a longer offset use the same `<OffsetFromRule>` shape as Good Friday - the anchor is computed by its `<Algorithm>` rule and every dependant tracks it. Corpus Christi is Easter Sunday + 60 days:
 
 ```xml
 <NotableDate id="corpus-christi" displayName="Corpus Christi" category="Religious" defaultNonWorkingDay="true">

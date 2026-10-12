@@ -114,7 +114,7 @@ References another concept's rule via `notableDateRef` (and optional `ruleRef`) 
 </NotableDate>
 ```
 
-The referenced algorithm runs once per year per resolution, regardless of how many offset rules consume it. See [Rule references](../../docs/calendar/concepts.md#rule-references-offset-from-rule) and the [resolution context](#cross-rule-references-and-the-resolution-context) below.
+Each offset rule resolves its reference when it is calculated, so the referenced rule (here the Easter algorithm) is calculated again for every rule that consumes it; nothing is cached between rules. See [Rule references](../../docs/calendar/concepts.md#rule-references-offset-from-rule) and the [resolution context](#cross-rule-references-and-the-resolution-context) below.
 
 ### `<Algorithm>` - dispatch to a named calculator
 
@@ -131,6 +131,7 @@ For dates that cannot be expressed as calendar arithmetic. The `key` attribute n
 Each strategy is a public, sealed type with a constructor mirroring its `<Strategy>` attributes, so you can evaluate one outside a document - useful for unit tests or ad-hoc calculation. `Calculate(year, context)` takes a <xref:Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext>; pass one built over the resource the strategy resolves against (or, for the year-only strategies that never follow a reference, any context):
 
 ```csharp
+using Bodu.Extensions;                       // WeekOrdinal
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Algorithms;
 
@@ -182,7 +183,7 @@ The two Easter keys are also exposed as constants on <xref:Bodu.Globalization.Ca
 | `holi` | Holi. |
 | `maun-agiyaras` | Maun Agiyaras - the Jain observance on Margashirsha shukla 11. |
 
-The equinox and Qingming keys are computed astronomically and resolved in a specific time zone: `vernal-equinox` / `autumnal-equinox` use UTC, `jp-vernal-equinox` / `jp-autumnal-equinox` use Japan Standard Time (UTC+9), and `qingming` uses China Standard Time (UTC+8). The Hindu-festival keys are computed against the Hindu lunisolar *panchanga* by the engine's internal `HinduLunarCalculator`; `vesak` and `asalha-puja` resolve full-moon dates; `losar` and `matariki` come from gazetted-date tables.
+The equinox and Qingming keys are computed astronomically and resolved in a specific time zone: `vernal-equinox` / `autumnal-equinox` use UTC, `jp-vernal-equinox` / `jp-autumnal-equinox` use Japan Standard Time (UTC+9), and `qingming` uses China Standard Time (UTC+8). The Hindu-festival keys are computed against the Hindu lunisolar *panchanga* by the engine's internal `HinduLunarCalculator`; `vesak` and `asalha-puja` resolve full-moon dates; `matariki` comes from the gazetted public-holiday table, and `losar` is an astronomical approximation - the new moon nearest a fixed solar longitude - that reproduces the published Phukpa dates to within a day.
 
 `tehran-nowruz` is an **observation-based variant**: it applies the official Iranian rule - Farvardin 1 falls on the day of the true vernal equinox when the equinox instant occurs before apparent solar noon at the 52.5°E Tehran standard meridian (UTC+03:30), otherwise on the following day - and is supported for the years 1800-2200 (outside that window it yields no occurrence). It is opt-in: the bundled tabular resources remain the default, and a rule chooses the astronomical variant by referencing the key.
 
@@ -195,7 +196,7 @@ bool builtIn = AlgorithmDateStrategy.IsKnownKey("western-easter");          // t
 bool custom  = AlgorithmDateStrategy.IsKnownKey("pi-day");                  // false - needs a registry
 ```
 
-A key that `IsKnownKey` does not recognise is resolved against the custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> supplied at load and construction time. An unregistered, unknown key surfaces as an error-severity validation diagnostic - and a `NotableDateValidationException` - when the document is loaded.
+At resolution time the custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> supplied at load and construction time is consulted first, so a key registered there overrides a built-in algorithm of the same name (which is why plugin registration rejects such collisions unless the host opts in); a key the registry does not hold falls back to the built-in calculators. An unregistered, unknown key surfaces as an error-severity validation diagnostic - and a `NotableDateValidationException` - when the document is loaded.
 
 ---
 
@@ -290,7 +291,7 @@ DateOnly? easter = context.ResolveReference("easter-sunday", "default", 2026);
 // → the resolved Easter Sunday date for 2026, or null when the reference produces no occurrence.
 ```
 
-`ResolveReference(notableDateRef, ruleRef, year)` is the same machinery <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> uses; a self-referential or mutually-referential chain is detected and reported rather than looping. When the referenced rule produces no occurrence for the year, `ResolveReference` returns `null` and the offset rule produces no occurrence in turn.
+`ResolveReference(notableDateRef, ruleRef, year)` is the same machinery <xref:Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy> uses; a self-referential or mutually-referential chain is detected and broken rather than looping: the reference that would close the loop returns `null`, so the rules in the cycle produce no occurrence, and validation does not report it. When the referenced rule produces no occurrence for the year, `ResolveReference` returns `null` and the offset rule produces no occurrence in turn.
 
 A `StrategyResolutionContext` can also be constructed directly over a resource (and, optionally, an algorithm registry) when you want to evaluate a reference outside a running query:
 
