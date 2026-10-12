@@ -22,8 +22,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// Header rows are located by their label rather than a fixed position so the parser tolerates the minor layout
-/// differences between RBA era files. A workbook that does not match the expected shape raises
-/// <see cref="ExchangeRateFormatException" />.
+/// differences between RBA era files, and the <c>Data</c> sheet by its name compared without regard to case. A workbook
+/// that does not match the expected shape raises <see cref="ExchangeRateFormatException" />.
 /// </para>
 /// </remarks>
 internal static class RbaRateWorkbookParser
@@ -63,10 +63,10 @@ internal static class RbaRateWorkbookParser
         ThrowHelper.ThrowIfNull(workbook);
         ThrowHelper.ThrowIfNull(options);
 
-        if (!HasDataSheet(workbook))
-            throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaDataSheetMissing);
+        ExcelWorksheetInfo dataSheet = FindDataSheet(workbook)
+            ?? throw new ExchangeRateFormatException(RbaResourceStrings.Format_Invalid_RbaDataSheetMissing);
 
-        Dictionary<(int Row, int Column), ExcelCell> grid = BuildGrid(workbook);
+        Dictionary<(int Row, int Column), ExcelCell> grid = BuildGrid(workbook, dataSheet);
 
         int unitsRow = FindLabelRow(grid, UnitsLabel);
         int seriesIdRow = FindLabelRow(grid, SeriesIdLabel);
@@ -87,30 +87,33 @@ internal static class RbaRateWorkbookParser
     }
 
     /// <summary>
-    /// Reports whether the workbook contains a sheet named <c>Data</c>.
+    /// Finds the workbook's <c>Data</c> sheet, comparing sheet names without regard to case.
     /// </summary>
     /// <param name="workbook">The workbook to inspect.</param>
-    /// <returns><see langword="true" /> when a <c>Data</c> sheet exists; otherwise <see langword="false" />.</returns>
-    private static bool HasDataSheet(ExcelBinaryWorkbook workbook)
+    /// <returns>The first sheet named <c>Data</c> in any case, or <see langword="null" /> when there is none.</returns>
+    private static ExcelWorksheetInfo? FindDataSheet(ExcelBinaryWorkbook workbook)
     {
         foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
         {
             if (string.Equals(sheet.Name, DataSheetName, StringComparison.OrdinalIgnoreCase))
-                return true;
+                return sheet;
         }
 
-        return false;
+        return null;
     }
 
     /// <summary>
     /// Reads the <c>Data</c> sheet into a position-keyed cell grid.
     /// </summary>
     /// <param name="workbook">The workbook to read.</param>
+    /// <param name="dataSheet">The sheet <see cref="FindDataSheet" /> matched, opened by its index.</param>
     /// <returns>A dictionary mapping each populated cell's (row, column) to its value.</returns>
-    private static Dictionary<(int Row, int Column), ExcelCell> BuildGrid(ExcelBinaryWorkbook workbook)
+    private static Dictionary<(int Row, int Column), ExcelCell> BuildGrid(
+        ExcelBinaryWorkbook workbook,
+        ExcelWorksheetInfo dataSheet)
     {
         Dictionary<(int Row, int Column), ExcelCell> grid = new();
-        using ExcelWorksheetReader reader = workbook.OpenWorksheet(DataSheetName);
+        using ExcelWorksheetReader reader = workbook.OpenWorksheet(dataSheet.Index);
         while (reader.TryReadCell(out ExcelCell cell))
             grid[(cell.RowIndex, cell.ColumnIndex)] = cell;
 
