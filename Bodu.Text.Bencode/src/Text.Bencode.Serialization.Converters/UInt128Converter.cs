@@ -19,8 +19,9 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// Bencode integers are arbitrary-precision per BEP 3, but this implementation reads and writes through the 64-bit
 /// surfaces, so a <see cref="UInt128" /> above <see cref="ulong.MaxValue" /> cannot be written - mirroring the way the
 /// signed 128-bit type is confined to the signed 64-bit range by <see cref="IntegerConverter{T}" />. A negative
-/// document value surfaces as a <see cref="BencodeSerializationException" />, matching the overflow contract of
-/// <see cref="UInt64Converter" />.
+/// document value surfaces as a <see cref="BencodeSerializationException" /> whose
+/// <see cref="BencodeSerializationException.BytesOffset" /> is the integer token's start offset, matching the overflow
+/// contract of <see cref="UInt64Converter" />.
 /// </remarks>
 internal sealed class UInt128Converter
     : BencodeConverter<UInt128>
@@ -39,8 +40,7 @@ internal sealed class UInt128Converter
             return value;
 
         // The token is a negative integer; report it as an overflow of the target type, mirroring UInt64Converter.
-        throw new BencodeSerializationException(
-            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_IntegerOverflow, reader.GetInt64(), typeof(UInt128)));
+        throw SerializationThrowHelper.IntegerOutOfRange(ref reader, reader.GetInt64(), typeof(UInt128));
     }
 
     /// <inheritdoc />

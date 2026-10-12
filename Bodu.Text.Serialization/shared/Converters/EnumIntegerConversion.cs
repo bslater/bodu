@@ -59,7 +59,7 @@ internal static class EnumIntegerConversion
         {
             ulong unsignedValue = reader.GetUInt64();
             if (Type.GetTypeCode(Enum.GetUnderlyingType(typeof(T))) != TypeCode.UInt64)
-                throw SerializationThrowHelper.EnumValueOutOfRange(ref reader, unsignedValue, typeof(T));
+                throw SerializationThrowHelper.IntegerOutOfRange(ref reader, unsignedValue, typeof(T));
 
             return (T)Enum.ToObject(typeof(T), unsignedValue);
         }
@@ -76,7 +76,7 @@ internal static class EnumIntegerConversion
                 value.ToString(CultureInfo.InvariantCulture),
                 typeof(T)));
 #else
-            throw SerializationThrowHelper.EnumValueOutOfRange(ref reader, value, typeof(T));
+            throw SerializationThrowHelper.IntegerOutOfRange(ref reader, value, typeof(T));
 #endif
         }
 

@@ -64,6 +64,19 @@ public sealed class BencodeSerializationException
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="BencodeSerializationException" /> class with the specified message,
+    /// source byte offset, and a reference to the inner exception that caused it.
+    /// </summary>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="bytesOffset">The byte offset into the source at which the error was detected.</param>
+    /// <param name="innerException">The exception that caused the current exception.</param>
+    internal BencodeSerializationException(string message, int bytesOffset, Exception? innerException)
+        : base(message, innerException)
+    {
+        BytesOffset = bytesOffset;
+    }
+
+    /// <summary>
     /// Gets the byte offset into the source at which the error was detected, when available.
     /// </summary>
     /// <value>The byte offset, or <see langword="null" /> when the failure has no associated position.</value>

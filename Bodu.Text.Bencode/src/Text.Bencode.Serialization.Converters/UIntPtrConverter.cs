@@ -18,8 +18,9 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// Routing <see cref="nuint" /> through the shared <see cref="IntegerConverter{T}" /> would confine it to the signed
 /// 64-bit surface, throwing for values above <see cref="long.MaxValue" /> that <see cref="ulong" /> - via
 /// <see cref="UInt64Converter" /> - accepts. A negative document value, or one above the platform's native-unsigned
-/// range, surfaces as a <see cref="BencodeSerializationException" />, matching the overflow contract of the other
-/// fixed-width integer types.
+/// range, surfaces as a <see cref="BencodeSerializationException" /> whose
+/// <see cref="BencodeSerializationException.BytesOffset" /> is the integer token's start offset, matching the overflow
+/// contract of the other fixed-width integer types.
 /// </remarks>
 internal sealed class UIntPtrConverter
     : BencodeConverter<nuint>
@@ -42,15 +43,12 @@ internal sealed class UIntPtrConverter
             }
             catch (OverflowException ex)
             {
-                throw new BencodeSerializationException(
-                    string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_IntegerOverflow, value, typeof(nuint)),
-                    ex);
+                throw SerializationThrowHelper.IntegerOutOfRange(ref reader, value, typeof(nuint), ex);
             }
         }
 
         // The token is a negative integer; report it as an overflow of the target type, mirroring IntegerConverter<T>.
-        throw new BencodeSerializationException(
-            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_IntegerOverflow, reader.GetInt64(), typeof(nuint)));
+        throw SerializationThrowHelper.IntegerOutOfRange(ref reader, reader.GetInt64(), typeof(nuint));
     }
 
     /// <inheritdoc />
