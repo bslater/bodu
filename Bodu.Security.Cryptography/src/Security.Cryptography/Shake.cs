@@ -202,7 +202,7 @@ public sealed class Shake
         {
             ThrowIfDisposed();
             ThrowIfInvalidState();
-            CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
+            ThrowHelper.ThrowIfNotPositiveMultipleOf(value, 8);
 
             HashSizeValue = value;
         }
