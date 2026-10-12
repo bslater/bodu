@@ -16,7 +16,7 @@ Stable and a Preview stream, each validated against its own last
 release; the cryptography performance plans were carried out; the
 calendar value sets replaced `WeekPattern`; recurrence gained sub-daily
 rules, the Quartz cron tokens and point queries that start where the
-query does; and eight structured-format readers were held to other
+query does; and eleven structured-format readers were held to other
 libraries' release-note fixes. The detail is in git and the release
 notes.*
 
@@ -249,10 +249,8 @@ proposals can be closed quickly.
 
 ## Active focus
 
-The focus is the 1.3.0 release. Two pieces of it are in progress and
-not yet on master: the release-note fix catalogues for the BIFF / `.xls`,
-`.msg` and `.pst` readers, and fixes to the Bencode, TOML and YAML enum
-and integer converters. What has already landed for 1.3.0:
+The focus is the 1.3.0 release, and everything planned for it has
+landed on master:
 
 **Release-note fix catalogues.** Each structured-format reader is held
 to the defect fixes that comparable libraries list in their release
@@ -261,7 +259,7 @@ notes. Every fix becomes a row in `corpus/<area>/fixes/`, classed
 Bodu in the Regression tier through the shared `Bodu.Test.Corpus`
 reader, and BVT governance tests pin each library's rows in every
 class. A row that fails is a defect: it gets an issue, then a failing
-regression test, then the fix. Eight areas have landed, each with a
+regression test, then the fix. Eleven areas have landed, each with a
 README that lists its sources and what the rows found
 (`corpus/README.md` describes the layout):
 
@@ -275,6 +273,9 @@ README that lists its sources and what the rows found
 | `corpus/ini/` | `Bodu.Text.Ini` | 8 | 323 |
 | `corpus/configuration/` | `Bodu.Text.Configuration`, against the EditorConfig cores | 6 | 195 |
 | `corpus/compound/` | `Bodu.IO.Compound` | 5 | 397 |
+| `corpus/biff/` | `Bodu.IO.Biff`, `Bodu.Formats.Excel.Binary` | 6 | 867 |
+| `corpus/msg/` | `Bodu.Formats.Outlook.Msg` and the shared Outlook decode layer | 5 | 447 |
+| `corpus/pst/` | `Bodu.IO.Pst`, `Bodu.Formats.Outlook.Pst` | 4 | 580 |
 
 The rest of what 1.3.0 carries:
 
@@ -303,11 +304,17 @@ The rest of what 1.3.0 carries:
   and 1.2.0. Since 1.2.0, BLAKE2's folded message loads and shorter
   half-rounds, BLAKE3's single-block rounds, BLAKE2b's AVX-512 rotation
   and Argon2's `VPRORQ` rotation on AVX-512 have landed for 1.3.0.
+- **Stricter enum and integer conversion.** In the Bencode, TOML and
+  YAML serializers an integer that does not fit its enum or integer
+  member is a serialization error rather than a narrowed value, and a
+  string enum converter created with `allowIntegerValues: false` reads
+  and writes names only, as System.Text.Json's does from .NET 9.
 - **Trimming and NativeAOT annotations.** `BencodeSerializer` declares
   `[RequiresUnreferencedCode]` and `[RequiresDynamicCode]` as
-  `TomlSerializer` does, and the Financial and Numerics JSON converter
-  factories, with the registrations that create them, declare
-  `[RequiresDynamicCode]` (see *AOT and trim readiness*).
+  `TomlSerializer` does, `YamlSerializer` now declares both, and the
+  Financial and Numerics JSON converter factories, with the
+  registrations that create them, declare `[RequiresDynamicCode]` (see
+  *AOT and trim readiness*).
 
 ## Per-project roadmap
 
@@ -1530,11 +1537,10 @@ Current state:
   runs the closed JSON converters on a source-generated context for
   every serializable type.
 - **Annotated rather than AOT-clean:** the reflection-based
-  serializers. `TomlSerializer` and, for 1.3.0, `BencodeSerializer`
-  declare `[RequiresUnreferencedCode]` and `[RequiresDynamicCode]` on
-  their entry points, `YamlSerializer` declares
-  `[RequiresUnreferencedCode]` only, and the Delimited / DotEnv / INI
-  serializers carry both. The JSON companions' converter factories,
+  serializers. `TomlSerializer` and, for 1.3.0, `BencodeSerializer` and
+  `YamlSerializer` declare `[RequiresUnreferencedCode]` and
+  `[RequiresDynamicCode]` on their entry points, as the Delimited /
+  DotEnv / INI serializers do. The JSON companions' converter factories,
   which close generic converters with `MakeGenericType`, declare
   `[RequiresDynamicCode]` (the Financial and Numerics ones for 1.3.0),
   with the closed converters on a source-generated
