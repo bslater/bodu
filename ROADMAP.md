@@ -334,7 +334,7 @@ set-backed), `Multiset<T>`, `RangeDictionary<,>` / `RangeSet<T>`,
 `SegmentedBuffer<T>`, `BiDictionary<,>`, `Table<,,>`,
 `LayeredDictionary<,>` / `DefaultingDictionary<,>`, `NavigableSet<T>` /
 `NavigableDictionary<,>`, `IntervalTree<T>`, the graphs (`Graph<T>`,
-`GraphAlgorithms`, `DisjointSet`) and trees (`Tree<T>`, `Trie`,
+`GraphAlgorithms`, `DisjointSet<T>`) and trees (`Tree<T>`, `Trie`,
 `RadixTrie`, `AhoCorasickAutomaton`), `BitSet` in
 `Bodu.Collections.Specialized`, and the `Bodu.Collections.Probabilistic`
 sketches (`BloomFilter<T>`, `CountMinSketch<T>`, `HyperLogLog<T>`).
@@ -412,8 +412,8 @@ hold the scalar paths to the same vectors.
 
 Forward-looking:
 
-- **What the speed-up plans left for later.** Each item in
-  `plans/crypto-performance-followups.md` §9 records what it left for
+- **What the speed-up plans left for later.** Most items in
+  `plans/crypto-performance-followups.md` §9 record what they left for
   later, such as a per-machine Argon2 thread threshold and BLAKE2b on
   Intel's client cores; as the plan sets out, a scratch spike measures
   the gain before any design is committed to.
@@ -430,8 +430,9 @@ Forward-looking:
 
 Current state: Stable; first shipped at 0.5.0. Fletcher 16/32/64, Adler
 (32, 32C, 64), FNV-1 and FNV-1a (32/64), CityHash, MurmurHash3, Pearson
-and the classic string hashes; the full RevEng CRC catalogue (112
-standards behind one parametric `Crc`); and the check-digit family
+and the classic string hashes; the RevEng CRC catalogue's 112
+standards of up to 64 bits (all but CRC-82/DARC) behind one parametric
+`Crc`; and the check-digit family
 (Luhn, Damm, Verhoeff, Gumm, Code 39 mod 43, Crockford Base32 mod 37,
 ABA, CUSIP, SEDOL, EAN, UPC-A, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
 
@@ -448,7 +449,7 @@ Forward-looking:
 
 - **Keep documenting the `System.IO.Hashing` interop story.** xxHash and
   the single-polynomial `Crc32` / `Crc64` (ISO 3309) ship in Microsoft's
-  package; the headline value here is the full 112-polynomial catalogue,
+  package; the headline value here is the 112-standard catalogue,
   the legacy non-cryptographic family, and the check-digit family - none
   of which are in the BCL.
 
@@ -458,7 +459,8 @@ Current state: Stable; first shipped at 0.5.0. Standalone encoders
 `Base16`, `Base32` (Standard/HexExtended/Crockford/ZBase32), `Base45`
 (RFC 9285), `Base58` / `Base58Check`, `Base62`, `Base64` / `Base64Url`,
 `Base85` (Ascii85 / Z85 / GitCompact), the standalone HRP-carrying
-`Bech32` / `Bech32m` (BIP-173 / BIP-350), plus `PercentEncoding` and
+`Bech32`, in its Bech32 and Bech32m forms (BIP-173 / BIP-350, chosen by
+`Bech32Encoding`), plus `PercentEncoding` and
 `QuotedPrintable`. Name-resolvable variants are exposed through the
 `BinaryEncodings` / `IBinaryEncoding` registry.
 
@@ -482,9 +484,10 @@ Current state: Stable; first shipped at 0.5.0. The shared core of the six
 the ignore / creation / unmapped-member / naming enums, the serialization
 callback interfaces and the naming policies, plus the source the format
 packages compile in. `shared/**` (the metadata resolver and converter
-engine) compiles under each format's symbol, and `shared/Flat/`
-(`InvariantScalarCodec`, `FlatMemberDescriptor` / `FlatMemberDiscovery`
-and `Utf8LineCursor`) compiles as-is into the three line formats. For
+engine) compiles into Bencode, TOML and YAML under their format symbols;
+the line formats compile files from `shared/Flat/` as-is:
+`InvariantScalarCodec` and `FlatMemberDescriptor` in all three, and
+`FlatMemberDiscovery` and `Utf8LineCursor` in DotEnv and INI. For
 1.3.0 the shared binding's handling of `[Include]` and
 `ObjectCreationHandling.Populate` was fixed.
 
@@ -516,10 +519,11 @@ tree. For 1.3.0 the serializer's entry points declare
   `BencodeSerializer` now throws `BencodeSerializationException` for it.
 - **The read-only configuration source has landed.** `AddBencodeFile` /
   `AddBencodeStream` in `Bodu.Extensions.Configuration.Text`.
-
-Forward-looking:
-
-- **In progress for 1.3.0:** fixes to the enum and integer converters.
+- **Enum and integer conversion is stricter (1.3.0).** An integer that
+  does not fit its enum or integer member is a serialization error
+  rather than a narrowed value, and a string enum converter created with
+  `allowIntegerValues: false` reads and writes names only, as
+  System.Text.Json's does from .NET 9.
 
 ### `Bodu.Text.Toml`
 
@@ -538,7 +542,11 @@ valid and 505 invalid cases (pinned in its `provenance.json`), and, for
   benchmark the emitter's allocation profile against `Tomlyn`, and keep
   the vendored corpus current with upstream `toml-test`, whose
   `provenance.json` does not yet record the upstream commit.
-- **In progress for 1.3.0:** fixes to the enum and integer converters.
+- **Enum and integer conversion is stricter (1.3.0).** An integer that
+  does not fit its enum or integer member is a serialization error
+  rather than a narrowed value, and a string enum converter created with
+  `allowIntegerValues: false` reads and writes names only, as
+  System.Text.Json's does from .NET 9.
 
 ### `Bodu.Text.Yaml`
 
@@ -564,13 +572,20 @@ release-note fix rows from nine YAML libraries (`corpus/yaml/`).
   YAML Core Tree Profile* section and compliance matrix carry the
   explicit in/out list (tag resolution, complex keys, directives,
   anchors).
+- **Enum and integer conversion is stricter (1.3.0).** An integer that
+  does not fit its enum or integer member is a serialization error
+  rather than a narrowed value, and a string enum converter created with
+  `allowIntegerValues: false` reads and writes names only, as
+  System.Text.Json's does from .NET 9; `YamlStringEnumConverter` writes
+  names whatever `WriteEnumsAsStrings` says, and the serializer's entry
+  points declare `[RequiresDynamicCode]` beside
+  `[RequiresUnreferencedCode]`, as the other format serializers' do.
 
 Forward-looking:
 
 - **Raise the coverage floor** in `bld/coverage-thresholds.json` (90.7
   line, 89.3 branch) toward Toml's 95.0/92.3 after the next coverage
   collection run.
-- **In progress for 1.3.0:** fixes to the enum and integer converters.
 
 ### `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` (and the `Bodu.Text.Formats` umbrella)
 
@@ -625,8 +640,8 @@ under `EditorConfigCompatible`, and brace groups without a comma read as
 choices; all are fixed.
 
 - **`ConfigurationPattern.Compile` is part of the Stable surface.** It
-  shipped at 1.0.0 with the rest of the package, so package validation
-  now holds it; the stability pass this item asked for closed with that
+  first shipped at 0.5.0 with the rest of the package and is in the
+  1.0.0 Stable baseline, so package validation holds it; the stability pass this item asked for closed with that
   release.
 
 Forward-looking:
@@ -786,9 +801,9 @@ scrape-token auth, **Oanda** - rolling ~180-day window, **Fixer** -
 `access_key` base+quotes, **ExchangeRateHost** - `access_key`
 source+quotes, **Fred** - `api_key` per-pair `series_id` map).
 `Bodu.Financial.ExchangeRates.Caching` supplies the `CachingRateProvider`
-read-through decorator and the `AggregatingRateProvider`
-(priority-fallback / average strategies, per-pair routing) over
-`IRateCache`, with in-memory, TOML and JSON backends, and
+read-through decorator over `IRateCache`, with in-memory, TOML and JSON
+backends, and the `AggregatingRateProvider` (priority-fallback / average
+strategies, per-pair routing) over child providers, and
 `.Caching.Sqlite` / `.Caching.Distributed` (`IDistributedCache` / Redis)
 add the durable and shared backends.
 `Bodu.Financial.ExchangeRates.Testing`, not packable, holds the
@@ -872,8 +887,10 @@ no compound-file dependency and no workbook model: it is the substrate
 beneath `Bodu.Formats.Excel.Binary`, as `Bodu.IO.Pst` is beneath
 `Bodu.Formats.Outlook.Pst`.
 
-- **In progress for 1.3.0:** the release-note fix catalogue for the
-  BIFF / `.xls` readers.
+- **The release-note catalogue has landed (1.3.0).** Six `.xls`
+  readers' fixes, 867 rows (`corpus/biff/`), held the codec and the
+  workbook reader to what those libraries fixed; the defects they found
+  are fixed, the codec's among them.
 
 ### `Bodu.Formats.Excel.Binary`
 
@@ -893,6 +910,9 @@ as `Bodu.Financial.ExchangeRates`.
 - **BIFF5 has landed.** Moving onto `Bodu.IO.Biff` let the reader accept
   BIFF5 (Excel 5.0/95) as well as BIFF8 (Excel 97-2003); an earlier BIFF
   version still raises `ExcelBinaryUnsupportedException`.
+- **The release-note catalogue has landed (1.3.0).** See
+  `Bodu.IO.Biff` above; the workbook reader's own defects it found are
+  fixed too.
 
 Forward-looking:
 
@@ -900,8 +920,6 @@ Forward-looking:
   namespace was chosen for exactly this - a read-only `.xlsx` reader over
   an OPC/ZIP container reusing `ExcelCell` / `ExcelWorksheet` /
   `ExcelWorkbookProperties`. See *New library candidates*.
-- **In progress for 1.3.0:** the release-note fix catalogue for the
-  BIFF / `.xls` readers.
 
 ### `Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`
 
@@ -931,10 +949,13 @@ in the container and served only through `OpenContentStream`.
   expectations manifest generated by olefile and a Regression sweep: the
   39 well-formed files decode as the independent oracle does, and the 2
   fuzzer-minimized malformed containers are rejected.
+- **The release-note catalogue has landed (1.3.0).** Five `.msg`
+  libraries' fixes, 447 rows (`corpus/msg/`); the defects they found
+  are fixed, in the `.msg` reader and in the decode layer it shares with
+  the `.pst` reader.
 
 Forward-looking:
 
-- **In progress for 1.3.0:** the `.msg` release-note fix catalogue.
 - **`.msg` authoring** and **TNEF** remain demand-driven candidates; see
   the kickoff plan's out-of-scope list.
 
@@ -948,8 +969,8 @@ permute/cyclic content encodings decoded, XBLOCK/XXBLOCK data trees,
 SLBLOCK/SIBLOCK subnode trees, and the LTP layer over them (heap-on-node,
 BTree-on-heap, and the public property-context and table-context views
 on `PstNode`), behind the `PstFile` / `PstNode` session with tiered
-validation (`Compatible` / `Strict` / `Minimal`). Only the 4 KiB-page
-OST variant is recognized and rejected. `Bodu.Formats.Outlook.Pst` is
+validation (`Compatible` / `Strict` / `Minimal`). An OST, the
+4 KiB-page variant included, is recognized and rejected. `Bodu.Formats.Outlook.Pst` is
 the mail-store reader over it (`OutlookMailStore` /
 `OutlookMailFolder` / `OutlookMailMessage` / `OutlookMailAttachment`),
 sharing the `Bodu.Formats.Outlook` value model and its decode layer.
@@ -975,11 +996,14 @@ Landed since the previous revision:
   block, and `MaxInlineAttachmentBytes` (1 MiB) on both readers.
 - **ANSI stores** (2026-09-04): `wVer` 14/15 files read through the same
   NDB readers, driven by an internal `PstLayout` descriptor.
+- **The release-note catalogue** (1.3.0): four `.pst` readers' fixes,
+  580 rows (`corpus/pst/`); the defects they found are fixed, so every
+  Unicode version from 23 up but 36 now opens, and a B-tree page or
+  heap allocation outside its bounds is rejected.
 
 Forward-looking:
 
-- **In progress for 1.3.0:** the `.pst` release-note fix catalogue.
-- **OST** - the 4 KiB-page variant stays rejected; a demand-driven
+- **OST** - OST files stay rejected; reading them is a demand-driven
   follow-on.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
   multi-megabyte stress option recorded in the fixture NOTICE.
@@ -1135,9 +1159,10 @@ territories import them directly. Country sets:
 Forward-looking:
 
 - **Subdivision-level data is the common open gap** across every pack.
-  US states, Canadian provinces, AU states, German *Länder*, and the UK
-  constituent countries already ship; the remaining bulk of regional
-  holidays (Brazilian/Mexican states, Indian/Indonesian/Philippine
+  US states, Canadian provinces, AU states, German *Länder*, the UK
+  constituent countries, three Brazilian states (SP, RJ, BA) and
+  Alsace-Moselle already ship; the remaining bulk of regional holidays
+  (the other Brazilian states, Mexican states, Indian/Indonesian/Philippine
   subdivisions, Spanish autonomous communities, Swiss cantons) is
   subdivision-specific.
 - **Document holiday-source citations** per country so consumers can
@@ -1154,9 +1179,9 @@ Forward-looking:
   coverage** in Africa.
 - **Ship fiscal-calendar packs** (US federal FY, retail 4-5-4) as the
   next natural "notable dates" layer beyond religious/civil holidays.
-- **Multi-day Chinese New Year / Lunar New Year regional variants** in
-  AsiaPacific (today the rule fires for the single primary date), and
-  wire Saudi-sighting subdivisions to `global-islamic-umm-al-qura.xml`.
+- **Multi-day Lunar New Year spans for ID and PH, and a rule for MY.**
+  CN, HK, KR, SG, TW and VN already carry their multi-day spans; ID and
+  PH fire a single day, and MY has no Lunar New Year rule.
 
 ### `Bodu.Globalization.Recurrence`
 
@@ -1218,8 +1243,8 @@ checks and governs the release-note fix catalogues under
 - **Promote `Bodu.Test.Kat` as a public NuGet** so downstream consumers
   can plug into the same testing model.
 - **Add a benchmark-results contract** so the `bench/` projects produce
-  comparable JSON across the Encoding / Configuration / Formats /
-  Cryptography suites.
+  comparable JSON across the Encoding / Configuration / Filtering /
+  Cryptography / caching suites.
 
 ### `Bodu.CodeStyle` *(separate solution)*
 
@@ -1295,8 +1320,9 @@ filter were added to *Non-goals* instead.
   what landed for 1.3.0, and the deferred read-only `.ics` reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
-  and a natural consumer of the existing Crockford Base32 support (in
-  `Bodu.IO.Hashing`) and the `Bodu.Text.Encoding` alphabets. Pairs
+  and a natural consumer of the existing Crockford Base32 support
+  (`Base32Variant.Crockford` in `Bodu.Text.Encoding`, with the
+  `Crockford32` check digit in `Bodu.IO.Hashing`) and the `Bodu.Text.Encoding` alphabets. Pairs
   naturally with **Sqids** (reversible short-ID encoding), which could
   live here or in `Bodu.Text.Encoding`. (Note: `Guid.CreateVersion7`
   ships in the BCL from `net9.0`, so the candidate's durable value
@@ -1334,8 +1360,9 @@ filter were added to *Non-goals* instead.
   constantly) - scope discipline is parse / format / validate only, no
   carrier lookup or geocoding, and the pack split keeps the data out of
   the core assembly.
-- **`Bodu.Text.Transliteration`** - Unicode-to-ASCII folding (the
-  `unidecode` operation) and slug generation. Python: `unidecode` +
+- **`Bodu.Text.Transliteration`** - table-driven Unicode-to-ASCII
+  folding (the `unidecode` operation) beyond what `Bodu.Core`'s
+  `StringExtensions.ToSlug` and `RemoveDiacritics` cover. Python: `unidecode` +
   `python-slugify`; Java: ICU4J's `Transliterator` (often pulled for
   this alone); .NET: Slugify.Core / Unidecode.NET. Data-driven mapping
   tables and span-based transforms - the `Bodu.Text.Encoding` profile
@@ -1399,7 +1426,8 @@ rather than inventing a fourth shape.
    `Bodu.Text.DotEnv` and `Bodu.Text.Ini`. **This is the template for
    every new structured-text format**; the line formats deviate only
    where their design notes under `Bodu.Text.Formats/docs/` say so
-   (trivia-bearing mutable DOMs for DotEnv / INI, and string-only scalars
+   (a comment-bearing mutable DOM for INI and an export-flag-preserving
+   one for DotEnv, and string-only scalars
    converted through the shared `InvariantScalarCodec` rather than the
    recursive converter engine).
 2. **The container + format-reader split** - a low-level container or
@@ -1411,10 +1439,11 @@ rather than inventing a fourth shape.
    it, and new office or document readers (`.xlsx`, `.doc`) plug into
    the same split.
 3. **The resilient web-data-provider stack** - an abstract provider base
-   (`WebRateProvider`) owning `HttpClient` + Polly resilience and
-   single-flight coalescing, a read-through cache decorator, an
-   aggregator with pluggable strategies over a storage-agnostic cache
-   contract, and per-package DI extensions delegating to shared
+   (`WebRateProvider`) owning the `HttpClient` and single-flight
+   coalescing, shared DI machinery adding a named `HttpClient` with Polly
+   resilience, a read-through cache decorator over a storage-agnostic
+   cache contract, an aggregator with pluggable strategies over child
+   providers, and per-package DI extensions delegating to the shared
    registration machinery. Proven by `Bodu.Financial.ExchangeRates.*`.
    Any future networked reference-data source should adopt this shape.
 
@@ -1429,8 +1458,9 @@ reader to the fixes comparable libraries have shipped (`corpus/README.md`).
 **Done - every .NET project multi-targets `net8.0;net10.0`**, since the
 1.0.0 cut. The matrix lives in one property, `$(BoduNetTargets)` in
 `bld/TargetFrameworks.props`; projects reference the property rather
-than naming a framework, so widening or narrowing the matrix is a
-one-line edit. Three projects stay `netstandard2.0` because their hosts
+than naming a framework, so narrowing the matrix is a one-line edit, and
+widening it is that edit plus a matching package-version group in
+`Directory.Packages.props`. Three projects stay `netstandard2.0` because their hosts
 demand it: the Roslyn generator `Bodu.Text.Formats.Generators`, the
 MSBuild task `Bodu.Globalization.Calendar.Build`, and `docs/doc.csproj`.
 
@@ -1555,7 +1585,7 @@ published Stable packages, 13 published Preview ones, and four withheld:
   fetch machinery), the `…ExchangeRates.DependencyInjection` plumbing,
   and the caching trio `…ExchangeRates.Caching{,.Sqlite,.Distributed}`.
 - **Preview** - the container and mail-store readers whose surfaces are
-  still settling (`Bodu.IO.Pst` and the Outlook readers built on it,
+  still settling (`Bodu.IO.Pst` and the Outlook packages
   `Bodu.Formats.Outlook{,.Msg,.Pst}`); the network-dependent per-source
   exchange-rate providers
   `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Fixer,ExchangeRateHost,Fred,Imf}`,
@@ -1628,7 +1658,9 @@ baseline needed is deleted.
 
 **Achieved.** Every packable package - the 60 rows of
 `bld/docs-checks/package-docs-map.txt` - has a landing page under
-`docs/docs/`, guides under `docs/guides/`, and a samples page, and
+`docs/docs/`, guides under `docs/guides/`, and a samples page, apart
+from two recorded absences (no guides for `Bodu.IO.Biff`, no samples
+page for `Bodu.Text.Serialization`), and
 `bld/check-docs.py` (`packages`) fails a pull request that loses one. The
 API reference is generated per framework from the compiled Release
 assemblies and merged into one page per API that names the frameworks it
