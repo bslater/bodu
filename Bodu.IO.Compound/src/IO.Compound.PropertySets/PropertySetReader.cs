@@ -389,13 +389,62 @@ internal static class PropertySetReader
     /// <param name="data">The property-set bytes.</param>
     /// <param name="offset">The byte offset of the length prefix.</param>
     /// <returns>The decoded string and the number of bytes consumed.</returns>
+    /// <remarks>
+    /// Some writers align the string, rather than the property, to a four-byte boundary: for a property that begins two
+    /// bytes past one, they put the length two bytes later than [MS-OLEPS] does. When the length at the expected place
+    /// runs past the data or frames a string with no terminating null, and the place is two bytes past a boundary, the
+    /// string is read from the next boundary if a null-terminated one starts there, as Apache POI reads it; otherwise
+    /// it is read from the expected place, or dropped when that runs past the data.
+    /// </remarks>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the string runs past the data and no string starts on the next boundary.
+    /// </exception>
     private static (object? Value, int Consumed) ReadUnicodeString(ReadOnlySpan<byte> data, int offset)
     {
         Ensure(data, offset, 4);
-        int bytes = Bounded((ulong)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)) * 2, data.Length - (offset + 4));
+        bool framed = TryFrameUnicodeString(data, offset, out int bytes, out bool terminated);
+        bool rereadable = !(framed && terminated) && offset % 4 == 2;
+        if (rereadable
+            && TryFrameUnicodeString(data, offset + 2, out int alignedBytes, out bool alignedTerminated)
+            && alignedTerminated
+            && alignedBytes > 0)
+        {
+            string aligned = Encoding.Unicode.GetString(data.Slice(offset + 6, alignedBytes)).TrimEnd('\0');
+            return (aligned, 6 + alignedBytes);
+        }
 
+        CompoundThrowHelper.ThrowFormatIf(!framed, CompoundResourceStrings.Format_Invalid_CompoundPropertySet, CompoundFileError.InvalidPropertySet);
         string text = Encoding.Unicode.GetString(data.Slice(offset + 4, bytes)).TrimEnd('\0');
         return (text, 4 + bytes);
+    }
+
+    /// <summary>
+    /// Determines whether a UTF-16 string's length prefix at an offset frames a string within the data.
+    /// </summary>
+    /// <param name="data">The property-set bytes.</param>
+    /// <param name="offset">The byte offset of the length prefix.</param>
+    /// <param name="bytes">When this method returns <see langword="true" />, the number of bytes of the string.</param>
+    /// <param name="terminated">
+    /// When this method returns <see langword="true" />, whether the string is empty or ends in a null character.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the length prefix and the characters it counts lie within the data; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool TryFrameUnicodeString(ReadOnlySpan<byte> data, int offset, out int bytes, out bool terminated)
+    {
+        bytes = 0;
+        terminated = false;
+        if (offset > data.Length - 4)
+            return false;
+
+        ulong length = (ulong)BinaryPrimitives.ReadUInt32LittleEndian(data.Slice(offset)) * 2;
+        if (length > (ulong)(data.Length - (offset + 4)))
+            return false;
+
+        bytes = (int)length;
+        terminated = bytes == 0 || (data[offset + 4 + bytes - 2] == 0 && data[offset + 4 + bytes - 1] == 0);
+        return true;
     }
 
     /// <summary>

@@ -185,6 +185,11 @@ public sealed class OlePropertySet
     /// boundary only while they are zero.
     /// </para>
     /// <para>
+    /// A <c>VT_LPWSTR</c> two bytes past a four-byte boundary whose writer put its length on the next boundary, rather
+    /// than where [MS-OLEPS] puts it, is read from there when the expected place frames no null-terminated string and
+    /// the next boundary does.
+    /// </para>
+    /// <para>
     /// A property whose type the reader does not implement is dropped, as is one whose type word carries
     /// <c>VT_ARRAY</c>, <c>VT_BYREF</c> or <c>VT_RESERVED</c>, rather than being read as a value of its base type; the
     /// section's other properties still read.
