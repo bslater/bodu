@@ -58,7 +58,7 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Overlap-storing interval index (stabbing / window queries) | <xref:Bodu.Collections.Generic.IntervalTree`1> / <xref:Bodu.Collections.Generic.IntervalTree`2> | The only range type that **stores** overlapping intervals - `RangeDictionary` rejects overlapping inserts, `RangeSet` merges them, and `Bodu.Numerics`' `IntervalSet<T>` normalizes to disjoint ranges. Closed `[low, high]` endpoints; O(log n + k) `QueryPoint` / `QueryOverlaps`, O(log n) `Intersects`. |
 | Cache with policy-driven eviction | <xref:Bodu.Collections.Generic.EvictingDictionary`2> | FIFO, LRU, LFU, MRU, Random, or Second-Chance. |
 | Ordered key-value store with O(1) first/last access | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Insertion order by default; opt into access order for LRU-style reordering. O(1) `First` / `Last` / `TryRemoveFirst` / `TryRemoveLast`. |
-| One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty live view, never `null`. |
+| One key → many values | <xref:Bodu.Collections.Generic.MultiValueDictionary`2> | Indexer returns an empty list, never `null`, for an absent key; a present key's list is a live view. |
 | One-to-one map, O(1) lookup in both directions | <xref:Bodu.Collections.Generic.BiDictionary`2> | Live `Inverse` view shares storage; duplicate-value conflicts follow the `Throw` / `Replace` policy. |
 | Layered lookup with first-wins precedence | <xref:Bodu.Collections.Generic.LayeredDictionary`2> | Python `ChainMap` semantics: a live view over ordered layers, writes to the first layer only; removing a shadowing entry unshadows the deeper value. `Count`/enumeration walk every layer. |
 | Two-key map with row/column projections | <xref:Bodu.Collections.Generic.Table`3> | Guava `Table` shape: live `Row` / `Column` views over a row-major store. Column-axis operations are O(rows) - no second index. A plain `Dictionary<(TRow, TColumn), TValue>` covers lookup-only use. |
@@ -90,14 +90,14 @@ The remainder of this page deepens that tree into per-axis tables, real-world sc
 | Multi-threaded read-heavy cache where approximate LRU is acceptable | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> | Lock-free reads over a segmented pseudo-LRU (hot / warm / cold queues); maintenance is amortized onto writers. No TTL, no policy choice, and `Count` may transiently exceed `Capacity`. Prefer the evicting dictionary when you need exactness, TTL, or a stampede guard. |
 | Single-threaded, every other scenario | All non-concurrent types in <xref:Bodu.Collections.Generic> | Wrap with external synchronisation if shared across threads. |
 
-The non-concurrent types are **not** thread-safe even for concurrent reads - <xref:Bodu.Collections.Generic.EvictingDictionary`2> mutates LRU and LFU metadata on read, and <xref:Bodu.Collections.Generic.IndexedPriorityQueue`2> mutates the element-to-slot map on every heap operation. Wrap with a lock or `ReaderWriterLockSlim` when sharing a single instance.
+The non-concurrent types are **not** thread-safe, and some are not safe even for concurrent reads - <xref:Bodu.Collections.Generic.EvictingDictionary`2> mutates LRU and LFU metadata on read, and an access-ordered <xref:Bodu.Collections.Generic.SequencedDictionary`2> moves entries on read. Wrap a shared instance in an exclusive lock; a `ReaderWriterLockSlim` read lock is enough only for the types [Thread safety](thread-safety.md) marks read-only safe.
 
 ### By ordering and uniqueness
 
 | Requirement | Reach for | Notes |
 |---|---|---|
 | Unique elements, no order | <xref:System.Collections.Generic.HashSet`1> (BCL) | Bodu does not duplicate this. |
-| Unique elements, insertion-ordered, indexable | <xref:Bodu.Collections.Generic.IndexedSet`1> | Implements `IList<T>` over an open-addressing hash table; O(1) `Contains`, `IndexOf`, indexed read. |
+| Unique elements, insertion-ordered, indexable | <xref:Bodu.Collections.Generic.IndexedSet`1> | Implements `IList<T>` over a chained hash table; O(1) `Contains`, `IndexOf`, indexed read. |
 | Unique elements, insertion-ordered, set surface | <xref:Bodu.Collections.Generic.OrderedSet`1> | Same engine as `IndexedSet<T>`; exposes indices only as a read-only view. |
 | Unique elements, comparer-sorted, positional queries | <xref:Bodu.Collections.Generic.NavigableSet`1> | Order-statistic sorted set: O(log n) `TryGetFloor` / `TryGetCeiling` / `TryGetHigher` / `TryGetLower`, rank/select (`IndexOf` / `GetAt`), and `CountInRange`. The BCL `SortedSet<T>` offers only `GetViewBetween` (no navigation or rank surface), and `SortedList<TKey,TValue>` pays O(n) per insert. |
 | Duplicates retained with count | <xref:Bodu.Collections.Generic.Multiset`1> | `Count` includes multiplicity; `DistinctCount` does not. |

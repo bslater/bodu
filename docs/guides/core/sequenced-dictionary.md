@@ -90,7 +90,7 @@ map["a"] = 10;          // updates in place - order unchanged in insertion mode
 
 ## Thread safety
 
-`SequencedDictionary<TKey, TValue>` is **not thread-safe**. In access-order mode reads mutate the iteration order, so even concurrent read-read is unsafe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when sharing a single instance across threads.
+`SequencedDictionary<TKey, TValue>` is **not thread-safe**. In access-order mode reads mutate the iteration order, so even concurrent read-read is unsafe without external synchronization. Wrap a shared instance in an exclusive lock; a `ReaderWriterLockSlim` read lock is enough only in insertion-order mode, where reads do not write.
 
 ## Relationship to `OrderedDictionary<TKey, TValue>`
 
