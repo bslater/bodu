@@ -246,4 +246,40 @@ public partial class RbaRateWorkbookParserTests
         Assert.AreEqual(template.Dates[1], row.Date);
         Assert.AreEqual(0.6735m, row.Values[0]);
     }
+
+    /// <summary>
+    /// Verifies that a dated row whose date serial is finite but outside the range of OLE Automation dates, so names no
+    /// date, is skipped as a non-finite one is, and the row between them is read, rather than failing with
+    /// <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenDateSerialIsOutsideDateRange_ShouldSkipRow()
+    {
+        RbaTestSheet template = CreateSheet();
+        RbaTestSheet sheet = template with { DateSerials = [1e10, RbaTestSheet.ToSerial(template.Dates[1]), -1e7] };
+
+        RbaRateTable table = Parse(sheet);
+
+        RbaRateRow row = table.Rows.Single();
+        Assert.AreEqual(template.Dates[1], row.Date);
+        Assert.AreEqual(0.6735m, row.Values[0]);
+    }
+
+    /// <summary>
+    /// Verifies that a data sheet none of whose first-column serials names a date, here NaN, a serial past the range of
+    /// OLE Automation dates and negative infinity, is rejected with <see cref="ExchangeRateFormatException" /> naming the
+    /// missing data rows, as a sheet with no dated row is.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenNoDateSerialNamesDate_ShouldThrowExchangeRateFormatException()
+    {
+        RbaTestSheet sheet = CreateSheet() with { DateSerials = [double.NaN, 1e10, double.NegativeInfinity] };
+
+        var ex = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = Parse(sheet);
+        });
+
+        Assert.AreEqual(RbaResourceStrings.Format_Invalid_RbaNoDataRows, ex.Message);
+    }
 }
