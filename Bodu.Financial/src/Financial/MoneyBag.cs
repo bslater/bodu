@@ -209,6 +209,10 @@ public sealed partial class MoneyBag
     /// <typeparam name="TCurrency">The currency type.</typeparam>
     /// <param name="amount">The amount to add.</param>
     /// <returns>The updated bag.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
+    /// <see cref="CurrencyCode" /> catalogue.
+    /// </exception>
     public MoneyBag Add<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
         Add(amount.ToMoney());
@@ -230,6 +234,10 @@ public sealed partial class MoneyBag
     /// <typeparam name="TCurrency">The currency type.</typeparam>
     /// <param name="amount">The amount to subtract.</param>
     /// <returns>The updated bag.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
+    /// <see cref="CurrencyCode" /> catalogue.
+    /// </exception>
     public MoneyBag Subtract<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
         Subtract(amount.ToMoney());

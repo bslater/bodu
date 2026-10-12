@@ -141,7 +141,7 @@ Deserialization on `Money<TCurrency>` rejects payloads whose `currency` field do
 | Splitting an amount fairly across N shares without remainder loss | `Money<T>.Allocate(parts)` / `Allocate(ratios)` |
 | Cash rounding for currencies with coarse coin denominations (CHF, AUD, NZD, …) | `Money<T>.RoundToCash()` and `ICurrency.CashRoundingIncrement` |
 | ISO 4217 currency lookup at runtime | <xref:Bodu.Financial.Currencies.CurrencyRegistry> |
-| A generic amount in a unit outside the shipped catalogue | your own `ICurrency` tag + `Money<TCurrency>` (generic only; cannot bridge to runtime `Money`) |
+| A generic amount in a unit outside the shipped catalogue | your own `ICurrency` tag + `Money<TCurrency>` (generic only; converting to runtime `Money` compiles but throws `InvalidOperationException`) |
 | Dated FX lookup with audit-grade provenance metadata | <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider> + <xref:Bodu.Financial.ExchangeRates.RateLookupResult> |
 | Prioritised fallback (or averaging) across multiple FX sources | [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider) (in `Bodu.Financial.ExchangeRates.Caching`) |
 | Build a rate series imperatively, or edit an existing one and snapshot the result | <xref:Bodu.Financial.ExchangeRates.RateSeriesBuilder>, `RateSeries.ToBuilder()` / `WithRate(...)` / `WithoutRate(...)` |

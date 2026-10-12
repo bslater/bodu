@@ -100,7 +100,7 @@ public sealed class XPT : ICurrency      // troy ounces of platinum, say
 Money<XPT> holding = new Money<XPT>(12.3456m);   // generic arithmetic only
 ```
 
-Because `XPT` is not a `CurrencyCode` member, the value cannot bridge to the runtime-tagged `Money`. To substitute or restrict the metadata used for the *shipped* currencies - for a test, or an alternate data source - install a custom `ICurrencyLookup` through <xref:Bodu.Financial.Currencies.CurrencyResolution>.
+Because `XPT` is not a `CurrencyCode` member, the value has no runtime-tagged `Money`: `ToMoney()`, `ToCalculated()`, and the implicit conversion to `Money` compile for it but throw `InvalidOperationException` at run time. To substitute or restrict the metadata used for the *shipped* currencies - for a test, or an alternate data source - install a custom `ICurrencyLookup` through <xref:Bodu.Financial.Currencies.CurrencyResolution>.
 
 ## Notes
 

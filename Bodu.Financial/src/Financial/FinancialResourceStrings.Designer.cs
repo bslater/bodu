@@ -452,6 +452,15 @@ namespace Bodu.Financial {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The currency tag {0} (ISO code &apos;{1}&apos;) is not in the shipped currency catalogue, so it has no runtime Money or CalculatedMoney representation..
+        /// </summary>
+        internal static string Op_Invalid_CurrencyTagOutsideCatalogue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CurrencyTagOutsideCatalogue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot convert {0} using exchange rate {1}-&gt;{2}: the rate&apos;s source currency does not match..
         /// </summary>
         internal static string Op_Invalid_ConversionRateDirectionMismatch {

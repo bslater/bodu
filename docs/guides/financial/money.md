@@ -53,7 +53,8 @@ implementing `ICurrency` - its `IsoCode` must be three uppercase ASCII
 letters - to mint a `Money<TCurrency>` for a unit outside the shipped
 set. Such a tag stays in the generic world; bridging it to the
 runtime-tagged `Money` requires a code the shipped `CurrencyCode`
-catalogue defines (see [Runtime-tagged amounts](#runtime-tagged-amounts-money)).
+catalogue defines - for any other code the conversion compiles but throws
+at run time (see [Runtime-tagged amounts](#runtime-tagged-amounts-money)).
 
 ## Creating amounts
 
@@ -929,7 +930,9 @@ Money<XPT> holding = new Money<XPT>(12.3456m);   // generic arithmetic only
 
 A custom tag's `IsoCode` must be three uppercase ASCII letters, and the
 value stays in the generic world: because `XPT` is not a `CurrencyCode`
-member, it cannot bridge to the runtime-tagged `Money`. To substitute or
+member, it has no runtime-tagged `Money`. `ToMoney()`, `ToCalculated()`,
+the implicit conversion to `Money`, and `MoneyBag.Add` compile for it but
+throw `InvalidOperationException` at run time. To substitute or
 restrict the metadata used for the *shipped* currencies - for a test, or
 an alternate data source - install a custom `ICurrencyLookup` through
 `CurrencyResolution` (next section).
