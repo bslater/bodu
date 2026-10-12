@@ -13,11 +13,13 @@ namespace Bodu.Text.Ini;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The generated factory maps the type's public read/write instance properties in declaration order, honouring
-/// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> for key names and skipping members annotated with
-/// <see cref="Bodu.Text.Serialization.IgnoreAttribute" />. Scalar values convert with the invariant culture. When
-/// writing, the factory leaves out the keys the reflection binder of <see cref="IniSerializer" /> leaves out under each
-/// member's own <see cref="Bodu.Text.Serialization.IgnoreAttribute.Condition" />, and under
+/// The generated factory maps the public read/write instance properties declared on the type, in declaration order,
+/// honouring <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> for key names and skipping members annotated
+/// <see cref="Bodu.Text.Serialization.IgnoreAttribute" /> with
+/// <see cref="Bodu.Text.Serialization.IgnoreCondition.Always" />, the default condition. Scalar values convert with the
+/// invariant culture. When writing, the factory leaves out the keys the reflection binder of
+/// <see cref="IniSerializer" /> leaves out under each member's own
+/// <see cref="Bodu.Text.Serialization.IgnoreAttribute.Condition" />, and under
 /// <see cref="Bodu.Text.Serialization.IgnoreCondition.WhenWritingNull" />, the default, for a member without one; the
 /// factory never sees <see cref="IniSerializerOptions" />, so another
 /// <see cref="IniSerializerOptions.DefaultIgnoreCondition" /> does not apply to it.
