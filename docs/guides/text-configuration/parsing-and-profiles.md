@@ -46,7 +46,7 @@ ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen:
 ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 ```
 
-`Load(string)` reads UTF-8 by default - pass an `Encoding` explicitly when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime; like `Parse`, it ignores one U+FEFF that opens the reader's text.
+`Load(string)` reads UTF-8 by default - set `DefaultEncoding` on the parse options when the file is not UTF-8. `Load(Stream)` does not dispose the stream when `leaveOpen: true`. `Load(TextReader)` is for callers that already control the reader's lifetime; like `Parse`, it ignores one U+FEFF that opens the reader's text.
 
 ## Pattern 3 - non-throwing parse
 
@@ -90,14 +90,15 @@ using Bodu.Text.Configuration;
 
 ConfigurationDocument.Save(document, "out.ini");
 ConfigurationDocument.Save(document, stream, leaveOpen: false);
-ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptions);
+using (var writer = new StreamWriter(path))
+    ConfigurationDocument.Save(document, writer, writeOptions);
 ```
 
-`Save` writes the document through the library's own INI writer with configurable `ConfigurationWriteOptions`. Comment trivia is preserved when the input parse retained it (`PreserveComments: true`, the default).
+`Save` writes the document through the library's own INI writer with configurable `ConfigurationWriteOptions`. The `TextWriter` overload neither flushes nor disposes the writer, so dispose it (as above) to commit the text. Comment trivia is preserved when the input parse retained it (`PreserveComments: true`, the default).
 
 ## The four profiles
 
-`ConfigurationProfile` is the headline behaviour switch. Each profile is a curated set of parse *and* resolve defaults. Materialise a clean starting point for a profile with the `For(profile)` factory that each option type exposes - `ConfigurationParseOptions.For(profile)`, `ConfigurationResolveOptions.For(profile)`, `ConfigurationWriteOptions.For(profile)` - then override individual fields for fine-grained tuning.
+`ConfigurationProfile` is the headline behaviour switch. Each profile is a curated set of parse *and* resolve defaults. Materialise a profile's option set with the `For(profile)` factory that each option type exposes - `ConfigurationParseOptions.For(profile)`, `ConfigurationResolveOptions.For(profile)`, `ConfigurationWriteOptions.For(profile)` - or the matching static preset. The properties are `init`-only, so a variation is a new instance that sets the profile's values from the table below and the fields that differ.
 
 | Profile | When to use |
 |---|---|
@@ -127,7 +128,7 @@ Construct a custom option set when none of the four profiles fits. `Configuratio
 
 ### Profile and presets
 
-- `Profile` (`ConfigurationProfile`, default `Bodu`) - selects the cohort of defaults above. Setting individual fields below overrides the profile's choice.
+- `Profile` (`ConfigurationProfile`, default `Bodu`) - labels the option set with the profile it was created from. It is informational: the parser does not read it, and setting it in an object initialiser changes no other field, so `new ConfigurationParseOptions { Profile = ConfigurationProfile.Strict }` parses with the field defaults below, not the Strict column above. Use `For(profile)` or a preset to select a profile.
 
 ### Comment handling
 
@@ -153,7 +154,9 @@ Construct a custom option set when none of the four profiles fits. `Configuratio
 - `DiagnosticMode` (`ConfigurationDiagnosticMode`, default per profile) -
   - `Throw` - first recoverable error raises `ConfigurationParseException` with a single diagnostic.
   - `Collect` - parser continues past recoverable errors; diagnostics accumulate on the `ConfigurationParseResult`.
-  - `Ignore` - diagnostics dropped silently. Non-recoverable errors still throw.
+  - `Ignore` - diagnostics dropped silently.
+
+  Under `Collect` and `Ignore` parsing never throws `ConfigurationParseException`; an I/O error from the source propagates unchanged.
 
 ### Trimming and limits
 
@@ -211,7 +214,7 @@ To go from the parsed `ConfigurationDocument` to a resolved typed view - includi
 
 ## Exceptions
 
-- **`ConfigurationParseException`** (derives from `FormatException`) - raised when `DiagnosticMode = Throw` hits the first recoverable error, or any time a non-recoverable error occurs. The primary diagnostic is exposed on `Diagnostic`, every diagnostic gathered before the failure on the `Diagnostics` array, and `Location` forwards to the primary diagnostic's source location (or `ConfigurationSourceLocation.None`).
+- **`ConfigurationParseException`** (derives from `FormatException`) - raised when `DiagnosticMode = Throw` hits the first error; never raised by a parse under `Collect` or `Ignore`. The diagnostic that stopped the parse is exposed on `Diagnostic` and as the single entry of the `Diagnostics` array, and `Location` forwards to its source location (or `ConfigurationSourceLocation.None`). Resolving a document raises it as well when a section name is not a valid glob (see [Views and resolution](views-and-resolution.md)).
 - **`ArgumentException`** / **`ArgumentNullException`** - input string null or stream not readable. Standard BCL contract.
 
 ## Switching profiles at runtime
@@ -280,13 +283,13 @@ ConfigurationDocument document = lenient.Document;
 
 **Trade-offs.** Re-parsing pays the parse cost twice and discards the first
 document, so reserve it for a deliberate validation step rather than the hot
-path. Switching profiles also switches *resolve* defaults bundled with each
-profile (duplicate handling, section-header strictness), so a value that resolved
-one way under `Bodu` can resolve differently under `EditorConfigCompatible` -
-choose the profile once per source and keep the consuming code reading the same
-`ConfigurationDocument` surface regardless. For fine-grained control without
-swapping the whole cohort, override individual fields on a single options record
-instead (see the field-by-field section above).
+path. Switching the parse profile changes duplicate handling and section-header
+strictness, so a value that resolved one way under `Bodu` can resolve differently
+under `EditorConfigCompatible`; the resolve options are a separate object, so
+choose the matching resolve preset as well. Choose the profile once per source
+and keep the consuming code reading the same `ConfigurationDocument` surface
+regardless. For fine-grained control without swapping the whole cohort, build one
+options instance with the fields you need (see the field-by-field section above).
 
 ## When *not* to use `ConfigurationDocument`
 

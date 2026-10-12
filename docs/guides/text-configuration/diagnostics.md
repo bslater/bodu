@@ -16,7 +16,9 @@ For the parse-time options that control diagnostic *behaviour* - `DiagnosticMode
 |---|---|
 | `Throw` *(default)* | The first recoverable error raises `ConfigurationParseException` carrying a single `ConfigurationDiagnostic`. Parsing stops. |
 | `Collect` | The parser continues past recoverable errors. Diagnostics accumulate on the `ConfigurationParseResult.Diagnostics` list. |
-| `Ignore` | Recoverable diagnostics are dropped silently. Non-recoverable errors still throw. |
+| `Ignore` | Diagnostics are dropped silently. |
+
+Under `Collect` and `Ignore` the parser never throws `ConfigurationParseException`; an I/O error from the source propagates unchanged.
 
 The `Bodu`, `EditorConfigCompatible`, and `Strict` profiles use `Throw`. The `Relaxed` profile uses `Collect` - handy for IDE-style validation where you want to surface every issue at once.
 
@@ -93,15 +95,15 @@ Stable codes - the values do not change across versions, so consumers can build 
 
 ### Glob-pattern compilation
 
-These fire when a section header is compiled as a `ConfigurationPattern`:
+These fire when a section name is compiled as a `ConfigurationPattern`, which happens when the document is resolved, not when it is parsed. They are therefore never collected by `ParseWithDiagnostics`, and `DiagnosticMode` does not affect them: `Resolve` with a target path, and `ConfigurationPattern.Compile`, throw `ConfigurationParseException` carrying the diagnostic.
 
 | Code | Trigger |
 |---|---|
 | `UnbalancedBrace` *(6)* | A `{` in a section glob had no matching `}`. |
 | `UnbalancedBracket` *(7)* | A `[` in a section glob had no matching `]`. |
-| `NumericRangeTooLarge` *(13)* | A `{n1..n2}` range expanded to more than the parser's expansion cap. |
-| `BraceNestingTooDeep` *(15)* | Brace nesting exceeded the parser's nesting cap. |
-| `PatternTooLong` *(16)* | The compiled glob pattern exceeded the max compilable length. |
+| `NumericRangeTooLarge` *(13)* | A `{n1..n2}` range would expand to more than 10,000 values. |
+| `BraceNestingTooDeep` *(15)* | Braces nested more than 32 deep. |
+| `PatternTooLong` *(16)* | The glob held more than 4096 characters. |
 
 ### Reserved code
 
@@ -114,9 +116,9 @@ character after it from being read as `=`, `#` or `;`, and stays in the text, so
 
 ## Diagnostics vs exceptions
 
-The parser raises three kinds of exception:
+Parsing and resolving raise three kinds of exception:
 
-1. **`ConfigurationParseException`** (a `FormatException`) - raised when `DiagnosticMode = Throw` hits the first recoverable error, or for any non-recoverable error. Exposes the primary `Diagnostic` and the full `Diagnostics` array of everything gathered before the failure; `Location` forwards to the primary diagnostic.
+1. **`ConfigurationParseException`** (a `FormatException`) - raised by a parse when `DiagnosticMode = Throw` hits the first error, and by `Resolve` when a section name is not a valid glob. Exposes the diagnostic that caused it as `Diagnostic` and as the single entry of the `Diagnostics` array; `Location` forwards to it.
 2. **`ArgumentException` / `ArgumentNullException`** - for invalid inputs (null source, unreadable stream). Standard BCL contract.
 3. **`InvalidOperationException`** - raised by `Resolve` when the options require a path root (`MissingPathRootMode.Throw`) but set no `PathRoot`, the document was not loaded from a file, and no target path is supplied.
 

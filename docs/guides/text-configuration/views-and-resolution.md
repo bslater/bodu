@@ -143,7 +143,7 @@ Every field of `ConfigurationResolveOptions`:
 
 | Field | Default | Effect |
 |---|---|---|
-| `Profile` | `Bodu` | Selects the cohort of resolve defaults. |
+| `Profile` | `Bodu` | Labels the option set with the profile it was created from. Informational: the resolver does not read it, so use `For(profile)` or a preset to select a profile's defaults. |
 | `PathRoot` | `null` | Optional root that a target path is rebased against before globs are matched; an explicit value always wins. `null` defers to the directory of the file a document was loaded from with `Load(path)`, and a target is matched as given when there is neither. |
 | `MissingPathRootMode` | `UseEmptyRoot` | Behaviour for a **path-less** resolve when no root is available - `UseEmptyRoot` returns a preamble-only view; `Throw` raises `InvalidOperationException`. No effect once a target path is supplied. |
 | `ApplyPreambleProperties` | `true` (Bodu/Strict/Relaxed) / `false` (EditorConfig) | Whether the global section contributes to the view. Its `root` pair never does: it marks the file as the root of its directory tree and stays in the document. |
@@ -188,7 +188,7 @@ The behaviour is governed by `ConfigurationKeyOptions`:
 | Field | Default | Effect |
 |---|---|---|
 | `SegmentSeparators` | `{ '.', ':' }` | Characters recognised as path separators. `Identity` does not split a key, so it ignores them. |
-| `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (assume already colon-delimited), or `Identity` (no transformation: the key is not split, so it keeps its dots and colons). |
+| `Mapping` | `DotToColon` | Raw-to-canonical mapping - `DotToColon`, `Colon` (intended for keys already colon-delimited, but it currently splits on every separator and maps exactly as `DotToColon` does), or `Identity` (no transformation: the key is not split, so it keeps its dots and colons). |
 | `CaseSensitive` | `false` | Case-sensitive comparison (the default `false` matches `Microsoft.Extensions.Configuration`). |
 | `LowercaseKeys` | `false` | Lowercase the segments and the path with the invariant culture, as EditorConfig lowercases keys; the raw key keeps its case. The `EditorConfigCompatible` presets set it. |
 | `AllowEmptySegments` | `false` | Permit empty segments like `a..b`; a segment of whitespace alone, as in `a. .b`, counts as empty. `Identity` does not split a key, so it keeps `a..b` as written either way. |
@@ -222,6 +222,8 @@ The glob grammar:
 | `\` | Escape the next character. |
 
 Patterns without `/` match at any depth. Patterns with `/` anchor to the start of the path. The grammar follows the EditorConfig 0.17.2 specification and is held to EditorConfig's core-tests for a bracket expression that holds a `/` (`brackets_slash_inside1` to `brackets_slash_inside3`), a brace group without a comma (`braces_single_choice`, `braces_empty_choice`, `braces_alpha_range1` to `braces_alpha_range6`) and a leading `/` (`leading_slash_relevance`). It departs from the EditorConfig cores in two documented ways: a `[` or `{` with no partner is rejected with `UnbalancedBracket` or `UnbalancedBrace` (see [Diagnostics](diagnostics.md)) where the cores read it as literal text, and a glob longer than 4096 characters is rejected with `PatternTooLong`. A bounded process-wide pattern cache means the same pattern compiled twice does not recompile.
+
+A section name is compiled when the document is resolved, not when it is parsed, so an invalid glob - an unbalanced bracket or brace, braces nested more than 32 deep, a numeric range of more than 10,000 values, or more than 4096 characters - throws `ConfigurationParseException` from `Resolve` (and from `Build()` through the `IConfiguration` bridge), whatever the parse's `DiagnosticMode`. A resolve with no target path compiles no section name.
 
 `Compile(pattern, StringComparison)` accepts an explicit comparison; the default `Ordinal` matches the EditorConfig requirement that paths be case-sensitive on case-sensitive file systems.
 

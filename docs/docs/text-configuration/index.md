@@ -42,7 +42,7 @@ The package contains five concept groups, all in the `Bodu.Text.Configuration` n
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Configuration.ConfigurationDocument> | First-class document type returned by `Parse`, `ParseWithDiagnostics`, `Load`; also hosts `Save` over strings, streams, paths, and text readers. Inherits the read-only <xref:Bodu.Text.Configuration.IniDocumentBase> model. |
+| <xref:Bodu.Text.Configuration.ConfigurationDocument> | First-class document type returned by `Parse`, `ParseWithDiagnostics`, `Load`; also hosts `Save` to a path, a stream, or a text writer. Inherits the <xref:Bodu.Text.Configuration.IniDocumentBase> model, whose section list it keeps fixed. |
 | <xref:Bodu.Text.Configuration.ConfigurationView> | Resolved, flattened snapshot for one target path; implements `IEnumerable<KeyValuePair<string, string?>>`. |
 | <xref:Bodu.Text.Configuration.ConfigurationExtensions> | Extension methods on `IniDocumentBase` and `IniEntry` - including the `Resolve(targetPath)` projection and `ConfigurationPath`. |
 | <xref:Bodu.Text.Configuration.ConfigurationResolvedEntry> | Per-key provenance in a resolved view: winning `SectionPattern`, `SourceLocation`, canonical `Key` and `Value`. |
@@ -150,7 +150,7 @@ The grammar follows **EditorConfig**, with the glob differences documented in
 extensions:
 
 1. **Inline comments** are recognised when introduced by whitespace (`key = value  # comment`) under the default `Bodu`
-   profile. Set the profile to `EditorConfigCompatible` to disable them.
+   profile. Parse with `ConfigurationParseOptions.EditorConfigCompatible` (or `For(ConfigurationProfile.EditorConfigCompatible)`) to disable them; setting `Profile` alone changes nothing.
 2. **Key mapping** projects dotted keys (`logging.level.default`) to colon-delimited configuration keys
    (`logging:level:default`) for direct interoperability with `Microsoft.Extensions.Configuration`. Both forms work as
    lookup inputs on the view; the canonical stored form is the colon-delimited one. The `EditorConfigCompatible`
