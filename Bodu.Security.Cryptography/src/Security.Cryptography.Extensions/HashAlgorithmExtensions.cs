@@ -38,7 +38,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <description>
 /// <c>VerifyHash</c> / <c>VerifyHashAsync</c> - hash an input (byte array, span, memory, stream, or
 /// <see cref="string" /> with a chosen <see cref="System.Text.Encoding" />) and compare the digest against an expected
-/// value given as bytes or as a hexadecimal string. Throws on a malformed input or hex.
+/// value given as bytes or as a hexadecimal string. Returns <see langword="false" /> when the digests differ or the hex
+/// is malformed, and throws only for <see langword="null" /> arguments.
 /// </description>
 /// </item>
 /// <item>

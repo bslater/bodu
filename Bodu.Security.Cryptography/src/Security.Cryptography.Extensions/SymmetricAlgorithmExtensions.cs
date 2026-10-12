@@ -76,7 +76,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// // 2. Stream-encrypt a large file with the default 80 KiB buffer.
 /// using FileStream src = File.OpenRead("plain.bin");
 /// using FileStream dst = File.Create("cipher.bin");
-/// int bytesWritten = aes.Encrypt(src, dst);
+/// int plaintextBytesRead = aes.Encrypt(src, dst);
 ///
 /// // 3. Validate caller-supplied key material without catching CryptographicException.
 /// if (!aes.TryCreateDecryptor(suppliedKey, suppliedIv, out ICryptoTransform? decryptor))
