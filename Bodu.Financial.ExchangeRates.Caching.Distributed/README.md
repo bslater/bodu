@@ -87,3 +87,7 @@ services.AddFinancialService()
 services.AddFinancialService()
         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
 ```
+
+Call `AddDistributedRateCache` once per provider to register several caches over one store: each is keyed by its
+provider name and writes under keys that carry that name, and the first registration also backs the unkeyed
+`IRateCache` resolution.

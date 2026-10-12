@@ -224,12 +224,13 @@ builder.Services
 | `ThrowOnStorageFailure` / `ValidateStorageOnStart` | `false` | As for SQLite. |
 | `Provider` | set by the registration | As for SQLite. |
 
-> [!IMPORTANT]
-> `AddDistributedRateCache` registers a **single** `DistributedRateCache` instance per host:
-> the first call creates it (bound to that call's provider name), and later calls for other
-> names only add keyed aliases to the same instance. Register it for one cached provider, or use
-> it as the shared L1 tier of a [stack](exchange-rate-caching.md#stacking-providers-tiered-read-through);
-> give each source its own SQLite or file cache when you need one cache per provider.
+> [!NOTE]
+> `AddDistributedRateCache` registers one `DistributedRateCache` per provider name, keyed by that
+> name, so several providers can share one `IDistributedCache`: each cache writes under keys that
+> carry its own provider name. The first registration also backs the unkeyed `IRateCache`
+> resolution, so resolve each provider's cache by its key, for example with
+> `cacheFactory: (sp, name) => sp.GetRequiredKeyedService<IRateCache>(name)`. A distributed cache
+> can also serve as the shared L1 tier of a [stack](exchange-rate-caching.md#stacking-providers-tiered-read-through).
 
 ## Pattern 4 - warming the cache at startup
 

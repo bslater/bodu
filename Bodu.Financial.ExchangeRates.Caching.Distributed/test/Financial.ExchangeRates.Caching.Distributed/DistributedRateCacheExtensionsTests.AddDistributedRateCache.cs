@@ -73,6 +73,26 @@ public sealed partial class DistributedRateCacheExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that, with caches registered for two providers, the default <see cref="IRateCache" /> resolution is the
+    /// first-registered provider's cache.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedRateCache_WhenTwoProvidersRegistered_ShouldResolveFirstAsDefault()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddFinancialService()
+                .AddDistributedRateCache("RBA")
+                .AddDistributedRateCache("ECB");
+        });
+
+        IRateCache byDefault = provider.GetRequiredService<IRateCache>();
+
+        Assert.AreSame(provider.GetRequiredKeyedService<IRateCache>("RBA"), byDefault);
+    }
+
+    /// <summary>
     /// Verifies that the resolved cache persists and serves rates through the registered <see cref="IDistributedCache" />.
     /// </summary>
     [TestMethod]
