@@ -208,7 +208,9 @@ public partial class YamlSerializerTests
 
     /// <summary>
     /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
-    /// <see cref="YamlSerializationException" /> when it reads a YAML integer scalar for the enumeration.
+    /// <see cref="YamlSerializationException" /> at a YAML integer scalar, with its line, column, offset and path, and a
+    /// message saying that integer values are not allowed, rather than one calling the integer an undefined value, which
+    /// 2, the value of a defined member, is not.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenStringEnumConverterDisallowsIntegers_ShouldThrowYamlSerializationException()
@@ -216,10 +218,18 @@ public partial class YamlSerializerTests
         var options = new YamlSerializerOptions();
         options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
 
-        Assert.ThrowsExactly<YamlSerializationException>(() =>
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
         {
             _ = YamlSerializer.Deserialize<StatusModel>("Status: 2\n", options);
         });
+
+        // The integer begins after "Status: ", at the zero-based offset 8 and the one-based column 9.
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(9, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(8, ex.Offset, "Offset");
+        Assert.AreEqual("Status", ex.Path, "Path");
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsFalse(ex.Message.Contains("is not a defined value", StringComparison.Ordinal), ex.Message);
     }
 
     /// <summary>
