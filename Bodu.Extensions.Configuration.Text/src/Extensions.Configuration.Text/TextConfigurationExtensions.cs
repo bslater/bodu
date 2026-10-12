@@ -79,14 +79,12 @@ namespace Bodu.Extensions.Configuration.Text;
 ///     source.Optional       = false;
 ///     source.ReloadOnChange = true;
 ///     source.ParseOptions   = ConfigurationParseOptions.Strict;
-///     source.ResolveOptions = new ConfigurationResolveOptions
-///     {
-///         Profile = ConfigurationProfile.Bodu,
-///     };
+///     source.ResolveOptions = ConfigurationResolveOptions.Bodu;
 /// });
 ///
-/// // 4. In-memory stream - handy in unit tests.
-/// using var ms = new MemoryStream(Encoding.UTF8.GetBytes("[*]\nLogging:Level=Debug\n"));
+/// // 4. In-memory stream - handy in unit tests. With no target path only the preamble applies, so the key sits
+/// //    before any section.
+/// using var ms = new MemoryStream(Encoding.UTF8.GetBytes("Logging:Level=Debug\n"));
 /// builder.Configuration.AddTextConfigurationStream(ms);
 ///
 /// // 5. Pre-parsed document - share one parse across multiple builders.

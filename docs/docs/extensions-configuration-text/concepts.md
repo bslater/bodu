@@ -61,7 +61,8 @@ logging.level.default = Warning
 ```
 
 the `[src/**]` pattern matches `src/MyApp/Program.cs`, so the resolved view picks up that section's properties on top
-of any earlier matches. When `TargetPath` is `null`, only unanchored patterns and preamble values contribute.
+of any earlier matches. When `TargetPath` is `null`, no section applies, unanchored or not, and only the preamble
+contributes (when `ApplyPreambleProperties` is set).
 
 `TargetPath` is **per source** - different sources in the same builder can have different anchors. If your application
 needs configuration evaluated for several paths in parallel, add several sources with the same `Path` but different
@@ -128,8 +129,8 @@ Reload is **not** atomic with respect to multiple providers - if your builder ha
 at once, the providers reload independently, in the order their watchers fire. This matches the MEC contract and is
 not specific to Bodu.
 
-The stream source does not support reload. The stream is parsed once when `Build` is called; the stream's lifetime
-ends with that parse. If you need dynamic stream-backed inputs, rebuild the configuration.
+The stream source does not support reload. The stream is read once when the configuration is built and is not
+disposed; the caller owns it. If you need dynamic stream-backed inputs, rebuild the configuration.
 
 ## File provider precedence
 
@@ -137,8 +138,9 @@ ends with that parse. If you need dynamic stream-backed inputs, rebuild the conf
 
 1. If a provider is supplied directly to the overload, use it.
 2. Otherwise, if the source's `FileProvider` is set, use that.
-3. Otherwise, defer to the builder's default file provider - typically a `PhysicalFileProvider` rooted at
-   `Directory.GetCurrentDirectory()`.
+3. Otherwise, defer to the builder's file provider - the one `SetFileProvider` or `SetBasePath` sets, or by default a
+   `PhysicalFileProvider` rooted at the application's base directory (`AppContext.BaseDirectory`), not the current
+   directory.
 
 Tests typically supply a `PhysicalFileProvider` rooted at a temp directory; production code typically relies on the
 builder default.

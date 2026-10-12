@@ -56,8 +56,9 @@ public sealed class TextConfigurationSource
     : FileConfigurationSource
 {
     /// <summary>
-    /// Gets or sets the path used to evaluate glob-anchored sections during resolution. Defaults to
-    /// <see langword="null" />, in which case only non-anchored matches and preamble values apply.
+    /// Gets or sets the path that each section's glob is matched against during resolution. Defaults to
+    /// <see langword="null" />, in which case no section applies and only the preamble contributes (when
+    /// <see cref="ConfigurationResolveOptions.ApplyPreambleProperties" /> is set).
     /// </summary>
     /// <value>The target path supplied to the resolver.</value>
     public string? TargetPath { get; set; }

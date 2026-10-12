@@ -167,7 +167,10 @@ public sealed class BencodeConfigurationProvider
     /// </summary>
     /// <param name="earlierKeys">Keys contributed by earlier providers.</param>
     /// <param name="parentPath">The parent key path, or <see langword="null" /> for the root.</param>
-    /// <returns>The distinct child key segments in configuration order.</returns>
+    /// <returns>
+    /// The child key segments of this provider and <paramref name="earlierKeys" />, sorted with
+    /// <see cref="ConfigurationKeyComparer" />; duplicates are not removed.
+    /// </returns>
     public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string? parentPath)
     {
         string prefix = parentPath is null ? string.Empty : parentPath + ConfigurationPath.KeyDelimiter;
