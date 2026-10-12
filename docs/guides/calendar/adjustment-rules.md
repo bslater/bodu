@@ -106,7 +106,7 @@ A rule's `<Adjustments>` element may list several `<Adjustment policyRef="…" /
 | `IfLeapYear` | The resolution year is a leap year. | *(none)* |
 | `IfBeforeFixedDate` | The nominal date falls before the `month`/`day` boundary. | `month`, `day` |
 | `IfAfterFixedDate` | The nominal date falls after the `month`/`day` boundary. | `month`, `day` |
-| `IfNthOccurrenceInMonth` | The nominal date is the `weekOrdinal`-th occurrence of its weekday in the month. | `weekOrdinal` |
+| `IfNthOccurrenceInMonth` | The nominal date is the `weekOrdinal`-th occurrence in its month of the weekday named by the trigger's first `<Weekday>` child. | `weekOrdinal` plus one `<Weekday value="…" />` child |
 | `Custom` | A registered <xref:Bodu.Globalization.Calendar.IAdjustmentTriggerHandler> returns `true`. | `handlerKey` |
 
 The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWorkingDay`) interpret "weekend" against the working week carried by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> (default Monday-Friday). For a `SundayToThursday` working week - common in some Middle-Eastern territories - Friday and Saturday are the weekend.
@@ -122,7 +122,7 @@ The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWo
 </AdjustmentPolicy>
 ```
 
-> **`IfNonWorkingDay` is order-sensitive.** It is evaluated against the non-working dates already settled for the same year and territory, so an anchor rule (e.g. Christmas Day) must out-prioritise a dependent rule (e.g. Boxing Day) for the dependent's `IfNonWorkingDay` trigger to see the anchor's observed date. See the [worked Boxing Day trace](#worked-pattern---christmas-and-boxing-day-substitution).
+> **What `IfNonWorkingDay` sees.** The trigger is evaluated against *actual* dates: it fires on a weekend or on another non-working holiday's actual (nominal) date, whatever order the rules are declared or prioritised in, and it never sees another holiday's observed substitute. Substitutes matter only to a working-day action with `skipNonWorkingDates="true"`, which steps over the days claimed by observed occurrences placed before it. Placement runs in order of actual date, earliest first, then by the higher rule `priority`. See the [worked Boxing Day trace](#worked-pattern---christmas-and-boxing-day-substitution).
 
 ---
 
@@ -134,17 +134,17 @@ The weekend-related triggers (`IfWeekend`, `IfWeekday`, `IfNonWorkingDay`, `IfWo
 |---|---|---|
 | `None` | Record that the trigger fired but leave the date unchanged. | *(none)* |
 | `AddDays` | Shift by a signed number of calendar days (may land on a weekend or holiday). | `days` |
-| `MoveToNextWeekday` | Advance to the next working-week day (ignores other non-working occurrences). | *(none)* |
-| `MoveToPreviousWeekday` | Retreat to the previous working-week day. | *(none)* |
-| `MoveToNextWorkingDay` | Advance past every consecutive non-working day to the next working day. | `maxSearchDays`, `skipWeekends`, `skipNonWorkingDates` |
-| `MoveToPreviousWorkingDay` | Retreat past every consecutive non-working day to the previous working day. | `maxSearchDays`, `skipWeekends`, `skipNonWorkingDates` |
+| `MoveToNextWeekday` | Move to the configured `dayOfWeek` on or after the nominal date (a nominal date already on that weekday is unchanged). Without `dayOfWeek` the date is unchanged. | `dayOfWeek` (required) |
+| `MoveToPreviousWeekday` | Move to the configured `dayOfWeek` on or before the nominal date. Without `dayOfWeek` the date is unchanged. | `dayOfWeek` (required) |
+| `MoveToNextWorkingDay` | Starting the day after the nominal date, advance past every day the skip flags block to the next unblocked day. | `maxSearchDays`, `skipWeekends`, `skipNonWorkingDates` |
+| `MoveToPreviousWorkingDay` | Starting the day before the nominal date, retreat past every day the skip flags block to the previous unblocked day. | `maxSearchDays`, `skipWeekends`, `skipNonWorkingDates` |
 | `ReplaceWithRule` | Replace the date with another rule's resolved occurrence for the year. | `notableDateRef`, `ruleRef` |
 | `Suppress` | Drop the occurrence entirely. | *(none)* |
 | `Custom` | Delegate the move to a registered <xref:Bodu.Globalization.Calendar.IAdjustmentHandler>. | `handlerKey` |
 
-`MoveToNextWeekday` / `MoveToPreviousWeekday` care only about the working week (weekends). `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` additionally skip other non-working occurrences - the right choice when a substitute must not land on another holiday - and accept `maxSearchDays` to cap how far they scan.
+`MoveToNextWeekday` / `MoveToPreviousWeekday` seek a named weekday and ignore both the working week and other holidays; the validator does not report a missing `dayOfWeek`, so always set it. `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` skip weekends and, when asked, other non-working occurrences - the right choice when a substitute must not land on another holiday - and accept `maxSearchDays` to cap how far they scan.
 
-The companion attributes have defaults when omitted: `skipWeekends` defaults to `true`, `skipNonWorkingDates` to `false`, and `days` (for `AddDays`) to `0`. `maxSearchDays` is unbounded when unset. So a bare `<Action type="MoveToNextWorkingDay" />` rolls past weekends but *not* past other holidays - set `skipNonWorkingDates="true"` for the Boxing-Day-style "skip past the Christmas substitute too" behaviour.
+The companion attributes have defaults when omitted: `skipWeekends` defaults to `true`, `skipNonWorkingDates` to `false`, `days` (for `AddDays`) to `0`, and `maxSearchDays` to `7`. When the search reaches `maxSearchDays` without finding an unblocked day, the last day scanned is used. So a bare `<Action type="MoveToNextWorkingDay" />` rolls past weekends but *not* past other holidays - set `skipNonWorkingDates="true"` for the Boxing-Day-style "skip past the Christmas substitute too" behaviour.
 
 ```xml
 <!-- Skip forward past weekends and any other non-working dates, searching at most 7 days. -->
@@ -200,12 +200,12 @@ An `<Scope>` element restricts a policy to particular territories, calendars, ca
     <Category value="PublicHoliday" />
   </Scope>
   <Trigger type="IfWeekend" />
-  <Action type="MoveToNextWeekday" />
+  <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
   <Emission mode="ObservedOnly" />
 </AdjustmentPolicy>
 ```
 
-`<Scope>` children mirror rule applicability: `<Territory code="…" />` (with the usual containment - a scope of `AU` matches `AU-NSW` queries), `<Calendar name="…" />`, `<Category value="…" />`, `<NotableDate ref="…" />`, `<Rule notableDateRef="…" ruleRef="…" />`, and `<OnlyYear value="…" />` / `<ExceptYear value="…" />`, plus the `fromYear` / `toYear` attributes on `<Scope>` itself. A policy is considered only when its scope matches the resolution context; otherwise it is skipped before its trigger is evaluated.
+`<Scope>` children mirror rule applicability: `<Territory code="…" />` (with the usual containment - a scope of `AU` matches `AU-NSW` queries), `<Calendar name="…" />`, `<Category value="…" />`, `<NotableDate ref="…" />`, `<Rule notableDateRef="…" ruleRef="…" />` (that concept's rule only), and `<OnlyYear value="…" />` / `<ExceptYear value="…" />`, plus the `fromYear` / `toYear` attributes on `<Scope>` itself. A policy is considered only when its scope matches the resolution context; otherwise it is skipped before its trigger is evaluated.
 
 ---
 
@@ -218,12 +218,12 @@ A rule references policies by id, and they are evaluated in ascending `priority`
   <!-- US "observed" style: Saturday → preceding Friday, Sunday → following Monday. -->
   <AdjustmentPolicy id="sat-to-fri" priority="10">
     <Trigger type="IfDayOfWeek"><Weekday value="Saturday" /></Trigger>
-    <Action type="MoveToPreviousWeekday" />
+    <Action type="MoveToPreviousWeekday" dayOfWeek="Friday" />
     <Emission mode="ObservedOnly" />
   </AdjustmentPolicy>
   <AdjustmentPolicy id="sun-to-mon" priority="20">
     <Trigger type="IfDayOfWeek"><Weekday value="Sunday" /></Trigger>
-    <Action type="MoveToNextWeekday" />
+    <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
     <Emission mode="ObservedOnly" />
   </AdjustmentPolicy>
 </AdjustmentPolicies>
@@ -239,29 +239,29 @@ A rule references policies by id, and they are evaluated in ascending `priority`
 
 ## Worked pattern - Christmas and Boxing Day substitution
 
-When Christmas Day moves to Monday, Boxing Day (26 December) must skip to Tuesday rather than also landing on Monday. Give Christmas a weekend-roll policy at a *higher* priority (lower number) than Boxing Day's `IfNonWorkingDay` policy so the relocated Christmas is already settled when Boxing Day is evaluated:
+When Christmas Day moves to Monday, Boxing Day (26 December) must skip to Tuesday rather than also landing on Monday. Give Christmas a weekend roll to Monday, and give Boxing Day a working-day search that skips days other holidays have claimed (`skipNonWorkingDates="true"`). Christmas is placed first because its actual date is earlier, so its substitute has claimed Monday by the time Boxing Day searches. (The policies' `priority` values only order the policies one rule references; they do not order the rules.)
 
 ```xml
 <AdjustmentPolicies>
   <AdjustmentPolicy id="weekend-to-next-weekday" priority="10">
     <Trigger type="IfWeekend" />
-    <Action type="MoveToNextWeekday" />
+    <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
     <Emission mode="ObservedOnly" nonWorking="true" />
   </AdjustmentPolicy>
   <AdjustmentPolicy id="skip-nonworking" priority="20">
     <Trigger type="IfNonWorkingDay" />
-    <Action type="MoveToNextWorkingDay" maxSearchDays="7" />
+    <Action type="MoveToNextWorkingDay" skipNonWorkingDates="true" maxSearchDays="7" />
     <Emission mode="ObservedOnly" nonWorking="true" />
   </AdjustmentPolicy>
 </AdjustmentPolicies>
 ```
 
-For 2027 (Christmas on Saturday, Boxing Day on Sunday), resolving `service.Resolve(2027, "AU")`:
+Christmas Day's rule references `weekend-to-next-weekday` and Boxing Day's rule references `skip-nonworking`. For 2027 (Christmas on Saturday, Boxing Day on Sunday), resolving `service.Resolve(2027, "AU")`:
 
 | Nominal | Policy | Observed |
 |---|---|---|
-| Sat 25 Dec - Christmas Day | `weekend-to-next-weekday` (`IfWeekend → MoveToNextWeekday`) | Mon 27 Dec |
-| Sun 26 Dec - Boxing Day | `skip-nonworking` (`IfNonWorkingDay → MoveToNextWorkingDay`): Sun → non-working, Mon 27 → non-working (Christmas substitute), Tue 28 → working | Tue 28 Dec |
+| Sat 25 Dec - Christmas Day | `weekend-to-next-weekday` (`IfWeekend → MoveToNextWeekday`, Monday on or after) | Mon 27 Dec |
+| Sun 26 Dec - Boxing Day | `skip-nonworking` (`IfNonWorkingDay → MoveToNextWorkingDay`), starting the day after: Mon 27 → claimed by the Christmas substitute, Tue 28 → working | Tue 28 Dec |
 
 Both occurrences come back with `IsObserved == true`, their `ActualDate` carrying the original 25 / 26 December.
 

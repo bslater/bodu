@@ -192,7 +192,10 @@ public sealed class AdjustmentPolicy
     /// <summary>
     /// Gets the maximum number of days a working-day search may scan.
     /// </summary>
-    /// <value>The configured search bound, or <see langword="null" /> when the default applies.</value>
+    /// <value>
+    /// The configured search bound, or <see langword="null" /> when the default of seven days applies. When the bound
+    /// is reached, the last day scanned is used.
+    /// </value>
     public int? MaxSearchDays { get; }
 
     /// <summary>

@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public sealed class AdjustmentHandlerContext
 {
-    /// <summary>The predicate reporting whether a candidate day is already claimed by another non-working occurrence.</summary>
+    /// <summary>The predicate reporting whether a candidate day is already claimed by a non-working occurrence.</summary>
     private readonly Func<DateOnly, bool> _isOccupied;
 
     /// <summary>
@@ -79,10 +79,15 @@ public sealed class AdjustmentHandlerContext
         Policy.HandlerParameters;
 
     /// <summary>
-    /// Determines whether a candidate day is already claimed by another non-working occurrence.
+    /// Determines whether a candidate day is already claimed by a non-working occurrence.
     /// </summary>
     /// <param name="date">The candidate day to test.</param>
     /// <returns><see langword="true" /> when the day is already claimed; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// The claimed days are the actual dates of every non-working occurrence in the scanned years, including this
+    /// occurrence's own actual date (its whole span) when it is non-working, plus the observed dates of the non-working
+    /// occurrences already placed. A search for a free day should therefore start after <see cref="BaseDate" />.
+    /// </remarks>
     public bool IsOccupied(DateOnly date) =>
         _isOccupied(date);
 }

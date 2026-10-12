@@ -13,7 +13,8 @@ namespace Bodu.Globalization.Calendar;
 /// <param name="Date">The emitted occurrence date (the observed date when an adjustment applied).</param>
 /// <param name="ActualDate">The originally calculated occurrence date.</param>
 /// <param name="IsObserved">
-/// Whether the emitted date differs from the calculated date because an adjustment applied.
+/// Whether this is the observed occurrence emitted by a fired adjustment policy. The date can equal
+/// <paramref name="ActualDate" /> when the policy's action left it unchanged.
 /// </param>
 /// <param name="Identity">The full identity of the rule that produced the occurrence.</param>
 /// <param name="DisplayName">The display name of the notable-date concept.</param>

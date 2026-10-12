@@ -117,8 +117,8 @@ public sealed class NotableDateFilter
         new(n => n.IsNonWorkingDay);
 
     /// <summary>
-    /// Creates a filter that matches occurrences whose emitted date differs from the calculated date because an
-    /// adjustment applied.
+    /// Creates a filter that matches the observed occurrences emitted by a fired adjustment policy (<see cref="NotableDate.IsObserved" />),
+    /// including one whose action left the date unchanged.
     /// </summary>
     /// <returns>A filter matching observed (adjusted) occurrences.</returns>
     public static NotableDateFilter WasAdjusted() =>

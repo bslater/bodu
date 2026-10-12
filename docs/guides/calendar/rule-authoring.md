@@ -66,9 +66,10 @@ A `<NotableDate>` is one notable-date **concept** - an `id`, a `displayName`, a 
 A `<Rule>` is one calculation recipe. Its required `id` distinguishes it from its siblings under the same concept; the optional attributes (`priority`, `category`, `nonWorking`, `durationDays`, `comment`) override the concept defaults for that recipe. A rule contains, **in order**:
 
 1. an optional `<Applicability>` (calendar, year bounds, territory scope);
-2. exactly one `<Strategy>` (the calculation);
-3. an optional `<Tags>` block;
-4. an optional `<Adjustments>` block of `policyRef` references.
+2. exactly one `<Strategy>` (the calculation) or `<Recurrence>` (a repeating series);
+3. an optional `<Duration>` (a calculated end date for a multi-day span);
+4. an optional `<Tags>` block;
+5. an optional `<Adjustments>` block of `policyRef` references.
 
 ```xml
 <Rule id="au" priority="100" comment="National; substitute Monday when 26 January falls on a weekend.">
@@ -310,7 +311,7 @@ Beyond `fromYear` / `toYear` bounds, `<Applicability>` supports a periodicity pa
 
 ## Validation
 
-Loading parses the document, resolves `<Imports>`, applies `<Overrides>`, assembles the concepts, and runs semantic validation. Any **error**-severity diagnostic throws a <xref:Bodu.Globalization.Calendar.NotableDateValidationException>; its `Diagnostics` collection carries every <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> ( `Severity`, `Code`, `Message`), so informational and warning diagnostics are visible even when the load succeeds:
+Loading parses the document, resolves `<Imports>`, applies `<Overrides>`, assembles the concepts, and runs semantic validation. Any **error**-severity diagnostic throws a <xref:Bodu.Globalization.Calendar.NotableDateValidationException>; its `Diagnostics` collection carries every <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> (`Severity`, `Code`, `Message`), warnings and informational messages included. A successful `Load` returns only the resource, so to see the warnings of a document that loads, use `TryLoad` / `TryLoadJson`, which return every diagnostic either way:
 
 ```csharp
 using Bodu.Globalization.Calendar;

@@ -123,7 +123,7 @@ A <xref:Bodu.Globalization.Calendar.NotableDate> is the immutable output of one 
 |---|---|
 | `Date` | The emitted occurrence date (observed, after any adjustment). |
 | `ActualDate` | The originally calculated (nominal) date. |
-| `IsObserved` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
+| `IsObserved` | Whether this is the observed occurrence emitted by a fired adjustment policy (the date can equal `ActualDate` when the action left it unchanged). |
 | `DisplayName` | The display name (subject to optional localisation). |
 | `Category` | `NotableDateCategory` value. |
 | `TerritoryCode` | The territory the occurrence applies to. |
