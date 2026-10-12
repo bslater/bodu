@@ -136,6 +136,7 @@ for (int i = 0; i < 100; i++)
     deque.AddLast(i);                       // backing array grows past 4
 
 // Lock the deque to its current size so subsequent adds are rejected:
+deque.TrimExcess();                          // capacity 128 -> 100, the current count
 deque.AllowGrow = false;
 bool added = deque.TryAddLast(101);          // false - at capacity
 

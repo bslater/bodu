@@ -46,7 +46,7 @@ int count = words.Count;                 // 4
 bool added = words.Add("car");   // false - already present
 ```
 
-Build directly from a sequence (an exception is thrown on a duplicate key):
+Build directly from a sequence (a duplicate key is stored once, as `Add` would store it):
 
 <!-- compile -->
 ```csharp

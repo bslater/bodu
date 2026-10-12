@@ -57,13 +57,13 @@ Element uniqueness is enforced. Calling `Enqueue("a", 5)` when `"a"` is already 
 
 ```csharp
 // True if added, false if already present (and priority updated).
-bool added = pq.EnqueueOrUpdate("b", newPriority: 2);
+bool added = pq.EnqueueOrUpdate("b", priority: 2);
 ```
 
 ## Priority updates
 
 ```csharp
-pq.Update("a", newPriority: 0);     // O(log n) - re-position in the heap
+pq.Update("a", priority: 0);        // O(log n) - re-position in the heap
 pq.TryUpdate("missing", 0);         // False - no exception
 ```
 

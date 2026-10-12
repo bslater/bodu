@@ -21,7 +21,7 @@ foreach (LogEntry entry in entries)
 IReadOnlyList<LogEntry> forId = byCorrelation["abc-123"];   // never null
 ```
 
-The indexer returns an empty, read-only view when the key is absent - it never throws and never returns `null`, so callers can iterate unconditionally:
+The indexer returns an empty, read-only list when the key is absent - it never throws and never returns `null`, so callers can iterate unconditionally:
 
 ```csharp
 foreach (LogEntry e in byCorrelation["missing-key"])   // safe - empty sequence
@@ -40,7 +40,7 @@ routes.Add("POST", "/users");
 IReadOnlyList<string> gets = routes.GetValues("GET");   // /users, /orders, /health
 ```
 
-`GetValues` is equivalent to the indexer; `TryGetValues` returns `false` (and an empty list) when the key is absent, mirroring `Dictionary.TryGetValue`:
+`GetValues` returns the same live list as the indexer for a present key, but throws `KeyNotFoundException` for an absent one; `TryGetValues` returns `false` (and an empty list) when the key is absent, mirroring `Dictionary.TryGetValue`:
 
 ```csharp
 if (routes.TryGetValues("DELETE", out IReadOnlyList<string> deletes))
@@ -84,7 +84,7 @@ foreach (KeyValuePair<string, string> pair in routes.Flatten())
     Console.WriteLine($"{pair.Key} → {pair.Value}");
 ```
 
-The `Keys` collection exposes the distinct keys; `Values` and `ReadOnlyValues` expose the flattened values.
+The `Keys` collection exposes the distinct keys; `Flatten()` yields every stored value with its key.
 
 ## Pattern 6 - custom key comparison
 
@@ -126,13 +126,14 @@ The backing and value comparer are fixed at construction. Ordering guarantee: pe
 |---|---|
 | `Add(TKey, TValue)` | Appends a value to the key's list, creating the key if needed. |
 | `AddRange(TKey, IEnumerable<TValue>)` | Appends several values to a key. |
-| `this[TKey]` / `GetValues(TKey)` | Returns the key's values as an `IReadOnlyList<TValue>` (empty, never `null`). |
+| `this[TKey]` | Returns the key's values as an `IReadOnlyList<TValue>`; an empty list, never `null`, when the key is absent. |
+| `GetValues(TKey)` | Returns the key's values; throws `KeyNotFoundException` when the key is absent. |
 | `TryGetValues(TKey, out IReadOnlyList<TValue>)` | Non-throwing lookup. |
 | `Remove(TKey, TValue)` | Removes a single value; returns `false` if absent. |
 | `RemoveAll(TKey)` | Removes a key and all its values. |
 | `ContainsKey(TKey)` / `ContainsValue(TKey, TValue)` | Membership tests. |
 | `Flatten()` | Enumerates `(key, value)` pairs, one per value. |
-| `Keys` / `Values` / `ReadOnlyValues` | The distinct keys and the flattened values. |
+| `Keys` | The distinct keys. |
 | `Count` | Total number of values across all keys. |
 | `KeyCount` | Number of distinct keys. |
 | `Comparer` | The active key `IEqualityComparer<TKey>`. |
