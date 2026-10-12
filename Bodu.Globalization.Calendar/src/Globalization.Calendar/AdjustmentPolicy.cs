@@ -226,6 +226,14 @@ public sealed class AdjustmentPolicy
     /// Gets the non-working-day flag applied to the observed occurrence.
     /// </summary>
     /// <value>The flag, or <see langword="null" /> when the rule's default applies.</value>
+    /// <remarks>
+    /// <para>
+    /// When set, the flag replaces the rule's for the observed occurrence only: it sets that occurrence's
+    /// <see cref="NotableDate.IsNonWorkingDay" />, and a non-working observed occurrence claims its day, so a later
+    /// working-day search with <see cref="SkipNonWorkingDates" /> passes over it. The actual occurrence, when emitted,
+    /// keeps the rule's flag.
+    /// </para>
+    /// </remarks>
     public bool? NonWorking { get; }
 
     /// <summary>

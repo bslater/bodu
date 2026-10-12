@@ -377,14 +377,15 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Claims an observed date in the occupied-day set when the candidate is a non-working occurrence.
+    /// Claims an observed date in the occupied-day set when the observed occurrence is a non-working day.
     /// </summary>
     /// <param name="occupied">The occupied-day set.</param>
     /// <param name="observed">The observed date to claim.</param>
     /// <param name="candidate">The candidate that produced the observed date.</param>
-    private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate)
+    /// <param name="nonWorking">Whether the observed occurrence is a non-working day.</param>
+    private static void Claim(HashSet<DateOnly> occupied, DateOnly observed, ResolutionCandidate candidate, bool nonWorking)
     {
-        if (candidate.NonWorking)
+        if (nonWorking)
             ClaimSpan(occupied, observed, candidate.DurationDays);
     }
 
@@ -413,6 +414,7 @@ public sealed class NotableDateService
     /// <param name="actual">The calculated occurrence date.</param>
     /// <param name="isObserved">Whether the emitted date differs from the actual date.</param>
     /// <param name="candidate">The candidate that produced the occurrence.</param>
+    /// <param name="nonWorking">Whether the emitted occurrence is a non-working day.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <param name="adjustmentPolicyId">
     /// The id of the adjustment policy that produced the observed date, if any.
@@ -431,6 +433,7 @@ public sealed class NotableDateService
         DateOnly actual,
         bool isObserved,
         ResolutionCandidate candidate,
+        bool nonWorking,
         string territory,
         string? adjustmentPolicyId,
         string? reason,
@@ -450,7 +453,7 @@ public sealed class NotableDateService
             candidate.Category,
             candidate.Priority,
             candidate.DurationDays,
-            candidate.NonWorking,
+            nonWorking,
             candidate.Tags,
             adjustmentPolicyId,
             string.IsNullOrEmpty(reason) ? null : reason));
@@ -677,28 +680,33 @@ public sealed class NotableDateService
     {
         if (candidate.Policy is not AdjustmentPolicy policy)
         {
-            AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
+            AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, candidate.NonWorking, territory, null, null, range);
             return;
         }
 
         DateOnly observed = ComputeObservedDate(policy, candidate, territory, occupied, context);
         string reason = policy.Reason ?? string.Empty;
 
+        // The policy's emission flag, when declared, overrides the rule's for the observed occurrence only: the actual
+        // occurrence keeps the rule's flag, and the observed day is claimed only when the observed occurrence is
+        // non-working.
+        bool observedNonWorking = policy.NonWorking ?? candidate.NonWorking;
+
         switch (policy.Emission)
         {
             case EmissionMode.ActualOnly:
-                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
+                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, candidate.NonWorking, territory, null, null, range);
                 break;
 
             case EmissionMode.ObservedOnly:
-                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
-                Claim(occupied, observed, candidate);
+                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, observedNonWorking, territory, policy.Id, reason, range);
+                Claim(occupied, observed, candidate, observedNonWorking);
                 break;
 
             case EmissionMode.ActualAndObserved:
-                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, territory, null, null, range);
-                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, territory, policy.Id, reason, range);
-                Claim(occupied, observed, candidate);
+                AddIfInRange(results, candidate.BaseDate, candidate.BaseDate, false, candidate, candidate.NonWorking, territory, null, null, range);
+                AddIfInRange(results, observed, candidate.BaseDate, true, candidate, observedNonWorking, territory, policy.Id, reason, range);
+                Claim(occupied, observed, candidate, observedNonWorking);
                 break;
 
             case EmissionMode.Suppress:
