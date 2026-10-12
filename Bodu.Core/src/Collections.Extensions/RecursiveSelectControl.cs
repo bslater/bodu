@@ -139,14 +139,21 @@ namespace Bodu.Collections.Extensions;
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.RecurseOnly);
-/// // Output: B, C
+/// // Output: (empty) - the control applies to the children too, so no node is yielded
 ///
 /// // SkipAndRecurse
 /// var skipAndRecurse = root.RecursiveSelect(
 ///     n => n.Children,
 ///     (n, i, d) => n.Name,
 ///     n => RecursiveSelectControl.SkipAndRecurse);
-/// // Output: B, C
+/// // Output: (empty) - as RecurseOnly
+///
+/// // RecurseOnly for A only: pass through the container, yield everything else
+/// var passThrough = root.RecursiveSelect(
+///     n => n.Children,
+///     (n, i, d) => n.Name,
+///     n => n.Name == "A" ? RecursiveSelectControl.RecurseOnly : RecursiveSelectControl.YieldAndRecurse);
+/// // Output: B, C, D
 ///
 /// // YieldAndBreak
 /// var yieldAndBreak = root.RecursiveSelect(

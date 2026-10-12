@@ -53,7 +53,7 @@ public static partial class SequenceGenerator
     /// });
     ///
     /// foreach (int b in randomBytes)
-    ///     Console.Write($"{b} "); // => 79 235 64 230 (a deterministic run with seed 42)
+    ///     Console.Write($"{b} "); // => 171 36 32 133 (a deterministic run with seed 42)
     ///]]>
     /// </code>
     /// </example>

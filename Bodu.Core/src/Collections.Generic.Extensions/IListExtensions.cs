@@ -40,7 +40,7 @@ namespace Bodu.Collections.Generic.Extensions;
 ///
 /// // Try-style relocation that won't throw on out-of-range indices.
 /// if (items.TryMove(oldIndex: 0, newIndex: 2))
-///     Console.WriteLine(string.Join(", ", items)); // beta, gamma, alpha, beta
+///     Console.WriteLine(string.Join(", ", items)); // beta, alpha, gamma, beta - newIndex is an insertion point
 ///
 /// // Bulk replacement with a count of changes.
 /// int replaced = items.ReplaceAll(oldItem: "beta", newItem: "BETA"); // 2

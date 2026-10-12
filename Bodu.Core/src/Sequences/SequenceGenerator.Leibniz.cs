@@ -59,7 +59,7 @@ public static partial class SequenceGenerator
     /// foreach (double term in SequenceGenerator.Leibniz(1e-3, 1.1).Take(100))
     ///     partial += term;
     ///
-    /// double pi = partial * 4; // => pi ≈ 3.139... (slow convergence, expected)
+    /// double pi = partial * 4; // => pi ≈ 3.1316 (slow convergence, expected)
     ///]]>
     /// </code>
     /// </example>

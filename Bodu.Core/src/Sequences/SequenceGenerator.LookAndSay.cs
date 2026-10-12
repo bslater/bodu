@@ -31,8 +31,8 @@ public static partial class SequenceGenerator
     /// <para>
     /// Each term grows in length roughly by Conway's constant (<c>≈ 1.303577…</c>) per iteration, so the strings
     /// produced for large <paramref name="count" /> values grow quickly and may dominate allocation cost. Iteration is
-    /// deferred - argument validation runs on first <c>MoveNext</c> - and a single <see cref="StringBuilder" />
-    /// instance is reused per term.
+    /// deferred - argument validation runs on first <c>MoveNext</c> - and each term is built in its own
+    /// <see cref="StringBuilder" />.
     /// </para>
     /// <para>
     /// The result is deterministic (the seed is fixed) and the iterator carries no shared mutable state.
