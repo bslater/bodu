@@ -77,4 +77,28 @@ public partial class DateTimeExtensionsTests
         Assert.IsTrue(input.IsNthDateOfWeekInMonth(DayOfWeek.Monday, WeekOrdinal.Fifth));
         Assert.IsFalse(input.IsNthDateOfWeekInMonth(DayOfWeek.Monday, WeekOrdinal.Fourth));
     }
+
+    /// <summary>
+    /// Verifies that a weekday or ordinal just outside the range its enum defines throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the parameter, as the <see cref="DateOnly" /> overload does.
+    /// </summary>
+    /// <param name="dayOfWeek">The weekday value.</param>
+    /// <param name="ordinal">The ordinal value.</param>
+    /// <param name="paramName">The parameter the exception must name.</param>
+    [TestMethod]
+    [DataRow(-1, 1, "dayOfWeek")]
+    [DataRow(7, 1, "dayOfWeek")]
+    [DataRow(1, 0, "ordinal")]
+    [DataRow(1, 7, "ordinal")]
+    public void IsNthDateOfWeekInMonth_WhenValueIsJustOutsideRange_ShouldThrowNamingParameter(int dayOfWeek, int ordinal, string paramName)
+    {
+        var input = new DateTime(2024, 1, 1);
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.IsNthDateOfWeekInMonth((DayOfWeek)dayOfWeek, (WeekOrdinal)ordinal);
+        });
+
+        Assert.AreEqual(paramName, ex.ParamName);
+    }
 }
