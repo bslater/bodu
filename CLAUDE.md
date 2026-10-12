@@ -182,7 +182,11 @@ and the first two have bitten:
   stops a release. The release's pack step goes further and also fails on
   NuGet restore and pack warnings, so a newly published advisory for a dependency stops a release until
   the dependency is updated or that advisory is suppressed with a `NuGetAuditSuppress` item giving the
-  reason. A local Release build fails on the same compiler and analyzer warnings, because
+  reason. `build-test.yml`'s `shipping-pack` job runs that pack on every pull request, without the real
+  signature, so a failure that only the shipping build shows fails the pull request rather than the
+  release: package validation, NuGet's warnings, and analyzer findings that appear once `BoduShipping`
+  strips the test assemblies' `InternalsVisibleTo` grants, as CA1852 did in #1040. A local Release build
+  fails on the same compiler and analyzer warnings, because
   `Directory.Build.targets` sets `TreatWarningsAsErrors` for every Release build (restore excepted, so
   NuGet's warnings stay warnings); a Debug build only reports them. The `Bodu.CodeStyle` solution opts
   out with `BoduReleaseWarningsAsErrors=false` and keeps its own policy. The same file holds every .NET

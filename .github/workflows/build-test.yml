@@ -584,3 +584,46 @@ jobs:
           # Only failing tests are listed, as in the job above: a full list runs past the summary's size
           # limit, and a long enough one overflows the reporter's stack. Each test class is still listed.
           list-tests: failed
+
+  # Packs the solution as release.yml's "Pack (real-signed, shipping)" step does, so a pull request that would
+  # stop the release's pack fails here instead of in the release run, after the tag has been pushed (#1043).
+  # BoduShipping=true strips the InternalsVisibleTo grants to test assemblies, so analyzers that respect friend
+  # assemblies, such as CA1852, report findings the build-test job never sees (#1040). The pack also runs package
+  # validation against each package's baseline, and warnings as errors promote NuGet's restore and pack warnings,
+  # as in the release. Only the real signature is left out, since it needs the release secret: the default build
+  # public-signs with the committed key, so the assembly identity, and with it package validation, is the
+  # release's. Nothing is published, and the packages are discarded with the runner.
+  shipping-pack:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution.
+          global-json-file: global.json
+          dotnet-version: 8.0.x
+
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration Release \
+            --output "${{ github.workspace }}/local-packages"
+
+      - name: Pack (shipping, as the release does)
+        shell: bash
+        run: |
+          dotnet pack bodu.slnx \
+            --configuration Release \
+            --output "$RUNNER_TEMP/shipping-packages" \
+            -p:BoduShipping=true \
+            -p:TreatWarningsAsErrors=true
