@@ -14,7 +14,7 @@ The samples run against `sample1.doc` from the [runnable compound-file sample](.
 
 - `RootStorage` and everything beneath it operate on the staging tree. Reads see your edits immediately; the destination sees nothing.
 - `IsDirty` turns `true` on the first mutation - opening a writable cursor counts, even before anything is written - and `false` after `Commit` or `Revert`.
-- `Commit` (or `CommitAsync`) truncates the destination and **rewrites the whole container** from the staging tree. There is no in-place patching of sectors - the layout is recomputed from scratch every time.
+- `Commit` (or `CommitAsync`) truncates the destination and **rewrites the whole container** from the staging tree. There is no in-place patching of sectors - the layout is recomputed from scratch every time. The layout is planned before the destination is truncated, so a staging tree that cannot be written (storages nested past `MaxDepth`, a version-3 container over 2 GB) throws <xref:Bodu.IO.Compound.CompoundFileSerializationException> and leaves the destination as it was.
 - `Revert` resets the staging tree to the baseline - the state loaded **at open**.
 - `Dispose` without `Commit` leaves the destination exactly as it was.
 
@@ -239,7 +239,8 @@ file.Commit();                                                    // ...which th
 | Edits are invisible to the destination until `Commit`. | Yes - the destination is not touched by any mutation, cursor, or `Revert`. |
 | Disposing without `Commit` leaves the destination unchanged. | Yes. |
 | A `Commit` writes every staged edit or none of them *as far as the staging tree goes*. | Yes - the layout is computed from the whole tree before the first byte is written. |
-| A `Commit` that faults or is cancelled mid-write leaves the destination intact. | **No.** The destination has been truncated and partially written; the file stays dirty with the staging tree intact, so `Commit` again or `Revert`. |
+| A `Commit` that faults before writing leaves the destination intact. | Yes - the layout is planned, and every error the staging tree can raise is raised, before the destination is truncated. |
+| A `Commit` that faults or is cancelled mid-write leaves the destination intact. | **No.** The destination has been truncated and partially written (for example by a deferred source shorter than it declared); the file stays dirty with the staging tree intact, so `Commit` again or `Revert`. |
 | Unchanged streams keep their bytes; storages keep their `ClassId`, timestamps, and state bits. | Yes - the rewrite preserves entry metadata and payloads; only the sector layout is recomputed. |
 | The output is byte-identical to the input when nothing changed. | No - a rewrite may lay sectors out differently from the original writer. |
 | Concurrent use of one `CompoundFile`. | Not supported. |

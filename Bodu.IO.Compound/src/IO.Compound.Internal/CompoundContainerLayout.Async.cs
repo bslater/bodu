@@ -30,9 +30,24 @@ internal static partial class CompoundContainerLayout
     /// <exception cref="OperationCanceledException">
     /// Thrown when <paramref name="cancellationToken" /> is canceled.
     /// </exception>
-    internal static async Task WriteToAsync(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options, CancellationToken cancellationToken)
+    internal static Task WriteToAsync(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options, CancellationToken cancellationToken) =>
+        EmitAsync(destination, PreparePlan(root, options), cancellationToken);
+
+    /// <summary>
+    /// Asynchronously emits a planned container to a destination stream, one sector at a time.
+    /// </summary>
+    /// <param name="destination">The stream that receives the compound-file content.</param>
+    /// <param name="plan">The emission plan.</param>
+    /// <param name="cancellationToken">A token that cancels the write.</param>
+    /// <returns>A task that completes when the container has been written.</returns>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when a deferred source is shorter than its declared length.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is canceled.
+    /// </exception>
+    private static async Task EmitAsync(Stream destination, EmissionPlan plan, CancellationToken cancellationToken)
     {
-        EmissionPlan plan = PreparePlan(root, options);
         var writer = new SectorWriter(destination, plan, HeaderSector);
 
         await EmitHeaderAsync(writer, plan, cancellationToken).ConfigureAwait(false);

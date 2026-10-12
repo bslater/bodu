@@ -86,9 +86,30 @@ internal static partial class CompoundContainerLayout
     /// <param name="root">The root storage to serialize.</param>
     /// <param name="options">The options controlling the output layout.</param>
     /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
-    internal static void WriteTo(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options)
+    internal static void WriteTo(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options) =>
+        Emit(destination, PreparePlan(root, options));
+
+    /// <summary>
+    /// Plans the container of a tree without writing any byte, so that every error the tree can raise is raised before
+    /// the caller touches its destination.
+    /// </summary>
+    /// <param name="root">The root storage to serialize.</param>
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <returns>The planned container, whose bytes are written by <see cref="PlannedContainer.WriteTo" />.</returns>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
+    internal static PlannedContainer Plan(CompoundStorageBuilder root, CompoundBuildOptions options) =>
+        PlannedContainer.Create(root, options);
+
+    /// <summary>
+    /// Emits a planned container to a destination stream, one sector at a time.
+    /// </summary>
+    /// <param name="destination">The stream that receives the compound-file content.</param>
+    /// <param name="plan">The emission plan.</param>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when a deferred source is shorter than its declared length.
+    /// </exception>
+    private static void Emit(Stream destination, EmissionPlan plan)
     {
-        EmissionPlan plan = PreparePlan(root, options);
         var writer = new SectorWriter(destination, plan, HeaderSector);
 
         EmitHeader(writer, plan);

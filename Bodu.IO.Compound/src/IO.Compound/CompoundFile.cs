@@ -783,20 +783,24 @@ public sealed class CompoundFile
     /// </exception>
     /// <remarks>
     /// The destination is truncated and the whole container is rewritten from the staging tree. When the destination is
-    /// not seekable, the committed bytes are appended at the current position.
+    /// not seekable, the committed bytes are appended at the current position. The container is planned before the
+    /// destination is touched, so a staging tree that cannot be represented leaves the destination as it was. A failure
+    /// while the bytes are written, such as a deferred source shorter than it declared, leaves the destination
+    /// partially written and the file dirty.
     /// </remarks>
     public void Commit()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         RequireWritable();
 
+        CompoundContainerLayout.PlannedContainer container = CompoundContainerLayout.Plan(_staging!, _buildOptions);
         if (_destination!.CanSeek)
         {
             _destination.Position = 0;
             _destination.SetLength(0);
         }
 
-        CompoundContainerLayout.WriteTo(_destination, _staging!, _buildOptions);
+        container.WriteTo(_destination);
         _destination.Flush();
         _dirty = false;
     }
@@ -829,10 +833,12 @@ public sealed class CompoundFile
     /// Thrown when <paramref name="cancellationToken" /> is canceled.
     /// </exception>
     /// <remarks>
-    /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. Cancellation is
-    /// observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves
-    /// the destination partially written and the file dirty - the same surface a synchronous <see cref="Commit" />
-    /// fault presents - so call <see cref="CommitAsync" /> (or <see cref="Commit" />) again, or <see cref="Revert" />.
+    /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. The container is
+    /// planned before the destination is touched, so a staging tree that cannot be represented leaves the destination
+    /// as it was. Cancellation is observed before any destination mutation and again during the write; a cancellation
+    /// or failure mid-write leaves the destination partially written and the file dirty - the same surface a
+    /// synchronous <see cref="Commit" /> fault presents - so call <see cref="CommitAsync" /> (or <see cref="Commit" />)
+    /// again, or <see cref="Revert" />.
     /// </remarks>
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
@@ -840,13 +846,14 @@ public sealed class CompoundFile
         RequireWritable();
         cancellationToken.ThrowIfCancellationRequested();
 
+        CompoundContainerLayout.PlannedContainer container = CompoundContainerLayout.Plan(_staging!, _buildOptions);
         if (_destination!.CanSeek)
         {
             _destination.Position = 0;
             _destination.SetLength(0);
         }
 
-        await CompoundContainerLayout.WriteToAsync(_destination, _staging!, _buildOptions, cancellationToken).ConfigureAwait(false);
+        await container.WriteToAsync(_destination, cancellationToken).ConfigureAwait(false);
         await _destination.FlushAsync(cancellationToken).ConfigureAwait(false);
         _dirty = false;
     }
