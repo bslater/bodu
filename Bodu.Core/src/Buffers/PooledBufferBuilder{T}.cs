@@ -282,8 +282,8 @@ public sealed class PooledBufferBuilder<T> :
     /// write, automatically growing the buffer if necessary.
     /// </summary>
     /// <param name="sizeHint">
-    /// The minimum number of elements required. When zero or negative, at least one element of free space is ensured.
-    /// The returned memory may be larger than the hint.
+    /// The minimum number of elements required. When zero, at least one element of free space is ensured. The returned
+    /// memory may be larger than the hint.
     /// </param>
     /// <returns>
     /// A writable <see cref="Memory{T}" /> beginning at the current write position and spanning all free capacity. Call
@@ -304,8 +304,8 @@ public sealed class PooledBufferBuilder<T> :
     /// write, automatically growing the buffer if necessary.
     /// </summary>
     /// <param name="sizeHint">
-    /// The minimum number of elements required. When zero or negative, at least one element of free space is ensured.
-    /// The returned span may be larger than the hint.
+    /// The minimum number of elements required. When zero, at least one element of free space is ensured. The returned
+    /// span may be larger than the hint.
     /// </param>
     /// <returns>
     /// A writable <see cref="Span{T}" /> beginning at the current write position and spanning all free capacity. Call

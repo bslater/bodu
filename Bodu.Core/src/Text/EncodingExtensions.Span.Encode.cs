@@ -183,7 +183,8 @@ public static partial class EncodingExtensions
     /// Prefer the <see cref="System.Text.Encoding" />-receiver variant <c>GetBytesPooled</c> when the caller already
     /// needs the concrete <see cref="Buffers.PooledBufferBuilder{T}" /> capabilities (
     /// <see cref="Buffers.PooledBufferBuilder{T}.WrittenSpan" />, <see cref="IBufferWriter{T}" /> integration). This
-    /// method returns the same buffer behind the <see cref="IMemoryOwner{T}" /> abstraction.
+    /// method instead rents from <paramref name="memoryPool" /> (<see cref="MemoryPool{T}.Shared" /> by default) and
+    /// returns the rental, sliced to the encoded length, behind the <see cref="IMemoryOwner{T}" /> abstraction.
     /// </remarks>
     public static IMemoryOwner<byte> ToOwnedBytes(
         this ReadOnlySpan<char> chars,

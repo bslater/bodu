@@ -319,7 +319,9 @@ public static partial class ThrowHelper
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative or exceeds <c>array.Length</c>.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <c>index + count</c> exceeds <c>array.Length</c>.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="offset" /> + <paramref name="count" /> exceeds <c>array.Length</c>.
+    /// </exception>
     public static void ThrowIfArrayOffsetOrCountInvalid(
         Array array, int offset, int count,
         [CallerArgumentExpression(nameof(array))] string? paramArrayName = null,

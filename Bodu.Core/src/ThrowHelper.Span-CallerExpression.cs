@@ -204,7 +204,7 @@ public static partial class ThrowHelper
     /// <see cref="ReadOnlySpan{T}.Length" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <c>index + count</c> exceeds <see cref="ReadOnlySpan{T}.Length" />.
+    /// Thrown when <paramref name="offset" /> + <paramref name="count" /> exceeds <see cref="ReadOnlySpan{T}.Length" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -256,7 +256,7 @@ public static partial class ThrowHelper
     /// <see cref="ReadOnlySpan{T}.Length" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <c>index + count</c> exceeds <see cref="ReadOnlySpan{T}.Length" />.
+    /// Thrown when <paramref name="offset" /> + <paramref name="count" /> exceeds <see cref="ReadOnlySpan{T}.Length" />.
     /// </exception>
     /// <remarks>
     /// <para>

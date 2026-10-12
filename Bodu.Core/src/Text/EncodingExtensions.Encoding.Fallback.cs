@@ -64,9 +64,8 @@ public static partial class EncodingExtensions
     /// supported encoding can represent.
     /// </param>
     /// <param name="decoderReplacement">
-    /// The replacement string used when a decoder cannot interpret a sequence. Defaults to <c>"?"</c> rather than the
-    /// Unicode replacement character (<c>U+FFFD</c>) because non-Unicode encodings - including ASCII - cannot represent
-    /// <c>U+FFFD</c>.
+    /// The replacement string used when a decoder cannot interpret a sequence. Defaults to <c>"?"</c>, matching the
+    /// encoder replacement; pass <c>"\uFFFD"</c> to mark invalid input with the Unicode replacement character.
     /// </param>
     /// <returns>
     /// A new <see cref="System.Text.Encoding" /> instance configured with

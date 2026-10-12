@@ -12,13 +12,9 @@ namespace Bodu.Text;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Members are split across partial files following the repository convention (see <c>CLAUDE.md</c>): one partial file
-/// per method, named <c>StringEncodingExtensions.&lt;MethodName&gt;.cs</c>. Tests follow the same pattern in
-/// <c>test/Text.Encoding/StringEncodingExtensionsTests.&lt;MethodName&gt;.cs</c>.
-/// </para>
-/// <para>
-/// All overloads delegate to the canonical span- or encoding-receiver implementations in
-/// <see cref="EncodingExtensions" /> so behaviour and performance match the rest of the encoding surface.
+/// The overloads forward to the BCL <see cref="System.Text.Encoding" /> APIs or to the span- and encoding-receiver
+/// implementations in <see cref="EncodingExtensions" />, so behaviour and performance match the rest of the encoding
+/// surface.
 /// </para>
 /// </remarks>
 /// <example>
