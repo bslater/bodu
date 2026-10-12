@@ -94,4 +94,36 @@ public partial class DateOnlyExtensionsTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the static <see cref="DateOnlyExtensions.GetNearestDateOfWeek(int, int, int, DayOfWeek)" /> overload throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the offending component when the year, month, and day do not
+    /// form a valid date.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="year">The year component.</param>
+    /// <param name="month">The month component.</param>
+    /// <param name="day">The day component.</param>
+    /// <param name="expectedParamName">The parameter name the exception is expected to report.</param>
+    [TestMethod]
+    [DataRow("year 0", 0, 1, 1, "year")]
+    [DataRow("year 10000", 10_000, 1, 1, "year")]
+    [DataRow("month 0", 2024, 0, 1, "month")]
+    [DataRow("month 13", 2024, 13, 1, "month")]
+    [DataRow("month 14", 2024, 14, 1, "month")]
+    [DataRow("day 0", 2024, 1, 0, "day")]
+    [DataRow("day 32", 2024, 1, 32, "day")]
+    [DataRow("30 February", 2024, 2, 30, "day")]
+    [DataRow("29 February in a common year", 2023, 2, 29, "day")]
+    public void GetNearestDateOfWeek_WhenDateIsInvalid_ShouldThrowArgumentOutOfRangeException(
+        string testName, int year, int month, int day, string expectedParamName)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = DateOnlyExtensions.GetNearestDateOfWeek(year, month, day, DayOfWeek.Monday);
+            },
+            testName);
+        Assert.AreEqual(expectedParamName, ex.ParamName, testName);
+    }
+
 }
