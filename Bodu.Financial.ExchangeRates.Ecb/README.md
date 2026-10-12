@@ -29,7 +29,7 @@ RateRangeResult series =
 
 // Discover what pairs the loaded data supports.
 foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
-    Console.WriteLine($"{info.Pair.FromIsoCode}/{info.Pair.ToIsoCode}");
+    Console.WriteLine($"{info.Pair.From}/{info.Pair.To}");
 ```
 
 ## Behaviour
@@ -63,12 +63,12 @@ The provider is `IDisposable` and offers two construction styles:
   and timeout. Dispose the provider (for example with `using`) to release the client.
 - `new EcbRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
-  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
+  package's `AddEcbExchangeRates` registration uses, backed by `IHttpClientFactory`.
 
 ## Logging
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
-constructor, or let the `*.DependencyInjection` package wire one for you (category
+constructor, or let the package's `AddEcbExchangeRates` registration wire one for you (category
 `Bodu.Financial.ExchangeRates.EcbRateProvider`). When no logger is supplied it
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 

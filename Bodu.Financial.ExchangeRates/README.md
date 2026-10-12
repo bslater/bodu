@@ -37,7 +37,7 @@ public sealed class AcmeRateProvider : PairWebRateProvider<AcmeSeriesInfo>
   serves rates through `HistoryAvailability` (a `RateHistoryAvailability` - unbounded, a
   fixed earliest date, or a rolling window).
 - **`PairWebRateProvider<TSeries>`** - the specialisation for sources that fetch a
-  distinct series per currency pair (the shape of the Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, and IMF feeds),
+  distinct series per currency pair (the shape of the Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, and FRED feeds),
   driven by an `IPairRateSource<TSeries>`.
 - **`WebRateProviderOptions`** - the abstract options base carrying `BaseAddress`,
   `HttpTimeout`, `UserAgent`, `DefaultLookback`, `CurrencyAliases`, and the per-stage

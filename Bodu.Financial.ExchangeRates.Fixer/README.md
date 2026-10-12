@@ -34,8 +34,9 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 - **Plan limits.** The free plan is locked to a EUR base and to the latest and single-date
   endpoints; changing the base currency and the time-series endpoint require a paid plan. A
   request the account's plan does not permit surfaces as a fetch failure, not a pre-empted
-  request - on the free plan, request pairs whose source currency is EUR (or rely on the
-  inverse-lookup fallback).
+  request - on the free plan, request pairs whose source currency is EUR. A request for the
+  reverse pair sends that pair's own source currency as the base, so to read `USD/EUR` warm
+  `EUR/USD` first; its reverse then resolves by inversion from the loaded series.
 - **API key required.** Set `ApiKey`; it is presented as the `access_key` query parameter.
 - **No provider-local disk cache.** For durable caching, compose with
   `AddCachedRateProvider<…>` from the
@@ -51,7 +52,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 | `HistoricalPath` | `{date}` | The single-date endpoint template (`{date}` placeholder). |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
-| `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
+| `DefaultLookback` | 7 days | The look-back window, ending on the requested date, fetched for on-demand and latest-rate lookups. |
 | `CurrencyAliases` | empty | Maps ISO codes to Fixer symbol components where they differ. |
 
 ## Dependency injection
