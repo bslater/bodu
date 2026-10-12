@@ -53,6 +53,26 @@ public sealed partial class DistributedRateCacheExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that registering caches for two providers gives each provider its own cache, bound to its own name, on
+    /// the keyed surface, rather than aliasing the second name to the first provider's cache.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedRateCache_WhenTwoProvidersRegistered_ShouldBindEachKeyedCacheToItsProvider()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddFinancialService()
+                .AddDistributedRateCache("RBA")
+                .AddDistributedRateCache("ECB");
+        });
+
+        IRateCache ecb = provider.GetRequiredKeyedService<IRateCache>("ECB");
+
+        Assert.AreEqual("ECB", ecb.Provider);
+    }
+
+    /// <summary>
     /// Verifies that the resolved cache persists and serves rates through the registered <see cref="IDistributedCache" />.
     /// </summary>
     [TestMethod]
