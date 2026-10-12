@@ -25,18 +25,19 @@ public static class AmbientResolution
     {
         SampleConsole.Scenario(
             "Ambient currency resolution",
-            what: "Resolves a currency from the ambient monetary context, changes the context, and resolves "
-                + "again.",
+            what: "Resolves a currency through the ambient currency lookup, restricts the lookup for a scope, "
+                + "and parses the same text inside and outside that scope.",
             why: "Most of an application works in one currency, and threading it through every call signature is "
                 + "noise that obscures the places where the currency genuinely varies. An ambient context removes "
                 + "that noise, and the reason it is worth being careful about is the same reason it helps: an "
                 + "implicit value is easy to read and easy to get wrong, so the context is explicit at its "
                 + "boundary and scoped rather than global - a request handler establishes it, and code outside "
                 + "that scope does not silently inherit it.",
-            expect: "The same resolution call returns different currencies under different contexts, and the "
-                + "context is established explicitly rather than read from machine configuration.");
+            expect: "The same parse accepts THB under the default lookup, rejects it inside the restricted scope, "
+                + "and accepts it again once the scope is disposed, and the lookup is established explicitly "
+                + "rather than read from machine configuration.");
 
-        // The default lookup serves the full ISO 4217 registry.
+        // The default lookup serves the shipped ISO 4217 registry.
         ICurrencyLookup current = CurrencyResolution.Current;
         if (current.TryByIsoCode("AUD", out CurrencyInfo aud))
             Console.WriteLine($"  AUD: {aud.EnglishName}, {aud.MinorUnits} minor units, cash increment {aud.CashRoundingIncrement}");

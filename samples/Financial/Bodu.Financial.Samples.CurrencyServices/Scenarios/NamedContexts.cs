@@ -23,8 +23,8 @@ public static class NamedContexts
     {
         SampleConsole.Scenario(
             "Named monetary contexts",
-            what: "Registers several named contexts with different rounding and currency settings and resolves "
-                + "amounts under each.",
+            what: "Registers several named contexts with different rounding settings and settles the same "
+                + "amount under each.",
             why: "One process often needs more than one monetary policy: a trading desk and a retail ledger in "
                 + "the same service round differently and settle in different currencies, and neither should "
                 + "have to know about the other. Naming the contexts keeps each policy in one place and makes "
