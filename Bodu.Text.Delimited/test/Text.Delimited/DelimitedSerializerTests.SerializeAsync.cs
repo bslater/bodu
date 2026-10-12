@@ -170,4 +170,28 @@ public partial class DelimitedSerializerTests
             yield return record;
         }
     }
+
+    /// <summary>
+    /// Verifies that both <c>SerializeAsync</c> overloads, over a collection and over an asynchronous sequence whose
+    /// element type is a scalar, throw <see cref="DelimitedSerializationException" /> and write nothing.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenTheRecordTypeIsAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        using var buffered = new MemoryStream();
+        using var incremental = new MemoryStream();
+
+        _ = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(buffered, new List<int> { 1, 2 });
+        });
+        _ = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(new List<int> { 1, 2 }));
+        });
+
+        Assert.AreEqual(0, buffered.Length);
+        Assert.AreEqual(0, incremental.Length);
+    }
 }
