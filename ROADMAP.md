@@ -3,123 +3,40 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-08-19. Since the previous revision, the
-**`Bodu.IO.Pst` LTP layer (P1) landed** - heap-on-node, BTree-on-heap,
-and the public property-context and table-context views on `PstNode`,
-pinned to the `lspst` oracle corpus (see the per-project section) - the
-**`Bodu.Text.Yaml` serializer reached parity with Bencode/Toml** (the
-wire-name enum tier with the public string/number enum converters,
-`DefaultIgnoreCondition` replacing the pre-release `IgnoreNullValues`,
-the `YamlSerializerDefaults` presets, the native-sized and 128-bit
-integer widths, and the `NodeConverter`/`YamlElement`/`YamlDocument`
-serializer bridges), the lock-step baseline was revved to **0.3.0**, and
-**`Bodu.Text.Filtering` was registered** - the include/exclude text
-filtering engine landed complete on 2026-08-02 (#648) but had never been
-entered here or in the shipping manifest; it now has a per-project
-section below and a Wave-2 manifest entry - and, earlier,
-**`Bodu.Financial` was restructured**: the currency surface now lives in
-`Bodu.Financial.Currencies`, the FX core in
-`Bodu.Financial.ExchangeRates`, the `Exchange`-stuttered type names were
-de-stuttered (`RateBook`, `RateSeries`, `CachingRateProvider`, …), and
-the `WebRateProvider` / `PairWebRateProvider<TSeries>` web-provider
-machinery was extracted into its own **`Bodu.Financial.ExchangeRates`
-package** that every per-source provider references. A
-**runnable-samples suite** landed alongside - a `samples/` tree covering
-Financial, Calendar, the text libraries, and the IO group (IO.Hashing,
-IO.Compound, Formats.Excel), with snippet-compile guards keeping the
-guide snippets building, a live FX sample, and a testing
-guide - and the FX libraries gained a **swallowed-exception logging
-pass** plus follow-up renames (`IHistoryAwareRateProvider` →
-`IHistoricalRateProvider`, `RbaEra` → `RbaEraWorkbook`). Before that,
-step 2 of the
-**Numerics growth wave landed - `BigDecimal`** ships as an
-arbitrary-precision decimal with the full `INumber<BigDecimal>`
-generic-math surface, span/UTF-8 parse and format, rounding, and a
-JSON converter registered through `AddNumericsJsonConverters` - and
-step 3, the **running-statistics aggregates**, has landed as well
-(`RunningStatistics<T>` / `RunningQuantile<T>` accumulators and the
-rolling-window `MovingSum<T>` / `MovingMinMax<T>` companions),
-**completing the Numerics growth wave** (see Active focus).
-`Bodu.Security.Cryptography` also gained the **RFC 6962 Merkle
-tree** (`MerkleTree` - roots over entries, blocks, or a write-time
-`MerkleBlockAccumulator`, inclusion and consistency proofs, length-bound
-roots, parallel leaf hashing as a constructor option), an
-untrusted-input **hardening pass** swept the parsers and AEAD
-transforms (bounds validation in the calendar-document and CFB-sector
-readers, a constant-time GCM-SIV GF multiply, EAX CMAC zeroing on
-fault), and every packable project now carries generated NuGet
-icon + hero-banner artwork wired through `bld/Packaging.props` -
-another release-readiness gate cleared ahead of the Wave 1 cut.
-Before that, the
-**`Bodu.Collections` package split was executed** (the
-collections pillar - `Collections.Generic` / `.Concurrent` / `.Graphs`
-/ `.Trees` - now ships as its own package referencing Core, namespaces
-unchanged) and the `WeekPattern` extraction was retired as unnecessary
-post-split; both decisions are recorded in
-`Bodu.Core/docs/roadmap-implementation-plan.md`. Earlier still, the
-`Bodu.Security.Cryptography` interop wave has merged - RFC 7468 **PEM**
-key wrapping for Ed25519 / X25519 (closing the key-encoding story), the
-`Bodu.Security.Cryptography.DisableSimd` **AVX-512 opt-out** and capability
-contract, and the **`Hotp` / `Totp`** one-time-password codes - and the
-**Numerics growth wave** began (now complete: `Interval<T>` extensions,
-`BigDecimal`, and the running-statistics aggregates have all
-landed - see Active focus). A
-release-discipline pass earlier moved `Bodu.Numerics` from Stable to
-**Preview**; its serialization and documentation conventions have since
-caught up (JSON now ships in the `Bodu.Numerics.Serialization.Json`
-companion) and the `BigDecimal` and statistics surfaces have settled, so
-both `Bodu.Numerics` and its JSON companion are **Stable** again (see
-*API-stability tiers*). This revision also folds in a **cross-ecosystem gap review** -
-Bodu's surface compared against the highest-adoption Java (Guava, Apache
-Commons, libphonenumber, ical4j / Quartz, Caffeine) and Python (stdlib
-`difflib` / `email`, `dateutil`, `rapidfuzz`, `phonenumbers`, `pint`)
-utility staples that .NET consumers currently obtain from
-independently-built packages - expanding *New library candidates*, the
-`Bodu.Core` forward list, and *Non-goals* accordingly. The
-broader landed-surface summary from the prior rewrite still stands: (1) a
-**Bodu.Core** structural expansion - the
-`Collections.Generic.Graphs` / `Collections.Generic.Trees` pillars
-(`Graph<T>`, `GraphAlgorithms`, `DisjointSet`, `Tree<T>`, `Trie` /
-`Trie<TValue>`), a full `Threading` async-primitive suite (`AsyncLock`,
-`AsyncReaderWriterLock`, `AsyncSemaphore`, the reset-event family,
-`AsyncLazy<T>`, `AsyncDebouncer`, `RateGate`), the `Sequences`
-(`SequenceGenerator`) and `Functional` (`Memoizer`) seams, and a broadened
-collection catalogue (`SequencedDictionary<,>`, `MultiValueDictionary<,>`,
-`RangeDictionary<,>` / `RangeSet<T>`, `Multiset<T>`, `OrderedSet<T>`,
-`SegmentedBuffer<T>`); (2) three **standalone `System.Text.Json`-shaped
-text libraries** extracted into their own projects - `Bodu.Text.Bencode`,
-`Bodu.Text.Toml`, and the new `Bodu.Text.Yaml` (YAML 1.2 core) - each the
-ref-struct `Utf8*Reader` / `Utf8*Writer` + `*Serializer` + mutable/read-only
-DOM quartet; (3) the **container + office-format reader** pair
-`Bodu.IO.Compound` (OLE2/CFB read + edit + fluent authoring) and
-`Bodu.Formats.Excel.Binary` (read-only BIFF8 `.xls`); (4) the entire
-**`Bodu.Financial.ExchangeRates.*` ecosystem** - eleven web providers (Boe,
-Ecb, Rba, Yahoo, Ofx, Xe, Oanda, Fixer, ExchangeRateHost, Fred, Imf) over a
-shared `WebRateProvider` base, the provider-agnostic caching layer (`CachingRateProvider`,
-`AggregatingRateProvider`) with in-memory / TOML / JSON / SQLite /
-distributed backends, and per-package DI; and (5) DI packages for
-`Bodu.Financial` and the calendar service, plus the calendar plugin loader.
-Central package management (`Directory.Packages.props`) is now in place.
-Waves 1-3 shipped at **0.5.0** (tag `v0.5.0`) - 25 packages live on
-nuget.org, strong-named and published through nuget.org trusted publishing
-(OIDC), with package validation now comparing each pack against its
-published predecessor.*
+*Last updated: 2026-10-12. Bodu 1.0.0 shipped on 2026-09-24, after the
+0.5.0, 0.6.0 and 0.7.0 waves put 56 packages on nuget.org;
+`Bodu.Security.Cryptography` 1.1.0 and 1.2.0, `Bodu.Core` 1.0.1 and
+`Bodu.Globalization.Calendar` 1.0.1 followed out of band. Next is 1.3.0:
+every Stable package ships at 1.3.0 and every Preview package at 0.7.2.
+Since the previous revision (2026-08-19): the `.pst` mail-store reader
+landed, with ANSI stores and a hardening pass; the `Bodu.IO.Biff` codec
+arrived beneath a `.xls` reader that now reads BIFF5 too; the .NET
+projects multi-target `net8.0;net10.0`; the packages version in a
+Stable and a Preview stream, each validated against its own last
+release; the cryptography performance plans were carried out; the
+calendar value sets replaced `WeekPattern`; recurrence gained sub-daily
+rules, the Quartz cron tokens and point queries that start where the
+query does; and eight structured-format readers were held to other
+libraries' release-note fixes. The detail is in git and the release
+notes.*
 
 ## How to read this
 
-- **Release focus** lists the release waves: which packages have shipped,
-  and which are queued for their first publish.
+- **Release focus** describes the two version streams, the releases
+  that have shipped, the next one, and the packages withheld from
+  nuget.org.
 - **Non-goals** lists things the repository is deliberately *not* doing,
   to keep scope discussions short.
 - **Per-project roadmap** has a short subsection per project (or project
-  family) in `bodu.slnx`. Each entry gives the current state plus 1-3
-  concrete forward-looking items.
+  family) in `bodu.slnx`. Each entry gives the current state and the
+  forward-looking items still open, if any.
 - **New library candidates** collects proposed *net-new* projects that
   fill genuine BCL / ecosystem gaps and reuse the repository's proven
   architectural patterns.
 - **Cross-cutting themes** covers concerns that span multiple projects
-  (TFM policy, AOT/trim, API stability tiers, source generators, and the
-  recurring architectural patterns that new work should conform to).
+  (TFM policy, AOT/trim, API stability tiers, source generators, package
+  validation, documentation, and the recurring architectural patterns
+  that new work should conform to).
 
 Items in this file are intent, not commitments. The order under each
 project is rough priority - the first bullet is what would land next if
@@ -159,127 +76,74 @@ The roadmap assumes the conventions already documented in
 
 ## Release focus
 
-Publishing is organised into waves so package-validation and dependency
-ordering are exercised on the smallest self-contained units first, and so a
-package's public surface stays free to change until it actually ships - the
-first publish is what fixes an API and gives it an ApiCompat baseline.
+Packages reach nuget.org in waves, each appending its package ids to
+the shipping manifest (`bld/release-manifest.txt`, which records the
+version each package first shipped at). The waves exercised package
+validation and dependency ordering on the smallest self-contained units
+first, and they keep a package's public surface free to change until it
+first ships: the first publish is what fixes an API and gives it an
+ApiCompat baseline.
 
-**Shipped.** Waves 1-3 published at **0.5.0** (25 packages) and wave 4 at
-**0.6.0** (17 more, for 42 in total) - the set listed in
-`bld/release-manifest.txt` with each package's first-shipped version. Wave 5
-(below) is staged for **0.7.0**: the exchange-rate family, held at Preview
-until it has been exercised against its live upstream endpoints, which is a
-reason to label it rather than to delay it.
+**Two version streams.** Since the 1.0.0 cut every package versions in
+one of two lock-step streams, split along the API-stability tier its
+README declares (`bld/Versioning.props`, `bld/RELEASING.md`):
 
-Two providers are **not** queued for any wave, both because they reach their
-data by working around a site rather than through a published interface.
-`…ExchangeRates.Xe` harvests an auth token from XE.com's bootstrap page.
-`…ExchangeRates.Oanda` calls an undocumented endpoint gated by bot
-mitigation, loading the site root to capture a challenge cookie and
-re-priming when challenged. Either can stop working through no fault of the
-code, and no release of ours can fix it; publishing them means fielding
-issues that cannot be closed. The remaining nine providers read a documented
-feed or an authenticated public API.
+| Stream | Ships at | Packages |
+| --- | --- | --- |
+| Stable | `BoduBaseVersion`, the default | 43 published packages |
+| Preview / Experimental | `BoduPreviewVersion`, through `<BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>` in the csproj | 13 published packages, and the four withheld ones |
 
-`Bodu.Globalization.Calendar.Tool` (a `PackAsTool` CLI) and `.Build` (an
-MSBuild `DevelopmentDependency`) are also held back - both are toolchain
-packages with a different consumer contract from a library, and warrant their
-own decision rather than a slot in a library wave.
+One `v<version>` tag releases the whole manifest at the versions
+MSBuild resolves, and a stream whose version did not move publishes
+nothing new. A Stable package can also ship out of band at a literal
+`BoduPackageVersionOverride` ahead of `BoduBaseVersion`, from a Release
+run limited to that package and tagged `<PackageId>-<version>`; the
+next lock-step release then has to move past it.
+`bld/check-release-manifest.sh` holds each package's README tier to the
+stream it publishes in, on every pull request.
 
-**Wave 1 - foundation packages (no inter-Bodu package dependencies):** *(shipped 0.5.0)*
+**Shipped.**
 
-| Package | Notes |
-| --- | --- |
-| `Bodu.Core` | The dependency root - buffers, extension surfaces, threading primitives, sequences, the calendar value sets (`DayOfWeekSet`, which replaced `WeekPattern` in 1.3.0, and its siblings), `ThrowHelper`, text-encoding utilities. |
-| `Bodu.Collections` | The specialized collection catalogue (incl. the graphs/trees pillars), split out of Core; references `Bodu.Core`. Namespaces unchanged (`Bodu.Collections.*`). |
-| `Bodu.Numerics` | `Fraction<T>` over `IBinaryInteger<T>` and the interval algebra (`Interval<T>` / `DiscreteInterval<T>` / `IntervalSet<T>`) over `INumber<T>`. Serialization-agnostic - no `System.Text.Json` dependency. |
-| `Bodu.Numerics.Serialization.Json` | `System.Text.Json` integration for `Bodu.Numerics` (`AddNumericsJsonConverters`, `NumericsJsonPolicy`, per-type converters). References `Bodu.Numerics`. |
-| `Bodu.IO.Hashing` | Non-cryptographic hashing + the full RevEng CRC catalogue + the check-digit family. |
-| `Bodu.Text.Encoding` | Base16/32/58/62/64/85 + Base45 + Bech32/Bech32m. |
-| `Bodu.Security.Cryptography` | Block/stream ciphers, AEAD, keyed/crypto hashes, the asymmetric family, KDFs, HPKE. |
+| Release | Tagged | Contents |
+| --- | --- | --- |
+| `v0.5.0` | 2026-09-23 | Waves 1-3, 25 packages: the foundation libraries, the self-contained format and text libraries, and the `.pst` readers. The first release, published through nuget.org trusted publishing. |
+| `v0.6.0` | 2026-09-24 | Wave 4, 17 packages: the financial core, the calendar engine with its data packs and companions, recurrence, and the configuration bridge. |
+| `v0.7.0` | 2026-09-24 | Wave 5, 14 packages: the exchange-rate infrastructure and its DI plumbing, nine providers, and the three caching packages. |
+| `v1.0.0` | 2026-09-24 | The Stable stream at 1.0.0 and the Preview stream at 0.7.1; the libraries multi-targeting `net8.0;net10.0`; `ArrayExtensions.Reverse` renamed `ToReversed`. |
+| `Bodu.Security.Cryptography-1.1.0` | 2026-09-29 | Out of band: the speed-ups of `plans/argon2-performance.md` and `plans/crypto-performance.md`, and two conformance fixes (AES-256-GCM-SIV's message key, AES-SIV's empty plaintext) after which data those modes sealed in earlier versions does not decrypt. |
+| `Bodu.Core-1.0.1`, `Bodu.Security.Cryptography-1.2.0` | 2026-10-01 | Out of band: follow-ups F1-F13 of `plans/crypto-performance-followups.md`; Core 1.0.1 carries the internals 1.2.0 calls. |
+| `Bodu.Globalization.Calendar-1.0.1` | 2026-10-01 | Out of band: working-day lookups no longer overflow the stack. |
 
-**Wave 2 - self-contained format & text libraries:** *(shipped 0.5.0)*
+**Next: 1.3.0.** `BoduBaseVersion` is 1.3.0 and `BoduPreviewVersion`
+0.7.2, so every Stable package ships at 1.3.0 and every Preview package
+at 0.7.2; no package joins the manifest. The Stable stream moves past
+`Bodu.Security.Cryptography` 1.2.0, the highest out-of-band version,
+and the out-of-band overrides are retired. The release carries what
+master has gained since 1.0.0 beyond the out-of-band releases (see
+*Active focus*), including one deliberate break inside the Stable line:
+`DayOfWeekSet` replaces `WeekPattern` in `Bodu.Core`,
+`Bodu.Globalization.Calendar` and `Bodu.Globalization.Calendar.Builder`,
+recorded in their `CompatibilitySuppressions.xml` until the Stable
+validation baseline moves to 1.3.0.
 
-| Package | Notes |
-| --- | --- |
-| `Bodu.Text.Bencode` | Standalone STJ-shaped Bencode library (reader/writer/serializer/DOM quartet). |
-| `Bodu.Text.Toml` | Standalone STJ-shaped TOML v1.0.0 / v1.1.0 library; corpus-backed. |
-| `Bodu.Text.Yaml` | Standalone YAML 1.2 core-profile library (symmetric read+write serializer at family parity). |
-| `Bodu.Text.Serialization` | The shared serialization primitives (attribute family, naming policies, callbacks) the per-format serializers build on. |
-| `Bodu.Text.Delimited` | Standalone STJ-shaped Delimited (RFC 4180 CSV/TSV) library; corpus-backed. |
-| `Bodu.Text.DotEnv` | Standalone STJ-shaped DotEnv library. |
-| `Bodu.Text.Ini` | Standalone STJ-shaped INI library (comment-preserving mutable DOM). |
-| `Bodu.Text.Formats` | Umbrella meta-package over `Bodu.Text.Delimited` / `.DotEnv` / `.Ini`. |
-| `Bodu.Text.Configuration` | INI-compatible profile, resolver, view getters (self-contained document model). |
-| `Bodu.Text.Filtering` | Include/exclude text filtering engine - glob + regex patterns compiled into a cost-tiered matcher (Core-only). |
-| `Bodu.IO.Compound` | OLE2 / CFB container read + edit + authoring. |
-| `Bodu.Formats.Excel.Binary` | Read-only BIFF8 `.xls` reader (depends on `Bodu.IO.Compound`). |
-| `Bodu.Formats.Outlook` | The shared, container-free MAPI value model. |
-| `Bodu.Formats.Outlook.Msg` | Read-only `.msg` (MS-OXMSG) reader over `Bodu.IO.Compound`. |
+**Withheld.** Four packages pack with the solution but are deliberately
+not published. `bld/release-manifest.txt` records why, and removing an
+entry from that list is the decision to ship it:
 
-**Wave 4 - financial core + calendar:** *(shipped 0.6.0)*
+| Package | Tier | Why it is held back |
+| --- | --- | --- |
+| `Bodu.Financial.ExchangeRates.Xe` | Experimental | Authenticates with a token scraped from XE.com's bootstrap page, which has no official endpoint, so it can stop working through no fault of the code. |
+| `Bodu.Financial.ExchangeRates.Oanda` | Preview | Calls an undocumented endpoint gated by bot mitigation, capturing a challenge cookie and re-priming when challenged. |
+| `Bodu.Globalization.Calendar.Tool` | Preview | A `PackAsTool` CLI (`bodu-calendar`), with a different consumer contract from a library; it warrants its own decision. |
+| `Bodu.Globalization.Calendar.Build` | Preview | The MSBuild integration (`DevelopmentDependency`) for that tool, held back for the same reason. |
 
-Note that wave 3 as numbered here was overtaken: the Outlook personal-folders
-readers (`Bodu.IO.Pst`, `Bodu.Formats.Outlook.Pst`) landed first and shipped
-as wave 3 at 0.5.0, so the financial + calendar set below is wave 4 in
-`bld/release-manifest.txt`.
-
-This was previously labelled a *coordinated breaking change* over
-`NotableDateService()` no longer loading every region's rules. That framing
-predates the lock-step scheme and no longer applies: the calendar packages
-have never been published, so their first release cannot break a consumer.
-The data-pack requirement is simply the shape they ship in.
-
-| Package | Notes |
-| --- | --- |
-| `Bodu.Financial` | `Money` / `Money<TCurrency>`, `CalculatedMoney`, `MoneyBag`, the ISO 4217 catalogue, rounding/allocation policies, and the FX abstractions (`ExchangeRate`, `IRateProvider` / `IDatedRateProvider`, `RateBook`, `WebRateProvider` base). References `Bodu.Numerics`. |
-| `Bodu.Financial.DependencyInjection` | `AddFinancialService`, currency-resolution registration. |
-| `Bodu.Financial.Serialization.Json` | `System.Text.Json` integration for `Bodu.Financial` (`AddFinancialJsonConverters`, `AddFinancialJson`). Keeps the core serialization-agnostic. |
-| `Bodu.Extensions.Configuration.Text` | Bridge between `Microsoft.Extensions.Configuration` and `Bodu.Text.Configuration`. Core-only besides the text packages it builds on, all of which shipped at 0.5.0. |
-| `Bodu.Globalization.Recurrence` | RFC 5545 `RRULE`, `RecurrenceSet`, Vixie cron, and `AnchoredInterval`. Preview: sub-daily frequencies parsed and round-tripped but threw `NotSupportedException` on enumeration, and cron rejected the Quartz day tokens, until 1.3.0. |
-| `Bodu.Globalization.Calendar` | Multi-assembly rule resolution. The parameterless `NotableDateService()` does not load every region's rules; consumers reference a data pack. |
-| `Bodu.Globalization.Calendar.{Americas,AsiaPacific,Europe,MiddleEast,Africa}` | The five regional data packs (authoritative country set below). |
-| `Bodu.Globalization.Calendar.{Builder,DependencyInjection,Plugins}` | Authoring API, DI registration, trust-gated plugin loader. |
-| `Bodu.Globalization.Calendar.Caching{,.Sqlite,.Distributed}` | Read-through notable-date cache and its durable / shared backends. Preview, matching the equivalent exchange-rate caching packages. |
-
-**Wave 5 - exchange-rate providers, caching, and DI:** *(staged for 0.7.0; Preview)*
-
-Fourteen packages: the provider infrastructure and its DI plumbing, nine
-source providers, and the three caching packages. `Xe` and `Oanda` are
-excluded - see the held-back note above.
-
-| Package | Notes |
-| --- | --- |
-| `Bodu.Financial.ExchangeRates` | The provider infrastructure: `WebRateProvider` / `PairWebRateProvider<TSeries>`, the fetch machinery (single-flight coordinator, file-system byte cache, HTTP client factory), and the loader/source contracts every provider builds on. |
-| `Bodu.Financial.ExchangeRates.DependencyInjection` | Shared `AddWebRateProvider` machinery (named `HttpClient` + Polly resilience). |
-| `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Imf,Fred,Fixer,ExchangeRateHost,Yahoo,Ofx}` | Per-source provider packages, each shipping its own DI extension. `Boe`/`Ecb`/`Rba`/`Imf` read a central bank's published feed; `Fred`/`Fixer`/`ExchangeRateHost` use an authenticated public API; `Yahoo`/`Ofx` use a public JSON endpoint. |
-| `Bodu.Financial.ExchangeRates.Caching` | `CachingRateProvider`, `AggregatingRateProvider`, in-memory / TOML / JSON backends. |
-| `Bodu.Financial.ExchangeRates.Caching.{Sqlite,Distributed}` | Durable SQLite and shared `IDistributedCache` backends. |
-
-Authoritative country set for each data pack at release time:
-
-| Data pack | Countries |
-| --- | --- |
-| `.Americas` | AR, BR, CA, CL, CO, MX, PE, US |
-| `.AsiaPacific` | AU, CN, HK, ID, IN, JP, KR, MY, NZ, PH, SG, TH, TW, VN |
-| `.Europe` | 28 EU/EEA (AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK); Orthodox-Easter overrides for GR, CY, BG, RO |
-| `.MiddleEast` | AE, IL, JO, QA, SA, TR |
-| `.Africa` | EG, ET, GH, KE, MA, NG, ZA |
-
-**Versioning policy.** Packages version in **lock-step** at the shared
-`BoduBaseVersion` (`bld/Versioning.props`), so a matched version number
-across `Bodu.*` packages is a coherent set; SemVer discipline still
-applies to each package's surface. A single git tag `v<version>` releases
-every package listed in the shipping manifest
-(`bld/release-manifest.txt`) - the release workflow packs the whole
-solution but publishes only the manifest set. Later waves append their
-package ids to the manifest - each with the version it first ships at - and
-bump the base version; earlier packages re-publish at the new coherent
-version. Per-package
-divergence is reserved for out-of-band fixes via
-`BoduPackageVersionOverride`. See `bld/RELEASING.md` for the full
-procedure. *(This supersedes the earlier `<package>/v<version>`
-per-package tag scheme, which predated the lock-step baseline.)*
+**Package validation.** Each stream is compared with its own last
+lock-step release: `BoduPackageValidationBaseline` is 1.0.0 for the
+Stable packages and `BoduPreviewPackageValidationBaseline` 0.7.1 for the
+Preview ones. After each publish, `bld/RELEASING.md` (Post-publish)
+moves the Stable baseline to the version just published, and the
+Preview one only when the release moved `BoduPreviewVersion`; after
+1.3.0 that is 1.3.0 and 0.7.2.
 
 ## Non-goals
 
