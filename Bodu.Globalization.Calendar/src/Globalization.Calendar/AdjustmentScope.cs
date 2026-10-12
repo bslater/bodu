@@ -16,11 +16,20 @@ namespace Bodu.Globalization.Calendar;
 /// the candidate value to be one of them. An empty scope therefore matches every rule, while a populated scope must
 /// satisfy every populated dimension.
 /// </para>
+/// <para>
+/// A rule reference names one concept's rule as <c>notableDateRef/ruleRef</c>, which is how the loader records a
+/// document's <c>&lt;Rule notableDateRef="…" ruleRef="…" /&gt;</c> scope entry. A bare rule identifier, with no
+/// concept, matches a rule with that identifier in any concept; the loader produces one only from a JSON
+/// <c>ruleRefs</c> string, or when reading a version 1 binary pack, whose scopes stored the rule identifier alone.
+/// </para>
 /// </remarks>
 /// <seealso cref="AdjustmentPolicy" /> <seealso href="../guides/calendar/adjustment-rules.html">Observance adjustment
 /// rules (guide)</seealso>
 public sealed class AdjustmentScope
 {
+    /// <summary>The separator between the concept and the rule in a qualified rule reference.</summary>
+    private const string RuleRefSeparator = "/";
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AdjustmentScope" /> class.
     /// </summary>
@@ -28,7 +37,10 @@ public sealed class AdjustmentScope
     /// <param name="calendars">The calendar systems the policy is limited to, if any.</param>
     /// <param name="categories">The categories the policy is limited to, if any.</param>
     /// <param name="notableDateRefs">The notable-date concepts the policy is limited to, if any.</param>
-    /// <param name="ruleRefs">The rules the policy is limited to, if any.</param>
+    /// <param name="ruleRefs">
+    /// The rules the policy is limited to, if any, each a <c>notableDateRef/ruleRef</c> reference or a bare rule
+    /// identifier.
+    /// </param>
     /// <param name="fromYear">The first year the policy applies, or <see langword="null" /> for no lower bound.</param>
     /// <param name="toYear">The last year the policy applies, or <see langword="null" /> for no upper bound.</param>
     /// <param name="onlyYears">The explicit inclusion years, or <see langword="null" /> for no restriction.</param>
@@ -103,7 +115,10 @@ public sealed class AdjustmentScope
     /// <summary>
     /// Gets the rules the policy is limited to.
     /// </summary>
-    /// <value>The scoped rule identifiers; empty when unrestricted.</value>
+    /// <value>
+    /// The scoped rule references, each <c>notableDateRef/ruleRef</c> or a bare rule identifier that matches the rule
+    /// in any concept; empty when unrestricted.
+    /// </value>
     public IReadOnlyList<string> RuleRefs { get; }
 
     /// <summary>
@@ -179,10 +194,52 @@ public sealed class AdjustmentScope
         if (NotableDateRefs.Count > 0 && !NotableDateRefs.Contains(notableDateId, StringComparer.OrdinalIgnoreCase))
             return false;
 
-        if (RuleRefs.Count > 0 && !RuleRefs.Contains(ruleId, StringComparer.OrdinalIgnoreCase))
+        if (RuleRefs.Count > 0 && !RuleRefs.Any(r => MatchesRuleRef(r, notableDateId, ruleId)))
             return false;
 
         return true;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any rule reference names its concept, which the binary pack format records with
+    /// a format version that earlier readers reject rather than misread.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when at least one entry of <see cref="RuleRefs" /> is a <c>notableDateRef/ruleRef</c>
+    /// reference; otherwise <see langword="false" />.
+    /// </value>
+    internal bool HasQualifiedRuleRefs =>
+        RuleRefs.Any(r => r.Contains(RuleRefSeparator, StringComparison.Ordinal));
+
+    /// <summary>
+    /// Builds the rule reference a scope stores for a document's rule scope entry.
+    /// </summary>
+    /// <param name="notableDateRef">
+    /// The concept that owns the rule, or <see langword="null" /> when none is named.
+    /// </param>
+    /// <param name="ruleRef">The rule identifier.</param>
+    /// <returns><c>notableDateRef/ruleRef</c>, or <paramref name="ruleRef" /> alone when no concept is named.</returns>
+    internal static string QualifyRuleRef(string? notableDateRef, string ruleRef) =>
+        string.IsNullOrEmpty(notableDateRef) ? ruleRef : notableDateRef + RuleRefSeparator + ruleRef;
+
+    /// <summary>
+    /// Determines whether a scoped rule reference names the supplied rule.
+    /// </summary>
+    /// <param name="scoped">The rule reference declared by the scope.</param>
+    /// <param name="notableDateId">The identifier of the rule's notable-date concept.</param>
+    /// <param name="ruleId">The identifier of the rule.</param>
+    /// <returns>
+    /// <see langword="true" /> when a qualified reference names the concept and the rule, or a bare reference names the
+    /// rule; otherwise <see langword="false" />. Identifiers compare case-insensitively.
+    /// </returns>
+    private static bool MatchesRuleRef(string scoped, string notableDateId, string ruleId)
+    {
+        int separator = scoped.IndexOf(RuleRefSeparator, StringComparison.Ordinal);
+        if (separator < 0)
+            return string.Equals(scoped, ruleId, StringComparison.OrdinalIgnoreCase);
+
+        return scoped.AsSpan(0, separator).Equals(notableDateId, StringComparison.OrdinalIgnoreCase)
+            && scoped.AsSpan(separator + 1).Equals(ruleId, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

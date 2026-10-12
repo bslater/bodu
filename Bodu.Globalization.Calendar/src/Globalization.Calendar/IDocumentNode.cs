@@ -100,4 +100,21 @@ internal interface IDocumentNode
     /// <param name="jsonProperty">The JSON object property name.</param>
     /// <returns>The key/value pairs; empty when absent.</returns>
     IReadOnlyList<(string Key, string Value)> KeyValueList(string xmlWrapper, string xmlItem, string xmlKeyAttribute, string xmlValueAttribute, string jsonProperty);
+
+    /// <summary>
+    /// Reads a list of references that may be qualified: XML item elements carrying a qualifier attribute and a name
+    /// attribute, or a JSON array whose items are objects carrying the same two properties, or strings carrying the
+    /// name alone.
+    /// </summary>
+    /// <param name="xmlWrapper">
+    /// The XML wrapper element, or <see langword="null" /> to read this node's children.
+    /// </param>
+    /// <param name="xmlItem">The XML item element local name.</param>
+    /// <param name="qualifierName">The XML attribute and JSON property carrying each reference's qualifier.</param>
+    /// <param name="name">The XML attribute and JSON property carrying each reference's name.</param>
+    /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <returns>
+    /// The references, each with a <see langword="null" /> qualifier when it carries none; empty when absent.
+    /// </returns>
+    IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty);
 }

@@ -502,7 +502,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The binary rule pack declares format version {0}; this reader supports version {1} only..
+        ///   Looks up a localized string similar to The binary rule pack declares format version {0}; this reader supports versions {1} through {2}..
         /// </summary>
         internal static string Format_Invalid_BinaryVersion {
             get {

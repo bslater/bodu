@@ -88,6 +88,20 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty)
+    {
+        XElement? container = xmlWrapper is null ? _element : _element.Element(_ns + xmlWrapper);
+        if (container is null)
+            return [];
+
+        List<(string? Qualifier, string Name)> references = new();
+        foreach (XElement item in container.Elements(_ns + xmlItem))
+            references.Add(((string?)item.Attribute(qualifierName), (string?)item.Attribute(name) ?? string.Empty));
+
+        return references;
+    }
+
+    /// <inheritdoc />
     public IReadOnlyList<(string Key, string Value)> KeyValueList(string xmlWrapper, string xmlItem, string xmlKeyAttribute, string xmlValueAttribute, string jsonProperty)
     {
         XElement? container = _element.Element(_ns + xmlWrapper);

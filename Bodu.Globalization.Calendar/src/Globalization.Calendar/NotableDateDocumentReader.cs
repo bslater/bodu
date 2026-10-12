@@ -145,7 +145,8 @@ internal static class NotableDateDocumentReader
             node.ScalarList(null, "Calendar", "name", "calendars").Select(c => ParseEnum(c, CalendarSystem.Gregorian)),
             node.ScalarList(null, "Category", "value", "categories").Select(c => ParseEnum(c, NotableDateCategory.None)),
             node.ScalarList(null, "NotableDate", "ref", "notableDateRefs"),
-            node.ScalarList(null, "Rule", "ruleRef", "ruleRefs"),
+            node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs")
+                .Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
             ParseNullableInt(node.Scalar("fromYear")),
             ParseNullableInt(node.Scalar("toYear")),
             node.IntList(null, "OnlyYear", "value", "onlyYears"),

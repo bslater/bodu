@@ -33,11 +33,18 @@ public static partial class NotableDateBinaryResource
         if (!header.AsSpan(0, 4).SequenceEqual(NotableDateBinaryFormat.Magic))
             throw new NotableDateBinaryFormatException(CalendarResourceStrings.Format_Invalid_BinaryMagic);
 
+        // Version 1 scopes store rule identifiers alone, which still match the rule in any concept; version 2 adds
+        // qualified notableDateRef/ruleRef references with the same layout, so one decoder reads both.
         ushort version = BinaryPrimitives.ReadUInt16LittleEndian(header.AsSpan(4));
-        if (version != NotableDateBinaryFormat.Version)
+        if (version is < NotableDateBinaryFormat.Version or > NotableDateBinaryFormat.QualifiedScopeRuleVersion)
         {
             throw new NotableDateBinaryFormatException(
-                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Format_Invalid_BinaryVersion, version, NotableDateBinaryFormat.Version));
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    CalendarResourceStrings.Format_Invalid_BinaryVersion,
+                    version,
+                    NotableDateBinaryFormat.Version,
+                    NotableDateBinaryFormat.QualifiedScopeRuleVersion));
         }
 
         using MemoryStream buffered = new();

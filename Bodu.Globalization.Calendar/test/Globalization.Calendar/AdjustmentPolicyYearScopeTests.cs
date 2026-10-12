@@ -200,4 +200,55 @@ public sealed class AdjustmentPolicyYearScopeTests
             (new DateOnly(2022, 1, 3), new DateOnly(2022, 1, 8)),
             (results.Single(r => r.NotableDateId == "new-year").Date, results.Single(r => r.NotableDateId == "other-day").Date));
     }
+
+    /// <summary>
+    /// Verifies that a JSON scope's <c>ruleRefs</c> object entry names one concept's rule, as the XML
+    /// <c>&lt;Rule notableDateRef="…" ruleRef="…" /&gt;</c> entry does, so only New Year's Day is mondayised.
+    /// </summary>
+    [TestMethod]
+    public void Scope_WhenJsonRuleReferenceNamesConcept_ShouldMatchThatConceptsRuleOnly()
+    {
+        NotableDateService service = new(RuleScopedJsonResource("""{ "notableDateRef": "new-year", "ruleRef": "x" }"""));
+
+        IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 14)), Territory);
+
+        Assert.AreEqual(
+            (new DateOnly(2022, 1, 3), new DateOnly(2022, 1, 8)),
+            (results.Single(r => r.NotableDateId == "new-year").Date, results.Single(r => r.NotableDateId == "other-day").Date));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON scope's <c>ruleRefs</c> string entry, which names no concept, matches the rule identifier in
+    /// every concept, so both Saturdays are mondayised.
+    /// </summary>
+    [TestMethod]
+    public void Scope_WhenJsonRuleReferenceIsBareIdentifier_ShouldMatchRuleInEveryConcept()
+    {
+        NotableDateService service = new(RuleScopedJsonResource("\"x\""));
+
+        IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 14)), Territory);
+
+        Assert.AreEqual(
+            (new DateOnly(2022, 1, 3), new DateOnly(2022, 1, 10)),
+            (results.Single(r => r.NotableDateId == "new-year").Date, results.Single(r => r.NotableDateId == "other-day").Date));
+    }
+
+    /// <summary>
+    /// Loads a JSON resource whose two concepts both use rule id <c>x</c> on a Saturday (1 and 8 January 2022) and
+    /// reference a mondayisation policy scoped by the supplied <c>ruleRefs</c> entry.
+    /// </summary>
+    /// <param name="ruleReference">The JSON <c>ruleRefs</c> array entry.</param>
+    /// <returns>The loaded resource.</returns>
+    private static NotableDateResource RuleScopedJsonResource(string ruleReference) =>
+        NotableDateResourceLoader.LoadJson($$"""
+            { "schemaVersion": "1.0", "resourceId": "data.b1-rule-scope-json",
+              "adjustmentPolicies": [ { "id": "mondayise", "scope": { "ruleRefs": [ {{ruleReference}} ] },
+                "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay", "skipWeekends": true },
+                "emission": { "mode": "ObservedOnly", "reason": "Substitute" } } ],
+              "notableDates": [
+                { "id": "new-year", "displayName": "New Year's Day", "category": "PublicHoliday", "defaultNonWorkingDay": true,
+                  "rules": [ { "id": "x", "strategy": { "fixed": { "month": 1, "day": 1 } }, "adjustments": [ "mondayise" ] } ] },
+                { "id": "other-day", "displayName": "Other Day", "category": "PublicHoliday", "defaultNonWorkingDay": true,
+                  "rules": [ { "id": "x", "strategy": { "fixed": { "month": 1, "day": 8 } }, "adjustments": [ "mondayise" ] } ] } ] }
+            """);
 }
