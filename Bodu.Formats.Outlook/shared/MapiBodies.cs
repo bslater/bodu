@@ -18,10 +18,11 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </summary>
 /// <remarks>
 /// The HTML body is <c>PidTagHtml</c>: a byte payload decoded through the internet code page (falling back to the
-/// message code page), or the string value when the writer stored it as a string; either way the text ends at its first
-/// NUL. The RTF body is <c>PidTagRtfCompressed</c>, decompressed per MS-OXRTFCP under the caller's output ceiling. This
-/// file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader; the
-/// consuming project selects the namespace via its <c>DefineConstants</c>.
+/// message code page), which may name any code page .NET serves, UTF-16 and UTF-32 included, or the string value when
+/// the writer stored it as a string; either way the text ends at its first NUL. The RTF body is
+/// <c>PidTagRtfCompressed</c>, decompressed per MS-OXRTFCP under the caller's output ceiling. This file lives in
+/// <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader; the consuming project
+/// selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
 internal static class MapiBodies
 {
