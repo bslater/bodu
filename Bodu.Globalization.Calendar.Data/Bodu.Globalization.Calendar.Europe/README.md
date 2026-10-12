@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Holiday and observance data for the EU / EEA territories, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus ISO 3166-2 subdivisions - that imports the shared Western, Orthodox, and Catholic Christian catalogues through the `europe-common` hub.
+Holiday and observance data for the 27 EU member states and the United Kingdom, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus, where authored, ISO 3166-2 subdivisions - that imports the shared core, Western Christian, family, and cultural catalogues through the `europe-common` hub. The Orthodox countries (Bulgaria, Cyprus, Greece, Romania) define their Orthodox Easter cycle in their own packs.
 
 ## Installation
 
@@ -22,7 +22,7 @@ Targets `net8.0` and `net10.0`.
 using Bodu.Globalization.Calendar;
 
 INotableDateService service = EuropeCalendarData.CreateService("DE");
-var holidays = service.GetNotableDates(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+IReadOnlyList<NotableDate> holidays = service.Resolve(2026, "DE");   // every occurrence in 2026
 ```
 
 The `EuropeCalendarData` factory exposes:
@@ -33,7 +33,7 @@ The `EuropeCalendarData` factory exposes:
 | `LoadResource(territory)` | The validated `NotableDateResource` for a country (and its subdivisions) |
 | `CreateService(territory)` | A ready-to-use `INotableDateService` for the territory |
 
-Subdivision rules (e.g. German *Land* or Spanish *comunidad autónoma* holidays) resolve automatically when a territory code carries an ISO 3166-2 subdivision.
+Subdivision rules (the German *Länder*, the UK nations, and the Alsace-Moselle *départements*) resolve automatically when a territory code carries an ISO 3166-2 subdivision.
 
 ## Testing
 

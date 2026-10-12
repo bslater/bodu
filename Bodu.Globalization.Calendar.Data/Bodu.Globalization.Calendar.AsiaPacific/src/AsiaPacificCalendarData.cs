@@ -9,8 +9,9 @@ using System.Globalization;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides access to the embedded Asia-Pacific notable-date resource pack (Australia, China, Japan, New Zealand),
-/// built on the notable-date schema.
+/// Provides access to the embedded Asia-Pacific notable-date resource pack (14 countries and territories, among them
+/// Australia, China, India, Japan, and New Zealand; see <see cref="SupportedCountries" />), built on the notable-date
+/// schema.
 /// </summary>
 /// <remarks>
 /// <para>

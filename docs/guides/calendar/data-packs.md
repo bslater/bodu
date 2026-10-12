@@ -16,7 +16,7 @@ All five packs ship as `Bodu.Globalization.Calendar.<Region>` packages - `Bodu.G
 |---|---|---|
 | **Bodu.Globalization.Calendar.Americas** | <xref:Bodu.Globalization.Calendar.AmericasCalendarData> | Argentina (`AR`), Brazil (`BR`), Canada (`CA`), Chile (`CL`), Colombia (`CO`), Mexico (`MX`), Peru (`PE`), United States (`US`) |
 | **Bodu.Globalization.Calendar.AsiaPacific** | <xref:Bodu.Globalization.Calendar.AsiaPacificCalendarData> | Australia (`AU`), China (`CN`), Hong Kong (`HK`), Indonesia (`ID`), India (`IN`), Japan (`JP`), South Korea (`KR`), Malaysia (`MY`), New Zealand (`NZ`), Philippines (`PH`), Singapore (`SG`), Thailand (`TH`), Taiwan (`TW`), Vietnam (`VN`) |
-| **Bodu.Globalization.Calendar.Europe** | <xref:Bodu.Globalization.Calendar.EuropeCalendarData> | 28 EU/EEA territories: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
+| **Bodu.Globalization.Calendar.Europe** | <xref:Bodu.Globalization.Calendar.EuropeCalendarData> | The 27 EU member states plus the United Kingdom: `AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK` |
 | **Bodu.Globalization.Calendar.MiddleEast** | <xref:Bodu.Globalization.Calendar.MiddleEastCalendarData> | United Arab Emirates (`AE`), Israel (`IL`), Jordan (`JO`), Qatar (`QA`), Saudi Arabia (`SA`), Turkey (`TR`) |
 | **Bodu.Globalization.Calendar.Africa** | <xref:Bodu.Globalization.Calendar.AfricaCalendarData> | Egypt (`EG`), Ethiopia (`ET`), Ghana (`GH`), Kenya (`KE`), Morocco (`MA`), Nigeria (`NG`), South Africa (`ZA`) |
 
@@ -89,7 +89,7 @@ IReadOnlyList<NotableDate> july4 = service.Resolve(new DateOnly(2026, 7, 4), "US
 
 ## Compose several territories
 
-A `NotableDateService` is built over a single resource, so a service from one pack resolves every territory that pack carries. Create one service per pack and route the query to the matching service:
+A `NotableDateService` is built over a single resource, and `LoadResource` loads one country's `region-<cc>.xml`, so a service resolves the country (and its subdivisions) whose resource it was built from - `AmericasCalendarData.CreateService("US")` returns nothing for `"CA"`. Create one service per country and route the query to the matching service:
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -139,7 +139,7 @@ See [Calendar dependency injection](dependency-injection.md) for the registratio
 
 Several Asia-Pacific resources resolve through built-in date-calculation algorithms - Lunar New Year and Mid-Autumn Festival (Chinese lunisolar), Vesak and Asalha Puja (lunar), Qingming (solar term), and the Hindu festivals (lunisolar). These keys are part of the base library and are wired automatically by `LoadResource` / `CreateService`, so the packs resolve out of the box with no extra registration.
 
-To extend a pack resource with your own computed date, register a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> and load your own document that imports the pack concepts and references the new `<Algorithm key="…">`. See [Date calculation algorithms](algorithms.md) and [Building and extending the service](building-the-service.md).
+A pack's own documents cannot be imported: the `region-<cc>` documents and the region hubs (`americas-common` and the others) are resolved only inside each factory, and <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> serves only the shared catalogues, so importing `region-us` reports `BODU-CAL-IMPORT-MISSING`. To add your own computed date, either author your own document that imports the shared catalogues the pack itself uses (for example `global-core` and `christian-western`) alongside a rule referencing a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm> by `<Algorithm key="…">`, loaded and served with your registry; or keep the pack's resource from `LoadResource(...)` and contribute the extra occurrences in code through `NotableDateServiceOptions.Providers`. See [Date calculation algorithms](algorithms.md) and [Building and extending the service](building-the-service.md).
 
 ## Per-pack reference
 
@@ -167,7 +167,7 @@ Every factory type lives in the `Bodu.Globalization.Calendar` namespace - the pa
 **Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.EuropeCalendarData>
 
-`SupportedCountries` = the 28 EU/EEA territories listed above (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`). National rules typically cover the federal calendar plus the major regional variants (`GB-SCT`, `GB-NIR`, `DE-BY` for Bavaria, …). All dates resolve through built-in strategies (most commonly Gregorian Easter via `Algorithm`), so no custom algorithm registration is required.
+`SupportedCountries` = the 27 EU member states plus the United Kingdom, listed above (`AT`, `BE`, `BG`, `CY`, `CZ`, `DE`, `DK`, `EE`, `ES`, `FI`, `FR`, `GB`, `GR`, `HR`, `HU`, `IE`, `IT`, `LT`, `LU`, `LV`, `MT`, `NL`, `PL`, `PT`, `RO`, `SE`, `SI`, `SK`). National rules typically cover the federal calendar plus the major regional variants (`GB-SCT`, `GB-NIR`, `DE-BY` for Bavaria, …). All dates resolve through built-in strategies (most commonly Gregorian Easter via `Algorithm`), so no custom algorithm registration is required.
 
 ### Middle East - `MiddleEastCalendarData` {#middle-east}
 
@@ -175,7 +175,7 @@ Every factory type lives in the `Bodu.Globalization.Calendar` namespace - the pa
 **Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.MiddleEastCalendarData>
 
-`SupportedCountries` = `AE`, `IL`, `JO`, `QA`, `SA`, `TR`. These resources lean on the non-Gregorian calendar systems and lunar projection: the Gulf states import the Saudi-aligned `global-islamic-umm-al-qura` catalogue, while Israel resolves the Hebrew-calendar festivals. Several rules carry a Sunday-Thursday (or Saturday-Thursday) working week and weekend-substitution adjustments - query with the matching <xref:Bodu.DayOfWeekSet> preset when computing working days. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
+`SupportedCountries` = `AE`, `IL`, `JO`, `QA`, `SA`, `TR`. These resources lean on the non-Gregorian calendar systems and lunar projection: Saudi Arabia imports the Umm al-Qura `global-islamic-umm-al-qura` catalogue directly; the UAE, Jordan, Qatar, and Turkey packs take the tabular `global-islamic` catalogue through the `middleeast-common` hub; and Israel imports `global-jewish` directly for the Hebrew-calendar festivals. The Israel, Jordan, Qatar, and Saudi Arabia packs declare a Sunday-Thursday working week - query with the matching <xref:Bodu.DayOfWeekSet> preset when computing working days. See [Working with non-Gregorian calendars](non-gregorian-calendars.md).
 
 ### Africa - `AfricaCalendarData` {#africa}
 
@@ -183,7 +183,7 @@ Every factory type lives in the `Bodu.Globalization.Calendar` namespace - the pa
 **Namespace:** `Bodu.Globalization.Calendar`
 **Type:** <xref:Bodu.Globalization.Calendar.AfricaCalendarData>
 
-`SupportedCountries` = `EG`, `ET`, `GH`, `KE`, `MA`, `NG`, `ZA`. Coverage mixes Gregorian civil holidays, Western and (for Ethiopia) Orthodox Christian dates via the Easter `Algorithm` keys, and Islamic dates imported from the tabular `global-islamic` catalogue. No custom registration is required.
+`SupportedCountries` = `EG`, `ET`, `GH`, `KE`, `MA`, `NG`, `ZA`. Coverage mixes Gregorian civil holidays, Western and (for Ethiopia and Egypt) Orthodox Christian dates via the Easter `Algorithm` keys, and Islamic dates imported from the tabular `global-islamic` catalogue. No custom registration is required.
 
 ## Where to go next
 

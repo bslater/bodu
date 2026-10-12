@@ -34,7 +34,7 @@ Each pack embeds one `region-<cc>.xml` document per country under its `Resources
 | `Bodu.Globalization.Calendar.MiddleEast` | `AE` United Arab Emirates · `IL` Israel · `JO` Jordan · `QA` Qatar · `SA` Saudi Arabia · `TR` Türkiye |
 | `Bodu.Globalization.Calendar.Africa` | `EG` Egypt · `ET` Ethiopia · `GH` Ghana · `KE` Kenya · `MA` Morocco · `NG` Nigeria · `ZA` South Africa |
 
-Where a country has subdivision-specific holidays the pack authors them under ISO 3166-2 codes - the Australian states and territories, the Canadian provinces, the German *Länder*, the US states, the UK nations (`GB-ENG`, `GB-SCT`, `GB-WLS`, `GB-NIR`), the Alsace-Moselle *départements* (`FR-57`, `FR-67`, `FR-68`), and the Brazilian and Mexican states with authored rules. The [per-pack reference](../../guides/calendar/data-packs.md#per-pack-reference) and the [notable-date catalogue](../../guides/calendar/catalogue/index.md) list what each territory actually observes.
+Where a country has subdivision-specific holidays the pack authors them under ISO 3166-2 codes - the Australian states and territories, the Canadian provinces, the German *Länder*, the US states, the UK nations (`GB-ENG`, `GB-SCT`, `GB-WLS`, `GB-NIR`), the Alsace-Moselle *départements* (`FR-57`, `FR-67`, `FR-68`), and the Brazilian states with authored rules. The [per-pack reference](../../guides/calendar/data-packs.md#per-pack-reference) and the [notable-date catalogue](../../guides/calendar/catalogue/index.md) list what each territory actually observes.
 
 ## Region hubs and the common catalogues
 

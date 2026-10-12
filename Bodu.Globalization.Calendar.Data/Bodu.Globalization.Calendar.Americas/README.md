@@ -22,7 +22,7 @@ Targets `net8.0` and `net10.0`.
 using Bodu.Globalization.Calendar;
 
 INotableDateService service = AmericasCalendarData.CreateService("US");
-var holidays = service.GetNotableDates(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+IReadOnlyList<NotableDate> holidays = service.Resolve(2026, "US");   // every occurrence in 2026
 ```
 
 The `AmericasCalendarData` factory exposes:

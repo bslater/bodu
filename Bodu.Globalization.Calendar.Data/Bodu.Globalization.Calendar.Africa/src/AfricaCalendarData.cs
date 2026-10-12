@@ -17,8 +17,8 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// Each supported country is a self-contained embedded resource. A territory may be a country code (<c>ZA</c>) or a
 /// subdivision; the subdivision selects the same country resource, and the resolver filters by the full territory at
-/// query time. The packs draw on the Western and Orthodox Christian, civil, and Islamic catalogues, and the
-/// North-African packs declare a Friday/Saturday working week.
+/// query time. The packs draw on the Western and Orthodox Christian, civil, and Islamic catalogues; Egypt's pack
+/// declares a Sunday-to-Thursday working week (a Friday/Saturday weekend), and the others keep Monday to Friday.
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Call <see cref="CreateService(string)" /> for a ready-to-query
