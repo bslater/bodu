@@ -445,6 +445,27 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO whose columns are ordered by <see cref="Bodu.Text.Serialization.PropertyOrderAttribute" />, with a
+    /// get-only column that is written but never read back.
+    /// </summary>
+    public sealed class OrderedRecord
+    {
+        /// <summary>Gets or sets the column ordered last.</summary>
+        /// <value>The last column.</value>
+        [Bodu.Text.Serialization.PropertyOrder(2)]
+        public string? Last { get; set; }
+
+        /// <summary>Gets the computed column, which has no order and so is written first.</summary>
+        /// <value>The text <c>computed</c>.</value>
+        public string Computed => "computed";
+
+        /// <summary>Gets or sets the column ordered after the computed one.</summary>
+        /// <value>The first ordered column.</value>
+        [Bodu.Text.Serialization.PropertyOrder(1)]
+        public string? First { get; set; }
+    }
+
+    /// <summary>
     /// A simple record POCO with a string and a typed column.
     /// </summary>
     public sealed class Person

@@ -774,4 +774,24 @@ public partial class DelimitedSerializerTests
             _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<int>(source);
         });
     }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, the streamed records of a POCO bind
+    /// each field to the member in the same position, as <c>Deserialize</c> does.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenNoHeaderIsSet_ForAPoco_ShouldBindFieldsByPosition()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Ada,36\nGrace,45\n"));
+
+        List<Person> people = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<Person>(stream, options));
+
+        Assert.AreEqual(2, people.Count);
+        Assert.AreEqual("Ada", people[0].Name);
+        Assert.AreEqual(36, people[0].Age);
+        Assert.AreEqual("Grace", people[1].Name);
+        Assert.AreEqual(45, people[1].Age);
+    }
 }

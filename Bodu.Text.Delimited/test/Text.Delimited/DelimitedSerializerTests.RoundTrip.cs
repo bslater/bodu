@@ -334,4 +334,24 @@ public partial class DelimitedSerializerTests
             Assert.AreEqual(records[i].Value, restored[i].Value, $"{typeof(TValue).Name}: record {i} has another value.");
         }
     }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, each field reads back into the member
+    /// <c>Serialize</c> wrote in its position: members ordered by <see cref="Bodu.Text.Serialization.PropertyOrderAttribute" />,
+    /// with the column of a get-only member written and skipped on the way back.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenNoHeaderIsSet_ShouldBindEachFieldToTheMemberWrittenInItsPosition()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+        var records = new List<OrderedRecord> { new() { First = "a", Last = "z" } };
+
+        string text = DelimitedSerializer.Serialize(records, options);
+        List<OrderedRecord> restored = DelimitedSerializer.Deserialize<OrderedRecord>(text, options);
+
+        Assert.AreEqual("computed,a,z\r\n", text);
+        Assert.AreEqual(1, restored.Count);
+        Assert.AreEqual("a", restored[0].First);
+        Assert.AreEqual("z", restored[0].Last);
+    }
 }
