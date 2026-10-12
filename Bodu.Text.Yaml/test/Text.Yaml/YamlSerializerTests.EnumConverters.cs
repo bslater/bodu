@@ -331,7 +331,6 @@ public partial class YamlSerializerTests
     [DataRow("1, 2", 7, DisplayName = "a list of integers")]
     [DataRow("Read, 2", 7, DisplayName = "a member name and an integer")]
     [DataRow("18446744073709551616", 7, DisplayName = "a plain integer beyond 64 bits")]
-    [DataRow("2.0", 7, DisplayName = "an integral float")]
     public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndScalarHoldsInteger_ShouldThrowYamlSerializationException(
         string scalar,
         int offset)
@@ -421,7 +420,6 @@ public partial class YamlSerializerTests
     [DataRow("\"2\"", 2, DisplayName = "the double-quoted digits of a defined value")]
     [DataRow("'99'", 99, DisplayName = "the single-quoted digits of an undefined value")]
     [DataRow("\" +2 \"", 2, DisplayName = "a signed integer between spaces")]
-    [DataRow("2.0", 2, DisplayName = "an integral float")]
     public void Deserialize_WhenStringEnumConverterAllowsIntegersAndScalarHoldsInteger_ShouldBindValue(string scalar, int expected)
     {
         var options = new YamlSerializerOptions();
@@ -1000,6 +998,317 @@ public partial class YamlSerializerTests
     /// <returns>The member's value as the decimal text of its underlying integer.</returns>
     private static string UnderlyingText(object model, string member) =>
         ((Enum)model.GetType().GetProperty(member)!.GetValue(model)!).ToString("D");
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> with a naming policy writes a combination of flags that no single member
+    /// names as the comma-separated wire names of its flags, in the order <see cref="Enum.ToString()" /> lists them,
+    /// as <c>System.Text.Json</c>'s <c>JsonStringEnumConverter</c> does, rather than as the members' CLR names.
+    /// </summary>
+    /// <param name="value">The combined underlying value.</param>
+    /// <param name="expected">The expected text.</param>
+    [TestMethod]
+    [DataRow(5, "can_read, can_execute", DisplayName = "two single flags")]
+    [DataRow(6, "can_write, can_execute", DisplayName = "two other single flags")]
+    [DataRow(7, "can_read_write, can_execute", DisplayName = "a composite member and a flag")]
+    public void Serialize_WhenCombinedFlagsUnderNamingPolicy_ShouldWriteEachFlagsWireName(int value, string expected)
+    {
+        string text = YamlSerializer.Serialize(new AccessModel { Access = (AccessFlags)value }, SnakeCaseEnumOptions(allowIntegerValues: true));
+
+        Assert.AreEqual($"Access: {expected}\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a combination of flags one of which carries a <see cref="StringEnumMemberNameAttribute" /> name
+    /// is written with that configured name for that flag.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenCombinedFlagsIncludeRenamedMember_ShouldWriteConfiguredName()
+    {
+        string expected = "r, Write";
+
+        string text = YamlSerializer.Serialize(new RenamedFlagsModel { Flags = RenamedFlags.Read | RenamedFlags.Write });
+
+        Assert.AreEqual($"Flags: {expected}\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> with a naming policy reads a comma-separated list of wire names as the
+    /// combination of their flags, in any order and with spaces around each name, and tolerates a trailing comma, as
+    /// <c>JsonStringEnumConverter</c> does.
+    /// </summary>
+    /// <param name="text">The string's text.</param>
+    /// <param name="expected">The expected combined underlying value.</param>
+    [TestMethod]
+    [DataRow("can_read, can_execute", 5, DisplayName = "two wire names")]
+    [DataRow("can_execute, can_read", 5, DisplayName = "two wire names in descending order")]
+    [DataRow(" can_read , can_execute ", 5, DisplayName = "two wire names between spaces")]
+    [DataRow("can_read_write, can_execute", 7, DisplayName = "a composite member's wire name and a flag")]
+    [DataRow("can_read,", 1, DisplayName = "a wire name and a trailing comma")]
+    public void Deserialize_WhenFlagsListUsesWireNames_ShouldBindCombination(string text, int expected)
+    {
+        AccessModel model = YamlSerializer.Deserialize<AccessModel>($"Access: \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true))!;
+
+        Assert.AreEqual((AccessFlags)expected, model.Access);
+    }
+
+    /// <summary>
+    /// Verifies that a combination of flags written under a naming policy reads back to the same value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenCombinedFlagsUnderNamingPolicy_ShouldRoundTrip()
+    {
+        YamlSerializerOptions options = SnakeCaseEnumOptions(allowIntegerValues: false);
+        var model = new AccessModel { Access = AccessFlags.CanReadWrite | AccessFlags.CanExecute };
+
+        string text = YamlSerializer.Serialize(model, options);
+        AccessModel roundTripped = YamlSerializer.Deserialize<AccessModel>(text, options)!;
+
+        Assert.AreEqual(model.Access, roundTripped.Access);
+    }
+
+    /// <summary>
+    /// Verifies that a list with an empty name, before, between or instead of its names, is rejected with
+    /// <see cref="YamlSerializationException" /> rather than read as the names it does hold.
+    /// </summary>
+    /// <param name="text">The string's text.</param>
+    [TestMethod]
+    [DataRow("can_read, , can_execute", DisplayName = "an empty name between two names")]
+    [DataRow(", can_read", DisplayName = "an empty name before a name")]
+    [DataRow("", DisplayName = "the empty string")]
+    [DataRow("  ", DisplayName = "white space only")]
+    [DataRow("can_read,,", DisplayName = "a name and two trailing commas")]
+    public void Deserialize_WhenFlagsListHoldsEmptyName_ShouldThrowYamlSerializationException(string text)
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<AccessModel>($"Access: \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true));
+        });
+
+        Assert.AreEqual("Access", ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that a member that carries a <see cref="StringEnumMemberNameAttribute" /> name does not bind by its CLR
+    /// name, in any case, as <c>JsonStringEnumConverter</c> does from .NET 9.
+    /// </summary>
+    /// <param name="text">The string's text.</param>
+    [TestMethod]
+    [DataRow("NotFound", DisplayName = "the CLR name")]
+    [DataRow("notfound", DisplayName = "the CLR name in lower case")]
+    public void Deserialize_WhenRenamedMemberIsReadByClrName_ShouldThrowYamlSerializationException(string text)
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<RenamedStatusModel>($"Status: \"{text}\"\n");
+        });
+
+        Assert.AreEqual("Status", ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that a flag that carries a <see cref="StringEnumMemberNameAttribute" /> name does not bind by its CLR
+    /// name inside a list of flags.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRenamedFlagIsReadByClrName_ShouldThrowYamlSerializationException()
+    {
+        string text = "Read, Write";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<RenamedFlagsModel>($"Flags: \"{text}\"\n");
+        });
+
+        Assert.AreEqual("Flags", ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="StringEnumMemberNameAttribute" /> name binds only as configured, so the name in
+    /// another case is rejected, as <c>JsonStringEnumConverter</c> rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAttributeNameCaseDiffers_ShouldThrowYamlSerializationException()
+    {
+        string text = "NOT-FOUND";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<RenamedStatusModel>($"Status: \"{text}\"\n");
+        });
+
+        Assert.AreEqual("Status", ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that a name a naming policy produces binds only as produced, so the name in another case is rejected,
+    /// as <c>JsonStringEnumConverter</c> rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenPolicyNameCaseDiffers_ShouldThrowYamlSerializationException()
+    {
+        string text = "CAN_READ";
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<AccessModel>($"Access: \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true));
+        });
+
+        Assert.AreEqual("Access", ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that under a naming policy a member without a <see cref="StringEnumMemberNameAttribute" /> name still
+    /// binds by its CLR name, in any case and inside a list, as <c>JsonStringEnumConverter</c> binds it.
+    /// </summary>
+    /// <param name="text">The string's text.</param>
+    /// <param name="expected">The expected underlying value.</param>
+    [TestMethod]
+    [DataRow("CanRead", 1, DisplayName = "the CLR name")]
+    [DataRow("canread", 1, DisplayName = "the CLR name in lower case")]
+    [DataRow("CanRead, CanExecute", 5, DisplayName = "a list of CLR names")]
+    public void Deserialize_WhenUnrenamedMemberIsReadByClrName_ShouldBindIt(string text, int expected)
+    {
+        AccessModel model = YamlSerializer.Deserialize<AccessModel>($"Access: \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true))!;
+
+        Assert.AreEqual((AccessFlags)expected, model.Access);
+    }
+
+    /// <summary>
+    /// Verifies that a list that holds an integer is rejected even by a converter that allows integer values, which
+    /// binds an integer only as the whole text, as <c>JsonStringEnumConverter</c> does.
+    /// </summary>
+    /// <param name="text">The string's text.</param>
+    [TestMethod]
+    [DataRow("1, 4", DisplayName = "a list of integers")]
+    [DataRow("CanRead, 4", DisplayName = "a CLR name and an integer")]
+    [DataRow("can_read, 4", DisplayName = "a wire name and an integer")]
+    public void Deserialize_WhenListHoldsIntegerAndIntegersAreAllowed_ShouldThrowYamlSerializationException(string text)
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<AccessModel>($"Access: \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true));
+        });
+
+        Assert.AreEqual("Access", ex.Path, "Path");
+    }
+
+    /// <summary>
+    /// Verifies that a float scalar never binds to an enumeration, even one that is integral, whether integer values
+    /// are allowed or not, as <c>JsonStringEnumConverter</c> never binds a non-integer number, and that the exception
+    /// says the scalar is a float.
+    /// </summary>
+    /// <param name="scalar">The scalar, as the document spells it.</param>
+    /// <param name="allowIntegerValues">
+    /// Whether the member reads through a registered <see cref="YamlStringEnumConverter" /> that allows integer values,
+    /// or <see langword="null" /> for the default enum handling.
+    /// </param>
+    [TestMethod]
+    [DataRow("2.0", null, DisplayName = "an integral float, default handling")]
+    [DataRow("1e0", null, DisplayName = "a float in exponent form, default handling")]
+    [DataRow(".inf", null, DisplayName = "infinity, default handling")]
+    [DataRow("2.0", true, DisplayName = "an integral float, string converter allowing integers")]
+    [DataRow("2.0", false, DisplayName = "an integral float, string converter disallowing integers")]
+    public void Deserialize_WhenScalarIsFloat_ShouldThrowYamlSerializationException(string scalar, bool? allowIntegerValues)
+    {
+        var options = new YamlSerializerOptions();
+        if (allowIntegerValues is bool allow)
+            options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: allow));
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<StatusModel>($"Status: {scalar}\n", options);
+        });
+
+        Assert.AreEqual("Status", ex.Path, "Path");
+        Assert.IsTrue(ex.Message.Contains("float", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Creates options that convert enumerations by name through a <see cref="YamlStringEnumConverter" /> with the lower snake-case
+    /// naming policy.
+    /// </summary>
+    /// <param name="allowIntegerValues">Whether the converter binds and writes integer values.</param>
+    /// <returns>The options.</returns>
+    private static YamlSerializerOptions SnakeCaseEnumOptions(bool allowIntegerValues)
+    {
+        var options = new YamlSerializerOptions();
+        options.Converters.Add(new YamlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues));
+        return options;
+    }
+
+    /// <summary>
+    /// A flags enumeration whose members' names change under a naming policy, with a composite member.
+    /// </summary>
+    [Flags]
+    private enum AccessFlags
+    {
+        /// <summary>
+        /// No access.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Read access.
+        /// </summary>
+        CanRead = 1,
+
+        /// <summary>
+        /// Write access.
+        /// </summary>
+        CanWrite = 2,
+
+        /// <summary>
+        /// Read and write access, the composite of <see cref="CanRead" /> and <see cref="CanWrite" />.
+        /// </summary>
+        CanReadWrite = 3,
+
+        /// <summary>
+        /// Execute access.
+        /// </summary>
+        CanExecute = 4,
+    }
+
+    /// <summary>
+    /// A flags enumeration one of whose members carries a <see cref="StringEnumMemberNameAttribute" /> name.
+    /// </summary>
+    [Flags]
+    private enum RenamedFlags
+    {
+        /// <summary>
+        /// The read flag, written under the name <c>r</c>.
+        /// </summary>
+        [StringEnumMemberName("r")]
+        Read = 1,
+
+        /// <summary>
+        /// The write flag.
+        /// </summary>
+        Write = 2,
+    }
+
+    /// <summary>
+    /// A model carrying an <see cref="AccessFlags" /> value.
+    /// </summary>
+    private sealed class AccessModel
+    {
+        /// <summary>
+        /// Gets or sets the access.
+        /// </summary>
+        /// <value>The access.</value>
+        public AccessFlags Access { get; set; }
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="RenamedFlags" /> value.
+    /// </summary>
+    private sealed class RenamedFlagsModel
+    {
+        /// <summary>
+        /// Gets or sets the flags.
+        /// </summary>
+        /// <value>The flags.</value>
+        public RenamedFlags Flags { get; set; }
+    }
 
     /// <summary>
     /// An enumeration whose members map to member-name scalars by default.

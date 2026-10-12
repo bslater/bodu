@@ -25,14 +25,23 @@ namespace Bodu.Text.Yaml.Serialization;
 /// throws <see cref="YamlSerializationException" /> rather than being narrowed into that type.
 /// </para>
 /// <para>
+/// Names are matched as System.Text.Json's <c>JsonStringEnumConverter</c> matches them. A member's wire name, from
+/// <see cref="StringEnumMemberNameAttribute" /> or the naming policy, binds only in its own case; the CLR name of a
+/// member the attribute does not rename also binds, in any case, while a renamed member's CLR name does not. A
+/// combination of flags is written as the comma-separated wire names of its flags, in the order
+/// <see cref="Enum.ToString()" /> lists them, and is read from a list of names in any order, with a trailing comma
+/// tolerated; an integer binds, where integers are allowed, only as the whole text. A float scalar, even an integral
+/// one such as <c>2.0</c>, never binds.
+/// </para>
+/// <para>
 /// A converter that does not allow integers throws <see cref="YamlSerializationException" /> on an integer scalar, and
 /// at any other scalar that is not a member's wire name and whose text has an integer in any of its comma-separated
-/// parts, such as a quoted <c>"2"</c>, <c>!!str 2</c>, an integral float such as <c>2.0</c>, or <c>Read, 2</c>, as
-/// System.Text.Json's <c>JsonStringEnumConverter</c> rejects a numeric string from .NET 9. A member whose wire name is
-/// an integer's text still reads from a string scalar, because the wire names are matched first. Such a converter also
-/// refuses to write a value that is neither a member nor a combination of defined flags, such as an undefined value or
-/// a flags value with an undefined bit, and throws <see cref="YamlSerializationException" /> rather than writing the
-/// decimal text it would reject on read.
+/// parts, such as a quoted <c>"2"</c>, <c>!!str 2</c>, or <c>Read, 2</c>, as System.Text.Json's
+/// <c>JsonStringEnumConverter</c> rejects a numeric string from .NET 9. A member whose wire name is an integer's text
+/// still reads from a string scalar, because the wire names are matched first. Such a converter also refuses to write a
+/// value that is neither a member nor a combination of defined flags, such as an undefined value or a flags value with
+/// an undefined bit, and throws <see cref="YamlSerializationException" /> rather than writing the decimal text it would
+/// reject on read.
 /// </para>
 /// </remarks>
 /// <example>

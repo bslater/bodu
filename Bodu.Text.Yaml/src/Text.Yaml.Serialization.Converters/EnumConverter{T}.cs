@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
-using System.Reflection;
 using Bodu.Text.Serialization;
 using Bodu.Text.Yaml.Reader;
 using Bodu.Text.Yaml.Writer;
@@ -14,42 +13,46 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 
 /// <summary>
 /// Converts an enumeration to and from a YAML scalar, honoring a naming policy and any per-member
-/// <see cref="StringEnumMemberNameAttribute" />: names are matched case-insensitively, integer scalars map through the
-/// enumeration's underlying value, and writing emits the mapped member name or, for the default enum handling, the
-/// numeric value per <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />. A null scalar reads as the type default.
+/// <see cref="StringEnumMemberNameAttribute" />: names are matched as System.Text.Json's <c>JsonStringEnumConverter</c>
+/// matches them, integer scalars map through the enumeration's underlying value, and writing emits the member's name
+/// or, for the default enum handling, the numeric value per <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />. A
+/// null scalar reads as the type default.
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>
 /// <para>
-/// On write a defined value is emitted as its mapped wire name; a value that does not correspond to a single defined
-/// member - an undefined value or a combination of flags - falls back to the runtime's string form of the value, its
-/// comma-separated member names for a combination of defined flags and its decimal text otherwise. With
+/// Names are mapped through <see cref="EnumNameTable{T}" />. On write a member is emitted as its wire name, and a
+/// combination of defined flags as the comma-separated wire names of its flags, in the order the runtime lists them;
+/// any other value, an undefined value or a flags value with an undefined bit, is emitted as its decimal text. With
 /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off, the default enum handling writes the underlying value
 /// instead, through <see cref="EnumIntegerConversion.WriteInteger{T}(ref Utf8YamlWriter, T)" />, which writes a value
 /// of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> as its plain invariant text, as a
 /// <see cref="ulong" /> member is written. A converter that <see cref="YamlStringEnumConverter" /> or
 /// <see cref="YamlStringEnumConverter{TEnum}" /> produces sets <see cref="_alwaysWriteNames" /> and writes names
-/// whatever the option says, as System.Text.Json's <c>JsonStringEnumConverter</c> does. On read a scalar is matched
-/// case-insensitively against the wire names and then, as a fallback, parsed by the runtime, so combined-flag strings,
-/// and numeric strings when integers are allowed, are accepted. An integer scalar maps through the underlying value, by
-/// way of <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so one outside the range of the
+/// whatever the option says, as System.Text.Json's <c>JsonStringEnumConverter</c> does.
+/// </para>
+/// <para>
+/// On read a scalar, as <see cref="ScalarCoercion.ReaderScalarText(ref Utf8YamlReader)" /> gives its text, binds when
+/// it is a wire name, in that name's own case, or a comma-separated list of names, in any order, each of which is a
+/// wire name or the CLR name, in any case, of a member that <see cref="StringEnumMemberNameAttribute" /> does not
+/// rename. An integer scalar maps through the underlying value, by way of
+/// <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so one outside the range of the
 /// enumeration's underlying type throws <see cref="YamlSerializationException" /> rather than being narrowed into that
-/// type.
+/// type, and a scalar whose whole text is an integer, such as a quoted <c>"2"</c>, binds as the value it holds. An
+/// integer inside a list never binds, and a float scalar, even an integral one such as <c>2.0</c>, never binds, as
+/// <c>JsonStringEnumConverter</c> never binds a number that is not an integer.
 /// </para>
 /// <para>
 /// When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer scalar is rejected rather than mapped
 /// through the underlying value, with a message that integer values are not allowed, whether or not the integer is the
-/// value of a defined member, and so is any other scalar whose text, as
-/// <see cref="ScalarCoercion.ReaderScalarText(ref Utf8YamlReader)" /> gives it, is not a wire name and holds an integer
-/// in any of its comma-separated parts, as <see cref="EnumIntegerConversion.ContainsIntegerText(ReadOnlySpan{char})" />
-/// determines: a quoted <c>"2"</c>, <c>!!str 2</c>, a plain integer beyond the 64-bit range, which YAML resolves as a
-/// string, an integral float such as <c>2.0</c>, or a list such as <c>Read, 2</c>. Each is rejected before the runtime
-/// could read the integer, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects a numeric string from .NET 9,
-/// and a wire name that is an integer's text, given through <see cref="StringEnumMemberNameAttribute" />, still binds
+/// value of a defined member, and so is any other scalar that is not a name and holds an integer in any of its
+/// comma-separated parts, as <see cref="EnumIntegerConversion.ContainsIntegerText(ReadOnlySpan{char})" /> determines: a
+/// quoted <c>"2"</c>, <c>!!str 2</c>, a plain integer beyond the 64-bit range, which YAML resolves as a string, or a
+/// list such as <c>Read, 2</c>, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects a numeric string from .NET
+/// 9. A wire name that is an integer's text, given through <see cref="StringEnumMemberNameAttribute" />, still binds
 /// its member. Nor is a value written by name as its decimal text, which the converter would then reject on read: a
-/// value that is neither a member nor a combination of defined flags, such as an undefined value or a flags value with
-/// an undefined bit, throws <see cref="YamlSerializationException" /> on write, as <c>JsonStringEnumConverter</c>
-/// refuses to write it when integers are not allowed.
+/// value that is neither a member nor a combination of defined flags throws <see cref="YamlSerializationException" />
+/// on write, as <c>JsonStringEnumConverter</c> refuses to write it when integers are not allowed.
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
@@ -59,17 +62,14 @@ internal sealed class EnumConverter<T>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether integer values are allowed: read from an integer scalar or a scalar whose text holds one, and written as the decimal text of a value with no name.</summary>
+    /// <summary>Whether integer values are allowed: read from an integer scalar or a scalar whose text is one, and written as the decimal text of a value with no name.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>Whether a value is written by name whatever <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says, as the string enum converters write it.</summary>
     private readonly bool _alwaysWriteNames;
 
-    /// <summary>Maps each wire name to its enumeration value, matched case-insensitively.</summary>
-    private readonly Dictionary<string, T> _nameToValue = new(StringComparer.OrdinalIgnoreCase);
-
-    /// <summary>Maps each enumeration value to the wire name used when writing it; the first name wins when several members share a value.</summary>
-    private readonly Dictionary<T, string> _valueToName = new();
+    /// <summary>The members' wire names, and the CLR names that also bind, in both directions.</summary>
+    private readonly EnumNameTable<T> _names;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EnumConverter{T}" /> class that applies no naming policy, accepts
@@ -88,7 +88,7 @@ internal sealed class EnumConverter<T>
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
     /// <param name="allowIntegerValues">
-    /// Whether integer values are allowed: read from an integer scalar or a scalar whose text holds one, and written as
+    /// Whether integer values are allowed: read from an integer scalar or a scalar whose text is one, and written as
     /// the decimal text of a value that is neither a member nor a combination of flags.
     /// </param>
     /// <param name="alwaysWriteNames">
@@ -106,18 +106,7 @@ internal sealed class EnumConverter<T>
         _namingPolicy = namingPolicy;
         _allowIntegerValues = allowIntegerValues;
         _alwaysWriteNames = alwaysWriteNames;
-
-        foreach (FieldInfo field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static))
-        {
-            string name = field.GetCustomAttribute<StringEnumMemberNameAttribute>()?.Name
-                ?? namingPolicy?.ConvertName(field.Name)
-                ?? field.Name;
-            var value = (T)field.GetValue(null)!;
-
-            _nameToValue[name] = value;
-            if (!_valueToName.ContainsKey(value))
-                _valueToName[value] = name;
-        }
+        _names = new EnumNameTable<T>(namingPolicy);
     }
 
     /// <inheritdoc />
@@ -134,17 +123,27 @@ internal sealed class EnumConverter<T>
             throw IntegerNotAllowed(reader.GetInt64().ToString(CultureInfo.InvariantCulture));
         }
 
+        if (reader.TokenType == YamlTokenType.Float)
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumFloatNotAllowed, typeof(T)));
+        }
+
         string text = ScalarCoercion.ReaderScalarText(ref reader);
-        if (_nameToValue.TryGetValue(text, out T mapped))
-            return mapped;
+        if (_names.TryParse(text, out T named))
+            return named;
+
+        if (EnumIntegerConversion.IsIntegerText(text) && _allowIntegerValues)
+        {
+            return Enum.TryParse(text, out T parsed)
+                ? parsed
+                : throw ValueNotFound(text);
+        }
 
         if (!_allowIntegerValues && EnumIntegerConversion.ContainsIntegerText(text))
             throw IntegerNotAllowed(text);
 
-        return Enum.TryParse(text, ignoreCase: true, out T parsed)
-            ? parsed
-            : throw new YamlSerializationException(string.Format(
-                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumValueNotFound, text, typeof(T)));
+        throw ValueNotFound(text);
     }
 
     /// <inheritdoc />
@@ -156,16 +155,9 @@ internal sealed class EnumConverter<T>
             return;
         }
 
-        if (_valueToName.TryGetValue(value, out string? name))
-        {
-            writer.WriteString(name);
-            return;
-        }
-
-        // The runtime formats a value that is neither a member nor a combination of defined flags as its decimal text,
-        // which this converter would reject on read when it does not allow integer values.
-        string text = value.ToString();
-        if (!_allowIntegerValues && EnumIntegerConversion.ContainsIntegerText(text))
+        // A value that is neither a member nor a combination of defined flags has only its decimal text, which this
+        // converter would reject on read when it does not allow integer values.
+        if (!_names.TryFormat(value, out string text) && !_allowIntegerValues)
         {
             throw new YamlSerializationException(string.Format(
                 CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumValueNotWritable, text, typeof(T)));
@@ -186,4 +178,14 @@ internal sealed class EnumConverter<T>
     private static YamlSerializationException IntegerNotAllowed(string text) =>
         new(string.Format(
             CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumIntegerNotAllowed, text, typeof(T)));
+
+    /// <summary>
+    /// Creates the exception reporting that a scalar's text is neither a name, a list of names, nor an integer this
+    /// converter reads.
+    /// </summary>
+    /// <param name="text">The scalar's text.</param>
+    /// <returns>The exception to throw.</returns>
+    private static YamlSerializationException ValueNotFound(string text) =>
+        new(string.Format(
+            CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumValueNotFound, text, typeof(T)));
 }

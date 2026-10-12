@@ -24,6 +24,14 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <see cref="BencodeSerializationException" /> rather than being narrowed into that type.
 /// </para>
 /// <para>
+/// Names are matched as System.Text.Json's <c>JsonStringEnumConverter</c> matches them. A member's wire name, from
+/// <see cref="StringEnumMemberNameAttribute" /> or the naming policy, binds only in its own case; the CLR name of a
+/// member the attribute does not rename also binds, in any case, while a renamed member's CLR name does not. A
+/// combination of flags is written as the comma-separated wire names of its flags, in the order
+/// <see cref="Enum.ToString()" /> lists them, and is read from a list of names in any order, with a trailing comma
+/// tolerated; an integer binds, where integers are allowed, only as the whole text.
+/// </para>
+/// <para>
 /// Like System.Text.Json's <c>JsonStringEnumConverter</c> from .NET 9, a converter that does not allow integers throws
 /// <see cref="BencodeSerializationException" /> on a Bencode integer, and at a byte string that is not a member's wire
 /// name and has an integer in any of its comma-separated parts, such as <c>2</c> or <c>Read, 2</c>. A member whose wire
