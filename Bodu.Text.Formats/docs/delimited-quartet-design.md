@@ -67,12 +67,11 @@ and `DelimitedSerializer` reads every record into a list of field arrays
 Headerless mode emits `StartArray … String* … EndArray` per record instead of
 objects (binds to `string[]` / `List<string>`).
 
-**As built:** only `string[]` binds as a positional record. A `List<string>`
-record type is bound as an object through its public properties
-(`GetMembers` in
-`Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializer.Binder.cs`), so
-deserializing headerless rows as `List<string>` yields empty lists, and
-serializing a `List<List<string>>` writes `Capacity` and `Count` columns.
+**As built:** only `string[]` binds as a positional record. Any other
+collection record type, `List<string>` among them, is rejected with
+`DelimitedSerializationException` before a row is read or written
+(`GetRecordMembers` in
+`Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializer.Binder.cs`, #1050).
 
 - **RFC 4180 in `Utf8DelimitedReader.Fields.cs`:** configurable delimiter/quote,
   quoted fields spanning lines, doubled-quote escapes, blank-line skipping,
@@ -160,11 +159,12 @@ root throws `DelimitedSerializationException`.
 incremental `SerializeAsync` takes an `IAsyncEnumerable<TRecord>`.
 `Deserialize` always returns a `List<TRecord>` and
 `DeserializeAsyncEnumerableAsync` yields an `IAsyncEnumerable<TRecord>`, with
-`TRecord` a POCO or `string[]`. The shipped root gate rejects only a root that
-is not enumerable (`Serialize` in
-`Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializer.cs`), so a `string`
-root, which is an `IEnumerable<char>`, and scalar record types are accepted
-(#1050), and a dictionary root is written as `Key` and `Value` columns.
+`TRecord` a POCO or `string[]`. A root that is not enumerable, a `string` root,
+and a record type that is a scalar or a collection other than `string[]` are
+rejected with `DelimitedSerializationException`, and so, when reading, is a
+record type with no public parameterless constructor (`GetRecordMembers` in
+`Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializer.Binder.cs`, #1050).
+A dictionary root is written as `Key` and `Value` columns.
 
 ## Dialect migration
 

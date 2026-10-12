@@ -163,11 +163,10 @@ handles `string`, `bool`, enums, `Guid`, `DateTime`, `DateTimeOffset`,
 `TimeSpan` and `Uri` itself and passes any other type to `Convert.ChangeType`.
 A dictionary target may be any `IDictionary<string, TValue>` whose values the
 codec converts. `DotEnvSerializerOptions` is a `sealed` class, not `partial`.
-The root gate (`IsScalarOrEnumerable`) rejects `string`, primitive, enum and
-non-dictionary enumerable roots only, so another scalar root such as `decimal`,
-`DateTime` or `Guid` binds as an object through its public properties:
-`Serialize(1.5m)` writes `Scale=1`, and `Deserialize<Guid>` returns
-`Guid.Empty`, without an error.
+The root gate (`IsScalarOrEnumerable`) rejects a scalar root, `decimal`,
+`DateTime`, `Guid`, `Uri` and the other scalar types and their nullable forms
+included, and a non-dictionary enumerable root, with
+`DotEnvSerializationException` (#1053).
 
 ## Dialect migration
 
