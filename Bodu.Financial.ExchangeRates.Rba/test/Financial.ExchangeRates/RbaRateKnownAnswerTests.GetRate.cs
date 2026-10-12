@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaRateKnownAnswerTests.GetRate.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class RbaRateKnownAnswerTests
 {
     /// <summary>
-    /// Verifies that an exact-date lookup returns the rate RBA published for the row's currency.
+    /// Verifies that an exact-date lookup returns the rate the era's workbook holds for the row's currency.
     /// </summary>
     /// <param name="answer">The known-answer row under test.</param>
     /// <returns>A task that completes when the assertion has run.</returns>
@@ -25,7 +25,7 @@ public partial class RbaRateKnownAnswerTests
 
         RbaRateProvider provider = await GetProviderAsync(answer.SourceFileName);
 
-        RateLookupResult result = provider.GetRate("AUD", ResolveCurrency(answer.Currency), answer.Date);
+        RateLookupResult result = provider.GetRate("AUD", answer.Currency, answer.Date);
 
         Assert.AreEqual(answer.ExpectedRate, result.Rate.Rate);
     }

@@ -15,11 +15,8 @@ namespace Bodu.Financial.ExchangeRates;
 internal sealed class GatedRbaRateTableSource
     : IRbaRateTableSource
 {
-    /// <summary>The options used when parsing the workbook fixture.</summary>
+    /// <summary>The options used when parsing the era's workbook.</summary>
     private readonly RbaRateProviderOptions _options;
-
-    /// <summary>The embedded fixture file name to parse once the gate opens.</summary>
-    private readonly string _fileName;
 
     /// <summary>The gate that callers await; the fetch completes only after it is released.</summary>
     private readonly TaskCompletionSource _gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -33,12 +30,10 @@ internal sealed class GatedRbaRateTableSource
     /// <summary>
     /// Initializes a new instance of the <see cref="GatedRbaRateTableSource" /> class.
     /// </summary>
-    /// <param name="options">The options used when parsing the workbook fixture.</param>
-    /// <param name="fileName">The embedded fixture file name to parse.</param>
-    public GatedRbaRateTableSource(RbaRateProviderOptions options, string fileName = RbaFixtures.Sample)
+    /// <param name="options">The options used when parsing the era's workbook.</param>
+    public GatedRbaRateTableSource(RbaRateProviderOptions options)
     {
         _options = options;
-        _fileName = fileName;
     }
 
     /// <summary>
@@ -66,7 +61,7 @@ internal sealed class GatedRbaRateTableSource
 
         await _gate.Task.ConfigureAwait(false);
 
-        using MemoryStream stream = RbaFixtures.OpenStream(_fileName);
+        using MemoryStream stream = RbaFixtures.OpenStream(era.FileName);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaRateWorkbookParser.Parse(workbook, _options);
     }

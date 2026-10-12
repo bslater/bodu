@@ -11,16 +11,13 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class RbaRateKnownAnswerTests
 {
     /// <summary>
-    /// Verifies that the first, last, minimum, and maximum rows selected for a workbook currency genuinely match the
-    /// extremes of that currency's full series, confirming both the selections and the completeness of the read series.
+    /// Verifies that the first, last, minimum, maximum and median rows selected for a workbook currency match the
+    /// extremes and median of the series the provider reads for that currency, confirming both the selections and the
+    /// completeness of the read series.
     /// </summary>
-    /// <param name="sourceFileName">The RBA workbook file name.</param>
-    /// <param name="currency">The RBA currency label.</param>
+    /// <param name="sourceFileName">The era workbook file name.</param>
+    /// <param name="currency">The ISO 4217 code of the quote currency.</param>
     /// <returns>A task that completes when the assertions have run.</returns>
-    /// <remarks>
-    /// The closest-to-median row is intentionally not recomputed here (its selection is algorithm-dependent); it is
-    /// still verified as a point value by <see cref="GetRate_WhenKnownAnswer_ShouldReturnPublishedRate" />.
-    /// </remarks>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(ClassificationGroups))]
@@ -30,29 +27,20 @@ public partial class RbaRateKnownAnswerTests
         RbaEraWorkbook era = RbaEraWorkbook.Default.Single(e => string.Equals(e.FileName, sourceFileName, StringComparison.Ordinal));
         DateOnly end = era.End ?? new DateOnly(2100, 1, 1);
 
-        IReadOnlyList<ExchangeRate> series = [.. await provider.GetRatesAsync("AUD", ResolveCurrency(currency), era.Start, end)];
+        IReadOnlyList<ExchangeRate> series = [.. await provider.GetRatesAsync("AUD", currency, era.Start, end)];
         Assert.IsNotEmpty(series);
 
         var byType = s_allRows
             .Where(row => row.SourceFileName == sourceFileName && string.Equals(row.Currency, currency, StringComparison.Ordinal))
-            .ToDictionary(row => row.Type, StringComparer.OrdinalIgnoreCase);
+            .ToDictionary(row => row.Type, StringComparer.Ordinal);
+        decimal[] sorted = [.. series.Select(rate => rate.Rate).Order()];
 
-        if (byType.TryGetValue("First", out RbaRateKnownAnswer? first))
-        {
-            Assert.AreEqual(first.Date, series[0].Date);
-            Assert.AreEqual(first.ExpectedRate, series[0].Rate);
-        }
-
-        if (byType.TryGetValue("Last", out RbaRateKnownAnswer? last))
-        {
-            Assert.AreEqual(last.Date, series[^1].Date);
-            Assert.AreEqual(last.ExpectedRate, series[^1].Rate);
-        }
-
-        if (byType.TryGetValue("Min", out RbaRateKnownAnswer? min))
-            Assert.AreEqual(min.ExpectedRate, series.Min(rate => rate.Rate));
-
-        if (byType.TryGetValue("Max", out RbaRateKnownAnswer? max))
-            Assert.AreEqual(max.ExpectedRate, series.Max(rate => rate.Rate));
+        Assert.AreEqual(byType["First"].Date, series[0].Date);
+        Assert.AreEqual(byType["First"].ExpectedRate, series[0].Rate);
+        Assert.AreEqual(byType["Last"].Date, series[^1].Date);
+        Assert.AreEqual(byType["Last"].ExpectedRate, series[^1].Rate);
+        Assert.AreEqual(byType["Min"].ExpectedRate, sorted[0]);
+        Assert.AreEqual(byType["Max"].ExpectedRate, sorted[^1]);
+        Assert.AreEqual(byType["Median"].ExpectedRate, sorted[(sorted.Length - 1) / 2]);
     }
 }

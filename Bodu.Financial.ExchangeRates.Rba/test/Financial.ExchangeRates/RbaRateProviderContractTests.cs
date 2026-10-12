@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RbaRateProviderContractTests.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -11,15 +11,15 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies that <see cref="RbaRateProvider" /> satisfies the shared dated-provider contract, so the RBA source
-/// is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider is seeded
-/// offline from the embedded sample workbook through <see cref="FixtureRbaRateTableSource" />.
+/// is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider loads each era
+/// offline from its synthetic workbook through <see cref="FixtureRbaRateTableSource" />.
 /// </summary>
 [TestClass]
 public sealed class RbaRateProviderContractTests
     : DatedRateProviderContractTests<RbaRateProvider>
 {
     /// <summary>
-    /// A date present in the embedded sample workbook (AUD/USD = 0.6828).
+    /// A date of the 2023-to-current era's workbook, which holds AUD/USD 0.6828 on it.
     /// </summary>
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
@@ -30,6 +30,7 @@ public sealed class RbaRateProviderContractTests
     protected override DateOnly KnownDate => s_seeded;
 
     /// <inheritdoc />
+    /// <remarks>New Year's Day, for which the 2018-2022 era's workbook, like the RBA's, has no row.</remarks>
     protected override DateOnly UnknownDate => new(2020, 1, 1);
 
     /// <inheritdoc />

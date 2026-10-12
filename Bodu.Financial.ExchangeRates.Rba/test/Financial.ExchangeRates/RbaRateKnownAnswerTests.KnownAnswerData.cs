@@ -9,16 +9,14 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class RbaRateKnownAnswerTests
 {
     /// <summary>
-    /// Verifies that the embedded data set loads and every row references a workbook in the RBA era catalogue.
+    /// Verifies that the known answers cover every workbook of the RBA era catalogue and reference no other.
     /// </summary>
     [TestMethod]
     public void KnownAnswerData_ShouldMapEveryRowToAKnownWorkbook()
     {
-        var knownFiles = RbaEraWorkbook.Default.Select(era => era.FileName).ToHashSet(StringComparer.Ordinal);
+        string[] knownFiles = [.. RbaEraWorkbook.Default.Select(era => era.FileName)];
 
         Assert.IsNotEmpty(s_allRows);
-        Assert.IsTrue(
-            s_allRows.All(row => knownFiles.Contains(row.SourceFileName)),
-            "Every known-answer row must reference a workbook in the RBA era catalogue.");
+        CollectionAssert.AreEquivalent(knownFiles, s_allRows.Select(row => row.SourceFileName).Distinct().ToArray());
     }
 }
