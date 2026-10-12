@@ -214,4 +214,51 @@ public partial class OutlookMessageTests
 
         Assert.AreEqual("<p>x</p>", message.BodyHtml, testName);
     }
+
+    /// <summary>
+    /// Verifies that a binary HTML body that begins with the byte order mark of the code page it decodes through has
+    /// the mark dropped, so the text does not begin with U+FEFF.
+    /// </summary>
+    /// <param name="testName">The encoding, by name.</param>
+    /// <param name="codePage">The declared internet code page.</param>
+    /// <param name="mark">The encoding's byte order mark, in hexadecimal.</param>
+    [TestMethod]
+    [DataRow("Utf8", 65001, "EFBBBF")]
+    [DataRow("Utf16LE", 1200, "FFFE")]
+    [DataRow("Utf16BE", 1201, "FEFF")]
+    [DataRow("Utf32LE", 12000, "FFFE0000")]
+    [DataRow("Utf32BE", 12001, "0000FEFF")]
+    public void BodyHtml_WhenBodyBeginsWithItsByteOrderMark_ShouldDropTheMark(
+        string testName,
+        int codePage,
+        string mark)
+    {
+        byte[] text = System.Text.Encoding.GetEncoding(codePage).GetBytes("<p>x</p>");
+        byte[] html = [.. Convert.FromHexString(mark), .. text];
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FDE0003, (ulong)codePage)
+            .AddBinary(MapiPropertyIds.Html, html)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("<p>x</p>", message.BodyHtml, testName);
+    }
+
+    /// <summary>
+    /// Verifies that a byte order mark that does not belong to the body's code page is left to the encoding: a UTF-8
+    /// mark under code page 1252 reads as the three Windows-1252 characters it encodes there.
+    /// </summary>
+    [TestMethod]
+    public void BodyHtml_WhenByteOrderMarkDoesNotMatchTheCodePage_ShouldDecodeTheMark()
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FDE0003, 1252)
+            .AddBinary(MapiPropertyIds.Html, [0xEF, 0xBB, 0xBF, .. "<p>x</p>"u8])
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("\u00EF\u00BB\u00BF<p>x</p>", message.BodyHtml);
+    }
 }
