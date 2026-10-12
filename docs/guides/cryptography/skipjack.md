@@ -55,20 +55,25 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 
 ## Encrypt and decrypt - CTR (stream mode)
 
+CTR needs no padding expansion, but through the `Skipjack` wrapper `PaddingMode.None` still requires block-aligned input (a multiple of 8 bytes); for arbitrary lengths drive <xref:Bodu.Security.Cryptography.CtrModeTransform> directly, which accepts a trailing partial block (see [Modes, transforms, and factories](cipher-composition-reference.md)):
+
 ```csharp
 using var alg = new Skipjack
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.None,  // CTR doesn't pad - input must be block-aligned here
 };
 alg.GenerateKey();
 alg.GenerateIV();              // initial counter block - must be unique per message
 
-byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] aligned = new byte[64]; // eight 8-byte blocks
+RandomNumberGenerator.Fill(aligned);
+
+byte[] ciphertext = alg.Encrypt(aligned);   // same length as the input
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-Skipjack's 8-byte counter space is small. Encrypting more than ~2³² blocks (32 GB) under the same key in CTR mode is unsafe because the counter is close to wrapping. `CtrModeTransform` will throw if the counter actually reaches its initial value.
+Skipjack's 8-byte block is small. Encrypting more than ~2³² blocks (32 GB) under the same key in CTR mode is unsafe because of the 64-bit birthday bound (SWEET32), long before the 64-bit counter could wrap. `CtrModeTransform` throws only if the counter rolls over to zero.
 
 ## Loading a known key
 

@@ -46,13 +46,13 @@ The IV must travel with the ciphertext so the receiver can decrypt. Don't put it
 
 **IV (counter):** same length as the block. **Must be unique per message under a given key.** Reuse is catastrophic.
 
-**Padding:** not required - `PaddingMode.None` is valid, because CTR turns the block cipher into a stream cipher. The ciphertext is the same length as the plaintext.
+**Padding:** CTR itself needs none - it turns the block cipher into a stream cipher, and <xref:Bodu.Security.Cryptography.CtrModeTransform> driven directly accepts any length, with the ciphertext exactly as long as the plaintext. Through a `SymmetricAlgorithm` wrapper, though, the final block still passes through the padding strategy, so `PaddingMode.None` accepts only block-aligned input there. Use PKCS7 through the wrapper for arbitrary lengths:
 
 ```csharp
 using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,   // CTR is a stream cipher
+    Padding   = PaddingMode.PKCS7,  // through the wrapper, None needs block-aligned input
 };
 alg.GenerateKey();
 alg.GenerateIV();                    // used as the initial counter block
@@ -60,6 +60,27 @@ alg.GenerateTweak();
 
 byte[] ciphertext = alg.Encrypt(plaintext);
 byte[] recovered  = alg.Decrypt(ciphertext);
+```
+
+To keep the ciphertext the same length as the plaintext, drive the transform directly over an <xref:Bodu.Security.Cryptography.IBlockCipher>:
+
+```csharp
+using System.Security.Cryptography;
+using Bodu.Security.Cryptography;
+
+byte[] key   = RandomNumberGenerator.GetBytes(32);
+byte[] tweak = RandomNumberGenerator.GetBytes(16);
+using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
+
+byte[] counter = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);   // initial counter block, unique per message
+
+byte[] ciphertext = new byte[plaintext.Length];                       // same length as plaintext
+using (var ctr = new CtrModeTransform(cipher, counter))
+    ctr.Transform(plaintext, ciphertext, encrypt: true);
+
+byte[] recovered = new byte[ciphertext.Length];
+using (var ctr = new CtrModeTransform(cipher, counter))
+    ctr.Transform(ciphertext, recovered, encrypt: false);
 ```
 
 **Design note.** The counter wraps after 2^(block_size) encryptions. `CtrModeTransform` detects this and throws <xref:System.Security.Cryptography.CryptographicException> rather than silently reusing keystream. In practice the block sizes on this library (64 to 1024 bits) are more than enough for any real workload, but this guard is your safety net.
@@ -70,13 +91,13 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 **IV:** same length as the block, unique per message. Unpredictability helps but is not strictly required.
 
-**Padding:** not required if the plaintext is block-aligned, but PKCS7 works.
+**Padding:** required for plaintext that is not block-aligned, as for CBC: this is full-block CFB, so the mode accepts only whole blocks. PKCS7 is the safe default; `PaddingMode.None` works only for block-aligned input.
 
 ```csharp
 using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CFB,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
 alg.GenerateIV();
@@ -94,13 +115,13 @@ Both directions use the cipher's *encryption* primitive - the decryptor never ca
 
 **IV:** same length as the block, **unique per message**. IV reuse under the same key is catastrophic because the keystream becomes identical.
 
-**Padding:** not required.
+**Padding:** required for plaintext that is not block-aligned: like CFB, this OFB transform accepts only whole blocks. PKCS7 is the safe default; `PaddingMode.None` works only for block-aligned input.
 
 ```csharp
 using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.OFB,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
 alg.GenerateIV();
@@ -168,7 +189,7 @@ using (var cts = new CtsModeTransform(cipher, iv))
 `CTS` mirrors the BCL <xref:System.Security.Cryptography.CipherMode>.`CTS` value, so it casts directly between the two enums. It is *not* an authenticated mode - pair it with a MAC if the ciphertext crosses a trust boundary.
 
 > [!NOTE]
-> **Which `CipherModeKind` values work where.** `ECB`, `CBC`, `CFB`, `OFB`, and `CTR` are the only values accepted by `BlockMode` on the `SymmetricAlgorithm` facades (they are what <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> can build). `CTS` and `XTS` are available only as the direct <xref:Bodu.Security.Cryptography.CtsModeTransform> / <xref:Bodu.Security.Cryptography.XtsModeTransform> transforms, and `OCB`, `EAX`, and `SIV` name the AEAD transforms in the [AEAD modes guide](aead-modes.md). Setting `BlockMode` to any of those five throws `NotSupportedException`.
+> **Which `CipherModeKind` values work where.** `ECB`, `CBC`, `CFB`, `OFB`, and `CTR` are the only `BlockMode` values the `SymmetricAlgorithm` facades can encrypt with (they are what <xref:Bodu.Security.Cryptography.BlockCipherModeFactory> can build). `CTS` and `XTS` are available only as the direct <xref:Bodu.Security.Cryptography.CtsModeTransform> / <xref:Bodu.Security.Cryptography.XtsModeTransform> transforms, and `OCB`, `EAX`, and `SIV` name the AEAD transforms in the [AEAD modes guide](aead-modes.md). `BlockMode` accepts any of those five when assigned, but `CreateEncryptor` / `CreateDecryptor` then throw `NotSupportedException`.
 
 > [!NOTE]
 > CTS needs at least one full block of input. A plaintext shorter than the block size has nothing to steal from, so use CBC + PKCS7 (which expands) or a stream-shaped mode (CTR) for sub-block messages.

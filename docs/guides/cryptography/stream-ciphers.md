@@ -126,7 +126,7 @@ Rabbit and HC-128 have no seekable counter - their keystream comes from an evolv
 
 ## A note on initialization cost
 
-HC-128 has a comparatively expensive setup: it warms up two 512-word tables before releasing any keystream. Rabbit's key/IV setup is lighter but still non-trivial. As with Blowfish's key schedule, **do not** build a fresh instance per message under the same key - cache the instance and call `CreateEncryptor()` / `CreateDecryptor()` per message instead.
+HC-128 has a comparatively expensive setup: it warms up two 512-word tables before releasing any keystream. Rabbit's key/IV setup is lighter but still non-trivial. Both run once per transform rather than once per instance: every `CreateEncryptor()` / `CreateDecryptor()` builds a new engine from the key and nonce, and HC-128's warm-up depends on the IV, so it is a per-message cost whichever way the instances are managed. Caching the algorithm instance does not amortize it.
 
 ## Authenticated stream ciphers - Poly1305 AEAD
 

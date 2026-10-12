@@ -116,7 +116,7 @@ The Threefish wrappers carry the same equivalence, with `Tweak` flowing into the
 using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.PKCS7,  // through the wrapper, None needs block-aligned input
     Key       = key,    // 32 bytes
     IV        = iv,     // 32 bytes
     Tweak     = tweak,  // 16 bytes

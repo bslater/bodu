@@ -59,20 +59,25 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 
 ## Encrypt and decrypt - CTR (stream mode)
 
+CTR needs no padding expansion, but through the `Threefish1024` wrapper `PaddingMode.None` still requires block-aligned input (a multiple of 128 bytes); for arbitrary lengths drive <xref:Bodu.Security.Cryptography.CtrModeTransform> directly, which accepts a trailing partial block (see [Modes, transforms, and factories](cipher-composition-reference.md)):
+
 ```csharp
 using var alg = new Threefish1024
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.None,    // CTR doesn't pad - input must be block-aligned here
 };
 alg.GenerateKey();
 alg.GenerateIV();
 alg.GenerateTweak();
 
-byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] aligned = new byte[256];      // two 128-byte blocks
+RandomNumberGenerator.Fill(aligned);
+
+byte[] ciphertext = alg.Encrypt(aligned);   // same length as the input
 byte[] recovered  = alg.Decrypt(ciphertext);
 
-Debug.Assert(plaintext.SequenceEqual(recovered));
+Debug.Assert(aligned.SequenceEqual(recovered));
 ```
 
 ## Trade-offs worth knowing

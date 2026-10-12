@@ -73,16 +73,21 @@ Any byte length from 4 to 56 is valid; longer keys only strengthen the cipher up
 
 ## Encrypt and decrypt - CTR (stream mode)
 
+CTR needs no padding expansion, but through the `Blowfish` wrapper `PaddingMode.None` still requires block-aligned input (a multiple of 8 bytes); for arbitrary lengths drive <xref:Bodu.Security.Cryptography.CtrModeTransform> directly, which accepts a trailing partial block (see [Modes, transforms, and factories](cipher-composition-reference.md)):
+
 ```csharp
 using var alg = new Blowfish
 {
     BlockMode = CipherModeKind.CTR,
-    Padding   = PaddingMode.None,
+    Padding   = PaddingMode.None,      // CTR doesn't pad - input must be block-aligned here
 };
 alg.GenerateKey();
 alg.GenerateIV();                  // 8-byte counter block, unique per message
 
-byte[] ciphertext = alg.Encrypt(plaintext);
+byte[] aligned = new byte[64];     // eight 8-byte blocks
+RandomNumberGenerator.Fill(aligned);
+
+byte[] ciphertext = alg.Encrypt(aligned);   // same length as the input
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
@@ -92,7 +97,7 @@ As with Skipjack, the 8-byte counter means you should not encrypt more than a fe
 
 Blowfish's key schedule is intentionally expensive: it derives the P-array and four S-boxes from the key by running the cipher thousands of times over itself. This makes brute-force searches meaningfully harder at the cost of a slow setup - roughly a few milliseconds for a one-off key.
 
-The practical implication is that you should **not** build a new `Blowfish` instance per message if you're re-using the same key. Cache the instance and call `CreateEncryptor()` / `CreateDecryptor()` per message instead.
+The practical implication is that the key schedule runs once per transform: every `CreateEncryptor()` / `CreateDecryptor()` call on the `Blowfish` wrapper builds a new keyed engine, so caching the wrapper instance does not avoid it. To pay for the schedule once per key, construct one `BlowfishBlockCipher` and reuse it under the mode transforms (see below).
 
 ## Dropping to the raw primitive
 
@@ -104,7 +109,7 @@ IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CB
 IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
 ```
 
-Because the key schedule is the expensive part, constructing one `BlowfishBlockCipher` and reusing it across messages amortises that cost - exactly the same caching argument as for the wrapper.
+Because the key schedule is the expensive part, constructing one `BlowfishBlockCipher` and reusing it across messages amortises that cost. Mode transforms such as `CbcModeTransform` do not dispose the engine they wrap, so one keyed engine can serve a fresh transform per message.
 
 > [!IMPORTANT]
 > Blowfish is unbroken at the round-function level, but its **64-bit block** caps its safe data volume per key (SWEET32) and its design predates authenticated encryption. For new work, prefer a 128-bit-block cipher ([AES family](aes-family.md)) under an [AEAD mode](aead-modes.md), or [Threefish](threefish-256.md) when you need a tweak.

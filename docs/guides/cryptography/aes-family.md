@@ -51,7 +51,7 @@ aes.Encrypt(plaintext, ciphertext);
 aes.Decrypt(ciphertext, plaintext);
 ```
 
-Use `AesBlockCipher` as the primitive that AEAD modes (GCM, GCM-SIV, CCM, OCB, EAX, SIV) compose with - see [AEAD modes](aead-modes.md). For a full ECB / CBC / CTR / CFB cipher stream, reach for the BCL `Aes` class directly: `Bodu.Security.Cryptography` does not duplicate the BCL surface.
+Use `AesBlockCipher` as the primitive that AEAD modes (GCM, GCM-SIV, CCM, OCB, EAX, SIV) compose with - see [AEAD modes](aead-modes.md). For a full ECB / CBC / CFB cipher stream, reach for the BCL `Aes` class directly: `Bodu.Security.Cryptography` does not duplicate the BCL surface. The BCL `CipherMode` has no CTR value, so for AES-CTR drive `AesBlockCipher` through a <xref:Bodu.Security.Cryptography.CtrModeTransform>.
 
 ## Twofish
 
@@ -117,11 +117,13 @@ using var cipher = Twofish.Create();
 cipher.Key          = key;
 cipher.IV           = iv;
 cipher.BlockMode    = CipherModeKind.CTR;
-cipher.BlockPadding = PaddingModeKind.None;   // CTR doesn't need padding
+cipher.BlockPadding = PaddingModeKind.PKCS7;  // through the wrapper, None needs block-aligned input
 
 using ICryptoTransform t = cipher.CreateEncryptor();
 byte[] ciphertext = t.TransformFinalBlock(plaintext, 0, plaintext.Length);
 ```
+
+CTR itself needs no padding, but a wrapper's transform passes the final block through the padding strategy, so `PaddingModeKind.None` accepts only block-aligned input there, in every mode. To encrypt an arbitrary length without expansion, drive <xref:Bodu.Security.Cryptography.CtrModeTransform> directly over the engine.
 
 For AEAD constructions - where authentication is part of the cipher rather than a separate step - see [AEAD modes](aead-modes.md). Any of AES / Twofish / Camellia / Serpent-128 can be plugged into the AEAD transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV).
 
