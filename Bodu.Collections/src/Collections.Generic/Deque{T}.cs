@@ -187,7 +187,7 @@ public sealed class Deque<T>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
     public Deque(IEnumerable<T> collection, int capacity)
-        : this(Materialize(collection), capacity, allowGrow: true) { }
+        : this(Materialize(collection), ValidateCapacity(capacity), allowGrow: true) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Deque{T}" /> class containing elements copied from
@@ -211,7 +211,7 @@ public sealed class Deque<T>
     /// elements than <paramref name="capacity" />.
     /// </exception>
     public Deque(IEnumerable<T> collection, int capacity, bool allowGrow)
-        : this(Materialize(collection), capacity, allowGrow) { }
+        : this(Materialize(collection), ValidateCapacity(capacity), allowGrow) { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Deque{T}" /> class using a pre-materialized array of elements, with
@@ -326,6 +326,23 @@ public sealed class Deque<T>
 
             _overflowPolicy = value;
         }
+    }
+
+    /// <summary>
+    /// Validates a capacity supplied to a public collection constructor before the private constructor interprets it,
+    /// so that a caller can neither reach the <see cref="UseFloorCapacity" /> sentinel nor have an invalid capacity
+    /// replaced by the source length. Returns the capacity unchanged on success.
+    /// </summary>
+    /// <param name="capacity">The requested capacity.</param>
+    /// <returns><paramref name="capacity" />, unchanged.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
+    private static int ValidateCapacity(int capacity)
+    {
+        ThrowHelper.ThrowIfOutOfRange(capacity, 1, Array.MaxLength);
+
+        return capacity;
     }
 
     /// <summary>
