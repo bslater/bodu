@@ -35,7 +35,7 @@
       the tier-to-stream agreement, because nothing else reconciles a package's declared tier with
       the version it actually publishes at - and a wrong version cannot be taken back off nuget.org.
     -->
-    <BoduPreviewVersion>0.7.1</BoduPreviewVersion>
+    <BoduPreviewVersion>0.7.2</BoduPreviewVersion>
 
     <!--
       Package-validation baselines, one per version stream. Each is its stream's last lock-step
