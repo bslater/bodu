@@ -80,6 +80,9 @@ public readonly partial struct Money
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public Money Convert(string targetIsoCode, decimal exchangeRate) =>
         Convert(targetIsoCode, exchangeRate, MidpointRounding.ToEven);
 
@@ -148,9 +151,14 @@ public readonly partial struct Money
     /// </exception>
     /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public Money Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
+        EnsureHasCurrency();
         ThrowHelper.ThrowIfZeroOrNegative(exchangeRate);
+
         return new Money(_amount * exchangeRate, CurrencyInfo.ParseCurrencyCode(targetIsoCode), rounding);
     }
 
@@ -161,6 +169,9 @@ public readonly partial struct Money
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
     /// <returns>The converted typed monetary value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate)
         where TTarget : ICurrency =>
         Convert<TTarget>(exchangeRate, MidpointRounding.ToEven);
@@ -174,10 +185,15 @@ public readonly partial struct Money
     /// <param name="rounding">The midpoint-rounding rule.</param>
     /// <returns>The converted typed monetary value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding)
         where TTarget : ICurrency
     {
+        EnsureHasCurrency();
         ThrowHelper.ThrowIfZeroOrNegative(exchangeRate);
+
         return new Money<TTarget>(_amount * exchangeRate, rounding);
     }
 }
