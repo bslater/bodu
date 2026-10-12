@@ -143,6 +143,26 @@ public abstract partial class PaddingStrategyTests<TPadding>
     }
 
     /// <summary>
+    /// Verifies that the <see cref="CryptographicException" /> thrown by <see cref="IPaddingStrategy.Pad" /> for a
+    /// <c>blockSize</c> that is not a multiple of 8 states the rule, naming the divisor, rather than carrying only the
+    /// parameter name or the text of an unrelated hash-size rule.
+    /// </summary>
+    [TestMethod]
+    public void Pad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowWithMessageStatingRule()
+    {
+        TPadding padding = CreatePadding();
+        byte[] input = new byte[BlockSize];
+
+        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = padding.Pad(input, 12);
+        });
+
+        Assert.Contains("multiple of 8", ex.Message);
+        Assert.DoesNotContain("hash size", ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that calling <see cref="IPaddingStrategy.Unpad" /> with a positive <c>blockSize</c>
     /// that is not a multiple of 8 throws <see cref="CryptographicException" /> rather than
     /// surfacing a <see cref="DivideByZeroException" /> for values in the range <c>1..7</c>.
