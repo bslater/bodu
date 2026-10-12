@@ -56,19 +56,21 @@ public static partial class ArrayExtensions
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="index" /> is negative or greater than <c>source.Length</c>, or when
-    /// <paramref name="count" /> is negative or would extend the range beyond the end of <paramref name="source" />.
+    /// Thrown when <paramref name="index" /> or <paramref name="count" /> is negative or greater than
+    /// <c>source.Length</c>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>index + count</c> is greater than <c>source.Length</c>.
     /// </exception>
     /// <remarks>
     /// <para>
     /// This is the canonical typed-array implementation. The full-array overload (<see cref="ToReversed{T}(T[])" />)
-    /// and the <see cref="Range" />-based overload (<see cref="ToReversed{T}(T[], Range)" />) both resolve their
-    /// arguments and delegate here.
+    /// and the <see cref="Range" />-based overload (<see cref="ToReversed{T}(T[], Range)" />) resolve their arguments
+    /// and share its core, <see cref="ReverseCore{T}" />.
     /// </para>
     /// <para>
-    /// Bounds validation is delegated to
-    /// <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(ReadOnlySpan{T}, int, int, string, string, string)" />
-    /// , which uses unsigned comparison to catch both negative values and out-of-bounds values in a single branch.
+    /// Bounds validation is delegated to <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, which checks
+    /// <paramref name="index" /> and <paramref name="count" /> separately against the length and then their sum.
     /// Validated arguments are then forwarded to <see cref="ReverseCore{T}" />, which performs the SIMD-accelerated
     /// copy and in-place reversal of the nominated slice.
     /// </para>
@@ -197,8 +199,8 @@ public static partial class ArrayExtensions
     /// <remarks>
     /// <para>
     /// This is the canonical non-generic implementation. The full-array overload (<see cref="ToReversed(Array)" />) and
-    /// the <see cref="Range" />-based overload (<see cref="ToReversed(Array, Range)" />) both resolve their arguments
-    /// and delegate here.
+    /// the <see cref="Range" />-based overload (<see cref="ToReversed(Array, Range)" />) resolve their arguments and
+    /// share its core, <see cref="ReverseArrayCore" />.
     /// </para>
     /// <para>
     /// Unlike the typed <see cref="ToReversed{T}(T[], int, int)" /> overload, this method cannot delegate to

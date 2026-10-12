@@ -50,11 +50,12 @@ public static partial class BufferConverter
     /// <param name="destination">The destination span of bytes to receive the endian-swapped elements.</param>
     /// <param name="elementSize">The size, in bytes, of each element whose byte order should be swapped.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="elementSize" /> is less than or equal to 1.
+    /// Thrown if <paramref name="elementSize" /> is less than or equal to 1, or if <paramref name="destination" /> is
+    /// shorter than <paramref name="source" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if the source or destination spans do not have a length that is a multiple of
-    /// <paramref name="elementSize" />, or if the destination is too small to receive the swapped data.
+    /// Thrown if <paramref name="source" /> or <paramref name="destination" /> is empty or does not have a length that
+    /// is a multiple of <paramref name="elementSize" />.
     /// </exception>
     /// <remarks>
     /// This method reverses the byte order of each element individually while copying from <paramref name="source" />

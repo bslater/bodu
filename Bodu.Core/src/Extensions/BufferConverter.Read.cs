@@ -19,7 +19,12 @@ public static partial class BufferConverter
     /// <returns>The value of type <typeparamref name="T" /> read from the specified location.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="sourceArray" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index" /> is out of range or insufficient bytes remain.
+    /// <paramref name="index" /> is negative or greater than the length of <paramref name="sourceArray" />, or the size
+    /// of <typeparamref name="T" /> is greater than the length of <paramref name="sourceArray" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Fewer bytes than the size of <typeparamref name="T" /> remain in <paramref name="sourceArray" /> from
+    /// <paramref name="index" />.
     /// </exception>
     /// <remarks>
     /// The method assumes that the byte array represents the value using platform-native endianness.
@@ -40,15 +45,12 @@ public static partial class BufferConverter
     /// <typeparam name="T">The unmanaged type to read.</typeparam>
     /// <param name="sourceSpan">The source span of bytes.</param>
     /// <returns>The value of type <typeparamref name="T" /> read from the span.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
+    /// <exception cref="ArgumentException">
     /// The span length is insufficient to represent a value of type <typeparamref name="T" />.
     /// </exception>
     /// <remarks>
     /// The method assumes that the span represents the value using platform-native endianness.
     /// </remarks>
-    /// <exception cref="ArgumentException">
-    /// Thrown when a span or array argument does not meet a length or offset precondition.
-    /// </exception>
     public static T Read<T>(this ReadOnlySpan<byte> sourceSpan)
         where T : unmanaged
     {
