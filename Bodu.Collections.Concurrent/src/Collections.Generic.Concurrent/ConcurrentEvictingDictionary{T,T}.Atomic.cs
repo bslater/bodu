@@ -72,9 +72,10 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>
     /// The update factory is invoked <em>inside</em> the owning segment's lock, so it runs at most once per call even
-    /// under concurrent contention - the single-flight behavior shared with <see cref="GetOrAdd(TKey, TValue)" />. The
-    /// factory blocks every other operation on the same segment while it runs, so keep it short and never call back
-    /// into this dictionary from it. If the factory throws, nothing is added or updated and the exception propagates.
+    /// under concurrent contention - the single-flight behavior shared with
+    /// <see cref="GetOrAdd(TKey, Func{TKey, TValue})" />. The factory blocks every other operation on the same segment
+    /// while it runs, so keep it short and never call back into this dictionary from it. If the factory throws, nothing
+    /// is added or updated and the exception propagates.
     /// </para>
     /// <para>
     /// The update path counts as an access for the configured <see cref="EvictingDictionaryPolicy" /> and starts a

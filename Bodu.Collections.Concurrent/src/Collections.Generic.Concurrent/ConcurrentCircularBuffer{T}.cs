@@ -13,7 +13,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <summary>
 /// Provides a lock-free, bounded first-in, first-out (FIFO) buffer with optional overwrite semantics.
 /// </summary>
-/// <typeparam name="T">The reference type stored in the buffer (constraint: <c>where T : class</c>).</typeparam>
+/// <typeparam name="T">The reference type stored in the buffer (constraint: <c>where T : class?</c>).</typeparam>
 /// <remarks>
 /// <para>
 /// This type implements a multi-producer/multi-consumer (MPMC) circular buffer using per-slot sequence numbers (Vyukov
@@ -262,7 +262,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// The zero-based index of the element to retrieve. Must be non-negative and less than <see cref="Count" />
     /// observed at the moment of the call.
     /// </param>
-    /// <returns>The element that was at the specified logical position during the call.</returns>
+    /// <value>The element that was at the specified logical position during the call.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative, or is greater than or equal to the number of elements in the buffer
     /// observed at the time of the call.
