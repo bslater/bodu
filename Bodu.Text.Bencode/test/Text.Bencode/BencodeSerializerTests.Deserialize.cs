@@ -261,6 +261,25 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a Bencode integer beyond <see cref="long.MaxValue" />, which an <see cref="Int128" /> member could
+    /// hold but the signed 64-bit surface it is read through cannot, is reported as outside that signed 64-bit range
+    /// rather than outside the representable range of <see cref="Int128" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerExceedsInt64RangeIntoInt128_ShouldNameSignedRangeInMessage()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei9223372036854775808ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<SingleValueModel<Int128>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("signed 64-bit range", StringComparison.Ordinal), ex.Message);
+        Assert.IsFalse(ex.Message.Contains("representable range", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that deserializing a Bencode integer literal beyond <see cref="ulong.MaxValue" /> throws
     /// <see cref="BencodeFormatException" />, surfacing at the reader before the converter is consulted.
     /// </summary>
