@@ -10,8 +10,8 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Verifies that <see cref="RbaRateWorkbookParser" /> interprets the RBA workbook layout correctly, over workbooks
-/// <see cref="RbaTestWorkbook" /> generates: the sample workbook of the 2023-to-current era and smaller ones a test
-/// describes.
+/// <see cref="RbaTestWorkbook" /> generates: the synthetic workbooks of the RBA eras, the 2023-to-current sample among
+/// them, and smaller ones a test describes.
 /// </summary>
 [TestClass]
 public partial class RbaRateWorkbookParserTests
@@ -20,9 +20,17 @@ public partial class RbaRateWorkbookParserTests
     /// Parses the sample workbook, the synthetic workbook of the 2023-to-current era, with default options.
     /// </summary>
     /// <returns>The parsed table.</returns>
-    private static RbaRateTable ParseSample()
+    private static RbaRateTable ParseSample() =>
+        ParseFixture(RbaFixtures.Sample);
+
+    /// <summary>
+    /// Parses the synthetic workbook of an era with default options.
+    /// </summary>
+    /// <param name="fileName">The era's workbook file name, for example <c>2010-2013.xls</c>.</param>
+    /// <returns>The parsed table.</returns>
+    private static RbaRateTable ParseFixture(string fileName)
     {
-        using MemoryStream stream = RbaFixtures.OpenStream(RbaFixtures.Sample);
+        using MemoryStream stream = RbaFixtures.OpenStream(fileName);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         return RbaRateWorkbookParser.Parse(workbook, new RbaRateProviderOptions());
     }
