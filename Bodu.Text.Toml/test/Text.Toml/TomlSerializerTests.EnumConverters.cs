@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Test.Assertions;
 using Bodu.Text.Serialization;
 using Bodu.Text.Toml.Serialization;
@@ -414,6 +415,94 @@ public partial class TomlSerializerTests
 
         FlagsModel roundTripped = TomlSerializer.Deserialize<FlagsModel>(text);
         Assert.AreEqual(PermissionFlags.Write, roundTripped.Flags);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="TomlSerializationException" />, naming the value and the enumeration, when it writes a value that is
+    /// not a member, rather than writing the value's decimal text, which it would reject on read.
+    /// </summary>
+    /// <param name="value">The underlying value, which no member of <see cref="Status" /> has.</param>
+    [TestMethod]
+    [DataRow(99, DisplayName = "an undefined value")]
+    [DataRow(-1, DisplayName = "a negative undefined value")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndValueIsUndefined_ShouldThrowTomlSerializationException(
+        int value)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        var model = new StatusModel { Status = (Status)value };
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(Status).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="TomlSerializationException" />, naming the value and the enumeration, when it writes a flags value
+    /// with a bit that no member defines, which is not a combination of defined flags.
+    /// </summary>
+    /// <param name="value">
+    /// The underlying value, with a bit that no member of <see cref="PermissionFlags" /> defines.
+    /// </param>
+    [TestMethod]
+    [DataRow(4, DisplayName = "an undefined flag")]
+    [DataRow(7, DisplayName = "defined flags with an undefined flag")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndFlagIsUndefined_ShouldThrowTomlSerializationException(
+        int value)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter<PermissionFlags>(namingPolicy: null, allowIntegerValues: false));
+        var model = new FlagsModel { Flags = (PermissionFlags)value };
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(PermissionFlags).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to reject integer values still writes a
+    /// combination of defined flags as its comma-separated member list, and the zero-valued member as its name.
+    /// </summary>
+    /// <param name="value">The underlying value, a combination of defined flags.</param>
+    /// <param name="expected">The expected TOML document.</param>
+    [TestMethod]
+    [DataRow(3, "Flags = \"Read, Write\"\n", DisplayName = "two defined flags")]
+    [DataRow(0, "Flags = \"None\"\n", DisplayName = "the zero-valued member")]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndFlagsAreDefined_ShouldWriteNames(int value, string expected)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        string text = TomlSerializer.Serialize(new FlagsModel { Flags = (PermissionFlags)value }, options);
+
+        Assert.AreEqual(expected, text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to allow integer values writes a value that is
+    /// not a member as its decimal text, as the default handling does.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterAllowsIntegersAndValueIsUndefined_ShouldWriteDecimalText()
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: true));
+
+        string text = TomlSerializer.Serialize(new StatusModel { Status = (Status)99 }, options);
+
+        Assert.AreEqual("Status = \"99\"\n", text);
     }
 
     /// <summary>
