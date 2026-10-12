@@ -80,7 +80,13 @@ public sealed class OutlookMailAttachment
             {
                 _context ??= _node.ReadPropertyContext();
                 _properties = PstMapiPropertyReader.Read(
-                    _context, _owner.MessageEncoding, _store.Strict, MapiPropertyIds.AttachData, _store.MaxInlineAttachmentBytes, out Encoding encoding);
+                    _context,
+                    _owner.MessageEncoding,
+                    _store.Strict,
+                    _store.CreateOmissionReporter(_node.Id),
+                    MapiPropertyIds.AttachData,
+                    _store.MaxInlineAttachmentBytes,
+                    out Encoding encoding);
                 _encoding = encoding;
             }
 

@@ -27,12 +27,23 @@ public partial class OutlookMailMessageTests
         Action<PstMessagingFixtureBuilder>? configure = null,
         PstValidationLevel level = PstValidationLevel.Compatible)
     {
+        return OpenSynthetic(configure, new OutlookMailStoreReaderOptions { ValidationLevel = level });
+    }
+
+    /// <summary>
+    /// Opens a synthetic mail store built by <see cref="PstMessagingFixtureBuilder" /> under the supplied options.
+    /// </summary>
+    /// <param name="configure">An optional knob configuration applied before the fixture is assembled.</param>
+    /// <param name="options">The reader options to open under.</param>
+    /// <returns>The open session; the caller disposes it.</returns>
+    internal static OutlookMailStore OpenSynthetic(
+        Action<PstMessagingFixtureBuilder>? configure,
+        OutlookMailStoreReaderOptions options)
+    {
         var builder = new PstMessagingFixtureBuilder();
         configure?.Invoke(builder);
 
-        return OutlookMailStore.Open(
-            builder.BuildStream(),
-            new OutlookMailStoreReaderOptions { ValidationLevel = level });
+        return OutlookMailStore.Open(builder.BuildStream(), options);
     }
 
     /// <summary>

@@ -37,9 +37,9 @@ public sealed partial class PstReleaseNoteCorpusTests
     {
         (string Library, int Applies, int Dialect, int NotApplicable, int Unknown)[] recorded =
         [
-            ("java-libpst", 49, 8, 20, 2),
-            ("libpff", 103, 23, 160, 11),
-            ("libpst", 53, 10, 116, 8),
+            ("java-libpst", 49, 9, 20, 2),
+            ("libpff", 104, 23, 160, 11),
+            ("libpst", 54, 10, 116, 8),
             ("xstreader", 5, 0, 12, 0),
         ];
 

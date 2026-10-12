@@ -60,6 +60,9 @@ internal sealed class PstMessagingFixtureBuilder
     /// <summary>The subnode identifier carrying a large, subnode-resident by-value attachment payload.</summary>
     internal const uint LargeAttachmentDataNodeId = 0x1025;
 
+    /// <summary>A heap identifier past every fixture heap's allocations (item 2047 of block 0).</summary>
+    internal const uint DanglingHid = 0x0000FFE0;
+
     /// <summary>The store object's display name.</summary>
     internal const string StoreDisplayName = "Synthetic Store";
 
@@ -361,6 +364,26 @@ internal sealed class PstMessagingFixtureBuilder
     internal double[]? MvAppTimeValues { get; set; }
 
     /// <summary>
+    /// Gets the identifiers of the full message's variable-size properties whose value references are replaced by
+    /// <see cref="DanglingHid" />, a heap identifier the message's heap does not hold.
+    /// </summary>
+    /// <value>Empty by default.</value>
+    internal HashSet<ushort> DanglingMessagePropertyIds { get; } = [];
+
+    /// <summary>
+    /// Gets the extra values the full message carries, each stored as a heap item under its wire type.
+    /// </summary>
+    /// <value>Empty by default.</value>
+    internal List<(ushort PropertyId, ushort WireType, byte[] Payload)> ExtraMessageValues { get; } = [];
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the second recipient row's email-address cell references
+    /// <see cref="DanglingHid" />, a heap identifier the recipient table's heap does not hold.
+    /// </summary>
+    /// <value><see langword="false" /> by default.</value>
+    internal bool DanglingRecipientEmail { get; set; }
+
+    /// <summary>
     /// Assembles the synthetic mail store and returns it as a seekable stream positioned at its start.
     /// </summary>
     /// <returns>The container stream.</returns>
@@ -565,7 +588,11 @@ internal sealed class PstMessagingFixtureBuilder
         if (MvAppTimeValues is not null)
             records.Add((MvAppTimePropertyId, MvAppTimeType, ltp.AddItem(BuildMvDoublePayload(MvAppTimeValues))));
 
-        _ = ltp.AddPropertyContext([.. records]);
+        foreach ((ushort propertyId, ushort wireType, byte[] payload) in ExtraMessageValues)
+            records.Add((propertyId, wireType, ltp.AddItem(payload)));
+
+        _ = ltp.AddPropertyContext(
+            [.. records.Select(r => DanglingMessagePropertyIds.Contains(r.PropertyId) ? (r.PropertyId, r.WireType, DanglingHid) : r)]);
         _ = ltp.AddHeapNode(file, MessageNodeId, subnodeBlockId);
     }
 
@@ -590,7 +617,7 @@ internal sealed class PstMessagingFixtureBuilder
     /// </summary>
     /// <param name="file">The container builder.</param>
     /// <returns>The heap's data-block identifier, for the subnode row.</returns>
-    private static ulong AddRecipientTable(PstFixtureBuilder file)
+    private ulong AddRecipientTable(PstFixtureBuilder file)
     {
         var ltp = new PstLtpFixtureBuilder();
         uint oneNameHid = ltp.AddItem(Encoding.Unicode.GetBytes(RecipientOneName));
@@ -602,7 +629,7 @@ internal sealed class PstMessagingFixtureBuilder
         byte[] matrix =
         [
             .. RecipientRow(1, (int)OutlookRecipientType.To, oneNameHid, oneEmailHid, oneTypeHid, 0b1111_1000),
-            .. RecipientRow(2, (int)OutlookRecipientType.Cc, twoNameHid, twoEmailHid, 0, 0b1111_0000),
+            .. RecipientRow(2, (int)OutlookRecipientType.Cc, twoNameHid, DanglingRecipientEmail ? DanglingHid : twoEmailHid, 0, 0b1111_0000),
         ];
         uint matrixHid = ltp.AddItem(matrix);
 

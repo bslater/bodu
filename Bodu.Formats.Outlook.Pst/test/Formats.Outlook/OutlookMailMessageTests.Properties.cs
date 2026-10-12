@@ -84,4 +84,125 @@ public partial class OutlookMailMessageTests
         Assert.IsTrue(GetFullMessage(store).Properties.TryGetValue(tag, out MapiProperty? property), testName);
         CollectionAssert.AreEqual(dates, (double[])property.Value!, testName);
     }
+
+    /// <summary>
+    /// Verifies that, by default, a message property whose heap reference does not resolve fails the message's
+    /// properties with <see cref="PstFileFormatException" /> at every validation level.
+    /// </summary>
+    /// <param name="testName">The row's display name.</param>
+    /// <param name="level">The validation level.</param>
+    [TestMethod]
+    [DataRow("Compatible", PstValidationLevel.Compatible)]
+    [DataRow("Strict", PstValidationLevel.Strict)]
+    [DataRow("Minimal", PstValidationLevel.Minimal)]
+    public void Properties_WhenAValueDoesNotResolve_ShouldThrowPstFileFormatException(string testName, PstValidationLevel level)
+    {
+        _ = testName;
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), level);
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
+            .Single(static m => m.Node.Id.Value == PstMessagingFixtureBuilder.MessageNodeId);
+
+        PstFileFormatException ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        {
+            _ = message.Properties;
+        });
+
+        Assert.AreEqual(PstFileError.InvalidHeap, ex.Error);
+    }
+
+    /// <summary>
+    /// Verifies that a store that omits unresolvable values leaves out a message property whose heap reference does not
+    /// resolve, keeps the rest of the message readable, and reports the omission, at every validation level.
+    /// </summary>
+    /// <param name="testName">The row's display name.</param>
+    /// <param name="level">The validation level.</param>
+    [TestMethod]
+    [DataRow("Compatible", PstValidationLevel.Compatible)]
+    [DataRow("Strict", PstValidationLevel.Strict)]
+    [DataRow("Minimal", PstValidationLevel.Minimal)]
+    public void Properties_WhenAValueDoesNotResolve_ForOmittingStore_ShouldOmitAndReportIt(string testName, PstValidationLevel level)
+    {
+        _ = testName;
+        var reports = new List<OutlookOmittedValue>();
+        var options = new OutlookMailStoreReaderOptions
+        {
+            ValidationLevel = level,
+            OmitUnresolvableValues = true,
+            ValueOmittedCallback = reports.Add,
+        };
+
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), options);
+        OutlookMailMessage message = GetFullMessage(store);
+
+        Assert.IsNull(message.SenderName);
+        Assert.AreEqual(PstMessagingFixtureBuilder.SenderEmailAddress, message.Properties.GetString(MapiPropertyIds.SenderEmailAddress));
+        Assert.AreEqual(PstMessagingFixtureBuilder.BodyText, message.BodyText);
+
+        OutlookOmittedValue report = reports.Single(static r => r.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
+        Assert.AreEqual(MapiPropertyIds.SenderName, report.PropertyId);
+        Assert.IsNull(report.RowId);
+        Assert.AreEqual(OutlookOmittedValueReason.UnresolvableReference, report.Reason);
+    }
+
+    /// <summary>
+    /// Verifies that a value the reader cannot decode is reported as <see cref="OutlookOmittedValueReason.UndecodableValue" />
+    /// under the tolerant validation levels, whether or not the store omits unresolvable values.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenAValueIsUndecodable_ShouldReportItAsUndecodable()
+    {
+        var reports = new List<OutlookOmittedValue>();
+        var options = new OutlookMailStoreReaderOptions { ValueOmittedCallback = reports.Add };
+
+        // A multi-valued string whose count promises five values but whose payload holds no offset table.
+        using OutlookMailStore store = OpenSynthetic(static b => b.ExtraMessageValues.Add((0x6003, 0x101F, [0x05, 0x00, 0x00, 0x00])), options);
+        OutlookMailMessage message = GetFullMessage(store);
+
+        Assert.IsFalse(message.Properties.Contains(new MapiPropertyTag(0x6003, (MapiPropertyType)0x101F)));
+
+        OutlookOmittedValue report = reports.Single(static r => r.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
+        Assert.AreEqual((ushort)0x6003, report.PropertyId);
+        Assert.AreEqual(OutlookOmittedValueReason.UndecodableValue, report.Reason);
+    }
+
+    /// <summary>
+    /// Verifies that a store with a callback but every value intact reports nothing.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenEveryValueDecodes_ShouldReportNothing()
+    {
+        var reports = new List<OutlookOmittedValue>();
+        var options = new OutlookMailStoreReaderOptions { OmitUnresolvableValues = true, ValueOmittedCallback = reports.Add };
+
+        using OutlookMailStore store = OpenSynthetic(configure: null, options);
+        OutlookMailMessage message = GetFullMessage(store);
+        _ = message.Properties;
+        _ = message.Recipients;
+
+        Assert.AreEqual(0, reports.Count);
+    }
+
+    /// <summary>
+    /// Verifies that an exception the omission callback throws propagates from the property access.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenValueOmittedCallbackThrows_ShouldPropagateTheException()
+    {
+        var options = new OutlookMailStoreReaderOptions
+        {
+            OmitUnresolvableValues = true,
+            ValueOmittedCallback = static _ => throw new InvalidOperationException("stop"),
+        };
+
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), options);
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
+            .Single(static m => m.Node.Id.Value == PstMessagingFixtureBuilder.MessageNodeId);
+
+        InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = message.Properties;
+        });
+
+        Assert.AreEqual("stop", ex.Message);
+    }
 }

@@ -23,6 +23,8 @@ public class OutlookMailStoreReaderOptionsTests
         var options = new OutlookMailStoreReaderOptions();
 
         Assert.AreEqual(PstValidationLevel.Compatible, options.ValidationLevel);
+        Assert.IsFalse(options.OmitUnresolvableValues);
+        Assert.IsNull(options.ValueOmittedCallback);
         Assert.AreEqual(256, options.BlockCacheSize);
         Assert.IsTrue(options.DecompressRtf);
         Assert.AreEqual(256L * 1024 * 1024, options.MaxNodeDataLength);
@@ -41,6 +43,7 @@ public class OutlookMailStoreReaderOptionsTests
         var options = new OutlookMailStoreReaderOptions
         {
             ValidationLevel = PstValidationLevel.Strict,
+            OmitUnresolvableValues = true,
             BlockCacheSize = 8,
             MaxNodeDataLength = 4096,
             MaxEmbeddedMessageDepth = 2,
@@ -50,6 +53,7 @@ public class OutlookMailStoreReaderOptionsTests
         PstFileOptions container = options.ToPstFileOptions();
 
         Assert.AreEqual(PstValidationLevel.Strict, container.ValidationLevel);
+        Assert.IsTrue(container.OmitUnresolvableValues);
         Assert.AreEqual(8, container.BlockCacheSize);
         Assert.AreEqual(4096L, container.MaxNodeDataLength);
         Assert.AreEqual(2, options.MaxEmbeddedMessageDepth);

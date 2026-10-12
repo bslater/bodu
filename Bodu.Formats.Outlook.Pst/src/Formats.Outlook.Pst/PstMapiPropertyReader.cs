@@ -25,7 +25,8 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </para>
 /// <para>
 /// Under strict validation an undecodable value throws <see cref="OutlookPstFormatException" />; under the tolerant
-/// levels the property is omitted and decoding continues.
+/// levels the property is omitted and decoding continues. Each omitted value - undecodable here, or left out of the
+/// container's context because its reference does not resolve - is passed to the caller's omission reporter.
 /// </para>
 /// </remarks>
 internal static class PstMapiPropertyReader
@@ -39,6 +40,9 @@ internal static class PstMapiPropertyReader
     /// <see langword="null" /> at the store root.
     /// </param>
     /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
+    /// <param name="onOmitted">
+    /// The reporter each omitted value's identifier and reason are passed to, or <see langword="null" />.
+    /// </param>
     /// <param name="encoding">
     /// When this method returns, the encoding the object's code-page strings decoded with.
     /// </param>
@@ -50,15 +54,19 @@ internal static class PstMapiPropertyReader
         PstPropertyContext context,
         Encoding? inheritedEncoding,
         bool strict,
+        Action<ushort, OutlookOmittedValueReason>? onOmitted,
         out Encoding encoding)
     {
         encoding = ResolveEncoding(context, inheritedEncoding);
+        ReportUnresolvable(context.OmittedPropertyIds, onOmitted);
 
         var properties = new List<MapiProperty>(context.Count);
         foreach (PstPropertyValue value in context)
         {
             if (TryDecodeValue(value, encoding, strict, out MapiProperty? property))
                 properties.Add(property);
+            else
+                onOmitted?.Invoke(value.PropertyId, OutlookOmittedValueReason.UndecodableValue);
         }
 
         return new MapiPropertyCollection(properties);
@@ -73,6 +81,9 @@ internal static class PstMapiPropertyReader
     /// The encoding inherited from the owning object, or <see langword="null" />.
     /// </param>
     /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
+    /// <param name="onOmitted">
+    /// The reporter each omitted value's identifier and reason are passed to, or <see langword="null" />.
+    /// </param>
     /// <param name="deferredPropertyId">The identifier of the binary property that may be deferred.</param>
     /// <param name="maxInlineBytes">The largest payload of that property decoded inline.</param>
     /// <param name="encoding">When this method returns, the encoding the code-page strings decoded with.</param>
@@ -90,11 +101,13 @@ internal static class PstMapiPropertyReader
         PstPropertyContext context,
         Encoding? inheritedEncoding,
         bool strict,
+        Action<ushort, OutlookOmittedValueReason>? onOmitted,
         ushort deferredPropertyId,
         int maxInlineBytes,
         out Encoding encoding)
     {
         encoding = ResolveEncoding(context, inheritedEncoding);
+        ReportUnresolvable(context.OmittedPropertyIds, onOmitted);
 
         var properties = new List<MapiProperty>(context.Count);
         foreach (ushort propertyId in context.EnumeratePropertyIds())
@@ -109,11 +122,13 @@ internal static class PstMapiPropertyReader
                 continue;
             }
 
-            if (context.TryGetValue(propertyId, out PstPropertyValue value)
-                && TryDecodeValue(value, encoding, strict, out MapiProperty? property))
-            {
+            if (!context.TryGetValue(propertyId, out PstPropertyValue value))
+                continue;
+
+            if (TryDecodeValue(value, encoding, strict, out MapiProperty? property))
                 properties.Add(property);
-            }
+            else
+                onOmitted?.Invoke(propertyId, OutlookOmittedValueReason.UndecodableValue);
         }
 
         return new MapiPropertyCollection(properties);
@@ -128,20 +143,45 @@ internal static class PstMapiPropertyReader
     /// The owning message's string encoding, which the row's code-page strings decode under.
     /// </param>
     /// <param name="strict">Whether undecodable values throw instead of being skipped.</param>
+    /// <param name="onOmitted">
+    /// The reporter each omitted cell's identifier and reason are passed to, or <see langword="null" />.
+    /// </param>
     /// <returns>The decoded property collection.</returns>
     /// <exception cref="OutlookPstFormatException">
     /// A cell is undecodable and <paramref name="strict" /> is set.
     /// </exception>
-    internal static MapiPropertyCollection ReadRow(PstTableRow row, Encoding encoding, bool strict)
+    internal static MapiPropertyCollection ReadRow(
+        PstTableRow row,
+        Encoding encoding,
+        bool strict,
+        Action<ushort, OutlookOmittedValueReason>? onOmitted = null)
     {
+        ReportUnresolvable(row.OmittedPropertyIds, onOmitted);
+
         var properties = new List<MapiProperty>();
         foreach (PstPropertyValue value in row.EnumerateCells())
         {
             if (TryDecodeValue(value, encoding, strict, out MapiProperty? property))
                 properties.Add(property);
+            else
+                onOmitted?.Invoke(value.PropertyId, OutlookOmittedValueReason.UndecodableValue);
         }
 
         return new MapiPropertyCollection(properties);
+    }
+
+    /// <summary>
+    /// Reports the values the container left out of a context or row because their references do not resolve.
+    /// </summary>
+    /// <param name="omittedPropertyIds">The identifiers the container omitted.</param>
+    /// <param name="onOmitted">The reporter, or <see langword="null" /> to report nothing.</param>
+    internal static void ReportUnresolvable(IReadOnlyList<ushort> omittedPropertyIds, Action<ushort, OutlookOmittedValueReason>? onOmitted)
+    {
+        if (onOmitted is null)
+            return;
+
+        foreach (ushort propertyId in omittedPropertyIds)
+            onOmitted(propertyId, OutlookOmittedValueReason.UnresolvableReference);
     }
 
     /// <summary>

@@ -50,6 +50,52 @@ public sealed class OutlookMailStoreReaderOptions
     public PstValidationLevel ValidationLevel { get; init; } = PstValidationLevel.Compatible;
 
     /// <summary>
+    /// Gets a value indicating whether a property value whose reference into the container does not resolve is omitted
+    /// from its object rather than failing the read.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to omit such a value and keep decoding the rest of the object; <see langword="false" />,
+    /// the default, to raise <see cref="PstFileFormatException" />.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// A value's reference does not resolve when it names a heap item or a subnode the container does not hold, or when
+    /// a fixed-width value is shorter than its type. By default each is container corruption that fails the folder,
+    /// message, attachment or recipient list it belongs to, at every validation level. With this option the value is
+    /// left out and the rest of the object stays readable, so a damaged message still yields its subject, sender, dates
+    /// and bodies: the option is for recovering mail from a damaged store. It sets
+    /// <see cref="PstFileOptions.OmitUnresolvableValues" /> on the container.
+    /// </para>
+    /// <para>
+    /// The option is independent of <see cref="ValidationLevel" /> and covers individual values only; a fault in a
+    /// heap, table or subnode tree still fails the read. Each omitted value is reported to
+    /// <see cref="ValueOmittedCallback" />. An omitted attachment data property leaves a by-value attachment without
+    /// its payload, so <see cref="OutlookMailAttachment.OpenContentStream" /> raises
+    /// <see cref="OutlookPstFormatException" /> for it, as for any by-value attachment without data.
+    /// </para>
+    /// </remarks>
+    public bool OmitUnresolvableValues { get; init; }
+
+    /// <summary>
+    /// Gets the callback the reader invokes for each property value it omits from an object it decodes.
+    /// </summary>
+    /// <value>The callback, or <see langword="null" />, the default, to report nothing.</value>
+    /// <remarks>
+    /// <para>
+    /// The reader omits a value whose reference does not resolve when <see cref="OmitUnresolvableValues" /> is set, and
+    /// a value it cannot decode as its MAPI type under <see cref="PstValidationLevel.Compatible" /> and
+    /// <see cref="PstValidationLevel.Minimal" />; <see cref="OutlookOmittedValue.Reason" /> says which. The callback
+    /// covers the store's, folders', messages' and attachments' properties, recipient rows, and the name-to-id map.
+    /// </para>
+    /// <para>
+    /// The reader decodes each object once, on first access to its properties or recipients, and invokes the callback
+    /// synchronously from that access, on the calling thread. An exception the callback throws propagates to that
+    /// caller and leaves the object undecoded.
+    /// </para>
+    /// </remarks>
+    public Action<OutlookOmittedValue>? ValueOmittedCallback { get; init; }
+
+    /// <summary>
     /// Gets the decoded page/block cache budget of the underlying container session, in entries.
     /// </summary>
     /// <value>The cache entry budget; <c>256</c> by default. <c>0</c> disables caching entirely.</value>
@@ -167,6 +213,7 @@ public sealed class OutlookMailStoreReaderOptions
         new()
         {
             ValidationLevel = ValidationLevel,
+            OmitUnresolvableValues = OmitUnresolvableValues,
             BlockCacheSize = BlockCacheSize,
             MaxNodeDataLength = MaxNodeDataLength,
         };

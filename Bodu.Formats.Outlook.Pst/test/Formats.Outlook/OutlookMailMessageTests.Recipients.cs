@@ -75,4 +75,47 @@ public partial class OutlookMailMessageTests
             recipients.Any(static r => r.DisplayName is not null || r.EmailAddress is not null),
             "At least one recipient must carry a display name or email address.");
     }
+
+    /// <summary>
+    /// Verifies that, by default, a recipient cell whose heap reference does not resolve fails the recipient list with
+    /// <see cref="PstFileFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Recipients_WhenACellDoesNotResolve_ShouldThrowPstFileFormatException()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingRecipientEmail = true);
+        OutlookMailMessage message = GetFullMessage(store);
+
+        PstFileFormatException ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        {
+            _ = message.Recipients;
+        });
+
+        Assert.AreEqual(PstFileError.InvalidHeap, ex.Error);
+    }
+
+    /// <summary>
+    /// Verifies that a store that omits unresolvable values keeps every recipient, leaves out the cell whose heap
+    /// reference does not resolve, and reports it with the recipient table's node and the row's identifier.
+    /// </summary>
+    [TestMethod]
+    public void Recipients_WhenACellDoesNotResolve_ForOmittingStore_ShouldOmitAndReportTheCell()
+    {
+        var reports = new List<OutlookOmittedValue>();
+        var options = new OutlookMailStoreReaderOptions { OmitUnresolvableValues = true, ValueOmittedCallback = reports.Add };
+
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingRecipientEmail = true, options);
+        OutlookMailMessage message = GetFullMessage(store);
+
+        Assert.AreEqual(2, message.Recipients.Count);
+        Assert.AreEqual(PstMessagingFixtureBuilder.RecipientTwoName, message.Recipients[1].DisplayName);
+        Assert.IsNull(message.Recipients[1].EmailAddress);
+        Assert.AreEqual(PstMessagingFixtureBuilder.RecipientOneEmail, message.Recipients[0].EmailAddress);
+
+        OutlookOmittedValue report = reports.Single();
+        Assert.AreEqual(PstMessagingFixtureBuilder.RecipientTableNodeId, report.NodeId.Value);
+        Assert.AreEqual(2u, report.RowId);
+        Assert.AreEqual(MapiPropertyIds.EmailAddress, report.PropertyId);
+        Assert.AreEqual(OutlookOmittedValueReason.UnresolvableReference, report.Reason);
+    }
 }

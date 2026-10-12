@@ -95,7 +95,11 @@ public sealed partial class OutlookMailStore
                 if (_file.TryGetNode(PstNodeId.MessageStore, out PstNode? storeNode))
                 {
                     _properties = PstMapiPropertyReader.Read(
-                        storeNode.ReadPropertyContext(), inheritedEncoding: null, Strict, out Encoding encoding);
+                        storeNode.ReadPropertyContext(),
+                        inheritedEncoding: null,
+                        Strict,
+                        CreateOmissionReporter(storeNode.Id),
+                        out Encoding encoding);
                     _storeEncoding = encoding;
                 }
                 else
@@ -143,6 +147,22 @@ public sealed partial class OutlookMailStore
     /// <value><see langword="true" /> under <see cref="PstValidationLevel.Strict" />.</value>
     internal bool Strict =>
         _options.ValidationLevel == PstValidationLevel.Strict;
+
+    /// <summary>
+    /// Creates the reporter that passes an object's omitted values to the configured
+    /// <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" />.
+    /// </summary>
+    /// <param name="nodeId">The node whose property context or table holds the object's values.</param>
+    /// <param name="rowId">The table row holding the values, or <see langword="null" /> for a property context.</param>
+    /// <returns>The reporter, or <see langword="null" /> when no callback is configured.</returns>
+    internal Action<ushort, OutlookOmittedValueReason>? CreateOmissionReporter(PstNodeId nodeId, uint? rowId = null)
+    {
+        Action<OutlookOmittedValue>? callback = _options.ValueOmittedCallback;
+        if (callback is null)
+            return null;
+
+        return (propertyId, reason) => callback(new OutlookOmittedValue(nodeId, rowId, propertyId, reason));
+    }
 
     /// <summary>
     /// Gets a value indicating whether compressed RTF bodies are decompressed by the body conveniences.
