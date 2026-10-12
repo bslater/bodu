@@ -168,10 +168,14 @@ internal static class MsgContainer
     }
 
     /// <summary>
-    /// Wraps a container exception in the reader's format exception.
+    /// Wraps a container exception in the reader's format exception, reporting the container as malformed.
     /// </summary>
     /// <param name="exception">The container exception.</param>
-    /// <returns>The exception to throw.</returns>
+    /// <returns>The exception to throw, with <paramref name="exception" /> as its inner exception.</returns>
+    /// <remarks>
+    /// A fault met after the container opened is a malformed container, whatever the reader was doing when it met it;
+    /// the missing-property-stream message is the property decoder's own, for the one case it describes.
+    /// </remarks>
     internal static OutlookMsgFormatException Wrap(CompoundFileException exception) =>
-        new(OutlookMsgResourceStrings.Format_Invalid_MsgContainer, exception);
+        new(OutlookMsgResourceStrings.Format_Invalid_MsgCompoundMalformed, exception);
 }
