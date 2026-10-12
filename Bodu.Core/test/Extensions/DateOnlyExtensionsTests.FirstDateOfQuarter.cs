@@ -197,4 +197,27 @@ public partial class DateOnlyExtensionsTests
         Assert.AreEqual(expected, actual);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns the first day
+    /// of the quarter for a date in year 9999 whose quarter arithmetic reaches into the following year.
+    /// </summary>
+    /// <param name="year">The year of the input date.</param>
+    /// <param name="month">The month of the input date.</param>
+    /// <param name="day">The day of the input date.</param>
+    /// <param name="definition">The quarter definition.</param>
+    /// <param name="expectedMonth">The month of the expected result in year 9999.</param>
+    /// <param name="expectedDay">The day of the expected result in year 9999.</param>
+    [TestMethod]
+    [DataRow(9999, 12, 31, CalendarQuarterDefinition.JanuaryToDecember, 10, 1)]
+    [DataRow(9999, 12, 31, CalendarQuarterDefinition.OctoberToSeptember, 10, 1)]
+    [DataRow(9999, 3, 15, CalendarQuarterDefinition.JulyToJune, 1, 1)]
+    [DataRow(9999, 6, 30, CalendarQuarterDefinition.JulyToJune, 4, 1)]
+    public void FirstDateOfQuarter_WhenQuarterArithmeticReachesYear10000_ShouldReturnExpectedDate(
+        int year, int month, int day, CalendarQuarterDefinition definition, int expectedMonth, int expectedDay)
+    {
+        DateOnly actual = new DateOnly(year, month, day).FirstDateOfQuarter(definition);
+
+        Assert.AreEqual(new DateOnly(9999, expectedMonth, expectedDay), actual);
+    }
+
 }

@@ -187,4 +187,35 @@ public partial class DateOnlyExtensionsTests
         Assert.AreEqual(expected, actual);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns the last day
+    /// of the quarter for a date in year 9999 whose quarter arithmetic reaches into the following year.
+    /// </summary>
+    /// <param name="year">The year of the input date.</param>
+    /// <param name="month">The month of the input date.</param>
+    /// <param name="day">The day of the input date.</param>
+    /// <param name="definition">The quarter definition.</param>
+    /// <param name="expectedMonth">The month of the expected result in year 9999.</param>
+    /// <param name="expectedDay">The day of the expected result in year 9999.</param>
+    [TestMethod]
+    [DataRow(9999, 12, 31, CalendarQuarterDefinition.JanuaryToDecember, 12, 31)]
+    [DataRow(9999, 12, 31, CalendarQuarterDefinition.OctoberToSeptember, 12, 31)]
+    [DataRow(9999, 3, 15, CalendarQuarterDefinition.JulyToJune, 3, 31)]
+    [DataRow(9999, 6, 30, CalendarQuarterDefinition.JulyToJune, 6, 30)]
+    public void LastDateOfQuarter_WhenQuarterArithmeticReachesYear10000_ShouldReturnExpectedDate(
+        int year, int month, int day, CalendarQuarterDefinition definition, int expectedMonth, int expectedDay)
+    {
+        DateOnly actual = new DateOnly(year, month, day).LastDateOfQuarter(definition);
+
+        Assert.AreEqual(new DateOnly(9999, expectedMonth, expectedDay), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfQuarter(int, int)" /> returns 31 December 9999 for the
+    /// fourth quarter of year 9999, whose end is computed from the start of the following year.
+    /// </summary>
+    [TestMethod]
+    public void GetLastDateOfQuarter_WhenYearIs9999AndQuarterIs4_ShouldReturnLastDayOfYear() =>
+        Assert.AreEqual(new DateOnly(9999, 12, 31), DateOnlyExtensions.GetLastDateOfQuarter(9999, 4));
+
 }
