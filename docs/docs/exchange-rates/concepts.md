@@ -120,7 +120,7 @@ A provider is safe for concurrent use. Lookups read a `volatile` reference to th
 
 ## Logging
 
-Logging is opt-in: pass an `ILogger` (or let DI supply one) or the provider uses `NullLogger`. Each options type exposes five per-event levels - `DownloadStartingLogLevel` (`Debug`), `DownloadCompletedLogLevel` (`Information`), `DownloadFailedLogLevel` (`Warning`), `ObservationIngestedLogLevel` (`Information`), and `SynchronousNetworkFetchLogLevel` (`Warning`) - so verbosity is tuned per concern without category-wide filters; `LogLevel.None` suppresses an event entirely.
+Logging is opt-in: pass an `ILogger` (or let DI supply one) or the provider uses `NullLogger`. Each options type exposes per-event levels - `DownloadStartingLogLevel` (`Debug`), `DownloadCompletedLogLevel` (`Information`), `DownloadFailedLogLevel` (`Warning`), `ObservationIngestedLogLevel` (`Trace`), and, on every provider except BoE and RBA, `SynchronousNetworkFetchLogLevel` (`Warning`) - so verbosity is tuned per concern without category-wide filters; `LogLevel.None` suppresses an event entirely.
 
 ## Where to go next
 

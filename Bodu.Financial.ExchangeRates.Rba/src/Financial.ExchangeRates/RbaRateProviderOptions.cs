@@ -118,8 +118,10 @@ public sealed class RbaRateProviderOptions
     /// <summary>
     /// Gets or sets the level at which each individual ingested rate observation is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
-    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Information;
+    /// <value>
+    /// The log level; defaults to <see cref="LogLevel.Trace" />, because a load can ingest thousands of observations.
+    /// </value>
+    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
 
     /// <summary>
     /// Validates the options, throwing when a required value is missing or an invariant is violated.

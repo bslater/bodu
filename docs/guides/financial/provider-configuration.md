@@ -93,7 +93,7 @@ binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> (and its nes
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Information",
+      "ObservationIngestedLogLevel": "Trace",
       "SynchronousNetworkFetchLogLevel": "Warning"
     }
   }
@@ -151,7 +151,7 @@ three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProvider
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Information",
+      "ObservationIngestedLogLevel": "Trace",
       "SynchronousNetworkFetchLogLevel": "Warning",
       "ApiKey": "",
       "TimeSeriesPath": "timeseries",
@@ -217,7 +217,7 @@ Three shapes, then, and two of them are already shown in full above. RBA's is th
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Information"
+      "ObservationIngestedLogLevel": "Trace"
     }
   }
 }
@@ -243,7 +243,7 @@ And the Bank of England's adds a query path and an on-demand window to the neste
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Information"
+      "ObservationIngestedLogLevel": "Trace"
     }
   }
 }

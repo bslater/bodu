@@ -133,7 +133,7 @@ The matching `appsettings.json` section - every key below binds to <xref:Bodu.Fi
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Information",
+      "ObservationIngestedLogLevel": "Trace",
       "SynchronousNetworkFetchLogLevel": "Warning"
     }
   }
@@ -183,7 +183,7 @@ Through DI, keep the key out of source and bind it from configuration (user secr
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Information",
+      "ObservationIngestedLogLevel": "Trace",
       "SynchronousNetworkFetchLogLevel": "Warning",
       "ApiKey": "<from user secrets>",
       "TimeSeriesPath": "timeseries",
