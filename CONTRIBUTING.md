@@ -112,15 +112,17 @@ change's scope belongs in its own issue and its own pull request.
 Every pull request runs:
 
 - **Build and Test** - every test project, every sample and the docs project, built with warnings as
-  errors on Linux x64, where the tests and samples then run; and the cryptography tests on Linux ARM64.
+  errors on Linux x64, where the tests and samples then run; the cryptography tests on Linux ARM64; and
+  the solution packed as the release packs it, without the test assemblies' access to internals and with
+  package validation.
 - **Policy Gate** - the deterministic checks in `bld/check-policy.sh` and the folder and namespace
   alignment check.
 - **Claude Policy Review** - an automated review against the judgment-based conventions in `CLAUDE.md`.
 - **Build and Publish DocFX Sites** - the API reference and documentation site, with its link checks.
 
 A change to a published package's public API is also compared against its last release by package
-validation when the package is packed. An intended breaking change needs a reviewed reason and, for a
-Stable package, a major version.
+validation when the package is packed, which CI does on every pull request. An intended breaking change
+needs a reviewed reason and, for a Stable package, a major version.
 
 ## License
 
