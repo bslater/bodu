@@ -125,18 +125,24 @@ public sealed class XorShiftRandom
     /// Returns a non-negative random integer that is strictly less than the specified exclusive upper bound.
     /// </summary>
     /// <param name="maxValue">The exclusive upper bound of the random number to be generated.</param>
-    /// <returns>A 32-bit signed integer in the half-open interval <c>[0, <paramref name="maxValue" />)</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="maxValue" /> is less than or equal to zero.
-    /// </exception>
+    /// <returns>
+    /// A 32-bit signed integer in the half-open interval <c>[0, <paramref name="maxValue" />)</c>; or zero when
+    /// <paramref name="maxValue" /> is zero.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxValue" /> is less than zero.</exception>
     /// <remarks>
-    /// Matches the contract of <see cref="System.Random.Next(int)" />. Draws are produced through Lemire-style
-    /// rejection rather than modulo, eliminating the modulo-bias that would otherwise skew small bounds.
+    /// Matches the contract of <see cref="System.Random.Next(int)" />, including its handling of a zero bound: when
+    /// <paramref name="maxValue" /> is zero the method returns zero without drawing from the generator. Draws are
+    /// produced through Lemire-style rejection rather than modulo, eliminating the modulo-bias that would otherwise
+    /// skew small bounds.
     /// </remarks>
     public override int Next(int maxValue)
     {
-        ThrowHelper.ThrowIfLessThanOrEqual(maxValue, 0);
-        return (int)BoundedNextUInt32((uint)maxValue);
+        ThrowHelper.ThrowIfNegative(maxValue);
+
+        return maxValue == 0
+            ? 0
+            : (int)BoundedNextUInt32((uint)maxValue);
     }
 
     /// <summary>
@@ -149,7 +155,7 @@ public sealed class XorShiftRandom
     /// A 32-bit signed integer greater than or equal to <paramref name="minValue" /> and strictly less than
     /// <paramref name="maxValue" />; or <paramref name="minValue" /> when the two bounds are equal.
     /// </returns>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="minValue" /> is strictly greater than <paramref name="maxValue" />.
     /// </exception>
     /// <remarks>
@@ -157,7 +163,8 @@ public sealed class XorShiftRandom
     /// Matches the contract of <see cref="System.Random.Next(int, int)" />, including its handling of an empty range:
     /// when <paramref name="minValue" /> equals <paramref name="maxValue" /> the method returns
     /// <paramref name="minValue" /> without throwing. Only a strictly inverted range (<paramref name="minValue" /> &gt;
-    /// <paramref name="maxValue" />) raises <see cref="ArgumentException" />.
+    /// <paramref name="maxValue" />) raises <see cref="ArgumentOutOfRangeException" />, naming
+    /// <paramref name="minValue" />.
     /// </para>
     /// <para>
     /// The full <see cref="int" /> span <c>Next(int.MinValue, int.MaxValue)</c> is supported - the range is computed in
@@ -167,7 +174,7 @@ public sealed class XorShiftRandom
     /// </remarks>
     public override int Next(int minValue, int maxValue)
     {
-        ThrowHelper.ThrowIfGreaterThanOther(minValue, maxValue);
+        ThrowHelper.ThrowIfGreaterThan(minValue, maxValue);
 
         // Compute range in long-space so the subtraction never overflows, even for the
         // full-int span Next(int.MinValue, int.MaxValue) - every int range fits in uint.
