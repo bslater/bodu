@@ -83,7 +83,7 @@ public static class ServiceCollectionExtensions
     ///
     /// services.AddFinancialService(builder => builder
     ///     .AddCurrencyLookup<MyCurrencyLookup>()
-    ///     .AddMonetaryContext("invoicing", new MonetaryContext(CurrencyCode.USD))
+    ///     .AddMonetaryContext("invoicing", new MonetaryContext { Rounding = MidpointRoundingStrategy.AwayFromZero })
     ///     .AddDatedExchangeRateProvider<MyRateProvider>());
     ///
     /// // Promote the configured lookup to the ambient default after the provider is built.

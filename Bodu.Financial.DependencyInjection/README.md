@@ -16,10 +16,11 @@ Targets `net8.0` and `net10.0`. The registration extension methods, the `IFinanc
 
 ```csharp
 using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.Serialization.Json;   // Bodu.Financial.Serialization.Json package (optional, for AddFinancialJson)
 
 services.AddFinancialService(configuration, sectionName: "Financial")
-    .AddExchangeRateProvider<EcbRateProvider>()
+    .AddExchangeRateProvider(new FixedRateTable(rates))     // any IRateProvider the container can build
     .AddMonetaryContext("au", auContext);
 
 services.AddFinancialJson(FinancialJsonPolicy.Strict);
@@ -30,10 +31,12 @@ services.AddFinancialJson(FinancialJsonPolicy.Strict);
 | `AddFinancialService(IConfiguration?, string)` | Register `ICurrencyLookup`, bind `FinancialOptions`, return an `IFinancialServiceBuilder` |
 | `AddFinancialService(Action<IFinancialServiceBuilder>)` | Register core services and compose fluently |
 | `IFinancialServiceBuilder.AddCurrencyLookup<TLookup>()` | Replace the registered `ICurrencyLookup` |
-| `.AddExchangeRateProvider<T>()` / `(instance)` | Register an `IRateProvider` |
-| `.AddDatedExchangeRateProvider<T>()` / `(instance)` | Register an `IDatedRateProvider` |
+| `.AddExchangeRateProvider<T>()` / `(instance)` | Register an `IRateProvider` (first registration wins) |
+| `.AddDatedExchangeRateProvider<T>()` / `(instance)` | Register an `IDatedRateProvider` (first registration wins) |
 | `.AddMonetaryContext(name, context)` | Register a named `MonetaryContext` as a keyed singleton |
 | `IServiceProvider.UseCurrencyResolution()` | Install the container's `ICurrencyLookup` as the process-wide ambient resolver |
+
+The provider methods register through `TryAdd`, and the generic form needs a type the container can construct. A web feed such as the ECB provider needs its own options and `HttpClient`, so register it through its package's `Add<Source>ExchangeRates()` method (for example `AddEcbExchangeRates()` from `Bodu.Financial.ExchangeRates.Ecb`) rather than `AddExchangeRateProvider<EcbRateProvider>()`.
 
 `FinancialOptions` is bound from the supplied configuration section (default `"Financial"`); it currently declares no settings of its own and exists as the binding seam for future options. The JSON registration `services.AddFinancialJson(policy)` (a `JsonSerializerOptions` keyed `"Financial"` with the financial converters) lives in the companion `Bodu.Financial.Serialization.Json` package.
 

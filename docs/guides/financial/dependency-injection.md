@@ -18,7 +18,7 @@ The package references `Bodu.Financial` and `Bodu.Core`, plus `Microsoft.Extensi
 
 ## The registration surface
 
-The entry point is the `AddFinancialService` `IServiceCollection` extension (in the `Bodu.Financial` namespace), with two overloads. Both register the default <xref:Bodu.Financial.Currencies.ICurrency> lookup and return an <xref:Bodu.Financial.IFinancialServiceBuilder>.
+The entry point is the `AddFinancialService` `IServiceCollection` extension (in the `Bodu.Financial` namespace), with two overloads. Both register the default <xref:Bodu.Financial.Currencies.ICurrencyLookup> and return an <xref:Bodu.Financial.IFinancialServiceBuilder>.
 
 | Method | Registers |
 |---|---|
@@ -32,7 +32,7 @@ The chainable `IFinancialServiceBuilder` extension methods (in the `Bodu.Financi
 | Builder method | Effect |
 |---|---|
 | `AddCurrencyLookup<TLookup>()` | Replaces the default currency lookup with your `ICurrencyLookup` implementation. |
-| `AddMonetaryContext(string name, MonetaryContext context)` | Registers a named monetary context (rounding, minor units, formatting). |
+| `AddMonetaryContext(string name, MonetaryContext context)` | Registers a named monetary context (rounding strategy, scale, cash rounding). |
 | `AddExchangeRateProvider<TProvider>()` / `AddExchangeRateProvider(provider)` | Registers a timeless <xref:Bodu.Financial.ExchangeRates.IRateProvider>, by type or by instance. |
 | `AddDatedExchangeRateProvider<TProvider>()` / `AddDatedExchangeRateProvider(provider)` | Registers a dated <xref:Bodu.Financial.ExchangeRates.IDatedRateProvider>. |
 

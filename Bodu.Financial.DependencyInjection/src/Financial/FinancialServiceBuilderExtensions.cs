@@ -24,7 +24,7 @@ namespace Bodu.Financial;
 ///
 /// services.AddFinancialService(builder => builder
 ///     .AddCurrencyLookup<MyCurrencyLookup>()
-///     .AddMonetaryContext("payroll", new MonetaryContext(CurrencyCode.EUR))
+///     .AddMonetaryContext("payroll", new MonetaryContext { Rounding = MidpointRoundingStrategy.AwayFromZero })
 ///     .AddExchangeRateProvider<MyRateProvider>());
 ///]]>
 /// </code>
@@ -71,12 +71,17 @@ public static class FinancialServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Registers an <see cref="IRateProvider" /> implementation as a singleton.
+    /// Registers an <see cref="IRateProvider" /> implementation as a singleton, unless an <see cref="IRateProvider" />
+    /// is already registered.
     /// </summary>
     /// <typeparam name="TProvider">The provider implementation.</typeparam>
     /// <param name="builder">The builder.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// The registration uses <c>TryAddSingleton</c>, so the first <see cref="IRateProvider" /> registration wins and
+    /// later calls are ignored.
+    /// </remarks>
     public static IFinancialServiceBuilder AddExchangeRateProvider<TProvider>(this IFinancialServiceBuilder builder)
         where TProvider : class, IRateProvider
     {
@@ -87,7 +92,8 @@ public static class FinancialServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Registers an <see cref="IRateProvider" /> instance as a singleton.
+    /// Registers an <see cref="IRateProvider" /> instance as a singleton, unless an <see cref="IRateProvider" /> is
+    /// already registered.
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="provider">The provider instance.</param>
@@ -95,6 +101,10 @@ public static class FinancialServiceBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// The registration uses <c>TryAddSingleton</c>, so the first <see cref="IRateProvider" /> registration wins and
+    /// later calls are ignored.
+    /// </remarks>
     public static IFinancialServiceBuilder AddExchangeRateProvider(this IFinancialServiceBuilder builder, IRateProvider provider)
     {
         ThrowHelper.ThrowIfNull(builder);
@@ -105,12 +115,17 @@ public static class FinancialServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Registers an <see cref="IDatedRateProvider" /> implementation as a singleton.
+    /// Registers an <see cref="IDatedRateProvider" /> implementation as a singleton, unless an
+    /// <see cref="IDatedRateProvider" /> is already registered.
     /// </summary>
     /// <typeparam name="TProvider">The provider implementation.</typeparam>
     /// <param name="builder">The builder.</param>
     /// <returns>The builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// The registration uses <c>TryAddSingleton</c>, so the first <see cref="IDatedRateProvider" /> registration wins
+    /// and later calls are ignored.
+    /// </remarks>
     public static IFinancialServiceBuilder AddDatedExchangeRateProvider<TProvider>(this IFinancialServiceBuilder builder)
         where TProvider : class, IDatedRateProvider
     {
@@ -121,7 +136,8 @@ public static class FinancialServiceBuilderExtensions
     }
 
     /// <summary>
-    /// Registers an <see cref="IDatedRateProvider" /> instance as a singleton.
+    /// Registers an <see cref="IDatedRateProvider" /> instance as a singleton, unless an
+    /// <see cref="IDatedRateProvider" /> is already registered.
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <param name="provider">The provider instance.</param>
@@ -129,6 +145,10 @@ public static class FinancialServiceBuilderExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// The registration uses <c>TryAddSingleton</c>, so the first <see cref="IDatedRateProvider" /> registration wins
+    /// and later calls are ignored.
+    /// </remarks>
     public static IFinancialServiceBuilder AddDatedExchangeRateProvider(this IFinancialServiceBuilder builder, IDatedRateProvider provider)
     {
         ThrowHelper.ThrowIfNull(builder);
