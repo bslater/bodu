@@ -58,9 +58,11 @@ public partial class PstPropertyContextTests
     /// Builds the shared fixture and opens the property context of the node under test.
     /// </summary>
     /// <param name="validationLevel">The validation level to open under.</param>
+    /// <param name="omitUnresolvableValues">Whether the session omits unresolvable values.</param>
     /// <returns>The open file and the context; the caller disposes the file.</returns>
     private static (PstFile File, PstPropertyContext Context) OpenSharedContext(
-        PstValidationLevel validationLevel = PstValidationLevel.Compatible)
+        PstValidationLevel validationLevel = PstValidationLevel.Compatible,
+        bool omitUnresolvableValues = false)
     {
         var builder = new PstFixtureBuilder();
         var ltp = new PstLtpFixtureBuilder();
@@ -90,7 +92,9 @@ public partial class PstPropertyContextTests
 
         ltp.AddHeapNode(builder, NodeId, subnodeTree);
 
-        PstFile file = PstFile.Open(builder.BuildStream(), new PstFileOptions { ValidationLevel = validationLevel });
+        PstFile file = PstFile.Open(
+            builder.BuildStream(),
+            new PstFileOptions { ValidationLevel = validationLevel, OmitUnresolvableValues = omitUnresolvableValues });
         return (file, file.GetNode(new PstNodeId(NodeId)).ReadPropertyContext());
     }
 }

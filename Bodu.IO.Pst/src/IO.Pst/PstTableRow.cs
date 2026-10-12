@@ -13,8 +13,15 @@ namespace Bodu.IO.Pst;
 /// Represents one row of a table context: the row identifier and cell access by column property identifier.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A row copies its bytes when it is produced, so it remains valid independent of the matrix block it came from.
 /// Variable-size cells hold value references that resolve on access, exactly like property-context values.
+/// </para>
+/// <para>
+/// When the session omits unresolvable values (<see cref="PstFileOptions.OmitUnresolvableValues" />), each present
+/// cell's value reference is checked as the row is produced, and a cell whose reference does not resolve is treated as
+/// absent by every member of the row and listed in <see cref="OmittedPropertyIds" />.
+/// </para>
 /// </remarks>
 public sealed class PstTableRow
 {
@@ -30,6 +37,9 @@ public sealed class PstTableRow
     /// <summary>The table geometry.</summary>
     private readonly PstTcInfo _info;
 
+    /// <summary>The omitted cells' property identifiers; <see langword="null" /> when no cell is omitted.</summary>
+    private readonly List<ushort>? _omitted;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="PstTableRow" /> class over a row's copied bytes.
     /// </summary>
@@ -43,6 +53,7 @@ public sealed class PstTableRow
         _heap = heap;
         _context = context;
         _info = info;
+        _omitted = context.Source.OmitUnresolvableValues ? FindUnresolvableCells() : null;
     }
 
     /// <summary>
@@ -51,6 +62,21 @@ public sealed class PstTableRow
     /// <value>The row identifier.</value>
     public uint RowId =>
         BinaryPrimitives.ReadUInt32LittleEndian(_row);
+
+    /// <summary>
+    /// Gets the property identifiers of the cells treated as absent because their value references do not resolve.
+    /// </summary>
+    /// <value>
+    /// The omitted cells' column property identifiers, in column order; empty when every present cell's reference
+    /// resolves or when the session does not omit unresolvable values.
+    /// </value>
+    /// <remarks>
+    /// Cells are omitted only when the session was opened with <see cref="PstFileOptions.OmitUnresolvableValues" />;
+    /// otherwise an unresolvable reference raises <see cref="PstFileFormatException" /> when the cell is read. A
+    /// non-empty list marks the row as salvaged from a damaged file.
+    /// </remarks>
+    public IReadOnlyList<ushort> OmittedPropertyIds =>
+        _omitted is null ? [] : _omitted;
 
     /// <summary>
     /// Attempts to retrieve a cell's value by its column's property identifier.
@@ -176,12 +202,47 @@ public sealed class PstTableRow
     }
 
     /// <summary>
-    /// Tests a column's bit in the row's existence bitmap, which is indexed most-significant-bit first.
+    /// Determines whether a column's cell is present: marked in the existence bitmap and not omitted.
     /// </summary>
     /// <param name="column">The column.</param>
     /// <returns><see langword="true" /> when the cell is present.</returns>
     private bool IsPresent(PstTcColumn column) =>
+        IsMarked(column) && (_omitted is null || !_omitted.Contains(column.PropertyId));
+
+    /// <summary>
+    /// Tests a column's bit in the row's existence bitmap, which is indexed most-significant-bit first.
+    /// </summary>
+    /// <param name="column">The column.</param>
+    /// <returns><see langword="true" /> when the bitmap marks the cell present.</returns>
+    private bool IsMarked(PstTcColumn column) =>
         (_row[_info.EndOffset1 + (column.ExistenceBit / 8)] & (1 << (7 - (column.ExistenceBit % 8)))) != 0;
+
+    /// <summary>
+    /// Finds the present cells whose value references do not resolve, for a session that omits unresolvable values.
+    /// </summary>
+    /// <returns>
+    /// The omitted cells' column property identifiers, in column order; <see langword="null" /> when every reference
+    /// resolves.
+    /// </returns>
+    /// <exception cref="PstFileFormatException">
+    /// The owning node's subnode tree is malformed, or a subnode's data tree exceeds
+    /// <see cref="PstFileOptions.MaxDataTreeLeaves" />.
+    /// </exception>
+    private List<ushort>? FindUnresolvableCells()
+    {
+        List<ushort>? omitted = null;
+        foreach (PstTcColumn column in _info.Columns)
+        {
+            if (IsMarked(column)
+                && IsOutOfLine(column)
+                && !_context.CanResolve(_heap, BinaryPrimitives.ReadUInt32LittleEndian(_row.AsSpan(column.DataOffset)), minimumLength: 0))
+            {
+                (omitted ??= []).Add(column.PropertyId);
+            }
+        }
+
+        return omitted;
+    }
 
     /// <summary>
     /// Resolves a cell into its value: fixed-width cells read inline from the row, variable-size cells resolve their
