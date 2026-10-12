@@ -453,17 +453,24 @@ public partial class EvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Occurs immediately <b>after</b> an item is evicted from the <see cref="EvictingDictionary{TKey, TValue}" /> due
-    /// to capacity limits.
+    /// Occurs immediately <b>after</b> an item is evicted from the <see cref="EvictingDictionary{TKey, TValue}" /> by
+    /// capacity pressure or time-based expiry.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This event is raised after the item has been removed from the collection, based on the configured
-    /// <see cref="EvictingDictionaryPolicy" /> (e.g., FirstInFirstOut, LeastRecentlyUsed, or LeastFrequentlyUsed).
+    /// This event is raised after the item has been removed from the collection, either as the victim of the configured
+    /// <see cref="EvictingDictionaryPolicy" /> (e.g., FirstInFirstOut, LeastRecentlyUsed, or LeastFrequentlyUsed) or,
+    /// when <see cref="Expiration" /> is configured, because its time-to-live has elapsed.
     /// </para>
     /// <para>
     /// Consumers can use this event to record historical data, notify observers, or synchronize external caches. The
     /// key and value provided are no longer present in the dictionary.
+    /// </para>
+    /// <para>
+    /// Exceptions thrown by handlers are not caught. One thrown during a capacity eviction propagates after the victim
+    /// has been removed, and the entry being added is not stored. Because expired entries are removed lazily, a
+    /// throwing handler can also surface from <see cref="TryGetValue" />, the indexer, <see cref="ContainsKey" />, or
+    /// <see cref="Touch" />.
     /// </para>
     /// </remarks>
     /// <example>
@@ -484,8 +491,8 @@ public partial class EvictingDictionary<TKey, TValue>
     public event Action<TKey, TValue>? ItemEvicted;
 
     /// <summary>
-    /// Occurs immediately <b>before</b> an item is evicted from the <see cref="EvictingDictionary{TKey, TValue}" /> due
-    /// to capacity limits.
+    /// Occurs immediately <b>before</b> an item is evicted from the <see cref="EvictingDictionary{TKey, TValue}" /> by
+    /// capacity pressure or time-based expiry.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -493,8 +500,11 @@ public partial class EvictingDictionary<TKey, TValue>
     /// value before eviction occurs.
     /// </para>
     /// <para>
-    /// Common use cases include diagnostics, logging, cache warm-up, or state mirroring. This event is informational
-    /// and cannot cancel or delay eviction.
+    /// Common use cases include diagnostics, logging, cache warm-up, or state mirroring. Exceptions thrown by handlers
+    /// are not caught: one thrown during a capacity eviction propagates before the victim is removed, so nothing is
+    /// evicted and the entry being added is not stored. Because expired entries are removed lazily, a throwing handler
+    /// can also surface from <see cref="TryGetValue" />, the indexer, <see cref="ContainsKey" />, or
+    /// <see cref="Touch" />.
     /// </para>
     /// </remarks>
     /// <example>
@@ -520,7 +530,7 @@ public partial class EvictingDictionary<TKey, TValue>
     public int Capacity { get; }
 
     /// <summary>
-    /// Gets the total number of items evicted from the dictionary since creation.
+    /// Gets the total number of items evicted from the dictionary since creation or the last <see cref="Clear" />.
     /// </summary>
     public long EvictionCount { get; private set; }
 
@@ -535,10 +545,12 @@ public partial class EvictingDictionary<TKey, TValue>
     public long TotalTouches { get; private set; }
 
     /// <summary>
-    /// Returns the key that would be evicted next based on the current eviction policy and internal state.
+    /// Returns the current eviction candidate of the configured policy: the key the next capacity eviction would remove
+    /// under every policy except <see cref="EvictingDictionaryPolicy.RandomReplacement" />, provided no entry has
+    /// expired.
     /// </summary>
     /// <returns>
-    /// The key that is next in line for eviction, or <see langword="default" /> if the dictionary is empty.
+    /// The policy's current eviction candidate, or <see langword="default" /> if the dictionary is empty.
     /// </returns>
     /// <remarks>
     /// The eviction candidate depends on the selected <see cref="EvictingDictionaryPolicy" />:
@@ -556,7 +568,10 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <description><b>LeastFrequentlyUsed</b>: returns the key with the fewest total accesses.</description>
     /// </item>
     /// <item>
-    /// <description><b>RandomReplacement</b>: returns an arbitrary key from the dictionary.</description>
+    /// <description>
+    /// <b>RandomReplacement</b>: returns an arbitrary key from the dictionary, which need not be the key a later
+    /// eviction removes, because each eviction draws its victim at random.
+    /// </description>
     /// </item>
     /// <item>
     /// <description>
@@ -608,8 +623,13 @@ public partial class EvictingDictionary<TKey, TValue>
     /// The specified <paramref name="key" /> does not exist in the dictionary.
     /// </exception>
     /// <remarks>
-    /// If the eviction policy is <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed" /> or
-    /// <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed" />, this updates the internal usage metadata.
+    /// Under <see cref="EvictingDictionaryPolicy.LeastRecentlyUsed" /> and
+    /// <see cref="EvictingDictionaryPolicy.MostRecentlyUsed" /> the entry moves to the most-recently-used position,
+    /// under <see cref="EvictingDictionaryPolicy.LeastFrequentlyUsed" /> its access count increases, and under
+    /// <see cref="EvictingDictionaryPolicy.SecondChance" /> its reference bit is set.
+    /// <see cref="EvictingDictionaryPolicy.FirstInFirstOut" /> and
+    /// <see cref="EvictingDictionaryPolicy.RandomReplacement" /> keep no usage metadata, so the touch only counts
+    /// toward <see cref="TotalTouches" />.
     /// </remarks>
     public void TouchOrThrow(TKey key)
     {

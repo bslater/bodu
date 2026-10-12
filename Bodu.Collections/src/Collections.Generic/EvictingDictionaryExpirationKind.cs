@@ -14,12 +14,13 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// The kind determines the point from which an entry's time-to-live is counted. Under <see cref="Absolute" /> the
 /// countdown starts when the entry is added (or its value is updated) and is unaffected by reads. Under
-/// <see cref="Sliding" /> every successful read access - <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" />,
-/// the indexer getter, and <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" /> - restarts the countdown,
-/// keeping actively read entries alive indefinitely.
+/// <see cref="Sliding" /> every successful read that returns the value -
+/// <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> and the indexer getter - restarts the countdown, keeping
+/// actively read entries alive indefinitely.
 /// </para>
 /// <para>
-/// Enumeration never refreshes an entry's lifetime under either kind.
+/// <see cref="EvictingDictionary{TKey, TValue}.ContainsKey" />, <see cref="EvictingDictionary{TKey, TValue}.Touch" />,
+/// and enumeration never refresh an entry's lifetime under either kind.
 /// </para>
 /// </remarks>
 public enum EvictingDictionaryExpirationKind
@@ -30,8 +31,8 @@ public enum EvictingDictionaryExpirationKind
     Absolute = 0,
 
     /// <summary>
-    /// The entry's expiration deadline is refreshed on every successful read access ( <c>TryGetValue</c>, the indexer
-    /// getter, or <c>ContainsKey</c>), so the entry expires only after remaining unread for its full time-to-live.
+    /// The entry's expiration deadline is refreshed on every successful read access ( <c>TryGetValue</c> or the indexer
+    /// getter), so the entry expires only after remaining unread for its full time-to-live.
     /// </summary>
     Sliding = 1,
 }

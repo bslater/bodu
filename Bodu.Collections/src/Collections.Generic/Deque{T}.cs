@@ -56,12 +56,12 @@ namespace Bodu.Collections.Generic;
 /// </item>
 /// <item>
 /// <description>
-/// Inherited <c>RemoveFirst</c> / <c>RemoveLast</c> - pop and return the head or tail element.
+/// <see cref="RemoveFirst" /> / <see cref="RemoveLast" /> - pop and return the head or tail element.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// Inherited <c>PeekFirst</c> / <c>PeekLast</c> - read the head or tail element without removing it.
+/// <see cref="PeekFirst" /> / <see cref="PeekLast" /> - read the head or tail element without removing it.
 /// </description>
 /// </item>
 /// <item>
