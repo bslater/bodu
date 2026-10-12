@@ -24,17 +24,21 @@ public readonly struct DotEnvReaderOptions
     public static DotEnvReaderOptions Default => default;
 
     /// <summary>
-    /// Gets a value indicating whether a leading <c>export</c> keyword before a key is recognized and stripped.
+    /// Gets a value indicating whether a leading <c>export</c> keyword before a key is left unrecognized rather than
+    /// stripped.
     /// </summary>
-    /// <value><see langword="true" /> to accept the <c>export</c> prefix; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> to leave the prefix unrecognized, so that an entry written with it is malformed;
+    /// otherwise <see langword="false" />, which strips it.
+    /// </value>
     /// <remarks>
     /// The property is inverted so the parameterless <see cref="Default" /> enables the prefix.
     /// </remarks>
     public bool DisallowExportPrefix { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether a <c>#</c> preceded by whitespace terminates an unquoted value as an inline
-    /// comment.
+    /// Gets a value indicating whether a <c>#</c> preceded by whitespace is read as part of an unquoted value rather
+    /// than as the start of an inline comment.
     /// </summary>
     /// <value><see langword="true" /> to disable inline comments; otherwise <see langword="false" />.</value>
     /// <remarks>
@@ -44,7 +48,8 @@ public readonly struct DotEnvReaderOptions
     public bool DisallowInlineComments { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether comment lines are surfaced as <see cref="DotEnvTokenType.Comment" /> tokens.
+    /// Gets a value indicating whether comment lines are skipped rather than surfaced as
+    /// <see cref="DotEnvTokenType.Comment" /> tokens.
     /// </summary>
     /// <value><see langword="true" /> to skip comment tokens; otherwise <see langword="false" />.</value>
     /// <remarks>
