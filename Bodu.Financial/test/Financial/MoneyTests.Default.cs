@@ -112,6 +112,36 @@ public partial class MoneyTests
     }
 
     /// <summary>
+    /// Verifies that converting a default-initialised, currency-less <see cref="Money" /> to a currency named by its
+    /// ISO code throws <see cref="InvalidOperationException" /> rather than producing a zero in the target currency.
+    /// </summary>
+    [TestMethod]
+    public void Convert_WhenDefaultAndTargetIsIsoCode_ShouldThrowInvalidOperationException()
+    {
+        Money money = default;
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = money.Convert("EUR", 0.9m);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that converting a default-initialised, currency-less <see cref="Money" /> to a strongly-typed currency
+    /// throws <see cref="InvalidOperationException" /> rather than producing a typed zero.
+    /// </summary>
+    [TestMethod]
+    public void Convert_WhenDefaultAndTargetIsTyped_ShouldThrowInvalidOperationException()
+    {
+        Money money = default;
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = money.Convert<EUR>(0.9m);
+        });
+    }
+
+    /// <summary>
     /// Verifies that equality remains usable on default-initialised values: two defaults compare equal and neither
     /// comparison throws.
     /// </summary>
