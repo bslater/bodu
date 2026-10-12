@@ -102,9 +102,10 @@ The inputs are a key, a nonce, the plaintext, and optional **associated data (AA
 
 The decrypt operation takes the same key, nonce, ciphertext, AAD, and tag, and returns either the plaintext or a tag-mismatch failure - there is no "decrypt and check tag separately" path that can be mis-sequenced.
 
-Bodu exposes AEAD two ways:
+Bodu exposes AEAD three ways:
 
 - **<xref:Bodu.Security.Cryptography.AsconAead128>** - a complete AEAD primitive (NIST SP 800-232) that does not use a separate block cipher.
+- **Poly1305 stream AEADs** - <xref:Bodu.Security.Cryptography.XChaCha20Poly1305>, <xref:Bodu.Security.Cryptography.XSalsa20Poly1305>, and <xref:Bodu.Security.Cryptography.XSalsa20Poly1305Aead>, built on <xref:Bodu.Security.Cryptography.Poly1305AeadTransform> with 192-bit nonces; see the [authenticated stream ciphers guide](../../guides/cryptography/stream-aead.md).
 - **AEAD mode transforms** over an <xref:Bodu.Security.Cryptography.IBlockCipher> - pair AES (via <xref:Bodu.Security.Cryptography.AesBlockCipher>) with <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform>, <xref:Bodu.Security.Cryptography.OcbModeTransform>, <xref:Bodu.Security.Cryptography.EaxModeTransform>, <xref:Bodu.Security.Cryptography.SivModeTransform>, or <xref:Bodu.Security.Cryptography.GcmSivModeTransform>. The contract these implement is <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform>.
 
 See the [AEAD modes guide](../../guides/cryptography/aead-modes.md) for the per-mode contract and per-message lifecycle.
@@ -128,7 +129,7 @@ Bodu's tweakable surface is <xref:Bodu.Security.Cryptography.TweakableSymmetricA
 Cryptographic digests in this library come in three structural shapes:
 
 - **Plain digest** - fixed-length output. <xref:Bodu.Security.Cryptography.Tiger>, <xref:Bodu.Security.Cryptography.Whirlpool>, <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024>, <xref:Bodu.Security.Cryptography.Blake2b> / <xref:Bodu.Security.Cryptography.Blake2s>, <xref:Bodu.Security.Cryptography.CubeHash>, <xref:Bodu.Security.Cryptography.Snefru128> / <xref:Bodu.Security.Cryptography.Snefru256>, <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256>.
-- **Extendable-output function (XOF)** - caller chooses the output length at finalize time. <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128>, and <xref:Bodu.Security.Cryptography.AsconCxof128>. (<xref:Bodu.Security.Cryptography.Blake3> is tree-structured internally but exposes only its fixed 256-bit digest here.)
+- **Extendable-output function (XOF)** - caller chooses the output length: per computation for <xref:Bodu.Security.Cryptography.Shake> (set `HashSize` before any input is absorbed), at squeeze time for the Ascon XOFs. <xref:Bodu.Security.Cryptography.Shake>, <xref:Bodu.Security.Cryptography.AsconXof128>, and <xref:Bodu.Security.Cryptography.AsconCxof128>. (<xref:Bodu.Security.Cryptography.Blake3> is tree-structured internally but exposes only its fixed 256-bit digest here.)
 - **Tree** - input split into leaves, leaves hashed in parallel, levels reduced to a root. <xref:Bodu.Security.Cryptography.Blake3> uses an internal tree; <xref:Bodu.Security.Cryptography.MerkleTree> exposes an explicit RFC 6962 tree over any inner `HashAlgorithm`, with inclusion and consistency proofs.
 
 ## MAC vs. one-time authenticator
@@ -181,7 +182,7 @@ Every one of these primitives produces and consumes the **raw key encodings** de
 
 ## Hybrid public-key encryption (HPKE)
 
-A KEM establishes a *secret*, not an encrypted *message*. **HPKE** (Hybrid Public Key Encryption, RFC 9180) composes the three building blocks - a KEM, a KDF, and an AEAD - into a single "seal this payload so only the holder of a given public key can read it" operation. The sender needs only the recipient's public key; the output is an **encapsulated key** plus an AEAD ciphertext and tag. <xref:Bodu.Security.Cryptography.Hpke> implements the base mode; <xref:Bodu.Security.Cryptography.HpkeSuite> selects the KEM / KDF / AEAD combination. It is the encryption layer beneath TLS Encrypted Client Hello, MLS, and Oblivious HTTP.
+A KEM establishes a *secret*, not an encrypted *message*. **HPKE** (Hybrid Public Key Encryption, RFC 9180) composes the three building blocks - a KEM, a KDF, and an AEAD - into a single "seal this payload so only the holder of a given public key can read it" operation. The sender needs only the recipient's public key; the output is an **encapsulated key** plus an AEAD ciphertext and tag. <xref:Bodu.Security.Cryptography.Hpke> implements all four RFC 9180 modes (base, PSK, auth, and auth-PSK); <xref:Bodu.Security.Cryptography.HpkeSuite> selects the KEM / KDF / AEAD combination. It is the encryption layer beneath TLS Encrypted Client Hello, MLS, and Oblivious HTTP.
 
 ## Key derivation and password hashing
 
@@ -196,20 +197,20 @@ Reaching for the wrong one is a security bug: an HKDF over a raw password offers
 
 Every primitive plugs into the standard BCL contracts so existing crypto code adopts these types without changes:
 
-- <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> - base class for the block ciphers and tweakable ciphers (through Bodu's <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm>, which adds `BlockMode` / `BlockPadding`). Lifecycle: configure `Key`, `IV`, mode and padding; call `CreateEncryptor()` / `CreateDecryptor()` or the Bodu `Encrypt` / `Decrypt` extension methods. The stream ciphers are **not** `SymmetricAlgorithm`s - they derive from <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm>, a standalone `IDisposable` base with `Key`, `Nonce`, `GenerateNonce()`, and `CreateTransform()`.
-- <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> - base class for the cryptographic digests and `Shake`. Lifecycle: one-shot `ComputeHash`, or `TransformBlock` … `TransformFinalBlock` then read `Hash` (the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> add `AppendData` / `VerifyHash`). The ASCON XOFs (`Absorb` / `Squeeze` / `GetHash`) and the Merkle tree hashes (factory-constructed, one-shot `ComputeHash`) use their own surfaces.
+- <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> - base class for the block ciphers (through Bodu's <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm>, which adds `BlockMode` / `BlockPadding`) and the tweakable ciphers (through <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>; the Threefish and wide-block Serpent wrappers declare their own `BlockMode` and use the BCL `Padding` only). Lifecycle: configure `Key`, `IV`, mode and padding; call `CreateEncryptor()` / `CreateDecryptor()` or the Bodu `Encrypt` / `Decrypt` extension methods. The stream ciphers are **not** `SymmetricAlgorithm`s - they derive from <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm>, a standalone `IDisposable` base with `Key`, `Nonce`, `GenerateNonce()`, and `CreateTransform()`.
+- <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> - base class for the cryptographic digests and `Shake`. Lifecycle: one-shot `ComputeHash`, or `TransformBlock` … `TransformFinalBlock` then read `Hash` (the <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> add `AppendData` / `VerifyHash`). The ASCON XOFs (`Absorb` / `Squeeze` / `GetHash`) use their own surface, and <xref:Bodu.Security.Cryptography.MerkleTree> is not a `HashAlgorithm` at all: it computes RFC 6962 roots and proofs over any `HashAlgorithm` its factory creates.
 - <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> - Bodu's base for the MACs (SipHash, Poly1305, and Skein's MAC mode): a `HashAlgorithm` with a required `Key` property. The library does not route through the BCL `KeyedHashAlgorithm`.
 - <xref:System.Security.Cryptography.AsymmetricAlgorithm?displayProperty=nameWithType> - base class for the public-key schemes (Ed25519, X25519, ML-KEM, ML-DSA). Lifecycle: `Create()`, `GenerateKey()`, export the public half, then sign / verify, agree, or encapsulate. Key formats differ by family: `Ed25519` / `X25519` carry the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers (`ImportPkcs8PrivateKey` / `ImportSubjectPublicKeyInfo` and the `TryExport…` pair) and, through the base-class helpers, RFC 7468 PEM; the ML-KEM / ML-DSA types expose raw FIPS encodings only and throw on the ASN.1 members. Encrypted PKCS#8 is out of scope everywhere.
 
 Bodu extends the BCL surface in two places:
 
 - <xref:Bodu.Security.Cryptography.IBlockCipher> - a one-block-at-a-time primitive contract, implemented by every block cipher in the library *and* by <xref:Bodu.Security.Cryptography.AesBlockCipher> (the bridge that lets AES feed the AEAD mode transforms).
-- <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> - extends `SymmetricAlgorithm` with `Tweak` and `GenerateTweak()` for the Threefish family.
+- <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> - extends `SymmetricAlgorithm` with `Tweak` and `GenerateTweak()` for the Threefish family and the wide-block Serpent variants.
 
 ## Key size and block size
 
-- **Key size** is reported via `SymmetricAlgorithm.LegalKeySizes` and selected via `KeySize` (bits). The Bodu facades expose only the legal sizes their algorithm supports - e.g. Camellia accepts 128 / 192 / 256, ChaCha20 accepts 256, Threefish-512 accepts only 512.
-- **Block size** is reported via `BlockSize` (bits). Block-cipher facades expose the algorithm's native size; stream ciphers report a nominal value but do not gate input length.
+- **Key size** is reported via `LegalKeySizes` and selected via `KeySize` (bits) - on `SymmetricAlgorithm` for the block ciphers, and on <xref:Bodu.Security.Cryptography.SymmetricStreamAlgorithm>, which declares its own pair, for the stream ciphers. The Bodu facades expose only the legal sizes their algorithm supports - e.g. Camellia accepts 128 / 192 / 256, ChaCha20 accepts 256, Threefish-512 accepts only 512.
+- **Block size** is reported via `BlockSize` (bits). Block-cipher facades expose the algorithm's native size; the stream ciphers have no block size and accept input of any length.
 
 Generate keys, IVs, nonces, and tweaks via the BCL-style `GenerateKey()` / `GenerateIV()` methods on the facade (and `GenerateTweak()` on tweakable algorithms), or via `System.Security.Cryptography.RandomNumberGenerator.GetBytes`.
 
@@ -217,7 +218,7 @@ Generate keys, IVs, nonces, and tweaks via the BCL-style `GenerateKey()` / `Gene
 
 Every algorithm facade implements `IDisposable` and zeroes its sensitive state - keys, IVs, nonces, tweaks, sponge state - on disposal. Always `using` an algorithm instance.
 
-The `ICryptoTransform` objects returned from `CreateEncryptor()` / `CreateDecryptor()` (and the AEAD mode transforms) are **single-use per message**. They carry internal state that finalises in `TransformFinalBlock` (or in the encrypt / decrypt call on an AEAD transform); calling them again after finalisation is undefined. The samples in [getting started](getting-started.md) construct a fresh transform on the encrypt side and another on the decrypt side - this is the contract, not over-cautious code.
+The `ICryptoTransform` objects returned from `CreateEncryptor()` / `CreateDecryptor()` (and the AEAD mode transforms) are **single-use per message**. They carry internal state that finalises in `TransformFinalBlock` (or in the encrypt / decrypt call on an AEAD transform); calling them again after finalisation throws <xref:System.InvalidOperationException>. The samples in [getting started](getting-started.md) construct a fresh transform on the encrypt side and another on the decrypt side - this is the contract, not over-cautious code.
 
 ## Where to go next
 

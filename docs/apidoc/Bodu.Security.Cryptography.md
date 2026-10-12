@@ -42,7 +42,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.XSalsa20> - 256-bit key, 192-bit nonce; extended-nonce Salsa20 (NaCl / libsodium).
 - <xref:Bodu.Security.Cryptography.Rabbit> - 128-bit key, 64-bit IV (RFC 4503; eSTREAM). Evolving internal state, no seekable counter.
 - <xref:Bodu.Security.Cryptography.Hc128> - 128-bit key, 128-bit IV (Wu; eSTREAM). Table-based with an expensive setup.
-- <xref:Bodu.Security.Cryptography.IStreamCipher>, <xref:Bodu.Security.Cryptography.TransformMode> - the keystream-cipher contract and the encrypt/decrypt direction selector shared by the stream ciphers above.
+- <xref:Bodu.Security.Cryptography.IStreamCipher> - the keystream-cipher contract shared by the stream ciphers above. (<xref:Bodu.Security.Cryptography.TransformMode> is a reserved direction enumeration that no public member consumes.)
 
 **Authenticated stream ciphers** (Poly1305 AEAD over the extended-nonce stream ciphers)
 
@@ -62,7 +62,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.IBlockCipherModeTransform>, <xref:Bodu.Security.Cryptography.IAeadBlockCipherModeTransform> - per-block / per-stripe transform contracts; the latter adds AEAD nonce / tag / associated-data semantics.
 - Classic mode transforms: <xref:Bodu.Security.Cryptography.EcbModeTransform>, <xref:Bodu.Security.Cryptography.CbcModeTransform>, <xref:Bodu.Security.Cryptography.CfbModeTransform>, <xref:Bodu.Security.Cryptography.OfbModeTransform>, <xref:Bodu.Security.Cryptography.CtrModeTransform>, <xref:Bodu.Security.Cryptography.CtsModeTransform>, <xref:Bodu.Security.Cryptography.XtsModeTransform>.
 - AEAD mode transforms: <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform>, <xref:Bodu.Security.Cryptography.OcbModeTransform>, <xref:Bodu.Security.Cryptography.EaxModeTransform>, <xref:Bodu.Security.Cryptography.SivModeTransform>, <xref:Bodu.Security.Cryptography.GcmSivModeTransform>.
-- Padding: <xref:Bodu.Security.Cryptography.IPaddingStrategy> with built-in strategies <xref:Bodu.Security.Cryptography.Pkcs7Padding>, <xref:Bodu.Security.Cryptography.NoPadding>, <xref:Bodu.Security.Cryptography.Iso10126Padding>, <xref:Bodu.Security.Cryptography.Iso7816_4Padding>, <xref:Bodu.Security.Cryptography.Ansix923Padding>, selected via <xref:Bodu.Security.Cryptography.PaddingFactory>.
+- Padding: <xref:Bodu.Security.Cryptography.IPaddingStrategy> with built-in strategies <xref:Bodu.Security.Cryptography.Pkcs7Padding>, <xref:Bodu.Security.Cryptography.NoPadding>, <xref:Bodu.Security.Cryptography.Iso10126Padding>, <xref:Bodu.Security.Cryptography.Iso7816_4Padding>, <xref:Bodu.Security.Cryptography.Ansix923Padding>, <xref:Bodu.Security.Cryptography.ZeroPadding>, selected via <xref:Bodu.Security.Cryptography.PaddingFactory>.
 
 **Cryptographic hashes** (`HashAlgorithm` lifecycle)
 
@@ -97,7 +97,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 - <xref:Bodu.Security.Cryptography.Extensions.SymmetricStreamAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.AeadTransformExtensions> - `byte[]`-returning one-shot `Encrypt` / `Decrypt` over the stream ciphers and the Poly1305 stream-AEAD transforms.
 - Secure-zeroization, padding guards, and cryptographically secure random generation ship as internal infrastructure; consumers reach them through the public surfaces (`GenerateKey()` / `GenerateIV()` / `GenerateNonce()` / `GenerateTweak()` on the algorithm types, `Nonce.Random`, `HashAlgorithmExtensions.VerifyHash`).
 - <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>, <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> - helper utilities for `HashAlgorithm` consumers and factory abstractions used by the keyed constructions.
-- <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> - abstract base for keyed hashes that defer the final block (the extension point shared by the keyed-hash constructions).
+- <xref:Bodu.Security.Cryptography.KeyedDeferredFinalBlockHashAlgorithm> - abstract base for keyed hashes that defer the final block (BLAKE2b and BLAKE2s); SipHash, Poly1305, and Skein derive from <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm> instead.
 
 **Asymmetric - signatures, key agreement, KEM, HPKE** (`AsymmetricAlgorithm` lifecycle over <xref:Bodu.Security.Cryptography.RawKeyAsymmetricAlgorithm>)
 

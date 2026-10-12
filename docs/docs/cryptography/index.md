@@ -49,9 +49,9 @@ A compact decision table for the most common requirements. The "BCL alternative"
 
 | If you need… | Reach for | Output | Standards | BCL alternative |
 |---|---|---|---|---|
-| **Confidentiality only**, block cipher | `Camellia`, `Twofish`, `Serpent128/256/512/1024`, `Threefish256/512/1024`, `Blowfish`, `Skipjack` | Block-aligned ciphertext + IV | RFC 3713 / FIPS-181 / NIST CFL / Threefish whitepaper | `Aes` (BCL - preferred for 128-bit-block AES) |
-| **Confidentiality only**, stream cipher | `ChaCha20`, `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, `Hc128` | Keystream-XOR ciphertext | RFC 7539 / XSalsa20 paper / eSTREAM | None (for these specific algorithms) |
-| **Confidentiality + integrity + authenticity** (AEAD) | `Aes` + `GcmModeTransform` / `CcmModeTransform` / `OcbModeTransform` / `EaxModeTransform` / `SivModeTransform` / `GcmSivModeTransform`; or `AsconAead128` | Ciphertext + auth tag | NIST SP 800-38D / RFC 5116 / RFC 7253 / NIST SP 800-232 | `AesGcm`, `AesCcm` (BCL - preferred for those modes) |
+| **Confidentiality only**, block cipher | `Camellia`, `Twofish`, `Serpent128/256/512/1024`, `Threefish256/512/1024`, `Blowfish`, `Skipjack` | Block-aligned ciphertext + IV | RFC 3713 / FIPS 185 / NIST CFL / Threefish whitepaper | `Aes` (BCL - preferred for 128-bit-block AES) |
+| **Confidentiality only**, stream cipher | `ChaCha20`, `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, `Hc128` | Keystream-XOR ciphertext | RFC 8439 / XSalsa20 paper / eSTREAM | None (for these specific algorithms) |
+| **Confidentiality + integrity + authenticity** (AEAD) | `AesBlockCipher` + `GcmModeTransform` / `CcmModeTransform` / `OcbModeTransform` / `EaxModeTransform` / `SivModeTransform` / `GcmSivModeTransform`; or `AsconAead128` | Ciphertext + auth tag | NIST SP 800-38D / RFC 5116 / RFC 7253 / NIST SP 800-232 | `AesGcm`, `AesCcm` (BCL - preferred for those modes) |
 | **Per-record / per-sector encryption** with public domain separation | `Threefish256/512/1024` with `Tweak`; `XtsModeTransform` | Tweakable ciphertext | IEEE P1619 (XTS) / Threefish whitepaper | None |
 | **Cryptographic digest** for content addressing | `Tiger`, `CubeHash`, `Whirlpool`, `Snefru`, `Blake2b`, `Blake3`, `AsconHash256`, `Skein256/512/1024` | 128 - 1024 bits | NESSIE / SHA-3 / RFC 7693 / NIST SP 800-232 | `SHA256`, `SHA384`, `SHA512`, `SHA3_256` (BCL - preferred where available) |
 | **Variable-length / extendable output** (XOF) | `AsconXof128`, `AsconCxof128`, `Shake` | Configurable | NIST SP 800-185 / FIPS 202 / NIST SP 800-232 | `Shake128`, `Shake256` (BCL - preferred where available) |
@@ -132,7 +132,7 @@ Cryptographic digests in this table provide **integrity only when the digest its
 | <xref:Bodu.Security.Cryptography.EcbModeTransform>, <xref:Bodu.Security.Cryptography.CbcModeTransform>, <xref:Bodu.Security.Cryptography.CfbModeTransform>, <xref:Bodu.Security.Cryptography.OfbModeTransform>, <xref:Bodu.Security.Cryptography.CtrModeTransform>, <xref:Bodu.Security.Cryptography.CtsModeTransform>, <xref:Bodu.Security.Cryptography.XtsModeTransform> | Standard cipher modes. |
 | <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform>, <xref:Bodu.Security.Cryptography.OcbModeTransform>, <xref:Bodu.Security.Cryptography.EaxModeTransform>, <xref:Bodu.Security.Cryptography.SivModeTransform>, <xref:Bodu.Security.Cryptography.GcmSivModeTransform> | AEAD mode transforms. |
 | <xref:Bodu.Security.Cryptography.IPaddingStrategy> | Padding contract. |
-| <xref:Bodu.Security.Cryptography.Pkcs7Padding>, <xref:Bodu.Security.Cryptography.NoPadding>, <xref:Bodu.Security.Cryptography.Iso10126Padding>, <xref:Bodu.Security.Cryptography.Iso7816_4Padding>, <xref:Bodu.Security.Cryptography.Ansix923Padding> | Built-in padding strategies. |
+| <xref:Bodu.Security.Cryptography.Pkcs7Padding>, <xref:Bodu.Security.Cryptography.NoPadding>, <xref:Bodu.Security.Cryptography.Iso10126Padding>, <xref:Bodu.Security.Cryptography.Iso7816_4Padding>, <xref:Bodu.Security.Cryptography.Ansix923Padding>, <xref:Bodu.Security.Cryptography.ZeroPadding> | Built-in padding strategies. |
 | <xref:Bodu.Security.Cryptography.PaddingFactory> + <xref:Bodu.Security.Cryptography.PaddingModeKind> | Selects a padding strategy from an enum that mirrors `System.Security.Cryptography.PaddingMode` and adds `ISO7816_4`. |
 
 ### Cryptographic hashes
