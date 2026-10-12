@@ -7,6 +7,7 @@
 using Bodu.Test.IO;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace Bodu.Extensions.Configuration.Text;
 
@@ -74,5 +75,39 @@ public sealed partial class BencodeConfigurationTests
         });
 
         Assert.AreEqual("path", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a relative path resolves against the base path the builder sets with <c>SetBasePath</c>, as it does
+    /// for <c>AddJsonFile</c>, rather than against the current directory.
+    /// </summary>
+    [TestMethod]
+    public void AddBencodeFile_WhenTheBuilderHasABasePath_ShouldResolveTheRelativePathAgainstIt()
+    {
+        using TempFileScope scope = new("d2:dbd4:porti5432ee4:name9:from-filee", "bencode");
+        IConfigurationRoot config = new ConfigurationBuilder()
+            .SetBasePath(scope.Directory)
+            .AddBencodeFile(Path.GetFileName(scope.Path))
+            .Build();
+
+        Assert.AreEqual("from-file", config["name"]);
+        Assert.AreEqual("5432", config["db:port"]);
+    }
+
+    /// <summary>
+    /// Verifies that a relative path resolves through the file provider the builder sets with <c>SetFileProvider</c>,
+    /// as it does for <c>AddJsonFile</c>.
+    /// </summary>
+    [TestMethod]
+    public void AddBencodeFile_WhenTheBuilderHasAFileProvider_ShouldReadThroughIt()
+    {
+        using TempFileScope scope = new("d2:dbd4:porti5432ee4:name9:from-filee", "bencode");
+        using var fileProvider = new PhysicalFileProvider(scope.Directory);
+        IConfigurationRoot config = new ConfigurationBuilder()
+            .SetFileProvider(fileProvider)
+            .AddBencodeFile(Path.GetFileName(scope.Path))
+            .Build();
+
+        Assert.AreEqual("from-file", config["name"]);
     }
 }
