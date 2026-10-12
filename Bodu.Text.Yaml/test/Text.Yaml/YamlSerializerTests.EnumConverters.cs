@@ -55,6 +55,79 @@ public partial class YamlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> or <see cref="YamlStringEnumConverter{TEnum}" />
+    /// registered on the options writes the member name when <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />
+    /// is disabled, because the converter it produces writes names whatever that option says.
+    /// </summary>
+    /// <param name="generic">Whether the generic factory is registered rather than the non-generic one.</param>
+    [TestMethod]
+    [DataRow(false, DisplayName = "non-generic factory")]
+    [DataRow(true, DisplayName = "generic factory")]
+    public void Serialize_WhenStringEnumConverterRegisteredAndWriteEnumsAsStringsDisabled_ShouldWriteMemberName(bool generic)
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+        options.Converters.Add(generic ? new YamlStringEnumConverter<Status>() : new YamlStringEnumConverter());
+
+        string text = YamlSerializer.Serialize(new StatusModel { Status = Status.Active }, options);
+
+        Assert.AreEqual("Status: Active\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a property annotated with <see cref="ConverterAttribute" /> naming a
+    /// <see cref="YamlStringEnumConverter{TEnum}" /> writes the member name when
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> is disabled.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterAttributeAndWriteEnumsAsStringsDisabled_ShouldWriteMemberName()
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+
+        string text = YamlSerializer.Serialize(new StringEnumModel { Status = Status.Pending }, options);
+
+        Assert.AreEqual("Status: Pending\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values writes the member
+    /// name when <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> is disabled, and reads it back, rather than
+    /// writing an integer that it rejects on read.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenStringEnumConverterDisallowsIntegersAndWriteEnumsAsStringsDisabled_ShouldRoundTripName()
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        string text = YamlSerializer.Serialize(new StatusModel { Status = Status.Archived }, options);
+
+        Assert.AreEqual("Status: Archived\n", text);
+
+        StatusModel roundTripped = YamlSerializer.Deserialize<StatusModel>(text, options)!;
+        Assert.AreEqual(Status.Archived, roundTripped.Status);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="YamlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="YamlSerializationException" /> when it writes a value that is not a member with
+    /// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> disabled, rather than writing the integer.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterDisallowsIntegersAndWriteEnumsAsStringsDisabledAndValueIsUndefined_ShouldThrowYamlSerializationException()
+    {
+        var options = new YamlSerializerOptions { WriteEnumsAsStrings = false };
+        options.Converters.Add(new YamlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        var model = new StatusModel { Status = (Status)99 };
+
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Serialize(model, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a bare enumeration value at the document root, which YAML permits as a root scalar, serializes as
     /// its member-name scalar and round-trips.
     /// </summary>
