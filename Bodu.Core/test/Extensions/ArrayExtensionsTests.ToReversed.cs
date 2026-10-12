@@ -388,21 +388,6 @@ public partial class ArrayExtensionsTests
         int[] input, int[] expected) => CollectionAssert.AreEqual(expected, input.ToReversed());
 
     /// <summary>
-    /// Verifies that passing a multidimensional array throws <see cref="RankException"/>
-    /// with a message confirming only single-dimensional arrays are supported, and that the
-    /// exception identifies the correct parameter name.
-    /// </summary>
-    [TestMethod]
-    public void ToReversed_WhenSourceIsMultidimensional_ForNonGenericArray_ShouldThrowExactly()
-    {
-        Array source = new int[2, 3];
-        Assert.ThrowsExactly<RankException>(() =>
-        {
-            source.ToReversed();
-        });
-    }
-
-    /// <summary>
     /// Verifies that passing a multidimensional array to the whole-array overload throws
     /// <see cref="ArgumentException" />, as the windowed overloads do, and that the exception identifies the correct
     /// parameter name.

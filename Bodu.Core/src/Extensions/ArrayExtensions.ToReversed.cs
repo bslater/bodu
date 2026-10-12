@@ -154,14 +154,15 @@ public static partial class ArrayExtensions
     /// arrays.
     /// </exception>
     /// <remarks>
-    /// Delegates to <see cref="ToReversed(Array, int, int)" /> with <c>index = 0</c> and <c>count = source.Length</c>.
-    /// See that overload for full implementation details. Prefer the generic <see cref="ToReversed{T}(T[])" /> overload
-    /// where the element type is known at compile time; the non-generic path cannot use <see cref="ReverseCore{T}" />
-    /// and falls back to <see cref="Array.Copy(Array, Array, int)" /> and <see cref="Array.Reverse(Array, int, int)" />.
+    /// Equivalent to <see cref="ToReversed(Array, int, int)" /> with <c>index = 0</c> and <c>count = source.Length</c>,
+    /// including its rank check. See that overload for full implementation details. Prefer the generic
+    /// <see cref="ToReversed{T}(T[])" /> overload where the element type is known at compile time; the non-generic path
+    /// cannot use <see cref="ReverseCore{T}" /> and falls back to <see cref="Array.Copy(Array, Array, int)" /> and
+    /// <see cref="Array.Reverse(Array, int, int)" />.
     /// </remarks>
     public static Array ToReversed(this Array source)
     {
-        ThrowHelper.ThrowIfNull(source);
+        ThrowHelper.ThrowIfArrayMultidimensional(source);
         return ReverseArrayCore(source, 0, source.Length);
     }
 
