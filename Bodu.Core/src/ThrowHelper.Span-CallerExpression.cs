@@ -424,6 +424,9 @@ public static partial class ThrowHelper
     /// passes validation.
     /// </param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="divisor" /> is zero or negative.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="span" /> is empty (and <paramref name="throwIfZero" /> is <see langword="true" />),
     /// or when <c>span.Length % divisor != 0</c>.
@@ -453,6 +456,9 @@ public static partial class ThrowHelper
     /// passes validation.
     /// </param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="divisor" /> is zero or negative.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="span" /> is empty (and <paramref name="throwIfZero" /> is <see langword="true" />),
     /// or when <c>span.Length % divisor != 0</c>.
@@ -462,6 +468,8 @@ public static partial class ThrowHelper
         Span<T> span, int divisor, bool throwIfZero = true,
         [CallerArgumentExpression(nameof(span))] string? paramName = null)
     {
+        ThrowHelper.ThrowIfZeroOrNegative(divisor);
+
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new ArgumentException(
                 string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
