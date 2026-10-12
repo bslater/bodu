@@ -38,7 +38,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// </para>
 /// <para>
 /// When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer scalar is rejected rather than mapped
-/// through the underlying value, and so is any other scalar whose text, as
+/// through the underlying value, with a message that integer values are not allowed, whether or not the integer is the
+/// value of a defined member, and so is any other scalar whose text, as
 /// <see cref="ScalarCoercion.ReaderScalarText(ref Utf8YamlReader)" /> gives it, is not a wire name and holds an integer
 /// in any of its comma-separated parts, as <see cref="EnumIntegerConversion.ContainsIntegerText(ReadOnlySpan{char})" />
 /// determines: a quoted <c>"2"</c>, <c>!!str 2</c>, a plain integer beyond the 64-bit range, which YAML resolves as a
@@ -130,9 +131,7 @@ internal sealed class EnumConverter<T>
             if (_allowIntegerValues)
                 return EnumIntegerConversion.ReadInteger<T>(ref reader);
 
-            string integerText = reader.GetInt64().ToString(CultureInfo.InvariantCulture);
-            throw new YamlSerializationException(string.Format(
-                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumValueNotFound, integerText, typeof(T)));
+            throw IntegerNotAllowed(reader.GetInt64().ToString(CultureInfo.InvariantCulture));
         }
 
         string text = ScalarCoercion.ReaderScalarText(ref reader);
@@ -140,10 +139,7 @@ internal sealed class EnumConverter<T>
             return mapped;
 
         if (!_allowIntegerValues && EnumIntegerConversion.ContainsIntegerText(text))
-        {
-            throw new YamlSerializationException(string.Format(
-                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumIntegerNotAllowed, text, typeof(T)));
-        }
+            throw IntegerNotAllowed(text);
 
         return Enum.TryParse(text, ignoreCase: true, out T parsed)
             ? parsed
@@ -177,4 +173,17 @@ internal sealed class EnumConverter<T>
 
         writer.WriteString(text);
     }
+
+    /// <summary>
+    /// Creates the exception reporting that a scalar is, or holds, an integer, which this converter does not allow.
+    /// </summary>
+    /// <param name="text">The scalar's text: the integer's invariant text, or the text that holds an integer.</param>
+    /// <returns>The exception to throw.</returns>
+    /// <remarks>
+    /// An integer scalar and a scalar whose text holds an integer report the same message, since both are rejected
+    /// because integer values are not allowed, whether or not the integer is the value of a defined member.
+    /// </remarks>
+    private static YamlSerializationException IntegerNotAllowed(string text) =>
+        new(string.Format(
+            CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumIntegerNotAllowed, text, typeof(T)));
 }
