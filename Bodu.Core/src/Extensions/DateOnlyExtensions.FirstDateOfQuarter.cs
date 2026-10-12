@@ -130,7 +130,8 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="quarter" /> is less than 1 or greater than 4.
+    /// Thrown if <paramref name="year" /> is less than 1 or greater than 9999, -or- <paramref name="quarter" /> is less
+    /// than 1 or greater than 4.
     /// </exception>
     public static DateOnly GetFirstDateOfQuarter(int year, int quarter) => GetFirstDateOfQuarter(year, quarter, CalendarQuarterDefinition.JanuaryToDecember);
 
@@ -155,8 +156,10 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="quarter" /> is less than 1 or greater than 4, -or- <paramref name="definition" /> is
-    /// not a defined value of the <see cref="CalendarQuarterDefinition" /> enumeration.
+    /// Thrown if <paramref name="year" /> is less than 1 or greater than 9999, -or- <paramref name="quarter" /> is less
+    /// than 1 or greater than 4, -or- <paramref name="definition" /> is not a defined value of the
+    /// <see cref="CalendarQuarterDefinition" /> enumeration, -or- the first day of the quarter falls after 31 December
+    /// 9999.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown if <paramref name="definition" /> is <see cref="CalendarQuarterDefinition.Custom" />; use a
@@ -164,6 +167,7 @@ public static partial class DateOnlyExtensions
     /// </exception>
     public static DateOnly GetFirstDateOfQuarter(int year, int quarter, CalendarQuarterDefinition definition)
     {
+        ThrowHelper.ThrowIfOutOfRange(year, DateTimeExtensions.MinYear, DateTimeExtensions.MaxYear);
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 

@@ -29,6 +29,9 @@ namespace Bodu.Extensions;
 /// </remarks>
 internal static class QuarterCalculator
 {
+    /// <summary>The number of days in one 400-year cycle of the Gregorian calendar, after which its pattern of leap years and weekdays repeats.</summary>
+    private const int DaysPer400Years = 146_097;
+
     /// <summary>
     /// Extracts the anchor month and day components from a <see cref="CalendarQuarterDefinition" /> value.
     /// </summary>
@@ -111,7 +114,7 @@ internal static class QuarterCalculator
         // If the start month is before the anchor month, it wraps into the *next calendar year*
         int startYear = (startMonth < definition.Month) ? year + 1 : year;
 
-        return DateTimeExtensions.GetDayNumberUnchecked(startYear, (int)startMonth, (int)definition.Day);
+        return GetDayNumber(startYear, (int)startMonth, (int)definition.Day);
     }
 
     /// <summary>
@@ -138,7 +141,7 @@ internal static class QuarterCalculator
         // If the end month is less than or equal to the anchor month, it also wraps
         int endYear = (endMonth <= definition.Month) ? year + 1 : year;
 
-        return DateTimeExtensions.GetDayNumberUnchecked(endYear, (int)endMonth, (int)definition.Day) - 1;
+        return GetDayNumber(endYear, (int)endMonth, (int)definition.Day) - 1;
     }
 
     /// <summary>
@@ -172,7 +175,7 @@ internal static class QuarterCalculator
         int startYear = (startMonth < def.Month) ? year + 1 : year;
 
         // Calculate the day number for the quarter start date
-        int startDayNumber = DateTimeExtensions.GetDayNumberUnchecked(startYear, (int)startMonth, (int)def.Day);
+        int startDayNumber = GetDayNumber(startYear, (int)startMonth, (int)def.Day);
 
         // If the start date is after the reference date, back up to the previous fiscal year
         if (startDayNumber > dayNumber)
@@ -180,4 +183,25 @@ internal static class QuarterCalculator
 
         return (year, q);
     }
+
+    /// <summary>
+    /// Computes the day number for the specified year, month, and day, including the year after 9999 that the quarter
+    /// arithmetic reaches for dates late in 9999.
+    /// </summary>
+    /// <param name="year">The year component, which may be 10000.</param>
+    /// <param name="month">The month component in the range 1 through 12.</param>
+    /// <param name="day">The day component, valid for the specified year and month.</param>
+    /// <returns>The number of days elapsed since 0001-01-01, which is day 0.</returns>
+    /// <remarks>
+    /// The end of a quarter is computed as the day before the start of the next quarter, and an anchor month other than
+    /// January places the start of some quarters in the following calendar year, so a date in 9999 can require a day
+    /// number in year 10000. <see cref="DateTimeExtensions.GetDayNumberUnchecked(int, int, int)" /> cannot compute one,
+    /// because <see cref="DateTime.IsLeapYear(int)" /> rejects the year, so a later year is computed from the same date
+    /// one 400-year cycle earlier. The caller decides whether the result is representable.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetDayNumber(int year, int month, int day) =>
+        year > DateTimeExtensions.MaxYear
+            ? DateTimeExtensions.GetDayNumberUnchecked(year - 400, month, day) + DaysPer400Years
+            : DateTimeExtensions.GetDayNumberUnchecked(year, month, day);
 }

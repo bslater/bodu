@@ -77,7 +77,9 @@ public static partial class DateTimeExtensions
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="definition" /> is not a defined value of the <see cref="CalendarQuarterDefinition" />
-    /// enumeration.
+    /// enumeration, -or- the quarter that contains <paramref name="dateTime" /> ends after 31 December 9999, which is
+    /// possible only for a definition whose quarters cross the turn of the year, such as
+    /// <see cref="CalendarQuarterDefinition.FebruaryToJanuary" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown if <paramref name="definition" /> is <see cref="CalendarQuarterDefinition.Custom" />; use the
@@ -185,8 +187,10 @@ public static partial class DateTimeExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="quarter" /> is less than 1 or greater than 4, -or- <paramref name="definition" /> is
-    /// not a defined value of the <see cref="CalendarQuarterDefinition" /> enumeration.
+    /// Thrown if <paramref name="year" /> is less than 1 or greater than 9999, -or- <paramref name="quarter" /> is less
+    /// than 1 or greater than 4, -or- <paramref name="definition" /> is not a defined value of the
+    /// <see cref="CalendarQuarterDefinition" /> enumeration, -or- the last day of the quarter falls after 31 December
+    /// 9999.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown if <paramref name="definition" /> is <see cref="CalendarQuarterDefinition.Custom" />; use a
@@ -194,6 +198,7 @@ public static partial class DateTimeExtensions
     /// </exception>
     public static DateTime GetLastDateOfQuarter(int year, int quarter, CalendarQuarterDefinition definition)
     {
+        ThrowHelper.ThrowIfOutOfRange(year, MinYear, MaxYear);
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 
