@@ -245,6 +245,7 @@ INotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
     .Register("mothers-day", new MothersDayAlgorithm());
 
 // Pass the registry to the loader so "pi-day"/"mothers-day" are whitelisted during validation …
+// (a JSON document takes the same registry: NotableDateResourceLoader.LoadJson(json, _ => null, registry)).
 NotableDateResource resource = NotableDateResourceLoader.Load(xml, _ => null, registry);
 
 // … and to the service so AlgorithmDateStrategy can resolve them at query time.

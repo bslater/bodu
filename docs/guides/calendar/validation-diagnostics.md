@@ -12,7 +12,7 @@ Every notable-date document - hand-authored XML/JSON, a bundled catalogue, or a 
 
 **Collecting (the lint surface).** The `Try` overloads return the same complete diagnostic list without throwing, so build tooling and editors can lint arbitrary input:
 
-- `NotableDateResourceLoader.TryLoad(xml, resolver, out resource, out diagnostics)` (plus an overload taking a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry>) and `TryLoadJson(...)` - malformed input becomes a `BODU-CAL-SYNTAX` error diagnostic instead of a `FormatException`.
+- `NotableDateResourceLoader.TryLoad(xml, resolver, out resource, out diagnostics)` and `TryLoadJson(json, resolver, out resource, out diagnostics)`, each with an overload taking a custom <xref:Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry> - malformed input becomes a `BODU-CAL-SYNTAX` error diagnostic instead of a `FormatException`.
 - `NotableDateDocumentBuilder.Validate()` - lints the authored document and returns the diagnostics; a clean result guarantees `Build()` succeeds for the same document, because both run the same pipeline.
 - `NotableDateDocumentBuilder.TryBuild(out resource, out diagnostics)` - the non-throwing counterpart of `Build()`.
 

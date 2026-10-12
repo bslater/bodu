@@ -225,7 +225,7 @@ Overrides run during loading and produce a normal immutable resource. *Runtime* 
 
 ## Authoring in JSON
 
-JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>'s `LoadJson` overloads (`LoadJson(json)`, `LoadJson(json, resolver)`, `LoadJson(Stream)`). The element names map directly to JSON property names:
+JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>'s `LoadJson` overloads (`LoadJson(json)`, `LoadJson(json, resolver)`, `LoadJson(json, resolver, algorithms)`, `LoadJson(Stream)`). The element names map directly to JSON property names:
 
 ```json
 {

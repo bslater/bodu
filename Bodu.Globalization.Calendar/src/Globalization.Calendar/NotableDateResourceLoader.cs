@@ -29,9 +29,10 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// <strong>When to use.</strong> Call <see cref="Load(string, ILogger)" /> / <see cref="LoadJson(string, ILogger)" />
 /// (or the <see cref="Stream" /> overloads) for a self-contained document, and the resolver overloads when the document
-/// imports shared concepts or adjustment policies from other resources. For the bundled territory packs prefer the
-/// data-pack factories (for example the <c>AmericasCalendarData</c> bundle), which load and wire the embedded resources
-/// for you.
+/// imports shared concepts or adjustment policies from other resources. A document whose rules name custom algorithm
+/// keys is loaded through the overloads that also take an <see cref="INotableDateAlgorithmRegistry" />, in either
+/// format. For the bundled territory packs prefer the data-pack factories (for example the <c>AmericasCalendarData</c>
+/// bundle), which load and wire the embedded resources for you.
 /// </para>
 /// <para>
 /// <strong>Logging.</strong> Each <c>Load</c> / <c>LoadJson</c> overload accepts an optional <see cref="ILogger" />
@@ -219,7 +220,33 @@ public static class NotableDateResourceLoader
     /// <exception cref="NotableDateValidationException">
     /// The notable-date document produced one or more error diagnostics.
     /// </exception>
-    public static NotableDateResource LoadJson(string json, Func<string, string?> resourceResolver, ILogger? logger = null)
+    public static NotableDateResource LoadJson(string json, Func<string, string?> resourceResolver, ILogger? logger = null) =>
+        LoadJson(json, resourceResolver, null, logger);
+
+    /// <summary>
+    /// Loads and validates a notable-date document from its JSON content, resolving imports through the supplied
+    /// resolver and accepting custom algorithm keys registered in the supplied registry.
+    /// </summary>
+    /// <param name="json">The notable-date document JSON content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="algorithms">
+    /// A registry of custom algorithm keys to accept during validation, or <see langword="null" />.
+    /// </param>
+    /// <param name="logger">
+    /// The logger that receives load diagnostics. <see langword="null" /> selects <see cref="NullLogger.Instance" />.
+    /// </param>
+    /// <returns>The loaded and validated <see cref="NotableDateResource" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="json" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="json" /> is empty or white-space.</exception>
+    /// <exception cref="FormatException"><paramref name="json" /> is not well-formed JSON.</exception>
+    /// <exception cref="NotableDateValidationException">
+    /// The notable-date document produced one or more error diagnostics.
+    /// </exception>
+    public static NotableDateResource LoadJson(string json, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(resourceResolver);
@@ -228,7 +255,7 @@ public static class NotableDateResourceLoader
         List<NotableDateValidationDiagnostic> diagnostics = new();
         ParsedNotableDateDocument document = NotableDateJsonDocumentParser.Parse(json, diagnostics);
 
-        return Build(document, resourceResolver, null, diagnostics, logger);
+        return Build(document, resourceResolver, algorithms, diagnostics, logger);
     }
 
     /// <summary>
@@ -368,7 +395,38 @@ public static class NotableDateResourceLoader
     /// Malformed or empty JSON is reported as a <c>BODU-CAL-SYNTAX</c> error diagnostic rather than an exception.
     /// </para>
     /// </remarks>
-    public static bool TryLoadJson(string json, Func<string, string?> resourceResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
+    public static bool TryLoadJson(string json, Func<string, string?> resourceResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics) =>
+        TryLoadJson(json, resourceResolver, null, out resource, out diagnostics);
+
+    /// <summary>
+    /// Attempts to load and validate a notable-date document from JSON content against a custom algorithm registry,
+    /// collecting every diagnostic instead of throwing on validation failure.
+    /// </summary>
+    /// <param name="json">The notable-date document JSON content.</param>
+    /// <param name="resourceResolver">
+    /// A delegate mapping a resource name to its XML or JSON content, or <see langword="null" /> when missing.
+    /// </param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry consulted when validating <c>algorithm</c> strategy keys, or
+    /// <see langword="null" /> for built-ins only.
+    /// </param>
+    /// <param name="resource">
+    /// The loaded resource, or <see langword="null" /> when the document does not validate.
+    /// </param>
+    /// <param name="diagnostics">Every diagnostic the parse, import resolution, and validation produced.</param>
+    /// <returns>
+    /// <see langword="true" /> when the document loaded without error-severity diagnostics; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="json" /> or <paramref name="resourceResolver" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Malformed or empty JSON is reported as a <c>BODU-CAL-SYNTAX</c> error diagnostic rather than an exception.
+    /// </para>
+    /// </remarks>
+    public static bool TryLoadJson(string json, Func<string, string?> resourceResolver, INotableDateAlgorithmRegistry? algorithms, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics)
     {
         ThrowHelper.ThrowIfNull(json);
         ThrowHelper.ThrowIfNull(resourceResolver);
@@ -394,7 +452,7 @@ public static class NotableDateResourceLoader
             return false;
         }
 
-        resource = BuildCore(document, resourceResolver, null, collected, null);
+        resource = BuildCore(document, resourceResolver, algorithms, collected, null);
         return resource is not null;
     }
 
