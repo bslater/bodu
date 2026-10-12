@@ -7,13 +7,18 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Determines how the resolver treats multiple distinct notable dates that resolve to the same day or overlapping span.
+/// Determines how the resolver treats multiple distinct notable dates that resolve to the same day.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The recommended default is <see cref="KeepAll" />, because multiple notable dates can legitimately occur on the same
 /// day. The other policies thin a same-day group by priority or category, or defer to an
 /// <see cref="INotableDateCollisionResolver" /> when set to <see cref="Custom" />.
+/// </para>
+/// <para>
+/// The service applies the resource's <see cref="ResolutionPolicy.SameDayCollisionPolicy" /> to occurrences that share
+/// an emitted date. <see cref="ResolutionPolicy.SpanCollisionPolicy" />, meant for overlapping multi-day spans, is
+/// reserved: it is stored but not applied, so overlapping spans are never reconciled (<see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>).
 /// </para>
 /// <example>
 /// <code language="csharp">

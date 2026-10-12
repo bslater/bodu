@@ -82,7 +82,7 @@ var window = new DateRange(new DateOnly(2026, 3, 1), new DateOnly(2026, 4, 30));
 IReadOnlyList<NotableDate> autumn = service.Resolve(window, "AU");
 ```
 
-Multi-day events (`DurationDays > 1`) are included when their span intersects the query window; which occurrence (actual or observed) controls inclusion is governed by the resource's [`ObservedDateRangePolicy`](identity-and-resolution.md).
+Multi-day events (`DurationDays > 1`) are included when their emitted span intersects the query window. The resource's [`ObservedDateRangePolicy`](identity-and-resolution.md) is reserved and does not change this.
 
 ## Pattern 5 - query a single day
 

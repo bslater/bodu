@@ -28,11 +28,11 @@ Shared faith and civil catalogues (`global-core`, `christian-western`, `christia
 
 ## Calculation strategies and algorithms
 
-The `Bodu.Globalization.Calendar.Algorithms` namespace provides the `IDateCalculationStrategy` implementations - `FixedDateStrategy`, `DayOfWeekInMonthStrategy`, `RelativeWeekdayInMonthStrategy`, `WeekdayNearDateStrategy`, `OffsetFromRuleStrategy`, and `AlgorithmDateStrategy` - together with the astronomical / calendrical `INotableDateAlgorithm` engines: `EasterCalculator`, `HinduLunarCalculator`, `LunarPhaseCalculator`, `SolarTermCalculator`, `TibetanLosarCalculator`, and `MatarikiCalendar`. Custom algorithms register through `NotableDateAlgorithmRegistry` and dispatch by key.
+The `Bodu.Globalization.Calendar.Algorithms` namespace provides the `IDateCalculationStrategy` implementations - among them `FixedDateStrategy`, `DayOfWeekInMonthStrategy`, `RelativeWeekdayInMonthStrategy`, `WeekdayNearDateStrategy`, `OffsetFromRuleStrategy`, and `AlgorithmDateStrategy`. `AlgorithmDateStrategy` dispatches an `<Algorithm key>` to the bundled astronomical and calendrical calculators (Easter, the equinoxes and solar terms, lunar phases, the Hindu lunisolar festivals, Losar, and the gazetted Matariki table), which are internal and reached only through their keys. Custom algorithms implement `INotableDateAlgorithm`, register through `NotableDateAlgorithmRegistry`, and dispatch by key.
 
 ## Range resolution
 
-The `Bodu.Globalization.Calendar.RangeResolution` namespace defines how overlapping and duplicate occurrences collapse: `ResolutionPolicy` carries the duplicate, collision, priority-direction, observed-range, and emission rules (`CollisionPolicy`, `DuplicatePolicy`, `PriorityDirection`, `ObservedDateRangePolicy`, `EmissionMode`), with `INotableDateCollisionResolver` as the custom extension point.
+The `Bodu.Globalization.Calendar.RangeResolution` namespace defines how colliding occurrences collapse: `ResolutionPolicy` carries the same-day collision and priority-direction rules (`CollisionPolicy`, `PriorityDirection`), the category precedence, and the working week, with `INotableDateCollisionResolver` as the custom extension point; each `AdjustmentPolicy` carries its own `EmissionMode`. Its `DuplicatePolicy`, span collision policy, and `ObservedDateRangePolicy` are reserved: a document may set them and they are stored, but the engine does not apply them yet ([#1119](https://github.com/bslater/bodu/issues/1119)).
 
 ## Working-day extensions
 

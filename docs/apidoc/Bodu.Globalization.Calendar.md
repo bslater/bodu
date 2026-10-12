@@ -55,7 +55,7 @@ Reach for this library when a `DateTime.DayOfWeek` check is not enough: when you
 
 **Range resolution and observed-date policy - `Bodu.Globalization.Calendar.RangeResolution`**
 
-- <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> - the resource-level policy bundle (`<ResolutionPolicy>` in the document) governing duplicates, same-day / span collisions, priority direction, range-inclusion of observed dates, and the working week.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> - the resource-level policy bundle (`<ResolutionPolicy>` in the document) governing same-day collisions, priority direction, category precedence, and the working week. Its duplicate, span-collision, and observed-date range settings are reserved: stored but not yet applied ([#1119](https://github.com/bslater/bodu/issues/1119)).
 - <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy>, <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy>, <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection>, <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode>, <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> - the policy vocabulary.
 - <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> - a custom resolver consulted when two rules land on the same day under `CollisionPolicy.Custom`.
 

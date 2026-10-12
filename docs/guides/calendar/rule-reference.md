@@ -26,20 +26,21 @@ The root element declares the schema namespace, version, and id, and contains it
 
 ### `<ResolutionPolicy>` - resource-level reconciliation
 
-`<ResolutionPolicy>` is optional; an absent element means <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy>`.Default`. It maps to the loaded `ResolutionPolicy` and decides how the resource reconciles duplicates and collisions and which date controls range inclusion.
+`<ResolutionPolicy>` is optional; an absent element means <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy>`.Default`. It maps to the loaded `ResolutionPolicy` and decides how same-day collisions are settled and which days are the working week. Three attributes are **reserved** - accepted and stored, but not yet applied ([#1119](https://github.com/bslater/bodu/issues/1119)) - as the table notes.
 
 | Attribute | Type | Default | Description |
 |---|---|---|---|
-| `duplicatePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> | `Error` | Reconciles *identical* occurrences: `Error`, `KeepFirst`, `KeepLast`, `Merge`. |
-| `sameDayCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles *distinct* rules on the same day: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`. |
-| `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles overlapping multi-day spans (same value set). |
+| `duplicatePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> | `Error` | **Reserved** (`Error`, `KeepFirst`, `KeepLast`, `Merge`): stored but not applied. Duplicate concept and rule ids are always load errors (`BODU-CAL-DUP-ND`, `BODU-CAL-DUP-RULE`). |
+| `sameDayCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles *distinct* occurrences that share an emitted date: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`. |
+| `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | **Reserved** (same value set): stored but not applied. Overlapping multi-day spans are never reconciled. |
 | `priorityDirection` | <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> | `HigherWins` | Whether a larger or smaller `Priority` wins a tie: `HigherWins`, `LowerWins`. |
-| `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | Which occurrence date governs range-query inclusion: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`. |
+| `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | **Reserved** (`ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`): stored but not applied. A range query always returns an occurrence whose emitted span intersects the window. |
 | `workingDays` | week pattern | Mon-Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon-Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `DayOfWeekSet`). |
 
 An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.CategoryPriority`. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) for the settlement semantics.
 
 ```xml
+<!-- duplicatePolicy and observedDateRangePolicy are reserved: accepted and stored, not yet applied. -->
 <ResolutionPolicy duplicatePolicy="KeepFirst"
                   sameDayCollisionPolicy="HighestPriorityOnly"
                   priorityDirection="HigherWins"

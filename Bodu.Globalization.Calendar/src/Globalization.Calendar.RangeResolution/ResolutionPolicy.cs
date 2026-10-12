@@ -7,13 +7,20 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Captures the resource-level policies that govern duplicate handling, collision handling, priority direction, and
-/// observed-date range inclusion.
+/// Captures the resource-level policies that govern same-day collision handling, priority direction, category
+/// precedence, and the working week, plus three settings reserved for later releases.
 /// </summary>
 /// <remarks>
 /// <para>
 /// The defaults mirror the recommended policy in the schema strategy: duplicates are an error, collisions keep all
 /// occurrences, higher priority wins, and the observed (emitted) occurrence controls range inclusion.
+/// </para>
+/// <para>
+/// <see cref="DuplicatePolicy" />, <see cref="SpanCollisionPolicy" />, and <see cref="ObservedDateRangePolicy" /> are
+/// reserved: they are read from a document, stored, and written to binary packs, but the loader and the service do not
+/// consult them, so the engine always behaves as their defaults describe (duplicate identifiers are load errors,
+/// overlapping spans are kept, and inclusion follows the emitted span). Implementing them is tracked by
+/// <see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -56,15 +63,19 @@ public sealed class ResolutionPolicy
     /// <summary>
     /// Initializes a new instance of the <see cref="ResolutionPolicy" /> class.
     /// </summary>
-    /// <param name="duplicatePolicy">The policy applied when two rules resolve to the same identity.</param>
+    /// <param name="duplicatePolicy">
+    /// The policy for two rules that resolve to the same identity; reserved, stored but not applied.
+    /// </param>
     /// <param name="sameDayCollisionPolicy">
-    /// The policy applied when distinct notable dates resolve to the same day.
+    /// The policy applied when distinct notable dates resolve to the same emitted date.
     /// </param>
     /// <param name="spanCollisionPolicy">
-    /// The policy applied when distinct notable dates resolve to overlapping spans.
+    /// The policy for distinct notable dates that resolve to overlapping spans; reserved, stored but not applied.
     /// </param>
     /// <param name="priorityDirection">The direction in which numeric priority is interpreted.</param>
-    /// <param name="observedDateRangePolicy">The occurrence that controls range-query inclusion.</param>
+    /// <param name="observedDateRangePolicy">
+    /// The occurrence that controls range-query inclusion; reserved, stored but not applied.
+    /// </param>
     /// <param name="workingWeek">
     /// The working week that defines which weekdays are working days, or <see langword="null" /> for the default
     /// Monday-to-Friday working week (a Saturday and Sunday weekend).
@@ -93,9 +104,14 @@ public sealed class ResolutionPolicy
     }
 
     /// <summary>
-    /// Gets the policy applied when two rules resolve to the same identity.
+    /// Gets the policy the resource declares for two rules that resolve to the same identity. Reserved: the value is
+    /// stored but not applied.
     /// </summary>
     /// <value>The configured <see cref="DuplicatePolicy" />.</value>
+    /// <remarks>
+    /// Duplicate concept and rule identifiers are always load errors, whatever the value; see
+    /// <see cref="RangeResolution.DuplicatePolicy" />.
+    /// </remarks>
     public DuplicatePolicy DuplicatePolicy { get; }
 
     /// <summary>
@@ -105,9 +121,14 @@ public sealed class ResolutionPolicy
     public CollisionPolicy SameDayCollisionPolicy { get; }
 
     /// <summary>
-    /// Gets the policy applied when distinct notable dates resolve to overlapping spans.
+    /// Gets the policy the resource declares for distinct notable dates that resolve to overlapping spans. Reserved:
+    /// the value is stored but not applied.
     /// </summary>
     /// <value>The configured span <see cref="CollisionPolicy" />.</value>
+    /// <remarks>
+    /// Overlapping multi-day spans are never reconciled; only <see cref="SameDayCollisionPolicy" />, over occurrences
+    /// that share an emitted date, is applied.
+    /// </remarks>
     public CollisionPolicy SpanCollisionPolicy { get; }
 
     /// <summary>
@@ -117,9 +138,14 @@ public sealed class ResolutionPolicy
     public PriorityDirection PriorityDirection { get; }
 
     /// <summary>
-    /// Gets the occurrence that controls whether a resolved notable date is included by a range query.
+    /// Gets the occurrence the resource declares to control whether a resolved notable date is included by a range
+    /// query. Reserved: the value is stored but not applied.
     /// </summary>
     /// <value>The configured <see cref="ObservedDateRangePolicy" />.</value>
+    /// <remarks>
+    /// A query always includes an occurrence whose emitted span intersects the window; see
+    /// <see cref="RangeResolution.ObservedDateRangePolicy" />.
+    /// </remarks>
     public ObservedDateRangePolicy ObservedDateRangePolicy { get; }
 
     /// <summary>

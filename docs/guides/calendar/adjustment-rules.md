@@ -176,7 +176,7 @@ The companion attributes have defaults when omitted: `skipWeekends` defaults to 
 | `ObservedAsAdditional` | **`[Obsolete]`** - behaves identically to `ActualAndObserved` and is normalised to it at load time. Prefer `ActualAndObserved`. |
 | `Suppress` | Nothing - the occurrence is dropped for the year. |
 
-`ObservedOnly` is the AU/NZ "the holiday moved" style; `ActualAndObserved` is the UK "keep the nominal, add a bank-holiday substitute" style. Which of the emitted occurrences governs inclusion in a *range* query is a separate, resource-level decision - the <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> - covered in [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
+`ObservedOnly` is the AU/NZ "the holiday moved" style; `ActualAndObserved` is the UK "keep the nominal, add a bank-holiday substitute" style. A *range* query returns each emitted occurrence whose span intersects the window, so emitting the actual occurrence too (`ActualAndObserved`) is how a holiday is found by its actual date; the resource-level <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> is reserved and does not change this. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
 
 ```xml
 <!-- UK bank-holiday style: keep 25 December, add a working-day substitute when it is a weekend. -->

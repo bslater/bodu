@@ -20,7 +20,7 @@ using Bodu.Globalization.Calendar.Builder;
 NotableDateResource resource = NotableDateDocumentBuilder
     .Create("au-national", schemaVersion: "1.0")
     .WithMetadata("Australia - National", description: "Federal public holidays")
-    .WithResolutionPolicy(p => /* duplicate, collision, observed-range rules */)
+    .WithResolutionPolicy(p => /* collision, priority, working-week rules */)
     .AddImport("christian-western")
     .AddNotableDate("australia-day", "Australia Day", category: "public", b => /* rules */)
     .Build();
