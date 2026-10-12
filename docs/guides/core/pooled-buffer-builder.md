@@ -6,7 +6,7 @@ title: Pooled buffer builder
 
 `PooledBufferBuilder<T>` is the zero-allocation way to assemble a `byte` or `char` span (or any other element type) without paying for repeated array resizing or for `List<T>`'s amortised-double growth. It rents arrays from `ArrayPool<T>.Shared`, accumulates elements with automatic growth, and returns the rented array to the pool on disposal.
 
-The type implements `IBufferWriter<T>` and `IMemoryOwner<T>`, so it composes with span-based APIs that already speak those interfaces - `Utf8Json` writers, `System.Text.Json.Utf8JsonWriter`, `MessagePackWriter`, the BCL `JsonWriter` API, and consumer code that targets `IBufferWriter<T>` directly.
+The type implements `IBufferWriter<T>` and `IMemoryOwner<T>`, so it composes with span-based APIs that already speak those interfaces - `Utf8Json` writers, `System.Text.Json.Utf8JsonWriter`, `MessagePackWriter`, and consumer code that targets `IBufferWriter<T>` directly.
 
 ## Construction
 
@@ -124,6 +124,7 @@ The pattern is useful when handing the buffer to a low-level API that already ac
 ## Worked example - pooled CSV encoding
 
 ```csharp
+using System.Text;
 using Bodu.Buffers;
 
 byte[] EncodeRecord(IEnumerable<string> fields)
@@ -136,8 +137,9 @@ byte[] EncodeRecord(IEnumerable<string> fields)
         if (!first) builder.Append((byte)',');
         first = false;
 
-        ReadOnlySpan<byte> utf8 = Encoding.UTF8.GetBytes(field);
-        builder.AppendRange(utf8);
+        // Encode straight into the builder's free space - no intermediate byte[] per field.
+        Span<byte> target = builder.GetSpan(Encoding.UTF8.GetMaxByteCount(field.Length));
+        builder.Advance(Encoding.UTF8.GetBytes(field, target));
     }
 
     builder.Append((byte)'\r');
@@ -146,7 +148,7 @@ byte[] EncodeRecord(IEnumerable<string> fields)
 }
 ```
 
-The function allocates exactly one array - the final result. Every intermediate step uses the pool.
+The function allocates exactly one array - the final result. Besides it, only the builder object and the enumerator over `fields` are allocated; every intermediate buffer comes from the pool, because each field is encoded directly into the span `GetSpan` reserves.
 
 ## When *not* to use `PooledBufferBuilder`
 
