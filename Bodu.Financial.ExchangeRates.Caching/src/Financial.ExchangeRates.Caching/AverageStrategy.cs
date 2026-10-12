@@ -22,9 +22,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// Averaging is most meaningful with <see cref="RateLookupOptions.Exact" />, where every contributor shares the
 /// requested date; under fallback resolutions the contributors may have resolved different dates. The range overload
-/// averages only the dates present in <em>every</em> contributing candidate (an inner join by date); a candidate whose
-/// range read throws <see cref="RateSeriesNotFoundException" />, because it can never carry the pair, does not
-/// contribute.
+/// averages only the dates present in <em>every</em> contributing candidate (an inner join by date). A candidate that
+/// returns no observations in the range, or whose range read throws <see cref="RateSeriesNotFoundException" /> because
+/// it can never carry the pair, does not contribute; the result is empty only when no candidate contributes.
 /// </para>
 /// <para>
 /// The synthesized mean is an <em>analytical, composite</em> value, not an authoritative observation: it can differ
@@ -158,9 +158,9 @@ public sealed class AverageStrategy
             foreach (ExchangeRate rate in rates)
                 byDate[rate.Date] = rate.Rate;
 
-            // A missing or empty candidate makes the inner join empty; return early.
+            // A candidate with no observations in the range does not resolve, so it stays out of the join.
             if (byDate.Count == 0)
-                return Array.Empty<ExchangeRate>();
+                continue;
 
             perCandidate.Add(byDate);
         }
@@ -200,9 +200,9 @@ public sealed class AverageStrategy
             foreach (ExchangeRate rate in rates)
                 byDate[rate.Date] = rate.Rate;
 
-            // A missing or empty candidate makes the inner join empty; return early.
+            // A candidate with no observations in the range does not resolve, so it stays out of the join.
             if (byDate.Count == 0)
-                return Array.Empty<ExchangeRate>();
+                continue;
 
             perCandidate.Add(byDate);
         }
