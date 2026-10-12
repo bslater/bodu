@@ -80,14 +80,9 @@ bodu-calendar info holidays.bcal
 
 ## Compiling packs during build
 
-The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration - a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project:
+The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration - a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project.
 
-It is [not published to nuget.org](../../docs/package-matrix.md#not-published-to-nugetorg), so reference the project from a clone:
-
-```xml
-<ProjectReference Include="../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj"
-                  ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-```
+It is [not published to nuget.org](../../docs/package-matrix.md#not-published-to-nugetorg), so pack it from a clone into a local feed and reference the package, or import its `.targets` from the clone; [Compiling packs in MSBuild](tooling/msbuild-integration.md) shows both. A `ProjectReference` to the Build project alone compiles nothing, because it does not import the `.targets`. Either way, the project declares its documents as `NotableDatePack` items:
 
 ```xml
 <ItemGroup>

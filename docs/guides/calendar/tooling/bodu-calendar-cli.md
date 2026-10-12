@@ -75,7 +75,7 @@ Unsupported document extension '.bcal': expected .xml or .json.          (stderr
 [exit 2]
 ```
 
-The summary line's shape is fixed: `<file>: OK - resource '<id>' is valid (<n> diagnostic(s)).` on success and `<file>: FAILED - <errors> error(s), <total> total diagnostic(s).` on failure, so a log scraper can match on `: OK -` / `: FAILED -` and an editor can match `^\[(Error|Warning)\] (BODU-CAL-[A-Z]+): `.
+The summary line's shape is fixed: `<file>: OK - resource '<id>' is valid (<n> diagnostic(s)).` on success and `<file>: FAILED - <errors> error(s), <total> total diagnostic(s).` on failure, so a log scraper can match on `: OK -` / `: FAILED -` and an editor can match `^\[(Error|Warning|Information)\] (BODU-CAL-[A-Z0-9-]+): `.
 
 ## Compiling to `.bcal`
 
@@ -96,7 +96,7 @@ invalid-unknown-algorithm.xml: FAILED - 1 error(s), 1 total diagnostic(s).      
 
 The digest printed by `compile` and `info` is the SHA-256 of the pack payload that the format stores in its header (bytes 8-39, after the `BCAL` magic and the little-endian format version), so the two lines agree by construction and the value is stable for a given document - byte-identical output is what makes the MSBuild integration's up-to-date check sound. Nothing is written when validation fails.
 
-A document that imports shared catalogues by name - `<Use resource="christian-western" />` and the like - resolves them from the catalogues embedded in the runtime. Point `--resolver-dir` at a folder of your own `<name>.xml` / `<name>.json` files to satisfy private imports, or to shadow a bundled catalogue with a local copy of the same name.
+A document that imports shared catalogues by name - `<Import resource="christian-western">` and the like - resolves them from the catalogues embedded in the runtime. Point `--resolver-dir` at a folder of your own `<name>.xml` / `<name>.json` files to satisfy private imports, or to shadow a bundled catalogue with a local copy of the same name.
 
 ## Loading a compiled pack
 

@@ -26,8 +26,10 @@ document does no work.
 </ItemGroup>
 ```
 
-A NuGet consumer writes exactly that and nothing else: the package's `build/*.targets` is imported
-automatically and finds the task and the tool inside the package. This sample carries extra
+A consumer of the package writes exactly that and nothing else beyond the package reference: the
+package's `build/*.targets` is imported automatically and finds the task and the tool inside the
+package. The package is not published to nuget.org, so that consumer packs it from a clone into a
+local feed first. This sample carries extra
 plumbing - an explicit `<Import>` of the `.targets` and overrides for `BoduCalendarTaskAssembly` and
 `BoduCalendarToolDll` - because inside this repository the task and tool are *projects* rather than a
 restored package. That plumbing is repository-specific and is commented as such in the csproj.
@@ -61,10 +63,16 @@ and stops.
 
 ## Equivalent NuGet references
 
+`Bodu.Globalization.Calendar.Build` and `Bodu.Globalization.Calendar.Tool` are not published to
+nuget.org. Pack them from a clone into a local feed and add `./artifacts` as a package source in
+your `nuget.config` before adding the build package:
+
 ```bash
 dotnet add package Bodu.Globalization.Calendar
+dotnet pack Bodu.Globalization.Calendar.Build/src -c Release -o ./artifacts
 dotnet add package Bodu.Globalization.Calendar.Build      # development dependency; brings the tool
-dotnet tool install --global Bodu.Globalization.Calendar.Tool   # only if you want the CLI directly
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts      # only if you want the CLI directly
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
 ```
 
 ## Related

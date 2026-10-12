@@ -125,9 +125,10 @@ The rule-pack toolchain - `Bodu.Globalization.Calendar.Build` and the `bodu-cale
 copied beside the application. The program is the consumer side, loading that pack with
 <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadBinary*> and comparing it against
 parsing the same XML at runtime - same three holidays, 255 bytes against 1,946, and no schema
-validation on the deployment path. A NuGet consumer writes only the item group; the sample's
-explicit `.targets` import and task/tool path overrides are repository plumbing, needed because
-here the task and tool are projects rather than a restored package. *Packages:
+validation on the deployment path. A consumer of the package, packed into a local feed from a
+clone since it is not published to nuget.org, writes only the package reference and the item group;
+the sample's explicit `.targets` import and task/tool path overrides are the plumbing for using
+the clone directly, where the task and tool are projects rather than a restored package. *Packages:
 `Bodu.Globalization.Calendar.Build`, `Bodu.Globalization.Calendar.Tool`.*
 
 ### Bodu.Globalization.Calendar.Samples.ValidationLint

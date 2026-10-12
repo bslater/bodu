@@ -6,8 +6,10 @@
 > release and may change; breaking changes can land in a minor version until then.
 >
 > This package is **not published to nuget.org** - see the
-> [package matrix](../docs/docs/package-matrix.md#not-published-to-nugetorg). Reference the project
-> from a clone.
+> [package matrix](../docs/docs/package-matrix.md#not-published-to-nugetorg). Pack it from a clone
+> into a local feed, or import its `.targets` from the clone; a `ProjectReference` alone compiles
+> nothing. The [MSBuild integration guide](../docs/guides/calendar/tooling/msbuild-integration.md)
+> shows both routes.
 
 MSBuild integration for Bodu notable-date rule packs: `NotableDatePack` items compile XML/JSON
 documents to sealed `.bcal` binary packs during build, incrementally, via the `bodu-calendar` tool.
