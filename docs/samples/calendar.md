@@ -142,16 +142,13 @@ want. The code catalogue lives in the
 [validation diagnostics guide](../guides/calendar/validation-diagnostics.md). *Packages:
 `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Builder`.*
 
-## Plugins, by choice
+## Plugins
 
-No sample ships a plugin assembly - a single-project plugin demo would have to load itself under
-the dev-only `AllowAllPluginTrustPolicy`, which is exactly what production hosts must not do.
-Instead, the CustomAlgorithm sample carries a fenced comment block showing the real switch: add
-`Bodu.Globalization.Calendar.Plugins`, mark the plugin assembly with
-`[assembly: NotableDatePlugin(...)]`, and load it through
-<xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> under a pinned
-`StrongNamePluginTrustPolicy`, registering the discovered algorithms into the same registry the
-sample already uses.
+Plugin loading has its own sample: **Bodu.Globalization.Calendar.Samples.Plugins** (above) loads
+the separate `…Samples.Plugin.Contoso` assembly under a SHA-256 allow-list, a delegating policy,
+and a composite policy. The CustomAlgorithm sample keeps its algorithm in-process and registers it
+directly into a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>, which is
+the right shape when the algorithm ships with the host.
 
 ## Testing your own data pack
 

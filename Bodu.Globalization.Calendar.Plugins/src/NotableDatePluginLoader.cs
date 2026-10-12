@@ -42,9 +42,15 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Gate activation behind a strong-name trust policy, then register the plugin's algorithms.
-/// IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(new[] { "c0ffee1234567890" });
-/// INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("Contoso.Calendar.Plugin.dll", trust);
+/// // Gate activation behind provenance (strong-name token) and integrity (pinned SHA-256): both must pass. A
+/// // strong-name token alone is copyable metadata, never sufficient for untrusted input.
+/// IPluginTrustPolicy trust = new CompositePluginTrustPolicy(
+///     new StrongNamePluginTrustPolicy(new[] { "c0ffee1234567890" }),
+///     new FileHashPluginTrustPolicy(new Dictionary<string, byte[]>
+///     {
+///         ["Contoso.Calendar.Plugin"] = Convert.FromHexString(pinnedSha256Hex),
+///     }));
+/// INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("plugins/Contoso.Calendar.Plugin.dll", trust);
 ///
 /// NotableDateAlgorithmRegistry registry = new();
 /// int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);
@@ -94,7 +100,7 @@ public static class NotableDatePluginLoader
     /// </para>
     /// </remarks>
     [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.")]
-    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data: a .bcal rule pack loaded with NotableDateResourceLoader.LoadBinary.")]
     public static INotableDatePlugin LoadFrom(Assembly assembly, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNull(assembly);
@@ -137,7 +143,7 @@ public static class NotableDatePluginLoader
     /// The plugin type could not be loaded or activated, or is not a plugin.
     /// </exception>
     [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.")]
-    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data: a .bcal rule pack loaded with NotableDateResourceLoader.LoadBinary.")]
     public static INotableDatePlugin LoadFrom(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNullOrEmpty(assemblyPath);
@@ -181,7 +187,7 @@ public static class NotableDatePluginLoader
     /// </para>
     /// </remarks>
     [RequiresUnreferencedCode("Plugin loading inspects assemblies via reflection; plugin types and their algorithm implementations cannot be statically discovered by the trimmer.")]
-    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data (see the calendar rule-pack roadmap).")]
+    [RequiresDynamicCode("Plugin loading executes assemblies discovered at run time, which native AOT cannot compile ahead of time. The AOT-compatible alternative is shipping rules as data: a .bcal rule pack loaded with NotableDateResourceLoader.LoadBinary.")]
     public static NotableDatePluginHandle LoadFromFile(string assemblyPath, IPluginTrustPolicy trustPolicy, ILogger? logger = null)
     {
         ThrowHelper.ThrowIfNullOrEmpty(assemblyPath);

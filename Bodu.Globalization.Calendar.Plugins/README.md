@@ -28,7 +28,7 @@ The gate is an admission check, not a sandbox: an admitted plugin runs with the 
 
 ## Plugin contract
 
-A plugin assembly declares its entry point with `NotableDatePluginAttribute` and implements `INotableDateAlgorithmPlugin` (deriving from `INotableDatePlugin`, which carries `Name` and `Version`). On load, contributed algorithms are registered into the algorithm registry. Failures surface through a typed exception hierarchy rooted at `NotableDatePluginException`: `PluginNotTrustedException`, `PluginActivationException`, and `PluginMissingAttributeException`.
+A plugin assembly declares its entry point with `NotableDatePluginAttribute` and implements `INotableDateAlgorithmPlugin` (deriving from `INotableDatePlugin`, which carries `Name` and `Version`). Loading only evaluates trust and activates the plugin; registering its algorithms is the separate `NotableDatePluginLoader.RegisterAlgorithms(plugin, registry)` call, after which the registry is passed to both `NotableDateResourceLoader` and `NotableDateService`. Failures surface through a typed exception hierarchy rooted at `NotableDatePluginException`: `PluginNotTrustedException`, `PluginActivationException`, and `PluginMissingAttributeException`.
 
 Construct a policy (for untrusted input, a `CompositePluginTrustPolicy` combining the file-hash pin with the strong-name label) and pass it to `NotableDatePluginLoader` with the plugin's file path; untrusted assemblies are rejected before any plugin type is instantiated. `LoadFromFile` additionally returns a disposable `NotableDatePluginHandle` owning the plugin's collectible load context, so the plugin can later be unloaded.
 
