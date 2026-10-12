@@ -33,7 +33,7 @@ For the full glossary, see [Core concepts](concepts.md).
 
 ## Scope and limitations
 
-- **Read-only, both PST formats.** The post-2003 Unicode format (`wVer` 23) and the legacy ANSI format (`wVer` 14/15) are read through the same surface; OST files are recognized and rejected with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+- **Read-only, both PST formats.** The post-2003 Unicode format (`wVer` 23 and later, except 36) and the legacy ANSI format (`wVer` 14/15) are read through the same surface; OST files are recognized and rejected with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 - **No MAPI semantics.** Property values surface with their raw wire types; property *meaning* (subjects, senders, recipients) belongs to the mail-store reader layered on top.
 - **Bounded memory.** Payloads stream through a decoded-block LRU cache sized by <xref:Bodu.IO.Pst.PstFileOptions.BlockCacheSize>; `OpenDataStream` keeps one leaf block resident regardless of the logical payload size.
 

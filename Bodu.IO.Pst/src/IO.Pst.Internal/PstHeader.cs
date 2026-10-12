@@ -18,11 +18,23 @@ internal sealed class PstHeader
     /// <summary>The Unicode header size, which is also the most a reader needs to buffer to parse either format.</summary>
     internal const int UnicodeHeaderSize = 564;
 
-    /// <summary>The <c>!BDN</c> magic.</summary>
+    /// <summary>The size of the <c>dwMagic</c> field, the most a reader needs to recognize a PST or OST file.</summary>
+    internal const int MagicSize = 4;
+
+    /// <summary>The <c>!BDN</c> magic every PST and OST file begins with.</summary>
     private const uint Magic = 0x4E444221;
 
-    /// <summary>The <c>SM</c> client magic.</summary>
+    /// <summary>The <c>SM</c> client magic of a PST file.</summary>
     private const ushort MagicClient = 0x4D53;
+
+    /// <summary>The <c>SO</c> client magic of an OST file.</summary>
+    private const ushort OstMagicClient = 0x4F53;
+
+    /// <summary>The offset of the <c>wMagicClient</c> field.</summary>
+    private const int MagicClientOffset = 8;
+
+    /// <summary>The <c>wVer</c> of the 4 KiB-page OST variant, which this reader recognizes but does not read.</summary>
+    private const ushort Ost4KVersion = 36;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PstHeader" /> class.
@@ -82,14 +94,12 @@ internal sealed class PstHeader
     internal PstBref BbtRoot { get; }
 
     /// <summary>
-    /// Determines whether bytes begin with the PST magic values.
+    /// Determines whether bytes begin with the <c>!BDN</c> magic every PST and OST file shares.
     /// </summary>
     /// <param name="data">The leading file bytes.</param>
-    /// <returns><see langword="true" /> when <c>dwMagic</c> and <c>wMagicClient</c> match.</returns>
-    internal static bool IsPstHeader(ReadOnlySpan<byte> data) =>
-        data.Length >= 12
-            && BinaryPrimitives.ReadUInt32LittleEndian(data) == Magic
-            && BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(8)) == MagicClient;
+    /// <returns><see langword="true" /> when <c>dwMagic</c> matches, whatever the client magic.</returns>
+    internal static bool HasMagic(ReadOnlySpan<byte> data) =>
+        data.Length >= MagicSize && BinaryPrimitives.ReadUInt32LittleEndian(data) == Magic;
 
     /// <summary>
     /// Parses and validates a header.
@@ -102,33 +112,42 @@ internal sealed class PstHeader
     /// </param>
     /// <returns>The parsed header.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The header is malformed, too short for its format, or fails its checksum.
+    /// The header is malformed (its client magic neither <c>SM</c> nor <c>SO</c> among the cases), too short for its
+    /// format, or fails its checksum.
     /// </exception>
     /// <exception cref="PstUnsupportedFormatException">
-    /// The file is a 4 KiB-page OST or uses an unknown content encoding.
+    /// The file is an OST (client magic <c>SO</c>) or the 4 KiB-page OST variant (version 36), or uses an unknown
+    /// content encoding.
     /// </exception>
     /// <remarks>
-    /// The version word at offset 10 selects the layout before anything else is read, so the length check, the sentinel
-    /// and crypt-method bytes, and the <c>ROOT</c> record are all located per format. The 471-byte partial checksum
-    /// range is the same in both formats.
+    /// The client magic at offset 8 tells a PST (<c>SM</c>) from an OST (<c>SO</c>), and an OST is rejected as
+    /// unsupported whatever its version. The version word at offset 10 then selects the layout before anything else is
+    /// read, so the length check, the sentinel and crypt-method bytes, and the <c>ROOT</c> record are all located per
+    /// format. The 471-byte partial checksum range is the same in both formats.
     /// </remarks>
     internal static PstHeader Parse(ReadOnlySpan<byte> data, PstValidationLevel validationLevel)
     {
-        if (!IsPstHeader(data))
+        if (!HasMagic(data) || data.Length < MagicClientOffset + 2)
             throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
+        ushort magicClient = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(MagicClientOffset));
+        if (magicClient == OstMagicClient)
+            throw new PstUnsupportedFormatException(PstResourceStrings.Op_NotSupported_PstOst);
+
+        if (magicClient != MagicClient || data.Length < 12)
+            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
+
+        // 14 and 15 are ANSI and every other version of 23 or more Unicode (MS-PST 2.2.2.6), but for 36, the 4 KiB-page
+        // OST; a Unicode file's WIP encryption is the crypt method's to reject, not the version's.
         ushort version = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(10));
-        PstLayout? layout = PstLayout.FromVersion(version);
-        if (layout is null)
+        if (version == Ost4KVersion)
         {
-            if (version >= 36)
-            {
-                throw new PstUnsupportedFormatException(string.Format(
-                    CultureInfo.CurrentCulture, PstResourceStrings.Op_NotSupported_PstFormat, PstFileFormat.Ost4K));
-            }
-
-            throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
+            throw new PstUnsupportedFormatException(string.Format(
+                CultureInfo.CurrentCulture, PstResourceStrings.Op_NotSupported_PstFormat, PstFileFormat.Ost4K));
         }
+
+        PstLayout layout = PstLayout.FromVersion(version)
+            ?? throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);
 
         if (data.Length < layout.HeaderSize)
             throw new PstFileFormatException(PstResourceStrings.Format_Invalid_PstHeader, PstFileError.InvalidHeader);

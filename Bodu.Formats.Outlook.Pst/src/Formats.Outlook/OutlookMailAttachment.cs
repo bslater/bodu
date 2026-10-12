@@ -164,12 +164,14 @@ public sealed class OutlookMailAttachment
     /// Opens the by-value content payload as a read-only stream.
     /// </summary>
     /// <returns>The content stream; dispose it when reading is complete.</returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="NotSupportedException">
-    /// The attachment's <see cref="Method" /> is <see cref="OutlookAttachmentMethod.EmbeddedMessage" /> or
-    /// <see cref="OutlookAttachmentMethod.Ole" /> - the payload is an object, not a byte stream - or
-    /// <see cref="OutlookAttachmentMethod.ByWebReference" />, whose content a web service holds.
+    /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.ByValue" /> - a referenced,
+    /// web-referenced, embedded, or OLE attachment, or one that declares no content, carries no byte payload in the
+    /// store.
     /// </exception>
     /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
+    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <remarks>
     /// A payload decoded inline (at or below <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" />) is
     /// served from the decoded bytes without copying; a larger payload is streamed from the store block by block and is
@@ -177,8 +179,7 @@ public sealed class OutlookMailAttachment
     /// </remarks>
     public Stream OpenContentStream()
     {
-        if (Method is OutlookAttachmentMethod.EmbeddedMessage or OutlookAttachmentMethod.Ole
-            or OutlookAttachmentMethod.ByWebReference)
+        if (Method != OutlookAttachmentMethod.ByValue)
         {
             throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture, OutlookPstResourceStrings.Op_NotSupported_PstAttachmentContent, Method));
@@ -224,6 +225,7 @@ public sealed class OutlookMailAttachment
     /// <returns>
     /// The nested message view. It is bound to the owning session and becomes unusable when the session is disposed.
     /// </returns>
+    /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="NotSupportedException">
     /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.EmbeddedMessage" />.
     /// </exception>
@@ -231,6 +233,7 @@ public sealed class OutlookMailAttachment
     /// The attachment carries no nested message subnode, or the nested message would sit deeper than
     /// <see cref="OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth" />.
     /// </exception>
+    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <remarks>
     /// The nested message is the message-typed subnode of the attachment object (MS-PST §2.4.6.3); its code-page
     /// strings inherit the attachment's encoding.

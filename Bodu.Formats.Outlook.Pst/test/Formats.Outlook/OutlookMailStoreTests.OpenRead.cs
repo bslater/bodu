@@ -44,6 +44,27 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
+    /// Verifies that a store embedded in a larger stream opens from the stream's current position, as the guides
+    /// document, and renders as the same store read on its own.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenStreamIsPositionedPastTheStart_ShouldReadTheStoreFromThatPosition()
+    {
+        byte[] input = PstReleaseNoteCorpusTests.GenerateInput("gen:Mail()");
+        var embedded = new byte[100 + input.Length];
+        embedded.AsSpan(0, 100).Fill(0xCC);
+        input.CopyTo(embedded, 100);
+        string expected;
+        using (OutlookMailStore alone = OutlookMailStore.OpenRead(new MemoryStream(input, writable: false)))
+            expected = PstReleaseNoteCorpusTests.RenderStore(alone, string.Empty);
+
+        using var stream = new MemoryStream(embedded, writable: false) { Position = 100 };
+        using OutlookMailStore store = OutlookMailStore.OpenRead(stream);
+
+        Assert.AreEqual(expected, PstReleaseNoteCorpusTests.RenderStore(store, string.Empty));
+    }
+
+    /// <summary>
     /// Verifies that a <see langword="null" /> path or stream is rejected.
     /// </summary>
     [TestMethod]

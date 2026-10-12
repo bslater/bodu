@@ -84,6 +84,14 @@ namespace Bodu.IO.Pst {
             }
         }
         /// <summary>
+        ///   Looks up a localized string similar to The index page at offset {0} holds a key outside the range its parent entry gives it..
+        /// </summary>
+        internal static string Format_Invalid_PstPageKeyRange {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstPageKeyRange", resourceCulture);
+            }
+        }
+        /// <summary>
         ///   Looks up a localized string similar to The index page at offset {0} failed its trailer validation..
         /// </summary>
         internal static string Format_Invalid_PstPageTrailer {
@@ -185,6 +193,14 @@ namespace Bodu.IO.Pst {
         internal static string Op_NotSupported_PstFormat {
             get {
                 return ResourceManager.GetString("Op_NotSupported_PstFormat", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to The file is an Outlook offline storage table (OST); only PST files in the Unicode and ANSI formats are supported..
+        /// </summary>
+        internal static string Op_NotSupported_PstOst {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_PstOst", resourceCulture);
             }
         }
         /// <summary>

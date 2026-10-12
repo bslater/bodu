@@ -14,9 +14,17 @@ namespace Bodu.IO.Pst.Internal;
 /// in-order enumeration and keyed search.
 /// </summary>
 /// <remarks>
+/// <para>
 /// A <c>BTPAGE</c> holds its entries at stride <c>cbEnt</c> in the first 488 bytes; <c>cLevel</c> above zero means the
 /// entries are <c>BTENTRY</c> references to child pages, and zero means leaf entries - <c>NBTENTRY</c> for the node
 /// tree, <c>BBTENTRY</c> for the block tree. Search descends by the greatest key at or below the target.
+/// </para>
+/// <para>
+/// Every key on a child page lies in the range its parent entry gives it: at or above the entry's key (MS-PST
+/// 2.2.2.7.7.2), and below the key of the entry that follows it in the parent or, for a parent's last entry, in an
+/// ancestor. Enumeration and search both hold each page they read to that range, so a page two entries reference is
+/// rejected rather than read twice.
+/// </para>
 /// </remarks>
 internal static class PstBTree
 {
@@ -83,11 +91,12 @@ internal static class PstBTree
         PstBref bref,
         byte pageType,
         Func<PstLayout, byte[], int, TEntry> readEntry) =>
-        EnumerateLeaves(source, bref, pageType, readEntry, expectedLevel: -1, depth: 0);
+        EnumerateLeaves(source, bref, pageType, readEntry, expectedLevel: -1, depth: 0, lowKey: 0, highKey: null);
 
     /// <summary>
     /// Enumerates the leaf entries beneath a page in key order, checking that every child sits exactly one level below
-    /// its parent and that the descent stays within <see cref="MaxDepth" />.
+    /// its parent, that its keys lie in the range its parent entry gives it, and that the descent stays within
+    /// <see cref="MaxDepth" />.
     /// </summary>
     /// <typeparam name="TEntry">The leaf entry type.</typeparam>
     /// <param name="source">The open source.</param>
@@ -96,10 +105,13 @@ internal static class PstBTree
     /// <param name="readEntry">Reads one leaf entry from its bytes.</param>
     /// <param name="expectedLevel">The level the page must declare, or <c>-1</c> for the root.</param>
     /// <param name="depth">The number of pages above this one.</param>
+    /// <param name="lowKey">The smallest key the page may hold: its parent entry's key, or zero for the root.</param>
+    /// <param name="highKey">The key every key on the page must be below, or <see langword="null" /> for none.</param>
     /// <returns>The leaf entries.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The page's level is not the one its parent implies, or the tree is deeper than the format allows - a crafted
-    /// page referencing itself or an ancestor cannot recurse without bound.
+    /// The page's level is not the one its parent implies, a key lies outside the range its parent entry gives the
+    /// page, or the tree is deeper than the format allows - a crafted page referencing itself, an ancestor, or a page
+    /// another entry references can neither recurse without bound nor be read twice.
     /// </exception>
     private static IEnumerable<TEntry> EnumerateLeaves<TEntry>(
         PstSource source,
@@ -107,23 +119,31 @@ internal static class PstBTree
         byte pageType,
         Func<PstLayout, byte[], int, TEntry> readEntry,
         int expectedLevel,
-        int depth)
+        int depth,
+        ulong lowKey,
+        ulong? highKey)
     {
+        PstLayout layout = source.Layout;
         byte[] page = source.ReadPage(bref, pageType);
-        (int count, int stride, int level) = ReadPageHeader(source.Layout, page, bref, expectedLevel, depth);
+        (int count, int stride, int level) = ReadPageHeader(layout, page, bref, expectedLevel, depth);
+        CheckKeyRange(layout, page, bref, count, stride, lowKey, highKey);
 
         for (int i = 0; i < count; i++)
         {
             int offset = i * stride;
             if (level > 0)
             {
-                PstBref child = ReadChildReference(source.Layout, page, offset);
-                foreach (TEntry entry in EnumerateLeaves(source, child, pageType, readEntry, level - 1, depth + 1))
+                // A child holds the keys from its entry's key up to the next entry's key; the last child inherits this
+                // page's upper bound.
+                PstBref child = ReadChildReference(layout, page, offset);
+                ulong childLowKey = layout.ReadId(page.AsSpan(offset));
+                ulong? childHighKey = i + 1 < count ? layout.ReadId(page.AsSpan(offset + stride)) : highKey;
+                foreach (TEntry entry in EnumerateLeaves(source, child, pageType, readEntry, level - 1, depth + 1, childLowKey, childHighKey))
                     yield return entry;
             }
             else
             {
-                yield return readEntry(source.Layout, page, offset);
+                yield return readEntry(layout, page, offset);
             }
         }
     }
@@ -142,7 +162,8 @@ internal static class PstBTree
     /// <param name="entry">When this method returns <see langword="true" />, the matching entry.</param>
     /// <returns><see langword="true" /> when the key exists.</returns>
     /// <exception cref="PstFileFormatException">
-    /// A page's level is not the one its parent implies, or the tree is deeper than the format allows.
+    /// A page's level is not the one its parent implies, a key lies outside the range its parent entry gives the page,
+    /// or the tree is deeper than the format allows.
     /// </exception>
     private static bool TryFindLeaf<TEntry>(
         PstSource source,
@@ -154,18 +175,22 @@ internal static class PstBTree
         out TEntry entry)
         where TEntry : struct
     {
+        PstLayout layout = source.Layout;
         PstBref current = bref;
         int expectedLevel = -1;
+        ulong lowKey = 0;
+        ulong? highKey = null;
         for (int depth = 0; ; depth++)
         {
             byte[] page = source.ReadPage(current, pageType);
-            (int count, int stride, int level) = ReadPageHeader(source.Layout, page, current, expectedLevel, depth);
+            (int count, int stride, int level) = ReadPageHeader(layout, page, current, expectedLevel, depth);
+            CheckKeyRange(layout, page, current, count, stride, lowKey, highKey);
 
             if (level == 0)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    TEntry candidate = readEntry(source.Layout, page, i * stride);
+                    TEntry candidate = readEntry(layout, page, i * stride);
                     if (keyOf(candidate) == key)
                     {
                         entry = candidate;
@@ -177,27 +202,21 @@ internal static class PstBTree
                 return false;
             }
 
-            // Descend into the child whose key is the greatest at or below the target.
-            PstBref child = default;
-            bool found = false;
-            for (int i = 0; i < count; i++)
-            {
-                int offset = i * stride;
-                ulong entryKey = source.Layout.ReadId(page.AsSpan(offset));
-                if (entryKey > key)
-                    break;
+            // Descend into the child whose key is the greatest at or below the target; the next entry's key, or this
+            // page's upper bound after its last entry, bounds the keys the child may hold.
+            int chosen = -1;
+            for (int i = 0; i < count && layout.ReadId(page.AsSpan(i * stride)) <= key; i++)
+                chosen = i;
 
-                child = ReadChildReference(source.Layout, page, offset);
-                found = true;
-            }
-
-            if (!found)
+            if (chosen < 0)
             {
                 entry = default;
                 return false;
             }
 
-            current = child;
+            current = ReadChildReference(layout, page, chosen * stride);
+            lowKey = layout.ReadId(page.AsSpan(chosen * stride));
+            highKey = chosen + 1 < count ? layout.ReadId(page.AsSpan((chosen + 1) * stride)) : highKey;
             expectedLevel = level - 1;
         }
     }
@@ -228,6 +247,35 @@ internal static class PstBTree
         }
 
         return (count, stride, level);
+    }
+
+    /// <summary>
+    /// Checks that every key on a page lies in the range its parent entry gives it.
+    /// </summary>
+    /// <param name="layout">The file layout.</param>
+    /// <param name="page">The page bytes.</param>
+    /// <param name="bref">The page reference, for diagnostics.</param>
+    /// <param name="count">The entry count.</param>
+    /// <param name="stride">The entry stride.</param>
+    /// <param name="lowKey">The smallest key the page may hold.</param>
+    /// <param name="highKey">The key every key on the page must be below, or <see langword="null" /> for none.</param>
+    /// <exception cref="PstFileFormatException">A key lies outside the range.</exception>
+    /// <remarks>
+    /// Every entry begins with its key: a <c>BTENTRY</c>'s <c>btkey</c>, an <c>NBTENTRY</c>'s node identifier, and a
+    /// <c>BBTENTRY</c>'s block identifier.
+    /// </remarks>
+    private static void CheckKeyRange(PstLayout layout, byte[] page, PstBref bref, int count, int stride, ulong lowKey, ulong? highKey)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            ulong key = layout.ReadId(page.AsSpan(i * stride));
+            if (key < lowKey || key >= highKey)
+            {
+                throw new PstFileFormatException(
+                    string.Format(CultureInfo.CurrentCulture, PstResourceStrings.Format_Invalid_PstPageKeyRange, bref.Offset),
+                    PstFileError.InvalidPage);
+            }
+        }
     }
 
     /// <summary>

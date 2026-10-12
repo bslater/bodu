@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Formats.Outlook.Pst;
 using Bodu.Test;
 
@@ -141,5 +142,105 @@ public partial class OutlookMailAttachmentTests
         {
             _ = attachment.OpenContentStream();
         });
+    }
+
+    /// <summary>
+    /// Verifies that content access on an attachment that declares a method other than <c>afByValue</c> throws
+    /// <see cref="NotSupportedException" /> naming that method, and does not serve the by-value payload the attachment
+    /// object also carries.
+    /// </summary>
+    /// <param name="method">The declared <c>PidTagAttachMethod</c> value.</param>
+    [TestMethod]
+    [DataRow(OutlookAttachmentMethod.None)]
+    [DataRow(OutlookAttachmentMethod.ByReference)]
+    [DataRow(OutlookAttachmentMethod.ByReferenceResolve)]
+    [DataRow(OutlookAttachmentMethod.ByReferenceOnly)]
+    [DataRow(OutlookAttachmentMethod.EmbeddedMessage)]
+    [DataRow(OutlookAttachmentMethod.Ole)]
+    [DataRow(OutlookAttachmentMethod.ByWebReference)]
+    public void OpenContentStream_WhenMethodIsNotByValueAndPayloadPresent_ShouldThrowNotSupportedException(OutlookAttachmentMethod method)
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(b => b.AttachMethodOverride = (uint)method);
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+
+        var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = attachment.OpenContentStream();
+        });
+
+        Assert.AreEqual(
+            string.Format(CultureInfo.CurrentCulture, OutlookPstResourceStrings.Op_NotSupported_PstAttachmentContent, method),
+            ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that content access on an attachment that declares a method other than <c>afByValue</c> and carries no
+    /// by-value payload throws <see cref="NotSupportedException" />, not <see cref="OutlookPstFormatException" />: the
+    /// method stores no payload, so its absence is not a format error.
+    /// </summary>
+    /// <param name="method">The declared <c>PidTagAttachMethod</c> value.</param>
+    [TestMethod]
+    [DataRow(OutlookAttachmentMethod.None)]
+    [DataRow(OutlookAttachmentMethod.ByReference)]
+    [DataRow(OutlookAttachmentMethod.ByReferenceResolve)]
+    [DataRow(OutlookAttachmentMethod.ByReferenceOnly)]
+    [DataRow(OutlookAttachmentMethod.EmbeddedMessage)]
+    [DataRow(OutlookAttachmentMethod.Ole)]
+    [DataRow(OutlookAttachmentMethod.ByWebReference)]
+    public void OpenContentStream_WhenMethodIsNotByValueAndPayloadAbsent_ShouldThrowNotSupportedException(OutlookAttachmentMethod method)
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(b =>
+        {
+            b.AttachMethodOverride = (uint)method;
+            b.OmitAttachData = true;
+        });
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+
+        var ex = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = attachment.OpenContentStream();
+        });
+
+        Assert.AreEqual(
+            string.Format(CultureInfo.CurrentCulture, OutlookPstResourceStrings.Op_NotSupported_PstAttachmentContent, method),
+            ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that content access on an attachment that declares <c>afByValue</c> but carries no
+    /// <c>PidTagAttachDataBinary</c> property throws <see cref="OutlookPstFormatException" />: the payload its method
+    /// promises is missing.
+    /// </summary>
+    [TestMethod]
+    public void OpenContentStream_WhenByValuePayloadAbsent_ShouldThrowOutlookPstFormatException()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(static b => b.OmitAttachData = true);
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+
+        _ = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = attachment.OpenContentStream();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an attachment that declares no method but carries a by-value payload reports
+    /// <see cref="OutlookAttachmentMethod.ByValue" />, and that its content stream serves that payload.
+    /// </summary>
+    [TestMethod]
+    public void OpenContentStream_WhenMethodAbsentAndPayloadPresent_ShouldReturnStoredPayload()
+    {
+        using OutlookMailStore store = OutlookMailMessageTests.OpenSynthetic(static b => b.OmitAttachMethod = true);
+
+        OutlookMailAttachment attachment = GetAttachments(store)[0];
+        using Stream content = attachment.OpenContentStream();
+        using var buffer = new MemoryStream();
+        content.CopyTo(buffer);
+
+        Assert.AreEqual(OutlookAttachmentMethod.ByValue, attachment.Method);
+        CollectionAssert.AreEqual(PstMessagingFixtureBuilder.AttachmentContent, buffer.ToArray());
     }
 }

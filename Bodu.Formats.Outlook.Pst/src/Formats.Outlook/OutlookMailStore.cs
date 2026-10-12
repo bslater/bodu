@@ -196,6 +196,13 @@ public sealed partial class OutlookMailStore
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="path" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="path" /> is empty.</exception>
+    /// <exception cref="FileNotFoundException">No file exists at <paramref name="path" />.</exception>
+    /// <exception cref="DirectoryNotFoundException">A directory in <paramref name="path" /> does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">
+    /// <paramref name="path" /> names a directory, or the caller does not have permission to read the file.
+    /// </exception>
+    /// <exception cref="IOException">The file could not be opened.</exception>
     /// <exception cref="PstFileFormatException">The file is not a structurally valid PST file.</exception>
     /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
     public static OutlookMailStore OpenRead(string path)
@@ -217,7 +224,7 @@ public sealed partial class OutlookMailStore
     /// <summary>
     /// Opens a mail store from a stream with default options.
     /// </summary>
-    /// <param name="stream">The readable, seekable stream positioned at the file start.</param>
+    /// <param name="stream">The readable, seekable stream; the file is read from its current position.</param>
     /// <param name="leaveOpen"><see langword="true" /> to leave the stream open when the session is disposed.</param>
     /// <returns>The open session.</returns>
     /// <exception cref="ArgumentNullException">
@@ -232,7 +239,7 @@ public sealed partial class OutlookMailStore
     /// <summary>
     /// Opens a mail store from a stream with explicit options.
     /// </summary>
-    /// <param name="stream">The readable, seekable stream positioned at the file start.</param>
+    /// <param name="stream">The readable, seekable stream; the file is read from its current position.</param>
     /// <param name="options">The reader options.</param>
     /// <param name="leaveOpen"><see langword="true" /> to leave the stream open when the session is disposed.</param>
     /// <returns>The open session.</returns>
@@ -251,10 +258,13 @@ public sealed partial class OutlookMailStore
     }
 
     /// <summary>
-    /// Determines whether a stream begins with the PST magics; its position is restored before returning.
+    /// Determines whether a stream begins with the <c>!BDN</c> magic; its position is restored before returning.
     /// </summary>
     /// <param name="stream">The readable, seekable stream to sniff.</param>
-    /// <returns><see langword="true" /> when the stream looks like a PST file of any variant.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the stream begins with the magic every PST variant shares, the OST included,
+    /// whether or not this reader opens it.
+    /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>

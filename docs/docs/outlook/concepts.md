@@ -44,8 +44,8 @@ The wire-type codes:
 | `0x000B` | `Boolean` | `bool` |
 | `0x000D` | `Object` | an embedded object (attachment storages) |
 | `0x0014` | `Int64` | `long` |
-| `0x001E` | `String8` | `string`, decoded through the object's code page |
-| `0x001F` | `Unicode` | `string` (UTF-16) |
+| `0x001E` | `String8` | `string`, decoded through the object's code page and ending at its first zero byte |
+| `0x001F` | `Unicode` | `string` (UTF-16), ending at its first zero code unit |
 | `0x0040` | `SystemTime` | `DateTimeOffset` (FILETIME) |
 | `0x0048` | `Guid` | `Guid` |
 | `0x0102` | `Binary` | `byte[]` |
@@ -66,7 +66,7 @@ Each file carries a mapping from identifier to identity, and each session resolv
 - `TryGetNamedPropertyId(MapiNamedProperty name, out ushort id)` - the file-specific identifier a name maps to; combine it with the expected `MapiPropertyType` to address a property collection.
 - `TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)` - the identity behind a named tag.
 
-Where the mapping lives differs by format. A `.msg` file keeps it in the root's `__nameid_version1.0` storage, parsed lazily and shared by every nested attached message (per MS-OXMSG). A `.pst` file keeps one **name-to-id map node** per store (MS-PST §2.4.7), so <xref:Bodu.Formats.Outlook.OutlookMailStore> resolves store-wide and one resolution applies to every message and attachment of the session. In both, entry *i* of the entry stream defines identifier `0x8000 + i`; a malformed entry throws the format's exception under strict validation and is skipped otherwise.
+Where the mapping lives differs by format. A `.msg` file keeps it in the root's `__nameid_version1.0` storage, parsed lazily and shared by every nested attached message (per MS-OXMSG). A `.pst` file keeps one **name-to-id map node** per store (MS-PST §2.4.7), so <xref:Bodu.Formats.Outlook.OutlookMailStore> resolves store-wide and one resolution applies to every message and attachment of the session. In both, an entry of the entry stream defines identifier `0x8000 + wPropIdx`, the property index its `NAMEID` records (MS-PST §2.4.7.1), not its position in the stream; a malformed entry throws the format's exception under strict validation and is skipped otherwise.
 
 ## Recipient
 
@@ -115,7 +115,7 @@ Each reader reuses its container's level rather than defining its own:
 | `.msg` | <xref:Bodu.Formats.Outlook.OutlookMessageReaderOptions.ValidationLevel> | <xref:Bodu.IO.Compound.CompoundValidationLevel> - `Strict` / `Compatible` (default) / `Minimal` |
 | `.pst` | <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions.ValidationLevel> | <xref:Bodu.IO.Pst.PstValidationLevel> - `Compatible` (default) / `Strict` / `Minimal` |
 
-Under the tolerant levels a malformed property is omitted and decoding continues, a table row that references no valid node is skipped, and an undefined attachment method is inferred - the tolerance real-world files need. Under `Strict`, structural problems throw the format's exception: a missing `.msg` value stream or recipient/attachment count mismatch raises <xref:Bodu.Formats.Outlook.OutlookMsgFormatException>; a `.pst` hierarchy, contents, recipient, or attachment row that does not reference a valid node - or a malformed name-to-id map - raises <xref:Bodu.Formats.Outlook.OutlookPstFormatException>. The level also flows down to the container, which enforces its own checksums and signatures under `Strict`.
+Under the tolerant levels a property value the MAPI decoding rejects is omitted and decoding continues (in a `.pst` file, a fault in the property context itself - a heap reference that does not resolve, a fixed-width value shorter than its type, a missing value subnode - is container corruption and fails at every level), a table row that references no valid node is skipped, and an undefined attachment method is inferred - the tolerance real-world files need. Under `Strict`, structural problems throw the format's exception: a missing `.msg` value stream or recipient/attachment count mismatch raises <xref:Bodu.Formats.Outlook.OutlookMsgFormatException>; a `.pst` hierarchy, contents, recipient, or attachment row that does not reference a valid node - or a malformed name-to-id map - raises <xref:Bodu.Formats.Outlook.OutlookPstFormatException>. The level also flows down to the container, which enforces its own checksums and signatures under `Strict`.
 
 ## Resource limits
 

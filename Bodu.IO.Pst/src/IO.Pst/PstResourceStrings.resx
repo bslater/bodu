@@ -67,6 +67,9 @@
   <data name="Format_Invalid_PstPage" xml:space="preserve">
     <value>The index page at offset {0} is malformed.</value>
   </data>
+  <data name="Format_Invalid_PstPageKeyRange" xml:space="preserve">
+    <value>The index page at offset {0} holds a key outside the range its parent entry gives it.</value>
+  </data>
   <data name="Format_Invalid_PstPageTrailer" xml:space="preserve">
     <value>The index page at offset {0} failed its trailer validation.</value>
   </data>
@@ -108,6 +111,9 @@
   </data>
   <data name="Op_NotSupported_PstFormat" xml:space="preserve">
     <value>The file uses the {0} PST format; only the Unicode and ANSI formats are supported.</value>
+  </data>
+  <data name="Op_NotSupported_PstOst" xml:space="preserve">
+    <value>The file is an Outlook offline storage table (OST); only PST files in the Unicode and ANSI formats are supported.</value>
   </data>
   <data name="Op_NotSupported_PstCryptMethod" xml:space="preserve">
     <value>The file uses an unsupported content encoding method (0x{0:X2}).</value>

@@ -275,6 +275,12 @@ internal sealed class PstMessagingFixtureBuilder
     internal uint? AttachMethodOverride { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the by-value attachment omits its <c>PidTagAttachMethod</c> property.
+    /// </summary>
+    /// <value><see langword="false" /> by default.</value>
+    internal bool OmitAttachMethod { get; set; }
+
+    /// <summary>
     /// Gets or sets the number of <c>XBLOCK</c>s (each 1021 references to one 8 KB block) behind a large,
     /// subnode-resident by-value attachment payload.
     /// </summary>
@@ -286,6 +292,13 @@ internal sealed class PstMessagingFixtureBuilder
     /// </summary>
     /// <value><see langword="false" /> by default.</value>
     internal bool OmitAttachSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the by-value attachment omits its <c>PidTagAttachDataBinary</c>
+    /// property.
+    /// </summary>
+    /// <value><see langword="false" /> by default.</value>
+    internal bool OmitAttachData { get; set; }
 
     /// <summary>
     /// Gets the logical length of the large attachment payload <see cref="LargeAttachmentXBlocks" /> produces.
@@ -689,15 +702,19 @@ internal sealed class PstMessagingFixtureBuilder
 
         var records = new List<(ushort PropertyId, ushort WireType, uint RawValue)>
         {
-            (MapiPropertyIds.AttachMethod, Int32Type, AttachMethodOverride ?? (uint)OutlookAttachmentMethod.ByValue),
             (MapiPropertyIds.AttachLongFilename, UnicodeType, longNameHid),
             (MapiPropertyIds.AttachFilename, UnicodeType, shortNameHid),
             (MapiPropertyIds.AttachContentId, UnicodeType, contentIdHid),
             (MapiPropertyIds.AttachMimeTag, UnicodeType, mimeHid),
         };
+        if (!OmitAttachMethod)
+            records.Add((MapiPropertyIds.AttachMethod, Int32Type, AttachMethodOverride ?? (uint)OutlookAttachmentMethod.ByValue));
         if (!OmitAttachSize)
             records.Add((MapiPropertyIds.AttachSize, Int32Type, declaredSize));
-        records.Add((MapiPropertyIds.AttachData, BinaryType, dataHnid));
+
+        // An omitted payload's bytes stay allocated but unreferenced, which the format permits.
+        if (!OmitAttachData)
+            records.Add((MapiPropertyIds.AttachData, BinaryType, dataHnid));
 
         _ = ltp.AddPropertyContext([.. records]);
 

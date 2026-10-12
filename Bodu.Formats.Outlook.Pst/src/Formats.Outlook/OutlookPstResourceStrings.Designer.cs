@@ -133,7 +133,7 @@ namespace Bodu.Formats.Outlook {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The attachment&apos;s method ({0}) does not expose a binary content stream..
+        ///   Looks up a localized string similar to The attachment&apos;s content is not a by-value payload; its method is {0}..
         /// </summary>
         internal static string Op_NotSupported_PstAttachmentContent {
             get {

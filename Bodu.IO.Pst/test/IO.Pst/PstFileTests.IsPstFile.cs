@@ -36,6 +36,37 @@ public partial class PstFileTests
     }
 
     /// <summary>
+    /// Verifies that the sniff answers <see langword="true" /> for any stream that begins with the <c>!BDN</c> magic,
+    /// whatever its client magic: an OST (<c>SO</c>) at the Unicode and the 4 KiB-page versions, and an unknown client
+    /// magic, each of which a full open then rejects.
+    /// </summary>
+    /// <param name="testName">The scenario name.</param>
+    /// <param name="clientMagic">The header's <c>wMagicClient</c>.</param>
+    /// <param name="version">The header's <c>wVer</c>.</param>
+    [TestMethod]
+    [DataRow("OST, version 23", 0x4F53, 23)]
+    [DataRow("OST, version 36", 0x4F53, 36)]
+    [DataRow("unknown client magic", 0x0000, 23)]
+    public void IsPstFile_WhenClientMagicIsNotSm_ShouldReturnTrue(string testName, int clientMagic, int version)
+    {
+        Assert.IsNotNull(testName);
+        using var stream = new MemoryStream(BuildWithClientMagic((ushort)clientMagic, (ushort)version), writable: false);
+
+        Assert.IsTrue(PstFile.IsPstFile(stream));
+    }
+
+    /// <summary>
+    /// Verifies that the sniff needs no more than the four bytes of the <c>!BDN</c> magic.
+    /// </summary>
+    [TestMethod]
+    public void IsPstFile_WhenStreamHoldsOnlyTheMagic_ShouldReturnTrue()
+    {
+        using var stream = new MemoryStream("!BDN"u8.ToArray(), writable: false);
+
+        Assert.IsTrue(PstFile.IsPstFile(stream));
+    }
+
+    /// <summary>
     /// Verifies that the sniff rejects data that does not carry the PST magics, and short streams.
     /// </summary>
     [TestMethod]

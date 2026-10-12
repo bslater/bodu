@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+using Bodu.IO.Pst.Internal;
 using Bodu.Test.Kat;
 
 namespace Bodu.IO.Pst;
@@ -55,6 +57,24 @@ public partial class PstFileTests
     /// <returns>The open session, owning the fixture stream.</returns>
     internal static PstFile OpenSample1() =>
         PstReferenceFixtures.OpenFile(Sample1);
+
+    /// <summary>
+    /// Builds a one-node Unicode container whose header carries a given client magic and version, with the header
+    /// checksum repaired.
+    /// </summary>
+    /// <param name="clientMagic">The <c>wMagicClient</c> value: <c>0x4D53</c> (<c>SM</c>) for a PST, <c>0x4F53</c> (<c>SO</c>) for an OST.</param>
+    /// <param name="version">The <c>wVer</c> value.</param>
+    /// <returns>The container bytes.</returns>
+    private static byte[] BuildWithClientMagic(ushort clientMagic, ushort version)
+    {
+        var builder = new PstFixtureBuilder { Version = version };
+        builder.AddNode(0x21, builder.AddDataBlock([1, 2, 3]));
+        byte[] file = builder.Build();
+        BinaryPrimitives.WriteUInt16LittleEndian(file.AsSpan(8), clientMagic);
+        PstFixtureBuilder.RepairHeaderChecksum(file);
+
+        return file;
+    }
 }
 
 /// <summary>

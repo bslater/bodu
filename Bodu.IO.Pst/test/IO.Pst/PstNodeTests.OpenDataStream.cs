@@ -90,4 +90,24 @@ public partial class PstNodeTests
         stream.CopyTo(buffer);
         CollectionAssert.AreEqual(node.ReadAllBytes(), buffer.ToArray());
     }
+
+    /// <summary>
+    /// Verifies that the stream over a node whose data is one data block seeks to an absolute position and reads the
+    /// rest of the payload from there.
+    /// </summary>
+    [TestMethod]
+    public void OpenDataStream_WhenTheNodeIsOneBlock_ShouldSeekAndReadFromThePosition()
+    {
+        var builder = new PstFixtureBuilder();
+        builder.AddNode(0x21, builder.AddDataBlock([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]));
+        using PstFile file = PstFile.Open(builder.BuildStream(), new PstFileOptions());
+        using Stream stream = file.GetNode(new PstNodeId(0x21)).OpenDataStream();
+
+        long position = stream.Seek(5, SeekOrigin.Begin);
+        var rest = new MemoryStream();
+        stream.CopyTo(rest);
+
+        Assert.AreEqual(5L, position);
+        CollectionAssert.AreEqual(new byte[] { 0x06, 0x07, 0x08 }, rest.ToArray());
+    }
 }
