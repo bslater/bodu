@@ -72,7 +72,7 @@ byte[] hash = hasher.Hash!;
 ## Security caveats
 
 - **Status.** Whirlpool is unbroken - no practical pre-image, second-pre-image, or collision attack on the standardised 2003 revision is known. Theoretical attacks reduce the security margin on reduced-round variants but do not threaten the full algorithm.
-- **Use the 2003 revision.** Whirlpool-0 (2000) was withdrawn because of a flaw in the diffusion matrix; Whirlpool-T (2001) was the corrected interim version. Only `WhirlpoolInfo3` (2003) is the current ISO/IEC standard. The earlier versions are exposed for compatibility with archived data, not for new designs.
+- **Use the 2003 revision.** Whirlpool-0 (2000) was followed by Whirlpool-T (2001), which replaced the S-box but kept the original diffusion matrix; the 2003 revision adopted by ISO/IEC 10118-3 also replaced the diffusion matrix. Only `WhirlpoolInfo3` (2003) is the current ISO/IEC standard. The earlier versions are exposed for compatibility with archived data, not for new designs.
 - **Merkle-Damgård length extension.** Whirlpool inherits the length-extension property of Merkle-Damgård hashes - if you use it for a MAC, use HMAC-Whirlpool, not "key ‖ message". For native MAC modes, prefer Skein or BLAKE2 / 3.
 
 ## When *not* to use Whirlpool

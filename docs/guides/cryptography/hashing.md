@@ -4,7 +4,7 @@ title: Using hashes and checksums
 
 # Using hashes and checksums
 
-**Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, Whirlpool, BLAKE2 / BLAKE3, Skein, ASCON-HASH256, ASCON-HASHA256), the XOFs (SHAKE, ASCON-XOF128 / CXOF128), and Merkle-tree hashing. The digests, MACs, and SHAKE plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract; the ASCON XOFs expose an absorb / squeeze sponge surface, and the Merkle tree hashes are factory-constructed one-shot `ComputeHash` types over any inner `HashAlgorithm`.
+**Bodu.Security.Cryptography** ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, Whirlpool, BLAKE2 / BLAKE3, Skein, ASCON-HASH256, ASCON-HASHA256), the XOFs (SHAKE, ASCON-XOF128 / CXOF128), and Merkle-tree hashing. The digests, MACs, and SHAKE plug into the standard <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contract; the ASCON XOFs expose an absorb / squeeze sponge surface, and <xref:Bodu.Security.Cryptography.MerkleTree> computes RFC 6962 roots, inclusion proofs, and consistency proofs over any `HashAlgorithm` its factory creates.
 
 This page is the cross-cutting overview - what guarantee a cryptographic hash actually makes, how the structural shapes (digest / XOF / tree) differ, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:
 
@@ -53,7 +53,7 @@ Two families on this page take a **secret key** in addition to the message and p
 
 Every cryptographic hash here is a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so the BCL contract applies unchanged:
 
-- **One-shot** - `ComputeHash(byte[])`, `ComputeHash(ReadOnlySpan<byte>)`, or `ComputeHash(Stream)`. The instance is auto-reinitialised afterwards, so the same instance can hash the next message.
+- **One-shot** - `ComputeHash(byte[])`, `ComputeHash(Stream)`, or the span-based `TryComputeHash(ReadOnlySpan<byte>, Span<byte>, out int)`. The instance is auto-reinitialised afterwards, so the same instance can hash the next message.
 - **Streaming** - `TransformBlock(...)` repeatedly, then `TransformFinalBlock(...)`; read the digest from the `Hash` property. Call `Initialize()` to reset between messages.
 - `CanReuseTransform` reports whether the instance survives a finalisation - `true` for the digests and for SipHash, **`false` for `Poly1305`** (its way of refusing key reuse at the API level).
 

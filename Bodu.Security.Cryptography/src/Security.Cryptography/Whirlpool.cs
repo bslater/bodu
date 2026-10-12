@@ -46,7 +46,7 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <description>
 /// Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> (2000),
-/// <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> (Whirlpool-T, 2001), or
+/// <see cref="WhirlpoolVersion.WhirlpoolInfo2" /> (Whirlpool-T, 2001), or
 /// <see cref="WhirlpoolVersion.WhirlpoolInfo3" /> (ISO/IEC 10118-3, 2003 - default).
 /// </description>
 /// </item>

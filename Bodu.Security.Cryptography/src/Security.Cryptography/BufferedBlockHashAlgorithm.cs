@@ -20,10 +20,10 @@ namespace Bodu.Security.Cryptography;
 ///<![CDATA[
 /// // Consume a concrete derivative through the standard HashAlgorithm contract - the base
 /// // class drives the residual buffer and the block-aligned compression loop for you.
-/// using HashAlgorithm hash = new Blake2b();      // DeferredFinalBlockHashAlgorithm<T>
+/// using HashAlgorithm hash = new Blake2b();      // derives from DeferredFinalBlockHashAlgorithm
 /// byte[] digest1 = hash.ComputeHash("hello"u8.ToArray());
 ///
-/// using HashAlgorithm tiger = new Tiger();       // BlockHashAlgorithm<T>
+/// using HashAlgorithm tiger = new Tiger();       // derives from BlockHashAlgorithm
 /// byte[] digest2 = tiger.ComputeHash("hello"u8.ToArray());
 ///]]>
 /// </code>
@@ -114,8 +114,8 @@ public abstract class BufferedBlockHashAlgorithm
     /// <remarks>
     /// Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
     /// telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
-    /// side-effect-free - the value may be queried before any input has been consumed and after disposal as part of
-    /// error reporting.
+    /// side-effect-free - the value may be queried before any input has been consumed. The library's implementations
+    /// throw <see cref="ObjectDisposedException" /> once the instance has been disposed.
     /// </remarks>
     public abstract string AlgorithmName { get; }
 
@@ -172,9 +172,8 @@ public abstract class BufferedBlockHashAlgorithm
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <remarks>
     /// <para>
-    /// This method does not reset the <see cref="HashAlgorithm.State" /> property explicitly on .NET 6+ targets &#8212;
-    /// the framework manages that transition. On earlier targets, derived classes that need the already-finalized guard
-    /// should reset their <c>_finalized</c> backing field from their own <c>Initialize</c> override.
+    /// This method does not reset the <see cref="HashAlgorithm.State" /> property explicitly; the framework manages
+    /// that transition.
     /// </para>
     /// <para>
     /// Derived classes that need to validate state before the reset (for example, a keyed MAC that refuses to be
@@ -266,10 +265,6 @@ public abstract class BufferedBlockHashAlgorithm
     /// <paramref name="array" />.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash algorithm has already been finalized and cannot accept more input
-    /// data.
-    /// </exception>
     protected override void HashCore(byte[] array, int ibStart, int cbSize)
     {
         ThrowHelper.ThrowIfNull(array);

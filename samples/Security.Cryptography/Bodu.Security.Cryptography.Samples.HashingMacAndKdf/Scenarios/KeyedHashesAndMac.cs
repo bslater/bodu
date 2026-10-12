@@ -42,7 +42,7 @@ public static class KeyedHashesAndMac
         Console.WriteLine($"message: \"authenticate me\"");
         Console.WriteLine();
 
-        // SipHash is a keyed pseudo-random function; the key is set through the KeyedHashAlgorithm surface.
+        // SipHash is a keyed pseudo-random function; the key is set through its Key property.
         using (var sip64 = new SipHash64 { Key = SipKey })
             Console.WriteLine($"  SipHash-64      : {Hex.ToHex(sip64.ComputeHash(Message))}");
 

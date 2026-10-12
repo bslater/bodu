@@ -161,7 +161,7 @@ Raw, confidentiality-only XOR keystream ciphers - **no authentication**; pair wi
 
 <div class="bodu-card">
   <h3><a href="cubehash.md">Using CubeHash</a></h3>
-  <p>SHA-3 finalist with tunable rounds and block size.</p>
+  <p>Second-round SHA-3 candidate with tunable rounds and block size.</p>
 </div>
 
 <div class="bodu-card">

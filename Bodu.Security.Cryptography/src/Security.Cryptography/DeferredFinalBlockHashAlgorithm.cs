@@ -111,10 +111,6 @@ public abstract class DeferredFinalBlockHashAlgorithm
     /// The input bytes to consume. May be empty, partial, exact-block, or multi-block in length.
     /// </param>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash algorithm has already been finalized and cannot accept more
-    /// input.
-    /// </exception>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
         ThrowIfDisposed();
@@ -166,9 +162,6 @@ public abstract class DeferredFinalBlockHashAlgorithm
     /// </summary>
     /// <returns>The computed hash bytes as produced by <see cref="ProcessFinalBlock" />.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash computation has already been finalized.
-    /// </exception>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();

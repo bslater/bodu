@@ -107,7 +107,9 @@ public abstract class SipHash
     /// Initializes a new instance of the <see cref="SipHash" /> class with a specified hash size.
     /// </summary>
     /// <param name="hashSize">The desired size of the final hash in bits. Supported values are 64 or 128.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not supported.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="hashSize" /> is not 64 or 128.
+    /// </exception>
     protected SipHash(int hashSize)
         : base(s_blockSize, KeySize)
     {

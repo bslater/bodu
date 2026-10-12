@@ -43,10 +43,6 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// Derived classes must also expose a public parameterless constructor to satisfy the base class's <c>new()</c>
-/// constraint.
-/// </para>
-/// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm" /> for any classic
 /// Merkle-Damgård cryptographic hash - the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and similar
 /// designs that finalize by appending a length-encoding pad to the last partial block. For the BLAKE-family pattern
@@ -122,9 +118,7 @@ public abstract class BlockHashAlgorithm
     /// method updates the internal hash state accordingly by consuming the entire input span.
     /// </summary>
     /// <param name="source">The input byte span containing the data to hash.</param>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The hash algorithm has already been finalized and cannot accept more input data.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <remarks>
     /// <para>
     /// This method is part of the core hashing process and is automatically invoked by methods such as
@@ -149,9 +143,6 @@ public abstract class BlockHashAlgorithm
     /// </summary>
     /// <returns>A byte array containing the final computed hash value.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash computation has already been finalized.
-    /// </exception>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();

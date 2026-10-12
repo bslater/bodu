@@ -136,9 +136,10 @@ public sealed class Poly1305
     /// The framework-invoked automatic re-initialization that occurs at the end of
     /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> and related APIs is tolerated so that callers can read
     /// <see cref="HashAlgorithm.Hash" /> without tripping the key-set guard. However, explicit reuse of a finalized
-    /// instance - for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])" /> call - is rejected by the
-    /// inherited finalized-state guard on frameworks prior to .NET 6. A fresh instance should be created for each
-    /// message.
+    /// instance - for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])" /> call without reassigning
+    /// <see cref="KeyedBlockHashAlgorithm.Key" /> - throws
+    /// <see cref="System.Security.Cryptography.CryptographicException" /> on every supported framework. A fresh
+    /// instance should be created for each message.
     /// </para>
     /// </remarks>
     public override bool CanReuseTransform => false;

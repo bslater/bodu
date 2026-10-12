@@ -198,7 +198,7 @@ public sealed partial class Tiger
     /// <item>
     /// <description>
     /// <see cref="TigerHashingVariant.Tiger2" /> uses a padding byte of <c>0x80</c> as introduced in the Tiger2 variant
-    /// to match typical Merkle�Damg�rd padding semantics.
+    /// to match typical Merkle-Damgard padding semantics.
     /// </description>
     /// </item>
     /// </list>

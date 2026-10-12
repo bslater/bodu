@@ -46,7 +46,7 @@ namespace Bodu.Security.Cryptography;
 /// // Or construct directly when the field type needs to be the concrete factory.
 /// var concreteFactory = new DelegateHashAlgorithmFactory<Tiger>(() => new Tiger
 /// {
-///     HashingVariant = TigerHashingVariant.Tiger2,
+///     Variant = TigerHashingVariant.Tiger2,
 /// });
 ///]]>
 /// </code>

@@ -13,13 +13,13 @@ title: Choosing a primitive
 
 | Algorithm | Type | Output (bits) | Keyed mode | Fast path | Standard | Use it for |
 |---|---|---|---|---|---|---|
-| BLAKE2b | <xref:Bodu.Security.Cryptography.Blake2b> | 128 / 160 / 192 / 224 / 256 / 384 / 512 - default **512** | Yes - `Key` of 1-64 bytes (RFC 7693 §2.8 MAC mode) | AVX-512 (VL), AVX2, SSSE3, AdvSimd | RFC 7693 | The general-purpose fast digest on 64-bit hosts; keyed hashing without HMAC. |
-| BLAKE2s | <xref:Bodu.Security.Cryptography.Blake2s> | 128 / 160 / 192 / 224 / 256 - default **256** | Yes - `Key` of 1-32 bytes | AVX-512 (VL), SSSE3, AdvSimd | RFC 7693 | Same as BLAKE2b on 32-bit or constrained hosts. |
+| BLAKE2b | <xref:Bodu.Security.Cryptography.Blake2b> | 128 / 160 / 192 / 224 / 256 / 384 / 512 - default **512** | Yes - `Key` of 1-64 bytes (RFC 7693 §2.8 MAC mode) | AVX-512 (VL), AVX2, SSSE3 (x64 only) | RFC 7693 | The general-purpose fast digest on 64-bit hosts; keyed hashing without HMAC. |
+| BLAKE2s | <xref:Bodu.Security.Cryptography.Blake2s> | 128 / 160 / 192 / 224 / 256 - default **256** | Yes - `Key` of 1-32 bytes | AVX-512 (VL), SSSE3 (x64 only) | RFC 7693 | Same as BLAKE2b on 32-bit or constrained hosts. |
 | BLAKE3 | <xref:Bodu.Security.Cryptography.Blake3> | **256** (fixed) | No - keyed and KDF modes are not exposed | AVX-512, AVX2, SSSE3, AdvSimd, many chunks at once; threads by opt-in | BLAKE3 specification (no RFC) | Tree-parallel digest of large inputs; the fixed-output subset only. |
 | Skein-256 / 512 / 1024 | <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024> | 256: 128 / 160 / 224 / 256 · 512: 128 / 160 / 224 / 256 / 384 / 512 · 1024: 384 / 512 / 1024 - default = state width | Yes - `Key` up to 8192 bits | Through the Threefish kernels (AVX-512) | SHA-3 finalist | Skein's native keyed mode (a MAC without HMAC) and the Skein/Threefish family. |
 | Whirlpool | <xref:Bodu.Security.Cryptography.Whirlpool> | **512** | No | - | ISO/IEC 10118-3 | Interoperability with formats that mandate it; three historical `Version` variants. |
 | Tiger | <xref:Bodu.Security.Cryptography.Tiger> | 128 / 160 / 192 - default **192**; Tiger and Tiger2 `Variant` | No | - | Legacy (TTH, Direct Connect) | Interoperability only, including Tiger-Tree hashes through <xref:Bodu.Security.Cryptography.MerkleTree> at `blockSize: 1024`. |
-| CubeHash | <xref:Bodu.Security.Cryptography.CubeHash> | 224-512 - default **512**; tunable rounds and block size | No | AVX-512 (F) | SHA-3 round 2 | Research and interoperability with CubeHash parameterizations. |
+| CubeHash | <xref:Bodu.Security.Cryptography.CubeHash> | 224-512 - default **512**; tunable rounds and block size | No | AVX-512 (F), AVX2, SSSE3, AdvSimd | SHA-3 round 2 | Research and interoperability with CubeHash parameterizations. |
 | Snefru-128 / 256 | <xref:Bodu.Security.Cryptography.Snefru128> / <xref:Bodu.Security.Cryptography.Snefru256> | 128 / 256 | No | - | Legacy | Interoperability only. |
 | Ascon-Hash256 / HashA256 | <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256> | **256** | No | - | NIST SP 800-232 (Hash256); Ascon v1.2, non-standard (HashA256) | Lightweight hashing that shares a permutation with Ascon-AEAD128. |
 | Ascon-XOF128 / CXOF128 | <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Any (`Absorb` / `Squeeze` / `GetHash(n)`) | No (CXOF takes a customization string) | - | NIST SP 800-232 | Variable-length output from the Ascon family. |
@@ -27,7 +27,7 @@ title: Choosing a primitive
 | SHA-256 / 384 / 512 | `System.Security.Cryptography.SHA256` … | 256 / 384 / 512 | via `HMACSHA256` … | SHA-NI / ARMv8 (platform) | FIPS 180-4 | **The default choice** for any hash the peer must also compute. |
 | SHA3-256 / 384 / 512 | `System.Security.Cryptography.SHA3_256` … | 256 / 384 / 512 | via `HMACSHA3_256` … | Platform (`IsSupported`) | FIPS 202 | When SHA-3 is mandated and the platform supports it. |
 
-Every Bodu hash derives from `System.Security.Cryptography.HashAlgorithm` (through <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> or one of its siblings), so `ComputeHash`, `TransformBlock` / `TransformFinalBlock`, `ComputeHashAsync(Stream)`, and `CryptoStream` all apply - see [Interoperating with System.Security.Cryptography](bcl-interop.md). The fast-path column comes from [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md); every accelerated primitive produces bit-identical output on the scalar path.
+Every Bodu hash except the Ascon XOFs (`AsconXof128`, `AsconCxof128`, which have their own absorb / squeeze surface) derives from `System.Security.Cryptography.HashAlgorithm` (through <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> or one of its siblings), so `ComputeHash`, `TransformBlock` / `TransformFinalBlock`, `ComputeHashAsync(Stream)`, and `CryptoStream` all apply - see [Interoperating with System.Security.Cryptography](bcl-interop.md). The fast-path column comes from [Hardware acceleration and the SIMD opt-out](hardware-acceleration.md); every accelerated primitive produces bit-identical output on the scalar path.
 
 <!-- compile -->
 ```csharp
@@ -55,7 +55,7 @@ Console.WriteLine(Convert.ToHexString(sha256.ComputeHash(message)));   // BA7816
 | SipHash-2-4 | <xref:Bodu.Security.Cryptography.SipHash64> | 128 bits | 64 bits | Hash-flooding-resistant hash tables, short-message PRFs, keyed fingerprints of untrusted keys. | A general-purpose MAC on long messages or where a 64-bit tag is too short. |
 | SipHash-2-4-128 | <xref:Bodu.Security.Cryptography.SipHash128> | 128 bits | 128 bits | Same as above with a full-width tag. | - |
 | Poly1305 | <xref:Bodu.Security.Cryptography.Poly1305> | 256 bits, **one-time** | 128 bits | The authenticator inside an AEAD construction, with a per-message key derived from the cipher keystream. | A reusable MAC - a second message under the same key throws `CryptographicException`; use the AEAD types below instead. |
-| BLAKE2b / BLAKE2s keyed | <xref:Bodu.Security.Cryptography.Blake2b> `Key` | 1-64 / 1-32 bytes | 8-64 / 8-32 bytes | A MAC without the HMAC double-hash, when both peers speak BLAKE2. | Peers that only implement HMAC. |
+| BLAKE2b / BLAKE2s keyed | <xref:Bodu.Security.Cryptography.Blake2b> `Key` | 1-64 / 1-32 bytes | 16 / 20 / 24 / 28 / 32 / 48 / 64 bytes (BLAKE2b); 16 / 20 / 24 / 28 / 32 bytes (BLAKE2s) | A MAC without the HMAC double-hash, when both peers speak BLAKE2. | Peers that only implement HMAC. |
 | Skein keyed | <xref:Bodu.Security.Cryptography.Skein512> `Key` | up to 8192 bits | per the variant | Skein-native MAC. | Peers that only implement HMAC. |
 | HMAC-SHA-2 | `System.Security.Cryptography.HMACSHA256` … | any | 256 / 384 / 512 bits | **The default MAC** - FIPS 198, universally implemented. | - |
 

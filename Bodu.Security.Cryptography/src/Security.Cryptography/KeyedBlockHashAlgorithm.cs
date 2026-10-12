@@ -130,7 +130,8 @@ public abstract class KeyedBlockHashAlgorithm
     /// </exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">
-    /// The length of the assigned key does not match the required key size for this algorithm.
+    /// The getter is called before any key has been set, or the length of the assigned key does not match the required
+    /// key size for this algorithm.
     /// </exception>
     public virtual byte[] Key
     {

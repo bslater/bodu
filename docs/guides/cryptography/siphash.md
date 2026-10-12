@@ -64,7 +64,7 @@ using var stream = File.OpenRead("message.bin");
 byte[] digest = sip.ComputeHash(stream);
 ```
 
-You can also drive it block-by-block with `TransformBlock` / `TransformFinalBlock`, or - simplest of all - with `ComputeHash(ReadOnlySpan<byte>)` from the BCL span overload.
+You can also drive it block-by-block with `TransformBlock` / `TransformFinalBlock`, or hash a span without allocating through the BCL's `TryComputeHash(ReadOnlySpan<byte>, Span<byte>, out int)`.
 
 ## Pattern 3 - adjusting the round count
 
