@@ -33,4 +33,25 @@ public sealed partial class DelimitedElementTests
 
         CollectionAssert.AreEqual(new[] { "a=1", "b=2", "2=3", "3=4" }, found);
     }
+
+    /// <summary>
+    /// Verifies that a column index finds a ragged field only as <see cref="DelimitedElement.EnumerateObject" /> names
+    /// it: not in a non-canonical spelling, not for a column the header names, and not past the record's last field.
+    /// </summary>
+    /// <param name="name">A name that no field of the record has.</param>
+    [TestMethod]
+    [DataRow("1")]
+    [DataRow("02")]
+    [DataRow("+2")]
+    [DataRow(" 2")]
+    [DataRow("-1")]
+    [DataRow("4")]
+    public void TryGetProperty_WhenTheNameIsNotAnEnumeratedColumnIndex_ShouldReturnFalse(string name)
+    {
+        var options = new DelimitedReaderOptions { FieldCountBehavior = DelimitedFieldCountBehavior.Ragged };
+        using DelimitedDocument document = DelimitedDocument.Parse("a,b\n1,2,3,4\n"u8, options);
+        DelimitedElement record = document.RootElement[0];
+
+        Assert.IsFalse(record.TryGetProperty(name, out _));
+    }
 }
