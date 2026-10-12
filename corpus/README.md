@@ -89,6 +89,8 @@ lists its sources, what was read and when, the licences, the rendering its rows 
 A catalogue is UTF-8 holding only printable ASCII and line feeds. It opens with `# library: <library> -- <repository>`,
 `# releases: ...` and `# licence: ...`, then any `# note: ...` lines, then the columns
 `library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason`.
+`.gitattributes` pins `*.csv` to `eol=lf`, so a checkout keeps the line feeds on every platform, Git for Windows'
+`core.autocrlf=true` included, and `ReleaseNoteCatalogTests` loads every catalogue as such a checkout writes it.
 
 | Column | Content |
 |---|---|

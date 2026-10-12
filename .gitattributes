@@ -10,6 +10,13 @@
 # materialise as CRLF and trip the analyzer in ways Linux/CI never see.
 *.cs text eol=lf
 
+# Pin CSV files to LF on checkout as well. The release-note catalogues under
+# corpus/*/fixes/, and the copies the test projects embed from
+# */test/Fixtures/ReleaseNotes/, are printable ASCII and line feeds only by
+# their format, and ReleaseNoteCatalog rejects a carriage return, so a CRLF
+# checkout fails every catalogue test (#1045).
+*.csv text eol=lf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
