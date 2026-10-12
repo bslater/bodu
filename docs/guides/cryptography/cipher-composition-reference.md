@@ -25,7 +25,8 @@ This is the reference for how a block cipher becomes an encryptor in `Bodu.Secur
 | `OCB` | 4096 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.OcbModeTransform> (AEAD) | 16-byte IV, first 12 used | any | n/a |
 | `EAX` | 8192 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.EaxModeTransform> (AEAD) | 16-byte nonce | any | n/a |
 | `SIV` | 16384 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.SivModeTransform> (AEAD) | ignored | any | n/a |
-| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.GcmSivModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform> (AEAD) | 12-byte nonce | any | n/a |
+| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmModeTransform> (AEAD) | 12-byte nonce | any | n/a |
+| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmSivModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform> (AEAD) | 16-byte IV, first 12 used | any | n/a |
 
 Two consequences worth stating plainly:
 

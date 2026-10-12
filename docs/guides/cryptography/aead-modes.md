@@ -13,7 +13,7 @@ title: Using AEAD modes
 | **GCM** | <xref:Bodu.Security.Cryptography.GcmModeTransform> | NIST SP 800-38D | Single-pass; fastest with CLMUL hardware. IV reuse is catastrophic. |
 | **CCM** | <xref:Bodu.Security.Cryptography.CcmModeTransform> | NIST SP 800-38C | Two-pass (CTR + CBC-MAC). Fixed 12-byte nonce and 16-byte tag in this implementation. |
 | **OCB3** | <xref:Bodu.Security.Cryptography.OcbModeTransform> | RFC 7253 | Single-pass with offsets; configurable tag length (`tagSize` in bits - 64 / 96 / 128). |
-| **EAX** | <xref:Bodu.Security.Cryptography.EaxModeTransform> | Bellare/Rogaway/Wagner (FSE 2004) | Two-pass (CTR + OMAC); arbitrary nonce length, no length-extension limits. |
+| **EAX** | <xref:Bodu.Security.Cryptography.EaxModeTransform> | Bellare/Rogaway/Wagner (FSE 2004) | Two-pass (CTR + OMAC); nonce of exactly the cipher block size (16 bytes for AES), no length-extension limits. |
 | **SIV** | <xref:Bodu.Security.Cryptography.SivModeTransform> | RFC 5297 | Misuse-resistant - same message encrypts to the same ciphertext, but confidentiality is preserved. Needs two independent AES keys. |
 | **GCM-SIV** | <xref:Bodu.Security.Cryptography.GcmSivModeTransform> | RFC 8452 | Misuse-resistant successor to GCM; POLYVAL-based. |
 
@@ -41,7 +41,7 @@ The output is the ciphertext (same length as the plaintext) followed by a fixed-
 
 ## Prerequisites - an AES `IBlockCipher`
 
-Every mode transform in this family takes an <xref:Bodu.Security.Cryptography.IBlockCipher> as its primitive **and assumes a 16-byte (128-bit) block size**. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules - so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <xref:Bodu.Security.Cryptography.AesBlockCipher>, which wraps the BCL's hardware-accelerated `Aes`, is the only primitive that fits.
+Every mode transform in this family takes an <xref:Bodu.Security.Cryptography.IBlockCipher> as its primitive **and assumes a 16-byte (128-bit) block size**. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules - so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. Any 128-bit-block `IBlockCipher` fits - <xref:Bodu.Security.Cryptography.CamelliaBlockCipher>, <xref:Bodu.Security.Cryptography.TwofishBlockCipher>, and <xref:Bodu.Security.Cryptography.Serpent128Cipher> included - and <xref:Bodu.Security.Cryptography.AesBlockCipher>, which wraps the BCL's hardware-accelerated `Aes`, is the usual choice.
 
 <!-- compile -->
 ```csharp
@@ -58,9 +58,9 @@ If you need authenticated encryption with one of the *non-128-bit* ciphers (Skip
 
 ## Prerequisites - the extension methods
 
-Calling an `IAeadBlockCipherModeTransform` directly requires four steps:
+Calling an `IAeadBlockCipherModeTransform` directly takes up to four steps:
 
-1. Call `ProcessAssociatedData(aad)` (even if the AAD is empty).
+1. Call `ProcessAssociatedData(aad)` when there is associated data. Omitting the call means empty AAD, except on `AsconAead128`, which requires it (pass an empty span for no AAD).
 2. Size the output buffer to `plaintext.Length + TagSize / 8` (`TagSize` is in bits).
 3. Call `Encrypt(plaintext, output)` and inspect the returned byte count.
 4. For decrypt, size the output to `ciphertextWithTag.Length - TagSize / 8` and call `Decrypt`.
@@ -112,7 +112,7 @@ using (var cipher = new AesBlockCipher(key))
 
 ## CCM - a two-pass alternative
 
-CCM is the standard AEAD in constrained and legacy environments (Bluetooth LE, older IPsec profiles, IEEE 802.11i). It pairs CTR encryption with CBC-MAC over the formatted message. The library's implementation fixes the deployment profile most commonly used: 12-byte nonce, 16-byte tag, up to 2²⁴−1 byte messages.
+CCM is the standard AEAD in constrained and legacy environments (Bluetooth LE, older IPsec profiles, IEEE 802.11i). It pairs CTR encryption with CBC-MAC over the formatted message. The library's implementation fixes the deployment profile most commonly used: 12-byte nonce, 16-byte tag, up to 2²⁴−1 byte messages. Associated data is limited to 65,279 bytes by the 2-byte length encoding it implements; longer associated data makes `Encrypt` / `Decrypt` throw `NotSupportedException`.
 
 ```csharp
 byte[] key = RandomNumberGenerator.GetBytes(16);
