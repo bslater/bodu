@@ -7,7 +7,8 @@ with the staged builder API and reading back, the OLE property sets that carry d
 metadata, format detection plus the v3/v4 version knob, and walking a real committed `.doc`.
 Everything runs offline against in-memory containers and two committed fixtures
 (`Data/golden-v3.cfb`, 8 KB; `Data/sample1.doc`, 29 KB - copied from the library's test
-fixtures).
+fixtures). `Data/NOTICE.md` records where each fixture comes from and carries the MIT notice
+under which `sample1.doc` is redistributed.
 
 ```bash
 dotnet run --project samples/IO.Compound/Bodu.IO.Compound.Samples.CompoundBasics
@@ -139,6 +140,7 @@ Bodu.IO.Compound.Samples.CompoundBasics/
   SampleConsole.cs                  # the What / Why / Expect scenario banner
   Data/golden-v3.cfb                # committed 8 KB v3 container fixture
   Data/sample1.doc                  # committed 29 KB Word 97-2003 fixture
+  Data/NOTICE.md                    # the fixtures' provenance and sample1.doc's MIT notice
   Scenarios/AuthorAndReadBack.cs
   Scenarios/OlePropertySets.cs
   Scenarios/DetectAndVersion.cs
