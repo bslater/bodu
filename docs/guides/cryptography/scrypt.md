@@ -24,7 +24,7 @@ scrypt's cost is set by <xref:Bodu.Security.Cryptography.ScryptParameters>:
 | `BlockSizeR` (`r`) | Block size | **Required.** Tunes the memory/bandwidth mix; 8 is the conventional value. |
 | `Parallelization` (`p`) | Independent iterations | **Required.** Usually 1. More than 1 can run on threads - see [Running the units on threads](#running-the-units-on-threads). |
 
-Peak memory is approximately `128 * N * r` bytes. RFC 7914, Section 2 suggests **`N = 16384`, `r = 8`, `p = 1`** (about 16 MiB) for interactive logins, scaling `N` up for more sensitive secrets. The key-derivation envelope uses PBKDF2-HMAC-SHA256, supplied by the platform. Construction validates the parameters and throws <xref:System.ArgumentOutOfRangeException> when `CostN` is not a power of two greater than one, or `BlockSizeR` / `Parallelization` is below 1.
+Peak memory is approximately `128 * N * r` bytes. RFC 7914, Section 2 suggests **`N = 16384`, `r = 8`, `p = 1`** (about 16 MiB) for interactive logins, scaling `N` up for more sensitive secrets. The key-derivation envelope uses PBKDF2-HMAC-SHA256, supplied by the platform. Construction validates the parameters and throws <xref:System.ArgumentOutOfRangeException> when `CostN` is not a power of two greater than one, `BlockSizeR` / `Parallelization` is below 1, `128 * N * r` exceeds 2 GiB (a library ceiling, not part of RFC 7914, that bounds what an untrusted PHC string can make a verification allocate), or `Parallelization` exceeds `((2^32 - 1) * 32) / (128 * r)` (RFC 7914, Section 6). The static `DeriveKey` and `Hash` helpers validate the same way, and a requested output length below 1 throws the same exception.
 
 ## Pattern 1 - derive a key (static one-shot)
 

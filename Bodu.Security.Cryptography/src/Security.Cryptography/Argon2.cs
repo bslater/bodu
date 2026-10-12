@@ -55,7 +55,8 @@ public abstract class Argon2
     /// <param name="parameters">The cost and auxiliary parameters governing the derivation.</param>
     /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106.
+    /// A cost parameter in <paramref name="parameters" /> falls outside its permitted range: the RFC 9106 ranges, with
+    /// <see cref="Argon2Parameters.MemoryKiB" /> also capped at <c>2^21</c> KiB.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// The version code in <paramref name="parameters" /> is neither 0x10 nor 0x13.
@@ -76,7 +77,8 @@ public abstract class Argon2
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 9106, or
+    /// A cost parameter in <paramref name="parameters" /> falls outside its permitted range (the RFC 9106 ranges, with
+    /// <see cref="Argon2Parameters.MemoryKiB" /> also capped at <c>2^21</c> KiB), or
     /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
     /// </exception>
     /// <exception cref="ArgumentException">
@@ -123,6 +125,14 @@ public abstract class Argon2
     /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The memory cost, iteration count, parallelism, or tag length encoded in <paramref name="encoded" /> is outside
+    /// the range <see cref="Argon2Parameters" /> permits - for example a memory cost above <c>2^21</c> KiB or a tag
+    /// shorter than 4 bytes.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version encoded in <paramref name="encoded" /> is neither 0x10 (16) nor 0x13 (19).
+    /// </exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
     /// </exception>
@@ -143,6 +153,14 @@ public abstract class Argon2
     /// <see langword="true" /> if the password matches the encoded hash; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The memory cost, iteration count, parallelism, or tag length encoded in <paramref name="encoded" /> is outside
+    /// the range <see cref="Argon2Parameters" /> permits - for example a memory cost above <c>2^21</c> KiB or a tag
+    /// shorter than 4 bytes.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version encoded in <paramref name="encoded" /> is neither 0x10 (16) nor 0x13 (19).
+    /// </exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
     /// </exception>
@@ -165,7 +183,13 @@ public abstract class Argon2
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
+    /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>; or the memory cost, iteration count,
+    /// parallelism, or tag length encoded in <paramref name="encoded" /> is outside the range
+    /// <see cref="Argon2Parameters" /> permits - for example a memory cost above <c>2^21</c> KiB or a tag shorter than
+    /// 4 bytes.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version encoded in <paramref name="encoded" /> is neither 0x10 (16) nor 0x13 (19).
     /// </exception>
     /// <exception cref="FormatException">
     /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.

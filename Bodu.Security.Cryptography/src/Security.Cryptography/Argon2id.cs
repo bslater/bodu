@@ -72,6 +72,15 @@ public sealed class Argon2id
     /// <param name="salt">The salt; must be at least 8 bytes.</param>
     /// <param name="parameters">The cost and auxiliary parameters.</param>
     /// <returns>The derived tag.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter in <paramref name="parameters" /> falls outside its permitted range (see
+    /// <see cref="Argon2Parameters" />).
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="salt" /> is shorter than 8 bytes, or the version code in <paramref name="parameters" /> is
+    /// neither 0x10 nor 0x13.
+    /// </exception>
     public static byte[] DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Argon2Parameters parameters) =>
         new Argon2id(parameters).GetBytes(password, salt);
 
@@ -82,6 +91,15 @@ public sealed class Argon2id
     /// <param name="salt">The salt to embed; must be at least 8 bytes.</param>
     /// <param name="parameters">The cost and auxiliary parameters.</param>
     /// <returns>The PHC encoded-hash string.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter in <paramref name="parameters" /> falls outside its permitted range (see
+    /// <see cref="Argon2Parameters" />).
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="salt" /> is shorter than 8 bytes, or the version code in <paramref name="parameters" /> is
+    /// neither 0x10 nor 0x13.
+    /// </exception>
     public static string Hash(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Argon2Parameters parameters) =>
         new Argon2id(parameters).Hash(password, salt);
 
@@ -94,6 +112,17 @@ public sealed class Argon2id
     /// <see langword="true" /> if the string names Argon2id and the password matches; otherwise,
     /// <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The memory cost, iteration count, parallelism, or tag length encoded in <paramref name="encoded" /> is outside
+    /// the range <see cref="Argon2Parameters" /> permits.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version encoded in <paramref name="encoded" /> is neither 0x10 (16) nor 0x13 (19).
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
+    /// </exception>
     public static new bool Verify(string encoded, ReadOnlySpan<byte> password) =>
         VerifyAs(encoded, password, ReadOnlySpan<byte>.Empty, Argon2Type.Argon2id);
 
@@ -107,6 +136,17 @@ public sealed class Argon2id
     /// <see langword="true" /> if the string names Argon2id and the password matches; otherwise,
     /// <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="encoded" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The memory cost, iteration count, parallelism, or tag length encoded in <paramref name="encoded" /> is outside
+    /// the range <see cref="Argon2Parameters" /> permits.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The version encoded in <paramref name="encoded" /> is neither 0x10 (16) nor 0x13 (19).
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="encoded" /> is not a well-formed Argon2 PHC string.
+    /// </exception>
     public static new bool Verify(string encoded, ReadOnlySpan<byte> password, ReadOnlySpan<byte> secret) =>
         VerifyAs(encoded, password, secret, Argon2Type.Argon2id);
 }

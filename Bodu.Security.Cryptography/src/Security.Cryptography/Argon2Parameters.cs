@@ -21,7 +21,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The optional <see cref="Secret" /> (a server-side "pepper") and <see cref="AssociatedData" /> are folded into the
-/// pre-hashing digest. They are not stored in the PHC encoded string and must be supplied again at verification time.
+/// pre-hashing digest. The secret is not stored in the PHC encoded string and must be supplied again at verification
+/// time; the associated data is stored in it, as the <c>data=</c> parameter.
 /// </para>
 /// </remarks>
 public sealed record Argon2Parameters
@@ -30,6 +31,13 @@ public sealed record Argon2Parameters
     /// Gets the amount of memory to fill, in kibibytes (the RFC 9106 parameter <c>m</c>).
     /// </summary>
     /// <value>The memory size in kibibytes.</value>
+    /// <remarks>
+    /// Must be at least <c>8 * </c><see cref="Parallelism" /> and at most <c>2^21</c> KiB (2 GiB). The upper bound is a
+    /// library ceiling, lower than RFC 9106's, that bounds what an untrusted PHC string can make a verification
+    /// allocate. The parameters are validated where they are used - an <see cref="Argon2" /> constructor, a static
+    /// derivation helper, or a verification - which throws <see cref="ArgumentOutOfRangeException" /> for a value
+    /// outside that range.
+    /// </remarks>
     public required int MemoryKiB { get; init; }
 
     /// <summary>

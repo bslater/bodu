@@ -50,7 +50,9 @@ public sealed class Scrypt
     /// <param name="parameters">The cost parameters governing the derivation.</param>
     /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 7914.
+    /// A cost parameter in <paramref name="parameters" /> falls outside its permitted range: <c>N</c> is not a power of
+    /// two greater than one, <c>r</c> or <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling
+    /// (a library limit, not part of RFC 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>.
     /// </exception>
     /// <remarks>
     /// Every derivation runs on the calling thread; see <see cref="MaxDegreeOfParallelism" />.
@@ -71,7 +73,9 @@ public sealed class Scrypt
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="parameters" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter in <paramref name="parameters" /> falls outside the range permitted by RFC 7914, or
+    /// A cost parameter in <paramref name="parameters" /> falls outside its permitted range: <c>N</c> is not a power of
+    /// two greater than one, <c>r</c> or <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling
+    /// (a library limit, not part of RFC 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>; or
     /// <paramref name="maxDegreeOfParallelism" /> is zero or less than <c>-1</c>.
     /// </exception>
     /// <remarks>
@@ -95,7 +99,9 @@ public sealed class Scrypt
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter falls outside the range permitted by RFC 7914.
+    /// A cost parameter falls outside its permitted range: <c>N</c> is not a power of two greater than one, <c>r</c> or
+    /// <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling (a library limit, not part of RFC
+    /// 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>.
     /// </exception>
     /// <remarks>
     /// Every derivation runs on the calling thread; see <see cref="MaxDegreeOfParallelism" />.
@@ -117,8 +123,10 @@ public sealed class Scrypt
     /// processor.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// A cost parameter falls outside the range permitted by RFC 7914, or <paramref name="maxDegreeOfParallelism" /> is
-    /// zero or less than <c>-1</c>.
+    /// A cost parameter falls outside its permitted range: <c>N</c> is not a power of two greater than one, <c>r</c> or
+    /// <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling (a library limit, not part of RFC
+    /// 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>; or <paramref name="maxDegreeOfParallelism" />
+    /// is zero or less than <c>-1</c>.
     /// </exception>
     /// <remarks>
     /// Each unit that runs at once holds its own <c>V</c> of <c>128 · N · r</c> bytes, so a derivation on several
@@ -182,7 +190,7 @@ public sealed class Scrypt
     /// <param name="password">The password to derive from.</param>
     /// <param name="salt">The salt.</param>
     /// <param name="destination">The buffer to receive the derived key; its length is the derived-key length.</param>
-    /// <exception cref="ArgumentException"><paramref name="destination" /> is empty.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="destination" /> is empty.</exception>
     public void DeriveKey(ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, Span<byte> destination)
     {
         ThrowIfInvalidLength(destination.Length);
@@ -197,6 +205,7 @@ public sealed class Scrypt
     /// <param name="password">The password to hash.</param>
     /// <param name="length">The hash length, in bytes.</param>
     /// <returns>The PHC encoded-hash string, including the generated salt.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than 1.</exception>
     public string Hash(ReadOnlySpan<byte> password, int length)
     {
         Span<byte> salt = stackalloc byte[GeneratedSaltLength];
@@ -240,6 +249,11 @@ public sealed class Scrypt
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <param name="length">The derived-key length, in bytes.</param>
     /// <returns>The derived key.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter falls outside its permitted range: <c>N</c> is not a power of two greater than one, <c>r</c> or
+    /// <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling (a library limit, not part of RFC
+    /// 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>; or <paramref name="length" /> is less than 1.
+    /// </exception>
     public static byte[] DeriveKey(
         ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, int costN, int blockSizeR, int parallelization, int length) =>
         new Scrypt(costN, blockSizeR, parallelization).GetBytes(password, salt, length);
@@ -253,6 +267,11 @@ public sealed class Scrypt
     /// <param name="blockSizeR">The block-size parameter <c>r</c>.</param>
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <param name="destination">The buffer to receive the derived key.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter falls outside its permitted range: <c>N</c> is not a power of two greater than one, <c>r</c> or
+    /// <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling (a library limit, not part of RFC
+    /// 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>; or <paramref name="destination" /> is empty.
+    /// </exception>
     public static void DeriveKey(
         ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, int costN, int blockSizeR, int parallelization, Span<byte> destination) =>
         new Scrypt(costN, blockSizeR, parallelization).DeriveKey(password, salt, destination);
@@ -269,6 +288,11 @@ public sealed class Scrypt
     /// <returns>The derived key.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="password" /> is <see langword="null" />.</exception>
     /// <exception cref="ObjectDisposedException"><paramref name="password" /> has been disposed.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter falls outside its permitted range: <c>N</c> is not a power of two greater than one, <c>r</c> or
+    /// <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling (a library limit, not part of RFC
+    /// 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>; or <paramref name="length" /> is less than 1.
+    /// </exception>
     /// <remarks>
     /// Convenience overload over the span form for callers using the <see cref="SecretBytes" /> and <see cref="Salt" />
     /// value types, which keep password material pinned and zeroed on disposal and keep salts distinct from keys and
@@ -292,6 +316,11 @@ public sealed class Scrypt
     /// <param name="parallelization">The parallelization parameter <c>p</c>.</param>
     /// <param name="length">The hash length, in bytes.</param>
     /// <returns>The PHC encoded-hash string.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A cost parameter falls outside its permitted range: <c>N</c> is not a power of two greater than one, <c>r</c> or
+    /// <c>p</c> is less than 1, <c>128 · N · r</c> exceeds the 2 GiB memory ceiling (a library limit, not part of RFC
+    /// 7914), or <c>p</c> exceeds <c>((2^32 - 1) · 32) / (128 · r)</c>; or <paramref name="length" /> is less than 1.
+    /// </exception>
     public static string Hash(
         ReadOnlySpan<byte> password, ReadOnlySpan<byte> salt, int costN, int blockSizeR, int parallelization, int length) =>
         new Scrypt(costN, blockSizeR, parallelization).Hash(password, salt, length);

@@ -28,7 +28,7 @@ The three are sealed types deriving from a shared `Argon2` base. Cost is supplie
 
 | Property | Meaning | Notes |
 |---|---|---|
-| `MemoryKiB` (`m`) | Memory to fill, in kibibytes | **Required.** Must be at least `8 * Parallelism`. The dominant cost knob. |
+| `MemoryKiB` (`m`) | Memory to fill, in kibibytes | **Required.** Must be at least `8 * Parallelism` and at most `2^21` (2 GiB). The dominant cost knob. |
 | `Iterations` (`t`) | Passes over memory | **Required.** Tunes time independently of memory. |
 | `Parallelism` (`p`) | Independent lanes | **Required.** 1-16777215. |
 | `TagLength` (`T`) | Output length, in bytes | Default 32. Minimum 4. Folded into the hash, so it is fixed per derivation. |
@@ -36,7 +36,7 @@ The three are sealed types deriving from a shared `Argon2` base. Cost is supplie
 | `Secret` (`K`) | Optional server-side pepper | Not stored in the PHC string - supply it again at verification. |
 | `AssociatedData` (`X`) | Optional associated data | Stored in the PHC string as `data=`. |
 
-RFC 9106, Section 4 gives two uniformly-safe starting points: **Argon2id with `t=1`, `p=4`, `m=2^21` (2 GiB)** for general use, or **`t=3`, `p=4`, `m=2^16` (64 MiB)** for memory-constrained environments. `MemoryKiB` is the peak working memory a single derivation allocates - `65536` is a literal 64 MiB - so multiply by your expected concurrent logins when sizing a server. `MemoryKiB` must be at least `8 * Parallelism`; `Parallelism` and `Iterations` must each be at least 1, and `TagLength` at least 4, or construction throws <xref:System.ArgumentOutOfRangeException>. The salt should be at least 8 bytes (16 is recommended); a shorter salt throws <xref:System.ArgumentException>.
+RFC 9106, Section 4 gives two uniformly-safe starting points: **Argon2id with `t=1`, `p=4`, `m=2^21` (2 GiB)** for general use, or **`t=3`, `p=4`, `m=2^16` (64 MiB)** for memory-constrained environments. `MemoryKiB` is the peak working memory a single derivation allocates - `65536` is a literal 64 MiB - so multiply by your expected concurrent logins when sizing a server. `MemoryKiB` must be at least `8 * Parallelism` and at most `2^21` (2 GiB, a library ceiling that bounds what an untrusted PHC string can make a verification allocate); `Parallelism` and `Iterations` must each be at least 1, and `TagLength` at least 4, or construction throws <xref:System.ArgumentOutOfRangeException>. The salt should be at least 8 bytes (16 is recommended); a shorter salt throws <xref:System.ArgumentException>.
 
 ## Pattern 1 - derive a key (static one-shot)
 
