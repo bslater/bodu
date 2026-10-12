@@ -15,12 +15,13 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The public surface of <see cref="IniDocumentBase" /> is read-only: it exposes <see cref="GlobalSection" />,
+/// The public surface of <see cref="IniDocumentBase" /> fixes the section list: it exposes <see cref="GlobalSection" />,
 /// <see cref="Sections" />, and the <see cref="GetSection(string)" />/
-/// <see cref="TryGetSection(string, out IniSection?)" /> lookups. Mutation is reserved to derived types through the
-/// <see langword="protected" /> core methods (<see cref="AddSectionCore(IniSection)" />,
+/// <see cref="TryGetSection(string, out IniSection?)" /> lookups, and adding or removing a section is reserved to
+/// derived types through the <see langword="protected" /> core methods (<see cref="AddSectionCore(IniSection)" />,
 /// <see cref="GetOrAddSectionCore(string)" />, <see cref="RemoveSectionCore(string)" />); a concrete subclass chooses
-/// whether to re-expose them publicly.
+/// whether to re-expose them publicly. The sections themselves are mutable: <see cref="IniSection" /> exposes its
+/// entries and leading comments for editing, so a document of any derived type can be edited section by section.
 /// </para>
 /// <para>
 /// Section lookup uses ordinal comparison, case-insensitive by default and case-sensitive when the document was created

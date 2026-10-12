@@ -36,16 +36,18 @@ namespace Bodu.Text.Configuration;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
+/// // The Bodu defaults, except that the unset sentinel removes a value.
 /// ConfigurationView view = document.Resolve(
 ///     "src/App/Program.cs",
 ///     new ConfigurationResolveOptions
 ///     {
-///         Profile = ConfigurationProfile.EditorConfigCompatible,
 ///         UnsetValueMode = ConfigurationUnsetValueMode.RemoveEffectiveValue,
 ///     });
 ///
-/// // Or start from a canonical profile option set and rely on its coherent defaults:
-/// ConfigurationView strict = document.Resolve(null, ConfigurationResolveOptions.For(ConfigurationProfile.Strict));
+/// // Or start from a profile's canonical option set, whose properties carry the profile's behaviour:
+/// ConfigurationView strict = document.Resolve(
+///     "src/App/Program.cs",
+///     ConfigurationResolveOptions.For(ConfigurationProfile.Strict));
 ///]]>
 /// </code>
 /// </example>
@@ -53,9 +55,13 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationResolveOptions
 {
     /// <summary>
-    /// Gets the behaviour profile this option bag represents.
+    /// Gets the profile this option set was created from. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <value>The selected profile.</value>
+    /// <value>The profile the option set is labelled with.</value>
+    /// <remarks>
+    /// The property is informational: the resolver does not read it, and setting it changes no other property. Use
+    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's behaviour.
+    /// </remarks>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>

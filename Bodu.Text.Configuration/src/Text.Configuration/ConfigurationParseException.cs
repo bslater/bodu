@@ -15,9 +15,11 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// In <see cref="ConfigurationDiagnosticMode.Throw" /> mode the parser raises this exception on the first recoverable
-/// error it encounters. In <see cref="ConfigurationDiagnosticMode.Collect" /> mode this exception is raised only for
-/// non-recoverable errors (such as a truncated stream); recoverable errors surface instead on the
-/// <see cref="ConfigurationParseResult.Diagnostics" /> list.
+/// error it encounters. In <see cref="ConfigurationDiagnosticMode.Collect" /> and
+/// <see cref="ConfigurationDiagnosticMode.Ignore" /> modes parsing never raises it: errors surface on the
+/// <see cref="ConfigurationParseResult.Diagnostics" /> list or are dropped, and an I/O error from the source propagates
+/// unchanged. Resolving a document raises it too, when a section name is not a valid glob (see
+/// <see cref="ConfigurationPattern.Compile(string, StringComparison)" />).
 /// </para>
 /// <para>
 /// The exception always provides a non-default <see cref="Diagnostics" /> array; when a single diagnostic triggered the
@@ -30,14 +32,14 @@ namespace Bodu.Text.Configuration;
 ///<![CDATA[
 /// try
 /// {
-///     IniDocument doc = ConfigurationDocument.Parse(text);
+///     ConfigurationDocument doc = ConfigurationDocument.Parse(text);
 /// }
 /// catch (ConfigurationParseException ex)
 /// {
 ///     // The primary diagnostic includes a source location that points back into the document.
 ///     Console.WriteLine($"Parse failed at {ex.Location}: {ex.Message}");
 ///
-///     // Every diagnostic gathered before the failure is preserved.
+///     // Diagnostics holds the diagnostic that stopped the parse.
 ///     foreach (ConfigurationDiagnostic d in ex.Diagnostics)
 ///         Console.WriteLine($"  {d}");
 /// }

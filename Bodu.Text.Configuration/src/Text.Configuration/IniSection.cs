@@ -163,7 +163,7 @@ public sealed class IniSection
     /// Gets the value associated with the specified key, or <see langword="null" /> if the key is absent.
     /// </summary>
     /// <param name="key">The key to look up.</param>
-    /// <returns>The string value, or <see langword="null" /> when the key is not present.</returns>
+    /// <value>The string value, or <see langword="null" /> when the key is not present.</value>
     public string? this[string key] =>
         key is not null && _lookup.TryGetValue(key, out IniEntry? entry) ? entry.Value : null;
 

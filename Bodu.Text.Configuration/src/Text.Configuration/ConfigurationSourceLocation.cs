@@ -40,7 +40,7 @@ namespace Bodu.Text.Configuration;
 ///     linePosition: 5,
 ///     length:       8,
 ///     path:         "app.ini");
-/// Console.WriteLine(loc);   // "app.ini(12,5): length 8"
+/// Console.WriteLine(loc);   // "app.ini: line 12, column 5"
 ///
 /// // Surface from a parse exception in editor-style form.
 /// try { ConfigurationDocument.Parse(text); }

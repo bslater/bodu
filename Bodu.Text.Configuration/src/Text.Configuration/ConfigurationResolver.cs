@@ -82,8 +82,9 @@ internal sealed class ConfigurationResolver
             }
             catch (RegexMatchTimeoutException)
             {
-                // With NonBacktracking this is effectively unreachable; treat a timeout as a non-match so a
-                // pathological section name cannot abort resolution.
+                // The compiled pattern carries a bounded match timeout, which the simple translated patterns are not
+                // expected to reach; treat a timeout as a non-match so a pathological section name cannot abort
+                // resolution. An invalid glob is not caught: Compile's ConfigurationParseException reaches the caller.
                 matched = false;
             }
 

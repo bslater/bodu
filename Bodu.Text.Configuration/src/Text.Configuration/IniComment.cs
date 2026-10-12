@@ -14,7 +14,8 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// Each <see cref="IniComment" /> records the prefix character that introduced the line (either <c>'#'</c> or
-/// <c>';'</c>), the trimmed text, and the 1-based source line at which it appeared.
+/// <c>';'</c>), the text after the prefix as written, its leading space included, and the 1-based source line at which
+/// it appeared.
 /// </para>
 /// <para>
 /// Pending comments are attached to the next entry or section in source order: comments authored before a property line

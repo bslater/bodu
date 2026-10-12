@@ -122,7 +122,12 @@ public sealed partial class ConfigurationPattern
     /// <exception cref="ArgumentException">
     /// <paramref name="pattern" /> is <see langword="null" />, empty, or contains only whitespace.
     /// </exception>
-    /// <exception cref="ConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
+    /// <exception cref="ConfigurationParseException">
+    /// The pattern is not a valid glob. The exception's diagnostic carries the
+    /// <see cref="ConfigurationDiagnosticCode" />: <c>UnbalancedBracket</c> or <c>UnbalancedBrace</c>,
+    /// <c>BraceNestingTooDeep</c> for braces nested more than 32 deep, <c>NumericRangeTooLarge</c> for a numeric range
+    /// of more than 10,000 values, or <c>PatternTooLong</c> for more than 4,096 characters.
+    /// </exception>
     public static ConfigurationPattern Compile(string pattern) =>
         Compile(pattern, StringComparison.Ordinal);
 
@@ -138,7 +143,12 @@ public sealed partial class ConfigurationPattern
     /// <exception cref="ArgumentException">
     /// <paramref name="pattern" /> is <see langword="null" />, empty, or contains only whitespace.
     /// </exception>
-    /// <exception cref="ConfigurationParseException">The pattern contained an unbalanced brace or bracket.</exception>
+    /// <exception cref="ConfigurationParseException">
+    /// The pattern is not a valid glob. The exception's diagnostic carries the
+    /// <see cref="ConfigurationDiagnosticCode" />: <c>UnbalancedBracket</c> or <c>UnbalancedBrace</c>,
+    /// <c>BraceNestingTooDeep</c> for braces nested more than 32 deep, <c>NumericRangeTooLarge</c> for a numeric range
+    /// of more than 10,000 values, or <c>PatternTooLong</c> for more than 4,096 characters.
+    /// </exception>
     /// <remarks>
     /// Compiled patterns are memoized in a bounded process-wide cache so that repeated resolve calls against the same
     /// document avoid re-walking the glob grammar. The cache key is the pair <c>(pattern, comparison)</c>; on overflow

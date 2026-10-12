@@ -39,7 +39,7 @@ namespace Bodu.Text.Configuration;
 /// // Build one directly - useful when a host integrates Bodu diagnostics into its own pipeline.
 /// var diag = new ConfigurationDiagnostic(
 ///     ConfigurationDiagnosticSeverity.Warning,
-///     ConfigurationDiagnosticCode.UnknownKey,
+///     ConfigurationDiagnosticCode.None,
 ///     "Key 'format:legacy' is no longer recognized.",
 ///     new ConfigurationSourceLocation(lineNumber: 7, linePosition: 1, length: 14));
 ///]]>

@@ -18,7 +18,7 @@ namespace Bodu.Text.Configuration;
 ///<![CDATA[
 /// // "logging.level" under each mapping:
 /// //   DotToColon -> "logging:level" (dots and colons both address it)
-/// //   Colon      -> "logging:level" (colon canonical form only)
+/// //   Colon      -> "logging:level" (currently the same as DotToColon)
 /// //   Identity   -> "logging.level" (verbatim)
 /// var keyOptions = new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.DotToColon };
 ///]]>
@@ -34,8 +34,9 @@ public enum ConfigurationKeyMapping
     DotToColon = 0,
 
     /// <summary>
-    /// File keys already use colon segment separators (<c>logging:level:default</c>) and are emitted as-is. Provided
-    /// for callers whose input already matches the MEC logical key shape.
+    /// Intended for file keys that already use colon segment separators (<c>logging:level:default</c>), the MEC logical
+    /// key shape. It currently behaves exactly as <see cref="DotToColon" />: a key is split on every configured
+    /// separator, dots included, and its segments are joined with colons.
     /// </summary>
     Colon = 1,
 
