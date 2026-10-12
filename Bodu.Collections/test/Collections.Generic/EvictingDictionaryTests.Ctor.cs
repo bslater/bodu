@@ -158,6 +158,21 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that an undefined eviction policy value throws <see cref="ArgumentOutOfRangeException" /> at
+    /// construction rather than at the first eviction.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenPolicyIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new EvictingDictionary<string, int>(capacity: 4, (EvictingDictionaryPolicy)42);
+        });
+
+        Assert.AreEqual("policy", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that entries are evicted when the source exceeds the specified capacity.
     /// </summary>
     [TestMethod]
