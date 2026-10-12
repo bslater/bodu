@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Toml_Serialization_TomlStringEnumConverter" data-uid="Bodu.Text.Toml.Serialization.TomlStringEnumConverter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 TomlStringEnumConverter Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/37a7d79d13bf9a623885e909f0bb89e19f951088/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/dc91f78f6cf192ae95d44ec3cb7a3ba7e20ac866/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ TomlStringEnumConverter Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Toml.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Toml">Bodu.Text.Toml</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/37a7d79d13bf9a623885e909f0bb89e19f951088/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs">TomlStringEnumConverter.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/dc91f78f6cf192ae95d44ec3cb7a3ba7e20ac866/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs">TomlStringEnumConverter.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Produces a converter that serializes any enumeration as a TOML string holding its member name, applying an optional
@@ -187,12 +187,24 @@ options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, 
 
 
   <h2 id="Bodu_Text_Toml_Serialization_TomlStringEnumConverter_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>Register the factory on <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html#Bodu_Text_Toml_TomlSerializerOptions_Converters">Converters</a> to apply it to every enumeration, or use the
+  <div class="markdown level0 remarks"><p>
+Register the factory on <a class="xref" href="Bodu.Text.Toml.TomlSerializerOptions.html#Bodu_Text_Toml_TomlSerializerOptions_Converters">Converters</a> to apply it to every enumeration, or use the
 generic <a class="xref" href="Bodu.Text.Toml.Serialization.TomlStringEnumConverter-1.html">TomlStringEnumConverter&lt;TEnum&gt;</a> with <a class="xref" href="Bodu.Text.Serialization.ConverterAttribute.html">ConverterAttribute</a> to apply it to a single
 enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts integers
 on read, and a form that takes an explicit naming policy and integer-handling flag. An integer accepted on read must
 lie within the range of the enumeration's underlying type; one outside it throws
-<a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> rather than being narrowed into that type.</p>
+<a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> rather than being narrowed into that type.
+</p>
+<p>
+A converter that does not allow integers throws <a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> on a TOML integer, and at
+a string that holds one: a string that is not a member's wire name and has an integer in any of its comma-separated
+parts, such as <code>"2"</code>, <code>" +2 "</code> or <code>"Read, 2"</code>, is rejected rather than bound as the integer, as
+System.Text.Json's <code>JsonStringEnumConverter</code> rejects such a string from .NET 9. The wire names are matched
+first, so a member named <code>1</code> through <a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> still reads. Such a converter
+also refuses to write a value that is neither a member nor a combination of defined flags, such as an undefined
+value or a flags value with an undefined bit, and throws <a class="xref" href="Bodu.Text.Toml.TomlSerializationException.html">TomlSerializationException</a> rather than
+writing the decimal text it would reject on read.
+</p>
 </div>
 
 
@@ -205,7 +217,7 @@ lie within the range of the enumeration's underlying type; one outside it throws
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Serialization_TomlStringEnumConverter__ctor" data-uid="Bodu.Text.Toml.Serialization.TomlStringEnumConverter.#ctor">
   TomlStringEnumConverter()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/37a7d79d13bf9a623885e909f0bb89e19f951088/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/dc91f78f6cf192ae95d44ec3cb7a3ba7e20ac866/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -237,7 +249,7 @@ accepts integers on read.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Serialization_TomlStringEnumConverter__ctor_Bodu_Text_Serialization_NamingPolicy_System_Boolean_" data-uid="Bodu.Text.Toml.Serialization.TomlStringEnumConverter.#ctor(Bodu.Text.Serialization.NamingPolicy,System.Boolean)">
   TomlStringEnumConverter(NamingPolicy?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/37a7d79d13bf9a623885e909f0bb89e19f951088/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/dc91f78f6cf192ae95d44ec3cb7a3ba7e20ac866/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -256,7 +268,8 @@ and integer-handling behavior.</p>
     <dd><p>The naming policy applied to member names, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use member names unchanged.</p>
 </dd>
     <dt><code>allowIntegerValues</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p>Whether a TOML integer is accepted as an enumeration value on read.</p>
+    <dd><p>Whether integer values are allowed: read from a TOML integer or a string that holds one, and written as the
+decimal text of a value that is neither a member nor a combination of flags.</p>
 </dd>
   </dl>
 
@@ -282,7 +295,7 @@ and integer-handling behavior.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Serialization_TomlStringEnumConverter_CanConvert_System_Type_" data-uid="Bodu.Text.Toml.Serialization.TomlStringEnumConverter.CanConvert(System.Type)">
   CanConvert(Type)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/37a7d79d13bf9a623885e909f0bb89e19f951088/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/dc91f78f6cf192ae95d44ec3cb7a3ba7e20ac866/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -326,7 +339,7 @@ and integer-handling behavior.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Toml_Serialization_TomlStringEnumConverter_CreateConverter_System_Type_Bodu_Text_Toml_TomlSerializerOptions_" data-uid="Bodu.Text.Toml.Serialization.TomlStringEnumConverter.CreateConverter(System.Type,Bodu.Text.Toml.TomlSerializerOptions)">
   CreateConverter(Type, TomlSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/37a7d79d13bf9a623885e909f0bb89e19f951088/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/dc91f78f6cf192ae95d44ec3cb7a3ba7e20ac866/Bodu.Text.Toml/src/Text.Toml.Serialization/TomlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -394,7 +407,7 @@ and integer-handling behavior.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 37a7d79 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: dc91f78 · Built: 2026-10-12 (UTC)</span>
         </div>
       </div>
     </footer>
