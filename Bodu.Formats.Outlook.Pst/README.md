@@ -50,6 +50,11 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   streams it from the store block by block.
 - The store-wide name-to-id map (node `0x61`), resolved bidirectionally.
 - The message bodies: plain text, HTML, and RTF (decompressed per MS-OXRTFCP).
+- Damaged stores, on request: with `OutlookMailStoreReaderOptions.OmitUnresolvableValues`
+  a property value or recipient cell whose reference does not resolve is left out
+  rather than failing its folder, message or attachment, and
+  `ValueOmittedCallback` reports each value the reader omits, so a salvaged object
+  can be told from a clean one.
 
 ## Out of scope
 

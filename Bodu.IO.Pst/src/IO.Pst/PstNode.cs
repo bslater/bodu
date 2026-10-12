@@ -179,13 +179,21 @@ public sealed class PstNode
     /// </exception>
     /// <remarks>
     /// Each call re-reads the context from the source; retain the returned instance to read many properties. Value
-    /// payloads resolve on access, so large subnode-resident values cost their read only when retrieved.
+    /// payloads resolve on access, so large subnode-resident values cost their read only when retrieved. When the
+    /// session omits unresolvable values (<see cref="PstFileOptions.OmitUnresolvableValues" />), each value's reference
+    /// is checked as the context is read, and a value whose reference does not resolve is left out of the context and
+    /// listed in <see cref="PstPropertyContext.OmittedPropertyIds" />.
     /// </remarks>
     public PstPropertyContext ReadPropertyContext()
     {
-        (PstHeapNode heap, List<PstPcEntry> entries) = PstPropertyContextReader.Read(_file.GetSource(), _entry);
+        PstSource source = _file.GetSource();
+        (PstHeapNode heap, List<PstPcEntry> entries) = PstPropertyContextReader.Read(source, _entry);
+        var context = new PstLtpContext(source, _entry);
+        IReadOnlyList<ushort> omitted = source.OmitUnresolvableValues
+            ? PstPropertyContextReader.OmitUnresolvable(heap, context, entries)
+            : [];
 
-        return new PstPropertyContext(heap, new PstLtpContext(_file.GetSource(), _entry), entries);
+        return new PstPropertyContext(heap, context, entries, omitted);
     }
 
     /// <summary>

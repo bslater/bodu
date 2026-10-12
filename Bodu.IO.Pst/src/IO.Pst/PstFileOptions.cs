@@ -39,6 +39,32 @@ public sealed class PstFileOptions
     public PstValidationLevel ValidationLevel { get; init; } = PstValidationLevel.Compatible;
 
     /// <summary>
+    /// Gets a value indicating whether a property value or table cell whose value reference does not resolve is omitted
+    /// rather than failing the read.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> to omit such a value and record its identifier in
+    /// <see cref="PstPropertyContext.OmittedPropertyIds" /> or <see cref="PstTableRow.OmittedPropertyIds" />;
+    /// <see langword="false" />, the default, to raise <see cref="PstFileFormatException" />.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// A value reference does not resolve when it names a heap item the context's heap does not hold, when a property's
+    /// fixed-width value is shorter than its type, or when it names a subnode the node does not hold or whose data tree
+    /// cannot be resolved. Without this option each of these is container corruption that fails the whole context at
+    /// every validation level. With it the value is omitted and the rest of the context stays readable, so a damaged
+    /// object still yields what it can: the option is for recovering data from a damaged file.
+    /// </para>
+    /// <para>
+    /// The option is independent of <see cref="ValidationLevel" /> and covers individual values only. A fault in a
+    /// heap's header, page map, or B-tree, in a table's column descriptions or row matrix, or in a node's subnode tree
+    /// still fails the read, and a value whose reference resolves but whose data blocks fail their checks still raises
+    /// <see cref="PstFileFormatException" /> when it is read.
+    /// </para>
+    /// </remarks>
+    public bool OmitUnresolvableValues { get; init; }
+
+    /// <summary>
     /// Gets the maximum number of decoded pages and block payloads the session keeps in its least-recently-used cache.
     /// </summary>
     /// <value>The cache entry budget; <c>256</c> by default. <c>0</c> disables caching entirely.</value>

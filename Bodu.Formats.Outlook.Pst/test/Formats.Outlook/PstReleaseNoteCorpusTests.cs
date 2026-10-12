@@ -50,7 +50,7 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
-        "Surface", "ValidationLevel", "DecompressRtf", "BlockCacheSize", "MaxNodeDataLength", "MaxDataTreeLeaves",
+        "Surface", "ValidationLevel", "OmitUnresolvableValues", "DecompressRtf", "BlockCacheSize", "MaxNodeDataLength", "MaxDataTreeLeaves",
         "MaxEmbeddedMessageDepth", "MaxDecompressedRtfBytes", "MaxInlineAttachmentBytes", "Detail", "Names", "Node",
         "Subnode", "View", "Row", "Data",
     ];

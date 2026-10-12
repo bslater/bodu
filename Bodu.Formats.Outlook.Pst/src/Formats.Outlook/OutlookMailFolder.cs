@@ -73,7 +73,11 @@ public sealed class OutlookMailFolder
             if (_properties is null)
             {
                 _properties = PstMapiPropertyReader.Read(
-                    _node.ReadPropertyContext(), _inheritedEncoding ?? _store.StoreEncoding, _store.Strict, out Encoding encoding);
+                    _node.ReadPropertyContext(),
+                    _inheritedEncoding ?? _store.StoreEncoding,
+                    _store.Strict,
+                    _store.CreateOmissionReporter(_node.Id),
+                    out Encoding encoding);
                 _encoding = encoding;
             }
 

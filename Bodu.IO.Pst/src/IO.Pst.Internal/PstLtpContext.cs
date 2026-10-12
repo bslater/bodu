@@ -81,6 +81,51 @@ internal sealed class PstLtpContext
     }
 
     /// <summary>
+    /// Determines whether an <c>HNID</c> resolves to a payload of at least a given length, without reading any leaf
+    /// data.
+    /// </summary>
+    /// <param name="heap">The context's heap, which serves heap-resident values.</param>
+    /// <param name="hnid">The value reference.</param>
+    /// <param name="minimumLength">The fewest bytes the payload must hold; zero when any length will do.</param>
+    /// <returns>
+    /// <see langword="true" /> when the reference names a heap item or a subnode with a resolvable data tree, and its
+    /// payload holds at least <paramref name="minimumLength" /> bytes.
+    /// </returns>
+    /// <exception cref="PstFileFormatException">
+    /// The owning node's subnode tree is malformed, or a subnode's data tree exceeds
+    /// <see cref="PstFileOptions.MaxDataTreeLeaves" />.
+    /// </exception>
+    /// <remarks>
+    /// A fault in the value's own storage - a heap item or subnode that does not exist, or a subnode data tree that
+    /// cannot be resolved - makes the reference unresolvable. A fault in the structure every value shares, the subnode
+    /// tree, propagates, as does a resource limit, which is not corruption.
+    /// </remarks>
+    internal bool CanResolve(PstHeapNode heap, uint hnid, int minimumLength)
+    {
+        if (PstHnid.IsNull(hnid))
+            return minimumLength == 0;
+
+        if (PstHnid.IsHeapId(hnid))
+            return heap.TryGetItem(hnid, out ReadOnlyMemory<byte> item) && item.Length >= minimumLength;
+
+        if (!TryGetSubnodeEntry(hnid, out PstNbtEntry entry))
+            return false;
+
+        try
+        {
+            long length = 0;
+            foreach (PstBbtEntry leaf in PstDataTree.ResolveLeafEntries(_source, entry.DataBlockId))
+                length += leaf.Length;
+
+            return length >= minimumLength;
+        }
+        catch (PstFileFormatException ex) when (ex.Error != PstFileError.LimitExceeded)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Attempts to resolve a subnode's ordered data-block segments, for structures that consume block boundaries
     /// directly.
     /// </summary>

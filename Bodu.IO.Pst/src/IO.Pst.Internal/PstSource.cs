@@ -54,6 +54,7 @@ internal sealed class PstSource
         ValidationLevel = options.ValidationLevel;
         MaxNodeDataLength = options.MaxNodeDataLength;
         MaxDataTreeLeaves = options.MaxDataTreeLeaves;
+        OmitUnresolvableValues = options.OmitUnresolvableValues;
         if (options.BlockCacheSize > 0)
         {
             // Pages and blocks live in separate caches: a block identifier can carry any bit pattern, so no key
@@ -74,6 +75,13 @@ internal sealed class PstSource
     /// </summary>
     /// <value>The configured <see cref="PstFileOptions.MaxDataTreeLeaves" />.</value>
     internal int MaxDataTreeLeaves { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether property values and table cells whose value references do not resolve are
+    /// omitted rather than failing the read.
+    /// </summary>
+    /// <value>The configured <see cref="PstFileOptions.OmitUnresolvableValues" />.</value>
+    internal bool OmitUnresolvableValues { get; }
 
     /// <summary>
     /// Gets the parsed file header.

@@ -76,6 +76,56 @@ internal static class PstPropertyContextReader
     }
 
     /// <summary>
+    /// Removes the records whose value references do not resolve, for a session that omits unresolvable values.
+    /// </summary>
+    /// <param name="heap">The context's heap.</param>
+    /// <param name="context">The value-reference resolver over the owning node.</param>
+    /// <param name="entries">The context's records in key order; the omitted records are removed in place.</param>
+    /// <returns>
+    /// The identifiers of the omitted records, in ascending order; empty when every reference resolves.
+    /// </returns>
+    /// <exception cref="PstFileFormatException">
+    /// The owning node's subnode tree is malformed, or a subnode's data tree exceeds
+    /// <see cref="PstFileOptions.MaxDataTreeLeaves" />.
+    /// </exception>
+    /// <remarks>
+    /// An inline value and a value of an unrecognized wire type hold no reference, so they are never omitted. A
+    /// fixed-width value must resolve to at least its type's width, as reading it requires.
+    /// </remarks>
+    internal static IReadOnlyList<ushort> OmitUnresolvable(PstHeapNode heap, PstLtpContext context, List<PstPcEntry> entries)
+    {
+        List<ushort>? omitted = null;
+        int kept = 0;
+        for (int i = 0; i < entries.Count; i++)
+        {
+            PstPcEntry entry = entries[i];
+            if (Resolves(heap, context, entry))
+                entries[kept++] = entry;
+            else
+                (omitted ??= []).Add(entry.PropertyId);
+        }
+
+        entries.RemoveRange(kept, entries.Count - kept);
+        return omitted is null ? [] : omitted;
+    }
+
+    /// <summary>
+    /// Determines whether a record's value can be resolved from its storage.
+    /// </summary>
+    /// <param name="heap">The context's heap.</param>
+    /// <param name="context">The value-reference resolver.</param>
+    /// <param name="entry">The record.</param>
+    /// <returns><see langword="true" /> when the value is inline, untyped, or its reference resolves.</returns>
+    private static bool Resolves(PstHeapNode heap, PstLtpContext context, PstPcEntry entry)
+    {
+        if (PstWireType.TryGetInlineSize(entry.WireType, out _) || !PstWireType.IsKnown(entry.WireType))
+            return true;
+
+        int minimumLength = PstWireType.TryGetFixedHeapSize(entry.WireType, out int fixedSize) ? fixedSize : 0;
+        return context.CanResolve(heap, entry.RawValue, minimumLength);
+    }
+
+    /// <summary>
     /// Determines whether a record list is already in ascending property-identifier order.
     /// </summary>
     /// <param name="entries">The records in stored order.</param>

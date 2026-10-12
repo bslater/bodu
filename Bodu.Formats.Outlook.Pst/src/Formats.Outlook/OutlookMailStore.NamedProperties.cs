@@ -24,8 +24,25 @@ public sealed partial class OutlookMailStore
     /// </exception>
     private PstNamedPropertyMap NamedPropertyMap =>
         _namedProperties ??= TryGetNode(PstNodeId.NameToIdMap, out PstNode? node)
-            ? PstNamedPropertyMap.Load(node.ReadPropertyContext(), Strict)
+            ? LoadNamedPropertyMap(node)
             : PstNamedPropertyMap.Empty;
+
+    /// <summary>
+    /// Parses the name-to-id map node, reporting any mapping stream omitted because its reference does not resolve.
+    /// </summary>
+    /// <param name="node">The name-to-id map node.</param>
+    /// <returns>The mapping.</returns>
+    /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// Under strict validation, the mapping streams are malformed.
+    /// </exception>
+    private PstNamedPropertyMap LoadNamedPropertyMap(PstNode node)
+    {
+        PstPropertyContext context = node.ReadPropertyContext();
+        PstMapiPropertyReader.ReportUnresolvable(context.OmittedPropertyIds, CreateOmissionReporter(node.Id));
+
+        return PstNamedPropertyMap.Load(context, Strict);
+    }
 
     /// <summary>
     /// Attempts to resolve the property identifier a named property maps to in this store.

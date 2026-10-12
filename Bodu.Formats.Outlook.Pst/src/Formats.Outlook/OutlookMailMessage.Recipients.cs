@@ -48,7 +48,10 @@ public sealed partial class OutlookMailMessage
 
         var recipients = new List<OutlookRecipient>();
         foreach (PstTableRow row in tableNode.ReadTableContext().EnumerateRows())
-            recipients.Add(new OutlookRecipient(PstMapiPropertyReader.ReadRow(row, MessageEncoding, _store.Strict)));
+        {
+            recipients.Add(new OutlookRecipient(PstMapiPropertyReader.ReadRow(
+                row, MessageEncoding, _store.Strict, _store.CreateOmissionReporter(tableNode.Id, row.RowId))));
+        }
 
         return [.. recipients];
     }

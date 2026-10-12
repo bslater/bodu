@@ -41,6 +41,12 @@ public sealed partial class PstReleaseNoteCorpusTests
         public PstValidationLevel ValidationLevel { get; init; } = PstValidationLevel.Compatible;
 
         /// <summary>
+        /// Gets a value indicating whether both readers omit values whose references do not resolve.
+        /// </summary>
+        /// <value><see langword="false" /> by default.</value>
+        public bool OmitUnresolvableValues { get; init; }
+
+        /// <summary>
         /// Gets a value indicating whether the mail store decompresses RTF bodies.
         /// </summary>
         /// <value><see langword="true" /> by default.</value>
@@ -147,6 +153,7 @@ public sealed partial class PstReleaseNoteCorpusTests
                 {
                     "Surface" when value is "Store" or "Nodes" => options with { Surface = value },
                     "ValidationLevel" => options with { ValidationLevel = ParseValidationLevel(value) },
+                    "OmitUnresolvableValues" => options with { OmitUnresolvableValues = ParseBoolean(name, value) },
                     "DecompressRtf" => options with { DecompressRtf = ParseBoolean(name, value) },
                     "BlockCacheSize" => options with { BlockCacheSize = ParseInt32(name, value, minimum: 0) },
                     "MaxNodeDataLength" => options with { MaxNodeDataLength = ParseInt64(name, value, minimum: 1) },
@@ -188,6 +195,7 @@ public sealed partial class PstReleaseNoteCorpusTests
             return new OutlookMailStoreReaderOptions
             {
                 ValidationLevel = ValidationLevel,
+                OmitUnresolvableValues = OmitUnresolvableValues,
                 DecompressRtf = DecompressRtf,
                 BlockCacheSize = BlockCacheSize ?? defaults.BlockCacheSize,
                 MaxNodeDataLength = MaxNodeDataLength ?? defaults.MaxNodeDataLength,
@@ -208,6 +216,7 @@ public sealed partial class PstReleaseNoteCorpusTests
             return new PstFileOptions
             {
                 ValidationLevel = ValidationLevel,
+                OmitUnresolvableValues = OmitUnresolvableValues,
                 BlockCacheSize = BlockCacheSize ?? defaults.BlockCacheSize,
                 MaxNodeDataLength = MaxNodeDataLength ?? defaults.MaxNodeDataLength,
                 MaxDataTreeLeaves = MaxDataTreeLeaves ?? defaults.MaxDataTreeLeaves,

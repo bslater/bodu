@@ -16,9 +16,16 @@ namespace Bodu.IO.Pst;
 /// wire-typed values, in the manner the exploration plan sketches - format-agnostic, with no MAPI semantics.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The context's records are materialized when the context is read; each value's payload is resolved on access, so a
 /// large subnode-resident value costs its read only when it is actually retrieved. Enumeration yields values in
 /// property-identifier order (the tree's stored order).
+/// </para>
+/// <para>
+/// When the session omits unresolvable values (<see cref="PstFileOptions.OmitUnresolvableValues" />), a property whose
+/// value reference does not resolve is absent from every member of the context, as if the context did not hold it, and
+/// its identifier is listed in <see cref="OmittedPropertyIds" />.
+/// </para>
 /// </remarks>
 public sealed class PstPropertyContext
     : IReadOnlyCollection<PstPropertyValue>
@@ -37,19 +44,38 @@ public sealed class PstPropertyContext
     /// </summary>
     /// <param name="heap">The context's heap.</param>
     /// <param name="context">The value-reference resolver.</param>
-    /// <param name="entries">The context's records in key order.</param>
-    internal PstPropertyContext(PstHeapNode heap, PstLtpContext context, List<PstPcEntry> entries)
+    /// <param name="entries">The context's records in key order, without any omitted record.</param>
+    /// <param name="omittedPropertyIds">
+    /// The identifiers of the records omitted because their references do not resolve.
+    /// </param>
+    internal PstPropertyContext(PstHeapNode heap, PstLtpContext context, List<PstPcEntry> entries, IReadOnlyList<ushort> omittedPropertyIds)
     {
         _heap = heap;
         _context = context;
         _entries = entries;
+        OmittedPropertyIds = omittedPropertyIds;
     }
 
     /// <summary>
     /// Gets the number of properties the context carries.
     /// </summary>
-    /// <value>The property count.</value>
+    /// <value>The property count, excluding any omitted property.</value>
     public int Count => _entries.Count;
+
+    /// <summary>
+    /// Gets the identifiers of the properties left out of the context because their value references do not resolve.
+    /// </summary>
+    /// <value>
+    /// The omitted property identifiers, in ascending order; empty when every reference resolves or when the session
+    /// does not omit unresolvable values.
+    /// </value>
+    /// <remarks>
+    /// Properties are omitted only when the session was opened with
+    /// <see cref="PstFileOptions.OmitUnresolvableValues" />; otherwise an unresolvable reference raises
+    /// <see cref="PstFileFormatException" /> when its value is read. A non-empty list marks the context as salvaged
+    /// from a damaged file.
+    /// </remarks>
+    public IReadOnlyList<ushort> OmittedPropertyIds { get; }
 
     /// <summary>
     /// Determines whether the context carries a property.

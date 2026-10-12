@@ -49,6 +49,8 @@ using Bodu.IO.Pst;
 var options = new OutlookMailStoreReaderOptions
 {
     ValidationLevel = PstValidationLevel.Strict,        // every checksum, signature, and table row enforced
+    OmitUnresolvableValues = false,                     // a value whose reference does not resolve fails its object
+    ValueOmittedCallback = omitted => Console.WriteLine($"omitted: {omitted}"),
     BlockCacheSize = 512,                               // decoded-block LRU entries (0 disables the cache)
     DecompressRtf = true,
     MaxNodeDataLength = 64L * 1024 * 1024,              // largest node payload materialized at once
@@ -64,6 +66,8 @@ Console.WriteLine(store.DisplayName);
 | Property | Type | Default | Effect | When it trips |
 |---|---|---|---|---|
 | `ValidationLevel` | <xref:Bodu.IO.Pst.PstValidationLevel> | `Compatible` | Forwarded to the container **and** used by the MAPI decoder. `Compatible` checks structure plus the header CRC; `Strict` additionally verifies every page and block checksum and signature and makes messaging-level problems throw; `Minimal` skips every checksum for salvage reads and behaves as `Compatible` in the decoder. | `Strict` only - see [What `Strict` changes](#what-strict-changes). |
+| `OmitUnresolvableValues` | `bool` | `false` | Forwarded to the container as <xref:Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues>: a property value or recipient cell whose reference does not resolve is left out of its object instead of failing it - see [Salvaging a damaged store](#salvaging-a-damaged-store). Independent of `ValidationLevel`. | Not a limit. |
+| `ValueOmittedCallback` | `Action<OutlookOmittedValue>?` | `null` | Receives an <xref:Bodu.Formats.Outlook.OutlookOmittedValue> for every value the reader omits from an object it decodes - one whose reference does not resolve, or one it cannot decode as its MAPI type under the tolerant levels - naming the node, the row for a recipient cell, the property, and the <xref:Bodu.Formats.Outlook.OutlookOmittedValueReason>. Invoked synchronously when the object is decoded. | Not a limit. |
 | `BlockCacheSize` | `int` | `256` | The container's least-recently-used cache of decoded pages and block payloads, in entries (each at most 8 KiB, so roughly 2 MB by default). `0` disables caching. Negative values throw. | Not a limit. |
 | `DecompressRtf` | `bool` | `true` | As for `.msg`: `false` makes `BodyRtf` return `null`; the compressed payload stays in `Properties`. | Not a limit. |
 | `MaxNodeDataLength` | `long` | 256 MiB | Forwarded to the container as <xref:Bodu.IO.Pst.PstFileOptions.MaxNodeDataLength>: the largest node payload materialized at once - the ceiling on any single property value, attachment payload, or table the store decodes whole. Streaming reads (`OpenContentStream()` on a deferred payload) are unbounded by design. | The **container** refuses the read with <xref:Bodu.IO.Pst.PstFileFormatException> and `Error == PstFileError.LimitExceeded`, at every validation level. It propagates unwrapped. |
@@ -76,6 +80,7 @@ Console.WriteLine(store.DisplayName);
 | <xref:Bodu.IO.Pst.PstFileOptions> member | Forwarded? | Value the container sees |
 |---|---|---|
 | `ValidationLevel` | Yes | `OutlookMailStoreReaderOptions.ValidationLevel` |
+| `OmitUnresolvableValues` | Yes | `OutlookMailStoreReaderOptions.OmitUnresolvableValues` |
 | `BlockCacheSize` | Yes | `OutlookMailStoreReaderOptions.BlockCacheSize` |
 | `MaxNodeDataLength` | Yes | `OutlookMailStoreReaderOptions.MaxNodeDataLength` |
 | `MaxDataTreeLeaves` | **No** | The container default of 65,536 leaf blocks per node. A data tree fanning out further is refused with `PstFileFormatException` / `LimitExceeded` exactly like an oversized payload. |
@@ -104,7 +109,36 @@ At *every* level the reader still throws for a container that is not a compound 
 - An undefined `PidTagAttachMethod` value (the tolerant levels infer `ByValue` / `None`).
 - A malformed name-to-id map.
 
-At every level the reader throws for a missing by-value payload (a by-value attachment with no `PidTagAttachDataBinary` property), a missing embedded-message subnode, and the depth and RTF limits. What the tolerant levels omit is a value the MAPI decoding rejects, as listed above; a fault in a property context itself - a heap reference that does not resolve (`InvalidHeap`), a fixed-width value shorter than its type (`InvalidPropertyContext`), or a value reference to a subnode the node does not contain (`InvalidSubnodeTree`) - is container corruption and fails the read at every level. Container corruption is never wrapped: it surfaces as the <xref:Bodu.IO.Pst.PstFileException> family (see [Reading .pst mail stores](reading-pst-mail-stores.md#errors-two-families-not-one)), and under `Strict` the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.
+At every level the reader throws for a missing by-value payload (a by-value attachment with no `PidTagAttachDataBinary` property), a missing embedded-message subnode, and the depth and RTF limits. What the tolerant levels omit is a value the MAPI decoding rejects, as listed above; a fault in a property context itself - a heap reference that does not resolve (`InvalidHeap`), a fixed-width value shorter than its type (`InvalidPropertyContext`), or a value reference to a subnode the node does not contain (`InvalidSubnodeTree`) - is container corruption and fails the read at every level, unless `OmitUnresolvableValues` is set (see [Salvaging a damaged store](#salvaging-a-damaged-store)). Container corruption is never wrapped: it surfaces as the <xref:Bodu.IO.Pst.PstFileException> family (see [Reading .pst mail stores](reading-pst-mail-stores.md#errors-two-families-not-one)), and under `Strict` the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.
+
+## Salvaging a damaged store
+
+By default one value whose reference into the container does not resolve fails the whole object it belongs to, so a single damaged property hides a message's subject, sender and bodies too. To recover what a damaged store still holds, set `OmitUnresolvableValues`: the value is left out, the rest of the object decodes, and each omission is reported to `ValueOmittedCallback`, so the caller can tell a salvaged object from a clean one.
+
+```csharp
+using Bodu.Formats.Outlook;
+using Bodu.IO.Pst;
+
+var omitted = new List<OutlookOmittedValue>();
+var options = new OutlookMailStoreReaderOptions
+{
+    ValidationLevel = PstValidationLevel.Minimal,   // follow checksum-failed pages as far as their geometry allows
+    OmitUnresolvableValues = true,                  // leave out a value whose reference does not resolve
+    ValueOmittedCallback = omitted.Add,             // and record it
+};
+
+using var store = OutlookMailStore.Open(File.OpenRead("damaged.pst"), options);
+foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
+{
+    foreach (OutlookMailMessage message in folder.EnumerateMessages())
+        Console.WriteLine($"{message.Subject} ({message.Recipients.Count} recipients)");
+}
+
+foreach (OutlookOmittedValue value in omitted)
+    Console.WriteLine($"node {value.NodeId}: property 0x{value.PropertyId:X4} omitted ({value.Reason})");
+```
+
+The option covers individual values only: a fault in a heap, table or subnode tree still fails the object, and the folder and message lists still skip a row that names no valid node only under the tolerant levels. An omitted `PidTagAttachDataBinary` leaves a by-value attachment with no data, so its `OpenContentStream()` raises <xref:Bodu.Formats.Outlook.OutlookPstFormatException> for a missing payload, as for any by-value attachment without data.
 
 ## The inline-attachment threshold in practice
 

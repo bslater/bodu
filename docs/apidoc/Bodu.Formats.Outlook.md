@@ -48,7 +48,7 @@ Both readers open a disposable **session** that owns the container, decode every
 **Options**
 
 - <xref:Bodu.Formats.Outlook.OutlookMessageReaderOptions> - `ValidationLevel` (<xref:Bodu.IO.Compound.CompoundValidationLevel>, `Compatible`), `ReadStrategy` (<xref:Bodu.IO.Compound.CompoundReadStrategy>, `Buffered`), `DecompressRtf` (`true`), `MaxEmbeddedMessageDepth` (16), `MaxDecompressedRtfBytes` (64 MiB), `MaxInlineAttachmentBytes` (1 MiB).
-- <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions> - `ValidationLevel` (<xref:Bodu.IO.Pst.PstValidationLevel>, `Compatible`), `BlockCacheSize` (256; `0` disables), `DecompressRtf` (`true`), `MaxNodeDataLength` (256 MiB), `MaxEmbeddedMessageDepth` (16), `MaxDecompressedRtfBytes` (64 MiB), `MaxInlineAttachmentBytes` (1 MiB).
+- <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions> - `ValidationLevel` (<xref:Bodu.IO.Pst.PstValidationLevel>, `Compatible`), `OmitUnresolvableValues` (`false`), `ValueOmittedCallback` (`null`; receives an <xref:Bodu.Formats.Outlook.OutlookOmittedValue>, with its <xref:Bodu.Formats.Outlook.OutlookOmittedValueReason>, for each value the reader omits), `BlockCacheSize` (256; `0` disables), `DecompressRtf` (`true`), `MaxNodeDataLength` (256 MiB), `MaxEmbeddedMessageDepth` (16), `MaxDecompressedRtfBytes` (64 MiB), `MaxInlineAttachmentBytes` (1 MiB).
 
 **Errors**
 
