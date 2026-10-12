@@ -1,0 +1,180 @@
+{
+  "$comment": "Project classification for the solution views. tools/solutions/generate-solutions.py reads this file and bodu.slnx and writes the bodu.*.slnx views; the views themselves hold no logic. See tools/solutions/README.md and plans/multi-solution-architecture.md.",
+
+  "master": "bodu.slnx",
+
+  "kinds": {
+    "library": "A production library under <Project>/src/: shipping, or packable and withheld from nuget.org by bld/release-manifest.txt.",
+    "test": "A runnable MSTest project of a library: IsTestProject is true and the file is named *.Test.csproj.",
+    "tooling": "A build-time or command-line component that is not a library: the calendar rule-pack tool and MSBuild task, and the source generator.",
+    "tooling-test": "A runnable MSTest project of a tooling component.",
+    "test-support": "A project referenced by tests that is not itself a runnable test suite: contract bases and shared test data.",
+    "test-fixture": "A project a test builds and loads at run time rather than compiles against.",
+    "aot-smoke": "A native AOT smoke application that a dedicated workflow publishes.",
+    "benchmark": "A BenchmarkDotNet harness.",
+    "sample": "A sample application under samples/.",
+    "sample-test": "A runnable MSTest project under samples/ that tests a sample.",
+    "docs": "The DocFX documentation project."
+  },
+
+  "domains": {
+    "core": {
+      "description": "Core foundations",
+      "prefixes": [ "Bodu.Core", "Bodu.Collections" ]
+    },
+    "security": {
+      "description": "Security and hashing",
+      "prefixes": [ "Bodu.Security", "Bodu.IO.Hashing" ]
+    },
+    "globalization": {
+      "description": "Calendar and recurrence",
+      "prefixes": [ "Bodu.Globalization" ]
+    },
+    "financial": {
+      "description": "Numerics and finance",
+      "prefixes": [ "Bodu.Numerics", "Bodu.Financial" ]
+    },
+    "text": {
+      "description": "Text and configuration",
+      "prefixes": [ "Bodu.Text", "Bodu.Extensions.Configuration.Text" ]
+    },
+    "formats": {
+      "description": "Binary formats and file I/O",
+      "prefixes": [ "Bodu.Formats", "Bodu.IO.Biff", "Bodu.IO.Compound", "Bodu.IO.Pst" ]
+    }
+  },
+
+  "domainViewKinds": [ "library", "test", "tooling", "tooling-test", "test-support", "test-fixture", "aot-smoke" ],
+
+  "views": [
+    { "file": "bodu.libraries.slnx", "purpose": "Production library build: every library, and nothing else.", "kinds": [ "library" ] },
+    { "file": "bodu.tests.slnx", "purpose": "Standard test suite: every runnable test project CI runs, with what they reference.", "kinds": [ "test", "tooling-test", "sample-test" ] },
+    { "file": "bodu.benchmarks.slnx", "purpose": "Performance investigations: the benchmark harnesses and the libraries they measure.", "kinds": [ "benchmark" ] },
+    { "file": "bodu.samples.slnx", "purpose": "Samples and example verification: the samples, their tests, and what they reference.", "kinds": [ "sample", "sample-test" ] },
+    { "file": "bodu.tooling.slnx", "purpose": "Specialist utilities: the toolchain, the source generator, their tests, the AOT smoke app, and the docs project.", "kinds": [ "tooling", "tooling-test", "aot-smoke", "docs" ] },
+    { "file": "bodu.core.slnx", "purpose": "Core foundations.", "domains": [ "core" ] },
+    { "file": "bodu.security.slnx", "purpose": "Security and hashing.", "domains": [ "security" ] },
+    { "file": "bodu.globalization.slnx", "purpose": "Calendar and recurrence.", "domains": [ "globalization" ] },
+    { "file": "bodu.financial.slnx", "purpose": "Numerics and finance.", "domains": [ "financial" ] },
+    { "file": "bodu.text.slnx", "purpose": "Text and configuration.", "domains": [ "text" ] },
+    { "file": "bodu.formats.slnx", "purpose": "Binary formats and file I/O.", "domains": [ "formats" ] }
+  ],
+
+  "exceptions": [
+    {
+      "match": "Bodu.Test/test/Bodu.Test.csproj",
+      "kind": "test",
+      "domain": null,
+      "reason": "The shared test harness. It has tests of its own, and every domain's tests reference it, so it reaches each domain view through references rather than through ownership."
+    },
+    {
+      "match": "Bodu.Globalization.Calendar.Tool/src/Bodu.Globalization.Calendar.Tool.csproj",
+      "kind": "tooling",
+      "reason": "The bodu-calendar command-line tool (PackAsTool), withheld from nuget.org; not a library."
+    },
+    {
+      "match": "Bodu.Globalization.Calendar.Tool/test/Bodu.Globalization.Calendar.Tool.Test.csproj",
+      "kind": "tooling-test",
+      "reason": "Tests the bodu-calendar tool."
+    },
+    {
+      "match": "Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj",
+      "kind": "tooling",
+      "reason": "The CompileNotableDatePack MSBuild task (netstandard2.0, DevelopmentDependency), withheld from nuget.org; not a library."
+    },
+    {
+      "match": "Bodu.Globalization.Calendar.Build/test/Bodu.Globalization.Calendar.Build.Test.csproj",
+      "kind": "tooling-test",
+      "reason": "Tests the CompileNotableDatePack MSBuild task."
+    },
+    {
+      "match": "Bodu.Text.Formats.Generators/src/Bodu.Text.Formats.Generators.csproj",
+      "kind": "tooling",
+      "reason": "A Roslyn source generator (netstandard2.0, not yet packable) that consumers load as an analyzer; not a library."
+    },
+    {
+      "match": "Bodu.Text.Formats.Generators/test/Bodu.Text.Formats.Generators.Test.csproj",
+      "kind": "tooling-test",
+      "reason": "Tests the source generator."
+    },
+    {
+      "match": "Bodu.Financial.ExchangeRates.Testing/src/Bodu.Financial.ExchangeRates.Testing.csproj",
+      "kind": "test-support",
+      "reason": "The exchange-rate provider contract-test bases. It lives under src/ and sets IsTestProject, but holds only abstract bases, so CI does not run it."
+    },
+    {
+      "match": "Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Data.Test.Common/Bodu.Globalization.Calendar.Data.Test.Common.csproj",
+      "kind": "test-support",
+      "reason": "Shared assertions for the regional calendar data test projects (IsTestProject is false)."
+    },
+    {
+      "match": "Bodu.Globalization.Calendar.Plugins/test/Fixtures/*/*.csproj",
+      "kind": "test-fixture",
+      "domain": "globalization",
+      "reason": "Plugin assemblies the plugin loader tests build and load at run time (Bodu.Globalization.Calendar.Plugins.Test references them with ReferenceOutputAssembly=false). Visual Studio builds them only when they are in the opened solution."
+    },
+    {
+      "match": "Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj",
+      "kind": "aot-smoke",
+      "reason": "Published with PublishAot=true by numerics-aot-smoke.yml; runs under the JIT in ordinary builds."
+    },
+    {
+      "match": "docs/doc.csproj",
+      "kind": "docs",
+      "domain": null,
+      "reason": "A content-only project that shows docs/ in the IDE; the API site is built by bld/docs/build-api-docs.sh."
+    }
+  ],
+
+  "rules": [
+    { "match": "samples/**/*.Test.csproj", "kind": "sample-test" },
+    { "match": "samples/**/*.csproj", "kind": "sample" },
+    { "match": "**/bench/**/*.csproj", "kind": "benchmark" },
+    { "match": "**/test/*.Test.csproj", "kind": "test" },
+    { "match": "**/src/*.csproj", "kind": "library" }
+  ],
+
+  "notInMaster": [
+    {
+      "match": "Bodu.CodeStyle/**/*.csproj",
+      "reason": "The Bodu.CodeStyle analyzers are an independent solution (Bodu.CodeStyle/Bodu.CodeStyle.sln) with their own global.json."
+    },
+    {
+      "match": "tools/CurrencyCatalogueGenerator/CurrencyCatalogueGenerator.csproj",
+      "reason": "A maintenance generator run by hand (dotnet run --project) to regenerate the ISO 4217 currency types. Kept out of the master so the release pack, which builds bodu.slnx, never builds it."
+    },
+    {
+      "match": "tools/IslamicObservanceVectorGenerator/IslamicObservanceVectorGenerator.csproj",
+      "reason": "A maintenance generator run by hand to regenerate the Hijri observance test vectors. Kept out of the master for the same reason."
+    }
+  ],
+
+  "externalReferences": [
+    {
+      "from": "Bodu.Core/src/Bodu.Core.csproj",
+      "to": "Bodu.CodeStyle/**/*.csproj",
+      "reason": "Bodu.Core loads the in-repo XML-documentation analyzer and code fix from source (OutputItemType=Analyzer, ReferenceOutputAssembly=false) to exercise BODU1405. Those projects belong to the separate Bodu.CodeStyle solution; bodu.slnx does not list them and neither do the views. A command-line build still builds them through the reference."
+    }
+  ],
+
+  "legacyMasterBuildExclusions": {
+    "reason": "bodu.slnx excludes these projects from its Debug configuration (<Build Solution=\"Debug|*\" Project=\"false\" />). The views never carry the exclusion. It stays in the master until each project's Debug build has been confirmed in the IDE (plans/multi-solution-architecture.md, section 6); the list is exact, so a new exclusion fails the check.",
+    "projects": [
+      "Bodu.Extensions.Configuration.Text/bench/Bodu.Extensions.Configuration.Text.Benchmarks.csproj",
+      "Bodu.Financial/bench/Bodu.Financial.Benchmarks.csproj",
+      "Bodu.Financial.ExchangeRates.Caching/bench/Bodu.Financial.ExchangeRates.Caching.Benchmarks.csproj",
+      "Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj",
+      "Bodu.Globalization.Calendar.Build/test/Bodu.Globalization.Calendar.Build.Test.csproj",
+      "Bodu.Globalization.Calendar.Caching/bench/Bodu.Globalization.Calendar.Caching.Benchmarks.csproj",
+      "Bodu.Globalization.Calendar.Tool/src/Bodu.Globalization.Calendar.Tool.csproj",
+      "Bodu.Globalization.Calendar.Tool/test/Bodu.Globalization.Calendar.Tool.Test.csproj",
+      "Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj",
+      "Bodu.Text.Configuration/bench/Bodu.Text.Configuration.Benchmarks.csproj",
+      "Bodu.Text.Encoding/bench/Bodu.Text.Encoding.Benchmarks.csproj",
+      "Bodu.Text.Filtering/bench/Bodu.Text.Filtering.Benchmarks.csproj",
+      "samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching/Bodu.Globalization.Calendar.Samples.Caching.csproj",
+      "samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.RulePackToolchain/Bodu.Globalization.Calendar.Samples.RulePackToolchain.csproj",
+      "samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ValidationLint/Bodu.Globalization.Calendar.Samples.ValidationLint.csproj"
+    ]
+  }
+}

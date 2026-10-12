@@ -24,6 +24,14 @@ namespace Bodu.Text.Toml.Serialization;
 /// <see cref="TomlSerializationException" /> rather than being narrowed into that type.
 /// </para>
 /// <para>
+/// Names are matched as System.Text.Json's <c>JsonStringEnumConverter</c> matches them. A member's wire name, from
+/// <see cref="StringEnumMemberNameAttribute" /> or the naming policy, binds only in its own case; the CLR name of a
+/// member the attribute does not rename also binds, in any case, while a renamed member's CLR name does not. A
+/// combination of flags is written as the comma-separated wire names of its flags, in the order
+/// <see cref="Enum.ToString()" /> lists them, and is read from a list of names in any order, with a trailing comma
+/// tolerated; an integer binds, where integers are allowed, only as the whole text.
+/// </para>
+/// <para>
 /// A converter that does not allow integers throws <see cref="TomlSerializationException" /> on a TOML integer, and at
 /// a string that is not a member's wire name and has an integer in any of its comma-separated parts, such as <c>"2"</c>
 /// or <c>"Read, 2"</c>, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects such a string from .NET 9. A

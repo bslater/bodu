@@ -215,6 +215,217 @@ public partial class TomlSerializerTests
             _ = TomlSerializer.Deserialize<StatusModel>($"Status = \"{text}\"\n", tomlOptions);
         });
     }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> with a naming policy writes a member, and a combination of
+    /// flags one of which a <see cref="StringEnumMemberNameAttribute" /> renames, as the text
+    /// <see cref="JsonStringEnumConverter" /> writes for the same value under the same policy.
+    /// </summary>
+    /// <param name="access">The underlying value of the <see cref="ParityAccessFlags" /> member.</param>
+    /// <param name="renamed">The underlying value of the <see cref="ParityRenamedFlags" /> member.</param>
+    /// <param name="toggle">The underlying value of the <see cref="ParityToggle" /> member.</param>
+    [TestMethod]
+    [DataRow(5, 3, 1, DisplayName = "two single flags, a renamed flag with another, and a renamed member")]
+    [DataRow(7, 1, 0, DisplayName = "a composite member and a flag, a renamed flag, and an unrenamed member")]
+    [DataRow(6, 2, 1, DisplayName = "two other single flags, an unrenamed flag, and a renamed member")]
+    [DataRow(3, 0, 0, DisplayName = "a composite member, and two zero values")]
+    public void Serialize_WhenStringEnumConverterHasNamingPolicy_ShouldWriteNamesLikeSystemTextJson(int access, int renamed, int toggle)
+    {
+        var model = new EnumParityModel { Access = (ParityAccessFlags)access, Renamed = (ParityRenamedFlags)renamed, Toggle = (ParityToggle)toggle };
+        using JsonDocument json = JsonDocument.Parse(JsonSerializer.Serialize(model, SnakeCaseJsonEnumOptions()));
+        string expected = string.Concat(
+            json.RootElement.EnumerateObject().Select(static property => $"{property.Name} = \"{property.Value.GetString()}\"\n"));
+
+        string toml = TomlSerializer.Serialize(model, SnakeCaseEnumOptions(allowIntegerValues: true));
+
+        Assert.AreEqual(expected, toml);
+    }
+
+    /// <summary>
+    /// Verifies that text <see cref="JsonStringEnumConverter" /> binds under a naming policy binds to the same value
+    /// through a <see cref="TomlStringEnumConverter" /> with the same policy.
+    /// </summary>
+    /// <param name="member">The model member the text is read into.</param>
+    /// <param name="text">The string's text.</param>
+    [TestMethod]
+    [DataRow(nameof(EnumParityModel.Access), "can_read, can_execute", DisplayName = "two wire names")]
+    [DataRow(nameof(EnumParityModel.Access), "can_execute, can_read", DisplayName = "two wire names in descending order")]
+    [DataRow(nameof(EnumParityModel.Access), " can_read , can_execute ", DisplayName = "two wire names between spaces")]
+    [DataRow(nameof(EnumParityModel.Access), "can_read_write, can_execute", DisplayName = "a composite member's wire name and a flag")]
+    [DataRow(nameof(EnumParityModel.Access), "can_read,", DisplayName = "a wire name and a trailing comma")]
+    [DataRow(nameof(EnumParityModel.Access), "CanRead", DisplayName = "an unrenamed member's CLR name")]
+    [DataRow(nameof(EnumParityModel.Access), "canread", DisplayName = "an unrenamed member's CLR name in lower case")]
+    [DataRow(nameof(EnumParityModel.Access), "CanRead, can_execute", DisplayName = "a CLR name and a wire name")]
+    [DataRow(nameof(EnumParityModel.Access), " +1 ", DisplayName = "a whole-text integer")]
+    [DataRow(nameof(EnumParityModel.Renamed), "r, write", DisplayName = "a configured name and a wire name")]
+    [DataRow(nameof(EnumParityModel.Renamed), "write, r", DisplayName = "a wire name and a configured name")]
+    [DataRow(nameof(EnumParityModel.Toggle), "on", DisplayName = "a renamed member's configured name")]
+    [DataRow(nameof(EnumParityModel.Toggle), "Disabled", DisplayName = "an unrenamed member's CLR name beside a renamed member")]
+    public void Deserialize_WhenSystemTextJsonBindsEnumText_ShouldBindSameValue(string member, string text)
+    {
+        EnumParityModel json = JsonSerializer.Deserialize<EnumParityModel>(
+            $"{{\"{member}\":{JsonSerializer.Serialize(text)}}}", SnakeCaseJsonEnumOptions())!;
+
+        EnumParityModel toml = TomlSerializer.Deserialize<EnumParityModel>(
+            $"{member} = \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true))!;
+
+        Assert.AreEqual(json.ValueOf(member), toml.ValueOf(member));
+    }
+
+    /// <summary>
+    /// Verifies that text <see cref="JsonStringEnumConverter" /> rejects under a naming policy, with integer values
+    /// allowed, is rejected through a <see cref="TomlStringEnumConverter" /> configured the same way.
+    /// </summary>
+    /// <param name="member">The model member the text is read into.</param>
+    /// <param name="text">The string's text.</param>
+    [TestMethod]
+    [DataRow(nameof(EnumParityModel.Access), "CAN_READ", DisplayName = "a policy name in another case")]
+    [DataRow(nameof(EnumParityModel.Access), "can_read, , can_execute", DisplayName = "an empty name between two names")]
+    [DataRow(nameof(EnumParityModel.Access), ", can_read", DisplayName = "an empty name before a name")]
+    [DataRow(nameof(EnumParityModel.Access), "can_read,,", DisplayName = "a name and two trailing commas")]
+    [DataRow(nameof(EnumParityModel.Access), "", DisplayName = "the empty string")]
+    [DataRow(nameof(EnumParityModel.Access), "1, 4", DisplayName = "a list of integers")]
+    [DataRow(nameof(EnumParityModel.Access), "can_read, 4", DisplayName = "a wire name and an integer")]
+    [DataRow(nameof(EnumParityModel.Renamed), "Read", DisplayName = "a renamed flag's CLR name")]
+    [DataRow(nameof(EnumParityModel.Renamed), "Read, write", DisplayName = "a renamed flag's CLR name in a list")]
+    [DataRow(nameof(EnumParityModel.Toggle), "ON", DisplayName = "a configured name in another case")]
+    [DataRow(nameof(EnumParityModel.Toggle), "Enabled", DisplayName = "a renamed member's CLR name")]
+    [DataRow(nameof(EnumParityModel.Toggle), "enabled", DisplayName = "a renamed member's CLR name in lower case")]
+    public void Deserialize_WhenSystemTextJsonRejectsEnumText_ShouldRejectLikeSystemTextJson(string member, string text)
+    {
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<EnumParityModel>($"{{\"{member}\":{JsonSerializer.Serialize(text)}}}", SnakeCaseJsonEnumOptions());
+        });
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<EnumParityModel>($"{member} = \"{text}\"\n", SnakeCaseEnumOptions(allowIntegerValues: true));
+        });
+    }
+
+    /// <summary>
+    /// Creates options that convert enumerations by name through a <see cref="JsonStringEnumConverter" /> with the lower
+    /// snake-case naming policy, allowing integer values, the counterpart of
+    /// <see cref="SnakeCaseEnumOptions(bool)" />.
+    /// </summary>
+    /// <returns>The options.</returns>
+    private static JsonSerializerOptions SnakeCaseJsonEnumOptions()
+    {
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower, allowIntegerValues: true));
+        return options;
+    }
+
+    /// <summary>
+    /// A flags enumeration whose members' names change under a naming policy, with a composite member, for comparing the
+    /// two serializers.
+    /// </summary>
+    [Flags]
+    private enum ParityAccessFlags
+    {
+        /// <summary>
+        /// No access.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Read access.
+        /// </summary>
+        CanRead = 1,
+
+        /// <summary>
+        /// Write access.
+        /// </summary>
+        CanWrite = 2,
+
+        /// <summary>
+        /// Read and write access, the composite of <see cref="CanRead" /> and <see cref="CanWrite" />.
+        /// </summary>
+        CanReadWrite = 3,
+
+        /// <summary>
+        /// Execute access.
+        /// </summary>
+        CanExecute = 4,
+    }
+
+    /// <summary>
+    /// A flags enumeration one of whose members both serializers' attributes rename.
+    /// </summary>
+    [Flags]
+    private enum ParityRenamedFlags
+    {
+        /// <summary>
+        /// No flag.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The read flag, written under the name <c>r</c>.
+        /// </summary>
+        [StringEnumMemberName("r")]
+        [JsonStringEnumMemberName("r")]
+        Read = 1,
+
+        /// <summary>
+        /// The write flag.
+        /// </summary>
+        Write = 2,
+    }
+
+    /// <summary>
+    /// An enumeration one of whose members both serializers' attributes rename.
+    /// </summary>
+    private enum ParityToggle
+    {
+        /// <summary>
+        /// The disabled state.
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
+        /// The enabled state, written under the name <c>on</c>.
+        /// </summary>
+        [StringEnumMemberName("on")]
+        [JsonStringEnumMemberName("on")]
+        Enabled = 1,
+    }
+
+    /// <summary>
+    /// A model carrying one member of each parity enumeration.
+    /// </summary>
+    private sealed class EnumParityModel
+    {
+        /// <summary>
+        /// Gets or sets the access flags.
+        /// </summary>
+        /// <value>The access flags.</value>
+        public ParityAccessFlags Access { get; set; }
+
+        /// <summary>
+        /// Gets or sets the renamed flags.
+        /// </summary>
+        /// <value>The renamed flags.</value>
+        public ParityRenamedFlags Renamed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the toggle.
+        /// </summary>
+        /// <value>The toggle.</value>
+        public ParityToggle Toggle { get; set; }
+
+        /// <summary>
+        /// Returns the underlying value of the member with the given name.
+        /// </summary>
+        /// <param name="member">The member's name.</param>
+        /// <returns>The member's underlying value.</returns>
+        public long ValueOf(string member) => member switch
+        {
+            nameof(Access) => (long)Access,
+            nameof(Renamed) => (long)Renamed,
+            _ => (long)Toggle,
+        };
+    }
 #endif
 
     /// <summary>

@@ -1,0 +1,19 @@
+<Solution>
+  <Project Path="Bodu.Collections/src/Bodu.Collections.csproj" />
+  <Project Path="Bodu.Core/src/Bodu.Core.csproj" />
+  <Project Path="Bodu.Formats.Excel.Binary/src/Bodu.Formats.Excel.Binary.csproj" />
+  <Project Path="Bodu.Formats.Excel.Binary/test/Bodu.Formats.Excel.Binary.Test.csproj" />
+  <Project Path="Bodu.Formats.Outlook/src/Bodu.Formats.Outlook.csproj" />
+  <Project Path="Bodu.Formats.Outlook/test/Bodu.Formats.Outlook.Test.csproj" />
+  <Project Path="Bodu.Formats.Outlook.Msg/src/Bodu.Formats.Outlook.Msg.csproj" />
+  <Project Path="Bodu.Formats.Outlook.Msg/test/Bodu.Formats.Outlook.Msg.Test.csproj" />
+  <Project Path="Bodu.Formats.Outlook.Pst/src/Bodu.Formats.Outlook.Pst.csproj" />
+  <Project Path="Bodu.Formats.Outlook.Pst/test/Bodu.Formats.Outlook.Pst.Test.csproj" />
+  <Project Path="Bodu.IO.Biff/src/Bodu.IO.Biff.csproj" />
+  <Project Path="Bodu.IO.Biff/test/Bodu.IO.Biff.Test.csproj" />
+  <Project Path="Bodu.IO.Compound/src/Bodu.IO.Compound.csproj" />
+  <Project Path="Bodu.IO.Compound/test/Bodu.IO.Compound.Test.csproj" />
+  <Project Path="Bodu.IO.Pst/src/Bodu.IO.Pst.csproj" />
+  <Project Path="Bodu.IO.Pst/test/Bodu.IO.Pst.Test.csproj" />
+  <Project Path="Bodu.Test/test/Bodu.Test.csproj" />
+</Solution>
