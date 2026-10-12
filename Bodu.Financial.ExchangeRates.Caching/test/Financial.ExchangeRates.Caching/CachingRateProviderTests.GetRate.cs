@@ -60,4 +60,21 @@ public sealed partial class CachingRateProviderTests
             _ = sut.GetRate("AUD", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.Exact);
         });
     }
+
+    /// <summary>
+    /// Verifies that the undated <see cref="CachingRateProvider.GetRate(string, string, RateLookupOptions?)" />
+    /// resolves the most recent rate on or before the current UTC date, as the wrapped provider's undated lookup does,
+    /// rather than requiring a rate on the current date itself.
+    /// </summary>
+    [TestMethod]
+    public void GetRate_WhenUndatedAndLatestRateIsBeforeToday_ShouldReturnMostRecentRate()
+    {
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 5), 0.50m), ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
+        CachingRateProvider sut = CreateDecorator(inner);
+
+        RateLookupResult result = sut.GetRate("AUD", "USD", options: null);
+
+        Assert.AreEqual(new DateOnly(2023, 1, 6), result.Rate.Date);
+        Assert.AreEqual(0.51m, result.Rate.Rate);
+    }
 }
