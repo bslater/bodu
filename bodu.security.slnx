@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Bodu.Core/src/Bodu.Core.csproj" />
+  <Project Path="Bodu.IO.Hashing/src/Bodu.IO.Hashing.csproj" />
+  <Project Path="Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj" />
+  <Project Path="Bodu.Security.Cryptography/src/Bodu.Security.Cryptography.csproj" />
+  <Project Path="Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj" />
+  <Project Path="Bodu.Security.Cryptography.Simd.Test/test/Bodu.Security.Cryptography.Simd.Test.csproj" />
+  <Project Path="Bodu.Test/test/Bodu.Test.csproj" />
+</Solution>
