@@ -249,4 +249,53 @@ public partial class CompoundFileTests
 
         Assert.AreEqual(expectedFree, found);
     }
+
+    /// <summary>
+    /// Verifies that a commit in update mode whose staged tree cannot be written, its storages nested deeper than
+    /// <see cref="CompoundBuildOptions.MaxDepth" /> allows, throws <see cref="CompoundFileSerializationException" /> and
+    /// leaves the container it opened unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenStagedTreeCannotBeWritten_ShouldLeaveTheDestinationUnchanged()
+    {
+        MemoryStream destination = CreateContainer(("A", CompoundContainerBytes.Pattern(100)));
+        byte[] original = destination.ToArray();
+
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        CompoundStorage storage = file.RootStorage;
+        for (int depth = 0; depth < 70; depth++)
+            storage = storage.CreateStorage("S");
+
+        Assert.ThrowsExactly<CompoundFileSerializationException>(() =>
+        {
+            file.Commit();
+        });
+
+        CollectionAssert.AreEqual(original, destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a second commit of a created version-3 file whose container would exceed 2 GB throws
+    /// <see cref="CompoundFileSerializationException" /> and leaves the container the first commit wrote unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Commit_WhenSecondCommitWouldExceedTwoGigabytes_ShouldLeaveTheFirstCommitUnchanged()
+    {
+        var destination = new MemoryStream();
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
+        file.RootStorage.CreateStream("A", CompoundContainerBytes.Pattern(100));
+        file.Commit();
+        byte[] first = destination.ToArray();
+        using var large1 = new UnbackedMemoryManager(1_100_000_000);
+        using var large2 = new UnbackedMemoryManager(1_100_000_000);
+        file.RootStorage.CreateStream("Large1", large1.Memory);
+        file.RootStorage.CreateStream("Large2", large2.Memory);
+
+        Assert.ThrowsExactly<CompoundFileSerializationException>(() =>
+        {
+            file.Commit();
+        });
+
+        CollectionAssert.AreEqual(first, destination.ToArray());
+    }
 }

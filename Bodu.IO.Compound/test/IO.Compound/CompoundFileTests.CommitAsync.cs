@@ -268,4 +268,28 @@ public partial class CompoundFileTests
         uint start = BinaryPrimitives.ReadUInt32LittleEndian(written.AsSpan(entry + CompoundContainerBytes.StartSectorOffset));
         Assert.AreEqual(1u + 292_969u + 292_969u + 1u, start);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> in update mode, when its staged tree cannot be written, throws
+    /// <see cref="CompoundFileSerializationException" /> and leaves the container it opened unchanged.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenStagedTreeCannotBeWritten_ShouldLeaveTheDestinationUnchanged()
+    {
+        MemoryStream destination = CreateContainer(("A", CompoundContainerBytes.Pattern(100)));
+        byte[] original = destination.ToArray();
+
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        CompoundStorage storage = file.RootStorage;
+        for (int depth = 0; depth < 70; depth++)
+            storage = storage.CreateStorage("S");
+
+        await Assert.ThrowsExactlyAsync<CompoundFileSerializationException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        CollectionAssert.AreEqual(original, destination.ToArray());
+    }
 }
