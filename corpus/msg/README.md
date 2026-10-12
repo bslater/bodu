@@ -315,6 +315,13 @@ OLE2 compound file", with the `CompoundFileFormatException` that says why still 
 this area, `Bodu.IO.Compound` still fills the unused directory entries it writes with zero bytes, where MS-CFB 2.6.3
 asks for `0xFFFFFFFF` in their left, right and child fields (#985).
 
+Three more defects were found while fixing these, and are fixed in the same change: an HTML body declared as UTF-16
+decoded as Windows-1252, because HTML bodies shared the refusal of UTF-16 that code-page strings need, and since #978
+read as its first character; `BodyHtml` now accepts any code page .NET serves, UTF-16 and UTF-32 included (#998). A
+`String8` value under a UTF-32 code page decoded to replacement characters; code-page strings now refuse 12000 and 12001
+as they refuse 1200 and 1201 (#999). The .msg reader reported a container fault met after `Open` as a missing property
+stream; it now reports a malformed container, as #984 does at `Open` (#1000).
+
 ### Documented behaviour that departs from the specification
 
 Two `dialect` rows pass because Bodu documents a behaviour the specification does not share; they are kept as `dialect`
