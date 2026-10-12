@@ -151,7 +151,7 @@ YamlSerializer.Deserialize<ServerConfig>("Name: edge\nlisten_port: 8443");
 | `WriteIndented` | - | The formats are line-oriented and always readable; YAML indentation width is a writer option (`YamlWriterOptions.IndentSize`), not a serializer option. |
 | `System.Text.Json.Serialization.ReferenceHandler` | - | Object cycles are detected and fail the write (see the YAML callbacks guide's [invocation order](yaml/callbacks.md#invocation-order)); there is no reference-preserving mode. |
 | `AllowTrailingCommas`, `ReadCommentHandling` | - | Comments are part of the TOML, YAML, DotEnv, and INI grammars and are always accepted. |
-| `System.Text.Json.JsonSerializerOptions.TypeInfoResolver` / source generation | - | The structured serializers are reflection-based (their `Serialize` / `Deserialize` carry `RequiresUnreferencedCode`). Reflection-free binding exists only for Delimited and INI through the [source generator](../formats/source-generator.md). |
+| `System.Text.Json.JsonSerializerOptions.TypeInfoResolver` / source generation | - | The structured serializers are reflection-based (their `Serialize` / `Deserialize` carry `RequiresUnreferencedCode` and `RequiresDynamicCode`, so trimming and native AOT analysis warn where an application calls them). Reflection-free binding exists only for Delimited and INI through the [source generator](../formats/source-generator.md). |
 
 The shape of an options block carries over directly, including the collection initializer on `Converters`:
 
