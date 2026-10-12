@@ -1,7 +1,8 @@
 # Outlook library hardening - security, exception discipline, performance
 
 **Date:** 2026-09-03
-**Status:** Phase A (tests) complete; Phase B (fixes) in progress.
+**Status:** Complete. Phase A (tests) and Phase B (fixes) landed on 2026-09-03, and every follow-on
+since (see the status section below).
 **Scope:** `Bodu.Formats.Outlook` (shared model + `shared/` decode layer),
 `Bodu.Formats.Outlook.Msg`, `Bodu.Formats.Outlook.Pst`, and the
 `Bodu.IO.Pst` container.

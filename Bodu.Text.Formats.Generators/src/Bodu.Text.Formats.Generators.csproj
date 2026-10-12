@@ -12,8 +12,8 @@
         <IsRoslynComponent>true</IsRoslynComponent>
         <!--
       The generator ships inside a consumer's build, not as a runtime dependency. Packaging (analyzer
-      nupkg layout, icon, hero banner, release-manifest entry) follows when the Wave-2 release wave
-      picks the package up; until then the project builds and tests as a Roslyn component only.
+      nupkg layout, icon, hero banner, release-manifest entry) follows when a release adds the package
+      to bld/release-manifest.txt; until then the project builds and tests as a Roslyn component only.
     -->
         <IsPackable>false</IsPackable>
         <DevelopmentDependency>true</DevelopmentDependency>

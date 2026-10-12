@@ -1,6 +1,6 @@
 # Bodu TOML release-note fix catalogue
 
-`fixes/` holds, for each of eight TOML libraries, every defect fix its release notes list, each turned into one or
+`fixes/` holds, for each of nine TOML projects, every defect fix its release notes list, each turned into one or
 more rows that run against `Bodu.Text.Toml`. A fix one library had to make is a scenario every TOML reader and
 writer can get wrong, so each row asks whether Bodu gets it right, or records why the fix cannot apply to Bodu.
 
