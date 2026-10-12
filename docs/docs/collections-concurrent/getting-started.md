@@ -61,6 +61,7 @@ Enumeration and `ToArray()` are weakly consistent lock-free traversals and never
 A lock-striped bounded cache - the thread-safe variant of `EvictingDictionary<TKey,TValue>`, with the same six eviction policies and optional TTL expiry:
 
 ```csharp
+using Bodu.Collections.Generic;
 using Bodu.Collections.Generic.Concurrent;
 
 var cache = new ConcurrentEvictingDictionary<string, Report>(

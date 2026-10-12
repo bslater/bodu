@@ -127,7 +127,7 @@ foreach (string item in set)
 string[] snap = set.ToArray();
 ```
 
-`ToArray` and the enumerator capture a **weakly consistent** snapshot via a lock-free traversal: every element present for the entire duration of the capture is included and no element appears twice, but concurrent additions and removals may or may not be observed. Enumeration is safe under concurrent mutation, never throws, and does not see writes that occur after the snapshot is taken.
+`ToArray` and the enumerator capture a **weakly consistent** snapshot via a lock-free traversal: every element present for the entire duration of the capture is included, but concurrent additions and removals may or may not be observed. No element appears twice, except in a rare interleaving: an element removed and re-added during the capture can appear twice when another element shares its full hash key. Enumeration is safe under concurrent mutation, never throws, and does not see writes that occur after the snapshot is taken.
 
 ### Counting
 
@@ -149,6 +149,7 @@ The thread-safe variant of [`EvictingDictionary<TKey,TValue>`](evicting-dictiona
 ### Construction
 
 ```csharp
+using Bodu.Collections.Generic;
 using Bodu.Collections.Generic.Concurrent;
 
 // Capacity + policy; all six EvictingDictionaryPolicy values are supported.

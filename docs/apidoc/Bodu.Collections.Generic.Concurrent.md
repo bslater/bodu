@@ -18,15 +18,16 @@ uid: Bodu.Collections.Generic.Concurrent
 ## Example
 
 ```csharp
+using Bodu.Collections.Generic;
 using Bodu.Collections.Generic.Concurrent;
 
 // T is constrained to reference types (where T : class?) - wrap value types in a record or class.
 var ring = new ConcurrentCircularBuffer<Sample>(capacity: 1024, allowOverwrite: true);
 
 // Multi-producer / multi-consumer scenarios - no external lock needed.
-Parallel.ForEach(samples, sample => ring.TryAdd(sample));
+Parallel.ForEach(samples, sample => ring.TryEnqueue(sample));
 
-while (ring.TryTake(out Sample? item))
+while (ring.TryDequeue(out Sample? item))
     Process(item);
 
 // Bounded, policy-driven cache shared by request threads.

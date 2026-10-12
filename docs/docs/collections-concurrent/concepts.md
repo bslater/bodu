@@ -44,13 +44,14 @@ The two caches therefore sit at opposite ends of one trade: the evicting diction
 
 ## Snapshot enumeration
 
-The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so both concurrent types substitute **snapshot enumeration** - `foreach` and `ToArray` capture the contents once, iterate over that fixed copy, and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.
+The single-threaded catalogue enumerates **fail-fast**: a version counter detects structural mutation and the enumerator throws <xref:System.InvalidOperationException>. A lock-free structure cannot maintain that token, so every concurrent type substitutes **snapshot enumeration** - `foreach` and `ToArray` capture the contents once, iterate over that fixed copy, and *never throw* on concurrent modification. Writes that land after the snapshot are simply not seen.
 
 The types capture their snapshots differently:
 
 - The **buffer** uses a per-slot *seqlock*: the scan validates slot sequence numbers and restarts on churn, falling back to a sequence-validated best-effort snapshot only after an internal retry budget is exhausted. The result is a coherent point-in-time capture.
-- The **set** performs a lock-free traversal of its split-ordered list. The capture is **weakly consistent** rather than point-in-time: it contains every element present for the entire duration of the call and never contains an element twice, but concurrent additions and removals may or may not be observed.
+- The **set** performs a lock-free traversal of its split-ordered list. The capture is **weakly consistent** rather than point-in-time: it contains every element present for the entire duration of the call, but concurrent additions and removals may or may not be observed. It contains no element twice, except in a rare interleaving: an element removed and re-added during the call can be yielded twice when another element shares its full hash key.
 - The **evicting dictionary** acquires every segment lock once, copies, and releases - a brief globally consistent pause rather than an optimistic retry loop.
+- The **LRU cache** copies its backing dictionary in one `ToArray` call - a point-in-time capture whose order is unspecified.
 
 ## Approximate vs. coherent counts
 
@@ -75,7 +76,7 @@ With `AllowOverwrite = true`, a producer that finds the buffer full silently ove
 |---|---|---|
 | Pre-eviction event | `ItemEvicting` (can veto) | *none* |
 | Handler exceptions | Propagate to the caller | **Swallowed** |
-| `Clear` raises events | Yes | No - bounded drain, no `ItemEvicted` |
+| `Clear` raises events | No | No - bounded drain, no `ItemEvicted` |
 
 The lock-free path cannot safely unwind a half-completed slot handoff, so there is no veto and a throwing handler must not be able to fail the producer. Do not port veto logic between the two types; treat the concurrent event as telemetry, not control flow.
 
