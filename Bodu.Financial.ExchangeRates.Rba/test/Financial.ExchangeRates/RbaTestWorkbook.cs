@@ -31,7 +31,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// declares a wider range than its cells use, as Excel's record of every formatted cell does.
 /// </para>
 /// </remarks>
-internal static class RbaTestWorkbook
+internal static partial class RbaTestWorkbook
 {
     /// <summary>The name of the compound-file stream that holds the workbook.</summary>
     public const string WorkbookStreamName = "Workbook";

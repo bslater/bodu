@@ -64,6 +64,15 @@ internal sealed record RbaTestColumn
     public string? SeriesId { get; init; }
 
     /// <summary>
+    /// Gets the ISO 4217 code the parser should resolve the column to.
+    /// </summary>
+    /// <value>
+    /// The code, for example <c>XDR</c> for the <c>SDR</c> column, or <see langword="null" /> when the column is not a
+    /// currency, as the trade-weighted index is not.
+    /// </value>
+    public string? CurrencyCode { get; init; }
+
+    /// <summary>
     /// Gets the number of decimal places the number format of the column's data cells shows.
     /// </summary>
     /// <value>From zero to four; four unless set.</value>
