@@ -22,9 +22,10 @@ namespace Bodu.Formats.Outlook.Pst;
 /// the writer stored it as a string; either way the text ends at its first NUL. A byte payload that begins with the
 /// byte order mark of the code page it decodes through - UTF-8, UTF-16LE, UTF-16BE, UTF-32LE or UTF-32BE - has the mark
 /// dropped first, as a UTF-8 code-page string has; a mark that does not belong to that code page is decoded as the
-/// encoding reads it. The RTF body is <c>PidTagRtfCompressed</c>, decompressed per MS-OXRTFCP under the caller's output
-/// ceiling. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format
-/// reader; the consuming project selects the namespace via its <c>DefineConstants</c>.
+/// encoding reads it. UTF-7 (code page 65000) has no fixed mark, so for it a leading U+FEFF in the decoded text, its
+/// signature, is dropped instead. The RTF body is <c>PidTagRtfCompressed</c>, decompressed per MS-OXRTFCP under the
+/// caller's output ceiling. This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each
+/// Outlook format reader; the consuming project selects the namespace via its <c>DefineConstants</c>.
 /// </remarks>
 internal static class MapiBodies
 {
@@ -65,7 +66,7 @@ internal static class MapiBodies
             if (!mark.IsEmpty && bytes.StartsWith(mark))
                 bytes = bytes[mark.Length..];
 
-            string text = encoding.GetString(bytes);
+            string text = MapiValueDecoder.RemoveUtf7Signature(encoding, encoding.GetString(bytes));
 
             // A writer may store the body with a terminating NUL. The text is cut at its first NUL character rather
             // than at a zero byte, because whether a zero byte is a NUL depends on the code page.

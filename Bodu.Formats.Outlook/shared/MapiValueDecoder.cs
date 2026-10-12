@@ -38,6 +38,9 @@ internal static class MapiValueDecoder
     /// <summary>The UTF-8 code page, whose payloads may carry a byte order mark.</summary>
     private const int Utf8CodePage = 65001;
 
+    /// <summary>The UTF-7 code page, whose signature is a leading U+FEFF in the decoded text.</summary>
+    private const int Utf7CodePage = 65000;
+
     /// <summary>
     /// Gets the UTF-8 byte order mark.
     /// </summary>
@@ -171,8 +174,9 @@ internal static class MapiValueDecoder
     /// <see cref="MapiPropertyType.Unicode" /> payload is cut at its first zero code unit and a
     /// <see cref="MapiPropertyType.String8" /> payload at its first zero byte, before the string is materialized, so
     /// the terminator and any bytes after it are dropped at every strictness. A UTF-8 code-page payload that begins
-    /// with a byte order mark has the mark removed first. The odd-length check applies to the whole payload, before the
-    /// cut.
+    /// with a byte order mark has the mark removed first, and a UTF-7 one whose decoded text begins with U+FEFF, the
+    /// UTF-7 signature, has that character removed (see <see cref="RemoveUtf7Signature" />). The odd-length check
+    /// applies to the whole payload, before the cut.
     /// </remarks>
     internal static bool TryDecodeVariableValue(MapiPropertyType type, ReadOnlySpan<byte> bytes, Encoding encoding, bool strict, out object? value)
     {
@@ -205,7 +209,8 @@ internal static class MapiValueDecoder
                 // In the single-byte and multibyte code pages a code-page string is written in, and in UTF-8 and UTF-7,
                 // no byte of a character other than NUL is zero, so the first zero byte is the terminator.
                 int terminator = bytes.IndexOf((byte)0);
-                value = encoding.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator));
+                string text = encoding.GetString(terminator < 0 ? bytes : bytes.Slice(0, terminator));
+                value = RemoveUtf7Signature(encoding, text);
                 return true;
             case MapiPropertyType.Binary:
                 value = bytes.ToArray();
@@ -224,6 +229,22 @@ internal static class MapiValueDecoder
                 return false;
         }
     }
+
+    /// <summary>
+    /// Removes the UTF-7 signature from text decoded through an encoding.
+    /// </summary>
+    /// <param name="encoding">The encoding the text was decoded through.</param>
+    /// <param name="text">The decoded text.</param>
+    /// <returns>
+    /// The text without its leading U+FEFF when <paramref name="encoding" /> is UTF-7; otherwise the text as given.
+    /// </returns>
+    /// <remarks>
+    /// UTF-7's signature is not a fixed byte sequence: RFC 2152 writes U+FEFF as <c>+/v8</c>, <c>+/v9</c>, <c>+/v+</c>
+    /// or <c>+/v/</c>, the last character depending on what follows, so it is recognized in the decoded text rather
+    /// than in the bytes. A U+FEFF anywhere but at the start is text, and stays.
+    /// </remarks>
+    internal static string RemoveUtf7Signature(Encoding encoding, string text) =>
+        encoding.CodePage == Utf7CodePage && text.StartsWith('\uFEFF') ? text[1..] : text;
 
     /// <summary>
     /// Decodes UTF-16LE text up to its first NUL code unit.
