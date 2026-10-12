@@ -29,7 +29,8 @@ public static partial class DateTimeExtensions
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
-    /// enumeration.
+    /// enumeration, or is <see cref="WorkingDaysOfWeek.Custom" />, which needs an
+    /// <see cref="IWeekendDefinitionProvider" />.
     /// </exception>
     public static DateTime NextWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek) =>
         NextWeekday(dateTime, workingWeek, provider: null);
@@ -62,7 +63,8 @@ public static partial class DateTimeExtensions
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="workingWeek" /> is not a defined value of the <see cref="WorkingDaysOfWeek" />
-    /// enumeration.
+    /// enumeration, or is <see cref="WorkingDaysOfWeek.Custom" /> and <paramref name="provider" /> is
+    /// <see langword="null" />.
     /// </exception>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "The provider is optional and is dereferenced only on the Custom path, after ResolveWorkingWeek has rejected a null provider there; the flow analysis cannot see that relationship.")]
     public static DateTime NextWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)

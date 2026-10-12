@@ -114,8 +114,10 @@ public static partial class DateTimeExtensions
     /// <paramref name="provider" /> - for example, 4-4-5 retail calendars or regional fiscal quarters.
     /// </para>
     /// <para>
-    /// The returned value has its time component normalized to midnight (00:00:00), and the original
-    /// <see cref="DateTime.Kind" /> is retained.
+    /// The value is returned exactly as <see cref="IQuarterDefinitionProvider.GetQuarterEnd(DateTime)" /> supplies it.
+    /// That member is documented to return midnight (00:00:00) with the original <see cref="DateTime.Kind" />
+    /// preserved, as the built-in <see cref="FiscalWeekQuarterProvider" /> does; a custom provider is responsible for
+    /// the same.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">

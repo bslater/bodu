@@ -74,11 +74,13 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns a string representation of the specified <paramref name="dateTime" /> in ISO 8601 format, using an
-    /// explicit <see cref="DateTimeKind" /> override.
+    /// Returns a string representation of the specified <paramref name="dateTime" /> in ISO 8601 format, after
+    /// converting it to the specified <see cref="DateTimeKind" />.
     /// </summary>
     /// <param name="dateTime">The date and time value to convert.</param>
-    /// <param name="kind">The <see cref="DateTimeKind" /> to apply before formatting.</param>
+    /// <param name="kind">
+    /// The <see cref="DateTimeKind" /> to convert <paramref name="dateTime" /> to before formatting.
+    /// </param>
     /// <returns>
     /// A <see cref="string" /> representation of <paramref name="dateTime" /> in ISO 8601 format:
     /// <list type="bullet">
@@ -93,6 +95,15 @@ public static partial class DateTimeExtensions
     /// </item>
     /// </list>
     /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The conversion preserves the instant, not the clock time: <see cref="DateTimeKind.Utc" /> converts with
+    /// <see cref="DateTime.ToUniversalTime" />, which treats an <see cref="DateTimeKind.Unspecified" /> value as local
+    /// time, and <see cref="DateTimeKind.Local" /> converts with <see cref="DateTime.ToLocalTime" />, which treats an
+    /// <see cref="DateTimeKind.Unspecified" /> value as Coordinated Universal Time. Only
+    /// <see cref="DateTimeKind.Unspecified" /> relabels the value without converting it.
+    /// </para>
+    /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="kind" /> is not a defined value of the <see cref="DateTimeKind" /> enumeration.
     /// </exception>

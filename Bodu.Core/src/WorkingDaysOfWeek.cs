@@ -18,9 +18,12 @@ namespace Bodu;
 /// set of its own.
 /// </para>
 /// <para>
-/// Use a named value when the working week is one of the listed patterns; use <see cref="Custom" /> together with a
-/// caller-supplied <see cref="DayOfWeekSet" /> when the working week is non-standard (for example a four-day week or an
-/// unevenly distributed schedule).
+/// Use a named value when the working week is one of the listed patterns. When the working week is non-standard (for
+/// example a four-day week or an unevenly distributed schedule), pass a <see cref="DayOfWeekSet" /> directly to the
+/// overloads that accept one, or use <see cref="Custom" /> together with an
+/// <see cref="Bodu.Extensions.IWeekendDefinitionProvider" /> that defines the week. <see cref="Custom" /> is also the
+/// value <see cref="Bodu.Extensions.WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek(DayOfWeekSet)" /> returns for a set
+/// that matches no named pattern.
 /// </para>
 /// </remarks>
 public enum WorkingDaysOfWeek
@@ -61,7 +64,8 @@ public enum WorkingDaysOfWeek
     SundayToThursday = 6,
 
     /// <summary>
-    /// Indicates a non-standard working week whose pattern is supplied externally via a <see cref="DayOfWeekSet" />.
+    /// Indicates a non-standard working week whose pattern is supplied externally by an
+    /// <see cref="Bodu.Extensions.IWeekendDefinitionProvider" />.
     /// </summary>
     Custom = 7,
 
