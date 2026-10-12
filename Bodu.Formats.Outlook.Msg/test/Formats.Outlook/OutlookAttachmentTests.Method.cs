@@ -30,6 +30,39 @@ public partial class OutlookAttachmentTests
             .Build();
 
     /// <summary>
+    /// Verifies that an attachment without a declared method but with a content stream reports the by-value method -
+    /// the real-world tolerance rule.
+    /// </summary>
+    [TestMethod]
+    public void Method_WhenUndeclaredButContentPresent_ShouldReportByValue()
+    {
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddAttachment(attachment => attachment
+                .AddBinary(MapiPropertyIds.AttachData, new byte[] { 1 }))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual(OutlookAttachmentMethod.ByValue, message.Attachments[0].Method);
+    }
+
+    /// <summary>
+    /// Verifies that an attachment with neither a declared method nor content reports no method.
+    /// </summary>
+    [TestMethod]
+    public void Method_WhenUndeclaredAndNoContent_ShouldReportNone()
+    {
+        using MemoryStream container = MsgFixtureBuilder.CreateMinimal()
+            .AddAttachment(attachment => attachment
+                .AddUnicode(MapiPropertyIds.AttachLongFilename, "ghost.bin"))
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual(OutlookAttachmentMethod.None, message.Attachments[0].Method);
+    }
+
+    /// <summary>
     /// Verifies that a declared <c>afByWebReference</c> (7) method reports as <c>ByWebReference</c> at every validation
     /// level, rather than as an undefined value that leaves the attachment reporting <c>None</c>.
     /// </summary>
