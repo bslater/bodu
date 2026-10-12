@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace Bodu.Extensions.Configuration.Text;
 
@@ -39,7 +40,7 @@ public sealed class TomlConfigurationSource
     public Stream? Stream { get; set; }
 
     /// <summary>
-    /// Gets or sets the path of the TOML file to read.
+    /// Gets or sets the path of the TOML file to read, rooted or relative to the configuration builder's file provider.
     /// </summary>
     /// <value>The configured file path, or <see langword="null" /> when the source is stream-backed.</value>
     public string? Path { get; set; }
@@ -55,6 +56,24 @@ public sealed class TomlConfigurationSource
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
     /// <returns>A <see cref="TomlConfigurationProvider" />.</returns>
-    public IConfigurationProvider Build(IConfigurationBuilder builder) =>
-        new TomlConfigurationProvider(this);
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="builder" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// A file-backed source locates <see cref="Path" /> as <c>AddJsonFile</c> does: a rooted path is read from the file
+    /// system, and any other path through the builder's file provider, which is the provider <c>SetFileProvider</c>
+    /// sets, the base path <c>SetBasePath</c> sets, or by default the application's base directory.
+    /// </remarks>
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+        ThrowHelper.ThrowIfNull(builder);
+
+        if (Stream is null && Path is { } path)
+        {
+            (IFileProvider fileProvider, string filePath) = ConfigurationFileResolver.Resolve(builder, path);
+            return new TomlConfigurationProvider(this, fileProvider, filePath);
+        }
+
+        return new TomlConfigurationProvider(this);
+    }
 }

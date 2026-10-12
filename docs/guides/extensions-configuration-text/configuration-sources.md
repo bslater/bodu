@@ -139,7 +139,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];
 ```
 
-`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`. The source is **read once** when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`, which locates the file as `AddJsonFile` does: a relative path through the builder's file provider (the provider `SetFileProvider` sets, the base path `SetBasePath` sets, or by default the application's base directory), a rooted path as it is. The default provider does not serve a file whose name begins with a dot. The source is **read once** when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
 
 For configuration that arrives as a stream rather than a file path, use the stream overload - the UTF-8 TOML text is consumed once during `Build()`:
 
@@ -191,7 +191,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];
 ```
 
-`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`. Like the TOML bridge, the source is **read once** when the configuration is built - it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`, which locates the file as the TOML bridge does. Like the TOML bridge, the source is **read once** when the configuration is built - it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
 
 For configuration that arrives as a stream, use the stream overload - the Bencode document is consumed once during `Build()`:
 

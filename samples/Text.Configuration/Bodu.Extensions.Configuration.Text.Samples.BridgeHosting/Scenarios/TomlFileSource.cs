@@ -39,8 +39,8 @@ public static class TomlFileSource
                 + "builds cleanly with no keys instead of throwing, which is what makes an optional local "
                 + "override file safe to register unconditionally.");
 
-        // AddTomlFile reads the path directly (absolute, or relative to the working
-        // directory) - it does not consult the builder's file provider, so anchor it.
+        // AddTomlFile locates the path as AddJsonFile does: a relative path through the
+        // builder's file provider (SetBasePath), an absolute path as it is. Anchor it.
         var tomlPath = Path.Combine(AppContext.BaseDirectory, "Data", "settings.toml");
 
         IConfiguration configuration = new ConfigurationBuilder()

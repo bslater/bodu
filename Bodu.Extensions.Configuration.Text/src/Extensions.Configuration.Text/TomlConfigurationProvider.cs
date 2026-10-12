@@ -9,6 +9,7 @@ using System.Globalization;
 using Bodu.Text.Toml;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 
 namespace Bodu.Extensions.Configuration.Text;
@@ -48,6 +49,12 @@ public sealed class TomlConfigurationProvider
     /// <summary>The change token returned by <see cref="GetReloadToken" />. The provider does not reload, so it never fires.</summary>
     private readonly ConfigurationReloadToken _reloadToken = new();
 
+    /// <summary>The file provider that serves the source's file, or <see langword="null" /> to read the file through the file system relative to the current directory.</summary>
+    private readonly IFileProvider? _fileProvider;
+
+    /// <summary>The path of the source's file within <see cref="_fileProvider" />, or <see langword="null" /> when unresolved.</summary>
+    private readonly string? _filePath;
+
     /// <summary>The flattened configuration data, keyed case-insensitively.</summary>
     private IDictionary<string, string?> _data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
@@ -58,10 +65,33 @@ public sealed class TomlConfigurationProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// A provider constructed directly reads a file-backed source's <see cref="TomlConfigurationSource.Path" /> through
+    /// the file system, relative to the current directory. The provider that
+    /// <see cref="TomlConfigurationSource.Build(IConfigurationBuilder)" /> creates reads it through the configuration
+    /// builder's file provider instead, as <c>AddJsonFile</c> does.
+    /// </remarks>
     public TomlConfigurationProvider(TomlConfigurationSource source)
     {
         ThrowHelper.ThrowIfNull(source);
         _source = source;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TomlConfigurationProvider" /> class backed by the supplied source,
+    /// reading its file through the supplied file provider.
+    /// </summary>
+    /// <param name="source">The source that produced this provider.</param>
+    /// <param name="fileProvider">The file provider that serves the source's file.</param>
+    /// <param name="filePath">The path of the source's file within <paramref name="fileProvider" />.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source" /> is <see langword="null" />.
+    /// </exception>
+    internal TomlConfigurationProvider(TomlConfigurationSource source, IFileProvider fileProvider, string filePath)
+        : this(source)
+    {
+        _fileProvider = fileProvider;
+        _filePath = filePath;
     }
 
     /// <summary>
@@ -81,7 +111,8 @@ public sealed class TomlConfigurationProvider
 
         if (_source.Path is { } path)
         {
-            if (!File.Exists(path))
+            using Stream? file = ConfigurationFileResolver.OpenRead(_fileProvider, _filePath ?? path);
+            if (file is null)
             {
                 if (_source.Optional)
                 {
@@ -92,7 +123,6 @@ public sealed class TomlConfigurationProvider
                 throw new FileNotFoundException(string.Format(CultureInfo.CurrentCulture, ConfigurationTextResourceStrings.IO_FileNotFound_TomlFile, path), path);
             }
 
-            using FileStream file = File.OpenRead(path);
             _data = TomlConfigurationParser.Parse(file);
             return;
         }
