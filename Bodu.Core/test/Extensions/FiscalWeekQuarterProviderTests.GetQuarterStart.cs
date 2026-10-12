@@ -34,6 +34,26 @@ public partial class FiscalWeekQuarterProviderTests
     public void GetQuarterStart_WhenCalledWithQuarterAndFiscalYear_ShouldReturnUnspecifiedKind() => Assert.AreEqual(DateTimeKind.Unspecified, s_sunday52.GetQuarterStart(1, Sunday52FiscalYear).Kind);
 
     /// <summary>
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> preserves the
+    /// <see cref="DateTime.Kind" /> of the supplied date, as <see cref="IQuarterDefinitionProvider.GetQuarterStart(DateTime)" />
+    /// documents.
+    /// </summary>
+    /// <param name="kind">The kind of the supplied date.</param>
+    [TestMethod]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    [DataRow(DateTimeKind.Unspecified)]
+    public void GetQuarterStart_WhenDateTimeHasKind_ShouldPreserveKind(DateTimeKind kind)
+    {
+        var date = new DateTime(2024, 5, 15, 13, 45, 0, kind);
+
+        DateTime actual = s_sunday52.GetQuarterStart(date);
+
+        Assert.AreEqual(kind, actual.Kind);
+        Assert.AreEqual(s_sunday52.GetQuarterStart(new DateTime(2024, 5, 15)).Ticks, actual.Ticks);
+    }
+
+    /// <summary>
     /// Verifies that the start of each successive quarter is exactly 91 days (13 weeks) after the
     /// previous quarter start, for Q1 through Q3 in a 52-week provider.
     /// </summary>
