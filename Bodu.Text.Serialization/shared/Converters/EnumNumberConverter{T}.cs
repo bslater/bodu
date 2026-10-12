@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
-
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
 #elif TOML
@@ -19,10 +17,12 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// <remarks>
 /// The numeric value is read through <see cref="EnumIntegerConversion.ReadInteger{T}(ref FormatReader)" />, so an
 /// integer outside the range of the enumeration's underlying type throws the format's serialization exception rather
-/// than being narrowed into that type. A Bencode integer reaches <see cref="ulong.MaxValue" /> for an enumeration based
-/// on <see cref="ulong" />, whereas a TOML integer is a signed 64-bit value. The value is written through a signed
-/// 64-bit integer, so a value of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> cannot
-/// be written.
+/// than being narrowed into that type, and written through
+/// <see cref="EnumIntegerConversion.WriteInteger{T}(ref FormatWriter, T)" />. A Bencode integer reaches
+/// <see cref="ulong.MaxValue" />, so an enumeration based on <see cref="ulong" /> reads and writes every value. A TOML
+/// integer is a signed 64-bit value, so such an enumeration reads integers up to <see cref="long.MaxValue" />, and
+/// writing a larger value throws the format's serialization exception, with the <see cref="OverflowException" /> as its
+/// inner exception.
 /// </remarks>
 internal sealed class EnumNumberConverter<T>
     : SharedConverter<T>
@@ -39,5 +39,5 @@ internal sealed class EnumNumberConverter<T>
 
     /// <inheritdoc />
     public override void Write(FormatWriter writer, T value, FormatOptions options) =>
-        writer.WriteInteger(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+        EnumIntegerConversion.WriteInteger(ref writer, value);
 }

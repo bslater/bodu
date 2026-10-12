@@ -68,7 +68,7 @@ Retries: 1
 
 ## Enums
 
-By default an enum is written as its **member-name string** and read back case-insensitively (or as an integer). Set <xref:Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings> to `false` to write the underlying integer instead:
+By default an enum is written as its **member-name string** and read back case-insensitively (or as an integer). Set <xref:Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings> to `false` to write the underlying integer instead; a `ulong`-based value above `long.MaxValue`, beyond the writer's signed 64-bit integers, is written as its plain text, as a `ulong` member is:
 
 ```csharp
 public enum Status { Active, OnHold }
@@ -84,7 +84,7 @@ string asInteger = YamlSerializer.Serialize(new { State = Status.OnHold }, asInt
 On read an enum binds from a wire name (case-insensitively), or from an integer scalar within the range of its underlying type, regardless of `WriteEnumsAsStrings` - the flag affects only the write side. An integer outside that range raises <xref:Bodu.Text.Yaml.YamlSerializationException> with the scalar's line, column and path rather than being narrowed into the type, so `Level: 300` never binds a `byte`-based enum as 44; an integer inside the range binds whether or not it names a member. Individual members rename on the wire with the shared <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute>, honored by the default handling and by the public enum converters:
 
 - <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` - member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a `[Converter(...)]` attribute.
-- `YamlNumberEnumConverter<TEnum>` - the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`. A `ulong`-based enum also reads a plain integer above `long.MaxValue`, which YAML resolves as a string, up to `ulong.MaxValue`, as a `ulong` member does; a quoted or tagged string is rejected.
+- `YamlNumberEnumConverter<TEnum>` - the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`. A `ulong`-based value above `long.MaxValue` is written as its plain text, as a `ulong` member is, and YAML resolves such a plain integer as a string, which the converter reads back up to `ulong.MaxValue`, as a `ulong` member does; a quoted or tagged string is rejected.
 
 <!-- compile -->
 ```csharp

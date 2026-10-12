@@ -19,7 +19,8 @@ namespace Bodu.Text.Bencode.Serialization;
 /// register it on <see cref="BencodeSerializerOptions.Converters" />. It exposes a public parameterless constructor so
 /// it can be used through the converter attribute. On read an integer outside the range of the underlying type of
 /// <typeparamref name="TEnum" /> throws <see cref="BencodeSerializationException" /> rather than being narrowed into
-/// that type; an enumeration based on <see cref="ulong" /> reads integers up to <see cref="ulong.MaxValue" />.
+/// that type; an enumeration based on <see cref="ulong" /> reads and writes integers up to
+/// <see cref="ulong.MaxValue" />.
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -57,8 +58,9 @@ namespace Bodu.Text.Toml.Serialization;
 /// register it on <see cref="TomlSerializerOptions.Converters" />. It exposes a public parameterless constructor so it
 /// can be used through the converter attribute. On read an integer outside the range of the underlying type of
 /// <typeparamref name="TEnum" /> throws <see cref="TomlSerializationException" /> rather than being narrowed into that
-/// type; a TOML integer is a signed 64-bit value, so an enumeration based on <see cref="ulong" /> reads integers up to
-/// <see cref="long.MaxValue" />.
+/// type. A TOML integer is a signed 64-bit value, so an enumeration based on <see cref="ulong" /> reads integers up to
+/// <see cref="long.MaxValue" />, and writing a larger value throws <see cref="TomlSerializationException" />, as
+/// writing such a <see cref="ulong" /> member does.
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -97,10 +99,11 @@ namespace Bodu.Text.Yaml.Serialization;
 /// constructor so it can be used through the converter attribute. The produced converter writes the numeric value
 /// regardless of <see cref="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings" />. On read an integer scalar
 /// outside the range of the underlying type of <typeparamref name="TEnum" /> throws
-/// <see cref="Bodu.Text.Yaml.YamlSerializationException" /> rather than being narrowed into that type. YAML resolves a
-/// plain integer above <see cref="long.MaxValue" /> as a string, which an enumeration based on <see cref="ulong" />
-/// also reads, up to <see cref="ulong.MaxValue" />, as a <see cref="ulong" /> member reads it; a quoted or tagged
-/// string is rejected.
+/// <see cref="Bodu.Text.Yaml.YamlSerializationException" /> rather than being narrowed into that type. A value of an
+/// enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> is written as its plain invariant text,
+/// as a <see cref="ulong" /> member is, and YAML resolves such a plain integer as a string, which the converter reads
+/// back, up to <see cref="ulong.MaxValue" />, as a <see cref="ulong" /> member reads it; a quoted or tagged string is
+/// rejected.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

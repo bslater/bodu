@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#if YAML
 using System.Globalization;
-#endif
 
 #if BENCODE
 namespace Bodu.Text.Bencode.Serialization.Converters;
@@ -17,16 +15,24 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 #endif
 
 /// <summary>
-/// Converts an integer token to an enumeration value, rejecting an integer outside the range of the enumeration's
-/// underlying type rather than narrowing it into that type.
+/// Converts between an enumeration value and the integer that carries its underlying value, rejecting an integer
+/// outside the range of the enumeration's underlying type rather than narrowing it into that type.
 /// </summary>
 /// <remarks>
+/// <para>
 /// <see cref="Enum.ToObject(Type, long)" /> keeps only the bits of its argument that the underlying type holds, so it
 /// would bind 256 to an enumeration based on <see cref="byte" /> as 0, and -1 to one based on <see cref="ulong" /> as
 /// <see cref="ulong.MaxValue" />. Every enumeration converter that accepts an integer reads it through
 /// <see cref="ReadInteger{T}(ref FormatReader)" />, which first checks it against the range of the underlying type that
 /// <see cref="Enum.GetUnderlyingType(Type)" /> reports. An integer inside that range binds as that value whether or not
 /// it names a member.
+/// </para>
+/// <para>
+/// Every enumeration converter that writes an integer writes it through
+/// <see cref="WriteInteger{T}(ref FormatWriter, T)" />, which carries a value of an enumeration based on
+/// <see cref="ulong" /> above <see cref="long.MaxValue" /> as the format's <see cref="ulong" /> converter carries such
+/// a value.
+/// </para>
 /// </remarks>
 internal static class EnumIntegerConversion
 {
@@ -75,6 +81,60 @@ internal static class EnumIntegerConversion
         }
 
         return (T)Enum.ToObject(typeof(T), value);
+    }
+
+    /// <summary>
+    /// Writes the underlying value of an enumeration value as an integer.
+    /// </summary>
+    /// <typeparam name="T">The enumeration type.</typeparam>
+    /// <param name="writer">The writer.</param>
+    /// <param name="value">The value to write.</param>
+    /// <exception cref="FormatSerializationException">
+    /// The format is TOML, and <paramref name="value" />, of an enumeration based on <see cref="ulong" />, is above
+    /// <see cref="long.MaxValue" />.
+    /// </exception>
+    /// <remarks>
+    /// Only an enumeration based on <see cref="ulong" /> has values above <see cref="long.MaxValue" />, and each format
+    /// writes one as it writes such a <see cref="ulong" /> member. Bencode writes it through the unsigned integer
+    /// surface, since a Bencode integer reaches <see cref="ulong.MaxValue" />. YAML, whose writer has only a signed
+    /// 64-bit integer surface, writes its invariant text, which reads back as a plain integer. TOML, whose integers are
+    /// signed 64-bit, rejects it, with the <see cref="OverflowException" /> as the inner exception.
+    /// </remarks>
+    internal static void WriteInteger<T>(ref FormatWriter writer, T value)
+        where T : struct, Enum
+    {
+        if (Type.GetTypeCode(Enum.GetUnderlyingType(typeof(T))) != TypeCode.UInt64)
+        {
+            writer.WriteInteger(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+            return;
+        }
+
+        ulong unsignedValue = Convert.ToUInt64(value, CultureInfo.InvariantCulture);
+#if BENCODE
+        writer.WriteInteger(unsignedValue);
+#elif YAML
+        if (unsignedValue > long.MaxValue)
+        {
+            writer.WriteString(unsignedValue.ToString(CultureInfo.InvariantCulture));
+            return;
+        }
+
+        writer.WriteInteger((long)unsignedValue);
+#else
+        try
+        {
+            writer.WriteInteger(long.CreateChecked(unsignedValue));
+        }
+        catch (OverflowException ex)
+        {
+            string message = string.Format(
+                CultureInfo.CurrentCulture,
+                FormatResourceStrings.Op_Invalid_IntegerOverflow,
+                unsignedValue,
+                typeof(long));
+            throw new FormatSerializationException(message, ex);
+        }
+#endif
     }
 
     /// <summary>

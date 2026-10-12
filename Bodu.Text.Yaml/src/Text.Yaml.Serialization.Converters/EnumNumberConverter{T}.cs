@@ -21,9 +21,10 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// enumeration's underlying type throws <see cref="YamlSerializationException" /> rather than being narrowed into that
 /// type. YAML resolves a plain integer above <see cref="long.MaxValue" /> as a string, so for an enumeration based on
 /// <see cref="ulong" /> a plain, untagged scalar of decimal digits also reads, as a <see cref="ulong" /> member reads
-/// it; a quoted or tagged string does not. The value is written through a signed 64-bit integer, the only integer width
-/// the writer can store, so a value of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" />
-/// cannot be represented.
+/// it; a quoted or tagged string does not. The value is written through
+/// <see cref="EnumIntegerConversion.WriteInteger{T}(ref Utf8YamlWriter, T)" />, which writes a value above
+/// <see cref="long.MaxValue" />, beyond the writer's signed 64-bit integer surface, as that plain text, as a
+/// <see cref="ulong" /> member is written.
 /// </remarks>
 internal sealed class EnumNumberConverter<T>
     : YamlConverter<T>
@@ -49,7 +50,7 @@ internal sealed class EnumNumberConverter<T>
 
     /// <inheritdoc />
     public override void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options) =>
-        writer.WriteInteger(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+        EnumIntegerConversion.WriteInteger(ref writer, value);
 
     /// <summary>
     /// Attempts to read a plain, untagged string scalar of decimal digits, the form YAML resolves an integer above
