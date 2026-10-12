@@ -152,7 +152,7 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 | International Women's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Fixed 8 Mar |
 | Mother's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 2nd Sun May |
 | Father's Day | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | 3rd Sun Jun |
-| National Indigenous Peoples Day | Yes | National + NT, YT | inline | Fixed 21 Jun |
+| National Indigenous Peoples Day | NT, YT only | National + NT, YT | inline | Fixed 21 Jun |
 | Heritage Day | - | AB | inline | 1st Mon Aug |
 
 ### Remembrance
@@ -319,7 +319,7 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 ## US
 
-**Subdivisions:** US-AK, US-AL, US-AR, US-CA, US-CO, US-CT, US-DC, US-DE, US-FL, US-GA, US-HI, US-IL, US-IN, US-KY, US-LA, US-MA, US-MD, US-ME, US-MI, US-MO, US-NC, US-NH, US-NM, US-NV, US-NY, US-OK, US-PA, US-RI, US-SC, US-SD, US-TN, US-TX, US-UT, US-VA, US-VT, US-WV. A national `US` query does not return subdivision-only rules.
+**Subdivisions:** US-AK, US-AL, US-AR, US-CA, US-CO, US-CT, US-DC, US-DE, US-FL, US-GA, US-HI, US-IL, US-IN, US-KY, US-LA, US-MA, US-MD, US-ME, US-MI, US-MO, US-NC, US-ND, US-NH, US-NJ, US-NM, US-NV, US-NY, US-OK, US-PA, US-RI, US-SC, US-SD, US-TN, US-TX, US-UT, US-VA, US-VT, US-WV. A national `US` query does not return subdivision-only rules.
 
 ### PublicHoliday
 
@@ -366,7 +366,7 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
 | Easter Sunday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Algorithm: western-easter |
-| Good Friday | - | National | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -2 |
+| Good Friday | CT, DE, HI, IN, KY, LA, NJ, NC, ND, TN only | National + CT, DE, HI, IN, KY, LA, NJ, NC, ND, TN | [← americas-common](theme-civil-and-christian.md#americas-common) | Easter -2 |
 
 ### Cultural
 
@@ -410,7 +410,7 @@ Notable dates observed by each country in the **Americas** data pack, grouped by
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-10-12T23:44:08Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 
