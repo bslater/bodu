@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExchangeRateTests.Ctors.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -117,6 +117,25 @@ public partial class ExchangeRateTests
             () =>
             {
                 _ = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, rate, "RBA");
+            },
+            "rate");
+    }
+
+    /// <summary>
+    /// Verifies that a zero or negative rate on an inverted rate throws <see cref="ArgumentOutOfRangeException" /> with
+    /// the parameter name <c>rate</c>, rather than failing while taking the reciprocal.
+    /// </summary>
+    [TestMethod]
+    [DataRow("0")]
+    [DataRow("-0.01")]
+    public void Constructor_WhenInvertedAndRateIsNotPositive_ShouldThrowArgumentOutOfRangeException(string value)
+    {
+        decimal rate = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+
+        ExceptionAssert.ThrowsExactlyWithParamName<ArgumentOutOfRangeException>(
+            () =>
+            {
+                _ = new ExchangeRate(CurrencyCode.USD, CurrencyCode.AUD, s_sampleDate, rate, "RBA", isInverted: true);
             },
             "rate");
     }
